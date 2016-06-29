@@ -30,8 +30,8 @@
 
   = javascript_include_tag "application"
 
-  - if page_specific_javascripts
-    = javascript_include_tag page_specific_javascripts, {"data-turbolinks-track" => true}
+  - if content_for?(:page_specific_javascripts)
+    = yield :page_specific_javascripts
 
   = csrf_meta_tags
 

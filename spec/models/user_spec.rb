@@ -31,6 +31,26 @@ describe User, models: true do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+
+    describe '#group_members' do
+      it 'does not include group memberships for which user is a requester' do
+        user = create(:user)
+        group = create(:group, :public)
+        group.request_access(user)
+
+        expect(user.group_members).to be_empty
+      end
+    end
+
+    describe '#project_members' do
+      it 'does not include project memberships for which user is a requester' do
+        user = create(:user)
+        project = create(:project, :public)
+        project.request_access(user)
+
+        expect(user.project_members).to be_empty
+      end
+    end
   end
 
   describe 'validations' do

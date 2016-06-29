@@ -319,6 +319,8 @@ class @LabelsSelect
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
+          _this.enableBulkLabelDropdown()
+
           if $dropdown.hasClass('js-filter-bulk-update')
             return
 
@@ -377,3 +379,8 @@ class @LabelsSelect
       label_ids.push $("#issue_#{issue_id}").data('labels')
 
     _.intersection.apply _, label_ids
+
+  enableBulkLabelDropdown: ->
+    if $('.selected_issue:checked').length
+      issuableBulkActions = $('.bulk-update').data('bulkActions')
+      issuableBulkActions.willUpdateLabels = true

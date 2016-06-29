@@ -186,6 +186,8 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
+
+            @filter.input.trigger('keyup') if @options.filterable and @filter and @filter.input
         }
 
     # Init filterable
@@ -280,7 +282,7 @@ class GitLabDropdown
         html = @renderData(data)
 
     # Render the full menu
-    full_html = @renderMenu(html.join(""))
+    full_html = @renderMenu(html)
 
     @appendMenu(full_html)
 
@@ -351,7 +353,8 @@ class GitLabDropdown
     if @options.renderMenu
       menu_html = @options.renderMenu(html)
     else
-      menu_html = "<ul>#{html}</ul>"
+      menu_html = $('<ul />')
+        .append(html)
 
     return menu_html
 
@@ -360,7 +363,9 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-    $(selector, @dropdown).html html
+    $(selector, @dropdown)
+      .empty()
+      .append(html)
 
   # Render the row
   renderItem: (data, group = false, index = false) ->
@@ -459,7 +464,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        @updateLabel()
+        @updateLabel(selectedObject, el, @)
       else
         selectedObject
     else if el.hasClass(INDETERMINATE_CLASS)
@@ -486,7 +491,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        @updateLabel(selectedObject, el)
+        @updateLabel(selectedObject, el, @)
       if value?
         if !field.length and fieldName
           @addInput(fieldName, value)
@@ -585,8 +590,8 @@ class GitLabDropdown
       # Scroll the dropdown content up
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
-  updateLabel: (selected = null, el = null) =>
-    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el)
+  updateLabel: (selected = null, el = null, instance = null) =>
+    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el, instance)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->

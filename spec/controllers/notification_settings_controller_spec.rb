@@ -101,7 +101,7 @@ describe NotificationSettingsController do
              project_id: private_project.id,
              notification_setting: { level: :participating }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -159,7 +159,7 @@ describe NotificationSettingsController do
             id: notification_setting,
             notification_setting: { level: :participating }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end

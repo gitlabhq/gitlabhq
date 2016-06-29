@@ -22,7 +22,7 @@ describe API::Templates, api: true  do
       it 'returns a list of available gitignore templates' do
         get api('/gitignores')
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to be > 15
       end
@@ -34,7 +34,7 @@ describe API::Templates, api: true  do
       it 'returns a list of available gitlab_ci_ymls' do
         get api('/gitlab_ci_ymls')
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).not_to be_nil
       end
@@ -45,7 +45,7 @@ describe API::Templates, api: true  do
     it 'adds a disclaimer on the top' do
       get api('/gitlab_ci_ymls/Ruby')
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['content']).to start_with("# This file is a template,")
     end
   end

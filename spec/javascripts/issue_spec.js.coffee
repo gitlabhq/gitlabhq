@@ -1,4 +1,4 @@
-#= require lib/text_utility
+#= require lib/utils/text_utility
 #= require issue
 
 describe 'Issue', ->

@@ -1,6 +1,8 @@
 - page_title       @user.name
 - page_description @user.bio
-- page_specific_javascripts asset_path("users/application.js")
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/d3.js')
+  = page_specific_javascript_tag('users/application.js')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 

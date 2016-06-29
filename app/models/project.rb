@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
+  has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
 
@@ -163,6 +164,7 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
+  validate :check_wiki_path_conflict
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -537,6 +539,16 @@ class Project < ActiveRecord::Base
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
     self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
+  end
+
+  def check_wiki_path_conflict
+    return if path.blank?
+
+    path_to_check = path.ends_with?('.wiki') ? path.chomp('.wiki') : "#{path}.wiki"
+
+    if Project.where(namespace_id: namespace_id, path: path_to_check).exists?
+      errors.add(:name, 'has already been taken')
+    end
   end
 
   def to_param

@@ -11,12 +11,12 @@ describe JwtController do
   context 'existing service' do
     subject! { get '/jwt/auth', parameters }
 
-    it { expect(response.status).to eq(200) }
+    it { expect(response).to have_http_status(200) }
 
     context 'returning custom http code' do
       let(:service) { double(execute: { http_status: 505 }) }
 
-      it { expect(response.status).to eq(505) }
+      it { expect(response).to have_http_status(505) }
     end
   end
 
@@ -36,7 +36,7 @@ describe JwtController do
       context 'project with disabled CI' do
         let(:builds_enabled) { false }
 
-        it { expect(response.status).to eq(403) }
+        it { expect(response).to have_http_status(403) }
       end
     end
 
@@ -56,14 +56,14 @@ describe JwtController do
 
       subject! { get '/jwt/auth', parameters, headers }
 
-      it { expect(response.status).to eq(403) }
+      it { expect(response).to have_http_status(403) }
     end
   end
 
   context 'unknown service' do
     subject! { get '/jwt/auth', service: 'unknown' }
 
-    it { expect(response.status).to eq(404) }
+    it { expect(response).to have_http_status(404) }
   end
 
   def credentials(login, password)

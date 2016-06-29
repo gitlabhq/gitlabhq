@@ -130,7 +130,7 @@ class Repository
   end
 
   def find_tag(name)
-    raw_repository.tags.find { |tag| tag.name == name }
+    tags.find { |tag| tag.name == name }
   end
 
   def add_branch(user, branch_name, target)
@@ -976,6 +976,10 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
+  end
+
+  def gitattribute(path, name)
+    raw_repository.attributes(path)[name]
   end
 
   def copy_gitattributes(ref)

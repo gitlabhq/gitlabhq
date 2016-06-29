@@ -1034,8 +1034,8 @@ You can find the link under `/ci/lint` of your gitlab instance.
 
 ## Skipping builds
 
-If your commit message contains `[ci skip]`, the commit will be created but the
-builds will be skipped.
+If your commit message contains `[ci skip]` or `[skip ci]`, using any
+capitalization, the commit will be created but the builds will be skipped.
 
 ## Examples
 

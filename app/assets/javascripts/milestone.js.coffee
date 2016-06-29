@@ -4,18 +4,10 @@ class @Milestone
       type: "PUT"
       url: issue_url
       data: data
-      success: (data) ->
-        if data.saved == true
-          if data.assignee_avatar_url
-            img_tag = $('<img/>')
-            img_tag.attr('src', data.assignee_avatar_url)
-            img_tag.addClass('avatar s16')
-            $(li).find('.assignee-icon').html(img_tag)
-          else
-            $(li).find('.assignee-icon').html('')
-          $(li).effect 'highlight'
-        else
-          new Flash("Issue update failed", 'alert')
+      success: (_data) =>
+        @successCallback(_data, li)
+      error: (data) ->
+        new Flash("Issue update failed", 'alert')
       dataType: "json"
 
   @sortIssues: (data) ->
@@ -25,9 +17,10 @@ class @Milestone
       type: "PUT"
       url: sort_issues_url
       data: data
-      success: (data) ->
-        if data.saved != true
-          new Flash("Issues update failed", 'alert')
+      success: (_data) =>
+        @successCallback(_data)
+      error: ->
+        new Flash("Issues update failed", 'alert')
       dataType: "json"
 
   @sortMergeRequests: (data) ->
@@ -37,9 +30,10 @@ class @Milestone
       type: "PUT"
       url: sort_mr_url
       data: data
-      success: (data) ->
-        if data.saved != true
-          new Flash("MR update failed", 'alert')
+      success: (_data) =>
+        @successCallback(_data)
+      error: (data) ->
+        new Flash("Issue update failed", 'alert')
       dataType: "json"
 
   @updateMergeRequest: (li, merge_request_url, data) ->
@@ -47,19 +41,22 @@ class @Milestone
       type: "PUT"
       url: merge_request_url
       data: data
-      success: (data) ->
-        if data.saved == true
-          if data.assignee_avatar_url
-            img_tag = $('<img/>')
-            img_tag.attr('src', data.assignee_avatar_url)
-            img_tag.addClass('avatar s16')
-            $(li).find('.assignee-icon').html(img_tag)
-          else
-            $(li).find('.assignee-icon').html('')
-          $(li).effect 'highlight'
-        else
-          new Flash("Issue update failed", 'alert')
+      success: (_data) =>
+        @successCallback(_data, li)
+      error: (data) ->
+        new Flash("Issue update failed", 'alert')
       dataType: "json"
+
+  @successCallback: (data, element) =>
+    if data.assignee
+      img_tag = $('<img/>')
+      img_tag.attr('src', data.assignee.avatar_url)
+      img_tag.addClass('avatar s16')
+      $(element).find('.assignee-icon').html(img_tag)
+    else
+      $(element).find('.assignee-icon').html('')
+
+    $(element).effect 'highlight'
 
   constructor: ->
     oldMouseStart = $.ui.sortable.prototype._mouseStart
@@ -81,8 +78,10 @@ class @Milestone
       stop: (event, ui) ->
         $(".issues-sortable-list").css "min-height", "0px"
       update: (event, ui) ->
-        data = $(this).sortable("serialize")
-        Milestone.sortIssues(data)
+        # Prevents sorting from container which element has been removed.
+        if $(this).find(ui.item).length > 0
+          data = $(this).sortable("serialize")
+          Milestone.sortIssues(data)
 
       receive: (event, ui) ->
         new_state = $(this).data('state')

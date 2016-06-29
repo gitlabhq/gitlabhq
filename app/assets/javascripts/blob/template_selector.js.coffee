@@ -19,6 +19,7 @@ class @TemplateSelector
       data: @data,
       filterable: true,
       selectable: true,
+      toggleLabel: @toggleLabel,
       search:
         fields: ['name']
       clicked: @onClick
@@ -30,6 +31,9 @@ class @TemplateSelector
     @$input.on('keyup blur', (e) =>
       @onFilenameUpdate()
     )
+
+  toggleLabel: (item) ->
+    item.name
 
   onFilenameUpdate: ->
     return unless @$input.length

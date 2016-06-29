@@ -1,15 +1,16 @@
-%div{ class: nav_control_class }
+.scrolling-tabs-container{ class: nav_control_class }
   = render 'layouts/nav/admin_settings'
-
+  .fade-left
+    = icon('angle-left')
+  .fade-right
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
-    %li.fade-left
-      = icon('arrow-left')
     = nav_link(controller: %w(dashboard admin projects users groups builds runners), html_options: {class: 'home'}) do
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
         %span
           Overview
-    = nav_link(controller: %w(background_jobs logs health_check)) do
-      = link_to admin_background_jobs_path, title: 'Monitoring' do
+    = nav_link(controller: %w(system_info background_jobs logs health_check)) do
+      = link_to admin_system_info_path, title: 'Monitoring' do
         %span
           Monitoring
     = nav_link(controller: :broadcast_messages) do
@@ -37,5 +38,3 @@
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span
             Spam Logs
-    %li.fade-right
-      = icon('arrow-right')

@@ -1,8 +1,87 @@
 Please view this file on the master branch, on stable branches it's out of date.
-v 8.10.0(unreleased)
-  - Add notifications dropdown for groups
 
+v 8.10.0 (unreleased)
+  - Fix commit builds API, return all builds for all pipelines for given commit. !4849
+  - Replace Haml with Hamlit to make view rendering faster. !3666
+  - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
+  - Display last commit of deleted branch in push events !4699 (winniehell)
+  - Add Sidekiq queue duration to transaction metrics.
+  - Let Workhorse serve format-patch diffs
+  - Make images fit to the size of the viewport !4810
+  - Fix check for New Branch button on Issue page !4630 (winniehell)
+  - Fix MR-auto-close text added to description. !4836
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Exclude email check from the standard health check
+  - Fix changing issue state columns in milestone view
+  - Add notification settings dropdown for groups
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - PipelinesFinder uses git cache data
+  - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Remove unused front-end variable -> default_issues_tracker
+  - Add API endpoint for a group issues !4520 (mahcsig)
+  - Add Bugzilla integration !4930 (iamtjg)
+  - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Add basic system information like memory and disk usage to the admin panel
+
+v 8.9.3 (unreleased)
+  - MergeRequestDiff reload content use update_columns to avoid multiple YAML de/serializations
+  - Decreased min width of screen to 1280px for pinned sidebar
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
+  - Update mobile button icons to be more inline with typical UI paradigms
+  - Fixes missing avatar on system notes. !4954
+  - Improve performance of obtaining the maximum access of a user in a project
+
+v 8.9.2
+  - Fix visibility of snippets when searching.
+  - Fix an information disclosure when requesting access to a group containing private projects.
+  - Update omniauth-saml to 1.6.0 !4951
+
+v 8.9.1
+  - Refactor labels documentation. !3347
+  - Eager load award emoji on notes. !4628
+  - Fix some CI wording in documentation. !4660
+  - Document `GIT_STRATEGY` and `GIT_DEPTH`. !4720
+  - Add documentation for the export & import features. !4732
+  - Add some docs for Docker Registry configuration. !4738
+  - Ensure we don't send the "access request declined" email to access requesters on project deletion. !4744
+  - Display group/project access requesters separately in the admin area. !4798
+  - Add documentation and examples for configuring cloud storage for registry images. !4812
+  - Clarifies documentation about artifact expiry. !4831
+  - Fix the Network graph links. !4832
+  - Fix MR-auto-close text added to description. !4836
+  - Add documentation for award emoji now that comments can be awarded with emojis. !4839
+  - Fix typo in export failure email. !4847
+  - Fix header vertical centering. !4170
+  - Fix subsequent SAML sign ins. !4718
+  - Set button label when picking an option from status dropdown. !4771
+  - Prevent invalid URLs from raising exceptions in WikiLink Filter. !4775
+  - Handle external issues in IssueReferenceFilter. !4789
+  - Support for rendering/redacting multiple documents. !4828
+  - Update Todos documentation and screenshots to include new functionality. !4840
+  - Hide nav arrows by default. !4843
+  - Added bottom padding to label color suggestion link. !4845
+  - Use jQuery objects in ref dropdown. !4850
+  - Fix GitLab project import issues related to notes and builds. !4855
+  - Restrict header logo to 36px so it doesn't overflow. !4861
+  - Fix unwanted label unassignment. !4863
+  - Fix mobile Safari bug where horizontal nav arrows would flicker on scroll. !4869
+  - Restore old behavior around diff notes to outdated discussions. !4870
+  - Fix merge requests project settings help link anchor. !4873
+  - Fix 404 when accessing pipelines as guest user on public projects. !4881
+  - Remove width restriction for logo on sign-in page. !4888
+  - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
+  - Apply selected value as label. !4886
+  - Fix temp file being deleted after the request while importing a GitLab project. !4894
+  - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Fix a wrong MR status when merge_when_build_succeeds & project.only_allow_merge_if_build_succeeds are true. !4912
+  - Add SMTP as default delivery method to match gitlab-org/omnibus-gitlab!826. !4915
+  - Remove duplicate 'New Page' button on edit wiki page
+
+v 8.9.0
 v 8.9.0 (unreleased)
+  - Fix group visibility form layout in application settings
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
@@ -15,7 +94,6 @@ v 8.9.0 (unreleased)
   - Fix endless redirections when accessing user OAuth applications when they are disabled
   - Allow enabling wiki page events from Webhook management UI
   - Bump rouge to 1.11.0
-  - Fix MR-auto-close text added to description
   - Fix issue with arrow keys not working in search autocomplete dropdown
   - Fix an issue where note polling stopped working if a window was in the
     background during a refresh.
@@ -39,7 +117,6 @@ v 8.9.0 (unreleased)
   - Implement a fair usage of shared runners
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
-  - Wrap code blocks on Activies and Todos page !4783 (winniehell)
   - Add a metric for the number of new Redis connections created by a transaction
   - Fix Error 500 when viewing a blob with binary characters after the 1024-byte mark
   - Redesign navigation for project pages
@@ -100,6 +177,7 @@ v 8.9.0 (unreleased)
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
+  - Updated project creation page to match new UI #2542
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
   - Manually mark a issue or merge request as a todo
@@ -154,6 +232,10 @@ v 8.9.0 (unreleased)
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.6
+  - Fix visibility of snippets when searching.
+  - Update omniauth-saml to 1.6.0 !4951
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
@@ -284,6 +366,10 @@ v 8.8.0
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
   - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
+
+v 8.7.8
+  - Fix visibility of snippets when searching.
+  - Update omniauth-saml to 1.6.0 !4951
 
 v 8.7.7
   - Fix import by `Any Git URL` broken if the URL contains a space

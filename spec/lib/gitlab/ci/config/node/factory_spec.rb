@@ -25,6 +25,16 @@ describe Gitlab::Ci::Config::Node::Factory do
           expect(entry.description).to eq 'test description'
         end
       end
+
+      context 'when setting key' do
+        it 'creates entry with custom key' do
+          entry = factory
+            .with(value: ['ls', 'pwd'], key: 'test key')
+            .create!
+
+          expect(entry.key).to eq 'test key'
+        end
+      end
     end
 
     context 'when not setting value' do

@@ -70,17 +70,20 @@ class @Project
         fieldName: 'ref'
         renderRow: (ref) ->
           if ref.header?
-            "<li class='dropdown-header'>#{ref.header}</li>"
+            $('<li />')
+              .addClass('dropdown-header')
+              .text(ref.header)
           else
-            isActiveClass = if ref is selected then 'is-active' else ''
+            link = $('<a />')
+              .attr('href', '#')
+              .addClass(if ref is selected then 'is-active' else '')
+              .text(ref)
+              .attr('data-ref', escape(ref))
 
-            "<li>
-              <a href='#' data-ref='#{escape(ref)}' class='#{isActiveClass}'>
-                #{ref}
-              </a>
-            </li>"
+            $('<li />')
+              .append(link)
         id: (obj, $el) ->
-          $el.data('ref')
+          $el.attr('data-ref')
         toggleLabel: (obj, $el) ->
           $el.text().trim()
         clicked: (e) ->

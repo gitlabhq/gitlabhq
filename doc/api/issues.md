@@ -28,7 +28,7 @@ GET /issues?labels=foo,bar&state=opened
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
-| `labels`  | string  | no    | Comma-separated list of label names |
+| `labels`  | string  | no    | Comma-separated list of label names, issues with any of the labels will be returned |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
@@ -83,6 +83,82 @@ Example response:
 ]
 ```
 
+## List group issues
+
+Get a list of a group's issues.
+
+```
+GET /groups/:id/issues
+GET /groups/:id/issues?state=opened
+GET /groups/:id/issues?state=closed
+GET /groups/:id/issues?labels=foo
+GET /groups/:id/issues?labels=foo,bar
+GET /groups/:id/issues?labels=foo,bar&state=opened
+GET /groups/:id/issues?milestone=1.0.0
+GET /groups/:id/issues?milestone=1.0.0&state=opened
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes   | The ID of a group |
+| `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
+| `labels`  | string  | no    | Comma-separated list of label names, issues must have all labels to be returned |
+| `milestone` | string| no    | The milestone title |
+| `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
+
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/issues
+```
+
+Example response:
+
+```json
+[
+   {
+      "project_id" : 4,
+      "milestone" : {
+         "due_date" : null,
+         "project_id" : 4,
+         "state" : "closed",
+         "description" : "Rerum est voluptatem provident consequuntur molestias similique ipsum dolor.",
+         "iid" : 3,
+         "id" : 11,
+         "title" : "v3.0",
+         "created_at" : "2016-01-04T15:31:39.788Z",
+         "updated_at" : "2016-01-04T15:31:39.788Z"
+      },
+      "author" : {
+         "state" : "active",
+         "web_url" : "https://gitlab.example.com/u/root",
+         "avatar_url" : null,
+         "username" : "root",
+         "id" : 1,
+         "name" : "Administrator"
+      },
+      "description" : "Omnis vero earum sunt corporis dolor et placeat.",
+      "state" : "closed",
+      "iid" : 1,
+      "assignee" : {
+         "avatar_url" : null,
+         "web_url" : "https://gitlab.example.com/u/lennie",
+         "state" : "active",
+         "username" : "lennie",
+         "id" : 9,
+         "name" : "Dr. Luella Kovacek"
+      },
+      "labels" : [],
+      "id" : 41,
+      "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
+      "updated_at" : "2016-01-04T15:31:46.176Z",
+      "created_at" : "2016-01-04T15:31:46.176Z",
+      "subscribed" : false,
+      "user_notes_count": 1
+   }
+]
+```
+
 ## List project issues
 
 Get a list of a project's issues.
@@ -104,7 +180,7 @@ GET /projects/:id/issues?iid=42
 | `id`      | integer | yes   | The ID of a project |
 | `iid`     | integer | no    | Return the issue having the given `iid` |
 | `state`   | string  | no    | Return all issues or just those that are `opened` or `closed`|
-| `labels`  | string  | no    | Comma-separated list of label names |
+| `labels`  | string  | no    | Comma-separated list of label names, issues with any of the labels will be returned |
 | `milestone` | string| no    | The milestone title |
 | `order_by`| string  | no    | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |

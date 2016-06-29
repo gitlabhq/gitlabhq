@@ -96,26 +96,14 @@ describe Projects::MergeRequestsController do
     end
 
     describe "as patch" do
-      include_examples "export merge as", :patch
-      let(:format) { :patch }
-
-      it "should really be a git email patch with commit" do
-        get(:show,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            id: merge_request.iid, format: format)
-
-        expect(response.body[0..100]).to start_with("From #{merge_request.commits.last.id}")
-      end
-
-      it "should contain git diffs" do
+      it 'triggers workhorse to serve the request' do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
             id: merge_request.iid,
-            format: format)
+            format: :patch)
 
-        expect(response.body).to match(/^diff --git/)
+        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-format-patch:")
       end
     end
   end
@@ -264,6 +252,18 @@ describe Projects::MergeRequestsController do
 
           merge_when_build_succeeds
         end
+
+        context 'when project.only_allow_merge_if_build_succeeds? is true' do
+          before do
+            project.update_column(:only_allow_merge_if_build_succeeds, true)
+          end
+
+          it 'returns :merge_when_build_succeeds' do
+            merge_when_build_succeeds
+
+            expect(assigns(:status)).to eq(:merge_when_build_succeeds)
+          end
+        end
       end
     end
   end
@@ -272,7 +272,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     context "when the user is owner" do
@@ -285,7 +285,7 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
       end
     end
