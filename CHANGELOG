@@ -14,6 +14,7 @@ v 8.10.0 (unreleased)
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Remove unused front-end variable -> default_issues_tracker
   - Add API endpoint for a group issues !4520 (mahcsig)
