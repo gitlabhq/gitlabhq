@@ -123,7 +123,7 @@ describe 'Git HTTP requests', lib: true do
       end
 
       context "when Kerberos token is provided" do
-        let(:env) { {spnego_request_token: 'opaque_request_token'} }
+        let(:env) { { spnego_request_token: 'opaque_request_token' } }
 
         before do
           allow_any_instance_of(Projects::GitHttpController).to receive(:allow_kerberos_spnego_auth?).and_return(true)
