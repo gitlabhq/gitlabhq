@@ -2,9 +2,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
 
-v 8.9.3 (unreleased)
-  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
-  - Fix creating MRs on forks of deleted projects
+v 8.9.3
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !502
+  - Fix creating MRs on forks of deleted projects. !503
+  - Roll back Grack::Auth to fix Git HTTP SPNEGO. !504
 
 v 8.9.2
   - [Elastic] Fix visibility of snippets when searching.
