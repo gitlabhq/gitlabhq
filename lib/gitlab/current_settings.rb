@@ -11,7 +11,7 @@ module Gitlab
     def ensure_application_settings!
       if connect_to_db?
         begin
-          settings = ::ApplicationSetting.cached
+          settings = ::ApplicationSetting.current
         # In case Redis isn't running or the Redis UNIX socket file is not available
         rescue ::Redis::BaseError, ::Errno::ENOENT
           settings = ::ApplicationSetting.last
