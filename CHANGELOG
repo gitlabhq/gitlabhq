@@ -12,6 +12,7 @@ v 8.9.3
   - Use memorized tags array when searching tags by name. !4859
   - Fixed avatar alignment in new MR view. !4901
   - Removed fade when filtering results. !4932
+  - Fix missing avatar on system notes. !4954
 
 v 8.9.2
   - Fix visibility of snippets when searching.
