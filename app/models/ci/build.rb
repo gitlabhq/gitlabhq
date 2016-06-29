@@ -19,6 +19,7 @@ module Ci
 
     acts_as_taggable
 
+    before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_destroy { project }
 
     after_create :execute_hooks
@@ -340,7 +341,6 @@ module Ci
     def erase_artifacts!
       remove_artifacts_file!
       remove_artifacts_metadata!
-      self.artifacts_size = nil
       save
     end
 
@@ -380,6 +380,10 @@ module Ci
     end
 
     private
+
+    def update_artifacts_size
+      self.artifacts_size = artifacts_file.size
+    end
 
     def erase_trace!
       self.trace = nil

@@ -476,13 +476,17 @@ describe Ci::API::API do
 
       describe 'DELETE /builds/:id/artifacts' do
         let(:build) { create(:ci_build, :artifacts) }
-        before { delete delete_url, token: build.token }
+
+        before do
+          delete delete_url, token: build.token
+          build.reload
+        end
 
         it 'should remove build artifacts' do
           expect(response).to have_http_status(200)
           expect(build.artifacts_file.exists?).to be_falsy
           expect(build.artifacts_metadata.exists?).to be_falsy
-          expect(build.artifacts_size).to be_falsy
+          expect(build.artifacts_size).to eq(0)
         end
       end
 
