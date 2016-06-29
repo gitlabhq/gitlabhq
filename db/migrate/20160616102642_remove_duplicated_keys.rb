@@ -9,7 +9,7 @@ class RemoveDuplicatedKeys < ActiveRecord::Migration
         AND id != (
           SELECT id FROM (
             SELECT max(id) AS id
-            FROM keys
+            FROM #{quote_table_name(:keys)}
             WHERE fingerprint = #{fingerprint}
           ) max_ids
         )
