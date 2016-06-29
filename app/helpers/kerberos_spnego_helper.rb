@@ -1,4 +1,6 @@
 module KerberosSpnegoHelper
+  include ActionController::HttpAuthentication::Basic
+
   attr_reader :spnego_response_token
 
   def allow_basic_auth?
@@ -31,7 +33,7 @@ module KerberosSpnegoHelper
     end
   end
 
-  def has_spnego_credentials?(request)
+  def spnego_provided?
     request.authorization.present? && (auth_scheme(request) == 'Negotiate')
   end
 
@@ -40,6 +42,7 @@ module KerberosSpnegoHelper
   end
 
   def find_kerberos_user(spnego_token)
+    spnego_token = Base64.strict_decode64(auth_param(request))
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
 

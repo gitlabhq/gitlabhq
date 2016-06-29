@@ -47,7 +47,7 @@ class Projects::GitHttpController < Projects::ApplicationController
       return # Allow access
     end
 
-    if allow_basic_auth? && has_basic_credentials?(request)
+    if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
       auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
@@ -62,10 +62,9 @@ class Projects::GitHttpController < Projects::ApplicationController
       if ci? || user
         return # Allow access
       end
-    elsif allow_kerberos_spnego_auth? && has_spnego_credentials?(request)
-      spnego_token = Base64.strict_decode64(auth_param(request))
-      @user = find_kerberos_user(spnego_token)
-    
+    elsif allow_kerberos_spnego_auth? && spnego_provided?
+      @user = find_kerberos_user
+
       if user
         send_final_spnego_response
         return # Allow access
@@ -75,6 +74,10 @@ class Projects::GitHttpController < Projects::ApplicationController
     # Authentication failed. Challenge the client to provide credentials.
     send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
+  end
+
+  def basic_auth_provided?
+    has_basic_credentials?(request)
   end
 
   def send_challenges
