@@ -9,13 +9,14 @@
 
     - if @project.description.present?
       .project-home-desc
-        = markdown(@project.description, pipeline: :description)
+        - if @project.description.present?
+          = markdown(@project.description, pipeline: :description)
 
-    - if forked_from_project = @project.forked_from_project
-      .cover-desc
-        Forked from
-        = link_to project_path(forked_from_project) do
-          = forked_from_project.namespace.try(:name)
+        - if forked_from_project = @project.forked_from_project
+          %p
+            Forked from
+            = link_to project_path(forked_from_project) do
+              = forked_from_project.namespace.try(:name)
 
     .project-repo-buttons.project-action-buttons
       .count-buttons

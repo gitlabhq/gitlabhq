@@ -89,7 +89,10 @@
   }
 
   .project-home-desc {
+    margin-left: auto;
+    margin-right: auto;
     margin-bottom: 15px;
+    max-width: 480px;
 
     > p {
       margin-bottom: 0;
@@ -367,6 +370,15 @@ a.deploy-project-label {
     &:not(:last-child) {
       margin-right: $gl-padding;
     }
+
+    &.project-repo-buttons-right {
+      margin-top: 10px;
+
+      @media (min-width: $screen-md-min) {
+        float: right;
+        margin-top: 0;
+      }
+    }
   }
 
   .nav > li > a {
@@ -498,7 +510,7 @@ pre.light-well {
   }
 
   .ci-status {
-    margin-right: 16px;
+    margin-right: $gl-padding;
   }
 
   .commit-row-message {
@@ -506,19 +518,12 @@ pre.light-well {
   }
 
   .commit_short_id {
-    margin: 0 5px;
+    margin-right: 5px;
     color: $gl-link-color;
     font-weight: 600;
   }
 
   .commit-author-link {
-    margin-left: 7px;
-    text-decoration: none;
-    .avatar {
-      float: none;
-      margin-right: 4px;
-    }
-
     .commit-author-name {
       font-weight: 600;
     }
