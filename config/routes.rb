@@ -131,8 +131,16 @@ Rails.application.routes.draw do
     end
   end
 
+  #
   # Spam reports
+  #
   resources :abuse_reports, only: [:new, :create]
+
+  #
+  # Notification settings
+  #
+  resources :notification_settings, only: [:create, :update]
+
 
   #
   # Import
@@ -178,6 +186,10 @@ Rails.application.routes.draw do
 
       get   :new_user_map,    path: :user_map
       post  :create_user_map, path: :user_map
+    end
+
+    resource :gitlab_project, only: [:create, :new] do
+      post :create
     end
   end
 
@@ -294,7 +306,7 @@ Rails.application.routes.draw do
           post :repository_check
         end
 
-        resources :runner_projects
+        resources :runner_projects, only: [:create, :destroy]
       end
     end
 
@@ -369,6 +381,13 @@ Rails.application.routes.draw do
       resources :keys
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
+
+      resources :personal_access_tokens, only: [:index, :create] do
+        member do
+          put :revoke
+        end
+      end
+
       resource :two_factor_auth, only: [:show, :create, :destroy] do
         member do
           post :create_u2f
@@ -497,8 +516,13 @@ Rails.application.routes.draw do
         post :housekeeping
         post :toggle_star
         post :markdown_preview
+        post :export
+        post :remove_export
+        post :generate_new_export
+        get :download_export
         get :autocomplete_sources
         get :activity
+        get :refs
       end
 
       scope module: :projects do
@@ -692,7 +716,6 @@ Rails.application.routes.draw do
 
         resources :forks, only: [:index, :new, :create]
         resource :import, only: [:new, :create, :show]
-        resource :notification_setting, only: [:update]
 
         resources :refs, only: [] do
           collection do
@@ -850,7 +873,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :todos, only: [:create, :update], constraints: { id: /\d+/ }
+        resources :todos, only: [:create]
 
         resources :uploads, only: [:create] do
           collection do

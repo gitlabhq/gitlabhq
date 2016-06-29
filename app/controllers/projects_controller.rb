@@ -1,13 +1,13 @@
 class ProjectsController < Projects::ApplicationController
   include ExtractsPath
 
-  before_action :authenticate_user!, except: [:show, :activity]
+  before_action :authenticate_user!, except: [:show, :activity, :refs]
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, :tree, only: [:show], if: :repo_exists?
 
   # Authorize
-  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping]
+  before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
   before_action :event_filter, only: [:show, :activity]
 
   layout :determine_layout
@@ -144,6 +144,7 @@ class ProjectsController < Projects::ApplicationController
       issues: autocomplete.issues,
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
+      labels: autocomplete.labels,
       members: participants
     }
 
@@ -186,6 +187,48 @@ class ProjectsController < Projects::ApplicationController
     )
   end
 
+  def export
+    @project.add_export_job(current_user: current_user)
+
+    redirect_to(
+      edit_project_path(@project),
+      notice: "Project export started. A download link will be sent by email."
+    )
+  end
+
+  def download_export
+    export_project_path = @project.export_project_path
+
+    if export_project_path
+      send_file export_project_path, disposition: 'attachment'
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export link has expired. Please generate a new export from your project settings."
+      )
+    end
+  end
+
+  def remove_export
+    if @project.remove_exports
+      flash[:notice] = "Project export has been deleted."
+    else
+      flash[:alert] = "Project export could not be deleted."
+    end
+    redirect_to(edit_project_path(@project))
+  end
+
+  def generate_new_export
+    if @project.remove_exports
+      export
+    else
+      redirect_to(
+        edit_project_path(@project),
+        alert: "Project export could not be deleted."
+      )
+    end
+  end
+
   def toggle_star
     current_user.toggle_star(@project)
     @project.reload
@@ -207,6 +250,24 @@ class ProjectsController < Projects::ApplicationController
         users: ext.users.map(&:username)
       }
     }
+  end
+
+  def refs
+    options = {
+      'Branches' => @repository.branch_names,
+    }
+
+    unless @repository.tag_count.zero?
+      options['Tags'] = VersionSorter.rsort(@repository.tag_names)
+    end
+
+    # If reference is commit id - we should add it to branch/tag selectbox
+    ref = Addressable::URI.unescape(params[:ref])
+    if ref && options.flatten(2).exclude?(ref) && ref =~ /\A[0-9a-zA-Z]{6,52}\z/
+      options['Commits'] = [ref]
+    end
+
+    render json: options.to_json
   end
 
   private
@@ -254,8 +315,14 @@ class ProjectsController < Projects::ApplicationController
     project.repository_exists? && !project.empty_repo?
   end
 
-  # Override get_id from ExtractsPath, which returns the branch and file path
+  # Override extract_ref from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
+  # This way we avoid to access the repository.ref_names.
+  def extract_ref(_id)
+    [get_id, '']
+  end
+
+  # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
   end

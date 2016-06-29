@@ -152,15 +152,5 @@ describe ProjectMember, models: true do
         member.__send__(:after_accept_request)
       end
     end
-
-    describe '#post_decline_request' do
-      it 'calls NotificationService.decline_project_access_request' do
-        member = create(:project_member, user: build_stubbed(:user), requested_at: Time.now)
-
-        expect_any_instance_of(NotificationService).to receive(:decline_project_access_request)
-
-        member.__send__(:post_decline_request)
-      end
-    end
   end
 end

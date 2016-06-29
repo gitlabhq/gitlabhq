@@ -26,6 +26,10 @@ Sidekiq.configure_server do |config|
   config['pool'] = Sidekiq.options[:concurrency] + 2
   ActiveRecord::Base.establish_connection(config)
   Rails.logger.debug("Connection Pool size for Sidekiq Server is now: #{ActiveRecord::Base.connection.pool.instance_variable_get('@size')}")
+
+  # Avoid autoload issue such as 'Mail::Parsers::AddressStruct'
+  # https://github.com/mikel/mail/issues/912#issuecomment-214850355
+  Mail.eager_autoload!
 end
 
 Sidekiq.configure_client do |config|

@@ -295,7 +295,23 @@ class Project < ActiveRecord::Base
     #
     # Returns a Project, or nil if no project could be found.
     def find_with_namespace(path)
-      where_paths_in([path]).reorder(nil).take
+      namespace_path, project_path = path.split('/', 2)
+
+      return unless namespace_path && project_path
+
+      namespace_path = connection.quote(namespace_path)
+      project_path = connection.quote(project_path)
+
+      # On MySQL we want to ensure the ORDER BY uses a case-sensitive match so
+      # any literal matches come first, for this we have to use "BINARY".
+      # Without this there's still no guarantee in what order MySQL will return
+      # rows.
+      binary = Gitlab::Database.mysql? ? 'BINARY' : ''
+
+      order_sql = "(CASE WHEN #{binary} namespaces.path = #{namespace_path} " \
+        "AND #{binary} projects.path = #{project_path} THEN 0 ELSE 1 END)"
+
+      where_paths_in([path]).reorder(order_sql).take
     end
 
     # Builds a relation to find multiple projects by their full paths.
@@ -383,6 +399,11 @@ class Project < ActiveRecord::Base
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 
       joins(join_body).reorder('join_note_counts.amount DESC')
+    end
+
+    # Deletes gitlab project export files older than 24 hours
+    def remove_gitlab_exports!
+      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
     end
   end
 
@@ -487,7 +508,7 @@ class Project < ActiveRecord::Base
   end
 
   def import?
-    external_import? || forked?
+    external_import? || forked? || gitlab_project_import?
   end
 
   def no_import?
@@ -583,6 +604,10 @@ class Project < ActiveRecord::Base
     return unless mirror?
 
     repository.fetch_upstream(self.import_url)
+  end
+
+  def gitlab_project_import?
+    import_type == 'gitlab_project'
   end
 
   def check_limit
@@ -1314,5 +1339,28 @@ class Project < ActiveRecord::Base
     Rails.logger.error("Error setting import status to failed: #{e.message}. Original error: #{sanitized_message}")
   ensure
     @errors = original_errors
+  end
+
+  def add_export_job(current_user:)
+    job_id = ProjectExportWorker.perform_async(current_user.id, self.id)
+
+    if job_id
+      Rails.logger.info "Export job started for project ID #{self.id} with job ID #{job_id}"
+    else
+      Rails.logger.error "Export job failed to start for project ID #{self.id}"
+    end
+  end
+
+  def export_path
+    File.join(Gitlab::ImportExport.storage_path, path_with_namespace)
+  end
+
+  def export_project_path
+    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
+  end
+
+  def remove_exports
+    _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
+    status.zero?
   end
 end

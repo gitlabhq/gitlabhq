@@ -6,11 +6,13 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
+    return head(403) if @runner.is_shared? || @runner.locked?
     return head(403) unless current_user.ci_authorized_runners.include?(@runner)
 
     path = runners_path(project)
+    runner_project = @runner.assign_to(project, current_user)
 
-    if @runner.assign_to(project, current_user)
+    if runner_project.persisted?
       redirect_to path
     else
       redirect_to path, alert: 'Failed adding runner to project'

@@ -144,7 +144,7 @@ module API
 
     helpers do
       def noteable_read_ability_name(noteable)
-        "read_#{noteable.class.to_s.underscore.downcase}".to_sym
+        "read_#{noteable.class.to_s.underscore}".to_sym
       end
     end
   end

@@ -80,9 +80,14 @@
 
 .commit {
   padding: 10px 0;
+  position: relative;
 
   @media (min-width: $screen-sm-min) {
-    padding-left: 46px;
+    padding-left: 20px;
+
+    .commit-info-block {
+      padding-left: 44px;
+    }
   }
 
   &:not(:last-child) {
@@ -95,8 +100,11 @@
     vertical-align: baseline;
   }
 
+
   .avatar {
-    margin-left: -46px;
+    position: absolute;
+    top: 10px;
+    left: 16px;
   }
 
   .item-title {

@@ -60,6 +60,40 @@ describe "Admin Runners" do
       it { expect(page).to have_content(@project1.name_with_namespace) }
       it { expect(page).not_to have_content(@project2.name_with_namespace) }
     end
+
+    describe 'enable/create' do
+      before do
+        @project1.runners << runner
+        visit admin_runner_path(runner)
+      end
+
+      it 'enables specific runner for project' do
+        within '.unassigned-projects' do
+          click_on 'Enable'
+        end
+
+        assigned_project = page.find('.assigned-projects')
+
+        expect(assigned_project).to have_content(@project2.path)
+      end
+    end
+
+    describe 'disable/destroy' do
+      before do
+        @project1.runners << runner
+        visit admin_runner_path(runner)
+      end
+
+      it 'enables specific runner for project' do
+        within '.assigned-projects' do
+          click_on 'Disable'
+        end
+
+        new_runner_project = page.find('.unassigned-projects')
+
+        expect(new_runner_project).to have_content(@project1.path)
+      end
+    end
   end
 
   describe 'runners registration token' do

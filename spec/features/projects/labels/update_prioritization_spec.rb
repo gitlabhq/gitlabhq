@@ -77,6 +77,7 @@ feature 'Prioritize labels', feature: true do
       end
 
       visit current_url
+      wait_for_ajax
 
       page.within('.prioritized-labels') do
         expect(first('li')).to have_content('wontfix')

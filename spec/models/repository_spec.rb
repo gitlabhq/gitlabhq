@@ -31,6 +31,47 @@ describe Repository, models: true do
     it { is_expected.not_to include('v1.0.0') }
   end
 
+  describe 'tags_sorted_by' do
+    context 'name' do
+      subject { repository.tags_sorted_by('name').map(&:name) }
+
+      it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+    end
+
+    context 'updated' do
+      let(:tag_a) { repository.find_tag('v1.0.0') }
+      let(:tag_b) { repository.find_tag('v1.1.0') }
+
+      context 'desc' do
+        subject { repository.tags_sorted_by('updated_desc').map(&:name) }
+
+        before do
+          double_first = double(committed_date: Time.now)
+          double_last = double(committed_date: Time.now - 1.second)
+
+          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_first)
+          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_last)
+        end
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
+      end
+
+      context 'asc' do
+        subject { repository.tags_sorted_by('updated_asc').map(&:name) }
+
+        before do
+          double_first = double(committed_date: Time.now - 1.second)
+          double_last = double(committed_date: Time.now)
+
+          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_last)
+          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_first)
+        end
+
+        it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+      end
+    end
+  end
+
   describe :last_commit_for_path do
     subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 

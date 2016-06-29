@@ -12,6 +12,11 @@ module Emails
       @member_id = member_id
 
       admins = member_source.members.owners_and_masters.includes(:user).pluck(:notification_email)
+      # A project in a group can have no explicit owners/masters, in that case
+      # we fallbacks to the group's owners/masters.
+      if admins.empty? && member_source.respond_to?(:group) && member_source.group
+        admins = member_source.group.members.owners_and_masters.includes(:user).pluck(:notification_email)
+      end
 
       mail(to: admins,
            subject: subject("Request to join the #{member_source.human_name} #{member_source.model_name.singular}"))

@@ -9,20 +9,52 @@ describe MembersHelper do
     it { expect(action_member_permission(:admin, group_member)).to eq :admin_group_member }
   end
 
-  describe '#can_see_member_roles?' do
-    let(:project) { create(:empty_project) }
-    let(:group) { create(:group) }
-    let(:user) { build(:user) }
-    let(:admin) { build(:user, :admin) }
-    let(:project_member) { create(:project_member, project: project) }
-    let(:group_member) { create(:group_member, group: group) }
+  describe '#default_show_roles' do
+    let(:user) { double }
+    let(:member) { build(:project_member) }
 
-    it { expect(can_see_member_roles?(source: project, user: nil)).to be_falsy }
-    it { expect(can_see_member_roles?(source: group, user: nil)).to be_falsy }
-    it { expect(can_see_member_roles?(source: project, user: admin)).to be_truthy }
-    it { expect(can_see_member_roles?(source: group, user: admin)).to be_truthy }
-    it { expect(can_see_member_roles?(source: project, user: project_member.user)).to be_truthy }
-    it { expect(can_see_member_roles?(source: group, user: group_member.user)).to be_truthy }
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :update_project_member, member).and_return(false)
+      allow(helper).to receive(:can?).with(user, :destroy_project_member, member).and_return(false)
+      allow(helper).to receive(:can?).with(user, :admin_project_member, member.source).and_return(false)
+    end
+
+    context 'when the current cannot update, destroy or admin the passed member' do
+      it 'returns false' do
+        expect(helper.default_show_roles(member)).to be_falsy
+      end
+    end
+
+    context 'when the current can update the passed member' do
+      before do
+        allow(helper).to receive(:can?).with(user, :update_project_member, member).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(helper.default_show_roles(member)).to be_truthy
+      end
+    end
+
+    context 'when the current can destroy the passed member' do
+      before do
+        allow(helper).to receive(:can?).with(user, :destroy_project_member, member).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(helper.default_show_roles(member)).to be_truthy
+      end
+    end
+
+    context 'when the current can admin the passed member source' do
+      before do
+        allow(helper).to receive(:can?).with(user, :admin_project_member, member.source).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(helper.default_show_roles(member)).to be_truthy
+      end
+    end
   end
 
   describe '#remove_member_message' do

@@ -21,6 +21,7 @@ feature 'Groups > Members > User requests access', feature: true do
     expect(page).to have_content 'Your request for access has been queued for review.'
 
     expect(page).to have_content 'Withdraw Access Request'
+    expect(page).not_to have_content 'Leave Group'
   end
 
   scenario 'user is not listed in the group members page' do

@@ -22,7 +22,7 @@
   = render 'team', members: @project_members.non_request
 
   - if @group
-    = render "group_members", members: @group_members
+    = render "group_members", members: @group_members.non_request
 
   - if @project_group_links.any? && @project.allowed_to_share_with_group?
     = render "shared_group_members"

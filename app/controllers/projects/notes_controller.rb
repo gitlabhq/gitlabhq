@@ -24,6 +24,10 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     @note = Notes::CreateService.new(project, current_user, note_params).execute
 
+    if @note.is_a?(Note)
+      Banzai::NoteRenderer.render([@note], @project, current_user)
+    end
+
     respond_to do |format|
       format.json { render json: note_json(@note) }
       format.html { redirect_back_or_default }
@@ -32,6 +36,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def update
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
+
+    if @note.is_a?(Note)
+      Banzai::NoteRenderer.render([@note], @project, current_user)
+    end
 
     respond_to do |format|
       format.json { render json: note_json(@note) }
@@ -118,6 +126,8 @@ class Projects::NotesController < Projects::ApplicationController
         name:   note.name
       }
     elsif note.valid?
+      Banzai::NoteRenderer.render([note], @project, current_user)
+
       {
         valid: true,
         id: note.id,

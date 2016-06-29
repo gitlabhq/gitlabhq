@@ -134,18 +134,6 @@ describe Member, models: true do
     it { is_expected.to respond_to(:user_email) }
   end
 
-  describe 'Callbacks' do
-    describe 'after_destroy :post_decline_request, if: :request?' do
-      let(:member) { create(:project_member, requested_at: Time.now.utc) }
-
-      it 'calls #post_decline_request' do
-        expect(member).to receive(:post_decline_request)
-
-        member.destroy
-      end
-    end
-  end
-
   describe ".add_user" do
     let!(:user)    { create(:user) }
     let(:project) { create(:project) }

@@ -14,7 +14,12 @@ Feature: Dashboard Todos
   Scenario: I mark todos as done
     Then I should see todos assigned to me
     And I mark the todo as done
-    And I click on the "Done" tab
+    Then I should see the todo marked as done
+
+  @javascript
+  Scenario: I mark all todos as done
+    Then I should see todos assigned to me
+    And I mark all todos as done
     Then I should see all todos marked as done
 
   @javascript
