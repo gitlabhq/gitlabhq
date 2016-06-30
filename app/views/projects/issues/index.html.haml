@@ -1,5 +1,6 @@
 - @no_container = true
 - page_title "Issues"
+- new_issue_email = @project.new_issue_address(current_user)
 = render "projects/issues/head"
 
 = content_for :meta_tags do
@@ -24,3 +25,8 @@
 
   .issues-holder
     = render "issues"
+  - if new_issue_email
+    .issues-footer.text-center
+      %button.issue-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issue-email-modal" } }
+        Email a new issue to this project
+    = render "issue_by_email", email: new_issue_email

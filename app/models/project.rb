@@ -529,7 +529,7 @@ class Project < ActiveRecord::Base
   end
 
   def new_issue_address(author)
-    if Gitlab::IncomingEmail.enabled?
+    if Gitlab::IncomingEmail.enabled? && author
       Gitlab::IncomingEmail.reply_address(
         "#{path_with_namespace}+#{author.authentication_token}")
     end
