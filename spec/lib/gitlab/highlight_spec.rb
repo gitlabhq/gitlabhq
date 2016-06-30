@@ -4,6 +4,7 @@ describe Gitlab::Highlight, lib: true do
   include RepoHelpers
 
   let(:project) { create(:project) }
+  let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
 
   describe '.highlight_lines' do
@@ -18,4 +19,30 @@ describe Gitlab::Highlight, lib: true do
     end
   end
 
+  describe 'custom highlighting from .gitattributes' do
+    let(:branch) { 'gitattributes' }
+    let(:blob) { repository.blob_at_branch(branch, path) }
+
+    let(:highlighter) do
+      Gitlab::Highlight.new(blob.path, blob.data, repository: repository)
+    end
+
+    before { project.change_head('gitattributes') }
+
+    describe 'basic language selection' do
+      let(:path) { 'custom-highlighting/test.gitlab-custom' }
+      it 'highlights as ruby' do
+        expect(highlighter.lexer.tag).to eq 'ruby'
+      end
+    end
+
+    describe 'cgi options' do
+      let(:path) { 'custom-highlighting/test.gitlab-cgi' }
+
+      it 'highlights as json with erb' do
+        expect(highlighter.lexer.tag).to eq 'erb'
+        expect(highlighter.lexer.parent.tag).to eq 'json'
+      end
+    end
+  end
 end

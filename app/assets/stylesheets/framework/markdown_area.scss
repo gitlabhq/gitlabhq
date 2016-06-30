@@ -125,7 +125,8 @@
   border: 0;
   outline: 0;
 
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gl-link-color;
   }
 }

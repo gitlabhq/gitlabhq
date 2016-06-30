@@ -86,7 +86,7 @@ describe NamespacesController do
             it "responds with status 404" do
               get :show, id: group.path
 
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -102,7 +102,7 @@ describe NamespacesController do
         it "responds with status 404" do
           get :show, id: "doesntexist"
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
 

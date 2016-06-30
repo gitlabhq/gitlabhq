@@ -39,7 +39,7 @@ describe API::Runners, api: true  do
         get api('/runners', user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
@@ -48,14 +48,14 @@ describe API::Runners, api: true  do
         get api('/runners?scope=active', user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
 
       it 'should avoid filtering if scope is invalid' do
         get api('/runners?scope=unknown', user)
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
       end
     end
 
@@ -63,7 +63,7 @@ describe API::Runners, api: true  do
       it 'should not return runners' do
         get api('/runners')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -75,7 +75,7 @@ describe API::Runners, api: true  do
           get api('/runners/all', admin)
           shared = json_response.any?{ |r| r['is_shared'] }
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
           expect(shared).to be_truthy
         end
@@ -85,7 +85,7 @@ describe API::Runners, api: true  do
         it 'should not return runners list' do
           get api('/runners/all', user)
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
 
@@ -93,14 +93,14 @@ describe API::Runners, api: true  do
         get api('/runners/all?scope=specific', admin)
         shared = json_response.any?{ |r| r['is_shared'] }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(shared).to be_falsey
       end
 
       it 'should avoid filtering if scope is invalid' do
         get api('/runners?scope=unknown', admin)
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
       end
     end
 
@@ -108,7 +108,7 @@ describe API::Runners, api: true  do
       it 'should not return runners' do
         get api('/runners')
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -119,7 +119,7 @@ describe API::Runners, api: true  do
         it "should return runner's details" do
           get api("/runners/#{shared_runner.id}", admin)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response['description']).to eq(shared_runner.description)
         end
       end
@@ -128,7 +128,7 @@ describe API::Runners, api: true  do
         it "should return runner's details" do
           get api("/runners/#{specific_runner.id}", admin)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response['description']).to eq(specific_runner.description)
         end
       end
@@ -136,7 +136,7 @@ describe API::Runners, api: true  do
       it 'should return 404 if runner does not exists' do
         get api('/runners/9999', admin)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -145,7 +145,7 @@ describe API::Runners, api: true  do
         it "should return runner's details" do
           get api("/runners/#{specific_runner.id}", user)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response['description']).to eq(specific_runner.description)
         end
       end
@@ -154,7 +154,7 @@ describe API::Runners, api: true  do
         it "should return runner's details" do
           get api("/runners/#{shared_runner.id}", user)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(json_response['description']).to eq(shared_runner.description)
         end
       end
@@ -164,7 +164,7 @@ describe API::Runners, api: true  do
       it "should not return runner's details" do
         get api("/runners/#{specific_runner.id}", user2)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -172,7 +172,7 @@ describe API::Runners, api: true  do
       it "should not return runner's details" do
         get api("/runners/#{specific_runner.id}")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -191,7 +191,7 @@ describe API::Runners, api: true  do
                                                  locked: 'true')
           shared_runner.reload
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(shared_runner.description).to eq("#{description}_updated")
           expect(shared_runner.active).to eq(!active)
           expect(shared_runner.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
@@ -206,7 +206,7 @@ describe API::Runners, api: true  do
           update_runner(specific_runner.id, admin, description: 'test')
           specific_runner.reload
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(specific_runner.description).to eq('test')
           expect(specific_runner.description).not_to eq(description)
         end
@@ -215,7 +215,7 @@ describe API::Runners, api: true  do
       it 'should return 404 if runner does not exists' do
         update_runner(9999, admin, description: 'test')
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
 
       def update_runner(id, user, args)
@@ -228,7 +228,7 @@ describe API::Runners, api: true  do
         it 'should not update runner' do
           put api("/runners/#{shared_runner.id}", user)
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
 
@@ -236,7 +236,7 @@ describe API::Runners, api: true  do
         it 'should not update runner without access to it' do
           put api("/runners/#{specific_runner.id}", user2)
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
 
         it 'should update runner with access to it' do
@@ -244,7 +244,7 @@ describe API::Runners, api: true  do
           put api("/runners/#{specific_runner.id}", admin), description: 'test'
           specific_runner.reload
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(specific_runner.description).to eq('test')
           expect(specific_runner.description).not_to eq(description)
         end
@@ -255,7 +255,7 @@ describe API::Runners, api: true  do
       it 'should not delete runner' do
         put api("/runners/#{specific_runner.id}")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -267,7 +267,7 @@ describe API::Runners, api: true  do
           expect do
             delete api("/runners/#{shared_runner.id}", admin)
           end.to change{ Ci::Runner.shared.count }.by(-1)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -276,21 +276,21 @@ describe API::Runners, api: true  do
           expect do
             delete api("/runners/#{unused_specific_runner.id}", admin)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
 
         it 'should delete used runner' do
           expect do
             delete api("/runners/#{specific_runner.id}", admin)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
       it 'should return 404 if runner does not exists' do
         delete api('/runners/9999', admin)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -298,26 +298,26 @@ describe API::Runners, api: true  do
       context 'when runner is shared' do
         it 'should not delete runner' do
           delete api("/runners/#{shared_runner.id}", user)
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
 
       context 'when runner is not shared' do
         it 'should not delete runner without access to it' do
           delete api("/runners/#{specific_runner.id}", user2)
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
 
         it 'should not delete runner with more than one associated project' do
           delete api("/runners/#{two_projects_runner.id}", user)
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
 
         it 'should delete runner for one owned project' do
           expect do
             delete api("/runners/#{specific_runner.id}", user)
           end.to change{ Ci::Runner.specific.count }.by(-1)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -326,7 +326,7 @@ describe API::Runners, api: true  do
       it 'should not delete runner' do
         delete api("/runners/#{specific_runner.id}")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -337,7 +337,7 @@ describe API::Runners, api: true  do
         get api("/projects/#{project.id}/runners", user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(shared).to be_truthy
       end
@@ -347,7 +347,7 @@ describe API::Runners, api: true  do
       it "should not return project's runners" do
         get api("/projects/#{project.id}/runners", user2)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -355,7 +355,7 @@ describe API::Runners, api: true  do
       it "should not return project's runners" do
         get api("/projects/#{project.id}/runners")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -372,14 +372,14 @@ describe API::Runners, api: true  do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
       end
 
       it 'should avoid changes when enabling already enabled runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
-        expect(response.status).to eq(409)
+        expect(response).to have_http_status(409)
       end
 
       it 'should not enable locked runner' do
@@ -389,13 +389,13 @@ describe API::Runners, api: true  do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(0)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
 
       it 'should not enable shared runner' do
         post api("/projects/#{project.id}/runners", user), runner_id: shared_runner.id
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
 
       context 'user is admin' do
@@ -403,7 +403,7 @@ describe API::Runners, api: true  do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
           end.to change{ project.runners.count }.by(+1)
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
         end
       end
 
@@ -411,14 +411,14 @@ describe API::Runners, api: true  do
         it 'should not enable runner without access to' do
           post api("/projects/#{project.id}/runners", user), runner_id: unused_specific_runner.id
 
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
 
       it 'should raise an error when no runner_id param is provided' do
         post api("/projects/#{project.id}/runners", admin)
 
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
       end
     end
 
@@ -426,7 +426,7 @@ describe API::Runners, api: true  do
       it 'should not enable runner' do
         post api("/projects/#{project.id}/runners", user2)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -434,7 +434,7 @@ describe API::Runners, api: true  do
       it 'should not enable runner' do
         post api("/projects/#{project.id}/runners")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -446,7 +446,7 @@ describe API::Runners, api: true  do
           expect do
             delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
           end.to change{ project.runners.count }.by(-1)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -455,14 +455,14 @@ describe API::Runners, api: true  do
           expect do
             delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
           end.to change{ project.runners.count }.by(0)
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(403)
         end
       end
 
       it 'should return 404 is runner is not found' do
         delete api("/projects/#{project.id}/runners/9999", user)
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -470,7 +470,7 @@ describe API::Runners, api: true  do
       it "should not disable project's runner" do
         delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -478,7 +478,7 @@ describe API::Runners, api: true  do
       it "should not disable project's runner" do
         delete api("/projects/#{project.id}/runners/#{specific_runner.id}")
 
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end

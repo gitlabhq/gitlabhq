@@ -41,6 +41,10 @@ ul.notes {
     .timeline-icon {
       .avatar {
         visibility: hidden;
+
+        .discussion-body & {
+          visibility: visible;
+        }
       }
     }
   }
@@ -113,6 +117,7 @@ ul.notes {
           border: 1px solid $table-border-gray;
           padding: 5px;
           margin: 5px 0;
+          max-height: calc(100vh - 100px);
         }
       }
     }

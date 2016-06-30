@@ -36,7 +36,7 @@ describe Projects::RepositoriesController do
         it "renders Not Found" do
           get :archive, namespace_id: project.namespace.path, project_id: project.path, ref: "master", format: "zip"
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end

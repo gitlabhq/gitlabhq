@@ -1,8 +1,8 @@
 .scrolling-tabs-container
   .fade-left
-    = icon('arrow-left')
+    = icon('angle-left')
   .fade-right
-    = icon('arrow-right')
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
     = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
       = link_to profile_path, title: 'Profile Settings' do

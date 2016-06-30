@@ -11,7 +11,7 @@ class Group < Namespace
   has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
 
   has_many :owners,
-    -> { where(members: { access_level: Gitlab::Access::OWNER }) },
+    -> { where(members: { requested_at: nil, access_level: Gitlab::Access::OWNER }) },
     through: :group_members,
     source: :user
 

@@ -22,7 +22,7 @@ describe Projects::TodosController do
                           issuable_type: 'issue')
           end.to change { user.todos.count }.by(1)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -36,7 +36,7 @@ describe Projects::TodosController do
                           issuable_type: 'issue')
           end.to change { user.todos.count }.by(0)
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
 
         it 'should not create todo for issue when user not logged in' do
@@ -47,7 +47,7 @@ describe Projects::TodosController do
                           issuable_type: 'issue')
           end.to change { user.todos.count }.by(0)
 
-          expect(response.status).to eq(302)
+          expect(response).to have_http_status(302)
         end
       end
     end
@@ -69,7 +69,7 @@ describe Projects::TodosController do
                           issuable_type: 'merge_request')
           end.to change { user.todos.count }.by(1)
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -83,7 +83,7 @@ describe Projects::TodosController do
                           issuable_type: 'merge_request')
           end.to change { user.todos.count }.by(0)
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
 
         it 'should not create todo for merge request user has no access to' do
@@ -94,7 +94,7 @@ describe Projects::TodosController do
                           issuable_type: 'merge_request')
           end.to change { user.todos.count }.by(0)
 
-          expect(response.status).to eq(302)
+          expect(response).to have_http_status(302)
         end
       end
     end

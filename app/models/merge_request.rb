@@ -340,13 +340,6 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
-  # Returns the commit as a series of email patches.
-  #
-  # see "git format-patch"
-  def to_patch
-    target_project.repository.format_patch(diff_base_commit.sha, source_sha)
-  end
-
   def hook_attrs
     attrs = {
       source: source_project.try(:hook_attrs),

@@ -33,6 +33,7 @@ class Member < ActiveRecord::Base
   scope :request, -> { where.not(requested_at: nil) }
   scope :non_request, -> { where(requested_at: nil) }
   scope :non_pending, -> { non_request.non_invite }
+  scope :has_access, -> { where('access_level > 0') }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
