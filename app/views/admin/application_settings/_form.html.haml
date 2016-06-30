@@ -311,6 +311,15 @@
         = f.text_field :sentry_dsn, class: 'form-control'
 
   %fieldset
+    %legend Repository Storage
+    .form-group
+      = f.label :repository_storage, 'Storage path for new projects', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.select :repository_storage, repository_storage_options_for_select, {}, class: 'form-control'
+        .help-block
+          You can manage the repository storage paths in your gitlab.yml configuration file
+
+  %fieldset
     %legend Repository Checks
     .form-group
       .col-sm-offset-2.col-sm-10

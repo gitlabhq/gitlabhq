@@ -607,6 +607,21 @@ describe Project, models: true do
     end
   end
 
+  context 'repository storage by default' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.repository_storage }
+
+    before do
+      storages = { 'alternative_storage' => '/some/path' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      stub_application_setting(repository_storage: 'alternative_storage')
+      allow_any_instance_of(Project).to receive(:ensure_dir_exist).and_return(true)
+    end
+
+    it { is_expected.to eq('alternative_storage') }
+  end
+
   context 'shared runners by default' do
     let(:project) { create(:empty_project) }
 
