@@ -341,3 +341,17 @@
     }
   }
 }
+
+.line-resolve-btn {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid #c3c3c3;
+  border-radius: 50%;
+
+  &:hover {
+    background-color: $gl-text-green;
+    border-color: darken($gl-text-green, 10%);
+  }
+}
