@@ -101,7 +101,6 @@ v 8.9.1
   - Remove duplicate 'New Page' button on edit wiki page
 
 v 8.9.0
-v 8.9.0 (unreleased)
   - Fix group visibility form layout in application settings
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
