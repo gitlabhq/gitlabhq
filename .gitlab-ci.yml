@@ -74,7 +74,8 @@ update-coverage:
   artifacts:
     expire_in: 31d
     paths:
-    - coverage/
+    - coverage/index.html
+    - coverage/assets/
 
 # Execute all testing suites
 
