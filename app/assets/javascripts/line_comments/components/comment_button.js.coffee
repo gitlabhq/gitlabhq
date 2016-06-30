@@ -1,6 +1,6 @@
 @CommentButton =
   model: (args) ->
-    @note = m.prop(args.note_id or false)
+    @note = m.prop(args.noteId or undefined)
     @resolved = m.prop(args.resolved or false)
     return
   controller: (args) ->
@@ -11,16 +11,25 @@
 
     @resolveLine = =>
       @model.resolved(!@model.resolved())
+      LinesObserver.trigger(@model.resolved(), @model.note())
 
     return
   view: (ctrl) ->
     buttonText = ctrl.resolvedText()()
+    isActive = if ctrl.model.resolved() then 'is-active' else ''
 
     # Return the view elements
     m('button',
       'aria-label': buttonText
-      class: 'line-resolve-btn'
+      title: buttonText
+      type: 'button'
+      class: "line-resolve-btn #{isActive}"
       onclick: ctrl.resolveLine
+      config: (el) ->
+        $(el)
+          .tooltip('hide')
+          .tooltip()
+          .tooltip('fixTitle')
     , [
       m('i',
         class: 'fa fa-check'
