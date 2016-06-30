@@ -776,6 +776,7 @@ GEM
       descendants_tracker (~> 0.0, >= 0.0.3)
       equalizer (~> 0.0, >= 0.0.9)
     vmstat (2.1.1)
+    vuejs-rails (1.0.24)
     warden (1.2.6)
       rack (>= 1.0)
     web-console (2.3.0)
@@ -980,7 +981,12 @@ DEPENDENCIES
   unicorn-worker-killer (~> 0.4.2)
   version_sorter (~> 2.0.0)
   virtus (~> 1.0.1)
+<<<<<<< HEAD
   vmstat (~> 2.1.1)
+=======
+  vmstat (~> 2.1.0)
+  vuejs-rails
+>>>>>>> Diff line comments resolve
   web-console (~> 2.0)
   webmock (~> 1.21.0)
   wikicloth (= 0.8.1)

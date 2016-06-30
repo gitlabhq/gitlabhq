@@ -20,6 +20,10 @@
           - access = note_max_access_for_user(note)
           - if access and not note.system
             %span.note-role.hidden-xs= access
+          - unless note.system
+            %line-btn{ ":note-id" => note.id, ":resolved" => "false", "inline-template" => true }
+              %button.note-action-button.line-resolve-btn{ type: "button", "v-bind:class" => "{ 'is-active': resolved }", "v-bind:aria-label" => "buttonText", "v-on:click" => "resolve", "v-bind:title" => "buttonText" }
+                = icon("check")
           - if current_user and not note.system
             = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
               = icon('spinner spin')

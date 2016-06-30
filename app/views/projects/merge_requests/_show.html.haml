@@ -1,6 +1,8 @@
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('line_comments/application.js')
 
 - if diff_view == 'parallel'
   - fluid_layout true

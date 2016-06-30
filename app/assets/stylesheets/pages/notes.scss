@@ -383,3 +383,47 @@ ul.notes {
     color: $gl-link-color;
   }
 }
+
+.line-resolve-all {
+  padding: 10px;
+  border: 1px solid $border-color;
+  border-radius: 2px;
+
+  .btn {
+  	margin-right: 10px;
+  }
+}
+
+.line-resolve-text {
+  vertical-align: middle;
+}
+
+.line-resolve-btn {
+  position: relative;
+  top: -1px;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  background-color: transparent;
+  border: 1px solid #c3c3c3;
+  border-radius: 50%;
+  outline: 0;
+  vertical-align: middle;
+
+  &:hover,
+  &.is-active {
+    color: #fff;
+    background-color: $gl-text-green;
+    border-color: $gl-text-green;
+
+    .fa {
+      color: #fff;
+    }
+  }
+
+  .fa {
+    top: 2px;
+    font-size: 8px;
+    vertical-align: top;
+  }
+}
