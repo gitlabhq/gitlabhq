@@ -56,8 +56,6 @@ module Gitlab
 
         if external_provider? && @user
           @user.external = true
-        elsif @user
-          @user.external = false
         end
 
         @user
