@@ -314,6 +314,8 @@ describe GitPushService, services: true do
       it "doesn't close issues when external issue tracker is in use" do
         allow_any_instance_of(Project).to receive(:default_issues_tracker?).
           and_return(false)
+        external_issue_tracker = double(title: 'My Tracker', issue_path: issue.iid)
+        allow_any_instance_of(Project).to receive(:external_issue_tracker).and_return(external_issue_tracker)
 
         # The push still shouldn't create cross-reference notes.
         expect do
