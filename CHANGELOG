@@ -5,6 +5,7 @@ v 8.9.4
   - Ensure references to private repos aren't shown to logged-out users.
   - Fixed search field blur not removing focus. !4704
   - Resolve "Sub nav isn't showing on file view". !4890
+  - Fixes middle click and double request when navigating through the file browser. !4891
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
