@@ -62,8 +62,11 @@ update-knapsack:
     - master
 
 update-coverage:
-  <<: *knapsack-state
   stage: post-test
+  services: []
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
   script:
     - bundle exec scripts/merge-simplecov
   artifacts:
