@@ -322,18 +322,46 @@ a.deploy-project-label {
 }
 
 .fork-namespaces {
-  .fork-thumbnail {
-    text-align: center;
-    margin-bottom: $gl-padding;
+  .row {
+    -webkit-flex-wrap: wrap;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 
-    .caption {
-      padding: $gl-padding 0;
-      min-height: 30px;
-    }
+    .fork-thumbnail {
+      @include border-radius($border-radius-base);
+      background-color: $white-light;
+      border: 1px solid $border-white-light;
+      height: 202px;
+      margin: $gl-padding;
+      text-align: center;
+      width: 169px;
+      &.forked {
+        background-color: #f8faff;
+        border-color: #b3d7ff;
+      }
+      &:hover {
+        background-color: #fcfdff;
+        border-color: #e6f4ff;
+      }
 
-    img {
-      @include border-radius(50%);
-      max-width: 100px;
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding-top: $gl-padding;
+        color: $gl-gray;
+        .caption {
+          min-height: 30px;
+          padding: $gl-padding 0;
+        }
+      }
+
+      img {
+        @include border-radius(50%);
+        max-width: 100px;
+      }
     }
   }
 }
