@@ -23,7 +23,7 @@ module Commits
     private
 
     def check_push_permissions
-      allowed = ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(@target_branch)
+      allowed = ::Gitlab::GitAccess.new(current_user, project, 'web').can_push_to_branch?(@target_branch)
 
       unless allowed
         raise ValidationError.new('You are not allowed to push into this branch')
