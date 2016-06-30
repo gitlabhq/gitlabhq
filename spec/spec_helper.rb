@@ -1,6 +1,5 @@
 if ENV['SIMPLECOV']
   require 'simplecov'
-  require 'simplecov-rcov'
 
   SimpleCov.start :rails do
     if ENV['CI_BUILD_NAME']
