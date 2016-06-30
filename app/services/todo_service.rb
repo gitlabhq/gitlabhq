@@ -170,7 +170,7 @@ class TodoService
   end
 
   def filter_mentioned_users(project, target, author)
-    mentioned_users = target.mentioned_users
+    mentioned_users = target.mentioned_users(author)
     mentioned_users = reject_users_without_access(mentioned_users, project, target)
     mentioned_users.delete(author)
     mentioned_users.uniq

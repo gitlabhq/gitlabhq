@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.7.9
   - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
 
 v 8.7.8
   - Fix visibility of snippets when searching.
