@@ -37,6 +37,31 @@ module LoginHelpers
     Thread.current[:current_user] = user
   end
 
+  def login_via(provider, user, uid)
+    mock_auth_hash(provider, uid, user.email)
+    visit new_user_session_path
+    #page.find('.oauth-image-link').click
+    click_link provider
+  end
+
+  def mock_auth_hash(provider, uid, email)
+    # The mock_auth configuration allows you to set per-provider (or default)
+    # authentication hashes to return during integration testing.
+    OmniAuth.config.mock_auth[provider.to_sym] = OmniAuth::AuthHash.new({
+      provider: provider,
+      uid: uid,
+      info: {
+        name: 'mockuser',
+        email: email,
+        image: 'mock_user_thumbnail_url'
+      },
+      credentials: {
+        token: 'mock_token',
+        secret: 'mock_secret'
+      }
+    })
+  end
+
   # Requires Javascript driver.
   def logout
     find(:css, ".fa.fa-sign-out").click

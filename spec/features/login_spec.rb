@@ -28,17 +28,17 @@ feature 'Login', feature: true do
   end
 
   describe 'with two-factor authentication' do
+    def enter_code(code)
+      fill_in 'Two-Factor Authentication code', with: code
+      click_button 'Verify code'
+    end
+
     context 'with valid username/password' do
       let(:user) { create(:user, :two_factor) }
 
       before do
         login_with(user, remember: true)
         expect(page).to have_content('Two-Factor Authentication')
-      end
-
-      def enter_code(code)
-        fill_in 'Two-Factor Authentication code', with: code
-        click_button 'Verify code'
       end
 
       it 'does not show a "You are already signed in." error message' do
@@ -106,6 +106,22 @@ feature 'Login', feature: true do
             expect(page).to have_content('Invalid two-factor code.')
           end
         end
+      end
+    end
+
+    context 'logging in via OAuth' do
+      def stub_omniauth_config(messages)
+        allow(Gitlab.config.omniauth).to receive_messages(messages)
+      end
+
+      it 'should show 2FA prompt after OAuth login' do
+        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
+        stub_omniauth_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [OpenStruct.new(name: 'saml', label: 'saml', args: {})])
+        login_via('saml', user, 'my-uid')
+
+        expect(page).to have_content('Two-Factor Authentication')
+        enter_code(user.current_otp)
+        expect(current_path).to eq root_path
       end
     end
   end
