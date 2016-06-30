@@ -681,7 +681,7 @@ Style/UnlessElse:
 
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable UnneededInterpolation Cop.
 # Checks for strings that are just an interpolated expression.
