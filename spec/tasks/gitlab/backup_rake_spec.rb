@@ -85,17 +85,26 @@ describe 'gitlab:app namespace rake task' do
     end
 
     def create_backup
+      puts "creating backup"
       FileUtils.rm tars_glob
+      puts "after deleting the old tars"
 
       # Redirect STDOUT and run the rake task
-      orig_stdout = $stdout
-      $stdout = StringIO.new
+      #orig_stdout = $stdout
+      #puts "after getting stdout (stdout is #{orig_stdout})"
+      #$stdout = StringIO.new
+      #puts "after assigning new stdout"
       reenable_backup_sub_tasks
+      puts "after reenable"
       run_rake_task('gitlab:backup:create')
+      puts "after run rake task"
       reenable_backup_sub_tasks
-      $stdout = orig_stdout
+      puts "after reenable again"
+      #$stdout = orig_stdout
+      #puts "after restoring stdout"
 
       @backup_tar = tars_glob.first
+      puts "after backup, now glob is #{tars_glob.inspect} and backup_tar is #{@backup_tar}"
     end
 
     context 'tar creation' do
@@ -164,41 +173,57 @@ describe 'gitlab:app namespace rake task' do
       end
     end
 
-    # context 'multiple repository storages' do
-    #   let(:project_a) { create(:project, repository_storage: 'default') }
-    #   let(:project_b) { create(:project, repository_storage: 'custom') }
-    #
-    #   before do
-    #     FileUtils.mkdir('tmp/tests/default_storage')
-    #     FileUtils.mkdir('tmp/tests/custom_storage')
-    #     storages = {
-    #       'default' => 'tmp/tests/default_storage',
-    #       'custom' => 'tmp/tests/custom_storage'
-    #     }
-    #     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-    #
-    #     # Create the projects now, after mocking the settings but before doing the backup
-    #     project_a
-    #     project_b
-    #
-    #     create_backup
-    #   end
-    #
-    #   after do
-    #     FileUtils.rm_rf('tmp/tests/default_storage')
-    #     FileUtils.rm_rf('tmp/tests/custom_storage')
-    #     FileUtils.rm(@backup_tar)
-    #   end
-    #
-    #   it 'should include repositories in all repository storages' do
-    #     tar_contents, exit_status = Gitlab::Popen.popen(
-    #       %W{tar -tvf #{@backup_tar} repositories}
-    #     )
-    #     expect(exit_status).to eq(0)
-    #     expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
-    #     expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
-    #   end
-    # end
+    context 'multiple repository storages' do
+      puts "context"
+      let(:project_a) { puts "creating a"; create(:project, repository_storage: 'default') }
+      let(:project_b) { puts "creating b"; create(:project, repository_storage: 'custom') }
+
+      before do
+        puts "before"
+        FileUtils.mkdir('tmp/tests/default_storage')
+        FileUtils.mkdir('tmp/tests/custom_storage')
+        puts "after creating dirs"
+        storages = {
+          'default' => 'tmp/tests/default_storage',
+          'custom' => 'tmp/tests/custom_storage'
+        }
+        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+        puts "after mocking storages"
+
+        # Create the projects now, after mocking the settings but before doing the backup
+        project_a
+        project_b
+        puts "after creating projects"
+
+        # We only need a backup of the repositories
+        ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
+        create_backup
+        puts "end before"
+      end
+
+      after do
+        puts "after"
+        FileUtils.rm_rf('tmp/tests/default_storage')
+        FileUtils.rm_rf('tmp/tests/custom_storage')
+        FileUtils.rm(@backup_tar)
+        puts "end after"
+      end
+
+      it 'should include repositories in all repository storages' do
+        puts "it example"
+        tar_contents, exit_status = Gitlab::Popen.popen(
+          %W{tar -tvf #{@backup_tar} repositories}
+        )
+        puts "after command"
+        expect(exit_status).to eq(0)
+        puts "expect(exit_status).to eq(0)"
+        expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
+        puts "first match"
+        expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
+        puts "end it"
+      end
+      puts "end context"
+    end
   end # backup_create task
 
   describe "Skipping items" do
