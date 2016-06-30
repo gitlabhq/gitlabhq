@@ -269,7 +269,7 @@ $ ->
   new Aside()
 
   # Sidenav pinning
-  if $window.width() < 1280 and $.cookie('pin_nav') is 'true'
+  if $window.width() < 1024 and $.cookie('pin_nav') is 'true'
     $.cookie('pin_nav', 'false', { path: '/', expires: 365 * 10 })
     $('.page-with-sidebar')
       .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
