@@ -48,7 +48,6 @@
               %th Finished at
               %th
 
-          - @builds.each do |build|
-            = render "admin/builds/build", build: build
+          = render partial: "admin/builds/build", collection: @builds
 
       = paginate @builds, theme: 'gitlab'

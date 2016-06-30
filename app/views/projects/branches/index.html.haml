@@ -29,6 +29,5 @@
                 = sort_title_oldest_updated
   - if @branches.any?
     %ul.content-list.all-branches
-      - @branches.each do |branch|
-        = render "projects/branches/branch", branch: branch
+      = render partial: "projects/branches/branch", collection: @branches
     = paginate @branches, theme: 'gitlab'

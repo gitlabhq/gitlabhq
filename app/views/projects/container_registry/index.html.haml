@@ -35,5 +35,4 @@
             - if can?(current_user, :update_container_image, @project)
               %th
 
-        - @tags.each do |tag|
-          = render 'tag', tag: tag
+        = render partial: 'tag', collection: @tags

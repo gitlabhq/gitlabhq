@@ -36,9 +36,8 @@
             = sort_title_oldest_updated
 
 %ul.content-list
-  - @groups.each do |group|
-    = render 'shared/groups/group', group: group
-  - unless @groups.present?
+  = render partial: 'shared/groups/group', collection: @groups
+  - if @groups.empty?
     .nothing-here-block No public groups
 
 
