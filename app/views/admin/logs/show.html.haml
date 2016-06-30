@@ -5,7 +5,7 @@
              Gitlab::RepositoryCheckLogger]
 = render 'admin/background_jobs/head'
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   %ul.nav-links.log-tabs
     - loggers.each do |klass|
       %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
