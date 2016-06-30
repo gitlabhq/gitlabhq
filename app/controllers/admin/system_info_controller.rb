@@ -1,27 +1,54 @@
 class Admin::SystemInfoController < Admin::ApplicationController
-  def show
-    excluded_mounts = [
-      "nobrowse",
-      "read-only",
-      "ro"
-    ]
+  EXCLUDED_MOUNT_OPTIONS = [
+    'nobrowse',
+    'read-only',
+    'ro'
+  ]
 
+  EXCLUDED_MOUNT_TYPES = [
+    'autofs',
+    'binfmt_misc',
+    'cgroup',
+    'debugfs',
+    'devfs',
+    'devpts',
+    'devtmpfs',
+    'efivarfs',
+    'fuse.gvfsd-fuse',
+    'fuseblk',
+    'fusectl',
+    'hugetlbfs',
+    'mqueue',
+    'proc',
+    'pstore',
+    'securityfs',
+    'sysfs',
+    'tmpfs',
+    'tracefs',
+    'vfat'
+  ]
+
+  def show
     system_info = Vmstat.snapshot
     mounts = Sys::Filesystem.mounts
 
     @disks = []
     mounts.each do |mount|
-      options = mount.options.split(', ')
+      mount_options = mount.options.split(',')
 
-      next unless excluded_mounts.each { |em| break if options.include?(em) }
+      next if (EXCLUDED_MOUNT_OPTIONS & mount_options).any?
+      next if (EXCLUDED_MOUNT_TYPES & [mount.mount_type]).any?
 
-      disk = Sys::Filesystem.stat(mount.mount_point)
-      @disks.push({
+      begin
+        disk = Sys::Filesystem.stat(mount.mount_point)
+        @disks.push({
           bytes_total: disk.bytes_total,
           bytes_used:  disk.bytes_used,
           disk_name:   mount.name,
           mount_path:  disk.path
-      })
+        })
+      rescue Sys::Filesystem::Error
+      end
     end
 
     @cpus = system_info.cpus.length
