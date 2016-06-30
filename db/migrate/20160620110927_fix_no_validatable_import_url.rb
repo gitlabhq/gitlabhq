@@ -38,8 +38,6 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
     def valid_url?(value)
       return false unless value
 
-      value.strip!
-
       valid_uri?(value) && valid_protocol?(value)
     rescue Addressable::URI::InvalidURIError
       false
@@ -50,11 +48,13 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
     end
 
     def valid_protocol?(value)
-      !!(value =~ /\A#{URI.regexp(%w(http https ssh git))}\z/)
+      value =~ /\A#{URI.regexp(%w(http https ssh git))}\z/
     end
   end
 
   def up
+    return unless defined?(Addressable::URI::InvalidURIError)
+
     say('Cleaning up invalid import URLs... This may take a few minutes if we have a large number of imported projects.')
 
     invalid_import_url_project_ids.each { |project_id| cleanup_import_url(project_id) }

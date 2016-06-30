@@ -18,6 +18,9 @@
 #   end
 #
 class AddressableUrlValidator < ActiveModel::EachValidator
+
+  DEFAULT_OPTIONS = { protocols: %w(http https ssh git) }
+
   def validate_each(record, attribute, value)
     unless valid_url?(value)
       record.errors.add(attribute, "must be a valid URL")
@@ -29,13 +32,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   def valid_url?(value)
     return false unless value
 
-    value.strip!
-
     valid_protocol?(value) && valid_uri?(value)
-  end
-
-  def default_options
-    @default_options ||= { protocols: %w(http https ssh git) }
   end
 
   def valid_uri?(value)
@@ -45,7 +42,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   end
 
   def valid_protocol?(value)
-    options = default_options.merge(self.options)
-    !!(value =~ /\A#{URI.regexp(options[:protocols])}\z/)
+    options = DEFAULT_OPTIONS.merge(self.options)
+    value =~ /\A#{URI.regexp(options[:protocols])}\z/
   end
 end
