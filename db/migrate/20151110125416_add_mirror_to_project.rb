@@ -1,3 +1,4 @@
+# rubocop:disable all
 class AddMirrorToProject < ActiveRecord::Migration
   def change
     add_column :projects, :mirror, :boolean, default: false, null: false
