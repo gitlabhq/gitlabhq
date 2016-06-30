@@ -8,6 +8,7 @@ v 8.9.4
   - Fixes middle click and double request when navigating through the file browser. !4891
   - Fixed URL on label button when filtering. !4897
   - Fixed commit avatar alignment. !4933
+  - Do not show build retry link when build is active. !4967
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
