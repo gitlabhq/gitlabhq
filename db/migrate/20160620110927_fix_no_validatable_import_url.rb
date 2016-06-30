@@ -54,7 +54,7 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
 
   def up
     unless defined?(Addressable::URI::InvalidURIError)
-      say('Skipping cleaning up invalid import URLs as class from Addressable iss missing')
+      say('Skipping cleaning up invalid import URLs as class from Addressable is missing')
       return
     end
 
