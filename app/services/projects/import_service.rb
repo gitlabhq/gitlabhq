@@ -42,7 +42,7 @@ module Projects
 
     def import_repository
       begin
-        gitlab_shell.import_repository(project.path_with_namespace, project.import_url)
+        gitlab_shell.import_repository(project.repository_storage_path, project.path_with_namespace, project.import_url)
       rescue Gitlab::Shell::Error => e
         raise Error,  "Error importing repository #{project.import_url} into #{project.path_with_namespace} - #{e.message}"
       end
