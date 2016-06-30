@@ -65,7 +65,7 @@ update-coverage:
   <<: *knapsack-state
   stage: post-test
   script:
-    - bundle exec rake ci:simplecov:merge
+    - bundle exec scripts/merge-simplecov
   artifacts:
     paths:
     - coverage/
