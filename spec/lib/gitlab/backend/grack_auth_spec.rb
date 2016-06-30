@@ -130,7 +130,7 @@ describe Grack::Auth, lib: true do
           context "when authentication succeeds" do
             before do
               allow_any_instance_of(Grack::Auth::Request).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
-              user.identities.build(provider: "kerberos", extern_uid:"mylogin@FOO.COM").save
+              user.identities.build(provider: "kerberos", extern_uid: "mylogin@FOO.COM").save
             end
 
             context "when the user has access to the project" do
