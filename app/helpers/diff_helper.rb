@@ -37,16 +37,8 @@ module DiffHelper
     end
   end
 
-  def diff_hard_limit_enabled?
-    params[:force_show_diff].present?
-  end
-
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace? }
-    if diff_hard_limit_enabled?
-      options.merge!(Commit.max_diff_options)
-    end
-    options
+    Commit.max_diff_options.merge(ignore_whitespace_change: hide_whitespace?)
   end
 
   def safe_diff_files(diffs, diff_refs: nil, repository: nil)
