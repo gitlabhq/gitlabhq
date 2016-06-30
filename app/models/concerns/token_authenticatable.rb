@@ -1,6 +1,20 @@
 module TokenAuthenticatable
   extend ActiveSupport::Concern
 
+  private
+
+  def write_new_token(token_field)
+    new_token = generate_token(token_field)
+    write_attribute(token_field, new_token)
+  end
+
+  def generate_token(token_field)
+    loop do
+      token = Devise.friendly_token
+      break token unless self.class.unscoped.find_by(token_field => token)
+    end
+  end
+
   class_methods do
     def authentication_token_fields
       @token_fields || []
@@ -30,20 +44,6 @@ module TokenAuthenticatable
         write_new_token(token_field)
         save!
       end
-    end
-  end
-
-  private
-
-  def write_new_token(token_field)
-    new_token = generate_token(token_field)
-    write_attribute(token_field, new_token)
-  end
-
-  def generate_token(token_field)
-    loop do
-      token = Devise.friendly_token
-      break token unless self.class.unscoped.find_by(token_field => token)
     end
   end
 end
