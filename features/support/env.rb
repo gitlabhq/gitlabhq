@@ -1,5 +1,13 @@
 if ENV['SIMPLECOV']
   require 'simplecov'
+
+  SimpleCov.start :rails do
+    if ENV['CI_BUILD_NAME']
+      coverage_dir "coverage/#{ENV['CI_BUILD_NAME']}"
+      command_name ENV['CI_BUILD_NAME']
+      merge_timeout 7200
+    end
+  end
 end
 
 ENV['RAILS_ENV'] = 'test'
