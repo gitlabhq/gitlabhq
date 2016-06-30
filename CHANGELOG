@@ -20,6 +20,7 @@ v 8.10.0 (unreleased)
   - Add Spring EmojiOne updates.
   - Fix viewing notification settings when a project is pending deletion
   - Fix pagination when sorting by columns with lots of ties (like priority)
+  - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area !4424
