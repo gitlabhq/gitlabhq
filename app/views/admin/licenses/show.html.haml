@@ -42,42 +42,6 @@
             %span.label.label-danger.pull-right
               %strong Expired
 
-    .panel.panel-default
-      .panel-heading
-        Users
-      %ul.well-list
-        %li
-          %span.light License limit:
-          %strong
-            - if @license.restricted?(:active_user_count)
-              - restricted = @license.restrictions[:active_user_count]
-              #{number_with_delimiter restricted} #{"users".pluralize(restricted)}
-            - else
-              Unlimited
-        %li
-          %span.light Current active users:
-          %strong
-            - current = User.active.count
-            #{number_with_delimiter current} #{"users".pluralize(current)}
-
-          - if restricted && current > restricted
-            %span.label.label-danger.pull-right
-              %strong
-                Exceeds license limit
-
-        - date_range = (Date.today - 1.year)..Date.today
-        - historical = HistoricalData.during(date_range).maximum(:active_user_count)
-        - if historical
-          %li
-            %span.light Maximum active users:
-            %strong
-              #{number_with_delimiter historical} #{"users".pluralize(historical)}
-
-            - if restricted && historical > restricted
-              %span.label.label-danger.pull-right
-                %strong
-                  Exceeds license limit
-
   .col-md-6
     .panel.panel-info
       .panel-heading
@@ -97,6 +61,8 @@
         %p If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded.
         %br
         = link_to 'Remove license', admin_license_path, data: { confirm: "Are you sure you want to remove the license?" }, method: :delete, class: "btn btn-remove"
+
+= render "breakdown", license: @license
 
 - if @previous_licenses.any?
   %h4 License History
