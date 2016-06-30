@@ -18,7 +18,6 @@
 #   end
 #
 class AddressableUrlValidator < ActiveModel::EachValidator
-
   DEFAULT_OPTIONS = { protocols: %w(http https ssh git) }
 
   def validate_each(record, attribute, value)

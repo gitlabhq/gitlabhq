@@ -1,6 +1,5 @@
 module Gitlab
   class UrlSanitizer
-
     def self.sanitize(content)
       regexp = URI::Parser.new.make_regexp(['http', 'https', 'ssh', 'git'])
 
