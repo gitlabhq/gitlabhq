@@ -9,6 +9,7 @@ v 8.9.4
   - Fixed URL on label button when filtering. !4897
   - Fixed commit avatar alignment. !4933
   - Do not show build retry link when build is active. !4967
+  - Fix restore Rake task warning message output. !4980
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
