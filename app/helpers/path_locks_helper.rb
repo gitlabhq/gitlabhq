@@ -12,7 +12,7 @@ module PathLocksHelper
       "Locked by #{file_lock.user.name}"
     else
       # Nested lock
-      "#{file_lock.user.name} locked #{file_lock.path}"
+      "#{file_lock.user.name} has a lock on \"#{file_lock.path}\""
     end
   end
 end
