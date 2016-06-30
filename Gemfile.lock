@@ -499,8 +499,6 @@ GEM
     pry-rails (0.3.4)
       pry (>= 0.9.10)
     pyu-ruby-sasl (0.0.3.3)
-    quiet_assets (1.0.3)
-      railties (>= 3.1, < 5.0)
     rack (1.6.4)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -920,7 +918,6 @@ DEPENDENCIES
   poltergeist (~> 1.9.0)
   premailer-rails (~> 1.9.0)
   pry-rails
-  quiet_assets (~> 1.0.2)
   rack-attack (~> 4.3.1)
   rack-cors (~> 0.4.0)
   rack-oauth2 (~> 1.2.1)

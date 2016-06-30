@@ -251,7 +251,6 @@ group :development do
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
