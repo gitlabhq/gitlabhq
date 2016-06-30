@@ -44,7 +44,7 @@ module Mentionable
   end
 
   def all_references(current_user = nil, text = nil)
-    ext = Gitlab::ReferenceExtractor.new(self.project, current_user || self.author, self.author)
+    ext = Gitlab::ReferenceExtractor.new(self.project, current_user, self.author)
 
     if text
       ext.analyze(text)
