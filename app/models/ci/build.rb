@@ -382,7 +382,9 @@ module Ci
     private
 
     def update_artifacts_size
-      self.artifacts_size = artifacts_file.size
+      self.artifacts_size = if artifacts_file.exists?
+                              artifacts_file.size
+                            end
     end
 
     def erase_trace!
