@@ -61,6 +61,15 @@ update-knapsack:
   only:
     - master
 
+update-coverage:
+  <<: *knapsack-state
+  stage: post-test
+  script:
+    - bundle exec rake ci:simplecov:merge
+  artifacts:
+    paths:
+    - coverage/
+
 # Execute all testing suites
 
 .use-db: &use-db
@@ -83,6 +92,7 @@ update-knapsack:
   artifacts:
     paths:
     - knapsack/
+    - coverage/
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
@@ -99,6 +109,7 @@ update-knapsack:
   artifacts:
     paths:
     - knapsack/
+    - coverage/
 
 rspec 0 20: *rspec-knapsack
 rspec 1 20: *rspec-knapsack
