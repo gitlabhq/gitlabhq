@@ -21,7 +21,7 @@
 
         .form-group
           = f.label :name, "Branch", class: "label-light"
-          = f.text_field(:name)
+          = render partial: "dropdown", locals: { f: f }
           %p.help-block
             = link_to "Wildcards", help_page_path(category: 'workflow', file: 'protected_branches', format: 'md', anchor: "wildcard-protected-branches")
             such as
@@ -39,10 +39,3 @@
         = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
     %hr
     = render "branches_list"
-
-:javascript
-  $("#protected_branch_name").select2({
-    placeholder: "Select branch",
-    createSearchChoice: function(term) { return { id: term, text: term }; },
-    data: gon.open_branches
-  })

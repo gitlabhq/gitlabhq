@@ -9,7 +9,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   def index
     @protected_branches = @project.protected_branches.order(:name).page(params[:page])
     @protected_branch = @project.protected_branches.new
-    gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name } } })
+    gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } })
   end
 
   def create
