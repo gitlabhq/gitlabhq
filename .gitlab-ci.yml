@@ -40,6 +40,7 @@ stages:
     paths:
     - knapsack/
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
 
@@ -70,6 +71,7 @@ update-coverage:
   script:
     - bundle exec scripts/merge-simplecov
   artifacts:
+    expire_in: 31d
     paths:
     - coverage/
 
@@ -93,6 +95,7 @@ update-coverage:
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack rspec
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
     - coverage/
@@ -110,6 +113,7 @@ update-coverage:
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
     - coverage/
