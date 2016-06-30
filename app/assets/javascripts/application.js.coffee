@@ -185,6 +185,15 @@ $ ->
       else
         buttons.enable()
 
+  $(document).ajaxError (e, xhrObj, xhrSetting, xhrErrorText) ->
+
+    if xhrObj.status is 401
+      new Flash 'You need to be logged in.', 'alert'
+
+    else if xhrObj.status in [ 404, 500 ]
+      new Flash 'Something went wrong on our end.', 'alert'
+
+
   # Show/Hide the profile menu when hovering the account box
   $('.account-box').hover -> $(@).toggleClass('hover')
 

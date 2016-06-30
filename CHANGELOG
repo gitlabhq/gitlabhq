@@ -245,6 +245,7 @@ v 8.9.0 (unreleased)
   - Filter parameters for request_uri value on instrumented transactions.
   - Remove duplicated keys add UNIQUE index to keys fingerprint column
   - ExtractsPath get ref_names from repository cache, if not there access git.
+  - Show a flash warning about the error detail of XHR requests which failed with status code 404 and 500
   - Cache user todo counts from TodoService
   - Ensure Todos counters doesn't count Todos for projects pending delete
   - Add left/right arrows horizontal navigation
