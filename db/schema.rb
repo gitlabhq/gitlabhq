@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.integer  "container_registry_token_expire_delay", default: 5
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
-    t.string   "enabled_git_access_protocols"
+    t.string   "enabled_git_access_protocol"
   end
 
   create_table "audit_events", force: :cascade do |t|
