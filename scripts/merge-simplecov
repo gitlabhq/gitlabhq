@@ -58,8 +58,6 @@ def merged_result
   result
 end
 
-SimpleCov.configure do
-  merge_timeout 7200
-end
+require_relative '../spec/simplecov_env'
 
 merged_result.format!

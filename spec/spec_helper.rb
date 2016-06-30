@@ -1,4 +1,5 @@
 require_relative 'simplecov_env'
+SimpleCov.start if ENV['SIMPLECOV']
 
 ENV["RAILS_ENV"] ||= 'test'
 

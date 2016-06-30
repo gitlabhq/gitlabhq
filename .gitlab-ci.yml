@@ -28,6 +28,7 @@ stages:
 - prepare
 - test
 - post-test
+- pages
 
 # Prepare and merge knapsack tests
 .knapsack-state: &knapsack-state
