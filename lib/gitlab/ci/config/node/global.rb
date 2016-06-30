@@ -28,7 +28,7 @@ module Gitlab
             description: 'Configuration of stages for this pipeline.'
 
           node :types, Node::Stages,
-            description: 'Stages for this pipeline (deprecated key).'
+            description: 'Deprecated: stages for this pipeline.'
 
           node :cache, Node::Cache,
             description: 'Configure caching between build jobs.'

@@ -27,13 +27,13 @@ describe Gitlab::Ci::Config::Node::Undefined do
       allow(entry).to receive(:default).and_return('some value')
     end
 
-    it 'returns default value for entry that is undefined' do
+    it 'returns default value for entry' do
       expect(undefined.value).to eq 'some value'
     end
   end
 
   describe '#undefined?' do
-    it 'is not a concrete entry that is defined' do
+    it 'is not a defined entry' do
       expect(undefined.defined?).to be false
     end
   end
