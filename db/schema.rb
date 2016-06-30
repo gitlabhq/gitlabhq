@@ -85,6 +85,7 @@ ActiveRecord::Schema.define(version: 20160620115026) do
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
     t.text     "after_sign_up_text"
+    t.string   "repository_storage",                    default: "default"
   end
 
   create_table "audit_events", force: :cascade do |t|

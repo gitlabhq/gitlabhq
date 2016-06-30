@@ -38,7 +38,8 @@ Example response:
    "default_project_visibility" : 0,
    "gravatar_enabled" : true,
    "sign_in_text" : null,
-   "container_registry_token_expire_delay": 5
+   "container_registry_token_expire_delay": 5,
+   "repository_storage": "default"
 }
 ```
 
@@ -66,6 +67,7 @@ PUT /application/settings
 | `user_oauth_applications` | boolean | no | Allow users to register any application to use GitLab as an OAuth provider |
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 | `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
+| `repository_storage` | string | no | Storage path for new projects. The value should be the name of one of the repository storage paths defined in your gitlab.yml |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -93,6 +95,7 @@ Example response:
   "restricted_signup_domains": [],
   "user_oauth_applications": true,
   "after_sign_out_path": "",
-  "container_registry_token_expire_delay": 5
+  "container_registry_token_expire_delay": 5,
+  "repository_storage": "default"
 }
 ```
