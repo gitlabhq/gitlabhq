@@ -87,9 +87,7 @@ module API
 
     helpers do
       def can_read_awardable?
-        ability = "read_#{awardable.class.to_s.underscore}".to_sym
-
-        can?(current_user, ability, awardable)
+        can?(current_user, ability_name(awardable), awardable)
       end
 
       def can_award_awardable?
@@ -100,18 +98,30 @@ module API
         @awardable ||=
           begin
             if params.include?(:note_id)
-              noteable.notes.find(params[:note_id])
+              note_id = params[:note_id]
+              params.delete(:note_id)
+
+              awardable.notes.find(note_id)
+            elsif params.include?(:issue_id)
+              user_project.issues.find(params[:issue_id])
+            elsif params.include?(:merge_request_id)
+              user_project.merge_requests.find(params[:merge_request_id])
             else
-              noteable
+              user_project.snippets.find(params[:snippet_id])
             end
           end
       end
 
-      def noteable
-        if params.include?(:issue_id)
-          user_project.issues.find(params[:issue_id])
-        else
-          user_project.merge_requests.find(params[:merge_request_id])
+      def ability_name(awardable)
+        case awardable
+        when Note
+          ability_name(awardable.noteable)
+        when Snippet
+          :read_project_snippet
+        when MergeRequest
+          :read_merge_request
+        when Issue
+          :read_issue
         end
       end
     end

@@ -281,6 +281,7 @@ v 8.11.0
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines
+  - Emoji can be awarded on Snippets !4456
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
   - Fix repository push email formatting in Outlook
@@ -508,7 +509,6 @@ v 8.10.0
   - Updated project header design
   - Issuable collapsed assignee tooltip is now the users name
   - Fix compare view not changing code view rendering style
-  - Emoji can be awarded on Snippets !4456
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area. !4424
   - Fix changing issue state columns in milestone view
