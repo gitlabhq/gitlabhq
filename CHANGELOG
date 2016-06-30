@@ -12,6 +12,7 @@ v 8.9.4
   - Fix restore Rake task warning message output. !4980
   - Handle external issues in IssueReferenceFilter. !4988
   - Expiry date on pinned nav cookie. !5009
+  - Updated breakpoint for sidebar pinning. !5019
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
