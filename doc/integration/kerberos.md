@@ -9,8 +9,6 @@ gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
 gitlab_rails['omniauth_providers'] = [
     {
         "name" => "kerberos",
-        "app_id" => "YOUR APP ID",
-        "app_secret" => "YOUR APP SECRET",
         "args" => { "access_type" => "offline", "approval_prompt" => "" }
     }
 ]
