@@ -1,4 +1,4 @@
-require_relative Rails.root.join('spec', 'simplecov_env')
+require_relative '../../spec/simplecov_env'
 SimpleCov.start if ENV['SIMPLECOV']
 
 ENV['RAILS_ENV'] = 'test'
