@@ -53,6 +53,7 @@ v 8.11.0 (unreleased)
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
+  - Support slash commands in issue and merge request descriptions as well as comments. !5021
   - Nokogiri's various parsing methods are now instrumented
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)

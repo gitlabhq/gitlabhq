@@ -231,7 +231,12 @@
       var $notesList, votesBlock;
       if (!note.valid) {
         if (note.award) {
-          new Flash('You have already awarded this emoji!', 'alert');
+          new Flash('You have already awarded this emoji!', 'alert', this.parentTimeline);
+        }
+        else {
+          if (note.errors.commands_only) {
+            new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
+          }
         }
         return;
       }

@@ -15,5 +15,9 @@ module Projects
     def labels
       @project.labels.select([:title, :color])
     end
+
+    def commands
+      SlashCommands::InterpretService.command_definitions
+    end
   end
 end

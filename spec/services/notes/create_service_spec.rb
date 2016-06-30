@@ -4,22 +4,31 @@ describe Notes::CreateService, services: true do
   let(:project) { create(:empty_project) }
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
+  let(:opts) do
+    { note: 'Awesome comment', noteable_type: 'Issue', noteable_id: issue.id }
+  end
 
   describe '#execute' do
     context "valid params" do
       before do
         project.team << [user, :master]
-        opts = {
-          note: 'Awesome comment',
-          noteable_type: 'Issue',
-          noteable_id: issue.id
-        }
-
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
       it { expect(@note).to be_valid }
-      it { expect(@note.note).to eq('Awesome comment') }
+      it { expect(@note.note).to eq(opts[:note]) }
+
+      it_behaves_like 'note on noteable that supports slash commands' do
+        let(:noteable) { create(:issue, project: project) }
+      end
+
+      it_behaves_like 'note on noteable that supports slash commands' do
+        let(:noteable) { create(:merge_request, source_project: project) }
+      end
+
+      it_behaves_like 'note on noteable that does not support slash commands' do
+        let(:noteable) { create(:commit, project: project) }
+      end
     end
   end
 

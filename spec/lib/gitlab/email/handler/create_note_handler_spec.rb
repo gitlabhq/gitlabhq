@@ -60,6 +60,15 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
     it "raises an InvalidNoteError" do
       expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
     end
+
+    context 'because the note was commands only' do
+      let!(:email_raw) { fixture_file("emails/commands_only_reply.eml") }
+
+      it 'raises a CommandsOnlyNoteError' do
+        expect { receiver.execute }.not_to raise_error
+      end
+
+    end
   end
 
   context "when the reply is blank" do

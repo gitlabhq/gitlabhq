@@ -145,7 +145,8 @@ class ProjectsController < Projects::ApplicationController
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
       labels: autocomplete.labels,
-      members: participants
+      members: participants,
+      commands: autocomplete.commands
     }
 
     respond_to do |format|

@@ -223,7 +223,7 @@
           }
         }
       });
-      return this.input.atwho({
+      this.input.atwho({
         at: '~',
         alias: 'labels',
         searchKey: 'search',
@@ -249,6 +249,41 @@
           }
         }
       });
+      return this.input.atwho({
+        at: '/',
+        alias: 'commands',
+        displayTpl: function(value) {
+          var tpl = '<li>/${name}';
+          if (value.aliases.length > 0) {
+            tpl += ' <small>(or /<%- aliases.join(", /") %>)</small>';
+          }
+          if (value.params.length > 0) {
+            tpl += ' <small><%- params.join(" ") %></small>';
+          }
+          if (value.description !== '') {
+            tpl += '<small class="description"><i><%- description %></i></small>';
+          }
+          tpl += '</li>';
+          return _.template(tpl)(value);
+        },
+        insertTpl: function(value) {
+          var tpl = "\n/${name} ";
+          var reference_prefix = null;
+          if (value.params.length > 0) {
+            reference_prefix = value.params[0][0];
+            if (/^[@%~]/.test(reference_prefix)) {
+              tpl += '<%- reference_prefix %>';
+            }
+          }
+          return _.template(tpl)({ reference_prefix: reference_prefix });
+        },
+        suffix: '',
+        callbacks: {
+          sorter: this.DefaultOptions.sorter,
+          filter: this.DefaultOptions.filter,
+          beforeInsert: this.DefaultOptions.beforeInsert
+        }
+      });
     },
     destroyAtWho: function() {
       return this.input.atwho('destroy');
@@ -265,6 +300,7 @@
       this.input.atwho('load', 'mergerequests', data.mergerequests);
       this.input.atwho('load', ':', data.emojis);
       this.input.atwho('load', '~', data.labels);
+      this.input.atwho('load', '/', data.commands);
       return $(':focus').trigger('keyup');
     }
   };

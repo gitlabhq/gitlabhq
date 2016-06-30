@@ -69,14 +69,9 @@ class IssuableBaseService < BaseService
   end
 
   def filter_labels
-    if params[:add_label_ids].present? || params[:remove_label_ids].present?
-      params.delete(:label_ids)
-
-      filter_labels_in_param(:add_label_ids)
-      filter_labels_in_param(:remove_label_ids)
-    else
-      filter_labels_in_param(:label_ids)
-    end
+    filter_labels_in_param(:add_label_ids)
+    filter_labels_in_param(:remove_label_ids)
+    filter_labels_in_param(:label_ids)
   end
 
   def filter_labels_in_param(key)
@@ -85,23 +80,65 @@ class IssuableBaseService < BaseService
     params[key] = project.labels.where(id: params[key]).pluck(:id)
   end
 
+  def process_label_ids(attributes, base_label_ids: [], merge_all: false)
+    label_ids = attributes.delete(:label_ids) { [] }
+    add_label_ids = attributes.delete(:add_label_ids) { [] }
+    remove_label_ids = attributes.delete(:remove_label_ids) { [] }
+
+    new_label_ids = base_label_ids
+    new_label_ids |= label_ids if merge_all || (add_label_ids.empty? && remove_label_ids.empty?)
+    new_label_ids |= add_label_ids
+    new_label_ids -= remove_label_ids
+
+    new_label_ids
+  end
+
+  def merge_slash_commands_into_params!
+    command_params = SlashCommands::InterpretService.new(project, current_user).
+      execute(params[:description])
+
+    params.merge!(command_params)
+  end
+
+  def create_issuable(issuable, attributes)
+    issuable.with_transaction_returning_status do
+      attributes.delete(:state_event)
+      params[:author] ||= current_user
+      label_ids = process_label_ids(attributes, merge_all: true)
+
+      issuable.assign_attributes(attributes)
+
+      if issuable.save
+        issuable.update_attributes(label_ids: label_ids)
+      end
+    end
+  end
+
+  def create(issuable)
+    merge_slash_commands_into_params!
+    filter_params
+
+    if params.present? && create_issuable(issuable, params)
+      handle_creation(issuable)
+      issuable.create_cross_references!(current_user)
+      execute_hooks(issuable)
+    end
+
+    issuable
+  end
+
   def update_issuable(issuable, attributes)
     issuable.with_transaction_returning_status do
-      add_label_ids = attributes.delete(:add_label_ids)
-      remove_label_ids = attributes.delete(:remove_label_ids)
+      attributes[:label_ids] = process_label_ids(attributes, base_label_ids: issuable.label_ids)
 
-      issuable.label_ids |= add_label_ids if add_label_ids
-      issuable.label_ids -= remove_label_ids if remove_label_ids
-
-      issuable.assign_attributes(attributes.merge(updated_by: current_user))
-
-      issuable.save
+      issuable.update(attributes.merge(updated_by: current_user))
     end
   end
 
   def update(issuable)
     change_state(issuable)
     change_subscription(issuable)
+    change_todo(issuable)
     filter_params
     old_labels = issuable.labels.to_a
 
@@ -131,6 +168,18 @@ class IssuableBaseService < BaseService
       issuable.subscribe(current_user)
     when 'unsubscribe'
       issuable.unsubscribe(current_user)
+    end
+  end
+
+  def change_todo(issuable)
+    case params.delete(:todo_event)
+    when 'mark'
+      todo_service.mark_todo(issuable, current_user)
+    when 'done'
+      todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
+      if todo
+        todo_service.mark_todos_as_done([todo], current_user)
+      end
     end
   end
 
