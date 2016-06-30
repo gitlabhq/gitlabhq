@@ -280,6 +280,7 @@ Rails.application.routes.draw do
     resource :logs, only: [:show]
     resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
+    resource :system_info, controller: 'system_info', only: [:show]
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
       root to: 'projects#index', as: :projects
@@ -652,7 +653,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
-          post '/wikis/*id/markdown_preview', to:'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
+          post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
         resource :repository, only: [:show, :create] do

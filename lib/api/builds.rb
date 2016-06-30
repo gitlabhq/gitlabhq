@@ -33,10 +33,10 @@ module API
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!
 
-        commit = user_project.pipelines.find_by_sha(params[:sha])
-        return not_found! unless commit
+        return not_found! unless user_project.commit(params[:sha])
 
-        builds = commit.builds.order('id DESC')
+        pipelines = user_project.pipelines.where(sha: params[:sha])
+        builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
         present paginate(builds), with: Entities::Build,

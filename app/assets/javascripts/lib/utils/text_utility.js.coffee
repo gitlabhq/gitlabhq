@@ -10,17 +10,41 @@
   gl.text.selectedText = (text, textarea) ->
     text.substring(textarea.selectionStart, textarea.selectionEnd)
 
-  gl.text.insertText = (textArea, text, tag, selected, wrap) ->
+  gl.text.lineBefore = (text, textarea) ->
+    split = text.substring(0, textarea.selectionStart).trim().split('\n')
+    split[split.length - 1]
+
+  gl.text.lineAfter = (text, textarea) ->
+    text.substring(textarea.selectionEnd).trim().split('\n')[0]
+
+  gl.text.blockTagText = (text, textArea, blockTag, selected) ->
+    lineBefore = @lineBefore(text, textArea)
+    lineAfter = @lineAfter(text, textArea)
+
+    if lineBefore is blockTag and lineAfter is blockTag
+      # To remove the block tag we have to select the line before & after
+      if blockTag?
+        textArea.selectionStart = textArea.selectionStart - (blockTag.length + 1)
+        textArea.selectionEnd = textArea.selectionEnd + (blockTag.length + 1)
+
+      selected
+    else
+      "#{blockTag}\n#{selected}\n#{blockTag}"
+
+  gl.text.insertText = (textArea, text, tag, blockTag, selected, wrap) ->
     selectedSplit = selected.split('\n')
     startChar = if not wrap and textArea.selectionStart > 0 then '\n' else ''
 
-    if selectedSplit.length > 1 and not wrap
-      insertText = selectedSplit.map((val) ->
-        if val.indexOf(tag) is 0
-          "#{val.replace(tag, '')}"
-        else
-          "#{tag}#{val}"
-      ).join('\n')
+    if selectedSplit.length > 1 and (not wrap or blockTag?)
+      if blockTag?
+        insertText = @blockTagText(text, textArea, blockTag, selected)
+      else
+        insertText = selectedSplit.map((val) ->
+          if val.indexOf(tag) is 0
+            "#{val.replace(tag, '')}"
+          else
+            "#{tag}#{val}"
+        ).join('\n')
     else
       insertText = "#{startChar}#{tag}#{selected}#{if wrap then tag else ' '}"
 
@@ -51,7 +75,7 @@
 
       textArea.setSelectionRange pos, pos
 
-  gl.text.updateText = (textArea, tag, wrap) ->
+  gl.text.updateText = (textArea, tag, blockTag, wrap) ->
     $textArea = $(textArea)
     oldVal = $textArea.val()
     textArea = $textArea.get(0)
@@ -59,7 +83,7 @@
     selected = @selectedText(text, textArea)
     $textArea.focus()
 
-    @insertText(textArea, text, tag, selected, wrap)
+    @insertText(textArea, text, tag, blockTag, selected, wrap)
 
   gl.text.init = (form) ->
     self = @
@@ -70,6 +94,7 @@
         self.updateText(
           $this.closest('.md-area').find('textarea'),
           $this.data('md-tag'),
+          $this.data('md-block'),
           not $this.data('md-prepend')
         )
 

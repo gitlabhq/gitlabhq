@@ -1,23 +1,56 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
+  - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
+  - Refactor repository paths handling to allow multiple git mount points
+  - Add Application Setting to configure default Repository Path for new projects
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
+  - Align flash messages with left side of page content !4959 (winniehell)
+  - Display last commit of deleted branch in push events !4699 (winniehell)
   - Add Sidekiq queue duration to transaction metrics.
+  - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
+  - Add notification settings dropdown for groups
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Remove unused front-end variable -> default_issues_tracker
   - Add API endpoint for a group issues !4520 (mahcsig)
+  - Add Bugzilla integration !4930 (iamtjg)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Set import_url validation to be more strict
 
 v 8.9.3 (unreleased)
+  - Add basic system information like memory and disk usage to the admin panel
+
+v 8.9.4 (unreleased)
+  - Fixes middle click and double request when navigating through the file browser  !4891
+  - Add sub nav to file page view
+
+v 8.9.3
+  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
+  - Fix rendering of commit notes. !4953
+  - Resolve "Pin should show up at 1280px min". !4947
+  - Switched mobile button icons to ellipsis and angle. !4944
+  - Correctly returns todo ID after creating todo. !4941
+  - Better debugging for memory killer middleware. !4936
+  - Remove duplicate new page btn from edit wiki. !4904
+  - Use clock_gettime for all performance timestamps. !4899
+  - Use memorized tags array when searching tags by name. !4859
+  - Fixed avatar alignment in new MR view. !4901
+  - Removed fade when filtering results. !4932
+  - Fix missing avatar on system notes. !4954
+  - Reduce overhead and optimize ProjectTeam#max_member_access performance. !4973
+  - Use update_columns to by_pass all the dirty code on active_record. !4985
+  - Decreased min width of screen to 1280px for pinned sidebar
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
+  - Update mobile button icons to be more inline with typical UI paradigms
 
 v 8.9.2
   - Fix visibility of snippets when searching.
@@ -68,6 +101,8 @@ v 8.9.1
   - Remove duplicate 'New Page' button on edit wiki page
 
 v 8.9.0
+v 8.9.0 (unreleased)
+  - Fix group visibility form layout in application settings
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
   - Fix pipeline status when there are no builds in pipeline
@@ -163,6 +198,7 @@ v 8.9.0
   - Add Application Setting to configure Container Registry token expire delay (default 5min)
   - Cache assigned issue and merge request counts in sidebar nav
   - Use Knapsack only in CI environment
+  - Updated project creation page to match new UI #2542
   - Cache project build count in sidebar nav
   - Add milestone expire date to the right sidebar
   - Manually mark a issue or merge request as a todo
@@ -217,6 +253,10 @@ v 8.9.0
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.6
+  - Fix visibility of snippets when searching.
+  - Update omniauth-saml to 1.6.0 !4951
 
 v 8.8.5
   - Import GitHub repositories respecting the API rate limit !4166
@@ -347,6 +387,10 @@ v 8.8.0
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
   - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
+
+v 8.7.8
+  - Fix visibility of snippets when searching.
+  - Update omniauth-saml to 1.6.0 !4951
 
 v 8.7.7
   - Fix import by `Any Git URL` broken if the URL contains a space

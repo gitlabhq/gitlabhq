@@ -91,6 +91,7 @@ gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
+gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
 gem "unf", '~> 0.1.4'
@@ -346,3 +347,6 @@ gem "paranoia", "~> 2.0"
 
 # Health check
 gem 'health_check', '~> 1.5.1'
+
+# System information
+gem 'vmstat', '~> 2.1.0'
