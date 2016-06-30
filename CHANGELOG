@@ -30,6 +30,7 @@ v 8.10.0 (unreleased)
   - Add basic system information like memory and disk usage to the admin panel
 
 v 8.9.4 (unreleased)
+  - Do not show build retry link in build sidebar when build is not finished yet
   - Fixes middle click and double request when navigating through the file browser  !4891
   - Add sub nav to file page view
 
