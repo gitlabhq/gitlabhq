@@ -81,8 +81,7 @@ module TestEnv
 
   def setup_gitlab_shell
     unless File.directory?(Gitlab.config.gitlab_shell.path)
-      # TODO: Remove `[shards]` when gitlab-shell v3.1.0 is published
-      `rake gitlab:shell:install[shards]`
+      `rake gitlab:shell:install`
     end
   end
 
