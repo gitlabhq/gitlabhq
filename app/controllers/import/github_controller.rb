@@ -1,11 +1,26 @@
 class Import::GithubController < Import::BaseController
   before_action :verify_github_import_enabled
-  before_action :github_auth, except: :callback
+  before_action :github_auth, only: [:status, :jobs, :create]
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
 
+  helper_method :logged_in_with_github?
+
+  def new
+    if logged_in_with_github?
+      go_to_github_for_permissions
+    elsif session[:github_access_token]
+      redirect_to status_import_github_url
+    end
+  end
+
   def callback
     session[:github_access_token] = client.get_token(params[:code])
+    redirect_to status_import_github_url
+  end
+
+  def personal_access_token
+    session[:github_access_token] = params[:personal_access_token]
     redirect_to status_import_github_url
   end
 
@@ -57,10 +72,14 @@ class Import::GithubController < Import::BaseController
   end
 
   def github_unauthorized
-    go_to_github_for_permissions
+    session[:github_access_token] = nil
+    redirect_to new_import_github_url,
+      alert: 'Access denied to your GitHub account.'
   end
 
-  private
+  def logged_in_with_github?
+    current_user.identities.exists?(provider: 'github')
+  end
 
   def access_params
     { github_access_token: session[:github_access_token] }
