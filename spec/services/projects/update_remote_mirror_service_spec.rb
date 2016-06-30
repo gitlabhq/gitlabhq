@@ -115,7 +115,7 @@ describe Projects::UpdateRemoteMirrorService do
           repository.rm_tag('v1.0.0')
 
           expect(repository).to receive(:delete_remote_branches).with(
-            project.path_with_namespace, remote_mirror.ref_name,['v1.0.0']
+            project.path_with_namespace, remote_mirror.ref_name, ['v1.0.0']
           )
 
           subject.execute(remote_mirror)

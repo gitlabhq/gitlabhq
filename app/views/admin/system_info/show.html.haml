@@ -1,0 +1,22 @@
+- @no_container = true
+- page_title "System Info"
+= render 'admin/background_jobs/head'
+
+%div{ class: (container_class) }
+  .prepend-top-default
+  .row
+    .col-sm-4
+      .light-well
+        %h4 CPU
+        .data
+          %h1= "#{@cpus} cores"
+    .col-sm-4
+      .light-well
+        %h4 Memory
+        .data
+          %h1= "#{number_to_human_size(@mem_used)} / #{number_to_human_size(@mem_total)}"
+    .col-sm-4
+      .light-well
+        %h4 Disk
+        .data
+          %h1= "#{number_to_human_size(@disk_used)} / #{number_to_human_size(@disk_total)}"

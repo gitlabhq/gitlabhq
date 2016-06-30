@@ -22,7 +22,7 @@ describe API::API, api: true  do
     context 'when authenticated' do
       it 'should fork if user has sufficient access to project' do
         post api("/projects/fork/#{project.id}", user2)
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to eq(project.path)
         expect(json_response['owner']['id']).to eq(user2.id)
@@ -32,7 +32,7 @@ describe API::API, api: true  do
 
       it 'should fork if user is admin' do
         post api("/projects/fork/#{project.id}", admin)
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(json_response['name']).to eq(project.name)
         expect(json_response['path']).to eq(project.path)
         expect(json_response['owner']['id']).to eq(admin.id)
@@ -42,20 +42,20 @@ describe API::API, api: true  do
 
       it 'should fail on missing project access for the project to fork' do
         post api("/projects/fork/#{project.id}", user3)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
 
       it 'should fail if forked project exists in the user namespace' do
         post api("/projects/fork/#{project.id}", user)
-        expect(response.status).to eq(409)
+        expect(response).to have_http_status(409)
         expect(json_response['message']['name']).to eq(['has already been taken'])
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
       it 'should fail if project to fork from does not exist' do
         post api('/projects/fork/424242', user)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
       end
     end
@@ -63,7 +63,7 @@ describe API::API, api: true  do
     context 'when unauthenticated' do
       it 'should return authentication error' do
         post api("/projects/fork/#{project.id}")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
         expect(json_response['message']).to eq('401 Unauthorized')
       end
     end

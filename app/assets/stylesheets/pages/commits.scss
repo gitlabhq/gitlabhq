@@ -83,11 +83,7 @@
   position: relative;
 
   @media (min-width: $screen-sm-min) {
-    padding-left: 20px;
-
-    .commit-info-block {
-      padding-left: 44px;
-    }
+    padding-left: 46px;
   }
 
   &:not(:last-child) {
@@ -102,9 +98,7 @@
 
 
   .avatar {
-    position: absolute;
-    top: 10px;
-    left: 16px;
+    margin-left: -46px;
   }
 
   .item-title {

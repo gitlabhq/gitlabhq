@@ -1,5 +1,6 @@
 .page-with-sidebar {
   padding-top: $header-height;
+  padding-bottom: 25px;
   transition: padding $sidebar-transition-duration;
 
   .sidebar-wrapper {

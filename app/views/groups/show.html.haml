@@ -15,12 +15,17 @@
           %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
             = visibility_level_icon(@group.visibility_level, fw: false)
 
+        %span.hidden-xs
+          = render 'shared/notifications/button', notification_setting: @notification_setting
+
+        - if current_user
+          .pull-right
+            = render 'shared/members/access_request_buttons', source: @group
+
       - if @group.description.present?
         .cover-desc.description
           = markdown(@group.description, pipeline: :description)
 
-    - if current_user
-      = render 'shared/members/access_request_buttons', source: @group
 
 %div{ class: container_class }
   .top-area

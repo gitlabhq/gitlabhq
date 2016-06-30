@@ -202,7 +202,6 @@ $ ->
     $('.header-content .header-logo').toggle()
     $('.header-content .navbar-collapse').toggle()
     $('.navbar-toggle').toggleClass('active')
-    $('.navbar-toggle i').toggleClass("fa-angle-right fa-angle-left")
 
   # Show/hide comments on diff
   $body.on "click", ".js-toggle-diff-comments", (e) ->
@@ -265,7 +264,7 @@ $ ->
   new Aside()
 
   # Sidenav pinning
-  if $window.width() < 1440 and $.cookie('pin_nav') is 'true'
+  if $window.width() < 1280 and $.cookie('pin_nav') is 'true'
     $.cookie('pin_nav', 'false', { path: '/' })
     $('.page-with-sidebar')
       .toggleClass('page-sidebar-collapsed page-sidebar-expanded')

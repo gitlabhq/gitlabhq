@@ -12,7 +12,7 @@ module Elastic
         index: {
           analysis: {
             analyzer: {
-              default:{
+              default: {
                 tokenizer: "standard",
                 filter: ["standard", "lowercase", "my_stemmer"]
               }

@@ -16,4 +16,11 @@
     @extend .alert-danger;
     margin: 0;
   }
+
+  .flash-notice, .flash-alert {
+    .container-fluid.flash-text {
+      background: transparent;
+    }
+  }
 }
+

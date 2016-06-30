@@ -58,7 +58,7 @@ class User < ActiveRecord::Base
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :group_members, dependent: :destroy, source: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -66,7 +66,7 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects,      dependent: :destroy
@@ -801,7 +801,7 @@ class User < ActiveRecord::Base
 
     unless email_domains.blank?
       match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        escaped = Regexp.escape(domain).gsub('\*', '.*?')
         regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
         email_domain = Mail::Address.new(self.email).domain
         email_domain =~ regexp

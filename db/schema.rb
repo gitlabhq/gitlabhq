@@ -186,8 +186,8 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
-    t.datetime "artifacts_expire_at"
     t.string   "environment"
+    t.datetime "artifacts_expire_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -879,15 +879,15 @@ ActiveRecord::Schema.define(version: 20160621123729) do
   add_index "path_locks", ["path"], name: "index_path_locks_on_path", using: :btree
   add_index "path_locks", ["project_id"], name: "index_path_locks_on_project_id", using: :btree
   add_index "path_locks", ["user_id"], name: "index_path_locks_on_user_id", using: :btree
-  
+
   create_table "personal_access_tokens", force: :cascade do |t|
     t.integer  "user_id",                    null: false
     t.string   "token",                      null: false
     t.string   "name",                       null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
     t.boolean  "revoked",    default: false
     t.datetime "expires_at"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -916,48 +916,50 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,  null: false
-    t.boolean  "merge_requests_enabled",             default: true,  null: false
-    t.boolean  "wiki_enabled",                       default: true,  null: false
+    t.boolean  "issues_enabled",                     default: true,     null: false
+    t.boolean  "merge_requests_enabled",             default: true,     null: false
+    t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.boolean  "snippets_enabled",                   default: true,  null: false
+    t.string   "issues_tracker",                     default: "gitlab", null: false
+    t.string   "issues_tracker_id"
+    t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",                   default: 0,     null: false
-    t.boolean  "archived",                           default: false, null: false
+    t.integer  "visibility_level",                   default: 0,        null: false
+    t.boolean  "archived",                           default: false,    null: false
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",                    default: 0.0
     t.text     "merge_requests_template"
-    t.integer  "star_count",                         default: 0,     null: false
+    t.integer  "star_count",                         default: 0,        null: false
     t.boolean  "merge_requests_rebase_enabled",      default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "approvals_before_merge",             default: 0,     null: false
+    t.integer  "approvals_before_merge",             default: 0,        null: false
     t.boolean  "reset_approvals_on_push",            default: true
     t.integer  "commit_count",                       default: 0
     t.boolean  "merge_requests_ff_only_enabled",     default: false
     t.text     "issues_template"
-    t.boolean  "mirror",                             default: false, null: false
+    t.boolean  "mirror",                             default: false,    null: false
     t.datetime "mirror_last_update_at"
     t.datetime "mirror_last_successful_update_at"
     t.integer  "mirror_user_id"
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,  null: false
-    t.boolean  "shared_runners_enabled",             default: true,  null: false
+    t.boolean  "builds_enabled",                     default: true,     null: false
+    t.boolean  "shared_runners_enabled",             default: true,     null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",              default: true,  null: false
-    t.integer  "build_timeout",                      default: 3600,  null: false
-    t.boolean  "mirror_trigger_builds",              default: false, null: false
+    t.boolean  "build_allow_git_fetch",              default: true,     null: false
+    t.integer  "build_timeout",                      default: 3600,     null: false
+    t.boolean  "mirror_trigger_builds",              default: false,    null: false
     t.boolean  "pending_delete",                     default: false
-    t.boolean  "public_builds",                      default: true,  null: false
+    t.boolean  "public_builds",                      default: true,     null: false
     t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
-    t.boolean  "only_allow_merge_if_build_succeeds", default: false, null: false
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
     t.boolean  "has_external_issue_tracker"
   end
 
@@ -1265,7 +1267,7 @@ ActiveRecord::Schema.define(version: 20160621123729) do
 
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
-  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "u2f_registrations", "users"
 end

@@ -1,5 +1,5 @@
 module API
-  # Licenses API
+  # License Templates API
   class LicenseTemplates < Grape::API
     PROJECT_TEMPLATE_REGEX =
       /[\<\{\[]

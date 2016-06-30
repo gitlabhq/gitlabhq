@@ -19,7 +19,7 @@ describe SnippetsController do
           it 'responds with status 404' do
             get :show, id: other_personal_snippet.to_param
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -28,7 +28,7 @@ describe SnippetsController do
             get :show, id: personal_snippet.to_param
 
             expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -54,7 +54,7 @@ describe SnippetsController do
           get :show, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -79,7 +79,7 @@ describe SnippetsController do
           get :show, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -88,7 +88,7 @@ describe SnippetsController do
           get :show, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -102,7 +102,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, id: 'doesntexist'
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
 
@@ -110,7 +110,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :show, id: 'doesntexist'
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -134,7 +134,7 @@ describe SnippetsController do
           it 'responds with status 404' do
             get :raw, id: other_personal_snippet.to_param
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -143,7 +143,7 @@ describe SnippetsController do
             get :raw, id: personal_snippet.to_param
 
             expect(assigns(:snippet)).to eq(personal_snippet)
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -169,7 +169,7 @@ describe SnippetsController do
           get :raw, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -194,7 +194,7 @@ describe SnippetsController do
           get :raw, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -203,7 +203,7 @@ describe SnippetsController do
           get :raw, id: personal_snippet.to_param
 
           expect(assigns(:snippet)).to eq(personal_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -217,7 +217,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :raw, id: 'doesntexist'
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
 
@@ -225,7 +225,7 @@ describe SnippetsController do
         it 'responds with status 404' do
           get :raw, id: 'doesntexist'
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end

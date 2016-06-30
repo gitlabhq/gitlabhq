@@ -30,7 +30,7 @@ gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.5.0'
+gem 'omniauth-saml',          '~> 1.6.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
@@ -96,6 +96,7 @@ gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
+gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
 gem "unf", '~> 0.1.4'
@@ -357,3 +358,6 @@ gem "paranoia", "~> 2.0"
 
 # Health check
 gem 'health_check', '~> 1.5.1'
+
+# System information
+gem 'vmstat', '~> 2.1.0'

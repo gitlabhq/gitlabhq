@@ -30,7 +30,7 @@ describe AutocompleteController do
         get(:users, project_id: 'unknown')
       end
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
 
     describe "GET #users that can push to protected branches" do
@@ -71,7 +71,7 @@ describe AutocompleteController do
         get(:users, group_id: 'unknown')
       end
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
   end
 
@@ -127,7 +127,7 @@ describe AutocompleteController do
         get(:users, project_id: project.id)
       end
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
 
     describe 'GET #users with unknown project' do
@@ -135,7 +135,7 @@ describe AutocompleteController do
         get(:users, project_id: 'unknown')
       end
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
 
     describe 'GET #users with inaccessible group' do
@@ -144,7 +144,7 @@ describe AutocompleteController do
         get(:users, group_id: user.namespace.id)
       end
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
 
     describe 'GET #users with no project' do

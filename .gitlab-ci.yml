@@ -20,6 +20,7 @@ variables:
   SIMPLECOV: "true"
   USE_DB: "true"
   USE_BUNDLE_INSTALL: "true"
+  GIT_DEPTH: "20"
 
 before_script:
   - source ./scripts/prepare_build.sh

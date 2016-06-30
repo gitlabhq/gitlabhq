@@ -1,11 +1,12 @@
 - page_title "Groups", @user.name, "Users"
 = render 'admin/users/head'
 
-- if @user.group_members.present?
+- group_members = @user.group_members.includes(:source)
+- if group_members.any?
   .panel.panel-default
     .panel-heading Groups:
     %ul.well-list
-      - @user.group_members.each do |group_member|
+      - group_members.each do |group_member|
         - group = group_member.group
         %li.group_member
           %span{class: ("list-item-name" unless group_member.owner?)}

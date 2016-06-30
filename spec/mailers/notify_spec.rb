@@ -1148,7 +1148,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
 
-    subject { @email = Notify.send_admin_notification(user.id, 'Admin announcement','Text') }
+    subject { @email = Notify.send_admin_notification(user.id, 'Admin announcement', 'Text') }
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]

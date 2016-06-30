@@ -139,20 +139,10 @@ class ProjectTeam
   def max_member_access(user_id)
     access = []
 
-    project.members.non_request.each do |member|
-      if member.user_id == user_id
-        access << member.access_field if member.access_field
-        break
-      end
-    end
+    access += project.members.non_request.where(user_id: user_id).has_access.pluck(:access_level)
 
     if group
-      group.members.non_request.each do |member|
-        if member.user_id == user_id
-          access << member.access_field if member.access_field
-          break
-        end
-      end
+      access += group.members.non_request.where(user_id: user_id).has_access.pluck(:access_level)
     end
 
     if project.invited_groups.any? && project.allowed_to_share_with_group?

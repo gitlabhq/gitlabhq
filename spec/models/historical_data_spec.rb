@@ -27,7 +27,7 @@ describe HistoricalData do
 
   describe ".track!" do
     before do
-      allow(User).to receive(:active).and_return([1,2,3,4,5])
+      allow(User).to receive(:active).and_return([1, 2, 3, 4, 5])
     end
 
     it "creates a new historical data record" do
