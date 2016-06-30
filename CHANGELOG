@@ -29,10 +29,19 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
-v 8.9.4 (unreleased)
-  - Do not show build retry link in build sidebar when build is not finished yet
-  - Fixes middle click and double request when navigating through the file browser  !4891
-  - Add sub nav to file page view
+v 8.9.4
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
+  - Fixed search field blur not removing focus. !4704
+  - Resolve "Sub nav isn't showing on file view". !4890
+  - Fixes middle click and double request when navigating through the file browser. !4891
+  - Fixed URL on label button when filtering. !4897
+  - Fixed commit avatar alignment. !4933
+  - Do not show build retry link when build is active. !4967
+  - Fix restore Rake task warning message output. !4980
+  - Handle external issues in IssueReferenceFilter. !4988
+  - Expiry date on pinned nav cookie. !5009
+  - Updated breakpoint for sidebar pinning. !5019
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
@@ -253,6 +262,10 @@ v 8.9.0
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
 
+v 8.8.7
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
+
 v 8.8.6
   - Fix visibility of snippets when searching.
   - Update omniauth-saml to 1.6.0 !4951
@@ -386,6 +399,10 @@ v 8.8.0
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
   - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
+
+v 8.7.9
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
 
 v 8.7.8
   - Fix visibility of snippets when searching.
