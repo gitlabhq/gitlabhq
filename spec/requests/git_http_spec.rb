@@ -97,7 +97,7 @@ describe 'Git HTTP requests', lib: true do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
 
           download(path, {}) do |response|
-            expect(response).to have_http_status(404)
+            expect(response).to have_http_status(401)
           end
         end
       end
