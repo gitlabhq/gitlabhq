@@ -40,6 +40,18 @@ describe GitPushService, services: true do
 
         subject
       end
+
+      it 'flushes the branches cache' do
+        expect(project.repository).to receive(:expire_branches_cache)
+
+        subject
+      end
+
+      it 'flushes the branch count cache' do
+        expect(project.repository).to receive(:expire_branch_count_cache)
+
+        subject
+      end
     end
 
     context 'existing branch' do
@@ -49,6 +61,18 @@ describe GitPushService, services: true do
       it 'flushes general cached data' do
         expect(project.repository).to receive(:expire_cache).
           with('master', newrev)
+
+        subject
+      end
+
+      it 'does not flush the branches cache' do
+        expect(project.repository).not_to receive(:expire_branches_cache)
+
+        subject
+      end
+
+      it 'does not flush the branch count cache' do
+        expect(project.repository).not_to receive(:expire_branch_count_cache)
 
         subject
       end
@@ -62,6 +86,18 @@ describe GitPushService, services: true do
 
       it 'flushes the visible content cache' do
         expect(project.repository).to receive(:expire_has_visible_content_cache)
+
+        subject
+      end
+
+      it 'flushes the branches cache' do
+        expect(project.repository).to receive(:expire_branches_cache)
+
+        subject
+      end
+
+      it 'flushes the branch count cache' do
+        expect(project.repository).to receive(:expire_branch_count_cache)
 
         subject
       end
