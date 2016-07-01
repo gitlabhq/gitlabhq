@@ -223,18 +223,6 @@
     @media (max-width: $screen-md-max) {
       top: 0;
     }
-
-    .access-request-button {
-      position: absolute;
-      right: 0;
-      bottom: 61px;
-
-      @media (max-width: $screen-md-max) {
-        position: relative;
-        bottom: 0;
-        margin-right: 10px;
-      }
-    }
   }
 
   @media (max-width: $screen-md-max) {
