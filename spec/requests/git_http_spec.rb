@@ -156,7 +156,7 @@ describe 'Git HTTP requests', lib: true do
         context "when authentication succeeds" do
           before do
             allow_any_instance_of(Projects::GitHttpController).to receive(:spnego_credentials!).and_return("mylogin@FOO.COM")
-            user.identities.create!(provider: "kerberos", extern_uid:"mylogin@FOO.COM")
+            user.identities.create!(provider: "kerberos", extern_uid: "mylogin@FOO.COM")
           end
 
           context "when the user has access to the project" do
