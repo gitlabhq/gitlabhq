@@ -1,3 +1,5 @@
+- project = event.project
+
 .event-title
   %span.author_name= link_to_author event
   %span.event_label.pushed #{event.action_name} #{event.ref_type}
@@ -5,19 +7,18 @@
     %strong= event.ref_name
   - else
     %strong
-      = link_to event.ref_name, namespace_project_commits_path(event.project.namespace, event.project, event.ref_name), title: h(event.target_title)
+      = link_to event.ref_name, namespace_project_commits_path(project.namespace, project, event.ref_name), title: h(event.target_title)
   at
-  = link_to_project event.project
+  = link_to_project project
 
 - if event.push_with_commits?
-  - project = event.project
   .event-body
     %ul.well-list.event_commits
       - few_commits = event.commits[0...2]
       - few_commits.each do |commit|
         = render "events/commit", commit: commit, project: project, event: event
 
-      - create_mr = event.new_ref? && create_mr_button?(event.project.default_branch, event.ref_name, event.project)
+      - create_mr = event.new_ref? && create_mr_button?(project.default_branch, event.ref_name, project)
       - if event.commits_count > 1
         %li.commits-stat
           - if event.commits_count > 2
@@ -27,18 +28,26 @@
             - from = event.commit_from
             - from_label = truncate_sha(from)
           - else
-            - from = event.project.default_branch
+            - from = project.default_branch
             - from_label = from
 
-          = link_to namespace_project_compare_path(event.project.namespace, event.project, from: from, to: event.commit_to) do
+          = link_to namespace_project_compare_path(project.namespace, project, from: from, to: event.commit_to) do
             Compare #{from_label}...#{truncate_sha(event.commit_to)}
 
           - if create_mr
             %span{"data-user-is" => event.author_id, "data-display" => "inline"}
               or
-              = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
+              = link_to create_mr_path(project.default_branch, event.ref_name, project) do
                 create a merge request
       - elsif create_mr
         %li.commits-stat{"data-user-is" => event.author_id}
-          = link_to create_mr_path(event.project.default_branch, event.ref_name, event.project) do
+          = link_to create_mr_path(project.default_branch, event.ref_name, project) do
             Create Merge Request
+- elsif event.rm_ref?
+  - repository = project.repository
+  - last_commit = repository.commit(event.commit_from)
+  - if last_commit
+    .event-body
+      %ul.well-list.event_commits
+        = render "events/commit", commit: last_commit, project: project, event: event
+

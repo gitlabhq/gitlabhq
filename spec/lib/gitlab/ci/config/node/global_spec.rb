@@ -3,13 +3,19 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Global do
   let(:global) { described_class.new(hash) }
 
-  describe '#allowed_nodes' do
+  describe '.nodes' do
     it 'can contain global config keys' do
-      expect(global.allowed_nodes).to include :before_script
+      expect(described_class.nodes).to include :before_script
     end
 
     it 'returns a hash' do
-      expect(global.allowed_nodes).to be_a Hash
+      expect(described_class.nodes).to be_a Hash
+    end
+  end
+
+  describe '#key' do
+    it 'returns underscored class name' do
+      expect(global.key).to eq 'global'
     end
   end
 
@@ -79,7 +85,7 @@ describe Gitlab::Ci::Config::Node::Global do
     describe '#errors' do
       it 'reports errors from child nodes' do
         expect(global.errors)
-          .to include 'before_script should be an array of strings'
+          .to include 'Before script config should be an array of strings'
       end
     end
 

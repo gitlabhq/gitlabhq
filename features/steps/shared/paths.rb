@@ -52,7 +52,7 @@ module SharedPaths
   end
 
   step 'I visit group "Owned" LDAP settings page' do
-    visit group_ldap_group_links_path(Group.find_by(name:"Owned"))
+    visit group_ldap_group_links_path(Group.find_by(name: "Owned"))
   end
 
   step 'I visit group "Owned" projects page' do

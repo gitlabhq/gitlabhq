@@ -58,7 +58,7 @@ class GitLabDropdownFilter
   filter: (search_text) ->
     data = @options.data()
 
-    if data?
+    if data? and not @options.filterByText
       results = data
 
       if search_text isnt ''
@@ -102,10 +102,11 @@ class GitLabDropdownFilter
           $el = $(@)
           matches = fuzzaldrinPlus.match($el.text().trim(), search_text)
 
-          if matches.length
-            $el.show()
-          else
-            $el.hide()
+          unless $el.is('.dropdown-header')
+            if matches.length
+              $el.show()
+            else
+              $el.hide()
       else
         elements.show()
 
@@ -185,12 +186,15 @@ class GitLabDropdown
             @fullData = data
 
             @parseData @fullData
+
+            @filter.input.trigger('keyup') if @options.filterable and @filter and @filter.input
         }
 
     # Init filterable
     if @options.filterable
       @filter = new GitLabDropdownFilter @filterInput,
         filterInputBlur: @filterInputBlur
+        filterByText: @options.filterByText
         remote: @options.filterRemote
         query: @options.data
         keys: searchFields
@@ -216,6 +220,13 @@ class GitLabDropdown
     @dropdown.on 'keyup', (e) =>
       if e.which is 27 # Escape key
         $('.dropdown-menu-close', @dropdown).trigger 'click'
+    @dropdown.on 'blur', 'a', (e) =>
+      if e.relatedTarget?
+        $relatedTarget = $(e.relatedTarget)
+        $dropdownMenu = $relatedTarget.closest('.dropdown-menu')
+
+        if $dropdownMenu.length is 0
+          @dropdown.removeClass('open')
 
     if @dropdown.find(".dropdown-toggle-page").length
       @dropdown.find(".dropdown-toggle-page, .dropdown-menu-back").on "click", (e) =>
@@ -278,7 +289,7 @@ class GitLabDropdown
         html = @renderData(data)
 
     # Render the full menu
-    full_html = @renderMenu(html.join(""))
+    full_html = @renderMenu(html)
 
     @appendMenu(full_html)
 
@@ -301,6 +312,9 @@ class GitLabDropdown
 
     if @options.setIndeterminateIds
       @options.setIndeterminateIds.call(@)
+
+    if @options.setActiveIds
+      @options.setActiveIds.call(@)
 
     # Makes indeterminate items effective
     if @fullData and @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
@@ -346,7 +360,8 @@ class GitLabDropdown
     if @options.renderMenu
       menu_html = @options.renderMenu(html)
     else
-      menu_html = "<ul>#{html}</ul>"
+      menu_html = $('<ul />')
+        .append(html)
 
     return menu_html
 
@@ -355,7 +370,9 @@ class GitLabDropdown
     selector = '.dropdown-content'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one .dropdown-content"
-    $(selector, @dropdown).html html
+    $(selector, @dropdown)
+      .empty()
+      .append(html)
 
   # Render the row
   renderItem: (data, group = false, index = false) ->
@@ -454,7 +471,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        @updateLabel()
+        @updateLabel(selectedObject, el, @)
       else
         selectedObject
     else if el.hasClass(INDETERMINATE_CLASS)
@@ -481,7 +498,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        @updateLabel(selectedObject, el)
+        @updateLabel(selectedObject, el, @)
       if value?
         if !field.length and fieldName
           @addInput(fieldName, value)
@@ -580,8 +597,8 @@ class GitLabDropdown
       # Scroll the dropdown content up
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
-  updateLabel: (selected = null, el = null) =>
-    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el)
+  updateLabel: (selected = null, el = null, instance = null) =>
+    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el, instance)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->

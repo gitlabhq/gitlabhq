@@ -65,6 +65,27 @@ describe Project, models: true do
       expect(project2).not_to be_valid
       expect(project2.errors[:limit_reached].first).to match(/Personal project creation is not allowed/)
     end
+
+    describe 'wiki path conflict' do
+      context "when the new path has been used by the wiki of other Project" do
+        it 'should have an error on the name attribute' do
+          new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
+
+          expect(new_project).not_to be_valid
+          expect(new_project.errors[:name].first).to eq('has already been taken')
+        end
+      end
+
+      context "when the new wiki path has been used by the path of other Project" do
+        it 'should have an error on the name attribute' do
+          project_with_wiki_suffix = create(:project, path: 'foo.wiki')
+          new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
+
+          expect(new_project).not_to be_valid
+          expect(new_project.errors[:name].first).to eq('has already been taken')
+        end
+      end
+    end
   end
 
   describe 'default_scope' do
@@ -230,7 +251,7 @@ describe Project, models: true do
     end
   end
 
-  describe :find_with_namespace do
+  describe '.find_with_namespace' do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
@@ -240,6 +261,22 @@ describe Project, models: true do
       it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
       it { expect(Project.find_with_namespace('GitLab/GitlabHQ')).to eq(@project) }
       it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
+    end
+
+    context 'when multiple projects using a similar name exist' do
+      let(:group) { create(:group, name: 'gitlab') }
+
+      let!(:project1) do
+        create(:empty_project, name: 'gitlab1', path: 'gitlab', namespace: group)
+      end
+
+      let!(:project2) do
+        create(:empty_project, name: 'gitlab2', path: 'GITLAB', namespace: group)
+      end
+
+      it 'returns the row where the path matches literally' do
+        expect(Project.find_with_namespace('gitlab/GITLAB')).to eq(project2)
+      end
     end
   end
 

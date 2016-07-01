@@ -17,11 +17,21 @@ module ButtonHelper
   def clipboard_button(data = {})
     content_tag :button,
       icon('clipboard'),
-      class: "btn",
+      class: "btn btn-clipboard",
       data: data,
       type: :button
   end
 
+  # Output a "Copy to Clipboard" button with a custom CSS class
+  #
+  # data - Data attributes passed to `content_tag`
+  # css_class - Class passed to the `content_tag`
+  #
+  # Examples:
+  # 
+  #   # Define the target element
+  #   clipboard_button_with_class({clipboard_target: "div#foo"}, css_class: "btn-clipboard")
+  #   # => "<button class='btn btn-clipboard' data-clipboard-target='div#foo'>...</button>"
   def clipboard_button_with_class(data = {}, css_class: 'btn-clipboard')
     content_tag :button,
       icon('clipboard'),

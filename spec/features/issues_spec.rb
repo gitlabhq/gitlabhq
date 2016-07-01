@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_button "Go full screen"
+      find('.js-zen-enter').click
     end
 
     it 'should open new issue popup' do
@@ -92,7 +92,7 @@ describe 'Issues', feature: true do
     end
 
     context 'on edit form' do
-      let(:issue) { create(:issue, author: @user,project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+      let(:issue) { create(:issue, author: @user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
 
       before do
         visit edit_namespace_project_issue_path(project.namespace, project, issue)

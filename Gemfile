@@ -30,7 +30,7 @@ gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.2.0'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
-gem 'omniauth-saml',          '~> 1.5.0'
+gem 'omniauth-saml',          '~> 1.6.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
@@ -52,11 +52,11 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.0'
 
 # Browser detection
-gem "browser", '~> 2.0.3'
+gem "browser", '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 10.0'
+gem "gitlab_git", '~> 10.2'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -81,7 +81,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem "kaminari", "~> 0.17.0"
 
 # HAML
-gem "haml-rails", '~> 0.9.0'
+gem 'hamlit', '~> 2.5'
 
 # Files attachments
 gem "carrierwave", '~> 0.10.0'
@@ -96,6 +96,7 @@ gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
+gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
 gem "unf", '~> 0.1.4'
@@ -231,7 +232,7 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
-gem 'font-awesome-rails', '~> 4.2'
+gem 'font-awesome-rails', '~> 4.6.1'
 gem 'gitlab_emoji',       '~> 0.3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
@@ -245,7 +246,7 @@ gem 'base32',             '~> 0.3.0'
 gem "gitlab-license", "~> 0.0.4"
 
 # Sentry integration
-gem 'sentry-raven', '~> 0.15'
+gem 'sentry-raven', '~> 1.1.0'
 
 gem 'premailer-rails', '~> 1.9.0'
 
@@ -341,7 +342,7 @@ gem "newrelic_rpm", '~> 3.14'
 
 gem 'octokit', '~> 4.3.0'
 
-gem "mail_room", "~> 0.7"
+gem "mail_room", "~> 0.8"
 
 gem 'email_reply_parser', '~> 0.5.8'
 
@@ -357,3 +358,6 @@ gem "paranoia", "~> 2.0"
 
 # Health check
 gem 'health_check', '~> 1.5.1'
+
+# System information
+gem 'vmstat', '~> 2.1.0'

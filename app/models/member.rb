@@ -1,5 +1,6 @@
 class Member < ActiveRecord::Base
   include Sortable
+  include Importable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -32,6 +33,7 @@ class Member < ActiveRecord::Base
   scope :request, -> { where.not(requested_at: nil) }
   scope :non_request, -> { where(requested_at: nil) }
   scope :non_pending, -> { non_request.non_invite }
+  scope :has_access, -> { where('access_level > 0') }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
@@ -42,13 +44,12 @@ class Member < ActiveRecord::Base
 
   before_validation :generate_invite_token, on: :create, if: -> (member) { member.invite_email.present? }
 
-  after_create :send_invite, if: :invite?
-  after_create :send_request, if: :request?
-  after_create :create_notification_setting, unless: :pending?
-  after_create :post_create_hook, unless: :pending?
-  after_update :post_update_hook, unless: :pending?
+  after_create :send_invite, if: :invite?, unless: :importing?
+  after_create :send_request, if: :request?, unless: :importing?
+  after_create :create_notification_setting, unless: [:pending?, :importing?]
+  after_create :post_create_hook, unless: [:pending?, :importing?]
+  after_update :post_update_hook, unless: [:pending?, :importing?]
   after_destroy :post_destroy_hook, unless: :pending?
-  after_destroy :post_decline_request, if: :request?
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -190,7 +191,7 @@ class Member < ActiveRecord::Base
   end
 
   def send_request
-    # override in subclass
+    notification_service.new_access_request(self)
   end
 
   def post_create_hook
@@ -215,10 +216,6 @@ class Member < ActiveRecord::Base
 
   def after_accept_request
     post_create_hook
-  end
-
-  def post_decline_request
-    # override in subclass
   end
 
   def system_hook_service

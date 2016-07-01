@@ -54,6 +54,10 @@
         }
       }
 
+      code {
+        white-space: pre-wrap;
+      }
+
       pre {
         border: none;
         background: #f9f9f9;
@@ -136,9 +140,10 @@
 .event-last-push {
   overflow: auto;
   width: 100%;
+  
   .event-last-push-text {
     @include str-truncated(100%);
-    padding: 5px 0;
+    padding: 4px 0;
     font-size: 13px;
     float: left;
     margin-right: -150px;

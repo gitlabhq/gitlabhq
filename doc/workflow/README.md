@@ -9,7 +9,7 @@
 - [Keyboard shortcuts](shortcuts.md)
 - [File finder](file_finder.md)
 - [File lock](../user/project/file_lock.md)
-- [Labels](labels.md)
+- [Labels](../user/project/labels.md)
 - [Issue weight](issue_weight.md)
 - [Manage large binaries with git annex](git_annex.md)
 - [Merge Request Approvals](merge_request_approvals.md)

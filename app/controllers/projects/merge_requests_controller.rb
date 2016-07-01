@@ -60,7 +60,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json   { render json: @merge_request, methods: :rebase_in_progress? }
-      format.patch  { render text: @merge_request.to_patch }
+      format.patch  do
+        headers.store(*Gitlab::Workhorse.send_git_patch(@project.repository,
+                                                        @merge_request.diff_base_commit.id,
+                                                        @merge_request.last_commit.id))
+        headers['Content-Disposition'] = 'inline'
+        head :ok
+      end
       format.diff do
         return render_404 unless @merge_request.diff_refs
 
@@ -85,6 +91,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
 
     respond_to do |format|
       format.html
@@ -204,7 +219,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
     return render_404 unless @merge_request.approved?
 
-    unless @merge_request.mergeable?
+    # Disable the CI check if merge_when_build_succeeds is enabled since we have
+    # to wait until CI completes to know
+    unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)
       @status = :failed
       return
     end
@@ -225,8 +242,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request.update(merge_error: nil)
 
-    if params[:merge_when_build_succeeds].present? 
-      if @merge_request.pipeline && @merge_request.pipeline.active?
+    if params[:merge_when_build_succeeds].present?
+      unless @merge_request.pipeline
+        @status = :failed
+        return
+      end
+
+      if @merge_request.pipeline.active?
         MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
                                                         .execute(@merge_request)
         @status = :merge_when_build_succeeds
@@ -360,8 +382,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
-    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
-    @discussions = @notes.discussions
+
+    @discussions = @merge_request.mr_and_commit_notes.
+      inc_author_project_award_emoji.
+      fresh.
+      discussions
+
+    @notes = Banzai::NoteRenderer.render(
+      @discussions.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
+
     @noteable = @merge_request
 
     # Get commits from repository
@@ -410,7 +445,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def clamp_approvals_before_merge(mr_params)
-    if mr_params[:approvals_before_merge].to_i <= selected_target_project.approvals_before_merge
+    target_project = @project.forked_from_project if @project.id.to_s != mr_params[:target_project_id]
+    target_project ||= @project
+
+    if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge
       mr_params.delete(:approvals_before_merge)
     end
 
@@ -425,5 +463,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # have head file in refs/merge-requests/
   def ensure_ref_fetched
     @merge_request.ensure_ref_fetched
+  end
+
+  def merge_when_build_succeeds_active?
+    params[:merge_when_build_succeeds].present? &&
+      @merge_request.pipeline && @merge_request.pipeline.active?
   end
 end

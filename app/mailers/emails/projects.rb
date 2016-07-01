@@ -9,6 +9,19 @@ module Emails
            subject: subject("Project was moved"))
     end
 
+    def project_was_exported_email(current_user, project)
+      @project = project
+      mail(to: current_user.notification_email,
+           subject: subject("Project was exported"))
+    end
+
+    def project_was_not_exported_email(current_user, project, errors)
+      @project = project
+      @errors = errors
+      mail(to: current_user.notification_email,
+           subject: subject("Project export error"))
+    end
+
     def repository_push_email(project_id, opts = {})
       @message =
         Gitlab::Email::Message::RepositoryPush.new(self, project_id, opts)

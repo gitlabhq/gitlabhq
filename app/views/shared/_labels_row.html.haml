@@ -1,6 +1,6 @@
 - labels.each do |label|
   %span.label-row.btn-group{ role: "group", aria: { label: escape_once(label.name) }, style: "color: #{text_color_for_bg(label.color)}" }
-    = link_to namespace_project_label_path(@project.namespace, @project, label),
+    = link_to label_filter_path(@project, label, type: controller.controller_name),
       class: "btn btn-transparent has-tooltip",
       style: "background-color: #{label.color};",
       title: escape_once(label.description),

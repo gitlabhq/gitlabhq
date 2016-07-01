@@ -8,6 +8,7 @@
   licensePath: "/api/:version/licenses/:key"
   gitignorePath: "/api/:version/gitignores/:key"
   ldapGroupsPath: "/api/:version/ldap/:provider/groups.json"
+  gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key"
 
   group: (group_id, callback) ->
     url = Api.buildUrl(Api.groupPath)
@@ -110,6 +111,12 @@
 
     $.get url, (gitignore) ->
       callback(gitignore)
+
+  gitlabCiYml: (key, callback) ->
+    url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key)
+
+    $.get url, (file) ->
+      callback(file)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?

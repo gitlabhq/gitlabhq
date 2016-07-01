@@ -48,9 +48,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def destroy
     @group_member = @group.group_members.find(params[:id])
 
-    return render_403 unless can?(current_user, :destroy_group_member, @group_member)
-
-    @group_member.destroy
+    Members::DestroyService.new(@group_member, current_user).execute
     log_audit_event(@group_member, action: :destroy)
 
     respond_to do |format|
@@ -81,8 +79,4 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :group
-
-  def cannot_leave?
-    @group.last_owner?(current_user)
-  end
 end

@@ -374,40 +374,6 @@ Get Gemnasium service settings for a project.
 GET /projects/:id/services/gemnasium
 ```
 
-## GitLab CI
-
-Continuous integration server from GitLab
-
-### Create/Edit GitLab CI service
-
-Set GitLab CI service for a project.
-
-```
-PUT /projects/:id/services/gitlab-ci
-```
-
-Parameters:
-
-- `token` (**required**) - GitLab CI project specific token
-- `project_url` (**required**) - http://ci.gitlabhq.com/projects/3
-- `enable_ssl_verification` (optional) - Enable SSL verification
-
-### Delete GitLab CI service
-
-Delete GitLab CI service for a project.
-
-```
-DELETE /projects/:id/services/gitlab-ci
-```
-
-### Get GitLab CI service settings
-
-Get GitLab CI service settings for a project.
-
-```
-GET /projects/:id/services/gitlab-ci
-```
-
 ## HipChat
 
 Private group chat and IM

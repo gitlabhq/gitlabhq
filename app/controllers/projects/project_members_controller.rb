@@ -59,9 +59,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def destroy
     @project_member = @project.project_members.find(params[:id])
 
-    return render_403 unless can?(current_user, :destroy_project_member, @project_member)
-
-    @project_member.destroy
+    Members::DestroyService.new(@project_member, current_user).execute
 
     log_audit_event(@project_member, action: :destroy)
 
@@ -109,8 +107,4 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :project
-
-  def cannot_leave?
-    current_user == @project.owner
-  end
 end

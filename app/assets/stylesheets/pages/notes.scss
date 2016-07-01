@@ -41,6 +41,10 @@ ul.notes {
     .timeline-icon {
       .avatar {
         visibility: hidden;
+
+        .discussion-body & {
+          visibility: visible;
+        }
       }
     }
   }
@@ -84,22 +88,12 @@ ul.notes {
         word-wrap: break-word;
         @include md-typography;
 
+        // Reset ul style types since we're nested inside a ul already
+        @include bulleted-list;
+
         // On diffs code should wrap nicely and not overflow
         code {
           white-space: pre-wrap;
-        }
-
-        // Reset ul style types since we're nested inside a ul already
-        & > ul {
-          list-style-type: disc;
-
-          ul {
-            list-style-type: circle;
-
-            ul {
-              list-style-type: square;
-            }
-          }
         }
 
         ul.task-list {
@@ -116,6 +110,14 @@ ul.notes {
 
         code {
           word-break: keep-all;
+        }
+
+        // Border around images in issue and MR comments.
+        img:not(.emoji) {
+          border: 1px solid $table-border-gray;
+          padding: 5px;
+          margin: 5px 0;
+          max-height: calc(100vh - 100px);
         }
       }
     }

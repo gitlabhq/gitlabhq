@@ -1,0 +1,25 @@
+- left_align = local_assigns[:left_align]
+- if notification_setting
+  .dropdown.notification-dropdown.pull-right
+    = form_for notification_setting, remote: true, html: { class: "inline notification-form" } do |f|
+      = hidden_setting_source_input(notification_setting)
+      = f.hidden_field :level, class: "notification_setting_level"
+      .js-notification-toggle-btns
+        %div{ class: ("btn-group" if notification_setting.custom?) }
+          - if notification_setting.custom?
+            %button.dropdown-new.btn.btn-default.notifications-btn#notifications-button{ type: "button", data: { toggle: "modal", target: "#" + notifications_menu_identifier("modal", notification_setting) } }
+              = icon("bell", class: "js-notification-loading")
+              = notification_title(notification_setting.level)
+            %button.btn.dropdown-toggle{ data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting) } }
+              %span.caret
+              .sr-only Toggle dropdown
+          - else
+            %button.dropdown-new.btn.btn-default.notifications-btn#notifications-button{ type: "button", data: { toggle: "dropdown", target: notifications_menu_identifier("dropdown", notification_setting) } }
+              = icon("bell", class: "js-notification-loading")
+              = notification_title(notification_setting.level)
+              = icon("caret-down")
+
+          = render "shared/notifications/notification_dropdown", notification_setting: notification_setting, left_align: left_align
+
+          = content_for :scripts_body do
+            = render "shared/notifications/custom_notifications", notification_setting: notification_setting

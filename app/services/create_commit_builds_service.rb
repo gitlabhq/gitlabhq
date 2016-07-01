@@ -1,6 +1,6 @@
 class CreateCommitBuildsService
   def execute(project, user, params, mirror_update: false)
-    return false unless project.builds_enabled?
+    return unless project.builds_enabled?
 
     return false if !project.mirror_trigger_builds? && mirror_update
 
@@ -8,10 +8,6 @@ class CreateCommitBuildsService
 
     sha = params[:checkout_sha] || params[:after]
     origin_ref = params[:ref]
-
-    unless origin_ref && sha.present?
-      return false
-    end
 
     ref = Gitlab::Git.ref_name(origin_ref)
     tag = Gitlab::Git.tag_ref?(origin_ref)
@@ -21,23 +17,50 @@ class CreateCommitBuildsService
       return false
     end
 
-    pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    @pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
 
-    # Skip creating pipeline when no gitlab-ci.yml is found
-    unless pipeline.ci_yaml_file
+    ##
+    # Skip creating pipeline if no gitlab-ci.yml is found
+    #
+    unless @pipeline.ci_yaml_file
       return false
     end
 
-    # Create a new pipeline
-    pipeline.save!
-
+    ##
     # Skip creating builds for commits that have [ci skip]
-    unless pipeline.skip_ci?
-      # Create builds for commit
-      pipeline.create_builds(user)
+    # but save pipeline object
+    #
+    if @pipeline.skip_ci?
+      return save_pipeline!
     end
 
-    pipeline.touch
-    pipeline
+    ##
+    # Skip creating builds when CI config is invalid
+    # but save pipeline object
+    #
+    unless @pipeline.config_processor
+      return save_pipeline!
+    end
+
+    ##
+    # Skip creating pipeline object if there are no builds for it.
+    #
+    unless @pipeline.create_builds(user)
+      @pipeline.errors.add(:base, 'No builds created')
+      return false
+    end
+
+    save_pipeline!
+  end
+
+  private
+
+  ##
+  # Create a new pipeline and touch object to calculate status
+  #
+  def save_pipeline!
+    @pipeline.save!
+    @pipeline.touch
+    @pipeline
   end
 end

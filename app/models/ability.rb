@@ -210,7 +210,8 @@ class Ability
       @public_project_rules ||= project_guest_rules + [
         :download_code,
         :fork_project,
-        :read_commit_status
+        :read_commit_status,
+        :read_pipeline
       ]
     end
 

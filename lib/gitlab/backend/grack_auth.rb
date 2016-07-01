@@ -29,7 +29,7 @@ module Grack
       # Need this if under RELATIVE_URL_ROOT
       unless Gitlab.config.gitlab.relative_url_root.empty?
         # If website is mounted using relative_url_root need to remove it first
-        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root,'')
+        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root, '')
       else
         @env['PATH_INFO'] = @request.path
       end
@@ -38,7 +38,7 @@ module Grack
 
       auth!
 
-      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @ci, @request).try_call
       return lfs_response unless lfs_response.nil?
 
       if project && authorized_request?

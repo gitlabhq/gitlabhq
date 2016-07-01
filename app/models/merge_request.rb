@@ -5,6 +5,7 @@ class MergeRequest < ActiveRecord::Base
   include Sortable
   include Taskable
   include Elastic::MergeRequestsSearch
+  include Importable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -16,7 +17,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff
+  after_create :create_merge_request_diff, unless: :importing
   after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
@@ -98,12 +99,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: :allow_broken
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: :allow_broken
+  validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
   validate :validate_approvals_before_merge
 
@@ -135,6 +136,10 @@ class MergeRequest < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("merge_requests", /(?<merge_request>\d+)/)
+  end
+
+  def self.reference_valid?(reference)
+    reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
   # Returns all the merge requests from an ActiveRecord:Relation.
@@ -280,19 +285,19 @@ class MergeRequest < ActiveRecord::Base
     self.title.sub(WIP_REGEX, "")
   end
 
-  def mergeable?
-    return false unless mergeable_state?
+  def mergeable?(skip_ci_check: false)
+    return false unless mergeable_state?(skip_ci_check: skip_ci_check)
 
     check_if_can_be_merged
 
     can_be_merged? && !must_be_rebased?
   end
 
-  def mergeable_state?
+  def mergeable_state?(skip_ci_check: false)
     return false unless open?
     return false if work_in_progress?
     return false if broken?
-    return false unless mergeable_ci_state?
+    return false unless skip_ci_check || mergeable_ci_state?
 
     true
   end
@@ -333,13 +338,6 @@ class MergeRequest < ActiveRecord::Base
       target_project_id: target_project_id,
       source_project_id: source_project_id
     )
-  end
-
-  # Returns the commit as a series of email patches.
-  #
-  # see "git format-patch"
-  def to_patch
-    target_project.repository.format_patch(diff_base_commit.sha, source_sha)
   end
 
   def hook_attrs

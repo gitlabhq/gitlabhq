@@ -39,7 +39,7 @@ describe CreateCommitBuildsService, services: true do
       end
 
       it "creates commit if there is no appropriate job but deploy job has right ref setting" do
-        config = YAML.dump({ deploy: { deploy: "ls", only: ["0_1"] } })
+        config = YAML.dump({ deploy: { script: "ls", only: ["0_1"] } })
         stub_ci_pipeline_yaml_file(config)
 
         result = service.execute(project, user,
@@ -81,8 +81,11 @@ describe CreateCommitBuildsService, services: true do
       expect(pipeline.yaml_errors).not_to be_nil
     end
 
-    describe :ci_skip? do
+    context 'when commit contains a [ci skip] directive' do
       let(:message) { "some message[ci skip]" }
+      let(:messageFlip) { "some message[skip ci]" }
+      let(:capMessage) { "some message[CI SKIP]" }
+      let(:capMessageFlip) { "some message[SKIP CI]" }
 
       before do
         allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { message }
@@ -96,12 +99,55 @@ describe CreateCommitBuildsService, services: true do
                                    after: '31das312',
                                    commits: commits
                                   )
+
         expect(pipeline).to be_persisted
         expect(pipeline.builds.any?).to be false
         expect(pipeline.status).to eq("skipped")
       end
 
-      it "does not skips builds creation if there is no [ci skip] tag in commit message" do
+      it "skips builds creation if there is [skip ci] tag in commit message" do
+        commits = [{ message: messageFlip }]
+        pipeline = service.execute(project, user,
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                  )
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
+      end
+
+      it "skips builds creation if there is [CI SKIP] tag in commit message" do
+        commits = [{ message: capMessage }]
+        pipeline = service.execute(project, user,
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                  )
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
+      end
+
+      it "skips builds creation if there is [SKIP CI] tag in commit message" do
+        commits = [{ message: capMessageFlip }]
+        pipeline = service.execute(project, user,
+                                   ref: 'refs/tags/0_1',
+                                   before: '00000000',
+                                   after: '31das312',
+                                   commits: commits
+                                  )
+
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
+      end
+
+      it "does not skips builds creation if there is no [ci skip] or [skip ci] tag in commit message" do
         allow_any_instance_of(Ci::Pipeline).to receive(:git_commit_message) { "some message" }
 
         commits = [{ message: "some message" }]
@@ -170,6 +216,25 @@ describe CreateCommitBuildsService, services: true do
       expect(pipeline).to be_persisted
       expect(pipeline.status).to eq("failed")
       expect(pipeline.builds.any?).to be false
+    end
+
+    context 'when there are no jobs for this pipeline' do
+      before do
+        config = YAML.dump({ test: { script: 'ls', only: ['feature'] } })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not create a new pipeline' do
+        result = service.execute(project, user,
+                                 ref: 'refs/heads/master',
+                                 before: '00000000',
+                                 after: '31das312',
+                                 commits: [{ message: 'some msg' }])
+
+        expect(result).to be_falsey
+        expect(Ci::Build.all).to be_empty
+        expect(Ci::Pipeline.count).to eq(0)
+      end
     end
   end
 end

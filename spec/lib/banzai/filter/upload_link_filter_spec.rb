@@ -23,6 +23,14 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
     %(<a href="#{path}">#{path}</a>)
   end
 
+  def nested_image(path)
+    %(<div><img src="#{path}" /></div>)
+  end
+
+  def nested_link(path)
+    %(<div><a href="#{path}">#{path}</a></div>)
+  end
+
   let(:project) { create(:project) }
 
   shared_examples :preserve_unchanged do
@@ -47,11 +55,19 @@ describe Banzai::Filter::UploadLinkFilter, lib: true do
       doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
       expect(doc.at_css('a')['href']).
         to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = filter(nested_link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('a')['href']).
+        to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 
     it 'rebuilds relative URL for an image' do
-      doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-      expect(doc.at_css('a')['href']).
+      doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('img')['src']).
+        to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = filter(nested_image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+      expect(doc.at_css('img')['src']).
         to eq "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
     end
 

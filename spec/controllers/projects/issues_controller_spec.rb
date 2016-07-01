@@ -14,7 +14,7 @@ describe Projects::IssuesController do
     it "returns index" do
       get :index, namespace_id: project.namespace.path, project_id: project.path
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
 
     it "return 301 if request path doesn't match project path" do
@@ -28,7 +28,7 @@ describe Projects::IssuesController do
       project.save
 
       get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     it "returns 404 when external issue tracker is enabled" do
@@ -36,7 +36,7 @@ describe Projects::IssuesController do
       allow(project).to receive(:default_issues_tracker?).and_return(false)
 
       get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -248,7 +248,7 @@ describe Projects::IssuesController do
       before { sign_in(user) }
       it "rejects a developer to destroy an issue" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -262,7 +262,7 @@ describe Projects::IssuesController do
       it "deletes the issue" do
         delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: issue.iid
 
-        expect(response.status).to eq(302)
+        expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The issue was successfully deleted\./).now
       end
     end
@@ -280,7 +280,7 @@ describe Projects::IssuesController do
                                   project_id: project.path, id: issue.iid, name: "thumbsup")
       end.to change { issue.award_emoji.count }.by(1)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 end

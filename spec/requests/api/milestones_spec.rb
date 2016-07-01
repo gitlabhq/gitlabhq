@@ -12,20 +12,20 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/milestones' do
     it 'should return project milestones' do
       get api("/projects/#{project.id}/milestones", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['title']).to eq(milestone.title)
     end
 
     it 'should return a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones")
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
     end
 
     it 'returns an array of active milestones' do
       get api("/projects/#{project.id}/milestones?state=active", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(milestone.id)
@@ -34,7 +34,7 @@ describe API::API, api: true  do
     it 'returns an array of closed milestones' do
       get api("/projects/#{project.id}/milestones?state=closed", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_milestone.id)
@@ -44,7 +44,7 @@ describe API::API, api: true  do
   describe 'GET /projects/:id/milestones/:milestone_id' do
     it 'should return a project milestone by id' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(milestone.title)
       expect(json_response['iid']).to eq(milestone.iid)
     end
@@ -60,19 +60,19 @@ describe API::API, api: true  do
 
     it 'should return 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}")
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
     end
 
     it 'should return a 404 error if milestone id not found' do
       get api("/projects/#{project.id}/milestones/1234", user)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
   describe 'POST /projects/:id/milestones' do
     it 'should create a new project milestone' do
       post api("/projects/#{project.id}/milestones", user), title: 'new milestone'
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new milestone')
       expect(json_response['description']).to be_nil
     end
@@ -80,14 +80,14 @@ describe API::API, api: true  do
     it 'should create a new project milestone with description and due date' do
       post api("/projects/#{project.id}/milestones", user),
         title: 'new milestone', description: 'release', due_date: '2013-03-02'
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['description']).to eq('release')
       expect(json_response['due_date']).to eq('2013-03-02')
     end
 
     it 'should return a 400 error if title is missing' do
       post api("/projects/#{project.id}/milestones", user)
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -95,14 +95,14 @@ describe API::API, api: true  do
     it 'should update a project milestone' do
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
         title: 'updated title'
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('updated title')
     end
 
     it 'should return a 404 error if milestone id not found' do
       put api("/projects/#{project.id}/milestones/1234", user),
         title: 'updated title'
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -110,7 +110,7 @@ describe API::API, api: true  do
     it 'should update a project milestone' do
       put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
         state_event: 'close'
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
 
       expect(json_response['state']).to eq('closed')
     end
@@ -131,14 +131,14 @@ describe API::API, api: true  do
     end
     it 'should return project issues for a particular milestone' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.first['milestone']['title']).to eq(milestone.title)
     end
 
     it 'should return a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
-      expect(response.status).to eq(401)
+      expect(response).to have_http_status(401)
     end
 
     describe 'confidential issues' do
@@ -155,7 +155,7 @@ describe API::API, api: true  do
       it 'returns confidential issues to team members' do
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id, confidential_issue.id)
@@ -167,7 +167,7 @@ describe API::API, api: true  do
 
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", member)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)
@@ -176,7 +176,7 @@ describe API::API, api: true  do
       it 'does not return confidential issues to regular users' do
         get api("/projects/#{public_project.id}/milestones/#{milestone.id}/issues", create(:user))
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
         expect(json_response.map { |issue| issue['id'] }).to include(issue.id)

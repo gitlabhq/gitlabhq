@@ -13,12 +13,12 @@ class Spinach::Features::ProjectFindFile < Spinach::FeatureSteps
   end
 
   step 'I should see "find file" page' do
-    ensure_active_main_tab('Code')
+    ensure_active_main_tab('Repository')
     expect(page).to have_selector('.file-finder-holder', count: 1)
   end
 
   step 'I fill in Find by path with "git"' do
-    ensure_active_main_tab('Code')
+    ensure_active_main_tab('Repository')
     expect(page).to have_selector('.file-finder-holder', count: 1)
   end
 

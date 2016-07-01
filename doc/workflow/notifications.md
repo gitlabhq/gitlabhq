@@ -4,7 +4,7 @@ GitLab has a notification system in place to notify a user of events that are im
 
 ## Notification settings
 
-Under user profile page you can find the notification settings.
+You can find notification settings under the user profile.
 
 ![notification settings](notifications/settings.png)
 
@@ -20,6 +20,7 @@ Each of these settings have levels of notification:
 * Participating - receive notifications from related resources
 * Watch - receive notifications from projects or groups user is a member of
 * Global - notifications as set at the global settings
+* Custom - user will receive notifications when mentioned, is participant and custom selected events.
 
 #### Global Settings
 
@@ -36,12 +37,14 @@ This means that you can set a different level of notifications per group while s
 to have a finer level setting per project.
 Organization like this is suitable for users that belong to different groups but don't have the
 same need for being notified for every group they are member of.
+These settings can be configured on group page or user profile notifications dropdown.
 
 #### Project Settings
 
 Project Settings are at the top level and any setting placed at this level will take precedence of any
 other setting.
 This is suitable for users that have different needs for notifications per project basis.
+These settings can be configured on project page or user profile notifications dropdown.
 
 ## Notification events
 
@@ -55,7 +58,7 @@ Below is the table of events users can be notified of:
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |
 | User added to group          | User                                                              | Sent when user is added to group |
-| Group access level changed   | User                                                              | Sent when user group access level is changed | 
+| Group access level changed   | User                                                              | Sent when user group access level is changed |
 | Project moved                | Project members [1]                                               | [1] not disabled |
 
 ### Issue / Merge Request events
@@ -71,6 +74,7 @@ In all of the below cases, the notification will be sent to:
 
 - Watchers: users with notification level "Watch"
 - Subscribers: anyone who manually subscribed to the issue/merge request
+- Custom: Users with notification level "custom" who turned on notifications for any of the events present in the table below
 
 | Event                  | Sent to |
 |------------------------|---------|

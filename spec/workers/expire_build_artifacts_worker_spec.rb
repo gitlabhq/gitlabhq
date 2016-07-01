@@ -20,6 +20,10 @@ describe ExpireBuildArtifactsWorker do
       it 'does remove files' do
         expect(build.reload.artifacts_file.exists?).to be_falsey
       end
+
+      it 'does nullify artifacts_file column' do
+        expect(build.reload.artifacts_file_identifier).to be_nil
+      end
     end
 
     context 'with not yet expired artifacts' do
@@ -32,6 +36,10 @@ describe ExpireBuildArtifactsWorker do
       it 'does not remove files' do
         expect(build.reload.artifacts_file.exists?).to be_truthy
       end
+
+      it 'does not nullify artifacts_file column' do
+        expect(build.reload.artifacts_file_identifier).not_to be_nil
+      end
     end
 
     context 'without expire date' do
@@ -43,6 +51,10 @@ describe ExpireBuildArtifactsWorker do
 
       it 'does not remove files' do
         expect(build.reload.artifacts_file.exists?).to be_truthy
+      end
+
+      it 'does not nullify artifacts_file column' do
+        expect(build.reload.artifacts_file_identifier).not_to be_nil
       end
     end
 

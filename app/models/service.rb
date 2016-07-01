@@ -170,6 +170,7 @@ class Service < ActiveRecord::Base
       bamboo
       buildkite
       builds_email
+      bugzilla
       campfire
       custom_issue_tracker
       drone_ci

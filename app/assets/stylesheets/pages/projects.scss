@@ -13,9 +13,52 @@
 
 .new_project,
 .edit-project {
-  fieldset.features {
-    .control-label {
+  fieldset {
+    &.features .control-label {
       font-weight: normal;
+    }
+    .form-group {
+      margin-bottom: 5px;
+    }
+    &> .form-group {
+      padding-left: 0;
+    }
+  }
+  .help-block {
+    margin-bottom: 10px;
+  }
+  .project-path {
+    padding-right: 0;
+    .form-control {
+      border-radius: $border-radius-base;
+    }
+  }
+  .input-group > div {
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+  @media (max-width: $screen-xs-max) {
+    .input-group > div {
+      margin-bottom: 14px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    fieldset > .form-group:first-child {
+      padding-right: 0;
+    }
+  }
+
+  .input-group-addon {
+    &.static-namespace {
+      height: 35px;
+      border-radius: 3px;
+      border: 1px solid #e5e5e5;
+    }
+    &+ .select2 a {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 }
@@ -28,7 +71,7 @@
   .container-fluid {
     position: relative;
 
-    @media (min-width: $screen-md-max) {
+    @media (min-width: $screen-lg-min) {
       .row {
         display: flex;
         -ms-flex-align: center;
@@ -101,7 +144,8 @@
 
   .notifications-btn {
 
-    .fa-bell {
+    .fa-bell,
+    .fa-spinner {
       margin-right: 6px;
     }
 
@@ -126,11 +170,6 @@
       .fa-caret-down {
         margin-left: 3px;
       }
-    }
-
-    .btn-group:not(:first-child):not(:last-child) > .btn {
-      border-top-right-radius: 3px;
-      border-bottom-right-radius: 3px;
     }
 
     form {
@@ -224,7 +263,7 @@
     right: 16px;
     bottom: 0;
 
-    @media (max-width: $screen-lg-min) {
+    @media (max-width: $screen-md-max) {
       top: 0;
     }
 
@@ -233,7 +272,7 @@
       right: 0;
       bottom: 61px;
 
-      @media (max-width: $screen-lg-min) {
+      @media (max-width: $screen-md-max) {
         position: relative;
         bottom: 0;
         margin-right: 10px;
@@ -369,16 +408,34 @@ a.deploy-project-label {
   }
 }
 
-.project-import .btn {
-  float: left;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.project-import {
+  .form-group {
+    margin-bottom: 0;
+  }
+  .import-buttons {
+    padding-left: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    .btn {
+      margin-right: 10px;
+      padding: 8px 12px;
+    }
+    &> div {
+      margin-bottom: 14px;
+      padding-left: 0;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 .project-stats {
   margin-top: $gl-padding;
   margin-bottom: 0;
-  padding: 16px 0;
+  padding: 0;
   background-color: $white-light;
   font-size: 0;
 
@@ -387,13 +444,14 @@ a.deploy-project-label {
   }
 
   .nav li {
-    display: inline;
+    display: inline-block;
+    margin: 16px 0;
+    margin-right: 16px;
   }
 
   .nav > li > a {
     background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
+    padding: 5px 10px;
     font-size: 15px;
     color: $notes-light-color;
   }
@@ -407,12 +465,17 @@ a.deploy-project-label {
     font-size: 17px;
   }
 
-  li.missing a {
-    color: #5a6069;
-    border: 1px dashed #dce0e5;
+  li.missing {
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
+
+    a {
+      color: $notes-light-color;
+      display: block;
+    }
 
     &:hover {
-      background-color: #f0f2f5;
+      background-color: $gray-normal;
     }
   }
 
@@ -499,7 +562,8 @@ pre.light-well {
 
 .activity-filter-block {
   .controls {
-    padding-bottom: 10px;
+    padding-bottom: 7px;
+    margin-top: 8px;
     border-bottom: 1px solid $border-color;
   }
 }
@@ -606,4 +670,27 @@ pre.light-well {
 
 .disabled-item {
   @extend .btn.disabled;
+}
+
+.custom-notifications-form {
+  .is-loading {
+    .custom-notification-event-loading {
+      display: inline-block;
+    }
+  }
+}
+
+.custom-notification-event-loading {
+  display: none;
+  margin-left: 5px;
+
+  &.is-done {
+    color: $gl-text-green;
+  }
+}
+
+.project-refs-form {
+  .dropdown-menu {
+    width: 300px;
+  }
 }
