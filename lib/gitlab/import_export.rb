@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     extend self
 
-    VERSION = '0.1.0'
+    VERSION = '0.1.1'
 
     def export_path(relative_path:)
       File.join(storage_path, relative_path)

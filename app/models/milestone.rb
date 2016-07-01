@@ -17,6 +17,7 @@ class Milestone < ActiveRecord::Base
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
   has_many :merge_requests
   has_many :participants, -> { distinct.reorder('users.name') }, through: :issues, source: :assignee
+  has_many :events, as: :target, dependent: :destroy
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
