@@ -3,9 +3,58 @@
 Sometimes things don't work the way they should. Here are some tips on debugging issues out
 in production.
 
-## The GNU Project Debugger (gdb)
+## Mail not working
 
-`gdb` is a must-have tool for debugging issues. To install on Ubuntu/Debian:
+A common problem is that mails are not being sent for some reason. Suppose you configured
+an SMTP server, but you're not seeing mail delivered. Here's how to check the settings:
+
+1. Run a Rails console:
+
+    ```sh
+    sudo gitlab-rails console production
+    ```
+
+    or for source installs:
+
+    ```sh
+    bundle exec rails console production
+    ```
+
+2. Look at the ActionMailer `delivery_method` to make sure it matches what you
+   intended. If you configured SMTP, it should say `:smtp`. If you're using
+   Sendmail, it should say `:sendmail`:
+
+    ```ruby
+    irb(main):001:0> ActionMailer::Base.delivery_method
+    => :smtp
+    ```
+
+3. If you're using SMTP, check the mail settings:
+
+    ```ruby
+    irb(main):002:0> ActionMailer::Base.smtp_settings
+    => {:address=>"localhost", :port=>25, :domain=>"localhost.localdomain", :user_name=>nil, :password=>nil, :authentication=>nil, :enable_starttls_auto=>true}```
+    ```
+
+    In the example above, the SMTP server is configured for the local machine. If this is intended, you may need to check your local mail
+    logs (e.g. `/var/log/mail.log`) for more details.
+
+4.  Send a test message via the console.
+
+    ```ruby
+    irb(main):003:0> Notify.test_email('youremail@email.com', 'Hello World', 'This is a test message').deliver_now
+    ```
+
+    If you do not receive an e-mail and/or see an error message, then check
+    your mail server settings.
+
+## Advanced Issues
+
+For more advanced issues, `gdb` is a must-have tool for debugging issues.
+
+### The GNU Project Debugger (gdb)
+
+To install on Ubuntu/Debian:
 
 ```
 sudo apt-get install gdb
