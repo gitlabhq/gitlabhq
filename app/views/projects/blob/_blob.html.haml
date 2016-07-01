@@ -6,7 +6,7 @@
     %li
       = link_to namespace_project_tree_path(@project.namespace, @project, @ref) do
         = @project.path
-    - tree_breadcrumbs(@tree, 6) do |title, path|
+    - tree_breadcrumbs(@tree, 6) do |title, path, part_path|
       %li
         - if path
           - if path.end_with?(@path)
@@ -17,6 +17,7 @@
             = link_to truncate(title, length: 40), namespace_project_tree_path(@project.namespace, @project, path)
         - else
           = link_to title, '#'
+        = render_lock_icon(part_path)
 
 %ul.blob-commit-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, blob.path)

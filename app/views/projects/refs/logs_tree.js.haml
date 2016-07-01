@@ -1,7 +1,7 @@
 - @logs.each do |content_data|
   - file_name = content_data[:file_name]
   - commit = content_data[:commit]
-  - path_lock_info = content_data[:path_lock_info]
+  - lock_label = content_data[:lock_label]
   - next unless commit
 
   :plain
@@ -9,10 +9,10 @@
     row.find("td.tree_time_ago").html('#{escape_javascript time_ago_with_tooltip(commit.committed_date)}');
     row.find("td.tree_commit").html('#{escape_javascript render("projects/tree/tree_commit_column", commit: commit)}');
 
-  - if path_lock_info
+  - if lock_label
     :plain
       var label = $("<span>")
-        .attr('title', 'Locked by #{escape_javascript path_lock_info.user.name}')
+        .attr('title', '#{escape_javascript lock_label}')
         .attr('data-toggle', 'tooltip')
         .addClass('fa fa-lock prepend-left-5');
       row.find('td.tree-item-file-name').append(label);
