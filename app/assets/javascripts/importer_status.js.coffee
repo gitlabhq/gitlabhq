@@ -13,7 +13,7 @@ class @ImporterStatus
         id = $tr.attr('id').replace('repo_', '')
         if $tr.find('.import-target input').length > 0
           new_namespace = $tr.find('.import-target input').prop('value')
-          $tr.find('.import-target').empty().append("#{new_namespace} / #{$tr.find('.import-target').data('project_name')}")
+          $tr.find('.import-target').empty().append("#{new_namespace}/#{$tr.find('.import-target').data('project_name')}")
 
         $btn
           .disable()
