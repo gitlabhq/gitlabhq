@@ -43,8 +43,8 @@ class Projects::BlobController < Projects::ApplicationController
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
           "#file-path-#{hexdigest(@path)}"
       else
-        unless params[:file_name] == @path
-          previous_path = @path
+        unless params[:file_name].empty?
+          @previous_path = @path
           @path = params[:file_name]
         end
 
