@@ -52,6 +52,7 @@ class Projects::BlobController < Projects::ApplicationController
           @previous_path = @path
           @path = params[:file_name]
         end
+
         namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
       end
 
