@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.5
+  - Fix emoji paths in relative root configurations. !5027
   - Fix issues importing events in Import/Export. !4987
   - Fixed 'use shortcuts' button on docs. !4979
   - Admin should be able to turn shared runners into specific ones. !4961
