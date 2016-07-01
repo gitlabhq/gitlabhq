@@ -44,7 +44,11 @@ class Projects::BlobController < Projects::ApplicationController
           "#file-path-#{hexdigest(@path)}"
       else
         # params[:file_name] stores the new name for the file
-        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, params[:file_name]))
+        unless params[:file_name] == @path
+          @path = params[:file_name]
+        end
+
+        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
       end
 
     create_commit(Files::UpdateService, success_path: after_edit_path,
