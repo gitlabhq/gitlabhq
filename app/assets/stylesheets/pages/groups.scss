@@ -46,15 +46,18 @@
 }
 
 .groups-cover-block {
-
   .container-fluid {
     position: relative;
   }
 
-  .access-request-button {
-    @include btn-gray;
-    margin-right: 10px;
-    text-transform: none;
+  .group-right-buttons {
+    position: absolute;
+    right: 16px;
+    .btn {
+      @include btn-gray;
+      padding: 3px 10px;
+      background-color: $background-color;
+    }
   }
 }
 

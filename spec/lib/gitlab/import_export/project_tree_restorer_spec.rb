@@ -24,6 +24,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
 
         expect(Ci::Pipeline.first.notes).not_to be_empty
       end
+
+      it 'restores the correct event' do
+        restored_project_json
+
+        expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
+      end
     end
   end
 end

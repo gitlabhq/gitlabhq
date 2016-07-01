@@ -62,6 +62,10 @@ class ApplicationSetting < ActiveRecord::Base
   validates :elasticsearch_port,
             presence: { message: "can't be blank when indexing is enabled" },
             if: :elasticsearch_indexing?
+  
+  validates :repository_storage,
+    presence: true,
+    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -144,6 +148,7 @@ class ApplicationSetting < ActiveRecord::Base
       container_registry_token_expire_delay: 5,
       elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
       elasticsearch_port: ENV['ELASTIC_PORT'] || '9200'
+      repository_storage: 'default',
     )
   end
 

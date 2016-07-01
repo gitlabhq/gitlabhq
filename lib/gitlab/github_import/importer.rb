@@ -167,7 +167,7 @@ module Gitlab
       def import_wiki
         unless project.wiki_enabled?
           wiki = WikiFormatter.new(project)
-          gitlab_shell.import_repository(wiki.path_with_namespace, wiki.import_url)
+          gitlab_shell.import_repository(project.repository_storage_path, wiki.path_with_namespace, wiki.import_url)
           project.update_attribute(:wiki_enabled, true)
         end
 

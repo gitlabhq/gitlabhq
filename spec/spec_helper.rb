@@ -3,11 +3,6 @@ if ENV['SIMPLECOV']
   SimpleCov.start :rails
 end
 
-if ENV['COVERALLS']
-  require 'coveralls'
-  Coveralls.wear_merged!
-end
-
 ENV["RAILS_ENV"] ||= 'test'
 
 require File.expand_path("../../config/environment", __FILE__)

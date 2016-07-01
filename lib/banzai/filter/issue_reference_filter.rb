@@ -46,6 +46,26 @@ module Banzai
         end
       end
 
+      def object_link_title(object)
+        if object.is_a?(ExternalIssue)
+          "Issue in #{object.project.external_issue_tracker.title}"
+        else
+          super
+        end
+      end
+
+      def data_attributes_for(text, project, object)
+        if object.is_a?(ExternalIssue)
+          data_attribute(
+            project: project.id,
+            external_issue: object.id,
+            reference_type: ExternalIssueReferenceFilter.reference_type
+          )
+        else
+          super
+        end
+      end
+
       def find_projects_for_paths(paths)
         super(paths).includes(:gitlab_issue_tracker_service)
       end

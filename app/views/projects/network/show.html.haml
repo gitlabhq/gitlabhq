@@ -4,7 +4,7 @@
   = page_specific_javascript_tag('network/application.js')
 = render "projects/commits/head"
 = render "head"
-%div{ class: (container_class) }
+%div{ class: container_class }
   .project-network
     .controls
       = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|

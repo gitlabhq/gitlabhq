@@ -58,6 +58,7 @@ describe Project, models: true do
     it { is_expected.to validate_length_of(:description).is_within(0..2000) }
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
+    it { is_expected.to validate_presence_of(:repository_storage) }
 
     it 'should not allow new projects beyond user limits' do
       project2 = build(:project)
@@ -84,6 +85,20 @@ describe Project, models: true do
           expect(new_project).not_to be_valid
           expect(new_project.errors[:name].first).to eq('has already been taken')
         end
+      end
+    end
+
+    context 'repository storages inclussion' do
+      let(:project2) { build(:project, repository_storage: 'missing') }
+
+      before do
+        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      end
+
+      it "should not allow repository storages that don't match a label in the configuration" do
+        expect(project2).not_to be_valid
+        expect(project2.errors[:repository_storage].first).to match(/is not included in the list/)
       end
     end
   end
@@ -130,6 +145,24 @@ describe Project, models: true do
 
     it 'returns a String reference to the object' do
       expect(project.to_reference).to eq project.path_with_namespace
+    end
+  end
+
+  describe '#repository_storage_path' do
+    let(:project) { create(:project, repository_storage: 'custom') }
+
+    before do
+      FileUtils.mkdir('tmp/tests/custom_repositories')
+      storages = { 'custom' => 'tmp/tests/custom_repositories' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    end
+
+    after do
+      FileUtils.rm_rf('tmp/tests/custom_repositories')
+    end
+
+    it 'returns the repository storage path' do
+      expect(project.repository_storage_path).to eq('tmp/tests/custom_repositories')
     end
   end
 
@@ -614,6 +647,21 @@ describe Project, models: true do
     end
   end
 
+  context 'repository storage by default' do
+    let(:project) { create(:empty_project) }
+
+    subject { project.repository_storage }
+
+    before do
+      storages = { 'alternative_storage' => '/some/path' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      stub_application_setting(repository_storage: 'alternative_storage')
+      allow_any_instance_of(Project).to receive(:ensure_dir_exist).and_return(true)
+    end
+
+    it { is_expected.to eq('alternative_storage') }
+  end
+
   context 'shared runners by default' do
     let(:project) { create(:empty_project) }
 
@@ -812,12 +860,12 @@ describe Project, models: true do
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with("#{ns}/foo", "#{ns}/#{project.path}").
+        with(project.repository_storage_path, "#{ns}/foo", "#{ns}/#{project.path}").
         and_return(true)
 
       expect(gitlab_shell).to receive(:mv_repository).
         ordered.
-        with("#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
+        with(project.repository_storage_path, "#{ns}/foo.wiki", "#{ns}/#{project.path}.wiki").
         and_return(true)
 
       expect_any_instance_of(SystemHooksService).
@@ -909,7 +957,7 @@ describe Project, models: true do
     context 'using a regular repository' do
       it 'creates the repository' do
         expect(shell).to receive(:add_repository).
-          with(project.path_with_namespace).
+          with(project.repository_storage_path, project.path_with_namespace).
           and_return(true)
 
         expect(project.repository).to receive(:after_create)
@@ -919,7 +967,7 @@ describe Project, models: true do
 
       it 'adds an error if the repository could not be created' do
         expect(shell).to receive(:add_repository).
-          with(project.path_with_namespace).
+          with(project.repository_storage_path, project.path_with_namespace).
           and_return(false)
 
         expect(project.repository).not_to receive(:after_create)

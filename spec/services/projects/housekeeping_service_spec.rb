@@ -12,7 +12,7 @@ describe Projects::HousekeepingService do
 
     it 'enqueues a sidekiq job' do
       expect(subject).to receive(:try_obtain_lease).and_return(true)
-      expect(GitlabShellOneShotWorker).to receive(:perform_async).with(:gc, project.path_with_namespace)
+      expect(GitlabShellOneShotWorker).to receive(:perform_async).with(:gc, project.repository_storage_path, project.path_with_namespace)
 
       subject.execute
       expect(project.pushes_since_gc).to eq(0)

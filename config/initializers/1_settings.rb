@@ -382,13 +382,20 @@ Settings.gitlab_shell['hooks_path']   ||= Settings.gitlab['user_home'] + '/gitla
 Settings.gitlab_shell['secret_file'] ||= Rails.root.join('.gitlab_shell_secret')
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
-Settings.gitlab_shell['repos_path']   ||= Settings.gitlab['user_home'] + '/repositories/'
 Settings.gitlab_shell['ssh_host']     ||= Settings.gitlab.ssh_host
 Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
 Settings.gitlab_shell['git_annex_enabled'] ||= false
+
+#
+# Repositories
+#
+Settings['repositories'] ||= Settingslogic.new({})
+Settings.repositories['storages'] ||= {}
+# Setting gitlab_shell.repos_path is DEPRECATED and WILL BE REMOVED in version 9.0
+Settings.repositories.storages['default'] ||= Settings.gitlab_shell['repos_path'] || Settings.gitlab['user_home'] + '/repositories/'
 
 #
 # Backup

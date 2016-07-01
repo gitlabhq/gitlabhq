@@ -34,7 +34,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'has events' do
-        expect(saved_project_json['events']).not_to be_empty
+        expect(saved_project_json['milestones'].first['events']).not_to be_empty
       end
 
       it 'has milestones' do
@@ -132,7 +132,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                        statuses: [commit_status])
 
     create(:ci_build, pipeline: ci_pipeline, project: project)
-    create(:milestone, project: project)
+    milestone = create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
     create(:note, noteable: snippet, project: project)
@@ -140,6 +140,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
            author: user,
            project: project,
            commit_id: ci_pipeline.sha)
+
+    create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+
     project
   end
 
