@@ -8,10 +8,11 @@
           Create new issue by email
       .modal-body
         %p
-          Write an email to
-          = succeed "." do
-            %a{ href: "mailto:#{email}" }= email
-          (This is a private email address, so keep it secret.)
+          Write an email to the below email address. (This is a private email address, so keep it secret.)
+        .email-modal-input-group.input-group
+          = text_field_tag :issue_email, email, class: "monospace js-select-on-focus form-control", readonly: true
+          .input-group-btn
+            = clipboard_button(clipboard_target: '#issue_email')
         %p
           Send an email to this address to create an issue.
         %p
