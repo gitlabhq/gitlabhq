@@ -1,4 +1,4 @@
-ResolveBtn = Vue.extend
+@ResolveBtn = Vue.extend
   props:
     noteId: Number
     resolved: Boolean
@@ -18,7 +18,8 @@ ResolveBtn = Vue.extend
       this.$nextTick this.updateTooltip
   compiled: ->
     $(this.$el).tooltip()
+  destroyed: ->
+    console.log this.noteId
   created: ->
+    console.log this.noteId
     CommentsStore.create(this.noteId, this.resolved)
-
-Vue.component 'resolve-btn', ResolveBtn

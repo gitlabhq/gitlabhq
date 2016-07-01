@@ -1,4 +1,4 @@
-ResolveAll = Vue.extend
+@ResolveAll = Vue.extend
   data: ->
     { comments: CommentsStore.state }
   computed:
@@ -15,5 +15,3 @@ ResolveAll = Vue.extend
     updateAll: ->
       resolveAll = !(this.resolved is this.commentsCount)
       CommentsStore.updateAll(resolveAll)
-
-Vue.component 'resolve-all', ResolveAll

@@ -2,9 +2,13 @@
 #= require_directory ./stores
 #= require_directory ./components
 
-$ ->
-  new Vue
+$ =>
+  @DiffNotesApp = new Vue
     el: '#notes'
+    components:
+      'resolve-btn': ResolveBtn
 
   new Vue
     el: '#resolve-all-app'
+    components:
+      'resolve-all': ResolveAll
