@@ -3,7 +3,8 @@
   .suppressed-container
     %a.show-suppressed-diff.js-show-suppressed-diff Changes suppressed. Click to show.
 
-%table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
+- text_file_data = @comments_target.any? ? { data: { noteable_id: @comments_target[:noteable_id], noteable_type: @comments_target[:noteable_type], commit_id: @comments_target[:commit_id], note_type: LegacyDiffNote.name } } : {}
+%table.text-file.code.js-syntax-highlight{ text_file_data, class: too_big ? 'hide' : '' }
 
   - last_line = 0
   - diff_file.highlighted_diff_lines.each_with_index do |line, index|

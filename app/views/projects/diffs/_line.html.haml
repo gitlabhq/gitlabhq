@@ -1,6 +1,6 @@
 - type = line.type
-- holder_data = @comments_target.any? ? { data: { noteable_id: @comments_target[:noteable_id], noteable_type: @comments_target[:noteable_type], commit_id: @comments_target[:commit_id], discussion_id: discussion_id(line_code), note_type: LegacyDiffNote.name } } : {}
-%tr.line_holder{ holder_data, id: line_code, class: type }
+- line_data = @comments_target.any? ? { data: { discussion_id: discussion_id(line_code) } } : {}
+%tr.line_holder{ line_data, id: line_code, class: type }
   - case type
   - when 'match'
     = render "projects/diffs/match_line", { line: line.text,

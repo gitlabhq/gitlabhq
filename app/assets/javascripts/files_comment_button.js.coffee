@@ -9,6 +9,7 @@ class @FilesCommentButton
     @LINE_NUMBER_CLASS = 'diff-line-num'
     @LINE_CONTENT_CLASS = 'line_content'
     @LINE_COLUMN_CLASSES = ".#{@LINE_NUMBER_CLASS}, .line_content"
+    @TEXT_FILE_SELECTOR = '.text-file'
 
     @DEBOUNCE_TIMEOUT_DURATION = 150
 
@@ -24,21 +25,23 @@ class @FilesCommentButton
     return
 
   render: (e) ->
-    lineHolderElement = @getLineHolder($(e.currentTarget))
-    lineContentElement = @getLineContent($(e.currentTarget))
-    lineNumElement = @getLineNum($(e.currentTarget))
+    currentTarget = $(e.currentTarget)
+    textFileElement = @getTextFileElement(currentTarget)
+    lineHolderElement = @getLineHolder(currentTarget)
+    lineContentElement = @getLineContent(currentTarget)
+    lineNumElement = @getLineNum(currentTarget)
     buttonParentElement = lineNumElement
 
     return if not @shouldRender e, buttonParentElement
 
     buttonParentElement.append @buildButton
       id:
-        noteable: lineHolderElement.attr 'data-noteable-id'
-        commit: lineHolderElement.attr 'data-commit-id'
+        noteable: textFileElement.attr 'data-noteable-id'
+        commit: textFileElement.attr 'data-commit-id'
         discussion: lineContentElement.attr('data-discussion-id') || lineHolderElement.attr('data-discussion-id')
       type:
-        noteable: lineHolderElement.attr 'data-noteable-type'
-        note: lineHolderElement.attr 'data-note-type'
+        noteable: textFileElement.attr 'data-noteable-type'
+        note: textFileElement.attr 'data-note-type'
         line: lineContentElement.attr 'data-line-type'
       code:
         line: lineContentElement.attr('data-line-code') || lineHolderElement.attr('id')
@@ -58,6 +61,9 @@ class @FilesCommentButton
       'data-line-type': buttonAttributes.type.line
       'data-note-type': buttonAttributes.type.note
       'data-line-code': buttonAttributes.code.line
+
+  getTextFileElement: (hoveredElement) ->
+    $(hoveredElement.closest(@TEXT_FILE_SELECTOR))
 
   getLineHolder: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass @LINE_HOLDER_CLASS
