@@ -35,6 +35,7 @@ v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
+  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
