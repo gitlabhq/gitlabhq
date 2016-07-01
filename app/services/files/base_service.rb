@@ -15,12 +15,7 @@ module Files
                           params[:file_content]
                         end
 
-<<<<<<< bb627b6fc24d71a0ee19fd35d987e423a2567c48
-=======
-      puts @file_path
-
       # Validate parameters
->>>>>>> successfully adds the new version with the updated name on the projects repo
       validate
 
       # Create new branch if it different from source_branch
