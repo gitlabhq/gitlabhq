@@ -125,6 +125,7 @@ v 8.10.0 (unreleased)
   - Allow empty repositories on project import/export
   - Render only commit message title in builds (Katarzyna Kobierska Ula Budziszewska)
   - Allow bulk (un)subscription from issues in issue index
+  - Fix MR diff encoding issues exporting GitLab projects
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
