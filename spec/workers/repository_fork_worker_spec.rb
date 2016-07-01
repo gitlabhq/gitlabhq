@@ -14,6 +14,7 @@ describe RepositoryForkWorker do
   describe "#perform" do
     it "creates a new repository from a fork" do
       expect(shell).to receive(:fork_repository).with(
+        project.repository_storage_path,
         project.path_with_namespace,
         fork_project.namespace.path
       ).and_return(true)
@@ -25,9 +26,11 @@ describe RepositoryForkWorker do
     end
 
     it 'flushes various caches' do
-      expect(shell).to receive(:fork_repository).
-        with(project.path_with_namespace, fork_project.namespace.path).
-        and_return(true)
+      expect(shell).to receive(:fork_repository).with(
+        project.repository_storage_path,
+        project.path_with_namespace,
+        fork_project.namespace.path
+      ).and_return(true)
 
       expect_any_instance_of(Repository).to receive(:expire_emptiness_caches).
         and_call_original

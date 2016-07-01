@@ -1,6 +1,6 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
-  %div{ class: (container_class) }
+  %div{ class: container_class }
     .row
       .project-image-container
         = project_icon(@project, alt: '', class: 'project-avatar avatar s70')

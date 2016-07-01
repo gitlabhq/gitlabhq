@@ -315,7 +315,7 @@ class Event < ActiveRecord::Base
 
   def body?
     if push?
-      push_with_commits?
+      push_with_commits? || rm_ref?
     elsif note?
       true
     else

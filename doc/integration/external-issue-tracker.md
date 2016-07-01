@@ -1,7 +1,7 @@
 # External issue tracker
 
 GitLab has a great issue tracker but you can also use an external one such as
-Jira or Redmine. Issue trackers are configurable per GitLab project and allow
+Jira, Redmine, or Bugzilla. Issue trackers are configurable per GitLab project and allow
 you to do the following:
 
 - the **Issues** link on the GitLab project pages takes you to the appropriate
@@ -20,6 +20,7 @@ Visit the links below for details:
 
 - [Redmine](../project_services/redmine.md)
 - [Jira](../project_services/jira.md)
+- [Bugzilla](../project_services/bugzilla.md)
 
 ### Service Template
 

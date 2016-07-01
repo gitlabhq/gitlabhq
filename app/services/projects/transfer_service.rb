@@ -50,12 +50,12 @@ module Projects
         project.send_move_instructions(old_path)
 
         # Move main repository
-        unless gitlab_shell.mv_repository(old_path, new_path)
+        unless gitlab_shell.mv_repository(project.repository_storage_path, old_path, new_path)
           raise TransferError.new('Cannot move project')
         end
 
         # Move wiki repo also if present
-        gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
+        gitlab_shell.mv_repository(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
 
         # clear project cached events
         project.reset_events_cache

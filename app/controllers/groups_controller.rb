@@ -37,15 +37,12 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    @last_push = current_user.recent_push if current_user
+    if current_user
+      @last_push            = current_user.recent_push
+      @notification_setting = current_user.notification_settings_for(group)
+    end
 
-    @projects = @projects.includes(:namespace)
-    @projects = @projects.sorted_by_activity
-    @projects = filter_projects(@projects)
-    @projects = @projects.sort(@sort = params[:sort])
-    @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
-
-    @shared_projects = GroupProjectsFinder.new(group, only_shared: true).execute(current_user)
+    setup_projects
 
     respond_to do |format|
       format.html
@@ -96,6 +93,16 @@ class GroupsController < Groups::ApplicationController
   end
 
   protected
+
+  def setup_projects
+    @projects = @projects.includes(:namespace)
+    @projects = @projects.sorted_by_activity
+    @projects = filter_projects(@projects)
+    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.page(params[:page]) if params[:filter_projects].blank?
+
+    @shared_projects = GroupProjectsFinder.new(group, only_shared: true).execute(current_user)
+  end
 
   def authorize_create_group!
     unless can?(current_user, :create_group, nil)

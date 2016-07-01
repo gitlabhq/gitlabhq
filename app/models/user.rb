@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.config.secret_key_base,
     mode:      :per_attribute_iv_and_salt,
+    insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
@@ -763,7 +764,7 @@ class User < ActiveRecord::Base
 
     unless email_domains.blank?
       match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        escaped = Regexp.escape(domain).gsub('\*', '.*?')
         regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
         email_domain = Mail::Address.new(self.email).domain
         email_domain =~ regexp

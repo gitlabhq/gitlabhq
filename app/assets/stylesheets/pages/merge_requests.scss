@@ -264,8 +264,15 @@
       margin-bottom: 4px;
     }
 
+    .item-title {
+      @media (min-width: $screen-sm-min) {
+        width: 49%;
+      }
+    }
+
     .avatar {
-      margin-left: 0;
+      left: 0;
+      top: 2px;
     }
 
     .commit-row-info {

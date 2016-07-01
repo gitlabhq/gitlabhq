@@ -199,6 +199,19 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
     end
   end
 
+  context 'referencing external issues' do
+    let(:project) { create(:redmine_project) }
+
+    it 'renders internal issue IDs as external issue links' do
+      doc = reference_filter('#1')
+      link = doc.css('a').first
+
+      expect(link.attr('data-reference-type')).to eq('external_issue')
+      expect(link.attr('title')).to eq('Issue in Redmine')
+      expect(link.attr('data-external-issue')).to eq('1')
+    end
+  end
+
   describe '#issues_per_Project' do
     context 'using an internal issue tracker' do
       it 'returns a Hash containing the issues per project' do

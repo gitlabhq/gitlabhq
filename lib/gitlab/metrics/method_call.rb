@@ -18,12 +18,12 @@ module Gitlab
 
       # Measures the real and CPU execution time of the supplied block.
       def measure
-        start_real = Time.now
+        start_real = System.monotonic_time
         start_cpu = System.cpu_time
         retval = yield
 
-        @real_time += (Time.now - start_real) * 1000.0
-        @cpu_time += System.cpu_time.to_f - start_cpu
+        @real_time += System.monotonic_time - start_real
+        @cpu_time += System.cpu_time - start_cpu
         @call_count += 1
 
         retval
