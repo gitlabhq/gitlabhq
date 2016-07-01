@@ -21,8 +21,10 @@ class Namespace < ActiveRecord::Base
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
-  after_create :ensure_dir_exist
   after_update :move_dir, if: :path_changed?
+
+  # Save the storage paths before the projects are destroyed to use them on after destroy
+  before_destroy(prepend: true) { @old_repository_storage_paths = repository_storage_paths }
   after_destroy :rm_dir
 
   scope :root, -> { where('type IS NULL') }
@@ -87,51 +89,35 @@ class Namespace < ActiveRecord::Base
     owner_name
   end
 
-  def ensure_dir_exist
-    gitlab_shell.add_namespace(path)
-  end
-
-  def rm_dir
-    # Move namespace directory into trash.
-    # We will remove it later async
-    new_path = "#{path}+#{id}+deleted"
-
-    if gitlab_shell.mv_namespace(path, new_path)
-      message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
-      Gitlab::AppLogger.info message
-
-      # Remove namespace directroy async with delay so
-      # GitLab has time to remove all projects first
-      GitlabShellWorker.perform_in(5.minutes, :rm_namespace, new_path)
-    end
-  end
-
   def move_dir
-    # Ensure old directory exists before moving it
-    gitlab_shell.add_namespace(path_was)
-
     if any_project_has_container_registry_tags?
       raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
-    if gitlab_shell.mv_namespace(path_was, path)
-      Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    # Move the namespace directory in all storages paths used by member projects
+    repository_storage_paths.each do |repository_storage_path|
+      # Ensure old directory exists before moving it
+      gitlab_shell.add_namespace(repository_storage_path, path_was)
 
-      # If repositories moved successfully we need to
-      # send update instructions to users.
-      # However we cannot allow rollback since we moved namespace dir
-      # So we basically we mute exceptions in next actions
-      begin
-        send_update_instructions
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
+      unless gitlab_shell.mv_namespace(repository_storage_path, path_was, path)
+        # if we cannot move namespace directory we should rollback
+        # db changes in order to prevent out of sync between db and fs
+        raise Exception.new('namespace directory cannot be moved')
       end
-    else
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise Exception.new('namespace directory cannot be moved')
+    end
+
+    Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+
+    # If repositories moved successfully we need to
+    # send update instructions to users.
+    # However we cannot allow rollback since we moved namespace dir
+    # So we basically we mute exceptions in next actions
+    begin
+      send_update_instructions
+    rescue
+      # Returning false does not rollback after_* transaction but gives
+      # us information about failing some of tasks
+      false
     end
   end
 
@@ -151,5 +137,34 @@ class Namespace < ActiveRecord::Base
 
   def find_fork_of(project)
     projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+  end
+
+  private
+
+  def repository_storage_paths
+    # We need to get the storage paths for all the projects, even the ones that are
+    # pending delete. Unscoping also get rids of the default order, which causes
+    # problems with SELECT DISTINCT.
+    Project.unscoped do
+      projects.select('distinct(repository_storage)').to_a.map(&:repository_storage_path)
+    end
+  end
+
+  def rm_dir
+    # Remove the namespace directory in all storages paths used by member projects
+    @old_repository_storage_paths.each do |repository_storage_path|
+      # Move namespace directory into trash.
+      # We will remove it later async
+      new_path = "#{path}+#{id}+deleted"
+
+      if gitlab_shell.mv_namespace(repository_storage_path, path, new_path)
+        message = "Namespace directory \"#{path}\" moved to \"#{new_path}\""
+        Gitlab::AppLogger.info message
+
+        # Remove namespace directroy async with delay so
+        # GitLab has time to remove all projects first
+        GitlabShellWorker.perform_in(5.minutes, :rm_namespace, repository_storage_path, new_path)
+      end
+    end
   end
 end

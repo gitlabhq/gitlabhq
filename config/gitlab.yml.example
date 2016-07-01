@@ -428,6 +428,13 @@ production: &base
   satellites:
     path: /home/git/gitlab-satellites/
 
+  ## Repositories settings
+  repositories:
+    # Paths where repositories can be stored. Give the canonicalized absolute pathname.
+    # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+    storages: # You must have at least a `default` storage path.
+      default: /home/git/repositories/
+
   ## Backup settings
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
@@ -452,9 +459,6 @@ production: &base
   ## GitLab Shell settings
   gitlab_shell:
     path: /home/git/gitlab-shell/
-
-    # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: /home/git/repositories/
     hooks_path: /home/git/gitlab-shell/hooks/
 
     # File that contains the secret key for verifying access for gitlab-shell.
@@ -528,11 +532,13 @@ test:
     # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
+  repositories:
+    storages:
+      default: tmp/tests/repositories/
   backup:
     path: tmp/tests/backups
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
-    repos_path: tmp/tests/repositories/
     hooks_path: tmp/tests/gitlab-shell/hooks/
   issues_tracker:
     redmine:

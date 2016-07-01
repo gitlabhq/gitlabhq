@@ -11,7 +11,7 @@ describe 'Admin System Info' do
 
       expect(page).to have_content 'CPU'
       expect(page).to have_content 'Memory'
-      expect(page).to have_content 'Disk'
+      expect(page).to have_content 'Disks'
     end
   end
 end

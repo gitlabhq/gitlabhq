@@ -2,7 +2,7 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   - if can?(current_user, :create_environment, @project) && !@environments.blank?
     .top-area
       .nav-controls

@@ -24,7 +24,11 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
+  default_value_for(:repository_storage) { current_application_settings.repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
+
+  after_create :ensure_dir_exist
+  after_save :ensure_dir_exist, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -81,6 +85,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
+  has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
 
@@ -164,6 +169,9 @@ class Project < ActiveRecord::Base
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
   validate :check_wiki_path_conflict
+  validates :repository_storage,
+    presence: true,
+    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -373,6 +381,10 @@ class Project < ActiveRecord::Base
     def remove_gitlab_exports!
       Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
     end
+  end
+
+  def repository_storage_path
+    Gitlab.config.repositories.storages[repository_storage]
   end
 
   def team
@@ -841,12 +853,12 @@ class Project < ActiveRecord::Base
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
-    if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+    if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
-        gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
+        gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
 
@@ -987,7 +999,7 @@ class Project < ActiveRecord::Base
   def create_repository
     # Forked import is handled asynchronously
     unless forked?
-      if gitlab_shell.add_repository(path_with_namespace)
+      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
         repository.after_create
         true
       else
@@ -1138,5 +1150,9 @@ class Project < ActiveRecord::Base
   def remove_exports
     _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
     status.zero?
+  end
+
+  def ensure_dir_exist
+    gitlab_shell.add_namespace(repository_storage_path, namespace.path)
   end
 end

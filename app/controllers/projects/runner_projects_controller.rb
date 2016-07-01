@@ -6,8 +6,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    return head(403) if @runner.is_shared? || @runner.locked?
-    return head(403) unless current_user.ci_authorized_runners.include?(@runner)
+    return head(403) unless can?(current_user, :assign_runner, @runner)
 
     path = runners_path(project)
     runner_project = @runner.assign_to(project, current_user)

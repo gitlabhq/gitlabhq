@@ -77,7 +77,7 @@ module API
         member = group.group_members.find_by(user_id: params[:user_id])
 
         if member.nil?
-          render_api_error!("404 Not Found - user_id:#{params[:user_id]} not a member of group #{group.name}",404)
+          render_api_error!("404 Not Found - user_id:#{params[:user_id]} not a member of group #{group.name}", 404)
         else
           member.destroy
         end

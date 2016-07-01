@@ -764,7 +764,7 @@ class User < ActiveRecord::Base
 
     unless email_domains.blank?
       match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        escaped = Regexp.escape(domain).gsub('\*', '.*?')
         regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
         email_domain = Mail::Address.new(self.email).domain
         email_domain =~ regexp

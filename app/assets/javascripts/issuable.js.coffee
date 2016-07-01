@@ -59,13 +59,12 @@ issuable_created = false
   filterResults: (form) =>
     formData = form.serialize()
 
-    $('.issues-holder, .merge-requests-holder').css('opacity', '0.5')
     formAction = form.attr('action')
     issuesUrl = formAction
     issuesUrl += ("#{if formAction.indexOf('?') < 0 then '?' else '&'}")
     issuesUrl += formData
 
-    Turbolinks.visit(issuesUrl);
+    Turbolinks.visit(issuesUrl)
 
   initChecks: ->
     @issuableBulkActions = $('.bulk-update').data('bulkActions')

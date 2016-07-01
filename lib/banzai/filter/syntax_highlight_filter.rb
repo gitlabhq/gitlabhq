@@ -27,11 +27,16 @@ module Banzai
           highlighted = "<pre>#{code}</pre>"
         end
 
-        # Replace the parent `pre` element with the entire highlighted block
-        node.parent.replace(highlighted)
+        # Extracted to a method to measure it
+        replace_parent_pre_element(node, highlighted)
       end
 
       private
+
+      def replace_parent_pre_element(node, highlighted)
+        # Replace the parent `pre` element with the entire highlighted block
+        node.parent.replace(highlighted)
+      end
 
       # Override Rouge::Plugins::Redcarpet#rouge_formatter
       def rouge_formatter(lexer)

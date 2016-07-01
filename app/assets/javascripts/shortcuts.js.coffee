@@ -9,12 +9,12 @@ class @Shortcuts
 
   onToggleHelp: (e) =>
     e.preventDefault()
-    @toggleHelp(@enabledHelp)
+    Shortcuts.toggleHelp(@enabledHelp)
 
-  toggleMarkdownPreview: (e) =>
+  toggleMarkdownPreview: (e) ->
     $(document).triggerHandler('markdown-preview:toggle', [e])
 
-  toggleHelp: (location) ->
+  @toggleHelp: (location) ->
     $modal = $('#modal-shortcuts')
 
     if $modal.length
