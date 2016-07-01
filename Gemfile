@@ -131,7 +131,7 @@ end
 # State machine
 gem 'state_machines-activerecord', '~> 0.4.0'
 # Run events after state machine commits
-gem 'after_commit_queue'
+gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 3.4'
@@ -140,7 +140,7 @@ gem 'acts-as-taggable-on', '~> 3.4'
 gem 'sinatra', '~> 1.4.4', require: false
 gem 'sidekiq', '~> 4.0'
 gem 'sidekiq-cron', '~> 0.4.0'
-gem 'redis-namespace'
+gem 'redis-namespace', '~> 1.5.2'
 
 # HTTP requests
 gem 'httparty', '~> 0.13.3'
@@ -247,14 +247,14 @@ group :metrics do
 end
 
 group :development do
-  gem 'foreman'
+  gem 'foreman', '~> 0.78.0'
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
-  gem 'bullet', require: false
-  gem 'rblineprof', platform: :mri, require: false
+  gem 'bullet', '~> 5.0.0', require: false
+  gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
 
   # Better errors handler
@@ -269,8 +269,8 @@ group :development do
 end
 
 group :development, :test do
-  gem 'byebug', platform: :mri
-  gem 'pry-rails'
+  gem 'byebug', '~> 8.2.1', platform: :mri
+  gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
@@ -278,7 +278,7 @@ group :development, :test do
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.4.0'
-  gem 'rspec-retry'
+  gem 'rspec-retry',        '~> 0.4.5'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
 
@@ -304,14 +304,14 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'simplecov', '~> 0.11.0', require: false
-  gem 'flog', require: false
-  gem 'flay', require: false
-  gem 'bundler-audit', require: false
+  gem 'flog', '~> 4.3.2', require: false
+  gem 'flay', '~> 2.6.1', require: false
+  gem 'bundler-audit', '~> 0.5.0', require: false
 
-  gem 'benchmark-ips', require: false
+  gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem 'license_finder', require: false
-  gem 'knapsack'
+  gem 'license_finder', '~> 2.1.0', require: false
+  gem 'knapsack', '~> 1.11.0'
 end
 
 group :test do
@@ -319,7 +319,7 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
-  gem 'sham_rack'
+  gem 'sham_rack', '~> 1.3.6'
 end
 
 group :production do
