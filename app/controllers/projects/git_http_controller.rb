@@ -1,3 +1,5 @@
+# This file should be identical in GitLab Community Edition and Enterprise Edition
+
 class Projects::GitHttpController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
@@ -149,7 +151,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def render_not_found
-    render text: 'Not Found', status: :not_found
+    render plain: 'Not Found', status: :not_found
   end
 
   def ci?
