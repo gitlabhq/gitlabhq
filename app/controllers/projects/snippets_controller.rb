@@ -54,7 +54,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @snippet)
-    @notes = @snippet.notes.fresh
+    @notes = Banzai::NoteRenderer.render(@snippet.notes.fresh, @project, current_user)
     @noteable = @snippet
   end
 
