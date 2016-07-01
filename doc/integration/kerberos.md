@@ -7,10 +7,7 @@ Kerberos integration can be enabled as a regular omniauth provider, edit [gitlab
 gitlab_rails['omniauth_enabled'] = true
 gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
 gitlab_rails['omniauth_providers'] = [
-    {
-        "name" => "kerberos",
-        "args" => { "access_type" => "offline", "approval_prompt" => "" }
-    }
+    {"name" => "kerberos"}
 ]
 ```
 
