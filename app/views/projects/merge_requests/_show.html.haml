@@ -44,7 +44,15 @@
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-    - if @commits_count.nonzero?
+    #resolve-all-app{ "v-cloak" => true }
+      %resolve-all{ "inline-template" => true }
+        .line-resolve-all{ "v-show" => "commentsCount > 0" }
+          %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "v-on:click" => "updateAll" }
+            {{ buttonText }}
+          %span.line-resolve-text
+            {{ resolved }}/{{ commentsCount }} comments resolved
+
+    - if @commits.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do

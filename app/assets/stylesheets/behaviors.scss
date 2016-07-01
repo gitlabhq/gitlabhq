@@ -20,3 +20,7 @@
     .turn-off { display: block; }
   }
 }
+
+[v-cloak="true"] {
+  display: none;
+}
