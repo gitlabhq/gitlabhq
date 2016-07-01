@@ -6,7 +6,6 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
-  include Eventable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -19,6 +18,8 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+
+  has_many :events, as: :target, dependent: :destroy
 
   validates :project, presence: true
 

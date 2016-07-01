@@ -5,13 +5,14 @@ class MergeRequest < ActiveRecord::Base
   include Sortable
   include Taskable
   include Importable
-  include Eventable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
   has_one :merge_request_diff, dependent: :destroy
+
+  has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
 
