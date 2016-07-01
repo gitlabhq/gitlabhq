@@ -71,13 +71,6 @@
           - if can? current_user, :admin_milestone, issuable.project
             %div
               = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
-      - if issuable.respond_to?(:weight)
-        .form-group
-          = f.label :label_ids, class: "control-label #{"col-lg-4" if has_due_date}" do
-            Weight
-          .col-sm-10{ class: ("col-lg-8" if has_due_date) }
-            = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
-              { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
       .form-group
         - has_labels = issuable.project.labels.any?
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
@@ -91,6 +84,13 @@
           - if can? current_user, :admin_label, issuable.project
             %div
               = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+      - if issuable.respond_to?(:weight)
+        .form-group
+          = f.label :label_ids, class: "control-label #{"col-lg-4" if has_due_date}" do
+            Weight
+          .col-sm-10{ class: ("col-lg-8" if has_due_date) }
+            = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
+              { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
     - if has_due_date
       .col-lg-6
         .form-group
