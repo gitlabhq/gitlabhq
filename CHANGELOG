@@ -26,6 +26,7 @@ v 8.10.0 (unreleased)
   - Better caching of git calls on ProjectsController#show.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
