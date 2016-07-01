@@ -1,5 +1,3 @@
-require_relative 'shell_env'
-
 module Grack
   class AuthSpawner
     def self.call(env)
@@ -41,10 +39,7 @@ module Grack
       lfs_response = Gitlab::Lfs::Router.new(project, @user, @ci, @request).try_call
       return lfs_response unless lfs_response.nil?
 
-      if project && authorized_request?
-        # Tell gitlab-workhorse the request is OK, and what the GL_ID is
-        render_grack_auth_ok
-      elsif @user.nil? && !@ci
+      if @user.nil? && !@ci
         unauthorized
       else
         render_not_found
@@ -118,11 +113,6 @@ module Grack
         end
 
         @user = authenticate_user(login, password)
-      end
-
-      if @user
-        Gitlab::ShellEnv.set_env(@user)
-        @env['REMOTE_USER'] = @auth.username
       end
     end
 
@@ -250,24 +240,6 @@ module Grack
         path_with_namespace[0] = '' if path_with_namespace.start_with?('/')
         Project.find_with_namespace(path_with_namespace)
       end
-    end
-
-    def render_grack_auth_ok
-      repo_path =
-        if @request.path_info =~ /^([\w\.\/-]+)\.wiki\.git/
-          ProjectWiki.new(project).repository.path_to_repo
-        else
-          project.repository.path_to_repo
-        end
-
-      [
-        200,
-        { "Content-Type" => "application/json" },
-        [JSON.dump({
-          'GL_ID' => Gitlab::ShellEnv.gl_id(@user),
-          'RepoPath' => repo_path,
-        })]
-      ]
     end
 
     def render_not_found
