@@ -306,7 +306,7 @@ describe Ci::API::API do
           end
 
           context 'should post artifact to running build' do
-            shared_examples 'post artifact' do
+            shared_examples 'artifacts sender' do
               it 'updates successfully' do
                 response_filename =
                   json_response['artifacts_file']['filename']
@@ -321,7 +321,7 @@ describe Ci::API::API do
                 upload_artifacts(file_upload, headers_with_token, false)
               end
 
-              it_behaves_like 'post artifact'
+              it_behaves_like 'artifacts sender'
             end
 
             context 'uses accelerated file post' do
@@ -329,7 +329,7 @@ describe Ci::API::API do
                 upload_artifacts(file_upload, headers_with_token, true)
               end
 
-              it_behaves_like 'post artifact'
+              it_behaves_like 'artifacts sender'
             end
 
             context 'updates artifact' do
@@ -338,7 +338,7 @@ describe Ci::API::API do
                 upload_artifacts(file_upload, headers_with_token)
               end
 
-              it_behaves_like 'post artifact'
+              it_behaves_like 'artifacts sender'
             end
           end
 
