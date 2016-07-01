@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequest, models: true do
+  include RepoHelpers
+
   subject { create(:merge_request) }
 
   describe 'associations' do
@@ -607,6 +609,44 @@ describe MergeRequest, models: true do
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
+    end
+  end
+
+  describe "#reload_diff" do
+    let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
+
+    let(:commit) { subject.project.commit(sample_commit.id) }
+
+    it "reloads the diff content" do
+      expect(subject.merge_request_diff).to receive(:reload_content)
+
+      subject.reload_diff
+    end
+
+    it "updates diff note positions" do
+      old_diff_refs = subject.diff_refs
+
+      merge_request_diff = subject.merge_request_diff
+
+      # Update merge_request_diff so that #diff_refs will return commit.diff_refs
+      allow(merge_request_diff).to receive(:reload_content) do
+        merge_request_diff.base_commit_sha = commit.parent_id
+        merge_request_diff.start_commit_sha = commit.parent_id
+        merge_request_diff.head_commit_sha = commit.sha
+      end
+
+      expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+        subject.project,
+        nil,
+        old_diff_refs: old_diff_refs,
+        new_diff_refs: commit.diff_refs,
+        paths: note.position.paths
+      ).and_call_original
+      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
+
+      expect_any_instance_of(DiffNote).to receive(:save).once
+
+      subject.reload_diff
     end
   end
 end
