@@ -72,7 +72,6 @@
   margin-bottom: 20px;
 }
 
-
 // Users List
 
 .users-list {
@@ -96,5 +95,12 @@
       margin-bottom: 0;
       line-height: inherit;
     }
+  }
+}
+
+table.abuse-reports tbody tr td {
+  vertical-align: top;
+  &:nth-child(5) {
+    min-width: 220px;
   }
 }

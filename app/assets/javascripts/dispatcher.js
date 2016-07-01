@@ -192,6 +192,9 @@
                 case 'edit':
                   new Labels();
               }
+            case 'abuse_reports':
+              new AbuseReports();
+              break;
           }
           break;
         case 'dashboard':
