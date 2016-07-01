@@ -29,6 +29,10 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
+v 8.9.5 (unreleased)
+  - Fix assigning shared runners as admins
+  - Show "locked" label for locked runners on runners admin
+
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
   - Ensure references to private repos aren't shown to logged-out users.
