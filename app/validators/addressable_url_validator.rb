@@ -35,9 +35,7 @@ class AddressableUrlValidator < ActiveModel::EachValidator
   end
 
   def valid_uri?(value)
-    Addressable::URI.parse(value).is_a?(Addressable::URI)
-  rescue Addressable::URI::InvalidURIError
-    false
+    Gitlab::UrlSanitizer.valid?(value)
   end
 
   def valid_protocol?(value)
