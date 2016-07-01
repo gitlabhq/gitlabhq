@@ -31,17 +31,11 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
-v 8.9.3 (unreleased)
-  - Decreased min width of screen to 1280px for pinned sidebar
-  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
-  - Update mobile button icons to be more inline with typical UI paradigms
-  - Fixes missing avatar on system notes. !4954
-  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
-  - Improve performance of obtaining the maximum access of a user in a project
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
+  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
