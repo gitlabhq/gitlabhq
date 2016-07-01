@@ -37,6 +37,7 @@ v 8.9.5 (unreleased)
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
   - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
+  - Fix import button disabled when import process fail due to the namespace already been taken.
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
