@@ -264,7 +264,7 @@ group :development do
   gem "sdoc", '~> 0.3.20'
 
   # thin instead webrick
-  gem 'thin', '~> 1.6.1'
+  gem 'thin', '~> 1.7.0'
 end
 
 group :development, :test do
