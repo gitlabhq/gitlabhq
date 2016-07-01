@@ -94,22 +94,6 @@ class Namespace < ActiveRecord::Base
       raise Exception.new('Namespace cannot be moved, because at least one project has tags in container registry')
     end
 
-<<<<<<< HEAD
-    if gitlab_shell.mv_namespace(path_was, path)
-      Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
-      Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
-
-      # If repositories moved successfully we need to
-      # send update instructions to users.
-      # However we cannot allow rollback since we moved namespace dir
-      # So we basically we mute exceptions in next actions
-      begin
-        send_update_instructions
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
-=======
     # Move the namespace directory in all storages paths used by member projects
     repository_storage_paths.each do |repository_storage_path|
       # Ensure old directory exists before moving it
@@ -119,11 +103,11 @@ class Namespace < ActiveRecord::Base
         # if we cannot move namespace directory we should rollback
         # db changes in order to prevent out of sync between db and fs
         raise Exception.new('namespace directory cannot be moved')
->>>>>>> 557ca2b31ff503b36a4b65af2641fcd0f5682d5b
       end
     end
 
     Gitlab::UploadsTransfer.new.rename_namespace(path_was, path)
+    Gitlab::PagesTransfer.new.rename_namespace(path_was, path)
 
     # If repositories moved successfully we need to
     # send update instructions to users.

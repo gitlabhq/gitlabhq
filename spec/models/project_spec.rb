@@ -1106,7 +1106,7 @@ describe Project, models: true do
     let(:mirror) { false }
 
     before do
-      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
       allow(project).to receive(:repository_exists?).and_return(true)
     end
 

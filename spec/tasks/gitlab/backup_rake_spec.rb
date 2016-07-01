@@ -129,26 +129,26 @@ describe 'gitlab:app namespace rake task' do
         end
       end
 
-    it 'should set correct permissions on the tar contents' do
-      tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
-      )
-      expect(exit_status).to eq(0)
-      expect(tar_contents).to match('db/')
-      expect(tar_contents).to match('uploads.tar.gz')
-      expect(tar_contents).to match('repositories/')
-      expect(tar_contents).to match('builds.tar.gz')
-      expect(tar_contents).to match('artifacts.tar.gz')
-      expect(tar_contents).to match('pages.tar.gz')
-      expect(tar_contents).to match('lfs.tar.gz')
-      expect(tar_contents).to match('registry.tar.gz')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
-    end
+      it 'should set correct permissions on the tar contents' do
+        tar_contents, exit_status = Gitlab::Popen.popen(
+          %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
+        )
+        expect(exit_status).to eq(0)
+        expect(tar_contents).to match('db/')
+        expect(tar_contents).to match('uploads.tar.gz')
+        expect(tar_contents).to match('repositories/')
+        expect(tar_contents).to match('builds.tar.gz')
+        expect(tar_contents).to match('artifacts.tar.gz')
+        expect(tar_contents).to match('pages.tar.gz')
+        expect(tar_contents).to match('lfs.tar.gz')
+        expect(tar_contents).to match('registry.tar.gz')
+        expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
+      end
 
-    it 'should delete temp directories' do
-      temp_dirs = Dir.glob(
-        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,pages,lfs,registry}')
-      )
+      it 'should delete temp directories' do
+        temp_dirs = Dir.glob(
+          File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,pages,lfs,registry}')
+        )
 
         expect(temp_dirs).to be_empty
       end
