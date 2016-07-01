@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class UploadsSaver
-
       def initialize(project:, shared:)
         @project = project
         @shared = shared

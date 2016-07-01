@@ -293,7 +293,6 @@ class SystemNoteService
     end
   end
 
-
   def self.cross_reference?(note_text)
     note_text.start_with?(cross_reference_note_prefix)
   end

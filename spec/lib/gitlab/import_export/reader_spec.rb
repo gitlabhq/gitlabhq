@@ -25,7 +25,6 @@ describe Gitlab::ImportExport::Reader, lib: true  do
   end
 
   context 'individual scenarios' do
-
     it 'generates the correct hash for a single project relation' do
       setup_yaml(project_tree: [:issues])
 

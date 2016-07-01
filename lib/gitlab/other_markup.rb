@@ -1,7 +1,6 @@
 module Gitlab
   # Parser/renderer for markups without other special support code.
   module OtherMarkup
-
     # Public: Converts the provided markup into HTML.
     #
     # input         - the source text in a markup format

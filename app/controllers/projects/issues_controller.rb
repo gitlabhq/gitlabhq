@@ -76,7 +76,6 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: @issue.to_json(include: [:milestone, :labels])
       end
     end
-
   end
 
   def create

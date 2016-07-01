@@ -875,7 +875,6 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-
   def search_files(query, ref)
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})

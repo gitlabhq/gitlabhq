@@ -18,7 +18,6 @@ describe Projects::LabelsController do
       15.times { |i| create_label(priority: (i % 3) + 1, title: "label #{15 - i}") }
       5.times { |i| create_label(title: "label #{100 - i}") }
 
-
       get :index, namespace_id: project.namespace.to_param, project_id: project.to_param
     end
 

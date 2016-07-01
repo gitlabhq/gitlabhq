@@ -49,7 +49,6 @@ describe ApplicationController do
         end
       end
 
-
       context "when the 'PRIVATE-TOKEN' header is populated with the private token" do
         it "logs the user in" do
           @request.headers['PRIVATE-TOKEN'] = user.private_token

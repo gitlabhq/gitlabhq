@@ -64,5 +64,4 @@ describe Gitlab::UrlSanitizer, lib: true do
       expect(sanitizer.full_url).to eq('user@server:project.git')
     end
   end
-
 end

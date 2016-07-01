@@ -190,7 +190,6 @@ class JiraService < IssueTrackerService
     end
   end
 
-
   def auth
     require 'base64'
     Base64.urlsafe_encode64("#{self.username}:#{self.password}")

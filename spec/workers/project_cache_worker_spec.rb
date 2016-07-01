@@ -7,7 +7,6 @@ describe ProjectCacheWorker do
 
   describe '#perform' do
     it 'updates project cache data' do
-
       expect_any_instance_of(Repository).to receive(:size)
       expect_any_instance_of(Repository).to receive(:commit_count)
 

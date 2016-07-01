@@ -128,7 +128,6 @@ describe Gitlab::OAuth::User, lib: true do
             end
 
             context "and no account for the LDAP user" do
-
               it "creates a user with dual LDAP and omniauth identities" do
                 oauth_user.save
 
@@ -169,7 +168,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
     end
 
     describe 'blocking' do
@@ -254,7 +252,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
 
       context 'sign-in' do
         before do

@@ -64,9 +64,7 @@ describe Projects::ForksController do
             expect(assigns[:forks]).to be_present
           end
         end
-
       end
     end
   end
-
 end

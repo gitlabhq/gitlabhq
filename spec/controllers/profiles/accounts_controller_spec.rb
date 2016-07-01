@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Profiles::AccountsController do
-
   let(:user) { create(:omniauth_user, provider: 'saml') }
 
   before do

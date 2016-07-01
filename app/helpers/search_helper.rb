@@ -1,5 +1,4 @@
 module SearchHelper
-
   def search_autocomplete_opts(term)
     return unless current_user
 

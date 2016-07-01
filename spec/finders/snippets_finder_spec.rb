@@ -69,7 +69,6 @@ describe SnippetsFinder do
       expect(snippets).to include(@snippet3)
       expect(snippets).not_to include(@snippet2, @snippet1)
     end
-
   end
 
   context 'by_project filter' do

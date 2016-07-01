@@ -76,7 +76,6 @@ describe 'gitlab:app namespace rake task' do
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
     end
-
   end # backup_restore task
 
   describe 'backup_create' do

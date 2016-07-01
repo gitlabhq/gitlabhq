@@ -253,7 +253,6 @@ describe RootController, 'routing' do
   end
 end
 
-
 #        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
 #            user_session POST   /users/sign_in(.:format)               devise/sessions#create
 #    destroy_user_session DELETE /users/sign_out(.:format)              devise/sessions#destroy

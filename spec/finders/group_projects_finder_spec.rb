@@ -12,13 +12,11 @@ describe GroupProjectsFinder do
   let!(:shared_project_2) { create(:project, :private, path: '4') }
   let!(:shared_project_3) { create(:project, :internal, path: '5') }
 
-
   before do
     shared_project_1.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
     shared_project_2.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
     shared_project_3.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
   end
-
 
   describe 'with a group member current user' do
     before  { group.add_user(current_user, Gitlab::Access::MASTER) }

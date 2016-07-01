@@ -49,5 +49,4 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   step 'I redirected to Google Code import page' do
     expect(current_path).to eq new_import_google_code_path
   end
-
 end

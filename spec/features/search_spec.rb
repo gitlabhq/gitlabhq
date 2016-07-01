@@ -48,9 +48,7 @@ describe "Search", feature: true  do
     end
   end
 
-
   describe 'Right header search field', feature: true do
-
     describe 'Search in project page' do
       before do
         visit namespace_project_path(project.namespace, project)
@@ -73,7 +71,6 @@ describe "Search", feature: true  do
       end
 
       context 'click the links in the category search dropdown', js: true do
-
         before do
           page.find('#search').click
         end
@@ -124,6 +121,4 @@ describe "Search", feature: true  do
       end
     end
   end
-
-
 end
