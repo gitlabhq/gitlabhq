@@ -102,7 +102,7 @@ module IssuesHelper
   end
 
   def issue_button_visibility(issue, closed)
-    return 'hidden' if issue.closed? == closed
+    return 'hidden' if issue.closed? == closed || (issue.try(:merged?) == closed && !issue.closed?)
   end
 
   def merge_requests_sentence(merge_requests)
