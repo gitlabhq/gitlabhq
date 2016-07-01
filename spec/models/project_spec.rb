@@ -11,6 +11,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:milestones).dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:project_members) }
+    it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { is_expected.to have_many(:deploy_keys_projects).dependent(:destroy) }
@@ -31,6 +33,34 @@ describe Project, models: true do
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    describe '#members & #requesters' do
+      let(:project) { create(:project) }
+      let(:requester) { create(:user) }
+      let(:developer) { create(:user) }
+      before do
+        project.request_access(requester)
+        project.team << [developer, :developer]
+      end
+
+      describe '#members' do
+        it 'includes members and exclude requesters' do
+          member_user_ids = project.members.pluck(:user_id)
+
+          expect(member_user_ids).to include(developer.id)
+          expect(member_user_ids).not_to include(requester.id)
+        end
+      end
+
+      describe '#requesters' do
+        it 'does not include requesters' do
+          requester_user_ids = project.requesters.pluck(:user_id)
+
+          expect(requester_user_ids).to include(requester.id)
+          expect(requester_user_ids).not_to include(developer.id)
+        end
+      end
+    end
   end
 
   describe 'modules' do

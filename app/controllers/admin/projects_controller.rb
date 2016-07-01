@@ -20,7 +20,8 @@ class Admin::ProjectsController < Admin::ApplicationController
       @group_members = @group.members.order("access_level DESC").page(params[:group_members_page])
     end
 
-    @project_members = @project.project_members.page(params[:project_members_page])
+    @project_members = @project.members.page(params[:project_members_page])
+    @requesters = @project.requesters
   end
 
   def transfer
