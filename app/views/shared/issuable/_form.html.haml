@@ -23,6 +23,25 @@
           to prevent a
           %strong Work In Progress
           merge request from being merged before it's ready.
+
+- if issuable.is_a?(Issue)
+  .form-group
+    = f.label :template, 'Template', class: 'control-label'
+    .col-sm-10
+
+      -# START render 'projects/issues/templates_dropdown' START
+
+      = hidden_field_tag(:template_name, params[:template_name])
+      -#  'data-templates' will be a method in issuables_helper that returns endpoint to get templates 'issue_templates_filter_dropdown_path'
+      = dropdown_tag(h(params[:template_name] || 'Template'), options: { title: 'Filter by template name', toggle_class: 'js-template-select js-filter-submit', filter: true, dropdown_class: 'dropdown-menu-selectable',
+        placeholder: 'Search templates', footer_content: true, data: { field_name: :template_name, selected: params[:template_name], project_id: @project.try(:id), templates: '/namespace/project/issues/templates', default_label: 'Template' } }) do
+        %ul.dropdown-footer-list
+          %li
+            %a.reset-template
+              Reset
+
+      -# END render 'projects/issues/templates_dropdown' END
+
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
