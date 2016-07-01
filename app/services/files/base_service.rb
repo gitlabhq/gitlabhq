@@ -15,6 +15,8 @@ module Files
                           params[:file_content]
                         end
 
+      puts @file_path
+
       # Validate parameters
       validate
 
