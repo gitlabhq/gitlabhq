@@ -7,6 +7,7 @@ module Files
                              branch: @target_branch,
                              previous_path: @previous_path,
                              message: @commit_message)
+
     end
   end
 end
