@@ -594,9 +594,100 @@ Example response:
     "id": 11,
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
-    "web_url": "http://lgitlab.example.com/u/orville"
+    "web_url": "https://gitlab.example.com/u/orville"
   },
   "subscribed": false
+}
+```
+
+## Create a todo
+
+Manually creates a todo for the current user on an issue. If the request is
+successful, status code `200` together with the created todo is returned. If
+there already exists a todo for the user on that issue, status code `304` is
+returned.
+
+```
+POST /projects/:id/issues/:issue_id/todo
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `issue_id` | integer | yes | The ID of a project's issue |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/todo
+```
+
+Example response:
+
+```json
+{
+  "id": 112,
+  "project": {
+    "id": 5,
+    "name": "Gitlab Ci",
+    "name_with_namespace": "Gitlab Org / Gitlab Ci",
+    "path": "gitlab-ci",
+    "path_with_namespace": "gitlab-org/gitlab-ci"
+  },
+  "author": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/root"
+  },
+  "action_name": "marked",
+  "target_type": "Issue",
+  "target": {
+    "id": 93,
+    "iid": 10,
+    "project_id": 5,
+    "title": "Vel voluptas atque dicta mollitia adipisci qui at.",
+    "description": "Tempora laboriosam sint magni sed voluptas similique.",
+    "state": "closed",
+    "created_at": "2016-06-17T07:47:39.486Z",
+    "updated_at": "2016-07-01T11:09:13.998Z",
+    "labels": [],
+    "milestone": {
+      "id": 26,
+      "iid": 1,
+      "project_id": 5,
+      "title": "v0.0",
+      "description": "Accusantium nostrum rerum quae quia quis nesciunt suscipit id.",
+      "state": "closed",
+      "created_at": "2016-06-17T07:47:33.832Z",
+      "updated_at": "2016-06-17T07:47:33.832Z",
+      "due_date": null
+    },
+    "assignee": {
+      "name": "Jarret O'Keefe",
+      "username": "francisca",
+      "id": 14,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/u/francisca"
+    },
+    "author": {
+      "name": "Maxie Medhurst",
+      "username": "craig_rutherford",
+      "id": 12,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a0d477b3ea21970ce6ffcbb817b0b435?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/u/craig_rutherford"
+    },
+    "subscribed": true,
+    "user_notes_count": 7,
+    "upvotes": 0,
+    "downvotes": 0
+  },
+  "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
+  "body": "Vel voluptas atque dicta mollitia adipisci qui at.",
+  "state": "pending",
+  "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
 

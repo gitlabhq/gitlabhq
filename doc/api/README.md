@@ -36,6 +36,7 @@ following locations:
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
 - [Users](users.md)
+- [Todos](todos.md)
 
 ### Internal CI API
 
