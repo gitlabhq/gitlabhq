@@ -143,7 +143,6 @@ module Ci
         end
 
         it "returns build only for specified type" do
-
           config = YAML.dump({
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", only: ["master", "deploy"] },

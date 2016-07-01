@@ -40,6 +40,5 @@ module MergeRequests
         error("Can't cancel the automatic merge", 406)
       end
     end
-
   end
 end

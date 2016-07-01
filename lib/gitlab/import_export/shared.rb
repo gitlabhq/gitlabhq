@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class Shared
-
       attr_reader :errors, :opts
 
       def initialize(opts)

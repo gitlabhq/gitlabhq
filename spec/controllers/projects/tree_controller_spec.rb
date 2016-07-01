@@ -66,7 +66,6 @@ describe Projects::TreeController do
       let(:id) { '6d39438/.gitignore' }
       it { expect(response).to have_http_status(302) }
     end
-
   end
 
   describe 'GET show with blob path' do

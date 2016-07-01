@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Ci::Charts, lib: true do
-
   context "build_times" do
     before do
       @pipeline = FactoryGirl.create(:ci_pipeline)

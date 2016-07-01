@@ -11,7 +11,6 @@ module API
         [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
-
           # Get a list of project +awardable+ award emoji
           #
           # Parameters:

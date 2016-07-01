@@ -855,7 +855,6 @@ describe Repository, models: true do
 
       repository.after_create
     end
-
   end
 
   describe "#copy_gitattributes" do

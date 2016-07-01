@@ -47,5 +47,4 @@ feature 'Users', feature: true do
   def number_of_errors_on_page(page)
     page.find('#error_explanation').find('ul').all('li').count
   end
-
 end

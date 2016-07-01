@@ -66,7 +66,6 @@ class Spinach::Features::ProjectFindFile < Spinach::FeatureSteps
     expect(page).not_to have_content(".gitignore")
   end
 
-
   def find_file(text)
     fill_in 'file_find', with: text
   end

@@ -117,7 +117,6 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when filtering by opened state' do
-
       context 'with opened merge requests' do
         it 'should list those merge requests' do
           get_merge_requests
@@ -138,7 +137,6 @@ describe Projects::MergeRequestsController do
           expect(assigns(:merge_requests)).to include(merge_request)
         end
       end
-
     end
   end
 

@@ -1,7 +1,6 @@
 module Milestones
   class DestroyService < Milestones::BaseService
     def execute(milestone)
-
       Milestone.transaction do
         update_params = { milestone: nil }
 

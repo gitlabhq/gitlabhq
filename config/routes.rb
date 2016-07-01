@@ -133,7 +133,6 @@ Rails.application.routes.draw do
   #
   resources :notification_settings, only: [:create, :update]
 
-
   #
   # Import
   #
@@ -466,7 +465,6 @@ Rails.application.routes.draw do
   resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
     resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
-
       member do
         put :transfer
         delete :remove_fork

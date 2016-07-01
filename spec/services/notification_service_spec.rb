@@ -95,7 +95,6 @@ describe NotificationService, services: true do
               notification.new_note(note)
             end
 
-
             it { should_not_email(@u_lazy_participant) }
           end
         end
@@ -377,7 +376,6 @@ describe NotificationService, services: true do
     end
 
     describe '#reassigned_issue' do
-
       before do
         update_custom_notification(:reassign_issue, @u_guest_custom, project)
         update_custom_notification(:reassign_issue, @u_custom_global)
@@ -566,7 +564,6 @@ describe NotificationService, services: true do
     end
 
     describe '#close_issue' do
-
       before do
         update_custom_notification(:close_issue, @u_guest_custom, project)
         update_custom_notification(:close_issue, @u_custom_global)
@@ -711,7 +708,6 @@ describe NotificationService, services: true do
 
         should_email(subscriber)
       end
-
 
       context 'participating' do
         context 'by assignee' do
@@ -880,7 +876,6 @@ describe NotificationService, services: true do
     end
 
     describe '#merged_merge_request' do
-
       before do
         update_custom_notification(:merge_merge_request, @u_guest_custom, project)
         update_custom_notification(:merge_merge_request, @u_custom_global)

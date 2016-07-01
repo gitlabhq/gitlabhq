@@ -984,7 +984,6 @@ describe Notify do
     end
 
     context "when set to send from committer email if domain matches" do
-
       let(:send_from_committer_email) { true }
 
       before do
@@ -992,7 +991,6 @@ describe Notify do
       end
 
       context "when the committer email domain is within the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@company.com")
           user.confirm
@@ -1010,7 +1008,6 @@ describe Notify do
       end
 
       context "when the committer email domain is not completely within the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@something.company.com")
           user.confirm
@@ -1028,7 +1025,6 @@ describe Notify do
       end
 
       context "when the committer email domain is outside the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@mpany.com")
           user.confirm
@@ -1084,5 +1080,4 @@ describe Notify do
       is_expected.to have_body_text /#{diff_path}/
     end
   end
-
 end
