@@ -1,5 +1,3 @@
-require_relative 'shell_env'
-
 module Grack
   class AuthSpawner
     def self.call(env)
