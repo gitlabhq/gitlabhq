@@ -15,6 +15,7 @@ module Files
                           params[:file_content]
                         end
 
+      # Validate parameters
       validate
 
       # Create new branch if it different from source_branch
