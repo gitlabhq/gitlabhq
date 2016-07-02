@@ -433,7 +433,7 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merged_when_build_succeeds` (optional)   - if `true` the MR is merged when the build succeeds
+- `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
