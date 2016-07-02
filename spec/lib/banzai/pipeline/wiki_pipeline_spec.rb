@@ -59,7 +59,6 @@ describe Banzai::Pipeline::WikiPipeline do
 
     { "when GitLab is hosted at a root URL" => '/',
       "when GitLab is hosted at a relative URL" => '/nested/relative/gitlab' }.each do |test_name, relative_url_root|
-
       context test_name do
         before do
           allow(Gitlab.config.gitlab).to receive(:relative_url_root).and_return(relative_url_root)

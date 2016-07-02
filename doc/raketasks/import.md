@@ -14,7 +14,8 @@
 - For omnibus-gitlab, it is located at: `/var/opt/gitlab/git-data/repositories` by default, unless you changed
 it in the `/etc/gitlab/gitlab.rb` file.
 - For installations from source, it is usually located at: `/home/git/repositories` or you can see where
-your repositories are located by looking at `config/gitlab.yml` under the `gitlab_shell => repos_path` entry.
+your repositories are located by looking at `config/gitlab.yml` under the `repositories => storages` entries
+(you'll usually use the `default` storage path to start).
 
 New folder needs to have git user ownership and read/write/execute access for git user and its group:
 

@@ -4,7 +4,6 @@ describe Gitlab::PushDataBuilder, lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-
   describe '.build_sample' do
     let(:data) { described_class.build_sample(project, user) }
 

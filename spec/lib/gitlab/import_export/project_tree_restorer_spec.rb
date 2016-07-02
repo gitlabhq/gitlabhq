@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
@@ -23,6 +22,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         restored_project_json
 
         expect(Ci::Pipeline.first.notes).not_to be_empty
+      end
+
+      it 'restores the correct event' do
+        restored_project_json
+
+        expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
       end
     end
   end

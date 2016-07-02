@@ -1,12 +1,15 @@
+- @no_container = true
 - page_title @blob.path, @ref
+= render "projects/commits/head"
 
-= render 'projects/last_push'
+%div{ class: container_class }
+  = render 'projects/last_push'
 
-%div#tree-holder.tree-holder
-  = render 'blob', blob: @blob
+  %div#tree-holder.tree-holder
+    = render 'blob', blob: @blob
 
-- if can_edit_blob?(@blob)
-  = render 'projects/blob/remove'
+  - if can_edit_blob?(@blob)
+    = render 'projects/blob/remove'
 
-  - title = "Replace #{@blob.name}"
-  = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put
+    - title = "Replace #{@blob.name}"
+    = render 'projects/blob/upload', title: title, placeholder: title, button_title: 'Replace file', form_path: namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put

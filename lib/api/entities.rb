@@ -272,6 +272,31 @@ module API
       expose :id, :project_id, :group_id, :group_access
     end
 
+    class Todo < Grape::Entity
+      expose :id
+      expose :project, using: Entities::BasicProjectDetails
+      expose :author, using: Entities::UserBasic
+      expose :action_name
+      expose :target_type
+
+      expose :target do |todo, options|
+        Entities.const_get(todo.target_type).represent(todo.target, options)
+      end
+
+      expose :target_url do |todo, options|
+        target_type   = todo.target_type.underscore
+        target_url    = "namespace_project_#{target_type}_url"
+        target_anchor = "note_#{todo.note_id}" if todo.note_id?
+
+        Gitlab::Application.routes.url_helpers.public_send(target_url,
+          todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
+      end
+
+      expose :body
+      expose :state
+      expose :created_at
+    end
+
     class Namespace < Grape::Entity
       expose :id, :path, :kind
     end
@@ -376,6 +401,7 @@ module API
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
+      expose :repository_storage
     end
 
     class Release < Grape::Entity

@@ -1,5 +1,4 @@
 class CustomIssueTrackerService < IssueTrackerService
-
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
   def title
@@ -31,5 +30,4 @@ class CustomIssueTrackerService < IssueTrackerService
       { type: 'text', name: 'new_issue_url', placeholder: 'New Issue url' }
     ]
   end
-
 end

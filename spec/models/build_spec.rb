@@ -323,7 +323,6 @@ describe Ci::Build, models: true do
         expect_any_instance_of(Ci::Runner).to receive(:can_pick?).and_return(false)
         is_expected.to be_falsey
       end
-
     end
   end
 
@@ -667,6 +666,24 @@ describe Ci::Build, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
+    end
+  end
+
+  describe '#retryable?' do
+    context 'when build is running' do
+      before { build.run! }
+
+      it 'should return false' do
+        expect(build.retryable?).to be false
+      end
+    end
+
+    context 'when build is finished' do
+      before { build.success! }
+
+      it 'should return true' do
+        expect(build.retryable?).to be true
+      end
     end
   end
 end

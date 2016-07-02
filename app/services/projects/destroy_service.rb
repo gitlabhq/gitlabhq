@@ -51,13 +51,13 @@ module Projects
       return true if params[:skip_repo] == true
 
       # There is a possibility project does not have repository or wiki
-      return true unless gitlab_shell.exists?(path + '.git')
+      return true unless gitlab_shell.exists?(project.repository_storage_path, path + '.git')
 
       new_path = removal_path(path)
 
-      if gitlab_shell.mv_repository(path, new_path)
+      if gitlab_shell.mv_repository(project.repository_storage_path, path, new_path)
         log_info("Repository \"#{path}\" moved to \"#{new_path}\"")
-        GitlabShellWorker.perform_in(5.minutes, :remove_repository, new_path)
+        GitlabShellWorker.perform_in(5.minutes, :remove_repository, project.repository_storage_path, new_path)
       else
         false
       end

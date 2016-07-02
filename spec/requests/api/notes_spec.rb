@@ -159,7 +159,6 @@ describe API::API, api: true  do
           end
         end
 
-
         context "and current user can view the note" do
           it "should return an issue note by id" do
             get api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", private_user)
@@ -221,7 +220,6 @@ describe API::API, api: true  do
           expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
         end
       end
-
     end
 
     context "when noteable is a Snippet" do
@@ -396,5 +394,4 @@ describe API::API, api: true  do
       end
     end
   end
-
 end

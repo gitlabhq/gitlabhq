@@ -13,7 +13,6 @@ module API
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
-
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 

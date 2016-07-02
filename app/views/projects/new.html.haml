@@ -23,6 +23,7 @@
                   .input-group-addon
                     = root_url
                   = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {}, {class: 'select2 js-select-namespace', tabindex: 1}
+
                 - else
                   .input-group-addon.static-namespace
                     #{root_url}#{current_user.username}/
@@ -44,15 +45,8 @@
               .col-sm-12.import-buttons
                 %div
                   - if github_import_enabled?
-                    - if github_import_configured?
-                      = link_to status_import_github_path, class: 'btn import_github' do
-                        %i.fa.fa-github
-                        GitHub
-                    - else
-                      = link_to '#', class: 'how_to_import_link btn import_github' do
-                        %i.fa.fa-github
-                        GitHub
-                      = render 'github_import_modal'
+                    = link_to new_import_github_path, class: 'btn import_github' do
+                      = icon 'github', text: 'GitHub'
                 %div
                   - if bitbucket_import_enabled?
                     - if bitbucket_import_configured?

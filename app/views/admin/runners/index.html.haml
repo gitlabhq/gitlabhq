@@ -1,7 +1,7 @@
 - @no_container = true
 = render "admin/dashboard/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
 
   %p.prepend-top-default
     %span
@@ -39,6 +39,9 @@
         %li
           %span.label.label-info specific
           \- run builds from assigned projects
+        %li
+          %span.label.label-warning locked
+          \- runner cannot be assigned to other projects
         %li
           %span.label.label-danger paused
           \- runner will not receive any new builds

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Issue prioritization', feature: true do
-
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -15,7 +14,6 @@ feature 'Issue prioritization', feature: true do
   # According to https://gitlab.com/gitlab-org/gitlab-ce/issues/14189#note_4360653
   context 'when issues have one label' do
     scenario 'Are sorted properly' do
-
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)
       issue_2 = create(:issue, title: 'issue_2', project: project)
@@ -46,7 +44,6 @@ feature 'Issue prioritization', feature: true do
 
   context 'when issues have multiple labels' do
     scenario 'Are sorted properly' do
-
       # Issues
       issue_1 = create(:issue, title: 'issue_1', project: project)
       issue_2 = create(:issue, title: 'issue_2', project: project)

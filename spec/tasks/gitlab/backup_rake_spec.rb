@@ -76,7 +76,6 @@ describe 'gitlab:app namespace rake task' do
         expect { run_rake_task('gitlab:backup:restore') }.not_to raise_error
       end
     end
-
   end # backup_restore task
 
   describe 'backup_create' do
@@ -98,67 +97,107 @@ describe 'gitlab:app namespace rake task' do
       @backup_tar = tars_glob.first
     end
 
-    before do
-      create_backup
-    end
-
-    after do
-      FileUtils.rm(@backup_tar)
-    end
-
-    context 'archive file permissions' do
-      it 'should set correct permissions on the tar file' do
-        expect(File.exist?(@backup_tar)).to be_truthy
-        expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100600')
+    context 'tar creation' do
+      before do
+        create_backup
       end
 
-      context 'with custom archive_permissions' do
-        before do
-          allow(Gitlab.config.backup).to receive(:archive_permissions).and_return(0651)
-          # We created a backup in a before(:all) so it got the default permissions.
-          # We now need to do some work to create a _new_ backup file using our stub.
-          FileUtils.rm(@backup_tar)
-          create_backup
+      after do
+        FileUtils.rm(@backup_tar)
+      end
+
+      context 'archive file permissions' do
+        it 'should set correct permissions on the tar file' do
+          expect(File.exist?(@backup_tar)).to be_truthy
+          expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100600')
         end
 
-        it 'uses the custom permissions' do
-          expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100651')
+        context 'with custom archive_permissions' do
+          before do
+            allow(Gitlab.config.backup).to receive(:archive_permissions).and_return(0651)
+            # We created a backup in a before(:all) so it got the default permissions.
+            # We now need to do some work to create a _new_ backup file using our stub.
+            FileUtils.rm(@backup_tar)
+            create_backup
+          end
+
+          it 'uses the custom permissions' do
+            expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100651')
+          end
         end
       end
-    end
 
-    it 'should set correct permissions on the tar contents' do
-      tar_contents, exit_status = Gitlab::Popen.popen(
-        %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
-      )
-      expect(exit_status).to eq(0)
-      expect(tar_contents).to match('db/')
-      expect(tar_contents).to match('uploads.tar.gz')
-      expect(tar_contents).to match('repositories/')
-      expect(tar_contents).to match('builds.tar.gz')
-      expect(tar_contents).to match('artifacts.tar.gz')
-      expect(tar_contents).to match('lfs.tar.gz')
-      expect(tar_contents).to match('registry.tar.gz')
-      expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
-    end
-
-    it 'should delete temp directories' do
-      temp_dirs = Dir.glob(
-        File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs,registry}')
-      )
-
-      expect(temp_dirs).to be_empty
-    end
-
-    context 'registry disabled' do
-      let(:enable_registry) { false }
-
-      it 'should not create registry.tar.gz' do
+      it 'should set correct permissions on the tar contents' do
         tar_contents, exit_status = Gitlab::Popen.popen(
-          %W{tar -tvf #{@backup_tar}}
+          %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz lfs.tar.gz registry.tar.gz}
         )
         expect(exit_status).to eq(0)
-        expect(tar_contents).not_to match('registry.tar.gz')
+        expect(tar_contents).to match('db/')
+        expect(tar_contents).to match('uploads.tar.gz')
+        expect(tar_contents).to match('repositories/')
+        expect(tar_contents).to match('builds.tar.gz')
+        expect(tar_contents).to match('artifacts.tar.gz')
+        expect(tar_contents).to match('lfs.tar.gz')
+        expect(tar_contents).to match('registry.tar.gz')
+        expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
+      end
+
+      it 'should delete temp directories' do
+        temp_dirs = Dir.glob(
+          File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,lfs,registry}')
+        )
+
+        expect(temp_dirs).to be_empty
+      end
+
+      context 'registry disabled' do
+        let(:enable_registry) { false }
+
+        it 'should not create registry.tar.gz' do
+          tar_contents, exit_status = Gitlab::Popen.popen(
+            %W{tar -tvf #{@backup_tar}}
+          )
+          expect(exit_status).to eq(0)
+          expect(tar_contents).not_to match('registry.tar.gz')
+        end
+      end
+    end
+
+    context 'multiple repository storages' do
+      let(:project_a) { create(:project, repository_storage: 'default') }
+      let(:project_b) { create(:project, repository_storage: 'custom') }
+
+      before do
+        FileUtils.mkdir('tmp/tests/default_storage')
+        FileUtils.mkdir('tmp/tests/custom_storage')
+        storages = {
+          'default' => 'tmp/tests/default_storage',
+          'custom' => 'tmp/tests/custom_storage'
+        }
+        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+
+        # Create the projects now, after mocking the settings but before doing the backup
+        project_a
+        project_b
+
+        # We only need a backup of the repositories for this test
+        ENV["SKIP"] = "db,uploads,builds,artifacts,lfs,registry"
+        create_backup
+      end
+
+      after do
+        FileUtils.rm_rf('tmp/tests/default_storage')
+        FileUtils.rm_rf('tmp/tests/custom_storage')
+        FileUtils.rm(@backup_tar)
+      end
+
+      it 'should include repositories in all repository storages' do
+        tar_contents, exit_status = Gitlab::Popen.popen(
+          %W{tar -tvf #{@backup_tar} repositories}
+        )
+        expect(exit_status).to eq(0)
+        expect(tar_contents).to match("repositories/#{project_a.path_with_namespace}.bundle")
+        expect(tar_contents).to match("repositories/#{project_b.path_with_namespace}.bundle")
       end
     end
   end # backup_create task

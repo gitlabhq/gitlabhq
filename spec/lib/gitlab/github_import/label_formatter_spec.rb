@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Gitlab::GithubImport::LabelFormatter, lib: true do
-
   describe '#attributes' do
     it 'returns formatted attributes' do
       project = create(:project)

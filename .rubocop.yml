@@ -1,4 +1,6 @@
-require: rubocop-rspec
+require:
+  - rubocop-rspec
+  - ./rubocop/rubocop
 
 AllCops:
   TargetRubyVersion: 2.1
@@ -191,7 +193,7 @@ Style/EmptyLineBetweenDefs:
 
 # Don't use several empty lines in a row.
 Style/EmptyLines:
-  Enabled: false
+  Enabled: true
 
 # Keep blank lines around access modifiers.
 Style/EmptyLinesAroundAccessModifier:
@@ -532,11 +534,11 @@ Style/SingleLineMethods:
 
 # Use spaces after colons.
 Style/SpaceAfterColon:
-  Enabled: false
+  Enabled: true
 
 # Use spaces after commas.
 Style/SpaceAfterComma:
-  Enabled: false
+  Enabled: true
 
 # Do not put a space between a method name and the opening parenthesis in a
 # method definition.
@@ -679,7 +681,7 @@ Style/UnlessElse:
 
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
-  Enabled: false
+  Enabled: true
 
 # TODO: Enable UnneededInterpolation Cop.
 # Checks for strings that are just an interpolated expression.

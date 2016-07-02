@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::ImportExport::Reader, lib: true  do
-  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path:'') }
+  let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: '') }
   let(:test_config) { 'spec/support/import_export/import_export.yml' }
   let(:project_tree_hash) do
     {
@@ -25,7 +25,6 @@ describe Gitlab::ImportExport::Reader, lib: true  do
   end
 
   context 'individual scenarios' do
-
     it 'generates the correct hash for a single project relation' do
       setup_yaml(project_tree: [:issues])
 

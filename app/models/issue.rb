@@ -19,6 +19,8 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
+  has_many :events, as: :target, dependent: :destroy
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }

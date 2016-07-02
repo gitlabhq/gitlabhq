@@ -57,6 +57,7 @@ describe Namespace, models: true do
   describe :move_dir do
     before do
       @namespace = create :namespace
+      @project = create :project, namespace: @namespace
       allow(@namespace).to receive(:path_changed?).and_return(true)
     end
 
@@ -87,8 +88,13 @@ describe Namespace, models: true do
   end
 
   describe :rm_dir do
-    it "should remove dir" do
-      expect(namespace.rm_dir).to be_truthy
+    let!(:project) { create(:project, namespace: namespace) }
+    let!(:path) { File.join(Gitlab.config.repositories.storages.default, namespace.path) }
+
+    before { namespace.destroy }
+
+    it "should remove its dirs when deleted" do
+      expect(File.exist?(path)).to be(false)
     end
   end
 
@@ -103,7 +109,6 @@ describe Namespace, models: true do
   end
 
   describe ".clean_path" do
-
     let!(:user)       { create(:user, username: "johngitlab-etc") }
     let!(:namespace)  { create(:namespace, path: "JohnGitLab-etc1") }
 

@@ -57,6 +57,72 @@ describe MembersHelper do
     end
   end
 
+  describe '#can_see_request_access_button?' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group, :public) }
+    let(:project) { create(:project, :public, group: group) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    context 'source is a group' do
+      context 'current_user is not a member' do
+        it 'returns true' do
+          expect(helper.can_see_request_access_button?(group)).to be_truthy
+        end
+      end
+
+      context 'current_user is a member' do
+        it 'returns false' do
+          group.add_owner(user)
+
+          expect(helper.can_see_request_access_button?(group)).to be_falsy
+        end
+      end
+
+      context 'current_user is a requester' do
+        it 'returns true' do
+          group.request_access(user)
+
+          expect(helper.can_see_request_access_button?(group)).to be_truthy
+        end
+      end
+    end
+
+    context 'source is a project' do
+      context 'current_user is not a member' do
+        it 'returns true' do
+          expect(helper.can_see_request_access_button?(project)).to be_truthy
+        end
+      end
+
+      context 'current_user is a group member' do
+        it 'returns false' do
+          group.add_owner(user)
+
+          expect(helper.can_see_request_access_button?(project)).to be_falsy
+        end
+      end
+
+      context 'current_user is a group requester' do
+        it 'returns false' do
+          group.request_access(user)
+
+          expect(helper.can_see_request_access_button?(project)).to be_falsy
+        end
+      end
+
+      context 'current_user is a member' do
+        it 'returns false' do
+          project.team << [user, :master]
+
+          expect(helper.can_see_request_access_button?(project)).to be_falsy
+        end
+      end
+    end
+  end
+
   describe '#remove_member_message' do
     let(:requester) { build(:user) }
     let(:project) { create(:project) }

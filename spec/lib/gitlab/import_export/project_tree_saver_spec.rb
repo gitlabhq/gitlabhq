@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   describe 'saves the project tree into a json object' do
-
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
     let(:project_tree_saver) { described_class.new(project: project, shared: shared) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
@@ -23,7 +22,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     end
 
     context 'JSON' do
-
       let(:saved_project_json) do
         project_tree_saver.save
         project_json(project_tree_saver.full_path)
@@ -34,7 +32,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       end
 
       it 'has events' do
-        expect(saved_project_json['events']).not_to be_empty
+        expect(saved_project_json['milestones'].first['events']).not_to be_empty
       end
 
       it 'has milestones' do
@@ -132,7 +130,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                        statuses: [commit_status])
 
     create(:ci_build, pipeline: ci_pipeline, project: project)
-    create(:milestone, project: project)
+    milestone = create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
     create(:note, noteable: snippet, project: project)
@@ -140,6 +138,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
            author: user,
            project: project,
            commit_id: ci_pipeline.sha)
+
+    create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+
     project
   end
 

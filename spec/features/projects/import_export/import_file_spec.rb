@@ -24,7 +24,7 @@ feature 'project import', feature: true, js: true do
     visit new_project_path
 
     select2('2', from: '#project_namespace_id')
-    fill_in :project_path, with:'test-project-path', visible: true
+    fill_in :project_path, with: 'test-project-path', visible: true
     click_link 'GitLab export'
 
     expect(page).to have_content('GitLab project export')
