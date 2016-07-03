@@ -8,10 +8,15 @@ class @FilesCommentButton
     @LINE_HOLDER_CLASS = '.line_holder'
     @LINE_NUMBER_CLASS = 'diff-line-num'
     @LINE_CONTENT_CLASS = 'line_content'
+    @UNFOLDABLE_LINE_CLASS = 'js-unfold'
+    @EMPTY_CELL_CLASS = 'empty-cell'
+    @OLD_LINE_CLASS = 'old_line'
     @LINE_COLUMN_CLASSES = ".#{@LINE_NUMBER_CLASS}, .line_content"
     @TEXT_FILE_SELECTOR = '.text-file'
 
     @DEBOUNCE_TIMEOUT_DURATION = 150
+
+    @VIEW_TYPE = $('input#view[type=hidden]').val()
 
     $(document)
       .on 'mouseover', @LINE_COLUMN_CLASSES, @debounceRender
@@ -38,13 +43,13 @@ class @FilesCommentButton
       id:
         noteable: textFileElement.attr 'data-noteable-id'
         commit: textFileElement.attr 'data-commit-id'
-        discussion: lineContentElement.attr('data-discussion-id') || lineHolderElement.attr('data-discussion-id')
+        discussion: lineContentElement.attr('data-discussion-id') or lineHolderElement.attr('data-discussion-id')
       type:
         noteable: textFileElement.attr 'data-noteable-type'
         note: textFileElement.attr 'data-note-type'
         line: lineContentElement.attr 'data-line-type'
       code:
-        line: lineContentElement.attr('data-line-code') || lineHolderElement.attr('id')
+        line: lineContentElement.attr('data-line-code') or lineHolderElement.attr('id')
     return
 
   destroy: (e) =>
@@ -70,14 +75,17 @@ class @FilesCommentButton
     $(hoveredElement.parent())
 
   getLineNum: (hoveredElement) ->
-    return hoveredElement if hoveredElement.hasClass @LINE_NUMBER_CLASS
-
-    $(hoveredElement).prev('.' + @LINE_NUMBER_CLASS)
+    if @VIEW_TYPE is 'inline' and hoveredElement.hasClass @OLD_LINE_CLASS
+      $(hoveredElement).next ".#{@LINE_NUMBER_CLASS}"
+    else if hoveredElement.hasClass @LINE_NUMBER_CLASS
+      hoveredElement
+    else
+      $(hoveredElement).prev ".#{@LINE_NUMBER_CLASS}"
 
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass @LINE_CONTENT_CLASS
 
-    $(hoveredElement).next('.' + @LINE_CONTENT_CLASS)
+    $(hoveredElement).next ".#{@LINE_CONTENT_CLASS}"
 
   isMovingToSameType: (e) ->
     newLineNum = @getLineNum($(e.toElement))
@@ -85,4 +93,6 @@ class @FilesCommentButton
     (newLineNum).is @getLineNum($(e.currentTarget))
 
   shouldRender: (e, buttonParentElement) ->
-    (!buttonParentElement.hasClass('empty-cell') and $(@COMMENT_BUTTON_CLASS, buttonParentElement).length is 0)
+    (!buttonParentElement.hasClass(@EMPTY_CELL_CLASS) and \
+    !buttonParentElement.hasClass(@UNFOLDABLE_LINE_CLASS) and \
+    $(@COMMENT_BUTTON_CLASS, buttonParentElement).length is 0)

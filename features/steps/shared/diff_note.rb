@@ -25,8 +25,7 @@ module SharedDiffNote
 
       page.within("form[id$='#{sample_commit.line_code}-true']") do
         fill_in "note[note]", with: "Typo, please fix"
-        find(".js-comment-button").trigger("click")
-        sleep 0.05
+        find(".js-comment-button").click
       end
     end
   end
@@ -35,7 +34,7 @@ module SharedDiffNote
     click_parallel_diff_line(sample_commit.del_line_code, 'old')
     page.within("#{diff_file_selector} form[id$='#{sample_commit.del_line_code}-true']") do
       fill_in "note[note]", with: "Old comment"
-      find(".js-comment-button").trigger("click")
+      find(".js-comment-button").click
     end
   end
 
@@ -43,7 +42,7 @@ module SharedDiffNote
     click_parallel_diff_line(sample_commit.line_code, 'new')
     page.within("#{diff_file_selector} form[id$='#{sample_commit.line_code}-true']") do
       fill_in "note[note]", with: "New comment"
-      find(".js-comment-button").trigger("click")
+      find(".js-comment-button").click
     end
   end
 
@@ -211,7 +210,7 @@ module SharedDiffNote
   end
 
   step 'I click side-by-side diff button' do
-    find('#parallel-diff-btn').trigger('click')
+    find('#parallel-diff-btn').click
   end
 
   step 'I see side-by-side diff button' do
@@ -223,12 +222,12 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find(".line_holder[id='#{code}'] td:nth-of-type(1)").hover
-    find(".line_holder[id='#{code}'] button").trigger('click')
+    find(".line_holder[id='#{code}'] td:nth-of-type(1)").trigger 'mouseover'
+    find(".line_holder[id='#{code}'] button").trigger 'click'
   end
 
   def click_parallel_diff_line(code, line_type)
-    find(".line_content.parallel.#{line_type}[data-line-code='#{code}']").trigger('mouseover')
-    find(".line_holder.parallel button[data-line-code='#{code}']").trigger('click')
+    find(".line_content.parallel.#{line_type}[data-line-code='#{code}']").trigger 'mouseover'
+    find(".line_holder.parallel button[data-line-code='#{code}']").trigger 'click'
   end
 end

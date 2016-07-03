@@ -39,7 +39,7 @@ module DiffHelper
   end
 
   def unfold_bottom_class(bottom)
-    bottom ? 'js-unfold-bottom' : ''
+    bottom ? 'js-unfold js-unfold-bottom' : ''
   end
 
   def unfold_class(unfold)

@@ -59,7 +59,7 @@ describe DiffHelper do
     end
 
     it 'should return js class when bottom lines should be unfolded' do
-      expect(unfold_bottom_class(true)).to eq('js-unfold-bottom')
+      expect(unfold_bottom_class(true)).to include('js-unfold-bottom')
     end
   end
 
