@@ -117,6 +117,8 @@ class MergeRequest < ActiveRecord::Base
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
 
+  after_save :keep_around_commit
+
   def self.reference_prefix
     '!'
   end
@@ -536,12 +538,12 @@ class MergeRequest < ActiveRecord::Base
     "refs/merge-requests/#{iid}/head"
   end
 
-  def ref_is_fetched?
-    File.exist?(File.join(project.repository.path_to_repo, ref_path))
+  def ref_fetched?
+    project.repository.ref_exists?(ref_path)
   end
 
   def ensure_ref_fetched
-    fetch_ref unless ref_is_fetched?
+    fetch_ref unless ref_fetched?
   end
 
   def in_locked_state
@@ -599,5 +601,9 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_cherry_picked?
     merge_commit
+  end
+
+  def keep_around_commit
+    project.repository.keep_around(self.merge_commit_sha)
   end
 end

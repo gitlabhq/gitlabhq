@@ -1117,6 +1117,14 @@ describe Repository, models: true do
     end
   end
 
+  describe "#keep_around" do
+    it "stores a reference to the specified commit sha so it isn't garbage collected" do
+      repository.keep_around(sample_commit.id)
+
+      expect(repository.kept_around?(sample_commit.id)).to be_truthy
+    end
+  end
+
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)

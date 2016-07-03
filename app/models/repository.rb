@@ -203,6 +203,26 @@ class Repository
     branch_names.include?(branch_name)
   end
 
+  def ref_exists?(ref)
+    rugged.references.exist?(ref)
+  end
+
+  def keep_around(sha)
+    return unless sha && commit(sha)
+
+    return if kept_around?(sha)
+
+    rugged.references.create(keep_around_ref_name(sha), sha)
+  end
+
+  def kept_around?(sha)
+    ref_exists?(keep_around_ref_name(sha))
+  end
+
+  def keep_around_ref_name(sha)
+    "refs/keep-around/#{sha}"
+  end
+
   def tag_names
     cache.fetch(:tag_names) { raw_repository.tag_names }
   end
