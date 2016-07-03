@@ -103,7 +103,7 @@ describe Projects::MergeRequestsController do
             id: merge_request.iid,
             format: :patch)
 
-        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-format-patch:")
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
       end
     end
   end

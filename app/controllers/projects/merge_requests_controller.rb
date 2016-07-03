@@ -58,14 +58,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json   { render json: @merge_request }
-      format.patch  do
-        headers.store(*Gitlab::Workhorse.send_git_patch(@project.repository,
-                                                        @merge_request.diff_base_commit.id,
-                                                        @merge_request.last_commit.id))
-        headers['Content-Disposition'] = 'inline'
-        head :ok
+      
+      format.json do
+        render json: @merge_request
       end
+
+      format.patch  do
+        return render_404 unless @merge_request.diff_refs
+
+        send_git_patch @project.repository, @merge_request.diff_refs
+      end
+
       format.diff do
         return render_404 unless @merge_request.diff_refs
 

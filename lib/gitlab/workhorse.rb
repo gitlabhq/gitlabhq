@@ -50,11 +50,11 @@ module Gitlab
         ]
       end
 
-      def send_git_patch(repository, from, to)
+      def send_git_patch(repository, diff_refs)
         params = {
           'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => from,
-          'ShaTo'     => to
+          'ShaFrom'   => diff_refs.start_sha,
+          'ShaTo'     => diff_refs.head_sha
         }
 
         [
