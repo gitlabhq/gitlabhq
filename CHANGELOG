@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.5
+  - Update RedCloth to 4.3.2 for CVE-2012-6684. !4929 (Takuya Noguchi)
   - Improve the request / withdraw access button. !4860
 
 v 8.9.4
