@@ -3,9 +3,12 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.0 (unreleased)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
+  - Refactor repository paths handling to allow multiple git mount points
+  - Add Application Setting to configure default Repository Path for new projects
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
+  - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
   - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
@@ -15,18 +18,39 @@ v 8.10.0 (unreleased)
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
+  - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
+  - API: Todos !3188 (Robert Schilling)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
   - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Don't instantiate a git tree on Projects show default view
   - Remove unused front-end variable -> default_issues_tracker
+  - Better caching of git calls on ProjectsController#show.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
 
-v 8.9.4 (unreleased)
-  - Fixes middle click and double request when navigating through the file browser  !4891
-  - Add sub nav to file page view
+v 8.9.5 (unreleased)
+  - Improve the request / withdraw access button. !4860
+  - Fix assigning shared runners as admins. !4961
+  - Show "locked" label for locked runners on runners admin. !4961
+  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
+
+v 8.9.4
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
+  - Fixed search field blur not removing focus. !4704
+  - Resolve "Sub nav isn't showing on file view". !4890
+  - Fixes middle click and double request when navigating through the file browser. !4891
+  - Fixed URL on label button when filtering. !4897
+  - Fixed commit avatar alignment. !4933
+  - Do not show build retry link when build is active. !4967
+  - Fix restore Rake task warning message output. !4980
+  - Handle external issues in IssueReferenceFilter. !4988
+  - Expiry date on pinned nav cookie. !5009
+  - Updated breakpoint for sidebar pinning. !5019
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !4963
@@ -43,9 +67,7 @@ v 8.9.3
   - Fix missing avatar on system notes. !4954
   - Reduce overhead and optimize ProjectTeam#max_member_access performance. !4973
   - Use update_columns to by_pass all the dirty code on active_record. !4985
-  - Decreased min width of screen to 1280px for pinned sidebar
-  - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem
-  - Update mobile button icons to be more inline with typical UI paradigms
+  - Fix restore Rake task warning message output !4980
 
 v 8.9.2
   - Fix visibility of snippets when searching.
@@ -96,7 +118,6 @@ v 8.9.1
   - Remove duplicate 'New Page' button on edit wiki page
 
 v 8.9.0
-v 8.9.0 (unreleased)
   - Fix group visibility form layout in application settings
   - Fix builds API response not including commit data
   - Fix error when CI job variables key specified but not defined
@@ -246,11 +267,16 @@ v 8.9.0
   - Filter parameters for request_uri value on instrumented transactions.
   - Remove duplicated keys add UNIQUE index to keys fingerprint column
   - ExtractsPath get ref_names from repository cache, if not there access git.
+  - Show a flash warning about the error detail of XHR requests which failed with status code 404 and 500
   - Cache user todo counts from TodoService
   - Ensure Todos counters doesn't count Todos for projects pending delete
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.7
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
 
 v 8.8.6
   - Fix visibility of snippets when searching.
@@ -385,6 +411,10 @@ v 8.8.0
   - Allows MR authors to have the source branch removed when merging the MR. !2801 (Jeroen Jacobs)
   - When creating a .gitignore file a dropdown with templates will be provided
   - Shows the issue/MR list search/filter form and corrects the mobile styling for guest users. #17562
+
+v 8.7.9
+  - Fix privilege escalation issue with OAuth external users.
+  - Ensure references to private repos aren't shown to logged-out users.
 
 v 8.7.8
   - Fix visibility of snippets when searching.

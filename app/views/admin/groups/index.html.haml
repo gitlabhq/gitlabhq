@@ -2,7 +2,7 @@
 - page_title "Groups"
 = render "admin/dashboard/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   %h3.page-title
     Groups (#{number_with_delimiter(@groups.total_count)})
 
@@ -39,7 +39,6 @@
       = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
 
   %ul.content-list
-    - @groups.each do |group|
-      = render 'group', group: group
+    = render @groups
 
   = paginate @groups, theme: "gitlab"

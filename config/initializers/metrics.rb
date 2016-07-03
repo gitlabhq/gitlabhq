@@ -132,6 +132,9 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(API::Helpers)
 
     config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
+
+    config.instrument_instance_methods(Rouge::Plugins::Redcarpet)
+    config.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
   end
 
   GC::Profiler.enable

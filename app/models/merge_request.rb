@@ -15,6 +15,8 @@ class MergeRequest < ActiveRecord::Base
   has_many :approvals, dependent: :destroy
   has_many :approvers, as: :target, dependent: :destroy
 
+  has_many :events, as: :target, dependent: :destroy
+
   serialize :merge_params, Hash
 
   after_create :create_merge_request_diff, unless: :importing

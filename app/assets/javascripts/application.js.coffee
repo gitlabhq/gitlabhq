@@ -188,6 +188,15 @@ $ ->
       else
         buttons.enable()
 
+  $(document).ajaxError (e, xhrObj, xhrSetting, xhrErrorText) ->
+
+    if xhrObj.status is 401
+      new Flash 'You need to be logged in.', 'alert'
+
+    else if xhrObj.status in [ 404, 500 ]
+      new Flash 'Something went wrong on our end.', 'alert'
+
+
   # Show/Hide the profile menu when hovering the account box
   $('.account-box').hover -> $(@).toggleClass('hover')
 
@@ -264,8 +273,8 @@ $ ->
   new Aside()
 
   # Sidenav pinning
-  if $window.width() < 1280 and $.cookie('pin_nav') is 'true'
-    $.cookie('pin_nav', 'false', { path: '/' })
+  if $window.width() < 1024 and $.cookie('pin_nav') is 'true'
+    $.cookie('pin_nav', 'false', { path: '/', expires: 365 * 10 })
     $('.page-with-sidebar')
       .toggleClass('page-sidebar-collapsed page-sidebar-expanded')
       .removeClass('page-sidebar-pinned')
@@ -296,7 +305,7 @@ $ ->
                .toggleClass('header-collapsed header-expanded')
 
       # Save settings
-      $.cookie 'pin_nav', doPinNav, { path: '/' }
+      $.cookie 'pin_nav', doPinNav, { path: '/', expires: 365 * 10 }
 
       if $.cookie('pin_nav') is 'true' or doPinNav
         tooltipText = 'Unpin navigation'

@@ -47,11 +47,13 @@ production: &base
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
 
+  repositories:
+    storages: # REPO PATHS MUST NOT BE A SYMLINK!!!
+      default: /apps/repositories/
+
   gitlab_shell:
     path: /apps/gitlab-shell/
 
-    # REPOS_PATH MUST NOT BE A SYMLINK!!!
-    repos_path: /apps/repositories/
     hooks_path: /apps/gitlab-shell/hooks/
 
     upload_pack: true

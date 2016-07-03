@@ -47,7 +47,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -298,22 +298,24 @@ class Repository
     end
   end
 
+  # Keys for data that can be affected for any commit push.
   def cache_keys
-    %i(size branch_names tag_names branch_count tag_count commit_count
+    %i(size commit_count
        readme version contribution_guide changelog
        license_blob license_key gitignore)
   end
 
+  # Keys for data on branch/tag operations.
+  def cache_keys_for_branches_and_tags
+    %i(branch_names tag_names branch_count tag_count)
+  end
+
   def build_cache
-    cache_keys.each do |key|
+    (cache_keys + cache_keys_for_branches_and_tags).each do |key|
       unless cache.exist?(key)
         send(key)
       end
     end
-  end
-
-  def expire_gitignore
-    cache.expire(:gitignore)
   end
 
   def expire_tags_cache
@@ -338,8 +340,6 @@ class Repository
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
     expire_emptiness_caches if empty?
-    expire_branch_count_cache
-    expire_tag_count_cache
   end
 
   def expire_branch_cache(branch_name = nil)

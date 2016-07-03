@@ -7,7 +7,7 @@
 = render 'projects/last_push'
 = render "projects/commits/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   .tree-controls
     = render 'projects/find_file_link'
     - if can? current_user, :download_code, @project

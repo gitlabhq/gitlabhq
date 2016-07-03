@@ -147,6 +147,7 @@ Rails.application.routes.draw do
   #
   namespace :import do
     resource :github, only: [:create, :new], controller: :github do
+      post :personal_access_token
       get :status
       get :callback
       get :jobs

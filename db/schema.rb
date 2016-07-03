@@ -92,6 +92,7 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.boolean  "elasticsearch_search",                  default: false,       null: false
     t.string   "elasticsearch_host",                    default: "localhost"
     t.string   "elasticsearch_port",                    default: "9200"
+    t.string   "repository_storage",                    default: "default"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -920,8 +921,6 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.boolean  "merge_requests_enabled",             default: true,     null: false
     t.boolean  "wiki_enabled",                       default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                     default: "gitlab", null: false
-    t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",                   default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
@@ -959,8 +958,9 @@ ActiveRecord::Schema.define(version: 20160621123729) do
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"
-    t.boolean  "only_allow_merge_if_build_succeeds", default: false,    null: false
+    t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
+    t.string   "repository_storage",                 default: "default", null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

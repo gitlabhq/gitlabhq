@@ -40,6 +40,16 @@ describe ApplicationSetting, models: true do
     it_behaves_like 'an object with email-formated attributes', :admin_notification_email do
       subject { setting }
     end
+
+    context 'repository storages inclussion' do
+      before do
+        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+      end
+
+      it { is_expected.to allow_value('custom').for(:repository_storage) }
+      it { is_expected.not_to allow_value('alternative').for(:repository_storage) }
+    end
   end
 
   context 'restricted signup domains' do
