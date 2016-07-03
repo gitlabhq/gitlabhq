@@ -335,12 +335,6 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#source_sha_parent" do
-    it "returns the sha of the parent commit of the first commit in the MR" do
-      expect(subject.source_sha_parent).to eq("ae73cb07c9eeaf35924a10f713b364d32b2dd34f")
-    end
-  end
-
   describe '#diverged_commits_count' do
     let(:project)      { create(:project) }
     let(:fork_project) { create(:project, forked_from_project: project) }

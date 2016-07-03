@@ -9,7 +9,7 @@ module MergeRequests
     private
 
     def commit
-      repository.ff_merge(current_user, merge_request.source_sha, merge_request.target_branch)
+      repository.ff_merge(current_user, merge_request.diff_head_sha, merge_request.target_branch)
     end
   end
 end

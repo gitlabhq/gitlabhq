@@ -679,12 +679,8 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def source_sha_parent
-    source_project.repository.commit(first_commit.sha).parents.first.sha
-  end
-
   def ff_merge_possible?
-    project.repository.is_ancestor?(target_sha, source_sha)
+    project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
   end
 
   def should_be_rebased?
