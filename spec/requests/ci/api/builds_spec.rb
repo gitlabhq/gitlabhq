@@ -305,7 +305,7 @@ describe Ci::API::API do
             end
           end
 
-          context 'should post artifact to running build' do
+          describe 'uploading artifacts for a running build' do
             shared_examples 'successful artifacts upload' do
               it 'updates successfully' do
                 response_filename =
