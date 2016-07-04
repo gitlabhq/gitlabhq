@@ -14,6 +14,7 @@ class DiffNote < Note
 
   before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code
+  after_save :keep_around_commits
 
   class << self
     def build_discussion_id(noteable_type, noteable_id, position)
@@ -115,5 +116,17 @@ class DiffNote < Note
     return if self.original_position.complete? && self.position.complete?
 
     errors.add(:position, "is invalid")
+  end
+
+  def keep_around_commits
+    project.repository.keep_around(self.original_position.base_sha)
+    project.repository.keep_around(self.original_position.start_sha)
+    project.repository.keep_around(self.original_position.head_sha)
+
+    if self.position != self.original_position
+      project.repository.keep_around(self.position.base_sha)
+      project.repository.keep_around(self.position.start_sha)
+      project.repository.keep_around(self.position.head_sha)
+    end
   end
 end
