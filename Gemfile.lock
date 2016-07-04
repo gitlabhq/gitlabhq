@@ -1,7 +1,12 @@
+<<<<<<< e5caeab441d6c0e818aec369ed467c0b8b9cc29a
 GIT
   remote: git@gitlab.com:gitlab-org/gitlab_git.git
   revision: 0e4ac299b806fa4190c4928a1c1ed5372fffbb38
   branch: commit-blob-rename-action
+=======
+PATH
+  remote: ~/src/Gitlab/gitlab_git
+>>>>>>> refactors blob_controller
   specs:
     gitlab_git (10.3.0)
       activesupport (~> 4.0)
@@ -285,11 +290,16 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
+<<<<<<< 2da08236773692ac819a6acde0dfab8d26a26e30
     gitlab_git (10.2.3)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
       github-linguist (~> 4.7.0)
       rugged (~> 0.24.0)
+<<<<<<< e5caeab441d6c0e818aec369ed467c0b8b9cc29a
+=======
+=======
+>>>>>>> refactors blob_controller
     gitlab_emoji (0.3.1)
       gemojione (~> 2.2, >= 2.2.1)
 >>>>>>> refactors blob_controller
@@ -403,6 +413,7 @@ GEM
     mail_room (0.8.0)
     method_source (0.8.2)
     mime-types (2.99.2)
+    mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
     mini_portile2 (2.1.0)
     minitest (5.7.0)
@@ -875,8 +886,16 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   github-markup (~> 1.3.1)
   gitlab-flowdock-git-hook (~> 1.0.1)
+<<<<<<< 2da08236773692ac819a6acde0dfab8d26a26e30
   gitlab_git (~> 10.2)
+<<<<<<< e5caeab441d6c0e818aec369ed467c0b8b9cc29a
   gitlab_emoji (~> 0.3.0)
+=======
+=======
+  gitlab_emoji (~> 0.3.0)
+  gitlab_git (~> 10.2)!
+>>>>>>> refactors blob_controller
+>>>>>>> refactors blob_controller
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.1.0)
