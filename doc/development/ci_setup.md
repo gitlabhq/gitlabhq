@@ -21,7 +21,7 @@ We currently use three CI services to test GitLab:
 
 Core team has access to trigger builds if needed for GitLab CE.
 
-We use [these build scripts](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/build_script_gitlab_ce.md) for testing with GitLab CI.
+We use [these build scripts](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml) for testing with GitLab CI.
 
 # Build configuration on [Semaphore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for testing the [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
 
