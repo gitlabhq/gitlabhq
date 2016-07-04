@@ -623,6 +623,11 @@ class MergeRequest < ActiveRecord::Base
     access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
   end
 
+  def can_be_merged_via_command_line_by?(user)
+    access = ::Gitlab::UserAccess.new(user, project: project)
+    access.can_push_to_branch?(target_branch)
+  end
+
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_build_succeeds?
 
