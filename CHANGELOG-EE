@@ -2,8 +2,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
 
-v 8.9.4 (unreleased)
-  - Improve how File Lock feature works with nested items
+v 8.9.4
+  - Improve how File Lock feature works with nested items. !497
 
 v 8.9.3
   - Fix encrypted data backwards compatibility after upgrading attr_encrypted gem. !502
@@ -38,6 +38,9 @@ v 8.9.0
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
   - Fix: Git hooks don't fire when committing from the UI
+
+v 8.8.7
+  - No EE-specific changes
 
 v 8.8.6
   - [Elastic] Fix visibility of snippets when searching.
@@ -81,6 +84,9 @@ v 8.8.0
   - Reduce emails-on-push HTML size by using a simple monospace font
   - API requests to /internal/authorized_keys are now tagged properly
   - Geo: Single Sign Out support !380
+
+v 8.7.9
+  - No EE-specific changes
 
 v 8.7.8
   - [Elastic] Fix visibility of snippets when searching.
