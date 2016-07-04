@@ -750,7 +750,6 @@ class Repository
 
       if options[:previous_path]
         commit_options[:file][:previous_path] = options[:previous_path]
-
         Gitlab::Git::Blob.rename(raw_repository, commit_options)
       else
         Gitlab::Git::Blob.commit(raw_repository, commit_options)
