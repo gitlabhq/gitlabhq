@@ -57,5 +57,3 @@ FactoryGirl::SyntaxRunner.class_eval do
 end
 
 ActiveRecord::Migration.maintain_test_schema!
-
-OmniAuth.config.test_mode = true
