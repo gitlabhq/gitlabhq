@@ -384,6 +384,8 @@ module Ci
     def update_artifacts_size
       self.artifacts_size = if artifacts_file.exists?
                               artifacts_file.size
+                            else
+                              nil
                             end
     end
 
