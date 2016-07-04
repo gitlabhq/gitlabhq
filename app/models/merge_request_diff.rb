@@ -24,7 +24,7 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_diffs
 
   after_create :reload_content, unless: :importing?
-  after_save :keep_around_commits
+  after_save :keep_around_commits, unless: :importing?
 
   def reload_content
     reload_commits
