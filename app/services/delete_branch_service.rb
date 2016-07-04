@@ -30,8 +30,8 @@ class DeleteBranchService < BaseService
     else
       error('Failed to remove branch')
     end
-  rescue GitHooksService::PreReceiveError
-    error('Branch deletion was rejected by Git hook')
+  rescue GitHooksService::PreReceiveError => ex
+    error(ex.message)
   end
 
   def error(message, return_code = 400)

@@ -18,16 +18,16 @@ describe GitHooksService, services: true do
   describe '#execute' do
     context 'when receive hooks were successful' do
       it 'should call post-receive hook' do
-        hook = double(trigger: true)
+        hook = double(trigger: [true, nil])
         expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
-        expect(service.execute(user, @repo_path, @blankrev, @newrev, @ref) { }).to eq(true)
+        expect(service.execute(user, @repo_path, @blankrev, @newrev, @ref) { }).to eq([true, nil])
       end
     end
 
     context 'when pre-receive hook failed' do
       it 'should not call post-receive hook' do
-        expect(service).to receive(:run_hook).with('pre-receive').and_return(false)
+        expect(service).to receive(:run_hook).with('pre-receive').and_return([false, ''])
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do
@@ -38,8 +38,8 @@ describe GitHooksService, services: true do
 
     context 'when update hook failed' do
       it 'should not call post-receive hook' do
-        expect(service).to receive(:run_hook).with('pre-receive').and_return(true)
-        expect(service).to receive(:run_hook).with('update').and_return(false)
+        expect(service).to receive(:run_hook).with('pre-receive').and_return([true, nil])
+        expect(service).to receive(:run_hook).with('update').and_return([false, ''])
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do

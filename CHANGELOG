@@ -32,6 +32,7 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
+  - More descriptive message for git hooks and file locks
 
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
