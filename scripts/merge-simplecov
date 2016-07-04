@@ -46,42 +46,11 @@ def all_results
   results
 end
 
-def merge_resultset(a1, a2)
-  return a1 || [] unless a2
-  return a2 || [] unless a1
-
-  new_array = a1.dup
-  a2.each_with_index do |element, i|
-    if element.nil? && new_array[i].nil?
-      new_array[i] = nil
-    elsif element.nil? && new_array[i] == 0 || element == 0 && new_array[i].nil?
-      new_array[i] = nil
-    else
-      local_value = element || 0
-      other_value = new_array[i] || 0
-      new_array[i] = local_value + other_value
-    end
-  end
-  new_array
-end
-
-def merge_hashes(h1, h2)
-  new_resultset = {}
-  (h1.keys + h2.keys).each do |filename|
-    new_resultset[filename] = []
-  end
-
-  new_resultset.each_key do |filename|
-    new_resultset[filename] = merge_resultset(h1[filename], h2[filename])
-  end
-  new_resultset
-end
-
 def merged_result
   merged = {}
   results = all_results
   results.each do |result|
-    merged = merge_hashes(result.original_result, merged)
+    merged = result.original_result.merge_resultset(merged)
   end
   result = SimpleCov::Result.new(merged)
   # Specify the command name
