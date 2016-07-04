@@ -65,6 +65,16 @@ describe MergeRequests::MergeService, services: true do
 
         expect(merge_request.merge_error).to eq("Something went wrong during merge")
       end
+
+      it 'saves error if there is an PreReceiveError exception' do
+        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, "error")
+
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to eq("error")
+      end
     end
   end
 end

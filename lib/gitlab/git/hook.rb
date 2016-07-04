@@ -41,7 +41,7 @@ module Gitlab
           chdir: repo_path
         }
 
-        Open3.popen3(vars, path, options) do |stdin, _, stderr, wait_thr|
+        Open3.popen3(vars, path, options) do |stdin, stdout, stderr, wait_thr|
           exit_status = true
           stdin.sync = true
 
@@ -60,7 +60,7 @@ module Gitlab
 
           unless wait_thr.value == 0
             exit_status = false
-            exit_message = stderr.gets
+            exit_message = retrieve_error_message(stderr, stdout)
           end
         end
 
@@ -75,6 +75,11 @@ module Gitlab
         end
 
         [status, nil]
+      end
+
+      def retrieve_error_message(stderr, stdout)
+        err_message = stderr.gets
+        err_message.blank? ? stdout.gets : err_message
       end
     end
   end
