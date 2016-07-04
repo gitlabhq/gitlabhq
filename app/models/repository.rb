@@ -741,6 +741,39 @@ class Repository
     end
   end
 
+  def update_file(user, path, previous_path, content, message, branch, update)
+    commit_with_hooks(user, branch) do |ref|
+      committer = user_to_committer(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref
+      }
+
+      options[:file] = {
+        content: content,
+        path: path,
+        update: update
+      }
+
+      if previous_path
+        options[:file].merge!(previous_path: previous_path)
+
+        puts "#" * 90
+        puts "Hello"
+        puts "#" * 90
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        puts "#" * 90
+        puts "World"
+        puts "#" * 90
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
+    end
+  end
+
   def remove_file(user, path, message, branch)
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)

@@ -11,7 +11,15 @@ module CreatesCommit
       file_path: @path
     )
 
+    puts "#" * 10
+    puts @previous_path
+    puts "#" * 10
+
     result = service.new(@tree_edit_project, current_user, commit_params).execute
+
+    puts "#" * 30
+    puts result[:status]
+    puts "#" * 30
 
     if result[:status] == :success
       update_flash_notice(success_notice)
