@@ -100,13 +100,25 @@ class @Notes
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
 
-  keydownNoteText: (e) ->
-    $this = $(this)
-    if $this.val() is '' and e.which is 38 and not isMetaKey e
+  keydownNoteText: (e) =>
+    return if isMetaKey e
+
+    $textarea = $(e.target)
+    if $textarea.val() is '' and e.which is 38
       myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
       if myLastNote.length
         myLastNoteEditBtn = myLastNote.find('.js-note-edit')
         myLastNoteEditBtn.trigger('click', [true, myLastNote])
+    if e.which is 27
+      discussionNoteForm = $textarea.closest(".js-discussion-note-form")
+      if discussionNoteForm.length
+        @removeDiscussionNoteForm(discussionNoteForm)
+        return
+
+      editNote = $textarea.closest(".note")
+      if editNote.length
+        @removeNoteEditForm(editNote)
+
 
   isMetaKey = (e) ->
     (e.metaKey or e.ctrlKey or e.altKey or e.shiftKey)
@@ -401,9 +413,12 @@ class @Notes
 
   Hides edit form and restores the original note text to the editor textarea.
   ###
-  cancelEdit: (e) ->
+  cancelEdit: (e) =>
     e.preventDefault()
-    note = $(this).closest(".note")
+    note = $(e.target).closest(".note")
+    @removeNoteEditForm(note)
+
+  removeNoteEditForm: (note) ->
     form = note.find(".current-note-edit-form")
     note.removeClass "is-editting"
     form.removeClass("current-note-edit-form")
