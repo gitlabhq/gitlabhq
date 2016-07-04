@@ -40,7 +40,6 @@ module LoginHelpers
   def login_via(provider, user, uid)
     mock_auth_hash(provider, uid, user.email)
     visit new_user_session_path
-    #page.find('.oauth-image-link').click
     click_link provider
   end
 

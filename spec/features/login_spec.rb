@@ -115,8 +115,8 @@ feature 'Login', feature: true do
       end
 
       it 'should show 2FA prompt after OAuth login' do
-        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
         stub_omniauth_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [OpenStruct.new(name: 'saml', label: 'saml', args: {})])
+        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
         login_via('saml', user, 'my-uid')
 
         expect(page).to have_content('Two-Factor Authentication')
