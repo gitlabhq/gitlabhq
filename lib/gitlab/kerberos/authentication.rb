@@ -1,11 +1,9 @@
-require "krb5_auth"
 # This calls helps to authenticate to Kerberos by providing username and password
-
 module Gitlab
   module Kerberos
     class Authentication
       def self.kerberos_default_realm
-        krb5 = ::Krb5Auth::Krb5.new
+        krb5 = krb5_class.new
         default_realm = krb5.get_default_realm
         krb5.close # release memory allocated by the krb5 library
         default_realm
@@ -19,15 +17,22 @@ module Gitlab
         auth.login
       end
 
+      def self.krb5_class
+        @krb5_class ||= begin
+          require "krb5_auth"
+          Krb5Auth::Krb5
+        end
+      end
+
       def initialize(login, password)
         @login = login
         @password = password
-        @krb5 = ::Krb5Auth::Krb5.new
+        @krb5 = self.class.krb5_class.new
       end
 
       def valid?
         @krb5.get_init_creds_password(@login, @password)
-      rescue ::Krb5Auth::Krb5::Exception
+      rescue self.class.krb5_class::Exception
         false
       end
 
