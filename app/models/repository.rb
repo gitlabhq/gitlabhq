@@ -749,17 +749,8 @@ class Repository
       options[:author] = committer
       options[:commit] = {
         message: message,
-        branch: ref,
+        branch: ref
       }
-
-      if previous_path
-        options[:file] = {
-          path: previous_path
-        }
-
-
-        Gitlab::Git::Blob.remove(raw_repository, options)
-      end
 
       options[:file] = {
         content: content,
@@ -767,7 +758,13 @@ class Repository
         update: update
       }
 
-      Gitlab::Git::Blob.commit(raw_repository, options)
+      if previous_path
+        options[:file].merge!(previous_path: previous_path)
+
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
     end
   end
 
