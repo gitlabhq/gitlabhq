@@ -387,7 +387,7 @@ ul.notes {
 .line-resolve-all {
   padding: 10px;
   border: 1px solid $border-color;
-  border-radius: 2px;
+  border-radius: $border-radius-default;
 
   .btn {
     margin-right: 10px;

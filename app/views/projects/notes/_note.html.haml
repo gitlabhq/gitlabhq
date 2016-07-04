@@ -21,9 +21,11 @@
           - if access and not note.system
             %span.note-role.hidden-xs= access
           - unless note.system
-            %resolve-btn{ ":note-id" => note.id, ":resolved" => "false", "inline-template" => true, "v-ref:note_#{note.id}" => true }
-              %button.note-action-button.line-resolve-btn{ type: "button", ":class" => "{ 'is-active': isResolved }", ":aria-label" => "buttonText", "@click" => "resolve", ":title" => "buttonText" }
-                = icon("check")
+            %resolve-btn{ ":endpoint" => "'#{resolve_namespace_project_note_path(note.project.namespace, note.project, note)}'", ":note-id" => note.id, ":resolved" => "false", "inline-template" => true, "v-ref:note_#{note.id}" => true }
+              .note-action-button
+                = icon("spin spinner", "v-show" => "loading")
+                %button.line-resolve-btn{ type: "button", ":class" => "{ 'is-active': isResolved }", ":aria-label" => "buttonText", "@click" => "resolve", ":title" => "buttonText", "v-show" => "!loading", "v-el:button" => true }
+                  = icon("check")
           - if current_user and not note.system
             = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
               = icon('spinner spin')

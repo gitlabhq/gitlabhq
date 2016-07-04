@@ -828,6 +828,7 @@ Rails.application.routes.draw do
           member do
             post :toggle_award_emoji
             delete :delete_attachment
+            post :resolve
           end
         end
 

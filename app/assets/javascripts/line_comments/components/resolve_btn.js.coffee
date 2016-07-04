@@ -2,22 +2,32 @@
   props:
     noteId: Number
     resolved: Boolean
-  data: -> comments: CommentsStore.state
+    endpoint: String
+  data: ->
+    comments: CommentsStore.state
+    loading: false
   computed:
     buttonText: ->
       if this.comments[this.noteId] then "Mark as un-resolved" else "Mark as resolved"
     isResolved: -> this.comments[this.noteId]
   methods:
     updateTooltip: ->
-      $(this.$el)
+      $(this.$els.button)
         .tooltip('hide')
         .tooltip('fixTitle')
     resolve: ->
-      CommentsStore.update(this.noteId, !this.comments[this.noteId])
+      this.$set('loading', true)
+      ResolveService
+        .resolve(this.endpoint, !this.isResolved)
+        .done =>
+          this.$set('loading', false)
+          CommentsStore.update(this.noteId, !this.isResolved)
 
-      this.$nextTick this.updateTooltip
+          this.$nextTick this.updateTooltip
+        .always =>
+          this.$set('loading', false)
   compiled: ->
-    $(this.$el).tooltip()
+    $(this.$els.button).tooltip()
   destroyed: ->
     CommentsStore.delete(this.noteId)
   created: ->

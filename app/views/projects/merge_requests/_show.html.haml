@@ -47,7 +47,8 @@
     #resolve-all-app{ "v-cloak" => true }
       %resolve-all{ "inline-template" => true }
         .line-resolve-all{ "v-show" => "commentsCount > 0" }
-          %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "@click" => "updateAll" }
+          %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "@click" => "updateAll", ":disabled" => "loading" }
+            = icon("spinner spin", "v-show" => "loading")
             {{ buttonText }}
           %span.line-resolve-text
             {{ resolved }}/{{ commentsCount }} comments resolved
