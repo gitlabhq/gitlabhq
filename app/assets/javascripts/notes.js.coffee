@@ -470,10 +470,7 @@ class @Notes
       notes = note.closest(".notes")
 
       if DiffNotesApp?
-        ref = DiffNotesApp.$refs["#{noteId}"]
-
-        if ref?
-          ref.$destroy(true)
+        ref = DiffNotesApp.$refs["#{noteId}"]?.$destroy(true)
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1
