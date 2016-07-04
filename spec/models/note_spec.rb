@@ -226,6 +226,20 @@ describe Note, models: true do
     it "returns false" do
       expect(note.cross_reference_not_visible_for?(private_user)).to be_falsy
     end
+
+    it "returns false if user visible reference count set" do
+      note.user_visible_reference_count = 1
+
+      expect(note).not_to receive(:reference_mentionables)
+      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_falsy
+    end
+
+    it "returns true if ref count is 0" do
+      note.user_visible_reference_count = 0
+
+      expect(note).not_to receive(:reference_mentionables)
+      expect(note.cross_reference_not_visible_for?(ext_issue.author)).to be_truthy
+    end
   end
 
   describe 'clear_blank_line_code!' do

@@ -17,6 +17,7 @@ describe Banzai::ObjectRenderer do
         and_call_original
 
       expect(object).to receive(:note_html=).with('<p>hello</p>')
+      expect(object).to receive(:user_visible_reference_count=).with(0)
 
       renderer.render([object], :note)
     end
@@ -25,6 +26,7 @@ describe Banzai::ObjectRenderer do
   describe '#render_objects' do
     it 'renders an Array of objects' do
       object = double(:object, note: 'hello')
+
       renderer = described_class.new(project, user)
 
       expect(renderer).to receive(:render_attribute).with(object, :note).
@@ -38,7 +40,7 @@ describe Banzai::ObjectRenderer do
   end
 
   describe '#redact_documents' do
-    it 'redacts a set of documents and returns them as an Array of Strings' do
+    it 'redacts a set of documents and returns them as an Array of Hashes' do
       doc = Nokogiri::HTML.fragment('<p>hello</p>')
       renderer = described_class.new(project, user)
 
@@ -48,7 +50,9 @@ describe Banzai::ObjectRenderer do
 
       redacted = renderer.redact_documents([doc])
 
-      expect(redacted).to eq(['<p>hello</p>'])
+      expect(redacted.count).to eq(1)
+      expect(redacted.first[:visible_reference_count]).to eq(0)
+      expect(redacted.first[:document].to_html).to eq('<p>hello</p>')
     end
   end
 
