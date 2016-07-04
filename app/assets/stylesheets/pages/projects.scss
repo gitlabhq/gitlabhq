@@ -75,6 +75,10 @@
     float: none;
     margin-left: auto;
     margin-right: auto;
+
+    &.identicon {
+      border-radius: 50%;
+    }
   }
 
   .project-title {
@@ -402,6 +406,8 @@ a.deploy-project-label {
     border-radius: $border-radius-default;
 
     a {
+      padding-left: 10px;
+      padding-right: 10px;
       color: $notes-light-color;
       display: block;
     }
