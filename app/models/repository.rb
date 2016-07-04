@@ -731,7 +731,6 @@ class Repository
     end
   end
 
-  # previous_path, message, update
   def update_file(user, path, content, branch, options={})
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
