@@ -271,6 +271,10 @@ class @Notes
       # append new note to all matching discussions
       discussionContainer.append note_html
 
+    if $('resolve-btn').length and DiffNotesApp?
+      $('resolve-btn').each ->
+        DiffNotesApp.$compile $(this).get(0)
+
     gl.utils.localTimeAgo($('.js-timeago', note_html), false)
 
     @updateNotesCount(1)
@@ -464,6 +468,12 @@ class @Notes
     $(".note[id='#{noteId}']").each (i, el) =>
       note  = $(el)
       notes = note.closest(".notes")
+
+      if DiffNotesApp?
+        ref = DiffNotesApp.$refs["#{noteId}"]
+
+        if ref?
+          ref.$destroy(true)
 
       # check if this is the last note for this line
       if notes.find(".note").length is 1

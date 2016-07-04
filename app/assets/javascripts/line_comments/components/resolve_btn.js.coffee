@@ -19,7 +19,6 @@
   compiled: ->
     $(this.$el).tooltip()
   destroyed: ->
-    console.log this.noteId
+    CommentsStore.delete(this.noteId)
   created: ->
-    console.log this.noteId
     CommentsStore.create(this.noteId, this.resolved)
