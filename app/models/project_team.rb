@@ -22,12 +22,12 @@ class ProjectTeam
   end
 
   def find_member(user_id)
-    member = project.members.non_request.find_by(user_id: user_id)
+    member = project.members.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
     if group && !member
-      member = group.members.non_request.find_by(user_id: user_id)
+      member = group.members.find_by(user_id: user_id)
     end
 
     member
@@ -137,20 +137,10 @@ class ProjectTeam
   def max_member_access(user_id)
     access = []
 
-    project.members.non_request.each do |member|
-      if member.user_id == user_id
-        access << member.access_field if member.access_field
-        break
-      end
-    end
+    access += project.members.where(user_id: user_id).has_access.pluck(:access_level)
 
     if group
-      group.members.non_request.each do |member|
-        if member.user_id == user_id
-          access << member.access_field if member.access_field
-          break
-        end
-      end
+      access += group.members.where(user_id: user_id).has_access.pluck(:access_level)
     end
 
     if project.invited_groups.any? && project.allowed_to_share_with_group?
@@ -178,14 +168,14 @@ class ProjectTeam
   end
 
   def fetch_members(level = nil)
-    project_members = project.members.non_request
-    group_members = group ? group.members.non_request : []
+    project_members = project.members
+    group_members = group ? group.members : []
     invited_members = []
 
     if project.invited_groups.any? && project.allowed_to_share_with_group?
       project.project_group_links.each do |group_link|
         invited_group = group_link.group
-        im = invited_group.members.non_request
+        im = invited_group.members
 
         if level
           int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]

@@ -39,7 +39,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -203,6 +203,26 @@ class Repository
     branch_names.include?(branch_name)
   end
 
+  def ref_exists?(ref)
+    rugged.references.exist?(ref)
+  end
+
+  # Makes sure a commit is kept around when Git garbage collection runs.
+  # Git GC will delete commits from the repository that are no longer in any
+  # branches or tags, but we want to keep some of these commits around, for
+  # example if they have comments or CI builds.
+  def keep_around(sha)
+    return unless sha && commit(sha)
+
+    return if kept_around?(sha)
+
+    rugged.references.create(keep_around_ref_name(sha), sha)
+  end
+
+  def kept_around?(sha)
+    ref_exists?(keep_around_ref_name(sha))
+  end
+
   def tag_names
     cache.fetch(:tag_names) { raw_repository.tag_names }
   end
@@ -246,22 +266,24 @@ class Repository
     end
   end
 
+  # Keys for data that can be affected for any commit push.
   def cache_keys
-    %i(size branch_names tag_names branch_count tag_count commit_count
+    %i(size commit_count
        readme version contribution_guide changelog
        license_blob license_key gitignore)
   end
 
+  # Keys for data on branch/tag operations.
+  def cache_keys_for_branches_and_tags
+    %i(branch_names tag_names branch_count tag_count)
+  end
+
   def build_cache
-    cache_keys.each do |key|
+    (cache_keys + cache_keys_for_branches_and_tags).each do |key|
       unless cache.exist?(key)
         send(key)
       end
     end
-  end
-
-  def expire_gitignore
-    cache.expire(:gitignore)
   end
 
   def expire_tags_cache
@@ -286,8 +308,6 @@ class Repository
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
     expire_emptiness_caches if empty?
-    expire_branch_count_cache
-    expire_tag_count_cache
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -875,7 +895,6 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-
   def search_files(query, ref)
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
@@ -978,6 +997,10 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
+  def gitattribute(path, name)
+    raw_repository.attributes(path)[name]
+  end
+
   def copy_gitattributes(ref)
     actual_ref = ref || root_ref
     begin
@@ -1014,5 +1037,9 @@ class Repository
 
   def tags_sorted_by_committed_date
     tags.sort_by { |tag| commit(tag.target).committed_date }
+  end
+
+  def keep_around_ref_name(sha)
+    "refs/keep-around/#{sha}"
   end
 end

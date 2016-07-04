@@ -16,7 +16,6 @@ describe GitHooksService, services: true do
   end
 
   describe '#execute' do
-
     context 'when receive hooks were successful' do
       it 'should call post-receive hook' do
         hook = double(trigger: true)
@@ -48,6 +47,5 @@ describe GitHooksService, services: true do
         end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
-
   end
 end

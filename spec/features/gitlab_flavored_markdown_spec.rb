@@ -81,7 +81,6 @@ describe "GitLab Flavored Markdown", feature: true do
     end
   end
 
-
   describe "for merge requests" do
     before do
       @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix #{issue.to_reference}")
@@ -99,7 +98,6 @@ describe "GitLab Flavored Markdown", feature: true do
       expect(page).to have_link(issue.to_reference)
     end
   end
-
 
   describe "for milestones" do
     before do

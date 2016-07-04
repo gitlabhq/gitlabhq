@@ -65,7 +65,6 @@ describe Gitlab::GitAccess, lib: true do
         expect(access.can_push_to_branch?(@branch.name)).to be_falsey
       end
     end
-
   end
 
   describe 'download_access_check' do

@@ -70,6 +70,10 @@ describe Note, models: true do
     it "should be recognized by #for_commit?" do
       expect(note).to be_for_commit
     end
+
+    it "keeps the commit around" do
+      expect(note.project.repository.kept_around?(commit.id)).to be_truthy
+    end
   end
 
   describe 'authorization' do

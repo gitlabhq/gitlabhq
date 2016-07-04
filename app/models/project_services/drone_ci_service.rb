@@ -1,5 +1,4 @@
 class DroneCiService < CiService
-
   prop_accessor :drone_url, :token, :enable_ssl_verification
 
   validates :drone_url, presence: true, url: true, if: :activated?

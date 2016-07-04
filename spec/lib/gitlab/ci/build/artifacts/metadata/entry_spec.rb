@@ -128,7 +128,6 @@ describe Gitlab::Ci::Build::Artifacts::Metadata::Entry do
       subject { |example| path(example).children }
       it { expect(subject.count).to eq 3 }
     end
-
   end
 
   describe 'path/dir_1/subdir/subfile', path: 'path/dir_1/subdir/subfile' do

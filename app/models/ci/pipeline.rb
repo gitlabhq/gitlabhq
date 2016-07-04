@@ -16,6 +16,7 @@ module Ci
 
     # Invalidate object and save if when touched
     after_touch :update_state
+    after_save :keep_around_commits
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -211,6 +212,11 @@ module Ci
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
+    end
+
+    def keep_around_commits
+      project.repository.keep_around(self.sha)
+      project.repository.keep_around(self.before_sha)
     end
   end
 end

@@ -16,6 +16,24 @@ describe Import::GithubController do
     allow(controller).to receive(:github_import_enabled?).and_return(true)
   end
 
+  describe "GET new" do
+    it "redirects to GitHub for an access token if logged in with GitHub" do
+      allow(controller).to receive(:logged_in_with_github?).and_return(true)
+      expect(controller).to receive(:go_to_github_for_permissions)
+
+      get :new
+    end
+
+    it "redirects to status if we already have a token" do
+      assign_session_token
+      allow(controller).to receive(:logged_in_with_github?).and_return(false)
+
+      get :new
+
+      expect(controller).to redirect_to(status_import_github_url)
+    end
+  end
+
   describe "GET callback" do
     it "updates access token" do
       token = "asdasd12345"
@@ -26,6 +44,20 @@ describe Import::GithubController do
       stub_omniauth_provider('github')
 
       get :callback
+
+      expect(session[:github_access_token]).to eq(token)
+      expect(controller).to redirect_to(status_import_github_url)
+    end
+  end
+
+  describe "POST personal_access_token" do
+    it "updates access token" do
+      token = "asdfasdf9876"
+
+      allow_any_instance_of(Gitlab::GithubImport::Client).
+        to receive(:user).and_return(true)
+
+      post :personal_access_token, personal_access_token: token
 
       expect(session[:github_access_token]).to eq(token)
       expect(controller).to redirect_to(status_import_github_url)
@@ -58,6 +90,17 @@ describe Import::GithubController do
 
       expect(assigns(:already_added_projects)).to eq([@project])
       expect(assigns(:repos)).to eq([])
+    end
+
+    it "handles an invalid access token" do
+      allow_any_instance_of(Gitlab::GithubImport::Client).
+        to receive(:repos).and_raise(Octokit::Unauthorized)
+
+      get :status
+
+      expect(session[:github_access_token]).to eq(nil)
+      expect(controller).to redirect_to(new_import_github_url)
+      expect(flash[:alert]).to eq('Access denied to your GitHub account.')
     end
   end
 

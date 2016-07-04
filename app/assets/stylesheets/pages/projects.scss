@@ -13,9 +13,52 @@
 
 .new_project,
 .edit-project {
-  fieldset.features {
-    .control-label {
+  fieldset {
+    &.features .control-label {
       font-weight: normal;
+    }
+    .form-group {
+      margin-bottom: 5px;
+    }
+    &> .form-group {
+      padding-left: 0;
+    }
+  }
+  .help-block {
+    margin-bottom: 10px;
+  }
+  .project-path {
+    padding-right: 0;
+    .form-control {
+      border-radius: $border-radius-base;
+    }
+  }
+  .input-group > div {
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+  @media (max-width: $screen-xs-max) {
+    .input-group > div {
+      margin-bottom: 14px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    fieldset > .form-group:first-child {
+      padding-right: 0;
+    }
+  }
+
+  .input-group-addon {
+    &.static-namespace {
+      height: 35px;
+      border-radius: 3px;
+      border: 1px solid #e5e5e5;
+    }
+    &+ .select2 a {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 }
@@ -223,18 +266,6 @@
     @media (max-width: $screen-md-max) {
       top: 0;
     }
-
-    .access-request-button {
-      position: absolute;
-      right: 0;
-      bottom: 61px;
-
-      @media (max-width: $screen-md-max) {
-        position: relative;
-        bottom: 0;
-        margin-right: 10px;
-      }
-    }
   }
 
   @media (max-width: $screen-md-max) {
@@ -365,10 +396,28 @@ a.deploy-project-label {
   }
 }
 
-.project-import .btn {
-  float: left;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.project-import {
+  .form-group {
+    margin-bottom: 0;
+  }
+  .import-buttons {
+    padding-left: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    .btn {
+      margin-right: 10px;
+      padding: 8px 12px;
+    }
+    &> div {
+      margin-bottom: 14px;
+      padding-left: 0;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 .project-stats {

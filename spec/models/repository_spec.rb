@@ -531,8 +531,6 @@ describe Repository, models: true do
   describe '#expire_cache' do
     it 'expires all caches' do
       expect(repository).to receive(:expire_branch_cache)
-      expect(repository).to receive(:expire_branch_count_cache)
-      expect(repository).to receive(:expire_tag_count_cache)
 
       repository.expire_cache
     end
@@ -857,7 +855,6 @@ describe Repository, models: true do
 
       repository.after_create
     end
-
   end
 
   describe "#copy_gitattributes" do
@@ -1055,12 +1052,14 @@ describe Repository, models: true do
     let(:cache) { repository.send(:cache) }
 
     it 'builds the caches if they do not already exist' do
+      cache_keys = repository.cache_keys + repository.cache_keys_for_branches_and_tags
+
       expect(cache).to receive(:exist?).
-        exactly(repository.cache_keys.length).
+        exactly(cache_keys.length).
         times.
         and_return(false)
 
-      repository.cache_keys.each do |key|
+      cache_keys.each do |key|
         expect(repository).to receive(key)
       end
 
@@ -1068,12 +1067,14 @@ describe Repository, models: true do
     end
 
     it 'does not build any caches that already exist' do
+      cache_keys = repository.cache_keys + repository.cache_keys_for_branches_and_tags
+
       expect(cache).to receive(:exist?).
-        exactly(repository.cache_keys.length).
+        exactly(cache_keys.length).
         times.
         and_return(true)
 
-      repository.cache_keys.each do |key|
+      cache_keys.each do |key|
         expect(repository).not_to receive(key)
       end
 
@@ -1113,6 +1114,14 @@ describe Repository, models: true do
 
         described_class.clean_old_archives
       end
+    end
+  end
+
+  describe "#keep_around" do
+    it "stores a reference to the specified commit sha so it isn't garbage collected" do
+      repository.keep_around(sample_commit.id)
+
+      expect(repository.kept_around?(sample_commit.id)).to be_truthy
     end
   end
 

@@ -1,6 +1,5 @@
 module Projects
   class DownloadService < BaseService
-
     WHITELIST = [
       /^[^.]+\.fogbugz.com$/
     ]

@@ -21,7 +21,7 @@ Background:
   Scenario: I should see instructions on how to import from GitHub
   Given I see "New Project" page
   When I click on "Import project from GitHub"
-  Then I see instructions on how to import from GitHub
+  Then I am redirected to the GitHub import page
 
   @javascript
   Scenario: I should see Google Code import page

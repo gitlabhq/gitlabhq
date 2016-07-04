@@ -91,7 +91,7 @@ module Ci
     end
 
     def retryable?
-      project.builds_enabled? && commands.present?
+      project.builds_enabled? && commands.present? && complete?
     end
 
     def retried?

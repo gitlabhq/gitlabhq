@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Service, models: true do
-
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -175,7 +174,6 @@ describe Service, models: true do
         }
       )
     end
-
 
     it "returns nil when the property has not been assigned a new value" do
       service.username = "key_changed"

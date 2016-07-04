@@ -341,7 +341,6 @@ module API
         else
           not_found!("Source Project")
         end
-
       end
 
       # Remove a forked_from relationship
@@ -417,7 +416,6 @@ module API
 
         present paginate(projects), with: Entities::Project
       end
-
 
       # Get a users list
       #

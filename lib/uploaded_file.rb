@@ -3,7 +3,6 @@ require "fileutils"
 
 # Taken from: Rack::Test::UploadedFile
 class UploadedFile
-
   # The filename, *not* including the path, of the "uploaded" file
   attr_reader :original_filename
 

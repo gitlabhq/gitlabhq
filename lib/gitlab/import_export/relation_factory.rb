@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class RelationFactory
-
       OVERRIDES = { snippets: :project_snippets,
                     pipelines: 'Ci::Pipeline',
                     statuses: 'commit_status',
@@ -33,6 +32,7 @@ module Gitlab
         update_user_references
         update_project_references
         reset_ci_tokens if @relation_name == 'Ci::Trigger'
+        @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
 
         generate_imported_object
       end

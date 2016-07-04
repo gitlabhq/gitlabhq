@@ -21,6 +21,7 @@ class Note < ActiveRecord::Base
   belongs_to :updated_by, class_name: "User"
 
   has_many :todos, dependent: :destroy
+  has_many :events, as: :target, dependent: :destroy
 
   delegate :gfm_reference, :local_reference, to: :noteable
   delegate :name, to: :project, prefix: true
@@ -65,6 +66,7 @@ class Note < ActiveRecord::Base
   end
 
   before_validation :clear_blank_line_code!
+  after_save :keep_around_commit
 
   class << self
     def model_name
@@ -213,5 +215,11 @@ class Note < ActiveRecord::Base
   def award_emoji_name
     original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
     Gitlab::AwardEmoji.normalize_emoji_name(original_name)
+  end
+
+  private
+
+  def keep_around_commit
+    project.repository.keep_around(self.commit_id)
   end
 end

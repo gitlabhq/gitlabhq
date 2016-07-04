@@ -47,7 +47,6 @@ describe SlackService::WikiPageMessage, models: true do
     context 'when :action == "create"' do
       before { args[:object_attributes][:action] = 'create' }
 
-
       it 'it returns the attachment for a new wiki page' do
         expect(subject.attachments).to eq([
           {

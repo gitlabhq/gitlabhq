@@ -5,7 +5,6 @@ class InvitesController < ApplicationController
   respond_to :html
 
   def show
-
   end
 
   def accept

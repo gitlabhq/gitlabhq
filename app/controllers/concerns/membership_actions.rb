@@ -10,7 +10,7 @@ module MembershipActions
   end
 
   def approve_access_request
-    @member = membershipable.members.request.find(params[:id])
+    @member = membershipable.requesters.find(params[:id])
 
     return render_403 unless can?(current_user, action_member_permission(:update, @member), @member)
 
@@ -20,7 +20,8 @@ module MembershipActions
   end
 
   def leave
-    @member = membershipable.members.find_by(user_id: current_user)
+    @member = membershipable.members.find_by(user_id: current_user) ||
+      membershipable.requesters.find_by(user_id: current_user)
     Members::DestroyService.new(@member, current_user).execute
 
     source_type = @member.real_source_type.humanize(capitalize: false)

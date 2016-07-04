@@ -122,13 +122,12 @@ describe Gitlab::OAuth::User, lib: true do
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:email) { ['johndoe@example.com','john2@example.com'] }
+              allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
               allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
             end
 
             context "and no account for the LDAP user" do
-
               it "creates a user with dual LDAP and omniauth identities" do
                 oauth_user.save
 
@@ -169,7 +168,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
     end
 
     describe 'blocking' do
@@ -203,7 +201,7 @@ describe Gitlab::OAuth::User, lib: true do
           stub_omniauth_config(auto_link_ldap_user: true)
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
-          allow(ldap_user).to receive(:email) { ['johndoe@example.com','john2@example.com'] }
+          allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
           allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
           allow(oauth_user).to receive(:ldap_person).and_return(ldap_user)
         end
@@ -254,7 +252,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
 
       context 'sign-in' do
         before do

@@ -170,7 +170,6 @@ describe Issue, "Issuable" do
     end
   end
 
-
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do
       before { allow(issue).to receive(:participants).with(user).and_return([]) }

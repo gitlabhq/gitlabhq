@@ -123,11 +123,17 @@ describe ProjectsHelper do
   end
 
   describe '#sanitized_import_error' do
+    let(:project) { create(:project) }
+
+    before do
+      allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
+    end
+
     it 'removes the repo path' do
-      repo = File.join(Gitlab.config.gitlab_shell.repos_path, '/namespace/test.git')
+      repo = '/base/repo/path/namespace/test.git'
       import_error = "Could not clone #{repo}\n"
 
-      expect(sanitize_repo_path(import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
+      expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
     end
   end
 end

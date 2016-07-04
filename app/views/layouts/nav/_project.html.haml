@@ -7,7 +7,7 @@
       %ul.dropdown-menu.dropdown-menu-align-right
         - can_edit = can?(current_user, :admin_project, @project)
         -# We don't use @project.team.find_member because it searches for group members too...
-        - member = @project.members.non_request.find_by(user_id: current_user.id)
+        - member = @project.members.find_by(user_id: current_user.id)
         - can_leave = member && can?(current_user, :destroy_project_member, member)
 
         = render 'layouts/nav/project_settings', can_edit: can_edit
@@ -26,9 +26,9 @@
 
 .scrolling-tabs-container{ class: nav_control_class }
   .fade-left
-    = icon('arrow-left')
+    = icon('angle-left')
   .fade-right
-    = icon('arrow-right')
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
     = nav_link(path: 'projects#show', html_options: {class: 'home'}) do
       = link_to project_path(@project), title: 'Project', class: 'shortcuts-project' do

@@ -9,6 +9,8 @@ class SentNotification < ActiveRecord::Base
   validates :commit_id, presence: true, if: :for_commit?
   validates :line_code, line_code: true, allow_blank: true
 
+  after_save :keep_around_commit
+
   class << self
     def reply_key
       SecureRandom.hex(16)
@@ -66,5 +68,11 @@ class SentNotification < ActiveRecord::Base
 
   def to_param
     self.reply_key
+  end
+
+  private
+
+  def keep_around_commit
+    project.repository.keep_around(self.commit_id)
   end
 end

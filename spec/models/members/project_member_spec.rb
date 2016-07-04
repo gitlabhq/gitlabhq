@@ -119,7 +119,6 @@ describe ProjectMember, models: true do
     it { expect(@project_1.users).to include(@user_1) }
     it { expect(@project_1.users).to include(@user_2) }
 
-
     it { expect(@project_2.users).to include(@user_1) }
     it { expect(@project_2.users).to include(@user_2) }
   end

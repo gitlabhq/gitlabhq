@@ -14,7 +14,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for assignee from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -36,7 +35,6 @@ describe 'Filter issues', feature: true do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
       end
 
-
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
@@ -46,7 +44,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for milestone from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -67,7 +64,6 @@ describe 'Filter issues', feature: true do
 
         expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
       end
-
 
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
@@ -113,7 +109,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for assignee and label from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -143,7 +138,6 @@ describe 'Filter issues', feature: true do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
       end
-
 
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click

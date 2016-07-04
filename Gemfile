@@ -91,6 +91,7 @@ gem 'fog-core', '~> 1.40'
 gem 'fog-local', '~> 0.3'
 gem 'fog-google', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
+gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
 gem "unf", '~> 0.1.4'
@@ -106,7 +107,7 @@ gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
 gem 'github-markup', '~> 1.3.1'
 gem 'redcarpet',     '~> 3.3.3'
-gem 'RedCloth',      '~> 4.2.9'
+gem 'RedCloth',      '~> 4.3.2'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
@@ -250,7 +251,6 @@ group :development do
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
-  gem 'quiet_assets', '~> 1.0.2'
   gem 'rerun', '~> 0.11.0'
   gem 'bullet', require: false
   gem 'rblineprof', platform: :mri, require: false
@@ -264,7 +264,7 @@ group :development do
   gem "sdoc", '~> 0.3.20'
 
   # thin instead webrick
-  gem 'thin', '~> 1.6.1'
+  gem 'thin', '~> 1.7.0'
 end
 
 group :development, :test do
@@ -302,7 +302,6 @@ group :development, :test do
   gem 'rubocop', '~> 0.40.0', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'coveralls', '~> 0.8.2', require: false
   gem 'simplecov', '~> 0.11.0', require: false
   gem 'flog', require: false
   gem 'flay', require: false
@@ -346,3 +345,7 @@ gem "paranoia", "~> 2.0"
 
 # Health check
 gem 'health_check', '~> 1.5.1'
+
+# System information
+gem 'vmstat', '~> 2.1.0'
+gem 'sys-filesystem', '~> 1.1.6'

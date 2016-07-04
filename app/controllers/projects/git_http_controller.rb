@@ -1,4 +1,9 @@
+# This file should be identical in GitLab Community Edition and Enterprise Edition
+
 class Projects::GitHttpController < Projects::ApplicationController
+  include ActionController::HttpAuthentication::Basic
+  include KerberosSpnegoHelper
+
   attr_reader :user
 
   # Git clients will not know what authenticity token to send along
@@ -40,9 +45,12 @@ class Projects::GitHttpController < Projects::ApplicationController
   private
 
   def authenticate_user
-    return if project && project.public? && upload_pack?
+    if project && project.public? && upload_pack?
+      return # Allow access
+    end
 
-    authenticate_or_request_with_http_basic do |login, password|
+    if allow_basic_auth? && basic_auth_provided?
+      login, password = user_name_and_password(request)
       auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
       if auth_result.type == :ci && upload_pack?
@@ -53,8 +61,31 @@ class Projects::GitHttpController < Projects::ApplicationController
         @user = auth_result.user
       end
 
-      ci? || user
+      if ci? || user
+        return # Allow access
+      end
+    elsif allow_kerberos_spnego_auth? && spnego_provided?
+      @user = find_kerberos_user
+
+      if user
+        send_final_spnego_response
+        return # Allow access
+      end
     end
+
+    send_challenges
+    render plain: "HTTP Basic: Access denied\n", status: 401
+  end
+
+  def basic_auth_provided?
+    has_basic_credentials?(request)
+  end
+
+  def send_challenges
+    challenges = []
+    challenges << 'Basic realm="GitLab"' if allow_basic_auth?
+    challenges << spnego_challenge if allow_kerberos_spnego_auth?
+    headers['Www-Authenticate'] = challenges.join("\n") if challenges.any?
   end
 
   def ensure_project_found!
@@ -120,7 +151,7 @@ class Projects::GitHttpController < Projects::ApplicationController
   end
 
   def render_not_found
-    render text: 'Not Found', status: :not_found
+    render plain: 'Not Found', status: :not_found
   end
 
   def ci?

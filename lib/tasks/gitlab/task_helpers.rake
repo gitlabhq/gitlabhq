@@ -125,10 +125,16 @@ namespace :gitlab do
   end
 
   def all_repos
-    IO.popen(%W(find #{Gitlab.config.gitlab_shell.repos_path} -mindepth 2 -maxdepth 2 -type d -name *.git)) do |find|
-      find.each_line do |path|
-        yield path.chomp
+    Gitlab.config.repositories.storages.each do |name, path|
+      IO.popen(%W(find #{path} -mindepth 2 -maxdepth 2 -type d -name *.git)) do |find|
+        find.each_line do |path|
+          yield path.chomp
+        end
       end
     end
+  end
+
+  def repository_storage_paths_args
+    Gitlab.config.repositories.storages.values
   end
 end
