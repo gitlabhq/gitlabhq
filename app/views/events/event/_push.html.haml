@@ -2,14 +2,14 @@
 
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label.pushed #{event.action_name} #{event.ref_type}
+  %span.pushed #{event.action_name} #{event.ref_type}
   - if event.rm_ref?
     %strong= event.ref_name
   - else
     %strong
       = link_to event.ref_name, namespace_project_commits_path(project.namespace, project, event.ref_name), title: h(event.target_title)
-  at
-  = link_to_project project
+
+  = render "events/event_scope", event: event
 
 - if event.push_with_commits?
   .event-body
