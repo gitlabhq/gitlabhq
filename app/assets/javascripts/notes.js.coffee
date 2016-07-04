@@ -114,7 +114,7 @@ class @Notes
 
     # Cancel creating diff note or editing any note when ESCAPE is hit
     if e.which is 27
-      discussionNoteForm = $textarea.closest(".js-discussion-note-form")
+      discussionNoteForm = $textarea.closest('.js-discussion-note-form')
       if discussionNoteForm.length
         if $textarea.val() isnt ''
           return unless confirm('Are you sure you want to cancel creating this comment?')
