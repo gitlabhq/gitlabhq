@@ -8,7 +8,8 @@ module CreatesCommit
       source_project: @project,
       source_branch: @ref,
       target_branch: @target_branch,
-      file_path: @path
+      file_path: @path,
+      previous_path: @previous_path
     )
 
     puts "#" * 10
