@@ -21,7 +21,7 @@ describe Gitlab::Ci::Config::Node::Boolean do
     end
 
     context 'when entry value is not valid' do
-      let(:config) { [ 'incorrect' ] }
+      let(:config) { ['incorrect'] }
 
       describe '#errors' do
         it 'saves errors' do

@@ -23,6 +23,7 @@ module Gitlab
 
           def unknown_keys
             return [] unless config.is_a?(Hash)
+
             config.keys - @node.class.nodes.keys
           end
 

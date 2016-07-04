@@ -13,7 +13,7 @@ module Gitlab
           end
 
           def self.default
-            %w(build test deploy)
+            %w[build test deploy]
           end
         end
       end

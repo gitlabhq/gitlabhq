@@ -551,8 +551,8 @@ module Ci
               config_processor = GitlabCiYamlProcessor.new(config, path)
 
               ##
-              # When variables config is empty, we asumme this is a correct,
-              # see issue #18775
+              # When variables config is empty, we assume this is a valid
+              # configuration, see issue #18775
               #
               expect(config_processor.job_variables(:rspec))
                 .to be_an_instance_of(Array).and be_empty

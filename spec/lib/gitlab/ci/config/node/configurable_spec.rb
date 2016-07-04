@@ -22,7 +22,6 @@ describe Gitlab::Ci::Config::Node::Configurable do
       validator.validate
     end
 
-
     context 'when node validator is invalid' do
       let(:instance) { node.new('ls') }
 
