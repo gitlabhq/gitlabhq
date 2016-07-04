@@ -44,7 +44,7 @@ class Projects::BlobController < Projects::ApplicationController
           "#file-path-#{hexdigest(@path)}"
       else
         unless params[:file_name] == @path
-          previous_path = @path
+          @previous_path = @path
           @path = params[:file_name]
         end
 
