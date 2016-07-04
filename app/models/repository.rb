@@ -751,9 +751,6 @@ class Repository
       if previous_path
         options[:file].merge!(previous_path: previous_path)
 
-        puts "#" * 90
-        puts "Hello"
-        puts "#" * 90
         Gitlab::Git::Blob.rename(raw_repository, options)
       else
         puts "#" * 90
