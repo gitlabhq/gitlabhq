@@ -1,3 +1,12 @@
+PATH
+  remote: ~/src/Gitlab/gitlab_git
+  specs:
+    gitlab_git (10.3.0)
+      activesupport (~> 4.0)
+      charlock_holmes (~> 0.7.3)
+      github-linguist (~> 4.7.0)
+      rugged (~> 0.24.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -277,10 +286,8 @@ GEM
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
     gitlab_git (10.3.0)
-      activesupport (~> 4.0)
-      charlock_holmes (~> 0.7.3)
-      github-linguist (~> 4.7.0)
-      rugged (~> 0.24.0)
+    gitlab_emoji (0.3.1)
+      gemojione (~> 2.2, >= 2.2.1)
     gitlab_meta (7.0)
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
@@ -392,7 +399,12 @@ GEM
     mail_room (0.8.0)
     method_source (0.8.2)
     mime-types (2.99.2)
+<<<<<<< 66468bd73385b31b3a4380c85264dfbe06542d79
     mimemagic (0.3.1)
+=======
+    mime-types-data (3.2016.0521)
+    mimemagic (0.3.0)
+>>>>>>> refactors blob_controller
     mini_portile2 (2.1.0)
     minitest (5.7.0)
     mousetrap-rails (1.4.6)
