@@ -749,31 +749,15 @@ class Repository
       options[:author] = committer
       options[:commit] = {
         message: message,
-<<<<<<< 3824e8e1c4315bb3d1b2c1389f442d3b5e94f945
         branch: ref
       }
 
-=======
-        branch: ref,
-      }
-
-      if previous_path
-        options[:file] = {
-          path: previous_path
-        }
-
-
-        Gitlab::Git::Blob.remove(raw_repository, options)
-      end
-
->>>>>>> creates the update_file method in repository.rb and applies changes accordingly
       options[:file] = {
         content: content,
         path: path,
         update: update
       }
 
-<<<<<<< 3824e8e1c4315bb3d1b2c1389f442d3b5e94f945
       if previous_path
         options[:file].merge!(previous_path: previous_path)
 
