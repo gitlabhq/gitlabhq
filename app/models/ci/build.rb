@@ -19,6 +19,7 @@ module Ci
 
     acts_as_taggable
 
+    before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_destroy { project }
 
     after_create :execute_hooks
@@ -329,7 +330,12 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+      metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
+        artifacts_metadata.path,
+        path,
+        **options)
+
+      metadata.to_entry
     end
 
     def erase_artifacts!
@@ -374,6 +380,14 @@ module Ci
     end
 
     private
+
+    def update_artifacts_size
+      self.artifacts_size = if artifacts_file.exists?
+                              artifacts_file.size
+                            else
+                              nil
+                            end
+    end
 
     def erase_trace!
       self.trace = nil

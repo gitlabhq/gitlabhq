@@ -195,8 +195,7 @@ module Ci
           not_found! unless build
           authenticate_build_token!(build)
 
-          build.remove_artifacts_file!
-          build.remove_artifacts_metadata!
+          build.erase_artifacts!
         end
       end
     end
