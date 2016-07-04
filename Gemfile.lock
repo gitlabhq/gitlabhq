@@ -692,7 +692,7 @@ GEM
       spinach (>= 0.4)
     spinach-rerun-reporter (0.0.2)
       spinach (~> 0.8)
-    spring (1.7.1)
+    spring (1.7.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     spring-commands-spinach (1.1.0)
