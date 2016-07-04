@@ -40,8 +40,8 @@ class MergeRequestDiff < ActiveRecord::Base
       @diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
           self.repository.raw_repository,
-          self.target_branch_sha,
-          self.source_branch_sha,
+          self.start_commit_sha || self.target_branch_sha,
+          self.head_commit_sha || self.source_branch_sha,
         )
         compare.diffs(options)
       end
