@@ -293,7 +293,7 @@ describe Ci::API::API do
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
-          context 'build has been erased' do
+          describe 'build has been erased' do
             let(:build) { create(:ci_build, erased_at: Time.now) }
 
             before do
