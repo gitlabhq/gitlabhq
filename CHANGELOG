@@ -11,6 +11,7 @@ v 8.10.0 (unreleased)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
   - Let Workhorse serve format-patch diffs
+  - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
