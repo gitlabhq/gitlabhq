@@ -29,8 +29,8 @@ module Gitlab
       def call_receive_hook(gl_id, oldrev, newrev, ref)
         changes = [oldrev, newrev, ref].join(" ")
 
-        # function  will return true if succesful
         exit_status = false
+        exit_message = nil
 
         vars = {
           'GL_ID' => gl_id,
@@ -41,7 +41,7 @@ module Gitlab
           chdir: repo_path
         }
 
-        Open3.popen2(vars, path, options) do |stdin, _, wait_thr|
+        Open3.popen3(vars, path, options) do |stdin, _, stderr, wait_thr|
           exit_status = true
           stdin.sync = true
 
@@ -60,16 +60,21 @@ module Gitlab
 
           unless wait_thr.value == 0
             exit_status = false
+            exit_message = stderr.gets
           end
         end
 
-        exit_status
+        [exit_status, exit_message]
       end
 
       def call_update_hook(gl_id, oldrev, newrev, ref)
+        status = nil
+
         Dir.chdir(repo_path) do
-          system({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+          status = system({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
         end
+
+        [status, nil]
       end
     end
   end
