@@ -104,19 +104,31 @@ class @Notes
     return if isMetaKey e
 
     $textarea = $(e.target)
+
+    # Edit previous note when UP arrow is hit
     if $textarea.val() is '' and e.which is 38
       myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
       if myLastNote.length
         myLastNoteEditBtn = myLastNote.find('.js-note-edit')
         myLastNoteEditBtn.trigger('click', [true, myLastNote])
+
+    # Cancel creating diff note or editing any note when ESCAPE is hit
     if e.which is 27
       discussionNoteForm = $textarea.closest(".js-discussion-note-form")
       if discussionNoteForm.length
+        if $textarea.val() isnt ''
+          return unless confirm('Are you sure you want to cancel creating this comment?')
+
         @removeDiscussionNoteForm(discussionNoteForm)
         return
 
       editNote = $textarea.closest(".note")
       if editNote.length
+        originalText = $textarea.closest('form').data('original-note')
+        newText = $textarea.val()
+        if originalText isnt newText
+          return unless confirm('Are you sure you want to cancel editing this comment?')
+
         @removeNoteEditForm(editNote)
 
 
