@@ -464,7 +464,7 @@ describe MergeRequest, models: true do
     context 'when it is not broken and has no conflicts' do
       it 'is marked as mergeable' do
         allow(subject).to receive(:broken?) { false }
-        allow(project).to receive_message_chain(:repository, :can_be_merged?) { true }
+        allow(project.repository).to receive(:can_be_merged?) { true }
 
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
       end
@@ -481,7 +481,7 @@ describe MergeRequest, models: true do
     context 'when it has conflicts' do
       before do
         allow(subject).to receive(:broken?) { false }
-        allow(project).to receive_message_chain(:repository, :can_be_merged?) { false }
+        allow(project.repository).to receive(:can_be_merged?) { false }
       end
 
       it 'becomes unmergeable' do
