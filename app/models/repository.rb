@@ -742,22 +742,25 @@ class Repository
         branch: ref,
       }
 
-      if previous_path
-        options[:file] = {
-          path: previous_path
-        }
-
-
-        Gitlab::Git::Blob.remove(raw_repository, options)
-      end
-
       options[:file] = {
         content: content,
         path: path,
         update: update
       }
 
-      Gitlab::Git::Blob.commit(raw_repository, options)
+      if previous_path
+        options[:file].merge!(previous_path: previous_path)
+
+        puts "#" * 90
+        puts "Hello"
+        puts "#" * 90
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        puts "#" * 90
+        puts "World"
+        puts "#" * 90
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
     end
   end
 
