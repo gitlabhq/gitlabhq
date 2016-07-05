@@ -90,7 +90,7 @@ class Group < Namespace
   end
 
   def avatar_url(size = nil)
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     end
   end
