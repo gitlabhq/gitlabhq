@@ -1,4 +1,4 @@
-- if can_see_request_access_button?(source)
+- if can?(current_user, :request_access, source)
   - if requester = source.requesters.find_by(user_id: current_user.id)
     = link_to 'Withdraw Access Request', polymorphic_path([:leave, source, :members]),
               method: :delete,
