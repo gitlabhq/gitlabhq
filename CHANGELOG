@@ -23,6 +23,7 @@ v 8.10.0 (unreleased)
   - API: Todos !3188 (Robert Schilling)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
+  - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Don't instantiate a git tree on Projects show default view
   - Remove unused front-end variable -> default_issues_tracker
