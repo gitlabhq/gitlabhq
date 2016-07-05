@@ -1,8 +1,12 @@
 require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
 
-uri = URI.parse(current_application_settings.sentry_dsn)
-CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
+if Rails.env.production? && current_application_settings.sentry_enabled
+  uri = URI.parse(current_application_settings.sentry_dsn)
+  CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
+else
+  CSP_REPORT_URI = ''
+end
 
 SecureHeaders::Configuration.default do |config|
   config.cookies = {
