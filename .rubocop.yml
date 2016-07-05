@@ -37,6 +37,10 @@ AllCops:
 Style/AccessModifierIndentation:
   Enabled: true
 
+# Check the naming of accessor methods for get_/set_.
+Style/AccessorMethodName:
+  Enabled: false
+
 # Use alias_method instead of alias.
 Style/Alias:
   EnforcedStyle: prefer_alias_method
@@ -238,6 +242,10 @@ Style/MethodDefParentheses:
 # Use the configured style when naming methods.
 Style/MethodName:
   Enabled: true
+
+# Checks for usage of `extend self` in modules.
+Style/ModuleFunction:
+  Enabled: false
 
 # Checks that the closing brace in an array literal is either on the same line
 # as the last array element, or a new line.
