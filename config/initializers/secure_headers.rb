@@ -2,7 +2,6 @@ require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
 
 uri = URI.parse(current_application_settings.sentry_dsn)
-
 CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
 
 SecureHeaders::Configuration.default do |config|
@@ -32,7 +31,7 @@ SecureHeaders::Configuration.default do |config|
     img_src: %w('self' www.gravatar.com secure.gravatar.com https:),
     media_src: %w('none'),
     object_src: %w('none'),
-    script_src: %w('unsafe-inline' 'self' maxcdn.bootstrapcdn.com),
+    script_src: %w('unsafe-inline' 'self'),
     style_src: %w('unsafe-inline' 'self'),
     base_uri: %w('self'),
     child_src: %w('self'),
@@ -42,4 +41,13 @@ SecureHeaders::Configuration.default do |config|
     upgrade_insecure_requests: true, # see https://www.w3.org/TR/upgrade-insecure-requests/
     report_uri: %W(#{CSP_REPORT_URI})
   }
+
+  if Rails.env.development?
+    config.csp[:script_src] << "maxcdn.bootstrapcdn.com"
+  end
+end
+
+SecureHeaders::Configuration.override(:background_jobs) do |config|
+  config.csp[:frame_ancestors] = %w('self')
+  config.x_frame_options = 'SAMEORIGIN'
 end
