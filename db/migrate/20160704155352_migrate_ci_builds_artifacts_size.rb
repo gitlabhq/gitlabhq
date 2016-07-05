@@ -6,6 +6,8 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   BATCH = 1000
 
   def up
+    cleanup_ci_builds_artifacts_file
+
     n = 0
 
     loop do
@@ -20,6 +22,13 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
         n += BATCH
       end
     end
+  end
+
+  def cleanup_ci_builds_artifacts_file
+    execute(<<-SQL)
+      UPDATE ci_builds SET artifacts_file = NULL
+        WHERE artifacts_file = ''
+    SQL
   end
 
   def fill_artifacts_size(result)
@@ -80,7 +89,6 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
         INNER JOIN projects p ON p.id = b.gl_project_id
         WHERE b.artifacts_size IS NULL
           AND b.artifacts_file IS NOT NULL
-          AND b.artifacts_file <> ''
         ORDER BY b.id
         LIMIT #{limit}
         OFFSET #{offset}
