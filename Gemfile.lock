@@ -1,5 +1,7 @@
-PATH
-  remote: ~/src/Gitlab/gitlab_git
+GIT
+  remote: git@gitlab.com:gitlab-org/gitlab_git.git
+  revision: 0e4ac299b806fa4190c4928a1c1ed5372fffbb38
+  branch: commit-blob-rename-action
   specs:
     gitlab_git (10.3.0)
       activesupport (~> 4.0)
@@ -399,12 +401,7 @@ GEM
     mail_room (0.8.0)
     method_source (0.8.2)
     mime-types (2.99.2)
-<<<<<<< 66468bd73385b31b3a4380c85264dfbe06542d79
-    mimemagic (0.3.1)
-=======
-    mime-types-data (3.2016.0521)
     mimemagic (0.3.0)
->>>>>>> refactors blob_controller
     mini_portile2 (2.1.0)
     minitest (5.7.0)
     mousetrap-rails (1.4.6)
