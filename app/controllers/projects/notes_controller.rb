@@ -71,6 +71,11 @@ class Projects::NotesController < Projects::ApplicationController
     render nothing: true, status: 200
   end
 
+  def resolve_all
+    sleep 2
+    render nothing: true, status: 200
+  end
+
   private
 
   def note

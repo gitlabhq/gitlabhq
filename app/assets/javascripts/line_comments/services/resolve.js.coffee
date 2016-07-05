@@ -5,15 +5,10 @@
         resolved: resolve
       type: 'post'
       url: endpoint
-  resolveAll: (ids) ->
+  resolveAll: (endpoint, ids, resolve) ->
     $.ajax
       data:
         id: ids
-      type: 'get'
-      url: '/'
-  unResolveAll: (ids) ->
-    $.ajax
-      data:
-        id: ids
-      type: 'get'
-      url: '/'
+        resolve: resolve
+      type: 'post'
+      url: endpoint

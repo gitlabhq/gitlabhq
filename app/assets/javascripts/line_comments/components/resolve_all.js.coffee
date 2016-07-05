@@ -2,6 +2,8 @@
   data: ->
     comments: CommentsStore.state
     loading: false
+  props:
+    endpoint: String
   computed:
     resolved: ->
       resolvedCount = 0
@@ -19,9 +21,8 @@
       ids = CommentsStore.getAllForState(this.allResolved)
       this.$set('loading', true)
 
-      promise = if this.allResolved then ResolveService.resolveAll(ids) else ResolveService.resolveAll(ids)
-
-      promise
+      ResolveService
+        .resolveAll(this.endpoint, ids, !this.allResolved)
         .done =>
           CommentsStore.updateAll(!this.allResolved)
         .always =>

@@ -825,6 +825,10 @@ Rails.application.routes.draw do
         resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
+          collection do
+            post :resolve_all
+          end
+
           member do
             post :toggle_award_emoji
             delete :delete_attachment

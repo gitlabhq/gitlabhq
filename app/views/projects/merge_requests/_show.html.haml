@@ -46,7 +46,7 @@
 
     - if current_user
       #resolve-all-app{ "v-cloak" => true }
-        %resolve-all{ "inline-template" => true }
+        %resolve-all{ ":endpoint" => "'#{resolve_all_namespace_project_notes_path(@project.namespace, @project)}'", "inline-template" => true }
           .line-resolve-all{ "v-show" => "commentsCount > 0" }
             %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "@click" => "updateAll", ":disabled" => "loading" }
               = icon("spinner spin", "v-show" => "loading")
@@ -54,7 +54,7 @@
             %span.line-resolve-text
               {{ resolved }}/{{ commentsCount }} comments resolved
 
-    - if @commits.nonzero?
+    - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
