@@ -39,6 +39,7 @@ module LoginHelpers
 
   def login_via(provider, user, uid)
     mock_auth_hash(provider, uid, user.email)
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
     visit new_user_session_path
     click_link provider
   end
@@ -57,6 +58,15 @@ module LoginHelpers
       credentials: {
         token: 'mock_token',
         secret: 'mock_secret'
+      },
+      extra: {
+        raw_info: {
+          info: {
+            name: 'mockuser',
+            email: email,
+            image: 'mock_user_thumbnail_url'
+          }
+        }
       }
     })
   end
