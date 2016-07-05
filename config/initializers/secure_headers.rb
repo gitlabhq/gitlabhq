@@ -1,3 +1,10 @@
+require 'gitlab/current_settings'
+include Gitlab::CurrentSettings
+
+uri = URI.parse(current_application_settings.sentry_dsn)
+
+CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
+
 SecureHeaders::Configuration.default do |config|
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
@@ -33,6 +40,6 @@ SecureHeaders::Configuration.default do |config|
     frame_ancestors: %w('none'),
     block_all_mixed_content: true, # see http://www.w3.org/TR/mixed-content/
     upgrade_insecure_requests: true, # see https://www.w3.org/TR/upgrade-insecure-requests/
-    report_uri: %w('')
+    report_uri: %W(#{CSP_REPORT_URI})
   }
 end
