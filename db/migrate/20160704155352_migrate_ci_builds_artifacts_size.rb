@@ -50,14 +50,18 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
     prefix_time = Time.parse(build['created_at']).strftime('%Y_%m')
 
     if build['ci_id']
-      old = artifacts_path_old(prefix_time, build)
-      old_store = File.join(artifacts_prefix, old)
+      artifacts_path_old_or_new(prefix_time, build)
+    else
+      artifacts_path_new(prefix_time, build)
+    end
+  end
 
-      if File.directory?(old_store)
-        old
-      else
-        artifacts_path_new(prefix_time, build)
-      end
+  def artifacts_path_old_or_new(prefix_time, build)
+    old = artifacts_path_old(prefix_time, build)
+    old_store = File.join(artifacts_prefix, old)
+
+    if File.directory?(old_store)
+      old
     else
       artifacts_path_new(prefix_time, build)
     end
