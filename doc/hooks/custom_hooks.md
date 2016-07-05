@@ -39,3 +39,16 @@ type. For example, if the script is in Ruby the shebang will probably be
 
 That's it! Assuming the hook code is properly implemented the hook will fire
 as appropriate.
+
+## Custom error messages
+
+>**Note:**
+This feature was [introduced][5073] in GitLab 8.10.
+
+If the commit is declined or an error occurs during the Git hook check,
+the STDERR and/or SDOUT message of the hook will be present in GitLab's UI.
+
+![Custom message from custom Git hook](img/custom_hooks_error_msg.png)
+
+[hooks]: https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#Server-Side-Hooks
+[5073]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5073
