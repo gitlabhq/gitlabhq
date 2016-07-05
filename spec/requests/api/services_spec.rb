@@ -87,7 +87,6 @@ describe API::API, api: true  do
         
         expect(response).to have_http_status(403)
       end
-
     end
   end
 end

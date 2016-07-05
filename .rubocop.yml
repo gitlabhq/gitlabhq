@@ -193,7 +193,7 @@ Style/EmptyLineBetweenDefs:
 
 # Don't use several empty lines in a row.
 Style/EmptyLines:
-  Enabled: false
+  Enabled: true
 
 # Keep blank lines around access modifiers.
 Style/EmptyLinesAroundAccessModifier:

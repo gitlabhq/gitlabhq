@@ -8,7 +8,6 @@ module Grack
   end
 
   class Auth < Rack::Auth::Basic
-
     attr_accessor :user, :project, :env
 
     def call_with_kerberos_support(env)

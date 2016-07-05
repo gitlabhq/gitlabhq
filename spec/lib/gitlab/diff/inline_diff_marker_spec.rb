@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::Diff::InlineDiffMarker, lib: true do
   describe '#inline_diffs' do
-
     context "when the rich text is html safe" do
       let(:raw)  { "abc 'def'" }
       let(:rich) { %{<span class="abc">abc</span><span class="space"> </span><span class="def">&#39;def&#39;</span>}.html_safe }

@@ -34,8 +34,8 @@ class CreateBranchService < BaseService
     else
       error('Invalid reference name')
     end
-  rescue GitHooksService::PreReceiveError
-    error('Branch creation was rejected by Git hook')
+  rescue GitHooksService::PreReceiveError => ex
+    error(ex.message)
   end
 
   def success(branch)

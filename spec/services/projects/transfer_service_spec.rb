@@ -73,5 +73,4 @@ describe Projects::TransferService, services: true do
       it { expect(private_project.visibility_level).to eq(Gitlab::VisibilityLevel::PRIVATE) }
     end
   end
-
 end

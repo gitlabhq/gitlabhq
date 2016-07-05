@@ -68,7 +68,6 @@ describe Projects::BranchesController do
       let(:branch) { "1-feature-branch" }
       let!(:issue) { create(:issue, project: project) }
 
-
       it 'redirects' do
         post :create,
           namespace_id: project.namespace.to_param,
@@ -89,7 +88,6 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
       end
-
     end
   end
 

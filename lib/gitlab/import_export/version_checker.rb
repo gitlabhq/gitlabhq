@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class VersionChecker
-
       def self.check!(*args)
         new(*args).check!
       end

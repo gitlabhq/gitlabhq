@@ -69,7 +69,6 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
     visit namespace_project_issues_path(public_project.namespace, public_project)
   end
 
-
   step 'I should see list of issues for "Community" project' do
     expect(page).to have_content "Bug"
     expect(page).to have_content public_project.name
@@ -87,7 +86,6 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
           )
     visit namespace_project_issues_path(internal_project.namespace, internal_project)
   end
-
 
   step 'I should see list of issues for "Internal" project' do
     expect(page).to have_content "Internal Bug"
@@ -136,7 +134,6 @@ class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   def public_project
     @public_project ||= Project.find_by!(name: 'Community')
   end
-
 
   def internal_merge_request
     @internal_merge_request ||= MergeRequest.find_by!(title: 'Feature implemented')

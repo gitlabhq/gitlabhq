@@ -24,6 +24,7 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_diffs
 
   after_create :reload_content, unless: :importing?
+  after_save :keep_around_commit
 
   def reload_content
     reload_commits
@@ -145,7 +146,11 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     new_attributes[:st_diffs] = new_diffs
-    new_attributes[:base_commit_sha] = self.repository.merge_base(self.head, self.base)
+
+    base_commit_sha = self.repository.merge_base(self.head, self.base)
+    new_attributes[:base_commit_sha] = base_commit_sha
+
+    self.repository.keep_around(base_commit_sha)
 
     update_columns_serialized(new_attributes)
   end
@@ -216,5 +221,9 @@ class MergeRequestDiff < ActiveRecord::Base
 
     update_columns(new_attributes.merge(updated_at: current_time_from_proper_timezone))
     reload
+  end
+
+  def keep_around_commit
+    self.repository.keep_around(self.base_commit_sha)
   end
 end

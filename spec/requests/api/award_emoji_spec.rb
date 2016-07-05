@@ -62,7 +62,6 @@ describe API::API, api: true  do
     end
   end
 
-
   describe "GET /projects/:id/awardable/:awardable_id/award_emoji/:award_id" do
     context 'on an issue' do
       it "returns the award emoji" do

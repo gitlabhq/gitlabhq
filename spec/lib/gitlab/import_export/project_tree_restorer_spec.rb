@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }

@@ -3,7 +3,6 @@ class Import::GoogleCodeController < Import::BaseController
   before_action :user_map, only: [:new_user_map, :create_user_map]
 
   def new
-
   end
 
   def callback
@@ -34,7 +33,6 @@ class Import::GoogleCodeController < Import::BaseController
   end
 
   def new_user_map
-
   end
 
   def create_user_map

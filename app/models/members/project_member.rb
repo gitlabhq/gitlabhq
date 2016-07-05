@@ -15,7 +15,6 @@ class ProjectMember < Member
   before_destroy :delete_member_todos
 
   class << self
-
     # Add users to project teams with passed access option
     #
     # access can be an integer representing a access code

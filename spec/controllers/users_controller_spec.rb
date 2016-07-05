@@ -64,7 +64,6 @@ describe UsersController do
   end
 
   describe 'GET #calendar' do
-
     it 'renders calendar' do
       sign_in(user)
 

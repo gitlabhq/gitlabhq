@@ -41,12 +41,12 @@ describe CreateTagService, services: true do
       it 'returns an error' do
         expect(repository).to receive(:add_tag).
           with(user, 'v1.1.0', 'master', 'Foo').
-          and_raise(GitHooksService::PreReceiveError)
+          and_raise(GitHooksService::PreReceiveError, 'something went wrong')
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 
         expect(response).to eq(status: :error,
-                               message: 'Tag creation was rejected by Git hook')
+                               message: 'something went wrong')
       end
     end
   end

@@ -40,7 +40,6 @@ module API
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ':id/repository/branches/:branch/protect',
           requirements: { branch: /.+/ } do
-
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
@@ -60,7 +59,6 @@ module API
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ':id/repository/branches/:branch/unprotect',
           requirements: { branch: /.+/ } do
-
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])

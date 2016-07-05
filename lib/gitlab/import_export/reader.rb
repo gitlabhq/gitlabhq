@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class Reader
-
       attr_reader :tree
 
       def initialize(shared:)
@@ -54,7 +53,6 @@ module Gitlab
         end
         @json_config_hash
       end
-
 
       # If the model is a hash, process the sub_models, which could also be hashes
       # If there is a list, add to an existing array, otherwise use hash syntax

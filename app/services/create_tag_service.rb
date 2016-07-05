@@ -13,8 +13,8 @@ class CreateTagService < BaseService
       new_tag = repository.add_tag(current_user, tag_name, target, message)
     rescue Rugged::TagError
       return error("Tag #{tag_name} already exists")
-    rescue GitHooksService::PreReceiveError
-      return error('Tag creation was rejected by Git hook')
+    rescue GitHooksService::PreReceiveError => ex
+      return error(ex.message)
     end
 
     if new_tag

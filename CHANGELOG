@@ -10,6 +10,7 @@ v 8.10.0 (unreleased)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
+  - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
@@ -31,12 +32,20 @@ v 8.10.0 (unreleased)
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Add basic system information like memory and disk usage to the admin panel
+  - Don't garbage collect commits that have related DB records like comments
+  - More descriptive message for git hooks and file locks
+  - Handle custom Git hook result in GitLab UI
 
+v 8.9.4 (unreleased)
+  - Ensure references to private repos aren't shown to logged-out users
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
+  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq
   - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
+  - Fix import button disabled when import process fail due to the namespace already been taken.
+  - Security: Update RedCloth to 4.3.2 (Takuya Noguchi)
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.

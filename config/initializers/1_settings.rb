@@ -162,7 +162,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
   end
 end
 
-
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled'] = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['auto_sign_in_with_provider'] = false if Settings.omniauth['auto_sign_in_with_provider'].nil?
@@ -255,7 +254,6 @@ Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path']
 Settings.gitlab['restricted_signup_domains'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project]
 Settings.gitlab['trusted_proxies'] ||= []
-
 
 #
 # Elasticseacrh
@@ -426,7 +424,6 @@ Settings.git['timeout']   ||= 10
 # db/migrate/20151023144219_remove_satellites.rb
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
-
 
 #
 # Kerberos

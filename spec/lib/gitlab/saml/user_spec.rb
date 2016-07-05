@@ -267,7 +267,6 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
       end
-
     end
 
     describe 'blocking' do

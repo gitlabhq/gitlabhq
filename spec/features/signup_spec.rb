@@ -2,7 +2,6 @@ require 'spec_helper'
 
 feature 'Signup', feature: true do
   describe 'signup with no errors' do
-
     context "when sending confirmation email" do
       before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true) }
 
@@ -40,7 +39,6 @@ feature 'Signup', feature: true do
         expect(page).to have_content("Welcome! You have signed up successfully.")
       end
     end
-
   end
 
   describe 'signup with errors' do
