@@ -25,7 +25,7 @@ class RepositoryUpdateMirrorWorker
 
       project.import_finish
     rescue => ex
-      project.mark_import_as_failed("We're sorry, a temporary error happened, please try again.")
+      project.mark_import_as_failed("We're sorry, a temporary error occurred, please try again.")
 
       raise UpdateMirrorError, "#{ex.class}: #{ex.message}"
     end
