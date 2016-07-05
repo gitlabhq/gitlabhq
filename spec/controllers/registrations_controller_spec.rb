@@ -14,8 +14,7 @@ describe RegistrationsController do
       before { allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(false) }
 
       it 'logs user in directly' do
-        post(:create, user_params)
-        expect(ActionMailer::Base.deliveries.last).to be_nil
+        expect { post(:create, user_params) }.not_to change{ ActionMailer::Base.deliveries.size }
         expect(subject.current_user).not_to be_nil
       end
     end
