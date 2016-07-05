@@ -5,6 +5,9 @@ class ProtectedBranch < ActiveRecord::Base
   validates :name, presence: true
   validates :project, presence: true
 
+  has_one :merge_access_level
+  has_one :push_access_level
+
   def commit
     project.commit(self.name)
   end
