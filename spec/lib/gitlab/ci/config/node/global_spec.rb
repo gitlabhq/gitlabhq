@@ -31,24 +31,24 @@ describe Gitlab::Ci::Config::Node::Global do
         before { global.process! }
 
         it 'creates nodes hash' do
-          expect(global.nodes).to be_an Array
+          expect(global.descendants).to be_an Array
         end
 
         it 'creates node object for each entry' do
-          expect(global.nodes.count).to eq 9
+          expect(global.descendants.count).to eq 9
         end
 
         it 'creates node object using valid class' do
-          expect(global.nodes.first)
+          expect(global.descendants.first)
             .to be_an_instance_of Gitlab::Ci::Config::Node::Script
-          expect(global.nodes.second)
+          expect(global.descendants.second)
             .to be_an_instance_of Gitlab::Ci::Config::Node::Image
         end
 
         it 'sets correct description for nodes' do
-          expect(global.nodes.first.description)
+          expect(global.descendants.first.description)
             .to eq 'Script that will be executed before each job.'
-          expect(global.nodes.second.description)
+          expect(global.descendants.second.description)
             .to eq 'Docker image that will be used to execute jobs.'
         end
       end
@@ -139,11 +139,11 @@ describe Gitlab::Ci::Config::Node::Global do
 
       describe '#nodes' do
         it 'instantizes all nodes' do
-          expect(global.nodes.count).to eq 9
+          expect(global.descendants.count).to eq 9
         end
 
         it 'contains undefined nodes' do
-          expect(global.nodes.first)
+          expect(global.descendants.first)
             .to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
         end
       end

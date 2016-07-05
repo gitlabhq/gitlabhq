@@ -26,12 +26,16 @@ module Gitlab
             process_nodes!
           end
 
-          def nodes
-            @nodes.values
+          def leaf?
+            nodes.none?
           end
 
-          def leaf?
-            self.class.nodes.none?
+          def nodes
+            self.class.nodes
+          end
+
+          def descendants
+            @nodes.values
           end
 
           def ancestors
@@ -43,7 +47,7 @@ module Gitlab
           end
 
           def errors
-            @validator.messages + nodes.flat_map(&:errors)
+            @validator.messages + @nodes.values.flat_map(&:errors)
           end
 
           def value
@@ -73,13 +77,13 @@ module Gitlab
           private
 
           def compose!
-            self.class.nodes.each do |key, essence|
+            nodes.each do |key, essence|
               @nodes[key] = create_node(key, essence)
             end
           end
 
           def process_nodes!
-            nodes.each(&:process!)
+            @nodes.each_value(&:process!)
           end
 
           def create_node(key, essence)
