@@ -32,7 +32,7 @@ SecureHeaders::Configuration.default do |config|
     frame_src: %w('self'),
     connect_src: %w('self'),
     font_src: %w('self'),
-    img_src: %w('self' www.gravatar.com secure.gravatar.com https:),
+    img_src: %w('self' https:),
     media_src: %w('none'),
     object_src: %w('none'),
     script_src: %w('unsafe-inline' 'self'),
@@ -46,7 +46,33 @@ SecureHeaders::Configuration.default do |config|
     report_uri: %W(#{CSP_REPORT_URI})
   }
 
+  # Allow Bootstrap Linter in development mode.
   if Rails.env.development?
     config.csp[:script_src] << "maxcdn.bootstrapcdn.com"
+  end
+
+  # Recaptcha
+  if current_application_settings.recaptcha_enabled
+    config.csp[:script_src] << "https://www.google.com/recaptcha/"
+    config.csp[:script_src] << "https://www.gstatic.com/recaptcha/"
+    config.csp[:frame_src] << "https://www.google.com/recaptcha/"
+  end
+
+  # Gravatar
+  if current_application_settings.gravatar_enabled?
+    config.csp[:img_src] << "www.gravatar.com"
+    config.csp[:img_src] << "secure.gravatar.com"
+    config.csp[:img_src] << Gitlab.config.gravatar.host
+  end
+
+  # Piwik
+  if Gitlab.config.extra.has_key?('piwik_url') && Gitlab.config.extra.has_key?('piwik_site_id')
+    config.csp[:script_src] << Gitlab.config.extra.piwik_url
+    config.csp[:img_src] << Gitlab.config.extra.piwik_url
+  end
+
+  # Google Analytics
+  if Gitlab.config.extra.has_key?('google_analytics_id')
+    config.csp[:script_src] << "https://www.google-analytics.com"
   end
 end
