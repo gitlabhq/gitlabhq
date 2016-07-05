@@ -8,7 +8,7 @@
     loading: false
   computed:
     buttonText: ->
-      if this.comments[this.noteId] then "Mark as un-resolved" else "Mark as resolved"
+      if this.isResolved then "Mark as un-resolved" else "Mark as resolved"
     isResolved: -> this.comments[this.noteId]
   methods:
     updateTooltip: ->
