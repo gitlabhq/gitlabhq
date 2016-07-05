@@ -40,13 +40,13 @@ module ButtonHelper
       type: :button
   end
 
-  def http_clone_button(project, placement = 'right', append_link = true)
+  def http_clone_button(project, placement = 'right', append_link: true)
     klass = 'http-selector'
     klass << ' has-tooltip' if current_user.try(:require_password?)
 
     protocol = gitlab_config.protocol.upcase
 
-    content_tag :a, protocol,
+    content_tag (append_link ? :a : :span), protocol,
       class: klass,
       href: (project.http_url_to_repo if append_link),
       data: {
@@ -57,11 +57,11 @@ module ButtonHelper
       }
   end
 
-  def ssh_clone_button(project, placement = 'right', append_link = true)
+  def ssh_clone_button(project, placement = 'right', append_link: true)
     klass = 'ssh-selector'
     klass << ' has-tooltip' if current_user.try(:require_ssh_key?)
 
-    content_tag :a, 'SSH',
+    content_tag (append_link ? :a : :span), 'SSH',
       class: klass,
       href: (project.ssh_url_to_repo if append_link),
       data: {

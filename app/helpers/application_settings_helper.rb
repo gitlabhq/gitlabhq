@@ -47,9 +47,9 @@ module ApplicationSettingsHelper
   def enabled_project_button(project, protocol)
     case protocol
     when 'ssh'
-      ssh_clone_button(project, 'bottom', false)
+      ssh_clone_button(project, 'bottom', append_link: false)
     else
-      http_clone_button(project, 'bottom', false)
+      http_clone_button(project, 'bottom', append_link: false)
     end
   end
 
