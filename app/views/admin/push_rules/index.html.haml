@@ -1,14 +1,14 @@
-- page_title "Git Hooks"
+- page_title "Push Rules"
 %h3.page-title
-  Pre-defined git hooks.
+  Pre-defined push rules.
 %p.light
   Rules that define what git pushes are accepted for a project. All newly created projects will use this settings. Request new rules for free by creating an issue on the <a href="https://gitlab.com/gitlab-org/gitlab-ee/issues/">GitLab EE issue tracker</a> and labeling it 'Feature proposal'. Or if you can please contribute a tested merge request.
 
 %hr.clearfix
 
-= form_for [:admin, @git_hook] do |f|
-  -if @git_hook.errors.any?
+= form_for [:admin, @push_rule] do |f|
+  -if @push_rule.errors.any?
     .alert.alert-danger
-      - @git_hook.errors.full_messages.each do |msg|
+      - @push_rule.errors.full_messages.each do |msg|
         %p= msg
-  = render "shared/git_hooks_form", f: f
+  = render "shared/push_rules_form", f: f

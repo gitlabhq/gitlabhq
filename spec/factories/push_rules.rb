@@ -1,7 +1,7 @@
 # Read about factories at https://github.com/thoughtbot/factory_girl
 
 FactoryGirl.define do
-  factory :git_hook do
+  factory :push_rule do
     force_push_regex 'feature\/.*'
     deny_delete_tag false
     delete_branch_regex 'bug\/.*'
@@ -15,7 +15,7 @@ FactoryGirl.define do
       author_email_regex '.*@veryspecificedomain.com'
     end
 
-    factory :git_hook_sample do
+    factory :push_rule_sample do
       is_sample true
     end
   end

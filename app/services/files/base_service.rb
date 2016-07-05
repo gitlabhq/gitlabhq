@@ -70,8 +70,8 @@ module Files
       end
     end
 
-    def git_hook
-      project.git_hook
+    def push_rule
+      project.push_rule
     end
   end
 end

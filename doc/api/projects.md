@@ -1177,14 +1177,14 @@ Parameters:
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order
 
-## Git Hooks (EE only)
+## Push Rules (EE only)
 
-### Show project git hooks
+### Show project push rules
 
-Get a project git hook.
+Get a project push rule.
 
 ```
-GET /projects/:id/git_hook
+GET /projects/:id/push_rule
 ```
 
 Parameters:
@@ -1202,26 +1202,12 @@ Parameters:
 }
 ```
 
-### Add project git hook
+### Add project push rule
 
-Adds a git hook to a specified project.
-
-```
-POST /projects/:id/git_hook
-```
-
-Parameters:
-
-- `id` (required) - The ID of a project
-- `deny_delete_tag` - Do not allow users to remove git tags with git push
-- `commit_message_regex` - Commit message regex
-
-### Edit project git hook
-
-Edits a git hook for a specified project.
+Adds a push rule to a specified project.
 
 ```
-PUT /projects/:id/git_hook
+POST /projects/:id/push_rule
 ```
 
 Parameters:
@@ -1230,18 +1216,32 @@ Parameters:
 - `deny_delete_tag` - Do not allow users to remove git tags with git push
 - `commit_message_regex` - Commit message regex
 
-### Delete project git hook
+### Edit project push rule
 
-Removes a git hook from a project. This is an idempotent method and can be called multiple times.
-Either the git hook is available or not.
+Edits a push rule for a specified project.
 
 ```
-DELETE /projects/:id/git_hook
+PUT /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `deny_delete_tag` - Do not allow users to remove git tags with git push
+- `commit_message_regex` - Commit message regex
+
+### Delete project push rule
+
+Removes a push rule from a project. This is an idempotent method and can be called multiple times.
+Either the push rule is available or not.
+
+```
+DELETE /projects/:id/push_rule
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
 
-Note the JSON response differs if the hook is available or not. If the project hook
+Note the JSON response differs if the push rule is available or not. If the project push rule
 is available before it is returned in the JSON response or an empty response is returned.

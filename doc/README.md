@@ -30,7 +30,7 @@
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
 - [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Email](tools/email.md) Email GitLab users from GitLab
-- [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
+- [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Installing your license](license/README.md)

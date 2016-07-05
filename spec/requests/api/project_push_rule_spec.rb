@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, 'ProjectGitHook', api: true  do
+describe API::API, 'ProjectPushRule', api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
@@ -11,14 +11,14 @@ describe API::API, 'ProjectGitHook', api: true  do
     project.team << [user3, :developer]
   end
 
-  describe "GET /projects/:id/git_hook" do
+  describe "GET /projects/:id/push_rule" do
     before do
-      create(:git_hook, project: project)
+      create(:push_rule, project: project)
     end
 
     context "authorized user" do
-      it "should return project git hook" do
-        get api("/projects/#{project.id}/git_hook", user)
+      it "should return project push rule" do
+        get api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(200)
 
         expect(json_response).to be_an Hash
@@ -27,17 +27,17 @@ describe API::API, 'ProjectGitHook', api: true  do
     end
 
     context "unauthorized user" do
-      it "should not access project git hooks" do
-        get api("/projects/#{project.id}/git_hook", user3)
+      it "should not access project push rule" do
+        get api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end
     end
   end
 
-  describe "POST /projects/:id/git_hook" do
+  describe "POST /projects/:id/push_rule" do
     context "authorized user" do
-      it "should add git hook to project" do
-        post api("/projects/#{project.id}/git_hook", user),
+      it "should add push rule to project" do
+        post api("/projects/#{project.id}/push_rule", user),
           deny_delete_tag: true
         expect(response.status).to eq(201)
 
@@ -48,35 +48,35 @@ describe API::API, 'ProjectGitHook', api: true  do
     end
 
     context "unauthorized user" do
-      it "should not add git hook to project" do
-        post api("/projects/#{project.id}/git_hook", user3),
+      it "should not add push rule to project" do
+        post api("/projects/#{project.id}/push_rule", user3),
           deny_delete_tag: true
         expect(response.status).to eq(403)
       end
     end
   end
 
-  describe "POST /projects/:id/git_hook" do
+  describe "POST /projects/:id/push_rule" do
     before do
-      create(:git_hook, project: project)
+      create(:push_rule, project: project)
     end
 
-    context "with existing git hook" do
-      it "should not add git hook to project" do
-        post api("/projects/#{project.id}/git_hook", user),
+    context "with existing push rule" do
+      it "should not add push rule to project" do
+        post api("/projects/#{project.id}/push_rule", user),
           deny_delete_tag: true
         expect(response.status).to eq(422)
       end
     end
   end
 
-  describe "PUT /projects/:id/git_hook" do
+  describe "PUT /projects/:id/push_rule" do
     before do
-      create(:git_hook, project: project)
+      create(:push_rule, project: project)
     end
 
-    it "should update an existing project git hook" do
-      put api("/projects/#{project.id}/git_hook", user),
+    it "should update an existing project push rule" do
+      put api("/projects/#{project.id}/push_rule", user),
         deny_delete_tag: false, commit_message_regex: 'Fixes \d+\..*'
       expect(response.status).to eq(200)
 
@@ -85,28 +85,28 @@ describe API::API, 'ProjectGitHook', api: true  do
     end
   end
 
-  describe "PUT /projects/:id/git_hook" do
-    it "should error on non existing project git hook" do
-      put api("/projects/#{project.id}/git_hook", user),
+  describe "PUT /projects/:id/push_rule" do
+    it "should error on non existing project push rule" do
+      put api("/projects/#{project.id}/push_rule", user),
         deny_delete_tag: false, commit_message_regex: 'Fixes \d+\..*'
       expect(response.status).to eq(404)
     end
 
-    it "should not update git hook for unauthorized user" do
-      post api("/projects/#{project.id}/git_hook", user3),
+    it "should not update push rule for unauthorized user" do
+      post api("/projects/#{project.id}/push_rule", user3),
         deny_delete_tag: true
       expect(response.status).to eq(403)
     end
   end
 
-  describe "DELETE /projects/:id/git_hook" do
+  describe "DELETE /projects/:id/push_rule" do
     before do
-      create(:git_hook, project: project)
+      create(:push_rule, project: project)
     end
 
     context "authorized user" do
-      it "should delete git hook from project" do
-        delete api("/projects/#{project.id}/git_hook", user)
+      it "should delete push rule from project" do
+        delete api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(200)
 
         expect(json_response).to be_an Hash
@@ -115,16 +115,16 @@ describe API::API, 'ProjectGitHook', api: true  do
 
     context "unauthorized user" do
       it "should return a 403 error" do
-        delete api("/projects/#{project.id}/git_hook", user3)
+        delete api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end
     end
   end
 
-  describe "DELETE /projects/:id/git_hook" do
-    context "for non existing git hook" do
-      it "should delete git hook from project" do
-        delete api("/projects/#{project.id}/git_hook", user)
+  describe "DELETE /projects/:id/push_rule" do
+    context "for non existing push rule" do
+      it "should delete push rule from project" do
+        delete api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(404)
 
         expect(json_response).to be_an Hash
@@ -132,7 +132,7 @@ describe API::API, 'ProjectGitHook', api: true  do
       end
 
       it "should return a 403 error if not authorized" do
-        delete api("/projects/#{project.id}/git_hook", user3)
+        delete api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end
     end

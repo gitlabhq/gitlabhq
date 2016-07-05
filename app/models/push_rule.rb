@@ -1,4 +1,4 @@
-class GitHook < ActiveRecord::Base
+class PushRule < ActiveRecord::Base
   belongs_to :project
 
   validates :project, presence: true, unless: "is_sample?"

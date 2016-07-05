@@ -309,12 +309,12 @@ describe Gitlab::GitAccess, lib: true do
         end
       end
 
-      describe 'and git hooks set' do
-        before { project.create_git_hook }
+      describe 'and push rules set' do
+        before { project.create_push_rule }
 
         describe 'check commit author email' do
           before do
-            project.git_hook.update(author_email_regex: "@only.com")
+            project.push_rule.update(author_email_regex: "@only.com")
           end
 
           describe 'git annex enabled' do
@@ -342,7 +342,7 @@ describe Gitlab::GitAccess, lib: true do
         describe 'check max file size' do
           before do
             allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(5.megabytes.to_i)
-            project.git_hook.update(max_file_size: 2)
+            project.push_rule.update(max_file_size: 2)
           end
 
           describe 'git annex enabled' do
@@ -361,22 +361,22 @@ describe Gitlab::GitAccess, lib: true do
     end
   end
 
-  describe "git_hook_check" do
+  describe "push_rule_check" do
     describe "author email check" do
       it 'returns true' do
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_truthy
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_truthy
       end
 
       it 'returns false' do
-        project.create_git_hook
-        project.git_hook.update(commit_message_regex: "@only.com")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        project.create_push_rule
+        project.push_rule.update(commit_message_regex: "@only.com")
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
 
       it 'returns true for tags' do
-        project.create_git_hook
-        project.git_hook.update(commit_message_regex: "@only.com")
-        expect(access.git_hook_check(user, project, 'refs/tags/v1', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        project.create_push_rule
+        project.push_rule.update(commit_message_regex: "@only.com")
+        expect(access.push_rule_check(user, project, 'refs/tags/v1', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
 
       it 'allows githook for new branch with an old bad commit' do
@@ -385,11 +385,11 @@ describe Gitlab::GitAccess, lib: true do
         allow(bad_commit).to receive(:refs).and_return([ref_object])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
-        project.create_git_hook
-        project.git_hook.update(commit_message_regex: "Change some files")
+        project.create_push_rule
+        project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.git_hook_check(user, project, 'refs/heads/new-branch', Gitlab::Git::BLANK_SHA, '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_rule_check(user, project, 'refs/heads/new-branch', Gitlab::Git::BLANK_SHA, '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
 
       it 'allows githook for any change with an old bad commit' do
@@ -398,11 +398,11 @@ describe Gitlab::GitAccess, lib: true do
         allow(bad_commit).to receive(:refs).and_return([ref_object])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
-        project.create_git_hook
-        project.git_hook.update(commit_message_regex: "Change some files")
+        project.create_push_rule
+        project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
 
       it 'does not allow any change from Web UI with bad commit' do
@@ -412,41 +412,41 @@ describe Gitlab::GitAccess, lib: true do
         allow(bad_commit).to receive(:refs).and_return([ref_object])
         allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
 
-        project.create_git_hook
-        project.git_hook.update(commit_message_regex: "Change some files")
+        project.create_push_rule
+        project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
     end
 
     describe "member_check" do
       before do
-        project.create_git_hook
-        project.git_hook.update(member_check: true)
+        project.create_push_rule
+        project.push_rule.update(member_check: true)
       end
 
       it 'returns false for non-member user' do
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
       end
 
       it 'returns true if committer is a gitlab member' do
         create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
       end
     end
 
     describe "file names check" do
       it 'returns false when filename is prohibited' do
-        project.create_git_hook
-        project.git_hook.update(file_name_regex: "jpg$")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).not_to be_allowed
+        project.create_push_rule
+        project.push_rule.update(file_name_regex: "jpg$")
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).not_to be_allowed
       end
 
       it 'returns true if file name is allowed' do
-        project.create_git_hook
-        project.git_hook.update(file_name_regex: "exe$")
-        expect(access.git_hook_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).to be_allowed
+        project.create_push_rule
+        project.push_rule.update(file_name_regex: "exe$")
+        expect(access.push_rule_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).to be_allowed
       end
     end
 
@@ -456,22 +456,22 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       it "returns false when size is too large" do
-        project.create_git_hook
-        project.git_hook.update(max_file_size: 1)
-        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).not_to be_allowed
+        project.create_push_rule
+        project.push_rule.update(max_file_size: 1)
+        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).not_to be_allowed
       end
 
       it "returns true when size is allowed" do
-        project.create_git_hook
-        project.git_hook.update(max_file_size: 2)
-        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
+        project.create_push_rule
+        project.push_rule.update(max_file_size: 2)
+        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
       end
 
       it "returns true when size is nil" do
         allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
-        project.create_git_hook
-        project.git_hook.update(max_file_size: 2)
-        expect(access.git_hook_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
+        project.create_push_rule
+        project.push_rule.update(max_file_size: 2)
+        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
       end
     end
   end

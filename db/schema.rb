@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160628085157) do
+ActiveRecord::Schema.define(version: 20160705111606) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -493,23 +493,6 @@ ActiveRecord::Schema.define(version: 20160628085157) do
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
-  create_table "git_hooks", force: :cascade do |t|
-    t.string   "force_push_regex"
-    t.string   "delete_branch_regex"
-    t.string   "commit_message_regex"
-    t.boolean  "deny_delete_tag"
-    t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "author_email_regex"
-    t.boolean  "member_check",         default: false, null: false
-    t.string   "file_name_regex"
-    t.boolean  "is_sample",            default: false
-    t.integer  "max_file_size",        default: 0,     null: false
-  end
-
-  add_index "git_hooks", ["project_id"], name: "index_git_hooks_on_project_id", using: :btree
-
   create_table "historical_data", force: :cascade do |t|
     t.date     "date",              null: false
     t.integer  "active_user_count"
@@ -918,43 +901,45 @@ ActiveRecord::Schema.define(version: 20160628085157) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,     null: false
-    t.boolean  "merge_requests_enabled",             default: true,     null: false
-    t.boolean  "wiki_enabled",                       default: true,     null: false
+    t.boolean  "issues_enabled",                     default: true,      null: false
+    t.boolean  "merge_requests_enabled",             default: true,      null: false
+    t.boolean  "wiki_enabled",                       default: true,      null: false
     t.integer  "namespace_id"
-    t.boolean  "snippets_enabled",                   default: true,     null: false
+    t.string   "issues_tracker",                     default: "gitlab",  null: false
+    t.string   "issues_tracker_id"
+    t.boolean  "snippets_enabled",                   default: true,      null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",                   default: 0,        null: false
-    t.boolean  "archived",                           default: false,    null: false
+    t.integer  "visibility_level",                   default: 0,         null: false
+    t.boolean  "archived",                           default: false,     null: false
     t.string   "avatar"
     t.string   "import_status"
     t.float    "repository_size",                    default: 0.0
     t.text     "merge_requests_template"
-    t.integer  "star_count",                         default: 0,        null: false
+    t.integer  "star_count",                         default: 0,         null: false
     t.boolean  "merge_requests_rebase_enabled",      default: false
     t.string   "import_type"
     t.string   "import_source"
-    t.integer  "approvals_before_merge",             default: 0,        null: false
+    t.integer  "approvals_before_merge",             default: 0,         null: false
     t.boolean  "reset_approvals_on_push",            default: true
     t.integer  "commit_count",                       default: 0
     t.boolean  "merge_requests_ff_only_enabled",     default: false
     t.text     "issues_template"
-    t.boolean  "mirror",                             default: false,    null: false
+    t.boolean  "mirror",                             default: false,     null: false
     t.datetime "mirror_last_update_at"
     t.datetime "mirror_last_successful_update_at"
     t.integer  "mirror_user_id"
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,     null: false
-    t.boolean  "shared_runners_enabled",             default: true,     null: false
+    t.boolean  "builds_enabled",                     default: true,      null: false
+    t.boolean  "shared_runners_enabled",             default: true,      null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
-    t.boolean  "build_allow_git_fetch",              default: true,     null: false
-    t.integer  "build_timeout",                      default: 3600,     null: false
-    t.boolean  "mirror_trigger_builds",              default: false,    null: false
+    t.boolean  "build_allow_git_fetch",              default: true,      null: false
+    t.integer  "build_timeout",                      default: 3600,      null: false
+    t.boolean  "mirror_trigger_builds",              default: false,     null: false
     t.boolean  "pending_delete",                     default: false
-    t.boolean  "public_builds",                      default: true,     null: false
+    t.boolean  "public_builds",                      default: true,      null: false
     t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
@@ -990,6 +975,23 @@ ActiveRecord::Schema.define(version: 20160628085157) do
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
+
+  create_table "push_rules", force: :cascade do |t|
+    t.string   "force_push_regex"
+    t.string   "delete_branch_regex"
+    t.string   "commit_message_regex"
+    t.boolean  "deny_delete_tag"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "author_email_regex"
+    t.boolean  "member_check",         default: false, null: false
+    t.string   "file_name_regex"
+    t.boolean  "is_sample",            default: false
+    t.integer  "max_file_size",        default: 0,     null: false
+  end
+
+  add_index "push_rules", ["project_id"], name: "index_push_rules_on_project_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
     t.string   "tag"

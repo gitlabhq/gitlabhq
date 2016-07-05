@@ -262,7 +262,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :git_hooks, only: [:index, :update]
+    resources :push_rules, only: [:index, :update]
 
     resource :impersonation, only: :destroy
 
@@ -783,7 +783,7 @@ Rails.application.routes.draw do
             post :update_now
           end
         end
-        resources :git_hooks, constraints: { id: /\d+/ }
+        resources :push_rules, constraints: { id: /\d+/ }
 
         resources :pipelines, only: [:index, :new, :create, :show] do
           member do

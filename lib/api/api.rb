@@ -49,7 +49,8 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::ProjectHooks
-    mount ::API::ProjectGitHook
+    mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
+    mount ::API::ProjectPushRule
     mount ::API::ProjectMembers
     mount ::API::ProjectSnippets
     mount ::API::Projects

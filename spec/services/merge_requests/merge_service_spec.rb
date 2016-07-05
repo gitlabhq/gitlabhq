@@ -87,7 +87,7 @@ describe MergeRequests::MergeService, services: true do
 
     context 'commit message validation' do
       before do
-        allow(project).to receive(:git_hook) { build(:git_hook, commit_message_regex: 'unmatched pattern .*') }
+        allow(project).to receive(:push_rule) { build(:push_rule, commit_message_regex: 'unmatched pattern .*') }
       end
 
       it 'returns false and saves error when invalid' do
@@ -98,7 +98,7 @@ describe MergeRequests::MergeService, services: true do
 
     context 'authors email validation' do
       before do
-        allow(project).to receive(:git_hook) { build(:git_hook, author_email_regex: '.*@unmatchedemaildomain.com') }
+        allow(project).to receive(:push_rule) { build(:push_rule, author_email_regex: '.*@unmatchedemaildomain.com') }
       end
 
       it 'returns false and saves error when invalid' do
