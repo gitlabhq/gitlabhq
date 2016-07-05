@@ -46,6 +46,8 @@
                 %ul
                   %li
                     = link_to "Profile", current_user
+                  %li
+                    = link_to "Profile Settings", profile_path
                   %li.divider
                   %li
                     = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link", title: 'Sign out'
