@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.5
+  - Add index on both Award Emoji user and name. !5061
   - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq. !5056
   - Re-enable import button when import process fails due to namespace already being taken. !5053
   - Fix snippets comments not displayed. !5045

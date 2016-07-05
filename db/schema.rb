@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620115026) do
+ActiveRecord::Schema.define(version: 20160703180340) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 20160620115026) do
   end
 
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+  add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
