@@ -23,7 +23,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     select_template('MIT License')
 
-    file_content = find('.file-content')
+    file_content = first('.file-editor')
     expect(file_content).to have_content('The MIT License (MIT)')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
@@ -46,7 +46,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     select_template('MIT License')
 
-    file_content = find('.file-content')
+    file_content = first('.file-editor')
     expect(file_content).to have_content('The MIT License (MIT)')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 

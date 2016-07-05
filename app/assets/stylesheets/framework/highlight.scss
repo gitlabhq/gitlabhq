@@ -6,11 +6,11 @@
   table-layout: fixed;
 
   pre {
-    padding: 10px;
+    padding: 10px 0;
     border: none;
     border-radius: 0;
     font-family: $monospace_font;
-    font-size: $code_font_size !important;
+    font-size: 0;
     line-height: $code_line_height !important;
     margin: 0;
     overflow: auto;
@@ -21,12 +21,18 @@
 
     code {
       font-family: $monospace_font;
+      font-size: 0;
       white-space: pre;
       word-wrap: normal;
       padding: 0;
 
       .line {
         display: inline-block;
+        width: 100%;
+        min-height: 19px;
+        padding-left: 10px;
+        padding-right: 10px;
+        font-size: $code_font_size;
       }
     }
   }
