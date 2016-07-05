@@ -24,13 +24,6 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
     end
   end
 
-  def cleanup_ci_builds_artifacts_file
-    execute(<<-SQL)
-      UPDATE ci_builds SET artifacts_file = NULL
-        WHERE artifacts_file = ''
-    SQL
-  end
-
   def fill_artifacts_size(result)
     result.each do |build|
       store_dir = File.join(artifacts_prefix, find_artifacts_path(build))
@@ -77,6 +70,13 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
 
   def artifacts_prefix
     Gitlab.config.artifacts.path
+  end
+
+  def cleanup_ci_builds_artifacts_file
+    execute(normalize_sql(<<-SQL))
+      UPDATE ci_builds SET artifacts_file = NULL
+        WHERE artifacts_file = ''
+    SQL
   end
 
   def update_build_sql(id, artifacts_size)
