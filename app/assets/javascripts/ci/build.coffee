@@ -5,6 +5,8 @@ class @CiBuild
   constructor: (@page_url, @build_url, @build_status, @state) ->
     clearInterval(CiBuild.interval)
 
+    @ansi = new Ansi2Html()
+
     # Init breakpoint checker
     @bp = Breakpoints.get()
     @hideSidebar()
@@ -49,8 +51,9 @@ class @CiBuild
     $.ajax
       url: @build_url
       dataType: 'json'
-      success: (build_data) ->
-        $('.js-build-output').html build_data.trace_html
+      success: (build_data) =>
+        html = @ansi.convertTrace(build_data.trace).html()
+        $('.js-build-output').replaceWith html
 
         if build_data.status is 'success' or build_data.status is 'failed'
           $('.js-build-refresh').remove()

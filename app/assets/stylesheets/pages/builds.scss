@@ -142,3 +142,15 @@ table.builds {
   right: 0;
   margin-top: -17px;
 }
+
+.build-trace-line {
+  margin: 0;
+  padding: 0;
+}
+
+.build-trace-line-number {
+  display: inline-block;
+  padding-right: 10px;
+  min-width: 40px;
+  text-align: right;
+}
