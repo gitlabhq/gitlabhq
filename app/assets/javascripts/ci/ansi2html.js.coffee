@@ -21,15 +21,22 @@ class @Ansi2Html
     codes = @getAnsiCodes(line)
 
     lineEl = @createLine(lineText, number)
-    lineEl.prepend @lineLink(number)
 
-    if codes?
-      lineEl
+    if lineText.indexOf('\r') >= 0
+      lastEl = @_html[@_html.length - 1]
+      lastEl
         .find('span')
-        .addClass @getColorClass(codes.color, codes.type, codes.bold)
-        .addClass @getModifierClass(codes.modifier)
+        .text(@removeAnsiCodes(lineText))
+    else
+      lineEl.prepend @lineLink(number)
 
-    @_html.push(lineEl)
+      if codes?
+        lineEl
+          .find('span')
+          .addClass @getColorClass(codes.color, codes.type, codes.bold)
+          .addClass @getModifierClass(codes.modifier)
+
+      @_html.push(lineEl)
 
   createLine: (line, number) ->
     $('<p />',
