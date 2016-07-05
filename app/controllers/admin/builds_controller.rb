@@ -5,8 +5,10 @@ class Admin::BuildsController < Admin::ApplicationController
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope
+      when 'pending'
+        @builds.pending.reverse_order
       when 'running'
-        @builds.running_or_pending.reverse_order
+        @builds.running.reverse_order
       when 'finished'
         @builds.finished
       else
