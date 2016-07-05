@@ -39,8 +39,6 @@ v 8.10.0 (unreleased)
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
 
-v 8.9.4 (unreleased)
-  - Ensure references to private repos aren't shown to logged-out users
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
