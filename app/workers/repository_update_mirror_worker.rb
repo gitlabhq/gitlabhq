@@ -1,26 +1,34 @@
 class RepositoryUpdateMirrorWorker
+  class UpdateMirrorError < StandardError; end
+
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
   LEASE_TIMEOUT = 300
-  
+
   sidekiq_options queue: :gitlab_shell
 
   attr_accessor :project, :repository, :current_user
 
   def perform(project_id)
-    return unless try_obtain_lease(project_id)
+    begin
+      return unless try_obtain_lease(project_id)
 
-    @project = Project.find(project_id)
-    @current_user = @project.mirror_user || @project.creator
+      @project = Project.find(project_id)
+      @current_user = @project.mirror_user || @project.creator
 
-    result = Projects::UpdateMirrorService.new(@project, @current_user).execute
-    if result[:status] == :error
-      project.mark_import_as_failed(result[:message])
-      return
+      result = Projects::UpdateMirrorService.new(@project, @current_user).execute
+      if result[:status] == :error
+        project.mark_import_as_failed(result[:message])
+        return
+      end
+
+      project.import_finish
+    rescue => ex
+      project.mark_import_as_failed("We're sorry, a temporary error happened, please try again.")
+
+      raise UpdateMirrorError, "#{ex.class}: #{ex.message}"
     end
-
-    project.import_finish
   end
 
   private
