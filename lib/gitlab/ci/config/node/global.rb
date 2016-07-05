@@ -36,6 +36,22 @@ module Gitlab
           helpers :before_script, :image, :services, :after_script,
                   :variables, :stages, :types, :cache
 
+          def initialize(config)
+            return super(config) unless config.is_a?(Hash)
+
+            jobs = config.except(*self.class.nodes.keys)
+            global = config.slice(*self.class.nodes.keys)
+
+            super(global.merge(jobs: jobs))
+          end
+
+          ##
+          # Temporary refactoring stub
+          #
+          def jobs
+            @config[:jobs]
+          end
+
           def stages
             stages_defined? ? stages_value : types_value
           end

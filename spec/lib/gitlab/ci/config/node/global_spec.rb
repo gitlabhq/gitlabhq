@@ -22,7 +22,9 @@ describe Gitlab::Ci::Config::Node::Global do
           variables: { VAR: 'value' },
           after_script: ['make clean'],
           stages: ['build', 'pages'],
-          cache: { key: 'k', untracked: true, paths: ['public/'] } }
+          cache: { key: 'k', untracked: true, paths: ['public/'] },
+          rspec: { script: 'rspec' },
+          spinach: { script: 'spinach' } }
       end
 
       describe '#process!' do
@@ -118,6 +120,14 @@ describe Gitlab::Ci::Config::Node::Global do
           it 'returns cache configuration' do
             expect(global.cache)
               .to eq(key: 'k', untracked: true, paths: ['public/'])
+          end
+        end
+
+        describe '#jobs' do
+          it 'returns jobs configuration' do
+            expect(global.jobs)
+              .to eq(rspec: { script: 'rspec' },
+                     spinach: { script: 'spinach' })
           end
         end
       end
