@@ -52,7 +52,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 10.2', path: "~/src/Gitlab/gitlab_git"
+gem "gitlab_git", '~> 10.2', git: "git@gitlab.com:gitlab-org/gitlab_git.git", branch: "commit-blob-rename-action"
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
