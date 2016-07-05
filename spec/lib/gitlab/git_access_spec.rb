@@ -128,7 +128,6 @@ describe Gitlab::GitAccess, lib: true do
         rugged = project.repository.rugged
         author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
-
         merge_index = rugged.merge_commits(target_branch, source_branch)
         Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
       end

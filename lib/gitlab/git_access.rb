@@ -108,7 +108,6 @@ module Gitlab
       actor if actor.is_a?(DeployKey)
     end
 
-
     def deploy_key_can_read_project?
       if deploy_key
         deploy_key.projects.include?(project)
