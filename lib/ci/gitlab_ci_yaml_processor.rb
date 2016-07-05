@@ -68,8 +68,9 @@ module Ci
 
       @jobs = {}
 
-      @config.except!(*ALLOWED_YAML_KEYS)
-      @config.each { |name, param| add_job(name, param) }
+      @ci_config.jobs.each do |name, param|
+        add_job(name, param)
+      end
 
       raise ValidationError, "Please define at least one job" if @jobs.none?
     end
