@@ -4,9 +4,6 @@ module Files
   class UpdateService < Files::BaseService
     def commit
       # Need to update file_path with the new filename
-      puts "#" * 10
-      puts @previous_path
-      puts "#" * 10
       repository.update_file(current_user, @file_path, @previous_path, @file_content, @commit_message, @target_branch, true)
     end
   end
