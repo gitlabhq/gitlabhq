@@ -1043,11 +1043,11 @@ EOT
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: services should be an array of strings")
       end
 
-      it "returns errors if there are unknown parameters" do
+      it "returns error if job configuration is invalid" do
         config = YAML.dump({ extra: "bundle update" })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra config should be a hash")
       end
 
       it "returns errors if there are unknown parameters that are hashes, but doesn't have a script" do
