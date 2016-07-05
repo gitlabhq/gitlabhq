@@ -157,9 +157,9 @@ class Ability
         # Push abilities on the users team role
         rules.push(*project_team_rules(project.team, user))
 
-        owner = project.owner == user ||
-                (project.group && project.group.has_owner?(user)) ||
-                user.admin?
+        owner = user.admin? ||
+                project.owner == user ||
+                (project.group && project.group.has_owner?(user))
 
         if owner
           rules.push(*project_owner_rules)
@@ -178,7 +178,7 @@ class Ability
               project.group.requesters.exists?(user_id: user.id)
             )
 
-          rules << :request_access unless owner || project.team.member?(user) || group_member
+          rules << :request_access unless owner || group_member || project.team.member?(user)
         end
 
         if project.archived?
@@ -355,8 +355,8 @@ class Ability
       rules = []
       rules << :read_group if can_read_group?(user, group)
 
-      owner = group.has_owner?(user) || user.admin?
-      master = owner || user.admin?
+      owner = user.admin? || group.has_owner?(user)
+      master = owner || group.has_master?(user)
 
       # Only group masters and group owners can create new projects
       if master
@@ -376,7 +376,7 @@ class Ability
         ]
       end
 
-      if (group.public? || (group.internal? && !user.external?))
+      if group.public? || (group.internal? && !user.external?)
         rules << :request_access unless group.users.include?(user)
       end
 
