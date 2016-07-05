@@ -3,9 +3,9 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a script.
+        # Entry that represents a configuration of Docker services.
         #
-        class Script < Entry
+        class Services < Entry
           include Validatable
 
           validations do

@@ -3,13 +3,17 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a script.
+        # Entry that represents environment variables.
         #
-        class Script < Entry
+        class Variables < Entry
           include Validatable
 
           validations do
-            validates :config, array_of_strings: true
+            validates :config, variables: true
+          end
+
+          def self.default
+            {}
           end
         end
       end

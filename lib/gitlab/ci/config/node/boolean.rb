@@ -3,13 +3,13 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a script.
+        # Entry that represents a boolean value.
         #
-        class Script < Entry
+        class Boolean < Entry
           include Validatable
 
           validations do
-            validates :config, array_of_strings: true
+            validates :config, boolean: true
           end
         end
       end

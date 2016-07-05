@@ -1,23 +1,15 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Script do
+describe Gitlab::Ci::Config::Node::Services do
   let(:entry) { described_class.new(config) }
 
-  describe '#process!' do
-    before { entry.process! }
-
+  describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { ['ls', 'pwd'] }
+      let(:config) { ['postgres:9.1', 'mysql:5.5'] }
 
       describe '#value' do
-        it 'returns array of strings' do
+        it 'returns array of services as is' do
           expect(entry.value).to eq config
-        end
-      end
-
-      describe '#errors' do
-        it 'does not append errors' do
-          expect(entry.errors).to be_empty
         end
       end
 
@@ -34,7 +26,7 @@ describe Gitlab::Ci::Config::Node::Script do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'script config should be an array of strings'
+            .to include 'services config should be an array of strings'
         end
       end
 

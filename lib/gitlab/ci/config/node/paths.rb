@@ -3,9 +3,9 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a script.
+        # Entry that represents an array of paths.
         #
-        class Script < Entry
+        class Paths < Entry
           include Validatable
 
           validations do

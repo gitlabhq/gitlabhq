@@ -19,35 +19,45 @@ module Gitlab
 
           included do
             validations do
-              validates :config, hash: true
+              validates :config, type: Hash
             end
           end
 
           private
 
           def create_node(key, factory)
-            factory.with(value: @config[key], key: key)
-            factory.nullify! unless @config.has_key?(key)
+            factory.with(value: @config[key], key: key, parent: self)
+
             factory.create!
           end
 
           class_methods do
             def nodes
-              Hash[@allowed_nodes.map { |key, factory| [key, factory.dup] }]
+              Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
             end
 
             private
 
-            def allow_node(symbol, entry_class, metadata)
+            def node(symbol, entry_class, metadata)
               factory = Node::Factory.new(entry_class)
                 .with(description: metadata[:description])
 
-              define_method(symbol) do
-                raise Entry::InvalidError unless valid?
-                @nodes[symbol].try(:value)
-              end
+              (@nodes ||= {}).merge!(symbol.to_sym => factory)
+            end
 
-              (@allowed_nodes ||= {}).merge!(symbol => factory)
+            def helpers(*nodes)
+              nodes.each do |symbol|
+                define_method("#{symbol}_defined?") do
+                  @nodes[symbol].try(:defined?)
+                end
+
+                define_method("#{symbol}_value") do
+                  raise Entry::InvalidError unless valid?
+                  @nodes[symbol].try(:value)
+                end
+
+                alias_method symbol.to_sym, "#{symbol}_value".to_sym
+              end
             end
           end
         end

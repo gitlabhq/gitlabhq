@@ -3,13 +3,13 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a script.
+        # Entry that represents a Docker image.
         #
-        class Script < Entry
+        class Image < Entry
           include Validatable
 
           validations do
-            validates :config, array_of_strings: true
+            validates :config, type: String
           end
         end
       end

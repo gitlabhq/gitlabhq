@@ -1,23 +1,15 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Script do
+describe Gitlab::Ci::Config::Node::Stages do
   let(:entry) { described_class.new(config) }
 
-  describe '#process!' do
-    before { entry.process! }
-
+  describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { ['ls', 'pwd'] }
+      let(:config) { [:stage1, :stage2] }
 
       describe '#value' do
-        it 'returns array of strings' do
+        it 'returns array of stages' do
           expect(entry.value).to eq config
-        end
-      end
-
-      describe '#errors' do
-        it 'does not append errors' do
-          expect(entry.errors).to be_empty
         end
       end
 
@@ -29,12 +21,12 @@ describe Gitlab::Ci::Config::Node::Script do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { 'ls' }
+      let(:config) { { test: true } }
 
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'script config should be an array of strings'
+            .to include 'stages config should be an array of strings'
         end
       end
 
@@ -43,6 +35,12 @@ describe Gitlab::Ci::Config::Node::Script do
           expect(entry).not_to be_valid
         end
       end
+    end
+  end
+
+  describe '.default' do
+    it 'returns default stages' do
+      expect(described_class.default).to eq %w[build test deploy]
     end
   end
 end

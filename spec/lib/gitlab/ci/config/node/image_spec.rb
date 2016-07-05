@@ -1,17 +1,15 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Script do
+describe Gitlab::Ci::Config::Node::Image do
   let(:entry) { described_class.new(config) }
 
-  describe '#process!' do
-    before { entry.process! }
-
+  describe 'validation' do
     context 'when entry config value is correct' do
-      let(:config) { ['ls', 'pwd'] }
+      let(:config) { 'ruby:2.2' }
 
       describe '#value' do
-        it 'returns array of strings' do
-          expect(entry.value).to eq config
+        it 'returns image string' do
+          expect(entry.value).to eq 'ruby:2.2'
         end
       end
 
@@ -29,12 +27,12 @@ describe Gitlab::Ci::Config::Node::Script do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { 'ls' }
+      let(:config) { ['ruby:2.2'] }
 
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'script config should be an array of strings'
+            .to include 'image config should be a string'
         end
       end
 

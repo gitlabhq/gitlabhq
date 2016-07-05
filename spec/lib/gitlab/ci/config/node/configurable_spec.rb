@@ -7,10 +7,42 @@ describe Gitlab::Ci::Config::Node::Configurable do
     node.include(described_class)
   end
 
+  describe 'validations' do
+    let(:validator) { node.validator.new(instance) }
+
+    before do
+      node.class_eval do
+        attr_reader :config
+
+        def initialize(config)
+          @config = config
+        end
+      end
+
+      validator.validate
+    end
+
+    context 'when node validator is invalid' do
+      let(:instance) { node.new('ls') }
+
+      it 'returns invalid validator' do
+        expect(validator).to be_invalid
+      end
+    end
+
+    context 'when node instance is valid' do
+      let(:instance) { node.new(key: 'value') }
+
+      it 'returns valid validator' do
+        expect(validator).to be_valid
+      end
+    end
+  end
+
   describe 'configured nodes' do
     before do
       node.class_eval do
-        allow_node :object, Object, description: 'test object'
+        node :object, Object, description: 'test object'
       end
     end
 

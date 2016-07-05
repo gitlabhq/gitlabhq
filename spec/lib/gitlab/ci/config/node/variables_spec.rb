@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Script do
+describe Gitlab::Ci::Config::Node::Variables do
   let(:entry) { described_class.new(config) }
 
-  describe '#process!' do
-    before { entry.process! }
-
+  describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { ['ls', 'pwd'] }
+      let(:config) do
+        { 'VARIABLE_1' => 'value 1', 'VARIABLE_2' => 'value 2' }
+      end
 
       describe '#value' do
-        it 'returns array of strings' do
+        it 'returns hash with key value strings' do
           expect(entry.value).to eq config
         end
       end
@@ -29,12 +29,12 @@ describe Gitlab::Ci::Config::Node::Script do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { 'ls' }
+      let(:config) { [ :VAR, 'test' ] }
 
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'script config should be an array of strings'
+            .to include /should be a hash of key value pairs/
         end
       end
 
