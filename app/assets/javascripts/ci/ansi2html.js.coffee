@@ -26,7 +26,8 @@ class @Ansi2Html
     if codes?
       lineEl
         .find('span')
-        .addClass @getColorClass(codes.color, codes.modifier)
+        .addClass @getColorClass(codes.color, codes.type, codes.bold)
+        .addClass @getModifierClass(codes.modifier)
 
     @_html.push(lineEl)
 
@@ -52,6 +53,7 @@ class @Ansi2Html
       match = matches[0]
       modifierSplit = match.split(';')
       color = modifierSplit[0].substring(1)
+      colorInt = parseInt(color)
       colorText = @_colors[color[1]]
       modifier = modifierSplit[1][0]
 
@@ -59,15 +61,31 @@ class @Ansi2Html
         return {
           color: colorText
           modifier: modifier
+          bold: modifier is "1"
+          type: @getLineType(color)
         }
+
+  getLineType: (code) ->
+    if code >= 40 and code < 90 or code >= 100
+      'bg'
+    else
+      'fg'
 
   removeAnsiCodes: (line) ->
     line.replace(@_colorRegex, '')
 
-  getColorClass: (color, modifier) ->
-    if modifier? and modifier is "1"
-      modifier = "l-"
-    else
-      modifier = ''
+  getColorClass: (color, type, bold) ->
+    bold = if bold then 'l-' else ''
 
-    "term-fg-#{modifier}#{color}"
+    "term-#{type}-#{bold}#{color}"
+
+  getModifierClass: (modifier) ->
+    unless modifier is "1"
+      if modifier is "3"
+        "term-italic"
+      else if modifier is "4"
+        "term-underline"
+      else if modifier is "8"
+        "term-conceal"
+      else if modifier is "9"
+        "term-cross"

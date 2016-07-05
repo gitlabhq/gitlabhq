@@ -53,7 +53,7 @@ class @CiBuild
       dataType: 'json'
       success: (build_data) =>
         html = @ansi.convertTrace(build_data.trace).html()
-        $('.js-build-output').replaceWith html
+        $('.js-build-output').append html
 
         if build_data.status is 'success' or build_data.status is 'failed'
           $('.js-build-refresh').remove()

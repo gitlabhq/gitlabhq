@@ -92,11 +92,13 @@ table.builds {
 }
 
 .build-trace {
+  padding: 10px 0;
   background: $ci-output-bg;
   color: $ci-text-color;
   white-space: pre;
   overflow-x: auto;
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 20px;
 
   .fa-refresh {
     font-size: 24px;
@@ -145,12 +147,23 @@ table.builds {
 
 .build-trace-line {
   margin: 0;
-  padding: 0;
+  padding-left: 60px;
+
+  &:hover {
+    background-color: lighten($ci-output-bg, 10%);
+  }
 }
 
 .build-trace-line-number {
   display: inline-block;
   padding-right: 10px;
-  min-width: 40px;
+  margin-left: -60px;
+  min-width: 60px;
+  color: $gl-text-color;
   text-align: right;
+
+  &:hover {
+    color: $gl-text-color;
+    text-decoration: none;
+  }
 }
