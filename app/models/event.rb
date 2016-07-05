@@ -44,7 +44,6 @@ class Event < ActiveRecord::Base
   scope :closed, -> { where(action: CLOSED) }
   scope :merged, -> { where(action: MERGED) }
 
-
   class << self
     def reset_event_cache_for(target)
       Event.where(target_id: target.id, target_type: target.class.to_s).

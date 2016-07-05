@@ -183,7 +183,6 @@ module IssuesHelper
     options_from_collection_for_select(options, 'name', 'title', params[:due_date])
   end
 
-
   def issues_weight_options(selected = nil, edit: false)
     weights = edit ? edit_weights : issue_weights
 

@@ -16,7 +16,6 @@ class ProjectWiki
   attr_reader :error_message
   attr_reader :project
 
-
   def initialize(project, user = nil)
     @project = project
     @user = user

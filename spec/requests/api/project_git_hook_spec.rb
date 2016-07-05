@@ -34,7 +34,6 @@ describe API::API, 'ProjectGitHook', api: true  do
     end
   end
 
-
   describe "POST /projects/:id/git_hook" do
     context "authorized user" do
       it "should add git hook to project" do

@@ -102,7 +102,6 @@ module Gitlab
         ).map(&:dn)
       end
 
-
       def ldap_search(*args)
         # Net::LDAP's `time` argument doesn't work. Use Ruby `Timeout` instead.
         Timeout.timeout(config.timeout) do

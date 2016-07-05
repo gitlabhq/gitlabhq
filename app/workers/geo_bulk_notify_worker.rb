@@ -3,7 +3,6 @@ class GeoBulkNotifyWorker
 
   sidekiq_options queue: :default
 
-
   def perform
     Geo::NotifyNodesService.new.execute
   end

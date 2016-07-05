@@ -366,7 +366,6 @@ describe API::API, api: true  do
              approvals_before_merge: approvals_before_merge
       end
 
-
       context 'when the target project has approvals_before_merge set to zero' do
         before do
           project.update_attributes(approvals_before_merge: 0)
