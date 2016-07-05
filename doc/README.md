@@ -23,7 +23,7 @@
 
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
+- [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
