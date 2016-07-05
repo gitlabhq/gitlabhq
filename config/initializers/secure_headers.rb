@@ -50,8 +50,3 @@ SecureHeaders::Configuration.default do |config|
     config.csp[:script_src] << "maxcdn.bootstrapcdn.com"
   end
 end
-
-SecureHeaders::Configuration.override(:background_jobs) do |config|
-  config.csp[:frame_ancestors] = %w('self')
-  config.x_frame_options = 'SAMEORIGIN'
-end
