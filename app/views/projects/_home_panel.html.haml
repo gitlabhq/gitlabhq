@@ -1,6 +1,6 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
-  %div{class: container_class }
+  %div{ class: container_class }
     = project_icon(@project, alt: @project.name, class: 'project-avatar avatar s70')
     %h1.project-title
       = @project.name
