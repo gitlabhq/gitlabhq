@@ -1,11 +1,7 @@
 - page_title "Members"
 
 .group-members-page.prepend-top-default
-<<<<<<< HEAD
-  - if current_user && can?(current_user, :admin_group_member, @group)
-=======
   - if can?(current_user, :admin_group_member, @group)
->>>>>>> 06c7d6f3a863a1ac8d9f47fed8423387d6e672a6
     .panel.panel-default
       .panel-heading
         Add new user to group
@@ -15,7 +11,8 @@
         .new-group-member-holder
           = render "new_group_member"
 
-<<<<<<< HEAD
+    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
+
   - if current_user && @group.ldap_synced?
     .bs-callout.bs-callout-info
       The members of this group are managed using LDAP and cannot be added, changed or removed here.
@@ -33,13 +30,6 @@
           = button_to 'Clear LDAP permission cache', '#', class: "btn btn-remove js-confirm-danger",
             data: { "confirm-danger-message" => clear_ldap_permission_cache_message,
                     'warning-message' => 'If you made manual permission tweaks for some group members they will be lost.' }
-
-
-  - if current_user && can?(current_user, :admin_group_member, @group)
-    = render 'shared/members/requests', membership_source: @group, members: @members.request
-=======
-    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
->>>>>>> 06c7d6f3a863a1ac8d9f47fed8423387d6e672a6
 
   .panel.panel-default
     .panel-heading
