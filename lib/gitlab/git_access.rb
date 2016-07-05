@@ -221,10 +221,6 @@ module Gitlab
       actor if actor.is_a?(DeployKey)
     end
 
-    def deploy_key
-      actor if actor.is_a?(DeployKey)
-    end
-
     def geo_node_key
       actor if actor.is_a?(GeoNodeKey)
     end
@@ -236,7 +232,6 @@ module Gitlab
         false
       end
     end
-
 
     protected
 
