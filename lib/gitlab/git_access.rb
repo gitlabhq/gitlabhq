@@ -224,7 +224,6 @@ module Gitlab
         end
       end
 
-
       build_status_object(true)
     end
 

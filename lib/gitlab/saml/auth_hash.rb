@@ -1,7 +1,6 @@
 module Gitlab
   module Saml
     class AuthHash < Gitlab::OAuth::AuthHash
-
       def groups
         get_raw(Gitlab::Saml::Config.groups)
       end
@@ -13,7 +12,6 @@ module Gitlab
         # otherwise just the first value is returned
         auth_hash.extra[:raw_info].all[key]
       end
-
     end
   end
 end

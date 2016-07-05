@@ -11,14 +11,28 @@ module Gitlab
             @node = node
           end
 
-          def full_errors
+          def messages
             errors.full_messages.map do |error|
-              "#{@node.key} #{error}".humanize
+              "#{location} #{error}".downcase
             end
           end
 
           def self.name
             'Validator'
+          end
+
+          def unknown_keys
+            return [] unless config.is_a?(Hash)
+
+            config.keys - @node.class.nodes.keys
+          end
+
+          private
+
+          def location
+            predecessors = ancestors.map(&:key).compact
+            current = key || @node.class.name.demodulize.underscore
+            predecessors.append(current).join(':')
           end
         end
       end

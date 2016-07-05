@@ -16,5 +16,4 @@ describe Milestone, "StripAttribute" do
 
     it { expect(milestone.title).to eq('8.3') }
   end
-
 end

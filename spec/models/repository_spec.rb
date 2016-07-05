@@ -308,14 +308,14 @@ describe Repository, models: true do
   describe :add_branch do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
-        hook = double(trigger: true)
+        hook = double(trigger: [true, nil])
         expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
         expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
       end
 
       it 'should create the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
 
         branch = repository.add_branch(user, 'new_feature', 'master')
 
@@ -331,7 +331,7 @@ describe Repository, models: true do
 
     context 'when pre hooks failed' do
       it 'should get an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
@@ -339,7 +339,7 @@ describe Repository, models: true do
       end
 
       it 'should not create the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
           repository.add_branch(user, 'new_feature', 'master')
@@ -352,13 +352,13 @@ describe Repository, models: true do
   describe :rm_branch do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
 
       it 'should delete the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
 
@@ -368,7 +368,7 @@ describe Repository, models: true do
 
     context 'when pre hooks failed' do
       it 'should get an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
           repository.rm_branch(user, 'new_feature')
@@ -376,7 +376,7 @@ describe Repository, models: true do
       end
 
       it 'should not delete the branch' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
           repository.rm_branch(user, 'feature')
@@ -408,7 +408,7 @@ describe Repository, models: true do
 
     context 'when pre hooks failed' do
       it 'should get an error' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(false)
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
@@ -903,7 +903,6 @@ describe Repository, models: true do
 
       repository.after_create
     end
-
   end
 
   describe "#copy_gitattributes" do
@@ -1227,6 +1226,14 @@ describe Repository, models: true do
 
         described_class.clean_old_archives
       end
+    end
+  end
+
+  describe "#keep_around" do
+    it "stores a reference to the specified commit sha so it isn't garbage collected" do
+      repository.keep_around(sample_commit.id)
+
+      expect(repository.kept_around?(sample_commit.id)).to be_truthy
     end
   end
 

@@ -219,6 +219,7 @@ Feature: Project Issues
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
 
+  @javascript
   Scenario: I submit new unassigned issue as guest
     Given public project "Community"
     When I visit project "Community" page

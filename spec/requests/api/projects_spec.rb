@@ -707,7 +707,6 @@ describe API::API, api: true  do
     end
 
     describe 'DELETE /projects/:id/fork' do
-
       it "shouldn't be visible to users outside group" do
         delete api("/projects/#{project_fork_target.id}/fork", user)
         expect(response).to have_http_status(404)

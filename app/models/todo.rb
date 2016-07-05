@@ -37,6 +37,8 @@ class Todo < ActiveRecord::Base
     state :done
   end
 
+  after_save :keep_around_commit
+
   def build_failed?
     action == BUILD_FAILED
   end
@@ -72,5 +74,11 @@ class Todo < ActiveRecord::Base
     else
       target.to_reference
     end
+  end
+
+  private
+
+  def keep_around_commit
+    project.repository.keep_around(self.commit_id)
   end
 end

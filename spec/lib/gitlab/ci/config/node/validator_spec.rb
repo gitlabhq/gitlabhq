@@ -5,7 +5,18 @@ describe Gitlab::Ci::Config::Node::Validator do
   let(:validator_instance) { validator.new(node) }
   let(:node) { spy('node') }
 
-  shared_examples 'delegated validator' do
+  before do
+    allow(node).to receive(:key).and_return('node')
+    allow(node).to receive(:ancestors).and_return([])
+  end
+
+  describe 'delegated validator' do
+    before do
+      validator.class_eval do
+        validates :test_attribute, presence: true
+      end
+    end
+
     context 'when node is valid' do
       before do
         allow(node).to receive(:test_attribute).and_return('valid value')
@@ -19,7 +30,7 @@ describe Gitlab::Ci::Config::Node::Validator do
       it 'returns no errors' do
         validator_instance.validate
 
-        expect(validator_instance.full_errors).to be_empty
+        expect(validator_instance.messages).to be_empty
       end
     end
 
@@ -36,32 +47,9 @@ describe Gitlab::Ci::Config::Node::Validator do
       it 'returns errors' do
         validator_instance.validate
 
-        expect(validator_instance.full_errors).not_to be_empty
+        expect(validator_instance.messages)
+          .to include "node test attribute can't be blank"
       end
     end
-  end
-
-  describe 'attributes validations' do
-    before do
-      validator.class_eval do
-        validates :test_attribute, presence: true
-      end
-    end
-
-    it_behaves_like 'delegated validator'
-  end
-
-  describe 'interface validations' do
-    before do
-      validator.class_eval do
-        validate do
-          unless @node.test_attribute == 'valid value'
-            errors.add(:test_attribute, 'invalid value')
-          end
-        end
-      end
-    end
-
-    it_behaves_like 'delegated validator'
   end
 end

@@ -323,7 +323,6 @@ describe Ci::Build, models: true do
         expect_any_instance_of(Ci::Runner).to receive(:can_pick?).and_return(false)
         is_expected.to be_falsey
       end
-
     end
   end
 

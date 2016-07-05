@@ -137,16 +137,16 @@
         .panel-heading
           %strong= @group.name
           group members
-          %span.badge= @group_members.non_request.size
+          %span.badge= @group_members.size
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-xs' do
               = icon('pencil-square-o', text: 'Manage Access')
         %ul.well-list.content-list
-          = render partial: 'shared/members/member', collection: @group_members.non_request, as: :member, locals: { show_controls: false }
+          = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
         .panel-footer
-          = paginate @group_members.non_request, param_name: 'group_members_page', theme: 'gitlab'
+          = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
-    = render 'shared/members/requests', membership_source: @project, members: @project_members.request
+    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
 
     .panel.panel-default
       .panel-heading
@@ -156,6 +156,6 @@
         .pull-right
           = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
       %ul.well-list.project_members.content-list
-        = render partial: 'shared/members/member', collection: @project_members.non_request, as: :member, locals: { show_controls: false }
+        = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .panel-footer
-        = paginate @project_members.non_request, param_name: 'project_members_page', theme: 'gitlab'
+        = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

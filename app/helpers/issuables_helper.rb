@@ -1,5 +1,4 @@
 module IssuablesHelper
-
   def sidebar_gutter_toggle_icon
     sidebar_gutter_collapsed? ? icon('angle-double-left') : icon('angle-double-right')
   end

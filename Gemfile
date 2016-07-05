@@ -117,7 +117,7 @@ gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
 gem 'github-markup', '~> 1.3.1'
 gem 'redcarpet',     '~> 3.3.3'
-gem 'RedCloth',      '~> 4.2.9'
+gem 'RedCloth',      '~> 4.3.2'
 gem 'rdoc',          '~>3.6'
 gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
@@ -275,7 +275,7 @@ group :development do
   gem "sdoc", '~> 0.3.20'
 
   # thin instead webrick
-  gem 'thin', '~> 1.6.1'
+  gem 'thin', '~> 1.7.0'
 end
 
 group :development, :test do
@@ -287,7 +287,7 @@ group :development, :test do
 
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
-  gem 'rspec-rails',        '~> 3.4.0'
+  gem 'rspec-rails',        '~> 3.5.0'
   gem 'rspec-retry'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'

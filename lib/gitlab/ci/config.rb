@@ -7,7 +7,8 @@ module Gitlab
       ##
       # Temporary delegations that should be removed after refactoring
       #
-      delegate :before_script, to: :@global
+      delegate :before_script, :image, :services, :after_script, :variables,
+               :stages, :cache, to: :@global
 
       def initialize(config)
         @config = Loader.new(config).load!

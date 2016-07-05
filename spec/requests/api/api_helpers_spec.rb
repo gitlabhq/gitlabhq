@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe API::Helpers, api: true do
-
   include API::Helpers
   include ApiHelpers
 

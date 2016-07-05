@@ -889,7 +889,6 @@ class User < ActiveRecord::Base
                  projects.select(:id),
                  groups.joins(:shared_projects).select(:project_id)]
 
-
     if min_access_level
       scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
       relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }

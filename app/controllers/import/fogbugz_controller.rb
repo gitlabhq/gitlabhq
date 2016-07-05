@@ -5,7 +5,6 @@ class Import::FogbugzController < Import::BaseController
   rescue_from Fogbugz::AuthenticationException, with: :fogbugz_unauthorized
 
   def new
-
   end
 
   def callback
@@ -22,7 +21,6 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def new_user_map
-
   end
 
   def create_user_map

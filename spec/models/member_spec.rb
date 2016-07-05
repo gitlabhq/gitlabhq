@@ -73,10 +73,10 @@ describe Member, models: true do
       @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
-      @requested_member = project.members.request.find_by(user_id: requested_user.id)
+      @requested_member = project.requesters.find_by(user_id: requested_user.id)
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.members.request.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
     end
 
     describe '.invite' do
@@ -101,22 +101,6 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_invite_member }
       it { expect(described_class.request).to include @requested_member }
       it { expect(described_class.request).not_to include @accepted_request_member }
-    end
-
-    describe '.non_request' do
-      it { expect(described_class.non_request).to include @master }
-      it { expect(described_class.non_request).to include @invited_member }
-      it { expect(described_class.non_request).to include @accepted_invite_member }
-      it { expect(described_class.non_request).not_to include @requested_member }
-      it { expect(described_class.non_request).to include @accepted_request_member }
-    end
-
-    describe '.non_pending' do
-      it { expect(described_class.non_pending).to include @master }
-      it { expect(described_class.non_pending).not_to include @invited_member }
-      it { expect(described_class.non_pending).to include @accepted_invite_member }
-      it { expect(described_class.non_pending).not_to include @requested_member }
-      it { expect(described_class.non_pending).to include @accepted_request_member }
     end
 
     describe '.owners_and_masters' do

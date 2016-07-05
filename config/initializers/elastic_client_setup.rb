@@ -2,7 +2,6 @@
 
 require 'gitlab/current_settings'
 
-
 module Elasticsearch
   module Model
     module Client

@@ -11,7 +11,6 @@ describe API::API, api: true  do
     project.team << [user, :master]
   end
 
-
   describe 'GET /projects/:id/labels' do
     it 'should return project labels' do
       get api("/projects/#{project.id}/labels", user)

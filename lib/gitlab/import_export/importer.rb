@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class Importer
-
       def initialize(project)
         @archive_file = project.import_source
         @current_user = project.creator
