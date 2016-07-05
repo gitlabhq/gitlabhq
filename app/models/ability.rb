@@ -171,14 +171,9 @@ class Ability
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
 
-          group_member =
-            project.group &&
-            (
-              project.group.members.exists?(user_id: user.id) ||
-              project.group.requesters.exists?(user_id: user.id)
-            )
-
-          rules << :request_access unless owner || group_member || project.team.member?(user)
+          unless owner || project.team.member?(user) || project_group_member?(project, user)
+            rules << :request_access
+          end
         end
 
         if project.archived?
@@ -501,8 +496,7 @@ class Ability
       target_user = subject.user
       project = subject.project
 
-      # Allow owners that requested access to their own project to destroy themselves
-      if target_user != project.owner || subject.request?
+      unless target_user == project.owner
         can_manage = project_abilities(user, project).include?(:admin_project_member)
 
         if can_manage
@@ -581,6 +575,14 @@ class Ability
       end
 
       rules
+    end
+
+    def project_group_member?(project, user)
+      project.group &&
+      (
+        project.group.members.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
     end
   end
 end
