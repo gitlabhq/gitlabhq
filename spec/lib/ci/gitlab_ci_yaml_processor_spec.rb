@@ -1061,7 +1061,14 @@ EOT
         config = YAML.dump({ before_script: ["bundle update"] })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Please define at least one job")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs config should contain at least one visible job")
+      end
+
+      it "returns errors if there are no visible jobs defined" do
+        config = YAML.dump({ before_script: ["bundle update"], '.hidden'.to_sym => {} })
+        expect do
+          GitlabCiYamlProcessor.new(config, path)
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs config should contain at least one visible job")
       end
 
       it "returns errors if job allow_failure parameter is not an boolean" do

@@ -10,10 +10,25 @@ module Gitlab
 
           validations do
             validates :config, type: Hash
+            validate :jobs_presence, on: :processed
+
+            def jobs_presence
+              unless relevant?
+                errors.add(:config, 'should contain at least one visible job')
+              end
+            end
           end
 
           def nodes
             @config
+          end
+
+          def relevant?
+            @nodes.values.any?(&:relevant?)
+          end
+
+          def leaf?
+            false
           end
 
           private

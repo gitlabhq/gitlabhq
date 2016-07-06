@@ -108,7 +108,10 @@ describe Gitlab::Ci::Config::Node::Global do
           end
 
           context 'when deprecated types key defined' do
-            let(:hash) { { types: ['test', 'deploy'] } }
+            let(:hash) do
+              { types: ['test', 'deploy'],
+                rspec: { script: 'rspec' } }
+            end
 
             it 'returns array of types as stages' do
               expect(global.stages).to eq %w[test deploy]
@@ -174,7 +177,7 @@ describe Gitlab::Ci::Config::Node::Global do
     # details.
     #
     context 'when entires specified but not defined' do
-      let(:hash) { { variables: nil } }
+      let(:hash) { { variables: nil, rspec: { script: 'rspec' } } }
       before { global.process! }
 
       describe '#variables' do

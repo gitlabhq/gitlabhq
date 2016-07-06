@@ -24,6 +24,7 @@ module Gitlab
 
             compose!
             process_nodes!
+            @validator.validate(:processed)
           end
 
           def leaf?

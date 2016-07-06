@@ -4,16 +4,8 @@ describe Gitlab::Ci::Config::Node::Jobs do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
-    before { entry.process! }
-
     context 'when entry config value is correct' do
       let(:config) { { rspec: { script: 'rspec' } } }
-
-      describe '#value' do
-        it 'returns key value' do
-          expect(entry.value).to eq(rspec: { script: 'rspec' })
-        end
-      end
 
       describe '#valid?' do
         it 'is valid' do
@@ -23,13 +15,32 @@ describe Gitlab::Ci::Config::Node::Jobs do
     end
 
     context 'when entry value is not correct' do
-      context 'incorrect config value type' do
-        let(:config) { ['incorrect'] }
+      describe '#errors' do
+        context 'incorrect config value type' do
+          let(:config) { ['incorrect'] }
 
-        describe '#errors' do
-          it 'saves errors' do
+          it 'returns error about incorrect type' do
             expect(entry.errors)
               .to include 'jobs config should be a hash'
+          end
+        end
+
+        context 'when no visible jobs present' do
+          let(:config) { { '.hidden'.to_sym => {} } }
+
+          context 'when not processed' do
+            it 'is valid' do
+              expect(entry.errors).to be_empty
+            end
+          end
+
+          context 'when processed' do
+            before { entry.process! }
+
+            it 'returns error about no visible jobs defined' do
+              expect(entry.errors)
+                .to include 'jobs config should contain at least one visible job'
+            end
           end
         end
       end
@@ -43,6 +54,13 @@ describe Gitlab::Ci::Config::Node::Jobs do
       { rspec: { script: 'rspec' },
         spinach: { script: 'spinach' },
         '.hidden'.to_sym => {} }
+    end
+
+    describe '#value' do
+      it 'returns key value' do
+        expect(entry.value).to eq(rspec: { script: 'rspec' },
+                                  spinach: { script: 'spinach' })
+      end
     end
 
     describe '#descendants' do

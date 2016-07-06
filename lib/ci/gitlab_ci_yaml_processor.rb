@@ -71,8 +71,6 @@ module Ci
       @ci_config.jobs.each do |name, param|
         add_job(name, param)
       end
-
-      raise ValidationError, "Please define at least one job" if @jobs.none?
     end
 
     def add_job(name, job)
