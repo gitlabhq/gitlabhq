@@ -67,6 +67,9 @@ class ApplicationSetting < ActiveRecord::Base
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
+  validates :enabled_git_access_protocol,
+            inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|

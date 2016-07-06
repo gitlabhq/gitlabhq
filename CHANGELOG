@@ -15,36 +15,45 @@ v 8.10.0 (unreleased)
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+  - Add Spring EmojiOne updates.
   - Fix pagination when sorting by columns with lots of ties (like priority)
+  - Updated project header design
   - Exclude email check from the standard health check
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
+  - Add "Enabled Git access protocols" to Application Settings
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
+  - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Don't instantiate a git tree on Projects show default view
+  - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
   - Better caching of git calls on ProjectsController#show.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Instrument Rinku usage
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
+  - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Set import_url validation to be more strict
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
+  - Allow '?', or '&' for label names
 
-v 8.9.4 (unreleased)
-  - Ensure references to private repos aren't shown to logged-out users
 v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
   - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq
+  - Add index on the user and emoji name on AwardEmoji table !5061
   - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
   - Fix import button disabled when import process fail due to the namespace already been taken.
+  - Fix diff comments not showing up in activity feed. !5069
   - Security: Update RedCloth to 4.3.2 (Takuya Noguchi)
 
 v 8.9.4

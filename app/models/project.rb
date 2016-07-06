@@ -168,9 +168,7 @@ class Project < ActiveRecord::Base
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-  validates :import_url,
-    url: { protocols: %w(ssh git http https) },
-    if: :external_import?
+  validates :import_url, addressable_url: true, if: :external_import?
   validates :import_url, presence: true, if: :mirror?
   validate  :import_url_availability, if: :import_url_changed?
   validates :mirror_user, presence: true, if: :mirror?
@@ -496,6 +494,8 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
+    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+
     import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
@@ -805,7 +805,7 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_url
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
       Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)

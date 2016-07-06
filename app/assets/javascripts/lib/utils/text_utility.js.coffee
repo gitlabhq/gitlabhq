@@ -49,8 +49,9 @@
       insertText = "#{startChar}#{tag}#{selected}#{if wrap then tag else ' '}"
 
     if document.queryCommandSupported('insertText')
-      document.execCommand 'insertText', false, insertText
-    else
+      inserted = document.execCommand 'insertText', false, insertText
+
+    unless inserted
       try
         document.execCommand("ms-beginUndoUnit")
 

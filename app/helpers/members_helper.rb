@@ -12,17 +12,6 @@ module MembersHelper
       can?(current_user, action_member_permission(:admin, member), member.source)
   end
 
-  def can_see_request_access_button?(source)
-    source_parent = source.respond_to?(:group) && source.group
-
-    return false if source_parent && source.group.members.exists?(user_id: current_user.id)
-    return false if source_parent && source.group.requesters.exists?(user_id: current_user.id)
-    return false if source.members.exists?(user_id: current_user.id)
-    return true if source.requesters.exists?(user_id: current_user.id)
-
-    true
-  end
-
   def remove_member_message(member, user: nil)
     user = current_user if defined?(current_user)
 

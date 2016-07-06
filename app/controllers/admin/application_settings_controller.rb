@@ -118,6 +118,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :elasticsearch_host,
       :elasticsearch_port,
       :repository_storage,
+      :enabled_git_access_protocol,
       restricted_visibility_levels: [],
       import_sources: [],
       disabled_oauth_sign_in_sources: []

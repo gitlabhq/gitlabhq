@@ -20,17 +20,6 @@
 
     .sidebar-wrapper {
       background: $color-darker;
-
-      .sidebar-user {
-        background: $color-darker;
-        color: $color-light;
-
-        &:hover {
-          background-color: $color-dark;
-          color: $white-light;
-          text-decoration: none;
-        }
-      }
     }
 
     .nav-sidebar li {

@@ -6,11 +6,12 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }
     GIT_ANNEX_COMMANDS = %w{ git-annex-shell }
 
-    attr_reader :actor, :project
+    attr_reader :actor, :project, :protocol
 
-    def initialize(actor, project)
+    def initialize(actor, project, protocol)
       @actor    = actor
       @project  = project
+      @protocol = protocol
     end
 
     def user
@@ -60,6 +61,8 @@ module Gitlab
     end
 
     def check(cmd, changes = nil)
+      return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
+
       unless actor
         return build_status_object(false, "No user or key was provided.")
       end
@@ -198,6 +201,10 @@ module Gitlab
 
     def forced_push?(oldrev, newrev)
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
+    end
+
+    def protocol_allowed?
+      Gitlab::ProtocolAccess.allowed?(protocol)
     end
 
     def path_locks_check(user, project, ref, oldrev, newrev)

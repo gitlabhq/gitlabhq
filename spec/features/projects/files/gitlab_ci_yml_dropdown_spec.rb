@@ -19,12 +19,12 @@ feature 'User wants to add a .gitlab-ci.yml file', feature: true do
     find('.js-gitlab-ci-yml-selector').click
     wait_for_ajax
     within '.gitlab-ci-yml-selector' do
-      find('.dropdown-input-field').set('jekyll')
-      find('.dropdown-content li', text: 'jekyll').click
+      find('.dropdown-input-field').set('Jekyll')
+      find('.dropdown-content li', text: 'Jekyll').click
     end
     wait_for_ajax
 
-    expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'jekyll')
+    expect(page).to have_css('.gitlab-ci-yml-selector .dropdown-toggle-text', text: 'Jekyll')
     expect(page).to have_content('This file is a template, and might need editing before it works on your project')
     expect(page).to have_content('jekyll build -d test')
   end
