@@ -27,7 +27,7 @@ class RepositoryUpdateMirrorWorker
     rescue => ex
       project.mark_import_as_failed("We're sorry, a temporary error occurred, please try again.")
 
-      raise UpdateMirrorError, "#{ex.class}: #{ex.message}"
+      raise UpdateMirrorError, "#{ex.class}: #{Gitlab::UrlSanitizer.sanitize(ex.message)}"
     end
   end
 
