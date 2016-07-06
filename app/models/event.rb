@@ -136,7 +136,7 @@ class Event < ActiveRecord::Base
   end
 
   def note?
-    %w[Note LegacyDiffNote].include?(target_type)
+    target.is_a?(Note)
   end
 
   def issue?
