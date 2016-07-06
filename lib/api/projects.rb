@@ -32,6 +32,17 @@ module API
         end
       end
 
+      # Get a simplified project list for authenticated user
+      #
+      # Example Request:
+      #   GET /projects/simple
+      get '/simple' do
+        @projects = current_user.authorized_projects
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
+        present @projects, with: Entities::SimpleProjectWithAccess, user: current_user
+      end
+
       # Get an owned projects list for authenticated user
       #
       # Example Request:
