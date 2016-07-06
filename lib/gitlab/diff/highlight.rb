@@ -42,11 +42,12 @@ module Gitlab
 
         line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
 
-        if diff_line.unchanged? || diff_line.added?
-          rich_line = new_lines[diff_line.new_pos - 1]
-        elsif diff_line.removed?
-          rich_line = old_lines[diff_line.old_pos - 1]
-        end
+        rich_line =
+          if diff_line.unchanged? || diff_line.added?
+            new_lines[diff_line.new_pos - 1]
+          elsif diff_line.removed?
+            old_lines[diff_line.old_pos - 1]
+          end
 
         # Only update text if line is found. This will prevent
         # issues with submodules given the line only exists in diff content.

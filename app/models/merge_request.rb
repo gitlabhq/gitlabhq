@@ -164,10 +164,6 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def last_commit
-    merge_request_diff ? merge_request_diff.last_commit : compare_commits.last
-  end
-
   def diff_size
     merge_request_diff.size
   end
@@ -246,7 +242,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    return nil unless diff_start_commit || diff_base_commit
+    return unless diff_start_commit || diff_base_commit
 
     Gitlab::Diff::DiffRefs.new(
       base_sha:  diff_base_sha,

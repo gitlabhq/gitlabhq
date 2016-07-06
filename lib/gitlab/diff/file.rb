@@ -21,9 +21,7 @@ module Gitlab
           new_path: new_path,
           old_line: line.old_line,
           new_line: line.new_line,
-          base_sha: diff_refs.base_sha,
-          start_sha: diff_refs.start_sha,
-          head_sha: diff_refs.head_sha
+          diff_refs: diff_refs
         )
       end
 
@@ -53,7 +51,7 @@ module Gitlab
 
       def content_commit
         return unless diff_refs
-        
+
         repository.commit(deleted_file ? old_ref : new_ref)
       end
 
@@ -121,6 +119,7 @@ module Gitlab
 
       def blob(commit = content_commit)
         return unless commit
+
         repository.blob_at(commit.id, file_path)
       end
     end

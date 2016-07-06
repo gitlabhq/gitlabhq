@@ -89,6 +89,8 @@ module DiffHelper
   end
 
   def commit_for_diff(diff_file)
+    return diff_file.content_commit if diff_file.content_commit
+    
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else
@@ -97,7 +99,7 @@ module DiffHelper
   end
 
   def diff_file_html_data(project, diff_file)
-    commit = diff_file.content_commit || commit_for_diff(diff_file)
+    commit = commit_for_diff(diff_file)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
                                                        tree_join(commit.id, diff_file.file_path))

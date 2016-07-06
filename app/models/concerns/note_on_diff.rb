@@ -33,13 +33,11 @@ module NoteOnDiff
 
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines
-    prev_match_line = nil
     prev_lines = []
 
     highlighted_diff_lines.each do |line|
       if line.meta?
         prev_lines.clear
-        prev_match_line = line
       else
         prev_lines << line
 
