@@ -76,8 +76,6 @@ module Ci
     end
 
     def add_job(name, job)
-      return if name.to_s.start_with?('.')
-
       raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
 
       stage = job[:stage] || job[:type] || DEFAULT_STAGE
