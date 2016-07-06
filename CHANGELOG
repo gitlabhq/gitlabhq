@@ -46,16 +46,20 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
 
-v 8.9.5 (unreleased)
-  - Improve the request / withdraw access button. !4860
-  - Fix assigning shared runners as admins. !4961
-  - Show "locked" label for locked runners on runners admin. !4961
-  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq
-  - Add index on the user and emoji name on AwardEmoji table !5061
-  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
-  - Fix import button disabled when import process fail due to the namespace already been taken.
+v 8.9.5
+  - Add more debug info to import/export and memory killer. !5108
+  - Fixed avatar alignment in new MR view. !5095
   - Fix diff comments not showing up in activity feed. !5069
-  - Security: Update RedCloth to 4.3.2 (Takuya Noguchi)
+  - Add index on both Award Emoji user and name. !5061
+  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq. !5056
+  - Re-enable import button when import process fails due to namespace already being taken. !5053
+  - Fix snippets comments not displayed. !5045
+  - Fix emoji paths in relative root configurations. !5027
+  - Fix issues importing events in Import/Export. !4987
+  - Fixed 'use shortcuts' button on docs. !4979
+  - Admin should be able to turn shared runners into specific ones. !4961
+  - Update RedCloth to 4.3.2 for CVE-2012-6684. !4929 (Takuya Noguchi)
+  - Improve the request / withdraw access button. !4860
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.
