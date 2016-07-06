@@ -26,7 +26,7 @@ class @Ansi2Html
 
     lineEl = @createLine(lineText)
 
-    if lineText.indexOf(@_replaceLineRegex) >= 0 and lineText.indexOf('$') < 0
+    if lineText.search(@_replaceLineRegex) >= 0 and lineText.indexOf('$') < 0
       prepend = false
       lastEl = @_html[@_html.length - 1]
 
