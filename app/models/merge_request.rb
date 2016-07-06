@@ -186,8 +186,9 @@ class MergeRequest < ActiveRecord::Base
   # This will not be the actual base commit if the target branch was merged into
   # the source branch after the merge request was created, but it is good enough
   # for the specific purpose of linking to a commit.
-  # It is not good enough for use in Gitlab::Git::DiffRefs, which need the
-  # true base commit.
+  # It is not good enough for use in `Gitlab::Git::DiffRefs`, which needs the
+  # true base commit, so we can't simply have `#diff_base_commit` fall back on
+  # this method.
   def likely_diff_base_commit
     first_commit.parent || first_commit
   end

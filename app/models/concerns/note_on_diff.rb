@@ -31,6 +31,7 @@ module NoteOnDiff
     false
   end
 
+  # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines
     prev_match_line = nil
     prev_lines = []

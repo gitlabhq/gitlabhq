@@ -28,6 +28,11 @@ module Gitlab
         end
       end
 
+      # `Gitlab::Diff::Position` objects are stored as serialized attributes in
+      # `DiffNote`, which use YAML to encode and decode objects.
+      # `#init_with` and `#encode_with` can be used to customize the en/decoding
+      # behavior. In this case, we override these to prevent memoized instance
+      # variables like `@diff_file` and `@diff_line` from being serialized.
       def init_with(coder)
         initialize(coder['attributes'])
 

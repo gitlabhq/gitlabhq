@@ -26,7 +26,7 @@ module Gitlab
         @diff_lines ||= @diff_file.diff_lines
       end
 
-      # Find old line number based on new line number.
+      # Find old/new line number based on its old/new counterpart line number.
       def map_line_number(from_line, from:, to:)
         # If no diff file could be found, the file wasn't changed, and the
         # mapped line number is the same as the specified line number.
