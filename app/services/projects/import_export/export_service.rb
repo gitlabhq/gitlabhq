@@ -38,6 +38,8 @@ module Projects
       end
 
       def cleanup_and_notify
+        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{@shared.errors.join(', ')}")
+
         FileUtils.rm_rf(@shared.export_path)
 
         notify_error
@@ -45,6 +47,8 @@ module Projects
       end
 
       def notify_success
+        Rails.logger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported")
+
         notification_service.project_exported(@project, @current_user)
       end
 
