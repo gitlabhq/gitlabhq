@@ -25,6 +25,8 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
+        @projects = filter_params(@projects)
+        puts present @projects, with: Entities::ProjectWithAccess, user: current_user
         present @projects, with: Entities::ProjectWithAccess, user: current_user
       end
 

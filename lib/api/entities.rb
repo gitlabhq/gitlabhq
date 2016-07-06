@@ -331,7 +331,9 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
+          project = Project.find_by(project[:id])
           project.project_members.find_by(user_id: options[:user].id)
+          ]
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
