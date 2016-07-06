@@ -1,10 +1,10 @@
 class @FilesCommentButton
   constructor: (@filesContainerElement) ->
-    return if not @filesContainerElement
-    return if not @filesContainerElement.data 'can-create-note'
+    return unless @filesContainerElement
+    return if _.isUndefined @filesContainerElement.data 'can-create-note'
 
     @COMMENT_BUTTON_CLASS = '.add-diff-note'
-    @COMMENT_BUTTON_TEMPLATE = _.template("<button name='button' type='submit' class='btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button' title='Add a comment to this line'><i class='fa fa-comment-o'></i></button>")
+    @COMMENT_BUTTON_TEMPLATE = _.template '<button name="button" type="submit" class="btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>'
 
     @LINE_HOLDER_CLASS = '.line_holder'
     @LINE_NUMBER_CLASS = 'diff-line-num'
@@ -37,7 +37,7 @@ class @FilesCommentButton
     lineContentElement = @getLineContent(currentTarget)
     buttonParentElement = @getButtonParent(currentTarget)
 
-    return if not @shouldRender e, buttonParentElement
+    return unless @shouldRender e, buttonParentElement
 
     buttonParentElement.append @buildButton
       id:
@@ -58,7 +58,9 @@ class @FilesCommentButton
     return
 
   buildButton: (buttonAttributes) ->
-    $(@COMMENT_BUTTON_TEMPLATE COMMENT_BUTTON_CLASS: @COMMENT_BUTTON_CLASS.substr 1).attr
+    initializedButtonTemplate = @COMMENT_BUTTON_TEMPLATE
+      COMMENT_BUTTON_CLASS: @COMMENT_BUTTON_CLASS.substr 1
+    $(initializedButtonTemplate).attr
       'data-noteable-id': buttonAttributes.id.noteable
       'data-commit-id': buttonAttributes.id.commit
       'data-discussion-id': buttonAttributes.id.discussion
