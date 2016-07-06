@@ -75,7 +75,7 @@ describe 'Git HTTP requests', lib: true do
       context "with correct credentials" do
         let(:env) { { user: user.username, password: user.password } }
 
-        it "uploads get status 200 (because Git hooks do the real check)" do
+        it "uploads get status 200 (because Push rules do the real check)" do
           upload(path, env) do |response|
             expect(response).to have_http_status(200)
           end
@@ -324,7 +324,7 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
-            it "uploads get status 200 (because Git hooks do the real check)" do
+            it "uploads get status 200 (because Push rules do the real check)" do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_http_status(200)
               end

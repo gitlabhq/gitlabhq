@@ -1,9 +1,6 @@
-# TODO: These end-points are deprecated and replaced with push_rules
-# and should be removed after  GitLab 9.0 is released
-
 module API
   # Projects push rule API
-  class ProjectGitHook < Grape::API
+  class ProjectPushRule < Grape::API
     before { authenticate! }
     before { authorize_admin_project }
 
@@ -14,7 +11,7 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   GET /projects/:id/push_rule
-      get ":id/git_hook" do
+      get ":id/push_rule" do
         @push_rule = user_project.push_rule
         present @push_rule, with: Entities::ProjectPushRule
       end
@@ -25,7 +22,7 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   POST /projects/:id/push_rule
-      post ":id/git_hook" do
+      post ":id/push_rule" do
         attrs = attributes_for_keys [
           :commit_message_regex,
           :deny_delete_tag
@@ -45,7 +42,7 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   PUT /projects/:id/push_rule
-      put ":id/git_hook" do
+      put ":id/push_rule" do
         @push_rule = user_project.push_rule
 
         attrs = attributes_for_keys [
@@ -66,7 +63,7 @@ module API
       #   id (required) - The ID of a project
       # Example Request:
       #   DELETE /projects/:id/push_rule
-      delete ":id/git_hook" do
+      delete ":id/push_rule" do
         @push_rule = user_project.push_rule
         if @push_rule
           @push_rule.destroy

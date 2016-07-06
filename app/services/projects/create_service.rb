@@ -95,11 +95,11 @@ module Projects
         @project.team << [current_user, :master, current_user]
       end
 
-      predefined_git_hook = GitHook.find_by(is_sample: true)
+      predefined_push_rule = PushRule.find_by(is_sample: true)
 
-      if predefined_git_hook
-        git_hook = predefined_git_hook.dup.tap{ |gh| gh.is_sample = false }
-        project.git_hook = git_hook
+      if predefined_push_rule
+        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
+        project.push_rule = push_rule
       end
     end
 

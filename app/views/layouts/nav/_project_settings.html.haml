@@ -43,10 +43,10 @@
       = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
         %span
           Badges
-  = nav_link(controller: :git_hooks) do
-    = link_to namespace_project_git_hooks_path(@project.namespace, @project), title: "Git Hooks" do
+  = nav_link(controller: :push_rules) do
+    = link_to namespace_project_push_rules_path(@project.namespace, @project), title: "Push Rules" do
       %span
-        Git Hooks
+        Push Rules
   = nav_link(controller: :mirrors) do
     = link_to namespace_project_mirror_path(@project.namespace, @project), title: 'Mirror Repository', data: {placement: 'right'} do
       %span

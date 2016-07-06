@@ -223,8 +223,8 @@ module SharedPaths
     visit admin_applications_path
   end
 
-  step 'I visit git hooks page' do
-    visit admin_git_hooks_path
+  step 'I visit push rules page' do
+    visit admin_push_rules_path
   end
 
   step 'I visit admin license page' do
@@ -295,8 +295,8 @@ module SharedPaths
     visit group_hooks_path(@group)
   end
 
-  step 'I visit project git hooks page' do
-    visit namespace_project_git_hooks_path(@project.namespace, @project)
+  step 'I visit project push rules page' do
+    visit namespace_project_push_rules_path(@project.namespace, @project)
   end
 
   step 'I visit project deploy keys page' do

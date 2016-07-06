@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitHook do
+describe PushRule do
   describe "Associations" do
     it { should belong_to(:project) }
   end

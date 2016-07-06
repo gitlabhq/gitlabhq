@@ -185,9 +185,9 @@ module Gitlab
         return status
       end
 
-      # Return build_status_object(true) if all git hook checks passed successfully
+      # Return build_status_object(true) if all push rule checks passed successfully
       # or build_status_object(false) if any hook fails
-      result = git_hook_check(user, project, ref, oldrev, newrev)
+      result = push_rule_check(user, project, ref, oldrev, newrev)
 
       if result.status && license_allows_file_locks?
         result = path_locks_check(user, project, ref, oldrev, newrev)
@@ -227,21 +227,21 @@ module Gitlab
       build_status_object(true)
     end
 
-    def git_hook_check(user, project, ref, oldrev, newrev)
-      unless project.git_hook && newrev && oldrev
+    def push_rule_check(user, project, ref, oldrev, newrev)
+      unless project.push_rule && newrev && oldrev
         return build_status_object(true)
       end
 
-      git_hook = project.git_hook
+      push_rule = project.push_rule
 
       # Prevent tag removal
       if Gitlab::Git.tag_ref?(ref)
-        if git_hook.deny_delete_tag && protected_tag?(tag_name(ref)) && Gitlab::Git.blank_ref?(newrev)
+        if push_rule.deny_delete_tag && protected_tag?(tag_name(ref)) && Gitlab::Git.blank_ref?(newrev)
           return build_status_object(false, "You can not delete tag")
         end
       else
         # if newrev is blank, the branch was deleted
-        if Gitlab::Git.blank_ref?(newrev) || !git_hook.commit_validation?
+        if Gitlab::Git.blank_ref?(newrev) || !push_rule.commit_validation?
           return build_status_object(true)
         end
 
@@ -251,7 +251,7 @@ module Gitlab
         commits(newrev, oldrev, project).each do |commit|
           next if commit_from_annex_sync?(commit.safe_message) || old_commit?(commit)
 
-          if status_object = check_commit(commit, git_hook)
+          if status_object = check_commit(commit, push_rule)
             return status_object
           end
         end
@@ -270,24 +270,24 @@ module Gitlab
       end
     end
 
-    # If commit does not pass git hook validation the whole push should be rejected.
+    # If commit does not pass push rule validation the whole push should be rejected.
     # This method should return nil if no error found or status object if there are some errors.
     # In case of errors - all other checks will be canceled and push will be rejected.
-    def check_commit(commit, git_hook)
-      unless git_hook.commit_message_allowed?(commit.safe_message)
-        return build_status_object(false, "Commit message does not follow the pattern '#{git_hook.commit_message_regex}'")
+    def check_commit(commit, push_rule)
+      unless push_rule.commit_message_allowed?(commit.safe_message)
+        return build_status_object(false, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
       end
 
-      unless git_hook.author_email_allowed?(commit.committer_email)
-        return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      unless push_rule.author_email_allowed?(commit.committer_email)
+        return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'")
       end
 
-      unless git_hook.author_email_allowed?(commit.author_email)
-        return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{git_hook.author_email_regex}'")
+      unless push_rule.author_email_allowed?(commit.author_email)
+        return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'")
       end
 
       # Check whether author is a GitLab member
-      if git_hook.member_check
+      if push_rule.member_check
         unless User.existing_member?(commit.author_email.downcase)
           return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
         end
@@ -299,29 +299,29 @@ module Gitlab
         end
       end
 
-      if status_object = check_commit_diff(commit, git_hook)
+      if status_object = check_commit_diff(commit, push_rule)
         return status_object
       end
 
       nil
     end
 
-    def check_commit_diff(commit, git_hook)
-      if git_hook.file_name_regex.present?
+    def check_commit_diff(commit, push_rule)
+      if push_rule.file_name_regex.present?
         commit.diffs.each do |diff|
-          if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-            return build_status_object(false, "File name #{diff.new_path.inspect} is prohibited by the pattern '#{git_hook.file_name_regex}'")
+          if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(push_rule.file_name_regex)
+            return build_status_object(false, "File name #{diff.new_path.inspect} is prohibited by the pattern '#{push_rule.file_name_regex}'")
           end
         end
       end
 
-      if git_hook.max_file_size > 0
+      if push_rule.max_file_size > 0
         commit.diffs.each do |diff|
           next if diff.deleted_file
 
           blob = project.repository.blob_at(commit.id, diff.new_path)
-          if blob && blob.size && blob.size > git_hook.max_file_size.megabytes
-            return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{git_hook.max_file_size} MB")
+          if blob && blob.size && blob.size > push_rule.max_file_size.megabytes
+            return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{push_rule.max_file_size} MB")
           end
         end
       end
@@ -414,7 +414,7 @@ module Gitlab
     def commit_from_annex_sync?(commit_message)
       return false unless Gitlab.config.gitlab_shell.git_annex_enabled
 
-      # Commit message starting with <git-annex in > so avoid git hooks on this
+      # Commit message starting with <git-annex in > so avoid push rules on this
       commit_message.start_with?('git-annex in')
     end
 
