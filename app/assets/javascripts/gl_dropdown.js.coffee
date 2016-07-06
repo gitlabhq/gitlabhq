@@ -24,33 +24,34 @@ class GitLabDropdownFilter
 
     # Key events
     timeout = ""
-    @input.on "keyup", (e) =>
-      keyCode = e.which
+    @input
+      .on 'keydown', (e) ->
+        keyCode = e.which
+        e.preventDefault() if keyCode is 13
+      .on 'keyup', (e) =>
+        keyCode = e.which
 
-      return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
+        return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
 
-      if @input.val() isnt "" and !$inputContainer.hasClass HAS_VALUE_CLASS
-        $inputContainer.addClass HAS_VALUE_CLASS
-      else if @input.val() is "" and $inputContainer.hasClass HAS_VALUE_CLASS
-        $inputContainer.removeClass HAS_VALUE_CLASS
+        if @input.val() isnt '' and !$inputContainer.hasClass HAS_VALUE_CLASS
+          $inputContainer.addClass HAS_VALUE_CLASS
+        else if @input.val() is '' and $inputContainer.hasClass HAS_VALUE_CLASS
+          $inputContainer.removeClass HAS_VALUE_CLASS
 
-      if keyCode is 13
-        return false
+        # Only filter asynchronously only if option remote is set
+        if @options.remote
+          clearTimeout timeout
+          timeout = setTimeout =>
+            blur_field = @shouldBlur keyCode
 
-      # Only filter asynchronously only if option remote is set
-      if @options.remote
-        clearTimeout timeout
-        timeout = setTimeout =>
-          blur_field = @shouldBlur keyCode
+            if blur_field and @filterInputBlur
+              @input.blur()
 
-          if blur_field and @filterInputBlur
-            @input.blur()
-
-          @options.query @input.val(), (data) =>
-            @options.callback(data)
-        , 250
-      else
-        @filter @input.val()
+            @options.query @input.val(), (data) =>
+              @options.callback(data)
+          , 250
+        else
+          @filter @input.val()
 
   shouldBlur: (keyCode) ->
     return BLUR_KEYCODES.indexOf(keyCode) >= 0

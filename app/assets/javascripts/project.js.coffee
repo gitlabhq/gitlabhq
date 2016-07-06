@@ -87,5 +87,10 @@ class @Project
         toggleLabel: (obj, $el) ->
           $el.text().trim()
         clicked: (e) ->
-          $dropdown.closest('form').submit()
+          if $('input[name="ref"]').length
+            $form = $dropdown.closest('form')
+            action = $form.attr('action')
+            divider = if action.indexOf('?') < 0 then '?' else '&'
+
+            Turbolinks.visit "#{action}#{divider}#{$form.serialize()}"
       )
