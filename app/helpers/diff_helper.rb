@@ -8,8 +8,8 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
-  def expand_all?
-    @expand_all || params[:expand].present?
+  def expand_all_diffs?
+    @expand_all_diffs || params[:expand_all_diffs].present?
   end
 
   def diff_view
