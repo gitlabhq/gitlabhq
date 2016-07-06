@@ -29,7 +29,7 @@ module Gitlab
 
       def execute(cmd)
         output, status = Gitlab::Popen.popen(cmd)
-        @shared.error(output.to_s) unless status_zero?
+        @shared.error(output.to_s) unless status.zero?
         status.zero?
       end
 
