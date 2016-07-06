@@ -1,6 +1,6 @@
 GIT
   remote: git@gitlab.com:gitlab-org/gitlab_git.git
-  revision: 0e4ac299b806fa4190c4928a1c1ed5372fffbb38
+  revision: cfb423fb576590525c4a978bc21cc98917c3334c
   branch: commit-blob-rename-action
   specs:
     gitlab_git (10.3.0)
@@ -210,7 +210,11 @@ GEM
       faraday_middleware
       multi_json
     ffaker (2.0.0)
+<<<<<<< f2df78d17977c1e082d6e78dda1ba98e62097ebd
     ffi (1.9.13)
+=======
+    ffi (1.9.12)
+>>>>>>> fixes merge conflicts for Gemfile.lock
     flay (2.8.0)
       erubis (~> 2.7.0)
       path_expander (~> 1.0)
@@ -287,7 +291,6 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
-    gitlab_git (10.3.0)
     gitlab_git (10.2.3)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.7.3)
@@ -406,7 +409,8 @@ GEM
     mail_room (0.8.0)
     method_source (0.8.2)
     mime-types (2.99.2)
-    mimemagic (0.3.0)
+    mime-types-data (3.2016.0521)
+    mimemagic (0.3.1)
     mini_portile2 (2.1.0)
     minitest (5.7.0)
     mousetrap-rails (1.4.6)
@@ -422,8 +426,18 @@ GEM
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
     numerizer (0.1.1)
+<<<<<<< f2df78d17977c1e082d6e78dda1ba98e62097ebd
     oauth (0.5.1)
     oauth2 (1.0.0)
+=======
+<<<<<<< e36858231db42f64fb69af7d74f3ec6a898d8a70
+    oauth (0.4.7)
+    oauth2 (1.2.0)
+=======
+    oauth (0.5.1)
+    oauth2 (1.0.0)
+>>>>>>> fixes merge conflicts for Gemfile.lock
+>>>>>>> fixes merge conflicts for Gemfile.lock
       faraday (>= 0.8, < 0.10)
       jwt (~> 1.0)
       multi_json (~> 1.3)
@@ -880,8 +894,12 @@ DEPENDENCIES
   github-linguist (~> 4.7.0)
   github-markup (~> 1.3.1)
   gitlab-flowdock-git-hook (~> 1.0.1)
+<<<<<<< e36858231db42f64fb69af7d74f3ec6a898d8a70
   gitlab_git (~> 10.2)
   gitlab_emoji (~> 0.3.0)
+=======
+  gitlab_git (~> 10.2)!
+>>>>>>> fixes merge conflicts for Gemfile.lock
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.1.0)
@@ -1006,4 +1024,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.12.5
+   1.10.6
