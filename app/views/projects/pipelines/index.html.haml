@@ -50,7 +50,7 @@
             - stages.each do |stage|
               %th.stage
                 %span.has-tooltip{ title: "#{stage.titleize}" }
-                  = stage.titleize.pluralize
+                  = stage.titleize
             %th Duration
             %th
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
