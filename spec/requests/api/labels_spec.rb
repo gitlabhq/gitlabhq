@@ -35,10 +35,10 @@ describe API::API, api: true  do
 
     it 'should return created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
-           name: 'Foo',
+           name: 'Foo & Bar',
            color: '#FFAABB'
-      expect(response).to have_http_status(201)
-      expect(json_response['name']).to eq('Foo')
+      expect(response.status).to eq(201)
+      expect(json_response['name']).to eq('Foo & Bar')
       expect(json_response['color']).to eq('#FFAABB')
       expect(json_response['description']).to be_nil
     end
@@ -71,7 +71,7 @@ describe API::API, api: true  do
 
     it 'should return 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
-           name: '?',
+           name: ',',
            color: '#FFAABB'
       expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq(['is invalid'])
@@ -167,7 +167,7 @@ describe API::API, api: true  do
     it 'should return 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
-          new_name: '?',
+          new_name: ',',
           color: '#FFFFFF'
       expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq(['is invalid'])
