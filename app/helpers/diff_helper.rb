@@ -15,6 +15,7 @@ module DiffHelper
 
     diff_commit = commit_for_diff(diff_file)
     blob = project.repository.blob_for_diff(diff_commit, diff_file)
+    @expand_all = true
 
     locals = {
       diff_file: diff_file,

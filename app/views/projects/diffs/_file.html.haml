@@ -16,9 +16,4 @@
 
         = view_file_btn(diff_commit.id, diff_file, project)
 
-  - if diff_file.collapsed_by_default?
-    - url = url_for(params.merge(action: :diff_for_path, path: diff_file.file_path, format: nil))
-    .diff-content.diff-wrap-lines{data: { diff_for_path: url }}
-      .nothing-here-block File hidden by default; content for this element available at #{url}
-  - else
-    = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, diff_refs: diff_refs, blob: blob, project: project
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, diff_refs: diff_refs, blob: blob, project: project

@@ -2,13 +2,15 @@ class @SingleDiff
 
   LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>'
   ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>'
+  COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. Click to expand it.</div>'
 
   constructor: (@file) ->
     @content = $('.diff-content', @file)
-    @diffForPath = @content.data 'diff-for-path'
+    @diffForPath = @content.find('[data-diff-for-path]').data 'diff-for-path'
     @setOpenState()
 
     $('.file-title > a', @file).on 'click', @toggleDiff
+    @enableToggleOnContent()
 
   setOpenState: ->
     if @diffForPath
@@ -18,11 +20,15 @@ class @SingleDiff
       @contentHTML = @content.html()
     return
 
+  enableToggleOnContent: ->
+    @content.find('.nothing-here-block.diff-collapsed').on 'click', @toggleDiff
+
   toggleDiff: (e) =>
     e.preventDefault()
     @isOpen = !@isOpen
     if not @isOpen and not @hasError
-      @content.empty()
+      @content.html COLLAPSED_HTML
+      @enableToggleOnContent
       return
     if @contentHTML
       @setContentHTML()
