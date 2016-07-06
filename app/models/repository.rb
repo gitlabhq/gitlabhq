@@ -748,8 +748,8 @@ class Repository
         update: options[:update]
       }
 
-      if previous_path
-        options[:file].merge!(previous_path: previous_path)
+      if commit_options[:previous_path]
+        commit_options[:file].merge!(previous_path: commit_options[:previous_path])
 
         Gitlab::Git::Blob.rename(raw_repository, commit_options)
       else
