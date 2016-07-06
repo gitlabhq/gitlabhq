@@ -67,10 +67,9 @@ class @CiBuild
           @state = log.state
 
         if log.status is "running"
-          if log.append
-            $('.js-build-output').append log.html
-          else
-            $('.js-build-output').html log.html
+          unless log.text is ''
+            html = @ansi.convertTrace(log.text).html()
+            $('.js-build-output').append html
           @checkAutoscroll()
         else if log.status isnt @build_status
           Turbolinks.visit @page_url

@@ -95,12 +95,13 @@ table.builds {
   padding: 10px 0;
   background: $ci-output-bg;
   color: $ci-text-color;
-  white-space: pre;
+  white-space: normal;
   overflow-x: auto;
   font-size: 13px;
   line-height: 20px;
 
   .fa-refresh {
+    margin-left: 10px;
     font-size: 24px;
   }
 

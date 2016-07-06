@@ -1,5 +1,6 @@
 class @Ansi2Html
   constructor: ->
+    @_currentLine = 0
     @_colorRegex = /\[[0-9]+;[0-9]?m/g
     @_colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
     @_html = []
@@ -12,15 +13,16 @@ class @Ansi2Html
       @trace = trace.trim().split('\n')
 
       for line, i in @trace
-        @convertLine(line, i+1)
+        @_currentLine = @_currentLine + 1
+        @convertLine(line)
 
     return @
 
-  convertLine: (line, number) ->
+  convertLine: (line) ->
     lineText = if line is '' then ' ' else line
     codes = @getAnsiCodes(line)
 
-    lineEl = @createLine(lineText, number)
+    lineEl = @createLine(lineText)
 
     if lineText.indexOf('\r') >= 0
       lastEl = @_html[@_html.length - 1]
@@ -28,7 +30,7 @@ class @Ansi2Html
         .find('span')
         .text(@removeAnsiCodes(lineText))
     else
-      lineEl.prepend @lineLink(number)
+      lineEl.prepend @lineLink()
 
       if codes?
         lineEl
@@ -38,19 +40,19 @@ class @Ansi2Html
 
       @_html.push(lineEl)
 
-  createLine: (line, number) ->
+  createLine: (line) ->
     $('<p />',
-      id: "line-#{number}"
+      id: "line-#{@_currentLine}"
       class: 'build-trace-line'
     ).append $('<span />',
       text: @removeAnsiCodes(line)
     )
 
-  lineLink: (number) ->
+  lineLink: ->
     $('<a />',
       class: 'build-trace-line-number'
-      href: "#line-#{number}"
-      text: number
+      href: "#line-#{@_currentLine}"
+      text: @_currentLine
     )
 
   getAnsiCodes: (line) ->

@@ -2,6 +2,9 @@
 - trace_with_state = @build.trace_with_state
 - header_title project_title(@project, "Builds", project_builds_path(@project))
 
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('ci/application.js')
+
 .build-page
   = render "header"
 
