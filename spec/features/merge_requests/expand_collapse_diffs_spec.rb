@@ -135,4 +135,42 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       end
     end
   end
+
+  context 'expanding all diffs' do
+    before do
+      click_link('Expand all')
+      wait_for_ajax
+      execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
+    end
+
+    it 'reloads the page with all diffs expanded' do
+      expect(small_diff).to have_selector('.code')
+      expect(small_diff).not_to have_selector('.nothing-here-block')
+
+      expect(large_diff).to have_selector('.code')
+      expect(large_diff).not_to have_selector('.nothing-here-block')
+    end
+
+    context 'collapsing an expanded diff' do
+      before { click_link('small_diff.md') }
+
+      it 'hides the diff content' do
+        expect(small_diff).not_to have_selector('.code')
+        expect(small_diff).to have_selector('.nothing-here-block')
+      end
+
+      context 're-expanding the same diff' do
+        before { click_link('small_diff.md') }
+
+        it 'shows the diff content' do
+          expect(small_diff).to have_selector('.code')
+          expect(small_diff).not_to have_selector('.nothing-here-block')
+        end
+
+        it 'does not make a new HTTP request' do
+          expect(evaluate_script('ajaxUris')).to be_empty
+        end
+      end
+    end
+  end
 end

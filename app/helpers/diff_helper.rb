@@ -8,6 +8,10 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
+  def expand_all?
+    @expand_all || params[:expand].present?
+  end
+
   def render_diff_for_path(diffs, diff_refs, project)
     diff_file = safe_diff_files(diffs, diff_refs).first
 
