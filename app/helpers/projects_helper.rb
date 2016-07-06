@@ -208,15 +208,10 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-<<<<<<< HEAD
-    if alternative_kerberos_url? && current_user
-      "krb5"
-    elsif !current_user || current_user.require_ssh_key?
-      gitlab_config.protocol
-=======
     if allowed_protocols_present?
       enabled_protocol
->>>>>>> ce/master
+    elsif alternative_kerberos_url? && current_user
+      "krb5"
     else
       if !current_user || current_user.require_ssh_key?
         gitlab_config.protocol
