@@ -14,7 +14,7 @@ class Projects::CompareController < Projects::ApplicationController
 
   def show
     compare = CompareService.new.
-      execute(@project, @head_ref, @project, @start_ref, diff_options)
+      execute(@project, @head_ref, @project, @start_ref)
 
     if compare
       @commits = Commit.decorate(compare.commits, @project)
@@ -37,18 +37,24 @@ class Projects::CompareController < Projects::ApplicationController
 
   def diff_for_path
     compare = CompareService.new.
-      execute(@project, @head_ref, @project, @base_ref, diff_options)
+      execute(@project, @head_ref, @project, @start_ref)
 
     return render_404 unless compare
 
+    @start_commit = @project.commit(@start_ref)
     @commit = @project.commit(@head_ref)
-    @base_commit = @project.merge_base_commit(@base_ref, @head_ref)
+    @base_commit = @project.merge_base_commit(@start_ref, @head_ref)
     diffs = compare.diffs(diff_options.merge(paths: [params[:path]]))
+    diff_refs = Gitlab::Diff::DiffRefs.new(
+      base_sha: @base_commit.try(:sha),
+      start_sha: @start_commit.try(:sha),
+      head_sha: @commit.try(:sha)
+    )
 
     @diff_notes_disabled = true
     @grouped_diff_notes = {}
 
-    render_diff_for_path(diffs, [@base_commit, @commit], @project)
+    render_diff_for_path(diffs, diff_refs, @project)
   end
 
   def create
