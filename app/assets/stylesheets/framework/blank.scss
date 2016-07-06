@@ -7,13 +7,6 @@
   }
 }
 
-.blank-state-welcome-title {
-  margin-top: 0;
-  margin-bottom: 5px;
-  font-size: 24px;
-  font-weight: normal;
-}
-
 .blank-state {
   padding-top: 20px;
   padding-bottom: 20px;
@@ -29,7 +22,7 @@
   padding-bottom: 20px;
 
   path {
-    fill: #ccc;
+    fill: $gray-darkest;
   }
 }
 
@@ -44,4 +37,8 @@
   margin-top: 0;
   margin-bottom: $gl-padding;
   font-size: 15px;
+}
+
+.blank-state-welcome-title {
+  font-size: 24px;
 }
