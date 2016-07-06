@@ -52,6 +52,7 @@ v 8.9.5 (unreleased)
   - Add index on the user and emoji name on AwardEmoji table !5061
   - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
   - Fix import button disabled when import process fail due to the namespace already been taken.
+  - Fix diff comments not showing up in activity feed. !5069
   - Security: Update RedCloth to 4.3.2 (Takuya Noguchi)
 
 v 8.9.4
