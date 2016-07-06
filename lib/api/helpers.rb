@@ -287,23 +287,6 @@ module API
 
     # Projects helpers
 
-    def filter_params(projects)
-      project_entries = []
-
-      # Removes the redundant information of the object
-      projects.each do |project|
-        entry = {
-          id: project.id,
-          http_url_to_repo: project.http_url_to_repo,
-          name_with_namespace: project.name_with_namespace
-        }
-
-        project_entries << entry
-      end
-
-      project_entries
-    end
-
     def filter_projects(projects)
       # If the archived parameter is passed, limit results accordingly
       if params[:archived].present?
