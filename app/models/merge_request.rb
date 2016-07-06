@@ -321,6 +321,18 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def conflicts?
+    project.repository.conflicts?(diff_head_sha, target_branch)
+  end
+
+  def conflicts
+    project.repository.conflicts(diff_head_sha, target_branch)
+  end
+
+  def conflict_diff(conflict)
+    project.repository.conflict_diff(diff_head_sha, target_branch, conflict[:ancestor][:path])
+  end
+
   def merge_event
     @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end

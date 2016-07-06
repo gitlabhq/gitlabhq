@@ -637,11 +637,11 @@ class Repository
   def contributors
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
-    commits.group_by(&:author_email).map do |email, commits|
+    commits.group_by(&:author_email).map do |author_email, author_commits|
       contributor = Gitlab::Contributor.new
-      contributor.email = email
+      contributor.email = author_email
 
-      commits.each do |commit|
+      author_commits.each do |commit|
         if contributor.name.blank?
           contributor.name = commit.author_name
         end
@@ -766,6 +766,39 @@ class Repository
       !rugged.merge_commits(our_commit, their_commit).conflicts?
     else
       false
+    end
+  end
+
+  def conflicts?(source_sha, target_branch)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    if our_commit && their_commit
+      rugged.merge_commits(our_commit, their_commit).conflicts?
+    else
+      false
+    end
+  end
+
+  def conflicts(source_sha, target_branch)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    if our_commit && their_commit
+      rugged.merge_commits(our_commit, their_commit).conflicts
+    else
+      []
+    end
+  end
+
+  def conflict_diff(source_sha, target_branch, path)
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    if our_commit && their_commit && path
+      rugged.diff(our_commit, their_commit, { paths: [path], context_lines: 3 })
+    else
+      []
     end
   end
 
