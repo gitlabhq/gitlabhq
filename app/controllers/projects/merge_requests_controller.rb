@@ -1,5 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include DiffForPath
   include DiffHelper
   include IssuableActions
   include ToggleAwardEmoji
@@ -102,10 +103,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     define_commit_vars
-    diffs = @merge_request.diffs(diff_options.merge(paths: [params[:path]]))
-    diff_refs = @merge_request.diff_refs
+    diffs = @merge_request.diffs(diff_options)
 
-    render_diff_for_path(diffs, diff_refs, @merge_request.project)
+    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
   end
 
   def commits

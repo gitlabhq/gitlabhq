@@ -1,0 +1,23 @@
+module DiffForPath
+  extend ActiveSupport::Concern
+
+  def render_diff_for_path(diffs, diff_refs, project)
+    diff_file = safe_diff_files(diffs, diff_refs: diff_refs, repository: project.repository).first
+
+    return render_404 unless diff_file
+
+    diff_commit = commit_for_diff(diff_file)
+    blob = diff_file.blob(diff_commit)
+    @expand_all = true
+
+    locals = {
+      diff_file: diff_file,
+      diff_commit: diff_commit,
+      diff_refs: diff_refs,
+      blob: blob,
+      project: project
+    }
+
+    render json: { html: view_to_html_string('projects/diffs/_content', locals) }
+  end
+end
