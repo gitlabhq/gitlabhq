@@ -21,6 +21,10 @@
         %span.cgray
           – Requested
           = time_ago_with_tooltip(member.requested_at)
+      - else
+        %span.cgray
+          = "(joined #{time_ago_with_tooltip(member.created_at)})"
+
     - else
       = image_tag avatar_icon(member.invite_email, 24), class: "avatar s24", alt: ''
       %strong= member.invite_email

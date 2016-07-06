@@ -47,6 +47,7 @@ v 8.10.0 (unreleased)
   - Handle custom Git hook result in GitLab UI
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
+  - Add date when user joined the team on the member page
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
