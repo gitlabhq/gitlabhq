@@ -304,6 +304,11 @@ module Gitlab
             next
           end
 
+          # Since we're removing users in this loop, `group.reload`
+          # before checking `last_owner?` to prevent stale owner information.
+          # Without a reload, this check would return a false negative.
+          group.reload
+
           # Check and update the access level. If `desired_access` is `nil`
           # we need to delete the user from the group.
           if desired_access.present?
