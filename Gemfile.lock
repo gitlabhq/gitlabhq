@@ -432,7 +432,6 @@ GEM
     mail_room (0.8.0)
     method_source (0.8.2)
     mime-types (2.99.2)
-    mime-types-data (3.2016.0521)
     mimemagic (0.3.1)
     mini_portile2 (2.1.0)
     minitest (5.7.0)
