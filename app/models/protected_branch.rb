@@ -34,7 +34,7 @@ class ProtectedBranch < ActiveRecord::Base
 
   # Checks if this protected branch contains a wildcard
   def wildcard?
-    self.name.include?('*')
+    self.name && self.name.include?('*')
   end
 
   protected
