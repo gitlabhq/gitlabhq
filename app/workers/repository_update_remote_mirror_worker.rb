@@ -21,7 +21,7 @@ class RepositoryUpdateRemoteMirrorWorker
     rescue => ex
       remote_mirror.mark_as_failed("We're sorry, a temporary error occurred, please try again.")
 
-      raise UpdateRemoteMirrorError, "#{ex.class}: #{ex.message}"
+      raise UpdateRemoteMirrorError, "#{ex.class}: #{Gitlab::UrlSanitizer.sanitize(ex.message)}"
     end
   end
 end
