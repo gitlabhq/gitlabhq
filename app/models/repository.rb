@@ -734,42 +734,25 @@ class Repository
   def update_file(user, path, content, branch:, previous_path:, message:)
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
-      options = {}
-      options[:committer] = committer
-      options[:author] = committer
-      options[:commit] = {
-        message: message,
-<<<<<<< 3824e8e1c4315bb3d1b2c1389f442d3b5e94f945
+      commit_options = {}
+      commit_options[:committer] = committer
+      commit_options[:author] = committer
+      commit_options[:commit] = {
+        message: options[:message],
         branch: ref
       }
 
-=======
-        branch: ref,
-      }
-
-      if previous_path
-        options[:file] = {
-          path: previous_path
-        }
-
-
-        Gitlab::Git::Blob.remove(raw_repository, options)
-      end
-
->>>>>>> creates the update_file method in repository.rb and applies changes accordingly
-      options[:file] = {
+      commit_options[:file] = {
         content: content,
         path: path,
         update: true
       }
 
-<<<<<<< 3824e8e1c4315bb3d1b2c1389f442d3b5e94f945
       if previous_path
         options[:file][:previous_path] = previous_path
-
-        Gitlab::Git::Blob.rename(raw_repository, options)
+        Gitlab::Git::Blob.rename(raw_repository, commit_options)
       else
-        Gitlab::Git::Blob.commit(raw_repository, options)
+        Gitlab::Git::Blob.commit(raw_repository, commit_options)
       end
     end
   end
