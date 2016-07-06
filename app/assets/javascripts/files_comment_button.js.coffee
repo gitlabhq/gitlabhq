@@ -35,8 +35,7 @@ class @FilesCommentButton
     textFileElement = @getTextFileElement(currentTarget)
     lineHolderElement = @getLineHolder(currentTarget)
     lineContentElement = @getLineContent(currentTarget)
-    lineNumElement = @getLineNum(currentTarget)
-    buttonParentElement = lineNumElement
+    buttonParentElement = @getButtonParent(currentTarget)
 
     return if not @shouldRender e, buttonParentElement
 
@@ -55,7 +54,7 @@ class @FilesCommentButton
 
   destroy: (e) =>
     return if @isMovingToSameType e
-    $(@COMMENT_BUTTON_CLASS, @getLineNum $(e.currentTarget)).remove()
+    $(@COMMENT_BUTTON_CLASS, @getButtonParent $(e.currentTarget)).remove()
     return
 
   buildButton: (buttonAttributes) ->
@@ -75,23 +74,25 @@ class @FilesCommentButton
     return hoveredElement if hoveredElement.hasClass @LINE_HOLDER_CLASS
     $(hoveredElement.parent())
 
-  getLineNum: (hoveredElement) ->
-    if @VIEW_TYPE is 'inline' and hoveredElement.hasClass @OLD_LINE_CLASS
-      $(hoveredElement).next ".#{@LINE_NUMBER_CLASS}"
-    else if hoveredElement.hasClass @LINE_NUMBER_CLASS
-      hoveredElement
-    else
-      $(hoveredElement).prev ".#{@LINE_NUMBER_CLASS}"
-
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass @LINE_CONTENT_CLASS
 
     $(hoveredElement).next ".#{@LINE_CONTENT_CLASS}"
 
+  getButtonParent: (hoveredElement) ->
+    if @VIEW_TYPE is 'inline'
+      return hoveredElement if hoveredElement.hasClass @OLD_LINE_CLASS
+
+      $(hoveredElement).parent().find ".#{@OLD_LINE_CLASS}"
+    else
+      return hoveredElement if hoveredElement.hasClass @LINE_NUMBER_CLASS
+
+      $(hoveredElement).prev ".#{@LINE_NUMBER_CLASS}"
+
   isMovingToSameType: (e) ->
-    newLineNum = @getLineNum($(e.toElement))
-    return false unless newLineNum
-    (newLineNum).is @getLineNum($(e.currentTarget))
+    newButtonParent = @getButtonParent($(e.toElement))
+    return false unless newButtonParent
+    (newButtonParent).is @getButtonParent($(e.currentTarget))
 
   shouldRender: (e, buttonParentElement) ->
     (!buttonParentElement.hasClass(@EMPTY_CELL_CLASS) and \
