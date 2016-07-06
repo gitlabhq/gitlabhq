@@ -16,6 +16,9 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 36px;
+  &.diff-collapsed {
+    cursor: pointer;
+  }
 }
 
 .row-content-block {

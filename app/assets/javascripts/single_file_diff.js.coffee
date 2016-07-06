@@ -1,4 +1,4 @@
-class @SingleDiff
+class @SingleFileDiff
 
   WRAPPER = '<div class="diff-content diff-wrap-lines"></div>'
   LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>'
@@ -24,7 +24,6 @@ class @SingleDiff
     $('.file-title > a', @file).on 'click', @toggleDiff
 
   toggleDiff: (e) =>
-    e.preventDefault()
     @isOpen = !@isOpen
     if not @isOpen and not @hasError
       @content.hide()
@@ -49,7 +48,7 @@ class @SingleDiff
       @collapsedContent.after(@content)
     return
 
-$.fn.singleDiff = ->
+$.fn.singleFileDiff = ->
   return @each ->
-    if not $.data this, 'singleDiff'
-      $.data this, 'singleDiff', new SingleDiff this
+    if not $.data this, 'singleFileDiff'
+      $.data this, 'singleFileDiff', new SingleFileDiff this
