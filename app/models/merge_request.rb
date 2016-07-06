@@ -294,7 +294,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged? && !must_be_rebased?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)
@@ -633,10 +633,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def ff_merge_possible?
-    target_sha == source_sha_parent
+    project.repository.is_ancestor?(target_sha, source_sha)
   end
 
-  def must_be_rebased?
+  def should_be_rebased?
     self.project.ff_merge_must_be_possible? && !ff_merge_possible?
   end
 

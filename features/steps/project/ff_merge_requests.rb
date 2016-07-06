@@ -58,6 +58,13 @@ class Spinach::Features::ProjectFfMergeRequests < Spinach::FeatureSteps
     merge_request.save!
   end
 
+  step 'merge request "Bug NS-05" merged target' do
+    merge_request.source_branch = 'merged-target'
+    merge_request.target_branch = 'improve/awesome'
+    merge_request.reload_code
+    merge_request.save!
+  end
+
   step 'rebase before merge enabled' do
     project = merge_request.target_project
     project.merge_requests_rebase_enabled = true

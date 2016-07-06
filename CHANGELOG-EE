@@ -31,6 +31,7 @@ v 8.9.0
   - Send notification email when merge request is approved
   - Distribute RepositoryUpdateMirror jobs in time and add exclusive lease on them by project_id
   - [Elastic] Move ES settings to application settings
+  - Always allow merging a merge request whenever fast-forward is possible. !454
   - Disable mirror flag for projects without import_url
   - UpdateMirror service return an error status when no mirror
   - Don't reset approvals when rebasing an MR from the UI

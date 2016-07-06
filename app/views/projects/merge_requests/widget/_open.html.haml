@@ -23,7 +23,7 @@
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif !@merge_request.mergeable_ci_state? && @pipeline && @pipeline.failed?
       = render 'projects/merge_requests/widget/open/build_failed'
-    - elsif @merge_request.must_be_rebased?
+    - elsif @merge_request.should_be_rebased?
       = render 'projects/merge_requests/widget/open/rebase'
     - else
       = render 'projects/merge_requests/widget/open/accept'

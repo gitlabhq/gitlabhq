@@ -25,7 +25,7 @@
         = f.button class: "btn btn-reopen js-rebase-button" do
           Rebase onto #{@merge_request.target_branch}
       .accept-control
-        Fast-forward merge is not possible. Rebase the source branch onto the target branch to allow this merge request to be merged.
+        Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.
 
   :javascript
     $('.rebase-mr-form').on('ajax:send', function() {

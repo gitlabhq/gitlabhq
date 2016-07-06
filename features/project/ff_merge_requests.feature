@@ -6,9 +6,18 @@ Feature: Project Ff Merge Requests
     And merge request "Bug NS-05" is mergeable
 
   @javascript
-  Scenario: I do ff-only merge
+  Scenario: I do ff-only merge for rebased branch
     Given ff merge enabled
     And merge request "Bug NS-05" is rebased
+    When I visit merge request page "Bug NS-05"
+    Then I should see ff-only merge button
+    When I accept this merge request
+    Then I should see merged request
+
+  @javascript
+  Scenario: I do ff-only merge for merged branch
+    Given ff merge enabled
+    And merge request "Bug NS-05" merged target
     When I visit merge request page "Bug NS-05"
     Then I should see ff-only merge button
     When I accept this merge request
