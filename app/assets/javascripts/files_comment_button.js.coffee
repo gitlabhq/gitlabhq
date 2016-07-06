@@ -1,6 +1,7 @@
 class @FilesCommentButton
   constructor: (@filesContainerElement) ->
-    return if not @filesContainerElement and not @filesContainerElement.data 'can-create-note'
+    return if not @filesContainerElement
+    return if not @filesContainerElement.data 'can-create-note'
 
     @COMMENT_BUTTON_CLASS = '.add-diff-note'
     @COMMENT_BUTTON_TEMPLATE = _.template("<button name='button' type='submit' class='btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button' title='Add a comment to this line'><i class='fa fa-comment-o'></i></button>")
