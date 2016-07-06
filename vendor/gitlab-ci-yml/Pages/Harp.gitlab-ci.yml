@@ -1,0 +1,16 @@
+# Full project: https://gitlab.com/pages/harp
+image: node:4.2.2
+
+pages:
+  cache:
+    paths:
+    - node_modules
+
+  script:
+  - npm install -g harp
+  - harp compile ./ public
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
