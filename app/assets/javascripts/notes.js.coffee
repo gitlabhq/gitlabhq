@@ -100,13 +100,40 @@ class @Notes
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
 
-  keydownNoteText: (e) ->
-    $this = $(this)
-    if $this.val() is '' and e.which is 38 and not isMetaKey e
-      myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
-      if myLastNote.length
-        myLastNoteEditBtn = myLastNote.find('.js-note-edit')
-        myLastNoteEditBtn.trigger('click', [true, myLastNote])
+  keydownNoteText: (e) =>
+    return if isMetaKey e
+
+    $textarea = $(e.target)
+
+    # Edit previous note when UP arrow is hit
+    switch e.which
+      when 38
+        return unless $textarea.val() is ''
+
+        myLastNote = $("li.note[data-author-id='#{gon.current_user_id}'][data-editable]:last")
+        if myLastNote.length
+          myLastNoteEditBtn = myLastNote.find('.js-note-edit')
+          myLastNoteEditBtn.trigger('click', [true, myLastNote])
+
+      # Cancel creating diff note or editing any note when ESCAPE is hit
+      when 27
+        discussionNoteForm = $textarea.closest('.js-discussion-note-form')
+        if discussionNoteForm.length
+          if $textarea.val() isnt ''
+            return unless confirm('Are you sure you want to cancel creating this comment?')
+
+          @removeDiscussionNoteForm(discussionNoteForm)
+          return
+
+        editNote = $textarea.closest('.note')
+        if editNote.length
+          originalText = $textarea.closest('form').data('original-note')
+          newText = $textarea.val()
+          if originalText isnt newText
+            return unless confirm('Are you sure you want to cancel editing this comment?')
+
+          @removeNoteEditForm(editNote)
+
 
   isMetaKey = (e) ->
     (e.metaKey or e.ctrlKey or e.altKey or e.shiftKey)
@@ -401,9 +428,12 @@ class @Notes
 
   Hides edit form and restores the original note text to the editor textarea.
   ###
-  cancelEdit: (e) ->
+  cancelEdit: (e) =>
     e.preventDefault()
-    note = $(this).closest(".note")
+    note = $(e.target).closest('.note')
+    @removeNoteEditForm(note)
+
+  removeNoteEditForm: (note) ->
     form = note.find(".current-note-edit-form")
     note.removeClass "is-editting"
     form.removeClass("current-note-edit-form")
