@@ -4,6 +4,9 @@ class SlackService < Service
   validates :webhook, presence: true, url: true, if: :activated?
 
   def initialize_properties
+    # Custom serialized properties initialization
+    self.supported_events.each { |event| self.class.prop_accessor event_channel_name(event) }
+
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_builds = true
@@ -29,13 +32,15 @@ class SlackService < Service
   end
 
   def fields
-    [
-      { type: 'text', name: 'webhook',
-        placeholder: 'https://hooks.slack.com/services/...' },
-      { type: 'text', name: 'username', placeholder: 'username' },
-      { type: 'text', name: 'channel', placeholder: '#channel' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
-    ]
+    default_fields =
+      [
+        { type: 'text', name: 'webhook',   placeholder: 'https://hooks.slack.com/services/...' },
+        { type: 'text', name: 'username', placeholder: 'username' },
+        { type: 'text', name: 'channel', placeholder: "#General" },
+        { type: 'checkbox', name: 'notify_only_broken_builds' },
+      ]
+
+    default_fields + build_event_channels
   end
 
   def supported_events
@@ -74,7 +79,10 @@ class SlackService < Service
       end
 
     opt = {}
-    opt[:channel] = channel if channel
+
+    event_channel = get_channel_field(object_kind) || channel
+
+    opt[:channel] = event_channel if event_channel
     opt[:username] = username if username
 
     if message
@@ -83,7 +91,31 @@ class SlackService < Service
     end
   end
 
+  def event_channel_names
+    supported_events.map { |event| event_channel_name(event) }
+  end
+
   private
+
+  def get_channel_field(event)
+    field_name = event_channel_name(event)
+    self.send(field_name)
+  end
+
+  def build_event_channels
+    channels = []
+
+    supported_events.each do |event|
+      channel_name = event_channel_name(event)
+      channels << { type: 'text', name: channel_name, placeholder: "#General" }
+    end
+
+    channels
+  end
+
+  def event_channel_name(event)
+    "#{event}_channel"
+  end
 
   def project_name
     project.name_with_namespace.gsub(/\s/, '')

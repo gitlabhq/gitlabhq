@@ -1,0 +1,34 @@
+= form_errors(@service)
+
+- if @service.help.present?
+  .well
+    = preserve do
+      = markdown @service.help
+
+.form-group
+  = form.label :active, "Active", class: "control-label"
+  .col-sm-10
+    = form.check_box :active
+
+.form-group
+  = form.label :url, "Trigger", class: 'control-label'
+
+  .col-sm-10
+    - @service.supported_events.each do |event|
+      %div
+        = form.check_box service_event_field_name(event), class: 'pull-left'
+        .prepend-left-20
+          = form.label service_event_field_name(event), class: 'list-label' do
+            %strong
+              = event.humanize
+
+      %p
+        - field = @service.fields.select{ |field| field[:name] == "#{event}_channel"}.first
+        = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
+
+      %p.light
+        = service_event_description(event)
+
+- @service.fields.each do |field|
+  - if %w(webhook username notify_only_broken_builds).include?(field[:name])
+    = render 'shared/field', form: form, field: field

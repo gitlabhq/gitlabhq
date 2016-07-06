@@ -66,10 +66,15 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def service_params
-    service_params = params.require(:service).permit(ALLOWED_PARAMS)
+    dynamic_params = []
+    dynamic_params.concat(@service.event_channel_names) if @service.is_a?(SlackService)
+
+    service_params = params.require(:service).permit(ALLOWED_PARAMS + dynamic_params)
+
     FILTER_BLANK_PARAMS.each do |param|
       service_params.delete(param) if service_params[param].blank?
     end
+
     service_params
   end
 end
