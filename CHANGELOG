@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.5
+  - Add more debug info to import/export and memory killer. !5108
   - Fixed avatar alignment in new MR view. !5095
   - Fix diff comments not showing up in activity feed. !5069
   - Add index on both Award Emoji user and name. !5061
