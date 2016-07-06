@@ -2,6 +2,7 @@ class @Ansi2Html
   constructor: ->
     @_currentLine = 0
     @_colorRegex = /\[[0-9]+;[0-9]?m/g
+    @_replaceLineRegex = /(\r|(\[[0-9]+k))/g
     @_colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
     @_html = []
 
@@ -10,7 +11,7 @@ class @Ansi2Html
 
   convertTrace: (trace) ->
     if trace?
-      @trace = trace.trim().split('\n')
+      @trace = trace.split('\n')
 
       for line, i in @trace
         @_currentLine = @_currentLine + 1
@@ -19,17 +20,27 @@ class @Ansi2Html
     return @
 
   convertLine: (line) ->
+    prepend = true
     lineText = if line is '' then ' ' else line
     codes = @getAnsiCodes(line)
 
     lineEl = @createLine(lineText)
 
-    if lineText.indexOf('\r') >= 0
+    if lineText.indexOf(@_replaceLineRegex) >= 0 and lineText.indexOf('$') < 0
+      prepend = false
       lastEl = @_html[@_html.length - 1]
-      lastEl
-        .find('span')
-        .text(@removeAnsiCodes(lineText))
-    else
+
+      if lastEl.find('span').text().indexOf('$') is 1
+        prepend = true
+      else
+        lineText = @removeAnsiCodes(lineText)
+        lineText = @replaceLine(lineText)
+
+        lastEl
+          .find('span')
+          .text(lineText)
+
+    if prepend
       lineEl.prepend @lineLink()
 
       if codes?
@@ -41,6 +52,9 @@ class @Ansi2Html
       @_html.push(lineEl)
 
   createLine: (line) ->
+    line = @removeAnsiCodes(line)
+    line = @replaceLine(line)
+
     $('<p />',
       id: "line-#{@_currentLine}"
       class: 'build-trace-line'
@@ -82,6 +96,10 @@ class @Ansi2Html
 
   removeAnsiCodes: (line) ->
     line.replace(@_colorRegex, '')
+
+  replaceLine: (line) ->
+    lineSplit = line.split(@_replaceLineRegex)
+    lineSplit[lineSplit.length - 1]
 
   getColorClass: (color, type, bold) ->
     bold = if bold then 'l-' else ''
