@@ -4,9 +4,9 @@ issuable_created = false
     unless issuable_created
       issuable_created = true
       Issuable.initTemplates()
-      Issuable.initSearch()
       Issuable.initChecks()
       Issuable.initLabelFilterRemove()
+    Issuable.initSearch()
 
   initTemplates: ->
     Issuable.labelRow = _.template(
