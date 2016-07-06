@@ -24,6 +24,27 @@ module NotesHelper
     }.to_json
   end
 
+  def note_text_file_data
+    return {} unless defined?(@comments_target) && @comments_target.any?
+
+    @comments_target.slice(:noteable_id, :noteable_type, :commit_id).merge(note_type: LegacyDiffNote.name)
+  end
+
+  def note_line_parallel_data(line_code, line_type)
+    data = {
+      line_code: line_code,
+      line_type: line_type,
+    }
+
+    unless @diff_notes_disabled
+      data.merge!(
+        discussion_id: discussion_id(line_code)
+      )
+    end
+
+    data
+  end
+
   def discussion_id(line_code)
     LegacyDiffNote.build_discussion_id(
       @comments_target[:noteable_type],

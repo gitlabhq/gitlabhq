@@ -30,7 +30,6 @@ module Emails
       @target_url = @message.target_url
       @project = Project.find(project_id)
       @diff_notes_disabled = true
-      @comments_target = {}
 
       add_project_headers
       headers['X-GitLab-Author'] = @message.author_username

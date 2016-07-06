@@ -1,5 +1,5 @@
 - type = line.type
-- line_data = @comments_target.any? ? { data: { discussion_id: discussion_id(line_code) } } : {}
+- line_data = @diff_notes_disabled ? {} : { data: { discussion_id: discussion_id(line_code) } }
 %tr.line_holder{ line_data, id: line_code, class: type }
   - case type
   - when 'match'
@@ -15,11 +15,11 @@
       - if defined?(plain) && plain
         = link_text
       - else
-        %a{href: "##{line_code}", data: { linenumber: link_text }}= "  "
+        %a{href: "##{line_code}", data: { linenumber: link_text }}
     %td.new_line.diff-line-num{ class: type, data: { linenumber: line.new_pos } }
       - link_text = type == "old" ? " " : line.new_pos
       - if defined?(plain) && plain
         = link_text
       - else
-        %a{href: "##{line_code}", data: { linenumber: link_text }}= ""
+        %a{href: "##{line_code}", data: { linenumber: link_text }}
     %td.line_content{ class: ['noteable_line', type], data: { line_code: line_code, line_type: type } }= diff_line_content(line.text, type)

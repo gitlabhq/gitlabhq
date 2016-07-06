@@ -1,6 +1,5 @@
 / Side-by-side diff view
-- text_file_data = @comments_target.any? ? { data: { noteable_id: @comments_target[:noteable_id], noteable_type: @comments_target[:noteable_type], commit_id: @comments_target[:commit_id], note_type: LegacyDiffNote.name } } : {}
-%div.text-file.diff-wrap-lines.code.file-content.js-syntax-highlight{ text_file_data }
+%div.text-file.diff-wrap-lines.code.file-content.js-syntax-highlight{ data: note_text_file_data }
   %table
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
@@ -14,9 +13,9 @@
           %td.new_line.diff-line-num.empty-cell
           %td.line_content.parallel.match= left[:text]
         - else
-          %td.old_line.diff-line-num{id: left[:line_code], class: "#{left[:type]} #{'empty-cell' if !left[:number]}", data: { linenumber: left[:number] }}
+          %td.old_line.diff-line-num{id: left[:line_code], class: "#{left[:type]} #{'empty-cell' unless left[:number]}", data: { linenumber: left[:number] }}
             %a{href: "##{left[:line_code]}" }= raw(left[:number])
-          %td.line_content{class: "parallel noteable_line #{left[:type]} #{'empty-cell' if left[:text].empty?}", data: { discussion_id: discussion_id(left[:line_code]), line_type: left[:type], line_code: left[:line_code] }}= diff_line_content(left[:text])
+          %td.line_content{class: "parallel noteable_line #{left[:type]} #{'empty-cell' if left[:text].empty?}", data: note_line_parallel_data(left[:line_code], left[:type]) }= diff_line_content(left[:text])
 
           - if right[:type] == 'new'
             - new_line_class = 'new'
@@ -25,9 +24,9 @@
             - new_line_class = nil
             - new_line_code = left[:line_code]
 
-          %td.new_line.diff-line-num{id: new_line_code, class: "#{new_line_class} #{'empty-cell' if !right[:number]}", data: { linenumber: right[:number] } }
+          %td.new_line.diff-line-num{id: new_line_code, class: "#{new_line_class} #{'empty-cell' unless right[:number]}", data: { linenumber: right[:number] } }
             %a{href: "##{new_line_code}" }= raw(right[:number])
-          %td.line_content.parallel{class: "noteable_line #{new_line_class} #{'empty-cell' if right[:text].empty?}", data: { discussion_id: discussion_id(new_line_code), line_type: new_line_class, line_code: new_line_code }}= diff_line_content(right[:text])
+          %td.line_content.parallel{class: "noteable_line #{new_line_class} #{'empty-cell' if right[:text].empty?}", data: note_line_parallel_data(new_line_code, new_line_class) }= diff_line_content(right[:text])
 
       - unless @diff_notes_disabled
         - notes_left, notes_right = organize_comments(left, right)

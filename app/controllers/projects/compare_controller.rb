@@ -24,7 +24,6 @@ class Projects::CompareController < Projects::ApplicationController
       @diff_refs = [@base_commit, @commit]
       @diff_notes_disabled = true
       @grouped_diff_notes = {}
-      @comments_target = {}
     end
   end
 
