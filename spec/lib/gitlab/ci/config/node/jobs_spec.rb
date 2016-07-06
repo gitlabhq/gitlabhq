@@ -36,18 +36,29 @@ describe Gitlab::Ci::Config::Node::Jobs do
     end
   end
 
-  describe '#descendants' do
+  context 'when valid job entries processed' do
     before { entry.process! }
 
     let(:config) do
       { rspec: { script: 'rspec' },
-        spinach: { script: 'spinach' } }
+        spinach: { script: 'spinach' },
+        '.hidden'.to_sym => {} }
     end
 
-    it 'creates two descendant nodes' do
-      expect(entry.descendants.count).to eq 2
-      expect(entry.descendants)
-        .to all(be_an_instance_of(Gitlab::Ci::Config::Node::Job))
+    describe '#descendants' do
+      it 'creates valid descendant nodes' do
+        expect(entry.descendants.count).to eq 3
+        expect(entry.descendants.first(2))
+          .to all(be_an_instance_of(Gitlab::Ci::Config::Node::Job))
+        expect(entry.descendants.last)
+          .to be_an_instance_of(Gitlab::Ci::Config::Node::HiddenJob)
+      end
+    end
+
+    describe '#value' do
+      it 'returns value of visible jobs only' do
+        expect(entry.value.keys).to eq [:rspec, :spinach]
+      end
     end
   end
 end

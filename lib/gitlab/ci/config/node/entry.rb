@@ -54,12 +54,19 @@ module Gitlab
             if leaf?
               @config
             else
-              defined = @nodes.select { |_key, value| value.defined? }
-              Hash[defined.map { |key, node| [key, node.value] }]
+              meaningful = @nodes.select do |_key, value|
+                value.defined? && value.relevant?
+              end
+
+              Hash[meaningful.map { |key, node| [key, node.value] }]
             end
           end
 
           def defined?
+            true
+          end
+
+          def relevant?
             true
           end
 

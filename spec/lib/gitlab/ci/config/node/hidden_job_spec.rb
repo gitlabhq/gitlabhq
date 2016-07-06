@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::Job do
+describe Gitlab::Ci::Config::Node::HiddenJob do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { { script: 'rspec' } }
+      let(:config) { { image: 'ruby:2.2' } }
 
       describe '#value' do
         it 'returns key value' do
-          expect(entry.value).to eq(script: 'rspec')
+          expect(entry.value).to eq(image: 'ruby:2.2')
         end
       end
 
@@ -27,16 +27,22 @@ describe Gitlab::Ci::Config::Node::Job do
         describe '#errors' do
           it 'saves errors' do
             expect(entry.errors)
-              .to include 'job config should be a hash'
+              .to include 'hidden job config should be a hash'
           end
         end
       end
     end
   end
 
+  describe '#leaf?' do
+    it 'is a leaf' do
+      expect(entry).to be_leaf
+    end
+  end
+
   describe '#relevant?' do
-    it 'is a relevant entry' do
-      expect(entry).to be_relevant
+    it 'is not a relevant entry' do
+      expect(entry).not_to be_relevant
     end
   end
 end
