@@ -26,7 +26,6 @@ module Ci
       end
 
       initial_parsing
-      validate!
     rescue Gitlab::Ci::Config::Loader::FormatError => e
       raise ValidationError, e.message
     end
@@ -71,6 +70,10 @@ module Ci
       @ci_config.jobs.each do |name, param|
         add_job(name, param)
       end
+
+      @jobs.each do |name, job|
+        validate_job!(name, job)
+      end
     end
 
     def add_job(name, job)
@@ -106,14 +109,6 @@ module Ci
           after_script: job[:after_script] || @after_script,
         }.compact
       }
-    end
-
-    def validate!
-      @jobs.each do |name, job|
-        validate_job!(name, job)
-      end
-
-      true
     end
 
     def validate_job!(name, job)
