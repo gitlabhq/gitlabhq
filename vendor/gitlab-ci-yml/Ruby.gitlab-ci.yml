@@ -10,12 +10,19 @@ services:
   - redis:latest
   - postgres:latest
 
+# Cache gems in between builds
+cache:
+  paths:
+    - vendor/ruby
+
 # This is a basic example for a gem or script which doesn't use
 # services such as redis or postgres
 before_script:
-  - gem install bundler         # Bundler is not installed with the image
-  - bundle install -j $(nproc)  # Install dependencies
+  - ruby -v                                   # Print out ruby version for debugging
+  - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
+  - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
 
+# Optional - Delete if not using `rubocop`
 rubocop:
   script:
   - rubocop
@@ -26,5 +33,5 @@ rspec:
 
 rails:
   script:
-  - rake db:migrate
-  - rspec spec
+  - bundle exec rake db:migrate
+  - bundle exec rake test
