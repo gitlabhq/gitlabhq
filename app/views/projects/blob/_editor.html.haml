@@ -4,8 +4,8 @@
       = icon('code-fork')
       = ref
     %span.editor-file-name
-      -if current_action?(:edit) || current_action?(:update)
-        = text_field_tag 'file_name', (params[:file_name] or @path),
+      - if current_action?(:edit) || current_action?(:update)
+        = text_field_tag 'file_name', (params[:file_name] || @path),
                                       class: 'form-control new-file-name'
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name

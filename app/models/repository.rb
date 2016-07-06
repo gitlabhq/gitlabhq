@@ -731,29 +731,29 @@ class Repository
     end
   end
 
-  def update_file(user, path, content, branch, options={})
+  def update_file(user, path, content, branch:, previous_path:, message:)
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
-      commit_options = {}
-      commit_options[:committer] = committer
-      commit_options[:author] = committer
-      commit_options[:commit] = {
-        message: options[:message],
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
         branch: ref
       }
 
-      commit_options[:file] = {
+      options[:file] = {
         content: content,
         path: path,
-        update: options[:update]
+        update: true
       }
 
-      if options[:previous_path]
-        commit_options[:file][:previous_path] = options[:previous_path]
+      if previous_path
+        options[:file][:previous_path] = previous_path
 
-        Gitlab::Git::Blob.rename(raw_repository, commit_options)
+        Gitlab::Git::Blob.rename(raw_repository, options)
       else
-        Gitlab::Git::Blob.commit(raw_repository, commit_options)
+        Gitlab::Git::Blob.commit(raw_repository, options)
       end
     end
   end
