@@ -5,11 +5,13 @@ class @NamespaceSelect
     } = opts
 
     showAny = true
-
     fieldName = 'namespace_id'
 
-    if @dropdown.data 'fieldName'
+    if @dropdown.attr 'data-field-name'
      fieldName = @dropdown.data 'fieldName'
+
+    if @dropdown.attr 'data-show-any'
+      showAny = @dropdown.data 'showAny'
 
     @dropdown.glDropdown(
       filterable: true
