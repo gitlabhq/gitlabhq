@@ -48,6 +48,7 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
+  - Fix 404 redirect after validation fails importing a GitLab project
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
