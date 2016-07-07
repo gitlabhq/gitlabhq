@@ -9,7 +9,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
@@ -308,10 +307,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def closes_issues
-    @closes_issues ||= @merge_request.closes_issues
-  end
-
   def authorize_update_merge_request!
     return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
@@ -377,7 +372,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_widget_vars
     @pipeline = @merge_request.pipeline
     @pipelines = [@pipeline].compact
-    closes_issues
   end
 
   def invalid_mr

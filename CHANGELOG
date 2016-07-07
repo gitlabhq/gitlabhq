@@ -34,6 +34,7 @@ v 8.10.0 (unreleased)
   - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
   - Better caching of git calls on ProjectsController#show.
+  - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
   - Instrument Rinku usage
