@@ -1,16 +1,20 @@
 module ProtectedBranches
   class BaseService < ::BaseService
     def set_access_levels!
-      if params[:developers_can_push] == '0'
-        @protected_branch.push_access_level.masters!
-      elsif params[:developers_can_push] == '1'
-        @protected_branch.push_access_level.developers!
+      case params[:allowed_to_merge]
+      when 'masters'
+        @protected_branch.merge_access_level.masters!
+      when 'developers'
+        @protected_branch.merge_access_level.developers!
       end
 
-      if params[:developers_can_merge] == '0'
-        @protected_branch.merge_access_level.masters!
-      elsif params[:developers_can_merge] == '1'
-        @protected_branch.merge_access_level.developers!
+      case params[:allowed_to_push]
+      when 'masters'
+        @protected_branch.push_access_level.masters!
+      when 'developers'
+        @protected_branch.push_access_level.developers!
+      when 'no_one'
+        @protected_branch.push_access_level.no_one!
       end
     end
   end

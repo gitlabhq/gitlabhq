@@ -664,10 +664,13 @@ pre.light-well {
 .protected-branches-list {
   a {
     color: $gl-gray;
-    font-weight: 600;
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &.is-active {
+      font-weight: 600;
     }
   }
 }

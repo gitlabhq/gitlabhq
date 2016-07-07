@@ -5,24 +5,25 @@
     No branches are protected, protect a branch with the form above.
 - else
   - can_admin_project = can?(current_user, :admin_project, @project)
-  .table-responsive
-    %table.table.protected-branches-list
-      %colgroup
-        %col{ width: "20%" }
-        %col{ width: "30%" }
-        %col{ width: "25%" }
-        %col{ width: "25%" }
+
+  %table.table.protected-branches-list
+    %colgroup
+      %col{ width: "20%" }
+      %col{ width: "30%" }
+      %col{ width: "25%" }
+      %col{ width: "25%" }
+    %thead
+      %tr
+        %th Branch
+        %th Last commit
+        %th Allowed to Merge
+        %th Allowed to Push
         - if can_admin_project
-          %col
-      %thead
-        %tr
-          %th Protected Branch
-          %th Commit
-          %th Developers Can Push
-          %th Developers Can Merge
-          - if can_admin_project
-            %th
-      %tbody
-        = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
+          %th
+    %tbody
+      = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
 
   = paginate @protected_branches, theme: 'gitlab'
+
+:javascript
+  new ProtectedBranchesAccessSelect();
