@@ -46,8 +46,8 @@ module Gitlab
       true
     end
 
-    def list_remote_tags(name, remote)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', "#{name}.git", remote])
+    def list_remote_tags(storage, name, remote)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
       tags_with_targets = []
 
       raise Error, output unless status.zero?
@@ -83,8 +83,8 @@ module Gitlab
     # Ex.
     #   fetch_remote("gitlab/gitlab-ci", "upstream")
     #
-    def fetch_remote(name, remote, forced: false, no_tags: false)
-      args = [gitlab_shell_projects_path, 'fetch-remote', "#{name}.git", remote, '600']
+    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, '600']
       args << '--force' if forced
       args << '--no-tags' if no_tags
 
@@ -261,8 +261,8 @@ module Gitlab
     # Ex.
     #   push_remote_branches('upstream', 'feature')
     #
-    def push_remote_branches(project_name, remote_name, branch_names)
-      args = [gitlab_shell_projects_path, 'push-branches', "#{project_name}.git", remote_name, *branch_names]
+    def push_remote_branches(storage, project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, *branch_names]
       output, status = Popen::popen(args)
       raise Error, output unless status.zero?
       true
@@ -277,8 +277,8 @@ module Gitlab
     # Ex.
     #   delete_remote_branches('upstream', 'feature')
     #
-    def delete_remote_branches(project_name, remote_name, branch_names)
-      args = [gitlab_shell_projects_path, 'delete-remote-branches', "#{project_name}.git", remote_name, *branch_names]
+    def delete_remote_branches(storage, project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
       output, status = Popen::popen(args)
       raise Error, output unless status.zero?
       true

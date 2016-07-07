@@ -49,11 +49,11 @@ module Projects
       # Push the default branch first so it works fine when remote mirror is empty.
       branches.unshift(*default_branch)
 
-      repository.push_remote_branches(project.path_with_namespace, mirror.ref_name, branches)
+      repository.push_remote_branches(mirror.ref_name, branches)
     end
 
     def delete_branches
-      repository.delete_remote_branches(project.path_with_namespace, mirror.ref_name, deleted_branches)
+      repository.delete_remote_branches(mirror.ref_name, deleted_branches)
     end
 
     def deleted_branches
@@ -101,11 +101,11 @@ module Projects
     end
 
     def push_tags
-      repository.push_remote_branches(project.path_with_namespace, mirror.ref_name, changed_tags)
+      repository.push_remote_branches(mirror.ref_name, changed_tags)
     end
 
     def delete_tags
-      repository.delete_remote_branches(project.path_with_namespace, mirror.ref_name, deleted_tags)
+      repository.delete_remote_branches(mirror.ref_name, deleted_tags)
     end
 
     def changed_tags

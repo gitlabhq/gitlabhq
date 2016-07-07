@@ -17,8 +17,6 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  delegate :push_remote_branches, :delete_remote_branches, to: :gitlab_shell
-
   def self.clean_old_archives
     Gitlab::Metrics.measure(:clean_old_archives) do
       repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
@@ -44,10 +42,14 @@ class Repository
     raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
+  def storage_path
+    @project.repository_storage_path
+  end
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(@project.repository_storage_path, path_with_namespace + ".git")
+      File.join(storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -162,6 +164,10 @@ class Repository
     find_branch(branch_name)
   end
 
+  def push_remote_branches(remote, branches)
+    gitlab_shell.push_remote_branches(storage_path, path_with_namespace, remote, branches)
+  end
+
   def add_tag(user, tag_name, target, message = nil)
     oldrev = Gitlab::Git::BLANK_SHA
     ref    = Gitlab::Git::TAG_REF_PREFIX + tag_name
@@ -192,6 +198,10 @@ class Repository
 
     after_remove_branch
     true
+  end
+
+  def delete_remote_branches(remote, branches)
+    gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
   def rm_tag(tag_name)
@@ -230,17 +240,17 @@ class Repository
   end
 
   def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(path_with_namespace, remote, forced: forced, no_tags: no_tags)
+    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
   end
 
   def remote_tags(remote)
-    gitlab_shell.list_remote_tags(path_with_namespace, remote).map do |name, target|
+    gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
       Gitlab::Git::Tag.new(name, target)
     end
   end
 
   def fetch_remote_forced!(remote)
-    gitlab_shell.fetch_remote(path_with_namespace, remote, forced: true)
+    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: true)
   end
 
   def ref_names
