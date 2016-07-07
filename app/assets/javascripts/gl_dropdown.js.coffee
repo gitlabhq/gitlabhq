@@ -566,7 +566,7 @@ class GitLabDropdown
       e.stopImmediatePropagation()
       $el.first().trigger 'click'
       href = $el.attr 'href'
-      Turbolinks.visit(href) if href
+      Turbolinks.visit(href) if href and href isnt '#'
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
