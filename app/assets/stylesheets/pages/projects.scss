@@ -345,7 +345,18 @@ a.deploy-project-label {
         background-color: #fcfdff;
         border-color: #e6f4ff;
       }
-
+      .no-avatar {
+        width: 100px;
+        height: 100px;
+        background-color: $gray-light;
+        border: 1px solid $gray-dark;
+        margin: 0 auto;
+        @include border-radius(50%);
+        i {
+          font-size: 100px;
+          color: $gray-dark;
+        }
+      }
       a {
         display: block;
         width: 100%;

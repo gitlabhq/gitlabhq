@@ -17,16 +17,25 @@
           - @namespaces.in_groups_of(6, false) do |group|
             .row
               - group.each do |namespace|
+                - avatar = namespace_icon(namespace, 100)
                 - if fork = namespace.find_fork_of(@project)
                   .fork-thumbnail.forked
                     = link_to project_path(fork) do
-                      = image_tag namespace_icon(namespace, 100)
+                      - if /no_((\w*)_)*avatar/.match(avatar)
+                        .no-avatar
+                          = icon 'question'
+                      - else
+                        = image_tag avatar
                       .caption
                         = namespace.human_name
                 - else
                   .fork-thumbnail
                     = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), method: "POST" do
-                      = image_tag namespace_icon(namespace, 100)
+                      - if /no_((\w*)_)*avatar/.match(avatar)
+                        .no-avatar
+                          = icon 'question'
+                      - else
+                        = image_tag avatar
                       .caption
                         = namespace.human_name
       - else
