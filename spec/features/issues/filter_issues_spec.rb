@@ -7,6 +7,7 @@ describe 'Filter issues', feature: true do
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
+  let!(:issue1)    { create(:issue, project: project) }
 
   before do
     project.team << [user, :master]
@@ -196,6 +197,7 @@ describe 'Filter issues', feature: true do
         page.within '.labels-filter' do
           click_link 'bug'
         end
+        find('.dropdown-menu-close-icon').click
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
@@ -287,7 +289,7 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
 
       page.within '.issues-list' do
-        expect(first('.issue')).to have_content('Frontend')
+        expect(page).to have_content('Frontend')
       end
     end
   end

@@ -189,7 +189,7 @@ describe Projects::MergeRequestsController do
             id: merge_request.iid,
             format: :patch)
 
-        expect(response.headers['Gitlab-Workhorse-Send-Data']).to start_with("git-format-patch:")
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
       end
     end
   end
@@ -343,7 +343,7 @@ describe Projects::MergeRequestsController do
 
     context 'when the sha parameter matches the source SHA' do
       def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.source_sha)
+        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
       end
 
       it 'returns :success' do
@@ -360,11 +360,11 @@ describe Projects::MergeRequestsController do
 
       context 'when merge_when_build_succeeds is passed' do
         def merge_when_build_succeeds
-          post :merge, base_params.merge(sha: merge_request.source_sha, merge_when_build_succeeds: '1')
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_build_succeeds: '1')
         end
 
         before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.source_sha, ref: merge_request.source_branch)
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch)
         end
 
         it 'returns :merge_when_build_succeeds' do

@@ -214,6 +214,13 @@ class Commit
     @raw.short_id(7)
   end
 
+  def diff_refs
+    Gitlab::Diff::DiffRefs.new(
+      base_sha: self.parent_id || self.sha,
+      head_sha: self.sha
+    )
+  end
+
   def pipelines
     @pipeline ||= project.pipelines.where(sha: sha)
   end

@@ -15,17 +15,19 @@ module Gitlab
         highlighted_diff_lines.each do |line|
           full_line = line.text
           type = line.type
-          line_code = generate_line_code(diff_file.file_path, line)
+          line_code = diff_file.line_code(line)
           line_new = line.new_pos
           line_old = line.old_pos
+          position = diff_file.position(line)
 
           next_line = diff_file.next_line(line.index)
 
           if next_line
             next_line = highlighted_diff_lines[next_line.index]
-            next_line_code = generate_line_code(diff_file.file_path, next_line)
+            full_next_line = next_line.text
+            next_line_code = diff_file.line_code(next_line)
             next_type = next_line.type
-            next_line = next_line.text
+            next_position = diff_file.position(next_line)
           end
 
           case type
@@ -37,12 +39,14 @@ module Gitlab
                 number:     line_old,
                 text:       full_line,
                 line_code:  line_code,
+                position:   position
               },
               right: {
                 type:       type,
                 number:     line_new,
                 text:       full_line,
-                line_code:  line_code
+                line_code:  line_code,
+                position:   position
               }
             }
           when 'old'
@@ -55,12 +59,14 @@ module Gitlab
                   number:     line_old,
                   text:       full_line,
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       next_type,
                   number:     line_new,
-                  text:       next_line,
-                  line_code:  next_line_code
+                  text:       full_next_line,
+                  line_code:  next_line_code,
+                  position:   next_position,
                 }
               }
               skip_next = true
@@ -73,12 +79,14 @@ module Gitlab
                   number:     line_old,
                   text:       full_line,
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       next_type,
                   number:     nil,
                   text:       "",
-                  line_code:  nil
+                  line_code:  nil,
+                  position:   nil
                 }
               }
             end
@@ -95,24 +103,20 @@ module Gitlab
                   number:     nil,
                   text:       "",
                   line_code:  line_code,
+                  position:   position
                 },
                 right: {
                   type:       type,
                   number:     line_new,
                   text:       full_line,
-                  line_code:  line_code
+                  line_code:  line_code,
+                  position:   position
                 }
               }
             end
           end
         end
         lines
-      end
-
-      private
-
-      def generate_line_code(file_path, line)
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
       end
     end
   end

@@ -45,7 +45,7 @@
   %td
     - if pipeline.started_at && pipeline.finished_at
       %p.duration
-        #{duration_in_words(pipeline.finished_at, pipeline.started_at)}
+        = duration_in_numbers(pipeline.finished_at, pipeline.started_at)
 
   %td
     .controls.hidden-xs.pull-right

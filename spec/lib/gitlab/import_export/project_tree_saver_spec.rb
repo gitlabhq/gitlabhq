@@ -125,7 +125,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
     ci_pipeline = create(:ci_pipeline,
                        project: project,
-                       sha: merge_request.last_commit.id,
+                       sha: merge_request.diff_head_sha,
                        ref: merge_request.source_branch,
                        statuses: [commit_status])
 

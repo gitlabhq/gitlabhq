@@ -213,7 +213,7 @@ describe SystemNoteService, services: true do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
+    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.diff_head_commit) }
 
     it_behaves_like 'a system note'
 

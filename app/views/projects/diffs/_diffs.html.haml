@@ -2,7 +2,7 @@
 - if diff_view == 'parallel'
   - fluid_layout true
 
-- diff_files = safe_diff_files(diffs, diff_refs)
+- diff_files = safe_diff_files(diffs, diff_refs: diff_refs, repository: project.repository)
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
@@ -24,7 +24,7 @@
 .files
   - diff_files.each_with_index do |diff_file, index|
     - diff_commit = commit_for_diff(diff_file)
-    - blob = project.repository.blob_for_diff(diff_commit, diff_file)
+    - blob = diff_file.blob(diff_commit)
     - next unless blob
     - blob.load_all_data!(project.repository) unless blob.only_display_raw?
 
