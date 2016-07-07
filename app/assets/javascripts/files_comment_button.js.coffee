@@ -40,16 +40,13 @@ class @FilesCommentButton
     return unless @shouldRender e, buttonParentElement
 
     buttonParentElement.append @buildButton
-      id:
-        noteable: textFileElement.attr 'data-noteable-id'
-        commit: textFileElement.attr 'data-commit-id'
-        discussion: lineContentElement.attr('data-discussion-id') or lineHolderElement.attr('data-discussion-id')
-      type:
-        noteable: textFileElement.attr 'data-noteable-type'
-        note: textFileElement.attr 'data-note-type'
-        line: lineContentElement.attr 'data-line-type'
-      code:
-        line: lineContentElement.attr('data-line-code') or lineHolderElement.attr('id')
+      commit_id: textFileElement.attr 'data-commit-id'
+      discussion_id: lineContentElement.attr('data-discussion-id') or lineHolderElement.attr('data-discussion-id')
+      line_code: lineContentElement.attr('data-line-code') or lineHolderElement.attr('id')
+      line_type: lineContentElement.attr 'data-line-type'
+      note_type: textFileElement.attr 'data-note-type'
+      noteable_id: textFileElement.attr 'data-noteable-id'
+      noteable_type: textFileElement.attr 'data-noteable-type'
     return
 
   destroy: (e) =>
@@ -61,13 +58,13 @@ class @FilesCommentButton
     initializedButtonTemplate = @COMMENT_BUTTON_TEMPLATE
       COMMENT_BUTTON_CLASS: @COMMENT_BUTTON_CLASS.substr 1
     $(initializedButtonTemplate).attr
-      'data-noteable-id': buttonAttributes.id.noteable
-      'data-commit-id': buttonAttributes.id.commit
-      'data-discussion-id': buttonAttributes.id.discussion
-      'data-noteable-type': buttonAttributes.type.noteable
-      'data-line-type': buttonAttributes.type.line
-      'data-note-type': buttonAttributes.type.note
-      'data-line-code': buttonAttributes.code.line
+      'data-noteable-id': buttonAttributes.noteable_id
+      'data-commit-id': buttonAttributes.commit_id
+      'data-discussion-id': buttonAttributes.discussion_id
+      'data-noteable-type': buttonAttributes.noteable_type
+      'data-line-type': buttonAttributes.line_type
+      'data-note-type': buttonAttributes.note_type
+      'data-line-code': buttonAttributes.line_code
 
   getTextFileElement: (hoveredElement) ->
     $(hoveredElement.closest(@TEXT_FILE_SELECTOR))
