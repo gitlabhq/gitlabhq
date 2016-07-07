@@ -45,7 +45,12 @@
   %td
     - if pipeline.started_at && pipeline.finished_at
       %p.duration
+      = icon("clock-o")
         = duration_in_numbers(pipeline.finished_at, pipeline.started_at)
+    - if pipeline.finished_at
+      %p.duration
+        = icon("calendar")
+        #{time_ago_with_tooltip(pipeline.finished_at)}
 
   %td
     .controls.hidden-xs.pull-right
