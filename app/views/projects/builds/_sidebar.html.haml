@@ -96,7 +96,7 @@
     .title
       Commit title
     %p.build-light-text.append-bottom-0
-      #{@build.pipeline.commit.try(:title)}
+      #{@build.commit.title}
 
   - if @build.tags.any?
     .block
