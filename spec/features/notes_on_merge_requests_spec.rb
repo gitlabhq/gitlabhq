@@ -231,7 +231,7 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    find(".line_holder[id='#{data}'] td:nth-of-type(1)").hover
+    find(".line_holder[id='#{data}'] td.line_content").hover
     find(".line_holder[id='#{data}'] button").trigger('click')
   end
 end
