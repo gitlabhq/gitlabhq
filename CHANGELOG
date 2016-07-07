@@ -129,6 +129,7 @@ v 8.9.7 (unreleased)
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects
+  - Render only commit message title in builds
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
