@@ -15,7 +15,6 @@ module Files
                           params[:file_content]
                         end
 
-      # Validate parameters
       validate
 
       # Create new branch if it different from source_branch
@@ -26,7 +25,7 @@ module Files
       if commit
         success
       else
-        error("Something went wrong. Your changes were not committed")
+        error('Something went wrong. Your changes were not committed')
       end
     rescue Repository::CommitError, Gitlab::Git::Repository::InvalidBlobName, GitHooksService::PreReceiveError, ValidationError => ex
       error(ex.message)
@@ -51,12 +50,12 @@ module Files
 
       unless project.empty_repo?
         unless @source_project.repository.branch_names.include?(@source_branch)
-          raise_error("You can only create or edit files when you are on a branch")
+          raise_error('You can only create or edit files when you are on a branch')
         end
 
         if different_branch?
           if repository.branch_names.include?(@target_branch)
-            raise_error("Branch with such name already exists. You need to switch to this branch in order to make changes")
+            raise_error('Branch with such name already exists. You need to switch to this branch in order to make changes')
           end
         end
       end
