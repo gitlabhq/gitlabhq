@@ -518,7 +518,9 @@ class GitLabDropdown
         if !field.length and fieldName
           @addInput(fieldName, value)
         else
-          field.val value
+          field
+            .val value
+            .trigger 'change'
 
       return selectedObject
 

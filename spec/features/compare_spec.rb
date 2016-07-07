@@ -16,7 +16,7 @@ describe "Compare", js: true do
     end
 
     it "should compare branches" do
-      fill_in "from", with: "mast"
+      fill_in "from", with: "fea"
       find("#from").click
 
       click_link "feature"
