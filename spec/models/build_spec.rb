@@ -673,7 +673,7 @@ describe Ci::Build, models: true do
     context 'when build is running' do
       before { build.run! }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(build.retryable?).to be false
       end
     end
@@ -681,9 +681,17 @@ describe Ci::Build, models: true do
     context 'when build is finished' do
       before { build.success! }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(build.retryable?).to be true
       end
+    end
+  end
+
+  describe 'Project#builds_for' do
+    it 'returns builds from ref and build name' do
+      latest_build = project.builds_for(build.name, 'HEAD').latest.first
+
+      expect(latest_build.id).to eq(build.id)
     end
   end
 end

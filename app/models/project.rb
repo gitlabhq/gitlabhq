@@ -429,6 +429,14 @@ class Project < ActiveRecord::Base
     repository.commit(id)
   end
 
+  def builds_for(build_name, ref = 'HEAD')
+    sha = commit(ref).sha
+
+    builds.joins(:pipeline).
+      merge(Ci::Pipeline.where(sha: sha)).
+      where(name: build_name)
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha
