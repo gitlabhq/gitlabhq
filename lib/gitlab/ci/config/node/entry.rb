@@ -14,6 +14,7 @@ module Gitlab
           def initialize(config)
             @config = config
             @nodes = {}
+
             @validator = self.class.validator.new(self)
             @validator.validate
           end
@@ -69,6 +70,10 @@ module Gitlab
 
           def relevant?
             true
+          end
+
+          def attributes
+            { key: @key, parent: @parent, description: @description }
           end
 
           def self.default

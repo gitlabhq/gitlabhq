@@ -5,8 +5,9 @@ module Gitlab
         ##
         # This class represents an undefined entry node.
         #
-        # It takes original entry class as configuration and returns default
-        # value of original entry as self value.
+        # It takes original entry class as configuration and creates an object
+        # if original entry has a default value. If there is default value
+        # some methods are delegated to it.
         #
         #
         class Undefined < Entry
@@ -16,12 +17,34 @@ module Gitlab
             validates :config, type: Class
           end
 
+          def initialize(node)
+            super
+
+            unless node.default.nil?
+              @default = fabricate_default(node)
+            end
+          end
+
           def value
-            @config.default
+            @default.value if @default
+          end
+
+          def valid?
+            @default ? @default.valid? : true
+          end
+
+          def errors
+            @default ? @default.errors : []
           end
 
           def defined?
             false
+          end
+
+          private
+
+          def fabricate_default(node)
+            Node::Factory.fabricate(node, node.default, attributes)
           end
         end
       end

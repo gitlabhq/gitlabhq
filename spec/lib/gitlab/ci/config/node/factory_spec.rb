@@ -9,11 +9,13 @@ describe Gitlab::Ci::Config::Node::Factory do
       it 'fabricates entry with attributes set' do
         fabricated = described_class
           .fabricate(entry_class, ['ls'],
-                     parent: factory, key: :test)
+                     parent: true, key: :test)
 
-        expect(fabricated.parent).to be factory
+        expect(fabricated.parent).to be true
         expect(fabricated.key).to eq :test
         expect(fabricated.value).to eq ['ls']
+        expect(fabricated.attributes)
+          .to eq(parent: true, key: :test, description: nil)
       end
     end
 
