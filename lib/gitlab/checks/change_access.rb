@@ -1,6 +1,6 @@
 module Gitlab
-  class GitAccess
-    class ChangeAccessCheck
+  module Checks
+    class ChangeAccess
       attr_reader :user_access, :project
 
       def initialize(change, user_access:, project:)
@@ -23,8 +23,6 @@ module Gitlab
       protected
 
       def protected_branch_checks
-        return unless project.protected_branch?(@branch_name)
-
         return unless project.protected_branch?(@branch_name)
 
         if forced_push? && user_access.cannot_do_action?(:force_push_code_to_protected_branches)
@@ -67,7 +65,7 @@ module Gitlab
       end
 
       def forced_push?
-        Gitlab::ForcePushCheck.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
       end
 
       def matching_merge_request?
