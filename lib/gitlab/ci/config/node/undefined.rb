@@ -13,28 +13,15 @@ module Gitlab
         class Undefined < Entry
           include Validatable
 
+          delegate :valid?, :errors, :value, to: :@strategy
+
           validations do
             validates :config, type: Class
           end
 
           def initialize(node)
             super
-
-            unless node.default.nil?
-              @default = fabricate_default(node)
-            end
-          end
-
-          def value
-            @default.value if @default
-          end
-
-          def valid?
-            @default ? @default.valid? : true
-          end
-
-          def errors
-            @default ? @default.errors : []
+            @strategy = create_strategy(node, node.default)
           end
 
           def defined?
@@ -43,8 +30,40 @@ module Gitlab
 
           private
 
-          def fabricate_default(node)
-            Node::Factory.fabricate(node, node.default, attributes)
+          def create_strategy(node, default)
+            if default.nil?
+              Undefined::NullStrategy.new
+            else
+              entry = Node::Factory
+                .fabricate(node, default, attributes)
+
+              Undefined::DefaultStrategy.new(entry)
+            end
+          end
+
+          class DefaultStrategy
+            delegate :valid?, :errors, :value, to: :@default
+
+            def initialize(entry)
+              @default = entry
+            end
+          end
+
+          class NullStrategy
+            def initialize(*)
+            end
+
+            def value
+              nil
+            end
+
+            def valid?
+              true
+            end
+
+            def errors
+              []
+            end
           end
         end
       end
