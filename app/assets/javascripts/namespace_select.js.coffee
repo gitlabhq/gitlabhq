@@ -16,6 +16,7 @@ class @NamespaceSelect
     @dropdown.glDropdown(
       filterable: true
       selectable: true
+      filterRemote: true
       search:
         fields: ['path']
       fieldName: fieldName
