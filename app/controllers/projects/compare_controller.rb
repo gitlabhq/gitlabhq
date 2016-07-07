@@ -15,6 +15,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
+    apply_diff_view_cookie!
   end
 
   def diff_for_path
