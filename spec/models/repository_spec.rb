@@ -1133,18 +1133,18 @@ describe Repository, models: true do
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches).
-        with('project_name', 'remote_name', ['branch'])
+        with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
 
-      repository.push_remote_branches('project_name', 'remote_name', ['branch'])
+      repository.push_remote_branches('remote_name', ['branch'])
     end
   end
 
   describe '#delete_remote_branches' do
     it 'delete branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches).
-        with('project_name', 'remote_name', ['branch'])
+        with(repository.storage_path, repository.path_with_namespace, 'remote_name', ['branch'])
 
-      repository.delete_remote_branches('project_name', 'remote_name', ['branch'])
+      repository.delete_remote_branches('remote_name', ['branch'])
     end
   end
 
@@ -1161,7 +1161,7 @@ describe Repository, models: true do
       masterrev = repository.find_branch('master').target
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
-        with(repository.path_with_namespace, 'upstream').
+        with(repository.storage_path, repository.path_with_namespace, 'upstream').
         and_return({ 'v0.0.1' => masterrev })
 
       tags = repository.remote_tags('upstream')
