@@ -94,9 +94,11 @@
 
   .block
     .title
-      Commit message
-    %p.build-light-text.append-bottom-0
-      #{@build.pipeline.git_commit_message}
+      Commit title
+    %p.build-light-text.append-bottom-
+      #{@build.pipeline.commit.title}
+
+
 
   - if @build.tags.any?
     .block
