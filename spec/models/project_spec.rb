@@ -1187,4 +1187,53 @@ describe Project, models: true do
       end
     end
   end
+
+  describe 'authorized_for_user' do
+    let(:group) { create(:group) }
+    let(:developer) { create(:user) }
+    let(:master) { create(:user) }
+    let(:personal_project) { create(:project, namespace: developer.namespace) }
+    let(:group_project) { create(:project, namespace: group) }
+    let(:members_project) { create(:project) }
+    let(:shared_project) { create(:project) }
+
+    before do
+      group.add_master(master)
+      group.add_developer(developer)
+
+      members_project.team << [developer, :developer]
+      members_project.team << [master, :master]
+
+      create(:project_group_link, project: shared_project, group: group)
+    end
+
+    it 'returns false for no user' do
+      expect(personal_project.authorized_for_user?(nil)).to be(false)
+    end
+
+    it 'returns true for personal projects of the user' do
+      expect(personal_project.authorized_for_user?(developer)).to be(true)
+    end
+
+    it 'returns true for projects of groups the user is a member of' do
+      expect(group_project.authorized_for_user?(developer)).to be(true)
+    end
+
+    it 'returns true for projects for which the user is a member of' do
+      expect(members_project.authorized_for_user?(developer)).to be(true)
+    end
+
+    it 'returns true for projects shared on a group the user is a member of' do
+      expect(shared_project.authorized_for_user?(developer)).to be(true)
+    end
+
+    it 'checks for the correct minimum level access' do
+      expect(group_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(group_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(members_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(members_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
+      expect(shared_project.authorized_for_user?(developer, Gitlab::Access::MASTER)).to be(false)
+      expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
+    end
+  end
 end
