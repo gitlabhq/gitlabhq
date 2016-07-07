@@ -1,5 +1,5 @@
 class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
   belongs_to :protected_branch
 
-  enum access_level: [:masters, :developers]
+  enum access_level: [:masters, :developers, :no_one]
 end
