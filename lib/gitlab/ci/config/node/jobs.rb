@@ -33,20 +33,14 @@ module Gitlab
 
           private
 
-          def create_node(key, essence)
-            fabricate_job(key, essence).tap do |job|
-              job.key = key
-              job.parent = self
-              job.description = "#{key} job definition."
-            end
-          end
+          def create_node(key, value)
+            node = key.to_s.start_with?('.') ? Node::HiddenJob : Node::Job
 
-          def fabricate_job(key, essence)
-            if key.to_s.start_with?('.')
-              Node::HiddenJob.new(essence)
-            else
-              Node::Job.new(essence)
-            end
+            attributes = { key: key,
+                           parent: self,
+                           description: "#{key} job definition." }
+
+            Node::Factory.fabricate(node, value, attributes)
           end
         end
       end

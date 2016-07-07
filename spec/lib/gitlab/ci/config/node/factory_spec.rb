@@ -5,6 +5,18 @@ describe Gitlab::Ci::Config::Node::Factory do
     let(:factory) { described_class.new(entry_class) }
     let(:entry_class) { Gitlab::Ci::Config::Node::Script }
 
+    describe '.fabricate' do
+      it 'fabricates entry with attributes set' do
+        fabricated = described_class
+          .fabricate(entry_class, ['ls'],
+                     parent: factory, key: :test)
+
+        expect(fabricated.parent).to be factory
+        expect(fabricated.key).to eq :test
+        expect(fabricated.value).to eq ['ls']
+      end
+    end
+
     context 'when setting up a value' do
       it 'creates entry with valid value' do
         entry = factory

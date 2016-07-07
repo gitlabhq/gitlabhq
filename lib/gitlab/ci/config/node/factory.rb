@@ -21,25 +21,29 @@ module Gitlab
           def create!
             raise InvalidFactory unless @attributes.has_key?(:value)
 
-            fabricate.tap do |entry|
-              entry.key = @attributes[:key]
-              entry.parent = @attributes[:parent]
-              entry.description = @attributes[:description]
-            end
-          end
-
-          private
-
-          def fabricate
             ##
             # We assume that unspecified entry is undefined.
             # See issue #18775.
             #
             if @attributes[:value].nil?
-              Node::Undefined.new(@node)
+              fabricate(Node::Undefined, @node)
             else
-              @node.new(@attributes[:value])
+              fabricate(@node, @attributes[:value])
             end
+          end
+
+          def self.fabricate(node, value, **attributes)
+            node.new(value).tap do |entry|
+              entry.key = attributes[:key]
+              entry.parent = attributes[:parent]
+              entry.description = attributes[:description]
+            end
+          end
+
+          private
+
+          def fabricate(node, value)
+            self.class.fabricate(node, value, @attributes)
           end
         end
       end

@@ -42,8 +42,8 @@ module Gitlab
           def initialize(config)
             return super unless config.is_a?(Hash)
 
-            jobs = config.except(*self.class.nodes.keys)
-            global = config.slice(*self.class.nodes.keys)
+            jobs = config.except(*nodes.keys)
+            global = config.slice(*nodes.keys)
 
             super(global.merge(jobs: jobs))
           end
