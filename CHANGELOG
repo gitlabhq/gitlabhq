@@ -535,6 +535,10 @@ v 8.9.7 (unreleased)
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects
+  - Added setting to set new users by default as external !4545 (Dravere)
+  - Add min value for project limit field on user's form !3622 (jastkand)
+  - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
+  - Render only commit message title in builds
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
