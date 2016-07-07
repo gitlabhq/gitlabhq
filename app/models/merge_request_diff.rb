@@ -39,7 +39,7 @@ class MergeRequestDiff < ActiveRecord::Base
     if options[:ignore_whitespace_change]
       @diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
-          self.repository.raw_repository,
+          repository.raw_repository,
           self.start_commit_sha || self.target_branch_sha,
           self.head_commit_sha || self.source_branch_sha,
         )
@@ -87,7 +87,7 @@ class MergeRequestDiff < ActiveRecord::Base
         merge_request.fetch_ref
 
         Gitlab::Git::Compare.new(
-          self.repository.raw_repository,
+          repository.raw_repository,
           self.target_branch_sha,
           self.source_branch_sha
         )
@@ -228,8 +228,8 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def keep_around_commits
-    self.repository.keep_around(target_branch_sha)
-    self.repository.keep_around(source_branch_sha)
-    self.repository.keep_around(branch_base_sha)
+    repository.keep_around(target_branch_sha)
+    repository.keep_around(source_branch_sha)
+    repository.keep_around(branch_base_sha)
   end
 end
