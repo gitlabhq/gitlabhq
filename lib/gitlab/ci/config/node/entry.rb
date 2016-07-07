@@ -20,12 +20,8 @@ module Gitlab
           end
 
           def process!
-            return if leaf?
-            return unless valid?
-
-            compose!
-            process_nodes!
-            @validator.validate(:processed)
+            compose! unless leaf?
+            @validator.validate(:processed) if valid?
           end
 
           def leaf?
@@ -90,12 +86,12 @@ module Gitlab
           private
 
           def compose!
+            return unless valid?
+
             nodes.each do |key, essence|
               @nodes[key] = create_node(key, essence)
             end
-          end
 
-          def process_nodes!
             @nodes.each_value(&:process!)
           end
 

@@ -27,10 +27,6 @@ module Gitlab
             @nodes.values.any?(&:relevant?)
           end
 
-          def leaf?
-            false
-          end
-
           private
 
           def create_node(key, value)
