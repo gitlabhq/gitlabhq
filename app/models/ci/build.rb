@@ -13,6 +13,7 @@ module Ci
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
+    scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -25,10 +26,6 @@ module Ci
     after_create :execute_hooks
 
     class << self
-      def last_month
-        where('created_at > ?', Date.today - 1.month)
-      end
-
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
