@@ -6,6 +6,9 @@
       = link_to user.name, [:admin, user]
     - if user.blocked?
       %span.label.label-danger blocked
+    - if user.note.present?
+      = link_to "#", { "data-toggle" => "tooltip", title: user.note, class: "user-note"} do
+        = icon("sticky-note-o cgrey")
     - if user.admin?
       %span.label.label-success Admin
     - if user.external?
