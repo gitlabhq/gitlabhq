@@ -9,7 +9,7 @@ describe DiffNote, models: true do
 
   let(:path) { "files/ruby/popen.rb" }
 
-  let(:position) do
+  let!(:position) do
     Gitlab::Diff::Position.new(
       old_path: path,
       new_path: path,
@@ -19,7 +19,7 @@ describe DiffNote, models: true do
     )
   end
 
-  let(:new_position) do
+  let!(:new_position) do
     Gitlab::Diff::Position.new(
       old_path: path,
       new_path: path,
@@ -129,56 +129,61 @@ describe DiffNote, models: true do
     end
   end
 
-  describe "#update_position" do
-    context "when noteable is a commit" do
-      subject { create(:diff_note_on_commit, project: project, position: position) }
+  describe "creation" do
+    describe "updating of position" do
+      context "when noteable is a commit" do
+        let(:diff_note) { create(:diff_note_on_commit, project: project, position: position) }
 
-      it "doesn't use the DiffPositionUpdateService" do
-        expect(Notes::DiffPositionUpdateService).not_to receive(:new)
-
-        subject.update_position
-      end
-
-      it "doesn't update the position" do
-        subject.update_position
-
-        expect(subject.original_position).to eq(position)
-        expect(subject.position).to eq(position)
-      end
-    end
-
-    context "when noteable is a merge request" do
-      context "when the note is active" do
         it "doesn't use the DiffPositionUpdateService" do
           expect(Notes::DiffPositionUpdateService).not_to receive(:new)
 
-          subject.update_position
+          diff_note
         end
 
         it "doesn't update the position" do
-          subject.update_position
+          diff_note
 
-          expect(subject.original_position).to eq(position)
-          expect(subject.position).to eq(position)
+          expect(diff_note.original_position).to eq(position)
+          expect(diff_note.position).to eq(position)
         end
       end
 
-      context "when the note is outdated" do
-        before do
-          allow(subject.noteable).to receive(:diff_refs).and_return(commit.diff_refs)
+      context "when noteable is a merge request" do
+        let(:diff_note) { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
+
+        context "when the note is active" do
+          it "doesn't use the DiffPositionUpdateService" do
+            expect(Notes::DiffPositionUpdateService).not_to receive(:new)
+
+            diff_note
+          end
+
+          it "doesn't update the position" do
+            diff_note
+
+            expect(diff_note.original_position).to eq(position)
+            expect(diff_note.position).to eq(position)
+          end
         end
 
-        it "uses the DiffPositionUpdateService" do
-          expect(Notes::DiffPositionUpdateService).to receive(:new).with(
-            project,
-            nil,
-            old_diff_refs: position.diff_refs,
-            new_diff_refs: commit.diff_refs,
-            paths: [path]
-          ).and_call_original
-          expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(subject)
+        context "when the note is outdated" do
+          before do
+            allow(merge_request).to receive(:diff_refs).and_return(commit.diff_refs)
+          end
 
-          subject.update_position
+          it "uses the DiffPositionUpdateService" do
+            service = instance_double("Notes::DiffPositionUpdateService")
+            expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+              project,
+              nil,
+              old_diff_refs: position.diff_refs,
+              new_diff_refs: commit.diff_refs,
+              paths: [path]
+            ).and_return(service)
+            expect(service).to receive(:execute)
+
+            diff_note
+          end
         end
       end
     end

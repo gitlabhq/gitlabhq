@@ -72,6 +72,20 @@ class DiffNote < Note
     self.position.diff_refs == diff_refs
   end
 
+  private
+
+  def supported?
+    !self.for_merge_request? || self.noteable.support_new_diff_notes?
+  end
+
+  def set_original_position
+    self.original_position = self.position.dup
+  end
+
+  def set_line_code
+    self.line_code = self.position.line_code(self.project.repository)
+  end
+
   def update_position
     return unless supported?
     return if for_commit?
@@ -85,25 +99,6 @@ class DiffNote < Note
       new_diff_refs: self.noteable.diff_refs,
       paths: self.position.paths
     ).execute(self)
-  end
-
-  def update_position!
-    update_position &&
-      Gitlab::Timeless.timeless(self, &:save)
-  end
-
-  private
-
-  def supported?
-    !self.for_merge_request? || self.noteable.support_new_diff_notes?
-  end
-
-  def set_original_position
-    self.original_position = self.position.dup
-  end
-
-  def set_line_code
-    self.line_code = self.position.line_code(self.project.repository)
   end
 
   def verify_supported
