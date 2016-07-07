@@ -122,6 +122,7 @@ class GitLabDropdownRemote
 
       # Fetch the data by calling the data funcfion
       @dataEndpoint "", (data) =>
+        console.log(data)
         if @options.success
           @options.success(data)
 
