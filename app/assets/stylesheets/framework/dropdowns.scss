@@ -23,6 +23,9 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
   }
 
   .dropdown-menu-toggle {

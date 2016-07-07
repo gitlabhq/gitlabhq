@@ -9,6 +9,7 @@ class CreateTagService < BaseService
     message.strip! if message
 
     new_tag = nil
+
     begin
       new_tag = repository.add_tag(current_user, tag_name, target, message)
     rescue Rugged::TagError
@@ -22,6 +23,7 @@ class CreateTagService < BaseService
         CreateReleaseService.new(@project, @current_user).
           execute(tag_name, release_description)
       end
+      
       success.merge(tag: new_tag)
     else
       error("Target #{target} is invalid")
