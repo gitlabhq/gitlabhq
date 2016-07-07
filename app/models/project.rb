@@ -425,8 +425,8 @@ class Project < ActiveRecord::Base
     container_registry_repository.tags.any?
   end
 
-  def commit(id = 'HEAD')
-    repository.commit(id)
+  def commit(ref = 'HEAD')
+    repository.commit(ref)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
