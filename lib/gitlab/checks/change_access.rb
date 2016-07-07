@@ -1,8 +1,7 @@
 module Gitlab
-  class GitAccess
-    class ChangeAccessCheck
+  module Checks
+    class ChangeAccess
       include PathLocksHelper
-
       attr_reader :user_access, :project
 
       def initialize(change, user_access:, project:)
@@ -81,7 +80,7 @@ module Gitlab
       end
 
       def forced_push?
-        Gitlab::ForcePushCheck.force_push?(@project, @oldrev, @newrev)
+        Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
       end
 
       def matching_merge_request?

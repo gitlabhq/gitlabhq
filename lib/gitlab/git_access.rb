@@ -111,7 +111,7 @@ module Gitlab
     end
 
     def change_access_check(change)
-      ChangeAccessCheck.new(change, user_access: user_access, project: project).exec
+      Checks::ChangeAccess.new(change, user_access: user_access, project: project).exec
     end
 
     def forced_push?(oldrev, newrev)
