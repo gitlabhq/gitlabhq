@@ -84,10 +84,10 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
+    t.boolean  "user_default_external",                 default: false,       null: false
   end
 
   create_table "audit_events", force: :cascade do |t|

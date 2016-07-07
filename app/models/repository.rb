@@ -125,6 +125,11 @@ class Repository
     commits
   end
 
+  def find_similar_branches(search)
+    raw_repository.branches.select { |branch| branch.name.include?(search) }
+
+  end
+
   def find_branch(name)
     raw_repository.branches.find { |branch| branch.name == name }
   end
@@ -606,6 +611,8 @@ class Repository
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
+    when 'name'
+      branches.sort_by(&:name)
     when 'recently_updated'
       branches.sort do |a, b|
         commit(b.target).committed_date <=> commit(a.target).committed_date

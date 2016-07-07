@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
   - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
+  - User can now filter branches by name on /branches page. !5144 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refresh the branch cache after `git gc` runs
