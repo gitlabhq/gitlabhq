@@ -5,11 +5,19 @@ class ProtectedBranch < ActiveRecord::Base
   validates :name, presence: true
   validates :project, presence: true
 
-  has_one :merge_access_level
-  has_one :push_access_level
+  has_one :merge_access_level, dependent: :destroy
+  has_one :push_access_level, dependent: :destroy
 
   def commit
     project.commit(self.name)
+  end
+
+  def developers_can_push
+    self.push_access_level && self.push_access_level.developers?
+  end
+
+  def developers_can_merge
+    self.merge_access_level && self.merge_access_level.developers?
   end
 
   # Returns all protected branches that match the given branch name.

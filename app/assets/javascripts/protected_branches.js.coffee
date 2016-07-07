@@ -3,7 +3,7 @@ $ ->
     name = $(this).attr("name")
     if name == "developers_can_push" || name == "developers_can_merge"
       id = $(this).val()
-      can_push = $(this).is(":checked")
+      can_push = if $(this).is(":checked") then "1" else "0"
       url = $(this).data("url")
       $.ajax
         type: "PATCH"

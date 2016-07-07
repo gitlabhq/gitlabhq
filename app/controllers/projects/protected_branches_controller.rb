@@ -3,19 +3,23 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_admin_project!
   before_action :load_protected_branch, only: [:show, :update, :destroy]
+  before_action :load_protected_branches, only: [:index, :create]
 
   layout "project_settings"
 
   def index
-    @protected_branches = @project.protected_branches.order(:name).page(params[:page])
     @protected_branch = @project.protected_branches.new
     gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } })
   end
 
   def create
-    @project.protected_branches.create(protected_branch_params)
-    redirect_to namespace_project_protected_branches_path(@project.namespace,
-                                                          @project)
+    service = ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params)
+    if service.execute
+      redirect_to namespace_project_protected_branches_path(@project.namespace, @project)
+    else
+      @protected_branch = service.protected_branch
+      render :index
+    end
   end
 
   def show
@@ -23,13 +27,15 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def update
-    if @protected_branch && @protected_branch.update_attributes(protected_branch_params)
+    service = ProtectedBranches::UpdateService.new(@project, current_user, params[:id], protected_branch_params)
+
+    if service.execute
       respond_to do |format|
-        format.json { render json: @protected_branch, status: :ok }
+        format.json { render json: service.protected_branch, status: :ok }
       end
     else
       respond_to do |format|
-        format.json { render json: @protected_branch.errors, status: :unprocessable_entity }
+        format.json { render json: service.protected_branch.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -51,5 +57,9 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def protected_branch_params
     params.require(:protected_branch).permit(:name, :developers_can_push, :developers_can_merge)
+  end
+
+  def load_protected_branches
+    @protected_branches = @project.protected_branches.order(:name).page(params[:page])
   end
 end
