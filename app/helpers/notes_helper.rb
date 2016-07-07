@@ -45,7 +45,7 @@ module NotesHelper
     # tab, would show in different discussions on the discussion tab.
     use_legacy_diff_note ||= begin
       line_diff_notes = @grouped_diff_notes[line_code]
-      @use_legacy_diff_notes = line_diff_notes && line_diff_notes.any?(&:legacy_diff_note?)
+      line_diff_notes && line_diff_notes.any?(&:legacy_diff_note?)
     end
 
     data = {
