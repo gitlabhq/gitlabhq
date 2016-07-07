@@ -56,7 +56,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, ->{ includes(:author) }
   scope :inc_author_project_award_emoji, ->{ includes(:project, :author, :award_emoji) }
 
-  scope :legacy_diff_notes, ->{ where(type: 'LegacyDiffNote') }
+  scope :diff_notes, ->{ where(type: ['LegacyDiffNote', 'DiffNote']) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
@@ -82,7 +82,7 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_notes
-      legacy_diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
+      diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
     end
 
     # Searches for notes matching the given query.
@@ -112,6 +112,10 @@ class Note < ActiveRecord::Base
   end
 
   def legacy_diff_note?
+    false
+  end
+
+  def new_diff_note?
     false
   end
 
@@ -193,7 +197,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji?
-    award_emoji_supported? && contains_emoji_only?
+    can_be_award_emoji? && contains_emoji_only?
   end
 
   def emoji_awardable?
@@ -204,7 +208,7 @@ class Note < ActiveRecord::Base
     self.line_code = nil if self.line_code.blank?
   end
 
-  def award_emoji_supported?
+  def can_be_award_emoji?
     noteable.is_a?(Awardable)
   end
 

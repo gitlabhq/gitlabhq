@@ -240,12 +240,16 @@ class @Notes
 
     @note_ids.push(note.id)
     form = $("#new-discussion-note-form-#{note.discussion_id}")
+    if note.original_discussion_id? and form.length is 0
+      form = $("#new-discussion-note-form-#{note.original_discussion_id}")
     row = form.closest("tr")
     note_html = $(note.html)
     note_html.syntaxHighlight()
 
     # is this the first note of discussion?
     discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']")
+    if note.original_discussion_id? and discussionContainer.length is 0
+      discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']")
     if discussionContainer.length is 0
       # insert the note and the reply button after the temp row
       row.after note.discussion_html
@@ -318,6 +322,7 @@ class @Notes
     form.addClass "js-main-target-form"
 
     form.find("#note_line_code").remove()
+    form.find("#note_position").remove()
     form.find("#note_type").remove()
 
   ###
@@ -335,10 +340,12 @@ class @Notes
 
     new Autosave textarea, [
       "Note"
-      form.find("#note_commit_id").val()
-      form.find("#note_line_code").val()
       form.find("#note_noteable_type").val()
       form.find("#note_noteable_id").val()
+      form.find("#note_commit_id").val()
+      form.find("#note_type").val()
+      form.find("#note_line_code").val()
+      form.find("#note_position").val()
     ]
 
   ###
@@ -512,10 +519,12 @@ class @Notes
   setupDiscussionNoteForm: (dataHolder, form) =>
     # setup note target
     form.attr 'id', "new-discussion-note-form-#{dataHolder.data("discussionId")}"
+    form.attr "data-line-code", dataHolder.data("lineCode")
     form.find("#note_type").val dataHolder.data("noteType")
     form.find("#line_type").val dataHolder.data("lineType")
     form.find("#note_commit_id").val dataHolder.data("commitId")
     form.find("#note_line_code").val dataHolder.data("lineCode")
+    form.find("#note_position").val dataHolder.attr("data-position")
     form.find("#note_noteable_type").val dataHolder.data("noteableType")
     form.find("#note_noteable_id").val dataHolder.data("noteableId")
     form.find('.js-note-discard')

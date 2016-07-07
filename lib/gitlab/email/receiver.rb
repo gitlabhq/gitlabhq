@@ -104,15 +104,7 @@ module Gitlab
       end
 
       def create_note(reply)
-        Notes::CreateService.new(
-          sent_notification.project,
-          sent_notification.recipient,
-          note:           reply,
-          noteable_type:  sent_notification.noteable_type,
-          noteable_id:    sent_notification.noteable_id,
-          commit_id:      sent_notification.commit_id,
-          line_code:      sent_notification.line_code
-        ).execute
+        sent_notification.create_note(reply)
       end
     end
   end
