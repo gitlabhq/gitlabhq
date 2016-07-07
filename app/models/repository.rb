@@ -127,7 +127,6 @@ class Repository
 
   def find_similar_branches(search)
     raw_repository.branches.select { |branch| branch.name.include?(search) }
-
   end
 
   def find_branch(name)
