@@ -13,6 +13,7 @@ v 8.10.0 (unreleased)
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
   - Make images fit to the size of the viewport !4810
+  - Fixed misplaced mirror repository button on tags page
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
   - Add Spring EmojiOne updates.
