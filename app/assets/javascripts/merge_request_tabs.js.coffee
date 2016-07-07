@@ -163,7 +163,7 @@ class @MergeRequestTabs
         @diffsLoaded = true
         @scrollToElement("#diffs")
         @highlighSelectedLine()
-        @filesCommentButton = new FilesCommentButton($('.files'))
+        @filesCommentButton = $('.files .diff-file').filesCommentButton()
 
         $(document)
           .off 'click', '.diff-line-num a'
