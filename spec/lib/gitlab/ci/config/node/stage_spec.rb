@@ -1,11 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Stage do
-  let(:entry) { described_class.new(config) }
+  let(:entry) { described_class.new(config, global: global) }
+  let(:global) { spy('Global') }
 
   describe 'validations' do
     context 'when entry config value is correct' do
-      let(:config) { :stage1 }
+      let(:config) { :build }
 
       describe '#value' do
         it 'returns a stage key' do
@@ -18,20 +19,32 @@ describe Gitlab::Ci::Config::Node::Stage do
           expect(entry).to be_valid
         end
       end
+    end
 
-      context 'when entry config is incorrect' do
-        let(:config) { { test: true } }
+    context 'when entry config is incorrect' do
+      describe '#errors' do
+        context 'when reference to global node is not set' do
+          let(:entry) { described_class.new(config) }
 
-        describe '#errors' do
-          it 'reports errors' do
+          it 'raises error' do
+            expect { entry }
+              .to raise_error Gitlab::Ci::Config::Node::Entry::InvalidError
+          end
+        end
+
+        context 'when value has a wrong type' do
+          let(:config) { { test: true } }
+
+          it 'reports errors about wrong type' do
             expect(entry.errors)
               .to include 'stage config should be a string or symbol'
           end
         end
 
-        describe '#valid?' do
-          it 'is not valid' do
-            expect(entry).not_to be_valid
+        context 'when stage is not present in global configuration' do
+          pending 'reports error about missing stage' do
+            expect(entry.errors)
+              .to include 'stage config should be one of test, stage'
           end
         end
       end
