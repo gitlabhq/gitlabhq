@@ -1,14 +1,15 @@
 - status = pipeline.status
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: "ci-status ci-#{status}" do
-      = ci_icon_for_status(status)
-      %strong ##{pipeline.id}
+    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
+      = ci_status_with_icon(status)
+
 
   %td
     %div.branch-commit
+      %span ##{pipeline.id}
       - if pipeline.ref
-        = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace"
+        = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace branch-name"
         &middot;
       = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: "commit-id monospace"
       &nbsp;

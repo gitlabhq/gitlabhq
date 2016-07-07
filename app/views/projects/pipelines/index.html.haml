@@ -45,13 +45,13 @@
       .table-holder
         %table.table.builds
           %tbody
-            %th ID
+            %th Status
             %th Commit
             - stages.each do |stage|
               %th.stage
                 %span.has-tooltip{ title: "#{stage.titleize}" }
                   = stage.titleize
-            %th Duration
+            %%th
             %th
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 
