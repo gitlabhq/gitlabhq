@@ -98,9 +98,12 @@
   }
 }
 
-table.abuse-reports tbody tr td {
-  vertical-align: top;
-  &:nth-child(5) {
-    min-width: 220px;
+.abuse-reports {
+  table-layout: fixed;
+  td {
+    vertical-align: top !important;
+    &.action-buttons a {
+      white-space: normal;
+    }
   }
 }
