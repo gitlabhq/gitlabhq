@@ -26,7 +26,9 @@ module Gitlab
           private
 
           def create_node(key, factory)
-            factory.with(value: @config[key], key: key, parent: self)
+            factory
+              .value(config[key])
+              .with(key: key, parent: self, global: global)
 
             factory.create!
           end

@@ -19,7 +19,7 @@ module Gitlab
             validates :config, type: Class
           end
 
-          def initialize(node)
+          def initialize(node, **attributes)
             super
             @strategy = create_strategy(node, node.default)
           end
@@ -34,9 +34,7 @@ module Gitlab
             if default.nil?
               Undefined::NullStrategy.new
             else
-              entry = Node::Factory
-                .fabricate(node, default, attributes)
-
+              entry = node.new(default, attributes)
               Undefined::DefaultStrategy.new(entry)
             end
           end

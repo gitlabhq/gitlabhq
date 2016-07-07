@@ -30,13 +30,13 @@ module Gitlab
           private
 
           def create_node(key, value)
-            node = key.to_s.start_with?('.') ? Node::HiddenJob : Node::Job
+            job_node = key.to_s.start_with?('.') ? Node::HiddenJob : Node::Job
 
-            attributes = { key: key,
-                           parent: self,
-                           description: "#{key} job definition." }
+            job_attributes = { key: key,
+                               parent: self,
+                               description: "#{key} job definition." }
 
-            Node::Factory.fabricate(node, value, attributes)
+            job_node.new(value, attributes.merge(job_attributes))
           end
         end
       end

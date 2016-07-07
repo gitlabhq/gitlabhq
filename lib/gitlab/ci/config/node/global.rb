@@ -51,6 +51,10 @@ module Gitlab
           def stages
             stages_defined? ? stages_value : types_value
           end
+
+          def global
+            self
+          end
         end
       end
     end

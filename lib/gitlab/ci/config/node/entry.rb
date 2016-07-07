@@ -8,12 +8,16 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
-          attr_reader :config
-          attr_accessor :key, :parent, :description
+          attr_reader :config, :attributes
+          attr_accessor :key, :parent, :global, :description
 
-          def initialize(config)
+          def initialize(config, **attributes)
             @config = config
             @nodes = {}
+
+            (@attributes = attributes).each do |attribute, value|
+              public_send("#{attribute}=", value)
+            end
 
             @validator = self.class.validator.new(self)
             @validator.validate
@@ -66,10 +70,6 @@ module Gitlab
 
           def relevant?
             true
-          end
-
-          def attributes
-            { key: @key, parent: @parent, description: @description }
           end
 
           def self.default

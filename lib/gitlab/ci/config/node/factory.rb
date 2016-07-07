@@ -13,37 +13,28 @@ module Gitlab
             @attributes = {}
           end
 
+          def value(value)
+            @value = value
+            self
+          end
+
           def with(attributes)
             @attributes.merge!(attributes)
             self
           end
 
           def create!
-            raise InvalidFactory unless @attributes.has_key?(:value)
+            raise InvalidFactory unless defined?(@value)
 
             ##
             # We assume that unspecified entry is undefined.
             # See issue #18775.
             #
-            if @attributes[:value].nil?
-              fabricate(Node::Undefined, @node)
+            if @value.nil?
+              Node::Undefined.new(@node, @attributes)
             else
-              fabricate(@node, @attributes[:value])
+              @node.new(@value, @attributes)
             end
-          end
-
-          def self.fabricate(node, value, **attributes)
-            node.new(value).tap do |entry|
-              entry.key = attributes[:key]
-              entry.parent = attributes[:parent]
-              entry.description = attributes[:description]
-            end
-          end
-
-          private
-
-          def fabricate(node, value)
-            self.class.fabricate(node, value, @attributes)
           end
         end
       end
