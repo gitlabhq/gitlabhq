@@ -25,14 +25,15 @@ module NotesHelper
   end
 
   def diff_view_data
-    return {} unless defined?(@comments_target) && @comments_target.any?
+    return {} unless @comments_target
 
     @comments_target.slice(:noteable_id, :noteable_type, :commit_id)
   end
 
-  def use_legacy_diff_notes?(line_code)
-    return @use_legacy_diff_notes if defined?(@use_legacy_diff_notes)
+  def diff_view_line_data(line_code, position, line_type)
+    return if @diff_notes_disabled
 
+    use_legacy_diff_note = @use_legacy_diff_notes
     # If the controller doesn't force the use of legacy diff notes, we
     # determine this on a line-by-line basis by seeing if there already exist
     # active legacy diff notes at this line, in which case newly created notes
@@ -42,36 +43,42 @@ module NotesHelper
     # are incompatible.
     # If we didn't, diff notes that would show for the same line on the changes
     # tab, would show in different discussions on the discussion tab.
-    line_diff_notes = @grouped_diff_notes[line_code]
-    @use_legacy_diff_notes = line_diff_notes && line_diff_notes.any?(&:legacy_diff_note?)
-  end
+    use_legacy_diff_note ||= begin
+      line_diff_notes = @grouped_diff_notes[line_code]
+      @use_legacy_diff_notes = line_diff_notes && line_diff_notes.any?(&:legacy_diff_note?)
+    end
 
-  def diff_view_line_data(line_code, position, line_type)
-    return if @diff_notes_disabled
-
-    {
+    data = {
       line_code: line_code,
-      position:  position.to_json,
       line_type: line_type,
-      note_type: (use_legacy_diff_notes?(line_code) ? LegacyDiffNote.name : DiffNote.name),
-      discussion_id: discussion_id(line_code, position)
     }
-  end
 
-  def discussion_id(line_code, position)
-    if use_legacy_diff_notes?(line_code)
-      LegacyDiffNote.build_discussion_id(
+    if use_legacy_diff_note
+      discussion_id = LegacyDiffNote.build_discussion_id(
         @comments_target[:noteable_type],
         @comments_target[:noteable_id] || @comments_target[:commit_id],
         line_code
       )
+
+      data.merge!(
+        note_type: LegacyDiffNote.name,
+        discussion_id: discussion_id
+      )
     else
       discussion_id = DiffNote.build_discussion_id(
-         @comments_target[:noteable_type],
-         @comments_target[:noteable_id] || @comments_target[:commit_id],
-         position
-       )
+        @comments_target[:noteable_type],
+        @comments_target[:noteable_id] || @comments_target[:commit_id],
+        position
+      )
+
+      data.merge!(
+        position: position.to_json,
+        note_type: DiffNote.name,
+        discussion_id: discussion_id
+      )
     end
+
+    data
   end
 
   def link_to_reply_discussion(note, line_type = nil)
