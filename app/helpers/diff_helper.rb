@@ -30,12 +30,8 @@ module DiffHelper
     options
   end
 
-  def safe_diff_files(diffs, diff_refs)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs) }
-  end
-
-  def generate_line_code(file_path, line)
-    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
+    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
   end
 
   def unfold_bottom_class(bottom)
@@ -93,6 +89,8 @@ module DiffHelper
   end
 
   def commit_for_diff(diff_file)
+    return diff_file.content_commit if diff_file.content_commit
+    
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else
@@ -100,10 +98,11 @@ module DiffHelper
     end
   end
 
-  def diff_file_html_data(project, diff_commit, diff_file)
+  def diff_file_html_data(project, diff_file)
+    commit = commit_for_diff(diff_file)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
-                                                       tree_join(diff_commit.id, diff_file.file_path))
+                                                       tree_join(commit.id, diff_file.file_path))
     }
   end
 

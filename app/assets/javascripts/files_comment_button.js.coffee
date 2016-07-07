@@ -6,7 +6,6 @@ class @FilesCommentButton
     @COMMENT_BUTTON_CLASS = '.add-diff-note'
     @COMMENT_BUTTON_TEMPLATE = _.template '<button name="button" type="submit" class="btn <%- COMMENT_BUTTON_CLASS %> js-add-diff-note-button" title="Add a comment to this line"><i class="fa fa-comment-o"></i></button>'
 
-    @LINE_HOLDER_CLASS = '.line_holder'
     @LINE_NUMBER_CLASS = 'diff-line-num'
     @LINE_CONTENT_CLASS = 'line_content'
     @UNFOLDABLE_LINE_CLASS = 'js-unfold'
@@ -33,20 +32,20 @@ class @FilesCommentButton
   render: (e) ->
     currentTarget = $(e.currentTarget)
     textFileElement = @getTextFileElement(currentTarget)
-    lineHolderElement = @getLineHolder(currentTarget)
     lineContentElement = @getLineContent(currentTarget)
     buttonParentElement = @getButtonParent(currentTarget)
 
     return unless @shouldRender e, buttonParentElement
 
     buttonParentElement.append @buildButton
-      commit_id: textFileElement.attr 'data-commit-id'
-      discussion_id: lineContentElement.attr('data-discussion-id') or lineHolderElement.attr('data-discussion-id')
-      line_code: lineContentElement.attr('data-line-code') or lineHolderElement.attr('id')
-      line_type: lineContentElement.attr 'data-line-type'
-      note_type: textFileElement.attr 'data-note-type'
-      noteable_id: textFileElement.attr 'data-noteable-id'
       noteable_type: textFileElement.attr 'data-noteable-type'
+      noteable_id: textFileElement.attr 'data-noteable-id'
+      commit_id: textFileElement.attr 'data-commit-id'
+      note_type: lineContentElement.attr 'data-note-type'
+      position: lineContentElement.attr 'data-position'
+      line_type: lineContentElement.attr 'data-line-type'
+      discussion_id: lineContentElement.attr 'data-discussion-id'
+      line_code: lineContentElement.attr 'data-line-code'
     return
 
   destroy: (e) =>
@@ -58,20 +57,17 @@ class @FilesCommentButton
     initializedButtonTemplate = @COMMENT_BUTTON_TEMPLATE
       COMMENT_BUTTON_CLASS: @COMMENT_BUTTON_CLASS.substr 1
     $(initializedButtonTemplate).attr
+      'data-noteable-type': buttonAttributes.noteable_type
       'data-noteable-id': buttonAttributes.noteable_id
       'data-commit-id': buttonAttributes.commit_id
-      'data-discussion-id': buttonAttributes.discussion_id
-      'data-noteable-type': buttonAttributes.noteable_type
-      'data-line-type': buttonAttributes.line_type
       'data-note-type': buttonAttributes.note_type
       'data-line-code': buttonAttributes.line_code
+      'data-position': buttonAttributes.position
+      'data-discussion-id': buttonAttributes.discussion_id
+      'data-line-type': buttonAttributes.line_type
 
   getTextFileElement: (hoveredElement) ->
     $(hoveredElement.closest(@TEXT_FILE_SELECTOR))
-
-  getLineHolder: (hoveredElement) ->
-    return hoveredElement if hoveredElement.hasClass @LINE_HOLDER_CLASS
-    $(hoveredElement.parent())
 
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass @LINE_CONTENT_CLASS

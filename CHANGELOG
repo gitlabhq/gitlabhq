@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
+  - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
@@ -15,10 +16,13 @@ v 8.10.0 (unreleased)
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+  - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Fix viewing notification settings when a project is pending deletion
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Updated project header design
   - Exclude email check from the standard health check
+  - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
@@ -28,7 +32,9 @@ v 8.10.0 (unreleased)
   - Reduce size of HTML used by diff comment forms
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - PipelinesFinder uses git cache data
+  - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
+  - Show last push widget in upstream after push to fork
   - Don't instantiate a git tree on Projects show default view
   - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
@@ -39,20 +45,30 @@ v 8.10.0 (unreleased)
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Set import_url validation to be more strict
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
+  - Allow '?', or '&' for label names
+  - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
+  - Add date when user joined the team on the member page
+  - Fix 404 redirect after validation fails importing a GitLab project
 
-v 8.9.5 (unreleased)
+v 8.9.5
+  - Add more debug info to import/export and memory killer. !5108
+  - Fixed avatar alignment in new MR view. !5095
+  - Fix diff comments not showing up in activity feed. !5069
+  - Add index on both Award Emoji user and name. !5061
+  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq. !5056
+  - Re-enable import button when import process fails due to namespace already being taken. !5053
+  - Fix snippets comments not displayed. !5045
+  - Fix emoji paths in relative root configurations. !5027
+  - Fix issues importing events in Import/Export. !4987
+  - Fixed 'use shortcuts' button on docs. !4979
+  - Admin should be able to turn shared runners into specific ones. !4961
+  - Update RedCloth to 4.3.2 for CVE-2012-6684. !4929 (Takuya Noguchi)
   - Improve the request / withdraw access button. !4860
-  - Fix assigning shared runners as admins. !4961
-  - Show "locked" label for locked runners on runners admin. !4961
-  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq
-  - Add index on the user and emoji name on AwardEmoji table !5061
-  - Fixes issues importing events in Import/Export. Import/Export version bumped to 0.1.1
-  - Fix import button disabled when import process fail due to the namespace already been taken.
-  - Security: Update RedCloth to 4.3.2 (Takuya Noguchi)
 
 v 8.9.4
   - Fix privilege escalation issue with OAuth external users.

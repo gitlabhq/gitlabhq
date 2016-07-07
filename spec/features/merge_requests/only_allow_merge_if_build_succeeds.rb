@@ -19,7 +19,7 @@ feature 'Only allow merge requests to be merged if the build succeeds', feature:
   end
 
   context 'when project has CI enabled' do
-    let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch) }
+    let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch) }
 
     context 'when merge requests can only be merged if the build succeeds' do
       before do

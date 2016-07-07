@@ -190,7 +190,7 @@ GitLab.GfmAutoComplete =
       callbacks:
         beforeSave: (merges) ->
           sanitizeLabelTitle = (title)->
-            if /\w+\s+\w+/g.test(title)
+            if /[\w\?&]+\s+[\w\?&]+/g.test(title)
               "\"#{sanitize(title)}\""
             else
               sanitize(title)

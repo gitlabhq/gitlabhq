@@ -38,4 +38,21 @@ RSpec.describe NotificationSetting, type: :model do
       end
     end
   end
+
+  describe '#for_projects' do
+    let(:user) { create(:user) }
+
+    before do
+      1.upto(4) do |i|
+        setting = create(:notification_setting, user: user)
+
+        setting.project.update_attributes(pending_delete: true) if i.even?
+      end
+    end
+
+    it 'excludes projects pending delete' do
+      expect(user.notification_settings.for_projects).to all(have_attributes(project: an_instance_of(Project)))
+      expect(user.notification_settings.for_projects.map(&:project)).to all(have_attributes(pending_delete: false))
+    end
+  end
 end

@@ -137,6 +137,15 @@ ul.content-list {
       padding-top: 1px;
       float: right;
 
+      > .control-text {
+        margin-right: $gl-padding-top;
+        line-height: 40px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
       > .btn,
       > .btn-group {
         margin-right: $gl-padding-top;

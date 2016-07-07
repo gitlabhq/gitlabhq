@@ -17,6 +17,7 @@ module Gitlab
           Rails.logger.info("Saved project export #{archive_file}")
           archive_file
         else
+          @shared.error(Gitlab::ImportExport::Error.new("Unable to save #{archive_file} into #{@shared.export_path}"))
           false
         end
       rescue => e

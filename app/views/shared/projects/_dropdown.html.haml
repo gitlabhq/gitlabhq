@@ -1,31 +1,30 @@
 - @sort ||= sort_value_recently_updated
 - personal = params[:personal]
 - archived = params[:archived]
+- namespace_id = params[:namespace_id]
 .dropdown.inline
-  %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-    %span.light
-      = projects_sort_options_hash[@sort]
-    %b.caret
+  - toggle_text = projects_sort_options_hash[@sort]
+  = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { id: 'sort-projects-dropdown' })
   %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
     %li.dropdown-header
       Sort by
     - projects_sort_options_hash.each do |value, title|
       %li
-        = link_to filter_projects_path(sort: value, archived: archived, personal: personal), class: ("is-active" if @sort == value) do
+        = link_to filter_projects_path(namespace_id: namespace_id, sort: value, archived: archived, personal: personal), class: ("is-active" if @sort == value) do
           = title
 
     %li.divider
     %li
-      = link_to filter_projects_path(sort: @sort, archived: nil), class: ("is-active" unless params[:archived].present?) do
+      = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, archived: nil), class: ("is-active" unless params[:archived].present?) do
         Hide archived projects
     %li
-      = link_to filter_projects_path(sort: @sort, archived: true), class: ("is-active" if params[:archived].present?) do
+      = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, archived: true), class: ("is-active" if params[:archived].present?) do
         Show archived projects
     - if current_user
       %li.divider
       %li
-        = link_to filter_projects_path(sort: @sort, personal: nil), class: ("is-active" unless personal) do
+        = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, personal: nil), class: ("is-active" unless personal.present?) do
           Owned by anyone
       %li
-        = link_to filter_projects_path(sort: @sort, personal: true), class: ("is-active" if personal) do
+        = link_to filter_projects_path(namespace_id: namespace_id, sort: @sort, personal: true), class: ("is-active" if personal.present?) do
           Owned by me

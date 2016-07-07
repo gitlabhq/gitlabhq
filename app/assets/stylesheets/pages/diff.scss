@@ -434,13 +434,3 @@
     }
   }
 }
-
-.discussion {
-  .diff-content {
-    .diff-line-num {
-      &:before {
-        content: attr(data-linenumber);
-      }
-    }
-  }
-}

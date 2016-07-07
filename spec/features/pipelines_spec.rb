@@ -123,7 +123,7 @@ describe "Pipelines" do
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
     it 'showing a list of builds' do
-      expect(page).to have_content('Tests')
+      expect(page).to have_content('Test')
       expect(page).to have_content(@success.id)
       expect(page).to have_content('Deploy')
       expect(page).to have_content(@failed.id)

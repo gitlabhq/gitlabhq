@@ -153,6 +153,7 @@ class NotificationService
       else
         mentioned_users
       end
+
     recipients = recipients.concat(participants)
 
     # Merge project watchers
@@ -176,6 +177,7 @@ class NotificationService
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
     end

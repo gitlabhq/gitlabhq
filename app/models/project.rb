@@ -162,9 +162,7 @@ class Project < ActiveRecord::Base
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-  validates :import_url,
-    url: { protocols: %w(ssh git http https) },
-    if: :external_import?
+  validates :import_url, addressable_url: true, if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -463,6 +461,8 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
+    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+
     import_url = Gitlab::UrlSanitizer.new(value)
     create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)

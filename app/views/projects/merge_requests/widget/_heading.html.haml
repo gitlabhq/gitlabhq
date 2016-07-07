@@ -7,7 +7,7 @@
           CI build
           = ci_label_for_status(status)
         for
-        - commit = @merge_request.last_commit
+        - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
         %span.ci-coverage
@@ -24,7 +24,7 @@
           CI build
           = ci_label_for_status(status)
         for
-        - commit = @merge_request.last_commit
+        - commit = @merge_request.diff_head_commit
         = succeed "." do
           = link_to commit.short_id, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, commit), class: "monospace"
         %span.ci-coverage
@@ -33,11 +33,11 @@
 
     .ci_widget
       = icon("spinner spin")
-      Checking CI status for #{@merge_request.last_commit_short_sha}&hellip;
+      Checking CI status for #{@merge_request.diff_head_commit.short_id}&hellip;
 
     .ci_widget.ci-not_found{style: "display:none"}
       = icon("times-circle")
-      Could not find CI status for #{@merge_request.last_commit_short_sha}.
+      Could not find CI status for #{@merge_request.diff_head_commit.short_id}.
 
     .ci_widget.ci-error{style: "display:none"}
       = icon("times-circle")

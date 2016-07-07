@@ -23,6 +23,9 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     display: block;
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
   }
 
   .dropdown-menu-toggle {
@@ -64,6 +67,10 @@
     .fa {
       color: $dropdown-toggle-hover-icon-color;
     }
+  }
+
+  &.large {
+    width: 200px;
   }
 }
 

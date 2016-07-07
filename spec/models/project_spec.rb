@@ -129,6 +129,18 @@ describe Project, models: true do
         expect(project2.errors[:repository_storage].first).to match(/is not included in the list/)
       end
     end
+
+    it 'should not allow an invalid URI as import_url' do
+      project2 = build(:project, import_url: 'invalid://')
+
+      expect(project2).not_to be_valid
+    end
+
+    it 'should allow a valid URI as import_url' do
+      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+
+      expect(project2).to be_valid
+    end
   end
 
   describe 'default_scope' do
@@ -300,7 +312,7 @@ describe Project, models: true do
     it 'should update merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
-      expect(merge_request.last_commit.id).to eq(commit_id)
+      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 

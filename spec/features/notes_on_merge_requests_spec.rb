@@ -166,12 +166,14 @@ describe 'Comments', feature: true do
           click_diff_line
 
           is_expected.
-            to have_css("tr[id='#{line_code}'] + .js-temp-notes-holder form",
+            to have_css("form[data-line-code='#{line_code}']",
                         count: 1)
         end
 
         it 'should be removed when canceled' do
-          page.within(".diff-file form[id$='#{line_code}-true']") do
+          is_expected.to have_css('.js-temp-notes-holder')
+
+          page.within("form[data-line-code='#{line_code}']") do
             find('.js-close-discussion-note-form').trigger('click')
           end
 
