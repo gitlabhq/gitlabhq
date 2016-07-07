@@ -55,7 +55,7 @@
 
       .cgray
         - if member.request?
-          – Requested
+          Requested
           = time_ago_with_tooltip(member.requested_at)
         - else
           Joined #{time_ago_with_tooltip(member.created_at)}
