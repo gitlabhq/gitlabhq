@@ -6,16 +6,15 @@ describe "Admin::AbuseReports", feature: true, js: true  do
   context 'as an admin' do
     describe 'if a user has been reported for abuse' do
       before do
-        admin = create(:admin)
         create(:abuse_report, user: user)
-        login_as admin
+        login_as :admin
       end
 
       describe 'in the abuse report view' do
         it "should present a link to the user's profile" do
           visit admin_abuse_reports_path
 
-          expect(page).to have_selector '#abuser_profile_path'
+          expect(page).to have_link user.name, href: user_path(user)
         end
       end
 
@@ -23,7 +22,7 @@ describe "Admin::AbuseReports", feature: true, js: true  do
         it 'should show a link to the admin view of the user' do
           visit user_path(user)
 
-          expect(page).to have_selector '#admin_user_path'
+          expect(page).to have_link '', href: admin_user_path(user)
         end
       end
     end

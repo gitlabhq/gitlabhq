@@ -3,7 +3,7 @@
 %tr
   %td
     - if user
-      = link_to user.name, user, id: 'abuser_profile_path'
+      = link_to user.name, user
       .light.small
         Joined #{time_ago_with_tooltip(user.created_at)}
     - else
