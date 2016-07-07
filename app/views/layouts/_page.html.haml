@@ -8,11 +8,6 @@
     - else
       = render 'layouts/nav/explore'
 
-    - if current_user
-      = link_to current_user, class: 'sidebar-user', title: "Profile", data: {user: current_user.username} do
-        = image_tag avatar_icon(current_user, 60), alt: 'Profile', class: 'avatar avatar s36'
-        .username
-          = current_user.username
     = link_to '#', class: "nav-header-btn text-center pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: {placement: 'right', container: 'body'} do
       %span.sr-only Toggle navigation pinning
       = icon('thumb-tack')

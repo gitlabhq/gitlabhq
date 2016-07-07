@@ -32,21 +32,20 @@ describe Label, models: true do
 
     it 'should validate title' do
       expect(label).not_to allow_value('G,ITLAB').for(:title)
-      expect(label).not_to allow_value('G?ITLAB').for(:title)
-      expect(label).not_to allow_value('G&ITLAB').for(:title)
       expect(label).not_to allow_value('').for(:title)
 
       expect(label).to allow_value('GITLAB').for(:title)
       expect(label).to allow_value('gitlab').for(:title)
+      expect(label).to allow_value('G?ITLAB').for(:title)
+      expect(label).to allow_value('G&ITLAB').for(:title)
       expect(label).to allow_value("customer's request").for(:title)
     end
   end
 
-  describe "#title" do
-    let(:label) { create(:label, title: "<b>test</b>") }
-
-    it "sanitizes title" do
-      expect(label.title).to eq("test")
+  describe '#title' do
+    it 'sanitizes title' do
+      label = described_class.new(title: '<b>foo & bar?</b>')
+      expect(label.title).to eq('foo & bar?')
     end
   end
 

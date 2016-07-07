@@ -8,7 +8,7 @@ class AwardEmoji < ActiveRecord::Base
   belongs_to :user
 
   validates :awardable, :user, presence: true
-  validates :name, presence: true, inclusion: { in: Emoji.emojis_names }
+  validates :name, presence: true, inclusion: { in: Gitlab::Emoji.emojis_names }
   validates :name, uniqueness: { scope: [:user, :awardable_type, :awardable_id] }
 
   participant :user

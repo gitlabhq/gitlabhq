@@ -19,6 +19,8 @@ class Projects::GitHttpController < Projects::ApplicationController
       render_ok
     elsif receive_pack? && receive_pack_allowed?
       render_ok
+    elsif http_blocked?
+      render_not_allowed
     else
       render_not_found
     end
@@ -154,6 +156,10 @@ class Projects::GitHttpController < Projects::ApplicationController
     render plain: 'Not Found', status: :not_found
   end
 
+  def render_not_allowed
+    render plain: download_access.message, status: :forbidden
+  end
+
   def ci?
     @ci.present?
   end
@@ -162,10 +168,26 @@ class Projects::GitHttpController < Projects::ApplicationController
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
     if user
-      Gitlab::GitAccess.new(user, project).download_access_check.allowed?
+      download_access.allowed?
     else
       ci? || project.public?
     end
+  end
+
+  def access
+    return @access if defined?(@access)
+
+    @access = Gitlab::GitAccess.new(user, project, 'http')
+  end
+
+  def download_access
+    return @download_access if defined?(@download_access)
+
+    @download_access = access.check('git-upload-pack')
+  end
+
+  def http_blocked?
+    !access.protocol_allowed?
   end
 
   def receive_pack_allowed?

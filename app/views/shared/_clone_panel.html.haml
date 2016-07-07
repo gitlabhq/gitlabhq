@@ -2,18 +2,23 @@
 
 .git-clone-holder.input-group
   .input-group-btn
-    %a#clone-dropdown.clone-dropdown-btn.btn{href: '#', 'data-toggle' => 'dropdown'}
-      %span
-        = default_clone_protocol.upcase
-      = icon('caret-down')
-    %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
-      %li
-        = ssh_clone_button(project)
-      %li
-        = http_clone_button(project)
-      - if alternative_kerberos_url?
+    -if allowed_protocols_present?
+      .clone-dropdown-btn.btn.btn-static
+        %span
+          = enabled_project_button(project, enabled_protocol)
+    - else
+      %a#clone-dropdown.clone-dropdown-btn.btn{href: '#', data: { toggle: 'dropdown' }}
+        %span
+          = default_clone_protocol.upcase
+        = icon('caret-down')
+      %ul.dropdown-menu.dropdown-menu-right.clone-options-dropdown
         %li
-          = kerberos_clone_button(project)
+          = ssh_clone_button(project)
+        %li
+          = http_clone_button(project)
+        - if alternative_kerberos_url?
+          %li
+            = kerberos_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn
