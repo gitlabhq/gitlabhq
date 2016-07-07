@@ -293,7 +293,11 @@ module ProjectsHelper
   end
 
   def last_push_event
-    if current_user
+    return unless current_user
+
+    if fork = current_user.fork_of(@project)
+      current_user.recent_push(fork.id)
+    else
       current_user.recent_push(@project.id)
     end
   end
