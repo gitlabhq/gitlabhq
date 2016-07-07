@@ -15,6 +15,7 @@ v 8.10.0 (unreleased)
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+  - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Updated project header design
