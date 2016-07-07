@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
+  - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refactor repository paths handling to allow multiple git mount points
