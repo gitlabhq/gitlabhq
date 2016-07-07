@@ -911,7 +911,7 @@ class Repository
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
-        extname = File.extname(filename)
+        extname = Regexp.escape(File.extname(filename))
         basename = filename.sub(/#{extname}$/, '')
         break
       end
