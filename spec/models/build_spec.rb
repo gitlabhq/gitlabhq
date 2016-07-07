@@ -674,7 +674,7 @@ describe Ci::Build, models: true do
       before { build.run! }
 
       it 'returns false' do
-        expect(build.retryable?).to be false
+        expect(build.retryable?).to be(false)
       end
     end
 
@@ -682,7 +682,7 @@ describe Ci::Build, models: true do
       before { build.success! }
 
       it 'returns true' do
-        expect(build.retryable?).to be true
+        expect(build.retryable?).to be(true)
       end
     end
   end
