@@ -11,7 +11,7 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
 
     attr_reader :results, :query
 
-    def initialize(batch_size: 100, query:)
+    def initialize(batch_size: 1000, query:)
       @offset = 0
       @batch_size = batch_size
       @query = query
@@ -58,22 +58,38 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
       return
     end
 
+    say('Nullifying empty import URLs')
+
+    nullify_empty_urls
+
     say('Cleaning up invalid import URLs... This may take a few minutes if we have a large number of imported projects.')
 
-    invalid_import_url_project_ids.each { |project_id| cleanup_import_url(project_id) }
+    process_invalid_import_urls
   end
 
-  def invalid_import_url_project_ids
-    ids = []
+  def process_invalid_import_urls
     batches = SqlBatches.new(query: "SELECT id, import_url FROM projects WHERE import_url IS NOT NULL")
 
     while batches.next?
+      project_ids = []
+
       batches.results.each do |result|
-        ids << result['id'] unless valid_url?(result['import_url'])
+        project_ids << result['id'] unless valid_url?(result['import_url'])
       end
+
+      process_batch(project_ids)
     end
 
-    ids
+  end
+
+  def process_batch(project_ids)
+    Thread.new do
+      begin
+        project_ids.each { |project_id| cleanup_import_url(project_id) }
+      ensure
+        ActiveRecord::Base.connection.close
+      end
+    end.join
   end
 
   def valid_url?(url)
@@ -82,5 +98,9 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
 
   def cleanup_import_url(project_id)
     execute("UPDATE projects SET import_url = NULL WHERE id = #{project_id}")
+  end
+
+  def nullify_empty_urls
+    execute("UPDATE projects SET import_url = NULL WHERE import_url = ''")
   end
 end

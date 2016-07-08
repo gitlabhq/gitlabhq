@@ -713,7 +713,7 @@ have the proper access rights, code 403 is returned. Status 404 is returned if t
 doesn't exist, or is hidden to the user.
 
 ```
-POST /projects/:id/archive
+POST /projects/:id/unarchive
 ```
 
 | Attribute | Type | Required | Description |
