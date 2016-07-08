@@ -44,7 +44,7 @@ describe Gitlab::UserAccess, lib: true do
 
     describe 'push to protected branch if allowed for developers' do
       before do
-        @branch = create :protected_branch, project: project, developers_can_push: true
+        @branch = create :protected_branch, :developers_can_push, project: project
       end
 
       it 'returns true if user is a master' do
@@ -65,7 +65,7 @@ describe Gitlab::UserAccess, lib: true do
 
     describe 'merge to protected branch if allowed for developers' do
       before do
-        @branch = create :protected_branch, project: project, developers_can_merge: true
+        @branch = create :protected_branch, :developers_can_merge, project: project
       end
 
       it 'returns true if user is a master' do

@@ -29,8 +29,9 @@ module Gitlab
     def can_push_to_branch?(ref)
       return false unless user
 
-      if project.protected_branch?(ref) && !project.developers_can_push_to_protected_branch?(ref)
-        user.can?(:push_code_to_protected_branches, project)
+      if project.protected_branch?(ref)
+        access_levels = project.protected_branches.matching(ref).map(&:push_access_level)
+        access_levels.any? { |access_level| access_level.check_access(user) }
       else
         user.can?(:push_code, project)
       end
@@ -39,8 +40,9 @@ module Gitlab
     def can_merge_to_branch?(ref)
       return false unless user
 
-      if project.protected_branch?(ref) && !project.developers_can_merge_to_protected_branch?(ref)
-        user.can?(:push_code_to_protected_branches, project)
+      if project.protected_branch?(ref)
+        access_levels = project.protected_branches.matching(ref).map(&:merge_access_level)
+        access_levels.any? { |access_level| access_level.check_access(user) }
       else
         user.can?(:push_code, project)
       end

@@ -202,29 +202,32 @@ describe Gitlab::GitAccess, lib: true do
         run_permission_checks(permissions_matrix)
       end
 
-      context "when 'developers can push' is turned on for the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, name: protected_branch_name, developers_can_push: true, project: project) }
+      context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
 
-      context "when 'developers can merge' is turned on for the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, name: protected_branch_name, developers_can_merge: true, project: project) }
+      context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, :developers_can_merge, name: protected_branch_name, project: project) }
 
         context "when a merge request exists for the given source/target branch" do
           context "when the merge request is in progress" do
             before do
-              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature',
+                     state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             end
 
-            run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: true }))
+            context "when the merge request is not in progress" do
+              before do
+                create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', in_progress_merge_commit_sha: nil)
+              end
+
+              run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
+            end
           end
 
-          context "when the merge request is not in progress" do
-            before do
-              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', in_progress_merge_commit_sha: nil)
-            end
-
+          context "when a merge request does not exist for the given source/target branch" do
             run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
           end
         end
@@ -234,11 +237,18 @@ describe Gitlab::GitAccess, lib: true do
         end
       end
 
-      context "when 'developers can merge' and 'developers can push' are turned on for the #{protected_branch_type} protected branch" do
-        before { create(:protected_branch, name: protected_branch_name, developers_can_merge: true, developers_can_push: true, project: project) }
+      context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
+    end
+
+    context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
+      before { create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
+
+      run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
+                                                          master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
     end
   end
 end
