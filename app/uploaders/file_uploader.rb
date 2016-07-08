@@ -42,7 +42,6 @@ class FileUploader < CarrierWave::Uploader::Base
     {
       alt:      filename,
       url:      self.secure_url,
-      is_image: image_or_video?,
       markdown: markdown
     }
   end
