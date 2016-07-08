@@ -32,6 +32,31 @@ v 8.10.0 (unreleased)
   - Add basic system information like memory and disk usage to the admin panel
 
 v 8.9.5 (unreleased)
+  - Don't garbage collect commits that have related DB records like comments
+  - More descriptive message for git hooks and file locks
+  - Handle custom Git hook result in GitLab UI
+  - Allow '?', or '&' for label names
+  - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
+  - Add date when user joined the team on the member page
+  - Fix 404 redirect after validation fails importing a GitLab project
+  - Added setting to set new users by default as external !4545 (Dravere)
+
+v 8.9.6
+  - Fix importing of events under notes for GitLab projects
+
+v 8.9.5
+  - Add more debug info to import/export and memory killer. !5108
+  - Fixed avatar alignment in new MR view. !5095
+  - Fix diff comments not showing up in activity feed. !5069
+  - Add index on both Award Emoji user and name. !5061
+  - Downgrade to Redis 3.2.2 due to massive memory leak with Sidekiq. !5056
+  - Re-enable import button when import process fails due to namespace already being taken. !5053
+  - Fix snippets comments not displayed. !5045
+  - Fix emoji paths in relative root configurations. !5027
+  - Fix issues importing events in Import/Export. !4987
+  - Fixed 'use shortcuts' button on docs. !4979
+  - Admin should be able to turn shared runners into specific ones. !4961
+  - Update RedCloth to 4.3.2 for CVE-2012-6684. !4929 (Takuya Noguchi)
   - Improve the request / withdraw access button. !4860
   - Fix assigning shared runners as admins. !4961
   - Show "locked" label for locked runners on runners admin. !4961
