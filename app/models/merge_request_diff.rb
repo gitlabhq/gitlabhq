@@ -46,7 +46,8 @@ class MergeRequestDiff < ActiveRecord::Base
         compare.diffs(options)
       end
     else
-      @diffs ||= load_diffs(st_diffs, options)
+      @diffs ||= {}
+      @diffs[options[:paths]] ||= load_diffs(st_diffs, options)
     end
   end
 
