@@ -7,13 +7,9 @@ module Banzai
       include ActionView::Helpers::TagHelper
       include ActionView::Context
 
-      EXTENSIONS = %w(.mov .mp4 .ogg .webm .flv)
-
       def call
         doc.search('img').each do |el|
-          if video?(el)
-            el.replace video_node(el)
-          end
+          el.replace(video_tag(doc, el)) if video?(el)
         end
 
         doc
@@ -22,19 +18,18 @@ module Banzai
       private
 
       def video?(element)
-        EXTENSIONS.include? File.extname(element.attribute('src').value)
+        extension = File.extname(element.attribute('src').value).delete('.')
+        UploaderHelper::VIDEO_EXT.include?(extension)
       end
 
       # Return a video tag Nokogiri node
       #
-      def video_node(element)
-        vtag = content_tag(:video, "", {
-                            src: element.attribute('src').value,
-                            class: 'video-js', preload: 'auto',
-                            controls: true
-                            })
-
-        Nokogiri::HTML::DocumentFragment.parse(vtag)
+      def video_node(doc, element)
+        doc.document.create_element(
+          'video',
+          src: element.attribute('src').value,
+          class: 'video-js',
+          controls: true)
       end
     end
 

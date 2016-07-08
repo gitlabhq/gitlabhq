@@ -9,8 +9,6 @@ Mime::Type.register_alias "text/plain", :patch
 Mime::Type.register_alias "text/html",  :markdown
 Mime::Type.register_alias "text/html",  :md
 
+Mime::Type.register "video/mp4",  :mp4, [], [:m4v, :mov]
 Mime::Type.register "video/webm", :webm
-Mime::Type.register "video/ogg",  :ogg
-Mime::Type.register "video/ogg",  :ogv
-Mime::Type.register "video/mp4",  :mp4
-Mime::Type.register "video/mp4",  :m4v
+Mime::Type.register "video/ogg",  :ogv, [], [:ogg]
