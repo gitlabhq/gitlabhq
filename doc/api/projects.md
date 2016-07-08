@@ -440,6 +440,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -464,6 +465,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -490,6 +492,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `public_builds` (optional)
