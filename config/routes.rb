@@ -615,13 +615,13 @@ Rails.application.routes.draw do
             post :retry_builds
             post :revert
             post :cherry_pick
-            get '/diffs/*path', action: :diff_for_path, constraints: { format: false }
+            get :diff_for_path
           end
         end
 
         resources :compare, only: [:index, :create] do
           collection do
-            get '/diffs/*path', action: :diff_for_path, constraints: { format: false }
+            get :diff_for_path
           end
         end
 
@@ -711,14 +711,14 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :toggle_award_emoji
             post :remove_wip
-            get '/diffs/*path', action: :diff_for_path, constraints: { format: false }
+            get :diff_for_path
           end
 
           collection do
             get :branch_from
             get :branch_to
             get :update_branches
-            get '/diffs/*path', action: :diff_for_path, constraints: { format: false }
+            get :diff_for_path
           end
         end
 

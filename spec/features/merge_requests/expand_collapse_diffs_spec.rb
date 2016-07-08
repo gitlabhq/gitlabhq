@@ -5,7 +5,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
   before do
     login_as :admin
-    merge_request = create(:merge_request, source_branch: 'expand-collapse-diffs', target_branch: 'master')
+    merge_request = create(:merge_request, target_branch: 'expand-collapse-diffs-start', source_branch: 'expand-collapse-diffs')
     project = merge_request.source_project
 
     # Ensure that undiffable.md is in .gitattributes
@@ -21,7 +21,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   # Use define_method instead of let (which is memoized) so that this just works across a
   # reload.
   #
-  ['small_diff.md', 'large_diff.md', 'undiffable.md', 'too_large.md', 'too_large_image.jpg'].each do |file|
+  files = [
+    'small_diff.md', 'large_diff.md', 'large_diff_renamed.md', 'undiffable.md',
+    'too_large.md', 'too_large_image.jpg'
+  ]
+
+  files.each do |file|
     define_method(file.split('.').first) { file_container(file) }
   end
 
@@ -31,9 +36,16 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       expect(small_diff).not_to have_selector('.nothing-here-block')
     end
 
-    it 'collapses larges diffs by default' do
+    it 'collapses large diffs by default' do
       expect(large_diff).not_to have_selector('.code')
       expect(large_diff).to have_selector('.nothing-here-block')
+    end
+
+    it 'collapses large diffs for renamed files by default' do
+      expect(large_diff_renamed).not_to have_selector('.code')
+      expect(large_diff_renamed).to have_selector('.nothing-here-block')
+      expect(large_diff_renamed).to have_selector('.file-title .deletion')
+      expect(large_diff_renamed).to have_selector('.file-title .addition')
     end
 
     it 'shows non-renderable diffs as such immediately, regardless of their size' do
@@ -51,6 +63,25 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     it 'shows image diffs immediately, regardless of their size' do
       expect(too_large_image).not_to have_selector('.nothing-here-block')
       expect(too_large_image).to have_selector('.image')
+    end
+
+    context 'expanding a diff for a renamed file' do
+      before do
+        large_diff_renamed.find('.nothing-here-block').click
+        wait_for_ajax
+      end
+
+      it 'shows the old content' do
+        old_line = large_diff_renamed.find('.line_content.old')
+
+        expect(old_line).to have_content('four copies')
+      end
+
+      it 'shows the new content' do
+        new_line = large_diff_renamed.find('.line_content.new', match: :prefer_exact)
+
+        expect(new_line).to have_content('six copies')
+      end
     end
 
     context 'expanding a large diff' do

@@ -384,7 +384,7 @@ describe Projects::MergeRequestsController do
         context 'when the user can view the merge request' do
           context 'when the path exists in the diff' do
             it 'enables diff notes' do
-              diff_for_path(id: merge_request.iid, path: existing_path)
+              diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
 
               expect(assigns(:diff_notes_disabled)).to be_falsey
               expect(assigns(:comments_target)).to eq(noteable_type: 'MergeRequest',
@@ -397,12 +397,12 @@ describe Projects::MergeRequestsController do
                 meth.call(diffs, diff_refs, project)
               end
 
-              diff_for_path(id: merge_request.iid, path: existing_path)
+              diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
             end
           end
 
           context 'when the path does not exist in the diff' do
-            before { diff_for_path(id: merge_request.iid, path: 'files/ruby/nopen.rb') }
+            before { diff_for_path(id: merge_request.iid, old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb') }
 
             it 'returns a 404' do
               expect(response).to have_http_status(404)
@@ -413,7 +413,7 @@ describe Projects::MergeRequestsController do
         context 'when the user cannot view the merge request' do
           before do
             project.team.truncate
-            diff_for_path(id: merge_request.iid, path: existing_path)
+            diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
           end
 
           it 'returns a 404' do
@@ -423,7 +423,7 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when the merge request does not exist' do
-        before { diff_for_path(id: merge_request.iid.succ, path: existing_path) }
+        before { diff_for_path(id: merge_request.iid.succ, old_path: existing_path, new_path: existing_path) }
 
         it 'returns a 404' do
           expect(response).to have_http_status(404)
@@ -435,7 +435,7 @@ describe Projects::MergeRequestsController do
 
         before do
           other_project.team << [user, :master]
-          diff_for_path(id: merge_request.iid, path: existing_path, project_id: other_project.to_param)
+          diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path, project_id: other_project.to_param)
         end
 
         it 'returns a 404' do
@@ -449,7 +449,7 @@ describe Projects::MergeRequestsController do
 
       context 'when both branches are in the same project' do
         it 'disables diff notes' do
-          diff_for_path(path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
+          diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
 
           expect(assigns(:diff_notes_disabled)).to be_truthy
         end
@@ -460,7 +460,7 @@ describe Projects::MergeRequestsController do
             meth.call(diffs, diff_refs, project)
           end
 
-          diff_for_path(path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
+          diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
         end
       end
 
@@ -471,7 +471,7 @@ describe Projects::MergeRequestsController do
 
         context 'when the path exists in the diff' do
           it 'disables diff notes' do
-            diff_for_path(path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
+            diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
 
             expect(assigns(:diff_notes_disabled)).to be_truthy
           end
@@ -482,12 +482,12 @@ describe Projects::MergeRequestsController do
               meth.call(diffs, diff_refs, project)
             end
 
-            diff_for_path(path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
+            diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })
           end
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(path: 'files/ruby/nopen.rb', merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' }) }
+          before { diff_for_path(old_path: 'files/ruby/nopen.rb', new_path: 'files/ruby/nopen.rb', merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' }) }
 
           it 'returns a 404' do
             expect(response).to have_http_status(404)
@@ -497,7 +497,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET #commits' do
+  describe 'GET commits' do
     def go(format: 'html')
       get :commits,
           namespace_id: project.namespace.to_param,

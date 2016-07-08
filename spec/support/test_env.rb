@@ -5,19 +5,21 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'empty-branch'     => '7efb185',
-    'flatten-dir'      => 'e56497b',
-    'feature'          => '0b4bc9a',
-    'feature_conflict' => 'bb5206f',
-    'fix'              => '48f0be4',
-    'improve/awesome'  => '5937ac0',
-    'markdown'         => '0ed8c6c',
-    'lfs'              => 'be93687',
-    'master'           => '5937ac0',
-    "'test'"           => 'e56497b',
-    'orphaned-branch'  => '45127a9',
-    'binary-encoding'  => '7b1cf43',
-    'gitattributes'    => '5a62481',
+    'empty-branch'                => '7efb185',
+    'flatten-dir'                 => 'e56497b',
+    'feature'                     => '0b4bc9a',
+    'feature_conflict'            => 'bb5206f',
+    'fix'                         => '48f0be4',
+    'improve/awesome'             => '5937ac0',
+    'markdown'                    => '0ed8c6c',
+    'lfs'                         => 'be93687',
+    'master'                      => '5937ac0',
+    "'test'"                      => 'e56497b',
+    'orphaned-branch'             => '45127a9',
+    'binary-encoding'             => '7b1cf43',
+    'gitattributes'               => '5a62481',
+    'expand-collapse-diffs-start' => '65b04e4',
+    'expand-collapse-diffs'       => '865e6d5'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

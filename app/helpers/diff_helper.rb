@@ -24,7 +24,11 @@ module DiffHelper
 
   def diff_options
     default_options = Commit.max_diff_options
-    default_options[:paths] = [params[:path]] if params[:path]
+
+    if action_name == 'diff_for_path'
+      default_options[:paths] = params.values_at(:old_path, :new_path)
+    end
+
     default_options.merge(ignore_whitespace_change: hide_whitespace?)
   end
 
@@ -88,7 +92,7 @@ module DiffHelper
 
   def commit_for_diff(diff_file)
     return diff_file.content_commit if diff_file.content_commit
-    
+
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else

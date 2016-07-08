@@ -30,10 +30,10 @@ describe MergeRequestDiff, models: true do
       end
 
       context 'when the :paths option is set' do
-        let(:diffs) { mr_diff.diffs(paths: ['.gitignore', 'files/ruby/popen.rb', 'files/ruby/string.rb']) }
+        let(:diffs) { mr_diff.diffs(paths: ['files/ruby/popen.rb', 'files/ruby/popen.rb']) }
 
-        it 'only returns diffs that match the paths given' do
-          expect(diffs.map(&:new_path)).to contain_exactly('.gitignore', 'files/ruby/popen.rb')
+        it 'only returns diffs that match the (old path, new path) given' do
+          expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
         end
 
         it 'uses the diffs from the DB' do

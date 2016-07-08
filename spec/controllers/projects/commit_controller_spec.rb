@@ -267,7 +267,7 @@ describe Projects::CommitController do
       context 'when the user has access to the project' do
         context 'when the path exists in the diff' do
           it 'enables diff notes' do
-            diff_for_path(id: commit.id, path: existing_path)
+            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
 
             expect(assigns(:diff_notes_disabled)).to be_falsey
             expect(assigns(:comments_target)).to eq(noteable_type: 'Commit',
@@ -280,12 +280,12 @@ describe Projects::CommitController do
               meth.call(diffs, diff_refs, project)
             end
 
-            diff_for_path(id: commit.id, path: existing_path)
+            diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
           end
         end
 
         context 'when the path does not exist in the diff' do
-          before { diff_for_path(id: commit.id, path: existing_path.succ) }
+          before { diff_for_path(id: commit.id, old_path: existing_path.succ, new_path: existing_path.succ) }
 
           it 'returns a 404' do
             expect(response).to have_http_status(404)
@@ -296,7 +296,7 @@ describe Projects::CommitController do
       context 'when the user does not have access to the project' do
         before do
           project.team.truncate
-          diff_for_path(id: commit.id, path: existing_path)
+          diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)
         end
 
         it 'returns a 404' do
@@ -306,7 +306,7 @@ describe Projects::CommitController do
     end
 
     context 'when the commit does not exist' do
-      before { diff_for_path(id: commit.id.succ, path: existing_path) }
+      before { diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path) }
 
       it 'returns a 404' do
         expect(response).to have_http_status(404)
