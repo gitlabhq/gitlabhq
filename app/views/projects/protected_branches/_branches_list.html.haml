@@ -26,4 +26,4 @@
   = paginate @protected_branches, theme: 'gitlab'
 
 :javascript
-  new ProtectedBranchesAccessSelect();
+  new ProtectedBranchesAccessSelect($(".protected-branches-list"), true);
