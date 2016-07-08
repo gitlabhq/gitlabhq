@@ -1,5 +1,5 @@
 module ProtectedBranches
-  class CreateService < BaseService
+  class CreateService < ProtectedBranches::BaseService
     attr_reader :protected_branch
 
     def execute

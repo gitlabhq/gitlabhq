@@ -1,5 +1,5 @@
 module ProtectedBranches
-  class UpdateService < BaseService
+  class UpdateService < ProtectedBranches::BaseService
     attr_reader :protected_branch
 
     def initialize(project, current_user, id, params = {})
