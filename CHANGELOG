@@ -31,6 +31,7 @@ v 8.10.0 (unreleased)
   - API: Expose shared groups for projects and shared projects for groups !5050 (Robert Schilling)
   - Add "Enabled Git access protocols" to Application Settings
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
