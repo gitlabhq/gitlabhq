@@ -1,3 +1,5 @@
+= render 'profiles/head'
+
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit-user prepend-top-default" }, authenticity_token: true do |f|
   = form_errors(@user)
 
