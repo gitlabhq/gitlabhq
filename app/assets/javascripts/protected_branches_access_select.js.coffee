@@ -34,6 +34,7 @@ class @ProtectedBranchesAccessSelect
         success: ->
           row = $(e.target)
           row.closest('tr').effect('highlight')
+          new Flash("Updated protected branch!", "notice")
 
         error: ->
           new Flash("Failed to update branch!", "alert")
