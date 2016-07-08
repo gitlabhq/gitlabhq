@@ -73,7 +73,7 @@ module API
       #
       delete do
         todos = find_todos
-        todos.each(&:done)
+        TodoService.new.mark_todos_as_done(todos, current_user)
 
         todos.length
       end
