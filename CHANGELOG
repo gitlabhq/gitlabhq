@@ -58,6 +58,7 @@ v 8.10.0 (unreleased)
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
+  - Add min value for project limit field on user's form !3622 (jastkand)
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
