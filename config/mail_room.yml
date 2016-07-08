@@ -3,7 +3,7 @@
     require_relative "lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
     config = Gitlab::MailRoom.config
 
-    if Gitlab::Mailroom.enabled?
+    if Gitlab::MailRoom.enabled?
   %>
     -
       :host: <%= config[:host].to_json %>
