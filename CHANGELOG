@@ -47,6 +47,7 @@ v 8.10.0 (unreleased)
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Set import_url validation to be more strict
   - Memoize MR merged/closed events retrieval
+  - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
