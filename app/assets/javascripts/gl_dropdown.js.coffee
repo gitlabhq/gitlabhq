@@ -56,6 +56,7 @@ class GitLabDropdownFilter
     return BLUR_KEYCODES.indexOf(keyCode) >= 0
 
   filter: (search_text) ->
+    @options.onFilter(search_text) if @options.onFilter
     data = @options.data()
 
     if data? and not @options.filterByText
@@ -195,6 +196,7 @@ class GitLabDropdown
       @filter = new GitLabDropdownFilter @filterInput,
         filterInputBlur: @filterInputBlur
         filterByText: @options.filterByText
+        onFilter: @options.onFilter
         remote: @options.filterRemote
         query: @options.data
         keys: searchFields
@@ -530,7 +532,7 @@ class GitLabDropdown
     if $el.length
       e.preventDefault()
       e.stopImmediatePropagation()
-      $(selector, @dropdown)[0].click()
+      $el.first().trigger('click')
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]

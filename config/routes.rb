@@ -775,7 +775,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
         resource :mirror, only: [:show, :update] do

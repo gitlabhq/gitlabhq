@@ -15,7 +15,7 @@ module Gitlab
       end
 
       def trigger(gl_id, oldrev, newrev, ref)
-        return true unless exists?
+        return [true, nil] unless exists?
 
         case name
         when "pre-receive", "post-receive"
@@ -70,13 +70,10 @@ module Gitlab
       end
 
       def call_update_hook(gl_id, oldrev, newrev, ref)
-        status = nil
-
         Dir.chdir(repo_path) do
-          status = system({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+          stdout, stderr, status = Open3.capture3({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+          [status.success?, stderr.presence || stdout]
         end
-
-        [status, nil]
       end
 
       def retrieve_error_message(stderr, stdout)

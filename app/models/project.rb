@@ -458,8 +458,8 @@ class Project < ActiveRecord::Base
     container_registry_repository.tags.any?
   end
 
-  def commit(id = 'HEAD')
-    repository.commit(id)
+  def commit(ref = 'HEAD')
+    repository.commit(ref)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -911,18 +911,12 @@ class Project < ActiveRecord::Base
     @repo_exists = false
   end
 
+  # Branches that are not _exactly_ matched by a protected branch.
   def open_branches
-    # We're using a Set here as checking values in a large Set is faster than
-    # checking values in a large Array.
-    protected_set = Set.new(protected_branch_names)
-
-    repository.branches.reject do |branch|
-      protected_set.include?(branch.name)
-    end
-  end
-
-  def protected_branch_names
-    @protected_branch_names ||= protected_branches.pluck(:name)
+    exact_protected_branch_names = protected_branches.reject(&:wildcard?).map(&:name)
+    branch_names = repository.branches.map(&:name)
+    non_open_branch_names = Set.new(exact_protected_branch_names).intersection(Set.new(branch_names))
+    repository.branches.reject { |branch| non_open_branch_names.include? branch.name }
   end
 
   def root_ref?(branch)
@@ -944,11 +938,12 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branch_names.include?(branch_name)
+    @protected_branches ||= self.protected_branches.to_a
+    ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
+    protected_branches.matching(branch_name).any?(&:developers_can_push)
   end
 
   def forked?
