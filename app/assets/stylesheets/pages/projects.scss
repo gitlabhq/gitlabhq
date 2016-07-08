@@ -661,6 +661,17 @@ pre.light-well {
   }
 }
 
+.new_protected_branch {
+  .dropdown {
+    display: inline;
+    margin-left: 15px;
+  }
+
+  label {
+    min-width: 120px;
+  }
+}
+
 .protected-branches-list {
   a {
     color: $gl-gray;

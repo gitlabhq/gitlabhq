@@ -12,12 +12,12 @@ class ProtectedBranch < ActiveRecord::Base
     project.commit(self.name)
   end
 
-  def developers_can_push
-    self.push_access_level && self.push_access_level.developers?
+  def allowed_to_push
+    self.push_access_level && self.push_access_level.access_level
   end
 
-  def developers_can_merge
-    self.merge_access_level && self.merge_access_level.developers?
+  def allowed_to_merge
+    self.merge_access_level && self.merge_access_level.access_level
   end
 
   # Returns all protected branches that match the given branch name.
