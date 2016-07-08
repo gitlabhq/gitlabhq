@@ -11,7 +11,8 @@ $ ->
         dataType: "json"
         data:
           id: id
-          developers_can_push: checked
+          protected_branch:
+            developers_can_push: checked
 
         success: ->
           row = $(e.target)

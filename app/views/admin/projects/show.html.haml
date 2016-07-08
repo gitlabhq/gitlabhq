@@ -99,7 +99,13 @@
           .form-group
             = f.label :new_namespace_id, "Namespace", class: 'control-label'
             .col-sm-10
-              = namespace_select_tag :new_namespace_id, selected: params[:namespace_id], class: 'input-large'
+              .dropdown
+                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id', show_any: 'false' }, { toggle_class: 'js-namespace-select large' })
+                .dropdown-menu.dropdown-select
+                  = dropdown_title('Namespaces')
+                  = dropdown_filter("Search for Namespace")
+                  = dropdown_content
+                  = dropdown_loading
 
           .form-group
             .col-sm-offset-2.col-sm-10

@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
+  - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
@@ -17,11 +18,14 @@ v 8.10.0 (unreleased)
   - Fix MR-auto-close text added to description. !4836
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Fix viewing notification settings when a project is pending deletion
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Updated project header design
   - Exclude email check from the standard health check
+  - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
+  - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
   - Add "Enabled Git access protocols" to Application Settings
@@ -48,6 +52,7 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
+  - Fix 404 redirect after validation fails importing a GitLab project
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108

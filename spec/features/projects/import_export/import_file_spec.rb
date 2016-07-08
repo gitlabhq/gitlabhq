@@ -42,6 +42,23 @@ feature 'project import', feature: true, js: true do
     expect(project.import_status).to eq('finished')
   end
 
+  scenario 'invalid project' do
+    project = create(:project, namespace_id: 2)
+
+    visit new_project_path
+
+    select2('2', from: '#project_namespace_id')
+    fill_in :project_path, with: project.name, visible: true
+    click_link 'GitLab export'
+
+    attach_file('file', file)
+    click_on 'Import project'
+
+    page.within('.flash-container') do
+      expect(page).to have_content('Project could not be imported')
+    end
+  end
+
   def wiki_exists?
     wiki = ProjectWiki.new(project)
     File.exist?(wiki.repository.path_to_repo) && !wiki.repository.empty?

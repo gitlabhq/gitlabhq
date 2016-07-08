@@ -56,7 +56,7 @@ describe Event, models: true do
     end
 
     context 'merge request diff note event' do
-      let(:target) { create(:note_on_merge_request_diff) }
+      let(:target) { create(:legacy_diff_note_on_merge_request) }
 
       it { is_expected.to be_note }
     end
@@ -132,7 +132,7 @@ describe Event, models: true do
     context 'merge request diff note event' do
       let(:project) { create(:project, :public) }
       let(:merge_request) { create(:merge_request, source_project: project, author: author, assignee: assignee) }
-      let(:note_on_merge_request) { create(:note_on_merge_request_diff, noteable: merge_request, project: project) }
+      let(:note_on_merge_request) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project) }
       let(:target) { note_on_merge_request }
 
       it { expect(event.visible_to_user?(non_member)).to eq true }
