@@ -25,7 +25,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step 'project "Shop" has protected branches' do
     project = Project.find_by(name: "Shop")
-    project.protected_branches.create(name: "stable")
+    create(:protected_branch, project: project, name: "stable")
   end
 
   step 'I click new branch link' do
