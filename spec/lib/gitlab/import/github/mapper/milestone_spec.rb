@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Import::Github::Mapper::Milestone, lib: true do
-  let(:project) { create(:empty_project) }
+  let(:project) { build(:empty_project) }
   let(:client)  { double(milestones: response) }
 
   let(:response) do
