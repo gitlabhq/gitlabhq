@@ -11,7 +11,7 @@ module Gitlab
           validations do
             validates :config, key: true
             validates :global, required_attribute: true
-            validate :known_stage, on: :after
+            validate :known_stage, on: :processed
 
             def known_stage
               unless known?

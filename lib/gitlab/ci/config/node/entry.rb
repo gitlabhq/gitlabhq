@@ -34,7 +34,7 @@ module Gitlab
           end
 
           def validate!
-            @validator.validate(:after)
+            @validator.validate(:processed)
             @entries.each_value(&:validate!)
           end
 

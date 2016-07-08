@@ -10,7 +10,7 @@ module Gitlab
 
           validations do
             validates :config, type: Hash
-            validate :jobs_presence, on: :after
+            validate :jobs_presence, on: :processed
 
             def jobs_presence
               unless relevant?
