@@ -91,12 +91,6 @@ module API
       end
     end
 
-    class SimpleProject < Grape::Entity
-      expose :id
-      expose :name, :name_with_namespace
-      expose :http_url_to_repo
-    end
-
     class ProjectMember < UserBasic
       expose :access_level do |user, options|
         options[:project].project_members.find_by(user_id: user.id).access_level
