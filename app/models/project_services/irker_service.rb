@@ -112,14 +112,6 @@ class IrkerService < Service
 
     # Authorize both irc://domain.com/#chan and irc://domain.com/chan
     if uri.is_a?(URI) && uri.scheme[/^ircs?\z/] && !uri.path.nil?
-      # Do not authorize irc://domain.com/
-      if uri.fragment.nil? && uri.path.length > 1
-      else
-        # Authorize irc://domain.com/smthg#chan
-        # The irker daemon will deal with it by concatenating smthg and
-        # chan, thus sending messages on #smthgchan
-      end
-
       uri.to_s
     end
   end
