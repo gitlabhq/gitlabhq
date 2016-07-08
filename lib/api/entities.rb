@@ -79,12 +79,6 @@ module API
       expose :public_builds
     end
 
-    class SimpleProject < Grape::Entity
-      expose :id
-      expose :name, :name_with_namespace
-      expose :http_url_to_repo
-    end
-
     class ProjectMember < UserBasic
       expose :access_level do |user, options|
         options[:project].project_members.find_by(user_id: user.id).access_level
@@ -334,7 +328,7 @@ module API
       end
     end
 
-    class SimpleProjectWithAccess < SimpleProject
+    class BasicProjectWithAccess < BasicProjectDetails
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
           project.project_members.find_by(user_id: options[:user].id)
