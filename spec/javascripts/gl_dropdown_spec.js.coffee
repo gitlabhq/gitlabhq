@@ -81,11 +81,12 @@ describe 'Dropdown', ->
       navigateWithKeys 'down', randomIndex, =>
         spyOn(Turbolinks, 'visit').and.stub()
         navigateWithKeys 'enter', null, =>
+          expect(@dropdownContainerElement).not.toHaveClass 'open'
           link = $("#{ITEM_SELECTOR}:eq(#{randomIndex}) a", @dropdownMenuElement)
           expect(link).toHaveClass 'is-active'
-          if link.attr 'href'
-            expect(Turbolinks.visit).toHaveBeenCalledWith link.attr 'href'
-            expect(@dropdownContainerElement).not.toHaveClass 'open'
+          linkedLocation = link.attr 'href'
+          if linkedLocation and linkedLocation isnt '#'
+            expect(Turbolinks.visit).toHaveBeenCalledWith linkedLocation
 
     it 'should close on ESC keypress', ->
       expect(@dropdownContainerElement).toHaveClass 'open'

@@ -307,7 +307,7 @@ class GitLabDropdown
 
   shouldPropagate: (e) =>
     $target = $(e.target) if @options.multiSelect
-    unless $target.hasClass('dropdown-menu-close') and $target.hasClass('dropdown-menu-close-icon') and $target.data('is-link')
+    if $target and not $target.hasClass('dropdown-menu-close') and not $target.hasClass('dropdown-menu-close-icon') and not $target.data('is-link')
       e.stopPropagation()
       false
     else
@@ -380,10 +380,10 @@ class GitLabDropdown
     html = ''
 
     # Divider
-    return '<li class='divider'></li>' if data is 'divider'
+    return '<li class="divider"></li>' if data is 'divider'
 
     # Separator is a full-width divider
-    return '<li class='separator'></li>' if data is 'separator'
+    return '<li class="separator"></li>' if data is 'separator'
 
     # Header
     return _.template('<li class="dropdown-header"><%- header %></li>')({ header: data.header }) if data.header?
@@ -518,8 +518,8 @@ class GitLabDropdown
   addInput: (fieldName, value)->
     # Create hidden input for form
     $input = $('<input>').attr('type', 'hidden')
-                         .attr('name', fieldName)
-                        .val(value)
+      .attr('name', fieldName)
+      .val(value)
 
     if @options.inputId?
       $input.attr('id', @options.inputId)
