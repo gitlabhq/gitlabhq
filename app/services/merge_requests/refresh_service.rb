@@ -35,10 +35,10 @@ module MergeRequests
     def close_merge_requests
       commit_ids = @commits.map(&:id)
       merge_requests = @project.merge_requests.opened.where(target_branch: @branch_name).to_a
-      merge_requests = merge_requests.select(&:last_commit)
+      merge_requests = merge_requests.select(&:diff_head_commit)
 
       merge_requests = merge_requests.select do |merge_request|
-        commit_ids.include?(merge_request.last_commit.id)
+        commit_ids.include?(merge_request.diff_head_sha)
       end
 
       merge_requests.uniq.select(&:source_project).each do |merge_request|
@@ -61,7 +61,7 @@ module MergeRequests
 
       merge_requests.each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
-          merge_request.reload_code
+          merge_request.reload_diff
           merge_request.mark_as_unchecked
         else
           mr_commit_ids = merge_request.commits.map(&:id)
@@ -69,7 +69,7 @@ module MergeRequests
           matches = mr_commit_ids & push_commit_ids
 
           if matches.any?
-            merge_request.reload_code
+            merge_request.reload_diff
             merge_request.mark_as_unchecked
           else
             merge_request.mark_as_unchecked
@@ -109,12 +109,10 @@ module MergeRequests
         merge_request = merge_requests_for_source_branch.first
         return unless merge_request
 
-        last_commit = merge_request.last_commit
-
         begin
           # Since any number of commits could have been made to the restored branch,
           # find the common root to see what has been added.
-          common_ref = @project.repository.merge_base(last_commit.id, @newrev)
+          common_ref = @project.repository.merge_base(merge_request.diff_head_sha, @newrev)
           # If the a commit no longer exists in this repo, gitlab_git throws
           # a Rugged::OdbError. This is fixed in https://gitlab.com/gitlab-org/gitlab_git/merge_requests/52
           @commits = @project.repository.commits_between(common_ref, @newrev) if common_ref

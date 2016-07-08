@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequest, models: true do
+  include RepoHelpers
+
   subject { create(:merge_request) }
 
   describe 'associations' do
@@ -62,7 +64,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#target_sha' do
+  describe '#target_branch_sha' do
     context 'when the target branch does not exist anymore' do
       let(:project) { create(:project) }
 
@@ -73,32 +75,32 @@ describe MergeRequest, models: true do
       end
 
       it 'returns nil' do
-        expect(subject.target_sha).to be_nil
+        expect(subject.target_branch_sha).to be_nil
       end
     end
   end
 
-  describe '#source_sha' do
+  describe '#source_branch_sha' do
     let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
 
     context 'with diffs' do
       subject { create(:merge_request, :with_diffs) }
       it 'returns the sha of the source branch last commit' do
-        expect(subject.source_sha).to eq(last_branch_commit.sha)
+        expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
       end
     end
 
     context 'without diffs' do
       subject { create(:merge_request, :without_diffs) }
       it 'returns the sha of the source branch last commit' do
-        expect(subject.source_sha).to eq(last_branch_commit.sha)
+        expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
       end
     end
 
     context 'when the merge request is being created' do
       subject { build(:merge_request, source_branch: nil, compare_commits: []) }
       it 'returns nil' do
-        expect(subject.source_sha).to be_nil
+        expect(subject.source_branch_sha).to be_nil
       end
     end
   end
@@ -285,12 +287,14 @@ describe MergeRequest, models: true do
     end
 
     it "can be removed if the last commit is the head of the source branch" do
-      allow(subject.source_project).to receive(:commit).and_return(subject.last_commit)
+      allow(subject.source_project).to receive(:commit).and_return(subject.diff_head_commit)
 
       expect(subject.can_remove_source_branch?(user)).to be_truthy
     end
 
     it "cannot be removed if the last commit is not also the head of the source branch" do
+      subject.source_branch = "lfs"
+
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
   end
@@ -328,12 +332,6 @@ describe MergeRequest, models: true do
       expect(attrs_hash).to include(:target)
       expect(attrs_hash).to include(:last_commit)
       expect(attrs_hash).to include(:work_in_progress)
-    end
-  end
-
-  describe "#source_sha_parent" do
-    it "returns the sha of the parent commit of the first commit in the MR" do
-      expect(subject.source_sha_parent).to eq("ae73cb07c9eeaf35924a10f713b364d32b2dd34f")
     end
   end
 
@@ -402,7 +400,7 @@ describe MergeRequest, models: true do
           and_return(2)
 
         subject.diverged_commits_count
-        allow(subject).to receive(:source_sha).and_return('123abc')
+        allow(subject).to receive(:source_branch_sha).and_return('123abc')
         subject.diverged_commits_count
       end
 
@@ -412,7 +410,7 @@ describe MergeRequest, models: true do
           and_return(2)
 
         subject.diverged_commits_count
-        allow(subject).to receive(:target_sha).and_return('123abc')
+        allow(subject).to receive(:target_branch_sha).and_return('123abc')
         subject.diverged_commits_count
       end
     end
@@ -431,11 +429,10 @@ describe MergeRequest, models: true do
 
   describe '#pipeline' do
     describe 'when the source project exists' do
-      it 'returns the latest commit' do
-        commit   = double(:commit, id: '123abc')
+      it 'returns the latest pipeline' do
         pipeline = double(:ci_pipeline, ref: 'master')
 
-        allow(subject).to receive(:last_commit).and_return(commit)
+        allow(subject).to receive(:diff_head_sha).and_return('123abc')
 
         expect(subject.source_project).to receive(:pipeline).
           with('123abc', 'master').
@@ -503,7 +500,7 @@ describe MergeRequest, models: true do
     context 'when it is not broken and has no conflicts' do
       it 'is marked as mergeable' do
         allow(subject).to receive(:broken?) { false }
-        allow(project.repository).to receive(:can_be_merged?) { true }
+        allow(project.repository).to receive(:can_be_merged?).and_return(true)
 
         expect { subject.check_if_can_be_merged }.to change { subject.merge_status }.to('can_be_merged')
       end
@@ -520,7 +517,7 @@ describe MergeRequest, models: true do
     context 'when it has conflicts' do
       before do
         allow(subject).to receive(:broken?) { false }
-        allow(project.repository).to receive(:can_be_merged?) { false }
+        allow(project.repository).to receive(:can_be_merged?).and_return(false)
       end
 
       it 'becomes unmergeable' do
@@ -645,6 +642,44 @@ describe MergeRequest, models: true do
 
         it { expect(subject.mergeable_ci_state?).to be_truthy }
       end
+    end
+  end
+
+  describe "#reload_diff" do
+    let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
+
+    let(:commit) { subject.project.commit(sample_commit.id) }
+
+    it "reloads the diff content" do
+      expect(subject.merge_request_diff).to receive(:reload_content)
+
+      subject.reload_diff
+    end
+
+    it "updates diff note positions" do
+      old_diff_refs = subject.diff_refs
+
+      merge_request_diff = subject.merge_request_diff
+
+      # Update merge_request_diff so that #diff_refs will return commit.diff_refs
+      allow(merge_request_diff).to receive(:reload_content) do
+        merge_request_diff.base_commit_sha = commit.parent_id
+        merge_request_diff.start_commit_sha = commit.parent_id
+        merge_request_diff.head_commit_sha = commit.sha
+      end
+
+      expect(Notes::DiffPositionUpdateService).to receive(:new).with(
+        subject.project,
+        nil,
+        old_diff_refs: old_diff_refs,
+        new_diff_refs: commit.diff_refs,
+        paths: note.position.paths
+      ).and_call_original
+      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
+
+      expect_any_instance_of(DiffNote).to receive(:save).once
+
+      subject.reload_diff
     end
   end
 end

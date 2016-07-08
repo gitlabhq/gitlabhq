@@ -12,8 +12,8 @@ describe Repository, models: true do
   end
   let(:merge_commit) do
     source_sha = repository.find_branch('feature').target
-    merge_commit_id = repository.merge(user, source_sha, 'master', commit_options)
-    repository.commit(merge_commit_id)
+    merge_commit_sha = repository.merge(user, source_sha, 'master', commit_options)
+    repository.commit(merge_commit_sha)
   end
 
   describe :branch_names_contains do
