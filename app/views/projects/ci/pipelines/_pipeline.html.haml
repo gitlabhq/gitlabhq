@@ -57,16 +57,26 @@
     .controls.hidden-xs.pull-right
       - artifacts = pipeline.builds.latest.select { |b| b.artifacts? }
       - if artifacts.present?
-        .dropdown.inline.build-artifacts
-          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-            = icon('download')
-            %b.caret
-          %ul.dropdown-menu.dropdown-menu-align-right
-            - artifacts.each do |build|
+        .btn-group.inline
+          .btn-group
+            %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+              = icon("play")
+              %b.caret
+            %ul.dropdown-menu.dropdown-menu-align-right
               %li
-                = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
-                  = icon("download")
-                  %span Download '#{build.name}' artifacts
+                = link_to '#' do
+                  = icon("play")
+                  %span Deploy to production
+          .btn-group
+            %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}
+              = icon("download")
+              %b.caret
+            %ul.dropdown-menu.dropdown-menu-align-right
+              - artifacts.each do |build|
+                %li
+                  = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
+                    = icon("download")
+                    %span Download '#{build.name}' artifacts
 
       - if can?(current_user, :update_pipeline, @project)
         - if pipeline.retryable?

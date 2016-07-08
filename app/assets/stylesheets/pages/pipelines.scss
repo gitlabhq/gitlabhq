@@ -90,11 +90,34 @@
   .pipeline-actions {
 
     .btn {
+      margin: 0;
+    }
+
+    .dropdown-toggle,
+    .dropdown-menu  {
       color: $table-text-gray;
+
+      .fa {
+        color: $table-text-gray;
+        margin-right: 6px;
+        font-size: 14px;
+      }
     }
 
     .btn-remove {
       color: $white-light;
+    }
+
+    .btn-group {
+      &.open {
+        .btn-default {
+          background-color: $white-normal;
+          border-color: $border-white-normal;
+
+          &:hover {
+          }
+        }
+      }
     }
   }
 
@@ -103,5 +126,9 @@
     a {
       color: $gl-dark-link-color;
     }
+  }
+
+  .btn-group.open .dropdown-toggle {
+    box-shadow: none;
   }
 }
