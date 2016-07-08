@@ -7,7 +7,8 @@
 
   %td
     %div.branch-commit
-      %span ##{pipeline.id}
+      = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
+        %span ##{pipeline.id}
       - if pipeline.ref
         = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace branch-name"
         = icon("code-fork")
