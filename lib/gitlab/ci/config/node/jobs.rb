@@ -10,7 +10,7 @@ module Gitlab
 
           validations do
             validates :config, type: Hash
-            validate :jobs_presence, on: :processed
+            validate :jobs_presence, on: :after
 
             def jobs_presence
               unless relevant?
@@ -24,12 +24,12 @@ module Gitlab
           end
 
           def relevant?
-            @nodes.values.any?(&:relevant?)
+            @entries.values.any?(&:relevant?)
           end
 
           private
 
-          def create_node(name, config)
+          def create(name, config)
             job_node(name).new(config, job_attributes(name))
           end
 

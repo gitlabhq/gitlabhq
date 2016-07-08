@@ -35,7 +35,10 @@ describe Gitlab::Ci::Config::Node::Jobs do
           end
 
           context 'when processed' do
-            before { entry.process! }
+            before do
+              entry.process!
+              entry.validate!
+            end
 
             it 'returns error about no visible jobs defined' do
               expect(entry.errors)

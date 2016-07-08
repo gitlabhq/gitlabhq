@@ -25,7 +25,7 @@ module Gitlab
 
           private
 
-          def create_node(key, factory)
+          def create(key, factory)
             factory
               .value(config[key])
               .with(key: key, parent: self, global: global)
@@ -50,12 +50,12 @@ module Gitlab
             def helpers(*nodes)
               nodes.each do |symbol|
                 define_method("#{symbol}_defined?") do
-                  @nodes[symbol].try(:defined?)
+                  @entries[symbol].try(:defined?)
                 end
 
                 define_method("#{symbol}_value") do
                   raise Entry::InvalidError unless valid?
-                  @nodes[symbol].try(:value)
+                  @entries[symbol].try(:value)
                 end
 
                 alias_method symbol.to_sym, "#{symbol}_value".to_sym

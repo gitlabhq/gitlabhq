@@ -13,7 +13,7 @@ module Gitlab
 
           def initialize(config, **attributes)
             @config = config
-            @nodes = {}
+            @entries = {}
 
             (@attributes = attributes).each do |attribute, value|
               public_send("#{attribute}=", value)
@@ -24,8 +24,18 @@ module Gitlab
           end
 
           def process!
-            compose! unless leaf?
-            @validator.validate(:processed) if valid?
+            return unless valid?
+
+            nodes.each do |key, essence|
+              @entries[key] = create(key, essence)
+            end
+
+            @entries.each_value(&:process!)
+          end
+
+          def validate!
+            @validator.validate(:after)
+            @entries.each_value(&:validate!)
           end
 
           def leaf?
@@ -37,7 +47,7 @@ module Gitlab
           end
 
           def descendants
-            @nodes.values
+            @entries.values
           end
 
           def ancestors
@@ -49,18 +59,18 @@ module Gitlab
           end
 
           def errors
-            @validator.messages + @nodes.values.flat_map(&:errors)
+            @validator.messages + @entries.values.flat_map(&:errors)
           end
 
           def value
             if leaf?
               @config
             else
-              meaningful = @nodes.select do |_key, value|
+              meaningful = @entries.select do |_key, value|
                 value.defined? && value.relevant?
               end
 
-              Hash[meaningful.map { |key, node| [key, node.value] }]
+              Hash[meaningful.map { |key, entry| [key, entry.value] }]
             end
           end
 
@@ -85,17 +95,7 @@ module Gitlab
 
           private
 
-          def compose!
-            return unless valid?
-
-            nodes.each do |key, essence|
-              @nodes[key] = create_node(key, essence)
-            end
-
-            @nodes.each_value(&:process!)
-          end
-
-          def create_node(key, essence)
+          def create(entry, essence)
             raise NotImplementedError
           end
         end
