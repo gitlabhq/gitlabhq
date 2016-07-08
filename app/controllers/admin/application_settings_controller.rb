@@ -87,6 +87,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :version_check_enabled,
       :admin_notification_email,
       :user_oauth_applications,
+      :user_default_external,
       :shared_runners_enabled,
       :shared_runners_text,
       :max_artifacts_size,
