@@ -32,19 +32,28 @@
             are supported.
 
         .form-group
-          = f.check_box :developers_can_push, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to push to this branch
+          .prepend-left-10
+            = f.hidden_field :allowed_to_merge
+            = f.label :allowed_to_merge, "Allowed to Merge: ", class: "label-light append-bottom-0"
+            = dropdown_tag("<Make a selection>",
+                           options: { title: "Allowed To Merge", toggle_class: 'allowed-to-merge',
+                                      dropdown_class: 'dropdown-menu-selectable',
+                                      data: { field_name: "protected_branch[allowed_to_merge]" }})
 
         .form-group
-          = f.check_box :developers_can_merge, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_merge, "Developers can merge", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to accept merge requests to this branch
+          .prepend-left-10
+            = f.hidden_field :allowed_to_push
+            = f.label :allowed_to_push, "Allowed to Push: ", class: "label-light append-bottom-0"
+            = dropdown_tag("<Make a selection>",
+                           options: { title: "Allowed To Push", toggle_class: 'allowed-to-push',
+                                      dropdown_class: 'dropdown-menu-selectable',
+                                      data: { field_name: "protected_branch[allowed_to_push]" }})
+
+
         = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
 
     %hr
     = render "branches_list"
+
+:javascript
+  new ProtectedBranchesAccessSelect($(".new_protected_branch"), false);
