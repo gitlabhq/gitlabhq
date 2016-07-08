@@ -8,7 +8,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
     if masters?
       user.can?(:push_code, project) if project.team.master?(user)
     elsif developers?
-      user.can?(:push_code, project) if (project.team.master?(user) || project.team.developer?(user))
+      user.can?(:push_code, project) if project.team.master?(user) || project.team.developer?(user)
     end
   end
 end
