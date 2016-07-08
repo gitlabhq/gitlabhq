@@ -240,8 +240,10 @@ describe GitPushService, services: true do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: false })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.first.allowed_to_push).to eq('masters')
+        expect(project.protected_branches.first.allowed_to_merge).to eq('masters')
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -249,8 +251,8 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).not_to receive(:create)
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).to be_empty
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
@@ -258,9 +260,12 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: true, developers_can_merge: false })
 
-        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.last.allowed_to_push).to eq('developers')
+        expect(project.protected_branches.last.allowed_to_merge).to eq('masters')
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
@@ -268,8 +273,10 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: true })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.first.allowed_to_push).to eq('masters')
+        expect(project.protected_branches.first.allowed_to_merge).to eq('developers')
       end
 
       it "when pushing new commits to existing branch" do
