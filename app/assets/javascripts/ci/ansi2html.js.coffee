@@ -3,7 +3,7 @@ class @Ansi2Html
     @_currentLine = 0
     @_ansiRegex = /\[[0-9]+;?[0-9]?m/g
     @_colorRegex = /\[[0-9]+;?[0-9]?m((.*))(\[0+;?m)?/g
-    @_replaceLineRegex = /(\r|(\[[0-9]+k))/g
+    @_replaceLineRegex = /(\r|(\[([0-9]?)+k))/gi
     @_colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
     @_html = []
 
@@ -69,7 +69,7 @@ class @Ansi2Html
         color = match.match(@_ansiRegex)
         if color.length > 1
           color = color.slice(0, -1)
-          
+
         color = color[color.length - 1]
         modifierSplit = color.split(/;|m/)
         color = modifierSplit[0].substring(1)
@@ -97,10 +97,15 @@ class @Ansi2Html
     line.replace(@_ansiRegex, '')
 
   replaceLine: (line) ->
+    return line if line.indexOf('$') >= 0
     lineSplit = line.split(@_replaceLineRegex).filter (text) ->
       text = '' if not text?
       text.trim().length > 0
-    lineSplit[lineSplit.length - 1]
+
+    if lineSplit.length > 0
+      lineSplit[lineSplit.length - 1]
+    else
+      line
 
   getColorClass: (color, type, bold) ->
     bold = if bold then 'l-' else ''
