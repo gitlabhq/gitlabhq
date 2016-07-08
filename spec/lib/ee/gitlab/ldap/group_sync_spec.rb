@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::GroupSync, lib: true do
-  let(:group_sync) { Gitlab::LDAP::GroupSync.new('ldapmain') }
+describe EE::Gitlab::LDAP::GroupSync, lib: true do
+  let(:group_sync) { described_class.new('ldapmain') }
   let(:config) { double(:config, active_directory: false) }
   let(:adapter) { double(:adapter, config: config) }
   subject { group_sync }
 
   before do
-    allow_any_instance_of(Gitlab::ExclusiveLease)
+    allow_any_instance_of(::Gitlab::ExclusiveLease)
       .to receive(:try_obtain).and_return(true)
   end
 
@@ -59,7 +59,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
     context 'with all functionality against one LDAP group type' do
       before do
-        allow_any_instance_of(Gitlab::LDAP::Group)
+        allow_any_instance_of(EE::Gitlab::LDAP::Group)
           .to receive(:adapter).and_return(adapter)
 
         user1.identities.create(
@@ -71,19 +71,19 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           extern_uid: "uid=#{user2.username},ou=users,dc=example,dc=com"
         )
 
-        allow(Gitlab::LDAP::Group)
+        allow(EE::Gitlab::LDAP::Group)
           .to receive(:find_by_cn)
-            .with('ldap_group1', kind_of(Gitlab::LDAP::Adapter))
-            .and_return(Gitlab::LDAP::Group.new(ldap_group1))
+            .with('ldap_group1', kind_of(::Gitlab::LDAP::Adapter))
+            .and_return(EE::Gitlab::LDAP::Group.new(ldap_group1))
 
         group1.ldap_group_links.create(
           cn: 'ldap_group1',
-          group_access: Gitlab::Access::DEVELOPER,
+          group_access: ::Gitlab::Access::DEVELOPER,
           provider: 'ldapmain'
         )
         group2.ldap_group_links.create(
           cn: 'ldap_group1',
-          group_access: Gitlab::Access::OWNER,
+          group_access: ::Gitlab::Access::OWNER,
           provider: 'ldapmain'
         )
       end
@@ -92,9 +92,9 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         before do
           # Pre-populate the group with some users
           group1.add_users([user1.id],
-                           Gitlab::Access::MASTER, skip_notification: true)
+                           ::Gitlab::Access::MASTER, skip_notification: true)
           group2.add_users([user2.id],
-                           Gitlab::Access::DEVELOPER, skip_notification: true)
+                           ::Gitlab::Access::DEVELOPER, skip_notification: true)
         end
 
         it 'adds new members' do
@@ -108,7 +108,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             .to change {
               group1.members.where(
                 user_id: user1.id,
-                access_level: Gitlab::Access::DEVELOPER
+                access_level: ::Gitlab::Access::DEVELOPER
               ).any?
             }.from(false).to(true)
         end
@@ -118,7 +118,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             .to change {
               group2.members.where(
                 user_id: user2.id,
-                access_level: Gitlab::Access::OWNER
+                access_level: ::Gitlab::Access::OWNER
               ).any?
             }.from(false).to(true)
         end
@@ -136,9 +136,9 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             .create(provider: group_sync.provider,
                     extern_uid: "uid=johndoe,ou=users,dc=example,dc=com" )
           group1.add_users([user_without_group.id],
-                           Gitlab::Access::MASTER, skip_notification: true)
+                           ::Gitlab::Access::MASTER, skip_notification: true)
           group2.add_users([user_without_group.id],
-                           Gitlab::Access::OWNER, skip_notification: true)
+                           ::Gitlab::Access::OWNER, skip_notification: true)
         end
 
         it 'removes the user from the group' do
@@ -157,27 +157,26 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         before do
           group1.ldap_group_links.create(
             cn: 'ldap_group1',
-            group_access: Gitlab::Access::DEVELOPER,
+            group_access: ::Gitlab::Access::DEVELOPER,
             provider: 'ldapmain'
           )
 
           group1.add_users([user1.id, user2.id],
-            Gitlab::Access::OWNER, skip_notification: true)
+            ::Gitlab::Access::OWNER, skip_notification: true)
         end
 
-        # Check two users in a loop to uncover any stale group owner data
         it 'downgrades one user but not the other' do
           group_sync.sync_groups
 
           expect(group1.members.pluck(:access_level).sort)
-            .to eq([Gitlab::Access::DEVELOPER, Gitlab::Access::OWNER])
+            .to eq([::Gitlab::Access::DEVELOPER, ::Gitlab::Access::OWNER])
         end
 
         context 'when user is a member of two groups from different providers' do
           let(:config) { double(:config, active_directory: false, provider: 'ldapsecondary') }
           let(:adapter) { double(:adapter, config: config) }
           let(:secondary_group_sync) do
-            Gitlab::LDAP::GroupSync.new('ldapsecondary', adapter)
+            described_class.new('ldapsecondary', adapter)
           end
           let(:ldap_secondary_group1) do
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
@@ -194,14 +193,14 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           let(:user_w_multiple_ids) { create(:user) }
 
           before do
-            allow(Gitlab::LDAP::Group)
+            allow(EE::Gitlab::LDAP::Group)
               .to receive(:find_by_cn)
                 .with('ldap_group1', any_args)
-                .and_return(Gitlab::LDAP::Group.new(ldap_group1))
-            allow(Gitlab::LDAP::Group)
+                .and_return(EE::Gitlab::LDAP::Group.new(ldap_group1))
+            allow(EE::Gitlab::LDAP::Group)
               .to receive(:find_by_cn)
                 .with('ldap_secondary_group1', any_args)
-                .and_return(Gitlab::LDAP::Group.new(ldap_secondary_group1))
+                .and_return(EE::Gitlab::LDAP::Group.new(ldap_secondary_group1))
             user_w_multiple_ids.identities.create(
               [
                 {
@@ -216,16 +215,16 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             )
             group1.ldap_group_links.create(
               cn: 'ldap_group1',
-              group_access: Gitlab::Access::DEVELOPER,
+              group_access: ::Gitlab::Access::DEVELOPER,
               provider: 'ldapprimary'
             )
             group1.ldap_group_links.create(
               cn: 'ldap_secondary_group1',
-              group_access: Gitlab::Access::OWNER,
+              group_access: ::Gitlab::Access::OWNER,
               provider: 'ldapsecondary'
             )
             group1.add_users([user_w_multiple_ids.id],
-                             Gitlab::Access::DEVELOPER, skip_notification: true)
+                             ::Gitlab::Access::DEVELOPER, skip_notification: true)
           end
 
           it 'does not change user permissions for secondary group link' do
@@ -233,7 +232,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
               .not_to change {
                 group1.members.where(
                   user_id: user_w_multiple_ids.id,
-                  access_level: Gitlab::Access::OWNER
+                  access_level: ::Gitlab::Access::OWNER
                 ).any?
               }
           end
@@ -252,7 +251,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
               objectclass: groupOfNames
             EOS
 
-          allow_any_instance_of(Gitlab::LDAP::Group)
+          allow_any_instance_of(EE::Gitlab::LDAP::Group)
             .to receive(:adapter).and_return(adapter)
 
           user1.identities.create(
@@ -264,36 +263,36 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             extern_uid: "uid=#{user2.username},ou=users,dc=example,dc=com"
           )
 
-          allow(Gitlab::LDAP::Group)
+          allow(EE::Gitlab::LDAP::Group)
             .to receive(:find_by_cn)
-              .with('ldap_group1', kind_of(Gitlab::LDAP::Adapter))
-              .and_return(Gitlab::LDAP::Group.new(ldap_group1))
-          allow(Gitlab::LDAP::Group)
+              .with('ldap_group1', kind_of(::Gitlab::LDAP::Adapter))
+              .and_return(EE::Gitlab::LDAP::Group.new(ldap_group1))
+          allow(EE::Gitlab::LDAP::Group)
             .to receive(:find_by_cn)
-              .with('ldap_group2', kind_of(Gitlab::LDAP::Adapter))
-              .and_return(Gitlab::LDAP::Group.new(ldap_group2))
+              .with('ldap_group2', kind_of(::Gitlab::LDAP::Adapter))
+              .and_return(EE::Gitlab::LDAP::Group.new(ldap_group2))
 
           group1.members.destroy_all
           group1.ldap_group_links.destroy_all
           group1.ldap_group_links.create(
             cn: 'ldap_group1',
-            group_access: Gitlab::Access::DEVELOPER,
+            group_access: ::Gitlab::Access::DEVELOPER,
             provider: 'ldapmain'
           )
           group2.members.destroy_all
           group2.ldap_group_links.destroy_all
           group2.ldap_group_links.create(
             cn: 'ldap_group2',
-            group_access: Gitlab::Access::MASTER,
+            group_access: ::Gitlab::Access::MASTER,
             provider: 'ldapmain'
           )
 
           group_sync.sync_groups
 
           expect(group1.members.pluck(:user_id).sort).to eq([user1.id, user2.id].sort)
-          expect(group1.members.pluck(:access_level).uniq).to eq([Gitlab::Access::DEVELOPER])
+          expect(group1.members.pluck(:access_level).uniq).to eq([::Gitlab::Access::DEVELOPER])
           expect(group2.members.pluck(:user_id)).to eq([user2.id])
-          expect(group2.members.pluck(:access_level).uniq).to eq([Gitlab::Access::MASTER])
+          expect(group2.members.pluck(:access_level).uniq).to eq([::Gitlab::Access::MASTER])
         end
       end
     end
@@ -303,9 +302,9 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       let(:secondary_extern_uid) { nil }
 
       before do
-        allow_any_instance_of(Gitlab::LDAP::Group)
+        allow_any_instance_of(EE::Gitlab::LDAP::Group)
           .to receive(:adapter).and_return(adapter)
-        allow(Gitlab::LDAP::Group)
+        allow(EE::Gitlab::LDAP::Group)
           .to receive(:find_by_cn)
             .with(ldap_group.cn, any_args)
             .and_return(ldap_group)
@@ -316,7 +315,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         )
         group1.ldap_group_links.create(
           cn: ldap_group.cn,
-          group_access: Gitlab::Access::DEVELOPER,
+          group_access: ::Gitlab::Access::DEVELOPER,
           provider: 'ldapmain'
         )
       end
@@ -324,7 +323,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       # GroupOfNames - OpenLDAP
       context 'with groupOfNames style LDAP group' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -346,7 +345,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       # posixGroup - Apple Open Directory
       context 'with posixGroup style LDAP group' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -358,7 +357,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           )
         end
         let(:ldap_user) do
-          Gitlab::LDAP::Person.new(
+          ::Gitlab::LDAP::Person.new(
             Net::LDAP::Entry.from_single_ldif_string(
               "dn: uid=#{user1.username},ou=users,dc=example,dc=com"
             ),
@@ -367,7 +366,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         end
 
         before do
-          allow(Gitlab::LDAP::Person)
+          allow(::Gitlab::LDAP::Person)
             .to receive(:find_by_uid)
               .with(user1.username, any_args)
               .and_return(ldap_user)
@@ -379,8 +378,8 @@ describe Gitlab::LDAP::GroupSync, lib: true do
               .from(false).to(true)
         end
 
-        it 'expects Gitlab::LDAP::Person to be called' do
-          expect(Gitlab::LDAP::Person).to receive(:find_by_uid)
+        it 'expects ::Gitlab::LDAP::Person to be called' do
+          expect(::Gitlab::LDAP::Person).to receive(:find_by_uid)
 
           group_sync.sync_groups
         end
@@ -398,8 +397,8 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         context 'when the uid is stored in the database' do
           let(:secondary_extern_uid) { user1.username }
 
-          it 'expects Gitlab::LDAP::Person will not be called' do
-            expect(Gitlab::LDAP::Person)
+          it 'expects ::Gitlab::LDAP::Person will not be called' do
+            expect(::Gitlab::LDAP::Person)
               .not_to receive(:find_by_uid)
                 .with(user1.username, any_args)
 
@@ -414,7 +413,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             # Group 1 link was created above. Create another here.
             group2.ldap_group_links.create(
               cn: ldap_group.cn,
-              group_access: Gitlab::Access::DEVELOPER,
+              group_access: ::Gitlab::Access::DEVELOPER,
               provider: 'ldapmain'
             )
           end
@@ -429,8 +428,8 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             group_sync.sync_groups
           end
 
-          it 'expects Gitlab::LDAP::Person will not be called' do
-            expect(Gitlab::LDAP::Person)
+          it 'expects ::Gitlab::LDAP::Person will not be called' do
+            expect(::Gitlab::LDAP::Person)
               .not_to receive(:find_by_uid)
                 .with(user1.username, any_args)
 
@@ -441,7 +440,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
       context 'with groupOfUniqueNames style LDAP group' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -462,7 +461,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
       context 'with an empty LDAP group' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -482,7 +481,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       # See gitlab-ee#442 and comment in GroupSync#ensure_full_dns!
       context 'with uid=username member format' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -494,7 +493,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
           )
         end
         let(:ldap_user) do
-          Gitlab::LDAP::Person.new(
+          ::Gitlab::LDAP::Person.new(
             Net::LDAP::Entry.from_single_ldif_string(
               "dn: uid=#{user1.username},ou=users,dc=example,dc=com"
             ),
@@ -503,7 +502,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
         end
 
         before do
-          allow(Gitlab::LDAP::Person)
+          allow(::Gitlab::LDAP::Person)
             .to receive(:find_by_uid)
               .with(user1.username, any_args)
               .and_return(ldap_user)
@@ -515,8 +514,8 @@ describe Gitlab::LDAP::GroupSync, lib: true do
               .from(false).to(true)
         end
 
-        it 'expects Gitlab::LDAP::Person to be called' do
-          expect(Gitlab::LDAP::Person).to receive(:find_by_uid)
+        it 'expects ::Gitlab::LDAP::Person to be called' do
+          expect(::Gitlab::LDAP::Person).to receive(:find_by_uid)
 
           group_sync.sync_groups
         end
@@ -534,7 +533,7 @@ describe Gitlab::LDAP::GroupSync, lib: true do
 
       context 'with invalid DNs in the LDAP group' do
         let(:ldap_group) do
-          Gitlab::LDAP::Group.new(
+          EE::Gitlab::LDAP::Group.new(
             Net::LDAP::Entry.from_single_ldif_string(<<-EOS.strip_heredoc)
                 dn: cn=ldap_group1,ou=groups,dc=example,dc=com
                 cn: ldap_group1
@@ -587,14 +586,14 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       user1.update_attribute(:admin, true)
       user3.update_attribute(:admin, true)
 
-      allow_any_instance_of(Gitlab::LDAP::Group)
+      allow_any_instance_of(EE::Gitlab::LDAP::Group)
         .to receive(:adapter).and_return(adapter)
-      allow(Gitlab::LDAP::Group)
+      allow(EE::Gitlab::LDAP::Group)
         .to receive(:find_by_cn).with(admin_group.cn, any_args)
-      allow(Gitlab::LDAP::Group)
+      allow(EE::Gitlab::LDAP::Group)
         .to receive(:find_by_cn)
-          .with('admin_group', kind_of(Gitlab::LDAP::Adapter))
-          .and_return(Gitlab::LDAP::Group.new(admin_group))
+          .with('admin_group', kind_of(::Gitlab::LDAP::Adapter))
+          .and_return(EE::Gitlab::LDAP::Group.new(admin_group))
 
       user1.identities.create(
         provider: 'ldapmain',
@@ -658,16 +657,16 @@ describe Gitlab::LDAP::GroupSync, lib: true do
       user3.update_attribute(:external, true)
       user4.update_attribute(:external, true)
 
-      allow_any_instance_of(Gitlab::LDAP::Group)
+      allow_any_instance_of(EE::Gitlab::LDAP::Group)
         .to receive(:adapter).and_return(adapter)
-      allow(Gitlab::LDAP::Group)
+      allow(EE::Gitlab::LDAP::Group)
         .to receive(:find_by_cn)
-              .with('external_group1', kind_of(Gitlab::LDAP::Adapter))
-              .and_return(Gitlab::LDAP::Group.new(external_group1))
-      allow(Gitlab::LDAP::Group)
+              .with('external_group1', kind_of(::Gitlab::LDAP::Adapter))
+              .and_return(EE::Gitlab::LDAP::Group.new(external_group1))
+      allow(EE::Gitlab::LDAP::Group)
         .to receive(:find_by_cn)
-              .with('external_group2', kind_of(Gitlab::LDAP::Adapter))
-              .and_return(Gitlab::LDAP::Group.new(external_group2))
+              .with('external_group2', kind_of(::Gitlab::LDAP::Adapter))
+              .and_return(EE::Gitlab::LDAP::Group.new(external_group2))
 
       user1.identities.create(
         provider: 'ldapmain',

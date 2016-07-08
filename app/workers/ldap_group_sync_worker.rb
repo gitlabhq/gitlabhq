@@ -5,7 +5,7 @@ class LdapGroupSyncWorker
 
   def perform
     logger.info 'Started LDAP group sync'
-    Gitlab::LDAP::GroupSync.execute
+    EE::Gitlab::LDAP::GroupSync.execute
     logger.info 'Finished LDAP group sync'
   end
 end

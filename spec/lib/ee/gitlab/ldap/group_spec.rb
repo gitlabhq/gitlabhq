@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::Group, lib: true do
+describe EE::Gitlab::LDAP::Group, lib: true do
   describe '#member_dns' do
     def ldif
       Net::LDAP::Entry.from_single_ldif_string(

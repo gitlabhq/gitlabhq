@@ -1,6 +1,12 @@
+# LDAP connection adapter
+#
+# Contains methods common to both GitLab CE and EE.
+# All EE methods should be in `EE::Gitlab::LDAP::Adapter` only.
 module Gitlab
   module LDAP
     class Adapter
+      include EE::Gitlab::LDAP::Adapter
+
       attr_reader :provider, :ldap
 
       def self.open(provider, &block)
@@ -20,30 +26,6 @@ module Gitlab
 
       def config
         Gitlab::LDAP::Config.new(provider)
-      end
-
-      # Get LDAP groups from ou=Groups
-      #
-      # cn - filter groups by name
-      #
-      # Ex.
-      #   groups("dev*") # return all groups start with 'dev'
-      #
-      def groups(cn = "*", size = nil)
-        options = {
-          base: config.group_base,
-          filter: Net::LDAP::Filter.eq("cn", cn)
-        }
-
-        options.merge!(size: size) if size
-
-        ldap_search(options).map do |entry|
-          Gitlab::LDAP::Group.new(entry, self)
-        end
-      end
-
-      def group(*args)
-        groups(*args).first
       end
 
       def users(field, value, limit = nil)
@@ -84,13 +66,6 @@ module Gitlab
 
       def user(*args)
         users(*args).first
-      end
-
-      def dn_matches_filter?(dn, filter)
-        ldap_search(base: dn,
-                    filter: filter,
-                    scope: Net::LDAP::SearchScope_BaseObject,
-                    attributes: %w{dn}).any?
       end
 
       def dns_for_filter(filter)
