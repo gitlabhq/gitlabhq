@@ -68,7 +68,6 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
   end
 
   def process_invalid_import_urls
-    @threads = []
     batches = SqlBatches.new(query: "SELECT id, import_url FROM projects WHERE import_url IS NOT NULL")
 
     while batches.next?
@@ -81,17 +80,16 @@ class FixNoValidatableImportUrl < ActiveRecord::Migration
       process_batch(project_ids)
     end
 
-    @threads.each(&:join)
   end
 
   def process_batch(project_ids)
-    @threads << Thread.new do
+    Thread.new do
       begin
         project_ids.each { |project_id| cleanup_import_url(project_id) }
       ensure
         ActiveRecord::Base.connection.close
       end
-    end
+    end.join
   end
 
   def valid_url?(url)
