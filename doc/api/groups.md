@@ -42,46 +42,49 @@ Parameters:
 ```json
 [
   {
-    "id": 4,
-    "description": null,
+    "id": 9,
+    "description": "foo",
     "default_branch": "master",
+    "tag_list": [],
     "public": false,
-    "visibility_level": 0,
-    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
-    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
-    "web_url": "http://example.com/diaspora/diaspora-client",
-    "tag_list": [
-      "example",
-      "disapora client"
-    ],
-    "owner": {
-      "id": 3,
-      "name": "Diaspora",
-      "created_at": "2013-09-30T13: 46: 02Z"
-    },
-    "name": "Diaspora Client",
-    "name_with_namespace": "Diaspora / Diaspora Client",
-    "path": "diaspora-client",
-    "path_with_namespace": "diaspora/diaspora-client",
+    "archived": false,
+    "visibility_level": 10,
+    "ssh_url_to_repo": "git@gitlab.example.com/html5-boilerplate.git",
+    "http_url_to_repo": "http://gitlab.example.com/h5bp/html5-boilerplate.git",
+    "web_url": "http://gitlab.example.com/h5bp/html5-boilerplate",
+    "name": "Html5 Boilerplate",
+    "name_with_namespace": "Experimental / Html5 Boilerplate",
+    "path": "html5-boilerplate",
+    "path_with_namespace": "h5bp/html5-boilerplate",
     "issues_enabled": true,
     "merge_requests_enabled": true,
-    "builds_enabled": true,
     "wiki_enabled": true,
-    "snippets_enabled": false,
-    "created_at": "2013-09-30T13: 46: 02Z",
-    "last_activity_at": "2013-09-30T13: 46: 02Z",
-    "creator_id": 3,
+    "builds_enabled": true,
+    "snippets_enabled": true,
+    "created_at": "2016-04-05T21:40:50.169Z",
+    "last_activity_at": "2016-04-06T16:52:08.432Z",
+    "shared_runners_enabled": true,
+    "creator_id": 1,
     "namespace": {
-      "created_at": "2013-09-30T13: 46: 02Z",
-      "description": "",
-      "id": 3,
-      "name": "Diaspora",
-      "owner_id": 1,
-      "path": "diaspora",
-      "updated_at": "2013-09-30T13: 46: 02Z"
+      "id": 5,
+      "name": "Experimental",
+      "path": "h5bp",
+      "owner_id": null,
+      "created_at": "2016-04-05T21:40:49.152Z",
+      "updated_at": "2016-04-07T08:07:48.466Z",
+      "description": "foo",
+      "avatar": {
+        "url": null
+      },
+      "share_with_group_lock": false,
+      "visibility_level": 10
     },
-    "archived": false,
-    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png"
+    "avatar_url": null,
+    "star_count": 1,
+    "forks_count": 0,
+    "open_issues_count": 3,
+    "public_builds": true,
+    "shared_with_groups": []
   }
 ]
 ```
@@ -201,7 +204,8 @@ Example response:
       "star_count": 1,
       "forks_count": 0,
       "open_issues_count": 3,
-      "public_builds": true
+      "public_builds": true,
+      "shared_with_groups": []
     }
   ]
 }
