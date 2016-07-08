@@ -33,6 +33,15 @@ module Gitlab
             end
           end
 
+          class RequiredAttributeValidator < ActiveModel::EachValidator
+            def validate_each(record, attribute, value)
+              if value.nil?
+                raise Entry::InvalidError,
+                  "Entry needs #{attribute} attribute set internally."
+              end
+            end
+          end
+
           class KeyValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 

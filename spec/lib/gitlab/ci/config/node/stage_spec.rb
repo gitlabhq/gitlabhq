@@ -27,8 +27,10 @@ describe Gitlab::Ci::Config::Node::Stage do
           let(:entry) { described_class.new(config) }
 
           it 'raises error' do
-            expect { entry }
-              .to raise_error Gitlab::Ci::Config::Node::Entry::InvalidError
+            expect { entry }.to raise_error(
+              Gitlab::Ci::Config::Node::Entry::InvalidError,
+              /Entry needs global attribute set internally./
+            )
           end
         end
 

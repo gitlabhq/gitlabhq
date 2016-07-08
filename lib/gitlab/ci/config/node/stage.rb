@@ -10,13 +10,7 @@ module Gitlab
 
           validations do
             validates :config, key: true
-
-            validate do |entry|
-              unless entry.global
-                raise Entry::InvalidError,
-                  'This entry needs reference to global configuration'
-              end
-            end
+            validates :global, required_attribute: true
           end
 
           def self.default
