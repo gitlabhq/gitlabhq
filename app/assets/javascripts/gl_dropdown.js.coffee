@@ -401,6 +401,7 @@ class GitLabDropdown
           selected = true
 
       # Set URL
+      console.log(data)
       if @options.url?
         url = @options.url(data)
       else
