@@ -1,7 +1,8 @@
 class @Ansi2Html
   constructor: ->
     @_currentLine = 0
-    @_colorRegex = /\[[0-9]+;[0-9]?m/g
+    @_ansiRegex = /\[[0-9]+;?[0-9]?m/g
+    @_colorRegex = /\[[0-9]+;?[0-9]?m((.*))\[0+;?m/g
     @_replaceLineRegex = /(\r|(\[[0-9]+k))/g
     @_colors = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white']
     @_html = []
@@ -22,11 +23,11 @@ class @Ansi2Html
   convertLine: (line) ->
     prepend = true
     lineText = if line is '' then ' ' else line
-    codes = @getAnsiCodes(line)
+    clearLineIndex = lineText.search(@_replaceLineRegex)
 
     lineEl = @createLine(lineText)
 
-    if lineText.search(@_replaceLineRegex) >= 0 and lineText.indexOf('$') < 0
+    if (clearLineIndex >= 0 and clearLineIndex is not lineText.length - 1) and lineText.indexOf('$') < 0
       prepend = false
       lastEl = @_html[@_html.length - 1]
 
@@ -42,25 +43,16 @@ class @Ansi2Html
 
     if prepend
       lineEl.prepend @lineLink()
-
-      if codes?
-        lineEl
-          .find('span')
-          .addClass @getColorClass(codes.color, codes.type, codes.bold)
-          .addClass @getModifierClass(codes.modifier)
-
       @_html.push(lineEl)
 
   createLine: (line) ->
-    line = @removeAnsiCodes(line)
     line = @replaceLine(line)
+    line = @getInnerTextWithColors(line)
 
     $('<p />',
       id: "line-#{@_currentLine}"
       class: 'build-trace-line'
-    ).append $('<span />',
-      text: @removeAnsiCodes(line)
-    )
+    ).append $('<span />').append line
 
   lineLink: ->
     $('<a />',
@@ -69,24 +61,28 @@ class @Ansi2Html
       text: @_currentLine
     )
 
-  getAnsiCodes: (line) ->
+  getInnerTextWithColors: (line) ->
     matches = line.match(@_colorRegex)
 
     if matches?
-      match = matches[0]
-      modifierSplit = match.split(';')
-      color = modifierSplit[0].substring(1)
-      colorInt = parseInt(color)
-      colorText = @_colors[color[1]]
-      modifier = modifierSplit[1][0]
+      for match in matches
+        color = match.match(@_ansiRegex).slice(0, -1)
+        color = color[color.length - 1]
+        modifierSplit = color.split(/(;|m)/g)
+        color = modifierSplit[0].substring(1)
+        colorInt = parseInt(color)
+        colorText = @_colors[color[1]]
+        modifier = modifierSplit[1][0]
 
-      if colorText?
-        return {
-          color: colorText
-          modifier: modifier
-          bold: modifier is "1"
-          type: @getLineType(color)
-        }
+        # Create inner span
+        $span = $('<span />',
+          text: @removeAnsiCodes(match)
+          class: @getColorClass(colorText, @getLineType(color), modifier is "1")
+        )
+        line = line.replace(match, $span.get(0).outerHTML)
+    else
+      line = @removeAnsiCodes(line)
+    line
 
   getLineType: (code) ->
     if code >= 40 and code < 90 or code >= 100
@@ -95,11 +91,11 @@ class @Ansi2Html
       'fg'
 
   removeAnsiCodes: (line) ->
-    line.replace(@_colorRegex, '')
+    line.replace(@_ansiRegex, '')
 
   replaceLine: (line) ->
     lineSplit = line.split(@_replaceLineRegex)
-    lineSplit[lineSplit.length - 1]
+    lineSplit[0]
 
   getColorClass: (color, type, bold) ->
     bold = if bold then 'l-' else ''
