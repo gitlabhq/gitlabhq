@@ -25,18 +25,11 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
-      end
-
-      # Get a simplified project list for authenticated user
-      #
-      # Example Request:
-      #   GET /projects/simple
-      get '/simple' do
-        @projects = current_user.authorized_projects
-        @projects = filter_projects(@projects)
-        @projects = paginate @projects
-        present @projects, with: Entities::SimpleProjectWithAccess, user: current_user
+        if params["format"]
+          present @projects, with: Entities::BasicProjectWithAccess, user: current_user
+        else
+          present @projects, with: Entities::ProjectWithAccess, user: current_user
+        end
       end
 
       # Get an owned projects list for authenticated user
