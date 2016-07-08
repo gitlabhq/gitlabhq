@@ -81,4 +81,79 @@ feature 'Projected Branches', feature: true, js: true do
       end
     end
   end
+
+  describe "access control" do
+    [
+      ['developers', 'Developers + Masters'],
+      ['masters', 'Masters'],
+      ['no_one', 'No one']
+    ].each do |access_type_id, access_type_name|
+      it "allows creating protected branches that #{access_type_name} can push to" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        within('.new_protected_branch') do
+          find(".allowed-to-push").click
+          click_on access_type_name
+        end
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+        expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
+      end
+
+      # This spec fails on PhantomJS versions below 2.0, which don't support `PATCH` requests.
+      # https://github.com/ariya/phantomjs/issues/11384
+      it "allows updating protected branches so that #{access_type_name} can push to them" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+
+        within(".protected-branches-list") do
+          find(".allowed-to-push").click
+          within('.dropdown-menu.push') { click_on access_type_name }
+        end
+
+        expect(page).to have_content "Updated protected branch"
+        expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
+      end
+    end
+
+    [
+      ['developers', 'Developers + Masters'],
+      ['masters', 'Masters']
+    ].each do |access_type_id, access_type_name|
+      it "allows creating protected branches that #{access_type_name} can merge to" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        within('.new_protected_branch') do
+          find(".allowed-to-merge").click
+          click_on access_type_name
+        end
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+        expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
+      end
+
+      # This spec fails on PhantomJS versions below 2.0, which don't support `PATCH` requests.
+      # https://github.com/ariya/phantomjs/issues/11384
+      it "allows updating protected branches so that #{access_type_name} can merge to them" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+
+        within(".protected-branches-list") do
+          find(".allowed-to-merge").click
+          within('.dropdown-menu.merge') { click_on access_type_name }
+        end
+
+        expect(page).to have_content "Updated protected branch"
+        expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
+      end
+    end
+  end
 end
