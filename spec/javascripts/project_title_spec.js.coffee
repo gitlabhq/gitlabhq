@@ -22,6 +22,7 @@ describe 'Project Title', ->
       @projects_data = fixture.load('projects.json')[0]
 
       spyOn(jQuery, 'ajax').and.callFake (req) =>
+
         expect(req.url).toBe('/api/v3/projects.json?simple=true')
         d = $.Deferred()
         d.resolve @projects_data
