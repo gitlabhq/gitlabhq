@@ -1,33 +1,33 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Stage do
-  let(:entry) { described_class.new(config, global: global) }
+  let(:stage) { described_class.new(config, global: global) }
   let(:global) { spy('Global') }
 
   describe 'validations' do
-    context 'when entry config value is correct' do
+    context 'when stage config value is correct' do
       let(:config) { :build }
 
       describe '#value' do
         it 'returns a stage key' do
-          expect(entry.value).to eq config
+          expect(stage.value).to eq config
         end
       end
 
       describe '#valid?' do
         it 'is valid' do
-          expect(entry).to be_valid
+          expect(stage).to be_valid
         end
       end
     end
 
-    context 'when entry config is incorrect' do
+    context 'when stage config is incorrect' do
       describe '#errors' do
         context 'when reference to global node is not set' do
-          let(:entry) { described_class.new(config) }
+          let(:stage) { described_class.new(config) }
 
           it 'raises error' do
-            expect { entry }.to raise_error(
+            expect { stage }.to raise_error(
               Gitlab::Ci::Config::Node::Entry::InvalidError,
               /Entry needs global attribute set internally./
             )
@@ -38,17 +38,49 @@ describe Gitlab::Ci::Config::Node::Stage do
           let(:config) { { test: true } }
 
           it 'reports errors about wrong type' do
-            expect(entry.errors)
+            expect(stage.errors)
               .to include 'stage config should be a string or symbol'
           end
         end
 
         context 'when stage is not present in global configuration' do
-          pending 'reports error about missing stage' do
-            expect(entry.errors)
-              .to include 'stage config should be one of test, stage'
+          let(:config) { :unknown }
+
+          before do
+            allow(global)
+              .to receive(:stages).and_return([:test, :deploy])
+          end
+
+          it 'reports error about missing stage' do
+            stage.validate!
+
+            expect(stage.errors)
+              .to include 'stage config should be one of ' \
+                          'defined stages (test, deploy)'
           end
         end
+      end
+    end
+  end
+
+  describe '#known?' do
+    before do
+      allow(global).to receive(:stages).and_return([:test, :deploy])
+    end
+
+    context 'when stage is not known' do
+      let(:config) { :unknown }
+
+      it 'returns false' do
+        expect(stage.known?).to be false
+      end
+    end
+
+    context 'when stage is known' do
+      let(:config) { :test }
+
+      it 'returns false' do
+        expect(stage.known?).to be true
       end
     end
   end
