@@ -104,10 +104,6 @@ class Group < Namespace
     end
   end
 
-  def owners
-    @owners ||= group_members.owners.includes(:user).map(&:user)
-  end
-
   def add_users(user_ids, access_level, current_user = nil, skip_notification: false)
     user_ids.each do |user_id|
       Member.add_user(self.group_members, user_id, access_level, current_user, skip_notification: skip_notification)

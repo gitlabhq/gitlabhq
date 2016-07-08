@@ -160,18 +160,17 @@ describe Gitlab::LDAP::GroupSync, lib: true do
             group_access: Gitlab::Access::DEVELOPER,
             provider: 'ldapmain'
           )
-          group1.add_users([user1.id],
+
+          group1.add_users([user1.id, user2.id],
             Gitlab::Access::OWNER, skip_notification: true)
         end
 
-        it 'refuses to downgrade the last owner' do
-          expect { group_sync.sync_groups }
-            .not_to change {
-              group1.members.where(
-                user_id: user1.id,
-                access_level: Gitlab::Access::OWNER
-              ).any?
-            }
+        # Check two users in a loop to uncover any stale group owner data
+        it 'downgrades one user but not the other' do
+          group_sync.sync_groups
+
+          expect(group1.members.pluck(:access_level).sort)
+            .to eq([Gitlab::Access::DEVELOPER, Gitlab::Access::OWNER])
         end
 
         context 'when user is a member of two groups from different providers' do
