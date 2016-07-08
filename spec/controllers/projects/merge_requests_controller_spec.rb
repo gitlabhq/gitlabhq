@@ -10,7 +10,7 @@ describe Projects::MergeRequestsController do
     project.team << [user, :master]
   end
 
-  describe '#new' do
+  describe 'GET new' do
     context 'merge request that removes a submodule' do
       render_views
 
@@ -34,7 +34,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe "#show" do
+  describe "GET show" do
     shared_examples "export merge as" do |format|
       it "should generally work" do
         get(:show,
@@ -108,7 +108,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET #index' do
+  describe 'GET index' do
     def get_merge_requests
       get :index,
           namespace_id: project.namespace.to_param,
@@ -140,7 +140,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'PUT #update' do
+  describe 'PUT update' do
     context 'there is no source project' do
       let(:project)       { create(:project) }
       let(:fork_project)  { create(:forked_project_with_submodules) }
@@ -168,7 +168,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'POST #merge' do
+  describe 'POST merge' do
     let(:base_params) do
       {
         namespace_id: project.namespace.path,
@@ -266,7 +266,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe "DELETE #destroy" do
+  describe "DELETE destroy" do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
 
@@ -289,7 +289,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET #diffs' do
+  describe 'GET diffs' do
     def go(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
@@ -367,7 +367,7 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET #diff_for_path' do
+  describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,

@@ -12,7 +12,7 @@ describe Projects::CommitController do
     project.team << [user, :master]
   end
 
-  describe 'GET #show' do
+  describe 'GET show' do
     render_views
 
     def go(extra_params = {})
@@ -141,7 +141,7 @@ describe Projects::CommitController do
     end
   end
 
-  describe "#branches" do
+  describe "GET branches" do
     it "contains branch and tags information" do
       get(:branches,
           namespace_id: project.namespace.to_param,
@@ -153,7 +153,7 @@ describe Projects::CommitController do
     end
   end
 
-  describe '#revert' do
+  describe 'POST revert' do
     context 'when target branch is not provided' do
       it 'should render the 404 page' do
         post(:revert,
@@ -202,7 +202,7 @@ describe Projects::CommitController do
     end
   end
 
-  describe '#cherry_pick' do
+  describe 'POST cherry_pick' do
     context 'when target branch is not provided' do
       it 'should render the 404 page' do
         post(:cherry_pick,
@@ -251,7 +251,7 @@ describe Projects::CommitController do
     end
   end
 
-  describe 'GET #diff_for_path' do
+  describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,

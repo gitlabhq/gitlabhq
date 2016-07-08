@@ -65,7 +65,7 @@ describe Projects::CompareController do
     end
   end
 
-  describe 'GET #diff_for_path' do
+  describe 'GET diff_for_path' do
     def diff_for_path(extra_params = {})
       params = {
         namespace_id: project.namespace.to_param,
