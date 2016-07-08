@@ -7,6 +7,7 @@ class @FilesCommentButton
   UNFOLDABLE_LINE_CLASS = 'js-unfold'
   EMPTY_CELL_CLASS = 'empty-cell'
   OLD_LINE_CLASS = 'old_line'
+  NEW_CLASS = 'new'
   LINE_COLUMN_CLASSES = ".#{LINE_NUMBER_CLASS}, .line_content"
   TEXT_FILE_SELECTOR = '.text-file'
   DEBOUNCE_TIMEOUT_DURATION = 100
@@ -63,17 +64,20 @@ class @FilesCommentButton
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass LINE_CONTENT_CLASS
 
-    $(hoveredElement).next ".#{LINE_CONTENT_CLASS}"
+    $(".#{LINE_CONTENT_CLASS + @diffTypeClass hoveredElement}", hoveredElement.parent())
 
   getButtonParent: (hoveredElement) ->
     if @VIEW_TYPE is 'inline'
       return hoveredElement if hoveredElement.hasClass OLD_LINE_CLASS
 
-      hoveredElement.parent().find ".#{OLD_LINE_CLASS}"
+      $(".#{OLD_LINE_CLASS}", hoveredElement.parent())
     else
       return hoveredElement if hoveredElement.hasClass LINE_NUMBER_CLASS
 
-      $(hoveredElement).prev ".#{LINE_NUMBER_CLASS}"
+      $(".#{LINE_NUMBER_CLASS + @diffTypeClass hoveredElement}", hoveredElement.parent())
+
+  diffTypeClass: (hoveredElement) ->
+    if hoveredElement.hasClass(NEW_CLASS) then '.new' else '.old'
 
   isMovingToSameType: (e) ->
     newButtonParent = @getButtonParent $(e.toElement)
