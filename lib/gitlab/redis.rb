@@ -19,7 +19,7 @@ module Gitlab
 
     class << self
       def params
-        @params || PARAMS_MUTEX.synchronize { @params = new.params }
+        PARAMS_MUTEX.synchronize { new.params }
       end
 
       # @deprecated Use .params instead to get sentinel support
@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def initialize(rails_env=nil)
-      @rails_env = rails_env || Rails.env
+      @rails_env = rails_env || ::Rails.env
     end
 
     def params
@@ -55,7 +55,7 @@ module Gitlab
         # Redis::Store does not handle Unix sockets well, so let's do it for them
         config[:path] = redis_uri.path
       else
-        redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(redis_uri)
+        redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(config[:url])
         config.merge!(redis_hash)
       end
 
@@ -74,7 +74,8 @@ module Gitlab
     end
 
     def fetch_config
-      File.exists?(config_file) ? YAML.load_file(config_file)[@rails_env] : false
+      file = config_file
+      File.exist?(file) ? YAML.load_file(file)[@rails_env] : false
     end
 
     def config_file

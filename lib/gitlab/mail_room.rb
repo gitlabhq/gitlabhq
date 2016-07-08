@@ -1,12 +1,11 @@
 require 'yaml'
 require 'json'
-require_relative 'lib/gitlab/redis' unless defined?(Gitlab::Redis)
+require_relative 'redis' unless defined?(Gitlab::Redis)
 
 module Gitlab
   module MailRoom
 
     class << self
-
       def enabled?
         config[:enabled] && config[:address]
       end
@@ -18,7 +17,7 @@ module Gitlab
       private
 
       def fetch_config
-        return nil unless File.exists?(config_file)
+        return {} unless File.exist?(config_file)
 
         rails_env = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
         all_config = YAML.load_file(config_file)[rails_env].deep_symbolize_keys
@@ -33,11 +32,12 @@ module Gitlab
         if config[:enabled] && config[:address]
           config[:redis_url] = Gitlab::Redis.new(rails_env).url
         end
+
+        config
       end
 
       def config_file
-        file = ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] || 'config/gitlab.yml'
-        File.expand_path("../../../#{file}", __FILE__)
+        ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] || File.expand_path('../../../config/gitlab.yml', __FILE__)
       end
     end
   end
