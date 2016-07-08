@@ -104,6 +104,7 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project
+      expose :shared_projects, using: Entities::Project
     end
 
     class GroupMember < UserBasic
