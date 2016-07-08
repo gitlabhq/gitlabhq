@@ -1,12 +1,13 @@
 .pipelines {
   .stage {
-    max-width: 100px;
+    max-width: 70px;
+    width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-  .duration, .finished_at {
+  .duration, .finished-at {
     margin: 4px 0;
   }
 
@@ -20,5 +21,87 @@
 
   .btn {
     margin: 4px;
+  }
+}
+
+.content-list.pipelines {
+  width: 100%;
+  overflow: auto;
+}
+
+.table.builds {
+  min-width: 1100px;
+
+  tr {
+    th {
+      padding: 18px 10px;
+      border: none;
+    }
+  }
+
+  tbody {
+    border-top-width: 1px;
+  }
+
+  .branch-commit {
+
+    .branch-name {
+      margin-left: 8px;
+      font-weight: bold;
+      max-width: 180px;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      vertical-align: top;
+      text-overflow: ellipsis;
+    }
+
+    .fa {
+      margin: 0 6px;
+    }
+
+    .commit-id {
+      color: $gl-link-color;
+      margin-right: 8px;
+    }
+
+    .commit-title {
+      margin-top: 4px;
+      max-width: 320px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .avatar {
+      margin-left: 0;
+    }
+  }
+
+  .duration,
+  .finished-at {
+    color: $table-text-gray;
+
+    .fa {
+      margin-right: 5px;
+    }
+  }
+
+  .pipeline-actions {
+
+    .btn {
+      color: $table-text-gray;
+    }
+
+    .btn-remove {
+      color: $white-light;
+    }
+  }
+
+  .build-link {
+
+    a {
+      color: $gl-dark-link-color;
+    }
   }
 }

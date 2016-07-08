@@ -51,7 +51,7 @@
               %th.stage
                 %span.has-tooltip{ title: "#{stage.titleize}" }
                   = stage.titleize
-            %%th
+            %th
             %th
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 

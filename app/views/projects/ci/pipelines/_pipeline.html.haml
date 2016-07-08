@@ -10,9 +10,8 @@
       %span ##{pipeline.id}
       - if pipeline.ref
         = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace branch-name"
-        &middot;
+        = icon("code-fork")
       = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: "commit-id monospace"
-      &nbsp;
       - if pipeline.tag?
         %span.label.label-primary tag
       - elsif pipeline.latest?
@@ -26,6 +25,7 @@
 
       %p.commit-title
         - if commit = pipeline.commit
+          = commit_author_avatar(commit, size: 20)
           = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "commit-row-message"
         - else
           Cant find HEAD commit for this branch
@@ -46,14 +46,14 @@
   %td
     - if pipeline.started_at && pipeline.finished_at
       %p.duration
-      = icon("clock-o")
+        = icon("clock-o")
         = duration_in_numbers(pipeline.finished_at, pipeline.started_at)
     - if pipeline.finished_at
-      %p.duration
+      %p.finished-at
         = icon("calendar")
         #{time_ago_with_tooltip(pipeline.finished_at)}
 
-  %td
+  %td.pipeline-actions
     .controls.hidden-xs.pull-right
       - artifacts = pipeline.builds.latest.select { |b| b.artifacts? }
       - if artifacts.present?

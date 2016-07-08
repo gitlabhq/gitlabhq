@@ -83,44 +83,6 @@
   }
 }
 
-
-.table.builds {
-
-  tr {
-    th {
-      padding: 18px 10px;
-      border: none;
-    }
-  }
-
-  tbody {
-    border-top-width: 1px;
-  }
-
-  .branch-commit {
-
-    .branch-name {
-      max-width: 180px;
-      overflow: hidden;
-      display: inline-block;
-      white-space: nowrap;
-      vertical-align: top;
-      text-overflow: ellipsis;
-      margin-left: 10px;
-    }
-
-    .commit-id {
-      color: $gl-link-color;
-    }
-  }
-
-  .build-link {
-    a {
-      color: $gl-dark-link-color;
-    }
-  }
-}
-
 .build-trace {
   background: $ci-output-bg;
   color: $ci-text-color;
