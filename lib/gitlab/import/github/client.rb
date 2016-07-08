@@ -9,6 +9,10 @@ module Gitlab
           @options = Options.new
         end
 
+        def labels
+          request { client.labels(repo, per_page: 100) }
+        end
+
         private
 
         attr_reader :credentials, :options, :repo, :repo_url
