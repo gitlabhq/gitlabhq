@@ -10,13 +10,18 @@ module Gitlab
         end
 
         def labels
-          request { client.labels(repo, per_page: 100) }
+          request { client.labels(repo, per_page: PER_PAGE) }
+        end
+
+        def milestones
+          client.milestones(repo, state: :all, per_page: PER_PAGE)
         end
 
         private
 
         attr_reader :credentials, :options, :repo, :repo_url
 
+        PER_PAGE = 100
         SAFE_REMAINING_REQUESTS = 100
         SAFE_SLEEP_TIME = 500
 

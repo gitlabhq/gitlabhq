@@ -9,6 +9,8 @@ module Gitlab
           end
 
           def each
+            return enum_for(:each) unless block_given?
+
             client.labels.each do |raw|
               label = ::Label.new(
                 project: project,
