@@ -57,6 +57,9 @@ module Ci
     private
 
     def initial_parsing
+      ##
+      # Global config
+      #
       @before_script = @ci_config.before_script
       @image = @ci_config.image
       @after_script = @ci_config.after_script
@@ -65,22 +68,14 @@ module Ci
       @stages = @ci_config.stages
       @cache = @ci_config.cache
 
-      @jobs = {}
-
-      @ci_config.jobs.each do |name, param|
-        add_job(name, param)
-      end
+      ##
+      # Jobs
+      #
+      @jobs = @ci_config.jobs
 
       @jobs.each do |name, job|
         validate_job!(name, job)
       end
-    end
-
-    def add_job(name, job)
-      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
-
-      stage = job[:stage] || job[:type] || DEFAULT_STAGE
-      @jobs[name] = { stage: stage }.merge(job)
     end
 
     def build_job(name, job)
@@ -112,12 +107,13 @@ module Ci
     end
 
     def validate_job!(name, job)
+      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
+
       validate_job_name!(name)
       validate_job_keys!(name, job)
       validate_job_types!(name, job)
       validate_job_script!(name, job)
 
-      validate_job_stage!(name, job) if job[:stage]
       validate_job_variables!(name, job) if job[:variables]
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
@@ -183,12 +179,6 @@ module Ci
 
       if job[:after_script] && !validate_array_of_strings(job[:after_script])
         raise ValidationError, "#{name} job: after_script should be an array of strings"
-      end
-    end
-
-    def validate_job_stage!(name, job)
-      unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
-        raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
       end
     end
 
