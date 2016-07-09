@@ -1,15 +1,23 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Job do
-  let(:entry) { described_class.new(config) }
+  let(:entry) { described_class.new(config, global: global) }
+  let(:global) { spy('Global') }
 
   describe 'validations' do
+    before do
+      entry.process!
+      entry.validate!
+    end
+
     context 'when entry config value is correct' do
       let(:config) { { script: 'rspec' } }
 
       describe '#value' do
         it 'returns key value' do
-          expect(entry.value).to eq(script: 'rspec')
+          expect(entry.value)
+            .to eq(script: 'rspec',
+                   stage: 'test')
         end
       end
 

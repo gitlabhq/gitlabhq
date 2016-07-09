@@ -6,7 +6,11 @@ describe Gitlab::Ci::Config::Node::Stage do
 
   describe 'validations' do
     context 'when stage config value is correct' do
-      let(:config) { :build }
+      let(:config) { 'build' }
+
+      before do
+        allow(global).to receive(:stages).and_return(%w[build])
+      end
 
       describe '#value' do
         it 'returns a stage key' do
@@ -39,16 +43,16 @@ describe Gitlab::Ci::Config::Node::Stage do
 
           it 'reports errors about wrong type' do
             expect(stage.errors)
-              .to include 'stage config should be a string or symbol'
+              .to include 'stage config should be a string'
           end
         end
 
         context 'when stage is not present in global configuration' do
-          let(:config) { :unknown }
+          let(:config) { 'unknown' }
 
           before do
             allow(global)
-              .to receive(:stages).and_return([:test, :deploy])
+              .to receive(:stages).and_return(%w[test deploy])
           end
 
           it 'reports error about missing stage' do
@@ -65,7 +69,7 @@ describe Gitlab::Ci::Config::Node::Stage do
 
   describe '#known?' do
     before do
-      allow(global).to receive(:stages).and_return([:test, :deploy])
+      allow(global).to receive(:stages).and_return(%w[test deploy])
     end
 
     context 'when stage is not known' do
@@ -77,7 +81,7 @@ describe Gitlab::Ci::Config::Node::Stage do
     end
 
     context 'when stage is known' do
-      let(:config) { :test }
+      let(:config) { 'test' }
 
       it 'returns false' do
         expect(stage.known?).to be true
@@ -87,7 +91,7 @@ describe Gitlab::Ci::Config::Node::Stage do
 
   describe '.default' do
     it 'returns default stage' do
-      expect(described_class.default).to eq :test
+      expect(described_class.default).to eq 'test'
     end
   end
 end

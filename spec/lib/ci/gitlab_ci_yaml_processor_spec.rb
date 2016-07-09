@@ -1082,21 +1082,21 @@ EOT
         config = YAML.dump({ rspec: { script: "test", type: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:type config should be a string")
       end
 
       it "returns errors if job stage is not a pre-defined stage" do
         config = YAML.dump({ rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test, deploy")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:type config should be one of defined stages (build, test, deploy)")
       end
 
       it "returns errors if job stage is not a defined stage" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", type: "acceptance" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: stage parameter should be build, test")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:type config should be one of defined stages (build, test)")
       end
 
       it "returns errors if stages is not an array" do

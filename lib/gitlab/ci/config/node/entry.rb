@@ -20,21 +20,21 @@ module Gitlab
             end
 
             @validator = self.class.validator.new(self)
-            @validator.validate
+            @validator.validate(:new)
           end
 
           def process!
             return unless valid?
 
-            nodes.each do |key, essence|
-              @entries[key] = create(key, essence)
-            end
-
+            compose!
             @entries.each_value(&:process!)
           end
 
           def validate!
-            @validator.validate(:processed)
+            if @validator.valid?(:new)
+              @validator.validate(:processed)
+            end
+
             @entries.each_value(&:validate!)
           end
 
@@ -94,6 +94,12 @@ module Gitlab
           end
 
           private
+
+          def compose!
+            nodes.each do |key, essence|
+              @entries[key] = create(key, essence)
+            end
+          end
 
           def create(entry, essence)
             raise NotImplementedError

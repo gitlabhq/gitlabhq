@@ -9,7 +9,7 @@ module Gitlab
           include Validatable
 
           validations do
-            validates :config, key: true
+            validates :config, type: String
             validates :global, required_attribute: true
             validate :known_stage, on: :processed
 
@@ -27,7 +27,7 @@ module Gitlab
           end
 
           def self.default
-            :test
+            'test'
           end
         end
       end
