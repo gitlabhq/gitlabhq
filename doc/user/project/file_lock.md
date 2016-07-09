@@ -45,11 +45,17 @@ Delta compression using up to 4 threads.
 Compressing objects: 100% (3/3), done.
 Writing objects: 100% (3/3), 320 bytes | 0 bytes/s, done.
 Total 3 (delta 1), reused 0 (delta 0)
-remote: GitLab: The path '.gitignore' is locked by TheDude
+remote: GitLab: The path '.gitignore' is locked by Administrator
 To https://example.com/gitlab-org/gitlab-ce.git
  ! [remote rejected] master -> master (pre-receive hook declined)
  error: failed to push some refs to 'https://example.com/gitlab-org/gitlab-ce.git'
 ```
+
+Similarly, when a user that is not the author of the locked state of a file
+accepts a merge request, an error message will appear stating that the file
+is locked.
+
+![Merge request error message](img/file_lock_merge_request_error_message.png)
 
 ## Locking a file or a directory
 
