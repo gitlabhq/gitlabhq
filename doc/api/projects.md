@@ -52,7 +52,7 @@ Parameters:
     "owner": {
       "id": 3,
       "name": "Diaspora",
-      "created_at": "2013-09-30T13: 46: 02Z"
+      "created_at": "2013-09-30T13:46:02Z"
     },
     "name": "Diaspora Client",
     "name_with_namespace": "Diaspora / Diaspora Client",
@@ -64,17 +64,18 @@ Parameters:
     "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "created_at": "2013-09-30T13: 46: 02Z",
-    "last_activity_at": "2013-09-30T13: 46: 02Z",
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13: 46: 02Z",
+      "created_at": "2013-09-30T13:46:02Z",
       "description": "",
       "id": 3,
       "name": "Diaspora",
       "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13: 46: 02Z"
+      "updated_at": "2013-09-30T13:46:02Z"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -113,6 +114,7 @@ Parameters:
     "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -225,7 +227,7 @@ Parameters:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -237,17 +239,18 @@ Parameters:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -555,17 +558,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -620,17 +624,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
@@ -682,7 +687,7 @@ Example response:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -694,17 +699,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -767,7 +773,7 @@ Example response:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -779,17 +785,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -991,11 +998,11 @@ Parameters:
   "id": 1,
   "url": "http://example.com/hook",
   "project_id": 3,
-  "push_events": "true",
-  "issues_events": "true",
-  "merge_requests_events": "true",
-  "note_events": "true",
-  "enable_ssl_verification": "true",
+  "push_events": true,
+  "issues_events": true,
+  "merge_requests_events": true,
+  "note_events": true,
+  "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -1115,8 +1122,8 @@ Parameters:
         "name": "Jeremy Ashkenas",
         "email": "jashkenas@example.com"
       },
-      "authored_date": "2013-09-07T12: 58: 21+00: 00",
-      "committed_date": "2013-09-07T12: 58: 21+00: 00"
+      "authored_date": "2013-09-07T12:58:21+00:00",
+      "committed_date": "2013-09-07T12:58:21+00:00"
     },
     "protected": false
   }

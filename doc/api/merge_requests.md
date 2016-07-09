@@ -49,10 +49,10 @@ Parameters:
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
     },
-    "source_project_id": "2",
-    "target_project_id": "3",
+    "source_project_id": 2,
+    "target_project_id": 3,
     "labels": [ ],
-    "description":"fixed login page css paddings",
+    "description": "fixed login page css paddings",
     "work_in_progress": false,
     "milestone": {
       "id": 5,
@@ -113,10 +113,10 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": "2",
-  "target_project_id": "3",
+  "source_project_id": 2,
+  "target_project_id": 3,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -296,7 +296,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -465,7 +465,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -531,7 +531,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
