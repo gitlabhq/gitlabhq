@@ -12,10 +12,11 @@ $sidebar-breakpoint: 1024px;
 /*
  * UI elements
  */
-$border-color:       #e5e5e5;
-$focus-border-color: #3aabf0;
-$table-border-color: #f0f0f0;
-$background-color:   #fafafa;
+$border-color:          #e5e5e5;
+$focus-border-color:    #3aabf0;
+$table-border-color:    #f0f0f0;
+$background-color:      #fafafa;
+$dark-background-color: #f7f7f7;
 
 /*
  * Text
@@ -152,9 +153,6 @@ $help-well-border: #e5e5e5;
 $warning-message-bg: #fbf2d9;
 $warning-message-color: #9e8e60;
 $warning-message-border: #f0e2bb;
-
-/* header */
-$light-grey-header: #faf9f9;
 
 /* tanuki logo colors */
 $tanuki-red: #e24329;
