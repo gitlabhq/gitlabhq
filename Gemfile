@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gem 'rails', '4.2.6'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
@@ -11,11 +11,11 @@ gem 'responders', '~> 2.0'
 gem 'sprockets', '~> 3.6.0'
 
 # Default values for AR models
-gem "default_value_for", "~> 3.0.0"
+gem 'default_value_for', '~> 3.0.0'
 
 # Supported DBs
-gem "mysql2", '~> 0.3.16', group: :mysql
-gem "pg", '~> 0.18.2', group: :postgres
+gem 'mysql2', '~> 0.3.16', group: :mysql
+gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 4.0'
@@ -52,16 +52,16 @@ gem 'u2f', '~> 0.2.1'
 gem 'validates_hostname', '~> 1.0.0'
 
 # Browser detection
-gem "browser", '~> 2.2'
+gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 10.2'
+gem 'gitlab_git', '~> 10.2'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
-gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
 gem 'net-ldap'
 
 # Git Wiki
@@ -70,7 +70,7 @@ gem 'gollum-lib', '~> 4.1.0', require: false
 gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 
 # Language detection
-gem "github-linguist", "~> 4.7.0", require: "linguist"
+gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
 gem 'grape',        '~> 0.13.0'
@@ -78,13 +78,13 @@ gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
 # Pagination
-gem "kaminari", "~> 0.17.0"
+gem 'kaminari', '~> 0.17.0'
 
 # HAML
 gem 'hamlit', '~> 2.5'
 
 # Files attachments
-gem "carrierwave", '~> 0.10.0'
+gem 'carrierwave', '~> 0.10.0'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -99,13 +99,13 @@ gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
-gem "unf", '~> 0.1.4'
+gem 'unf', '~> 0.1.4'
 
 # Authorization
-gem "six", '~> 0.2.0'
+gem 'six', '~> 0.2.0'
 
 # Seed data
-gem "seed-fu", '~> 2.3.5'
+gem 'seed-fu', '~> 2.3.5'
 
 # Search
 gem 'elasticsearch-model'
@@ -134,29 +134,29 @@ gem 'diffy', '~> 3.0.3'
 
 # Application server
 group :unicorn do
-  gem "unicorn", '~> 4.9.0'
+  gem 'unicorn', '~> 4.9.0'
   gem 'unicorn-worker-killer', '~> 0.4.2'
 end
 
 # State machine
-gem "state_machines-activerecord", '~> 0.4.0'
+gem 'state_machines-activerecord', '~> 0.4.0'
 # Run events after state machine commits
-gem 'after_commit_queue'
+gem 'after_commit_queue', '~> 1.3.0'
 
 # Issue tags
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: nil
+gem 'sinatra', '~> 1.4.4', require: false
 gem 'sidekiq', '~> 4.0'
 gem 'sidekiq-cron', '~> 0.4.0'
-gem 'redis-namespace'
+gem 'redis-namespace', '~> 1.5.2'
 
 # HTTP requests
-gem "httparty", '~> 0.13.3'
+gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem "rainbow", '~> 2.1.0'
+gem 'rainbow', '~> 2.1.0'
 
 # GitLab settings
 gem 'settingslogic', '~> 2.0.9'
@@ -166,7 +166,7 @@ gem 'settingslogic', '~> 2.0.9'
 gem 'version_sorter', '~> 2.0.0'
 
 # Cache
-gem "redis-rails", '~> 4.0.0'
+gem 'redis-rails', '~> 4.0.0'
 
 # Redis
 gem 'redis', '~> 3.2'
@@ -179,13 +179,13 @@ gem 'tinder', '~> 1.10.0'
 gem 'hipchat', '~> 1.5.0'
 
 # Flowdock integration
-gem "gitlab-flowdock-git-hook", "~> 1.0.1"
+gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 
 # Gemnasium integration
-gem "gemnasium-gitlab-service", "~> 0.2"
+gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
-gem "slack-notifier", "~> 1.2.0"
+gem 'slack-notifier', '~> 1.2.0'
 
 # Asana integration
 gem 'asana', '~> 0.4.0'
@@ -197,20 +197,20 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'd3_rails', '~> 3.5.0'
 
 # underscore-rails
-gem "underscore-rails", "~> 1.8.0"
+gem 'underscore-rails', '~> 1.8.0'
 
 # Sanitize user input
-gem "sanitize", '~> 2.0'
+gem 'sanitize', '~> 2.0'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
-gem "loofah", "~> 2.0.3"
+gem 'loofah', '~> 2.0.3'
 
 # Working with license
 gem 'licensee', '~> 8.0.0'
 
 # Protect against bruteforcing
-gem "rack-attack", '~> 4.3.1'
+gem 'rack-attack', '~> 4.3.1'
 
 # Ace editor
 gem 'ace-rails-ap', '~> 4.0.2'
@@ -224,9 +224,9 @@ gem 'charlock_holmes', '~> 0.7.3'
 # Parse duration
 gem 'chronic_duration', '~> 0.10.6'
 
-gem "sass-rails", '~> 5.0.0'
-gem "coffee-rails", '~> 4.1.0'
-gem "uglifier", '~> 2.7.2'
+gem 'sass-rails', '~> 5.0.0'
+gem 'coffee-rails', '~> 4.1.0'
+gem 'uglifier', '~> 2.7.2'
 gem 'turbolinks', '~> 2.5.0'
 gem 'jquery-turbolinks', '~> 2.1.0'
 
@@ -258,13 +258,13 @@ group :metrics do
 end
 
 group :development do
-  gem "foreman"
+  gem 'foreman', '~> 0.78.0'
   gem 'brakeman', '~> 3.3.0', require: false
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rerun', '~> 0.11.0'
-  gem 'bullet', require: false
-  gem 'rblineprof', platform: :mri, require: false
+  gem 'bullet', '~> 5.0.0', require: false
+  gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
 
   # Better errors handler
@@ -272,15 +272,15 @@ group :development do
   gem 'binding_of_caller', '~> 0.7.2'
 
   # Docs generator
-  gem "sdoc", '~> 0.3.20'
+  gem 'sdoc', '~> 0.3.20'
 
   # thin instead webrick
   gem 'thin', '~> 1.7.0'
 end
 
 group :development, :test do
-  gem 'byebug', platform: :mri
-  gem 'pry-rails'
+  gem 'byebug', '~> 8.2.1', platform: :mri
+  gem 'pry-rails', '~> 0.3.4'
 
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
@@ -288,7 +288,7 @@ group :development, :test do
   gem 'database_cleaner',   '~> 1.4.0'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.5.0'
-  gem 'rspec-retry'
+  gem 'rspec-retry',        '~> 0.4.5'
   gem 'spinach-rails',      '~> 0.2.1'
   gem 'spinach-rerun-reporter', '~> 0.0.2'
 
@@ -314,14 +314,14 @@ group :development, :test do
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'simplecov', '~> 0.11.0', require: false
-  gem 'flog', require: false
-  gem 'flay', require: false
-  gem 'bundler-audit', require: false
+  gem 'flog', '~> 4.3.2', require: false
+  gem 'flay', '~> 2.6.1', require: false
+  gem 'bundler-audit', '~> 0.5.0', require: false
 
-  gem 'benchmark-ips', require: false
+  gem 'benchmark-ips', '~> 2.3.0', require: false
 
-  gem "license_finder", require: false
-  gem 'knapsack'
+  gem 'license_finder', '~> 2.1.0', require: false
+  gem 'knapsack', '~> 1.11.0'
 end
 
 group :test do
@@ -329,30 +329,30 @@ group :test do
   gem 'email_spec', '~> 1.6.0'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
-  gem 'sham_rack'
+  gem 'sham_rack', '~> 1.3.6'
 end
 
 group :production do
-  gem "gitlab_meta", '7.0'
+  gem 'gitlab_meta', '7.0'
 end
 
-gem "newrelic_rpm", '~> 3.14'
+gem 'newrelic_rpm', '~> 3.14'
 
 gem 'octokit', '~> 4.3.0'
 
-gem "mail_room", "~> 0.8"
+gem 'mail_room', '~> 0.8'
 
 gem 'email_reply_parser', '~> 0.5.8'
 
 ## CI
 gem 'activerecord-session_store', '~> 1.0.0'
-gem "nested_form", '~> 0.3.2'
+gem 'nested_form', '~> 0.3.2'
 
 # OAuth
 gem 'oauth2', '~> 1.2.0'
 
 # Soft deletion
-gem "paranoia", "~> 2.0"
+gem 'paranoia', '~> 2.0'
 
 # Health check
 gem 'health_check', '~> 1.5.1'

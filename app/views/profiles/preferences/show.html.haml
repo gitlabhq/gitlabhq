@@ -1,4 +1,5 @@
 - page_title 'Preferences'
+= render 'profiles/head'
 
 = form_for @user, url: profile_preferences_path, remote: true, method: :put, html: {class: 'row prepend-top-default js-preferences-form'} do |f|
   .col-lg-3.profile-settings-sidebar

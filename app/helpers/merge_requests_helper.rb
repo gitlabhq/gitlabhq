@@ -55,6 +55,10 @@ module MergeRequestsHelper
     end.sort.to_sentence
   end
 
+  def mr_closes_issues
+    @mr_closes_issues ||= @merge_request.closes_issues
+  end
+
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,

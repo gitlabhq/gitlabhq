@@ -55,7 +55,6 @@
 #= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
-#= require cropper
 #= require u2f
 
 window.slugify = (text) ->

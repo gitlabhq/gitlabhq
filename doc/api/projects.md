@@ -82,7 +82,8 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true
+    "public_builds": true,
+    "shared_with_groups": []
   },
   {
     "id": 6,
@@ -140,7 +141,8 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true
+    "public_builds": true,
+    "shared_with_groups": []
   }
 ]
 ```
@@ -262,7 +264,20 @@ Parameters:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": [
+    {
+      "group_id": 4,
+      "group_name": "Twitter",
+      "group_access_level": 30
+    },
+    {
+      "group_id": 3,
+      "group_name": "Gitlab Org",
+      "group_access_level": 10
+    }
+  ]
 }
 ```
 
@@ -425,6 +440,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -449,6 +465,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -475,6 +492,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `public_builds` (optional)
@@ -553,7 +571,9 @@ Example response:
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
   "forks_count": 0,
-  "star_count": 1
+  "star_count": 1,
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -616,7 +636,9 @@ Example response:
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
   "forks_count": 0,
-  "star_count": 0
+  "star_count": 0,
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -699,7 +721,9 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -713,7 +737,7 @@ have the proper access rights, code 403 is returned. Status 404 is returned if t
 doesn't exist, or is hidden to the user.
 
 ```
-POST /projects/:id/archive
+POST /projects/:id/unarchive
 ```
 
 | Attribute | Type | Required | Description |
@@ -782,7 +806,9 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 

@@ -135,7 +135,6 @@ class Dispatcher
       when 'dashboard', 'root'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
-        new Profile()
         new NotificationsForm()
         new NotificationsDropdown()
       when 'projects'

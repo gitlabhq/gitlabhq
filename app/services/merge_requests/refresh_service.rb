@@ -62,19 +62,14 @@ module MergeRequests
       merge_requests.each do |merge_request|
         if merge_request.source_branch == @branch_name || force_push?
           merge_request.reload_diff
-          merge_request.mark_as_unchecked
         else
           mr_commit_ids = merge_request.commits.map(&:id)
           push_commit_ids = @commits.map(&:id)
           matches = mr_commit_ids & push_commit_ids
-
-          if matches.any?
-            merge_request.reload_diff
-            merge_request.mark_as_unchecked
-          else
-            merge_request.mark_as_unchecked
-          end
+          merge_request.reload_diff if matches.any?
         end
+
+        merge_request.mark_as_unchecked
       end
     end
 

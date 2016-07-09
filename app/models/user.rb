@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
-  default_value_for :external, false
+  default_value_for(:external) { current_application_settings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
