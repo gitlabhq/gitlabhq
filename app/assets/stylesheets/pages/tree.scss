@@ -23,12 +23,11 @@
       }
 
       &:hover {
-        cursor: pointer;
-
         td {
           background-color: $row-hover;
           border-top: 1px solid $row-hover-border;
           border-bottom: 1px solid $row-hover-border;
+          cursor: pointer;
         }
       }
 
