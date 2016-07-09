@@ -4,11 +4,7 @@
       #{time_ago_with_tooltip(event.created_at)}
 
     = cache [event, current_application_settings, "v2.2"] do
-      - if event.author
-        = link_to user_path(event.author) do
-          = image_tag avatar_icon(event.author_email, 40), class: "avatar s40", alt:''
-      - else
-        = image_tag avatar_icon(event.author_email, 40), class: "avatar s40", alt:''
+      = author_avatar(event, size: 40)
 
       - if event.created_project?
         = render "events/event/created_project", event: event

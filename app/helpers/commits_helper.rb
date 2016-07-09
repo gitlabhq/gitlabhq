@@ -16,16 +16,6 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
-  def commit_author_avatar(commit, options = {})
-    options = options.merge(source: :author)
-    user = commit.send(options[:source])
-
-    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
-    person_email = user.try(:email) || source_email
-
-    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
-  end
-
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
