@@ -33,30 +33,38 @@ module Gitlab
           node :cache, Node::Cache,
             description: 'Configure caching between build jobs.'
 
-          node :jobs, Node::Jobs,
-            description: 'Definition of jobs for this pipeline.'
-
           helpers :before_script, :image, :services, :after_script,
                   :variables, :stages, :types, :cache, :jobs
 
-          def initialize(config, **attributes)
-            super(setup(config), attributes)
+          def initialize(*)
+            super
             @global = self
-          end
-
-          def stages
-            stages_defined? ? stages_value : types_value
           end
 
           private
 
-          def setup(config)
-            return config unless config.is_a?(Hash)
+          def compose!
+            super
 
-            jobs = config.except(*nodes.keys)
-            global = config.slice(*nodes.keys)
+            compose_stages!
+            compose_jobs!
+          end
 
-            global.merge(jobs: jobs)
+          def compose_stages!
+            factory = Node::Factory.new(Node::Jobs)
+            factory.value(@config.except(*nodes.keys))
+            factory.with(key: :jobs, parent: self, global: self)
+            factory.with(description: 'Jobs definition for this pipeline')
+
+            @entries[:jobs] = factory.create!
+          end
+
+          def compose_jobs!
+            if types_defined? && !stages_defined?
+              @entries[:stages] = @entries[:types]
+            end
+
+            @entries.delete(:types)
           end
         end
       end

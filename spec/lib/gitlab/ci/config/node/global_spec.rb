@@ -35,7 +35,7 @@ describe Gitlab::Ci::Config::Node::Global do
         end
 
         it 'creates node object for each entry' do
-          expect(global.descendants.count).to eq 9
+          expect(global.descendants.count).to eq 8
         end
 
         it 'creates node object using valid class' do
@@ -142,7 +142,7 @@ describe Gitlab::Ci::Config::Node::Global do
 
       describe '#nodes' do
         it 'instantizes all nodes' do
-          expect(global.descendants.count).to eq 9
+          expect(global.descendants.count).to eq 8
         end
 
         it 'contains undefined nodes' do

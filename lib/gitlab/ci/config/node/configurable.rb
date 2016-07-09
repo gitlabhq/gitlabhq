@@ -27,8 +27,8 @@ module Gitlab
 
           def create(key, factory)
             factory
-              .value(config[key])
-              .with(key: key, parent: self, global: global)
+              .value(@config[key])
+              .with(key: key, parent: self, global: @global)
 
             factory.create!
           end
