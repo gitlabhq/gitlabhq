@@ -7,6 +7,7 @@ v 8.10.0 (unreleased)
   - Add Application Setting to configure default Repository Path for new projects
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
+  - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
