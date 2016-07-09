@@ -339,11 +339,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_event
-    self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
+    @merge_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
 
   def closed_event
-    self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
+    @closed_event ||= target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze

@@ -63,6 +63,14 @@ module API
       expose :path, :path_with_namespace
     end
 
+    class SharedGroup < Grape::Entity
+      expose :group_id
+      expose :group_name do |group_link, options|
+        group_link.group.name
+      end
+      expose :group_access, as: :group_access_level
+    end
+
     class Project < Grape::Entity
       expose :id, :description, :default_branch, :tag_list
       expose :public?, as: :public
@@ -82,6 +90,9 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds
+      expose :shared_with_groups do |project, options|
+        SharedGroup.represent(project.project_group_links.all, options)
+      end
     end
 
     class ProjectMember < UserBasic
@@ -108,6 +119,7 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project
+      expose :shared_projects, using: Entities::Project
     end
 
     class GroupMember < UserBasic

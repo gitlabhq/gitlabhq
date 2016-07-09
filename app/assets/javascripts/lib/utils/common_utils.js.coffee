@@ -5,12 +5,12 @@
 
   w.gl.utils.isInGroupsPage = ->
 
-    return $('body').data('page').split(':')[0] is 'groups'
+    return gl.utils.getPagePath() is 'groups'
 
 
   w.gl.utils.isInProjectPage = ->
 
-    return $('body').data('page').split(':')[0] is 'projects'
+    return gl.utils.getPagePath() is 'projects'
 
 
   w.gl.utils.getProjectSlug = ->
@@ -42,6 +42,9 @@
   
   gl.utils.capitalize = (str) ->
     return str[0].toUpperCase() + str.slice(1);
+
+  gl.utils.getPagePath = ->
+    return $('body').data('page').split(':')[0]
 
 
   jQuery.timefor = (time, suffix, expiredLabel) ->

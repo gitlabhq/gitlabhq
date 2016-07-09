@@ -51,7 +51,8 @@ module Gitlab
         elasticsearch_search: false,
         elasticsearch_indexing: false,
         elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
-        elasticsearch_port: ENV['ELASTIC_PORT'] || '9200'
+        elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
+        user_default_external: false
       )
     end
 

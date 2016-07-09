@@ -152,6 +152,7 @@ class ApplicationSetting < ActiveRecord::Base
       elasticsearch_host: ENV['ELASTIC_HOST'] || 'localhost',
       elasticsearch_port: ENV['ELASTIC_PORT'] || '9200',
       repository_storage: 'default',
+      user_default_external: false,
     )
   end
 

@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.boolean  "elasticsearch_indexing",                default: false,       null: false
     t.boolean  "elasticsearch_search",                  default: false,       null: false

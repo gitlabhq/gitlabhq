@@ -52,5 +52,6 @@ information from database or file system
 * Use red button for destructive actions (not revertable). For example removing issue.
 * Use green or blue button for primary action. Primary button should be only one. 
 Do not use both green and blue button in one form. 
-* For all other cases use default white button 
+* For all other cases use default white button. 
+* Text button should have only first word capitalized. So should be "Create issue" instead of "Create Issue"  
 

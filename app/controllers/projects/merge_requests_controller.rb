@@ -10,7 +10,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip,
     :approve, :rebase
   ]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
@@ -54,9 +53,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def show
-    @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
-      group(:commit_id).count
-
     respond_to do |format|
       format.html
 
@@ -80,6 +76,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     apply_diff_view_cookie!
+
+    @merge_request_diff = @merge_request.merge_request_diff
 
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
@@ -110,7 +108,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def commits
     respond_to do |format|
       format.html { render 'show' }
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_commits') } }
+      format.json do
+        # Get commits from repository
+        # or from cache if already merged
+        @commits = @merge_request.commits
+        @note_counts = Note.where(commit_id: @commits.map(&:id)).
+          group(:commit_id).count
+
+        render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
+      end
     end
   end
 
@@ -348,10 +354,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def closes_issues
-    @closes_issues ||= @merge_request.closes_issues
-  end
-
   def authorize_update_merge_request!
     return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
@@ -380,30 +382,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    # Build a note object for comment form
-    @note = @project.notes.new(noteable: @merge_request)
-
-    @discussions = @merge_request.mr_and_commit_notes.
-      inc_author_project_award_emoji.
-      fresh.
-      discussions
-
-    @notes = Banzai::NoteRenderer.render(
-      @discussions.flatten,
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
-
     @noteable = @merge_request
-
-    # Get commits from repository
-    # or from cache if already merged
-    @commits = @merge_request.commits
-
-    @merge_request_diff = @merge_request.merge_request_diff
+    @commits_count = @merge_request.commits.count
 
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses if @pipeline
@@ -412,12 +392,36 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.unlock_mr
       @merge_request.close
     end
+
+    if request.format == :html || action_name == 'show'
+      define_show_html_vars
+    end
+  end
+
+  # Discussion tab data is only required on html requests
+  def define_show_html_vars
+    # Build a note object for comment form
+    @note = @project.notes.new(noteable: @noteable)
+
+    @discussions = @noteable.mr_and_commit_notes.
+      inc_author_project_award_emoji.
+      fresh.
+      discussions
+
+    # This is not executed lazily
+    @notes = Banzai::NoteRenderer.render(
+      @discussions.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
   end
 
   def define_widget_vars
     @pipeline = @merge_request.pipeline
     @pipelines = [@pipeline].compact
-    closes_issues
   end
 
   def invalid_mr
