@@ -17,9 +17,7 @@ module Ci
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
-      @config = @ci_config.to_hash
-
-      @path = path
+      @config, @path = @ci_config.to_hash, path
 
       unless @ci_config.valid?
         raise ValidationError, @ci_config.errors.first

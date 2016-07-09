@@ -50,7 +50,7 @@ module Gitlab
             compose_jobs!
           end
 
-          def compose_stages!
+          def compose_jobs!
             factory = Node::Factory.new(Node::Jobs)
             factory.value(@config.except(*nodes.keys))
             factory.with(key: :jobs, parent: self, global: self)
@@ -59,7 +59,14 @@ module Gitlab
             @entries[:jobs] = factory.create!
           end
 
-          def compose_jobs!
+          def compose_stages!
+            ##
+            # Deprecated `:types` key workaround - if types are defined and
+            # stages are not defined we use types definition as stages.
+            #
+            # Otherwise we use stages in favor of types, and remove types from
+            # processing.
+            #
             if types_defined? && !stages_defined?
               @entries[:stages] = @entries[:types]
             end
