@@ -91,33 +91,10 @@ ul.notes {
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
 
-        // On diffs code should wrap nicely and not overflow
-        code {
-          white-space: pre-wrap;
-        }
-
         ul.task-list {
           ul:not(.task-list) {
             padding-left: 1.3em;
           }
-        }
-
-        hr {
-          // Darken 'whitesmoke' a bit to make it more visible in note bodies
-          border-color: darken(#f5f5f5, 8%);
-          margin: 10px 0;
-        }
-
-        code {
-          word-break: keep-all;
-        }
-
-        // Border around images in issue and MR comments.
-        img:not(.emoji) {
-          border: 1px solid $table-border-gray;
-          padding: 5px;
-          margin: 5px 0;
-          max-height: calc(100vh - 100px);
         }
       }
     }
