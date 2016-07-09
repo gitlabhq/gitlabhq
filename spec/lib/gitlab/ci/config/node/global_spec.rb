@@ -137,7 +137,7 @@ describe Gitlab::Ci::Config::Node::Global do
     end
 
     context 'when most of entires not defined' do
-      let(:hash) { { cache: { key: 'a' }, rspec: {} } }
+      let(:hash) { { cache: { key: 'a' }, rspec: { script: %w[ls] } } }
       before { global.process! }
 
       describe '#nodes' do

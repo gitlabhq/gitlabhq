@@ -39,6 +39,16 @@ describe Gitlab::Ci::Config::Node::Job do
           end
         end
       end
+
+      context 'when config is empty' do
+        let(:config) { {} }
+
+        describe '#valid' do
+          it 'is invalid' do
+            expect(entry).not_to be_valid
+          end
+        end
+      end
     end
   end
 

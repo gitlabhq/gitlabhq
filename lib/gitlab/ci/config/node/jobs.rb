@@ -30,17 +30,19 @@ module Gitlab
           private
 
           def create(name, config)
-            job_node(name).new(config, job_attributes(name))
+            Node::Factory.new(job_node(name))
+              .value(config || {})
+              .with(key: name, parent: self, global: @global)
+              .with(description: "#{name} job definition.")
+              .create!
           end
 
           def job_node(name)
-            name.to_s.start_with?('.') ? Node::HiddenJob : Node::Job
-          end
-
-          def job_attributes(name)
-            @attributes.merge(key: name,
-                              parent: self,
-                              description: "#{name} job definition.")
+            if name.to_s.start_with?('.')
+              Node::HiddenJob
+            else
+              Node::Job
+            end
           end
         end
       end

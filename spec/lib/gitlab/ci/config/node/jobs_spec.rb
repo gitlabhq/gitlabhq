@@ -4,6 +4,11 @@ describe Gitlab::Ci::Config::Node::Jobs do
   let(:entry) { described_class.new(config, global: spy) }
 
   describe 'validations' do
+    before do
+      entry.process!
+      entry.validate!
+    end
+
     context 'when entry config value is correct' do
       let(:config) { { rspec: { script: 'rspec' } } }
 
@@ -25,25 +30,20 @@ describe Gitlab::Ci::Config::Node::Jobs do
           end
         end
 
-        context 'when no visible jobs present' do
-          let(:config) { { '.hidden'.to_sym => {} } }
+        context 'when job is unspecified' do
+          let(:config) { { rspec: nil } }
 
-          context 'when not processed' do
-            it 'is valid' do
-              expect(entry.errors).to be_empty
-            end
+          it 'is not valid' do
+            expect(entry).not_to be_valid
           end
+        end
 
-          context 'when processed' do
-            before do
-              entry.process!
-              entry.validate!
-            end
+        context 'when no visible jobs present' do
+          let(:config) { { '.hidden'.to_sym => { script: [] } } }
 
-            it 'returns error about no visible jobs defined' do
-              expect(entry.errors)
-                .to include 'jobs config should contain at least one visible job'
-            end
+          it 'returns error about no visible jobs defined' do
+            expect(entry.errors)
+              .to include 'jobs config should contain at least one visible job'
           end
         end
       end

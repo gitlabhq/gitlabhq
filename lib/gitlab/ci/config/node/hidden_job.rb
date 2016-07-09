@@ -10,6 +10,7 @@ module Gitlab
 
           validations do
             validates :config, type: Hash
+            validates :config, presence: true
           end
 
           def relevant?

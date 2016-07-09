@@ -38,6 +38,7 @@ module Gitlab
 
           def initialize(*)
             super
+
             @global = self
           end
 

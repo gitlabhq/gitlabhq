@@ -8,6 +8,10 @@ module Gitlab
         class Job < Entry
           include Configurable
 
+          validations do
+            validates :config, presence: true
+          end
+
           node :stage, Stage,
             description: 'Pipeline stage this job will be executed into.'
 
