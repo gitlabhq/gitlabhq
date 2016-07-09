@@ -29,7 +29,7 @@
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
-- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
+- [Custom git hooks](administration/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
 - [Email](tools/email.md) Email GitLab users from GitLab
 - [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.

@@ -4,8 +4,8 @@
 **Note:** Custom Git hooks must be configured on the filesystem of the GitLab
 server. Only GitLab server administrators will be able to complete these tasks.
 Please explore [webhooks](../web_hooks/web_hooks.md) as an option if you do not
-have filesystem access. For a user configurable Push Rules interface, please see
-[GitLab Enterprise Edition Push Rules](http://docs.gitlab.com/ee/push_rules/push_rules.html).**
+have filesystem access. For a user configurable Git hook interface, please see
+[GitLab Enterprise Edition Git Hooks](http://docs.gitlab.com/ee/git_hooks/git_hooks.html).
 
 Git natively supports hooks that are executed on different actions.
 Examples of server-side git hooks include pre-receive, post-receive, and update.
@@ -48,7 +48,8 @@ as appropriate.
 This feature was [introduced][5073] in GitLab 8.10.
 
 If the commit is declined or an error occurs during the Git hook check,
-the STDERR and/or SDOUT message of the hook will be present in GitLab's UI.
+the STDERR or STDOUT message of the hook will be present in GitLab's UI.
+STDERR takes precedence over STDOUT.
 
 ![Custom message from custom Git hook](img/custom_hooks_error_msg.png)
 
