@@ -130,6 +130,15 @@ describe Banzai::Filter::AutolinkFilter, lib: true do
 
       doc = filter("See #{link}...")
       expect(doc.at_css('a').text).to eq link
+
+      doc = filter("See #{link}\"")
+      expect(doc.at_css('a').text).to eq link
+
+      doc = filter("See #{link}'")
+      expect(doc.at_css('a').text).to eq link
+
+      doc = filter("See #{link})")
+      expect(doc.at_css('a').text).to eq link
     end
 
     it 'does not include trailing HTML entities' do

@@ -26,7 +26,7 @@ module Banzai
       # in the generated link.
       #
       # Rubular: http://rubular.com/r/cxjPyZc7Sb
-      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<!,|\.)}
+      LINK_PATTERN = %r{([a-z][a-z0-9\+\.-]+://\S+)(?<![,."':?!&)<>])}
 
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
