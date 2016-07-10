@@ -18,6 +18,7 @@ v 8.10.0 (unreleased)
   - Fix MR-auto-close text added to description. !4836
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
