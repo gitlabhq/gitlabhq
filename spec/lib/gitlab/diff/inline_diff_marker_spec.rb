@@ -14,7 +14,7 @@ describe Gitlab::Diff::InlineDiffMarker, lib: true do
       end
     end
 
-    context "when the text text is not html safe" do
+    context "when the rich text is not html safe" do
       let(:raw) { "abc 'def'" }
       let(:inline_diffs) { [2..5] }
       let(:subject) { described_class.new(raw).mark(inline_diffs) }
