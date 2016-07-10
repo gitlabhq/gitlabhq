@@ -8,7 +8,7 @@ Single `>>>` inside code block:
 
 Double `>>>` inside code block:
 
-```
+```txt
 # Code
 >>>
 # Code

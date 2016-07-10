@@ -5,35 +5,56 @@ module Banzai
           (?<code>
             # Code blocks:
             # ```
-            # Anything, including ignored `>>>` blocks
+            # Anything, including `>>>` blocks which are ignored by this filter
             # ```
-            ^```.+?\n```$
+
+            ^```
+            .+?
+            \n```$
           )
         |
           (?<html>
-            # HTML:
+            # HTML block:
             # <tag>
-            # Anything, including ignored `>>>` blocks
+            # Anything, including `>>>` blocks which are ignored by this filter
             # </tag>
-            ^<[^>]+?>.+?\n<\/[^>]+?>$
+
+            ^<[^>]+?>\n
+            .+?
+            \n<\/[^>]+?>$
           )
         |
-          (
-            ^>>>\n(?<quote>
+          (?:
+            # Blockquote:
+            # >>>
+            # Anything, including code and HTML blocks
+            # >>>
+
+            ^>>>\n
+            (?<quote>
               (?:
-                  (?!^```|^<[^>]+?>).
+                  # Any character that doesn't introduce a code or HTML block
+                  (?!
+                      ^```
+                    |
+                      ^<[^>]+?>\n
+                  )
+                  .
                 |
+                  # A code block
                   \g<code>
                 |
+                  # An HTML block
                   \g<html>
-              )
-            +?)\n>>>$
+              )+?
+            )
+            \n>>>$
           )
       }mx.freeze
 
       def initialize(text, context = nil, result = nil)
         super text, context, result
-        @text = @text.delete "\r"
+        @text = @text.delete("\r")
       end
 
       def call
