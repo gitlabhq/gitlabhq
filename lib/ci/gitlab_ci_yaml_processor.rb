@@ -110,7 +110,6 @@ module Ci
       validate_job_name!(name)
       validate_job_keys!(name, job)
       validate_job_types!(name, job)
-      validate_job_script!(name, job)
 
       validate_job_variables!(name, job) if job[:variables]
       validate_job_cache!(name, job) if job[:cache]
@@ -163,20 +162,6 @@ module Ci
 
       if job[:environment] && !validate_environment(job[:environment])
         raise ValidationError, "#{name} job: environment parameter #{Gitlab::Regex.environment_name_regex_message}"
-      end
-    end
-
-    def validate_job_script!(name, job)
-      if !validate_string(job[:script]) && !validate_array_of_strings(job[:script])
-        raise ValidationError, "#{name} job: script should be a string or an array of a strings"
-      end
-
-      if job[:before_script] && !validate_array_of_strings(job[:before_script])
-        raise ValidationError, "#{name} job: before_script should be an array of strings"
-      end
-
-      if job[:after_script] && !validate_array_of_strings(job[:after_script])
-        raise ValidationError, "#{name} job: after_script should be an array of strings"
       end
     end
 
