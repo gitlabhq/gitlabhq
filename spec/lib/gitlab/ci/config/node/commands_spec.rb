@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::JobScript do
+describe Gitlab::Ci::Config::Node::Commands do
   let(:entry) { described_class.new(config) }
 
   context 'when entry config value is an array' do
@@ -41,7 +41,7 @@ describe Gitlab::Ci::Config::Node::JobScript do
     describe '#errors' do
       it 'saves errors' do
         expect(entry.errors)
-          .to include 'job script config should be a ' \
+          .to include 'commands config should be a ' \
                       'string or an array of strings'
       end
     end

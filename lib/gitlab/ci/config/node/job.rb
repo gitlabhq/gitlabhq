@@ -15,7 +15,7 @@ module Gitlab
           node :before_script, Script,
             description: 'Global before script overridden in this job.'
 
-          node :script, JobScript,
+          node :script, Commands,
             description: 'Commands that will be executed in this job.'
 
           node :stage, Stage,

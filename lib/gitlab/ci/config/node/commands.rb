@@ -5,7 +5,7 @@ module Gitlab
         ##
         # Entry that represents a job script.
         #
-        class JobScript < Entry
+        class Commands < Entry
           include Validatable
 
           validations do
@@ -14,10 +14,14 @@ module Gitlab
             validate :string_or_array_of_strings
 
             def string_or_array_of_strings
-              unless validate_string(config) || validate_array_of_strings(config)
+              unless config_valid?
                 errors.add(:config,
                            'should be a string or an array of strings')
               end
+            end
+
+            def config_valid?
+              validate_string(config) || validate_array_of_strings(config)
             end
           end
 
