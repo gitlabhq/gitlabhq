@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.9.6
   - Fix log statements in import/export. !5129
+  - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
 
 v 8.9.5
