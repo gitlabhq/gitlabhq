@@ -6,7 +6,7 @@ describe Gitlab::StringRangeMarker, lib: true do
       let(:raw)  { "abc <def>" }
       let(:rich) { %{<span class="abc">abc</span><span class="space"> </span><span class="def">&lt;def&gt;</span>}.html_safe }
       let(:inline_diffs) { [2..5] }
-      let(:subject) do
+      subject do
         described_class.new(raw, rich).mark(inline_diffs) do |text, left:, right:|
           "LEFT#{text}RIGHT"
         end
@@ -21,7 +21,7 @@ describe Gitlab::StringRangeMarker, lib: true do
     context "when the rich text is not html safe" do
       let(:raw)  { "abc <def>" }
       let(:inline_diffs) { [2..5] }
-      let(:subject) do
+      subject do
         described_class.new(raw).mark(inline_diffs) do |text, left:, right:|
           "LEFT#{text}RIGHT"
         end
