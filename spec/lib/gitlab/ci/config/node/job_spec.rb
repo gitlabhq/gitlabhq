@@ -54,7 +54,7 @@ describe Gitlab::Ci::Config::Node::Job do
       it 'returns correct value' do
         expect(entry.value)
           .to eq(before_script: %w[ls pwd],
-                 script: 'rspec',
+                 script: %w[rspec],
                  stage: 'test')
       end
     end

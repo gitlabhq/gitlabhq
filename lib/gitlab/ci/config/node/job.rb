@@ -15,13 +15,16 @@ module Gitlab
           node :before_script, Script,
             description: 'Global before script overridden in this job.'
 
+          node :script, JobScript,
+            description: 'Commands that will be executed in this job.'
+
           node :stage, Stage,
             description: 'Pipeline stage this job will be executed into.'
 
           node :type, Stage,
             description: 'Deprecated: stage this job will be executed into.'
 
-          helpers :before_script, :stage, :type
+          helpers :before_script, :script, :stage, :type
 
           def value
             raise InvalidError unless valid?
@@ -36,8 +39,9 @@ module Gitlab
           private
 
           def to_hash
-            { before_script: before_script,
-              stage: stage }
+            { before_script: before_script_value,
+              script: script_value,
+              stage: stage_value }
           end
 
           def compose!

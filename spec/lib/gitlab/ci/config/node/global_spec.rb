@@ -129,8 +129,8 @@ describe Gitlab::Ci::Config::Node::Global do
         describe '#jobs' do
           it 'returns jobs configuration' do
             expect(global.jobs)
-              .to eq(rspec: { script: 'rspec', stage: 'test' },
-                     spinach: { script: 'spinach', stage: 'test' })
+              .to eq(rspec: { script: %w[rspec], stage: 'test' },
+                     spinach: { script: %w[spinach], stage: 'test' })
           end
         end
       end
