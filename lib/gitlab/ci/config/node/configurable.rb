@@ -28,7 +28,8 @@ module Gitlab
           def create(key, factory)
             factory
               .value(@config[key])
-              .with(key: key, parent: self, global: @global)
+              .parent(self)
+              .with(key: key)
 
             factory.create!
           end
@@ -40,11 +41,11 @@ module Gitlab
 
             private
 
-            def node(symbol, entry_class, metadata)
-              factory = Node::Factory.new(entry_class)
+            def node(key, node, metadata)
+              factory = Node::Factory.new(node)
                 .with(description: metadata[:description])
 
-              (@nodes ||= {}).merge!(symbol.to_sym => factory)
+              (@nodes ||= {}).merge!(key.to_sym => factory)
             end
 
             def helpers(*nodes)

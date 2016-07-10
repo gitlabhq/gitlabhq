@@ -18,6 +18,11 @@ module Gitlab
             self
           end
 
+          def parent(parent)
+            @parent = parent
+            self
+          end
+
           def with(attributes)
             @attributes.merge!(attributes)
             self
@@ -25,15 +30,19 @@ module Gitlab
 
           def create!
             raise InvalidFactory unless defined?(@value)
+            raise InvalidFactory unless defined?(@parent)
+
+            attributes = { parent: @parent, global: @parent.global }
+            attributes.merge!(@attributes)
 
             ##
             # We assume that unspecified entry is undefined.
             # See issue #18775.
             #
             if @value.nil?
-              Node::Undefined.new(@node, @attributes)
+              Node::Undefined.new(@node, attributes)
             else
-              @node.new(@value, @attributes)
+              @node.new(@value, attributes)
             end
           end
         end
