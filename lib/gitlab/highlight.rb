@@ -25,7 +25,7 @@ module Gitlab
     def highlight(text, continue: true, plain: false)
       highlighted_text = highlight_text(text, continue: continue, plain: plain)
       highlighted_text = link_dependencies(text, highlighted_text) if blob_name
-      highlighted_text
+      autolink_strings(highlighted_text)
     end
 
     def lexer
@@ -66,6 +66,24 @@ module Gitlab
 
     def link_dependencies(text, highlighted_text)
       Gitlab::DependencyLinker.link(blob_name, text, highlighted_text)
+    end
+
+    def autolink_strings(highlighted_text)
+      doc = Nokogiri::HTML::DocumentFragment.parse(highlighted_text)
+
+      # Files without highlighting have all text in `span.line`.
+      # Files with highlighting have strings and comments in `span`s with a
+      # `class` starting with `c` or `s`.
+      doc.xpath('.//span[@class="line" or starts-with(@class, "c") or starts-with(@class, "s")]/text()').each do |node|
+        content = node.to_html
+        html = Banzai.render(content, pipeline: :autolink, autolink_emails: true)
+
+        next if html == content
+
+        node.replace(html)
+      end
+
+      doc.to_html.html_safe
     end
   end
 end

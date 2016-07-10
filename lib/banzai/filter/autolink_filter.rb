@@ -54,15 +54,13 @@ module Banzai
       #
       # `@doc` will be re-parsed with the HTML String from Rinku.
       def rinku_parse
-        # Convert the options from a Hash to a String that Rinku expects
-        options = tag_options(link_options)
-
         # NOTE: We don't parse email links because it will erroneously match
         # external Commit and CommitRange references.
         #
         # The final argument tells Rinku to link short URLs that don't include a
         # period (e.g., http://localhost:3000/)
-        rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a, 1)
+        mode = context[:autolink_emails] ? :all : :urls
+        rinku = Rinku.auto_link(html, mode, tag_options(link_options), IGNORE_PARENTS.to_a, 1)
 
         return if rinku == html
 
@@ -111,9 +109,9 @@ module Banzai
         # order to be output literally rather than escaped.
         match.gsub!(/((?:&[\w#]+;)+)\z/, '')
         dropped = ($1 || '').html_safe
+        match = ERB::Util.html_escape_once(match)
 
-        options = link_options.merge(href: match)
-        content_tag(:a, match, options) + dropped
+        %{<a href="#{match}" #{tag_options(link_options)}>#{match}</a>#{dropped}}.html_safe
       end
 
       def autolink_filter(text)
