@@ -12,19 +12,33 @@ module Gitlab
             validates :config, presence: true
           end
 
+          node :before_script, Script,
+            description: 'Global before script overridden in this job.'
+
           node :stage, Stage,
             description: 'Pipeline stage this job will be executed into.'
 
           node :type, Stage,
             description: 'Deprecated: stage this job will be executed into.'
 
-          helpers :stage, :type
+          helpers :before_script, :stage, :type
 
           def value
-            @config.merge(stage: stage_value)
+            raise InvalidError unless valid?
+
+            ##
+            # TODO, refactoring step: do not expose internal configuration,
+            # return only hash value without merging it to internal config.
+            #
+            @config.merge(to_hash.compact)
           end
 
           private
+
+          def to_hash
+            { before_script: before_script,
+              stage: stage }
+          end
 
           def compose!
             super

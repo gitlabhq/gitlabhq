@@ -4,22 +4,14 @@ describe Gitlab::Ci::Config::Node::Job do
   let(:entry) { described_class.new(config, global: global) }
   let(:global) { spy('Global') }
 
-  describe 'validations' do
-    before do
-      entry.process!
-      entry.validate!
-    end
+  before do
+    entry.process!
+    entry.validate!
+  end
 
+  describe 'validations' do
     context 'when entry config value is correct' do
       let(:config) { { script: 'rspec' } }
-
-      describe '#value' do
-        it 'returns key value' do
-          expect(entry.value)
-            .to eq(script: 'rspec',
-                   stage: 'test')
-        end
-      end
 
       describe '#valid?' do
         it 'is valid' do
@@ -33,7 +25,7 @@ describe Gitlab::Ci::Config::Node::Job do
         let(:config) { ['incorrect'] }
 
         describe '#errors' do
-          it 'saves errors' do
+          it 'reports error about a config type' do
             expect(entry.errors)
               .to include 'job config should be a hash'
           end
@@ -48,6 +40,32 @@ describe Gitlab::Ci::Config::Node::Job do
             expect(entry).not_to be_valid
           end
         end
+      end
+    end
+  end
+
+  describe '#value' do
+    context 'when entry is correct' do
+      let(:config) do
+        { before_script: %w[ls pwd],
+          script: 'rspec' }
+      end
+
+      it 'returns correct value' do
+        expect(entry.value)
+          .to eq(before_script: %w[ls pwd],
+                 script: 'rspec',
+                 stage: 'test')
+      end
+    end
+
+    context 'when entry is incorrect' do
+      let(:config) { {} }
+
+      it 'raises error' do
+        expect { entry.value }.to raise_error(
+          Gitlab::Ci::Config::Node::Entry::InvalidError
+        )
       end
     end
   end
