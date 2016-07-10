@@ -48,14 +48,16 @@ describe Gitlab::Ci::Config::Node::Job do
     context 'when entry is correct' do
       let(:config) do
         { before_script: %w[ls pwd],
-          script: 'rspec' }
+          script: 'rspec',
+          after_script: %w[cleanup] }
       end
 
       it 'returns correct value' do
         expect(entry.value)
           .to eq(before_script: %w[ls pwd],
                  script: %w[rspec],
-                 stage: 'test')
+                 stage: 'test',
+                 after_script: %w[cleanup])
       end
     end
 
