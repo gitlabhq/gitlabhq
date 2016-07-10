@@ -73,7 +73,7 @@ module Banzai
       def find_users(ids)
         return [] if ids.empty?
 
-        User.where(id: ids).to_a
+        collection_objects_for_ids(User, ids)
       end
 
       def find_users_for_groups(ids)
@@ -85,7 +85,8 @@ module Banzai
       def find_users_for_projects(ids)
         return [] if ids.empty?
 
-        Project.where(id: ids).flat_map { |p| p.team.members.to_a }
+        collection_objects_for_ids(Project, ids).
+          flat_map { |p| p.team.members.to_a }
       end
     end
   end

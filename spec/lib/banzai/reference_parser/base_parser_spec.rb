@@ -234,4 +234,79 @@ describe Banzai::ReferenceParser::BaseParser, lib: true do
         to eq([project])
     end
   end
+
+  describe '#collection_objects_for_ids' do
+    context 'with RequestStore disabled' do
+      it 'queries the collection directly' do
+        collection = User.all
+
+        expect(collection).to receive(:where).twice.and_call_original
+
+        2.times do
+          expect(subject.collection_objects_for_ids(collection, [user.id])).
+            to eq([user])
+        end
+      end
+    end
+
+    context 'with RequestStore enabled' do
+      before do
+        cache = Hash.new { |hash, key| hash[key] = {} }
+
+        allow(RequestStore).to receive(:active?).and_return(true)
+        allow(subject).to receive(:collection_cache).and_return(cache)
+      end
+
+      it 'queries the collection on the first call' do
+        expect(subject.collection_objects_for_ids(User, [user.id])).
+          to eq([user])
+      end
+
+      it 'does not query previously queried objects' do
+        collection = User.all
+
+        expect(collection).to receive(:where).once.and_call_original
+
+        2.times do
+          expect(subject.collection_objects_for_ids(collection, [user.id])).
+            to eq([user])
+        end
+      end
+
+      it 'casts String based IDs to Fixnums before querying objects' do
+        2.times do
+          expect(subject.collection_objects_for_ids(User, [user.id.to_s])).
+            to eq([user])
+        end
+      end
+
+      it 'queries any additional objects after the first call' do
+        other_user = create(:user)
+
+        expect(subject.collection_objects_for_ids(User, [user.id])).
+          to eq([user])
+
+        expect(subject.collection_objects_for_ids(User, [user.id, other_user.id])).
+          to eq([user, other_user])
+      end
+
+      it 'caches objects on a per collection class basis' do
+        expect(subject.collection_objects_for_ids(User, [user.id])).
+          to eq([user])
+
+        expect(subject.collection_objects_for_ids(Project, [project.id])).
+          to eq([project])
+      end
+    end
+  end
+
+  describe '#collection_cache_key' do
+    it 'returns the cache key for a Class' do
+      expect(subject.collection_cache_key(Project)).to eq(Project)
+    end
+
+    it 'returns the cache key for an ActiveRecord::Relation' do
+      expect(subject.collection_cache_key(Project.all)).to eq(Project)
+    end
+  end
 end
