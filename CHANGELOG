@@ -5,6 +5,7 @@ v 8.10.0 (unreleased)
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refactor repository paths handling to allow multiple git mount points
   - Add Application Setting to configure default Repository Path for new projects
+  - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
