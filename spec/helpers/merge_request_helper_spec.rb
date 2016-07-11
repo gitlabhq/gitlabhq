@@ -31,9 +31,9 @@ describe MergeRequestsHelper do
     context 'for JIRA issues' do
       let(:issues) do
         [
-          JiraIssue.new('JIRA-123', project),
-          JiraIssue.new('JIRA-456', project),
-          JiraIssue.new('FOOBAR-7890', project)
+          ExternalIssue.new('JIRA-123', project),
+          ExternalIssue.new('JIRA-456', project),
+          ExternalIssue.new('FOOBAR-7890', project)
         ]
       end
 
