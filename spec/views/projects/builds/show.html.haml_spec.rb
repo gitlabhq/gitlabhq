@@ -22,6 +22,10 @@ describe 'projects/builds/show' do
     it 'does not show retry button' do
       expect(rendered).not_to have_link('Retry')
     end
+
+    it 'shows commit title' do
+      expect(rendered).to have_text(@git_commit_title)
+    end
   end
 
   context 'when build is not running' do
@@ -33,5 +37,10 @@ describe 'projects/builds/show' do
     it 'shows retry button' do
       expect(rendered).to have_link('Retry')
     end
+
+   it 'shows commit title' do
+      expect(rendered).to have_text(@git_commit_title)
+    end
   end
+
 end
