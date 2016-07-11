@@ -2,10 +2,10 @@ class @Shortcuts
   constructor: (skipResetBindings) ->
     @enabledHelp = []
     Mousetrap.reset() if not skipResetBindings
-    Mousetrap.bind('?', @onToggleHelp)
-    Mousetrap.bind('s', Shortcuts.focusSearch)
-    Mousetrap.bind 'f', @focusFilter
-    Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview)
+    Mousetrap.bind '?', @onToggleHelp
+    Mousetrap.bind 's', Shortcuts.focusSearch
+    Mousetrap.bind 'f', (e) => @focusFilter e
+    Mousetrap.bind ['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview
     Mousetrap.bind('t', -> Turbolinks.visit(findFileURL)) if findFileURL?
 
   onToggleHelp: (e) =>
@@ -34,7 +34,8 @@ class @Shortcuts
     )
 
   focusFilter: (e) ->
-    $('input[type=search]', '.nav-controls .block-controls').focus()
+    @filterInput ?= $('input[type=search]', '.nav-controls')
+    @filterInput.focus()
     e.preventDefault()
 
   @focusSearch: (e) ->

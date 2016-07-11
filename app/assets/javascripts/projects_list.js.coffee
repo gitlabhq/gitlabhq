@@ -6,9 +6,9 @@
 
   initSearch: ->
     projectsListFilter = $('.projects-list-filter')
-    projectsListFilter.on 'keyup', (e) =>
-      clearTimeout(@timer) if @timer
-      @timer = setTimeout(ProjectsList.filterResults, 500) if projectsListFilter.val() isnt ''
+    debounceFilter = _.debounce ProjectsList.filterResults, 500
+    projectsListFilter.on 'keyup', (e) ->
+      debounceFilter() if projectsListFilter.val() isnt ''
 
   filterResults: ->
     $('.projects-list-holder').fadeTo(250, 0.5)
