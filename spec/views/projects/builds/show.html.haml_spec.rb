@@ -38,7 +38,7 @@ describe 'projects/builds/show' do
       expect(rendered).to have_link('Retry')
     end
 
-   it 'shows commit title' do
+    it 'shows commit title' do
       expect(rendered).to have_text(@git_commit_title)
     end
   end
