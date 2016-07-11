@@ -13,21 +13,19 @@ module Ci
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
+    scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
+    before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_destroy { project }
 
     after_create :execute_hooks
 
     class << self
-      def last_month
-        where('created_at > ?', Date.today - 1.month)
-      end
-
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
@@ -329,7 +327,12 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+      metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
+        artifacts_metadata.path,
+        path,
+        **options)
+
+      metadata.to_entry
     end
 
     def erase_artifacts!
@@ -374,6 +377,14 @@ module Ci
     end
 
     private
+
+    def update_artifacts_size
+      self.artifacts_size = if artifacts_file.exists?
+                              artifacts_file.size
+                            else
+                              nil
+                            end
+    end
 
     def erase_trace!
       self.trace = nil

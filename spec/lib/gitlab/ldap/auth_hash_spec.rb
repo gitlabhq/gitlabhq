@@ -32,7 +32,6 @@ describe Gitlab::LDAP::AuthHash, lib: true do
   end
 
   context "without overridden attributes" do
-
     it "has the correct username" do
       expect(auth_hash.username).to eq("123456") 
     end

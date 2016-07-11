@@ -58,7 +58,6 @@ module Issuable
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
 
-
     delegate :name,
              :email,
              to: :author,

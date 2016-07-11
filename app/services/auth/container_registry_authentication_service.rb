@@ -20,9 +20,11 @@ module Auth
       token.issuer = registry.issuer
       token.audience = AUDIENCE
       token.expire_time = token_expire_at
+
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(*) }
       end
+      
       token.encoded
     end
 

@@ -272,10 +272,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'user "John Doe" leaves a comment like "Line is wrong" on diff' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
-    create(:note_on_merge_request_diff, project: project,
+    create(:diff_note_on_merge_request, project: project,
                                         noteable: mr,
                                         author: user_exists("John Doe"),
-                                        line_code: sample_commit.line_code,
                                         note: 'Line is wrong')
   end
 
@@ -519,7 +518,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step '"Bug NS-05" has CI status' do
     project = merge_request.source_project
     project.enable_ci
-    pipeline = create :ci_pipeline, project: project, sha: merge_request.last_commit.id, ref: merge_request.source_branch
+    pipeline = create :ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch
     create :ci_build, pipeline: pipeline
   end
 

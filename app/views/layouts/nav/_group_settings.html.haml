@@ -1,6 +1,6 @@
 - if current_user
   - can_edit = can?(current_user, :admin_group, @group)
-  - member = @group.members.non_request.find_by(user_id: current_user.id)
+  - member = @group.members.find_by(user_id: current_user.id)
   - can_leave = member && can?(current_user, :destroy_group_member, member)
 
   .controls

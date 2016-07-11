@@ -157,10 +157,11 @@ class Ability
         # Push abilities on the users team role
         rules.push(*project_team_rules(project.team, user))
 
-        if project.owner == user ||
-          (project.group && project.group.has_owner?(user)) ||
-          user.admin?
+        owner = user.admin? ||
+                project.owner == user ||
+                (project.group && project.group.has_owner?(user))
 
+        if owner
           rules.push(*project_owner_rules)
         end
 
@@ -169,6 +170,10 @@ class Ability
 
           # Allow to read builds for internal projects
           rules << :read_build if project.public_builds?
+
+          unless owner || project.team.member?(user) || project_group_member?(project, user)
+            rules << :request_access
+          end
         end
 
         if project.archived?
@@ -345,8 +350,11 @@ class Ability
       rules = []
       rules << :read_group if can_read_group?(user, group)
 
+      owner = user.admin? || group.has_owner?(user)
+      master = owner || group.has_master?(user)
+
       # Only group masters and group owners can create new projects
-      if group.has_master?(user) || group.has_owner?(user) || user.admin?
+      if master
         rules += [
           :create_projects,
           :admin_milestones
@@ -354,13 +362,17 @@ class Ability
       end
 
       # Only group owner and administrators can admin group
-      if group.has_owner?(user) || user.admin?
+      if owner
         rules += [
           :admin_group,
           :admin_namespace,
           :admin_group_member,
           :change_visibility_level
         ]
+      end
+
+      if group.public? || (group.internal? && !user.external?)
+        rules << :request_access unless group.users.include?(user)
       end
 
       rules.flatten
@@ -563,6 +575,14 @@ class Ability
       end
 
       rules
+    end
+
+    def project_group_member?(project, user)
+      project.group &&
+      (
+        project.group.members.exists?(user_id: user.id) ||
+        project.group.requesters.exists?(user_id: user.id)
+      )
     end
   end
 end

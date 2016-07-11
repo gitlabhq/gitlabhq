@@ -13,7 +13,6 @@ module Ci
         collect
       end
 
-
       def push(from, to, format)
         @labels << from.strftime(format)
         @total << project.builds.

@@ -11,6 +11,8 @@ describe Project, models: true do
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:milestones).dependent(:destroy) }
     it { is_expected.to have_many(:project_members).dependent(:destroy) }
+    it { is_expected.to have_many(:users).through(:project_members) }
+    it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { is_expected.to have_many(:deploy_keys_projects).dependent(:destroy) }
@@ -31,6 +33,34 @@ describe Project, models: true do
     it { is_expected.to have_many(:environments).dependent(:destroy) }
     it { is_expected.to have_many(:deployments).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+
+    describe '#members & #requesters' do
+      let(:project) { create(:project) }
+      let(:requester) { create(:user) }
+      let(:developer) { create(:user) }
+      before do
+        project.request_access(requester)
+        project.team << [developer, :developer]
+      end
+
+      describe '#members' do
+        it 'includes members and exclude requesters' do
+          member_user_ids = project.members.pluck(:user_id)
+
+          expect(member_user_ids).to include(developer.id)
+          expect(member_user_ids).not_to include(requester.id)
+        end
+      end
+
+      describe '#requesters' do
+        it 'does not include requesters' do
+          requester_user_ids = project.requesters.pluck(:user_id)
+
+          expect(requester_user_ids).to include(requester.id)
+          expect(requester_user_ids).not_to include(developer.id)
+        end
+      end
+    end
   end
 
   describe 'modules' do
@@ -98,6 +128,18 @@ describe Project, models: true do
         expect(project2).not_to be_valid
         expect(project2.errors[:repository_storage].first).to match(/is not included in the list/)
       end
+    end
+
+    it 'should not allow an invalid URI as import_url' do
+      project2 = build(:project, import_url: 'invalid://')
+
+      expect(project2).not_to be_valid
+    end
+
+    it 'should allow a valid URI as import_url' do
+      project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
+
+      expect(project2).to be_valid
     end
   end
 
@@ -270,7 +312,7 @@ describe Project, models: true do
     it 'should update merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
-      expect(merge_request.last_commit.id).to eq(commit_id)
+      expect(merge_request.diff_head_sha).to eq(commit_id)
     end
   end
 
@@ -407,6 +449,14 @@ describe Project, models: true do
 
     it { expect(project.open_branches.map(&:name)).to include('feature') }
     it { expect(project.open_branches.map(&:name)).not_to include('master') }
+
+    it "includes branches matching a protected branch wildcard" do
+      expect(project.open_branches.map(&:name)).to include('feature')
+
+      create(:protected_branch, name: 'feat*', project: project)
+
+      expect(Project.find(project.id).open_branches.map(&:name)).to include('feature')
+    end
   end
 
   describe '#star_count' do
@@ -907,14 +957,66 @@ describe Project, models: true do
   describe '#protected_branch?' do
     let(:project) { create(:empty_project) }
 
-    it 'returns true when a branch is a protected branch' do
+    it 'returns true when the branch matches a protected branch via direct match' do
       project.protected_branches.create!(name: 'foo')
 
       expect(project.protected_branch?('foo')).to eq(true)
     end
 
-    it 'returns false when a branch is not a protected branch' do
+    it 'returns true when the branch matches a protected branch via wildcard match' do
+      project.protected_branches.create!(name: 'production/*')
+
+      expect(project.protected_branch?('production/some-branch')).to eq(true)
+    end
+
+    it 'returns false when the branch does not match a protected branch via direct match' do
       expect(project.protected_branch?('foo')).to eq(false)
+    end
+
+    it 'returns false when the branch does not match a protected branch via wildcard match' do
+      project.protected_branches.create!(name: 'production/*')
+
+      expect(project.protected_branch?('staging/some-branch')).to eq(false)
+    end
+  end
+
+  describe "#developers_can_push_to_protected_branch?" do
+    let(:project) { create(:empty_project) }
+
+    context "when the branch matches a protected branch via direct match" do
+      it "returns true if 'Developers can Push' is turned on" do
+        create(:protected_branch, name: "production", project: project, developers_can_push: true)
+
+        expect(project.developers_can_push_to_protected_branch?('production')).to be true
+      end
+
+      it "returns false if 'Developers can Push' is turned off" do
+        create(:protected_branch, name: "production", project: project, developers_can_push: false)
+
+        expect(project.developers_can_push_to_protected_branch?('production')).to be false
+      end
+    end
+
+    context "when the branch matches a protected branch via wilcard match" do
+      it "returns true if 'Developers can Push' is turned on" do
+        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+
+        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be true
+      end
+
+      it "returns false if 'Developers can Push' is turned off" do
+        create(:protected_branch, name: "production/*", project: project, developers_can_push: false)
+
+        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be false
+      end
+    end
+
+    context "when the branch does not match a protected branch" do
+      it "returns false" do
+        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+
+        expect(project.developers_can_push_to_protected_branch?('staging/some-branch')).to be false
+      end
     end
   end
 

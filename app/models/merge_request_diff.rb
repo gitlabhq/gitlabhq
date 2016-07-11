@@ -7,7 +7,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  delegate :head_source_sha, :target_branch, :source_branch, to: :merge_request, prefix: nil
+  delegate :source_branch_sha, :target_branch_sha, :target_branch, :source_branch, to: :merge_request, prefix: nil
 
   state_machine :state, initial: :empty do
     state :collected
@@ -24,6 +24,7 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_diffs
 
   after_create :reload_content, unless: :importing?
+  after_save :keep_around_commits, unless: :importing?
 
   def reload_content
     reload_commits
@@ -38,9 +39,9 @@ class MergeRequestDiff < ActiveRecord::Base
     if options[:ignore_whitespace_change]
       @diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
-          self.repository.raw_repository,
-          self.base,
-          self.head,
+          repository.raw_repository,
+          self.start_commit_sha || self.target_branch_sha,
+          self.head_commit_sha || self.source_branch_sha,
         )
         compare.diffs(options)
       end
@@ -62,36 +63,38 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def base_commit
-    return nil unless self.base_commit_sha
+    return unless self.base_commit_sha
 
-    merge_request.target_project.commit(self.base_commit_sha)
+    project.commit(self.base_commit_sha)
   end
 
-  def last_commit_short_sha
-    @last_commit_short_sha ||= last_commit.short_id
+  def start_commit
+    return unless self.start_commit_sha
+
+    project.commit(self.start_commit_sha)
   end
 
-  def dump_commits(commits)
-    commits.map(&:to_hash)
+  def head_commit
+    return last_commit unless self.head_commit_sha
+
+    project.commit(self.head_commit_sha)
   end
 
-  def load_commits(array)
-    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash), merge_request.source_project) }
+  def compare
+    @compare ||=
+      begin
+        # Update ref for merge request
+        merge_request.fetch_ref
+
+        Gitlab::Git::Compare.new(
+          repository.raw_repository,
+          self.target_branch_sha,
+          self.source_branch_sha
+        )
+      end
   end
 
-  def dump_diffs(diffs)
-    if diffs.respond_to?(:map)
-      diffs.map(&:to_hash)
-    end
-  end
-
-  def load_diffs(raw, options)
-    if raw.respond_to?(:each)
-      Gitlab::Git::DiffCollection.new(raw, options)
-    else
-      Gitlab::Git::DiffCollection.new([])
-    end
-  end
+  private
 
   # Collect array of Git::Commit objects
   # between target and source branches
@@ -103,6 +106,14 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     commits
+  end
+
+  def dump_commits(commits)
+    commits.map(&:to_hash)
+  end
+
+  def load_commits(array)
+    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash), merge_request.source_project) }
   end
 
   # Reload all commits related to current merge request from repo
@@ -117,6 +128,26 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     update_columns_serialized(new_attributes)
+  end
+
+  # Collect array of Git::Diff objects
+  # between target and source branches
+  def unmerged_diffs
+    compare.diffs(Commit.max_diff_options)
+  end
+
+  def dump_diffs(diffs)
+    if diffs.respond_to?(:map)
+      diffs.map(&:to_hash)
+    end
+  end
+
+  def load_diffs(raw, options)
+    if raw.respond_to?(:each)
+      Gitlab::Git::DiffCollection.new(raw, options)
+    else
+      Gitlab::Git::DiffCollection.new([])
+    end
   end
 
   # Reload diffs between branches related to current merge request from repo
@@ -145,55 +176,33 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     new_attributes[:st_diffs] = new_diffs
-    new_attributes[:base_commit_sha] = self.repository.merge_base(self.head, self.base)
+
+    new_attributes[:start_commit_sha] = self.target_branch_sha
+    new_attributes[:head_commit_sha] = self.source_branch_sha
+    new_attributes[:base_commit_sha] = branch_base_sha
 
     update_columns_serialized(new_attributes)
+
+    keep_around_commits
   end
 
-  # Collect array of Git::Diff objects
-  # between target and source branches
-  def unmerged_diffs
-    compare.diffs(Commit.max_diff_options)
+  def project
+    merge_request.target_project
   end
 
   def repository
-    merge_request.target_project.repository
+    project.repository
   end
 
-  def source_sha
-    return head_source_sha if head_source_sha.present?
+  def branch_base_commit
+    return unless self.source_branch_sha && self.target_branch_sha
 
-    source_commit = merge_request.source_project.commit(source_branch)
-    source_commit.try(:sha)
+    project.merge_base_commit(self.source_branch_sha, self.target_branch_sha)
   end
 
-  def target_sha
-    merge_request.target_sha
+  def branch_base_sha
+    branch_base_commit.try(:sha)
   end
-
-  def base
-    self.target_sha || self.target_branch
-  end
-
-  def head
-    self.source_sha
-  end
-
-  def compare
-    @compare ||=
-      begin
-        # Update ref for merge request
-        merge_request.fetch_ref
-
-        Gitlab::Git::Compare.new(
-          self.repository.raw_repository,
-          self.base,
-          self.head
-        )
-      end
-  end
-
-  private
 
   #
   # #save or #update_attributes providing changes on serialized attributes do a lot of
@@ -216,5 +225,11 @@ class MergeRequestDiff < ActiveRecord::Base
 
     update_columns(new_attributes.merge(updated_at: current_time_from_proper_timezone))
     reload
+  end
+
+  def keep_around_commits
+    repository.keep_around(target_branch_sha)
+    repository.keep_around(source_branch_sha)
+    repository.keep_around(branch_base_sha)
   end
 end

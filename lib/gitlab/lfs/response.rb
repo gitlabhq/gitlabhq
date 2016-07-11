@@ -1,7 +1,6 @@
 module Gitlab
   module Lfs
     class Response
-
       def initialize(project, user, ci, request)
         @origin_project = project
         @project = storage_project(project)

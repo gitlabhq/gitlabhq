@@ -13,13 +13,13 @@ module Banzai
       end
 
       def self.references_in(text, pattern = Label.reference_pattern)
-        text.gsub(pattern) do |match|
+        unescape_html_entities(text).gsub(pattern) do |match|
           yield match, $~[:label_id].to_i, $~[:label_name], $~[:project], $~
         end
       end
 
       def references_in(text, pattern = Label.reference_pattern)
-        text.gsub(pattern) do |match|
+        unescape_html_entities(text).gsub(pattern) do |match|
           label = find_label($~[:project], $~[:label_id], $~[:label_name])
 
           if label
@@ -65,6 +65,10 @@ module Banzai
         else
           LabelsHelper.render_colored_cross_project_label(object)
         end
+      end
+
+      def unescape_html_entities(text)
+        CGI.unescapeHTML(text.to_s)
       end
     end
   end

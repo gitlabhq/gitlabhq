@@ -39,7 +39,8 @@ module LoginHelpers
 
   # Requires Javascript driver.
   def logout
-    find(:css, ".fa.fa-sign-out").click
+    find(".header-user-dropdown-toggle").click
+    click_link "Sign out"
   end
 
   # Logout without JavaScript driver

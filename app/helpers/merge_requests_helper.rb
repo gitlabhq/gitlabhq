@@ -27,7 +27,7 @@ module MergeRequestsHelper
   end
 
   def ci_build_details_path(merge_request)
-    build_url = merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha, merge_request.source_branch)
+    build_url = merge_request.source_project.ci_service.build_page(merge_request.diff_head_sha, merge_request.source_branch)
     return nil unless build_url
 
     parsed_url = URI.parse(build_url)
@@ -53,6 +53,10 @@ module MergeRequestsHelper
     issues.map do |issue|
       issue.to_reference(@project)
     end.sort.to_sentence
+  end
+
+  def mr_closes_issues
+    @mr_closes_issues ||= @merge_request.closes_issues
   end
 
   def mr_change_branches_path(merge_request)

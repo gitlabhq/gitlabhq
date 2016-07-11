@@ -82,7 +82,7 @@ class SystemNoteService
     end
 
     body << ' ' << 'label'.pluralize(labels_count)
-    body = "#{body.capitalize}"
+    body = body.capitalize
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -125,7 +125,7 @@ class SystemNoteService
   # Returns the created Note object
   def self.change_status(noteable, project, author, status, source)
     body = "Status changed to #{status}"
-    body += " by #{source.gfm_reference(project)}" if source
+    body << " by #{source.gfm_reference(project)}" if source
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -139,7 +139,7 @@ class SystemNoteService
 
   # Called when 'merge when build succeeds' is canceled
   def self.cancel_merge_when_build_succeeds(noteable, project, author)
-    body = "Canceled the automatic merge"
+    body = 'Canceled the automatic merge'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -236,6 +236,7 @@ class SystemNoteService
       else
         'deleted'
       end
+
     body = "#{verb} #{branch_type.to_s} branch `#{branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -292,7 +293,6 @@ class SystemNoteService
       create_note(note_options)
     end
   end
-
 
   def self.cross_reference?(note_text)
     note_text.start_with?(cross_reference_note_prefix)

@@ -361,7 +361,6 @@ describe 'Issues', feature: true do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
     context 'by authorized user' do
-
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
@@ -420,7 +419,6 @@ describe 'Issues', feature: true do
     end
 
     context 'by unauthorized user' do
-
       let(:guest) { create(:user) }
 
       before do
@@ -442,8 +440,6 @@ describe 'Issues', feature: true do
     let!(:milestone) { create(:milestone, project: project) }
 
     context 'by authorized user' do
-
-
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 

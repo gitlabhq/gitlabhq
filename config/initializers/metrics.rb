@@ -135,6 +135,8 @@ if Gitlab::Metrics.enabled?
 
     config.instrument_instance_methods(Rouge::Plugins::Redcarpet)
     config.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
+
+    config.instrument_methods(Rinku)
   end
 
   GC::Profiler.enable

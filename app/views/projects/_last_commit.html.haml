@@ -1,11 +1,10 @@
-.project-last-commit
-  - if commit.status
-    = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{commit.status}" do
-      = ci_icon_for_status(commit.status)
-      = ci_label_for_status(commit.status)
+- if commit.status
+  = link_to builds_namespace_project_commit_path(commit.project.namespace, commit.project, commit), class: "ci-status ci-#{commit.status}" do
+    = ci_icon_for_status(commit.status)
+    = ci_label_for_status(commit.status)
 
-  = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
-  = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
-  &middot;
-  #{time_ago_with_tooltip(commit.committed_date, skip_js: true)} by
-  = commit_author_link(commit, avatar: true, size: 24)
+= link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit_short_id"
+= link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit), class: "commit-row-message"
+&middot;
+#{time_ago_with_tooltip(commit.committed_date, skip_js: true)} by
+= commit_author_link(commit, avatar: true, size: 24)

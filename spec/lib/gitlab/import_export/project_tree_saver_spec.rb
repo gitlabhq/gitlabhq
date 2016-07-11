@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
   describe 'saves the project tree into a json object' do
-
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: project.path_with_namespace) }
     let(:project_tree_saver) { described_class.new(project: project, shared: shared) }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }
@@ -23,7 +22,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
     end
 
     context 'JSON' do
-
       let(:saved_project_json) do
         project_tree_saver.save
         project_json(project_tree_saver.full_path)
@@ -127,7 +125,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
 
     ci_pipeline = create(:ci_pipeline,
                        project: project,
-                       sha: merge_request.last_commit.id,
+                       sha: merge_request.diff_head_sha,
                        ref: merge_request.source_branch,
                        statuses: [commit_status])
 

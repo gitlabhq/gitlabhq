@@ -144,7 +144,7 @@ class JiraService < IssueTrackerService
     commit_id = if entity.is_a?(Commit)
                   entity.id
                 elsif entity.is_a?(MergeRequest)
-                  entity.last_commit.id
+                  entity.diff_head_sha
                 end
     commit_url = build_entity_url(:commit, commit_id)
 
@@ -189,7 +189,6 @@ class JiraService < IssueTrackerService
       send_message(url, message.to_json)
     end
   end
-
 
   def auth
     require 'base64'

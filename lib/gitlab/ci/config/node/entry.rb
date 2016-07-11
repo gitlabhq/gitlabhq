@@ -9,7 +9,7 @@ module Gitlab
           class InvalidError < StandardError; end
 
           attr_reader :config
-          attr_accessor :key, :description
+          attr_accessor :key, :parent, :description
 
           def initialize(config)
             @config = config
@@ -34,8 +34,8 @@ module Gitlab
             self.class.nodes.none?
           end
 
-          def key
-            @key || self.class.name.demodulize.underscore
+          def ancestors
+            @parent ? @parent.ancestors + [@parent] : []
           end
 
           def valid?
@@ -43,12 +43,23 @@ module Gitlab
           end
 
           def errors
-            @validator.full_errors +
-              nodes.map(&:errors).flatten
+            @validator.messages + nodes.flat_map(&:errors)
           end
 
           def value
-            raise NotImplementedError
+            if leaf?
+              @config
+            else
+              defined = @nodes.select { |_key, value| value.defined? }
+              Hash[defined.map { |key, node| [key, node.value] }]
+            end
+          end
+
+          def defined?
+            true
+          end
+
+          def self.default
           end
 
           def self.nodes

@@ -109,7 +109,6 @@ describe Namespace, models: true do
   end
 
   describe ".clean_path" do
-
     let!(:user)       { create(:user, username: "johngitlab-etc") }
     let!(:namespace)  { create(:namespace, path: "JohnGitLab-etc1") }
 

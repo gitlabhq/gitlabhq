@@ -9,7 +9,7 @@ describe DiffHelper do
   let(:diffs) { commit.diffs }
   let(:diff) { diffs.first }
   let(:diff_refs) { [commit.parent, commit] }
-  let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs) }
+  let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   describe 'diff_view' do
     it 'returns a valid value when cookie is set' do

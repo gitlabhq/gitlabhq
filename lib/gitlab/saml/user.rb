@@ -6,7 +6,6 @@
 module Gitlab
   module Saml
     class User < Gitlab::OAuth::User
-
       def save
         super('SAML')
       end

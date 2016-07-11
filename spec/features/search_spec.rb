@@ -3,6 +3,8 @@ require 'spec_helper'
 describe "Search", feature: true  do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
+  let!(:issue) { create(:issue, project: project, assignee: user) }
+  let!(:issue2) { create(:issue, project: project, author: user) }
 
   before do
     login_with(user)
@@ -48,9 +50,7 @@ describe "Search", feature: true  do
     end
   end
 
-
   describe 'Right header search field', feature: true do
-
     describe 'Search in project page' do
       before do
         visit namespace_project_path(project.namespace, project)
@@ -73,7 +73,6 @@ describe "Search", feature: true  do
       end
 
       context 'click the links in the category search dropdown', js: true do
-
         before do
           page.find('#search').click
         end
@@ -124,6 +123,4 @@ describe "Search", feature: true  do
       end
     end
   end
-
-
 end

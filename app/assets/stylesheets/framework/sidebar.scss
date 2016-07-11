@@ -3,6 +3,12 @@
   padding-bottom: 25px;
   transition: padding $sidebar-transition-duration;
 
+  &.page-sidebar-pinned {
+    .sidebar-wrapper {
+      @include box-shadow(none);
+    }
+  }
+
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -11,6 +17,7 @@
     height: 100%;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
+    @include box-shadow(2px 0 16px 0 #bbb);
   }
 }
 
@@ -40,32 +47,16 @@
   }
 }
 
-.sidebar-user {
-  padding: 15px;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  width: $sidebar_width;
-  overflow: hidden;
-  font-size: 16px;
-  line-height: 36px;
-  transition: width $sidebar-transition-duration, padding $sidebar-transition-duration;
-
-  @media (min-width: $sidebar-breakpoint) {
-    bottom: 50px;
-  }
-}
-
 .nav-sidebar {
   position: absolute;
   top: 50px;
-  bottom: 65px;
+  bottom: 0;
   width: $sidebar_width;
   overflow-y: auto;
   overflow-x: hidden;
 
   @media (min-width: $sidebar-breakpoint) {
-    bottom: 115px;
+    bottom: 50px;
   }
 
   &.navbar-collapse {

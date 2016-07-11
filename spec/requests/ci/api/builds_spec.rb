@@ -293,33 +293,52 @@ describe Ci::API::API do
             allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
-          context 'build has been erased' do
+          describe 'build has been erased' do
             let(:build) { create(:ci_build, erased_at: Time.now) }
-            before { upload_artifacts(file_upload, headers_with_token) }
+
+            before do
+              upload_artifacts(file_upload, headers_with_token)
+            end
 
             it 'should respond with forbidden' do
               expect(response.status).to eq 403
             end
           end
 
-          context "should post artifact to running build" do
-            it "uses regual file post" do
-              upload_artifacts(file_upload, headers_with_token, false)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
+          describe 'uploading artifacts for a running build' do
+            shared_examples 'successful artifacts upload' do
+              it 'updates successfully' do
+                response_filename =
+                  json_response['artifacts_file']['filename']
+
+                expect(response).to have_http_status(201)
+                expect(response_filename).to eq(file_upload.original_filename)
+              end
             end
 
-            it "uses accelerated file post" do
-              upload_artifacts(file_upload, headers_with_token, true)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload.original_filename)
+            context 'uses regular file post' do
+              before do
+                upload_artifacts(file_upload, headers_with_token, false)
+              end
+
+              it_behaves_like 'successful artifacts upload'
             end
 
-            it "updates artifact" do
-              upload_artifacts(file_upload, headers_with_token)
-              upload_artifacts(file_upload2, headers_with_token)
-              expect(response).to have_http_status(201)
-              expect(json_response["artifacts_file"]["filename"]).to eq(file_upload2.original_filename)
+            context 'uses accelerated file post' do
+              before do
+                upload_artifacts(file_upload, headers_with_token, true)
+              end
+
+              it_behaves_like 'successful artifacts upload'
+            end
+
+            context 'updates artifact' do
+              before do
+                upload_artifacts(file_upload2, headers_with_token)
+                upload_artifacts(file_upload, headers_with_token)
+              end
+
+              it_behaves_like 'successful artifacts upload'
             end
           end
 
@@ -329,6 +348,7 @@ describe Ci::API::API do
 
             let(:stored_artifacts_file) { build.reload.artifacts_file.file }
             let(:stored_metadata_file) { build.reload.artifacts_metadata.file }
+            let(:stored_artifacts_size) { build.reload.artifacts_size }
 
             before do
               post(post_url, post_data, headers_with_token)
@@ -346,6 +366,7 @@ describe Ci::API::API do
                 expect(response).to have_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
+                expect(stored_artifacts_size).to eq(71759)
               end
             end
 
@@ -455,12 +476,17 @@ describe Ci::API::API do
 
       describe 'DELETE /builds/:id/artifacts' do
         let(:build) { create(:ci_build, :artifacts) }
-        before { delete delete_url, token: build.token }
+
+        before do
+          delete delete_url, token: build.token
+          build.reload
+        end
 
         it 'should remove build artifacts' do
           expect(response).to have_http_status(200)
           expect(build.artifacts_file.exists?).to be_falsy
           expect(build.artifacts_metadata.exists?).to be_falsy
+          expect(build.artifacts_size).to be_nil
         end
       end
 

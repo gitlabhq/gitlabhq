@@ -206,10 +206,14 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-    if !current_user || current_user.require_ssh_key?
-      gitlab_config.protocol
+    if allowed_protocols_present?
+      enabled_protocol
     else
-      "ssh"
+      if !current_user || current_user.require_ssh_key?
+        gitlab_config.protocol
+      else
+        'ssh'
+      end
     end
   end
 
@@ -289,7 +293,11 @@ module ProjectsHelper
   end
 
   def last_push_event
-    if current_user
+    return unless current_user
+
+    if fork = current_user.fork_of(@project)
+      current_user.recent_push(fork.id)
+    else
       current_user.recent_push(@project.id)
     end
   end

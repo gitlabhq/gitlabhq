@@ -121,7 +121,6 @@ class Projects::CommitController < Projects::ApplicationController
     opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
 
     @diffs = commit.diffs(opts)
-    @diff_refs = [commit.parent || commit, commit]
     @notes_count = commit.notes.count
 
     @statuses = CommitStatus.where(pipeline: pipelines)

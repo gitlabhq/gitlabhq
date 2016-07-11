@@ -6,7 +6,6 @@ describe API::API, 'Settings', api: true  do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
 
-
   describe "GET /application/settings" do
     it "should return application settings" do
       get api("/application/settings", admin)

@@ -1,9 +1,8 @@
 - diff = diff_file.diff
-- file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.id, diff.new_path))
+- file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.new_ref, diff.new_path))
 // diff_refs will be nil for orphaned commits (e.g. first commit in repo)
-- if diff_refs
-  - old_commit_id = diff_refs.first.id
-  - old_file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(old_commit_id, diff.old_path))
+- if diff_file.old_ref
+  - old_file_raw_path = namespace_project_raw_path(@project.namespace, @project, tree_join(diff_file.old_ref, diff.old_path))
 
 - if diff.renamed_file || diff.new_file || diff.deleted_file
   .image
@@ -16,7 +15,7 @@
     %div.two-up.view
       %span.wrap
         .frame.deleted
-          %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(old_commit_id, diff.old_path))}
+          %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.old_ref, diff.old_path))}
             %img{src: old_file_raw_path}
         %p.image-info.hide
           %span.meta-filesize= "#{number_to_human_size old_file.size}"
@@ -28,7 +27,7 @@
           %span.meta-height
       %span.wrap
         .frame.added
-          %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(@commit.id, diff.new_path))}
+          %a{href: namespace_project_blob_path(@project.namespace, @project, tree_join(diff_file.new_ref, diff.new_path))}
             %img{src: file_raw_path}
         %p.image-info.hide
           %span.meta-filesize= "#{number_to_human_size file.size}"

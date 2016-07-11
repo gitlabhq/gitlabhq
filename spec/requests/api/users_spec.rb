@@ -246,7 +246,6 @@ describe API::API, api: true  do
   end
 
   describe "GET /users/sign_up" do
-
     it "should redirect to sign in page" do
       get "/users/sign_up"
       expect(response).to have_http_status(302)

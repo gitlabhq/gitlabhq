@@ -56,7 +56,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, ->{ includes(:author) }
   scope :inc_author_project_award_emoji, ->{ includes(:project, :author, :award_emoji) }
 
-  scope :legacy_diff_notes, ->{ where(type: 'LegacyDiffNote') }
+  scope :diff_notes, ->{ where(type: ['LegacyDiffNote', 'DiffNote']) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }
 
   scope :with_associations, -> do
@@ -66,6 +66,7 @@ class Note < ActiveRecord::Base
   end
 
   before_validation :clear_blank_line_code!
+  after_save :keep_around_commit
 
   class << self
     def model_name
@@ -81,7 +82,7 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_notes
-      legacy_diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
+      diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
     end
 
     # Searches for notes matching the given query.
@@ -111,6 +112,10 @@ class Note < ActiveRecord::Base
   end
 
   def legacy_diff_note?
+    false
+  end
+
+  def new_diff_note?
     false
   end
 
@@ -192,7 +197,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji?
-    award_emoji_supported? && contains_emoji_only?
+    can_be_award_emoji? && contains_emoji_only?
   end
 
   def emoji_awardable?
@@ -203,7 +208,7 @@ class Note < ActiveRecord::Base
     self.line_code = nil if self.line_code.blank?
   end
 
-  def award_emoji_supported?
+  def can_be_award_emoji?
     noteable.is_a?(Awardable)
   end
 
@@ -214,5 +219,11 @@ class Note < ActiveRecord::Base
   def award_emoji_name
     original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
     Gitlab::AwardEmoji.normalize_emoji_name(original_name)
+  end
+
+  private
+
+  def keep_around_commit
+    project.repository.keep_around(self.commit_id)
   end
 end

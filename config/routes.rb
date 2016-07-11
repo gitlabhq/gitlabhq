@@ -133,7 +133,6 @@ Rails.application.routes.draw do
   #
   resources :notification_settings, only: [:create, :update]
 
-
   #
   # Import
   #
@@ -466,7 +465,6 @@ Rails.application.routes.draw do
   resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
     resources(:projects, constraints: { id: /[a-zA-Z.0-9_\-]+(?<!\.atom)/ }, except:
               [:new, :create, :index], path: "/") do
-
       member do
         put :transfer
         delete :remove_fork
@@ -722,7 +720,7 @@ Rails.application.routes.draw do
           resource :release, only: [:edit, :update]
         end
 
-        resources :protected_branches, only: [:index, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
 

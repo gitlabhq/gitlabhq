@@ -13,6 +13,7 @@ module API
       #   action - git action (git-upload-pack or git-receive-pack)
       #   ref - branch name
       #   forced_push - forced_push
+      #   protocol - Git access protocol being used, e.g. HTTP or SSH
       #
 
       helpers do
@@ -46,11 +47,13 @@ module API
             User.find_by(id: params[:user_id])
           end
 
+        protocol = params[:protocol]
+
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project)
+            Gitlab::GitAccessWiki.new(actor, project, protocol)
           else
-            Gitlab::GitAccess.new(actor, project)
+            Gitlab::GitAccess.new(actor, project, protocol)
           end
 
         access_status = access.check(params[:action], params[:changes])

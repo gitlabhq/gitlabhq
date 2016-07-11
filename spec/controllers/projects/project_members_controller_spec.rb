@@ -187,7 +187,7 @@ describe Projects::ProjectMembersController do
 
           expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
           expect(response).to redirect_to(namespace_project_path(project.namespace, project))
-          expect(project.members.request).to be_empty
+          expect(project.requesters).to be_empty
           expect(project.users).not_to include user
         end
       end
@@ -210,7 +210,7 @@ describe Projects::ProjectMembersController do
       expect(response).to redirect_to(
         namespace_project_path(project.namespace, project)
       )
-      expect(project.members.request.exists?(user_id: user)).to be_truthy
+      expect(project.requesters.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
     end
   end
@@ -233,7 +233,7 @@ describe Projects::ProjectMembersController do
       let(:team_requester) { create(:user) }
       let(:member) do
         project.request_access(team_requester)
-        project.members.request.find_by(user_id: team_requester.id)
+        project.requesters.find_by(user_id: team_requester.id)
       end
 
       context 'when user does not have enough rights' do

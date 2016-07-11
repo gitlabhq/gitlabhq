@@ -1,0 +1,22 @@
+# Official Java image. Look for the different tagged releases at
+# https://hub.docker.com/r/library/java/tags/ . A Java image is not required
+# but an image with a JVM speeds up the build a bit.
+image: java:8
+
+before_script:
+  # Enable the usage of sources over https
+  - apt-get update -yqq
+  - apt-get install apt-transport-https -yqq
+  # Add keyserver for SBT
+  - echo "deb http://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+  - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 642AC823
+  # Install SBT
+  - apt-get update -yqq
+  - apt-get install sbt -yqq
+  # Log the sbt version
+  - sbt sbt-version
+
+test:
+  script:
+    # Execute your project's tests
+    - sbt clean test

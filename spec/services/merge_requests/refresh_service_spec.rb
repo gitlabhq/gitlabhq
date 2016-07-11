@@ -175,7 +175,6 @@ describe MergeRequests::RefreshService, services: true do
       end
     end
 
-
     def reload_mrs
       @merge_request.reload
       @fork_merge_request.reload

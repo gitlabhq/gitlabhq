@@ -2,7 +2,6 @@ require_relative 'base_service'
 
 class UpdateReleaseService < BaseService
   def execute(tag_name, release_description)
-
     repository = project.repository
     existing_tag = repository.find_tag(tag_name)
 
@@ -22,8 +21,6 @@ class UpdateReleaseService < BaseService
   end
 
   def success(release)
-    out = super()
-    out[:release] = release
-    out
+    super().merge(release: release)
   end
 end

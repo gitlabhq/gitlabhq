@@ -1,6 +1,7 @@
 module Gitlab
   module Git
     class Hook
+      GL_PROTOCOL = 'web'.freeze
       attr_reader :name, :repo_path, :path
 
       def initialize(name, repo_path)
@@ -14,7 +15,7 @@ module Gitlab
       end
 
       def trigger(gl_id, oldrev, newrev, ref)
-        return true unless exists?
+        return [true, nil] unless exists?
 
         case name
         when "pre-receive", "post-receive"
@@ -29,19 +30,20 @@ module Gitlab
       def call_receive_hook(gl_id, oldrev, newrev, ref)
         changes = [oldrev, newrev, ref].join(" ")
 
-        # function  will return true if succesful
         exit_status = false
+        exit_message = nil
 
         vars = {
           'GL_ID' => gl_id,
-          'PWD' => repo_path
+          'PWD' => repo_path,
+          'GL_PROTOCOL' => GL_PROTOCOL
         }
 
         options = {
           chdir: repo_path
         }
 
-        Open3.popen2(vars, path, options) do |stdin, _, wait_thr|
+        Open3.popen3(vars, path, options) do |stdin, stdout, stderr, wait_thr|
           exit_status = true
           stdin.sync = true
 
@@ -60,16 +62,23 @@ module Gitlab
 
           unless wait_thr.value == 0
             exit_status = false
+            exit_message = retrieve_error_message(stderr, stdout)
           end
         end
 
-        exit_status
+        [exit_status, exit_message]
       end
 
       def call_update_hook(gl_id, oldrev, newrev, ref)
         Dir.chdir(repo_path) do
-          system({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+          stdout, stderr, status = Open3.capture3({ 'GL_ID' => gl_id }, path, ref, oldrev, newrev)
+          [status.success?, stderr.presence || stdout]
         end
+      end
+
+      def retrieve_error_message(stderr, stdout)
+        err_message = stderr.gets
+        err_message.blank? ? stdout.gets : err_message
       end
     end
   end

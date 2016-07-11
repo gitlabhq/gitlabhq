@@ -14,7 +14,6 @@ describe GitPushService, services: true do
   end
 
   describe 'Push branches' do
-
     let(:oldrev) { @oldrev }
     let(:newrev) { @newrev }
 
@@ -23,7 +22,6 @@ describe GitPushService, services: true do
     end
 
     context 'new branch' do
-
       let(:oldrev) { @blankrev }
 
       it { is_expected.to be_truthy }
@@ -55,7 +53,6 @@ describe GitPushService, services: true do
     end
 
     context 'existing branch' do
-
       it { is_expected.to be_truthy }
 
       it 'flushes general cached data' do
@@ -79,7 +76,6 @@ describe GitPushService, services: true do
     end
 
     context 'rm branch' do
-
       let(:newrev) { @blankrev }
 
       it { is_expected.to be_truthy }
@@ -222,7 +218,6 @@ describe GitPushService, services: true do
       end
     end
   end
-
 
   describe "Webhooks" do
     context "execute webhooks" do
@@ -490,7 +485,6 @@ describe GitPushService, services: true do
         execute_service(project, user, @oldrev, @newrev, @ref)
       end
     end
-
 
     it 'increments the push counter' do
       expect(housekeeping).to receive(:increment!)
