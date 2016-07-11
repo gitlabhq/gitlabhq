@@ -7,9 +7,9 @@
     .branch-commit
       - if can?(current_user, :read_build, build.project)
         = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-          %span ##{build.id}
+          %span.build-link ##{build.id}
       - else
-        %span ##{build.id}
+        %span.build-link ##{build.id}
 
       - if build.stuck?
         %i.fa.fa-warning.text-warning
@@ -22,15 +22,15 @@
 
       = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace commit-id"
 
-      - if build.tags.any?
-        .label-container
+      .label-container
+        - if build.tags.any?
           - build.tags.each do |tag|
             %span.label.label-primary
               = tag
-          - if build.try(:trigger_request)
-            %span.label.label-info triggered
-          - if build.try(:allow_failure)
-            %span.label.label-danger allowed to fail
+        - if build.try(:trigger_request)
+          %span.label.label-info triggered
+        - if build.try(:allow_failure)
+          %span.label.label-danger allowed to fail
 
   %td
     - if project
