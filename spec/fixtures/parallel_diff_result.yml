@@ -253,27 +253,6 @@
         :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
         :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
-    :type: old
-    :number:
-    :text: ''
-    :line_code:
-    :position:
-- :left:
-    :type: old
-    :number: 14
-    :text: |
-      -<span id="LC14" class="line">    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">chdir: </span><span class="n">path</span> <span class="p">}</span></span>
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_13
-    :position: !ruby/object:Gitlab::Diff::Position
-      attributes:
-        :old_path: files/ruby/popen.rb
-        :new_path: files/ruby/popen.rb
-        :old_line: 14
-        :new_line:
-        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
-        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
-        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
-  :right:
     :type: new
     :number: 13
     :text: |
@@ -289,16 +268,17 @@
         :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
         :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
-    :type:
-    :number:
-    :text: ''
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14
+    :type: old
+    :number: 14
+    :text: |
+      -<span id="LC14" class="line">    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">chdir: </span><span class="n">path</span> <span class="p">}</span></span>
+    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_13
     :position: !ruby/object:Gitlab::Diff::Position
       attributes:
         :old_path: files/ruby/popen.rb
         :new_path: files/ruby/popen.rb
-        :old_line:
-        :new_line: 14
+        :old_line: 14
+        :new_line:
         :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
         :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
         :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d

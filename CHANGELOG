@@ -33,6 +33,7 @@ v 8.10.0 (unreleased)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
+  - Actually render old and new sections of parallel diff next to each other
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Show last push widget in upstream after push to fork

@@ -32,8 +32,8 @@ module SharedDiffNote
   end
 
   step 'I leave a diff comment in a parallel view on the left side like "Old comment"' do
-    click_parallel_diff_line(sample_commit.line_code, 'old')
-    page.within("#{diff_file_selector} form[data-line-code='#{sample_commit.line_code}']") do
+    click_parallel_diff_line(sample_commit.del_line_code, 'old')
+    page.within("#{diff_file_selector} form[data-line-code='#{sample_commit.del_line_code}']") do
       fill_in "note[note]", with: "Old comment"
       find(".js-comment-button").trigger("click")
     end
