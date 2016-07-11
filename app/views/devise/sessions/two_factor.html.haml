@@ -1,3 +1,7 @@
+- content_for :page_specific_javascripts do
+  - if inject_u2f_api?
+    = page_specific_javascript_tag('u2f.js')
+
 %div
   .login-box
     .login-heading

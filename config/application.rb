@@ -87,6 +87,7 @@ module Gitlab
     config.assets.precompile << "profile/application.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
+    config.assets.precompile << "u2f.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

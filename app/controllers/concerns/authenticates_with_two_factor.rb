@@ -80,8 +80,7 @@ module AuthenticatesWithTwoFactor
       challenges = sign_requests.map(&:challenge)
       session[:challenges] = challenges
       gon.push(u2f: { challenges: challenges, app_id: u2f_app_id,
-                      sign_requests: sign_requests,
-                      browser_supports_u2f: browser_supports_u2f? })
+                      sign_requests: sign_requests })
     end
   end
 end
