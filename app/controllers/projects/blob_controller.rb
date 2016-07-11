@@ -39,16 +39,16 @@ class Projects::BlobController < Projects::ApplicationController
 
   def update
     unless params[:file_name].empty?
-      @previous_path = @path
-      @path = params[:file_name]
+      @previous_path = @file_path
+      @file_path = params[:file_name]
     end
 
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
-          "#file-path-#{hexdigest(@path)}"
+          "#file-path-#{hexdigest(@file_path)}"
       else
-        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @path))
+        namespace_project_blob_path(@project.namespace, @project, File.join(@target_branch, @file_path))
       end
 
     create_commit(Files::UpdateService, success_path: after_edit_path,
