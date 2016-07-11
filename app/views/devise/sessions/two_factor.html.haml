@@ -1,5 +1,5 @@
-- content_for :page_specific_javascripts do
-  - if inject_u2f_api?
+- if inject_u2f_api?
+  - content_for :page_specific_javascripts do
     = page_specific_javascript_tag('u2f.js')
 
 %div
