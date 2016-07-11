@@ -1,7 +1,7 @@
 .pipelines {
   .stage {
-    max-width: 70px;
-    width: 70px;
+    max-width: 80px;
+    width: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -34,7 +34,7 @@
 
   tr {
     th {
-      padding: 18px 10px;
+      padding: 16px;
       border: none;
     }
   }
@@ -56,8 +56,11 @@
       text-overflow: ellipsis;
     }
 
-    .fa {
+    svg {
       margin: 0 6px;
+      height: 14px;
+      width: auto;
+      vertical-align: middle;
     }
 
     .commit-id {
@@ -88,6 +91,17 @@
     margin: 4px 0;
 
     .fa {
+      font-size: 12px;
+    }
+
+    svg {
+      height: 12px;
+      width: auto;
+      vertical-align: middle;
+    }
+
+    .fa,
+    svg {
       margin-right: 5px;
     }
   }
