@@ -1,0 +1,83 @@
+.loading{ "v-if" => "isLoading" }
+  %i.fa.fa-spinner.fa-spin
+
+.content-block.oneline-block.files-changed{ "v-if" => "!isLoading" }
+  .inline-parallel-buttons
+    .btn-group
+      %a.btn{ |
+        ":class" => "{'active': !isParallel}", |
+        "@click" => "handleViewTypeChange('inline')"}
+        Inline
+      %a.btn{ |
+        ":class" => "{'active': isParallel}", |
+        "@click" => "handleViewTypeChange('parallel')"}
+        Side-by-side
+
+  .js-toggle-container
+    .commit-stat-summary
+      Showing
+      %strong.cred 3 conflicts
+      for
+      %strong {{conflictsData.source_branch}}
+      into
+      %strong {{conflictsData.target_branch}}
+
+
+.files-wrapper{ "v-if" => "!isLoading" }
+  .files{{"v-if" => "isParallel"}}
+    .diff-file.file-holder.conflict.unresolved.parallel-view{"v-for" => "file in conflictsData.files"}
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span {{file.new_path}}
+        .file-actions
+          %a.btn.btn-sm View file @{{file.commit_sha.slice(0, 7)}}
+
+      .diff-content.diff-wrap-lines
+        .diff-wrap-lines.code.file-content.js-syntax-highlight.white
+          %table{"v-for" => "(key, group) in file.parallelLines"}
+            %tr.line_holder.parallel{ |
+              "v-for" => "line in group", |
+              ":class" => "line.lineType != 'context' && (key == 'left' ? 'head' : 'origin')"}
+
+              %td.diff-line-num.header{"v-if" => "line.lineType == 'header'"}
+              %td.line_content.header{"v-if" => "line.lineType == 'header'"}
+                %strong {{key == 'left' ? 'HEAD//our changes' : 'origin//their changes'}}
+                %button.btn{"@click" => "handleSelected(line.id, line.lineType)"} Use this
+
+              %td.diff-line-num.old_line{"v-if" => "line.lineType != 'header'"}
+                {{line.lineNumber}}
+              %td.line_content{"v-if" => "line.lineType != 'header'"}
+                {{line.text}}
+
+
+  .files{{"v-if" => "!isParallel"}}
+    .diff-file.file-holder.conflict.unresolved.inline-view{"v-for" => "file in conflictsData.files"}
+      .file-title
+        %i.fa.fa-ban
+        %a
+          %span {{file.new_path}}
+        .file-actions
+          %a.btn.btn-sm View file @{{file.commit_sha.slice(0, 7)}}
+
+      .diff-content.diff-wrap-lines
+        .diff-wrap-lines.code.file-content.js-syntax-highlight.white
+          %table
+            %tr.line_holder{ |
+              "v-for" => "line in file.inlineLines", |
+              ":class" => "line.type == 'old' ? 'head' : line.type == 'new' ? 'origin' : ''"}
+
+              %template{"v-if" => "line.lineType != 'header'"}
+                %td.diff-line-num.old_line
+                  %a {{line.old_line}}
+                %td.diff-line-num.new_line
+                  %a {{line.new_line}}
+                %td.line_content
+                  {{{line.text}}}
+
+              %template{"v-if" => "line.lineType == 'header'"}
+                %td.diff-line-num.header
+                %td.diff-line-num.header
+                %td.line_content.header
+                  %strong {{line.type == 'old' ? 'HEAD//our changes' : 'origin//their changes'}}
+                  %button.btn{"@click" => "handleSelected(line.id, line.type)"} Use this
