@@ -24,7 +24,7 @@ module Gitlab
 
       # @deprecated Use .params instead to get sentinel support
       def url
-        raw_config_hash[:url]
+        new.url
       end
 
       def with
@@ -43,6 +43,10 @@ module Gitlab
 
     def params
       redis_store_options
+    end
+
+    def url
+      raw_config_hash[:url]
     end
 
     private
