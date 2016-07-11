@@ -167,6 +167,7 @@ class TodoService
 
   def new_issuable(issuable, author)
     create_assignment_todo(issuable, author)
+    create_approval_required_todos(issuable, author) if issuable.is_a?(MergeRequest)
     create_mention_todos(issuable.project, issuable, author)
   end
 
@@ -204,6 +205,12 @@ class TodoService
     mentioned_users = filter_mentioned_users(project, note || target, author)
     attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
+  end
+
+  def create_approval_required_todos(merge_request, author)
+    approvers = merge_request.overall_approvers.map(&:user)
+    attributes = attributes_for_todo(merge_request.project, merge_request, author, Todo::APPROVAL_REQUIRED)
+    create_todos(approvers, attributes)
   end
 
   def create_build_failed_todo(merge_request)
