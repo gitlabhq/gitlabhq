@@ -82,11 +82,15 @@ module Gitlab
       # disabled. In this case we just want to return gracefully
       # instead of spitting out an error.
       rescue Octokit::NotFound
-        OpenStruct.new(remaining: GITHUB_SAFE_REMAINING_REQUESTS + 1)
+        nil
+      end
+
+      def has_rate_limit?
+        rate_limit.present?
       end
 
       def rate_limit_exceed?
-        rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+        has_rate_limit? && rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
       end
 
       def rate_limit_sleep_time
