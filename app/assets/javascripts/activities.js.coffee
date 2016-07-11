@@ -15,10 +15,11 @@ class @Activities
 
 
   toggleFilter: (sender) ->
-    $('.event-filter .active').removeClass "active"
-    event_filters = $.cookie("event_filter")
-    filter = sender.attr("id").split("_")[0]
-    $.cookie "event_filter", (if event_filters isnt filter then filter else ""), { path: '/' }
+    unless sender.closest('li').hasClass('active')
+      $('.event-filter .active').removeClass "active"
+      event_filters = $.cookie("event_filter")
+      filter = sender.attr("id").split("_")[0]
+      $.cookie "event_filter", (if event_filters isnt filter then filter else "all"), { path: '/' }
 
-    if event_filters isnt filter
-      sender.closest('li').toggleClass "active"
+      if event_filters isnt filter
+        sender.closest('li').toggleClass "active"
