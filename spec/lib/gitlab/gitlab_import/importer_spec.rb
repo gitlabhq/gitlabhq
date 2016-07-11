@@ -1,8 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::GitlabImport::Importer, lib: true do
+  include ImportSpecHelper
+
   describe '#execute' do
-    it 'persists issues' do
+    before do
+      stub_omniauth_provider('gitlab')
       stub_request('issues', [
         {
           'id' => 2579857,
@@ -17,7 +20,9 @@ describe Gitlab::GitlabImport::Importer, lib: true do
         }
       ])
       stub_request('issues/2579857/notes', [])
+    end
 
+    it 'persists issues' do
       project = create(:empty_project, import_source: 'asd/vim')
       project.build_import_data(credentials: { password: 'password' })
 
