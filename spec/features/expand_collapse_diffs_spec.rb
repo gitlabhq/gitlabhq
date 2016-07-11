@@ -5,12 +5,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
   before do
     login_as :admin
-    merge_request = create(:merge_request, target_branch: 'expand-collapse-diffs-start', source_branch: 'expand-collapse-diffs')
-    project = merge_request.source_project
+    project = create(:project)
+    branch = 'expand-collapse-diffs'
 
     # Ensure that undiffable.md is in .gitattributes
-    project.repository.copy_gitattributes('expand-collapse-diffs')
-    visit diffs_namespace_project_merge_request_path(project.namespace, project, merge_request)
+    project.repository.copy_gitattributes(branch)
+    visit namespace_project_commit_path(project.namespace, project, project.commit(branch))
     execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
   end
 
@@ -30,7 +30,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     define_method(file.split('.').first) { file_container(file) }
   end
 
-  context 'visiting an existing merge request' do
+  context 'visiting a commit with collapsed diffs' do
     it 'shows small diffs immediately' do
       expect(small_diff).to have_selector('.code')
       expect(small_diff).not_to have_selector('.nothing-here-block')
@@ -74,13 +74,13 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       it 'shows the old content' do
         old_line = large_diff_renamed.find('.line_content.old')
 
-        expect(old_line).to have_content('four copies')
+        expect(old_line).to have_content('two copies')
       end
 
       it 'shows the new content' do
         new_line = large_diff_renamed.find('.line_content.new', match: :prefer_exact)
 
-        expect(new_line).to have_content('six copies')
+        expect(new_line).to have_content('three copies')
       end
     end
 
