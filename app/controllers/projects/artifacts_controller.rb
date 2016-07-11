@@ -25,7 +25,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     if entry.exists?
       send_artifacts_entry(build, entry)
     else
-      render json: {}, status: 404
+      render_404
     end
   end
 
