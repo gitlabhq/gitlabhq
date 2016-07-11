@@ -143,18 +143,14 @@ module Rouge
               '</span>'
             end
           end
-          lines.join("\n")
-        else
-          if @linenos == 'inline'
-            lines = lines.each_with_index.map do |line, index|
-              number = index + @linenostart
-              "<span class=\"linenos\">#{number}</span>#{line}"
-            end
-            lines.join("\n")
-          else
-            lines.join("\n")
+        elsif @linenos == 'inline'
+          lines = lines.each_with_index.map do |line, index|
+            number = index + @linenostart
+            "<span class=\"linenos\">#{number}</span>#{line}"
           end
         end
+
+        lines.join("\n")
       end
 
       def span(tok, val)

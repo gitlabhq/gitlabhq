@@ -133,8 +133,9 @@ module Banzai
         return {} if nodes.empty?
 
         ids = unique_attribute_values(nodes, attribute)
+        rows = collection_objects_for_ids(collection, ids)
 
-        collection.where(id: ids).each_with_object({}) do |row, hash|
+        rows.each_with_object({}) do |row, hash|
           hash[row.id] = row
         end
       end
@@ -151,6 +152,31 @@ module Banzai
         end
 
         values.to_a
+      end
+
+      # Queries the collection for the objects with the given IDs.
+      #
+      # If the RequestStore module is enabled this method will only query any
+      # objects that have not yet been queried. For objects that have already
+      # been queried the object is returned from the cache.
+      def collection_objects_for_ids(collection, ids)
+        if RequestStore.active?
+          cache = collection_cache[collection_cache_key(collection)]
+          to_query = ids.map(&:to_i) - cache.keys
+
+          unless to_query.empty?
+            collection.where(id: to_query).each { |row| cache[row.id] = row }
+          end
+
+          cache.values
+        else
+          collection.where(id: ids)
+        end
+      end
+
+      # Returns the cache key to use for a collection.
+      def collection_cache_key(collection)
+        collection.respond_to?(:model) ? collection.model : collection
       end
 
       # Processes the list of HTML documents and returns an Array containing all
@@ -189,7 +215,7 @@ module Banzai
       end
 
       def find_projects_for_hash_keys(hash)
-        Project.where(id: hash.keys)
+        collection_objects_for_ids(Project, hash.keys)
       end
 
       private
@@ -198,6 +224,12 @@ module Banzai
 
       def lazy(&block)
         Gitlab::Lazy.new(&block)
+      end
+
+      def collection_cache
+        RequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
+          hash[key] = {}
+        end
       end
     end
   end

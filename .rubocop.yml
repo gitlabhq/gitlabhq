@@ -284,7 +284,7 @@ Style/IfWithSemicolon:
 # Checks that conditional statements do not have an identical line at the
 # end of each branch, which can validly be moved out of the conditional.
 Style/IdenticalConditionalBranches:
-  Enabled: false
+  Enabled: true
 
 # Checks the indentation of the first line of the right-hand-side of a
 # multi-line assignment.
