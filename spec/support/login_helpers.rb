@@ -39,7 +39,6 @@ module LoginHelpers
 
   def login_via(provider, user, uid)
     mock_auth_hash(provider, uid, user.email)
-    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
     visit new_user_session_path
     click_link provider
   end
@@ -69,6 +68,7 @@ module LoginHelpers
         }
       }
     })
+    Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
   end
 
   # Requires Javascript driver.
