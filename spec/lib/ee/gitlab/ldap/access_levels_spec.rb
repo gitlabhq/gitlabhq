@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP::AccessLevels, lib: true do
+describe EE::Gitlab::LDAP::AccessLevels, lib: true do
   describe '#set' do
-    let(:access_levels) { Gitlab::LDAP::AccessLevels.new }
+    let(:access_levels) { described_class.new }
     let(:dns) do
       %w(
       uid=johndoe,ou=users,dc=example,dc=com
