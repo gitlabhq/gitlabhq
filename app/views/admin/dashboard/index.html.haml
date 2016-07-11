@@ -2,6 +2,9 @@
 = render "admin/dashboard/head"
 
 %div{ class: container_class }
+  - if @license
+    = render "admin/licenses/breakdown", license: @license
+
   .admin-dashboard.prepend-top-default
     .row
       .col-md-4
