@@ -25,6 +25,11 @@
     color: $hover-text;
     border-color: $hover-border;;
   }
+
+  &:focus {
+    outline: none;
+    border-color: darken($border, 15%);
+  }
 }
 
 @mixin btn-color($light, $border-light, $normal, $border-normal, $dark, $border-dark, $color) {
@@ -45,6 +50,11 @@
     background-color: $dark;
     border-color: $border-dark;
     color: $color;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $border-dark;
   }
 }
 
