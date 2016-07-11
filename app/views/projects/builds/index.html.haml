@@ -36,7 +36,7 @@
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-  %ul.content-list
+  %ul.content-list.builds-content-list
     - if @builds.blank?
       %li
         .nothing-here-block No builds to show
@@ -46,14 +46,10 @@
           %thead
             %tr
               %th Status
-              %th Build ID
               %th Commit
-              %th Ref
               %th Stage
               %th Name
-              %th Tags
-              %th Duration
-              %th Finished at
+              %th
               - if @project.build_coverage_enabled?
                 %th Coverage
               %th
