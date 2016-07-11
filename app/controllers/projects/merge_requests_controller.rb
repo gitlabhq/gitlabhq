@@ -9,11 +9,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
+    :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
-  before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
@@ -127,6 +127,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
         render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
       end
+    end
+  end
+
+
+  def conflicts
+    respond_to do |format|
+      format.html { render 'show' }
     end
   end
 
