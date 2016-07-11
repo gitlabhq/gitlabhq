@@ -6,6 +6,10 @@ class EventFilter
       %w{ push issues merge_requests team}
     end
 
+    def all
+      'all'
+    end
+
     def push
       'push'
     end
@@ -32,7 +36,7 @@ class EventFilter
   end
 
   def apply_filter(events)
-    return events unless params.present?
+    return events unless params.present? && params.exclude?(EventFilter.all)
 
     filter = params.dup
 
