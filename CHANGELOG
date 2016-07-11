@@ -25,6 +25,7 @@ v 8.10.0 (unreleased)
   - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
+  - Render inline diffs for multiple changed lines following eachother
   - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
