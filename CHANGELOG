@@ -95,6 +95,7 @@ v 8.9.6
   - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
+  - Keeps issue number when importing from Gitlab.com
 
 v 8.9.6 (unreleased)
   - Fix importing of events under notes for GitLab projects
