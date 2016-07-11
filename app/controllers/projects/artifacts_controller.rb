@@ -5,11 +5,11 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :validate_artifacts!
 
   def download
-    unless artifacts_file.file_storage?
-      return redirect_to artifacts_file.url
+    if artifacts_file.file_storage?
+      send_file artifacts_file.path, disposition: 'attachment'
+    else
+      redirect_to artifacts_file.url
     end
-
-    send_file artifacts_file.path, disposition: 'attachment'
   end
 
   def browse
