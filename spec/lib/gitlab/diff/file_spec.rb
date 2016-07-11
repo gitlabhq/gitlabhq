@@ -8,14 +8,14 @@ describe Gitlab::Diff::File, lib: true do
   let(:diff) { commit.diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
-  describe :diff_lines do
+  describe '#diff_lines' do
     let(:diff_lines) { diff_file.diff_lines }
 
     it { expect(diff_lines.size).to eq(30) }
     it { expect(diff_lines.first).to be_kind_of(Gitlab::Diff::Line) }
   end
 
-  describe :mode_changed? do
+  describe '#mode_changed?' do
     it { expect(diff_file.mode_changed?).to be_falsey }
   end
 
