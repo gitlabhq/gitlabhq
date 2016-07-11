@@ -733,6 +733,12 @@ Rails.application.routes.draw do
 
         resources :environments, only: [:index, :show, :new, :create, :destroy]
 
+        resources :artifacts, only: [] do
+          collection do
+            get :search, path: ':ref/:build_name(/*path)', format: false
+          end
+        end
+
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all

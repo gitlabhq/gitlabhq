@@ -35,14 +35,34 @@ class Projects::ArtifactsController < Projects::ApplicationController
     redirect_to namespace_project_build_path(project.namespace, project, build)
   end
 
+  def search
+    url = namespace_project_build_url(project.namespace, project, build)
+
+    if params[:path]
+      redirect_to "#{url}/artifacts/#{params[:path]}"
+    else
+      render_404
+    end
+  end
+
   private
 
   def validate_artifacts!
-    render_404 unless build.artifacts?
+    render_404 unless build && build.artifacts?
   end
 
   def build
-    @build ||= project.builds.find_by!(id: params[:build_id])
+    @build ||= build_from_id || build_from_ref
+  end
+
+  def build_from_id
+    project.builds.find_by(id: params[:build_id]) if params[:build_id]
+  end
+
+  def build_from_ref
+    if params[:ref]
+      project.builds_for(params[:build_name], params[:ref]).latest.first
+    end
   end
 
   def artifacts_file
