@@ -131,7 +131,7 @@
           counter = $emojiButton.find('.js-counter');
           counter.text(parseInt(counter.text()) + 1);
           $emojiButton.addClass('active');
-          this.addMeToUserList(votesBlock, emoji);
+          this.addYouToUserList(votesBlock, emoji);
           return this.animateEmoji($emojiButton);
         }
       } else {
@@ -177,11 +177,11 @@
       counterNumber = parseInt(counter.text(), 10);
       if (counterNumber > 1) {
         counter.text(counterNumber - 1);
-        this.removeMeFromUserList($emojiButton, emoji);
+        this.removeYouFromUserList($emojiButton, emoji);
       } else if (emoji === 'thumbsup' || emoji === 'thumbsdown') {
         $emojiButton.tooltip('destroy');
         counter.text('0');
-        this.removeMeFromUserList($emojiButton, emoji);
+        this.removeYouFromUserList($emojiButton, emoji);
         if ($emojiButton.parents('.note').length) {
           this.removeEmoji($emojiButton);
         }
@@ -214,17 +214,17 @@
       }
     };
 
-    AwardsHandler.prototype.removeMeFromUserList = function($emojiButton, emoji) {
+    AwardsHandler.prototype.removeYouFromUserList = function($emojiButton, emoji) {
       var authors, awardBlock, newAuthors, originalTitle;
       awardBlock = $emojiButton;
       originalTitle = this.getAwardTooltip(awardBlock);
       authors = originalTitle.split(FROM_SENTENCE_REGEX);
-      authors.splice(authors.indexOf('me'), 1);
+      authors.splice(authors.indexOf('You'), 1);
       awardBlock.closest('.js-emoji-btn').removeData('original-title').attr('data-original-title', this.toSentence(authors));
       return this.resetTooltip(awardBlock);
     };
 
-    AwardsHandler.prototype.addMeToUserList = function(votesBlock, emoji) {
+    AwardsHandler.prototype.addYouToUserList = function(votesBlock, emoji) {
       var awardBlock, origTitle, users;
       awardBlock = this.findEmojiIcon(votesBlock, emoji).parent();
       origTitle = this.getAwardTooltip(awardBlock);
@@ -232,7 +232,7 @@
       if (origTitle) {
         users = origTitle.trim().split(FROM_SENTENCE_REGEX);
       }
-      users.unshift('me');
+      users.unshift('You');
       awardBlock.attr('title', this.toSentence(users));
       return this.resetTooltip(awardBlock);
     };
@@ -249,7 +249,7 @@
     AwardsHandler.prototype.createEmoji_ = function(votesBlock, emoji) {
       var $emojiButton, buttonHtml, emojiCssClass;
       emojiCssClass = this.resolveNameToCssClass(emoji);
-      buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='me' data-placement='bottom'> <div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div> <span class='award-control-text js-counter'>1</span> </button>";
+      buttonHtml = "<button class='btn award-control js-emoji-btn has-tooltip active' title='You' data-placement='bottom'> <div class='icon emoji-icon " + emojiCssClass + "' data-emoji='" + emoji + "'></div> <span class='award-control-text js-counter'>1</span> </button>";
       $emojiButton = $(buttonHtml);
       $emojiButton.insertBefore(votesBlock.find('.js-award-holder')).find('.emoji-icon').data('emoji', emoji);
       this.animateEmoji($emojiButton);

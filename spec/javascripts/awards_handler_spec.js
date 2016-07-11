@@ -143,8 +143,8 @@
         return expect($votesBlock.find('[data-emoji=fire]').length).toBe(0);
       });
     });
-    describe('::addMeToUserList', function() {
-      it('should prepend "me" to the award tooltip', function() {
+    describe('::addYouToUserList', function() {
+      it('should prepend "You" to the award tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
@@ -152,9 +152,9 @@
         $thumbsUpEmoji.attr('data-title', 'sam, jerry, max, and andy');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('me, sam, jerry, max, and andy');
+        return expect($thumbsUpEmoji.data("original-title")).toBe('You, sam, jerry, max, and andy');
       });
-      return it('handles the special case where "me" is not cleanly comma seperated', function() {
+      return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
@@ -162,27 +162,27 @@
         $thumbsUpEmoji.attr('data-title', 'sam');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
-        return expect($thumbsUpEmoji.data("original-title")).toBe('me and sam');
+        return expect($thumbsUpEmoji.data("original-title")).toBe('You and sam');
       });
     });
-    describe('::removeMeToUserList', function() {
-      it('removes "me" from the front of the tooltip', function() {
+    describe('::removeYouToUserList', function() {
+      it('removes "You" from the front of the tooltip', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
-        $thumbsUpEmoji.attr('data-title', 'me, sam, jerry, max, and andy');
+        $thumbsUpEmoji.attr('data-title', 'You, sam, jerry, max, and andy');
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
         return expect($thumbsUpEmoji.data("original-title")).toBe('sam, jerry, max, and andy');
       });
-      return it('handles the special case where "me" is not cleanly comma seperated', function() {
+      return it('handles the special case where "You" is not cleanly comma seperated', function() {
         var $thumbsUpEmoji, $votesBlock, awardUrl;
         awardUrl = awardsHandler.getAwardUrl();
         $votesBlock = $('.js-awards-block').eq(0);
         $thumbsUpEmoji = $votesBlock.find('[data-emoji=thumbsup]').parent();
-        $thumbsUpEmoji.attr('data-title', 'me and sam');
+        $thumbsUpEmoji.attr('data-title', 'You and sam');
         $thumbsUpEmoji.addClass('active');
         awardsHandler.addAward($votesBlock, awardUrl, 'thumbsup', false);
         $thumbsUpEmoji.tooltip();
