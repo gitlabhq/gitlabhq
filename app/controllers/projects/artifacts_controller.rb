@@ -16,7 +16,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     directory = params[:path] ? "#{params[:path]}/" : ''
     @entry = build.artifacts_metadata_entry(directory)
 
-    return render_404 unless @entry.exists?
+    render_404 unless @entry.exists?
   end
 
   def file
