@@ -3,6 +3,12 @@
   padding-bottom: 25px;
   transition: padding $sidebar-transition-duration;
 
+  &.page-sidebar-pinned {
+    .sidebar-wrapper {
+      @include box-shadow(none);
+    }
+  }
+
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -11,6 +17,7 @@
     height: 100%;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
+    @include box-shadow(2px 0 16px 0 #bbb);
   }
 }
 

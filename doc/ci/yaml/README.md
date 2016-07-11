@@ -133,7 +133,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 ### after_script
 
 >**Note:**
-Introduced in GitLab 8.7 and requires Gitlab Runner v1.2 (not yet released)
+Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.
@@ -811,7 +811,7 @@ deploy:
 It's possible to overwrite globally defined `before_script` and `after_script`:
 
 ```yaml
-before_script
+before_script:
 - global before script
 
 job:

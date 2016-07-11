@@ -446,6 +446,7 @@ describe User, models: true do
       it { expect(user.can_create_group?).to be_truthy }
       it { expect(user.can_create_project?).to be_truthy }
       it { expect(user.first_name).to eq('John') }
+      it { expect(user.external).to be_falsey }
     end
 
     describe 'with defaults' do
@@ -466,6 +467,26 @@ describe User, models: true do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
+      end
+    end
+
+    context 'when current_application_settings.user_default_external is true' do
+      before do
+        stub_application_setting(user_default_external: true)
+      end
+
+      it "creates external user by default" do
+        user = build(:user)
+
+        expect(user.external).to be_truthy
+      end
+
+      describe 'with default overrides' do
+        it "creates a non-external user" do
+          user = build(:user, external: false)
+
+          expect(user.external).to be_falsey
+        end
       end
     end
   end

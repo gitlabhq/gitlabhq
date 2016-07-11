@@ -47,14 +47,12 @@
 #= require date.format
 #= require_directory ./behaviors
 #= require_directory ./blob
-#= require_directory ./ci
 #= require_directory ./commit
 #= require_directory ./extensions
 #= require_directory ./lib/utils
 #= require_directory ./u2f
 #= require_directory .
 #= require fuzzaldrin-plus
-#= require cropper
 #= require u2f
 
 window.slugify = (text) ->

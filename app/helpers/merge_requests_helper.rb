@@ -55,6 +55,10 @@ module MergeRequestsHelper
     end.sort.to_sentence
   end
 
+  def mr_closes_issues
+    @mr_closes_issues ||= @merge_request.closes_issues
+  end
+
   def mr_change_branches_path(merge_request)
     new_namespace_project_merge_request_path(
       @project.namespace, @project,
@@ -91,5 +95,9 @@ module MergeRequestsHelper
     else
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
+  end
+
+  def merge_request_button_visibility(merge_request, closed)
+    return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?)
   end
 end

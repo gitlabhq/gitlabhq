@@ -142,6 +142,7 @@ class ApplicationSetting < ActiveRecord::Base
       send_user_confirmation_email: false,
       container_registry_token_expire_delay: 5,
       repository_storage: 'default',
+      user_default_external: false,
     )
   end
 

@@ -5,6 +5,7 @@ v 8.10.0 (unreleased)
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refactor repository paths handling to allow multiple git mount points
   - Add Application Setting to configure default Repository Path for new projects
+  - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
@@ -18,27 +19,35 @@ v 8.10.0 (unreleased)
   - Fix MR-auto-close text added to description. !4836
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
   - Fix pagination when sorting by columns with lots of ties (like priority)
+  - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
   - Add notification settings dropdown for groups
+  - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
+  - API: Expose shared groups for projects and shared projects for groups !5050 (Robert Schilling)
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
+  - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
+  - Allow expanding and collapsing files in diff view (!4990)
+  - Collapse large diffs by default (!4990)
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Show last push widget in upstream after push to fork
   - Don't instantiate a git tree on Projects show default view
   - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
   - Better caching of git calls on ProjectsController#show.
+  - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
   - Instrument Rinku usage
@@ -46,6 +55,8 @@ v 8.10.0 (unreleased)
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
   - Set import_url validation to be more strict
+  - Memoize MR merged/closed events retrieval
+  - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
@@ -54,6 +65,14 @@ v 8.10.0 (unreleased)
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project 
+  - Fix 404 redirect after validation fails importing a GitLab project
+  - Added setting to set new users by default as external !4545 (Dravere)
+  - Add min value for project limit field on user's form !3622 (jastkand)
+  - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
+  - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
+
+v 8.9.6 (unreleased)
+  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
@@ -98,7 +117,7 @@ v 8.9.3
   - Removed fade when filtering results. !4932
   - Fix missing avatar on system notes. !4954
   - Reduce overhead and optimize ProjectTeam#max_member_access performance. !4973
-  - Use update_columns to by_pass all the dirty code on active_record. !4985
+  - Use update_columns to bypass all the dirty code on active_record. !4985
   - Fix restore Rake task warning message output !4980
 
 v 8.9.2
@@ -2602,13 +2621,13 @@ v 6.5.0
   - Files API supports base64 encoded content (sponsored by O'Reilly Media)
   - Added support for Go's repository retrieval (Bruno Albuquerque)
 
-v6.4.3
+v 6.4.3
   - Don't use unicorn worker killer if PhusionPassenger is defined
 
-v6.4.2
+v 6.4.2
   - Fixed wrong behaviour of script/upgrade.rb
 
-v6.4.1
+v 6.4.1
   - Fixed bug with repository rename
   - Fixed bug with project transfer
 

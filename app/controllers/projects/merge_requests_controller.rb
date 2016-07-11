@@ -1,5 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include DiffForPath
   include DiffHelper
   include IssuableActions
   include ToggleAwardEmoji
@@ -9,10 +10,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
     :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
   ]
-  before_action :closes_issues, only: [:edit, :update, :show, :diffs, :commits, :builds]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
+  before_action :define_commit_vars, only: [:diffs]
+  before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -53,12 +55,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def show
-    @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
-      group(:commit_id).count
-
     respond_to do |format|
       format.html
-      
+
       format.json do
         render json: @merge_request
       end
@@ -80,25 +79,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     apply_diff_view_cookie!
 
-    @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
-
-    @comments_target = {
-      noteable_type: 'MergeRequest',
-      noteable_id: @merge_request.id
-    }
-
-    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
-
-    Banzai::NoteRenderer.render(
-      @grouped_diff_notes.values.flatten,
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
+    @merge_request_diff = @merge_request.merge_request_diff
 
     respond_to do |format|
       format.html
@@ -106,10 +87,37 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  # With an ID param, loads the MR at that ID. Otherwise, accepts the same params as #new
+  # and uses that (unsaved) MR.
+  #
+  def diff_for_path
+    if params[:id]
+      merge_request
+      define_diff_comment_vars
+    else
+      build_merge_request
+      @diff_notes_disabled = true
+      @grouped_diff_notes = {}
+    end
+
+    define_commit_vars
+    diffs = @merge_request.diffs(diff_options)
+
+    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
+  end
+
   def commits
     respond_to do |format|
       format.html { render 'show' }
-      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_commits') } }
+      format.json do
+        # Get commits from repository
+        # or from cache if already merged
+        @commits = @merge_request.commits
+        @note_counts = Note.where(commit_id: @commits.map(&:id)).
+          group(:commit_id).count
+
+        render json: { html: view_to_html_string('projects/merge_requests/show/_commits') }
+      end
     end
   end
 
@@ -121,8 +129,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    build_merge_request
     @noteable = @merge_request
 
     @target_branches = if @merge_request.target_project
@@ -308,10 +315,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
 
-  def closes_issues
-    @closes_issues ||= @merge_request.closes_issues
-  end
-
   def authorize_update_merge_request!
     return render_404 unless can?(current_user, :update_merge_request, @merge_request)
   end
@@ -340,30 +343,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def define_show_vars
-    # Build a note object for comment form
-    @note = @project.notes.new(noteable: @merge_request)
-
-    @discussions = @merge_request.mr_and_commit_notes.
-      inc_author_project_award_emoji.
-      fresh.
-      discussions
-
-    @notes = Banzai::NoteRenderer.render(
-      @discussions.flatten,
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
-
     @noteable = @merge_request
-
-    # Get commits from repository
-    # or from cache if already merged
-    @commits = @merge_request.commits
-
-    @merge_request_diff = @merge_request.merge_request_diff
+    @commits_count = @merge_request.commits.count
 
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses if @pipeline
@@ -372,12 +353,60 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.unlock_mr
       @merge_request.close
     end
+
+    if request.format == :html || action_name == 'show'
+      define_show_html_vars
+    end
+  end
+
+  # Discussion tab data is only required on html requests
+  def define_show_html_vars
+    # Build a note object for comment form
+    @note = @project.notes.new(noteable: @noteable)
+
+    @discussions = @noteable.mr_and_commit_notes.
+      inc_author_project_award_emoji.
+      fresh.
+      discussions
+
+    # This is not executed lazily
+    @notes = Banzai::NoteRenderer.render(
+      @discussions.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
   end
 
   def define_widget_vars
     @pipeline = @merge_request.pipeline
     @pipelines = [@pipeline].compact
-    closes_issues
+  end
+
+  def define_commit_vars
+    @commit = @merge_request.diff_head_commit
+    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
+  end
+
+  def define_diff_comment_vars
+    @comments_target = {
+      noteable_type: 'MergeRequest',
+      noteable_id: @merge_request.id
+    }
+
+    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
   end
 
   def invalid_mr
@@ -407,5 +436,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_when_build_succeeds_active?
     params[:merge_when_build_succeeds].present? &&
       @merge_request.pipeline && @merge_request.pipeline.active?
+  end
+
+  def build_merge_request
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
   end
 end
