@@ -12,7 +12,7 @@ class HelpController < ApplicationController
   end
 
   def show
-    @path = path_params[:path]
+    @path = clean_path_info(path_params[:path])
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
