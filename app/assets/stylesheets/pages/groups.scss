@@ -44,7 +44,7 @@
     display: -ms-flexbox;
     display: flex;
 
-    .group-avatar, .group-details, .group-controls {
+    .group-avatar, .group-details, .controls {
       display: -webkit-flex;
       display: -ms-flexbox;
       display: flex;
@@ -56,7 +56,7 @@
       min-width: 0;
     }
 
-    .group-controls {
+    .controls {
       align-items: center;
 
       a {
