@@ -67,6 +67,9 @@ v 8.10.0 (unreleased)
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
   - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
 
+v 8.9.6 (unreleased)
+  - Fix importing of events under notes for GitLab projects
+
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
   - Fixed avatar alignment in new MR view. !5095

@@ -69,10 +69,19 @@ module Gitlab
       # Example:
       # +relation_key+ issues, loops through the list of *issues* and for each individual
       # issue, finds any subrelations such as notes, creates them and assign them back to the hash
+      #
+      # Recursively calls this method if the sub-relation is a hash containing more sub-relations
       def create_sub_relations(relation, tree_hash)
         relation_key = relation.keys.first.to_s
+        return if tree_hash[relation_key].blank?
+
         tree_hash[relation_key].each do |relation_item|
           relation.values.flatten.each do |sub_relation|
+            # We just use author to get the user ID, do not attempt to create an instance.
+            next if sub_relation == :author
+
+            create_sub_relations(sub_relation, relation_item) if sub_relation.is_a?(Hash)
+
             relation_hash, sub_relation = assign_relation_hash(relation_item, sub_relation)
             relation_item[sub_relation.to_s] = create_relation(sub_relation, relation_hash) unless relation_hash.blank?
           end
