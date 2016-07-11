@@ -1,5 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include DiffForPath
   include DiffHelper
   include IssuableActions
   include ToggleAwardEmoji
@@ -12,6 +13,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
+  before_action :define_commit_vars, only: [:diffs]
+  before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -54,7 +57,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def show
     respond_to do |format|
       format.html
-      
+
       format.json do
         render json: @merge_request
       end
@@ -78,30 +81,29 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
-    @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
-
-    @comments_target = {
-      noteable_type: 'MergeRequest',
-      noteable_id: @merge_request.id
-    }
-
-    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
-
-    Banzai::NoteRenderer.render(
-      @grouped_diff_notes.values.flatten,
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
-
     respond_to do |format|
       format.html
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
     end
+  end
+
+  # With an ID param, loads the MR at that ID. Otherwise, accepts the same params as #new
+  # and uses that (unsaved) MR.
+  #
+  def diff_for_path
+    if params[:id]
+      merge_request
+      define_diff_comment_vars
+    else
+      build_merge_request
+      @diff_notes_disabled = true
+      @grouped_diff_notes = {}
+    end
+
+    define_commit_vars
+    diffs = @merge_request.diffs(diff_options)
+
+    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
   end
 
   def commits
@@ -127,8 +129,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    build_merge_request
     @noteable = @merge_request
 
     @target_branches = if @merge_request.target_project
@@ -384,6 +385,30 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @pipelines = [@pipeline].compact
   end
 
+  def define_commit_vars
+    @commit = @merge_request.diff_head_commit
+    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
+  end
+
+  def define_diff_comment_vars
+    @comments_target = {
+      noteable_type: 'MergeRequest',
+      noteable_id: @merge_request.id
+    }
+
+    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
+  end
+
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
@@ -411,5 +436,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_when_build_succeeds_active?
     params[:merge_when_build_succeeds].present? &&
       @merge_request.pipeline && @merge_request.pipeline.active?
+  end
+
+  def build_merge_request
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
   end
 end

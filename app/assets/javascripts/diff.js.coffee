@@ -1,6 +1,8 @@
 class @Diff
   UNFOLD_COUNT = 20
   constructor: ->
+    $('.files .diff-file').singleFileDiff()
+
     $(document).off('click', '.js-unfold')
     $(document).on('click', '.js-unfold', (event) =>
       target = $(event.target)

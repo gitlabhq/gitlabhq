@@ -160,6 +160,7 @@ class @MergeRequestTabs
         $('#diffs').html data.html
         gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'))
         $('#diffs .js-syntax-highlight').syntaxHighlight()
+        $('#diffs .diff-file').singleFileDiff()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")

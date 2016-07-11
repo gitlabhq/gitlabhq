@@ -6,6 +6,8 @@
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
+    - unless expand_all_diffs?
+      = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), class: 'btn btn-default'
     - if show_whitespace_toggle
       - if current_controller?(:commit)
         = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
