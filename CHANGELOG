@@ -53,8 +53,6 @@ v 8.10.0 (unreleased)
   - Memoize MR merged/closed events retrieval
   - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
-
-v 8.9.5 (unreleased)
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
@@ -63,11 +61,11 @@ v 8.9.5 (unreleased)
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
-
-v 8.9.6
-  - Fix importing of events under notes for GitLab projects
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
+
+v 8.9.6 (unreleased)
+  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
