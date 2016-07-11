@@ -43,6 +43,7 @@ v 8.10.0 (unreleased)
   - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
@@ -60,7 +61,6 @@ v 8.10.0 (unreleased)
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
-  - Fix new snippet style bug
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
