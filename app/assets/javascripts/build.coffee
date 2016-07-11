@@ -1,9 +1,9 @@
-class @CiBuild
+class @Build
   @interval: null
   @state: null
 
   constructor: (@page_url, @build_url, @build_status, @state) ->
-    clearInterval(CiBuild.interval)
+    clearInterval(Build.interval)
 
     # Init breakpoint checker
     @bp = Breakpoints.get()
@@ -40,7 +40,7 @@ class @CiBuild
       # Check for new build output if user still watching build page
       # Only valid for runnig build when output changes during time
       #
-      CiBuild.interval = setInterval =>
+      Build.interval = setInterval =>
         if window.location.href.split("#").first() is @page_url
           @getBuildTrace()
       , 4000
