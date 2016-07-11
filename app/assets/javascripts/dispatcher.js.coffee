@@ -127,11 +127,10 @@ class Dispatcher
           when 'groups'
             new UsersSelect()
           when 'projects'
-            new NamespaceSelect()
+            new NamespaceSelects()
       when 'dashboard', 'root'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
-        new Profile()
         new NotificationsForm()
         new NotificationsDropdown()
       when 'projects'

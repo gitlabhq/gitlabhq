@@ -53,11 +53,11 @@ class ProjectsController < Projects::ApplicationController
             notice: "Project '#{@project.name}' was successfully updated."
           )
         end
-        format.js
       else
         format.html { render 'edit' }
-        format.js
       end
+
+      format.js
     end
   end
 

@@ -7,6 +7,7 @@ Feature: Dashboard
     And project "Shop" has CI enabled
     And project "Shop" has CI build
     And project "Shop" has labels: "bug", "feature", "enhancement"
+    And project "Shop" has issue: "bug report"
     And I visit dashboard page
 
   Scenario: I should see projects list

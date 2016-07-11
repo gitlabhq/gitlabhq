@@ -39,7 +39,7 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_toggle(toggle_text, data_attr, options)
+  def dropdown_toggle(toggle_text, data_attr, options = {})
     content_tag(:button, class: "dropdown-menu-toggle #{options[:toggle_class] if options.has_key?(:toggle_class)}", id: (options[:id] if options.has_key?(:id)), type: "button", data: data_attr) do
       output = content_tag(:span, toggle_text, class: "dropdown-toggle-text")
       output << icon('chevron-down')

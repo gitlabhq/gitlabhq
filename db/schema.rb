@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
@@ -593,6 +594,8 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.datetime "updated_at"
     t.string   "base_commit_sha"
     t.string   "real_size"
+    t.string   "head_commit_sha"
+    t.string   "start_commit_sha"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -689,10 +692,12 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
+    t.boolean  "system",            default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
     t.string   "type"
+    t.text     "position"
+    t.text     "original_position"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -881,6 +886,8 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string  "commit_id"
     t.string  "reply_key",     null: false
     t.string  "line_code"
+    t.string  "note_type"
+    t.text    "position"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree

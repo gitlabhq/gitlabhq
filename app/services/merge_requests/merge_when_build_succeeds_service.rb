@@ -12,7 +12,7 @@ module MergeRequests
         merge_request.merge_when_build_succeeds = true
         merge_request.merge_user                = @current_user
 
-        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.last_commit)
+        SystemNoteService.merge_when_build_succeeds(merge_request, @project, @current_user, merge_request.diff_head_commit)
       end
 
       merge_request.save
