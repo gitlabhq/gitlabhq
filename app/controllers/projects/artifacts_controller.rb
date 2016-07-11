@@ -61,7 +61,9 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   def build_from_ref
     if params[:ref]
-      project.builds_for(params[:build_name], params[:ref]).latest.first
+      builds = project.builds_for(params[:build_name], params[:ref])
+
+      builds.latest.success.first
     end
   end
 
