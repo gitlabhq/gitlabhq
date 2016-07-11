@@ -25,7 +25,7 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        if params["format"]
+        if params["simple"]
           present @projects, with: Entities::BasicProjectWithAccess, user: current_user
         else
           present @projects, with: Entities::ProjectWithAccess, user: current_user
