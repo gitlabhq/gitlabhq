@@ -2,9 +2,13 @@
 
   w.gl ?= {}
   w.gl.utils ?= {}
+  w.gl.utils.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
   w.gl.utils.formatDate = (datetime) ->
     dateFormat(datetime, 'mmm d, yyyy h:MMtt Z')
+
+  w.gl.utils.getDayName = (date) ->
+    this.days[date.getDay()]
 
   w.gl.utils.localTimeAgo = ($timeagoEls, setTimeago = true) ->
     $timeagoEls.each( ->
