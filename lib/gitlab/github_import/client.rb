@@ -78,6 +78,11 @@ module Gitlab
 
       def rate_limit
         api.rate_limit!
+      # GitHub Rate Limit API returns 404 when the rate limit is
+      # disabled. In this case we just want to return gracefully
+      # instead of spitting out an error.
+      rescue Octokit::NotFound
+        OpenStruct.new(remaining: GITHUB_SAFE_REMAINING_REQUESTS + 1)
       end
 
       def rate_limit_exceed?

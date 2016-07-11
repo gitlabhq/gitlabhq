@@ -61,4 +61,13 @@ describe Gitlab::GithubImport::Client, lib: true do
       expect(client.api.api_endpoint).to eq 'https://github.company.com/'
     end
   end
+
+  context 'when rate limit is disabled' do
+    it 'does not raise error' do
+      stub_request(:get, /api.github.com/)
+      allow(client.api).to receive(:rate_limit!).and_raise(Octokit::NotFound)
+
+      expect { client.issues }.not_to raise_error
+    end
+  end
 end
