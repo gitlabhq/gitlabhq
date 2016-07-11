@@ -17,7 +17,7 @@
     height: 100%;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
-    @include box-shadow(2px 0px 16px 0px #bbb);
+    @include box-shadow(2px 0 16px 0 #bbb);
   }
 }
 
