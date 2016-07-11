@@ -6,7 +6,7 @@
 
 
   %td
-    %div.branch-commit
+    .branch-commit
       = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
         %span ##{pipeline.id}
       - if pipeline.ref

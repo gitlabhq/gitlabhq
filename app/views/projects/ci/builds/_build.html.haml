@@ -6,7 +6,7 @@
       = ci_status_with_icon(build.status)
 
   %td
-    %div.branch-commit
+    .branch-commit
       - if can?(current_user, :read_build, build)
         = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
           %span ##{build.id}
@@ -28,17 +28,17 @@
       - if defined?(commit_sha) && commit_sha
         = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
 
-      .label-container
-        - if build.tags.any?
+      - if build.tags.any?
+        .label-container
           - build.tags.each do |tag|
             %span.label.label-primary
               = tag
-        - if build.try(:trigger_request)
-          %span.label.label-info triggered
-        - if build.try(:allow_failure)
-          %span.label.label-danger allowed to fail
-        - if defined?(retried) && retried
-          %span.label.label-warning retried
+          - if build.try(:trigger_request)
+            %span.label.label-info triggered
+          - if build.try(:allow_failure)
+            %span.label.label-danger allowed to fail
+          - if defined?(retried) && retried
+            %span.label.label-warning retried
 
 
   - if defined?(runner) && runner
