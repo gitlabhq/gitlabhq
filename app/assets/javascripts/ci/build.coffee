@@ -46,13 +46,15 @@ class @CiBuild
       , 4000
 
   getInitialBuildTrace: ->
+    removeRefreshStatuses = ['success', 'failed', 'canceled']
+
     $.ajax
       url: @build_url
       dataType: 'json'
       success: (build_data) ->
         $('.js-build-output').html build_data.trace_html
 
-        if build_data.status is 'success' or build_data.status is 'failed'
+        if removeRefreshStatuses.indexOf(build_data.status) >= 0
           $('.js-build-refresh').remove()
 
   getBuildTrace: ->
