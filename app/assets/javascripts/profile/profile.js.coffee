@@ -78,3 +78,6 @@ $ ->
 
     if comment && comment.length > 1 && $title.val() == ''
       $title.val(comment[1]).change()
+
+  if gl.utils.getPagePath() == 'profiles'
+    new Profile()

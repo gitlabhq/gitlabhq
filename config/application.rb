@@ -84,6 +84,7 @@ module Gitlab
     config.assets.precompile << "graphs/application.js"
     config.assets.precompile << "users/application.js"
     config.assets.precompile << "network/application.js"
+    config.assets.precompile << "profile/application.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
 

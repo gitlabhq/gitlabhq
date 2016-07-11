@@ -52,7 +52,7 @@ Parameters:
     "owner": {
       "id": 3,
       "name": "Diaspora",
-      "created_at": "2013-09-30T13: 46: 02Z"
+      "created_at": "2013-09-30T13:46:02Z"
     },
     "name": "Diaspora Client",
     "name_with_namespace": "Diaspora / Diaspora Client",
@@ -64,17 +64,18 @@ Parameters:
     "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
-    "created_at": "2013-09-30T13: 46: 02Z",
-    "last_activity_at": "2013-09-30T13: 46: 02Z",
+    "container_registry_enabled": false,
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
     "namespace": {
-      "created_at": "2013-09-30T13: 46: 02Z",
+      "created_at": "2013-09-30T13:46:02Z",
       "description": "",
       "id": 3,
       "name": "Diaspora",
       "owner_id": 1,
       "path": "diaspora",
-      "updated_at": "2013-09-30T13: 46: 02Z"
+      "updated_at": "2013-09-30T13:46:02Z"
     },
     "archived": false,
     "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
@@ -82,7 +83,8 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true
+    "public_builds": true,
+    "shared_with_groups": []
   },
   {
     "id": 6,
@@ -112,6 +114,7 @@ Parameters:
     "builds_enabled": true,
     "wiki_enabled": true,
     "snippets_enabled": false,
+    "container_registry_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
     "last_activity_at": "2013-09-30T13:46:02Z",
     "creator_id": 3,
@@ -140,7 +143,8 @@ Parameters:
     "forks_count": 0,
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
-    "public_builds": true
+    "public_builds": true,
+    "shared_with_groups": []
   }
 ]
 ```
@@ -223,7 +227,7 @@ Parameters:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -235,17 +239,18 @@ Parameters:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -262,7 +267,20 @@ Parameters:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": [
+    {
+      "group_id": 4,
+      "group_name": "Twitter",
+      "group_access_level": 30
+    },
+    {
+      "group_id": 3,
+      "group_name": "Gitlab Org",
+      "group_access_level": 10
+    }
+  ]
 }
 ```
 
@@ -425,6 +443,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -449,6 +468,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `import_url` (optional)
@@ -475,6 +495,7 @@ Parameters:
 - `wiki_enabled` (optional)
 - `snippets_enabled` (optional)
 - `container_registry_enabled` (optional)
+- `shared_runners_enabled` (optional)
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `public_builds` (optional)
@@ -537,23 +558,26 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
   "forks_count": 0,
-  "star_count": 1
+  "star_count": 1,
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -600,23 +624,26 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "archived": true,
   "avatar_url": "http://example.com/uploads/project/avatar/3/uploads/avatar.png",
   "shared_runners_enabled": true,
   "forks_count": 0,
-  "star_count": 0
+  "star_count": 0,
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -660,7 +687,7 @@ Example response:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -672,17 +699,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -699,7 +727,9 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -713,7 +743,7 @@ have the proper access rights, code 403 is returned. Status 404 is returned if t
 doesn't exist, or is hidden to the user.
 
 ```
-POST /projects/:id/archive
+POST /projects/:id/unarchive
 ```
 
 | Attribute | Type | Required | Description |
@@ -743,7 +773,7 @@ Example response:
   "owner": {
     "id": 3,
     "name": "Diaspora",
-    "created_at": "2013-09-30T13: 46: 02Z"
+    "created_at": "2013-09-30T13:46:02Z"
   },
   "name": "Diaspora Project Site",
   "name_with_namespace": "Diaspora / Diaspora Project Site",
@@ -755,17 +785,18 @@ Example response:
   "builds_enabled": true,
   "wiki_enabled": true,
   "snippets_enabled": false,
-  "created_at": "2013-09-30T13: 46: 02Z",
-  "last_activity_at": "2013-09-30T13: 46: 02Z",
+  "container_registry_enabled": false,
+  "created_at": "2013-09-30T13:46:02Z",
+  "last_activity_at": "2013-09-30T13:46:02Z",
   "creator_id": 3,
   "namespace": {
-    "created_at": "2013-09-30T13: 46: 02Z",
+    "created_at": "2013-09-30T13:46:02Z",
     "description": "",
     "id": 3,
     "name": "Diaspora",
     "owner_id": 1,
     "path": "diaspora",
-    "updated_at": "2013-09-30T13: 46: 02Z"
+    "updated_at": "2013-09-30T13:46:02Z"
   },
   "permissions": {
     "project_access": {
@@ -782,7 +813,9 @@ Example response:
   "shared_runners_enabled": true,
   "forks_count": 0,
   "star_count": 0,
-  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b"
+  "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
+  "public_builds": true,
+  "shared_with_groups": []
 }
 ```
 
@@ -965,11 +998,11 @@ Parameters:
   "id": 1,
   "url": "http://example.com/hook",
   "project_id": 3,
-  "push_events": "true",
-  "issues_events": "true",
-  "merge_requests_events": "true",
-  "note_events": "true",
-  "enable_ssl_verification": "true",
+  "push_events": true,
+  "issues_events": true,
+  "merge_requests_events": true,
+  "note_events": true,
+  "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -1089,8 +1122,8 @@ Parameters:
         "name": "Jeremy Ashkenas",
         "email": "jashkenas@example.com"
       },
-      "authored_date": "2013-09-07T12: 58: 21+00: 00",
-      "committed_date": "2013-09-07T12: 58: 21+00: 00"
+      "authored_date": "2013-09-07T12:58:21+00:00",
+      "committed_date": "2013-09-07T12:58:21+00:00"
     },
     "protected": false
   }

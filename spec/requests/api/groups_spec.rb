@@ -49,10 +49,25 @@ describe API::API, api: true  do
 
   describe "GET /groups/:id" do
     context "when authenticated as user" do
-      it "should return one of user1's groups" do
+      it "returns one of user1's groups" do
+        project = create(:project, namespace: group2, path: 'Foo')
+        create(:project_group_link, project: project, group: group1)
+
         get api("/groups/#{group1.id}", user1)
+
         expect(response).to have_http_status(200)
-        json_response['name'] == group1.name
+        expect(json_response['id']).to eq(group1.id)
+        expect(json_response['name']).to eq(group1.name)
+        expect(json_response['path']).to eq(group1.path)
+        expect(json_response['description']).to eq(group1.description)
+        expect(json_response['visibility_level']).to eq(group1.visibility_level)
+        expect(json_response['avatar_url']).to eq(group1.avatar_url)
+        expect(json_response['web_url']).to eq(group1.web_url)
+        expect(json_response['projects']).to be_an Array
+        expect(json_response['projects'].length).to eq(2)
+        expect(json_response['shared_projects']).to be_an Array
+        expect(json_response['shared_projects'].length).to eq(1)
+        expect(json_response['shared_projects'][0]['id']).to eq(project.id)
       end
 
       it "should not return a non existing group" do

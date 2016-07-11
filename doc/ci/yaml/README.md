@@ -811,7 +811,7 @@ deploy:
 It's possible to overwrite globally defined `before_script` and `after_script`:
 
 ```yaml
-before_script
+before_script:
 - global before script
 
 job:

@@ -175,6 +175,12 @@ ul.content-list {
 
 .panel > .content-list > li {
   padding: $gl-padding-top $gl-padding;
+
+  &.commit {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 46px + $gl-padding;
+    }
+  }
 }
 
 ul.controls {
