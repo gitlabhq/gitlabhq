@@ -196,23 +196,6 @@ describe "Builds" do
     end
   end
 
-  describe "GET /:project/builds/:id/download" do
-    before do
-      @build.update_attributes(artifacts_file: artifacts_file)
-      visit namespace_project_build_path(@project.namespace, @project, @build)
-      click_link 'Download'
-    end
-
-    context "Build from other project" do
-      before do
-        @build2.update_attributes(artifacts_file: artifacts_file)
-        visit download_namespace_project_build_artifacts_path(@project.namespace, @project, @build2)
-      end
-
-      it { expect(page.status_code).to eq(404) }
-    end
-  end
-
   describe "GET /:project/builds/:id/raw" do
     context "Build from project" do
       before do
