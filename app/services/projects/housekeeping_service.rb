@@ -22,11 +22,7 @@ module Projects
     def execute
       raise LeaseTaken unless try_obtain_lease
 
-      GitGarbageCollectWorker.perform_async(@project.id)
-    ensure
-      Gitlab::Metrics.measure(:reset_pushes_since_gc) do
-        update_pushes_since_gc(0)
-      end
+      execute_gitlab_shell_gc
     end
 
     def needed?
@@ -34,17 +30,25 @@ module Projects
     end
 
     def increment!
-      Gitlab::Metrics.measure(:increment_pushes_since_gc) do
-        update_pushes_since_gc(@project.pushes_since_gc + 1)
+      if Gitlab::ExclusiveLease.new("project_housekeeping:increment!:#{@project.id}", timeout: 60).try_obtain
+        Gitlab::Metrics.measure(:increment_pushes_since_gc) do
+          update_pushes_since_gc(@project.pushes_since_gc + 1)
+        end
       end
     end
 
     private
 
-    def update_pushes_since_gc(new_value)
-      if Gitlab::ExclusiveLease.new("project_housekeeping:update_pushes_since_gc:#{project.id}", timeout: 60).try_obtain
-        @project.update_column(:pushes_since_gc, new_value)
+    def execute_gitlab_shell_gc
+      GitGarbageCollectWorker.perform_async(@project.id)
+    ensure
+      Gitlab::Metrics.measure(:reset_pushes_since_gc) do
+        update_pushes_since_gc(0)
       end
+    end
+
+    def update_pushes_since_gc(new_value)
+      @project.update_column(:pushes_since_gc, new_value)
     end
 
     def try_obtain_lease
