@@ -40,9 +40,19 @@ module Gitlab
             # See issue #18775.
             #
             if @value.nil?
-              Node::Undefined.new(@node, attributes)
+              Node::Undefined.new(fabricate_undefined(attributes))
             else
               @node.new(@value, attributes)
+            end
+          end
+
+          private
+
+          def fabricate_undefined(attributes)
+            if @node.default.nil?
+              Node::Null.new(nil, attributes)
+            else
+              @node.new(@node.default, attributes)
             end
           end
         end

@@ -66,14 +66,14 @@ module Gitlab
               @config
             else
               meaningful = @entries.select do |_key, value|
-                value.defined? && value.relevant?
+                value.specified? && value.relevant?
               end
 
               Hash[meaningful.map { |key, entry| [key, entry.value] }]
             end
           end
 
-          def defined?
+          def specified?
             true
           end
 

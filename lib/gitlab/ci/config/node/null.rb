@@ -8,10 +8,6 @@ module Gitlab
         # Implements the Null Object pattern.
         #
         class Null < Entry
-          def initialize(config = nil, **attributes)
-            super
-          end
-
           def value
             nil
           end
@@ -22,6 +18,14 @@ module Gitlab
 
           def errors
             []
+          end
+
+          def specified?
+            false
+          end
+
+          def relevant?
+            false
           end
         end
       end

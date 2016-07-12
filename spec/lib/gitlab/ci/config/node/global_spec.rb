@@ -233,9 +233,9 @@ describe Gitlab::Ci::Config::Node::Global do
     end
   end
 
-  describe '#defined?' do
+  describe '#specified?' do
     it 'is concrete entry that is defined' do
-      expect(global.defined?).to be true
+      expect(global.specified?).to be true
     end
   end
 end
