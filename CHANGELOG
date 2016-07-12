@@ -78,6 +78,7 @@ v 8.10.0 (unreleased)
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
   - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
   - Style of import project buttons were fixed in the new project page. !5183 (rdemirbay)
+  - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
 
 v 8.9.6 (unreleased)
   - Fix importing of events under notes for GitLab projects
