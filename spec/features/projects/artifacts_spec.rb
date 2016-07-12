@@ -26,9 +26,9 @@ describe 'Artifacts' do
         build2.update_attributes(artifacts_file: artifacts_file)
 
         visit download_namespace_project_build_artifacts_path(
-                project.namespace,
-                project,
-                build2)
+          project.namespace,
+          project,
+          build2)
       end
 
       it { expect(page.status_code).to eq(404) }
