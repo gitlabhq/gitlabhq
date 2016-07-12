@@ -28,7 +28,7 @@
     .nav-controls
       - if can? current_user, :create_pipeline, @project
         = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
-          New pipeline
+          Run pipeline
 
         - unless @repository.gitlab_ci_yml
           = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
