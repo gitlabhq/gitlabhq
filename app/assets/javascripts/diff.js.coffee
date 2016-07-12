@@ -1,6 +1,7 @@
 class @Diff
   UNFOLD_COUNT = 20
   constructor: ->
+    $('.files .diff-file').singleFileDiff()
     @filesCommentButton = $('.files .diff-file').filesCommentButton()
 
     $(document).off('click', '.js-unfold')
