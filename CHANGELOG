@@ -35,6 +35,7 @@ v 8.10.0 (unreleased)
   - Add notification settings dropdown for groups
   - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
+  - API: Expose `due_date` for issues (Robert Schilling)
   - API: Todos !3188 (Robert Schilling)
   - API: Expose shared groups for projects and shared projects for groups !5050 (Robert Schilling)
   - Add "Enabled Git access protocols" to Application Settings
