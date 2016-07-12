@@ -55,7 +55,7 @@ module Gitlab
                 end
 
                 define_method("#{symbol}_value") do
-                  raise Entry::InvalidError unless valid?
+                  return unless valid?
                   @entries[symbol].value if @entries[symbol]
                 end
 

@@ -209,10 +209,8 @@ describe Gitlab::Ci::Config::Node::Global do
     end
 
     describe '#before_script' do
-      it 'raises error' do
-        expect { global.before_script }.to raise_error(
-          Gitlab::Ci::Config::Node::Entry::InvalidError
-        )
+      it 'returns nil' do
+        expect(global.before_script).to be_nil
       end
     end
   end
