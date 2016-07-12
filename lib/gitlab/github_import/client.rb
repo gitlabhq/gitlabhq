@@ -86,7 +86,9 @@ module Gitlab
       end
 
       def has_rate_limit?
-        rate_limit.present?
+        return @has_rate_limit if defined?(@has_rate_limit)
+
+        @has_rate_limit = rate_limit.present?
       end
 
       def rate_limit_exceed?
