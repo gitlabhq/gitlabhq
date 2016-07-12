@@ -436,10 +436,8 @@ class Project < ActiveRecord::Base
       builds.none
 
     else
-      sha = ct.sha
-
       builds.joins(:pipeline).
-        merge(Ci::Pipeline.where(sha: sha)).
+        merge(Ci::Pipeline.where(sha: ct.sha)).
         where(name: build_name)
     end
   end
