@@ -32,6 +32,7 @@ describe API::API, api: true  do
       expect(json_response['name']).to eq(branch_name)
       expect(json_response['commit']['id']).to eq(branch_sha)
       expect(json_response['protected']).to eq(false)
+      expect(json_response['developers_can_push']).to eq(false)
     end
 
     it "should return a 403 error if guest" do
@@ -45,14 +46,66 @@ describe API::API, api: true  do
     end
   end
 
-  describe "PUT /projects/:id/repository/branches/:branch/protect" do
-    it "should protect a single branch" do
+  describe 'PUT /projects/:id/repository/branches/:branch/protect' do
+    it 'protects a single branch' do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
-      expect(response).to have_http_status(200)
 
+      expect(response).to have_http_status(200)
       expect(json_response['name']).to eq(branch_name)
       expect(json_response['commit']['id']).to eq(branch_sha)
       expect(json_response['protected']).to eq(true)
+      expect(json_response['developers_can_push']).to eq(false)
+    end
+
+    it 'protects a single branch and developers can push' do
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+        developers_can_push: true
+
+      expect(response).to have_http_status(200)
+      expect(json_response['name']).to eq(branch_name)
+      expect(json_response['commit']['id']).to eq(branch_sha)
+      expect(json_response['protected']).to eq(true)
+      expect(json_response['developers_can_push']).to eq(true)
+    end
+
+    it 'protects a single branch and developers cannot push' do
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user),
+        developers_can_push: 'tru'
+
+      expect(response).to have_http_status(200)
+      expect(json_response['name']).to eq(branch_name)
+      expect(json_response['commit']['id']).to eq(branch_sha)
+      expect(json_response['protected']).to eq(true)
+      expect(json_response['developers_can_push']).to eq(false)
+    end
+
+    context 'on a protected branch' do
+      let(:protected_branch) { 'foo' }
+
+      before do
+        project.repository.add_branch(user, protected_branch, 'master')
+        create(:protected_branch, project: project, name: protected_branch, developers_can_push: true)
+      end
+
+      it 'updates that a developer can push' do
+        put api("/projects/#{project.id}/repository/branches/#{protected_branch}/protect", user),
+          developers_can_push: false
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(protected_branch)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(false)
+      end
+
+      it 'does not update that a developer can push' do
+        put api("/projects/#{project.id}/repository/branches/#{protected_branch}/protect", user),
+          developers_can_push: 'foobar'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['name']).to eq(protected_branch)
+        expect(json_response['protected']).to eq(true)
+        expect(json_response['developers_can_push']).to eq(true)
+      end
     end
 
     it "should return a 404 error if branch not found" do

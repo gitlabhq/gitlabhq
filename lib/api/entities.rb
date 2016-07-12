@@ -125,9 +125,15 @@ module API
         end
       end
 
-      expose :protected do |repo, options|
+      expose :protected do |repo_obj, options|
         if options[:project]
-          options[:project].protected_branch? repo.name
+          options[:project].protected_branch? repo_obj.name
+        end
+      end
+
+      expose :developers_can_push do |repo_obj, options|
+        if options[:project]
+          options[:project].developers_can_push_to_protected_branch? repo_obj.name
         end
       end
     end

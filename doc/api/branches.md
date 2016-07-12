@@ -23,6 +23,7 @@ Example response:
   {
     "name": "master",
     "protected": true,
+    "developers_can_push": false,
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -64,6 +65,7 @@ Example response:
 {
   "name": "master",
   "protected": true,
+  "developers_can_push": false,
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -91,13 +93,14 @@ PUT /projects/:id/repository/branches/:branch/protect
 ```
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect?developers_can_push=true
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `branch` | string | yes | The name of the branch |
+| `developers_can_push` | boolean | no | Flag if developers can push to the branch |
 
 Example response:
 
@@ -117,7 +120,8 @@ Example response:
     ]
   },
   "name": "master",
-  "protected": true
+  "protected": true,
+  "developers_can_push": true
 }
 ```
 
@@ -158,7 +162,8 @@ Example response:
     ]
   },
   "name": "master",
-  "protected": false
+  "protected": false,
+  "developers_can_push": false
 }
 ```
 
@@ -196,7 +201,8 @@ Example response:
     ]
   },
   "name": "newbranch",
-  "protected": false
+  "protected": false,
+  "developers_can_push": false
 }
 ```
 
