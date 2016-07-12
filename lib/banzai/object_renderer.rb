@@ -31,10 +31,10 @@ module Banzai
       redacted = redact_documents(documents)
 
       objects.each_with_index do |object, index|
-        object.__send__("#{attribute}_html=", redacted.fetch(index))
+        redacted_data = redacted[index]
+        object.__send__("#{attribute}_html=", redacted_data[:document].to_html.html_safe)
+        object.user_visible_reference_count = redacted_data[:visible_reference_count]
       end
-
-      objects
     end
 
     # Renders the attribute of every given object.
@@ -50,9 +50,7 @@ module Banzai
     def redact_documents(documents)
       redactor = Redactor.new(project, user)
 
-      redactor.redact(documents).map do |document|
-        document.to_html.html_safe
-      end
+      redactor.redact(documents)
     end
 
     # Returns a Banzai context for the given object and attribute.
