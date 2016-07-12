@@ -9,9 +9,6 @@ describe TodoService, services: true do
   let(:admin) { create(:admin) }
   let(:john_doe) { create(:user) }
   let(:project) { create(:project) }
-  let(:approver_1) { create(:user) }
-  let(:approver_2) { create(:user) }
-  let(:approver_3) { create(:user) }
   let(:mentions) { [author, assignee, john_doe, member, guest, non_member, admin].map(&:to_reference).join(' ') }
   let(:service) { described_class.new }
 
@@ -20,9 +17,6 @@ describe TodoService, services: true do
     project.team << [author, :developer]
     project.team << [member, :developer]
     project.team << [john_doe, :developer]
-    project.team << [approver_1, :developer]
-    project.team << [approver_2, :developer]
-    project.team << [approver_3, :developer]
   end
 
   describe 'Issues' do
@@ -324,10 +318,17 @@ describe TodoService, services: true do
       end
 
       context 'when the merge request has approvers' do
+        let(:approver_1) { create(:user) }
+        let(:approver_2) { create(:user) }
+        let(:approver_3) { create(:user) }
         let(:approver_mentions) { [john_doe, approver_1].map(&:to_reference).join(' ') }
         let(:mr_approvers) { create(:merge_request, source_project: project, author: author, description: approver_mentions) }
 
         before do
+          project.team << [approver_1, :developer]
+          project.team << [approver_2, :developer]
+          project.team << [approver_3, :developer]
+
           create(:approver, user: approver_1, target: mr_approvers)
           create(:approver, user: approver_2, target: mr_approvers)
 

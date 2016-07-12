@@ -184,7 +184,7 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
-    context 'when the issue is relabeled' do
+    context 'when the merge request is relabeled' do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
 
@@ -199,7 +199,7 @@ describe MergeRequests::UpdateService, services: true do
         should_not_email(non_subscriber)
       end
 
-      context 'when issue has the `label` label' do
+      context 'when the merge request has the `label` label' do
         before { merge_request.labels << label }
 
         it 'does not send notifications for existing labels' do
@@ -222,6 +222,41 @@ describe MergeRequests::UpdateService, services: true do
 
           should_not_email(subscriber)
           should_not_email(non_subscriber)
+        end
+      end
+    end
+
+    context 'when the approvers change' do
+      let(:existing_approver) { create(:user) }
+      let(:removed_approver) { create(:user) }
+      let(:new_approver) { create(:user) }
+
+      before do
+        update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+        Todo.where(action: Todo::APPROVAL_REQUIRED).destroy_all
+      end
+
+      context 'when an approver is added and an approver is removed' do
+        before { update_merge_request(approver_ids: [new_approver, existing_approver].map(&:id).join(',')) }
+
+        it 'adds todos for the new approvers' do
+          expect(Todo.where(user: new_approver, action: Todo::APPROVAL_REQUIRED)).not_to be_empty
+        end
+
+        it 'does not add todos for the existing approvers' do
+          expect(Todo.where(user: existing_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+        end
+
+        it 'does not add todos for the removed approvers' do
+          expect(Todo.where(user: removed_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+        end
+      end
+
+      context 'when the approvers are set to the same values' do
+        it 'does not create any todos' do
+          expect do
+            update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+          end.not_to change { Todo.count }
         end
       end
     end
