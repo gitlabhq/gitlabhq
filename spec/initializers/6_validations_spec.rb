@@ -1,9 +1,19 @@
 require 'spec_helper'
 
 describe '6_validations', lib: true do
+  before :all do
+    FileUtils.mkdir_p('tmp/tests/paths/a/b/c/d')
+    FileUtils.mkdir_p('tmp/tests/paths/a/b/c2')
+    FileUtils.mkdir_p('tmp/tests/paths/a/b/d')
+  end
+
+  after :all do
+    FileUtils.rm_rf('tmp/tests/paths')
+  end
+
   context 'with correct settings' do
     before do
-      mock_storages('foo' => '/a/b/c', 'bar' => 'a/b/d')
+      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/d')
     end
 
     it 'passes through' do
@@ -13,7 +23,7 @@ describe '6_validations', lib: true do
 
   context 'with invalid storage names' do
     before do
-      mock_storages('name with spaces' => '/a/b/c')
+      mock_storages('name with spaces' => 'tmp/tests/paths/a/b/c')
     end
 
     it 'throws an error' do
@@ -23,11 +33,21 @@ describe '6_validations', lib: true do
 
   context 'with nested storage paths' do
     before do
-      mock_storages('foo' => '/a/b/c', 'bar' => '/a/b/c/d')
+      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/c/d')
     end
 
     it 'throws an error' do
       expect { load_validations }.to raise_error('bar is a nested path of foo. Nested paths are not supported for repository storages. Please fix this in your gitlab.yml before starting GitLab.')
+    end
+  end
+
+  context 'with similar but un-nested storage paths' do
+    before do
+      mock_storages('foo' => 'tmp/tests/paths/a/b/c', 'bar' => 'tmp/tests/paths/a/b/c2')
+    end
+
+    it 'passes through' do
+      expect { load_validations }.not_to raise_error
     end
   end
 
