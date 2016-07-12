@@ -14,6 +14,11 @@ if Gitlab::LDAP::Config.enabled?
   end
 end
 
+if Gitlab.config.kerberos.enabled
+  require 'omniauth/strategies/kerberos_spnego'
+  Gitlab.config.omniauth.providers << { 'name' => 'kerberos_spnego' }
+end
+
 OmniAuth.config.full_host = Settings.gitlab['base_url']
 OmniAuth.config.allowed_request_methods = [:post]
 # In case of auto sign-in, the GET method is used (users don't get to click on a button)

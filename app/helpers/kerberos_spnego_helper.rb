@@ -42,7 +42,6 @@ module KerberosSpnegoHelper
   end
 
   def find_kerberos_user
-    spnego_token = Base64.strict_decode64(auth_param(request))
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
 
@@ -76,5 +75,9 @@ module KerberosSpnegoHelper
   rescue GSSAPI::GssApiError => ex
     Rails.logger.error "#{self.class.name}: failed to process Negotiate/Kerberos authentication: #{ex.message}"
     false
+  end
+
+  def spnego_token
+    Base64.strict_decode64(auth_param(request))
   end
 end
