@@ -12,9 +12,9 @@ describe 'Issue inline editing', feature: true, js: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
     end
 
-    it 'should allow user to update title' do
+    it 'allows user to update title' do
       find('.js-issuable-title').click
-      expect(page).to have_selector('.js-issuable-edit-title', visible: true)
+      expect(page).to have_selector('.js-issuable-edit-title')
       fill_in 'issue_title', with: 'test'
       click_button 'Save'
 
@@ -23,16 +23,16 @@ describe 'Issue inline editing', feature: true, js: true do
       end
     end
 
-    it 'should hide title field' do
+    it 'hides title field' do
       find('.js-issuable-title').click
-      expect(page).to have_selector('.js-issuable-edit-title', visible: true)
+      expect(page).to have_selector('.js-issuable-edit-title')
       click_button 'Cancel'
       expect(page).to have_selector('.js-issuable-edit-title', visible: false)
     end
 
-    it 'should allow user to update description' do
+    it 'allows user to update description' do
       find('.js-issuable-description').click
-      expect(page).to have_selector('.js-issuable-description-field', visible: true)
+      expect(page).to have_selector('.js-issuable-description-field')
       fill_in 'issue_description', with: 'test'
       click_button 'Save'
 
@@ -41,9 +41,9 @@ describe 'Issue inline editing', feature: true, js: true do
       end
     end
 
-    it 'should hide description field' do
+    it 'hides description field' do
       find('.js-issuable-description').click
-      expect(page).to have_selector('.js-issuable-description-field', visible: true)
+      expect(page).to have_selector('.js-issuable-description-field')
       click_button 'Cancel'
       expect(page).to have_selector('.js-issuable-description-field', visible: false)
     end
@@ -55,11 +55,11 @@ describe 'Issue inline editing', feature: true, js: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
     end
 
-    it 'should not allow editing of title' do
+    it 'does not allow editing of title' do
       expect(page).not_to have_selector('.js-issuable-title', visible: false)
     end
 
-    it 'should not allow editing of description' do
+    it 'does not allow editing of description' do
       expect(page).not_to have_selector('.js-issuable-description', visible: false)
     end
   end

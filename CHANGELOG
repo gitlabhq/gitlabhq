@@ -21,6 +21,7 @@ v 8.10.0 (unreleased)
   - Upgrade to Rails 4.2.7. !5236
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
+  - Inline editing of issue & merge request title and description
   - Let Workhorse serve format-patch diffs
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
@@ -79,6 +80,7 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
+  - Fix 404 redirect after validation fails importing a GitLab project
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
@@ -328,7 +330,6 @@ v 8.9.0
   - Remove deprecated issues_tracker and issues_tracker_id from project model
   - Allow users to create confidential issues in private projects
   - Measure CPU time for instrumented methods
-  - Inline editing of issue & merge request title and description
   - Instrument private methods and private instance methods by default instead just public methods
   - Only show notes through JSON on confidential issues that the user has access to
   - Updated the allocations Gem to version 1.0.5
