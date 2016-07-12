@@ -17,7 +17,11 @@ module MergeRequests
       update(merge_request)
 
       new_approvers = merge_request.overall_approvers.to_a - old_approvers
-      todo_service.add_merge_request_approvers(merge_request, new_approvers) if new_approvers.any?
+
+      if new_approvers.any?
+        todo_service.add_merge_request_approvers(merge_request, new_approvers)
+        notification_service.add_merge_request_approvers(merge_request, new_approvers, current_user)
+      end
 
       merge_request
     end

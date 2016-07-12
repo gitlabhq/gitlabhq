@@ -232,23 +232,34 @@ describe MergeRequests::UpdateService, services: true do
       let(:new_approver) { create(:user) }
 
       before do
-        update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+        perform_enqueued_jobs do
+          update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+        end
+
         Todo.where(action: Todo::APPROVAL_REQUIRED).destroy_all
+        ActionMailer::Base.deliveries.clear
       end
 
       context 'when an approver is added and an approver is removed' do
-        before { update_merge_request(approver_ids: [new_approver, existing_approver].map(&:id).join(',')) }
+        before do
+          perform_enqueued_jobs do
+            update_merge_request(approver_ids: [new_approver, existing_approver].map(&:id).join(','))
+          end
+        end
 
-        it 'adds todos for the new approvers' do
+        it 'adds todos for and sends emails to the new approvers' do
           expect(Todo.where(user: new_approver, action: Todo::APPROVAL_REQUIRED)).not_to be_empty
+          should_email(new_approver)
         end
 
-        it 'does not add todos for the existing approvers' do
+        it 'does not add todos for or send emails to the existing approvers' do
           expect(Todo.where(user: existing_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+          should_not_email(existing_approver)
         end
 
-        it 'does not add todos for the removed approvers' do
+        it 'does not add todos for or send emails to the removed approvers' do
           expect(Todo.where(user: removed_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+          should_not_email(removed_approver)
         end
       end
 
@@ -257,6 +268,12 @@ describe MergeRequests::UpdateService, services: true do
           expect do
             update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
           end.not_to change { Todo.count }
+        end
+
+        it 'does not send any emails' do
+          expect do
+            update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+          end.not_to change { ActionMailer::Base.deliveries.count }
         end
       end
     end
