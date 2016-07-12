@@ -431,13 +431,17 @@ class Project < ActiveRecord::Base
 
   def builds_for(build_name, ref = 'HEAD')
     ct = commit(ref)
-    return builds.none unless ct
 
-    sha = commit(ref).sha
+    if ct.nil?
+      builds.none
 
-    builds.joins(:pipeline).
-      merge(Ci::Pipeline.where(sha: sha)).
-      where(name: build_name)
+    else
+      sha = ct.sha
+
+      builds.joins(:pipeline).
+        merge(Ci::Pipeline.where(sha: sha)).
+        where(name: build_name)
+    end
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
