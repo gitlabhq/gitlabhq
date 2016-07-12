@@ -1,18 +1,20 @@
 # Permissions
 
-Users have different abilities depending on the access level they have in a particular group or project.
+Users have different abilities depending on the access level they have in a
+particular group or project. If a user is both in a group's project and the
+project itself, the highest permission level is used.
 
-If a user is both in a project group and in the project itself, the highest permission level is used.
+On public and internal projects the Guest role is not enforced. All users will
+be able to create issues, leave comments, and pull or download the project code.
 
-If a user is a GitLab administrator they receive all permissions.
-
-On public and internal projects the Guest role is not enforced.
-All users will be able to create issues, leave comments, and pull or download the project code.
+GitLab administrators receive all permissions.
 
 To add or import a user, you can follow the [project users and members
 documentation](../workflow/add-user/add-user.md).
 
 ## Project
+
+The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
@@ -46,8 +48,8 @@ documentation](../workflow/add-user/add-user.md).
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
-| Turn on/off prot. branch push for devs|         |            |             | ✓        | ✓      |
-| Rewrite/remove git tags               |         |            |             | ✓        | ✓      |
+| Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
+| Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
@@ -66,10 +68,9 @@ documentation](../workflow/add-user/add-user.md).
 
 ## Group
 
-In order for a group to appear as public and be browsable, it must contain at
-least one public project.
-
-Any user can remove themselves from a group, unless they are the last Owner of the group.
+Any user can remove themselves from a group, unless they are the last Owner of
+the group. The following table depicts the various user permission levels in a
+group.
 
 | Action                  | Guest | Reporter | Developer | Master | Owner |
 |-------------------------|-------|----------|-----------|--------|-------|
@@ -102,3 +103,29 @@ will find the option to flag the user as external.
 
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
+
+## GitLab CI
+
+GitLab CI permissions rely on the role the user has in GitLab. There are four
+permission levels it total:
+
+- admin
+- master
+- developer
+- guest/reporter
+
+The admin user can perform any action on GitLab CI in scope of the GitLab
+instance and project. In addition, all admins can use the admin interface under
+`/admin/runners`.
+
+| Action                                | Guest, Reporter | Developer   | Master   | Admin  |
+|---------------------------------------|-----------------|-------------|----------|--------|
+| See commits and builds                | ✓               | ✓           | ✓        | ✓      |
+| Retry or cancel build                 |                 | ✓           | ✓        | ✓      |
+| Remove project                        |                 |             | ✓        | ✓      |
+| Create project                        |                 |             | ✓        | ✓      |
+| Change project configuration          |                 |             | ✓        | ✓      |
+| Add specific runners                  |                 |             | ✓        | ✓      |
+| Add shared runners                    |                 |             |          | ✓      |
+| See events in the system              |                 |             |          | ✓      |
+| Admin interface                       |                 |             |          | ✓      |
