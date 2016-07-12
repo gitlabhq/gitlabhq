@@ -693,9 +693,9 @@ describe Ci::Build, models: true do
 
   describe 'Project#builds_for' do
     it 'returns builds from ref and build name' do
-      latest_build = project.builds_for(build.name, 'HEAD').latest.first
+      build_ids = project.builds_for(build.name, 'HEAD').map(&:id)
 
-      expect(latest_build.id).to eq(build.id)
+      expect(build_ids).to eq([build.id])
     end
   end
 end

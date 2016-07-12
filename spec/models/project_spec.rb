@@ -364,20 +364,6 @@ describe Project, models: true do
     end
   end
 
-  describe '#builds_for' do
-    let(:project) { create(:project) }
-    let(:pipeline) do
-      create(:ci_pipeline, project: project, sha: project.commit.sha)
-    end
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-
-    it 'returns builds for a particular ref' do
-      build_ids = project.builds_for(build.name, build.sha).map(&:id)
-
-      expect(build_ids).to eq([build.id])
-    end
-  end
-
   describe :default_issues_tracker? do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
