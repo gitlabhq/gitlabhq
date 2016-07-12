@@ -51,12 +51,12 @@ module Gitlab
             def helpers(*nodes)
               nodes.each do |symbol|
                 define_method("#{symbol}_defined?") do
-                  @entries[symbol].specified?
+                  @entries[symbol].specified? if @entries[symbol]
                 end
 
                 define_method("#{symbol}_value") do
                   raise Entry::InvalidError unless valid?
-                  @entries[symbol].try(:value)
+                  @entries[symbol].value if @entries[symbol]
                 end
 
                 alias_method symbol.to_sym, "#{symbol}_value".to_sym
