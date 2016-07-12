@@ -53,18 +53,19 @@ module Gitlab
 
     def redis_store_options
       config = raw_config_hash
+      redis_url = config.delete(:url)
+      redis_uri = URI.parse(redis_url)
 
-      redis_uri = URI.parse(config[:url])
       if redis_uri.scheme == 'unix'
         # Redis::Store does not handle Unix sockets well, so let's do it for them
         config[:path] = redis_uri.path
+        config
       else
-        redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(config[:url])
-        config.merge!(redis_hash)
+        redis_hash = ::Redis::Store::Factory.extract_host_options_from_uri(redis_url)
+        # order is important here, sentinels must be after the connection keys.
+        # {url: ..., port: ..., sentinels: [...]}
+        redis_hash.merge(config)
       end
-
-      config.delete(:url)
-      config
     end
 
     def raw_config_hash
