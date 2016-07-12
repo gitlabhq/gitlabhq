@@ -31,10 +31,9 @@ module Gitlab
           end
 
           def validate!
-            if @validator.valid?(:new)
-              @validator.validate(:processed)
-            end
+            return unless valid?
 
+            @validator.validate(:processed)
             @entries.each_value(&:validate!)
           end
 
