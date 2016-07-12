@@ -36,9 +36,9 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def search
-    url = namespace_project_build_url(project.namespace, project, build)
-
     if params[:path]
+      url = namespace_project_build_url(project.namespace, project, build)
+
       redirect_to "#{url}/artifacts/#{params[:path]}"
     else
       render_404
