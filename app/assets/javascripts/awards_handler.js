@@ -220,7 +220,12 @@
       originalTitle = this.getAwardTooltip(awardBlock);
       authors = originalTitle.split(FROM_SENTENCE_REGEX);
       authors.splice(authors.indexOf('You'), 1);
-      awardBlock.closest('.js-emoji-btn').removeData('original-title').attr('data-original-title', this.toSentence(authors));
+      awardBlock
+        .closest('.js-emoji-btn')
+        .removeData('title')
+        .removeAttr('data-title')
+        .removeAttr('data-original-title')
+        .attr('title', this.toSentence(authors));
       return this.resetTooltip(awardBlock);
     };
 

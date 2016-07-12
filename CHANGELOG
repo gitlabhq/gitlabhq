@@ -77,6 +77,7 @@ v 8.11.0 (unreleased)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add pipeline events hook
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
+  - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
