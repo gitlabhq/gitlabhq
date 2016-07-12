@@ -146,6 +146,12 @@ module Ci
       end
     end
 
+    def with_warnings?
+      builds.latest.any? do |build|
+        build.failed? && build.allow_failure
+      end
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)

@@ -23,6 +23,7 @@ v 8.10.0 (unreleased)
   - Store when and yaml variables in builds table
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
+  - Add "passing with warnings" to the merge request pipeline possible statuses, this happens when builds that allow failures have failed. !5004
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Upgrade to Rails 4.2.7. !5236
   - Allow to pull code with deploy key from public projects

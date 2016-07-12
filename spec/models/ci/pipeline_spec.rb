@@ -502,4 +502,30 @@ describe Ci::Pipeline, models: true do
       end
     end
   end
+
+  describe '#with_warnings?' do
+    subject { pipeline.with_warnings? }
+
+    context 'build which is allowed to fail fails' do
+      before do
+        FactoryGirl.create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        FactoryGirl.create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
+      end
+      
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'build which is allowed to fail succeeds' do
+      before do
+        FactoryGirl.create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        FactoryGirl.create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
+      end
+      
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+  end
 end
