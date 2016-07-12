@@ -342,14 +342,6 @@ module API
       end
     end
 
-    class BasicProjectWithAccess < BasicProjectDetails
-      expose :permissions do
-        expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.project_members.find_by(user_id: options[:user].id)
-        end
-      end
-    end
-
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
