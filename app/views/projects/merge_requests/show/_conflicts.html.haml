@@ -31,24 +31,24 @@
         %a
           %span {{file.new_path}}
         .file-actions
-          %a.btn.btn-sm View file @{{file.commit_sha.slice(0, 7)}}
+          %a.btn.btn-sm View file @{{file.shortCommitSha}}
 
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
           %table{"v-for" => "(key, group) in file.parallelLines"}
-            %tr.line_holder.parallel{ |
-              "v-for" => "line in group", |
-              ":class" => "line.lineType != 'context' && (key == 'left' ? 'head' : 'origin')"}
+            %tr.line_holder.parallel{"v-for" => "line in group", ":class" => "line.cssClass"}
 
-              %td.diff-line-num.header{"v-if" => "line.lineType == 'header'"}
-              %td.line_content.header{"v-if" => "line.lineType == 'header'"}
-                %strong {{key == 'left' ? 'HEAD//our changes' : 'origin//their changes'}}
-                %button.btn{"@click" => "handleSelected(line.id, line.lineType)"} Use this
+              %template{"v-if" => "line.isHeader"}
+                %td.diff-line-num.header
+                %td.line_content.header
+                  %strong {{line.text}}
+                  %button.btn{"@click" => "handleSelected(line.id, line.lineType)"} Use this
 
-              %td.diff-line-num.old_line{"v-if" => "line.lineType != 'header'"}
-                {{line.lineNumber}}
-              %td.line_content{"v-if" => "line.lineType != 'header'"}
-                {{line.text}}
+              %template{"v-if" => "!line.isHeader"}
+                %td.diff-line-num.old_line
+                  {{line.lineNumber}}
+                %td.line_content
+                  {{line.text}}
 
 
   .files{{"v-if" => "!isParallel"}}
@@ -58,16 +58,14 @@
         %a
           %span {{file.new_path}}
         .file-actions
-          %a.btn.btn-sm View file @{{file.commit_sha.slice(0, 7)}}
+          %a.btn.btn-sm View file @{{file.shortCommitSha}}
 
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
           %table
-            %tr.line_holder{ |
-              "v-for" => "line in file.inlineLines", |
-              ":class" => "line.type == 'old' ? 'head' : line.type == 'new' ? 'origin' : ''"}
+            %tr.line_holder{"v-for" => "line in file.inlineLines", ":class" => "line.cssClass"}
 
-              %template{"v-if" => "line.lineType != 'header'"}
+              %template{"v-if" => "!line.isHeader"}
                 %td.diff-line-num.old_line
                   %a {{line.old_line}}
                 %td.diff-line-num.new_line
@@ -75,9 +73,9 @@
                 %td.line_content
                   {{{line.text}}}
 
-              %template{"v-if" => "line.lineType == 'header'"}
+              %template{"v-if" => "line.isHeader"}
                 %td.diff-line-num.header
                 %td.diff-line-num.header
                 %td.line_content.header
-                  %strong {{line.type == 'old' ? 'HEAD//our changes' : 'origin//their changes'}}
+                  %strong {{line.text}}
                   %button.btn{"@click" => "handleSelected(line.id, line.type)"} Use this

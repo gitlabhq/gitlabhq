@@ -48,21 +48,23 @@ class window.MergeConflictResolver extends Vue
 
   decorateData: (data) ->
 
+    headHeaderText   = 'HEAD//our changes'
+    originHeaderText = 'origin//their changes'
+
     for file in data.files
-      file.parallelLines = { left: [], right: [] }
-      file.inlineLines   = []
-      currentLineType    = 'old'
+      file.parallelLines  = { left: [], right: [] }
+      file.inlineLines    = []
+      file.shortCommitSha = file.commit_sha.slice 0, 7
+      currentLineType     = 'old'
 
       for section in file.sections
         { conflict, lines, id } = section
 
         if conflict
-          header = { lineType: 'header', id }
-          file.parallelLines.left.push  header
-          file.parallelLines.right.push header
+          file.parallelLines.left.push  { isHeader: yes, id, text: headHeaderText, cssClass: 'head' }
+          file.parallelLines.right.push { isHeader: yes, id, text: originHeaderText, cssClass: 'origin' }
 
-          header.type = 'old'
-          file.inlineLines.push header
+          file.inlineLines.push { isHeader: yes, id, text: headHeaderText, type: 'old', cssClass: 'head' }
 
         for line in lines
           if line.type in ['new', 'old'] and currentLineType isnt line.type
@@ -71,14 +73,15 @@ class window.MergeConflictResolver extends Vue
             file.inlineLines.push { lineType: 'emptyLine', text: '<span> </span>' }
 
           line.conflict = conflict
+          line.cssClass = if line.type is 'old' then 'head' else if line.type is 'new' then 'origin' else ''
           file.inlineLines.push line
 
           if conflict
             if line.type is 'old'
-              line = { lineType: 'conflict', lineNumber: line.old_line, text: line.text }
+              line = { lineType: 'conflict', lineNumber: line.old_line, text: line.text, cssClass: 'head' }
               file.parallelLines.left.push  line
             else if line.type is 'new'
-              line = { lineType: 'conflict', lineNumber: line.new_line, text: line.text }
+              line = { lineType: 'conflict', lineNumber: line.new_line, text: line.text, cssClass: 'origin' }
               file.parallelLines.right.push line
             else
               console.log 'unhandled line type...', line
@@ -87,9 +90,8 @@ class window.MergeConflictResolver extends Vue
             file.parallelLines.right.push { lineType: 'context', lineNumber: line.new_line, text: line.text }
 
         if conflict
-          file.inlineLines.push { lineType: 'header', id, type: 'new' }
+          file.inlineLines.push { isHeader: yes, id, type: 'new', text: originHeaderText, cssClass: 'origin' }
 
-    console.log data
     return data
 
 
