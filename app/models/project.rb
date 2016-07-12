@@ -431,7 +431,7 @@ class Project < ActiveRecord::Base
 
   def builds_for(build_name, ref = 'HEAD')
     ct = commit(ref)
-    return [] unless ct
+    return builds.none unless ct
 
     sha = commit(ref).sha
 

@@ -697,5 +697,11 @@ describe Ci::Build, models: true do
 
       expect(build_ids).to eq([build.id])
     end
+
+    it 'returns empty relation if the build cannot be found' do
+      builds = project.builds_for(build.name, 'TAIL').all
+
+      expect(builds).to be_empty
+    end
   end
 end
