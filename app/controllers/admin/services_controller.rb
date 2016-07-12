@@ -1,4 +1,6 @@
 class Admin::ServicesController < Admin::ApplicationController
+  include ServiceParams
+
   before_action :service, only: [:edit, :update]
 
   def index
@@ -36,19 +38,5 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def service
     @service ||= Service.where(id: params[:id], template: true).first
-  end
-
-  def application_services_params
-    dynamic_params = []
-    dynamic_params.concat(@service.event_channel_names) if @service.is_a?(SlackService)
-
-    application_services_params = params.permit(:id,
-      service: Projects::ServicesController::ALLOWED_PARAMS + dynamic_params)
-    if application_services_params[:service].is_a?(Hash)
-      Projects::ServicesController::FILTER_BLANK_PARAMS.each do |param|
-        application_services_params[:service].delete(param) if application_services_params[:service][param].blank?
-      end
-    end
-    application_services_params
   end
 end

@@ -2,7 +2,7 @@ module ServicesHelper
   def service_event_description(event)
     case event
     when "push"
-      "Webhook will triggered by a push to the repository"
+      "Webhook will be triggered by a push to the repository"
     when "tag_push"
       "Webhook will be triggered when a new tag is pushed to the repository"
     when "note"
@@ -19,7 +19,7 @@ module ServicesHelper
   end
 
   def service_event_field_name(event)
-    event = event.pluralize if %w(merge_request issue).include?(event)
+    event = event.pluralize if %w[merge_request issue].include?(event)
     "#{event}_events"
   end
 end

@@ -5,7 +5,7 @@ class SlackService < Service
 
   def initialize_properties
     # Custom serialized properties initialization
-    self.supported_events.each { |event| self.class.prop_accessor event_channel_name(event) }
+    self.supported_events.each { |event| self.class.prop_accessor(event_channel_name(event)) }
 
     if properties.nil?
       self.properties = {}
@@ -36,7 +36,7 @@ class SlackService < Service
       [
         { type: 'text', name: 'webhook',   placeholder: 'https://hooks.slack.com/services/...' },
         { type: 'text', name: 'username', placeholder: 'username' },
-        { type: 'text', name: 'channel', placeholder: "#General" },
+        { type: 'text', name: 'channel', placeholder: "#general" },
         { type: 'checkbox', name: 'notify_only_broken_builds' },
       ]
 
@@ -99,18 +99,13 @@ class SlackService < Service
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
-    self.send(field_name)
+    self.public_send(field_name)
   end
 
   def build_event_channels
-    channels = []
-
-    supported_events.each do |event|
-      channel_name = event_channel_name(event)
-      channels << { type: 'text', name: channel_name, placeholder: "#General" }
+    supported_events.reduce([]) do |channels, event|
+      channels << { type: 'text', name: event_channel_name(event), placeholder: "#general" }
     end
-
-    channels
   end
 
   def event_channel_name(event)
