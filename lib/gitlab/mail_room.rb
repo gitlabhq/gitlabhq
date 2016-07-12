@@ -4,7 +4,6 @@ require_relative 'redis' unless defined?(Gitlab::Redis)
 
 module Gitlab
   module MailRoom
-
     class << self
       def enabled?
         config[:enabled] && config[:address]

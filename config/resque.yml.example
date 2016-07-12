@@ -3,13 +3,13 @@
 #
 development:
   url: redis://localhost:6379
-  sentinels:
-    -
-      host: localhost
-      port: 26380 # point to sentinel, not to redis port
-    -
-      host: slave2
-      port: 26381 # point to sentinel, not to redis port
+  # sentinels:
+  #   -
+  #     host: localhost
+  #     port: 26380 # point to sentinel, not to redis port
+  #   -
+  #     host: slave2
+  #     port: 26381 # point to sentinel, not to redis port
 test:
   url: redis://localhost:6379
 production:
@@ -18,17 +18,17 @@ production:
   ##
   # Redis + Sentinel (for HA)
   #
-  # Please read instructions carefully before using it as you may loose data:
+  # Please read instructions carefully before using it as you may lose data:
   # http://redis.io/topics/sentinel
   #
   # You must specify a list of a few sentinels that will handle client connection
   # please read here for more information: https://github.com/redis/redis-rb#sentinel-support
   ##
-  #url: redis://master:6379
-  #  sentinels:
-  #    -
-  #      host: slave1
-  #      port: 26379 # point to sentinel, not to redis port
-  #    -
-  #      host: slave2
-  #      port: 26379 # point to sentinel, not to redis port
+  # url: redis://master:6379
+  # sentinels:
+  #   -
+  #     host: slave1
+  #     port: 26379 # point to sentinel, not to redis port
+  #   -
+  #     host: slave2
+  #     port: 26379 # point to sentinel, not to redis port
