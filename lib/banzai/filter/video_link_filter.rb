@@ -1,11 +1,10 @@
 module Banzai
   module Filter
 
-    # HTML Filter that handles video uploads.
-
+    # Find every image that isn't already wrapped in an `a` tag, and that has
+    # a `src` attribute ending with a video extension, add a new video node and
+    # a "Download" link in the case the video cannot be played.
     class VideoLinkFilter < HTML::Pipeline::Filter
-      include ActionView::Helpers::TagHelper
-      include ActionView::Context
 
       def call
         doc.xpath(query).each do |el|
@@ -27,8 +26,6 @@ module Banzai
         end
       end
 
-      # Return a video tag Nokogiri node
-      #
       def video_node(doc, element)
         container = doc.document.create_element(
           'div',
@@ -38,16 +35,16 @@ module Banzai
         video = doc.document.create_element(
           'video',
           src: element['src'],
-          class: 'video-js vjs-sublime-skin',
+          width: '400',
           controls: true,
-          "data-setup": '{}')
+          'data-setup' => '{}')
 
         link = doc.document.create_element(
           'a',
           element['title'] || element['alt'],
           href: element['src'],
           target: '_blank',
-          title: "Downlad '#{element['title'] || element['alt']}'")
+          title: "Download '#{element['title'] || element['alt']}'")
         download_paragraph = doc.document.create_element('p')
         download_paragraph.children = link
 

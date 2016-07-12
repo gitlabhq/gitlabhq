@@ -18,24 +18,33 @@ describe Banzai::Filter::VideoLinkFilter, lib: true do
   context 'when the element src has a video extension' do
     UploaderHelper::VIDEO_EXT.each do |ext|
       it "replaces the image tag 'path/video.#{ext}' with a video tag" do
-        element = filter(link_to_image("/path/video.#{ext}")).children.first
+        container = filter(link_to_image("/path/video.#{ext}")).children.first
 
-        expect(element.name).to eq 'video'
-        expect(element['src']).to eq "/path/video.#{ext}"
+        expect(container.name).to eq 'div'
+        expect(container['class']).to eq 'video-container'
 
-        fallback_link = element.children.first
-        expect(fallback_link.name).to eq 'a'
-        expect(fallback_link['href']).to eq "/path/video.#{ext}"
-        expect(fallback_link['target']).to eq '_blank'
+        video, paragraph = container.children
+
+        expect(video.name).to eq 'video'
+        expect(video['src']).to eq "/path/video.#{ext}"
+
+        expect(paragraph.name).to eq 'p'
+
+        link = paragraph.children.first
+
+        expect(link.name).to eq 'a'
+        expect(link['href']).to eq "/path/video.#{ext}"
+        expect(link['target']).to eq '_blank'
       end
     end
   end
 
   context 'when the element src is an image' do
     it 'leaves the document unchanged' do
-      element = filter(link_to_image("/path/my_image.jpg")).children.first
+      element = filter(link_to_image('/path/my_image.jpg')).children.first
 
       expect(element.name).to eq 'img'
+      expect(element['src']).to eq '/path/my_image.jpg'
     end
   end
 

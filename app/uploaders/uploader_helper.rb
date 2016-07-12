@@ -3,8 +3,8 @@ module UploaderHelper
   IMAGE_EXT = %w[png jpg jpeg gif bmp tiff]
   # We recommend using the .mp4 format over .mov. Videos in .mov format can
   # still be used but you really need to make sure they are served with the
-  # proper MIME type video/mp4 and not video/quicktime or your videos won’t play
-  # on IE ≥ 9.
+  # proper MIME type video/mp4 and not video/quicktime or your videos won't play
+  # on IE >= 9.
   # http://archive.sublimevideo.info/20150912/docs.sublimevideo.net/troubleshooting.html
   VIDEO_EXT = %w[mp4 m4v mov webm ogv]
 
@@ -21,6 +21,8 @@ module UploaderHelper
   end
 
   def extension_match?(extensions)
+    return false unless file
+
     extension =
       if file.respond_to?(:extension)
         file.extension
