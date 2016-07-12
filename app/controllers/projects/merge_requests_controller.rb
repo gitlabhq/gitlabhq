@@ -56,7 +56,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def show
     respond_to do |format|
-      format.html
+      format.html { define_discussion_vars }
 
       format.json do
         render json: @merge_request
@@ -82,7 +82,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request_diff = @merge_request.merge_request_diff
 
     respond_to do |format|
-      format.html
+      format.html { define_discussion_vars }
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
     end
   end
@@ -108,7 +108,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def commits
     respond_to do |format|
-      format.html { render 'show' }
+      format.html do
+        define_discussion_vars
+
+        render 'show'
+      end
       format.json do
         # Get commits from repository
         # or from cache if already merged
@@ -123,7 +127,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def builds
     respond_to do |format|
-      format.html { render 'show' }
+      format.html do
+        define_discussion_vars
+
+        render 'show'
+      end
       format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
     end
   end
@@ -353,14 +361,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.unlock_mr
       @merge_request.close
     end
-
-    if request.format == :html || action_name == 'show'
-      define_show_html_vars
-    end
   end
 
-  # Discussion tab data is only required on html requests
-  def define_show_html_vars
+  # Discussion tab data is rendered on html responses of actions
+  # :show, :diff, :commits, :builds. but not when request the data through AJAX
+  def define_discussion_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @noteable)
 

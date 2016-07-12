@@ -1,14 +1,17 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
+  - Expose {should,force}_remove_source_branch (Ben Boeckel)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
+  - Expire the branch cache after `git gc` runs
   - Refactor repository paths handling to allow multiple git mount points
   - Optimize system note visibility checking by memoizing the visible reference count !5070
   - Add Application Setting to configure default Repository Path for new projects
   - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
+  - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
@@ -29,6 +32,7 @@ v 8.10.0 (unreleased)
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
+  - Update health_check gem to version 2.1.0
   - Add notification settings dropdown for groups
   - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
@@ -53,6 +57,7 @@ v 8.10.0 (unreleased)
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
   - Instrument Rinku usage
+  - Be explicit to define merge request discussion variables
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
@@ -72,6 +77,7 @@ v 8.10.0 (unreleased)
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
   - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
+  - Style of import project buttons were fixed in the new project page. !5183 (rdemirbay)
 
 v 8.9.6 (unreleased)
   - Fix importing of events under notes for GitLab projects

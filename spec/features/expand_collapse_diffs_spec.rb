@@ -106,7 +106,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         let(:comment_text) { 'A comment' }
 
         before do
-          large_diff.find('.line_holder', match: :prefer_exact).hover
+          large_diff.find('.diff-line-num', match: :prefer_exact).hover
           large_diff.find('.add-diff-note').click
           large_diff.find('.note-textarea').send_keys comment_text
           large_diff.find_button('Comment').click
@@ -161,7 +161,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         end
 
         it 'does not make a new HTTP request' do
-          expect(evaluate_script('ajaxUris')).to be_empty
+          expect(evaluate_script('ajaxUris')).not_to include(a_string_matching('small_diff.md'))
         end
       end
     end
@@ -199,7 +199,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         end
 
         it 'does not make a new HTTP request' do
-          expect(evaluate_script('ajaxUris')).to be_empty
+          expect(evaluate_script('ajaxUris')).not_to include(a_string_matching('small_diff.md'))
         end
       end
     end
