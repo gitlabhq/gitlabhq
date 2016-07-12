@@ -4,7 +4,7 @@ module Gitlab
       # Regex to find a run of deleted lines followed by the same number of added lines
       REGEX = %r{
         # Runs start at the beginning of the string (the first line) or after a space (for an unchanged line)
-        (?:\A| )
+        (?:\A|\s)
 
         # This matches a number of `-`s followed by the same number of `+`s through recursion
         (?<del_ins>
@@ -14,7 +14,7 @@ module Gitlab
         )
 
         # Runs end at the end of the string (the last line) or before a space (for an unchanged line)
-        (?= |\z)
+        (?=\s|\z)
       }x.freeze
 
       attr_accessor :old_line, :new_line, :offset
