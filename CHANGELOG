@@ -113,6 +113,7 @@ v 8.9.6
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
+  - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
 
 v 8.9.7 (unreleased)
   - Fix import_data wrongly saved as a result of an invalid import_url
@@ -133,11 +134,6 @@ v 8.9.5
   - Fixed 'use shortcuts' button on docs. !4979
   - Admin should be able to turn shared runners into specific ones. !4961
   - Update RedCloth to 4.3.2 for CVE-2012-6684. !4929 (Takuya Noguchi)
-  - Add Pending tab for Builds
-
-v 8.9.4 (unreleased)
-  - Ensure references to private repos aren't shown to logged-out users
-v 8.9.5 (unreleased)
   - Improve the request / withdraw access button. !4860
 
 v 8.9.4

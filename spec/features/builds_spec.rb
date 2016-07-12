@@ -13,6 +13,18 @@ describe "Builds" do
   end
 
   describe "GET /:project/builds" do
+    context "Pending scope" do
+      before do
+        visit namespace_project_builds_path(@project.namespace, @project, scope: :pending)
+      end
+
+      it { expect(page).to have_link 'Cancel running' }
+      it { expect(page).to have_selector('.nav-links li.active', text: 'Pending') }
+      it { expect(page).to have_content @build.short_sha }
+      it { expect(page).to have_content @build.ref }
+      it { expect(page).to have_content @build.name }
+    end
+
     context "Running scope" do
       before do
         @build.run!
