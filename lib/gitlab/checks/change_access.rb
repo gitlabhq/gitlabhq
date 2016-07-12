@@ -28,7 +28,7 @@ module Gitlab
         if forced_push? && user_access.cannot_do_action?(:force_push_code_to_protected_branches)
           return "You are not allowed to force push code to a protected branch on this project."
         elsif Gitlab::Git.blank_ref?(@newrev) && user_access.cannot_do_action?(:remove_protected_branches)
-          return "You are not allowed to deleted protected branches from this project."
+          return "You are not allowed to delete protected branches from this project."
         end
 
         if matching_merge_request?
@@ -47,7 +47,9 @@ module Gitlab
       end
 
       def tag_checks
-        if (tag_ref = tag_name(@ref)) && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
+        tag_ref = tag_name(@ref)
+
+        if tag_ref && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
           "You are not allowed to change existing tags on this project."
         end
       end
