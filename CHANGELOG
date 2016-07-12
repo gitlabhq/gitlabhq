@@ -92,6 +92,10 @@ v 8.9.6
   - Fix log statements in import/export. !5129
   - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
+  - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
+
+v 8.9.6 (unreleased)
+  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
