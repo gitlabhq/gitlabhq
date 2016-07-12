@@ -394,7 +394,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    expect(page).to have_selector('.status-box-open', visible: true)
+    expect(page).to have_selector('.status-box-open')
   end
 
   step 'I click link "Hide inline discussion" of the third file' do

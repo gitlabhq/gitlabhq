@@ -185,12 +185,11 @@ class Projects::NotesController < Projects::ApplicationController
 
     case target_type
     when "issue"
-      return "closed" if project.issues.find(target_id).closed?
+      project.issues.find(target_id).state
     when "merge_request"
-      return "closed" if project.merge_requests.find(target_id).closed?
-      return "merged" if project.merge_requests.find(target_id).merged?
+      project.merge_requests.find(target_id).state
+    else
+      "open"
     end
-
-    "open"
   end
 end

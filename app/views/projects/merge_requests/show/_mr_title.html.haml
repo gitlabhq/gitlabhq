@@ -1,4 +1,4 @@
-.clearfix.detail-page-header.js-issuable-header{ data: { status: issuable_status(@merge_request) } }
+.clearfix.detail-page-header.js-issuable-header{ data: { status: @merge_request.state } }
   .issuable-header
     .issuable-status-box.status-box.status-box-merged{ class: merge_request_button_visibility(@merge_request, "merged") }
       = icon("check", class: "hidden-sm hidden-md hidden-lg")

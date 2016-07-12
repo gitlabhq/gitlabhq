@@ -89,14 +89,4 @@ module IssuablesHelper
       issuable.open? ? :opened : :closed
     end
   end
-
-  def issuable_status(item)
-    if item.respond_to?(:merged?) && item.merged?
-      "merged"
-    elsif item.closed?
-      "closed"
-    else
-      "open"
-    end
-  end
 end
