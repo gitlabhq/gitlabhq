@@ -22,11 +22,11 @@ describe Service, models: true do
         @testable = @service.can_test?
       end
 
-      describe :can_test do
+      describe '#can_test?' do
         it { expect(@testable).to eq(true) }
       end
 
-      describe :test do
+      describe '#test' do
         let(:data) { 'test' }
 
         it 'test runs execute' do
@@ -45,7 +45,7 @@ describe Service, models: true do
         @testable = @service.can_test?
       end
 
-      describe :can_test do
+      describe '#can_test?' do
         it { expect(@testable).to eq(true) }
       end
     end

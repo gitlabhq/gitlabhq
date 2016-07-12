@@ -5,7 +5,7 @@ describe MergeRequests::RefreshService, services: true do
   let(:user) { create(:user) }
   let(:service) { MergeRequests::RefreshService }
 
-  describe :execute do
+  describe '#execute' do
     before do
       @user = create(:user)
       group = create(:group)
