@@ -77,7 +77,7 @@ v 8.10.0 (unreleased)
 v 8.9.7 (unreleased)
   - Fix import_data wrongly saved as a result of an invalid import_url
 
-v 8.9.6 (unreleased)
+v 8.9.6
   - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
