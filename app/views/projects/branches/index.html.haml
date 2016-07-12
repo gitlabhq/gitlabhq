@@ -27,7 +27,6 @@
                 = sort_title_recently_updated
               = link_to filter_branches_path(sort: 'last_updated') do
                 = sort_title_oldest_updated
-
         = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
           New branch
   - if @branches.any?

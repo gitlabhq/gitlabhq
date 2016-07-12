@@ -17,6 +17,7 @@ describe BranchesFinder do
 
       it 'sorts by recently_updated' do
         branches_finder = described_class.new(repository, { sort: 'recently_updated' })
+
         result = branches_finder.execute
 
         expect(result.first.name).to eq('expand-collapse-lines')

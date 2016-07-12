@@ -125,10 +125,6 @@ class Repository
     commits
   end
 
-  def find_similar_branches(search)
-    raw_repository.branches.select { |branch| branch.name.include?(search) }
-  end
-
   def find_branch(name)
     raw_repository.branches.find { |branch| branch.name == name }
   end
