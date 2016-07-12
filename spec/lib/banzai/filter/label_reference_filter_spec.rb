@@ -178,6 +178,46 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
   end
 
+  describe 'consecutive references' do
+    let(:bug) { create(:label, name: 'bug', project: project) }
+    let(:feature_proposal) { create(:label, name: 'feature proposal', project: project) }
+    let(:technical_debt) { create(:label, name: 'technical debt', project: project) }
+
+    let(:bug_reference) { "#{Label.reference_prefix}#{bug.name}" }
+    let(:feature_proposal_reference) { feature_proposal.to_reference(format: :name) }
+    let(:technical_debt_reference) { technical_debt.to_reference(format: :name) }
+
+    context 'separated with a comma' do
+      let(:references) { "#{bug_reference}, #{feature_proposal_reference}, #{technical_debt_reference}" }
+
+      it 'links to valid references' do
+        doc = reference_filter("See #{references}")
+
+        expect(doc.css('a').map { |a| a.attr('href') }).to match_array([
+          urls.namespace_project_issues_url(project.namespace, project, label_name: bug.name),
+          urls.namespace_project_issues_url(project.namespace, project, label_name: feature_proposal.name),
+          urls.namespace_project_issues_url(project.namespace, project, label_name: technical_debt.name)
+        ])
+        expect(doc.text).to eq 'See bug, feature proposal, technical debt'
+      end
+    end
+
+    context 'separated with a space' do
+      let(:references) { "#{bug_reference} #{feature_proposal_reference} #{technical_debt_reference}" }
+
+      it 'links to valid references' do
+        doc = reference_filter("See #{references}")
+
+        expect(doc.css('a').map { |a| a.attr('href') }).to match_array([
+          urls.namespace_project_issues_url(project.namespace, project, label_name: bug.name),
+          urls.namespace_project_issues_url(project.namespace, project, label_name: feature_proposal.name),
+          urls.namespace_project_issues_url(project.namespace, project, label_name: technical_debt.name)
+        ])
+        expect(doc.text).to eq 'See bug feature proposal technical debt'
+      end
+    end
+  end
+
   describe 'edge cases' do
     it 'gracefully handles non-references matching the pattern' do
       exp = act = '(format nil "~0f" 3.0) ; 3.0'
