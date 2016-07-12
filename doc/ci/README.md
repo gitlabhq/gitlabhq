@@ -15,6 +15,6 @@
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger builds through the API](triggers/README.md)
 - [Build artifacts](build_artifacts/README.md)
-- [User permissions](permissions/README.md)
+- [User permissions](../user/permissions.md#gitlab-ci)
 - [API](../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)
