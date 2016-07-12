@@ -359,8 +359,22 @@ describe Project, models: true do
   describe :repository do
     let(:project) { create(:project) }
 
-    it 'should return valid repo' do
+    it 'returns valid repo' do
       expect(project.repository).to be_kind_of(Repository)
+    end
+  end
+
+  describe '#builds_for' do
+    let(:project) { create(:project) }
+    let(:pipeline) do
+      create(:ci_pipeline, project: project, sha: project.commit.sha)
+    end
+    let(:build) { create(:ci_build, pipeline: pipeline) }
+
+    it 'returns builds for a particular ref' do
+      build_ids = project.builds_for(build.name, build.sha).map(&:id)
+
+      expect(build_ids).to eq([build.id])
     end
   end
 

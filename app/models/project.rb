@@ -430,6 +430,9 @@ class Project < ActiveRecord::Base
   end
 
   def builds_for(build_name, ref = 'HEAD')
+    ct = commit(ref)
+    return [] unless ct
+
     sha = commit(ref).sha
 
     builds.joins(:pipeline).
