@@ -6,6 +6,9 @@ v 8.10.0 (unreleased)
   - Add todos for MR approvers !547
   - Isolate EE LDAP library code in EE module (Part 1) !511
 
+v 8.9.6
+  - Avoid adding index for key fingerprint if it already exists. !539
+
 v 8.9.5
   - Fix of quoted text in lock tooltip. !518
 
