@@ -13,6 +13,7 @@ module TodosHelper
     when Todo::MENTIONED then 'mentioned you on'
     when Todo::BUILD_FAILED then 'The build failed for your'
     when Todo::MARKED then 'added a todo for'
+    when Todo::APPROVAL_REQUIRED then 'set you as an approver for'
     end
   end
 
