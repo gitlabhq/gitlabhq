@@ -52,6 +52,7 @@ v 8.10.0 (unreleased)
   - Don't instantiate a git tree on Projects show default view
   - Bump Rinku to 2.0.0
   - Remove unused front-end variable -> default_issues_tracker
+  - ObjectRenderer retrieve renderer content using Rails.cache.read_multi
   - Better caching of git calls on ProjectsController#show.
   - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
