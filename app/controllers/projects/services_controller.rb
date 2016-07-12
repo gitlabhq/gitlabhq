@@ -45,8 +45,9 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    data = Gitlab::PushDataBuilder.build_sample(project, current_user)
+    data = @service.test_data(project, current_user)
     outcome = @service.test(data)
+
     if outcome[:success]
       message = { notice: 'We sent a request to the provided URL' }
     else

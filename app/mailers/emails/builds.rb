@@ -6,6 +6,7 @@ module Emails
 
       add_project_headers
       add_build_headers('failed')
+
       mail(to: to, subject: subject("Build failed for #{@project.name}", @build.short_sha))
     end
 
