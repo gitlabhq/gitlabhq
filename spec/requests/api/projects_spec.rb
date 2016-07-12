@@ -83,7 +83,7 @@ describe API::API, api: true  do
 
       context 'GET /projects?simple=true' do
         it 'should return a simplified version of all the projects' do
-          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace", "permissions"]
+          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
 
           get api('/projects?simple=true', user)
           expect(response).to have_http_status(200)
