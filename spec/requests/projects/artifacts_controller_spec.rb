@@ -2,19 +2,13 @@ require 'spec_helper'
 require_relative '../shared/artifacts_context'
 
 describe Projects::ArtifactsController do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit('fix').sha)
-  end
-  let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
-
-  before do
-    login_as(user)
-    project.team << [user, :developer]
-  end
-
   describe 'GET /:project/artifacts/:ref/:build_name/browse' do
+    include_context 'artifacts from ref and build name'
+
+    before do
+      login_as(user)
+    end
+
     def path_from_ref(ref = pipeline.sha, build_name = build.name,
                       path = 'browse')
       search_namespace_project_artifacts_path(

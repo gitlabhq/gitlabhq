@@ -1,4 +1,17 @@
-shared_context 'artifacts from ref with 404' do
+shared_context 'artifacts from ref and build name' do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:pipeline) do
+    create(:ci_pipeline, project: project, sha: project.commit('fix').sha)
+  end
+  let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+  before do
+    project.team << [user, :developer]
+  end
+end
+
+shared_examples 'artifacts from ref with 404' do
   context 'has no such ref' do
     before do
       get path_from_ref('TAIL', build.name)
@@ -16,7 +29,7 @@ shared_context 'artifacts from ref with 404' do
   end
 end
 
-shared_context 'artifacts from ref with 302' do
+shared_examples 'artifacts from ref with 302' do
   context 'with sha' do
     before do
       get path_from_ref
