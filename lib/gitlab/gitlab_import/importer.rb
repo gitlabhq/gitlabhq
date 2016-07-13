@@ -35,6 +35,7 @@ module Gitlab
           end
 
           project.issues.create!(
+            iid: issue["iid"],
             description: body,
             title: issue["title"],
             state: issue["state"],

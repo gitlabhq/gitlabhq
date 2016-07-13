@@ -1639,8 +1639,7 @@ describe Gitlab::Diff::PositionTracer, lib: true do
           committer: committer
         }
 
-        merge_request = create(:merge_request, source_branch: second_create_file_commit.sha, target_branch: branch_name, source_project: project)
-        repository.merge(current_user, merge_request, options)
+        repository.merge(current_user, second_create_file_commit.sha, branch_name, options)
         project.commit(branch_name)
       end
 

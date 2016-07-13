@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
+  - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Expire the branch cache after `git gc` runs
@@ -43,10 +44,10 @@ v 8.10.0 (unreleased)
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms
-  - Protected branches have a "Developers can Merge" setting. !4892 (original implementation by Mathias Vestergaard)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
+  - Actually render old and new sections of parallel diff next to each other
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Allow expanding and collapsing files in diff view (!4990)
   - Collapse large diffs by default (!4990)
@@ -95,6 +96,7 @@ v 8.9.6
   - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
+  - Keeps issue number when importing from Gitlab.com
 
 v 8.9.6 (unreleased)
   - Fix importing of events under notes for GitLab projects
