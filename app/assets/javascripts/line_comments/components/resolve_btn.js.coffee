@@ -2,7 +2,7 @@
   props:
     noteId: Number
     resolved: Boolean
-    endpoint: String
+    namespace: String
   data: ->
     comments: CommentsStore.state
     loading: false
@@ -18,13 +18,10 @@
     resolve: ->
       this.loading = true
       ResolveService
-        .resolve(this.endpoint, !this.isResolved)
-        .done =>
-          CommentsStore.update(this.noteId, !this.isResolved)
-
-          this.$nextTick this.updateTooltip
-        .always =>
+        .resolve(this.namespace, this.noteId, !this.isResolved)
+        .then =>
           this.loading = false
+          this.$nextTick this.updateTooltip
   compiled: ->
     $(this.$els.button).tooltip()
   destroyed: ->

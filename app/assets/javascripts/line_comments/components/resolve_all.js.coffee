@@ -3,7 +3,7 @@
     comments: CommentsStore.state
     loading: false
   props:
-    endpoint: String
+    namespace: String
   computed:
     resolved: ->
       resolvedCount = 0
@@ -22,8 +22,6 @@
       this.loading = true
 
       ResolveService
-        .resolveAll(this.endpoint, ids, !this.allResolved)
-        .done =>
-          CommentsStore.updateAll(!this.allResolved)
-        .always =>
+        .resolveAll(this.namespace, ids, !this.allResolved)
+        .then =>
           this.loading = false

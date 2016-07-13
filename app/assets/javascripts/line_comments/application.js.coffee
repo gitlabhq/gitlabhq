@@ -1,4 +1,5 @@
 #= require vue
+#= require vue-resource
 #= require_directory ./stores
 #= require_directory ./services
 #= require_directory ./components

@@ -46,7 +46,7 @@
 
     - if current_user
       #resolve-all-app{ "v-cloak" => true }
-        %resolve-all{ ":endpoint" => "'#{resolve_all_namespace_project_notes_path(@project.namespace, @project)}'", "inline-template" => true }
+        %resolve-all{ ":namespace" => "'#{@project.namespace.path}/#{@project.path}'", "inline-template" => true }
           .line-resolve-all{ "v-show" => "commentsCount > 0" }
             %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "@click" => "updateAll", ":disabled" => "loading" }
               = icon("spinner spin", "v-show" => "loading")
