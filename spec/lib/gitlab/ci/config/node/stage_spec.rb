@@ -28,10 +28,10 @@ describe Gitlab::Ci::Config::Node::Stage do
     context 'when stage config is incorrect' do
       describe '#errors' do
         context 'when reference to global node is not set' do
-          let(:stage) { described_class.new(config) }
+          let(:stage) { described_class.new('test') }
 
           it 'raises error' do
-            expect { stage }.to raise_error(
+            expect { stage.validate! }.to raise_error(
               Gitlab::Ci::Config::Node::Entry::InvalidError,
               /Entry needs global attribute set internally./
             )

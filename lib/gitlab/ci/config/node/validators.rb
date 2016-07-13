@@ -33,7 +33,7 @@ module Gitlab
             end
           end
 
-          class RequiredAttributeValidator < ActiveModel::EachValidator
+          class RequiredValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               if value.nil?
                 raise Entry::InvalidError,
