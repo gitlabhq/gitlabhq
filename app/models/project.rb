@@ -465,7 +465,7 @@ class Project < ActiveRecord::Base
 
     import_url = Gitlab::UrlSanitizer.new(value)
     super(import_url.sanitized_url)
-    create_or_update_import_data(credentials: import_url.credentials) unless errors.messages[:import_url]
+    create_or_update_import_data(credentials: import_url.credentials) if valid_import_url?
   end
 
   def import_url
@@ -475,6 +475,10 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  end
+
+  def valid_import_url?
+    valid? || errors.messages[:import_url].nil?
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
