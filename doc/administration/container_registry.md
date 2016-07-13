@@ -122,6 +122,8 @@ Registry is exposed to the outside world is `4567`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
+N.B. Do not choose port 5000, it will conflict with the Docker registry service.
+
 ---
 
 **Omnibus GitLab installations**
