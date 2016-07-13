@@ -1,10 +1,15 @@
 $head_line:               #EFFDEB;
-$head_header:             #DAFACE;
-$head_header_selected:    #BAF0A8;
+$head_gutter:             #DAFACE;
+$selected_head_gutter:    #B2EE9E;
+$selected_head_line:      #D4F5C9;
 
 $origin_line:             #F2F9FF;
-$origin_header:           #E0F0FF;
-$origin_header_selected:  #ADD8FF;
+$origin_gutter:           #E0F0FF;
+$selected_origin_gutter:  #A3D3FF;
+$selected_origin_line:    #CEE4F9;
+
+$unselected_gutter:       #EEEEEE;
+$unselected_line:         #F8F8F8;
 
 
 #conflicts {
@@ -15,19 +20,46 @@ $origin_header_selected:  #ADD8FF;
 
   .head {
     .header, .diff-line-num {
-      background-color: $head_header;
+      background-color: $head_gutter;
     }
     td {
       background-color: $head_line;
+    }
+    &.selected {
+      .header, .diff-line-num {
+        background-color: $selected_head_gutter;
+      }
+      td {
+        background-color: $selected_head_line;
+      }
     }
   }
 
   .origin {
     .header, .diff-line-num {
-      background-color: $origin_header;
+      background-color: $origin_gutter;
     }
     td {
       background-color: $origin_line;
+    }
+    &.selected {
+      .header, .diff-line-num {
+        background-color: $selected_origin_gutter;
+      }
+      td {
+        background-color: $selected_origin_line;
+      }
+    }
+  }
+
+  .origin, .head {
+    &.unselected {
+      .header, .diff-line-num {
+        background-color: $unselected_gutter;
+      }
+      td {
+        background-color: $unselected_line;
+      }
     }
   }
 
