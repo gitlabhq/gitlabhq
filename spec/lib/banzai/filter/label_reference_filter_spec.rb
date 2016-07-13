@@ -93,8 +93,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      doc = reference_filter("Label (#{reference}).")
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
     end
 
     it 'ignores invalid label names' do
@@ -117,8 +117,8 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+      doc = reference_filter("Label (#{reference}).")
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\)\.))
     end
 
     it 'ignores invalid label names' do
@@ -129,7 +129,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based single-word references with special characters' do
-    let(:label)     { create(:label, name: '?gfm&', project: project) }
+    let(:label)     { create(:label, name: '?g.fm&', project: project) }
     let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
     it 'links to a valid reference' do
@@ -137,17 +137,17 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
       expect(doc.css('a').first.attr('href')).to eq urls.
         namespace_project_issues_url(project.namespace, project, label_name: label.name)
-      expect(doc.text).to eq 'See ?gfm&'
+      expect(doc.text).to eq 'See ?g.fm&'
     end
 
     it 'links with adjacent text' do
-      doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>\?gfm&amp;</span></a>\.\)))
+      doc = reference_filter("Label (#{reference}).")
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>\?g\.fm&amp;</span></a>\)\.))
     end
 
     it 'ignores invalid label names' do
       act = "Label #{Label.reference_prefix}#{label.name.reverse}"
-      exp = "Label #{Label.reference_prefix}&amp;mfg?"
+      exp = "Label #{Label.reference_prefix}&amp;mf.g?"
 
       expect(reference_filter(act).to_html).to eq exp
     end
@@ -202,7 +202,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based multi-word references with special characters in quotes' do
-    let(:label)     { create(:label, name: 'gfm & references?', project: project) }
+    let(:label)     { create(:label, name: 'g.fm & references?', project: project) }
     let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
@@ -210,17 +210,17 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
       expect(doc.css('a').first.attr('href')).to eq urls.
         namespace_project_issues_url(project.namespace, project, label_name: label.name)
-      expect(doc.text).to eq 'See gfm & references?'
+      expect(doc.text).to eq 'See g.fm & references?'
     end
 
     it 'links with adjacent text' do
       doc = reference_filter("Label (#{reference}.)")
-      expect(doc.to_html).to match(%r(\(<a.+><span.+>gfm &amp; references\?</span></a>\.\)))
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>g\.fm &amp; references\?</span></a>\.\)))
     end
 
     it 'ignores invalid label names' do
       act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
-      exp = %(Label #{Label.reference_prefix}"?secnerefer &amp; mfg\")
+      exp = %(Label #{Label.reference_prefix}"?secnerefer &amp; mf.g\")
 
       expect(reference_filter(act).to_html).to eq exp
     end
