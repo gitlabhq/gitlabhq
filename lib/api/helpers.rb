@@ -17,7 +17,7 @@ module API
     def current_user
       @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
-      unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
+      unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
         return nil
       end
 

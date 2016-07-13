@@ -626,6 +626,7 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.integer  "lock_version",              default: 0,     null: false
+    t.string   "in_progress_merge_commit_sha"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -860,11 +861,12 @@ ActiveRecord::Schema.define(version: 20160712171823) do
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: :cascade do |t|
-    t.integer  "project_id",                          null: false
-    t.string   "name",                                null: false
+    t.integer  "project_id",                           null: false
+    t.string   "name",                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "developers_can_push", default: false, null: false
+    t.boolean  "developers_can_push",  default: false, null: false
+    t.boolean  "developers_can_merge", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
