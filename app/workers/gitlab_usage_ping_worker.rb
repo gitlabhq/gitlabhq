@@ -9,6 +9,8 @@ class GitlabUsagePingWorker
   sidekiq_options queue: :default, retry: false
 
   def perform
+    return unless current_application_settings.usage_ping_enabled
+
     # Multiple Sidekiq workers could run this. We should only do this at most once a day.
     return unless try_obtain_lease
 

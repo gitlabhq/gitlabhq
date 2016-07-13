@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712171823) do
+ActiveRecord::Schema.define(version: 20160713222618) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,8 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.string   "elasticsearch_host",                    default: "localhost"
     t.string   "elasticsearch_port",                    default: "9200"
     t.string   "repository_storage",                    default: "default"
-    t.string   "enabled_git_access_protocol"
+    t.string   "enabled_git_access_protocol",
+    t.boolean  "usage_ping_enabled",                    default: true,        null: false
   end
 
   create_table "approvals", force: :cascade do |t|
