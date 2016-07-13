@@ -16,14 +16,12 @@ describe Projects::ArtifactsController do
   describe 'GET /:project/artifacts/:ref/:build_name/browse' do
     context '404' do
       it 'has no such ref' do
-        path = search_namespace_project_artifacts_path(
+        get search_namespace_project_artifacts_path(
           project.namespace,
           project,
           'TAIL',
           build.name,
           'browse')
-
-        get path
 
         expect(response.status).to eq(404)
       end
