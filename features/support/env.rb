@@ -13,7 +13,7 @@ require_relative 'rerun'
 
 if ENV['CI']
   require 'knapsack'
-  Knapsack::Adapters::RSpecAdapter.bind
+  Knapsack::Adapters::SpinachAdapter.bind
 end
 
 %w(select2_helper test_env repo_helpers).each do |f|
