@@ -10,7 +10,7 @@
 // preference): plain class selectors, type (element name) selectors, or
 // explicit child selectors.
 
-table.code {
+.code {
   font-family: monospace;
   font-size: $code_font_size;
   -premailer-cellpadding: 0;
@@ -20,34 +20,16 @@ table.code {
   tr {
     line-height: $code_line_height;
   }
-
-  .diff-line-num {
-    padding: 0 5px;
-    text-align: right;
-    max-width: 50px;
-    width: 35px;
-    border-right-width: 1px;
-    border-right-style: solid;
-  }
-
-  .line_content {
-    white-space: pre;
-  }
-}
-
-.line-numbers, .diff-line-num {
-  background-color: $background-color;
-}
-
-.diff-line-num, .diff-line-num a {
-  color: $black-transparent;
-}
-
-pre.code, .diff-line-num {
-  border-right: 1px solid $table-border-gray;
 }
 
 .diff-line-num {
+  padding: 0 5px;
+  text-align: right;
+  max-width: 50px;
+  width: 35px;
+  color: $black-transparent;
+  border-right: 1px solid $table-border-gray;
+
   &.old {
     background-color: $line-number-old;
     border-right-color: $line-removed-dark;
@@ -60,12 +42,14 @@ pre.code, .diff-line-num {
 }
 
 .line_content {
+  white-space: pre;
   background-color: #fff;
 
   &.old {
     background-color: $line-removed;
 
-    > .line > span.idiff, > .line > span > span.idiff {
+    > .line > span.idiff,
+    > .line > span > span.idiff {
       background-color: $line-removed-dark;
     }
   }
@@ -73,7 +57,8 @@ pre.code, .diff-line-num {
   &.new {
     background-color: $line-added;
 
-    > .line > span.idiff, > .line > span > span.idiff {
+    > .line > span.idiff,
+    > .line > span > span.idiff {
       background-color: $line-added-dark;
     }
   }
@@ -82,6 +67,10 @@ pre.code, .diff-line-num {
     color: $black-transparent;
     background-color: $match-line;
   }
+}
+
+.diff-line-num {
+  background-color: $background-color;
 }
 
 span.highlight_word {
