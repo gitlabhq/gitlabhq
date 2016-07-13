@@ -29,6 +29,7 @@ Spinach.hooks.before_run do
   include ActiveJob::TestHelper
   RSpec::Mocks.setup
   TestEnv.init(mailer: false)
+  License.destroy_all
   TestLicense.init
 
   # skip pre-receive hook check so we can use

@@ -48,6 +48,7 @@ RSpec.configure do |config|
   end
 
   config.before(:all) do
+    License.destroy_all
     TestLicense.init
   end
 end
