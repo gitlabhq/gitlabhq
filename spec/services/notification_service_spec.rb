@@ -50,7 +50,7 @@ describe NotificationService, services: true do
         update_custom_notification(:new_note, @u_custom_global)
       end
 
-      describe :new_note do
+      describe '#new_note' do
         it do
           add_users_with_subscription(note.project, issue)
 
@@ -306,7 +306,7 @@ describe NotificationService, services: true do
         project.team << [merge_request.assignee, :master]
       end
 
-      describe :new_note do
+      describe '#new_note' do
         it "records sent notifications" do
           # Ensure create SentNotification by noteable = merge_request 6 times, not noteable = note
           expect(SentNotification).to receive(:record_note).with(note, any_args).exactly(4).times.and_call_original

@@ -89,7 +89,7 @@ Feature: Project Merge Requests
     Then The list should be sorted by "Oldest updated"
 
   @javascript
-  Scenario: Visiting Merge Requests from a differente Project after sorting
+  Scenario: Visiting Merge Requests from a different Project after sorting
     Given I visit project "Shop" merge requests page
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page

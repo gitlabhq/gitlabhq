@@ -314,7 +314,7 @@ describe Project, models: true do
     end
   end
 
-  describe :update_merge_requests do
+  describe '#update_merge_requests' do
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:key) { create(:key, user_id: project.owner.id) }
@@ -363,7 +363,7 @@ describe Project, models: true do
     end
   end
 
-  describe :to_param do
+  describe '#to_param' do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
@@ -374,7 +374,7 @@ describe Project, models: true do
     end
   end
 
-  describe :repository do
+  describe '#repository' do
     let(:project) { create(:project) }
 
     it 'should return valid repo' do
@@ -382,7 +382,7 @@ describe Project, models: true do
     end
   end
 
-  describe :default_issues_tracker? do
+  describe '#default_issues_tracker?' do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
@@ -395,7 +395,7 @@ describe Project, models: true do
     end
   end
 
-  describe :external_issue_tracker do
+  describe '#external_issue_tracker' do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
@@ -436,7 +436,7 @@ describe Project, models: true do
     end
   end
 
-  describe :cache_has_external_issue_tracker do
+  describe '#cache_has_external_issue_tracker' do
     let(:project) { create(:project) }
 
     it 'stores true if there is any external_issue_tracker' do
@@ -458,7 +458,7 @@ describe Project, models: true do
     end
   end
 
-  describe :open_branches do
+  describe '#open_branches' do
     let(:project) { create(:project) }
 
     before do
@@ -535,7 +535,7 @@ describe Project, models: true do
     end
   end
 
-  describe :avatar_type do
+  describe '#avatar_type' do
     let(:project) { create(:project) }
 
     it 'should be true if avatar is image' do
@@ -549,7 +549,7 @@ describe Project, models: true do
     end
   end
 
-  describe :avatar_url do
+  describe '#avatar_url' do
     subject { project.avatar_url }
 
     let(:project) { create(:project) }
@@ -586,7 +586,7 @@ describe Project, models: true do
     end
   end
 
-  describe :pipeline do
+  describe '#pipeline' do
     let(:project) { create :project }
     let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
@@ -606,7 +606,7 @@ describe Project, models: true do
     end
   end
 
-  describe :builds_enabled do
+  describe '#builds_enabled' do
     let(:project) { create :project }
 
     before { project.builds_enabled = true }
@@ -708,7 +708,7 @@ describe Project, models: true do
     end
   end
 
-  describe :any_runners do
+  describe '#any_runners' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
     let(:shared_runner) { create(:ci_runner, :shared) }

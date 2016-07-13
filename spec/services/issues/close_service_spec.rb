@@ -12,7 +12,7 @@ describe Issues::CloseService, services: true do
     project.team << [user2, :developer]
   end
 
-  describe :execute do
+  describe '#execute' do
     context "valid params" do
       before do
         perform_enqueued_jobs do

@@ -8,7 +8,7 @@ module Ci
     let(:commit) { project.ensure_pipeline(commit_sha, 'master') }
     let(:build) { FactoryGirl.create(:ci_build, pipeline: commit) }
 
-    describe :execute do
+    describe '#execute' do
       before { build }
 
       context 'branch name' do

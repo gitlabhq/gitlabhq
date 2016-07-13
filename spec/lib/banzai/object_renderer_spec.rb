@@ -29,7 +29,7 @@ describe Banzai::ObjectRenderer do
 
       renderer = described_class.new(project, user)
 
-      expect(renderer).to receive(:render_attribute).with(object, :note).
+      expect(renderer).to receive(:render_attributes).with([object], :note).
         and_call_original
 
       rendered = renderer.render_objects([object], :note)
@@ -89,14 +89,36 @@ describe Banzai::ObjectRenderer do
     end
   end
 
-  describe '#render_attribute' do
-    it 'renders the attribute of an object' do
-      object = double(:doc, note: 'hello')
+  describe '#render_attributes' do
+    it 'renders the attribute of a list of objects' do
+      objects = [double(:doc, note: 'hello'), double(:doc, note: 'bye')]
       renderer = described_class.new(project, user, pipeline: :note)
-      doc = renderer.render_attribute(object, :note)
 
-      expect(doc).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(doc.to_html).to eq('<p>hello</p>')
+      expect(Banzai).to receive(:cache_collection_render).
+        with([
+          { text: 'hello', context: renderer.context_for(objects[0], :note) },
+          { text: 'bye', context: renderer.context_for(objects[1], :note) }
+        ]).
+        and_call_original
+
+      docs = renderer.render_attributes(objects, :note)
+
+      expect(docs[0]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
+      expect(docs[0].to_html).to eq('<p>hello</p>')
+
+      expect(docs[1]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
+      expect(docs[1].to_html).to eq('<p>bye</p>')
+    end
+
+    it 'returns when no objects to render' do
+      objects = []
+      renderer = described_class.new(project, user, pipeline: :note)
+
+      expect(Banzai).to receive(:cache_collection_render).
+        with([]).
+        and_call_original
+
+      expect(renderer.render_attributes(objects, :note)).to eq([])
     end
   end
 
