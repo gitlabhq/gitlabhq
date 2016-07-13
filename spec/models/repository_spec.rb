@@ -16,7 +16,7 @@ describe Repository, models: true do
     repository.commit(merge_commit_sha)
   end
 
-  describe :branch_names_contains do
+  describe '#branch_names_contains' do
     subject { repository.branch_names_contains(sample_commit.id) }
 
     it { is_expected.to include('master') }
@@ -24,7 +24,7 @@ describe Repository, models: true do
     it { is_expected.not_to include('fix') }
   end
 
-  describe :tag_names_contains do
+  describe '#tag_names_contains' do
     subject { repository.tag_names_contains(sample_commit.id) }
 
     it { is_expected.to include('v1.1.0') }
@@ -72,13 +72,13 @@ describe Repository, models: true do
     end
   end
 
-  describe :last_commit_for_path do
+  describe '#last_commit_for_path' do
     subject { repository.last_commit_for_path(sample_commit.id, '.gitignore').id }
 
     it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
 
-  describe :find_commits_by_message do
+  describe '#find_commits_by_message' do
     subject { repository.find_commits_by_message('submodule').map{ |k| k.id } }
 
     it { is_expected.to include('5937ac0a7beb003549fc5fd26fc247adbce4a52e') }
@@ -87,7 +87,7 @@ describe Repository, models: true do
     it { is_expected.not_to include('913c66a37b4a45b9769037c55c2d238bd0942d2e') }
   end
 
-  describe :blob_at do
+  describe '#blob_at' do
     context 'blank sha' do
       subject { repository.blob_at(Gitlab::Git::BLANK_SHA, '.gitignore') }
 
@@ -95,7 +95,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :merged_to_root_ref? do
+  describe '#merged_to_root_ref?' do
     context 'merged branch' do
       subject { repository.merged_to_root_ref?('improve/awesome') }
 
@@ -103,7 +103,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :can_be_merged? do
+  describe '#can_be_merged?' do
     context 'mergeable branches' do
       subject { repository.can_be_merged?('0b4bc9a49b562e85de7cc9e834518ea6828729b9', 'master') }
 
@@ -305,7 +305,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :add_branch do
+  describe '#add_branch' do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
         hook = double(trigger: [true, nil])
@@ -349,7 +349,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :rm_branch do
+  describe '#rm_branch' do
     context 'when pre hooks were successful' do
       it 'should run without errors' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
@@ -386,7 +386,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :commit_with_hooks do
+  describe '#commit_with_hooks' do
     context 'when pre hooks were successful' do
       before do
         expect_any_instance_of(GitHooksService).to receive(:execute).
