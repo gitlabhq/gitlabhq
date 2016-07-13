@@ -33,14 +33,18 @@
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
           %table{"v-for" => "(key, group) in file.parallelLines"}
-            %tr.line_holder.parallel{"v-for" => "line in group", ":class" => "line.cssClass"}
+            %tr.line_holder.parallel{"v-for" => "line in group", |
+              ":class" => "{ |
+                'head': line.isHead, |
+                'origin': line.isOrigin, |
+                'selected': line.isSelected, |
+                'unselected': line.isUnselected }"}
 
               %template{"v-if" => "line.isHeader"}
                 %td.diff-line-num.header
                 %td.line_content.header
                   %strong {{line.text}}
-                  / FIXME: Don't use cssClass here
-                  %button.btn{"@click" => "handleSelected(line.id, line.cssClass)"} Use this
+                  %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
 
               %template{"v-if" => "!line.isHeader"}
                 %td.diff-line-num.old_line
@@ -58,7 +62,12 @@
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
           %table
-            %tr.line_holder{"v-for" => "line in file.inlineLines", ":class" => "line.cssClass"}
+            %tr.line_holder{"v-for" => "line in file.inlineLines", |
+              ":class" => "{ |
+                'head': line.isHead, |
+                'origin': line.isOrigin, |
+                'selected': line.isSelected, |
+                'unselected': line.isUnselected }"}
 
               %template{"v-if" => "!line.isHeader"}
                 %td.diff-line-num.old_line
@@ -73,8 +82,7 @@
                 %td.diff-line-num.header
                 %td.line_content.header
                   %strong {{{line.text}}}
-                  / FIXME: Don't use cssClass here
-                  %button.btn{"@click" => "handleSelected(line.id, line.cssClass)"} Use this
+                  %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
 
   .content-block.oneline-block.files-changed
     %strong.resolved-count {{resolvedCount}}

@@ -22,13 +22,16 @@ $unselected_line:         #F8F8F8;
     .header, .diff-line-num {
       background-color: $head_gutter;
     }
+
     td {
       background-color: $head_line;
     }
+
     &.selected {
       .header, .diff-line-num {
         background-color: $selected_head_gutter;
       }
+
       td {
         background-color: $selected_head_line;
       }
@@ -39,13 +42,16 @@ $unselected_line:         #F8F8F8;
     .header, .diff-line-num {
       background-color: $origin_gutter;
     }
+
     td {
       background-color: $origin_line;
     }
+
     &.selected {
       .header, .diff-line-num {
         background-color: $selected_origin_gutter;
       }
+
       td {
         background-color: $selected_origin_line;
       }
@@ -57,6 +63,7 @@ $unselected_line:         #F8F8F8;
       .header, .diff-line-num {
         background-color: $unselected_gutter;
       }
+
       td {
         background-color: $unselected_line;
       }
@@ -66,6 +73,7 @@ $unselected_line:         #F8F8F8;
   .parallel-view {
     .diff-content {
       overflow: hidden;
+
       table {
         width: 50%;
         float: left;
