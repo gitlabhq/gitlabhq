@@ -78,6 +78,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_omniauth
   end
 
+  def kerberos_spnego
+    oauth['provider'] = 'kerberos'
+    handle_omniauth
+  end
+
   private
 
   def handle_omniauth
