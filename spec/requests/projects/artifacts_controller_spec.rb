@@ -9,8 +9,8 @@ describe Projects::ArtifactsController do
       login_as(user)
     end
 
-    def path_from_ref(ref = pipeline.sha, build_name = build.name,
-                      path = 'browse')
+    def path_from_ref(
+      ref = pipeline.sha, build_name = build.name, path = 'browse')
       search_namespace_project_artifacts_path(
         project.namespace,
         project,
