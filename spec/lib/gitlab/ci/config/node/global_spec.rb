@@ -23,7 +23,7 @@ describe Gitlab::Ci::Config::Node::Global do
           after_script: ['make clean'],
           stages: ['build', 'pages'],
           cache: { key: 'k', untracked: true, paths: ['public/'] },
-          rspec: { script: 'rspec' },
+          rspec: { script: %w[rspec ls] },
           spinach: { script: 'spinach' } }
       end
 
@@ -129,8 +129,14 @@ describe Gitlab::Ci::Config::Node::Global do
         describe '#jobs' do
           it 'returns jobs configuration' do
             expect(global.jobs)
-              .to eq(rspec: { script: %w[rspec], stage: 'test' },
-                     spinach: { script: %w[spinach], stage: 'test' })
+              .to eq(rspec: { before_script: %w[ls pwd],
+                              script: %w[rspec ls],
+                              commands: "ls\npwd\nrspec\nls",
+                              stage: 'test' },
+                     spinach: { before_script: %w[ls pwd],
+                                script: %w[spinach],
+                                commands: "ls\npwd\nspinach",
+                                stage: 'test' })
           end
         end
       end

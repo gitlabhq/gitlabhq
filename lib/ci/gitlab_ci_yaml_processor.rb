@@ -80,12 +80,7 @@ module Ci
       {
         stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
-        ##
-        # Refactoring note:
-        #  - before script behaves differently than after script
-        #  - after script returns an array of commands
-        #  - before script should be a concatenated command
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        commands: job[:commands],
         tag_list: job[:tags] || [],
         name: name,
         only: job[:only],
@@ -124,8 +119,12 @@ module Ci
     end
 
     def validate_job_keys!(name, job)
+      ##
+      # TODO, remove refactoring keys
+      #
+      refactoring_keys = [:commands]
       job.keys.each do |key|
-        unless ALLOWED_JOB_KEYS.include? key
+        unless (ALLOWED_JOB_KEYS + refactoring_keys).include? key
           raise ValidationError, "#{name} job: unknown parameter #{key}"
         end
       end

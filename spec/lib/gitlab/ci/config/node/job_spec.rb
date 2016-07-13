@@ -56,6 +56,7 @@ describe Gitlab::Ci::Config::Node::Job do
         expect(entry.value)
           .to eq(before_script: %w[ls pwd],
                  script: %w[rspec],
+                 commands: "ls\npwd\nrspec",
                  stage: 'test',
                  after_script: %w[cleanup])
       end
@@ -114,7 +115,7 @@ describe Gitlab::Ci::Config::Node::Job do
         end
 
         it 'returns correct script' do
-          expect(entry.before_script).to eq []
+          expect(entry.before_script).to be_nil
         end
       end
     end

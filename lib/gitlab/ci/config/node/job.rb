@@ -40,23 +40,24 @@ module Gitlab
 
           def before_script
             if before_script_defined?
-              before_script_value.to_a
+              before_script_value
             else
-              @global.before_script.to_a
+              @global.before_script
             end
           end
 
           def commands
-            (before_script + script).join("\n")
+            [before_script, script].compact.join("\n")
           end
 
           private
 
           def to_hash
-            { before_script: before_script_value,
-              script: script_value,
-              stage: stage_value,
-              after_script: after_script_value }
+            { before_script: before_script,
+              script: script,
+              commands: commands,
+              stage: stage,
+              after_script: after_script }
           end
 
           def compose!

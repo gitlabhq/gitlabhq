@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Jobs do
-  let(:entry) { described_class.new(config, global: spy) }
+  let(:entry) { described_class.new(config, global: global) }
+  let(:global) { double('global', before_script: nil, stages: %w[test]) }
 
   describe 'validations' do
     before do
@@ -62,8 +63,12 @@ describe Gitlab::Ci::Config::Node::Jobs do
     describe '#value' do
       it 'returns key value' do
         expect(entry.value)
-          .to eq(rspec: { script: %w[rspec], stage: 'test' },
-                 spinach: { script: %w[spinach], stage: 'test' })
+          .to eq(rspec: { script: %w[rspec],
+                          commands: 'rspec',
+                          stage: 'test' },
+                 spinach: { script: %w[spinach],
+                            commands: 'spinach',
+                            stage: 'test' })
       end
     end
 
