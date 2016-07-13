@@ -95,6 +95,14 @@ class SlackService < Service
     supported_events.map { |event| event_channel_name(event) }
   end
 
+  def event_field(event)
+    fields.find { |field| field[:name] == event_channel_name(event) }
+  end
+
+  def global_fields
+    fields.reject { |field| field[:name].end_with?('channel') }
+  end
+
   private
 
   def get_channel_field(event)

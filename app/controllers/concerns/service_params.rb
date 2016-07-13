@@ -18,18 +18,18 @@ module ServiceParams
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password]
 
-  def application_services_params
+  def service_params
     dynamic_params = []
     dynamic_params.concat(@service.event_channel_names)
 
-    application_services_params = params.permit(:id, service: ALLOWED_PARAMS + dynamic_params)
+    service_params = params.permit(:id, service: ALLOWED_PARAMS + dynamic_params)
 
-    if application_services_params[:service].is_a?(Hash)
+    if service_params[:service].is_a?(Hash)
       FILTER_BLANK_PARAMS.each do |param|
-        application_services_params[:service].delete(param) if application_services_params[:service][param].blank?
+        service_params[:service].delete(param) if service_params[:service][param].blank?
       end
     end
 
-    application_services_params
+    service_params
   end
 end

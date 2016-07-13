@@ -139,7 +139,7 @@ describe SlackService, models: true do
     end
 
     context "event channels" do
-      it "should user the right channel for push event" do
+      it "uses the right channel for push event" do
         slack.update_attributes(push_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
@@ -151,7 +151,7 @@ describe SlackService, models: true do
         slack.execute(push_sample_data)
       end
 
-      it "should use the right channel for merge request event" do
+      it "uses the right channel for merge request event" do
         slack.update_attributes(merge_request_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
@@ -163,7 +163,7 @@ describe SlackService, models: true do
         slack.execute(@merge_sample_data)
       end
 
-      it "should use the right channel for issue event" do
+      it "uses the right channel for issue event" do
         slack.update_attributes(issue_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
@@ -175,7 +175,7 @@ describe SlackService, models: true do
         slack.execute(@issues_sample_data)
       end
 
-      it "should use the right channel for wiki event" do
+      it "uses the right channel for wiki event" do
         slack.update_attributes(wiki_page_channel: "random")
 
         expect(Slack::Notifier).to receive(:new).
@@ -192,7 +192,7 @@ describe SlackService, models: true do
           create(:note_on_issue, project: project, note: "issue note")
         end
 
-        it "should use the right channel" do
+        it "uses the right channel" do
           slack.update_attributes(note_channel: "random")
 
           note_data = Gitlab::NoteDataBuilder.build(issue_note, user)

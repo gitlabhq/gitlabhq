@@ -10,8 +10,8 @@ Go to your project's **Settings > Services > Slack** and you will see a checkbox
 * Build
 * Wiki page
 
-Bellow each of these event checkboxes you will have a input to insert which Slack channel do you want to send that event message,
-#general channel is default.
+Below each of these event checkboxes you will have an input to insert which Slack channel do you want to send that event message,
+`#general` channel is default.
 
 
 ![Slack configuration](img/slack_configuration.png)

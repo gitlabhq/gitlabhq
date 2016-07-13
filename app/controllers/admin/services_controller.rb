@@ -15,7 +15,7 @@ class Admin::ServicesController < Admin::ApplicationController
   end
 
   def update
-    if service.update_attributes(application_services_params[:service])
+    if service.update_attributes(service_params[:service])
       redirect_to admin_application_settings_services_path,
         notice: 'Application settings saved successfully'
     else

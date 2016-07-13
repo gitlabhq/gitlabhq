@@ -4,10 +4,7 @@
 %p #{@service.description} template
 
 = form_for :service, url: admin_application_settings_service_path, method: :put, html: { class: 'form-horizontal fieldset-form' } do |form|
-  - if @service.is_a?(SlackService)
-    = render 'projects/services/slack/service_settings', form: form
-  - else
-    = render 'shared/service_settings', form: form
+  = render 'shared/service_settings', form: form
 
   .form-actions
     = form.submit 'Save', class: 'btn btn-save'

@@ -18,7 +18,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def update
-    if @service.update_attributes(service_params)
+    if @service.update_attributes(service_params[:service])
       redirect_to(
         edit_namespace_project_service_path(@project.namespace, @project,
                                             @service.to_param, notice:
@@ -48,18 +48,5 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def service
     @service ||= @project.services.find { |service| service.to_param == params[:id] }
-  end
-
-  def service_params
-    dynamic_params = []
-    dynamic_params.concat(@service.event_channel_names) if @service.is_a?(SlackService)
-
-    service_params = params.require(:service).permit(ALLOWED_PARAMS + dynamic_params)
-
-    FILTER_BLANK_PARAMS.each do |param|
-      service_params.delete(param) if service_params[param].blank?
-    end
-
-    service_params
   end
 end
