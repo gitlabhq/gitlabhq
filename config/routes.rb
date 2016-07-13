@@ -735,8 +735,8 @@ Rails.application.routes.draw do
 
         resources :artifacts, only: [] do
           collection do
-            get :search, path: ':ref/:build_name/*path', format: false,
-                         constraints: { ref: /.+/ } # ref could have /
+            get :search, path: ':ref_name/:build_name/*path', format: false,
+                         constraints: { ref_name: /.+/ } # ref could have /
           end
         end
 
