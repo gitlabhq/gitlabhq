@@ -154,4 +154,12 @@
       $('.import_gitlab_project').attr('disabled',true);
       $('.import_gitlab_project').attr('title', 'Project path required.');
     }
-  })
+  });
+
+  $('.import_git').click(function( event ) {
+    if($('#project_import_url').attr('disabled')) {
+      $('#project_import_url').attr('disabled', false);
+    } else {
+      $('#project_import_url').attr('disabled', true);
+    }
+  });

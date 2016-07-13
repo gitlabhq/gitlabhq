@@ -2,7 +2,7 @@
   = f.label :import_url, class: 'control-label' do
     %span Git repository URL
   .col-sm-10
-    = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+    = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git', disabled: true
 
     .well.prepend-top-20
       %ul
