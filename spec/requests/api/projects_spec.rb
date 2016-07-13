@@ -81,6 +81,18 @@ describe API::API, api: true  do
         expect(json_response.first.keys).not_to include('open_issues_count')
       end
 
+      context 'GET /projects?simple=true' do
+        it 'returns a simplified version of all the projects' do
+          expected_keys = ["id", "http_url_to_repo", "web_url", "name", "name_with_namespace", "path", "path_with_namespace"]
+
+          get api('/projects?simple=true', user)
+
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.first.keys).to match_array expected_keys
+        end
+      end
+
       context 'and using search' do
         it 'should return searched project' do
           get api('/projects', user), { search: project.name }
