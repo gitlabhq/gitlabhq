@@ -1,5 +1,6 @@
 class Projects::MergeRequestsController < Projects::ApplicationController
   include ToggleSubscriptionAction
+  include DiffForPath
   include DiffHelper
   include IssuableActions
   include ToggleAwardEmoji
@@ -13,6 +14,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
+  before_action :define_commit_vars, only: [:diffs]
+  before_action :define_diff_comment_vars, only: [:diffs]
   before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
 
   # Allow read any merge_request
@@ -54,7 +57,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def show
     respond_to do |format|
-      format.html
+      format.html { define_discussion_vars }
 
       format.json do
         render json: @merge_request, methods: :rebase_in_progress?
@@ -79,35 +82,38 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
 
-    @commit = @merge_request.diff_head_commit
-    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
-
-    @comments_target = {
-      noteable_type: 'MergeRequest',
-      noteable_id: @merge_request.id
-    }
-
-    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
-
-    Banzai::NoteRenderer.render(
-      @grouped_diff_notes.values.flatten,
-      @project,
-      current_user,
-      @path,
-      @project_wiki,
-      @ref
-    )
-
     respond_to do |format|
-      format.html
+      format.html { define_discussion_vars }
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
     end
   end
 
+  # With an ID param, loads the MR at that ID. Otherwise, accepts the same params as #new
+  # and uses that (unsaved) MR.
+  #
+  def diff_for_path
+    if params[:id]
+      merge_request
+      define_diff_comment_vars
+    else
+      build_merge_request
+      @diff_notes_disabled = true
+      @grouped_diff_notes = {}
+    end
+
+    define_commit_vars
+    diffs = @merge_request.diffs(diff_options)
+
+    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
+  end
+
   def commits
     respond_to do |format|
-      format.html { render 'show' }
+      format.html do
+        define_discussion_vars
+
+        render 'show'
+      end
       format.json do
         # Get commits from repository
         # or from cache if already merged
@@ -122,14 +128,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def builds
     respond_to do |format|
-      format.html { render 'show' }
+      format.html do
+        define_discussion_vars
+
+        render 'show'
+      end
       format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_builds') } }
     end
   end
 
   def new
-    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
-    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+    build_merge_request
     @noteable = @merge_request
 
     @target_branches = if @merge_request.target_project
@@ -200,6 +209,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
       render "edit"
     end
+  rescue ActiveRecord::StaleObjectError
+    @conflict = true
+    render :edit
   end
 
   def remove_wip
@@ -392,14 +404,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.unlock_mr
       @merge_request.close
     end
-
-    if request.format == :html || action_name == 'show'
-      define_show_html_vars
-    end
   end
 
-  # Discussion tab data is only required on html requests
-  def define_show_html_vars
+  # Discussion tab data is rendered on html responses of actions
+  # :show, :diff, :commits, :builds. but not when request the data through AJAX
+  def define_discussion_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @noteable)
 
@@ -424,6 +433,30 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @pipelines = [@pipeline].compact
   end
 
+  def define_commit_vars
+    @commit = @merge_request.diff_head_commit
+    @base_commit = @merge_request.diff_base_commit || @merge_request.likely_diff_base_commit
+  end
+
+  def define_diff_comment_vars
+    @comments_target = {
+      noteable_type: 'MergeRequest',
+      noteable_id: @merge_request.id
+    }
+
+    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
+    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+
+    Banzai::NoteRenderer.render(
+      @grouped_diff_notes.values.flatten,
+      @project,
+      current_user,
+      @path,
+      @project_wiki,
+      @ref
+    )
+  end
+
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
@@ -443,8 +476,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, :force_remove_source_branch,
-      :approvals_before_merge,
-      label_ids: []
+      :lock_version, :approvals_before_merge, label_ids: []
     )
   end
 
@@ -472,5 +504,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge_when_build_succeeds_active?
     params[:merge_when_build_succeeds].present? &&
       @merge_request.pipeline && @merge_request.pipeline.active?
+  end
+
+  def build_merge_request
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
   end
 end

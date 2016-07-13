@@ -8,7 +8,7 @@
 #     action_id: integer
 #     author_id: integer
 #     project_id; integer
-#     state: 'pending' or 'done'
+#     state: 'pending' (default) or 'done'
 #     type: 'Issue' or 'MergeRequest'
 #
 

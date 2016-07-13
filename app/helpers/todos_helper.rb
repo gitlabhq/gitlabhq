@@ -1,10 +1,10 @@
 module TodosHelper
   def todos_pending_count
-    TodosFinder.new(current_user, state: :pending).execute.count
+    @todos_pending_count ||= TodosFinder.new(current_user, state: :pending).execute.count
   end
 
   def todos_done_count
-    TodosFinder.new(current_user, state: :done).execute.count
+    @todos_done_count ||= TodosFinder.new(current_user, state: :done).execute.count
   end
 
   def todo_action_name(todo)

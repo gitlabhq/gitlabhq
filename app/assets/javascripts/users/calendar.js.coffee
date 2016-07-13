@@ -87,14 +87,15 @@ class @Calendar
       .attr 'width', @daySize
       .attr 'height', @daySize
       .attr 'title', (stamp) =>
+        date = new Date(stamp.date)
         contribText = 'No contributions'
 
         if stamp.count > 0
           contribText = "#{stamp.count} contribution#{if stamp.count > 1 then 's' else ''}"
 
-        date = dateFormat(stamp.date, 'mmm d, yyyy')
+        dateText = dateFormat(date, 'mmm d, yyyy')
 
-        "#{contribText}<br />#{date}"
+        "#{contribText}<br />#{gl.utils.getDayName(date)} #{dateText}"
       .attr 'class', 'user-contrib-cell js-tooltip'
       .attr 'fill', (stamp) =>
         if stamp.count isnt 0

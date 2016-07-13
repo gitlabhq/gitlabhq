@@ -27,7 +27,7 @@
   .row-content-block.second-block
     #{(@scope || 'all').capitalize} builds
 
-  %ul.content-list
+  %ul.content-list.builds-content-list
     - if @builds.blank?
       %li
         .nothing-here-block No builds to show
@@ -37,15 +37,11 @@
           %thead
             %tr
               %th Status
-              %th Build ID
-              %th Project
               %th Commit
-              %th Ref
+              %th Project
               %th Runner
               %th Name
-              %th Tags
-              %th Duration
-              %th Finished at
+              %th
               %th
 
           - @builds.each do |build|

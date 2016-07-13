@@ -68,6 +68,10 @@ module Gitlab
         @lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
       end
 
+      def collapsed_by_default?
+        diff.diff.bytesize > 10240 # 10 KB
+      end
+
       def highlighted_diff_lines
         @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end

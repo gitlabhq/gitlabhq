@@ -2,7 +2,7 @@ FactoryGirl.define do
   # Project without repository
   #
   # Project does not have bare repository.
-  # Use this factory if you dont need repository in tests
+  # Use this factory if you don't need repository in tests
   factory :empty_project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }

@@ -116,6 +116,31 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.merge_request_diff = MergeRequestDiff.new
+
+        expect(merge_request.merge_request_diff).to receive(:diffs).with(options)
+
+        merge_request.diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:diffs).with(options)
+
+        merge_request.diffs(options)
+      end
+    end
+  end
+
   describe "#mr_and_commit_notes" do
     let!(:merge_request) { create(:merge_request) }
 
