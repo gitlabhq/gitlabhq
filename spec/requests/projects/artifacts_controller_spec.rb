@@ -50,12 +50,12 @@ describe Projects::ArtifactsController do
     end
 
     context '302' do
-      def path_from_sha
+      def path_from_ref(ref = pipeline.sha, build_name = build.name)
         search_namespace_project_artifacts_path(
           project.namespace,
           project,
-          pipeline.sha,
-          build.name,
+          ref,
+          build_name,
           'browse')
       end
 
@@ -72,7 +72,7 @@ describe Projects::ArtifactsController do
 
       context 'with sha' do
         before do
-          get path_from_sha
+          get path_from_ref
         end
 
         it_behaves_like 'redirect to the build'
@@ -84,12 +84,7 @@ describe Projects::ArtifactsController do
         end
 
         before do
-          get search_namespace_project_artifacts_path(
-            project.namespace,
-            project,
-            'master',
-            build.name,
-            'browse')
+          get path_from_ref('master')
         end
 
         it_behaves_like 'redirect to the build'
@@ -101,12 +96,7 @@ describe Projects::ArtifactsController do
         end
 
         before do
-          get search_namespace_project_artifacts_path(
-            project.namespace,
-            project,
-            'improve/awesome',
-            build.name,
-            'browse')
+          get path_from_ref('improve/awesome')
         end
 
         it_behaves_like 'redirect to the build'
@@ -120,7 +110,7 @@ describe Projects::ArtifactsController do
         end
 
         before do
-          get path_from_sha
+          get path_from_ref
         end
 
         it_behaves_like 'redirect to the build'
@@ -133,7 +123,7 @@ describe Projects::ArtifactsController do
         end
 
         before do
-          get path_from_sha
+          get path_from_ref
         end
 
         it_behaves_like 'redirect to the build'
