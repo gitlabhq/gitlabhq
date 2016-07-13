@@ -46,7 +46,7 @@ class ElasticIndexerWorker
     })
 
     # Remove wiki index
-    Client.delete_by_query({
+    client.delete_by_query({
       index: ProjectWiki.__elasticsearch__.index_name,
       body: {
         query: {
