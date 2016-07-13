@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Gitlab::BuildDataBuilder' do
   let(:build) { create(:ci_build) }
 
-  describe :build do
+  describe '.build' do
     let(:data) do
       Gitlab::BuildDataBuilder.build(build)
     end

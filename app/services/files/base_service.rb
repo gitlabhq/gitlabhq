@@ -42,7 +42,7 @@ module Files
     end
 
     def validate
-      allowed = ::Gitlab::GitAccess.new(current_user, project, 'web').can_push_to_branch?(@target_branch)
+      allowed = ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(@target_branch)
 
       unless allowed
         raise_error("You are not allowed to push into this branch")

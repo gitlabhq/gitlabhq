@@ -19,29 +19,36 @@ module Banzai
     #
     # Returns the documents passed as the first argument.
     def redact(documents)
-      nodes = documents.flat_map do |document|
-        Querying.css(document, 'a.gfm[data-reference-type]')
-      end
+      all_document_nodes = document_nodes(documents)
 
-      redact_nodes(nodes)
-
-      documents
+      redact_document_nodes(all_document_nodes)
     end
 
-    # Redacts the given nodes
+    # Redacts the given node documents
     #
-    # nodes - An Array of HTML nodes to redact.
-    def redact_nodes(nodes)
-      visible = nodes_visible_to_user(nodes)
+    # data - An Array of a Hashes mapping an HTML document to nodes to redact.
+    def redact_document_nodes(all_document_nodes)
+      all_nodes = all_document_nodes.map { |x| x[:nodes] }.flatten
+      visible = nodes_visible_to_user(all_nodes)
+      metadata = []
 
-      nodes.each do |node|
-        unless visible.include?(node)
+      all_document_nodes.each do |entry|
+        nodes_for_document = entry[:nodes]
+        doc_data = { document: entry[:document], visible_reference_count: nodes_for_document.count }
+        metadata << doc_data
+
+        nodes_for_document.each do |node|
+          next if visible.include?(node)
+
+          doc_data[:visible_reference_count] -= 1
           # The reference should be replaced by the original text,
           # which is not always the same as the rendered text.
           text = node.attr('data-original') || node.text
           node.replace(text)
         end
       end
+
+      metadata
     end
 
     # Returns the nodes visible to the current user.
@@ -64,6 +71,12 @@ module Banzai
       end
 
       visible
+    end
+
+    def document_nodes(documents)
+      documents.map do |document|
+        { document: document, nodes: Querying.css(document, 'a.gfm[data-reference-type]') }
+      end
     end
   end
 end

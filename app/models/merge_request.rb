@@ -19,7 +19,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :create_merge_request_diff, unless: :importing?
   after_update :update_merge_request_diff
 
-  delegate :commits, :diffs, :real_size, to: :merge_request_diff, prefix: nil
+  delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -162,6 +162,10 @@ class MergeRequest < ActiveRecord::Base
 
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
+  end
+
+  def diffs(*args)
+    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
   end
 
   def diff_size
@@ -548,7 +552,13 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_be_merged_by?(user)
-    ::Gitlab::GitAccess.new(user, project, 'web').can_push_to_branch?(target_branch)
+    access = ::Gitlab::UserAccess.new(user, project: project)
+    access.can_push_to_branch?(target_branch) || access.can_merge_to_branch?(target_branch)
+  end
+
+  def can_be_merged_via_command_line_by?(user)
+    access = ::Gitlab::UserAccess.new(user, project: project)
+    access.can_push_to_branch?(target_branch)
   end
 
   def mergeable_ci_state?

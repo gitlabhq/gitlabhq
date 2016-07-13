@@ -50,10 +50,12 @@
 
   %td.duration
     - if generic_commit_status.duration
+      = icon("clock-o")
       #{duration_in_words(generic_commit_status.finished_at, generic_commit_status.started_at)}
 
   %td.timestamp
     - if generic_commit_status.finished_at
+      = icon("calendar")
       %span #{time_ago_with_tooltip(generic_commit_status.finished_at)}
 
   - if defined?(coverage) && coverage

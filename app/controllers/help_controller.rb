@@ -12,13 +12,12 @@ class HelpController < ApplicationController
   end
 
   def show
-    @category = clean_path_info(path_params[:category])
-    @file = path_params[:file]
+    @path = clean_path_info(path_params[:path])
 
     respond_to do |format|
       format.any(:markdown, :md, :html) do
         # Note: We are purposefully NOT using `Rails.root.join`
-        path = File.join(Rails.root, 'doc', @category, "#{@file}.md")
+        path = File.join(Rails.root, 'doc', "#{@path}.md")
 
         if File.exist?(path)
           @markdown = File.read(path)
@@ -33,7 +32,7 @@ class HelpController < ApplicationController
       # Allow access to images in the doc folder
       format.any(:png, :gif, :jpeg) do
         # Note: We are purposefully NOT using `Rails.root.join`
-        path = File.join(Rails.root, 'doc', @category, "#{@file}.#{params[:format]}")
+        path = File.join(Rails.root, 'doc', "#{@path}.#{params[:format]}")
 
         if File.exist?(path)
           send_file(path, disposition: 'inline')
@@ -57,8 +56,7 @@ class HelpController < ApplicationController
   private
 
   def path_params
-    params.require(:category)
-    params.require(:file)
+    params.require(:path)
 
     params
   end

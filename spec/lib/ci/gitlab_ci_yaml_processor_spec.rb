@@ -31,7 +31,7 @@ module Ci
         })
       end
 
-      describe :only do
+      describe 'only' do
         it "does not return builds if only has another branch" do
           config = YAML.dump({
                                before_script: ["pwd"],
@@ -187,7 +187,7 @@ module Ci
         end
       end
 
-      describe :except do
+      describe 'except' do
         it "returns builds if except has another branch" do
           config = YAML.dump({
                                before_script: ["pwd"],

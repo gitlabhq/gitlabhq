@@ -5,7 +5,7 @@ describe MergeRequests::CreateService, services: true do
   let(:user) { create(:user) }
   let(:assignee) { create(:user) }
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:opts) do
         {

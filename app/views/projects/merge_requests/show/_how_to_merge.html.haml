@@ -8,7 +8,7 @@
         %p
           %strong Step 1.
           Fetch and check out the branch for this merge request
-        = clipboard_button_with_class({clipboard_target: "pre#merge-info-1"}, css_class: "btn-clipboard")
+        = clipboard_button(clipboard_target: "pre#merge-info-1")
         %pre.dark#merge-info-1
           - if @merge_request.for_fork?
             :preserve
@@ -25,7 +25,7 @@
         %p
           %strong Step 3.
           Merge the branch and fix any conflicts that come up
-        = clipboard_button_with_class({clipboard_target: "pre#merge-info-3"}, css_class: "btn-clipboard")
+        = clipboard_button(clipboard_target: "pre#merge-info-3")
         %pre.dark#merge-info-3
           - if @merge_request.for_fork?
             :preserve
@@ -38,7 +38,7 @@
         %p
           %strong Step 4.
           Push the result of the merge to GitLab
-        = clipboard_button_with_class({clipboard_target: "pre#merge-info-4"}, css_class: "btn-clipboard")
+        = clipboard_button(clipboard_target: "pre#merge-info-4")
         %pre.dark#merge-info-4
           :preserve
             git push origin #{h @merge_request.target_branch}

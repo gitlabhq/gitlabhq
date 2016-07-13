@@ -3,14 +3,19 @@ require 'spec_helper'
 describe Gitlab::Diff::InlineDiff, lib: true do
   describe '.for_lines' do
     let(:diff) do
-      <<eos
- class Test
--  def initialize(test = true)
-+  def initialize(test = false)
-     @test = test
-   end
- end
-eos
+      <<-EOF.strip_heredoc
+         class Test
+        -  def initialize(test = true)
+        +  def initialize(test = false)
+             @test = test
+        -    if true
+        -      @foo = "bar"
+        +    unless false
+        +      @foo = "baz"
+             end
+           end
+         end
+      EOF
     end
 
     let(:subject) { described_class.for_lines(diff.lines) }
@@ -20,8 +25,11 @@ eos
       expect(subject[1]).to eq([25..27])
       expect(subject[2]).to eq([25..28])
       expect(subject[3]).to be_nil
-      expect(subject[4]).to be_nil
-      expect(subject[5]).to be_nil
+      expect(subject[4]).to eq([5..10])
+      expect(subject[5]).to eq([17..17])
+      expect(subject[6]).to eq([5..15])
+      expect(subject[7]).to eq([17..17])
+      expect(subject[8]).to be_nil
     end
   end
 

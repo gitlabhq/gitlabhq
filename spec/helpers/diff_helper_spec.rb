@@ -31,25 +31,10 @@ describe DiffHelper do
     end
   end
 
-  describe 'diff_hard_limit_enabled?' do
-    it 'should return true if param is provided' do
-      allow(controller).to receive(:params) { { force_show_diff: true } }
-      expect(diff_hard_limit_enabled?).to be_truthy
-    end
-
-    it 'should return false if param is not provided' do
-      expect(diff_hard_limit_enabled?).to be_falsey
-    end
-  end
-
   describe 'diff_options' do
-    it 'should return hard limit for a diff if force diff is true' do
+    it 'should return hard limit for a diff' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
       expect(diff_options).to include(Commit.max_diff_options)
-    end
-
-    it 'should return safe limit for a diff if force diff is false' do
-      expect(diff_options).not_to include(:max_lines, :max_files)
     end
   end
 
@@ -59,7 +44,7 @@ describe DiffHelper do
     end
 
     it 'should return js class when bottom lines should be unfolded' do
-      expect(unfold_bottom_class(true)).to eq('js-unfold-bottom')
+      expect(unfold_bottom_class(true)).to include('js-unfold-bottom')
     end
   end
 

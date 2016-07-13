@@ -89,8 +89,9 @@ Rails.application.routes.draw do
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
+  
   get 'help'                  => 'help#index'
-  get 'help/:category/:file'  => 'help#show', as: :help_page, constraints: { category: /.*/, file: /[^\/\.]+/ }
+  get 'help/*path'            => 'help#show', as: :help_page
   get 'help/shortcuts'
   get 'help/ui' => 'help#ui'
 
@@ -615,10 +616,18 @@ Rails.application.routes.draw do
             post :retry_builds
             post :revert
             post :cherry_pick
+            get :diff_for_path
           end
         end
 
-        resources :compare, only: [:index, :create]
+        resources :compare, only: [:index, :create] do
+          collection do
+            get :diff_for_path
+          end
+        end
+
+        get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
+
         resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
 
         resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
@@ -628,9 +637,6 @@ Rails.application.routes.draw do
             get :languages
           end
         end
-
-        get '/compare/:from...:to' => 'compare#show', :as => 'compare',
-            :constraints => { from: /.+/, to: /.+/ }
 
         resources :snippets, constraints: { id: /\d+/ } do
           member do
@@ -706,12 +712,14 @@ Rails.application.routes.draw do
             post :toggle_subscription
             post :toggle_award_emoji
             post :remove_wip
+            get :diff_for_path
           end
 
           collection do
             get :branch_from
             get :branch_to
             get :update_branches
+            get :diff_for_path
           end
         end
 

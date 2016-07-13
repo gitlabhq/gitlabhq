@@ -8,6 +8,10 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
+  def expand_all_diffs?
+    @expand_all_diffs || params[:expand_all_diffs].present?
+  end
+
   def diff_view
     diff_views = %w(inline parallel)
 
@@ -18,16 +22,14 @@ module DiffHelper
     end
   end
 
-  def diff_hard_limit_enabled?
-    params[:force_show_diff].present?
-  end
-
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace? }
-    if diff_hard_limit_enabled?
-      options.merge!(Commit.max_diff_options)
+    default_options = Commit.max_diff_options
+
+    if action_name == 'diff_for_path'
+      default_options[:paths] = params.values_at(:old_path, :new_path)
     end
-    options
+
+    default_options.merge(ignore_whitespace_change: hide_whitespace?)
   end
 
   def safe_diff_files(diffs, diff_refs: nil, repository: nil)
@@ -35,7 +37,7 @@ module DiffHelper
   end
 
   def unfold_bottom_class(bottom)
-    bottom ? 'js-unfold-bottom' : ''
+    bottom ? 'js-unfold js-unfold-bottom' : ''
   end
 
   def unfold_class(unfold)
@@ -90,7 +92,7 @@ module DiffHelper
 
   def commit_for_diff(diff_file)
     return diff_file.content_commit if diff_file.content_commit
-    
+
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else

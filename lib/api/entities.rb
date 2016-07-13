@@ -199,7 +199,6 @@ module API
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
-      expose :description
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
@@ -208,6 +207,8 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
+      expose :should_remove_source_branch?, as: :should_remove_source_branch
+      expose :force_remove_source_branch?, as: :force_remove_source_branch
     end
 
     class MergeRequestChanges < MergeRequest

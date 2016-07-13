@@ -27,6 +27,14 @@ module CapybaraHelpers
       end
     end
   end
+
+  # Refresh the page. Calling `visit current_url` doesn't seem to work consistently.
+  #
+  def refresh
+    url = current_url
+    visit 'about:blank'
+    visit url
+  end
 end
 
 RSpec.configure do |config|
