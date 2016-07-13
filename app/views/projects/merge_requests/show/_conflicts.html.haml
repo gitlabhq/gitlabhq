@@ -22,9 +22,8 @@
       into
       %strong {{conflictsData.target_branch}}
 
-
 .files-wrapper{ "v-if" => "!isLoading" }
-  .files{{"v-if" => "isParallel"}}
+  .files{"v-if" => "isParallel"}
     .diff-file.file-holder.conflict.unresolved.parallel-view{"v-for" => "file in conflictsData.files"}
       .file-title
         %i.fa.fa-ban
@@ -42,16 +41,16 @@
                 %td.diff-line-num.header
                 %td.line_content.header
                   %strong {{line.text}}
-                  %button.btn{"@click" => "handleSelected(line.id, line.lineType)"} Use this
+                  / FIXME: Don't use cssClass here
+                  %button.btn{"@click" => "handleSelected(line.id, line.cssClass)"} Use this
 
               %template{"v-if" => "!line.isHeader"}
                 %td.diff-line-num.old_line
                   {{line.lineNumber}}
                 %td.line_content
-                  {{line.text}}
+                  {{{line.text}}}
 
-
-  .files{{"v-if" => "!isParallel"}}
+  .files{"v-if" => "!isParallel"}
     .diff-file.file-holder.conflict.unresolved.inline-view{"v-for" => "file in conflictsData.files"}
       .file-title
         %i.fa.fa-ban
@@ -77,5 +76,22 @@
                 %td.diff-line-num.header
                 %td.diff-line-num.header
                 %td.line_content.header
-                  %strong {{line.text}}
-                  %button.btn{"@click" => "handleSelected(line.id, line.type)"} Use this
+                  %strong {{{line.text}}}
+                  / FIXME: Don't use cssClass here
+                  %button.btn{"@click" => "handleSelected(line.id, line.cssClass)"} Use this
+
+  .content-block.oneline-block.files-changed
+    %strong.resolved-count {{resolvedCount}}
+    of
+    %strong.total-count {{conflictsCount}}
+    conflicts have been resolved
+
+    .commit-message-container.form-group
+      .max-width-marker
+      %textarea.form-control.js-commit-message{"placeholder" => 'Your commit message', ":disabled" => "!allResolved"}
+
+    %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved"}
+      Commit conflict resolution
+
+    %button{type: 'button', class: 'btn btn-cancel'}
+      Cancel

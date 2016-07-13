@@ -4,10 +4,14 @@ class window.MergeConflictResolver extends Vue
 
   constructor: (options = {}) ->
 
-    options.el      = '#conflicts'
-    options.data    = @getInitialData()
-    options.created = -> @fetchData()
-    options.name    = 'MergeConflictResolver'
+    options.el       = '#conflicts'
+    options.data     = @getInitialData()
+    options.name     = 'MergeConflictResolver'
+    options.created  = -> @fetchData()
+    options.computed =
+      conflictsCount : -> @getConflictsCount()
+      resolvedCount  : -> @getResolvedCount()
+      allResolved    : -> @isAllResolved()
 
     super options
 
@@ -43,13 +47,15 @@ class window.MergeConflictResolver extends Vue
 
   handleSelected: (sectionId, selection) ->
 
-    console.log sectionId, selection
+    @resolutionData[sectionId] = selection
 
 
   decorateData: (data) ->
 
     headHeaderText   = 'HEAD//our changes'
     originHeaderText = 'origin//their changes'
+
+    @updateResolutionsData data
 
     for file in data.files
       file.parallelLines  = { left: [], right: [] }
@@ -61,10 +67,10 @@ class window.MergeConflictResolver extends Vue
         { conflict, lines, id } = section
 
         if conflict
-          file.parallelLines.left.push  { isHeader: yes, id, text: headHeaderText, cssClass: 'head' }
-          file.parallelLines.right.push { isHeader: yes, id, text: originHeaderText, cssClass: 'origin' }
+          file.parallelLines.left.push  { isHeader: yes, id, text: headHeaderText, cssClass: 'head', section: 'head' }
+          file.parallelLines.right.push { isHeader: yes, id, text: originHeaderText, cssClass: 'origin', section: 'origin' }
 
-          file.inlineLines.push { isHeader: yes, id, text: headHeaderText, type: 'old', cssClass: 'head' }
+          file.inlineLines.push { isHeader: yes, id, text: headHeaderText, type: 'old', cssClass: 'head', section: 'head' }
 
         for line in lines
           if line.type in ['new', 'old'] and currentLineType isnt line.type
@@ -90,9 +96,30 @@ class window.MergeConflictResolver extends Vue
             file.parallelLines.right.push { lineType: 'context', lineNumber: line.new_line, text: line.text }
 
         if conflict
-          file.inlineLines.push { isHeader: yes, id, type: 'new', text: originHeaderText, cssClass: 'origin' }
+          file.inlineLines.push { isHeader: yes, id, type: 'new', text: originHeaderText, cssClass: 'origin', section: 'origin' }
 
     return data
+
+
+  getConflictsCount: -> return Object.keys(@resolutionData).length
+
+
+  getResolvedCount: ->
+
+    count = 0
+    count++ for id, resolution of @resolutionData when resolution
+
+    return count
+
+
+  isAllResolved: -> return @resolvedCount is @conflictsCount
+
+
+  updateResolutionsData: (data) ->
+
+    for file in data.files
+      for section in file.sections when section.conflict
+        @$set "resolutionData.#{section.id}", no
 
 
   getInitialData: ->
@@ -100,8 +127,9 @@ class window.MergeConflictResolver extends Vue
     diffViewType = $.cookie 'diff_view'
 
     return {
-      isLoading     : yes
-      diffView      : diffViewType
-      conflictsData : {}
-      isParallel    : diffViewType is 'parallel'
+      isLoading      : yes
+      isParallel     : diffViewType is 'parallel'
+      diffView       : diffViewType
+      conflictsData  : {}
+      resolutionData : {}
     }
