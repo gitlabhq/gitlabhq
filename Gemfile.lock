@@ -937,7 +937,7 @@ DEPENDENCIES
   rqrcode-rails3 (~> 0.1.7)
   rspec-rails (~> 3.5.0)
   rspec-retry (~> 0.4.5)
-  rubocop (~> 0.41.1)
+  rubocop (~> 0.41.2)
   rubocop-rspec (~> 1.5.0)
   ruby-fogbugz (~> 0.2.1)
   sanitize (~> 2.0)
