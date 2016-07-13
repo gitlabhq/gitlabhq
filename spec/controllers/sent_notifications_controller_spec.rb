@@ -1,25 +1,102 @@
 require 'rails_helper'
 
 describe SentNotificationsController, type: :controller do
-  let(:user)              { create(:user) }
-  let(:issue)             { create(:issue, author: user) }
-  let(:sent_notification) { create(:sent_notification, noteable: issue) }
+  let(:user) { create(:user) }
+  let(:project) { create(:empty_project) }
+  let(:sent_notification) { create(:sent_notification, noteable: issue, recipient: user) }
 
-  describe 'GET #unsubscribe' do
-    it 'returns a 404 when calling without existing id' do
-      get(:unsubscribe, id: '0' * 32)
+  let(:issue) do
+    create(:issue, project: project, author: user) do |issue|
+      issue.subscriptions.create(user: user, subscribed: true)
+    end
+  end
 
-      expect(response.status).to be 404
+  describe 'GET unsubscribe' do
+    context 'when the user is not logged in' do
+      context 'when the force param is passed' do
+        before { get(:unsubscribe, id: sent_notification.reply_key, force: true) }
+
+        it 'unsubscribes the user' do
+          expect(issue.subscribed?(user)).to be_falsey
+        end
+
+        it 'sets the flash message' do
+          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+        end
+
+        it 'redirects to the login page' do
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
+
+      context 'when the force param is not passed' do
+        before { get(:unsubscribe, id: sent_notification.reply_key) }
+
+        it 'does not unsubscribe the user' do
+          expect(issue.subscribed?(user)).to be_truthy
+        end
+
+        it 'does not set the flash message' do
+          expect(controller).not_to set_flash[:notice]
+        end
+
+        it 'redirects to the login page' do
+          expect(response).to redirect_to(new_user_session_path)
+        end
+      end
     end
 
-    context 'calling with id' do
-      it 'shows a flash message to the user' do
-        get(:unsubscribe, id: sent_notification.reply_key)
+    context 'when the user is logged in' do
+      before { sign_in(user) }
 
-        expect(response.status).to be 302
+      context 'when the ID passed does not exist' do
+        before { get(:unsubscribe, id: sent_notification.reply_key.reverse) }
 
-        expect(response).to redirect_to new_user_session_path
-        expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+        it 'does not unsubscribe the user' do
+          expect(issue.subscribed?(user)).to be_truthy
+        end
+
+        it 'does not set the flash message' do
+          expect(controller).not_to set_flash[:notice]
+        end
+
+        it 'returns a 404' do
+          expect(response).to have_http_status(:not_found)
+        end
+      end
+
+      context 'when the force param is passed' do
+        before { get(:unsubscribe, id: sent_notification.reply_key, force: true) }
+
+        it 'unsubscribes the user' do
+          expect(issue.subscribed?(user)).to be_falsey
+        end
+
+        it 'sets the flash message' do
+          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+        end
+
+        it 'redirects to the issue page' do
+          expect(response).
+            to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+        end
+      end
+
+      context 'when the force param is not passed' do
+        before { get(:unsubscribe, id: sent_notification.reply_key) }
+
+        it 'unsubscribes the user' do
+          expect(issue.subscribed?(user)).to be_falsey
+        end
+
+        it 'sets the flash message' do
+          expect(controller).to set_flash[:notice].to(/unsubscribed/).now
+        end
+
+        it 'redirects to the issue page' do
+          expect(response).
+            to redirect_to(namespace_project_issue_path(project.namespace, project, issue))
+        end
       end
     end
   end
