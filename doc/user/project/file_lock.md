@@ -93,4 +93,4 @@ locks and [remove the ones you have permission for](#permissions-on-file-locking
 
 [ee-440]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440 "File Lock"
 [pricing page]: https://about.gitlab.com/pricing
-[push access]: ../../permissions/permissions.md
+[push access]: ../../user/permissions.md
