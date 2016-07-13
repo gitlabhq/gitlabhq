@@ -24,10 +24,26 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(Ci::Pipeline.first.notes).not_to be_empty
       end
 
-      it 'restores the correct event' do
+      it 'restores the correct event with symbolised data' do
         restored_project_json
 
         expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
+      end
+
+      context 'event at forth level of the tree' do
+        let(:event) { Event.where(title: 'test levels').first }
+
+        before do
+          restored_project_json
+        end
+
+        it 'restores the event' do
+          expect(event).not_to be_nil
+        end
+
+        it 'event belongs to note, belongs to merge request, belongs to a project' do
+          expect(event.note.noteable.project).not_to be_nil
+        end
       end
     end
   end

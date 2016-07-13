@@ -27,6 +27,8 @@ We try to keep the amount of tabs in the header navigation between 5 and 10 so t
 tab should represent separate functionality. Everything related to the issue 
 tracker should be under the 'Issues' tab while everything related to the wiki should 
 be under 'Wiki' tab and so on and so forth.
+When adding a new tab to the header don't use more than 2 words for text in the link. 
+We want to keep links short and easy to remember and fit all of them in the small screen.
 
 ## Mobile screen size 
 

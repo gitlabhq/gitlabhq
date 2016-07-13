@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160705163108) do
+ActiveRecord::Schema.define(version: 20160712171823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,11 +73,11 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                          default: 8089
-    t.boolean  "akismet_enabled",                       default: false
-    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",               default: 15
     t.boolean  "sentry_enabled",                        default: false
     t.string   "sentry_dsn"
+    t.boolean  "akismet_enabled",                       default: false
+    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",                  default: false
     t.integer  "default_group_visibility"
     t.boolean  "repository_checks_enabled",             default: false
@@ -87,7 +87,6 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.boolean  "elasticsearch_indexing",                default: false,       null: false
     t.boolean  "elasticsearch_search",                  default: false,       null: false
@@ -95,6 +94,7 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "elasticsearch_port",                    default: "9200"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
+    t.boolean  "user_default_external",                 default: false,       null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -190,8 +190,8 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
-    t.string   "environment"
     t.datetime "artifacts_expire_at"
+    t.string   "environment"
     t.integer  "artifacts_size"
   end
 
@@ -541,10 +541,11 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.integer  "iid"
     t.integer  "updated_by_id"
     t.integer  "weight"
+    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
-    t.integer  "moved_to_id"
+    t.integer  "lock_version",  default: 0,     null: false
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -701,6 +702,7 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.datetime "deleted_at"
     t.integer  "approvals_before_merge"
     t.string   "rebase_commit_sha"
+    t.integer  "lock_version",              default: 0,     null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1046,9 +1048,9 @@ ActiveRecord::Schema.define(version: 20160705163108) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                                   null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true

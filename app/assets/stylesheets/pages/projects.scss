@@ -340,23 +340,30 @@ a.deploy-project-label {
 
 .project-import {
   .form-group {
-    margin-bottom: 0;
+    margin-bottom: 5px;
   }
+
   .import-buttons {
     padding-left: 0;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
+
     .btn {
-      margin-right: 10px;
-      padding: 8px 12px;
+      margin: 0 10px 10px 0;
+      padding: 8px;
     }
-    &> div {
-      margin-bottom: 14px;
+
+    > div {
       padding-left: 0;
+
       &:last-child {
         margin-bottom: 0;
+
+        .btn {
+          margin-right: 0;
+        }
       }
     }
   }

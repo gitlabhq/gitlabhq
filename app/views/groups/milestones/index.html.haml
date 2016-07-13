@@ -6,7 +6,6 @@
   .nav-controls
     - if can?(current_user, :admin_milestones, @group)
       = link_to new_group_milestone_path(@group), class: "btn btn-new" do
-        = icon('plus')
         New Milestone
 
 .row-content-block

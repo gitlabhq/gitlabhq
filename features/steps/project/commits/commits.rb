@@ -125,25 +125,6 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
     expect(page).to have_content 'Authors'
   end
 
-  step 'I visit big commit page' do
-    # Create a temporary scope to ensure that the stub_const is removed after user
-    RSpec::Mocks.with_temporary_scope do
-      stub_const('Gitlab::Git::DiffCollection::DEFAULT_LIMITS', { max_lines: 1, max_files: 1 })
-      visit namespace_project_commit_path(@project.namespace, @project, sample_big_commit.id)
-    end
-  end
-
-  step 'I see big commit warning' do
-    expect(page).to have_content sample_big_commit.message
-    expect(page).to have_content "Too many changes"
-  end
-
-  step 'I see "Reload with full diff" link' do
-    link = find_link('Reload with full diff')
-    expect(link[:href]).to end_with('?force_show_diff=true')
-    expect(link[:href]).not_to include('.html')
-  end
-
   step 'I visit a commit with an image that changed' do
     visit namespace_project_commit_path(@project.namespace, @project, sample_image_commit.id)
   end
