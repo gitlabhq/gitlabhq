@@ -300,6 +300,8 @@ v 8.10.0
   - Reduce size of HTML used by diff comment forms
   - Protected branches have a "Developers can Merge" setting. !4892 (original implementation by Mathias Vestergaard)
   - Fix user creation with stronger minimum password requirements. !4054 (nathan-pmt)
+  - Added tooltip listing label names to the labels value in the collapsed issuable sidebar
+  - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
   - Track a user who created a pipeline

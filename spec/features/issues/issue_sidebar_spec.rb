@@ -73,6 +73,44 @@ feature 'Issue Sidebar', feature: true do
     end
   end
 
+  context 'update labels', js: true do
+    before do
+      project.team << [user, :developer]
+      visit_issue(project, issue)
+    end
+
+    context 'more than 5' do
+      before do
+        create(:label, project: project, title: 'a')
+        create(:label, project: project, title: 'b')
+        create(:label, project: project, title: 'c')
+        create(:label, project: project, title: 'd')
+        create(:label, project: project, title: 'e')
+        create(:label, project: project, title: 'f')
+      end
+
+      it 'should update the tooltip for collapsed sidebar' do
+        page.within('.block.labels') do
+          find('.edit-link').click
+
+          page.within('.dropdown-menu-labels') do
+            click_link 'a'
+            click_link 'b'
+            click_link 'c'
+            click_link 'd'
+            click_link 'e'
+            click_link 'f'
+          end
+
+          find('.edit-link').click
+          sleep 1
+
+          expect(find('.js-sidebar-labels-tooltip', visible: false)['data-original-title']).to eq('a, b, c, d, e, and 1 more')
+        end
+      end
+    end
+  end
+
   def visit_issue(project, issue)
     visit namespace_project_issue_path(project.namespace, project, issue)
   end

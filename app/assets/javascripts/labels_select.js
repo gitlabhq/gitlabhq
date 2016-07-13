@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
@@ -21,6 +21,7 @@
         $block = $selectbox.closest('.block');
         $form = $dropdown.closest('form');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
+        $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL != null) {
@@ -52,7 +53,7 @@
             dataType: 'JSON',
             data: data
           }).done(function(data) {
-            var labelCount, template;
+            var labelCount, template, labelTooltipTitle;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -66,6 +67,31 @@
             }
             $value.removeAttr('style').html(template);
             $sidebarCollapsedValue.text(labelCount);
+
+            if (data.labels.length) {
+              labelTooltipTitle = _.chain(data.labels)
+                .map(function (label, i) {
+                  if (i < 5) {
+                    return label.title;
+                  }
+                })
+                .compact()
+                .values();
+
+              if (data.labels.length > 5) {
+                labelTooltipTitle.push('and ' + (data.labels.length - 5) + ' more');
+              }
+
+              labelTooltipTitle = labelTooltipTitle.join(', ');
+            } else {
+              labelTooltipTitle = '';
+              $sidebarLabelTooltip.tooltip('destroy');
+            }
+
+            $sidebarLabelTooltip
+              .attr('title', labelTooltipTitle)
+              .tooltip('fixTitle');
+
             $('.has-tooltip', $value).tooltip({
               container: 'body'
             });

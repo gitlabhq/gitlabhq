@@ -72,6 +72,20 @@ module IssuablesHelper
     end
   end
 
+  def issuable_labels_tooltip(labels)
+    max_labels = 5
+    label_size = labels.size
+    label_names = labels.each_with_index.map do |label, i|
+      label.name unless i >= max_labels
+    end
+
+    if label_size > max_labels
+      label_names << "and #{label_size - max_labels} more"
+    end
+
+    label_names.compact.join(', ')
+  end
+
   private
 
   def sidebar_gutter_collapsed?
