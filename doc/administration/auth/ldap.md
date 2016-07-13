@@ -208,7 +208,7 @@ production:
 8.9 and above.
 
 Using the `external_groups` setting will allow you to mark all users belonging
-to these groups as [external users](../../permissions/permissions.md). Group membership is
+to these groups as [external users](../../user/permissions.md). Group membership is
 checked periodically through the `LdapGroupSync` background task.
 
 **Configuration**
