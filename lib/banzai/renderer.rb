@@ -61,10 +61,16 @@ module Banzai
       end
 
       cacheable_items, non_cacheable_items = items_collection.partition { |item| item.key?(:cache_key) }
-      items_in_cache = Rails.cache.read_multi(*cacheable_items.map { |item| item[:cache_key] })
-      items_not_in_cache = cacheable_items.reject do |item|
-        item[:rendered] = items_in_cache[item[:cache_key]]
-        items_in_cache.key?(item[:cache_key])
+
+      items_in_cache = []
+      items_not_in_cache = []
+
+      unless cacheable_items.empty?
+        items_in_cache = Rails.cache.read_multi(*cacheable_items.map { |item| item[:cache_key] })
+        items_not_in_cache = cacheable_items.reject do |item|
+          item[:rendered] = items_in_cache[item[:cache_key]]
+          items_in_cache.key?(item[:cache_key])
+        end
       end
 
       (items_not_in_cache + non_cacheable_items).each do |item|
