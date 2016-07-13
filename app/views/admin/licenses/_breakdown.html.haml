@@ -4,8 +4,7 @@
 - else
   - licensed_users = 'Unlimited'
 
-- date_range = (Date.today - 1.year)..Date.today
-- historical = HistoricalData.during(date_range).maximum(:active_user_count) || 0
+- historical = max_historical_user_count
 - if historical && restricted && historical > restricted
   - users_over_license = historical - restricted
 - else
