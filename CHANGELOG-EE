@@ -5,6 +5,7 @@ v 8.10.0 (unreleased)
   - Fix EE keys fingerprint add index migration if came from CE
   - Add todos for MR approvers !547
   - Isolate EE LDAP library code in EE module (Part 1) !511
+  - Make Elasticsearch indexer run as an async task
 
 v 8.9.6
   - Avoid adding index for key fingerprint if it already exists. !539

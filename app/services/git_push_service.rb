@@ -74,17 +74,9 @@ class GitPushService < BaseService
     CreateCommitBuildsService.new.execute(@project, current_user, build_push_data, mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
 
-    index_commits_blobs if current_application_settings.elasticsearch_indexing?
-  end
-
-  def index_commits_blobs
-    indexer = Gitlab::Elastic::Indexer.new
-    indexer.run(
-      @project.id,
-      project.repository.path_to_repo,
-      params[:oldrev],
-      params[:newrev]
-    )
+    if current_application_settings.elasticsearch_indexing?
+      ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
+    end
   end
 
   def perform_housekeeping
