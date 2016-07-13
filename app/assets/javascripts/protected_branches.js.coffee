@@ -1,18 +1,18 @@
 $ ->
   $(".protected-branches-list :checkbox").change (e) ->
     name = $(this).attr("name")
-    if name == "developers_can_push" || name == "developers_can_merge"
+    if name == "developers_can_push"
       id = $(this).val()
-      can_push = $(this).is(":checked")
+      checked = $(this).is(":checked")
       url = $(this).data("url")
       $.ajax
-        type: "PATCH"
+        type: "PUT"
         url: url
         dataType: "json"
         data:
           id: id
           protected_branch:
-            "#{name}": can_push
+            developers_can_push: checked
 
         success: ->
           row = $(e.target)
