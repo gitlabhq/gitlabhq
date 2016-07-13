@@ -243,7 +243,7 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
-gem "gitlab-license", "~> 0.0.4"
+gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
 gem 'sentry-raven', '~> 1.1.0'
