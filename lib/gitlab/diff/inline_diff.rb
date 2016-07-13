@@ -2,7 +2,7 @@ module Gitlab
   module Diff
     class InlineDiff
       # Regex to find a run of deleted lines followed by the same number of added lines
-      REGEX = %r{
+      LINE_PAIRS_PATTERN = %r{
         # Runs start at the beginning of the string (the first line) or after a space (for an unchanged line)
         (?:\A|\s)
 
@@ -72,7 +72,7 @@ module Gitlab
         line_prefixes = lines.each_with_object("") { |line, s| s << line[0] }.gsub(/[^ +-]/, ' ')
 
         changed_line_pairs = []
-        line_prefixes.scan(REGEX) do
+        line_prefixes.scan(LINE_PAIRS_PATTERN) do
           # For `"---+++"`, `begin_index == 0`, `end_index == 6`
           begin_index, end_index = Regexp.last_match.offset(:del_ins)
 
