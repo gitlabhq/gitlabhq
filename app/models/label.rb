@@ -62,7 +62,7 @@ class Label < ActiveRecord::Base
         (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
         (?<label_name>
           [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
-          "([^"]*)"              # String-based multi-word label surrounded in quotes
+          "([^"]+)"              # String-based multi-word label surrounded in quotes
         )
       )
     }x
