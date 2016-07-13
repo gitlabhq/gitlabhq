@@ -38,9 +38,9 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
-    unless params[:file_name].nil? || params[:file_name].empty?
+    if params[:file_path].present?
       @previous_path = @path
-      @path = params[:file_name]
+      @path = params[:file_path]
       @commit_params[:file_path] = @path
     end
 
