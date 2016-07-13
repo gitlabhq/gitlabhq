@@ -104,6 +104,30 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     end
   end
 
+  context 'String-based single-word references that begin with a digit' do
+    let(:label)     { create(:label, name: '2fa', project: project) }
+    let(:reference) { "#{Label.reference_prefix}#{label.name}" }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq urls.
+        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.text).to eq 'See 2fa'
+    end
+
+    it 'links with adjacent text' do
+      doc = reference_filter("Label (#{reference}.)")
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+    end
+
+    it 'ignores invalid label names' do
+      exp = act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
   context 'String-based single-word references with special characters' do
     let(:label)     { create(:label, name: '?gfm&', project: project) }
     let(:reference) { "#{Label.reference_prefix}#{label.name}" }
@@ -148,6 +172,30 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
     it 'ignores invalid label names' do
       exp = act = %(Label #{Label.reference_prefix}"#{label.name.reverse}")
+
+      expect(reference_filter(act).to_html).to eq exp
+    end
+  end
+
+  context 'String-based multi-word references that begin with a digit' do
+    let(:label)     { create(:label, name: '2 factor authentication', project: project) }
+    let(:reference) { label.to_reference(format: :name) }
+
+    it 'links to a valid reference' do
+      doc = reference_filter("See #{reference}")
+
+      expect(doc.css('a').first.attr('href')).to eq urls.
+        namespace_project_issues_url(project.namespace, project, label_name: label.name)
+      expect(doc.text).to eq 'See 2 factor authentication'
+    end
+
+    it 'links with adjacent text' do
+      doc = reference_filter("Label (#{reference}.)")
+      expect(doc.to_html).to match(%r(\(<a.+><span.+>#{label.name}</span></a>\.\)))
+    end
+
+    it 'ignores invalid label names' do
+      exp = act = "Label #{Label.reference_prefix}#{label.id}#{label.name.reverse}"
 
       expect(reference_filter(act).to_html).to eq exp
     end
