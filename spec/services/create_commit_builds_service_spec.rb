@@ -9,7 +9,7 @@ describe CreateCommitBuildsService, services: true do
     stub_ci_pipeline_to_return_yaml_file
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:pipeline) do
         service.execute(project, user,

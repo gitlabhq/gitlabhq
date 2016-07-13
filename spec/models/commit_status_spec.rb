@@ -24,14 +24,14 @@ describe CommitStatus, models: true do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
 
-  describe :author do
+  describe '#author' do
     subject { commit_status.author }
     before { commit_status.author = User.new }
 
     it { is_expected.to eq(commit_status.user) }
   end
 
-  describe :started? do
+  describe '#started?' do
     subject { commit_status.started? }
 
     context 'without started_at' do
@@ -57,7 +57,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :active? do
+  describe '#active?' do
     subject { commit_status.active? }
 
     %w(pending running).each do |state|
@@ -77,7 +77,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :complete? do
+  describe '#complete?' do
     subject { commit_status.complete? }
 
     %w(success failed canceled).each do |state|
@@ -97,7 +97,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :duration do
+  describe '#duration' do
     subject { commit_status.duration }
 
     it { is_expected.to eq(120.0) }
@@ -122,7 +122,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :latest do
+  describe '.latest' do
     subject { CommitStatus.latest.order(:id) }
 
     before do
@@ -138,7 +138,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :running_or_pending do
+  describe '.running_or_pending' do
     subject { CommitStatus.running_or_pending.order(:id) }
 
     before do

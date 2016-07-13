@@ -1,6 +1,6 @@
 - page_title "Snippets"
 
-.row-content-block.top-block
+.sub-header-block
   .pull-right
     - if can?(current_user, :create_project_snippet, @project)
       = link_to new_namespace_project_snippet_path(@project.namespace, @project), class: "btn btn-new", title: "New Snippet" do

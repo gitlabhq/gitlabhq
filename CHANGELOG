@@ -8,6 +8,7 @@ v 8.10.0 (unreleased)
   - Refactor repository paths handling to allow multiple git mount points
   - Optimize system note visibility checking by memoizing the visible reference count !5070
   - Add Application Setting to configure default Repository Path for new projects
+  - Delete award emoji when deleting a user
   - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
@@ -34,6 +35,7 @@ v 8.10.0 (unreleased)
   - Fix changing issue state columns in milestone view
   - Update health_check gem to version 2.1.0
   - Add notification settings dropdown for groups
+  - Render inline diffs for multiple changed lines following eachother
   - Wildcards for protected branches. !4665
   - Allow importing from Github using Personal Access Tokens. (Eric K Idema)
   - API: Todos !3188 (Robert Schilling)
@@ -73,7 +75,7 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
-  - Fix 404 redirect after validation fails importing a GitLab project 
+  - Fix 404 redirect after validation fails importing a GitLab project
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
@@ -83,12 +85,18 @@ v 8.10.0 (unreleased)
   - Style of import project buttons were fixed in the new project page. !5183 (rdemirbay)
   - Fix GitHub client requests when rate limit is disabled
   - Optimistic locking for Issues and Merge Requests (Title and description overriding prevention)
+  - Redesign Builds and Pipelines pages
+  - Change status color and icon for running builds
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
   - Fix log statements in import/export. !5129
   - Fix commit avatar alignment in compare view. !5128
   - Fix broken migration in MySQL. !5005
+  - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
+
+v 8.9.6 (unreleased)
+  - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
