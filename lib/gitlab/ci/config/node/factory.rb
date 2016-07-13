@@ -32,27 +32,39 @@ module Gitlab
             raise InvalidFactory unless defined?(@value)
             raise InvalidFactory unless defined?(@parent)
 
-            attributes = { parent: @parent, global: @parent.global }
-            attributes.merge!(@attributes)
-
             ##
             # We assume that unspecified entry is undefined.
             # See issue #18775.
             #
             if @value.nil?
-              Node::Undefined.new(fabricate_undefined(attributes))
+              Node::Undefined.new(
+                fabricate_undefined
+              )
             else
-              @node.new(@value, attributes)
+              fabricate(@node, @value)
             end
           end
 
           private
 
-          def fabricate_undefined(attributes)
+          def fabricate_undefined
+            ##
+            # If node has a default value we fabricate concrete node
+            # with default value.
+            #
             if @node.default.nil?
-              Node::Null.new(nil, attributes)
+              fabricate(Node::Null)
             else
-              @node.new(@node.default, attributes)
+              fabricate(@node, @node.default)
+            end
+          end
+
+          def fabricate(node, value = nil)
+            node.new(value).tap do |entry|
+              entry.key = @attributes[:key]
+              entry.parent = @attributes[:parent] || @parent
+              entry.global = @attributes[:global] || @parent.global
+              entry.description = @attributes[:description]
             end
           end
         end
