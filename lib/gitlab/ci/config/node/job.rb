@@ -10,6 +10,7 @@ module Gitlab
 
           validations do
             validates :config, presence: true
+            validates :global, required: true, on: :processed
           end
 
           node :before_script, Script,
@@ -30,13 +31,23 @@ module Gitlab
           helpers :before_script, :script, :stage, :type, :after_script
 
           def value
-            raise InvalidError unless valid?
-
             ##
             # TODO, refactoring step: do not expose internal configuration,
             # return only hash value without merging it to internal config.
             #
             @config.merge(to_hash.compact)
+          end
+
+          def before_script
+            if before_script_defined?
+              before_script_value.to_a
+            else
+              @global.before_script.to_a
+            end
+          end
+
+          def commands
+            (before_script + script).join("\n")
           end
 
           private

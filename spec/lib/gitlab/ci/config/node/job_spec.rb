@@ -60,14 +60,62 @@ describe Gitlab::Ci::Config::Node::Job do
                  after_script: %w[cleanup])
       end
     end
+  end
 
-    context 'when entry is incorrect' do
-      let(:config) { {} }
+  describe '#before_script' do
+    context 'when global entry has before script' do
+      before do
+        allow(global).to receive(:before_script)
+          .and_return(%w[ls pwd])
+      end
 
-      it 'raises error' do
-        expect { entry.value }.to raise_error(
-          Gitlab::Ci::Config::Node::Entry::InvalidError
-        )
+      context 'when before script is overridden' do
+        let(:config) do
+          { before_script: %w[whoami],
+            script: 'rspec' }
+        end
+
+        it 'returns correct script' do
+          expect(entry.before_script).to eq %w[whoami]
+        end
+      end
+
+      context 'when before script is not overriden' do
+        let(:config) do
+          { script: %w[spinach] }
+        end
+
+        it 'returns correct script' do
+          expect(entry.before_script).to eq %w[ls pwd]
+        end
+      end
+    end
+
+    context 'when global entry does not have before script' do
+      before do
+        allow(global).to receive(:before_script)
+          .and_return(nil)
+      end
+
+      context 'when job has before script' do
+        let(:config) do
+          { before_script: %w[whoami],
+            script: 'rspec' }
+        end
+
+        it 'returns correct script' do
+          expect(entry.before_script).to eq %w[whoami]
+        end
+      end
+
+      context 'when job does not have before script' do
+        let(:config) do
+          { script: %w[ls test] }
+        end
+
+        it 'returns correct script' do
+          expect(entry.before_script).to eq []
+        end
       end
     end
   end
@@ -75,6 +123,63 @@ describe Gitlab::Ci::Config::Node::Job do
   describe '#relevant?' do
     it 'is a relevant entry' do
       expect(entry).to be_relevant
+    end
+  end
+
+  describe '#commands' do
+    context 'when global entry has before script' do
+      before do
+        allow(global).to receive(:before_script)
+          .and_return(%w[ls pwd])
+      end
+
+      context 'when before script is overridden' do
+        let(:config) do
+          { before_script: %w[whoami],
+            script: 'rspec' }
+        end
+
+        it 'returns correct commands' do
+          expect(entry.commands).to eq "whoami\nrspec"
+        end
+      end
+
+      context 'when before script is not overriden' do
+        let(:config) do
+          { script: %w[rspec spinach] }
+        end
+
+        it 'returns correct commands' do
+          expect(entry.commands).to eq "ls\npwd\nrspec\nspinach"
+        end
+      end
+    end
+
+    context 'when global entry does not have before script' do
+      before do
+        allow(global).to receive(:before_script)
+          .and_return(nil)
+      end
+      context 'when job has before script' do
+        let(:config) do
+          { before_script: %w[whoami],
+            script: 'rspec' }
+        end
+
+        it 'returns correct commands' do
+          expect(entry.commands).to eq "whoami\nrspec"
+        end
+      end
+
+      context 'when job does not have before script' do
+        let(:config) do
+          { script: %w[ls test] }
+        end
+
+        it 'returns correct commands' do
+          expect(entry.commands).to eq "ls\ntest"
+        end
+      end
     end
   end
 end
