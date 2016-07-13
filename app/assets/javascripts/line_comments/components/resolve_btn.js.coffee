@@ -16,16 +16,15 @@
         .tooltip('hide')
         .tooltip('fixTitle')
     resolve: ->
-      this.$set('loading', true)
+      this.loading = true
       ResolveService
         .resolve(this.endpoint, !this.isResolved)
         .done =>
-          this.$set('loading', false)
           CommentsStore.update(this.noteId, !this.isResolved)
 
           this.$nextTick this.updateTooltip
         .always =>
-          this.$set('loading', false)
+          this.loading = false
   compiled: ->
     $(this.$els.button).tooltip()
   destroyed: ->

@@ -68,12 +68,12 @@ class Projects::NotesController < Projects::ApplicationController
 
   def resolve
     sleep 2
-    render nothing: true, status: 200
+    head :ok
   end
 
   def resolve_all
     sleep 2
-    render nothing: true, status: 200
+    head :ok
   end
 
   private

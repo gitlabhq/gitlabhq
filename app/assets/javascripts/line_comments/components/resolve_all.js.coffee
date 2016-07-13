@@ -19,11 +19,11 @@
   methods:
     updateAll: ->
       ids = CommentsStore.getAllForState(this.allResolved)
-      this.$set('loading', true)
+      this.loading = true
 
       ResolveService
         .resolveAll(this.endpoint, ids, !this.allResolved)
         .done =>
           CommentsStore.updateAll(!this.allResolved)
         .always =>
-          this.$set('loading', false)
+          this.loading = false
