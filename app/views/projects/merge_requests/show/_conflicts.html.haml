@@ -16,7 +16,7 @@
   .js-toggle-container
     .commit-stat-summary
       Showing
-      %strong.cred 3 conflicts
+      %strong.cred {{conflictsCount}} conflicts
       for
       %strong {{conflictsData.source_branch}}
       into
@@ -24,11 +24,9 @@
 
 .files-wrapper{ "v-if" => "!isLoading" }
   .files{"v-if" => "isParallel"}
-    .diff-file.file-holder.conflict.unresolved.parallel-view{"v-for" => "file in conflictsData.files"}
+    .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
       .file-title
-        %i.fa.fa-ban
-        %a
-          %span {{file.new_path}}
+        %span {{file.new_path}}
         .file-actions
           %a.btn.btn-sm View file @{{file.shortCommitSha}}
 
@@ -51,11 +49,9 @@
                   {{{line.text}}}
 
   .files{"v-if" => "!isParallel"}
-    .diff-file.file-holder.conflict.unresolved.inline-view{"v-for" => "file in conflictsData.files"}
+    .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
       .file-title
-        %i.fa.fa-ban
-        %a
-          %span {{file.new_path}}
+        %span {{file.new_path}}
         .file-actions
           %a.btn.btn-sm View file @{{file.shortCommitSha}}
 
