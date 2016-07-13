@@ -707,4 +707,160 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
   end
+
+  describe 'approvals' do
+    let(:project) { create(:empty_project) }
+    let(:merge_request) { create(:merge_request, source_project: project, author: author) }
+    let(:author) { create(:user) }
+    let(:approver) { create(:user) }
+
+    context 'on a project with only one member' do
+      context 'when there is one approver' do
+        before { project.update_attributes(approvals_before_merge: 1) }
+
+        context 'when that approver is not the MR author' do
+          before do
+            project.team << [approver, :developer]
+            create(:approver, user: approver, target: merge_request)
+          end
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'allows the approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+          end
+        end
+      end
+    end
+
+    context 'on a project with several members' do
+      let(:approver_2) { create(:user) }
+      let(:developer) { create(:user) }
+      let(:reporter) { create(:user) }
+      let(:stranger) { create(:user) }
+
+      before do
+        project.team << [author, :developer]
+        project.team << [approver, :developer]
+        project.team << [approver_2, :developer]
+        project.team << [developer, :developer]
+        project.team << [reporter, :reporter]
+      end
+
+      context 'when there is one approver required' do
+        before { project.update_attributes(approvals_before_merge: 1) }
+
+        context 'when that approver is the MR author' do
+          before { create(:approver, user: author, target: merge_request) }
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'does not allow the author to approve the MR' do
+            expect(merge_request.can_approve?(author)).to be_falsey
+          end
+
+          it 'allows any other project member with write access to approve the MR' do
+            expect(merge_request.can_approve?(developer)).to be_truthy
+
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+          end
+        end
+
+        context 'when that approver is not the MR author' do
+          before { create(:approver, user: approver, target: merge_request) }
+
+          it 'requires one approval' do
+            expect(merge_request.approvals_left).to eq(1)
+          end
+
+          it 'only allows the approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+
+            expect(merge_request.can_approve?(author)).to be_falsey
+            expect(merge_request.can_approve?(developer)).to be_falsey
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+          end
+        end
+      end
+
+      context 'when there are multiple approvers required' do
+        before { project.update_attributes(approvals_before_merge: 3) }
+
+        context 'when one of those approvers is the MR author' do
+          before do
+            create(:approver, user: author, target: merge_request)
+            create(:approver, user: approver, target: merge_request)
+            create(:approver, user: approver_2, target: merge_request)
+          end
+
+          it 'requires the original number of approvals' do
+            expect(merge_request.approvals_left).to eq(3)
+          end
+
+          it 'does not allow the author to approve the MR' do
+            expect(merge_request.can_approve?(author)).to be_falsey
+          end
+
+          it 'allows any other other approver to approve the MR' do
+            expect(merge_request.can_approve?(approver)).to be_truthy
+          end
+
+          context 'when all of the valid approvers have approved the MR' do
+            before do
+              create(:approval, user: approver, merge_request: merge_request)
+              create(:approval, user: approver_2, merge_request: merge_request)
+            end
+
+            it 'requires the original number of approvals' do
+              expect(merge_request.approvals_left).to eq(1)
+            end
+
+            it 'does not allow the author to approve the MR' do
+              expect(merge_request.can_approve?(author)).to be_falsey
+            end
+
+            it 'does not allow the approvers to approve the MR again' do
+              expect(merge_request.can_approve?(approver)).to be_falsey
+              expect(merge_request.can_approve?(approver_2)).to be_falsey
+            end
+
+            it 'allows any other project member with write access to approve the MR' do
+              expect(merge_request.can_approve?(developer)).to be_truthy
+
+              expect(merge_request.can_approve?(reporter)).to be_falsey
+              expect(merge_request.can_approve?(stranger)).to be_falsey
+            end
+          end
+        end
+
+        context 'when the approvers do not contain the MR author' do
+          before do
+            create(:approver, user: developer, target: merge_request)
+            create(:approver, user: approver, target: merge_request)
+            create(:approver, user: approver_2, target: merge_request)
+          end
+
+          it 'requires the original number of approvals' do
+            expect(merge_request.approvals_left).to eq(3)
+          end
+
+          it 'only allows the approvers to approve the MR' do
+            expect(merge_request.can_approve?(developer)).to be_truthy
+            expect(merge_request.can_approve?(approver)).to be_truthy
+            expect(merge_request.can_approve?(approver_2)).to be_truthy
+
+            expect(merge_request.can_approve?(author)).to be_falsey
+            expect(merge_request.can_approve?(reporter)).to be_falsey
+            expect(merge_request.can_approve?(stranger)).to be_falsey
+          end
+        end
+      end
+    end
+  end
 end

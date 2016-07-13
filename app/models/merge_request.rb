@@ -112,7 +112,7 @@ class MergeRequest < ActiveRecord::Base
   scope :references_project, -> { references(:target_project) }
 
   participant :approvers_left
- 
+
   after_save :keep_around_commit
 
   def self.reference_prefix
@@ -565,8 +565,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approvers_left
-    user_ids = overall_approvers.map(&:user_id) - approvals.map(&:user_id)
-    User.where id: user_ids
+    User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
   end
 
   def approvals_required
@@ -577,12 +576,14 @@ class MergeRequest < ActiveRecord::Base
     approvals_required.nonzero?
   end
 
-  def overall_approvers
-    if approvers.any?
-      approvers
-    else
-      target_project.approvers
-    end
+  # Before a merge request has been created, author will be nil, so pass the current user
+  # on the MR create page.
+  #
+  def overall_approvers(exclude_user: nil)
+    exclude_user ||= author
+    approvers_relation = approvers.any? ? approvers : target_project.approvers
+
+    exclude_user ? approvers_relation.where.not(user_id: exclude_user.id) : approvers_relation
   end
 
   def approved?
@@ -598,8 +599,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def can_approve?(user)
-    approvers_left.include?(user) ||
-    (any_approver_allowed? && !approved_by?(user))
+    return true if approvers_left.include?(user)
+
+    any_approver_allowed? && !approved_by?(user) && user != author && user.can?(:update_merge_request, self)
   end
 
   def any_approver_allowed?
@@ -640,6 +642,8 @@ class MergeRequest < ActiveRecord::Base
 
   def approver_ids=(value)
     value.split(",").map(&:strip).each do |user_id|
+      next if user_id == author.id
+
       approvers.find_or_initialize_by(user_id: user_id, target_id: id)
     end
   end

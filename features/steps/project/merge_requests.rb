@@ -641,10 +641,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content('diff --git')
   end
 
-  step 'I am a "Shop" reporter' do
+  step 'I am a "Shop" developer' do
     user = create(:user, name: "Mike")
     project = Project.find_by(name: "Shop")
-    project.team << [user, :reporter]
+    project.team << [user, :developer]
 
     logout
     login_with user

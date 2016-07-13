@@ -704,14 +704,31 @@ describe API::API, api: true  do
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/approve' do
-    it 'approves the merge request' do
-      project.update_attribute(:approvals_before_merge, 2)
+    before { project.update_attribute(:approvals_before_merge, 2) }
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
+    context 'as the author of the merge request' do
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
 
-      expect(response.status).to eq(201)
-      expect(json_response['approvals_left']).to eq(1)
-      expect(json_response['approved_by'][0]['user']['username']).to eq(user.username)
+      it 'returns a 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'as a valid approver' do
+      let(:approver) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [create(:user), :developer]
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
+      end
+
+      it 'approves the merge request' do
+        expect(response.status).to eq(201)
+        expect(json_response['approvals_left']).to eq(1)
+        expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+      end
     end
   end
 
