@@ -79,7 +79,6 @@ v 8.10.0 (unreleased)
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
-  - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Reset project pushes_since_gc when we enqueue the git gc call
@@ -2222,8 +2221,6 @@ v 7.7.0
   - Fixes for diff comments: drag-n-drop images, selecting images
   - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update
   - Remove password strength indicator
-
-
 
 v 7.6.0
   - Fork repository to groups
