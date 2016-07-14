@@ -96,13 +96,4 @@ module MergeRequestsHelper
       ["#{source_path}:#{source_branch}", "#{target_path}:#{target_branch}"]
     end
   end
-
-  def merge_request_button_visibility(merge_request, state)
-    merge_request_state = if merge_request.open?
-                            "open"
-                          else
-                            merge_request.state
-                          end
-    "hidden" unless merge_request_state === state
-  end
 end

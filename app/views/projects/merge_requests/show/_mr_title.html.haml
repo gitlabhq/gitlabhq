@@ -1,14 +1,14 @@
 .clearfix.detail-page-header.js-issuable-header{ data: { status: @merge_request.state } }
   .issuable-header
-    .issuable-status-box.status-box.status-box-merged{ class: merge_request_button_visibility(@merge_request, "merged") }
+    .issuable-status-box.status-box.status-box-merged{ class: ("hidden" unless @merge_request.merged?) }
       = icon("check", class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
         Merged
-    .issuable-status-box.status-box.status-box-closed{ class: merge_request_button_visibility(@merge_request, "closed") }
+    .issuable-status-box.status-box.status-box-closed{ class: ("hidden" unless @merge_request.closed?) }
       = icon("times", class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
         Closed
-    .issuable-status-box.status-box.status-box-open{ class: merge_request_button_visibility(@merge_request, "open") }
+    .issuable-status-box.status-box.status-box-open{ class: ("hidden" unless @merge_request.open?) }
       = icon("circle-o", class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
         Open
@@ -27,13 +27,13 @@
           Options
         .dropdown-menu.dropdown-menu-align-right.hidden-lg
           %ul
-            %li{ class: merge_request_button_visibility(@merge_request, "open") }
+            %li{ class: ("hidden" unless @merge_request.open?) }
               = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
-            %li{ class: merge_request_button_visibility(@merge_request, "closed") }
+            %li{ class: ("hidden" unless @merge_request.closed?) }
               = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
             %li
               = link_to 'Edit', edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'issuable-edit'
-        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{merge_request_button_visibility(@merge_request, "open")}", title: 'Close merge request'
-        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen reopen-mr-link #{merge_request_button_visibility(@merge_request, "closed")}", title: 'Reopen merge request'
+        = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-close #{("hidden" unless @merge_request.open?)}", title: 'Close merge request'
+        = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "hidden-xs hidden-sm btn btn-nr btn-grouped btn-reopen reopen-mr-link #{("hidden" unless @merge_request.closed?)}", title: 'Reopen merge request'
         = link_to edit_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "hidden-xs hidden-sm btn btn-nr btn-grouped issuable-edit" do
           Edit
