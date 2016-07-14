@@ -187,12 +187,12 @@ describe API::API, api: true do
     end
   end
 
-  describe 'GET /projects/:id/artifacts/:ref_name/:build_name' do
+  describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     include_context 'artifacts from ref and build name'
 
     def path_from_ref(ref = pipeline.sha, job = build.name)
       api(
-        "/projects/#{project.id}/builds/artifacts/download/#{ref}?job=#{job}",
+        "/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}",
         user)
     end
 
