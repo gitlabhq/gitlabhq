@@ -5,8 +5,8 @@
       = render partial: "projects/notes/note", collection: discussion.notes, as: :note
 
     .discussion-reply-holder
-      .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
-        .btn-group{ role: "group" }
+      .discussion-with-resolve-btn{ role: "group" }
+        .btn-group
           = link_to_reply_discussion(note)
-        .btn-group{ role: "group" }
+        .btn-group
           = render "projects/notes/discussions/resolve_all", note: note
