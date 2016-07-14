@@ -227,7 +227,7 @@ describe API::API, api: true do
         expect(response.headers).to include(download_headers)
       end
 
-      it_behaves_like 'artifacts from ref with 302'
+      it_behaves_like 'artifacts from ref successfully'
     end
   end
 

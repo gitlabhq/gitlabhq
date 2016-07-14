@@ -29,13 +29,13 @@ shared_examples 'artifacts from ref with 404' do
   end
 end
 
-shared_examples 'artifacts from ref with 302' do
+shared_examples 'artifacts from ref successfully' do
   context 'with sha' do
     before do
       get path_from_ref
     end
 
-    it('redirects') { verify }
+    it('gives the file') { verify }
   end
 
   context 'with regular branch' do
@@ -47,7 +47,7 @@ shared_examples 'artifacts from ref with 302' do
       get path_from_ref('master')
     end
 
-    it('redirects') { verify }
+    it('gives the file') { verify }
   end
 
   context 'with branch name containing slash' do
@@ -59,7 +59,7 @@ shared_examples 'artifacts from ref with 302' do
       get path_from_ref('improve/awesome')
     end
 
-    it('redirects') { verify }
+    it('gives the file') { verify }
   end
 
   context 'with latest build' do
@@ -73,7 +73,7 @@ shared_examples 'artifacts from ref with 302' do
       get path_from_ref
     end
 
-    it('redirects') { verify }
+    it('gives the file') { verify }
   end
 
   context 'with success build' do
@@ -86,6 +86,6 @@ shared_examples 'artifacts from ref with 302' do
       get path_from_ref
     end
 
-    it('redirects') { verify }
+    it('gives the file') { verify }
   end
 end

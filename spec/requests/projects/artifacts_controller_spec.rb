@@ -45,7 +45,7 @@ describe Projects::ArtifactsController do
         expect(response).to redirect_to(path)
       end
 
-      it_behaves_like 'artifacts from ref with 302'
+      it_behaves_like 'artifacts from ref successfully'
     end
   end
 end
