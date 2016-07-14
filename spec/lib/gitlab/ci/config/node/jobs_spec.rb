@@ -1,8 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Jobs do
-  let(:entry) { described_class.new(config, global: global) }
-  let(:global) { double('global', before_script: nil, stages: %w[test]) }
+  let(:entry) { described_class.new(config) }
 
   describe 'validations' do
     before do

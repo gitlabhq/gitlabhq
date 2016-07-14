@@ -9,7 +9,7 @@ module Gitlab
           class InvalidError < StandardError; end
 
           attr_reader :config, :attributes
-          attr_accessor :key, :parent, :global, :description
+          attr_accessor :key, :parent, :description
 
           def initialize(config, **attributes)
             @config = config

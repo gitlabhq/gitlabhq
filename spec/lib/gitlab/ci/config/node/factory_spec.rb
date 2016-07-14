@@ -5,11 +5,6 @@ describe Gitlab::Ci::Config::Node::Factory do
     let(:factory) { described_class.new(node) }
     let(:node) { Gitlab::Ci::Config::Node::Script }
     let(:parent) { double('parent') }
-    let(:global) { double('global') }
-
-    before do
-      allow(parent).to receive(:global).and_return(global)
-    end
 
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
@@ -21,13 +16,12 @@ describe Gitlab::Ci::Config::Node::Factory do
         expect(entry.value).to eq ['ls', 'pwd']
       end
 
-      it 'sets parent and global attributes' do
+      it 'sets parent  attributes' do
         entry = factory
           .value('ls')
           .parent(parent)
           .create!
 
-        expect(entry.global).to eq global
         expect(entry.parent).to eq parent
       end
 

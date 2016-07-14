@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Job do
-  let(:entry) { described_class.new(config, attributes) }
-  let(:attributes) { { key: :rspec, global: global } }
-  let(:global) { double('global', stages: %w[test]) }
+  let(:entry) { described_class.new(config, key: :rspec) }
 
   before do
     entry.process!
@@ -21,7 +19,7 @@ describe Gitlab::Ci::Config::Node::Job do
       end
 
       context 'when job name is empty' do
-        let(:attributes) { { key: '', global: global } }
+        let(:entry) { described_class.new(config, key: ''.to_sym) }
 
         it 'reports error' do
           expect(entry.errors)

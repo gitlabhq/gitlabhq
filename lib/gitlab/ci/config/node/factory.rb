@@ -63,7 +63,6 @@ module Gitlab
             node.new(value).tap do |entry|
               entry.key = @attributes[:key]
               entry.parent = @attributes[:parent] || @parent
-              entry.global = @attributes[:global] || @parent.global
               entry.description = @attributes[:description]
             end
           end
