@@ -42,6 +42,7 @@ v 8.10.0 (unreleased)
   - Eager load award emoji on notes
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
+  - Add "No one can push" as an option for protected branches. !5081
   - Updated project header design
   - Issuable collapsed assignee tooltip is now the users name
   - Exclude email check from the standard health check
