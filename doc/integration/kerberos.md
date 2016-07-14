@@ -4,7 +4,11 @@ GitLab can be configured to allow your users to sign with their Kerberos credent
 
 ## Configuration
 
-For GitLab to offer Kerberos token-based authentication, perform the following prerequisites.
+For GitLab to offer Kerberos token-based authentication, perform the
+following prerequisites. You still need to configure your system for
+Kerberos usage, such as specifying realms. GitLab will make use of the
+system's Kerberos settings.
+
 
 ### GitLab keytab
 
@@ -30,7 +34,7 @@ Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-c
     enabled: true
   allow_single_sign_on: ['kerberos']
   providers:
-    - {"name" => "kerberos_spnego"}
+    - {name: 'kerberos_spnego'}
 
   kerberos:
     # Allow the HTTP Negotiate authentication method for Git clients
@@ -42,7 +46,7 @@ Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-c
     keytab: /etc/http.keytab
 ```
 
-Restart GitLab to apply the changes. GitLab will now offer the `negotiate` authentication method for HTTP git access, enabling git clients that support this authentication protocol to authenticate with Kerberos tokens.
+Restart GitLab to apply the changes. GitLab will now offer the `negotiate` authentication method for signing in and HTTP git access, enabling git clients that support this authentication protocol to authenticate with Kerberos tokens.
 
 ### Omnibus package installations
 
@@ -61,7 +65,6 @@ gitlab_rails['kerberos_keytab'] = "/etc/http.keytab"
 
 and run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
-You still need to configure your system for Kerberos usage, such as specifying realms. GitLab will make use of the system's Kerberos settings.
 
 ## Creating and linking Kerberos accounts
 
