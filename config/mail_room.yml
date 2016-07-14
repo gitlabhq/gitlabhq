@@ -1,3 +1,6 @@
+# If you change this file in a Merge Request, please also create
+# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+#
 :mailboxes:
   <%
     require_relative "lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
@@ -12,6 +15,7 @@
       :start_tls: <%= config[:start_tls].to_json %>
       :email: <%= config[:user].to_json %>
       :password: <%= config[:password].to_json %>
+      :idle_timeout: 60
 
       :name: <%= config[:mailbox].to_json %>
 
