@@ -52,8 +52,7 @@ module API
       get ':id/builds/:build_id' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
@@ -69,8 +68,7 @@ module API
       get ':id/builds/:build_id/artifacts' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         artifacts_file = build.artifacts_file
 
@@ -97,8 +95,7 @@ module API
       get ':id/builds/:build_id/trace' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
@@ -118,8 +115,7 @@ module API
       post ':id/builds/:build_id/cancel' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         build.cancel
 
@@ -137,8 +133,7 @@ module API
       post ':id/builds/:build_id/retry' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
         return forbidden!('Build is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
@@ -157,8 +152,7 @@ module API
       post ':id/builds/:build_id/erase' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
         return forbidden!('Build is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
@@ -176,8 +170,8 @@ module API
       post ':id/builds/:build_id/artifacts/keep' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build && build.artifacts?
+        build = get_build!(params[:build_id])
+        return not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 
@@ -190,6 +184,10 @@ module API
     helpers do
       def get_build(id)
         user_project.builds.find_by(id: id.to_i)
+      end
+
+      def get_build!(id)
+        get_build(id) || not_found!
       end
 
       def filter_builds(builds, scope)
