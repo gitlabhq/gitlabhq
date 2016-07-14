@@ -32,7 +32,10 @@ module Gitlab
           node :after_script, Script,
             description: 'Commands that will be executed when finishing job.'
 
-          helpers :before_script, :script, :stage, :type, :after_script
+          node :cache, Cache,
+            description: 'Cache definition for this job.'
+
+          helpers :before_script, :script, :stage, :type, :after_script, :cache
 
           def name
             @key
@@ -48,6 +51,7 @@ module Gitlab
             { before_script: before_script_value,
               script: script_value,
               stage: stage_value,
+              cache: cache_value,
               after_script: after_script_value }
           end
 

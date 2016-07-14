@@ -107,7 +107,6 @@ module Ci
 
       validate_job_stage!(name, job) if job[:stage]
       validate_job_variables!(name, job) if job[:variables]
-      validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
     end
@@ -164,26 +163,6 @@ module Ci
       unless validate_variables(job[:variables])
         raise ValidationError,
           "#{name} job: variables should be a map of key-value strings"
-      end
-    end
-
-    def validate_job_cache!(name, job)
-      job[:cache].keys.each do |key|
-        unless ALLOWED_CACHE_KEYS.include? key
-          raise ValidationError, "#{name} job: cache unknown parameter #{key}"
-        end
-      end
-
-      if job[:cache][:key] && !validate_string(job[:cache][:key])
-        raise ValidationError, "#{name} job: cache:key parameter should be a string"
-      end
-
-      if job[:cache][:untracked] && !validate_boolean(job[:cache][:untracked])
-        raise ValidationError, "#{name} job: cache:untracked parameter should be an boolean"
-      end
-
-      if job[:cache][:paths] && !validate_array_of_strings(job[:cache][:paths])
-        raise ValidationError, "#{name} job: cache:paths parameter should be an array of strings"
       end
     end
 

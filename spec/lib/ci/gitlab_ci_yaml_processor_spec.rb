@@ -1201,21 +1201,21 @@ EOT
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { key: 1 } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:key parameter should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:cache:key config should be a string or symbol")
       end
 
       it "returns errors if job cache:untracked is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { untracked: "string" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:untracked parameter should be an boolean")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:cache:untracked config should be a boolean value")
       end
 
       it "returns errors if job cache:paths is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", cache: { paths: "string" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: cache:paths parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:cache:paths config should be an array of strings")
       end
 
       it "returns errors if job dependencies is not an array of strings" do
