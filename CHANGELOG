@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
+  - Add "No one can push" as an option for protected branches. !5081
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
@@ -122,6 +123,8 @@ v 8.10.0
   - Allow to define manual actions/builds on Pipelines and Environments
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times. !5020
+  - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
+  - Add "No one can push" as an option for protected branches. !5081
   - Updated project header design
   - Issuable collapsed assignee tooltip is now the users name
   - Fix compare view not changing code view rendering style
