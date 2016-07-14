@@ -16,6 +16,7 @@ v 8.10.0 (unreleased)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Add Sidekiq queue duration to transaction metrics.
+  - Add experimental Redis Sentinel support !1877
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
   - Added day name to contribution calendar tooltips
@@ -73,7 +74,7 @@ v 8.10.0 (unreleased)
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
-  - Fix 404 redirect after validation fails importing a GitLab project 
+  - Fix 404 redirect after validation fails importing a GitLab project
   - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
