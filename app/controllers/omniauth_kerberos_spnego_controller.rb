@@ -1,3 +1,5 @@
+require 'omniauth/strategies/kerberos_spnego'
+
 class OmniauthKerberosSpnegoController < ApplicationController
   include KerberosSpnegoHelper
 
@@ -5,7 +7,7 @@ class OmniauthKerberosSpnegoController < ApplicationController
 
   def negotiate
     if spnego_provided? && (krb_principal = spnego_credentials!(spnego_token))
-      session[:kerberos_spnego_principal_name] = krb_principal
+      session[OmniAuth::Strategies::KerberosSpnego::SESSION_KEY] = krb_principal
       send_final_spnego_response
       redirect_to user_kerberos_spnego_omniauth_callback_path
       return

@@ -6,6 +6,8 @@ module OmniAuth
       include OmniAuth::Strategy
       include Gitlab::Routing.url_helpers
 
+      SESSION_KEY = :kerberos_spnego_principal_name
+
       option :name, 'kerberos_spnego'
 
       uid { username }
@@ -25,7 +27,7 @@ module OmniAuth
       def principal_name
         return @principal_name if defined?(@principal_name)
 
-        @principal_name = session.delete(:kerberos_spnego_principal_name)
+        @principal_name = session.delete(SESSION_KEY)
       end
 
       def request_phase
