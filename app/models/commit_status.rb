@@ -17,11 +17,11 @@ class CommitStatus < ActiveRecord::Base
   alias_attribute :author, :user
 
   scope :latest, -> do
-    id = unscope(:select).
+    max_id = unscope(:select).
            select("max(#{table_name}.id)").
            group(:name, :commit_id)
 
-    where(id: id)
+    where(id: max_id)
   end
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
