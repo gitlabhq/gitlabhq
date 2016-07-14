@@ -503,13 +503,13 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#with_warnings?' do
-    subject { pipeline.with_warnings? }
+  describe '#has_warnings?' do
+    subject { pipeline.has_warnings? }
 
     context 'build which is allowed to fail fails' do
       before do
-        FactoryGirl.create :ci_build, :success, pipeline: pipeline, name: 'rspec'
-        FactoryGirl.create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
       end
       
       it 'returns true' do
@@ -519,10 +519,22 @@ describe Ci::Pipeline, models: true do
 
     context 'build which is allowed to fail succeeds' do
       before do
-        FactoryGirl.create :ci_build, :success, pipeline: pipeline, name: 'rspec'
-        FactoryGirl.create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
       end
       
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'build is retried and succeeds' do
+      before do
+        create :ci_build, :success, pipeline: pipeline, name: 'rubocop'
+        create :ci_build, :failed, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+      end
+
       it 'returns false' do
         is_expected.to be_falsey
       end

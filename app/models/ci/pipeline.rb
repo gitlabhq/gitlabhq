@@ -146,10 +146,8 @@ module Ci
       end
     end
 
-    def with_warnings?
-      builds.latest.any? do |build|
-        build.failed? && build.allow_failure
-      end
+    def has_warnings?
+      builds.latest.ignored.any?
     end
 
     def config_processor
