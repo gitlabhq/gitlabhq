@@ -49,6 +49,20 @@
     border-color: $border-dark;
     color: $color;
   }
+
+  svg {
+    vertical-align: top;
+    position: relative;
+    top: 2px;
+
+    path {
+      fill: $white-light;
+    }
+
+    use {
+      stroke: $white-light;
+    }
+  }
 }
 
 @mixin btn-green {
@@ -172,6 +186,12 @@
 
   .caret {
     margin-left: 5px;
+  }
+
+  svg {
+    width: 16px;
+    height: auto;
+    vertical-align: middle;
   }
 }
 
