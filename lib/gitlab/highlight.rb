@@ -35,8 +35,8 @@ module Gitlab
 
     def lexer
       @lexer ||= custom_language || begin
-        Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
-      rescue Rouge::Lexer::AmbiguousGuess => e
+        Rouge::Lexer.guess(filename: @blob_name, source: @blob_content).new
+      rescue Rouge::Guesser::Ambiguous => e
         e.alternatives.sort_by(&:tag).first
       end
     end
