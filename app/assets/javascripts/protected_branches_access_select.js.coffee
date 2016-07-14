@@ -21,10 +21,11 @@ class @ProtectedBranchesAccessSelect
     $(dropdown).find('.dropdown-toggle-text').text(selected.text)
     if @saveOnSelect
       $.ajax
-        type: "PATCH"
+        type: "POST"
         url: $(dropdown).data('url')
         dataType: "json"
         data:
+          _method: 'PATCH'
           id: $(dropdown).data('id')
           protected_branch:
             "#{$(dropdown).data('type')}": selected.id
