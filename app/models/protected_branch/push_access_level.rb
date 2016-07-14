@@ -14,9 +14,9 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
 
   def check_access(user)
     if masters?
-      user.can?(:push_code, project) if project.team.master?(user)
+      user.can?(:push_code, project) if project.team.master_or_greater?(user)
     elsif developers?
-      user.can?(:push_code, project) if project.team.master?(user) || project.team.developer?(user)
+      user.can?(:push_code, project) if project.team.developer_or_greater?(user)
     elsif no_one?
       false
     end

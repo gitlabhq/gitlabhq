@@ -151,7 +151,13 @@ describe Gitlab::GitAccess, lib: true do
     def self.run_permission_checks(permissions_matrix)
       permissions_matrix.keys.each do |role|
         describe "#{role} access" do
-          before { project.team << [user, role] }
+          before do
+            if role == :admin
+              user.update_attribute(:admin, true)
+            else
+              project.team << [user, role]
+            end
+          end
 
           permissions_matrix[role].each do |action, allowed|
             context action do
@@ -165,6 +171,17 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     permissions_matrix = {
+      admin: {
+        push_new_branch: true,
+        push_master: true,
+        push_protected_branch: true,
+        push_remove_protected_branch: false,
+        push_tag: true,
+        push_new_tag: true,
+        push_all: true,
+        merge_into_protected_branch: true
+      },
+
       master: {
         push_new_branch: true,
         push_master: true,
@@ -257,13 +274,14 @@ describe Gitlab::GitAccess, lib: true do
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
-    end
 
-    context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
-      before { create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
+      context "when no one is allowed to push to the #{protected_branch_name} protected branch" do
+        before { create(:protected_branch, :no_one_can_push, name: protected_branch_name, project: project) }
 
-      run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
-                                                          master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+        run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
+                                                            master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
+                                                            admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
+      end
     end
   end
 
