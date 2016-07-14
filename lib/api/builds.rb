@@ -73,7 +73,7 @@ module API
         present_artifact!(build.artifacts_file)
       end
 
-      # Download the artifacts file from ref_name and build_name
+      # Download the artifacts file from ref_name and job
       #
       # Parameters:
       #   id (required) - The ID of a project
