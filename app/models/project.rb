@@ -429,15 +429,18 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
-  def builds_for(build_name, ref = 'HEAD')
+  def latest_success_builds_for(ref = 'HEAD')
+    builds_for(ref).success.latest
+  end
+
+  def builds_for(ref = 'HEAD')
     commit_object = commit(ref)
 
     if commit_object.nil?
       builds.none
     else
       builds.joins(:pipeline).
-        merge(Ci::Pipeline.where(sha: commit_object.sha)).
-        where(name: build_name)
+        merge(Ci::Pipeline.where(sha: commit_object.sha))
     end
   end
 

@@ -691,15 +691,19 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe 'Project#builds_for' do
-    it 'returns builds from ref and build name' do
-      build_ids = project.builds_for(build.name, 'HEAD').map(&:id)
+  describe 'Project#latest_success_builds_for' do
+    before do
+      build.update(status: 'success')
+    end
+
+    it 'returns builds from ref' do
+      build_ids = project.latest_success_builds_for('HEAD').map(&:id)
 
       expect(build_ids).to eq([build.id])
     end
 
     it 'returns empty relation if the build cannot be found' do
-      builds = project.builds_for(build.name, 'TAIL').all
+      builds = project.latest_success_builds_for('TAIL').all
 
       expect(builds).to be_empty
     end

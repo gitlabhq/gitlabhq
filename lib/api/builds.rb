@@ -83,9 +83,8 @@ module API
       #   GET /projects/:id/artifacts/:ref_name/download?job=name
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
-        builds = user_project.builds_for(params[:job], params[:ref_name])
-
-        latest_build = builds.success.latest.first
+        builds = user_project.latest_success_builds_for(params[:ref_name])
+        latest_build = builds.where(name: params[:job]).first
 
         if latest_build
           present_artifact!(latest_build.artifacts_file)
