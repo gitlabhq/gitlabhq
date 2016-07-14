@@ -9,7 +9,9 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def index
     @protected_branch = @project.protected_branches.new
-    gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } })
+    gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } },
+               push_access_levels: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text } },
+               merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text } } })
   end
 
   def create

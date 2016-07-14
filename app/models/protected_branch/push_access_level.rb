@@ -4,6 +4,14 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
 
   enum access_level: [:masters, :developers, :no_one]
 
+  def self.human_access_levels
+    {
+      "masters" => "Masters",
+      "developers" => "Developers + Masters",
+      "no_one" => "No one"
+    }.with_indifferent_access
+  end
+
   def check_access(user)
     if masters?
       user.can?(:push_code, project) if project.team.master?(user)
@@ -12,5 +20,9 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
     elsif no_one?
       false
     end
+  end
+
+  def humanize
+    self.class.human_access_levels[self.access_level]
   end
 end
