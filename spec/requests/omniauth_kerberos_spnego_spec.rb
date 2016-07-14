@@ -1,8 +1,17 @@
-require "spec_helper"
+require 'spec_helper'
+require 'omniauth/strategies/kerberos_spnego'
 
 describe 'OmniAuth Kerberos SPNEGO', lib: true do
   let(:path) { '/users/auth/kerberos_spnego/negotiate' }
   let(:controller_class) { OmniauthKerberosSpnegoController }
+
+  before do
+    # In production user_kerberos_spnego_omniauth_callback_path is defined
+    # dynamically early when the app boots. Because this is hard to set up
+    # during testing we stub out this path helper on the controller.
+    allow_any_instance_of(controller_class).to receive(:user_kerberos_spnego_omniauth_callback_path).
+      and_return(OmniAuth::Strategies::KerberosSpnego.new(:app).callback_path)
+  end
 
   it 'asks for an SPNEGO token' do
     get path
