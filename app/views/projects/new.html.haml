@@ -157,9 +157,6 @@
   });
 
   $('.import_git').click(function( event ) {
-    if($('#project_import_url').attr('disabled')) {
-      $('#project_import_url').attr('disabled', false);
-    } else {
-      $('#project_import_url').attr('disabled', true);
-    }
+    $projectImportUrl = $('#project_import_url')
+    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
   });
