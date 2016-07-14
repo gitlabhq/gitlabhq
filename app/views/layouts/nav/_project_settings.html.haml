@@ -27,10 +27,6 @@
         Protected Branches
 
   - if @project.builds_enabled?
-    = nav_link(controller: :builds) do
-      = link_to settings_namespace_project_builds_path(@project.namespace, @project), title: 'Builds' do
-        %span
-          Builds
     = nav_link(controller: :runners) do
       = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
         %span
@@ -43,7 +39,7 @@
       = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
         %span
           Triggers
-    = nav_link(controller: :badges) do
-      = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
+    = nav_link(controller: :builds) do
+      = link_to settings_namespace_project_builds_path(@project.namespace, @project), title: 'CI Pipeline' do
         %span
-          Badges
+          CI Pipeline
