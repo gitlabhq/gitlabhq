@@ -6,16 +6,21 @@ describe API::API, api: true do
   let(:user) { create(:user) }
   let(:api_user) { user }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project, creator_id: user.id) }
-  let!(:developer) { create(:project_member, :developer, user: user, project: project) }
-  let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
-  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
-  let!(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:project) { create(:project, creator_id: user.id) }
+  let(:developer) { create(:project_member, :developer, user: user, project: project) }
+  let(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
-    before { get api("/projects/#{project.id}/builds?#{query}", api_user) }
+    before do
+      developer
+      build
+
+      get api("/projects/#{project.id}/builds?#{query}", api_user)
+    end
 
     context 'authorized user' do
       it 'should return project builds' do
@@ -77,9 +82,9 @@ describe API::API, api: true do
       context 'when user is authorized' do
         context 'when pipeline has builds' do
           before do
-            create(:ci_pipeline, project: project, sha: project.commit.id)
+            developer
+            build
             create(:ci_build, pipeline: pipeline)
-            create(:ci_build)
 
             get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
           end
@@ -93,6 +98,8 @@ describe API::API, api: true do
 
         context 'when pipeline has no builds' do
           before do
+            developer
+
             branch_head = project.commit('feature').id
             get api("/projects/#{project.id}/repository/commits/#{branch_head}/builds", api_user)
           end
@@ -107,8 +114,7 @@ describe API::API, api: true do
 
       context 'when user is not authorized' do
         before do
-          create(:ci_pipeline, project: project, sha: project.commit.id)
-          create(:ci_build, pipeline: pipeline)
+          build
 
           get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", nil)
         end
@@ -122,7 +128,11 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}", api_user) }
+    before do
+      developer
+
+      get api("/projects/#{project.id}/builds/#{build.id}", api_user)
+    end
 
     context 'authorized user' do
       it 'should return specific build data' do
@@ -141,7 +151,11 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user) }
+    before do
+      developer
+
+      get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+    end
 
     context 'build with artifacts' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -175,7 +189,11 @@ describe API::API, api: true do
   describe 'GET /projects/:id/builds/:build_id/trace' do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
 
-    before { get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user) }
+    before do
+      developer
+
+      get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
+    end
 
     context 'authorized user' do
       it 'should return specific build trace' do
@@ -194,7 +212,12 @@ describe API::API, api: true do
   end
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
-    before { post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user) }
+    before do
+      developer
+      reporter
+
+      post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build persmission' do
@@ -225,7 +248,12 @@ describe API::API, api: true do
   describe 'POST /projects/:id/builds/:build_id/retry' do
     let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
-    before { post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user) }
+    before do
+      developer
+      reporter
+
+      post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build permission' do
@@ -256,6 +284,8 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/erase' do
     before do
+      developer
+
       post api("/projects/#{project.id}/builds/#{build.id}/erase", user)
     end
 
@@ -286,6 +316,8 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
     before do
+      developer
+
       post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
     end
 
