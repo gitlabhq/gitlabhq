@@ -69,16 +69,17 @@ module API
         authorize_read_builds!
 
         build = get_build!(params[:build_id])
-
         artifacts_file = build.artifacts_file
 
-        unless artifacts_file.file_storage?
-          return redirect_to build.artifacts_file.url
+        if !artifacts_file.file_storage?
+          redirect_to(build.artifacts_file.url)
+
+        elsif artifacts_file.exists?
+          present_file!(artifacts_file.path, artifacts_file.filename)
+
+        else
+          not_found!
         end
-
-        return not_found! unless artifacts_file.exists?
-
-        present_file!(artifacts_file.path, artifacts_file.filename)
       end
 
       # Get a trace of a specific build of a project
