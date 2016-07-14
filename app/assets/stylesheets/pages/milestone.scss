@@ -141,11 +141,10 @@
 .milestone-page-header {
   display: flex;
   flex-flow: row;
-  align-content: center;
+  align-items: center;
   flex-wrap: wrap;
   .status-box {
-    margin-top: 0; // no need for margin-top as we don't shrink it
-    line-height: 34px; // match .btn line-height
+    margin-top: 0; // no need for margin-top, vertical alignment is done by flexbox
   }
   .milestone-buttons {
     // flex flow is row (left to right)
