@@ -17,24 +17,28 @@ module Gitlab
       @formatter = Rouge::Formatters::HTMLGitlab.new
       @repository = repository
       @blob_name = blob_name
-      @lexer = custom_language || begin
+      @blob_content = blob_content
+    end
+
+    def highlight(text, continue: true, plain: false)
+      if plain
+        hl_lexer = Rouge::Lexers::PlainText
+        continue = false
+      else
+        hl_lexer = self.lexer
+      end
+
+      @formatter.format(hl_lexer.lex(text, continue: continue)).html_safe
+    rescue
+      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
+    end
+
+    def lexer
+      @lexer ||= custom_language || begin
         Rouge::Lexer.guess(filename: blob_name, source: blob_content).new
       rescue Rouge::Lexer::AmbiguousGuess => e
         e.alternatives.sort_by(&:tag).first
       end
-    end
-
-    def highlight(text, continue: true, plain: false)
-      lexer = @lexer
-
-      if plain
-        lexer = Rouge::Lexers::PlainText
-        continue = false
-      end
-
-      @formatter.format(lexer.lex(text, continue: continue)).html_safe
-    rescue
-      @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end
 
     private
