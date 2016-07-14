@@ -80,9 +80,10 @@
                     %span Download '#{build.name}' artifacts
 
       - if can?(current_user, :update_pipeline, @project)
-        - if pipeline.retryable?
-          = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
-            = icon("repeat")
-        - if pipeline.cancelable?
-          = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
-            = icon("remove")
+        .cancel-retry-btns
+          - if pipeline.retryable?
+            = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
+              = icon("repeat")
+          - if pipeline.cancelable?
+            = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
+              = icon("remove")
