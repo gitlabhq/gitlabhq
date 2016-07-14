@@ -11,6 +11,7 @@
     }
 
     .progress {
+      width: 100%;
       height: 6px;
     }
   }
@@ -39,14 +40,68 @@
 }
 
 .milestone-summary {
-  margin-bottom: 25px;
+
+  h4 {
+    margin-bottom: 0;
+  }
 
   .milestone-stat {
+    white-space: nowrap;
     margin-right: 10px;
+    &.with-drilldown {
+      margin-right: 2px; // the drill down element should sit closer to its parent
+    }
   }
 
   .remaining-days {
     color: $orange-light;
+  }
+
+  $width_to_show_stats_and_buttons_on_one_line: $screen-xs-min;
+
+  .milestone-stats-and-buttons {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+
+    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+      justify-content: space-between;
+      flex-wrap: nowrap;
+    }
+  }
+
+  .milestone-progress-buttons {
+    // for small devices buttons go first
+    order: 1;
+    // buttons go on its own line below the header and need some margin
+    margin-top: 10px;
+    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+      // when displayed on one line stats go first, buttons second
+      order: 2;
+      margin-top: 0;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      float: left;
+      margin-right: $btn-side-margin;
+    }
+  }
+
+  .milestone-stats {
+    order: 2;
+    width: 100%;
+    padding: 7px 0;
+    flex-shrink: 1;
+    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+      // when displayed on one line stats go first, buttons second
+      order: 1;
+    }
+  }
+
+  .progress {
+    width: 100%;
+    margin: 15px 0;
   }
 }
 
@@ -79,6 +134,51 @@
 
     .btn:first-child {
       margin-left: 0;
+    }
+  }
+}
+
+.milestone-page-header {
+  display: flex;
+  flex-flow: row;
+  align-content: center;
+  flex-wrap: wrap;
+  .status-box {
+    margin-top: 0; // reset what's inherited from the framework css. elements here are v-aligned by flexbox
+  }
+  .milestone-buttons {
+    // flex flow is row (left to right)
+    // but buttons should stick to the right side
+    margin-left: auto;
+  }
+
+  .status-box {
+    order: 1;
+  }
+  .milestone-buttons {
+    order: 2;
+  }
+  .header-text-content {
+    order: 3;
+    width: 100%;
+  }
+
+  .milestone-buttons .verbose {
+    display: none;
+  }
+
+  @media (min-width: $screen-xs-min) {
+
+    .milestone-buttons .verbose {
+      display: inline;
+    }
+
+    .header-text-content {
+      order: 2;
+      width: auto;
+    }
+    .milestone-buttons {
+      order: 3;
     }
   }
 }
