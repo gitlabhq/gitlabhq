@@ -118,6 +118,14 @@ class ProjectTeam
     max_member_access(user.id) == Gitlab::Access::MASTER
   end
 
+  def master_or_greater?(user)
+    master?(user) || user.is_admin?
+  end
+
+  def developer_or_greater?(user)
+    master_or_greater?(user) || developer?(user)
+  end
+
   def member?(user, min_member_access = nil)
     member = !!find_member(user.id)
 
