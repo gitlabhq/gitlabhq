@@ -9,7 +9,9 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :import_sources
   serialize :disabled_oauth_sign_in_sources, Array
   serialize :restricted_signup_domains, Array
-  attr_accessor :restricted_signup_domains_raw
+  serialize :domain_blacklist, Array
+
+  attr_accessor :restricted_signup_domains_raw, :domain_blacklist_raw
 
   validates :session_expire_delay,
             presence: true,
@@ -61,6 +63,10 @@ class ApplicationSetting < ActiveRecord::Base
 
   validates :enabled_git_access_protocol,
             inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
+
+  validates :domain_blacklist,
+            presence: true,
+            if: :domain_blacklist_enabled?
 
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
@@ -154,16 +160,33 @@ class ApplicationSetting < ActiveRecord::Base
     self.restricted_signup_domains.join("\n") unless self.restricted_signup_domains.nil?
   end
 
-  def restricted_signup_domains_raw=(values)
-    self.restricted_signup_domains = []
-    self.restricted_signup_domains = values.split(
-      /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
+  def domain_blacklist_raw
+    self.domain_blacklist.join("\n") unless self.domain_blacklist.nil?
+  end
+
+  def splitter
+    /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
       |               # or
       \s              # any whitespace character
       |               # or
       [\r\n]          # any number of newline characters
-      /x)
+    /x
+  end
+
+  def restricted_signup_domains_raw=(values)
+    self.restricted_signup_domains = []
+    self.restricted_signup_domains = values.split(splitter)
     self.restricted_signup_domains.reject! { |d| d.empty? }
+  end
+
+  def domain_blacklist_raw=(values)
+    self.domain_blacklist = []
+    self.domain_blacklist = values.split(splitter)
+    self.domain_blacklist.reject! { |d| d.empty? }
+  end
+
+  def domain_blacklist_file=(file)
+    self.domain_blacklist_raw = file.read
   end
 
   def runners_registration_token

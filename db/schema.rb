@@ -88,6 +88,8 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
+    t.boolean  "domain_blacklist_enabled",              default: false
+    t.text     "domain_blacklist"
   end
 
   create_table "audit_events", force: :cascade do |t|

@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :restricted_signup_domains, on: :create
+  before_validation :signup_domain_valid?, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -760,27 +760,41 @@ class User < ActiveRecord::Base
     Project.where(id: events)
   end
 
-  def restricted_signup_domains
-    email_domains = current_application_settings.restricted_signup_domains
+  def match_domain(email_domains)
+    email_domains.any? do |domain|
+      escaped = Regexp.escape(domain).gsub('\*', '.*?')
+      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+      email_domain = Mail::Address.new(self.email).domain
+      email_domain =~ regexp
+    end
+  end
 
-    unless email_domains.blank?
-      match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*', '.*?')
-        regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
-        email_domain = Mail::Address.new(self.email).domain
-        email_domain =~ regexp
-      end
+  def signup_domain_valid?
+    valid = true
 
-      unless match_found
-        self.errors.add :email,
-                        'is not whitelisted. ' +
-                        'Email domains valid for registration are: ' +
-                        email_domains.join(', ')
-        return false
+    if current_application_settings.domain_blacklist_enabled?
+      blocked_domains = current_application_settings.domain_blacklist
+      if match_domain(blocked_domains)
+        self.errors.add :email, 'is not from an allowed domain.'
+        valid = false
       end
     end
 
-    true
+    allowed_domains = current_application_settings.restricted_signup_domains
+    unless allowed_domains.blank?
+      if match_domain(allowed_domains)
+        self.errors.clear
+        valid = true
+      else
+        self.errors.add :email,
+                        'is not whitelisted. ' +
+                        'Email domains valid for registration are: ' +
+                        allowed_domains.join(', ')
+        valid = false
+      end
+    end
+
+    return valid
   end
 
   def can_be_removed?
