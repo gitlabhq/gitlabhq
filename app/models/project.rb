@@ -434,7 +434,6 @@ class Project < ActiveRecord::Base
 
     if ct.nil?
       builds.none
-
     else
       builds.joins(:pipeline).
         merge(Ci::Pipeline.where(sha: ct.sha)).
