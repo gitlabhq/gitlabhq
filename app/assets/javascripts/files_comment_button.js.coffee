@@ -63,7 +63,10 @@ class @FilesCommentButton
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass LINE_CONTENT_CLASS
 
-    $(hoveredElement).next ".#{LINE_CONTENT_CLASS}"
+    if @VIEW_TYPE is 'inline'
+     return $(hoveredElement).closest(LINE_HOLDER_CLASS).find ".#{LINE_CONTENT_CLASS}"
+    else
+      return $(hoveredElement).next ".#{LINE_CONTENT_CLASS}"
 
   getButtonParent: (hoveredElement) ->
     if @VIEW_TYPE is 'inline'
