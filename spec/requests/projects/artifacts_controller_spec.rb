@@ -2,7 +2,7 @@ require 'spec_helper'
 require_relative '../shared/artifacts_context'
 
 describe Projects::ArtifactsController do
-  describe 'GET /:project/artifacts/:ref/:build_name/browse' do
+  describe 'GET /:project/builds/artifacts/:ref_name/browse?job=name' do
     include_context 'artifacts from ref and build name'
 
     before do
@@ -10,13 +10,13 @@ describe Projects::ArtifactsController do
     end
 
     def path_from_ref(
-      ref = pipeline.sha, build_name = build.name, path = 'browse')
+      ref = pipeline.sha, job = build.name, path = 'browse')
       search_namespace_project_artifacts_path(
         project.namespace,
         project,
         ref,
-        build_name,
-        path)
+        path,
+        job: job)
     end
 
     context '404' do
