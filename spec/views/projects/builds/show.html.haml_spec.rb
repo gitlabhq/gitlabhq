@@ -3,12 +3,15 @@ require 'spec_helper'
 describe 'projects/builds/show' do
   include Devise::TestHelpers
 
-  let(:build) { create(:ci_build) }
-  let(:project) { build.project }
+  let(:project) { create(:project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let(:commit) { project.commit }
 
   before do
     assign(:build, build)
     assign(:project, project)
+    assign(:commit_title, build.project.commit.title)
 
     allow(view).to receive(:can?).and_return(true)
   end
@@ -22,10 +25,6 @@ describe 'projects/builds/show' do
     it 'does not show retry button' do
       expect(rendered).not_to have_link('Retry')
     end
-
-    it 'shows commit title' do
-      expect(rendered).to have_text(@git_commit_title)
-    end
   end
 
   context 'when build is not running' do
@@ -37,10 +36,18 @@ describe 'projects/builds/show' do
     it 'shows retry button' do
       expect(rendered).to have_link('Retry')
     end
-
-    it 'shows commit title' do
-      expect(rendered).to have_text(@git_commit_title)
-    end
   end
 
+  context 'show commit title' do
+    before do
+      build.run!
+      render
+    end
+
+    it 'show commit title' do
+      within('p.build-light-text.append-bottom-0') do
+        assert page.has_content?(commit.title)
+      end
+    end 
+  end
 end
