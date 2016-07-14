@@ -23,7 +23,7 @@ OmniAuth.config.before_request_phase do |env|
 end
 
 if Gitlab.config.omniauth.enabled
-  provider_names = Gitlab.config.omniauth.providers.map { |p| p['name'] }
+  provider_names = Gitlab.config.omniauth.providers.map(&:name)
   require 'omniauth-kerberos' if provider_names.include?('kerberos')
   require 'omniauth/strategies/kerberos_spnego' if provider_names.include?('kerberos_spnego')
 end
