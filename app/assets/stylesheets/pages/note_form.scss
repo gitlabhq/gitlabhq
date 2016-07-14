@@ -156,6 +156,27 @@
   .discussion-reply-holder {
     background-color: $white-light;
     padding: 10px 16px;
+
+    .btn-group-justified {
+      table-layout: auto;
+    }
+
+    .btn-group:first-child {
+      width: 100%;
+    }
+
+    .discussion-with-resolve-btn {
+      .btn-group:first-child .btn {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .btn-group:last-child .btn {
+        margin-left: -1px;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+    }
   }
 }
 

@@ -6,11 +6,12 @@
 
 $ =>
   @DiffNotesApp = new Vue
-    el: '#notes'
+    el: '#diff-comments-app'
     components:
       'resolve-btn': ResolveBtn
+      'resolve-all': ResolveAll
 
   new Vue
-    el: '#resolve-all-app'
+    el: '#resolve-count-app'
     components:
-      'resolve-all': ResolveAll
+      'resolve-count': ResolveCount

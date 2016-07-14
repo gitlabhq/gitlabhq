@@ -271,8 +271,8 @@ class @Notes
       # append new note to all matching discussions
       discussionContainer.append note_html
 
-    if $('resolve-btn').length and DiffNotesApp?
-      $('resolve-btn').each ->
+    if $('resolve-btn, resolve-all').length and DiffNotesApp?
+      $('resolve-btn, resolve-all').each ->
         DiffNotesApp.$compile $(this).get(0)
 
     gl.utils.localTimeAgo($('.js-timeago', note_html), false)
@@ -507,10 +507,10 @@ class @Notes
   replyToDiscussionNote: (e) =>
     form = @formClone.clone()
     replyLink = $(e.target).closest(".js-discussion-reply-button")
-    replyLink.hide()
-
-    # insert the form after the button
-    replyLink.after form
+    replyLink
+      .closest('.discussion-reply-holder')
+      .hide()
+      .after form
 
     # show the form
     @setupDiscussionNoteForm(replyLink, form)
@@ -606,7 +606,9 @@ class @Notes
     form.find(".js-note-text").data("autosave").reset()
 
     # show the reply button (will only work for replies)
-    form.prev(".js-discussion-reply-button").show()
+    form
+      .prev('.discussion-reply-holder')
+      .show()
     if row.is(".js-temp-notes-holder")
       # remove temporary row for diff lines
       row.remove()

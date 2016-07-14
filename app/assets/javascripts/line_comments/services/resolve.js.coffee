@@ -12,20 +12,27 @@ class ResolveService
     Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken()
     @resource = Vue.resource('notes{/id}', {}, actions)
 
-  resolve: (namespace, id, resolve) ->
+  resolve: (namespace, discussionId, noteId, resolve) ->
     Vue.http.options.root = "/#{namespace}"
     @resource
-      .resolve({ id: id }, { resolved: resolve })
+      .resolve({ id: noteId }, { discussion: discussionId, resolved: resolve })
       .then (response) ->
         if response.status is 200
-          CommentsStore.update(id, resolve)
+          CommentsStore.update(discussionId, noteId, resolve)
 
-  resolveAll: (namespace, ids, resolve) ->
+  resolveAll: (namespace, discussionId, allResolve) ->
     Vue.http.options.root = "/#{namespace}"
+
+    ids = []
+    for noteId, resolved of CommentsStore.state[discussionId]
+      ids.push(noteId) if resolved is allResolve
+
     @resource
-      .all({}, { ids: ids, resolve: resolve })
+      .all({}, { ids: ids, discussion: discussionId, resolved: !allResolve })
       .then (response) ->
-        CommentsStore.updateAll(resolve)
+        if response.status is 200
+          for noteId in ids
+            CommentsStore.update(discussionId, noteId, !allResolve)
 
 $ ->
   @ResolveService = new ResolveService()

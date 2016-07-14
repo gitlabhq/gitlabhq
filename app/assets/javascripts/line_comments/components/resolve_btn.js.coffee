@@ -1,6 +1,7 @@
 @ResolveBtn = Vue.extend
   props:
     noteId: Number
+    discussionId: String
     resolved: Boolean
     namespace: String
   data: ->
@@ -9,7 +10,7 @@
   computed:
     buttonText: ->
       if this.isResolved then "Mark as un-resolved" else "Mark as resolved"
-    isResolved: -> this.comments[this.noteId]
+    isResolved: -> CommentsStore.get(this.discussionId, this.noteId)
   methods:
     updateTooltip: ->
       $(this.$els.button)
@@ -18,13 +19,13 @@
     resolve: ->
       this.loading = true
       ResolveService
-        .resolve(this.namespace, this.noteId, !this.isResolved)
+        .resolve(this.namespace, this.discussionId, this.noteId, !this.isResolved)
         .then =>
           this.loading = false
           this.$nextTick this.updateTooltip
   compiled: ->
     $(this.$els.button).tooltip()
   destroyed: ->
-    CommentsStore.delete(this.noteId)
+    CommentsStore.delete(this.discussionId, this.noteId)
   created: ->
-    CommentsStore.create(this.noteId, this.resolved)
+    CommentsStore.create(this.discussionId, this.noteId, this.resolved)

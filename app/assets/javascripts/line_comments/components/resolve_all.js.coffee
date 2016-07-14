@@ -1,27 +1,22 @@
 @ResolveAll = Vue.extend
+  props:
+    discussionId: String
+    namespace: String
   data: ->
     comments: CommentsStore.state
     loading: false
-  props:
-    namespace: String
   computed:
-    resolved: ->
-      resolvedCount = 0
-      for noteId, resolved of this.comments
-        resolvedCount++ if resolved
-      resolvedCount
-    commentsCount: ->
-      Object.keys(this.comments).length
-    buttonText: ->
-      if this.allResolved then 'Un-resolve all' else 'Resolve all'
     allResolved: ->
-      this.resolved is this.commentsCount
+      isResolved = true
+      for noteId, resolved of this.comments[this.discussionId]
+        isResolved = false unless resolved
+      isResolved
+    buttonText: ->
+      if this.allResolved then "Un-resolve all" else "Resolve all"
   methods:
-    updateAll: ->
-      ids = CommentsStore.getAllForState(this.allResolved)
+    resolve: ->
       this.loading = true
-
       ResolveService
-        .resolveAll(this.namespace, ids, !this.allResolved)
+        .resolveAll(this.namespace, this.discussionId, this.allResolved)
         .then =>
           this.loading = false

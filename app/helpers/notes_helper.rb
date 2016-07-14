@@ -81,10 +81,8 @@ module NotesHelper
 
     data = discussion.reply_attributes.merge(line_type: line_type)
 
-    content_tag(:div, class: "discussion-reply-holder") do
-      button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
-                             data: data, title: 'Add a reply'
-    end
+    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
+                           data: data, title: 'Add a reply'
   end
 
   def note_max_access_for_user(note)

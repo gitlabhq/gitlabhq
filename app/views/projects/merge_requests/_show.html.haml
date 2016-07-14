@@ -45,14 +45,11 @@
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     - if current_user
-      #resolve-all-app{ "v-cloak" => true }
-        %resolve-all{ ":namespace" => "'#{@project.namespace.path}/#{@project.path}'", "inline-template" => true }
+      #resolve-count-app{ "v-cloak" => true }
+        %resolve-count{ "inline-template" => true }
           .line-resolve-all{ "v-show" => "commentsCount > 0" }
-            %button.btn.btn-gray{ type: "button", "aria-label" => "Resolve all", "@click" => "updateAll", ":disabled" => "loading" }
-              = icon("spinner spin", "v-show" => "loading")
-              {{ buttonText }}
             %span.line-resolve-text
-              {{ resolved }}/{{ commentsCount }} comments resolved
+              {{ resolved }}/{{ commentsCount }} discussions resolved
 
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
@@ -74,7 +71,7 @@
             Changes
             %span.badge= @merge_request.diff_size
 
-      .tab-content
+      .tab-content#diff-comments-app
         #notes.notes.tab-pane.voting_notes
           .content-block.content-block-small.oneline-block
             = render 'award_emoji/awards_block', awardable: @merge_request, inline: true

@@ -157,6 +157,11 @@ class @MergeRequestTabs
       url: "#{source}.json" + @_location.search
       success: (data) =>
         $('#diffs').html data.html
+
+        if $('resolve-btn, resolve-all').length and DiffNotesApp?
+          $('resolve-btn, resolve-all').each ->
+            DiffNotesApp.$compile $(this).get(0)
+
         gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'))
         $('#diffs .js-syntax-highlight').syntaxHighlight()
         $('#diffs .diff-file').singleFileDiff()

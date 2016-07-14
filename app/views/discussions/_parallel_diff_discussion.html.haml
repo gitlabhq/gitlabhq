@@ -5,7 +5,12 @@
       %ul.notes{ data: { discussion_id: discussion_left.id } }
         = render partial: "projects/notes/note", collection: discussion_left.notes, as: :note
 
-      = link_to_reply_discussion(discussion_left, 'old')
+      .discussion-reply-holder
+        .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+          .btn-group{ role: "group" }
+            = link_to_reply_discussion(note_left, 'old')
+          .btn-group{ role: "group" }
+            = render "projects/notes/discussions/resolve_all", note: note_left
   - else
     %td.notes_line.old= ""
     %td.notes_content.parallel.old= ""
@@ -16,7 +21,12 @@
       %ul.notes{ data: { discussion_id: discussion_right.id } }
         = render partial: "projects/notes/note", collection: discussion_right.notes, as: :note
 
-      = link_to_reply_discussion(discussion_right, 'new')
+      .discussion-reply-holder
+        .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+          .btn-group{ role: "group" }
+            = link_to_reply_discussion(note_right, 'new')
+          .btn-group{ role: "group" }
+            = render "projects/notes/discussions/resolve_all", note: note_right
   - else
     %td.notes_line.new= ""
     %td.notes_content.parallel.new= ""
