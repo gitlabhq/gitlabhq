@@ -10,7 +10,7 @@ module OmniAuth
 
       option :name, 'kerberos_spnego'
 
-      uid { username }
+      uid { principal_name }
 
       info do
         { username: username, email: email }

@@ -9,6 +9,11 @@ describe OmniAuth::Strategies::KerberosSpnego do
     allow(subject).to receive(:session).and_return(session)
   end
 
+  it 'uses the principal name as the "uid"' do
+    session[:kerberos_spnego_principal_name] = 'Janedoe@FOOBAR.COM'
+    expect(subject.uid).to eq('Janedoe@FOOBAR.COM')
+  end
+
   it 'extracts the username' do
     session[:kerberos_spnego_principal_name] = 'Janedoe@FOOBAR.COM'
     expect(subject.username).to eq('Janedoe')
