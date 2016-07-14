@@ -4,9 +4,6 @@ module NoteOnDiff
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
   included do
-    attr_mentionable :note, pipeline: :note
-    participant :author
-
     delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
   end
 
