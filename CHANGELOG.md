@@ -984,6 +984,7 @@ entry.
   - Add Bugzilla integration. !4930 (iamtjg)
   - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
+  - Make the milestone page more responsive
   - Be explicit to define merge request discussion variables
   - Use cache for todos counter calling TodoService
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
