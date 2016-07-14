@@ -17,11 +17,9 @@ module Rouge
       #                     be changed with lineanchorsid to e.g. foo-linenumber
       #                     (default: 'L').
       def initialize(
-          cssclass: 'highlight',
           lineanchors: false,
           lineanchorsid: 'L'
       )
-        @cssclass = cssclass
         @lineanchors = lineanchors
         @lineanchorsid = lineanchorsid
       end

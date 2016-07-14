@@ -44,8 +44,7 @@ module Banzai
 
       # Override Rouge::Plugins::Redcarpet#rouge_formatter
       def rouge_formatter(lexer)
-        Rouge::Formatters::HTMLGitlab.new(
-          cssclass: "code highlight js-syntax-highlight #{lexer.tag}")
+        Rouge::Formatters::HTMLGitlab.new
       end
     end
   end

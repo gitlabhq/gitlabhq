@@ -48,7 +48,6 @@ module Gitlab
 
     def rouge_formatter(options = {})
       Rouge::Formatters::HTMLGitlab.new(
-        cssclass: 'code highlight',
         lineanchors: true,
         lineanchorsid: 'LC'
       )
