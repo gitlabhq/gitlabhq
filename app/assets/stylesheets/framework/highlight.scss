@@ -10,7 +10,7 @@
     border: none;
     border-radius: 0;
     font-family: $monospace_font;
-    font-size: 0;
+    font-size: $code_font_size;
     line-height: $code_line_height !important;
     margin: 0;
     overflow: auto;
@@ -21,18 +21,16 @@
 
     code {
       font-family: $monospace_font;
-      font-size: 0;
-      white-space: pre;
+      white-space: normal;
       word-wrap: normal;
       padding: 0;
 
       .line {
-        display: inline-block;
+        display: block;
         width: 100%;
         min-height: 19px;
         padding-left: 10px;
         padding-right: 10px;
-        font-size: $code_font_size;
       }
     }
   }
