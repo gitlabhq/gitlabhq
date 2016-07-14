@@ -128,6 +128,12 @@
       color: $table-text-gray;
     }
 
+    .cancel-retry-btns {
+      .btn:not(:first-child) {
+        margin-left: 8px;
+      }
+    }
+
     .dropdown-toggle,
     .dropdown-menu {
       color: $table-text-gray;
