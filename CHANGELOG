@@ -21,6 +21,7 @@ v 8.10.0 (unreleased)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
+  - Added the ability to block sign ups using a domain blacklist !5259
   - Upgrade to Rails 4.2.7. !5236
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
