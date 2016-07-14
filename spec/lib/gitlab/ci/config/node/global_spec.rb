@@ -130,11 +130,9 @@ describe Gitlab::Ci::Config::Node::Global do
           it 'returns jobs configuration' do
             expect(global.jobs)
               .to eq(rspec: { script: %w[rspec ls],
-                              stage: 'test',
-                              commands: "ls\npwd\nrspec\nls" },
+                              stage: 'test'  },
                      spinach: { script: %w[spinach],
-                                stage: 'test',
-                                commands: "ls\npwd\nspinach" })
+                                stage: 'test' })
           end
         end
       end

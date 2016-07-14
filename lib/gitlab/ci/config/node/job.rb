@@ -43,25 +43,13 @@ module Gitlab
             @config.merge(to_hash.compact)
           end
 
-          def before_script
-            if before_script_defined?
-              before_script_value
-            else
-              @global.before_script
-            end
-          end
-
-          def commands
-            [before_script, script].compact.join("\n")
-          end
-
           private
 
           def to_hash
-            { script: script,
-              stage: stage,
-              commands: commands,
-              after_script: after_script }
+            { before_script: before_script_value,
+              script: script_value,
+              stage: stage_value,
+              after_script: after_script_value }
           end
 
           def compose!
