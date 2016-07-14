@@ -100,7 +100,10 @@ v 8.9.6
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
 
-v 8.9.6 (unreleased)
+v 8.9.7 (unreleased)
+  - Fix import_data wrongly saved as a result of an invalid import_url
+
+v 8.9.6
   - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
