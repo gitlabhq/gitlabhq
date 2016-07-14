@@ -561,7 +561,20 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def approvals_left
-    approvals_required - approvals.count
+    [approvals_required - approvals.count, potential_approvers].min
+  end
+
+  def potential_approvers
+    wheres = [
+      "id IN (#{overall_approvers.select(:user_id).to_sql})",
+      "id IN (#{project.members.where(['access_level > ?', Member::REPORTER]).select(:user_id).to_sql})"
+    ]
+
+    if project.group
+      wheres << "id IN (#{project.group.members.where(['access_level > ?', Member::REPORTER]).select(:user_id).to_sql})"
+    end
+
+    User.count_by_sql("SELECT COUNT(*) FROM users WHERE (#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}")
   end
 
   def approvers_left
