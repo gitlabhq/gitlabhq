@@ -3,7 +3,7 @@ class @ProtectedBranchesAccessSelect
     @container.find(".allowed-to-merge").each (i, element) =>
       fieldName = $(element).data('field-name')
       $(element).glDropdown
-        data: [{id: 'developers', text: 'Developers + Masters'}, {id: 'masters', text: 'Masters'}]
+        data: gon.merge_access_levels
         selectable: true
         fieldName: fieldName
         clicked: _.partial(@onSelect, element)
@@ -11,9 +11,7 @@ class @ProtectedBranchesAccessSelect
     @container.find(".allowed-to-push").each (i, element) =>
       fieldName = $(element).data('field-name')
       $(element).glDropdown
-        data: [{id: 'no_one', text: 'No one'},
-               {id: 'developers', text: 'Developers + Masters'},
-               {id: 'masters', text: 'Masters'}]
+        data: gon.push_access_levels
         selectable: true
         fieldName: fieldName
         clicked: _.partial(@onSelect, element)

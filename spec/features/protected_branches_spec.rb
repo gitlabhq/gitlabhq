@@ -83,11 +83,7 @@ feature 'Projected Branches', feature: true, js: true do
   end
 
   describe "access control" do
-    [
-      ['developers', 'Developers + Masters'],
-      ['masters', 'Masters'],
-      ['no_one', 'No one']
-    ].each do |access_type_id, access_type_name|
+    ProtectedBranch::PushAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
       it "allows creating protected branches that #{access_type_name} can push to" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
@@ -120,10 +116,7 @@ feature 'Projected Branches', feature: true, js: true do
       end
     end
 
-    [
-      ['developers', 'Developers + Masters'],
-      ['masters', 'Masters']
-    ].each do |access_type_id, access_type_name|
+    ProtectedBranch::MergeAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
       it "allows creating protected branches that #{access_type_name} can merge to" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
