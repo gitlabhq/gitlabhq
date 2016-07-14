@@ -33,8 +33,6 @@ Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-c
   omniauth:
     enabled: true
   allow_single_sign_on: ['kerberos']
-  providers:
-    - {name: 'kerberos_spnego'}
 
   kerberos:
     # Allow the HTTP Negotiate authentication method for Git clients
@@ -55,9 +53,6 @@ In `/etc/gitlab/gitlab.rb`:
 ```ruby
 gitlab_rails['omniauth_enabled'] = true
 gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
-gitlab_rails['omniauth_providers'] = [
-    {"name" => "kerberos_spnego"}
-]
 
 gitlab_rails['kerberos_enabled'] = true
 gitlab_rails['kerberos_keytab'] = "/etc/http.keytab"
