@@ -12,7 +12,6 @@ module Gitlab
             validates :config, presence: true
 
             with_options on: :processed do
-              validates :global, required: true
               validates :name, presence: true
               validates :name, type: Symbol
             end

@@ -10,22 +10,6 @@ module Gitlab
 
           validations do
             validates :config, type: String
-
-            with_options on: :processed do
-              validates :global, required: true
-
-              validate do
-                unless known?
-                  errors.add(:config,
-                             'should be one of defined stages ' \
-                             "(#{global.stages.join(', ')})")
-                end
-              end
-            end
-          end
-
-          def known?
-            @global.stages.include?(@config)
           end
 
           def self.default
