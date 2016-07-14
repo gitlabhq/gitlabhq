@@ -31,10 +31,15 @@ describe API::API, api: true do
       it_behaves_like 'artifacts from ref with 404'
     end
 
-    context '302' do
+    context '200' do
       def verify
-        expect(response).to redirect_to(
-          "/projects/#{project.id}/builds/#{build.id}/artifacts")
+        download_headers =
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' =>
+              "attachment; filename=#{build.artifacts_file.filename}" }
+
+        expect(response).to have_http_status(200)
+        expect(response.headers).to include(download_headers)
       end
 
       it_behaves_like 'artifacts from ref with 302'

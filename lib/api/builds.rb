@@ -69,9 +69,8 @@ module API
         authorize_read_builds!
 
         build = get_build!(params[:build_id])
-        artifacts_file = build.artifacts_file
 
-        present_artifact!(artifacts_file)
+        present_artifact!(build.artifacts_file)
       end
 
       # Download the artifacts file from ref_name and build_name
@@ -90,8 +89,7 @@ module API
         latest_build = builds.success.latest.first
 
         if latest_build
-          redirect(
-            "/projects/#{user_project.id}/builds/#{latest_build.id}/artifacts")
+          present_artifact!(latest_build.artifacts_file)
         else
           not_found!
         end
