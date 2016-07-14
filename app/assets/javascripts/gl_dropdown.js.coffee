@@ -214,6 +214,17 @@ class GitLabDropdown
         callback: (data) =>
           currentIndex = -1
           @parseData data
+
+          unless @filterInput.val() is ''
+            selector = '.dropdown-content li:not(.divider):visible'
+
+            if @dropdown.find('.dropdown-toggle-page').length
+              selector = ".dropdown-page-one #{selector}"
+
+            $(selector, @dropdown)
+              .first()
+              .find('a')
+              .addClass('is-focused')
         enterCallback: (e) =>
           @selectRowAtIndex(e, 0)
 
