@@ -55,10 +55,6 @@
   overflow-y: auto;
   overflow-x: hidden;
 
-  @media (min-width: $sidebar-breakpoint) {
-    bottom: 50px;
-  }
-
   &.navbar-collapse {
     padding: 0 !important;
   }
@@ -76,7 +72,7 @@
     }
 
     a {
-      padding: 7px 16px;
+      padding: 7px $gl-sidebar-padding;
       font-size: $gl-font-size;
       line-height: 24px;
       display: block;
@@ -143,7 +139,7 @@
 }
 
 .nav-header-btn {
-  padding: 10px 16px;
+  padding: 10px $gl-sidebar-padding;
   color: inherit;
   transition-duration: .3s;
   position: absolute;
