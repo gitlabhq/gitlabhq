@@ -97,8 +97,6 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
       end
 
-      # This spec fails on PhantomJS versions below 2.0, which don't support `PATCH` requests.
-      # https://github.com/ariya/phantomjs/issues/11384
       it "allows updating protected branches so that #{access_type_name} can push to them" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
@@ -130,8 +128,6 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
       end
 
-      # This spec fails on PhantomJS versions below 2.0, which don't support `PATCH` requests.
-      # https://github.com/ariya/phantomjs/issues/11384
       it "allows updating protected branches so that #{access_type_name} can merge to them" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
