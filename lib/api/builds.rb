@@ -80,11 +80,10 @@ module API
       #   ref_name (required) - The ref from repository
       #   job (required) - The name for the build
       # Example Request:
-      #   GET /projects/:id/artifacts/:ref_name/:build_name
-      get ':id/builds/artifacts/:ref_name',
+      #   GET /projects/:id/artifacts/download/:ref_name?job=name
+      get ':id/builds/artifacts/download/:ref_name',
         requirements: { ref_name: /.+/ } do
-        builds = user_project.builds_for(
-          params[:job], params[:ref_name])
+        builds = user_project.builds_for(params[:job], params[:ref_name])
 
         latest_build = builds.success.latest.first
 

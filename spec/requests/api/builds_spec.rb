@@ -191,7 +191,9 @@ describe API::API, api: true do
     include_context 'artifacts from ref and build name'
 
     def path_from_ref(ref = pipeline.sha, job = build.name)
-      api("/projects/#{project.id}/builds/artifacts/#{ref}?job=#{job}", user)
+      api(
+        "/projects/#{project.id}/builds/artifacts/download/#{ref}?job=#{job}",
+        user)
     end
 
     context '401' do
