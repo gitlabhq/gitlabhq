@@ -554,7 +554,7 @@ class GitLabDropdown
     ARROW_KEY_CODES = [38, 40]
     $input = @dropdown.find(".dropdown-input-field")
 
-    selector = '.dropdown-content li:not(.divider,.dropdown-header,.separator)'
+    selector = '.dropdown-content li:not(.divider,.dropdown-header,.separator):visible'
     if @dropdown.find(".dropdown-toggle-page").length
       selector = ".dropdown-page-one #{selector}"
 
