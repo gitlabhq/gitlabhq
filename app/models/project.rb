@@ -430,13 +430,13 @@ class Project < ActiveRecord::Base
   end
 
   def builds_for(build_name, ref = 'HEAD')
-    ct = commit(ref)
+    commit_object = commit(ref)
 
-    if ct.nil?
+    if commit_object.nil?
       builds.none
     else
       builds.joins(:pipeline).
-        merge(Ci::Pipeline.where(sha: ct.sha)).
+        merge(Ci::Pipeline.where(sha: commit_object.sha)).
         where(name: build_name)
     end
   end
