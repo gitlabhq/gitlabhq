@@ -127,6 +127,8 @@ v 8.10.0 (unreleased)
   - Render only commit message title in builds (Katarzyna Kobierska Ula Budziszewska)
   - Allow bulk (un)subscription from issues in issue index
   - Fix MR diff encoding issues exporting GitLab projects
+  - Move builds settings out of project settings and rename Pipelines
+  - Add builds badge to Pipelines settings page
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
