@@ -5,7 +5,7 @@ class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
   include RepoHelpers
 
   step 'I display builds badge for a master branch' do
-    visit build_namespace_project_badges_path(@project.namespace, @project, ref: :master, format: :svg)
+    visit settings_namespace_project_builds_path(@project.namespace, @project, ref: :master, format: :svg)
   end
 
   step 'I should see a build success badge' do
