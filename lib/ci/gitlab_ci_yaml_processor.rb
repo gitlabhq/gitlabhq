@@ -102,7 +102,6 @@ module Ci
     def validate_job!(name, job)
       raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
 
-      validate_job_name!(name)
       validate_job_keys!(name, job)
       validate_job_types!(name, job)
 
@@ -110,12 +109,6 @@ module Ci
       validate_job_cache!(name, job) if job[:cache]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
-    end
-
-    def validate_job_name!(name)
-      if name.blank? || !validate_string(name)
-        raise ValidationError, "job name should be non-empty string"
-      end
     end
 
     def validate_job_keys!(name, job)

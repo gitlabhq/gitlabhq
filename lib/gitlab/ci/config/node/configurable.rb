@@ -55,8 +55,10 @@ module Gitlab
                 end
 
                 define_method("#{symbol}_value") do
-                  return unless valid?
-                  @entries[symbol].value if @entries[symbol]
+                  if @entries[symbol]
+                    return unless @entries[symbol].valid?
+                    @entries[symbol].value
+                  end
                 end
 
                 alias_method symbol.to_sym, "#{symbol}_value".to_sym

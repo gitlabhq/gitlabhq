@@ -10,7 +10,12 @@ module Gitlab
 
           validations do
             validates :config, presence: true
-            validates :global, required: true, on: :processed
+
+            with_options on: :processed do
+              validates :global, required: true
+              validates :name, presence: true
+              validates :name, type: Symbol
+            end
           end
 
           node :before_script, Script,
@@ -30,11 +35,11 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script
 
+          def name
+            @key
+          end
+
           def value
-            ##
-            # TODO, refactoring step: do not expose internal configuration,
-            # return only hash value without merging it to internal config.
-            #
             @config.merge(to_hash.compact)
           end
 
@@ -53,10 +58,9 @@ module Gitlab
           private
 
           def to_hash
-            { before_script: before_script,
-              script: script,
-              commands: commands,
+            { script: script,
               stage: stage,
+              commands: commands,
               after_script: after_script }
           end
 

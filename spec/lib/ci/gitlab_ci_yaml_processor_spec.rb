@@ -998,14 +998,14 @@ EOT
         config = YAML.dump({ '' => { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "job name should be non-empty string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:job name can't be blank")
       end
 
       it "returns errors if job name is non-string" do
         config = YAML.dump({ 10 => { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "job name should be non-empty string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:10 name should be a symbol")
       end
 
       it "returns errors if job image parameter is invalid" do

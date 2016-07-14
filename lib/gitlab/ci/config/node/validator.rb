@@ -31,8 +31,15 @@ module Gitlab
 
           def location
             predecessors = ancestors.map(&:key).compact
-            current = key || @node.class.name.demodulize.underscore.humanize
-            predecessors.append(current).join(':')
+            predecessors.append(key_name).join(':')
+          end
+
+          def key_name
+            if key.blank? || key.nil?
+              @node.class.name.demodulize.underscore.humanize
+            else
+              key
+            end
           end
         end
       end

@@ -34,8 +34,8 @@ describe Gitlab::Ci::Config::Node::Jobs do
         context 'when job is unspecified' do
           let(:config) { { rspec: nil } }
 
-          it 'is not valid' do
-            expect(entry).not_to be_valid
+          it 'reports error' do
+            expect(entry.errors).to include "rspec config can't be blank"
           end
         end
 

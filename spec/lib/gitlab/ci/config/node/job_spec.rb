@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Job do
-  let(:entry) { described_class.new(config, global: global) }
-  let(:global) { spy('Global') }
+  let(:entry) { described_class.new(config, attributes) }
+  let(:attributes) { { key: :rspec, global: global } }
+  let(:global) { double('global', stages: %w[test]) }
 
   before do
     entry.process!
@@ -18,6 +19,15 @@ describe Gitlab::Ci::Config::Node::Job do
           expect(entry).to be_valid
         end
       end
+
+      context 'when job name is empty' do
+        let(:attributes) { { key: '', global: global } }
+
+        it 'reports error' do
+          expect(entry.errors)
+            .to include "job name can't be blank"
+        end
+      end
     end
 
     context 'when entry value is not correct' do
@@ -27,7 +37,7 @@ describe Gitlab::Ci::Config::Node::Job do
         describe '#errors' do
           it 'reports error about a config type' do
             expect(entry.errors)
-              .to include 'job config should be a hash'
+              .to include 'rspec config should be a hash'
           end
         end
       end
