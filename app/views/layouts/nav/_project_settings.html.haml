@@ -27,6 +27,10 @@
         Protected Branches
 
   - if @project.builds_enabled?
+    = nav_link(controller: :builds) do
+      = link_to settings_namespace_project_builds_path(@project.namespace, @project), title: 'Builds' do
+        %span
+          Builds
     = nav_link(controller: :runners) do
       = link_to namespace_project_runners_path(@project.namespace, @project), title: 'Runners' do
         %span
