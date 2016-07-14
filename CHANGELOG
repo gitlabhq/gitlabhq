@@ -91,6 +91,7 @@ v 8.10.0 (unreleased)
   - Redesign Builds and Pipelines pages
   - Change status color and icon for running builds
   - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
+  - Fix issues importing projects from EE to CE
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
