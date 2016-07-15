@@ -17,6 +17,8 @@ class @FilesCommentButton
     debounce = _.debounce @render, DEBOUNCE_TIMEOUT_DURATION
 
     $(document)
+      .off 'mouseover', LINE_COLUMN_CLASSES
+      .off 'mouseleave', LINE_COLUMN_CLASSES
       .on 'mouseover', LINE_COLUMN_CLASSES, debounce
       .on 'mouseleave', LINE_COLUMN_CLASSES, @destroy
 
@@ -64,7 +66,7 @@ class @FilesCommentButton
     return hoveredElement if hoveredElement.hasClass LINE_CONTENT_CLASS
 
     if @VIEW_TYPE is 'inline'
-     return $(hoveredElement).closest(LINE_HOLDER_CLASS).find ".#{LINE_CONTENT_CLASS}"
+      return $(hoveredElement).closest(LINE_HOLDER_CLASS).find ".#{LINE_CONTENT_CLASS}"
     else
       return $(hoveredElement).next ".#{LINE_CONTENT_CLASS}"
 
