@@ -137,6 +137,8 @@ class Dispatcher
         new Project()
         new ProjectAvatar()
         switch path[1]
+          when 'compare'
+            new CompareAutocomplete()
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
             new ProjectNew()
