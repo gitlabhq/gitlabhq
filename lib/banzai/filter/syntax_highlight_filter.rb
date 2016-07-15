@@ -19,8 +19,15 @@ module Banzai
         language = node.attr('class')
         code     = node.text
 
+        lexer = Rouge::Lexer.find_fancy(language)
+        formatter = Rouge::Formatters::HTML.new
+        css_classes = "code highlight js-syntax-highlight #{lexer.tag}"
+
         begin
-          highlighted = block_code(code, language)
+          highlighted = ''
+          highlighted << %(<pre class="#{css_classes}"><code>)
+          highlighted << formatter.format(lexer.lex(code))
+          highlighted << %(</code></pre>)
         rescue
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.
@@ -40,8 +47,7 @@ module Banzai
 
       # Override Rouge::Plugins::Redcarpet#rouge_formatter
       def rouge_formatter(lexer)
-        Rouge::Formatters::HTMLGitlab.new(
-          cssclass: "code highlight js-syntax-highlight #{lexer.tag}")
+        Rouge::Formatters::HTML.new
       end
     end
   end
