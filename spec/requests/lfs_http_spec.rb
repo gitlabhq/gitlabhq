@@ -98,6 +98,8 @@ describe Gitlab::Lfs::Router do
 
       context 'with required headers' do
         shared_examples 'responds with a file' do
+          let(:sendfile) { 'X-Sendfile' }
+
           it 'responds with status 200' do
             expect(response).to have_http_status(200)
           end
@@ -110,7 +112,6 @@ describe Gitlab::Lfs::Router do
 
         context 'with user is authorized' do
           let(:authorization) { authorize_user }
-          let(:sendfile) { 'X-Sendfile' }
 
           context 'and does not have project access' do
             let(:update_permissions) do
@@ -134,6 +135,10 @@ describe Gitlab::Lfs::Router do
 
         context 'when CI is authorized' do
           let(:authorization) { authorize_ci_project }
+
+          let(:update_permissions) do
+            project.lfs_objects << lfs_object
+          end
 
           it_behaves_like 'responds with a file'
         end
