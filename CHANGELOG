@@ -23,10 +23,12 @@ v 8.10.0 (unreleased)
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
+  - Display tooltip for mentioned users and groups !5261 (winniehell)
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+  - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
   - Add syntax for multiline blockquote using `>>>` fence !3954
@@ -57,6 +59,7 @@ v 8.10.0 (unreleased)
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Allow expanding and collapsing files in diff view (!4990)
   - Collapse large diffs by default (!4990)
+  - Fix mentioned users list on diff notes
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Show last push widget in upstream after push to fork
   - Cache todos pending/done dashboard query counts.
@@ -95,7 +98,11 @@ v 8.10.0 (unreleased)
   - Redesign Builds and Pipelines pages
   - Change status color and icon for running builds
   - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
+  - Project export filename now includes the project and namespace path
   - Fix last update timestamp on issues not preserved on gitlab.com and project imports
+  - Fix issues importing projects from EE to CE
+  - Fix creating group with space in group path
+  - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154

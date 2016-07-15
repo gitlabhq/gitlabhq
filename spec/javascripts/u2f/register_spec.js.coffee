@@ -5,7 +5,6 @@
 #= require ./mock_u2f_device
 
 describe 'U2FRegister', ->
-  U2FUtil.enableTestMode()
   fixture.load('u2f/register')
 
   beforeEach ->

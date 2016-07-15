@@ -344,10 +344,6 @@ class ApplicationController < ActionController::Base
     session[:skip_tfa] && session[:skip_tfa] > Time.current
   end
 
-  def browser_supports_u2f?
-    browser.chrome? && browser.version.to_i >= 41 && !browser.device.mobile?
-  end
-
   def redirect_to_home_page_url?
     # If user is not signed-in and tries to access root_path - redirect him to landing page
     # Don't redirect to the default URL to prevent endless redirections
