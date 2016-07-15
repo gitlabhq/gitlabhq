@@ -23,7 +23,7 @@
           = f.label :name, "Branch", class: "label-light"
           = render partial: "dropdown", locals: { f: f }
           %p.help-block
-            = link_to "Wildcards", help_page_path('workflow/protected_branches', anchor: "wildcard-protected-branches")
+            = link_to "Wildcards", help_page_path('user/project/protected_branches', anchor: "wildcard-protected-branches")
             such as
             %code *-stable
             or
