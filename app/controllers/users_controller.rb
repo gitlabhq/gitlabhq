@@ -86,7 +86,7 @@ class UsersController < ApplicationController
   end
 
   def exists
-    render json: user.id
+    render json: { exists: !user.nil? }
   end
 
   private
