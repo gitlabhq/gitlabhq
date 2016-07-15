@@ -613,8 +613,10 @@ class MergeRequest < ActiveRecord::Base
 
   def can_approve?(user)
     return true if approvers_left.include?(user)
+    return false if user == author
+    return false unless user.can?(:update_merge_request, self)
 
-    any_approver_allowed? && !approved_by?(user) && user != author && user.can?(:update_merge_request, self)
+    any_approver_allowed? && !approved_by?(user)
   end
 
   def any_approver_allowed?
