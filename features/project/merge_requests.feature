@@ -327,7 +327,7 @@ Feature: Project Merge Requests
     And I click link "Bug NS-04"
     And I should not see merge button
     When I click link "Approve"
-    Then I should see message that merge request can be merged
+    Then I should see approved merge request "Bug NS-04"
 
   Scenario: I can not approve merge request if I am not an approver
     Given merge request 'Bug NS-04' must be approved by some user
