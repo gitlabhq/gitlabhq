@@ -565,13 +565,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def potential_approvers
+    has_access = ['access_level > ?', Member::REPORTER]
     wheres = [
       "id IN (#{overall_approvers.select(:user_id).to_sql})",
-      "id IN (#{project.members.where(['access_level > ?', Member::REPORTER]).select(:user_id).to_sql})"
+      "id IN (#{project.members.where(has_access).select(:user_id).to_sql})"
     ]
 
     if project.group
-      wheres << "id IN (#{project.group.members.where(['access_level > ?', Member::REPORTER]).select(:user_id).to_sql})"
+      wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
     end
 
     User.count_by_sql("SELECT COUNT(*) FROM users WHERE (#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}")
