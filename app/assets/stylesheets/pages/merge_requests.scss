@@ -196,6 +196,16 @@
 
     .merge-request-title {
       margin-bottom: 2px;
+
+      .ci-status-link {
+
+        svg {
+          height: 13px;
+          width: 13px;
+          position: relative;
+          top: 2px;
+        }
+      }
     }
   }
 
