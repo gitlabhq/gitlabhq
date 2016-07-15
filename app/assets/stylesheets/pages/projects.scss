@@ -536,6 +536,13 @@ pre.light-well {
 
   .ci-status {
     margin-right: $gl-padding;
+
+    &.ci-running {
+
+      svg {
+        margin-right: 3px;
+      }
+    }
   }
 
   .commit-row-message {

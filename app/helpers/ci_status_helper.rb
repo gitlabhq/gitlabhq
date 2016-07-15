@@ -32,12 +32,12 @@ module CiStatusHelper
       when 'pending'
         'clock-o'
       when 'running'
-        'spinner'
+        'icon_running'
       else
         'circle'
       end
 
-    icon(icon_name + ' fw')
+    status == 'running' ? custom_icon(icon_name) : icon(icon_name + ' fw')
   end
 
   def render_commit_status(commit, tooltip_placement: 'auto left', cssclass: '')

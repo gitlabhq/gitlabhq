@@ -123,6 +123,15 @@
       right: 1px;
     }
   }
+  
+  .stage-cell {
+
+    svg {
+      height: 13px;
+      width: 13px;
+      margin-left: 3px;
+    }
+  }
 
   .duration,
   .finished-at {
