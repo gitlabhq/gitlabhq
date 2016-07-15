@@ -607,11 +607,6 @@ class Project < ActiveRecord::Base
     RepositoryUpdateMirrorWorker.perform_in(delay, self.id)
   end
 
-  def mark_import_as_failed(error_message)
-    import_fail
-    update_column(:import_error, Gitlab::UrlSanitizer.sanitize(error_message))
-  end
-
   def has_remote_mirror?
     remote_mirrors.enabled.exists?
   end
