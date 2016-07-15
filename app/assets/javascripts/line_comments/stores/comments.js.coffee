@@ -4,7 +4,7 @@
     this.state[discussionId][noteId]
   create: (discussionId, noteId, resolved) ->
     unless this.state[discussionId]?
-      Vue.set(this.state, discussionId, {})
+      Vue.set(this.state, discussionId, { loading: false })
 
     Vue.set(this.state[discussionId], noteId, resolved)
   update: (discussionId, noteId, resolved) ->

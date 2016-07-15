@@ -9,11 +9,15 @@ class ResolveService
         url: 'notes/resolve_all'
     }
 
-    Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken()
     @resource = Vue.resource('notes{/id}', {}, actions)
 
+  setCSRF: ->
+    Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken()
+
   resolve: (namespace, discussionId, noteId, resolve) ->
+    @setCSRF()
     Vue.http.options.root = "/#{namespace}"
+
     @resource
       .resolve({ id: noteId }, { discussion: discussionId, resolved: resolve })
       .then (response) ->
@@ -21,12 +25,14 @@ class ResolveService
           CommentsStore.update(discussionId, noteId, resolve)
 
   resolveAll: (namespace, discussionId, allResolve) ->
+    @setCSRF()
     Vue.http.options.root = "/#{namespace}"
 
     ids = []
     for noteId, resolved of CommentsStore.state[discussionId]
       ids.push(noteId) if resolved is allResolve
 
+    CommentsStore.state[discussionId].loading = true
     @resource
       .all({}, { ids: ids, discussion: discussionId, resolved: !allResolve })
       .then (response) ->
@@ -34,5 +40,6 @@ class ResolveService
           for noteId in ids
             CommentsStore.update(discussionId, noteId, !allResolve)
 
-$ ->
-  @ResolveService = new ResolveService()
+        CommentsStore.state[discussionId].loading = false
+
+@ResolveService = new ResolveService()

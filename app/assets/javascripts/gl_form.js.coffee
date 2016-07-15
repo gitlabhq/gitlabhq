@@ -24,6 +24,7 @@ class @GLForm
       @form.find('.div-dropzone').remove()
       @form.addClass('gfm-form')
       disableButtonIfEmptyField @form.find('.js-note-text'), @form.find('.js-comment-button')
+      disableButtonIfEmptyField @form.find('.js-note-text'), @form.find('.js-comment-resolve-button')
 
       # remove notify commit author checkbox for non-commit notes
       GitLab.GfmAutoComplete.setup()

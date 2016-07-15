@@ -20,7 +20,7 @@
           - access = note_max_access_for_user(note)
           - if access and not note.system
             %span.note-role.hidden-xs= access
-          - if !note.system && note.discussion_id && current_user
+          - if !note.system && note.new_diff_note? && current_user
             %resolve-btn{ ":namespace" => "'#{note.project.namespace.path}/#{note.project.path}'", ":discussion-id" => "'#{note.discussion_id}'", ":note-id" => note.id, ":resolved" => "false", "inline-template" => true, "v-ref:note_#{note.id}" => true }
               .note-action-button
                 = icon("spin spinner", "v-show" => "loading")

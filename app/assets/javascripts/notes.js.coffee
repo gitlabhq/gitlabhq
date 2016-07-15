@@ -43,6 +43,7 @@ class @Notes
     # Reopen and close actions for Issue/MR combined with note form submit
     $(document).on "click", ".js-comment-button", @updateCloseButton
     $(document).on "keyup input", ".js-note-text", @updateTargetButtons
+    $(document).on 'click', '.js-comment-resolve-button', @resolveDiscussion
 
     # remove a note (in general)
     $(document).on "click", ".js-note-delete", @removeNote
@@ -96,6 +97,7 @@ class @Notes
     $(document).off "click", ".js-note-target-close"
     $(document).off "click", ".js-note-discard"
     $(document).off "keydown", ".js-note-text"
+    $(document).off 'click', '.js-comment-resolve-button'
 
     $('.note .js-task-list-container').taskList('disable')
     $(document).off 'tasklist:changed', '.note .js-task-list-container'
@@ -327,6 +329,7 @@ class @Notes
     form.find("#note_line_code").remove()
     form.find("#note_position").remove()
     form.find("#note_type").remove()
+    form.find('.js-comment-resolve-button').remove()
 
     @parentTimeline = form.parents('.timeline')
 
@@ -370,10 +373,18 @@ class @Notes
   Adds new note to list.
   ###
   addDiscussionNote: (xhr, note, status) =>
+    $form = $(xhr.target)
     @renderDiscussionNote(note)
 
     # cleanup after successfully creating a diff/discussion note
-    @removeDiscussionNoteForm($(xhr.target))
+    @removeDiscussionNoteForm($form)
+
+    if $form.attr('data-resolve-all')?
+      namespace = $form.attr('data-namespace')
+      discussionId = $form.attr('data-discussion-id')
+
+      if ResolveService?
+        ResolveService.resolveAll(namespace, discussionId, false)
 
   ###
   Called in response to the edit note form being submitted
@@ -542,6 +553,9 @@ class @Notes
     @setupNoteForm form
     form.find(".js-note-text").focus()
     form
+      .find('.js-comment-resolve-button')
+      .attr('data-discussion-id', dataHolder.data('discussionId'))
+    form
       .removeClass('js-main-target-form')
       .addClass("discussion-form js-discussion-note-form")
 
@@ -701,3 +715,13 @@ class @Notes
 
   updateNotesCount: (updateCount) ->
     @notesCountBadge.text(parseInt(@notesCountBadge.text()) + updateCount)
+
+  resolveDiscussion: ->
+    $this = $(this)
+    discussionId = $this.attr('data-discussion-id')
+
+    $this
+      .closest('form')
+      .attr('data-discussion-id', discussionId)
+      .attr('data-resolve-all', 'true')
+      .attr('data-namespace', $this.attr('data-namespace'))
