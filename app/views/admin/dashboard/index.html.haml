@@ -98,7 +98,10 @@
           %p
             Geo
             %span.pull-right
-              = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
+              - if Gitlab::Geo.current_node
+                = Gitlab::Geo.current_node.primary ? 'Primary node' : 'Secondary node'
+              - else
+                Undefined
         %p
           Git
           %span.pull-right
