@@ -337,13 +337,9 @@ a.deploy-project-label {
       margin: $gl-padding;
       text-align: center;
       width: 169px;
-      &.forked {
-        background-color: #f8faff;
-        border-color: #b3d7ff;
-      }
-      &:hover {
-        background-color: #fcfdff;
-        border-color: #e6f4ff;
+      &:hover, &.forked {
+        background-color: $row-hover;
+        border-color: $row-hover-border;
       }
       .no-avatar {
         width: 100px;
