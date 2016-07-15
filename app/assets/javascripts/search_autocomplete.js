@@ -367,4 +367,42 @@
 
   })();
 
+  $(function() {
+    if ($('.js-search-project-options').length) {
+      var projectOptionsDataEl = $('.js-search-project-options');
+
+      gl.projectOptions = gl.projectOptions || {};
+
+      var projectPath = projectOptionsDataEl.data('project-path');
+
+      gl.projectOptions[projectPath] = {
+        name: projectOptionsDataEl.data('name'),
+        issuesPath: projectOptionsDataEl.data('issues-path'),
+        mrPath: projectOptionsDataEl.data('mr-path')
+      };
+    }
+ 
+    if ($('.js-search-group-options').length) {
+      var groupOptionsDataEl = $('.js-search-group-options');
+   
+      gl.groupOptions = gl.groupOptions || {};
+       
+      var groupPath = groupOptionsDataEl.data('group-path');
+   
+      gl.groupOptions[groupPath] = {
+        name: groupOptionsDataEl.data('name'),
+        issuesPath: groupOptionsDataEl.data('issues-path'),
+        mrPath: groupOptionsDataEl.data('mr-path')
+      };
+    }
+   
+    if ($('.js-search-dashboard-options').length) {
+      var dashboardOptionsDataEl = $('.js-search-dashboard-options');
+      gl.dashboardOptions = {
+        issuesPath: dashboardOptionsDataEl.data('issues-path'),
+        mrPath: dashboardOptionsDataEl.data('mr-path')
+      };
+    }
+  });
+
 }).call(this);
