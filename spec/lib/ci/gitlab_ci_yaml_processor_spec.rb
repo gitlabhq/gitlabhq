@@ -26,11 +26,12 @@ module Ci
           tag_list: [],
           options: {},
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
 
-      describe :only do
+      describe 'only' do
         it "does not return builds if only has another branch" do
           config = YAML.dump({
                                before_script: ["pwd"],
@@ -142,7 +143,6 @@ module Ci
         end
 
         it "returns build only for specified type" do
-
           config = YAML.dump({
                                before_script: ["pwd"],
                                rspec: { script: "rspec", type: "test", only: ["master", "deploy"] },
@@ -156,9 +156,38 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref("test", "deploy").size).to eq(1)
           expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(1)
         end
+
+        context 'for invalid value' do
+          let(:config) { { rspec: { script: "rspec", type: "test", only: only } } }
+          let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+          shared_examples 'raises an error' do
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: only parameter should be an array of strings or regexps')
+            end
+          end
+
+          context 'when it is integer' do
+            let(:only) { 1 }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is an array of integers' do
+            let(:only) { [1, 1] }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is invalid regex' do
+            let(:only) { ["/*invalid/"] }
+
+            it_behaves_like 'raises an error'
+          end
+        end
       end
 
-      describe :except do
+      describe 'except' do
         it "returns builds if except has another branch" do
           config = YAML.dump({
                                before_script: ["pwd"],
@@ -283,16 +312,44 @@ module Ci
           expect(config_processor.builds_for_stage_and_ref("test", "test").size).to eq(0)
           expect(config_processor.builds_for_stage_and_ref("deploy", "master").size).to eq(0)
         end
-      end
 
+        context 'for invalid value' do
+          let(:config) { { rspec: { script: "rspec", except: except } } }
+          let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+
+          shared_examples 'raises an error' do
+            it do
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: except parameter should be an array of strings or regexps')
+            end
+          end
+
+          context 'when it is integer' do
+            let(:except) { 1 }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is an array of integers' do
+            let(:except) { [1, 1] }
+
+            it_behaves_like 'raises an error'
+          end
+
+          context 'when it is invalid regex' do
+            let(:except) { ["/*invalid/"] }
+
+            it_behaves_like 'raises an error'
+          end
+        end
+      end
     end
-    
+
     describe "Scripts handling" do
       let(:config_data) { YAML.dump(config) }
       let(:config_processor) { GitlabCiYamlProcessor.new(config_data, path) }
-      
+
       subject { config_processor.builds_for_stage_and_ref("test", "master").first }
-      
+
       describe "before_script" do
         context "in global context" do
           let(:config) do
@@ -301,12 +358,12 @@ module Ci
               test: { script: ["script"] }
             }
           end
-          
+
           it "return commands with scripts concencaced" do
             expect(subject[:commands]).to eq("global script\nscript")
           end
         end
- 
+
         context "overwritten in local context" do
           let(:config) do
             {
@@ -387,7 +444,8 @@ module Ci
             services: ["mysql"]
           },
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
 
@@ -415,7 +473,8 @@ module Ci
             services: ["postgresql"]
           },
           allow_failure: false,
-          when: "on_success"
+          when: "on_success",
+          environment: nil,
         })
       end
     end
@@ -462,19 +521,41 @@ module Ci
         end
 
         context 'when syntax is incorrect' do
-          it 'raises error' do
-            variables = [:KEY1, 'value1', :KEY2, 'value2']
+          context 'when variables defined but invalid' do
+            it 'raises error' do
+              variables = [:KEY1, 'value1', :KEY2, 'value2']
 
-            config =  YAML.dump(
-              { before_script: ['pwd'],
-                rspec: {
-                  variables: variables,
-                  script: 'rspec' }
-              })
+              config =  YAML.dump(
+                { before_script: ['pwd'],
+                  rspec: {
+                    variables: variables,
+                    script: 'rspec' }
+                })
 
-            expect { GitlabCiYamlProcessor.new(config, path) }
-              .to raise_error(GitlabCiYamlProcessor::ValidationError,
-                               /job: variables should be a map/)
+              expect { GitlabCiYamlProcessor.new(config, path) }
+                .to raise_error(GitlabCiYamlProcessor::ValidationError,
+                                 /job: variables should be a map/)
+            end
+          end
+
+          context 'when variables key defined but value not specified' do
+            it 'returns empty array' do
+              config =  YAML.dump(
+                { before_script: ['pwd'],
+                  rspec: {
+                    variables: nil,
+                    script: 'rspec' }
+                })
+
+              config_processor = GitlabCiYamlProcessor.new(config, path)
+
+              ##
+              # When variables config is empty, we assume this is a valid
+              # configuration, see issue #18775
+              #
+              expect(config_processor.job_variables(:rspec))
+                .to be_an_instance_of(Array).and be_empty
+            end
           end
         end
       end
@@ -509,7 +590,20 @@ module Ci
       end
     end
 
-    describe "Caches" do
+    describe 'cache' do
+      context 'when cache definition has unknown keys' do
+        it 'raises relevant validation error' do
+          config = YAML.dump(
+            { cache: { untracked: true, invalid: 'key' },
+              rspec: { script: 'rspec' } })
+
+          expect { GitlabCiYamlProcessor.new(config) }.to raise_error(
+            GitlabCiYamlProcessor::ValidationError,
+            'cache config contains unknown keys: invalid'
+          )
+        end
+      end
+
       it "returns cache when defined globally" do
         config = YAML.dump({
                              cache: { paths: ["logs/", "binaries/"], untracked: true, key: 'key' },
@@ -605,7 +699,8 @@ module Ci
             }
           },
           when: "on_success",
-          allow_failure: false
+          allow_failure: false,
+          environment: nil,
         })
       end
 
@@ -623,6 +718,51 @@ module Ci
           builds = config_processor.builds_for_stage_and_ref("test", "master")
           expect(builds.size).to eq(1)
           expect(builds.first[:options][:artifacts][:when]).to eq(when_state)
+        end
+      end
+    end
+
+    describe '#environment' do
+      let(:config) do
+        {
+          deploy_to_production: { stage: 'deploy', script: 'test', environment: environment }
+        }
+      end
+
+      let(:processor) { GitlabCiYamlProcessor.new(YAML.dump(config)) }
+      let(:builds) { processor.builds_for_stage_and_ref('deploy', 'master') }
+
+      context 'when a production environment is specified' do
+        let(:environment) { 'production' }
+
+        it 'does return production' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to eq(environment)
+        end
+      end
+
+      context 'when no environment is specified' do
+        let(:environment) { nil }
+
+        it 'does return nil environment' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to be_nil
+        end
+      end
+
+      context 'is not a string' do
+        let(:environment) { 1 }
+
+        it 'raises error' do
+          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
+        end
+      end
+
+      context 'is not a valid string' do
+        let(:environment) { 'production staging' }
+
+        it 'raises error' do
+          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
         end
       end
     end
@@ -688,7 +828,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
         end
       end
@@ -733,7 +874,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
           expect(subject.second).to eq({
             except: nil,
@@ -745,7 +887,8 @@ module Ci
             tag_list: [],
             options: {},
             when: "on_success",
-            allow_failure: false
+            allow_failure: false,
+            environment: nil,
           })
         end
       end
@@ -820,7 +963,7 @@ EOT
         config = YAML.dump({ before_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "before_script config should be an array of strings")
       end
 
       it "returns errors if job before_script parameter is not an array of strings" do
@@ -834,7 +977,7 @@ EOT
         config = YAML.dump({ after_script: "bundle update", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "after_script should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "after_script config should be an array of strings")
       end
 
       it "returns errors if job after_script parameter is not an array of strings" do
@@ -848,7 +991,7 @@ EOT
         config = YAML.dump({ image: ["test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "image config should be a string")
       end
 
       it "returns errors if job name is blank" do
@@ -876,14 +1019,14 @@ EOT
         config = YAML.dump({ services: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
       end
 
       it "returns errors if services parameter is not an array of strings" do
         config = YAML.dump({ services: [10, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "services config should be an array of strings")
       end
 
       it "returns errors if job services parameter is not an array" do
@@ -950,31 +1093,31 @@ EOT
       end
 
       it "returns errors if stages is not an array" do
-        config = YAML.dump({ types: "test", rspec: { script: "test" } })
+        config = YAML.dump({ stages: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages config should be an array of strings")
       end
 
       it "returns errors if stages is not an array of strings" do
-        config = YAML.dump({ types: [true, "test"], rspec: { script: "test" } })
+        config = YAML.dump({ stages: [true, "test"], rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "stages config should be an array of strings")
       end
 
       it "returns errors if variables is not a map" do
         config = YAML.dump({ variables: "test", rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-value strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
       end
 
       it "returns errors if variables is not a map of key-value strings" do
         config = YAML.dump({ variables: { test: false }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables should be a map of key-value strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "variables config should be a hash of key value pairs")
       end
 
       it "returns errors if job when is not on_success, on_failure or always" do
@@ -1030,21 +1173,21 @@ EOT
         config = YAML.dump({ cache: { untracked: "string" }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:untracked parameter should be an boolean")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:untracked config should be a boolean value")
       end
 
       it "returns errors if cache:paths is not an array of strings" do
         config = YAML.dump({ cache: { paths: "string" }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:paths config should be an array of strings")
       end
 
       it "returns errors if cache:key is not a string" do
         config = YAML.dump({ cache: { key: 1 }, rspec: { script: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key parameter should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "cache:key config should be a string or symbol")
       end
 
       it "returns errors if job cache:key is not an a string" do
@@ -1073,6 +1216,18 @@ EOT
         expect do
           GitlabCiYamlProcessor.new(config)
         end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
+      end
+    end
+
+    describe "Validate configuration templates" do
+      templates = Dir.glob("#{Rails.root.join('vendor/gitlab-ci-yml')}/**/*.gitlab-ci.yml")
+
+      templates.each do |file|
+        it "does not return errors for #{file}" do
+          file = File.read(file)
+
+          expect { GitlabCiYamlProcessor.new(file) }.not_to raise_error
+        end
       end
     end
   end

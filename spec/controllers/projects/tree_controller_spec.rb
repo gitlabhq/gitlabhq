@@ -64,9 +64,8 @@ describe Projects::TreeController do
 
     context "valid SHA commit ID with path" do
       let(:id) { '6d39438/.gitignore' }
-      it { expect(response.status).to eq(302) }
+      it { expect(response).to have_http_status(302) }
     end
-
   end
 
   describe 'GET show with blob path' do

@@ -6,15 +6,16 @@ describe "Admin::Hooks", feature: true do
     login_as :admin
 
     @system_hook = create(:system_hook)
-
   end
 
   describe "GET /admin/hooks" do
     it "should be ok" do
       visit admin_root_path
-      page.within ".sidebar-wrapper" do
+
+      page.within ".layout-nav" do
         click_on "Hooks"
       end
+
       expect(current_path).to eq(admin_hooks_path)
     end
 
@@ -47,5 +48,4 @@ describe "Admin::Hooks", feature: true do
 
     it { expect(current_path).to eq(admin_hooks_path) }
   end
-
 end

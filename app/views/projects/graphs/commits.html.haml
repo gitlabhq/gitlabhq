@@ -1,52 +1,54 @@
+- @no_container = true
 - page_title "Commits", "Graphs"
 = render 'head'
 
-.row-content-block.append-bottom-default
-  .tree-ref-holder
-    = render 'shared/ref_switcher', destination: 'graphs_commits'
-  %ul.breadcrumb.repo-breadcrumb
-    = commits_breadcrumbs
+%div{ class: container_class }
+  .sub-header-block
+    .tree-ref-holder
+      = render 'shared/ref_switcher', destination: 'graphs_commits'
+    %ul.breadcrumb.repo-breadcrumb
+      = commits_breadcrumbs
 
-%p.lead
-  Commit statistics for
-  %strong #{@ref}
-  #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+  %p.lead
+    Commit statistics for
+    %strong #{@ref}
+    #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
 
-.row
-  .col-md-6
-    %ul
-      %li
-        %p.lead
-          %strong #{@commits_graph.commits.size}
-          commits during
-          %strong #{@commits_graph.duration}
-          days
-      %li
-        %p.lead
-          Average
-          %strong #{@commits_graph.commit_per_day}
-          commits per day
-      %li
-        %p.lead
-          Contributed by
-          %strong #{@commits_graph.authors}
-          authors
-  .col-md-6
-    %div
-      %p.slead
-        Commits per day of month
-      %canvas#month-chart
-.row
-  .col-md-6
-    %div
-      %p.slead
-        Commits per day hour (UTC)
-      %canvas#hour-chart
-  .col-md-6
-    %div
-      %p.slead
-        Commits per weekday
-      %canvas#weekday-chart
+  .row
+    .col-md-6
+      %ul
+        %li
+          %p.lead
+            %strong #{@commits_graph.commits.size}
+            commits during
+            %strong #{@commits_graph.duration}
+            days
+        %li
+          %p.lead
+            Average
+            %strong #{@commits_graph.commit_per_day}
+            commits per day
+        %li
+          %p.lead
+            Contributed by
+            %strong #{@commits_graph.authors}
+            authors
+    .col-md-6
+      %div
+        %p.slead
+          Commits per day of month
+        %canvas#month-chart
+  .row
+    .col-md-6
+      %div
+        %p.slead
+          Commits per day hour (UTC)
+        %canvas#hour-chart
+    .col-md-6
+      %div
+        %p.slead
+          Commits per weekday
+        %canvas#weekday-chart
 
 :javascript
   var responsiveChart = function (selector, data) {

@@ -9,7 +9,7 @@ describe API::API, api: true  do
     context "when valid password" do
       it "should return private token" do
         post api("/session"), email: user.email, password: '12345678'
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
 
         expect(json_response['email']).to eq(user.email)
         expect(json_response['private_token']).to eq(user.private_token)
@@ -48,7 +48,7 @@ describe API::API, api: true  do
     context "when invalid password" do
       it "should return authentication error" do
         post api("/session"), email: user.email, password: '123'
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
 
         expect(json_response['email']).to be_nil
         expect(json_response['private_token']).to be_nil
@@ -58,7 +58,7 @@ describe API::API, api: true  do
     context "when empty password" do
       it "should return authentication error" do
         post api("/session"), email: user.email
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
 
         expect(json_response['email']).to be_nil
         expect(json_response['private_token']).to be_nil
@@ -68,7 +68,7 @@ describe API::API, api: true  do
     context "when empty name" do
       it "should return authentication error" do
         post api("/session"), password: user.password
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
 
         expect(json_response['email']).to be_nil
         expect(json_response['private_token']).to be_nil

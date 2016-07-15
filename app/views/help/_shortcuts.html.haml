@@ -20,6 +20,10 @@
                 %td Focus Search
               %tr
                 %td.shortcut
+                  .key f
+                %td Focus Filter
+              %tr
+                %td.shortcut
                   .key ?
                 %td Show/hide this dialog
               %tr
@@ -28,8 +32,12 @@
                     .key &#8984; shift p
                   - else
                     .key ctrl shift p
-
                 %td Toggle Markdown preview
+              %tr
+                %td.shortcut
+                  .key
+                    %i.fa.fa-arrow-up
+                %td Edit last comment (when focused on an empty textarea)
             %tbody
               %tr
                 %th

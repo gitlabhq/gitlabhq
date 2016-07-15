@@ -1,6 +1,8 @@
 - page_title       @user.name
 - page_description @user.bio
-- page_specific_javascripts asset_path("users/application.js")
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/d3.js')
+  = page_specific_javascript_tag('users/application.js')
 - header_title     @user.name, user_path(@user)
 - @no_container = true
 
@@ -27,6 +29,11 @@
         &nbsp;
         = link_to user_path(@user, :atom, { private_token: current_user.private_token }), class: 'btn btn-gray' do
           = icon('rss')
+        - if current_user.admin?
+          &nbsp;
+          = link_to [:admin, @user], class: 'btn btn-gray', title: 'View user in admin area',
+            data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+            = icon('users')
 
     .avatar-holder
       = link_to avatar_icon(@user, 400), target: '_blank' do

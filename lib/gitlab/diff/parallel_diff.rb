@@ -8,111 +8,96 @@ module Gitlab
       end
 
       def parallelize
-        lines = []
-        skip_next = false
 
+        i = 0
+        free_right_index = nil
+
+        lines = []
         highlighted_diff_lines = diff_file.highlighted_diff_lines
         highlighted_diff_lines.each do |line|
-          full_line = line.text
-          type = line.type
-          line_code = generate_line_code(diff_file.file_path, line)
-          line_new = line.new_pos
-          line_old = line.old_pos
+          line_code = diff_file.line_code(line)
+          position = diff_file.position(line)
 
-          next_line = diff_file.next_line(line.index)
-
-          if next_line
-            next_line = highlighted_diff_lines[next_line.index]
-            next_line_code = generate_line_code(diff_file.file_path, next_line)
-            next_type = next_line.type
-            next_line = next_line.text
-          end
-
-          case type
+          case line.type
           when 'match', nil
             # line in the right panel is the same as in the left one
             lines << {
               left: {
-                type:       type,
-                number:     line_old,
-                text:       full_line,
+                type:       line.type,
+                number:     line.old_pos,
+                text:       line.text,
                 line_code:  line_code,
+                position:   position
               },
               right: {
-                type:       type,
-                number:     line_new,
-                text:       full_line,
-                line_code:  line_code
+                type:       line.type,
+                number:     line.new_pos,
+                text:       line.text,
+                line_code:  line_code,
+                position:   position
               }
             }
+
+            free_right_index = nil
+            i += 1
           when 'old'
-            case next_type
-            when 'new'
-              # Left side has text removed, right side has text added
-              lines << {
-                left: {
-                  type:       type,
-                  number:     line_old,
-                  text:       full_line,
-                  line_code:  line_code,
-                },
-                right: {
-                  type:       next_type,
-                  number:     line_new,
-                  text:       next_line,
-                  line_code:  next_line_code
-                }
+            lines << {
+              left: {
+                type:       line.type,
+                number:     line.old_pos,
+                text:       line.text,
+                line_code:  line_code,
+                position:   position
+              },
+              right: {
+                type:       nil,
+                number:     nil,
+                text:       "",
+                line_code:  line_code,
+                position:   position
               }
-              skip_next = true
-            when 'old', 'nonewline', nil
-              # Left side has text removed, right side doesn't have any change
-              # No next line code, no new line number, no new line text
-              lines << {
-                left: {
-                  type:       type,
-                  number:     line_old,
-                  text:       full_line,
-                  line_code:  line_code,
-                },
-                right: {
-                  type:       next_type,
-                  number:     nil,
-                  text:       "",
-                  line_code:  nil
-                }
-              }
-            end
+            }
+
+            # Once we come upon a new line it can be put on the right of this old line
+            free_right_index ||= i
+            i += 1
           when 'new'
-            if skip_next
-              # Change has been already included in previous line so no need to do it again
-              skip_next = false
-              next
+            data = {
+              type:       line.type,
+              number:     line.new_pos,
+              text:       line.text,
+              line_code:  line_code,
+              position:   position
+            }
+
+            if free_right_index
+              # If an old line came before this without a line on the right, this
+              # line can be put to the right of it.
+              lines[free_right_index][:right] = data
+
+              # If there are any other old lines on the left that don't yet have
+              # a new counterpart on the right, update the free_right_index
+              next_free_right_index = free_right_index + 1
+              free_right_index = next_free_right_index < i ? next_free_right_index : nil
             else
-              # Change is only on the right side, left side has no change
               lines << {
                 left: {
                   type:       nil,
                   number:     nil,
                   text:       "",
                   line_code:  line_code,
+                  position:   position
                 },
-                right: {
-                  type:       type,
-                  number:     line_new,
-                  text:       full_line,
-                  line_code:  line_code
-                }
+                right: data
               }
+
+              free_right_index = nil
+              i += 1
             end
           end
         end
+
         lines
-      end
-
-      private
-
-      def generate_line_code(file_path, line)
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
       end
     end
   end

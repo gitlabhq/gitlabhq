@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 feature 'project owner creates a license file', feature: true, js: true do
-  include Select2Helper
+  include WaitForAjax
 
   let(:project_master) { create(:user) }
   let(:project) { create(:project) }
@@ -21,7 +21,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     expect(page).to have_selector('.license-selector')
 
-    select2('mit', from: '#license_type')
+    select_template('MIT License')
 
     file_content = find('.file-content')
     expect(file_content).to have_content('The MIT License (MIT)')
@@ -44,7 +44,7 @@ feature 'project owner creates a license file', feature: true, js: true do
     expect(find('#file_name').value).to eq('LICENSE')
     expect(page).to have_selector('.license-selector')
 
-    select2('mit', from: '#license_type')
+    select_template('MIT License')
 
     file_content = find('.file-content')
     expect(file_content).to have_content('The MIT License (MIT)')
@@ -57,5 +57,13 @@ feature 'project owner creates a license file', feature: true, js: true do
       namespace_project_blob_path(project.namespace, project, 'master/LICENSE'))
     expect(page).to have_content('The MIT License (MIT)')
     expect(page).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
+  end
+
+  def select_template(template)
+    page.within('.js-license-selector-wrap') do
+      click_button 'Choose a License template'
+      click_link template
+      wait_for_ajax
+    end
   end
 end

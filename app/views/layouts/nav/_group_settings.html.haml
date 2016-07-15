@@ -1,16 +1,22 @@
 - if current_user
-  - if access = @group.users.find_by(id: current_user.id)
-    .controls
-      .dropdown.group-settings-dropdown
-        %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
-          = icon('cog')
-          = icon('caret-down')
-        %ul.dropdown-menu.dropdown-menu-align-right
-          - if can?(current_user, :admin_group, @group)
-            = nav_link(path: 'groups#projects') do
-              = link_to projects_group_path(@group), title: 'Projects' do
-                Projects
-            %li.divider
-            %li
-              = link_to edit_group_path(@group) do
-                Edit Group
+  - can_edit = can?(current_user, :admin_group, @group)
+  - member = @group.members.find_by(user_id: current_user.id)
+  - can_leave = member && can?(current_user, :destroy_group_member, member)
+
+  .controls
+    .dropdown.group-settings-dropdown
+      %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+        = icon('cog')
+        = icon('caret-down')
+      %ul.dropdown-menu.dropdown-menu-align-right
+        = nav_link(path: 'groups#projects') do
+          = link_to 'Projects', projects_group_path(@group), title: 'Projects'
+        %li.divider
+        - if can_edit
+          %li
+            = link_to 'Edit Group', edit_group_path(@group)
+        - if can_leave
+          %li
+            = link_to polymorphic_path([:leave, @group, :members]),
+              data: { confirm: leave_confirmation_message(@group) }, method: :delete, title: 'Leave group' do
+              Leave Group

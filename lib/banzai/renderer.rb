@@ -10,7 +10,7 @@ module Banzai
     # requiring XHTML, such as Atom feeds, need to call `post_process` on the
     # result, providing the appropriate `pipeline` option.
     #
-    # markdown - Markdown String
+    # text     - Markdown String
     # context  - Hash of context options passed to our HTML Pipeline
     #
     # Returns an HTML-safe String
@@ -29,14 +29,62 @@ module Banzai
       end
     end
 
-    def self.render_result(text, context = {})
-      Pipeline[context[:pipeline]].call(text, context)
+    # Perform multiple render from an Array of Markdown String into an
+    # Array of HTML-safe String of HTML.
+    #
+    # As the rendered Markdown String can be already cached read all the data
+    # from the cache using Rails.cache.read_multi operation. If the Markdown String
+    # is not in the cache or it's not cacheable (no cache_key entry is provided in
+    # the context) the Markdown String is rendered and stored in the cache so the
+    # next render call gets the rendered HTML-safe String from the cache.
+    #
+    # For further explanation see #render method comments.
+    #
+    # texts_and_contexts - An Array of Hashes that contains the Markdown String (:text)
+    #                      an options passed to our HTML Pipeline (:context)
+    #
+    # If on the :context you specify a :cache_key entry will be used to retrieve it
+    # and cache the result of rendering the Markdown String.
+    #
+    # Returns an Array containing HTML-safe String instances.
+    #
+    # Example:
+    #    texts_and_contexts
+    #    => [{ text: '### Hello',
+    #          context: { cache_key: [note, :note] } }]
+    def self.cache_collection_render(texts_and_contexts)
+      items_collection = texts_and_contexts.each_with_index do |item, index|
+        context = item[:context]
+        cache_key = full_cache_multi_key(context.delete(:cache_key), context[:pipeline])
+
+        item[:cache_key] = cache_key if cache_key
+      end
+
+      cacheable_items, non_cacheable_items = items_collection.partition { |item| item.key?(:cache_key) }
+
+      items_in_cache = []
+      items_not_in_cache = []
+
+      unless cacheable_items.empty?
+        items_in_cache = Rails.cache.read_multi(*cacheable_items.map { |item| item[:cache_key] })
+        items_not_in_cache = cacheable_items.reject do |item|
+          item[:rendered] = items_in_cache[item[:cache_key]]
+          items_in_cache.key?(item[:cache_key])
+        end
+      end
+
+      (items_not_in_cache + non_cacheable_items).each do |item|
+        item[:rendered] = render(item[:text], item[:context])
+        Rails.cache.write(item[:cache_key], item[:rendered]) if item[:cache_key]
+      end
+
+      items_collection.map { |item| item[:rendered] }
     end
 
-    def self.pre_process(text, context)
-      pipeline = Pipeline[:pre_process]
+    def self.render_result(text, context = {})
+      text = Pipeline[:pre_process].to_html(text, context) if text
 
-      pipeline.to_html(text, context)
+      Pipeline[context[:pipeline]].call(text, context)
     end
 
     # Perform post-processing on an HTML String
@@ -81,6 +129,14 @@ module Banzai
     def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
       ["banzai", *cache_key, pipeline_name || :full]
+    end
+
+    # To map Rails.cache.read_multi results we need to know the Rails.cache.expanded_key.
+    # Other option will be to generate stringified keys on our side and don't delegate to Rails.cache.expanded_key
+    # method.
+    def self.full_cache_multi_key(cache_key, pipeline_name)
+      return unless cache_key
+      Rails.cache.send(:expanded_key, full_cache_key(cache_key, pipeline_name))
     end
   end
 end

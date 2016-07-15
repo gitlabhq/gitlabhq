@@ -1,32 +1,34 @@
+- @no_container = true
 - page_title "Git Access", "Wiki"
 
 = render 'nav'
-.row-content-block
-  %span.oneline
-    Git access for
-    %strong= @project_wiki.path_with_namespace
+%div{ class: container_class }
+  .sub-header-block
+    %span.oneline
+      Git access for
+      %strong= @project_wiki.path_with_namespace
 
-  .pull-right
-    = render "shared/clone_panel", project: @project_wiki
+    .pull-right
+      = render "shared/clone_panel", project: @project_wiki
 
-.git-empty.prepend-top-default
-  %fieldset
-    %legend Install Gollum:
-    %pre.dark
-      :preserve
-        gem install gollum
+  .prepend-top-default
+    %fieldset
+      %legend Install Gollum:
+      %pre.dark
+        :preserve
+          gem install gollum
 
-    %legend Clone Your Wiki:
-    %pre.dark
-      :preserve
-        git clone #{ content_tag(:span, default_url_to_repo(@project_wiki), class: 'clone')}
-        cd #{h @project_wiki.path}
+      %legend Clone Your Wiki:
+      %pre.dark
+        :preserve
+          git clone #{ content_tag(:span, default_url_to_repo(@project_wiki), class: 'clone')}
+          cd #{h @project_wiki.path}
 
-    %legend Start Gollum And Edit Locally:
-    %pre.dark
-      :preserve
-        gollum
-        == Sinatra/1.3.5 has taken the stage on 4567 for development with backup from Thin
-        >> Thin web server (v1.5.0 codename Knife)
-        >> Maximum connections set to 1024
-        >> Listening on 0.0.0.0:4567, CTRL+C to stop
+      %legend Start Gollum And Edit Locally:
+      %pre.dark
+        :preserve
+          gollum
+          == Sinatra/1.3.5 has taken the stage on 4567 for development with backup from Thin
+          >> Thin web server (v1.5.0 codename Knife)
+          >> Maximum connections set to 1024
+          >> Listening on 0.0.0.0:4567, CTRL+C to stop

@@ -8,7 +8,6 @@ module Banzai
     # Context options:
     #   :project_wiki
     class WikiLinkFilter < HTML::Pipeline::Filter
-
       def call
         return doc unless project_wiki?
 
@@ -29,7 +28,7 @@ module Banzai
         return if html_attr.blank?
 
         html_attr.value = apply_rewrite_rules(html_attr.value)
-      rescue URI::Error
+      rescue URI::Error, Addressable::URI::InvalidURIError
         # noop
       end
 

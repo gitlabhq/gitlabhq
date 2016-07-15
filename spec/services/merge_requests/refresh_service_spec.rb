@@ -5,7 +5,7 @@ describe MergeRequests::RefreshService, services: true do
   let(:user) { create(:user) }
   let(:service) { MergeRequests::RefreshService }
 
-  describe :execute do
+  describe '#execute' do
     before do
       @user = create(:user)
       group = create(:group)
@@ -174,7 +174,6 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request).to be_open
       end
     end
-
 
     def reload_mrs
       @merge_request.reload

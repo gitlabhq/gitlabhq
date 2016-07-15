@@ -8,7 +8,7 @@ Asana - Teamwork without email
 
 Set Asana service for a project.
 
-> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it.  You can also close a task with a message containing: `fix #123456`.  You can find your Api Keys here: http://developer.asana.com/documentation/#api_keys
+> This service adds commit messages as comments to Asana tasks. Once enabled, commit messages are checked for Asana task URLs (for example, `https://app.asana.com/0/123456/987654`) or task IDs starting with # (for example, `#987654`). Every task ID found will get the commit comment added to it.  You can also close a task with a message containing: `fix #123456`.  You can find your Api Keys here: https://asana.com/developers/documentation/getting-started/auth#api-key
 
 ```
 PUT /projects/:id/services/asana
@@ -372,40 +372,6 @@ Get Gemnasium service settings for a project.
 
 ```
 GET /projects/:id/services/gemnasium
-```
-
-## GitLab CI
-
-Continuous integration server from GitLab
-
-### Create/Edit GitLab CI service
-
-Set GitLab CI service for a project.
-
-```
-PUT /projects/:id/services/gitlab-ci
-```
-
-Parameters:
-
-- `token` (**required**) - GitLab CI project specific token
-- `project_url` (**required**) - http://ci.gitlabhq.com/projects/3
-- `enable_ssl_verification` (optional) - Enable SSL verification
-
-### Delete GitLab CI service
-
-Delete GitLab CI service for a project.
-
-```
-DELETE /projects/:id/services/gitlab-ci
-```
-
-### Get GitLab CI service settings
-
-Get GitLab CI service settings for a project.
-
-```
-GET /projects/:id/services/gitlab-ci
 ```
 
 ## HipChat

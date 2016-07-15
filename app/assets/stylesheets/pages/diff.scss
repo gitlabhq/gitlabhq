@@ -4,6 +4,11 @@
   margin-bottom: $gl-padding;
   border-radius: 3px;
 
+  .commit-short-id {
+    font-family: $regular_font;
+    font-weight: 400;
+  }
+
   .diff-header {
     position: relative;
     background: $background-color;
@@ -423,16 +428,6 @@
 .file-holder {
   .diff-line-num:not(.js-unfold-bottom) {
     a {
-      &:before {
-        content: attr(data-linenumber);
-      }
-    }
-  }
-}
-
-.discussion {
-  .diff-content {
-    .diff-line-num {
       &:before {
         content: attr(data-linenumber);
       }

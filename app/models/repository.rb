@@ -39,7 +39,7 @@ class Repository
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+      File.join(@project.repository_storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -78,9 +78,9 @@ class Repository
     end
   end
 
-  def commit(id = 'HEAD')
+  def commit(ref = 'HEAD')
     return nil unless exists?
-    commit = Gitlab::Git::Commit.find(raw_repository, id)
+    commit = Gitlab::Git::Commit.find(raw_repository, ref)
     commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
@@ -130,7 +130,7 @@ class Repository
   end
 
   def find_tag(name)
-    raw_repository.tags.find { |tag| tag.name == name }
+    tags.find { |tag| tag.name == name }
   end
 
   def add_branch(user, branch_name, target)
@@ -191,12 +191,36 @@ class Repository
     end
   end
 
+  def ref_names
+    branch_names + tag_names
+  end
+
   def branch_names
-    cache.fetch(:branch_names) { branches.map(&:name) }
+    @branch_names ||= cache.fetch(:branch_names) { branches.map(&:name) }
   end
 
   def branch_exists?(branch_name)
     branch_names.include?(branch_name)
+  end
+
+  def ref_exists?(ref)
+    rugged.references.exist?(ref)
+  end
+
+  # Makes sure a commit is kept around when Git garbage collection runs.
+  # Git GC will delete commits from the repository that are no longer in any
+  # branches or tags, but we want to keep some of these commits around, for
+  # example if they have comments or CI builds.
+  def keep_around(sha)
+    return unless sha && commit(sha)
+
+    return if kept_around?(sha)
+
+    rugged.references.create(keep_around_ref_name(sha), sha)
+  end
+
+  def kept_around?(sha)
+    ref_exists?(keep_around_ref_name(sha))
   end
 
   def tag_names
@@ -242,22 +266,24 @@ class Repository
     end
   end
 
+  # Keys for data that can be affected for any commit push.
   def cache_keys
-    %i(size branch_names tag_names commit_count
+    %i(size commit_count
        readme version contribution_guide changelog
        license_blob license_key gitignore)
   end
 
+  # Keys for data on branch/tag operations.
+  def cache_keys_for_branches_and_tags
+    %i(branch_names tag_names branch_count tag_count)
+  end
+
   def build_cache
-    cache_keys.each do |key|
+    (cache_keys + cache_keys_for_branches_and_tags).each do |key|
       unless cache.exist?(key)
         send(key)
       end
     end
-  end
-
-  def expire_gitignore
-    cache.expire(:gitignore)
   end
 
   def expire_tags_cache
@@ -267,6 +293,7 @@ class Repository
 
   def expire_branches_cache
     cache.expire(:branch_names)
+    @branch_names = nil
     @local_branches = nil
   end
 
@@ -281,8 +308,6 @@ class Repository
     # This ensures this particular cache is flushed after the first commit to a
     # new repository.
     expire_emptiness_caches if empty?
-    expire_branch_count_cache
-    expire_tag_count_cache
   end
 
   def expire_branch_cache(branch_name = nil)
@@ -330,10 +355,6 @@ class Repository
 
   def lookup_cache
     @lookup_cache ||= {}
-  end
-
-  def expire_branch_names
-    cache.expire(:branch_names)
   end
 
   def expire_avatar_cache(branch_name = nil, revision = nil)
@@ -446,7 +467,7 @@ class Repository
 
   def blob_at(sha, path)
     unless Gitlab::Git.blank_ref?(sha)
-      Gitlab::Git::Blob.find(self, sha, path)
+      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path))
     end
   end
 
@@ -598,6 +619,21 @@ class Repository
     end
   end
 
+  def tags_sorted_by(value)
+    case value
+    when 'name'
+      # Would be better to use `sort_by` but `version_sorter` only exposes
+      # `sort` and `rsort`
+      VersionSorter.rsort(tag_names).map { |tag_name| find_tag(tag_name) }
+    when 'updated_desc'
+      tags_sorted_by_committed_date.reverse
+    when 'updated_asc'
+      tags_sorted_by_committed_date
+    else
+      tags
+    end
+  end
+
   def contributors
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
@@ -614,16 +650,6 @@ class Repository
       end
 
       contributor
-    end
-  end
-
-  def blob_for_diff(commit, diff)
-    blob_at(commit.id, diff.file_path)
-  end
-
-  def prev_blob_for_diff(commit, diff)
-    if commit.parent_id
-      blob_at(commit.parent_id, diff.old_path)
     end
   end
 
@@ -859,7 +885,6 @@ class Repository
     merge_base(ancestor_id, descendant_id) == ancestor_id
   end
 
-
   def search_files(query, ref)
     offset = 2
     args = %W(#{Gitlab.config.git.bin_path} grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
@@ -876,7 +901,7 @@ class Repository
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
-        extname = File.extname(filename)
+        extname = Regexp.escape(File.extname(filename))
         basename = filename.sub(/#{extname}$/, '')
         break
       end
@@ -962,6 +987,10 @@ class Repository
     raw_repository.ls_files(actual_ref)
   end
 
+  def gitattribute(path, name)
+    raw_repository.attributes(path)[name]
+  end
+
   def copy_gitattributes(ref)
     actual_ref = ref || root_ref
     begin
@@ -994,5 +1023,13 @@ class Repository
 
   def file_on_head(regex)
     tree(:head).blobs.find { |file| file.name =~ regex }
+  end
+
+  def tags_sorted_by_committed_date
+    tags.sort_by { |tag| commit(tag.target).committed_date }
+  end
+
+  def keep_around_ref_name(sha)
+    "refs/keep-around/#{sha}"
   end
 end

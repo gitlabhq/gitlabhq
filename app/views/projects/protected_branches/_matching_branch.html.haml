@@ -1,0 +1,9 @@
+%tr
+  %td
+    = link_to matching_branch.name, namespace_project_tree_path(@project.namespace, @project, matching_branch.name)
+    - if @project.root_ref?(matching_branch.name)
+      %span.label.label-info.prepend-left-5 default
+  %td
+    - commit = @project.commit(matching_branch.name)
+    = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id')
+    = time_ago_with_tooltip(commit.committed_date)

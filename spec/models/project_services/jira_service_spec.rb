@@ -76,7 +76,8 @@ describe JiraService, models: true do
     end
 
     it "should call JIRA API" do
-      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request,
+                            ExternalIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @comment_url).with(
         body: /Issue solved with/
       ).once
@@ -84,7 +85,8 @@ describe JiraService, models: true do
 
     it "calls the api with jira_issue_transition_id" do
       @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
-      @jira_service.execute(merge_request, JiraIssue.new("JIRA-123", project))
+      @jira_service.execute(merge_request,
+                            ExternalIssue.new("JIRA-123", project))
       expect(WebMock).to have_requested(:post, @api_url).with(
         body: /this-is-a-custom-id/
       ).once
@@ -152,10 +154,8 @@ describe JiraService, models: true do
         expect(@jira_service.password).to eq("password")
         expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
       end
-
     end
   end
-
 
   describe "Validations" do
     context "active" do

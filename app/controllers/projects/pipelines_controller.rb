@@ -32,7 +32,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def retry
-    pipeline.retry_failed
+    pipeline.retry_failed(current_user)
 
     redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
   end
@@ -54,6 +54,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @pipeline.commit_data
+    @commit ||= @pipeline.commit
   end
 end

@@ -22,7 +22,6 @@ feature 'Master deletes tag', feature: true do
         namespace_project_tags_path(project.namespace, project))
       expect(page).not_to have_content 'v1.1.0'
     end
-
   end
 
   context 'from a specific tag page' do

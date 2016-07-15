@@ -11,7 +11,7 @@ describe MergeRequests::MergeService, services: true do
     project.team << [user2, :developer]
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:service) { MergeRequests::MergeService.new(project, user, commit_message: 'Awesome message') }
 
@@ -64,6 +64,16 @@ describe MergeRequests::MergeService, services: true do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to eq("Something went wrong during merge")
+      end
+
+      it 'saves error if there is an PreReceiveError exception' do
+        allow(service).to receive(:repository).and_raise(GitHooksService::PreReceiveError, "error")
+
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.merge_error).to eq("error")
       end
     end
   end

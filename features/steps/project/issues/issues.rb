@@ -82,7 +82,8 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I submit new issue "500 error on profile" with label \'bug\'' do
     fill_in "issue_title", with: "500 error on profile"
-    select 'bug', from: "Labels"
+    click_button "Label"
+    click_link "bug"
     click_button "Submit issue"
   end
 
@@ -124,14 +125,12 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'project "Shop" has milestone "v2.2"' do
-
     milestone = create(:milestone, title: "v2.2", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
   end
 
   step 'project "Shop" has milestone "v3.0"' do
-
     milestone = create(:milestone, title: "v3.0", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
@@ -147,7 +146,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   When 'I select first assignee from "Shop" project' do
-
     first_assignee = project.users.first
     select first_assignee.name, from: "assignee_id"
   end
@@ -160,7 +158,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'project "Shop" have "Release 0.4" open issue' do
-
     create(:issue,
            title: "Release 0.4",
            project: project,
@@ -360,5 +357,4 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   def filter_issue(text)
     fill_in 'issue_search', with: text
   end
-
 end

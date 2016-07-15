@@ -99,7 +99,13 @@
           .form-group
             = f.label :new_namespace_id, "Namespace", class: 'control-label'
             .col-sm-10
-              = namespace_select_tag :new_namespace_id, selected: params[:namespace_id], class: 'input-large'
+              .dropdown
+                = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id', show_any: 'false' }, { toggle_class: 'js-namespace-select large' })
+                .dropdown-menu.dropdown-select
+                  = dropdown_title('Namespaces')
+                  = dropdown_filter("Search for Namespace")
+                  = dropdown_content
+                  = dropdown_loading
 
           .form-group
             .col-sm-offset-2.col-sm-10
@@ -126,7 +132,7 @@
               - else
                 passed.
 
-            = link_to icon('question-circle'), help_page_path('administration', 'repository_checks')
+            = link_to icon('question-circle'), help_page_path('administration/repository_checks')
 
           .form-group
             = f.submit 'Trigger repository check', class: 'btn btn-primary'
@@ -135,44 +141,27 @@
     - if @group
       .panel.panel-default
         .panel-heading
-          %strong #{@group.name}
-          group members (#{@group.group_members.count})
+          %strong= @group.name
+          group members
+          %span.badge= @group_members.size
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-xs' do
-              %i.fa.fa-pencil-square-o
-        %ul.well-list
-          - @group_members.each do |member|
-            = render 'shared/members/member', member: member, show_controls: false
+              = icon('pencil-square-o', text: 'Manage Access')
+        %ul.well-list.content-list
+          = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
         .panel-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
+    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+
     .panel.panel-default
       .panel-heading
-        Project members
-        %small
-          (#{@project.users.count})
+        %strong= @project.name
+        project members
+        %span.badge= @project.users.size
         .pull-right
-          = link_to namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-xs" do
-            %i.fa.fa-pencil-square-o
-            Manage Access
-      %ul.well-list.project_members
-        - @project_members.each do |project_member|
-          - user = project_member.user
-          %li.project_member
-            .list-item-name
-              - if user
-                %strong
-                  = link_to user.name, admin_user_path(user)
-              - else
-                %strong
-                  = project_member.invite_email
-                (invited)
-            .pull-right
-              - if project_member.owner?
-                %span.light Owner
-              - else
-                %span.light= project_member.human_access
-                = link_to namespace_project_project_member_path(@project.namespace, @project, project_member), data: { confirm: remove_member_message(project_member)}, method: :delete, remote: true, class: "btn btn-sm btn-remove" do
-                  %i.fa.fa-times
+          = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
+      %ul.well-list.project_members.content-list
+        = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .panel-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

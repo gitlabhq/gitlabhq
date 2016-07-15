@@ -1,12 +1,6 @@
 require 'spec_helper'
 
 describe VisibilityLevelHelper do
-  include Haml::Helpers
-
-  before :all do
-    init_haml_helpers
-  end
-
   let(:project)          { build(:project) }
   let(:group)            { build(:group) }
   let(:personal_snippet) { build(:personal_snippet) }
@@ -95,6 +89,5 @@ describe VisibilityLevelHelper do
         expect(skip_level?(snippet, Gitlab::VisibilityLevel::PRIVATE)).to be_falsey
       end
     end
-
   end
 end

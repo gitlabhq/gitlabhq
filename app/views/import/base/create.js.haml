@@ -1,6 +1,8 @@
 - if @already_been_taken
   :plain
-    target_field = $("tr#repo_#{@repo_id} .import-target")
+    tr = $("tr#repo_#{@repo_id}")
+    target_field = tr.find(".import-target")
+    import_button = tr.find(".btn-import")
     origin_target = target_field.text()
     project_name = "#{@project_name}"
     origin_namespace = "#{@target_namespace}"
@@ -10,6 +12,7 @@
     target_field.append("/" + project_name)
     target_field.data("project_name", project_name)
     target_field.find('input').prop("value", origin_namespace)
+    import_button.enable().removeClass('is-loading')
 - elsif @access_denied
   :plain
     job = $("tr#repo_#{@repo_id}")

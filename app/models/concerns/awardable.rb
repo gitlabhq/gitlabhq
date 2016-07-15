@@ -2,9 +2,10 @@ module Awardable
   extend ActiveSupport::Concern
 
   included do
-    has_many :award_emoji, as: :awardable, dependent: :destroy
+    has_many :award_emoji, -> { includes(:user) }, as: :awardable, dependent: :destroy
 
     if self < Participable
+      # By default we always load award_emoji user association
       participant :award_emoji
     end
   end
@@ -35,6 +36,7 @@ module Awardable
   end
 
   def grouped_awards(with_thumbs: true)
+    # By default we always load award_emoji user association
     awards = award_emoji.group_by(&:name)
 
     if with_thumbs

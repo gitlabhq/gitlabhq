@@ -2,11 +2,13 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:project) { create(:project) }
+  let(:source_sha) { create(:commit, project: project).id }
+  let(:target_sha) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit).id }
   let(:repository) { double(id: 1, fork: false) }
   let(:source_repo) { repository }
-  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
+  let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: source_sha) }
   let(:target_repo) { repository }
-  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7') }
+  let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -41,10 +43,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
-          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
+          source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
-          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
+          target_branch_sha: target_sha,
           state: 'opened',
           milestone: nil,
           author_id: project.creator_id,
@@ -68,10 +70,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
-          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
+          source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
-          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
+          target_branch_sha: target_sha,
           state: 'closed',
           milestone: nil,
           author_id: project.creator_id,
@@ -95,10 +97,10 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           description: "*Created by: octocat*\n\nPlease pull these awesome changes",
           source_project: project,
           source_branch: 'feature',
-          head_source_sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b',
+          source_branch_sha: source_sha,
           target_project: project,
           target_branch: 'master',
-          base_target_sha: '8ffb3c15a5475e59ae909384297fede4badcb4c7',
+          target_branch_sha: target_sha,
           state: 'merged',
           milestone: nil,
           author_id: project.creator_id,

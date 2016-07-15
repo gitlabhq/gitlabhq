@@ -6,14 +6,18 @@ $sidebar_width: 220px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 258px;
+$sidebar-transition-duration: .15s;
+$sidebar-breakpoint: 1024px;
 
 /*
  * UI elements
  */
-$border-color:       #e5e5e5;
-$focus-border-color: #3aabf0;
-$table-border-color: #f0f0f0;
-$background-color:   #fafafa;
+$border-color:          #e5e5e5;
+$focus-border-color:    #3aabf0;
+$table-border-color:    #f0f0f0;
+$background-color:      #fafafa;
+$dark-background-color: #f7f7f7;
+$table-text-gray:       #8f8f8f;
 
 /*
  * Text
@@ -60,6 +64,7 @@ $gl-btn-padding: 10px;
 $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
+$gl-sidebar-padding: 22px;
 
 /*
  * Misc
@@ -151,8 +156,10 @@ $warning-message-bg: #fbf2d9;
 $warning-message-color: #9e8e60;
 $warning-message-border: #f0e2bb;
 
-/* header */
-$light-grey-header: #faf9f9;
+/* tanuki logo colors */
+$tanuki-red: #e24329;
+$tanuki-orange: #fc6d26;
+$tanuki-yellow: #fca326;
 
 /*
  * State colors:
@@ -260,6 +267,11 @@ $calendar-header-color: #b8b8b8;
 $calendar-hover-bg: #ecf3fe;
 $calendar-border-color: rgba(#000, .1);
 $calendar-unselectable-bg: #faf9f9;
+
+/*
+ * Personal Access Tokens
+ */
+$personal-access-tokens-disabled-label-color: #bbb;
 
 $ci-output-bg: #1d1f21;
 $ci-text-color: #c5c8c6;

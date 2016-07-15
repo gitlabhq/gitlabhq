@@ -4,6 +4,14 @@
       margin-right: 1px;
     }
   }
+
+  // Border around images in issue and MR descriptions.
+  .description img:not(.emoji) {
+    border: 1px solid $table-border-gray;
+    padding: 5px;
+    margin: 5px;
+    max-height: calc(100vh - 100px);
+  }
 }
 
 .issuable-filter-count {
@@ -145,7 +153,6 @@
 
       .assign-yourself {
         margin-top: 10px;
-        font-weight: normal;
         display: block;
       }
     }
@@ -156,6 +163,10 @@
 
     .light {
       font-weight: normal;
+    }
+
+    .no-value {
+      color: $gl-placeholder-color;
     }
 
     .sidebar-collapsed-icon {
@@ -248,11 +259,16 @@
       padding-bottom: 0;
       margin-bottom: 10px;
     }
+
+    .issuable-header-btn {
+      display: none;
+    }
   }
 
   .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
+    
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
@@ -322,7 +338,7 @@
   margin-left: 5px;
 
   a {
-    color: #8c8c8c;
+    color: $gl-placeholder-color;
   }
 }
 

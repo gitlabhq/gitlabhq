@@ -5,13 +5,13 @@ describe Gitlab::Ci::Config::Node::Factory do
     let(:factory) { described_class.new(entry_class) }
     let(:entry_class) { Gitlab::Ci::Config::Node::Script }
 
-    context 'when value setting value' do
+    context 'when setting up a value' do
       it 'creates entry with valid value' do
         entry = factory
           .with(value: ['ls', 'pwd'])
           .create!
 
-        expect(entry.value).to eq "ls\npwd"
+        expect(entry.value).to eq ['ls', 'pwd']
       end
 
       context 'when setting description' do
@@ -21,13 +21,35 @@ describe Gitlab::Ci::Config::Node::Factory do
             .with(description: 'test description')
             .create!
 
-          expect(entry.value).to eq "ls\npwd"
+          expect(entry.value).to eq ['ls', 'pwd']
           expect(entry.description).to eq 'test description'
+        end
+      end
+
+      context 'when setting key' do
+        it 'creates entry with custom key' do
+          entry = factory
+            .with(value: ['ls', 'pwd'], key: 'test key')
+            .create!
+
+          expect(entry.key).to eq 'test key'
+        end
+      end
+
+      context 'when setting a parent' do
+        let(:parent) { Object.new }
+
+        it 'creates entry with valid parent' do
+          entry = factory
+            .with(value: 'ls', parent: parent)
+            .create!
+
+          expect(entry.parent).to eq parent
         end
       end
     end
 
-    context 'when not setting value' do
+    context 'when not setting up a value' do
       it 'raises error' do
         expect { factory.create! }.to raise_error(
           Gitlab::Ci::Config::Node::Factory::InvalidFactory
@@ -35,14 +57,13 @@ describe Gitlab::Ci::Config::Node::Factory do
       end
     end
 
-    context 'when creating a null entry' do
-      it 'creates a null entry' do
+    context 'when creating entry with nil value' do
+      it 'creates an undefined entry' do
         entry = factory
           .with(value: nil)
-          .nullify!
           .create!
 
-        expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Null
+        expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
       end
     end
   end

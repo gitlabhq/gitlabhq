@@ -51,12 +51,25 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'provider was external, now has been removed' do
-          it 'should mark existing user internal' do
+          it 'should not mark external user as internal' do
             create(:omniauth_user, extern_uid: 'my-uid', provider: 'twitter', external: true)
             stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['facebook'])
             oauth_user.save
             expect(gl_user).to be_valid
-            expect(gl_user.external).to be_falsey
+            expect(gl_user.external).to be_truthy
+          end
+        end
+
+        context 'provider is not external' do
+          context 'when adding a new OAuth identity' do
+            it 'should not promote an external user to internal' do
+              user = create(:user, email: 'john@mail.com', external: true)
+              user.identities.create(provider: provider, extern_uid: uid)
+
+              oauth_user.save
+              expect(gl_user).to be_valid
+              expect(gl_user.external).to be_truthy
+            end
           end
         end
 
@@ -122,13 +135,12 @@ describe Gitlab::OAuth::User, lib: true do
             before do
               allow(ldap_user).to receive(:uid) { uid }
               allow(ldap_user).to receive(:username) { uid }
-              allow(ldap_user).to receive(:email) { ['johndoe@example.com','john2@example.com'] }
+              allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
               allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
               allow(Gitlab::LDAP::Person).to receive(:find_by_uid).and_return(ldap_user)
             end
 
             context "and no account for the LDAP user" do
-
               it "creates a user with dual LDAP and omniauth identities" do
                 oauth_user.save
 
@@ -169,7 +181,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
     end
 
     describe 'blocking' do
@@ -203,7 +214,7 @@ describe Gitlab::OAuth::User, lib: true do
           stub_omniauth_config(auto_link_ldap_user: true)
           allow(ldap_user).to receive(:uid) { uid }
           allow(ldap_user).to receive(:username) { uid }
-          allow(ldap_user).to receive(:email) { ['johndoe@example.com','john2@example.com'] }
+          allow(ldap_user).to receive(:email) { ['johndoe@example.com', 'john2@example.com'] }
           allow(ldap_user).to receive(:dn) { 'uid=user1,ou=People,dc=example' }
           allow(oauth_user).to receive(:ldap_person).and_return(ldap_user)
         end
@@ -254,7 +265,6 @@ describe Gitlab::OAuth::User, lib: true do
           end
         end
       end
-
 
       context 'sign-in' do
         before do

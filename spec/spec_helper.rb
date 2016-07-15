@@ -3,11 +3,6 @@ if ENV['SIMPLECOV']
   SimpleCov.start :rails
 end
 
-if ENV['COVERALLS']
-  require 'coveralls'
-  Coveralls.wear_merged!
-end
-
 ENV["RAILS_ENV"] ||= 'test'
 
 require File.expand_path("../../config/environment", __FILE__)
@@ -38,7 +33,6 @@ RSpec.configure do |config|
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
   config.include EmailHelpers
-  config.include RelativeUrl,         type: feature
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls

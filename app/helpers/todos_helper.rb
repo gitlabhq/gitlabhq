@@ -1,10 +1,10 @@
 module TodosHelper
   def todos_pending_count
-    current_user.todos.pending.count
+    @todos_pending_count ||= TodosFinder.new(current_user, state: :pending).execute.count
   end
 
   def todos_done_count
-    current_user.todos.done.count
+    @todos_done_count ||= TodosFinder.new(current_user, state: :done).execute.count
   end
 
   def todo_action_name(todo)
@@ -12,7 +12,8 @@ module TodosHelper
     when Todo::ASSIGNED then 'assigned you'
     when Todo::MENTIONED then 'mentioned you on'
     when Todo::BUILD_FAILED then 'The build failed for your'
-    when Todo::MARKED then 'marked this as a Todo for'
+    when Todo::MARKED then 'added a todo for'
+    when Todo::APPROVAL_REQUIRED then 'set you as an approver for'
     end
   end
 

@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Script do
-  let(:entry) { described_class.new(value) }
+  let(:entry) { described_class.new(config) }
 
-  describe '#validate!' do
-    before { entry.validate! }
+  describe '#process!' do
+    before { entry.process! }
 
-    context 'when entry value is correct' do
-      let(:value) { ['ls', 'pwd'] }
+    context 'when entry config value is correct' do
+      let(:config) { ['ls', 'pwd'] }
 
       describe '#value' do
-        it 'returns concatenated command' do
-          expect(entry.value).to eq "ls\npwd"
+        it 'returns array of strings' do
+          expect(entry.value).to eq config
         end
       end
 
@@ -29,12 +29,12 @@ describe Gitlab::Ci::Config::Node::Script do
     end
 
     context 'when entry value is not correct' do
-      let(:value) { 'ls' }
+      let(:config) { 'ls' }
 
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include /should be an array of strings/
+            .to include 'script config should be an array of strings'
         end
       end
 

@@ -52,5 +52,4 @@ class Spinach::Features::SnippetSearch < Spinach::FeatureSteps
   step 'I should not see "Personal snippet private" in results' do
     expect(page).not_to have_content 'Personal snippet private'
   end
-
 end

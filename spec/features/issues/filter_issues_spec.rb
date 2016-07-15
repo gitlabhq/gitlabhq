@@ -7,6 +7,7 @@ describe 'Filter issues', feature: true do
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
+  let!(:issue1)    { create(:issue, project: project) }
 
   before do
     project.team << [user, :master]
@@ -14,7 +15,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for assignee from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -36,7 +36,6 @@ describe 'Filter issues', feature: true do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
       end
 
-
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
@@ -46,7 +45,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for milestone from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -67,7 +65,6 @@ describe 'Filter issues', feature: true do
 
         expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
       end
-
 
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
@@ -113,7 +110,6 @@ describe 'Filter issues', feature: true do
   end
 
   describe 'Filter issues for assignee and label from issues#index' do
-
     before do
       visit namespace_project_issues_path(project.namespace, project)
 
@@ -143,7 +139,6 @@ describe 'Filter issues', feature: true do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
       end
-
 
       it 'should not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
@@ -202,6 +197,7 @@ describe 'Filter issues', feature: true do
         page.within '.labels-filter' do
           click_link 'bug'
         end
+        find('.dropdown-menu-close-icon').click
 
         page.within '.issues-list' do
           expect(page).to have_selector('.issue', count: 1)
@@ -293,7 +289,7 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
 
       page.within '.issues-list' do
-        expect(first('.issue')).to have_content('Frontend')
+        expect(page).to have_content('Frontend')
       end
     end
   end

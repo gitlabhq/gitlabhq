@@ -164,7 +164,14 @@ describe Gitlab::Saml::User, lib: true do
             end
 
             context 'and LDAP user has an account already' do
-              let!(:existing_user) { create(:omniauth_user, email: 'john@mail.com', extern_uid: 'uid=user1,ou=People,dc=example', provider: 'ldapmain', username: 'john') }
+              before do
+                create(:omniauth_user,
+                       email: 'john@mail.com',
+                       extern_uid: 'uid=user1,ou=People,dc=example',
+                       provider: 'ldapmain',
+                       username: 'john')
+              end
+
               it 'adds the omniauth identity to the LDAP account' do
                 saml_user.save
 
@@ -176,6 +183,15 @@ describe Gitlab::Saml::User, lib: true do
                 expect(identities_as_hash).to match_array([ { provider: 'ldapmain', extern_uid: 'uid=user1,ou=People,dc=example' },
                                                             { provider: 'saml', extern_uid: uid }
                                                           ])
+              end
+
+              it 'saves successfully on subsequent tries, when both identities are present' do
+                saml_user.save
+                local_saml_user = described_class.new(auth_hash)
+                local_saml_user.save
+
+                expect(local_saml_user.gl_user).to be_valid
+                expect(local_saml_user.gl_user).to be_persisted
               end
             end
 
@@ -198,7 +214,6 @@ describe Gitlab::Saml::User, lib: true do
           end
         end
       end
-
     end
 
     describe 'blocking' do

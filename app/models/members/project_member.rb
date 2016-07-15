@@ -15,7 +15,6 @@ class ProjectMember < Member
   before_destroy :delete_member_todos
 
   class << self
-
     # Add users to project teams with passed access option
     #
     # access can be an integer representing a access code
@@ -111,12 +110,6 @@ class ProjectMember < Member
     super
   end
 
-  def send_request
-    notification_service.new_project_access_request(self)
-
-    super
-  end
-
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
@@ -148,12 +141,6 @@ class ProjectMember < Member
 
   def after_decline_invite
     notification_service.decline_project_invite(self)
-
-    super
-  end
-
-  def post_decline_request
-    notification_service.decline_project_access_request(self)
 
     super
   end

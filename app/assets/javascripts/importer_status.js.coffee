@@ -7,13 +7,16 @@ class @ImporterStatus
     $('.js-add-to-import')
       .off 'click'
       .on 'click', (e) =>
-        new_namespace = null
         $btn = $(e.currentTarget)
         $tr = $btn.closest('tr')
+        $target_field = $tr.find('.import-target')
+        $namespace_input = $target_field.find('input')
         id = $tr.attr('id').replace('repo_', '')
-        if $tr.find('.import-target input').length > 0
-          new_namespace = $tr.find('.import-target input').prop('value')
-          $tr.find('.import-target').empty().append("#{new_namespace} / #{$tr.find('.import-target').data('project_name')}")
+        new_namespace = null
+
+        if $namespace_input.length > 0
+          new_namespace = $namespace_input.prop('value')
+          $target_field.empty().append("#{new_namespace}/#{$target_field.data('project_name')}")
 
         $btn
           .disable()

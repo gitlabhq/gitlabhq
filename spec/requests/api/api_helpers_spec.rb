@@ -1,8 +1,9 @@
 require 'spec_helper'
 
-describe API, api: true do
+describe API::Helpers, api: true do
   include API::Helpers
   include ApiHelpers
+
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
@@ -39,24 +40,64 @@ describe API, api: true do
   end
 
   describe ".current_user" do
-    it "should return nil for an invalid token" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
-      allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
-      expect(current_user).to be_nil
+    describe "when authenticating using a user's private token" do
+      it "should return nil for an invalid token" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        expect(current_user).to be_nil
+      end
+
+      it "should return nil for a user without access" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        expect(current_user).to be_nil
+      end
+
+      it "should leave user as is when sudo not specified" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
+        expect(current_user).to eq(user)
+        clear_env
+        params[API::Helpers::PRIVATE_TOKEN_PARAM] = user.private_token
+        expect(current_user).to eq(user)
+      end
     end
 
-    it "should return nil for a user without access" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
-      allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
-      expect(current_user).to be_nil
-    end
+    describe "when authenticating using a user's personal access tokens" do
+      let(:personal_access_token) { create(:personal_access_token, user: user) }
 
-    it "should leave user as is when sudo not specified" do
-      env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
-      expect(current_user).to eq(user)
-      clear_env
-      params[API::Helpers::PRIVATE_TOKEN_PARAM] = user.private_token
-      expect(current_user).to eq(user)
+      it "should return nil for an invalid token" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        expect(current_user).to be_nil
+      end
+
+      it "should return nil for a user without access" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        expect(current_user).to be_nil
+      end
+
+      it "should leave user as is when sudo not specified" do
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        expect(current_user).to eq(user)
+        clear_env
+        params[API::Helpers::PRIVATE_TOKEN_PARAM] = personal_access_token.token
+        expect(current_user).to eq(user)
+      end
+
+      it 'does not allow revoked tokens' do
+        personal_access_token.revoke!
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        expect(current_user).to be_nil
+      end
+
+      it 'does not allow expired tokens' do
+        personal_access_token.update_attributes!(expires_at: 1.day.ago)
+        env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        allow_any_instance_of(self.class).to receive(:doorkeeper_guard){ false }
+        expect(current_user).to be_nil
+      end
     end
 
     it "should change current user to sudo when admin" do

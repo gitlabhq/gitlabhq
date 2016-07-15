@@ -4,26 +4,39 @@ module Gitlab
       GITHUB_SAFE_REMAINING_REQUESTS = 100
       GITHUB_SAFE_SLEEP_TIME = 500
 
-      attr_reader :client, :api
+      attr_reader :access_token
 
       def initialize(access_token)
-        @client = ::OAuth2::Client.new(
+        @access_token = access_token
+
+        if access_token
+          ::Octokit.auto_paginate = false
+        end
+      end
+
+      def api
+        @api ||= ::Octokit::Client.new(
+          access_token: access_token,
+          api_endpoint: github_options[:site],
+          # If there is no config, we're connecting to github.com and we
+          # should verify ssl.
+          connection_options: {
+            ssl: { verify: config ? config['verify_ssl'] : true }
+          }
+        )
+      end
+
+      def client
+        unless config
+          raise Projects::ImportService::Error,
+            'OAuth configuration for GitHub missing.'
+        end
+
+        @client ||= ::OAuth2::Client.new(
           config.app_id,
           config.app_secret,
           github_options.merge(ssl: { verify: config['verify_ssl'] })
         )
-
-        if access_token
-          ::Octokit.auto_paginate = false
-
-          @api = ::Octokit::Client.new(
-            access_token: access_token,
-            api_endpoint: github_options[:site],
-            connection_options: {
-              ssl: { verify: config['verify_ssl'] }
-            }
-          )
-        end
       end
 
       def authorize_url(redirect_uri)
@@ -56,15 +69,30 @@ module Gitlab
       end
 
       def github_options
-        config["args"]["client_options"].deep_symbolize_keys
+        if config
+          config["args"]["client_options"].deep_symbolize_keys
+        else
+          OmniAuth::Strategies::GitHub.default_options[:client_options].symbolize_keys
+        end
       end
 
       def rate_limit
         api.rate_limit!
+      # GitHub Rate Limit API returns 404 when the rate limit is
+      # disabled. In this case we just want to return gracefully
+      # instead of spitting out an error.
+      rescue Octokit::NotFound
+        nil
+      end
+
+      def has_rate_limit?
+        return @has_rate_limit if defined?(@has_rate_limit)
+
+        @has_rate_limit = rate_limit.present?
       end
 
       def rate_limit_exceed?
-        rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+        has_rate_limit? && rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
       end
 
       def rate_limit_sleep_time

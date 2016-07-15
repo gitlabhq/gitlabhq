@@ -2,8 +2,19 @@
  *  Application Header
  *
  */
+@mixin tanuki-logo-colors($path-color) {
+  fill: $path-color;
+  transition: all 0.8s;
+
+  &:hover,
+  &.highlight {
+    fill: lighten($path-color, 25%);
+    transition: all 0.1s;
+  }
+}
+
 header {
-  transition-duration: .3s;
+  transition: padding $sidebar-transition-duration;
 
   &.navbar-empty {
     height: $header-height;
@@ -15,7 +26,6 @@ header {
       text-align: center;
 
       #tanuki-logo, img {
-        width: 36px;
         height: 36px;
       }
     }
@@ -50,7 +60,7 @@ header {
         margin: ($header-height - 28) / 2 0;
         margin-left: 10px;
         height: 28px;
-        width: 28px;
+        min-width: 28px;
         line-height: 28px;
         text-align: center;
 
@@ -79,14 +89,9 @@ header {
 
     &.header-collapsed {
       padding: 0 16px;
-
-      .side-nav-toggle {
-        display: block;
-      }
     }
 
     .side-nav-toggle {
-      display: none;
       position: absolute;
       left: -10px;
       margin: 6px 0;
@@ -108,9 +113,7 @@ header {
   .header-content {
     position: relative;
     height: $header-height;
-    padding-right: 40px;
     padding-left: 30px;
-    transition-duration: .3s;
 
     @media (min-width: $screen-sm-min) {
       padding-right: 0;
@@ -127,6 +130,10 @@ header {
       top: 7px;
       transition-duration: .3s;
       z-index: 999;
+
+      svg, img {
+        height: 36px;
+      }
 
       &:hover {
         cursor: pointer;
@@ -198,25 +205,24 @@ header {
   }
 }
 
-.header-collapsed {
-  margin-left: 0;
+#tanuki-logo {
 
-  .header-content {
-
-    @media (min-width: $screen-sm-max) {
-      padding-left: 30px;
-      transition-duration: .3s;
-    }
+  #tanuki-left-ear,
+  #tanuki-right-ear,
+  #tanuki-nose {
+    @include tanuki-logo-colors($tanuki-red);
   }
-}
 
-.tanuki-shape {
-  transition: all 0.8s;
-
-  &:hover, &.highlight {
-    fill: rgb(255, 255, 255);
-    transition: all 0.1s;
+  #tanuki-left-eye,
+  #tanuki-right-eye {
+    @include tanuki-logo-colors($tanuki-orange);
   }
+
+  #tanuki-left-cheek,
+  #tanuki-right-cheek {
+    @include tanuki-logo-colors($tanuki-yellow);
+  }
+
 }
 
 @media (max-width: $screen-xs-max) {
@@ -235,14 +241,23 @@ header {
     .navbar-collapse {
       padding-left: 5px;
 
-      li {
+      .nav > li {
         display: table-cell;
         width: 1%;
-
-        a {
-          margin-left: 8px !important;
-        }
       }
     }
   }
+}
+
+.header-user {
+  .dropdown-menu-nav {
+    width: 140px;
+    margin-top: -5px;
+  }
+}
+
+.header-user-avatar {
+  float: left;
+  margin-right: 5px;
+  border-radius: 50%;
 }

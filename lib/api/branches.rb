@@ -25,7 +25,7 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   GET /projects/:id/repository/branches/:branch
-      get ':id/repository/branches/:branch', requirements: { branch: /.*/ } do
+      get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
         @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
         not_found!("Branch") unless @branch
         present @branch, with: Entities::RepoObject, project: user_project
@@ -39,8 +39,7 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ':id/repository/branches/:branch/protect',
-          requirements: { branch: /.*/ } do
-
+          requirements: { branch: /.+/ } do
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
@@ -59,8 +58,7 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ':id/repository/branches/:branch/unprotect',
-          requirements: { branch: /.*/ } do
-
+          requirements: { branch: /.+/ } do
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
@@ -101,7 +99,7 @@ module API
       # Example Request:
       #   DELETE /projects/:id/repository/branches/:branch
       delete ":id/repository/branches/:branch",
-          requirements: { branch: /.*/ } do
+          requirements: { branch: /.+/ } do
         authorize_push_project
         result = DeleteBranchService.new(user_project, current_user).
           execute(params[:branch])

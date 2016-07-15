@@ -56,8 +56,6 @@ module Gitlab
 
         if external_provider? && @user
           @user.external = true
-        elsif @user
-          @user.external = false
         end
 
         @user
@@ -74,7 +72,7 @@ module Gitlab
         if user
           # Case when a LDAP user already exists in Gitlab. Add the OAuth identity to existing account.
           log.info "LDAP account found for user #{user.username}. Building new #{auth_hash.provider} identity."
-          user.identities.build(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+          user.identities.find_or_initialize_by(extern_uid: auth_hash.uid, provider: auth_hash.provider)
         else
           log.info "No existing LDAP account was found in GitLab. Checking for #{auth_hash.provider} account."
           user = find_by_uid_and_provider

@@ -20,6 +20,7 @@ class Snippet < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.file_name_regex,
               message: Gitlab::Regex.file_name_regex_message }
+
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
@@ -81,6 +82,11 @@ class Snippet < ActiveRecord::Base
     0
   end
 
+  # alias for compatibility with blobs and highlighting
+  def path
+    file_name
+  end
+
   def name
     file_name
   end
@@ -135,7 +141,16 @@ class Snippet < ActiveRecord::Base
     end
 
     def accessible_to(user)
-      where('visibility_level IN (?) OR author_id = ?', [Snippet::INTERNAL, Snippet::PUBLIC], user)
+      return are_public unless user.present?
+      return all if user.admin?
+
+      where(
+        'visibility_level IN (:visibility_levels)
+         OR author_id = :author_id
+         OR project_id IN (:project_ids)',
+         visibility_levels: [Snippet::PUBLIC, Snippet::INTERNAL],
+         author_id: user.id,
+         project_ids: user.authorized_projects.select(:id))
     end
   end
 end

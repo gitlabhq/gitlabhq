@@ -73,10 +73,10 @@ describe Member, models: true do
       @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
-      @requested_member = project.members.request.find_by(user_id: requested_user.id)
+      @requested_member = project.requesters.find_by(user_id: requested_user.id)
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
-      @accepted_request_member = project.members.request.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+      @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
     end
 
     describe '.invite' do
@@ -103,22 +103,6 @@ describe Member, models: true do
       it { expect(described_class.request).not_to include @accepted_request_member }
     end
 
-    describe '.non_request' do
-      it { expect(described_class.non_request).to include @master }
-      it { expect(described_class.non_request).to include @invited_member }
-      it { expect(described_class.non_request).to include @accepted_invite_member }
-      it { expect(described_class.non_request).not_to include @requested_member }
-      it { expect(described_class.non_request).to include @accepted_request_member }
-    end
-
-    describe '.non_pending' do
-      it { expect(described_class.non_pending).to include @master }
-      it { expect(described_class.non_pending).not_to include @invited_member }
-      it { expect(described_class.non_pending).to include @accepted_invite_member }
-      it { expect(described_class.non_pending).not_to include @requested_member }
-      it { expect(described_class.non_pending).to include @accepted_request_member }
-    end
-
     describe '.owners_and_masters' do
       it { expect(described_class.owners_and_masters).to include @owner }
       it { expect(described_class.owners_and_masters).to include @master }
@@ -132,18 +116,6 @@ describe Member, models: true do
   describe "Delegate methods" do
     it { is_expected.to respond_to(:user_name) }
     it { is_expected.to respond_to(:user_email) }
-  end
-
-  describe 'Callbacks' do
-    describe 'after_destroy :post_decline_request, if: :request?' do
-      let(:member) { create(:project_member, requested_at: Time.now.utc) }
-
-      it 'calls #post_decline_request' do
-        expect(member).to receive(:post_decline_request)
-
-        member.destroy
-      end
-    end
   end
 
   describe ".add_user" do

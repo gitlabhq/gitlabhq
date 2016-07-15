@@ -10,7 +10,7 @@ module MembershipActions
   end
 
   def approve_access_request
-    @member = membershipable.members.request.find(params[:id])
+    @member = membershipable.requesters.find(params[:id])
 
     return render_403 unless can?(current_user, action_member_permission(:update, @member), @member)
 
@@ -20,39 +20,25 @@ module MembershipActions
   end
 
   def leave
-    @member = membershipable.members.find_by(user_id: current_user)
-    return render_403 unless @member
+    @member = membershipable.members.find_by(user_id: current_user) ||
+      membershipable.requesters.find_by(user_id: current_user)
+    Members::DestroyService.new(@member, current_user).execute
 
     source_type = @member.real_source_type.humanize(capitalize: false)
-
-    if can?(current_user, action_member_permission(:destroy, @member), @member)
-      notice =
-        if @member.request?
-          "Your access request to the #{source_type} has been withdrawn."
-        else
-          "You left the \"#{@member.source.human_name}\" #{source_type}."
-        end
-      @member.destroy
-
-      redirect_to [:dashboard, @member.real_source_type.tableize], notice: notice
-    else
-      if cannot_leave?
-        alert = "You can not leave the \"#{@member.source.human_name}\" #{source_type}."
-        alert << " Transfer or delete the #{source_type}."
-        redirect_to polymorphic_url(membershipable), alert: alert
+    notice =
+      if @member.request?
+        "Your access request to the #{source_type} has been withdrawn."
       else
-        render_403
+        "You left the \"#{@member.source.human_name}\" #{source_type}."
       end
-    end
+    redirect_path = @member.request? ? @member.source : [:dashboard, @member.real_source_type.tableize]
+
+    redirect_to redirect_path, notice: notice
   end
 
   protected
 
   def membershipable
-    raise NotImplementedError
-  end
-
-  def cannot_leave?
     raise NotImplementedError
   end
 end

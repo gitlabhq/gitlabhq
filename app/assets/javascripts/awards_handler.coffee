@@ -40,7 +40,7 @@ class @AwardsHandler
     $menu = $ '.emoji-menu'
 
     if $addBtn.hasClass 'js-note-emoji'
-      $addBtn.parents('.note').find('.js-awards-block').addClass 'current'
+      $addBtn.closest('.note').find('.js-awards-block').addClass 'current'
     else
       $addBtn.closest('.js-awards-block').addClass 'current'
 
@@ -341,7 +341,9 @@ class @AwardsHandler
       for emoji in frequentlyUsedEmojis
         $(".emoji-menu-content [data-emoji='#{emoji}']").closest('li').clone().appendTo(ul)
 
-      $('input.emoji-search').after(ul).after($('<h5>').text('Frequently used'))
+      $('.emoji-menu-content')
+        .prepend(ul)
+        .prepend($('<h5>').text('Frequently used'))
 
     @frequentEmojiBlockRendered = true
 
@@ -356,7 +358,7 @@ class @AwardsHandler
 
       if term
         # Generate a search result block
-        h5 = $('<h5>').text('Search results').addClass('emoji-search')
+        h5 = $('<h5>').text('Search results')
         found_emojis = @searchEmojis(term).show()
         ul = $('<ul>').addClass('emoji-menu-list emoji-menu-search').append(found_emojis)
         $('.emoji-menu-content ul, .emoji-menu-content h5').hide()

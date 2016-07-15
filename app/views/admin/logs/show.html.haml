@@ -1,28 +1,32 @@
+- @no_container = true
 - page_title "Logs"
 - loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
              Gitlab::ProductionLogger, Gitlab::SidekiqLogger,
              Gitlab::RepositoryCheckLogger]
-%ul.nav-links.log-tabs
-  - loggers.each do |klass|
-    %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
-      = link_to klass::file_name, "##{klass::file_name_noext}",
-          'data-toggle' => 'tab'
-.row-content-block
-  To prevent performance issues admin logs output the last 2000 lines
-.tab-content
-  - loggers.each do |klass|
-    .tab-pane{ class: (klass == Gitlab::GitLogger ? 'active' : ''),
-        id: klass::file_name_noext }
-      .file-holder#README
-        .file-title
-          %i.fa.fa-file
-          = klass::file_name
-          .pull-right
-            = link_to '#', class: 'log-bottom' do
-              %i.fa.fa-arrow-down
-              Scroll down
-        .file-content.logs
-          %ol
-            - klass.read_latest.each do |line|
-              %li
-                %p= line
+= render 'admin/background_jobs/head'
+
+%div{ class: container_class }
+  %ul.nav-links.log-tabs
+    - loggers.each do |klass|
+      %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
+        = link_to klass::file_name, "##{klass::file_name_noext}",
+            'data-toggle' => 'tab'
+  .row-content-block
+    To prevent performance issues admin logs output the last 2000 lines
+  .tab-content
+    - loggers.each do |klass|
+      .tab-pane{ class: (klass == Gitlab::GitLogger ? 'active' : ''),
+          id: klass::file_name_noext }
+        .file-holder#README
+          .file-title
+            %i.fa.fa-file
+            = klass::file_name
+            .pull-right
+              = link_to '#', class: 'log-bottom' do
+                %i.fa.fa-arrow-down
+                Scroll down
+          .file-content.logs
+            %ol
+              - klass.read_latest.each do |line|
+                %li
+                  %p= line

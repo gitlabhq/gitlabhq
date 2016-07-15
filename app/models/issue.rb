@@ -19,6 +19,8 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
 
+  has_many :events, as: :target, dependent: :destroy
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -81,6 +83,10 @@ class Issue < ActiveRecord::Base
 
   def self.link_reference_pattern
     @link_reference_pattern ||= super("issues", /(?<issue>\d+)/)
+  end
+
+  def self.reference_valid?(reference)
+    reference.to_i > 0 && reference.to_i <= Gitlab::Database::MAX_INT_VALUE
   end
 
   def self.sort(method, excluded_labels: [])

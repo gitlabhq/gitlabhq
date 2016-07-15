@@ -1,5 +1,3 @@
-require_relative 'shell_env'
-
 module Grack
   class AuthSpawner
     def self.call(env)
@@ -10,7 +8,6 @@ module Grack
   end
 
   class Auth < Rack::Auth::Basic
-
     attr_accessor :user, :project, :env
 
     def call(env)
@@ -24,7 +21,7 @@ module Grack
       # Need this if under RELATIVE_URL_ROOT
       unless Gitlab.config.gitlab.relative_url_root.empty?
         # If website is mounted using relative_url_root need to remove it first
-        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root,'')
+        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root, '')
       else
         @env['PATH_INFO'] = @request.path
       end
@@ -33,7 +30,7 @@ module Grack
 
       auth!
 
-      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @ci, @request).try_call
       return lfs_response unless lfs_response.nil?
 
       if @user.nil? && !@ci
@@ -61,11 +58,6 @@ module Grack
       end
 
       @user = authenticate_user(login, password)
-
-      if @user
-        Gitlab::ShellEnv.set_env(@user)
-        @env['REMOTE_USER'] = @auth.username
-      end
     end
 
     def ci_request?(login, password)

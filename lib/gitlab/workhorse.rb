@@ -8,7 +8,7 @@ module Gitlab
     class << self
       def git_http_ok(repository, user)
         {
-          'GL_ID' => Gitlab::ShellEnv.gl_id(user),
+          'GL_ID' => Gitlab::GlId.gl_id(user),
           'RepoPath' => repository.path_to_repo,
         }
       end
@@ -38,17 +38,40 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        from, to = diff_refs
-
         params = {
           'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => from.sha,
-          'ShaTo'     => to.sha
+          'ShaFrom'   => diff_refs.start_sha,
+          'ShaTo'     => diff_refs.head_sha
         }
 
         [
           SEND_DATA_HEADER,
           "git-diff:#{encode(params)}"
+        ]
+      end
+
+      def send_git_patch(repository, diff_refs)
+        params = {
+          'RepoPath'  => repository.path_to_repo,
+          'ShaFrom'   => diff_refs.start_sha,
+          'ShaTo'     => diff_refs.head_sha
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-format-patch:#{encode(params)}"
+        ]
+      end
+
+      def send_artifacts_entry(build, entry)
+        params = {
+          'Archive' => build.artifacts_file.path,
+          'Entry' => Base64.encode64(entry.path)
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "artifacts-entry:#{encode(params)}"
         ]
       end
 

@@ -36,7 +36,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'succeeds if repository import is successfully' do
-        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
 
         result = subject.execute
 
@@ -44,7 +44,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'fails if repository import fails' do
-        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_raise(Gitlab::Shell::Error.new('Failed to import the repository'))
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_raise(Gitlab::Shell::Error.new('Failed to import the repository'))
 
         result = subject.execute
 
@@ -64,7 +64,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'succeeds if importer succeeds' do
-        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
         expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(true)
 
         result = subject.execute
@@ -74,7 +74,7 @@ describe Projects::ImportService, services: true do
 
       it 'flushes various caches' do
         expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).
-          with(project.path_with_namespace, project.import_url).
+          with(project.repository_storage_path, project.path_with_namespace, project.import_url).
           and_return(true)
 
         expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).
@@ -90,7 +90,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'fails if importer fails' do
-        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
         expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_return(false)
 
         result = subject.execute
@@ -100,7 +100,7 @@ describe Projects::ImportService, services: true do
       end
 
       it 'fails if importer raise an error' do
-        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.path_with_namespace, project.import_url).and_return(true)
+        expect_any_instance_of(Gitlab::Shell).to receive(:import_repository).with(project.repository_storage_path, project.path_with_namespace, project.import_url).and_return(true)
         expect_any_instance_of(Gitlab::GithubImport::Importer).to receive(:execute).and_raise(Projects::ImportService::Error.new('Github: failed to connect API'))
 
         result = subject.execute

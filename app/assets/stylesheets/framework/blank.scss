@@ -1,0 +1,51 @@
+.blank-state-welcome {
+  text-align: center;
+  border-bottom: 1px solid $border-color;
+
+  .blank-state-text {
+    margin-bottom: 0;
+  }
+}
+
+.blank-state {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.blank-state-no-icon {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.blank-state-icon {
+  padding-bottom: 20px;
+  color: $gray-darkest;
+  font-size: 56px;
+
+  path,
+  polygon {
+    fill: currentColor;
+  }
+}
+
+.blank-state-title {
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-size: 19px;
+  font-weight: normal;
+}
+
+.blank-state-text {
+  margin-top: 0;
+  margin-bottom: $gl-padding;
+  font-size: 15px;
+
+  > strong {
+    font-weight: 600;
+  }
+}
+
+.blank-state-welcome-title {
+  font-size: 24px;
+}

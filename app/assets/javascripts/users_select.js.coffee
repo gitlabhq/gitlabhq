@@ -31,7 +31,7 @@ class @UsersSelect
       assignTo = (selected) ->
         data = {}
         data[abilityName] = {}
-        data[abilityName].assignee_id = selected
+        data[abilityName].assignee_id = if selected? then selected else null
         $loading
           .fadeIn()
         $dropdown.trigger('loading.gl.dropdown')
@@ -61,8 +61,8 @@ class @UsersSelect
 
       collapsedAssigneeTemplate = _.template(
         '<% if( avatar ) { %>
-        <a class="author_link" href="/u/<%= username %>">
-          <img width="24" class="avatar avatar-inline s24" alt="" src="<%= avatar %>">
+        <a class="author_link" href="/u/<%- username %>">
+          <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>">
           <span class="author">Toni Boehm</span>
         </a>
         <% } else { %>
@@ -72,17 +72,17 @@ class @UsersSelect
 
       assigneeTemplate = _.template(
         '<% if (username) { %>
-        <a class="author_link " href="/u/<%= username %>">
+        <a class="author_link bold" href="/u/<%- username %>">
           <% if( avatar ) { %>
-          <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
+          <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>">
           <% } %>
-          <span class="author"><%= name %></span>
+          <span class="author"><%- name %></span>
           <span class="username">
-            @<%= username %>
+            @<%- username %>
           </span>
         </a>
           <% } else { %>
-        <span class="assign-yourself">
+        <span class="no-value assign-yourself">
           No assignee -
           <a href="#" class="js-assign-yourself">
             assign yourself
@@ -151,11 +151,13 @@ class @UsersSelect
           # display:block overrides the hide-collapse rule
           $value.css('display', '')
 
-        clicked: (user) ->
+        clicked: (user, $el, e) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
-          if $dropdown.hasClass('js-filter-bulk-update')
+          if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
+            e.preventDefault()
+            selectedId = user.id
             return
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
@@ -168,7 +170,8 @@ class @UsersSelect
               .closest('.selectbox')
               .find("input[name='#{$dropdown.data('field-name')}']").val()
             assignTo(selected)
-
+        id: (user) ->
+          user.id
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false

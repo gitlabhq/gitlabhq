@@ -4,7 +4,7 @@ window.GitLab ?= {}
 GitLab.GfmAutoComplete =
   dataLoading: false
   dataLoaded: false
-
+  cachedData: {}
   dataSource: ''
 
   # Emoji
@@ -14,6 +14,9 @@ GitLab.GfmAutoComplete =
   # Team Members
   Members:
     template: '<li>${username} <small>${title}</small></li>'
+
+  Labels:
+    template: '<li><span class="dropdown-label-box" style="background: ${color}"></span> ${title}</li>'
 
   # Issues and MergeRequests
   Issues:
@@ -52,7 +55,7 @@ GitLab.GfmAutoComplete =
     @setupAtWho()
 
     if @dataSource
-      if !@dataLoading
+      if not @dataLoading and not @cachedData
         @dataLoading = true
 
         # We should wait until initializations are done
@@ -67,6 +70,8 @@ GitLab.GfmAutoComplete =
             @loadData(data)
         , 1000)
 
+      if @cachedData?
+        @loadData(@cachedData)
 
   setupAtWho: ->
     # Emoji
@@ -176,6 +181,25 @@ GitLab.GfmAutoComplete =
             title:  sanitize(m.title)
             search: "#{m.iid} #{m.title}"
 
+    @input.atwho
+      at: '~'
+      alias: 'labels'
+      searchKey: 'search'
+      displayTpl: @Labels.template
+      insertTpl: '${atwho-at}${title}'
+      callbacks:
+        beforeSave: (merges) ->
+          sanitizeLabelTitle = (title)->
+            if /[\w\?&]+\s+[\w\?&]+/g.test(title)
+              "\"#{sanitize(title)}\""
+            else
+              sanitize(title)
+
+          $.map merges, (m) ->
+            title: sanitizeLabelTitle(m.title)
+            color: m.color
+            search: "#{m.title}"
+
   destroyAtWho: ->
     @input.atwho('destroy')
 
@@ -183,6 +207,7 @@ GitLab.GfmAutoComplete =
     $.getJSON(dataSource)
 
   loadData: (data) ->
+    @cachedData = data
     @dataLoaded = true
 
     # load members
@@ -195,6 +220,8 @@ GitLab.GfmAutoComplete =
     @input.atwho 'load', 'mergerequests', data.mergerequests
     # load emojis
     @input.atwho 'load', ':', data.emojis
+    # load labels
+    @input.atwho 'load', '~', data.labels
 
     # This trigger at.js again
     # otherwise we would be stuck with loading until the user types

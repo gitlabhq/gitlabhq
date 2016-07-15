@@ -25,7 +25,7 @@ module Ci
       return render_404 unless @project
 
       image = Ci::ImageForBuildService.new.execute(@project, params)
-      send_file image.path, filename: image.name, disposition: 'inline', type:"image/svg+xml"
+      send_file image.path, filename: image.name, disposition: 'inline', type: "image/svg+xml"
     end
 
     protected

@@ -39,10 +39,9 @@ feature 'Groups > Members > Owner manages access requests', feature: true do
     expect(ActionMailer::Base.deliveries.last.subject).to match "Access to the #{group.name} group was denied"
   end
 
-
   def expect_visible_access_request(group, user)
-    expect(group.members.request.exists?(user_id: user)).to be_truthy
-    expect(page).to have_content "#{group.name} access requests (1)"
+    expect(group.requesters.exists?(user_id: user)).to be_truthy
+    expect(page).to have_content "#{group.name} access requests 1"
     expect(page).to have_content user.name
   end
 end

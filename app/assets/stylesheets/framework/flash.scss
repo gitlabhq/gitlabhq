@@ -1,8 +1,8 @@
 .flash-container {
   cursor: pointer;
   margin: 0;
+  margin-bottom: $gl-padding;
   font-size: 14px;
-  width: 100%;
   z-index: 100;
 
   .flash-notice {
@@ -16,4 +16,29 @@
     @extend .alert-danger;
     margin: 0;
   }
+
+  .flash-notice, .flash-alert {
+    border-radius: $border-radius-default;
+
+    .container-fluid.container-limited.flash-text {
+      background: transparent;
+    }
+  }
+
+  &.flash-container-page {
+    margin-bottom: 0;
+
+    .flash-notice, .flash-alert {
+      border-radius: 0;
+    }
+  }
 }
+
+@media (max-width: $screen-md-min) {
+  ul.notes {
+    .flash-container.timeline-content {
+      margin-left: 0;
+    }
+  }
+}
+

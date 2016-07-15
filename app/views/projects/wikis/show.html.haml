@@ -1,24 +1,26 @@
+- @no_container = true
 - page_title @page.title.capitalize, "Wiki"
 = render 'nav'
 
-.top-area
-  .nav-text
-    %strong= @page.title.capitalize
+%div{ class: container_class }
+  .top-area
+    .nav-text
+      %strong= @page.title.capitalize
 
-    %span.wiki-last-edit-by
-      &middot;
-      last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
+      %span.wiki-last-edit-by
+        &middot;
+        last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}
 
-  .nav-controls
-    = render 'main_links'
+    .nav-controls
+      = render 'main_links'
 
-- if @page.historical?
-  .warning_message
-    This is an old version of this page.
-    You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
+  - if @page.historical?
+    .warning_message
+      This is an old version of this page.
+      You can view the #{link_to "most recent version", namespace_project_wiki_path(@project.namespace, @project, @page)} or browse the #{link_to "history", namespace_project_wiki_history_path(@project.namespace, @project, @page)}.
 
 
-.wiki-holder.prepend-top-default.append-bottom-default
-  .wiki
-    = preserve do
-      = render_wiki_content(@page)
+  .wiki-holder.prepend-top-default.append-bottom-default
+    .wiki
+      = preserve do
+        = render_wiki_content(@page)

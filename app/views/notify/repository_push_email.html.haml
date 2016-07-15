@@ -72,12 +72,11 @@
             The diff for this file was not included because it is too large.
           - else
             %hr
-            - diff_commit = diff_file.deleted_file ? @message.diff_refs.first : @message.diff_refs.last
-            - blob = @message.project.repository.blob_for_diff(diff_commit, diff_file)
+            - blob = diff_file.blob
             - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
               %table.code.white
                 - diff_file.highlighted_diff_lines.each do |line|
-                  = render "projects/diffs/line", {line: line, diff_file: diff_file, line_code: nil, plain: true}
+                  = render "projects/diffs/line", line: line, diff_file: diff_file, plain: true
             - else
               No preview for this file type
           %br

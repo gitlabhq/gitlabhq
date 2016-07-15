@@ -15,11 +15,11 @@ module ContainerRegistry
     end
 
     def repository_tags(name)
-      @faraday.get("/v2/#{name}/tags/list").body
+      response_body @faraday.get("/v2/#{name}/tags/list")
     end
 
     def repository_manifest(name, reference)
-      @faraday.get("/v2/#{name}/manifests/#{reference}").body
+      response_body @faraday.get("/v2/#{name}/manifests/#{reference}")
     end
 
     def repository_tag_digest(name, reference)
@@ -34,7 +34,7 @@ module ContainerRegistry
     def blob(name, digest, type = nil)
       headers = {}
       headers['Accept'] = type if type
-      @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers).body
+      response_body @faraday.get("/v2/#{name}/blobs/#{digest}", nil, headers)
     end
 
     def delete_blob(name, digest)
@@ -47,7 +47,10 @@ module ContainerRegistry
       conn.request :json
       conn.headers['Accept'] = MANIFEST_VERSION
 
-      conn.response :json, content_type: /\bjson$/
+      conn.response :json, content_type: 'application/json'
+      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+prettyjws'
+      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v1+json'
+      conn.response :json, content_type: 'application/vnd.docker.distribution.manifest.v2+json'
 
       if options[:user] && options[:password]
         conn.request(:basic_auth, options[:user].to_s, options[:password].to_s)
@@ -56,6 +59,10 @@ module ContainerRegistry
       end
 
       conn.adapter :net_http
+    end
+
+    def response_body(response)
+      response.body if response.success?
     end
   end
 end

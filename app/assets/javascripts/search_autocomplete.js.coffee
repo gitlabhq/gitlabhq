@@ -67,8 +67,12 @@ class @SearchAutocomplete
   getData: (term, callback) ->
     _this = @
 
-    # Do not trigger request if input is empty
-    return if @searchInput.val() is ''
+    unless term
+      if contents = @getCategoryContents()
+        @searchInput.data('glDropdown').filter.options.callback contents
+        @enableAutocomplete()
+
+      return
 
     # Prevent multiple ajax calls
     return if @loadingSuggestions
@@ -122,6 +126,37 @@ class @SearchAutocomplete
     ).always ->
       _this.loadingSuggestions = false
 
+
+  getCategoryContents: ->
+
+    userId = gon.current_user_id
+    { utils, projectOptions, groupOptions, dashboardOptions } = gl
+
+    if utils.isInGroupsPage() and groupOptions
+      options = groupOptions[utils.getGroupSlug()]
+
+    else if utils.isInProjectPage() and projectOptions
+      options = projectOptions[utils.getProjectSlug()]
+
+    else if dashboardOptions
+      options = dashboardOptions
+
+    { issuesPath, mrPath, name } = options
+
+    items = [
+      { header: "#{name}" }
+      { text: 'Issues assigned to me', url: "#{issuesPath}/?assignee_id=#{userId}" }
+      { text: "Issues I've created",   url: "#{issuesPath}/?author_id=#{userId}"   }
+      'separator'
+      { text: 'Merge requests assigned to me', url: "#{mrPath}/?assignee_id=#{userId}" }
+      { text: "Merge requests I've created",   url: "#{mrPath}/?author_id=#{userId}"   }
+    ]
+
+    items.splice 0, 1 unless name
+
+    return items
+
+
   serializeState: ->
     {
       # Search Criteria
@@ -136,21 +171,14 @@ class @SearchAutocomplete
     }
 
   bindEvents: ->
-    $(document).on 'click', @onDocumentClick
     @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
+    @searchInput.on 'blur', @onSearchInputBlur
     @clearInput.on 'click', @onClearInputClick
     @locationBadgeEl.on 'click', =>
       @searchInput.focus()
-
-  onDocumentClick: (e) =>
-    # If clicking outside the search box
-    # And search input is not focused
-    # And we are not clicking inside a suggestion
-    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).closest('.search-form').length
-      @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
@@ -209,6 +237,12 @@ class @SearchAutocomplete
     @isFocused = true
     @wrap.addClass('search-active')
 
+    @getData()  if @getValue() is ''
+
+
+  getValue: -> return @searchInput.val()
+
+
   onClearInputClick: (e) =>
     e.preventDefault()
     @searchInput.val('').focus()
@@ -229,6 +263,10 @@ class @SearchAutocomplete
     @locationBadgeEl.text(badgeText).show()
     @wrap.addClass('has-location-badge')
 
+
+  hasLocationBadge: -> return @wrap.is '.has-location-badge'
+
+
   restoreOriginalState: ->
     inputs = Object.keys @originalState
 
@@ -241,8 +279,6 @@ class @SearchAutocomplete
       @addLocationBadge(
         value: @originalState._location
       )
-
-    @dropdown.removeClass 'open'
 
   badgePresent: ->
     @locationBadgeEl.length
@@ -257,13 +293,14 @@ class @SearchAutocomplete
 
       @getElement("##{input}").val('')
 
+
   removeLocationBadge: ->
+
     @locationBadgeEl.hide()
-
-    # Reset state
     @resetSearchState()
-
     @wrap.removeClass('has-location-badge')
+    @disableAutocomplete()
+
 
   disableAutocomplete: ->
     @searchInput.addClass('disabled')

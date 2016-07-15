@@ -137,6 +137,15 @@ ul.content-list {
       padding-top: 1px;
       float: right;
 
+      > .control-text {
+        margin-right: $gl-padding-top;
+        line-height: 40px;
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+
       > .btn,
       > .btn-group {
         margin-right: $gl-padding-top;
@@ -159,13 +168,19 @@ ul.content-list {
       background-color: $gray-light;
       border: dotted 1px $gray-dark;
       margin: 1px 0;
-      min-height: 30px;
+      min-height: 52px;
     }
   }
 }
 
 .panel > .content-list > li {
   padding: $gl-padding-top $gl-padding;
+
+  &.commit {
+    @media (min-width: $screen-sm-min) {
+      padding-left: 46px + $gl-padding;
+    }
+  }
 }
 
 ul.controls {

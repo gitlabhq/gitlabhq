@@ -31,6 +31,28 @@ module ApplicationSettingsHelper
     current_application_settings.akismet_enabled?
   end
 
+  def allowed_protocols_present?
+    current_application_settings.enabled_git_access_protocol.present?
+  end
+
+  def enabled_protocol
+    case current_application_settings.enabled_git_access_protocol
+    when 'http'
+      gitlab_config.protocol
+    when 'ssh'
+      'ssh'
+    end
+  end
+
+  def enabled_project_button(project, protocol)
+    case protocol
+    when 'ssh'
+      ssh_clone_button(project, 'bottom', append_link: false)
+    else
+      http_clone_button(project, 'bottom', append_link: false)
+    end
+  end
+
   # Return a group of checkboxes that use Bootstrap's button plugin for a
   # toggle button effect.
   def restricted_level_checkboxes(help_block_id)
@@ -77,5 +99,13 @@ module ApplicationSettingsHelper
                       autocomplete: 'off') + Gitlab::OAuth::Provider.label_for(source)
       end
     end
+  end
+
+  def repository_storage_options_for_select
+    options = Gitlab.config.repositories.storages.map do |name, path|
+      ["#{name} - #{path}", name]
+    end
+
+    options_for_select(options, @application_setting.repository_storage)
   end
 end

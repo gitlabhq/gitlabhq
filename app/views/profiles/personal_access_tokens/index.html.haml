@@ -1,0 +1,106 @@
+- page_title "Personal Access Tokens"
+= render 'profiles/head'
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p
+      You can generate a personal access token for each application you use that needs access to the GitLab API.
+  .col-lg-9
+
+    - if flash[:personal_access_token]
+      .created-personal-access-token-container
+        %h5.prepend-top-0
+          Your New Personal Access Token
+        .form-group
+          = text_field_tag 'created-personal-access-token', flash[:personal_access_token], readonly: true, class: "form-control", 'aria-describedby' => "created-personal-access-token-help-block"
+          = clipboard_button(clipboard_text: flash[:personal_access_token])
+          %span#created-personal-access-token-help-block.help-block.text-danger Make sure you save it - you won't be able to access it again.
+
+      %hr
+
+    %h5.prepend-top-0
+      Add a Personal Access Token
+    %p.profile-settings-content
+      Pick a name for the application, and we'll give you a unique token.
+    = form_for [:profile, @personal_access_token],
+                method: :post, html: { class: 'js-requires-input' } do |f|
+
+      = form_errors(@personal_access_token)
+
+      .form-group
+        = f.label :name, class: 'label-light'
+        = f.text_field :name, class: "form-control", required: true
+
+      .form-group
+        = f.label :expires_at, class: 'label-light'
+        = f.text_field :expires_at, class: "datepicker form-control", required: false
+
+      .prepend-top-default
+        = f.submit 'Create Personal Access Token', class: "btn btn-create"
+
+    %hr
+
+    %h5 Active Personal Access Tokens (#{@active_personal_access_tokens.length})
+
+    - if @active_personal_access_tokens.present?
+      .table-responsive
+        %table.table.active-personal-access-tokens
+          %thead
+            %tr
+              %th Name
+              %th Created
+              %th Expires
+              %th
+          %tbody
+            - @active_personal_access_tokens.each do |token|
+              %tr
+                %td= token.name
+                %td= token.created_at.to_date.to_s(:medium)
+                %td
+                  - if token.expires_at.present?
+                    = token.expires_at.to_date.to_s(:medium)
+                  - else
+                    %span.personal-access-tokens-never-expires-label Never
+                %td= link_to "Revoke", revoke_profile_personal_access_token_path(token), method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this token? This action cannot be undone." }
+
+    - else
+      .settings-message.text-center
+        You don't have any active tokens yet.
+
+    %hr
+
+    %h5 Inactive Personal Access Tokens (#{@inactive_personal_access_tokens.length})
+
+    - if @inactive_personal_access_tokens.present?
+      .table-responsive
+        %table.table.inactive-personal-access-tokens
+          %thead
+            %tr
+              %th Name
+              %th Created
+          %tbody
+            - @inactive_personal_access_tokens.each do |token|
+              %tr
+                %td= token.name
+                %td= token.created_at.to_date.to_s(:medium)
+
+    - else
+      .settings-message.text-center
+        There are no inactive tokens.
+
+
+:javascript
+  var date = $('#personal_access_token_expires_at').val();
+
+  var datepicker = $(".datepicker").datepicker({
+    dateFormat: "yy-mm-dd",
+    minDate: 0
+  });
+
+  $("#created-personal-access-token").click(function() {
+    this.select();
+  });
+
+  $("#created-personal-access-token").effect('highlight', { color: '#ffff99' }, 2000);

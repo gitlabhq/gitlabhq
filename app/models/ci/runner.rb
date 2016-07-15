@@ -4,7 +4,7 @@ module Ci
 
     LAST_CONTACT_TIME = 5.minutes.ago
     AVAILABLE_SCOPES = %w[specific shared active paused online]
-    FORM_EDITABLE = %i[description tag_list active run_untagged]
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked]
 
     has_many :builds, class_name: 'Ci::Build'
     has_many :runner_projects, dependent: :destroy, class_name: 'Ci::RunnerProject'
@@ -24,6 +24,13 @@ module Ci
     scope :owned_or_shared, ->(project_id) do
       joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
         .where("ci_runner_projects.gl_project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+    end
+
+    scope :assignable_for, ->(project) do
+      # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
+      #        Without that, placeholders would miss one and couldn't match.
+      where(locked: false).
+        where.not("id IN (#{project.runners.select(:id).to_sql})").specific
     end
 
     validate :tag_constraints
@@ -56,7 +63,7 @@ module Ci
     def assign_to(project, current_user = nil)
       self.is_shared = false if shared?
       self.save
-      project.runner_projects.create!(runner_id: self.id)
+      project.runner_projects.create(runner_id: self.id)
     end
 
     def display_name
@@ -91,6 +98,10 @@ module Ci
       !shared?
     end
 
+    def can_pick?(build)
+      assignable_for?(build.project) && accepting_tags?(build)
+    end
+
     def only_for?(project)
       projects == [project]
     end
@@ -110,6 +121,14 @@ module Ci
         errors.add(:tags_list,
           'can not be empty when runner is not allowed to pick untagged jobs')
       end
+    end
+
+    def assignable_for?(project)
+      !locked? || projects.exists?(id: project.id)
+    end
+
+    def accepting_tags?(build)
+      (run_untagged? || build.has_tags?) && (build.tag_list - tag_list).empty?
     end
   end
 end

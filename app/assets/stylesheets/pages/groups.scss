@@ -38,21 +38,53 @@
       margin-right: 15px;
     }
   }
+
+  &.group-admin {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+
+    .group-avatar, .group-details, .group-controls {
+      display: -webkit-flex;
+      display: -ms-flexbox;
+      display: flex;
+    }
+
+    .group-details {
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .group-controls {
+      align-items: center;
+
+      a {
+        margin-left: 5px;
+      }
+    }
+  }
+
+}
+
+.ldap-group-links {
+  .form-actions {
+    margin-bottom: $gl-padding;
+  }
 }
 
 .groups-cover-block {
-
   .container-fluid {
     position: relative;
   }
 
-  .access-request-button {
-    @include btn-gray;
+  .group-right-buttons {
     position: absolute;
     right: 16px;
-    bottom: 32px;
-    padding: 3px 10px;
-    text-transform: none;
-    background-color: $background-color;
+    .btn {
+      @include btn-gray;
+      padding: 3px 10px;
+      background-color: $background-color;
+    }
   }
 }

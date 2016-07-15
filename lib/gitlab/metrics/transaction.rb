@@ -4,7 +4,7 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      attr_reader :tags, :values
+      attr_reader :tags, :values, :methods
 
       attr_accessor :action
 
@@ -16,6 +16,7 @@ module Gitlab
       #          plus method name.
       def initialize(action = nil)
         @metrics = []
+        @methods = {}
 
         @started_at  = nil
         @finished_at = nil
@@ -29,7 +30,7 @@ module Gitlab
       end
 
       def duration
-        @finished_at ? (@finished_at - @started_at) * 1000.0 : 0.0
+        @finished_at ? (@finished_at - @started_at) : 0.0
       end
 
       def allocated_memory
@@ -40,20 +41,34 @@ module Gitlab
         Thread.current[THREAD_KEY] = self
 
         @memory_before = System.memory_usage
-        @started_at    = Time.now
+        @started_at    = System.monotonic_time
 
         yield
       ensure
         @memory_after = System.memory_usage
-        @finished_at  = Time.now
+        @finished_at  = System.monotonic_time
 
         Thread.current[THREAD_KEY] = nil
       end
 
       def add_metric(series, values, tags = {})
-        prefix = sidekiq? ? 'sidekiq_' : 'rails_'
+        @metrics << Metric.new("#{series_prefix}#{series}", values, tags)
+      end
 
-        @metrics << Metric.new("#{prefix}#{series}", values, tags)
+      # Measures the time it takes to execute a method.
+      #
+      # Multiple calls to the same method add up to the total runtime of the
+      # method.
+      #
+      # name - The full name of the method to measure (e.g. `User#sign_in`).
+      def measure_method(name, &block)
+        unless @methods[name]
+          series = "#{series_prefix}#{Instrumentation::SERIES}"
+
+          @methods[name] = MethodCall.new(name, series)
+        end
+
+        @methods[name].measure(&block)
       end
 
       def increment(name, value)
@@ -84,7 +99,13 @@ module Gitlab
       end
 
       def submit
-        metrics = @metrics.map do |metric|
+        submit = @metrics.dup
+
+        @methods.each do |name, method|
+          submit << method.to_metric if method.above_threshold?
+        end
+
+        submit_hashes = submit.map do |metric|
           hash = metric.to_hash
 
           hash[:tags][:action] ||= @action if @action
@@ -92,11 +113,15 @@ module Gitlab
           hash
         end
 
-        Metrics.submit_metrics(metrics)
+        Metrics.submit_metrics(submit_hashes)
       end
 
       def sidekiq?
         Sidekiq.server?
+      end
+
+      def series_prefix
+        sidekiq? ? 'sidekiq_' : 'rails_'
       end
     end
   end

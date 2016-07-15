@@ -38,7 +38,8 @@ Example response:
    "default_project_visibility" : 0,
    "gravatar_enabled" : true,
    "sign_in_text" : null,
-   "container_registry_token_expire_delay": 5
+   "container_registry_token_expire_delay": 5,
+   "repository_storage": "default"
 }
 ```
 
@@ -56,7 +57,7 @@ PUT /application/settings
 | `gravatar_enabled`  | boolean | no  | Enable Gravatar |
 | `sign_in_text`      | string  | no  | Text on login page |
 | `home_page_url`     | string  | no  | Redirect to this URL when not logged in |
-| `default_branch_protection` | integer | no | Determine if developers can push to master. Can take `0` _(not protected, both developers and masters can push new commits, force push or delete the branch)_, `1` _(partially protected, developers can push new commits, but cannot force push or delete the branch, masters can do anything)_ or `2` _(fully protected, developers cannot push new commits, force push or delete the branch, masters can do anything)_ as a parameter. Default is `1`. |
+| `default_branch_protection` | integer | no | Determine if developers can push to master. Can take `0` _(not protected, both developers and masters can push new commits, force push or delete the branch)_, `1` _(partially protected, developers can push new commits, but cannot force push or delete the branch, masters can do anything)_ or `2` _(fully protected, developers cannot push new commits, force push or delete the branch, masters can do anything)_ as a parameter. Default is `2`. |
 | `restricted_visibility_levels` | array of integers | no | Selected levels cannot be used by non-admin users for projects or snippets. Can take `0` _(Private)_, `1` _(Internal)_ and `2` _(Public)_ as a parameter. Default is null which means there is no restriction. |
 | `max_attachment_size` | integer | no | Limit attachment size in MB |
 | `session_expire_delay` | integer | no | Session duration in minutes. GitLab restart is required to apply changes |
@@ -66,6 +67,8 @@ PUT /application/settings
 | `user_oauth_applications` | boolean | no | Allow users to register any application to use GitLab as an OAuth provider |
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 | `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
+| `repository_storage` | string | no | Storage path for new projects. The value should be the name of one of the repository storage paths defined in your gitlab.yml |
+| `enabled_git_access_protocol` | string | no | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols.
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/application/settings?signup_enabled=false&default_project_visibility=1
@@ -93,6 +96,7 @@ Example response:
   "restricted_signup_domains": [],
   "user_oauth_applications": true,
   "after_sign_out_path": "",
-  "container_registry_token_expire_delay": 5
+  "container_registry_token_expire_delay": 5,
+  "repository_storage": "default"
 }
 ```

@@ -40,32 +40,38 @@ describe Gitlab::Ci::Config do
         end
       end
     end
+  end
 
-    context 'when config is invalid' do
-      context 'when yml is incorrect' do
-        let(:yml) { '// invalid' }
+  context 'when config is invalid' do
+    context 'when yml is incorrect' do
+      let(:yml) { '// invalid' }
 
-        describe '.new' do
-          it 'raises error' do
-            expect { config }.to raise_error(
-              Gitlab::Ci::Config::Loader::FormatError,
-              /Invalid configuration format/
-            )
-          end
+      describe '.new' do
+        it 'raises error' do
+          expect { config }.to raise_error(
+            Gitlab::Ci::Config::Loader::FormatError,
+            /Invalid configuration format/
+          )
+        end
+      end
+    end
+
+    context 'when config logic is incorrect' do
+      let(:yml) { 'before_script: "ls"' }
+
+      describe '#valid?' do
+        it 'is not valid' do
+          expect(config).not_to be_valid
+        end
+
+        it 'has errors' do
+          expect(config.errors).not_to be_empty
         end
       end
 
-      context 'when config logic is incorrect' do
-        let(:yml) { 'before_script: "ls"' }
-
-        describe '#valid?' do
-          it 'is not valid' do
-            expect(config).not_to be_valid
-          end
-
-          it 'has errors' do
-            expect(config.errors).not_to be_empty
-          end
+      describe '#errors' do
+        it 'returns an array of strings' do
+          expect(config.errors).to all(be_an_instance_of(String))
         end
       end
     end

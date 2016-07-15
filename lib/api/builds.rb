@@ -13,7 +13,6 @@ module API
       # Example Request:
       #   GET /projects/:id/builds
       get ':id/builds' do
-
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
@@ -33,10 +32,10 @@ module API
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!
 
-        commit = user_project.pipelines.find_by_sha(params[:sha])
-        return not_found! unless commit
+        return not_found! unless user_project.commit(params[:sha])
 
-        builds = commit.builds.order('id DESC')
+        pipelines = user_project.pipelines.where(sha: params[:sha])
+        builds = user_project.builds.where(pipeline: pipelines).order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
         present paginate(builds), with: Entities::Build,
@@ -142,7 +141,7 @@ module API
         return not_found!(build) unless build
         return forbidden!('Build is not retryable') unless build.retryable?
 
-        build = Ci::Build.retry(build)
+        build = Ci::Build.retry(build, current_user)
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)

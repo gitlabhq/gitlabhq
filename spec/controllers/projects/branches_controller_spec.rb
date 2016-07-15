@@ -68,7 +68,6 @@ describe Projects::BranchesController do
       let(:branch) { "1-feature-branch" }
       let!(:issue) { create(:issue, project: project) }
 
-
       it 'redirects' do
         post :create,
           namespace_id: project.namespace.to_param,
@@ -89,7 +88,6 @@ describe Projects::BranchesController do
           branch_name: branch,
           issue_iid: issue.iid
       end
-
     end
   end
 
@@ -103,7 +101,7 @@ describe Projects::BranchesController do
            namespace_id: project.namespace.to_param,
            project_id: project.to_param
 
-      expect(response.status).to eq(303)
+      expect(response).to have_http_status(303)
     end
   end
 
@@ -121,24 +119,24 @@ describe Projects::BranchesController do
     context "valid branch name, valid source" do
       let(:branch) { "feature" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
 
     context "valid branch name with unencoded slashes" do
       let(:branch) { "improve/awesome" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
 
     context "valid branch name with encoded slashes" do
       let(:branch) { "improve%2Fawesome" }
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
     context "invalid branch name, valid ref" do
       let(:branch) { "no-branch" }
 
-      it { expect(response.status).to eq(404) }
+      it { expect(response).to have_http_status(404) }
     end
   end
 end

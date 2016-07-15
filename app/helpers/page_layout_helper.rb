@@ -52,7 +52,7 @@ module PageLayoutHelper
     raise ArgumentError, 'cannot provide more than two attributes' if map.length > 2
 
     @page_card_attributes ||= {}
-    @page_card_attributes = map.reject { |_,v| v.blank? } if map.present?
+    @page_card_attributes = map.reject { |_, v| v.blank? } if map.present?
     @page_card_attributes
   end
 

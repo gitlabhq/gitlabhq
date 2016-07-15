@@ -11,12 +11,10 @@ class Spinach::Features::ProfileNotifications < Spinach::FeatureSteps
   end
 
   step 'I select Mention setting from dropdown' do
-    select 'mention', from: 'notification_setting_level'
+    first(:link, "On mention").trigger('click')
   end
 
   step 'I should see Notification saved message' do
-    page.within '.flash-container' do
-      expect(page).to have_content 'Notification settings saved'
-    end
+    expect(page).to have_content 'On mention'
   end
 end

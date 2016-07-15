@@ -8,6 +8,10 @@ module Banzai
       # of the anchor, and then replace the img with the link-wrapped version.
       def call
         doc.xpath('descendant-or-self::img[not(ancestor::a)]').each do |img|
+          div = doc.document.create_element(
+            'div',
+            class: 'image-container'
+          )
 
           link = doc.document.create_element(
             'a',
@@ -17,7 +21,10 @@ module Banzai
           )
 
           link.children = img.clone
-          img.replace(link)
+
+          div.children = link
+
+          img.replace(div)
         end
 
         doc

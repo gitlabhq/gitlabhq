@@ -135,24 +135,22 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click "Assign to" dropdown"' do
-    first('.ajax-users-select').click
+    click_button 'Assignee'
   end
 
   step 'I should see the target project ID in the input selector' do
-    expect(page).to have_selector("input[data-project-id=\"#{@project.id}\"]")
+    expect(find('.js-assignee-search')["data-project-id"]).to eq "#{@project.id}"
   end
 
   step 'I should see the users from the target project ID' do
-    expect(page).to have_selector('.user-result', visible: true, count: 3)
-    users = page.all('.user-name')
-    expect(users[0].text).to eq 'Unassigned'
-    expect(users[1].text).to eq current_user.name
-    expect(users[2].text).to eq @project.users.first.name
+    expect(page).to have_content 'Unassigned'
+    expect(page).to have_content current_user.name
+    expect(page).to have_content @project.users.first.name
   end
 
   # Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
     # This should force a wait for the javascript to execute
-    expect(find(:div,container_div).find(".commit_short_id")['href']).to have_content "#{container_project.path_with_namespace}/commit"
+    expect(find(:div, container_div).find(".commit_short_id")['href']).to have_content "#{container_project.path_with_namespace}/commit"
   end
 end

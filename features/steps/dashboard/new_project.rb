@@ -11,6 +11,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
 
   step 'I see "New Project" page' do
     expect(page).to have_content('Project path')
+    expect(page).to have_content('Project name')
   end
 
   step 'I see all possible import optios' do
@@ -19,24 +20,19 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Gitorious.org')
     expect(page).to have_link('Google Code')
-    expect(page).to have_link('Any repo by URL')
+    expect(page).to have_link('Repo by URL')
+    expect(page).to have_link('GitLab export')
   end
 
   step 'I click on "Import project from GitHub"' do
     first('.import_github').click
   end
 
-  step 'I see instructions on how to import from GitHub' do
-    github_modal = first('.modal-body')
-    expect(github_modal).to be_visible
-    expect(github_modal).to have_content "To enable importing projects from GitHub"
-
-    page.all('.modal-body').each do |element|
-      expect(element).not_to be_visible unless element == github_modal
-    end
+  step 'I am redirected to the GitHub import page' do
+    expect(current_path).to eq new_import_github_path
   end
 
-  step 'I click on "Any repo by URL"' do
+  step 'I click on "Repo by URL"' do
     first('.import_git').click
   end
 
@@ -53,5 +49,4 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   step 'I redirected to Google Code import page' do
     expect(current_path).to eq new_import_google_code_path
   end
-
 end

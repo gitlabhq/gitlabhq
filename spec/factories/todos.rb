@@ -22,5 +22,13 @@ FactoryGirl.define do
     trait :build_failed do
       action { Todo::BUILD_FAILED }
     end
+
+    trait :approval_required do
+      action { Todo::APPROVAL_REQUIRED }
+    end
+
+    trait :done do
+      state :done
+    end
   end
 end

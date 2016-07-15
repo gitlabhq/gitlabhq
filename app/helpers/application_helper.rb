@@ -101,22 +101,6 @@ module ApplicationHelper
     'Never'
   end
 
-  def grouped_options_refs
-    repository = @project.repository
-
-    options = [
-      ['Branches', repository.branch_names],
-      ['Tags', VersionSorter.rsort(repository.tag_names)]
-    ]
-
-    # If reference is commit id - we should add it to branch/tag selectbox
-    if @ref && !options.flatten.include?(@ref) && @ref =~ /\A[0-9a-zA-Z]{6,52}\z/
-      options << ['Commit', [@ref]]
-    end
-
-    grouped_options_for_select(options, @ref || @project.default_branch)
-  end
-
   # Define whenever show last push event
   # with suggestion to create MR
   def show_last_push_widget?(event)
@@ -132,7 +116,7 @@ module ApplicationHelper
     return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
 
     # Skip if user removed branch right after that
-    return false unless project.repository.branch_names.include?(event.branch_name)
+    return false unless project.repository.branch_exists?(event.branch_name)
 
     true
   end
@@ -213,7 +197,7 @@ module ApplicationHelper
 
   def render_markup(file_name, file_content)
     if gitlab_markdown?(file_name)
-      Haml::Helpers.preserve(markdown(file_content))
+      Hamlit::RailsHelpers.preserve(markdown(file_content))
     elsif asciidoc?(file_name)
       asciidoc(file_content)
     elsif plain?(file_name)
@@ -321,5 +305,16 @@ module ApplicationHelper
 
   def truncate_first_line(message, length = 50)
     truncate(message.each_line.first.chomp, length: length) if message
+  end
+
+  # While similarly named to Rails's `link_to_if`, this method behaves quite differently.
+  # If `condition` is truthy, a link will be returned with the result of the block
+  # as its body. If `condition` is falsy, only the result of the block will be returned.
+  def conditional_link_to(condition, options, html_options = {}, &block)
+    if condition
+      link_to options, html_options, &block
+    else
+      capture(&block)
+    end
   end
 end

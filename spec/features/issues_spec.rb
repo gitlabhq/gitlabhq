@@ -22,7 +22,7 @@ describe 'Issues', feature: true do
 
     before do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
-      click_button "Go full screen"
+      find('.js-zen-enter').click
     end
 
     it 'should open new issue popup' do
@@ -50,9 +50,8 @@ describe 'Issues', feature: true do
 
       expect(page).to have_content "Assignee #{@user.name}"
 
-      first('#s2id_issue_assignee_id').click
-      sleep 2 # wait for ajax stuff to complete
-      first('.user-result').click
+      first('.js-user-search').click
+      click_link 'Unassigned'
 
       click_button 'Save changes'
 
@@ -92,7 +91,7 @@ describe 'Issues', feature: true do
     end
 
     context 'on edit form' do
-      let(:issue) { create(:issue, author: @user,project: project, due_date: Date.today.at_beginning_of_month.to_s) }
+      let(:issue) { create(:issue, author: @user, project: project, due_date: Date.today.at_beginning_of_month.to_s) }
 
       before do
         visit edit_namespace_project_issue_path(project.namespace, project, issue)
@@ -120,6 +119,17 @@ describe 'Issues', feature: true do
         page.within '.issuable-sidebar' do
           expect(page).to have_content date.to_s(:medium)
         end
+      end
+
+      it 'warns about version conflict' do
+        issue.update(title: "New title")
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Someone edited the issue the same time you did'
       end
     end
   end
@@ -361,7 +371,6 @@ describe 'Issues', feature: true do
     let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
 
     context 'by authorized user' do
-
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
@@ -396,10 +405,30 @@ describe 'Issues', feature: true do
           expect(page).to have_content @user.name
         end
       end
+
+      it 'allows user to unselect themselves', js: true do
+        issue2 = create(:issue, project: project, author: @user)
+        visit namespace_project_issue_path(project.namespace, project, issue2)
+
+        page.within '.assignee' do
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content @user.name
+          end
+
+          click_link 'Edit'
+          click_link @user.name
+
+          page.within '.value' do
+            expect(page).to have_content "No assignee"
+          end
+        end
+      end
     end
 
     context 'by unauthorized user' do
-
       let(:guest) { create(:user) }
 
       before do
@@ -421,8 +450,6 @@ describe 'Issues', feature: true do
     let!(:milestone) { create(:milestone, project: project) }
 
     context 'by authorized user' do
-
-
       it 'allows user to select unassigned', js: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
 
@@ -439,6 +466,26 @@ describe 'Issues', feature: true do
         end
 
         expect(issue.reload.milestone).to be_nil
+      end
+
+      it 'allows user to de-select milestone', js: true do
+        visit namespace_project_issue_path(project.namespace, project, issue)
+
+        page.within('.milestone') do
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content milestone.title
+          end
+
+          click_link 'Edit'
+          click_link milestone.title
+
+          page.within '.value' do
+            expect(page).to have_content 'None'
+          end
+        end
       end
     end
 
@@ -515,10 +562,10 @@ describe 'Issues', feature: true do
             first('.ui-state-default').click
           end
 
-          expect(page).to have_no_content 'None'
+          expect(page).to have_no_content 'No due date'
 
           click_link 'remove due date'
-          expect(page).to have_content 'None'
+          expect(page).to have_content 'No due date'
         end
       end
     end

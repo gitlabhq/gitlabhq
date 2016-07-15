@@ -1,16 +1,28 @@
 class @Flash
-  constructor: (message, type = 'alert')->
-    @flash = $(".flash-container")
-    @flash.html("")
+  hideFlash = -> $(@).fadeOut()
 
-    innerDiv = $('<div/>',
-      class: "flash-#{type}",
+  constructor: (message, type = 'alert', parent = null)->
+    if parent
+      @flashContainer = parent.find('.flash-container')
+    else
+      @flashContainer = $('.flash-container-page')
+
+    @flashContainer.html('')
+
+    flash = $('<div/>',
+      class: "flash-#{type}"
+    )
+    flash.on 'click', hideFlash
+
+    textDiv = $('<div/>',
+      class: 'flash-text',
       text: message
     )
-    innerDiv.appendTo(".flash-container")
+    textDiv.appendTo(flash)
 
-    @flash.click -> $(@).fadeOut()
-    @flash.show()
+    if @flashContainer.parent().hasClass('content-wrapper')
+      textDiv.addClass('container-fluid container-limited')
 
-  pinTo: (selector) ->
-    @flash.detach().appendTo(selector)
+    flash.appendTo(@flashContainer)
+    @flashContainer.show()
+

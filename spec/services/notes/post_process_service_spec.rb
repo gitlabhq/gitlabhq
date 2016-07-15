@@ -5,7 +5,7 @@ describe Notes::PostProcessService, services: true do
   let(:issue) { create(:issue, project: project) }
   let(:user) { create(:user) }
 
-  describe :execute do
+  describe '#execute' do
     before do
       project.team << [user, :master]
       note_opts = {

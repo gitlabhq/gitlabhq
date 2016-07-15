@@ -12,7 +12,7 @@
           - if params[:author_id].present?
             = hidden_field_tag(:author_id, params[:author_id])
           = dropdown_tag(user_dropdown_label(params[:author_id], "Author"), options: { toggle_class: "js-user-search js-filter-submit js-author-search", title: "Filter by author", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit",
-            placeholder: "Search authors", data: { any_user: "Any Author", first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author], field_name: "author_id", default_label: "Author" } })
+            placeholder: "Search authors", data: { any_user: "Any Author", first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: "author_id", default_label: "Author" } })
 
         .filter-item.inline
           - if params[:assignee_id].present?
@@ -21,10 +21,10 @@
             placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (@project.id if @project), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown"
+          = render "shared/issuable/milestone_dropdown", selected: params[:milestone_title], name: :milestone_title, show_any: true, show_upcoming: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown"
+          = render "shared/issuable/label_dropdown", selected: params[:label_name], data_options: { field_name: "label_name[]" }
 
         .pull-right
           = render 'shared/sort_dropdown'

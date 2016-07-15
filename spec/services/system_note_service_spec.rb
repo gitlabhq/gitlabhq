@@ -213,7 +213,7 @@ describe SystemNoteService, services: true do
       create(:merge_request, source_project: project, target_project: project)
     end
 
-    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.last_commit) }
+    subject { described_class.merge_when_build_succeeds(noteable, project, author, noteable.diff_head_commit) }
 
     it_behaves_like 'a system note'
 
@@ -529,7 +529,7 @@ describe SystemNoteService, services: true do
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
-    let(:jira_issue) { JiraIssue.new("JIRA-1", project)}
+    let(:jira_issue) { ExternalIssue.new("JIRA-1", project)}
     let(:jira_tracker) { project.create_jira_service if project.jira_service.nil? }
     let(:commit)     { project.commit }
 

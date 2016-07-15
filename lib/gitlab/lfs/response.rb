@@ -1,11 +1,11 @@
 module Gitlab
   module Lfs
     class Response
-
-      def initialize(project, user, request)
+      def initialize(project, user, ci, request)
         @origin_project = project
         @project = storage_project(project)
         @user = user
+        @ci = ci
         @env = request.env
         @request = request
       end
@@ -189,7 +189,7 @@ module Gitlab
         return render_not_enabled unless Gitlab.config.lfs.enabled
 
         unless @project.public?
-          return render_unauthorized unless @user
+          return render_unauthorized unless @user || @ci
           return render_forbidden unless user_can_fetch?
         end
 
@@ -210,7 +210,7 @@ module Gitlab
 
       def user_can_fetch?
         # Check user access against the project they used to initiate the pull
-        @user.can?(:download_code, @origin_project)
+        @ci || @user.can?(:download_code, @origin_project)
       end
 
       def user_can_push?

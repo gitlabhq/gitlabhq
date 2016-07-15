@@ -181,3 +181,9 @@
     :why: Equivalent to LGPLv2
     :versions: []
     :when: 2016-06-07 17:14:10.907682000 Z
+- - :whitelist
+  - Artistic 2.0
+  - :who: Josh Frye
+    :why: Disk/mount information display on Admin pages
+    :versions: []
+    :when: 2016-06-29 16:32:45.432113000 Z

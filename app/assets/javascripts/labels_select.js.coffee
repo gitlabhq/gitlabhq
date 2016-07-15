@@ -32,14 +32,14 @@ class @LabelsSelect
       if issueUpdateURL
         labelHTMLTemplate = _.template(
             '<% _.each(labels, function(label){ %>
-            <a href="<%= ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%= _.escape(label.title) %>">
-            <span class="label has-tooltip color-label" title="<%= _.escape(label.description) %>" style="background-color: <%= label.color %>; color: <%= label.text_color %>;">
-            <%= _.escape(label.title) %>
+            <a href="<%- ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%- encodeURIComponent(label.title) %>">
+            <span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">
+            <%- label.title %>
             </span>
             </a>
             <% }); %>'
         )
-        labelNoneHTMLTemplate = _.template('<div class="light">None</div>')
+        labelNoneHTMLTemplate = '<span class="no-value">None</span>'
 
       if newLabelField.length
 
@@ -145,7 +145,7 @@ class @LabelsSelect
             template = labelHTMLTemplate(data)
             labelCount = data.labels.length
           else
-            template = labelNoneHTMLTemplate()
+            template = labelNoneHTMLTemplate
           $value
             .removeAttr('style')
             .html(template)
@@ -184,20 +184,22 @@ class @LabelsSelect
               .value()
 
             if $dropdown.hasClass 'js-extra-options'
-              if showNo
-                data.unshift(
-                  id: 0
-                  title: 'No Label'
-                )
-
+              extraData = []
               if showAny
-                data.unshift(
+                extraData.push(
                   isAny: true
                   title: 'Any Label'
                 )
 
-              if data.length > 2
-                data.splice 2, 0, 'divider'
+              if showNo
+                extraData.push(
+                  id: 0
+                  title: 'No Label'
+                )
+
+              if extraData.length
+                extraData.push 'divider'
+                data = extraData.concat(data)
 
             callback data
 
@@ -210,8 +212,20 @@ class @LabelsSelect
 
           if $dropdown.hasClass('js-filter-bulk-update')
             indeterminate = instance.indeterminateIds
+            active = instance.activeIds
+
             if indeterminate.indexOf(label.id) isnt -1
               selectedClass.push 'is-indeterminate'
+
+            if active.indexOf(label.id) isnt -1
+              # Remove is-indeterminate class if the item will be marked as active
+              i = selectedClass.indexOf 'is-indeterminate'
+              selectedClass.splice i, 1 unless i is -1
+
+              selectedClass.push 'is-active'
+
+              # Add input manually
+              instance.addInput @fieldName, label.id
 
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
@@ -249,7 +263,7 @@ class @LabelsSelect
             $a.attr('data-label-id', label.id)
 
           $a.addClass(selectedClass.join(' '))
-            .html("#{colorEl} #{_.escape(label.title)}")
+            .html("#{colorEl} #{label.title}")
 
           # Return generated html
           $li.html($a).prop('outerHTML')
@@ -275,8 +289,14 @@ class @LabelsSelect
             defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->
+          if $dropdown.hasClass('js-issuable-form-dropdown')
+            if label.id is 0
+              return
+            else
+              return label.id
+
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
-            _.escape label.title
+            label.title
           else
             label.id
 
@@ -288,6 +308,9 @@ class @LabelsSelect
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
+
+          return if $dropdown.hasClass('js-issuable-form-dropdown')
+
           if $dropdown.hasClass 'js-multiselect'
             if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
               selectedLabels = $dropdown
@@ -307,7 +330,9 @@ class @LabelsSelect
 
         multiSelect: $dropdown.hasClass 'js-multiselect'
         clicked: (label) ->
-          if $dropdown.hasClass('js-filter-bulk-update')
+          _this.enableBulkLabelDropdown()
+
+          if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
             return
 
           page = $('body').data 'page'
@@ -328,6 +353,10 @@ class @LabelsSelect
         setIndeterminateIds: ->
           if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
             @indeterminateIds = _this.getIndeterminateIds()
+
+        setActiveIds: ->
+          if @dropdown.find('.dropdown-menu-toggle').hasClass('js-filter-bulk-update')
+            @activeIds = _this.getActiveIds()
       )
 
     @bindEvents()
@@ -352,3 +381,17 @@ class @LabelsSelect
       label_ids.push $("#issue_#{issue_id}").data('labels')
 
     _.flatten(label_ids)
+
+  getActiveIds: ->
+    label_ids = []
+
+    $('.selected_issue:checked').each (i, el) ->
+      issue_id = $(el).data('id')
+      label_ids.push $("#issue_#{issue_id}").data('labels')
+
+    _.intersection.apply _, label_ids
+
+  enableBulkLabelDropdown: ->
+    if $('.selected_issue:checked').length
+      issuableBulkActions = $('.bulk-update').data('bulkActions')
+      issuableBulkActions.willUpdateLabels = true
