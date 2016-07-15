@@ -66,4 +66,12 @@
 
   })();
 
+  $(function() {
+    if ($('.js-importer-status').length) {
+      var jobsImportPath = $('.js-importer-status').data('jobs-import-path');
+      var importPath = $('.js-importer-status').data('import-path');
+      
+      new ImporterStatus(jobsImportPath, importPath);
+    }
+  });
 }).call(this);
