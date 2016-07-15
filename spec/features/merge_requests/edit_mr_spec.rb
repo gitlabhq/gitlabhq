@@ -17,16 +17,5 @@ feature 'Edit Merge Request', feature: true do
     it 'form should have class js-quick-submit' do
       expect(page).to have_selector('.js-quick-submit')
     end
-
-    it 'warns about version conflict' do
-      merge_request.update(title: "New title")
-
-      fill_in 'merge_request_title', with: 'bug 345'
-      fill_in 'merge_request_description', with: 'bug description'
-
-      click_button 'Save changes'
-
-      expect(page).to have_content 'Someone edited the merge request the same time you did'
-    end
   end
 end
