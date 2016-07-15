@@ -557,7 +557,7 @@ describe Gitlab::Lfs::Router do
         end
 
         it 'does not recognize it as a valid lfs command' do
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(403)
         end
       end
     end
