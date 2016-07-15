@@ -55,7 +55,7 @@ feature 'issue move to another project' do
         first('.select2-choice').click
       end
 
-      fill_in('s2id_autogen1_search', with: new_project_search.name)
+      fill_in('s2id_autogen2_search', with: new_project_search.name)
 
       page.within '.select2-drop' do
         expect(page).to have_content(new_project_search.name)
