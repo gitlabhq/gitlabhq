@@ -8,7 +8,7 @@ module ContainerRegistry
     MANIFEST_VERSION = 'application/vnd.docker.distribution.manifest.v2+json'
 
     # Taken from: FaradayMiddleware::FollowRedirects
-    REDIRECT_CODES  = Set.new [301, 302, 303, 307]
+    REDIRECT_CODES = Set.new [301, 302, 303, 307]
 
     def initialize(base_uri, options = {})
       @base_uri = base_uri
