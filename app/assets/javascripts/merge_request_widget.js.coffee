@@ -55,12 +55,13 @@ class @MergeRequestWidget
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
-    if status is 'success'
-      'passed'
-    else if status is 'success_with_warnings'
-      'passed with warnings'
-    else
-      status
+    switch status
+      when 'success'
+        'passed'
+      when 'success_with_warnings'
+        'passed with warnings'
+      else
+        status
 
   pollCIStatus: ->
     @fetchBuildStatusInterval = setInterval ( =>
