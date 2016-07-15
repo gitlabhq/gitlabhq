@@ -37,7 +37,6 @@ Feature: Project Issues
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
-  @javascript
   Scenario: I submit new unassigned issue with labels
     Given project "Shop" has labels: "bug", "feature", "enhancement"
     And I click link "New Issue"

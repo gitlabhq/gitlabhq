@@ -62,7 +62,7 @@ class @MilestoneSelect
                 title: 'Upcoming'
               )
 
-            if extraOptions.length > 0
+            if extraOptions.length > 2
               extraOptions.push 'divider'
 
             callback(extraOptions.concat(data))

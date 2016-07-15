@@ -135,17 +135,19 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click "Assign to" dropdown"' do
-    click_button 'Assignee'
+    first('.ajax-users-select').click
   end
 
   step 'I should see the target project ID in the input selector' do
-    expect(find('.js-assignee-search')["data-project-id"]).to eq "#{@project.id}"
+    expect(page).to have_selector("input[data-project-id=\"#{@project.id}\"]")
   end
 
   step 'I should see the users from the target project ID' do
-    expect(page).to have_content 'Unassigned'
-    expect(page).to have_content current_user.name
-    expect(page).to have_content @project.users.first.name
+    expect(page).to have_selector('.user-result', visible: true, count: 3)
+    users = page.all('.user-name')
+    expect(users[0].text).to eq 'Unassigned'
+    expect(users[1].text).to eq current_user.name
+    expect(users[2].text).to eq @project.users.first.name
   end
 
   # Verify a link is generated against the correct project
