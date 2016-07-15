@@ -91,7 +91,7 @@ describe User, models: true do
     describe 'email' do
       context 'when no signup domains whitelisted' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return([])
         end
 
         it 'accepts any email' do
@@ -102,7 +102,7 @@ describe User, models: true do
 
       context 'when a signup domain is whitelisted and subdomains are allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com', '*.example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -123,7 +123,7 @@ describe User, models: true do
 
       context 'when a signup domain is whitelisted and subdomains are not allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -163,7 +163,7 @@ describe User, models: true do
         context 'when a signup domain is black listed but a wildcard subdomain is allowed' do
           before do
             allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['test.example.com'])
-            allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['*.example.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['*.example.com'])
           end
 
           it 'should give priority to whitelist and allow info@test.example.com' do
@@ -174,7 +174,7 @@ describe User, models: true do
 
         context 'with both lists containing a domain' do
           before do
-            allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['test.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['test.com'])
           end
 
           it 'accepts info@test.com' do

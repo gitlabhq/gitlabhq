@@ -412,7 +412,7 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
-      expose :restricted_signup_domains
+      expose :domain_whitelist
       expose :domain_blacklist_enabled
       expose :domain_blacklist
       expose :user_oauth_applications

@@ -14,10 +14,10 @@ class ApplicationSetting < ActiveRecord::Base
   serialize :restricted_visibility_levels
   serialize :import_sources
   serialize :disabled_oauth_sign_in_sources, Array
-  serialize :restricted_signup_domains, Array
+  serialize :domain_whitelist, Array
   serialize :domain_blacklist, Array
 
-  attr_accessor :restricted_signup_domains_raw, :domain_blacklist_raw
+  attr_accessor :domain_whitelist_raw, :domain_blacklist_raw
 
   validates :session_expire_delay,
             presence: true,
@@ -141,7 +141,7 @@ class ApplicationSetting < ActiveRecord::Base
       session_expire_delay: Settings.gitlab['session_expire_delay'],
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-      restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
+      domain_whitelist: Settings.gitlab['domain_whitelist'],
       import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
@@ -162,19 +162,19 @@ class ApplicationSetting < ActiveRecord::Base
     ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
 
-  def restricted_signup_domains_raw
-    self.restricted_signup_domains.join("\n") unless self.restricted_signup_domains.nil?
+  def domain_whitelist_raw
+    self.domain_whitelist.join("\n") unless self.domain_whitelist.nil?
   end
 
   def domain_blacklist_raw
     self.domain_blacklist.join("\n") unless self.domain_blacklist.nil?
   end
 
-  def restricted_signup_domains_raw=(values)
-    self.restricted_signup_domains = []
-    self.restricted_signup_domains = values.split(DOMAIN_LIST_SEPARATOR)
-    self.restricted_signup_domains.reject! { |d| d.empty? }
-    self.restricted_signup_domains
+  def domain_whitelist_raw=(values)
+    self.domain_whitelist = []
+    self.domain_whitelist = values.split(DOMAIN_LIST_SEPARATOR)
+    self.domain_whitelist.reject! { |d| d.empty? }
+    self.domain_whitelist
   end
 
   def domain_blacklist_raw=(values)

@@ -54,23 +54,23 @@ describe ApplicationSetting, models: true do
 
   context 'restricted signup domains' do
     it 'set single domain' do
-      setting.restricted_signup_domains_raw = 'example.com'
-      expect(setting.restricted_signup_domains).to eq(['example.com'])
+      setting.domain_whitelist_raw = 'example.com'
+      expect(setting.domain_whitelist).to eq(['example.com'])
     end
 
     it 'set multiple domains with spaces' do
-      setting.restricted_signup_domains_raw = 'example.com *.example.com'
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = 'example.com *.example.com'
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
     end
 
     it 'set multiple domains with newlines and a space' do
-      setting.restricted_signup_domains_raw = "example.com\n *.example.com"
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = "example.com\n *.example.com"
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
     end
 
     it 'set multiple domains with commas' do
-      setting.restricted_signup_domains_raw = "example.com, *.example.com"
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = "example.com, *.example.com"
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
     end
   end
 

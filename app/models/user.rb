@@ -871,7 +871,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    allowed_domains = current_application_settings.restricted_signup_domains
+    allowed_domains = current_application_settings.domain_whitelist
     unless allowed_domains.blank?
       if match_domain(allowed_domains, self.email)
         valid = true

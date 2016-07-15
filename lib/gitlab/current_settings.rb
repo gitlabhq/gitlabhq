@@ -39,7 +39,7 @@ module Gitlab
         session_expire_delay: Settings.gitlab['session_expire_delay'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
-        restricted_signup_domains: Settings.gitlab['restricted_signup_domains'],
+        domain_whitelist: Settings.gitlab['domain_whitelist'],
         import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
         shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
         max_artifacts_size: Settings.artifacts['max_size'],

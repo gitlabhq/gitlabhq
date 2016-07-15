@@ -359,7 +359,7 @@ restrict the sign-up e-mail domains of a GitLab instance to `*.example.com` and
 `example.net`, you would do something like this:
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "restricted_signup_domains[]=*.example.com" -d "restricted_signup_domains[]=example.net" https://gitlab.example.com/api/v3/application/settings
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "domain_whitelist[]=*.example.com" -d "domain_whitelist[]=example.net" https://gitlab.example.com/api/v3/application/settings
 ```
 
 [cURL]: http://curl.haxx.se/ "cURL website"
