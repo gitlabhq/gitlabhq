@@ -92,6 +92,7 @@ v 8.10.0 (unreleased)
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Reset project pushes_since_gc when we enqueue the git gc call
   - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
+  - Collapsed diffs lines/size don't acumulate to overflow diffs.
   - Remove duplicate `description` field in `MergeRequest` entities (Ben Boeckel)
   - Style of import project buttons were fixed in the new project page. !5183 (rdemirbay)
   - Fix GitHub client requests when rate limit is disabled
