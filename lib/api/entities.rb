@@ -59,6 +59,7 @@ module API
 
     class BasicProjectDetails < Grape::Entity
       expose :id
+      expose :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
     end

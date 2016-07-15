@@ -154,4 +154,9 @@
       $('.import_gitlab_project').attr('disabled',true);
       $('.import_gitlab_project').attr('title', 'Project path required.');
     }
-  })
+  });
+
+  $('.import_git').click(function( event ) {
+    $projectImportUrl = $('#project_import_url')
+    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
+  });

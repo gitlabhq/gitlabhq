@@ -482,6 +482,10 @@ pre.light-well {
       a:hover {
         text-decoration: none;
       }
+
+      > span {
+        margin-left: 10px;
+      }
     }
   }
 
@@ -657,5 +661,11 @@ pre.light-well {
   @media (min-width: $screen-sm-min) {
     float: right;
     margin-top: 0;
+  }
+}
+
+.compare-form-group {
+  .dropdown-menu {
+    width: 300px;
   }
 }

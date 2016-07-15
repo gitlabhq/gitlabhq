@@ -43,6 +43,13 @@
     border-top-width: 1px;
   }
 
+  .commit-link {
+
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
   .branch-commit {
 
     .branch-name {
@@ -80,7 +87,12 @@
       margin-left: 0;
     }
 
+    .label {
+      margin-right: 4px;
+    }
+
     .label-container {
+      font-size: 0;
 
       .label {
         margin-top: 5px;
@@ -114,6 +126,12 @@
     .btn {
       margin: 0;
       color: $table-text-gray;
+    }
+
+    .cancel-retry-btns {
+      .btn:not(:first-child) {
+        margin-left: 8px;
+      }
     }
 
     .dropdown-toggle,

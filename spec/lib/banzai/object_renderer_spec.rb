@@ -109,6 +109,17 @@ describe Banzai::ObjectRenderer do
       expect(docs[1]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
       expect(docs[1].to_html).to eq('<p>bye</p>')
     end
+
+    it 'returns when no objects to render' do
+      objects = []
+      renderer = described_class.new(project, user, pipeline: :note)
+
+      expect(Banzai).to receive(:cache_collection_render).
+        with([]).
+        and_call_original
+
+      expect(renderer.render_attributes(objects, :note)).to eq([])
+    end
   end
 
   describe '#base_context' do

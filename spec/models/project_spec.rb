@@ -132,16 +132,34 @@ describe Project, models: true do
       end
     end
 
-    it 'should not allow an invalid URI as import_url' do
+    it 'does not allow an invalid URI as import_url' do
       project2 = build(:project, import_url: 'invalid://')
 
       expect(project2).not_to be_valid
     end
 
-    it 'should allow a valid URI as import_url' do
+    it 'does allow a valid URI as import_url' do
       project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
 
       expect(project2).to be_valid
+    end
+
+    it 'does not allow to introduce an empty URI' do
+      project2 = build(:project, import_url: '')
+
+      expect(project2).not_to be_valid
+    end
+
+    it 'does not produce import data on an empty URI' do
+      project2 = build(:project, import_url: '')
+
+      expect(project2.import_data).to be_nil
+    end
+
+    it 'does not produce import data on an invalid URI' do
+      project2 = build(:project, import_url: 'test://')
+
+      expect(project2.import_data).to be_nil
     end
   end
 

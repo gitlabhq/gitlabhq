@@ -32,13 +32,11 @@ issuable_created = false
           $search = $('#issue_search')
           $form = $('.js-filter-form')
           $input = $("input[name='#{$search.attr('name')}']", $form)
-
           if $input.length is 0
             $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{_.escape($search.val())}'/>"
           else
             $input.val $search.val()
-
-          Issuable.filterResults $form
+          Issuable.filterResults $form if $search.val() isnt ''
         , 500)
 
   initLabelFilterRemove: ->
