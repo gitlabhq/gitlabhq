@@ -46,6 +46,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         new GLForm($('.merge-request-form'))
         new IssuableForm($('.merge-request-form'))
+        new LabelsSelect()
+        new MilestoneSelect()
       when 'projects:tags:new'
         new ZenMode()
         new GLForm($('.tag-form'))
