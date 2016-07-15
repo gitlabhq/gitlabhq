@@ -20,9 +20,17 @@ module Gitlab
 
         if Database.postgresql?
           options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
         end
 
         add_index(table_name, column_name, options)
+      end
+
+      # Long-running migrations may take more than the timeout allowed by
+      # the database. Disable the session's statement timeout to ensure
+      # migrations don't get killed prematurely. (PostgreSQL only)
+      def disable_statement_timeout
+        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0') if Database.postgresql?
       end
 
       # Updates the value of a column in batches.
@@ -132,6 +140,8 @@ module Gitlab
             'you can disable transactions by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
+
+        disable_statement_timeout
 
         transaction do
           add_column(table, column, type, default: nil)
