@@ -98,8 +98,18 @@
 
   .icon-container {
     display: inline-block;
-    text-align: center;
+    text-align: right;
     width: 20px;
+
+    .fa {
+      position: relative;
+      right: 3px;
+    }
+
+    svg {
+      position: relative;
+      right: 1px;
+    }
   }
 
   .duration,
@@ -121,6 +131,7 @@
   }
 
   .pipeline-actions {
+    min-width: 140px;
 
     .btn {
       margin: 0;
