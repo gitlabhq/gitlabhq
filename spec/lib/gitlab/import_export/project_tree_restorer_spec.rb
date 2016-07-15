@@ -30,6 +30,14 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         expect(Event.where.not(data: nil).first.data[:ref]).not_to be_empty
       end
 
+      it 'preserves updated_at on issues' do
+        restored_project_json
+
+        issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
+
+        expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
+      end
+
       context 'event at forth level of the tree' do
         let(:event) { Event.where(title: 'test levels').first }
 
