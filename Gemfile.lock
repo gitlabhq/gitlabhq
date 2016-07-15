@@ -1,3 +1,14 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitlab_git.git
+  revision: 0df0cdd9bb1164a7595f1f69f5dfa79489e3eaf1
+  branch: optional_branch_update
+  specs:
+    gitlab_git (10.3.0)
+      activesupport (~> 4.0)
+      charlock_holmes (~> 0.7.3)
+      github-linguist (~> 4.7.0)
+      rugged (~> 0.24.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -296,11 +307,6 @@ GEM
       mime-types (>= 1.16, < 3)
       posix-spawn (~> 0.3)
     gitlab-license (1.0.0)
-    gitlab_git (10.2.3)
-      activesupport (~> 4.0)
-      charlock_holmes (~> 0.7.3)
-      github-linguist (~> 4.7.0)
-      rugged (~> 0.24.0)
     gitlab_meta (7.0)
     gitlab_omniauth-ldap (1.2.1)
       net-ldap (~> 0.9)
@@ -892,7 +898,7 @@ DEPENDENCIES
   gitlab-elasticsearch-git (~> 0.0.15)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-license (~> 1.0)
-  gitlab_git (~> 10.2)
+  gitlab_git!
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.1.0)
