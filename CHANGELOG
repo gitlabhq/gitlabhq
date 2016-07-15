@@ -60,6 +60,7 @@ v 8.10.0 (unreleased)
   - Allow expanding and collapsing files in diff view (!4990)
   - Collapse large diffs by default (!4990)
   - Fix mentioned users list on diff notes
+  - Fix creation of deployment on build that is retried, redeployed or rollback
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Show last push widget in upstream after push to fork
   - Cache todos pending/done dashboard query counts.
