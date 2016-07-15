@@ -6,12 +6,10 @@ describe 'projects/builds/show' do
   let(:project) { create(:project) }
   let(:pipeline) { create(:ci_pipeline, project: project) }
   let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:commit) { project.commit }
 
   before do
     assign(:build, build)
     assign(:project, project)
-    assign(:commit_title, build.project.commit.title)
 
     allow(view).to receive(:can?).and_return(true)
   end
@@ -38,15 +36,12 @@ describe 'projects/builds/show' do
     end
   end
 
-  context 'show commit title' do
-    before do
-      build.run!
-      render
-    end
-
-    it 'show commit title' do
+  describe 'projects/builds/show/commit title' do
+    let(:commit_title) {build.project.commit.title}
+    
+    it 'shows commit title' do
       within('p.build-light-text.append-bottom-0') do
-        assert page.has_content?(commit.title)
+        expect(rendered).to have_content(commit_title)
       end
     end 
   end
