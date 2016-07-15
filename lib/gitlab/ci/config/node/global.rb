@@ -36,19 +36,13 @@ module Gitlab
           helpers :before_script, :image, :services, :after_script,
                   :variables, :stages, :types, :cache, :jobs
 
-          def initialize(*)
-            super
-
-            @global = self
-          end
-
           private
 
           def compose!
             super
 
-            compose_stages!
             compose_jobs!
+            compose_stages!
           end
 
           def compose_jobs!
@@ -64,9 +58,6 @@ module Gitlab
             ##
             # Deprecated `:types` key workaround - if types are defined and
             # stages are not defined we use types definition as stages.
-            #
-            # Otherwise we use stages in favor of types, and remove types from
-            # processing.
             #
             if types_defined? && !stages_defined?
               @entries[:stages] = @entries[:types]

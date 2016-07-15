@@ -11,21 +11,19 @@ module Gitlab
           validations do
             validates :config, type: Hash
 
-            with_options on: :processed do
-              validate do
-                unless has_visible_job?
-                  errors.add(:config, 'should contain at least one visible job')
-                end
+            validate do
+              unless has_visible_job?
+                errors.add(:config, 'should contain at least one visible job')
               end
+            end
+
+            def has_visible_job?
+              config.any? { |key, _| !key.to_s.start_with?('.') }
             end
           end
 
           def nodes
             @config
-          end
-
-          def has_visible_job?
-            @entries.values.any?(&:relevant?)
           end
 
           private

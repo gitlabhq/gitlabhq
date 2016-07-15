@@ -8,13 +8,13 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
-          attr_reader :config, :attributes
+          attr_reader :config, :metadata
           attr_accessor :key, :parent, :description
 
           def initialize(config, **metadata)
             @config = config
-            @entries = {}
             @metadata = metadata
+            @entries = {}
 
             @validator = self.class.validator.new(self)
             @validator.validate(:new)
@@ -25,13 +25,6 @@ module Gitlab
 
             compose!
             @entries.each_value(&:process!)
-          end
-
-          def validate!
-            return unless valid?
-
-            @validator.validate(:processed)
-            @entries.each_value(&:validate!)
           end
 
           def leaf?

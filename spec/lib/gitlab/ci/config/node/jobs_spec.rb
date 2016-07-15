@@ -4,10 +4,7 @@ describe Gitlab::Ci::Config::Node::Jobs do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
-    before do
-      entry.process!
-      entry.validate!
-    end
+    before { entry.process! }
 
     context 'when entry config value is correct' do
       let(:config) { { rspec: { script: 'rspec' } } }

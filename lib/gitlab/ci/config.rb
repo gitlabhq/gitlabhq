@@ -15,7 +15,6 @@ module Gitlab
 
         @global = Node::Global.new(@config)
         @global.process!
-        @global.validate!
       end
 
       def valid?
