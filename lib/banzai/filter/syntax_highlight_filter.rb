@@ -25,9 +25,9 @@ module Banzai
 
         begin
           highlighted = ''
-          highlighted << %<<pre class="#{css_classes}"><code>>
+          highlighted << %(<pre class="#{css_classes}"><code>)
           highlighted << formatter.format(lexer.lex(code))
-          highlighted << %<</code></pre>>
+          highlighted << %(</code></pre>)
         rescue
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.

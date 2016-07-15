@@ -17,7 +17,7 @@ describe BlobHelper do
   describe '#highlight' do
     it 'should return plaintext for unknown lexer context' do
       result = helper.highlight(blob_name, no_context_content)
-      expect(result).to eq(%<<pre class="code highlight"><code><span id="LC1" class="line">:type "assem"))</span></code></pre>>)
+      expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line">:type "assem"))</span></code></pre>])
     end
 
     it 'should highlight single block' do

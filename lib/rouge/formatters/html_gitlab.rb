@@ -17,9 +17,9 @@ module Rouge
           yield "\n" unless is_first
           is_first = false
 
-          yield %<<span id="LC#{@line_number}" class="line">>
+          yield %(<span id="LC#{@line_number}" class="line">)
           line.each { |token, value| yield span(token, value) }
-          yield %<</span>>
+          yield %(</span>)
 
           @line_number += 1
         end

@@ -1,7 +1,7 @@
 module BlobHelper
   def highlight(blob_name, blob_content, repository: nil, plain: false)
     highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
-    raw %<<pre class="code highlight"><code>#{highlighted}</code></pre>>
+    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end
 
   def no_highlight_files
