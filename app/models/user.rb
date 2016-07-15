@@ -760,41 +760,31 @@ class User < ActiveRecord::Base
     Project.where(id: events)
   end
 
-  def match_domain(email_domains)
-    email_domains.any? do |domain|
-      escaped = Regexp.escape(domain).gsub('\*', '.*?')
-      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
-      email_domain = Mail::Address.new(self.email).domain
-      email_domain =~ regexp
-    end
-  end
-
   def signup_domain_valid?
     valid = true
+    error = nil
 
     if current_application_settings.domain_blacklist_enabled?
       blocked_domains = current_application_settings.domain_blacklist
-      if match_domain(blocked_domains)
-        self.errors.add :email, 'is not from an allowed domain.'
+      if match_domain(blocked_domains, self.email)
+        error = 'is not from an allowed domain.'
         valid = false
       end
     end
 
     allowed_domains = current_application_settings.restricted_signup_domains
     unless allowed_domains.blank?
-      if match_domain(allowed_domains)
-        self.errors.clear
+      if match_domain(allowed_domains, self.email)
         valid = true
       else
-        self.errors.add :email,
-                        'is not whitelisted. ' +
-                        'Email domains valid for registration are: ' +
-                        allowed_domains.join(', ')
+        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
         valid = false
       end
     end
 
-    return valid
+    self.errors.add(:email, error) unless valid
+
+    valid
   end
 
   def can_be_removed?
@@ -894,5 +884,16 @@ class User < ActiveRecord::Base
 
     self.can_create_group   = false
     self.projects_limit     = 0
+  end
+
+  private
+
+  def match_domain(email_domains, email)
+    signup_domain = Mail::Address.new(email).domain
+    email_domains.any? do |domain|
+      escaped = Regexp.escape(domain).gsub('\*', '.*?')
+      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+      signup_domain =~ regexp
+    end
   end
 end
