@@ -268,7 +268,7 @@
   .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
-    
+
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
@@ -395,47 +395,27 @@
   line-height: 18px;
 }
 
-.issuable-title-edit {
-  position: relative;
-  padding-right: 127px;
-}
-
-.issuable-title-edit-buttons {
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-
-.issuable-title-edit {
-  .form-control {
-    font-size: inherit;
+.issuable-inline-label {
+  @media (min-width: $screen-md-min) {
+    text-align: right;
   }
 }
 
-.inline-edit-box {
-  position: relative;
+.issuable-inline-edit {
+  margin-top: 5px;
 
-  &:hover {
-    &::after {
-      content: '';
-      position: absolute;
-      right: 0;
-      bottom: -2px;
-      left: 0;
-      border-top: 2px dashed $focus-border-color;
-    }
+  .btn {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: $gray-darkest;
+    border-right: 1px solid $gray-darkest;
+    border-radius: 0;
   }
-}
 
-.inline-edit-description-box {
-  &:hover {
-    &::before {
-      content: '';
-      position: absolute;
-      right: 0;
-      top: -2px;
-      left: 0;
-      border-top: 2px dashed $focus-border-color;
-    }
+  .edited-text {
+    display: inline-block;
+    margin-left: 5px;
+    line-height: 27px;
+    vertical-align: bottom;
   }
 }

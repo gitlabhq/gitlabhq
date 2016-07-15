@@ -1,33 +1,21 @@
-= form_for issuable, remote: true, html: { class: 'detail-page-description content-block common-note-form js-quick-submit js-issuable-inline-form', data: { type: "json" } } do |f|
+= form_for issuable, remote: true, html: { class: 'detail-page-description content-block common-note-form hidden js-quick-submit js-issuable-inline-form', data: { type: "json" } } do |f|
   = hidden_field_tag :inline, true
-  %h2.title
-    %span.inline-edit-box.js-issuable-title= markdown escape_once(issuable.title), pipeline: :single_line, author: issuable.author
-    = icon('spinner spin', class: 'js-issuable-title-loading hidden')
-    .issuable-title-edit.js-issuable-edit-title.hidden
-      = f.text_field :title, class: 'form-control js-issuable-title-field'
-      .issuable-title-edit-buttons
-        %button.btn.btn-success.js-issuable-title-save{ type: "submit" }
-          Save
-        %button.btn.btn-default.js-issuable-edit-cancel{ type: "button" }
+  .row.form-group
+    .col-md-2.issuable-inline-label
+      = f.label :title, "Title", class: "label-light"
+    .col-md-10
+      = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: "off", class: "form-control", required: true
+  .row
+    .col-md-2.issuable-inline-label
+      = f.label :description, "Description", class: "label-light"
+    .col-md-10
+      = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
+        = render 'projects/zen', f: f, attr: :description,
+                                 classes: 'note-textarea js-task-list-field',
+                                 placeholder: "Write a comment or drag your files here..."
+        = render 'projects/notes/hints'
+      .prepend-top-10.append-bottom-10
+        %button.btn.btn-success.js-issuable-description-save{ type: "submit" }
+          Save changes
+        %button.btn.btn-default.pull-right.js-issuable-edit-cancel{ type: "button" }
           Cancel
-  - if issuable.description.present?
-    .description{ class: 'js-task-list-container' }
-      .wiki.inline-edit-box.inline-edit-description-box.js-issuable-description
-        = preserve do
-          = markdown(issuable.description, cache_key: [issuable, "description"], author: issuable.author)
-      .js-issuable-description-field.hidden
-        = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
-          = render 'projects/zen', f: f, attr: :description,
-                                   classes: 'note-textarea js-task-list-field',
-                                   placeholder: "Write a comment or drag your files here..."
-          = render 'projects/notes/hints'
-        .prepend-top-10.append-bottom-10
-          %button.btn.btn-success.js-issuable-description-save{ type: "submit" }
-            Save
-          %button.btn.btn-default.pull-right.js-issuable-edit-cancel{ type: "button" }
-            Cancel
-  = edited_time_ago_with_tooltip(issuable, placement: 'bottom', html_class: 'issue_edited_ago')
-
-  - if issuable.is_a? Issue
-    #merge-requests{ data: { url: referenced_merge_requests_namespace_project_issue_url(@project.namespace, @project, issuable) } }
-    #related-branches{ data: { url: related_branches_namespace_project_issue_url(@project.namespace, @project, issuable) } }

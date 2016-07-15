@@ -12,40 +12,15 @@ describe 'Issue inline editing', feature: true, js: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
     end
 
-    it 'allows user to update title' do
-      find('.js-issuable-title').click
-      expect(page).to have_selector('.js-issuable-edit-title')
-      fill_in 'issue_title', with: 'test'
-      click_button 'Save'
+    it 'allows user to update title and description' do
+      find('.js-inline-edit').click
 
-      page.within '.issuable-details' do
-        expect(page).to have_content 'test'
-      end
-    end
+      fill_in 'issue_title', with: 'title test'
+      fill_in 'issue_description', with: 'description test'
 
-    it 'hides title field' do
-      find('.js-issuable-title').click
-      expect(page).to have_selector('.js-issuable-edit-title')
-      click_button 'Cancel'
-      expect(page).to have_selector('.js-issuable-edit-title', visible: false)
-    end
-
-    it 'allows user to update description' do
-      find('.js-issuable-description').click
-      expect(page).to have_selector('.js-issuable-description-field')
-      fill_in 'issue_description', with: 'test'
-      click_button 'Save'
-
-      page.within '.issuable-details' do
-        expect(page).to have_content 'test'
-      end
-    end
-
-    it 'hides description field' do
-      find('.js-issuable-description').click
-      expect(page).to have_selector('.js-issuable-description-field')
-      click_button 'Cancel'
-      expect(page).to have_selector('.js-issuable-description-field', visible: false)
+      click_button 'Save changes'
+      expect(page).to have_content 'title test'
+      expect(page).to have_content 'description test'
     end
   end
 
@@ -56,11 +31,7 @@ describe 'Issue inline editing', feature: true, js: true do
     end
 
     it 'does not allow editing of title' do
-      expect(page).not_to have_selector('.js-issuable-title', visible: false)
-    end
-
-    it 'does not allow editing of description' do
-      expect(page).not_to have_selector('.js-issuable-description', visible: false)
+      expect(page).not_to have_selector('.js-inline-edit', visible: false)
     end
   end
 end
