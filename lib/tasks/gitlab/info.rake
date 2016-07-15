@@ -36,6 +36,13 @@ namespace :gitlab do
       http_clone_url = project.http_url_to_repo
       ssh_clone_url  = project.ssh_url_to_repo
 
+      if Gitlab::Geo.current_node
+        geo_node_type = Gitlab::Geo.current_node.primary ? 'Primary' : 'Secondary'
+      else
+        geo_node_type = 'Undefined'.color(:red)
+      end
+
+
       omniauth_providers = Gitlab.config.omniauth.providers
       omniauth_providers.map! { |provider| provider['name'] }
 
@@ -51,7 +58,7 @@ namespace :gitlab do
       puts "SSH Clone URL:\t#{ssh_clone_url}"
       puts "Elasticsearch:\t#{Gitlab.config.elasticsearch.enabled ? "yes".color(:green) : "no"}"
       puts "Geo:\t\t#{Gitlab::Geo.enabled? ? "yes".color(:green) : "no"}"
-      puts "Geo node:\t#{Gitlab::Geo.current_node.primary ? "Primary" : "Secondary"}" if Gitlab::Geo.enabled?
+      puts "Geo node:\t#{geo_node_type}" if Gitlab::Geo.enabled?
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".color(:green) : "no"}"
       puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".color(:green) : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.join(', ')}" if Gitlab.config.omniauth.enabled
