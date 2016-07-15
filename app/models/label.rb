@@ -52,14 +52,17 @@ class Label < ActiveRecord::Base
   # This pattern supports cross-project references.
   #
   def self.reference_pattern
+    # NOTE: The id pattern only matches when all characters on the expression
+    # are digits, so it will match ~2 but not ~2fa because that's probably a
+    # label name and we want it to be matched as such.
     @reference_pattern ||= %r{
       (#{Project.reference_pattern})?
       #{Regexp.escape(reference_prefix)}
       (?:
-        (?<label_id>\d+) | # Integer-based label ID, or
+        (?<label_id>\d+(?!\S\w)\b) | # Integer-based label ID, or
         (?<label_name>
-          [A-Za-z0-9_\-\?&]+ | # String-based single-word label title, or
-          "[^,]+"              # String-based multi-word label surrounded in quotes
+          [A-Za-z0-9_\-\?\.&]+ | # String-based single-word label title, or
+          ".+?"                  # String-based multi-word label surrounded in quotes
         )
       )
     }x

@@ -12,7 +12,10 @@ module Gitlab
         json = IO.read(@path)
         @tree_hash = ActiveSupport::JSON.decode(json)
         @project_members = @tree_hash.delete('project_members')
-        create_relations
+
+        ActiveRecord::Base.no_touching do
+          create_relations
+        end
       rescue => e
         @shared.error(e)
         false

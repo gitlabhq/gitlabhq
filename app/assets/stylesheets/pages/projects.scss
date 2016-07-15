@@ -482,6 +482,10 @@ pre.light-well {
       a:hover {
         text-decoration: none;
       }
+
+      > span {
+        margin-left: 10px;
+      }
     }
   }
 
@@ -635,6 +639,12 @@ pre.light-well {
 }
 
 .project-refs-form {
+  .dropdown-menu {
+    width: 300px;
+  }
+}
+
+.compare-form-group {
   .dropdown-menu {
     width: 300px;
   }

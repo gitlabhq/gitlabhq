@@ -1,53 +1,46 @@
 - publicish_project_count = ProjectsFinder.new.execute(current_user).count
-%h3.page-title Welcome to GitLab!
-%p.light Self hosted Git management application.
-%hr
-%div
-  .dashboard-intro-icon
-    %i.fa.fa-bookmark-o
-  .dashboard-intro-text
-    %p.slead
-      You don't have access to any projects right now.
-      %br
-      - if current_user.can_create_project?
-        You can create up to
-        %strong= pluralize(number_with_delimiter(current_user.projects_limit), "project") + "."
-      - else
-        If you are added to a project, it will be displayed here.
-
+.blank-state.blank-state-welcome
+  %h2.blank-state-welcome-title
+    Welcome to GitLab
+  %p.blank-state-text
+    Code, test, and deploy together
+.blank-state
+  .blank-state-icon
+    = custom_icon("project", size: 50)
+  %h3.blank-state-title
+    You don't have access to any projects right now
+  %p.blank-state-text
     - if current_user.can_create_project?
-      .link_holder
-        = link_to new_project_path, class: "btn btn-new" do
-          = icon('plus')
-          New Project
+      You can create up to
+      %strong= number_with_delimiter(current_user.projects_limit)
+      = succeed "." do
+        = "project".pluralize(current_user.projects_limit)
+    - else
+      If you are added to a project, it will be displayed here.
+  - if current_user.can_create_project?
+    = link_to new_project_path, class: "btn btn-new" do
+      New project
 
 - if current_user.can_create_group?
-  %hr
-  %div
-    .dashboard-intro-icon
-      %i.fa.fa-users
-    .dashboard-intro-text
-      %p.slead
-        You can create a group for several dependent projects.
-        %br
-        Groups are the best way to manage projects and members.
-      .link_holder
-        = link_to new_group_path, class: "btn btn-new" do
-          %i.fa.fa-plus
-          New Group
+  .blank-state
+    .blank-state-icon
+      = custom_icon("group", size: 50)
+    %h3.blank-state-title
+      You can create a group for several dependent projects.
+    %p.blank-state-text
+      Groups are the best way to manage projects and members.
+    = link_to new_group_path, class: "btn btn-new" do
+      New group
 
 -if publicish_project_count > 0
-  %hr
-  %div
-    .dashboard-intro-icon
-      %i.fa.fa-globe
-    .dashboard-intro-text
-      %p.slead
-        There are
-        %strong= number_with_delimiter(publicish_project_count)
-        public projects on this server.
-        %br
-        Public projects are an easy way to allow everyone to have read-only access.
-      .link_holder
-        = link_to trending_explore_projects_path, class: "btn btn-new" do
-          Browse public projects
+  .blank-state
+    .blank-state-icon
+      = icon("globe")
+    %h3.blank-state-title
+      There are
+      = number_with_delimiter(publicish_project_count)
+      public projects on this server.
+    %p.blank-state-text
+      Public projects are an easy way to allow everyone to have read-only access.
+    = link_to trending_explore_projects_path, class: "btn btn-new" do
+      Browse projects

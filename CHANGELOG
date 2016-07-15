@@ -5,7 +5,7 @@ v 8.10.0 (unreleased)
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
-  - Expire the branch cache after `git gc` runs
+  - Refresh the branch cache after `git gc` runs
   - Refactor repository paths handling to allow multiple git mount points
   - Optimize system note visibility checking by memoizing the visible reference count !5070
   - Add Application Setting to configure default Repository Path for new projects
@@ -14,9 +14,11 @@ v 8.10.0 (unreleased)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
+  - Use default cursor for table header of project files !5165 (winniehell)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
+  - Upgrade to Rails 4.2.7. !5236
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
@@ -28,9 +30,12 @@ v 8.10.0 (unreleased)
   - Add Spring EmojiOne updates.
   - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
+  - Updated compare dropdown menus to use GL dropdown
+  - Eager load award emoji on notes
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
+  - Issuable collapsed assignee tooltip is now the users name
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
@@ -78,7 +83,6 @@ v 8.10.0 (unreleased)
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
-  - Fix 404 redirect after validation fails importing a GitLab project
   - Added setting to set new users by default as external !4545 (Dravere)
   - Add min value for project limit field on user's form !3622 (jastkand)
   - Reset project pushes_since_gc when we enqueue the git gc call
@@ -89,6 +93,8 @@ v 8.10.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (Title and description overriding prevention)
   - Redesign Builds and Pipelines pages
   - Change status color and icon for running builds
+  - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
+  - Fix last update timestamp on issues not preserved on gitlab.com and project imports
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
@@ -98,7 +104,10 @@ v 8.9.6
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
 
-v 8.9.6 (unreleased)
+v 8.9.7 (unreleased)
+  - Fix import_data wrongly saved as a result of an invalid import_url
+
+v 8.9.6
   - Fix importing of events under notes for GitLab projects
 
 v 8.9.5
@@ -260,6 +269,7 @@ v 8.9.0
   - Add rake task 'gitlab:db:configure' for conditionally seeding or migrating the database
   - Changed the Slack build message to use the singular duration if necessary (Aran Koning)
   - Fix race condition on merge when build succeeds
+  - Added shortcut to focus filter search fields and added documentation #18120
   - Links from a wiki page to other wiki pages should be rewritten as expected
   - Add option to project to only allow merge requests to be merged if the build succeeds (Rui Santos)
   - Added navigation shortcuts to the project pipelines, milestones, builds and forks page. !4393
@@ -2220,8 +2230,6 @@ v 7.7.0
   - Fixes for diff comments: drag-n-drop images, selecting images
   - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update
   - Remove password strength indicator
-
-
 
 v 7.6.0
   - Fork repository to groups
