@@ -97,6 +97,7 @@ v 8.10.0 (unreleased)
   - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
   - Fix last update timestamp on issues not preserved on gitlab.com and project imports
   - Fix issues importing projects from EE to CE
+  - Fix creating group with space in group path
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
