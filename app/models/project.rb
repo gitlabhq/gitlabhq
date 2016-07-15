@@ -172,6 +172,7 @@ class Project < ActiveRecord::Base
   validates :import_url, presence: true, if: :mirror?
   validate  :import_url_availability, if: :import_url_changed?
   validates :mirror_user, presence: true, if: :mirror?
+  validates :import_url, addressable_url: true, if: :import_url
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -497,8 +498,8 @@ class Project < ActiveRecord::Base
     return super(value) unless Gitlab::UrlSanitizer.valid?(value)
 
     import_url = Gitlab::UrlSanitizer.new(value)
-    create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
+    create_or_update_import_data(credentials: import_url.credentials)
   end
 
   def import_url
@@ -510,7 +511,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def valid_import_url?
+    valid? || errors.messages[:import_url].nil?
+  end
+
   def create_or_update_import_data(data: nil, credentials: nil)
+    return unless valid_import_url?
+
     project_import_data = import_data || build_import_data
     if data
       project_import_data.data ||= {}

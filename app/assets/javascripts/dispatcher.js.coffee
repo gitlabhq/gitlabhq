@@ -39,6 +39,8 @@ class Dispatcher
         shortcut_handler = new ShortcutsNavigation()
         new GLForm($('.issue-form'))
         new IssuableForm($('.issue-form'))
+        new LabelsSelect()
+        new MilestoneSelect()
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
@@ -141,6 +143,8 @@ class Dispatcher
         new Project()
         new ProjectAvatar()
         switch path[1]
+          when 'compare'
+            new CompareAutocomplete()
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
             new ProjectNew()
