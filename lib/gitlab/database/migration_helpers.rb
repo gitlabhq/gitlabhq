@@ -25,6 +25,13 @@ module Gitlab
         add_index(table_name, column_name, options)
       end
 
+      # Long-running migrations may take more than the timeout allowed by
+      # the database. Disable the session's statement timeout to ensure
+      # migrations don't get killed prematurely. (PostgreSQL only)
+      def disable_statement_timeout
+        ActiveRecord::Base.connection.execute('SET statement_timeout TO 0') if Database.postgresql?
+      end
+
       # Updates the value of a column in batches.
       #
       # This method updates the table in batches of 5% of the total row count.
@@ -134,6 +141,7 @@ module Gitlab
         end
 
         transaction do
+          disable_statement_timeout
           add_column(table, column, type, default: nil)
 
           # Changing the default before the update ensures any newly inserted
