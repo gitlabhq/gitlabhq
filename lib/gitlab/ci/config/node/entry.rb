@@ -11,13 +11,10 @@ module Gitlab
           attr_reader :config, :attributes
           attr_accessor :key, :parent, :description
 
-          def initialize(config, **attributes)
+          def initialize(config, **metadata)
             @config = config
             @entries = {}
-
-            (@attributes = attributes).each do |attribute, value|
-              public_send("#{attribute}=", value)
-            end
+            @metadata = metadata
 
             @validator = self.class.validator.new(self)
             @validator.validate(:new)

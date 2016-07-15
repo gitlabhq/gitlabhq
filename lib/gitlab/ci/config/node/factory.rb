@@ -10,6 +10,7 @@ module Gitlab
 
           def initialize(node)
             @node = node
+            @metadata = {}
             @attributes = {}
           end
 
@@ -18,8 +19,8 @@ module Gitlab
             self
           end
 
-          def parent(parent)
-            @parent = parent
+          def metadata(metadata)
+            @metadata.merge!(metadata)
             self
           end
 
@@ -30,7 +31,6 @@ module Gitlab
 
           def create!
             raise InvalidFactory unless defined?(@value)
-            raise InvalidFactory unless defined?(@parent)
 
             ##
             # We assume that unspecified entry is undefined.
@@ -60,9 +60,9 @@ module Gitlab
           end
 
           def fabricate(node, value = nil)
-            node.new(value).tap do |entry|
+            node.new(value, @metadata).tap do |entry|
               entry.key = @attributes[:key]
-              entry.parent = @attributes[:parent] || @parent
+              entry.parent = @attributes[:parent]
               entry.description = @attributes[:description]
             end
           end

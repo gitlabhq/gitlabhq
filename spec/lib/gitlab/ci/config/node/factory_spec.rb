@@ -4,32 +4,20 @@ describe Gitlab::Ci::Config::Node::Factory do
   describe '#create!' do
     let(:factory) { described_class.new(node) }
     let(:node) { Gitlab::Ci::Config::Node::Script }
-    let(:parent) { double('parent') }
 
     context 'when setting a concrete value' do
       it 'creates entry with valid value' do
         entry = factory
           .value(['ls', 'pwd'])
-          .parent(parent)
           .create!
 
         expect(entry.value).to eq ['ls', 'pwd']
-      end
-
-      it 'sets parent  attributes' do
-        entry = factory
-          .value('ls')
-          .parent(parent)
-          .create!
-
-        expect(entry.parent).to eq parent
       end
 
       context 'when setting description' do
         it 'creates entry with description' do
           entry = factory
             .value(['ls', 'pwd'])
-            .parent(parent)
             .with(description: 'test description')
             .create!
 
@@ -42,7 +30,6 @@ describe Gitlab::Ci::Config::Node::Factory do
         it 'creates entry with custom key' do
           entry = factory
             .value(['ls', 'pwd'])
-            .parent(parent)
             .with(key: 'test key')
             .create!
 
@@ -56,7 +43,6 @@ describe Gitlab::Ci::Config::Node::Factory do
         it 'creates entry with valid parent' do
           entry = factory
             .value('ls')
-            .parent(parent)
             .with(parent: object)
             .create!
 
@@ -73,22 +59,27 @@ describe Gitlab::Ci::Config::Node::Factory do
       end
     end
 
-    context 'when not setting parent object' do
-      it 'raises error' do
-        expect { factory.value('ls').create! }.to raise_error(
-          Gitlab::Ci::Config::Node::Factory::InvalidFactory
-        )
-      end
-    end
-
     context 'when creating entry with nil value' do
       it 'creates an undefined entry' do
         entry = factory
           .value(nil)
-          .parent(parent)
           .create!
 
         expect(entry).to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
+      end
+    end
+
+    context 'when passing metadata' do
+      let(:node) { spy('node') }
+
+      it 'passes metadata as a parameter' do
+        factory
+          .value('some value')
+          .metadata(some: 'hash')
+          .create!
+
+        expect(node).to have_received(:new)
+          .with('some value', { some: 'hash' })
       end
     end
   end

@@ -28,8 +28,7 @@ module Gitlab
           def create(key, factory)
             factory
               .value(@config[key])
-              .parent(self)
-              .with(key: key)
+              .with(key: key, parent: self)
 
             factory.create!
           end

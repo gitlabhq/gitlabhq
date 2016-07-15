@@ -61,11 +61,13 @@ describe Gitlab::Ci::Config::Node::Jobs do
 
     describe '#value' do
       it 'returns key value' do
-        expect(entry.value)
-          .to eq(rspec: { script: %w[rspec],
-                          stage: 'test' },
-                 spinach: { script: %w[spinach],
-                            stage: 'test' })
+        expect(entry.value).to eq(
+          rspec: { name: :rspec,
+                   script: %w[rspec],
+                   stage: 'test' },
+          spinach: { name: :spinach,
+                     script: %w[spinach],
+                     stage: 'test' })
       end
     end
 

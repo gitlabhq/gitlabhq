@@ -10,11 +10,8 @@ module Gitlab
 
           validations do
             validates :config, presence: true
-
-            with_options on: :processed do
-              validates :name, presence: true
-              validates :name, type: Symbol
-            end
+            validates :name, presence: true
+            validates :name, type: Symbol
           end
 
           node :before_script, Script,
@@ -38,7 +35,7 @@ module Gitlab
           helpers :before_script, :script, :stage, :type, :after_script, :cache
 
           def name
-            @key
+            @metadata[:name]
           end
 
           def value
@@ -48,11 +45,12 @@ module Gitlab
           private
 
           def to_hash
-            { before_script: before_script_value,
-              script: script_value,
-              stage: stage_value,
-              cache: cache_value,
-              after_script: after_script_value }
+            { name: name,
+              before_script: before_script,
+              script: script,
+              stage: stage,
+              cache: cache,
+              after_script: after_script }
           end
 
           def compose!

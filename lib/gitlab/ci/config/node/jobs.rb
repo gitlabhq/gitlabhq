@@ -31,14 +31,15 @@ module Gitlab
           private
 
           def create(name, config)
-            Node::Factory.new(node(name))
+            Node::Factory.new(job_class(name))
               .value(config || {})
-              .parent(self)
-              .with(key: name, description: "#{name} job definition.")
+              .metadata(name: name)
+              .with(key: name, parent: self,
+                    description: "#{name} job definition.")
               .create!
           end
 
-          def node(name)
+          def job_class(name)
             if name.to_s.start_with?('.')
               Node::HiddenJob
             else

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Job do
-  let(:entry) { described_class.new(config, key: :rspec) }
+  let(:entry) { described_class.new(config, name: :rspec) }
 
   before do
     entry.process!
@@ -19,7 +19,7 @@ describe Gitlab::Ci::Config::Node::Job do
       end
 
       context 'when job name is empty' do
-        let(:entry) { described_class.new(config, key: ''.to_sym) }
+        let(:entry) { described_class.new(config, name: ''.to_sym) }
 
         it 'reports error' do
           expect(entry.errors)
@@ -35,7 +35,7 @@ describe Gitlab::Ci::Config::Node::Job do
         describe '#errors' do
           it 'reports error about a config type' do
             expect(entry.errors)
-              .to include 'rspec config should be a hash'
+              .to include 'job config should be a hash'
           end
         end
       end
@@ -62,7 +62,8 @@ describe Gitlab::Ci::Config::Node::Job do
 
       it 'returns correct value' do
         expect(entry.value)
-          .to eq(before_script: %w[ls pwd],
+          .to eq(name: :rspec,
+                 before_script: %w[ls pwd],
                  script: %w[rspec],
                  stage: 'test',
                  after_script: %w[cleanup])

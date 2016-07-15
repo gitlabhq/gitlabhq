@@ -82,7 +82,7 @@ module Ci
         stage: job[:stage],
         commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
-        name: name,
+        name: job[:name],
         only: job[:only],
         except: job[:except],
         allow_failure: job[:allow_failure] || false,
@@ -113,7 +113,7 @@ module Ci
 
     def validate_job_keys!(name, job)
       job.keys.each do |key|
-        unless ALLOWED_JOB_KEYS.include? key
+        unless (ALLOWED_JOB_KEYS + %i[name]).include? key
           raise ValidationError, "#{name} job: unknown parameter #{key}"
         end
       end

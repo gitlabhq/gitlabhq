@@ -54,9 +54,8 @@ module Gitlab
           def compose_jobs!
             factory = Node::Factory.new(Node::Jobs)
               .value(@config.except(*nodes.keys))
-              .parent(self)
-              .with(key: :jobs, global: self)
-              .with(description: 'Jobs definition for this pipeline')
+              .with(key: :jobs, parent: self,
+                    description: 'Jobs definition for this pipeline')
 
             @entries[:jobs] = factory.create!
           end
