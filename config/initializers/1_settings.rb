@@ -131,7 +131,7 @@ class Settings < Settingslogic
       hour = rand(24)
       minute = rand(60)
 
-      "#{hour} #{minute} * * 0"
+      "#{minute} #{hour} * * 0"
     end
   end
 end
