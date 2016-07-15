@@ -12,5 +12,6 @@
         %a.diff-line-num{href: "#{link}#L#{i}", id: "L#{i}", 'data-line-number' => i}
           = link_icon
           = i
-  .blob-content{data: {blob_id: blob.id}}
-    = highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?)
+  .blob-content{data: {blob_id: blob.id}}><
+    - highlight(blob.path, blob.data, repository: repository, plain: blob.no_highlighting?) do |chunk|
+      ~ chunk

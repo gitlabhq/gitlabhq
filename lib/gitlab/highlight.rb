@@ -5,6 +5,11 @@ module Gitlab
         highlight(blob_content, continue: false, plain: plain)
     end
 
+    def self.stream_highlight(blob_name, blob_content, repository: nil, plain: false, &b)
+      new(blob_name, blob_content, repository: repository).
+        highlight(blob_content, continue: false, plain: plain, &b)
+    end
+
     def self.highlight_lines(repository, ref, file_name)
       blob = repository.blob_at(ref, file_name)
       return [] unless blob
@@ -20,7 +25,7 @@ module Gitlab
       @blob_content = blob_content
     end
 
-    def highlight(text, continue: true, plain: false)
+    def highlight(text, continue: true, plain: false, &b)
       if plain
         hl_lexer = Rouge::Lexers::PlainText
         continue = false
@@ -28,7 +33,11 @@ module Gitlab
         hl_lexer = self.lexer
       end
 
-      @formatter.format(hl_lexer.lex(text, continue: continue)).html_safe
+      if b
+        @formatter.format(hl_lexer.lex(text, continue: continue), &b)
+      else
+        @formatter.format(hl_lexer.lex(text, continue: continue)).html_safe
+      end
     rescue
       @formatter.format(Rouge::Lexers::PlainText.lex(text)).html_safe
     end

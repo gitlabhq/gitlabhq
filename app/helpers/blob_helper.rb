@@ -1,7 +1,16 @@
 module BlobHelper
-  def highlight(blob_name, blob_content, repository: nil, plain: false)
-    highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
-    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
+  include Hamlit::HamlHelpers
+
+  def highlight(blob_name, blob_content, repository: nil, plain: false, &block)
+    unless block_given?
+      return raw enum_for(:highlight, blob_name, blob_content, repository: repository, plain: false).to_a.join
+    end
+
+    yield raw('<pre class="code highlight><code>')
+    Gitlab::Highlight.stream_highlight(blob_name, blob_content, plain: plain, repository: repository) do |chunk|
+      yield raw(chunk)
+    end
+    yield raw('</code></pre>')
   end
 
   def no_highlight_files
