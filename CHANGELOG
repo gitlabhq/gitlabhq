@@ -79,6 +79,7 @@ v 8.10.0 (unreleased)
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
   - Handle custom Git hook result in GitLab UI
+  - Allow to access Container Registry for Public and Internal projects
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
