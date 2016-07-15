@@ -32,7 +32,7 @@ class ResolveService
     for noteId, resolved of CommentsStore.state[discussionId]
       ids.push(noteId) if resolved is allResolve
 
-    CommentsStore.state[discussionId].loading = true
+    CommentsStore.loading[discussionId] = true
     @resource
       .all({}, { ids: ids, discussion: discussionId, resolved: !allResolve })
       .then (response) ->
@@ -40,6 +40,6 @@ class ResolveService
           for noteId in ids
             CommentsStore.update(discussionId, noteId, !allResolve)
 
-        CommentsStore.state[discussionId].loading = false
+        CommentsStore.loading[discussionId] = false
 
 @ResolveService = new ResolveService()
