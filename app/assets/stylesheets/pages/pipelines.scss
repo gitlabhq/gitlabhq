@@ -49,6 +49,14 @@
 
   .commit-link {
 
+    .ci-running {
+
+      svg {
+        top: 1px;
+        margin-right: 0;
+      }
+    }
+
     a:hover {
       text-decoration: none;
     }
@@ -123,7 +131,7 @@
       right: 1px;
     }
   }
-  
+
   .stage-cell {
 
     svg {
