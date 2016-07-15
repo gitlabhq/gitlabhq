@@ -13,6 +13,7 @@ v 8.10.0 (unreleased)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refresh the branch cache after `git gc` runs
+  - Allow to disable request access button on projects/groups
   - Refactor repository paths handling to allow multiple git mount points
   - Optimize system note visibility checking by memoizing the visible reference count !5070
   - Add Application Setting to configure default Repository Path for new projects

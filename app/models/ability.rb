@@ -172,7 +172,7 @@ class Ability
           rules << :read_build if project.public_builds?
 
           unless owner || project.team.member?(user) || project_group_member?(project, user)
-            rules << :request_access
+            rules << :request_access if project.request_access_enabled
           end
         end
 
@@ -372,7 +372,7 @@ class Ability
         ]
       end
 
-      if group.public? || (group.internal? && !user.external?)
+      if (group.public? || (group.internal? && !user.external?)) && group.request_access_enabled
         rules << :request_access unless group.users.include?(user)
       end
 

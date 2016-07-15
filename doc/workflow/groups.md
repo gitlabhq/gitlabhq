@@ -53,6 +53,9 @@ If necessary, you can increase the access level of an individual user for a spec
 
 ## Requesting access to a group
 
+As group owner you can enable or disable non members to request access to
+your group. Go to group settings and click on **allow users to request access**
+
 As a user, you can request to be a member of a group. Go to the group you'd
 like to be a member of, and click the **Request Access** button on the right
 side of your screen.
