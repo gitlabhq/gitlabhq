@@ -20,6 +20,7 @@ module Gitlab
 
         if Database.postgresql?
           options = options.merge({ algorithm: :concurrently })
+          disable_statement_timeout
         end
 
         add_index(table_name, column_name, options)
@@ -140,8 +141,9 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        disable_statement_timeout
+
         transaction do
-          disable_statement_timeout
           add_column(table, column, type, default: nil)
 
           # Changing the default before the update ensures any newly inserted
