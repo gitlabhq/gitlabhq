@@ -57,14 +57,14 @@
     color: $orange-light;
   }
 
-  $width_to_show_stats_and_buttons_on_one_line: $screen-xs-min;
-
   .milestone-stats-and-buttons {
     display: flex;
     justify-content: flex-start;
+    // on small screens split into two line
     flex-wrap: wrap;
 
-    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+    @media (min-width: $screen-xs-min) {
+      // on bigger screens show on one line
       justify-content: space-between;
       flex-wrap: nowrap;
     }
@@ -75,7 +75,7 @@
     order: 1;
     // buttons go on its own line below the header and need some margin
     margin-top: 10px;
-    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+    @media (min-width: $screen-xs-min) {
       // when displayed on one line stats go first, buttons second
       order: 2;
       margin-top: 0;
@@ -93,7 +93,7 @@
     width: 100%;
     padding: 7px 0;
     flex-shrink: 1;
-    @media (min-width: $width_to_show_stats_and_buttons_on_one_line) {
+    @media (min-width: $screen-xs-min) {
       // when displayed on one line stats go first, buttons second
       order: 1;
     }
