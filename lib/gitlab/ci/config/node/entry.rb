@@ -28,11 +28,7 @@ module Gitlab
           end
 
           def leaf?
-            nodes.none?
-          end
-
-          def nodes
-            self.class.nodes
+            @entries.none?
           end
 
           def descendants
@@ -74,10 +70,6 @@ module Gitlab
           def self.default
           end
 
-          def self.nodes
-            {}
-          end
-
           def self.validator
             Validator
           end
@@ -85,13 +77,6 @@ module Gitlab
           private
 
           def compose!
-            nodes.each do |key, essence|
-              @entries[key] = create(key, essence)
-            end
-          end
-
-          def create(entry, essence)
-            raise NotImplementedError
           end
         end
       end

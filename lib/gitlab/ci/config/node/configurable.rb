@@ -25,12 +25,14 @@ module Gitlab
 
           private
 
-          def create(key, factory)
-            factory
-              .value(@config[key])
-              .with(key: key, parent: self)
+          def compose!
+            self.class.nodes.each do |key, factory|
+              factory
+                .value(@config[key])
+                .with(key: key, parent: self)
 
-            factory.create!
+              @entries[key] = factory.create!
+            end
           end
 
           class_methods do

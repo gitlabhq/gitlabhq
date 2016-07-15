@@ -22,27 +22,24 @@ module Gitlab
             end
           end
 
-          def nodes
-            @config
-          end
-
           private
 
-          def create(name, config)
-            Node::Factory.new(job_class(name))
-              .value(config || {})
-              .metadata(name: name)
-              .with(key: name, parent: self,
-                    description: "#{name} job definition.")
-              .create!
+          def compose!
+            @config.each do |name, config|
+              node = hidden?(name) ? Node::HiddenJob : Node::Job
+
+              factory = Node::Factory.new(node)
+                .value(config || {})
+                .metadata(name: name)
+                .with(key: name, parent: self,
+                      description: "#{name} job definition.")
+
+              @entries[name] = factory.create!
+            end
           end
 
-          def job_class(name)
-            if name.to_s.start_with?('.')
-              Node::HiddenJob
-            else
-              Node::Job
-            end
+          def hidden?(name)
+            name.to_s.start_with?('.')
           end
         end
       end

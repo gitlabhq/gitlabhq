@@ -51,11 +51,11 @@ describe Gitlab::Ci::Config::Node::Global do
           expect(global.descendants.second.description)
             .to eq 'Docker image that will be used to execute jobs.'
         end
-      end
 
-      describe '#leaf?' do
-        it 'is not leaf' do
-          expect(global).not_to be_leaf
+        describe '#leaf?' do
+          it 'is not leaf' do
+            expect(global).not_to be_leaf
+          end
         end
       end
 
@@ -63,6 +63,12 @@ describe Gitlab::Ci::Config::Node::Global do
         describe '#before_script' do
           it 'returns nil' do
             expect(global.before_script).to be nil
+          end
+        end
+
+        describe '#leaf?' do
+          it 'is leaf' do
+            expect(global).to be_leaf
           end
         end
       end
