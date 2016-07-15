@@ -1038,8 +1038,8 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref, current_user = nil)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci

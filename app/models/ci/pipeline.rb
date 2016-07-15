@@ -6,6 +6,8 @@ module Ci
     self.table_name = 'ci_commits'
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :user
+
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
