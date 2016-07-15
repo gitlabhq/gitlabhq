@@ -129,6 +129,17 @@
       color: $layout-link-gray;
     }
 
+    svg {
+
+      path {
+        fill: $layout-link-gray;
+      }
+
+      use {
+        stroke: $layout-link-gray;
+      }
+    }
+
     .fa-caret-down {
       margin-left: 3px;
     }

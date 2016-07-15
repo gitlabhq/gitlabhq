@@ -51,16 +51,13 @@
   }
 
   svg {
-    vertical-align: top;
-    position: relative;
-    top: 2px;
 
     path {
-      fill: $white-light;
+      fill: $color;
     }
 
     use {
-      stroke: $white-light;
+      stroke: $color;
     }
   }
 }
@@ -189,9 +186,10 @@
   }
 
   svg {
-    width: 16px;
-    height: auto;
-    vertical-align: middle;
+    height: 15px;
+    width: auto;
+    position: relative;
+    top: 2px;
   }
 }
 
