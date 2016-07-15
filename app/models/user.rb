@@ -760,33 +760,6 @@ class User < ActiveRecord::Base
     Project.where(id: events)
   end
 
-  def signup_domain_valid?
-    valid = true
-    error = nil
-
-    if current_application_settings.domain_blacklist_enabled?
-      blocked_domains = current_application_settings.domain_blacklist
-      if match_domain(blocked_domains, self.email)
-        error = 'is not from an allowed domain.'
-        valid = false
-      end
-    end
-
-    allowed_domains = current_application_settings.restricted_signup_domains
-    unless allowed_domains.blank?
-      if match_domain(allowed_domains, self.email)
-        valid = true
-      else
-        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
-        valid = false
-      end
-    end
-
-    self.errors.add(:email, error) unless valid
-
-    valid
-  end
-
   def can_be_removed?
     !solo_owned_groups.present?
   end
@@ -886,7 +859,32 @@ class User < ActiveRecord::Base
     self.projects_limit     = 0
   end
 
-  private
+  def signup_domain_valid?
+    valid = true
+    error = nil
+
+    if current_application_settings.domain_blacklist_enabled?
+      blocked_domains = current_application_settings.domain_blacklist
+      if match_domain(blocked_domains, self.email)
+        error = 'is not from an allowed domain.'
+        valid = false
+      end
+    end
+
+    allowed_domains = current_application_settings.restricted_signup_domains
+    unless allowed_domains.blank?
+      if match_domain(allowed_domains, self.email)
+        valid = true
+      else
+        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        valid = false
+      end
+    end
+
+    self.errors.add(:email, error) unless valid
+
+    valid
+  end
 
   def match_domain(email_domains, email)
     signup_domain = Mail::Address.new(email).domain
