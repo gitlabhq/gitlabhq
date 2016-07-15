@@ -24,7 +24,7 @@ describe CreateCommitBuildsService, services: true do
       it { expect(pipeline).to be_valid }
       it { expect(pipeline).to be_persisted }
       it { expect(pipeline).to eq(project.pipelines.last) }
-      it { expect(pipeline).to have_attributes(:user => user) }
+      it { expect(pipeline).to have_attributes(user: user) }
       it { expect(pipeline.builds.first).to be_kind_of(Ci::Build) }
     end
 
