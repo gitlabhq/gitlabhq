@@ -100,10 +100,15 @@
 
 .abuse-reports {
   table-layout: fixed;
-  td {
-    vertical-align: top !important;
-    &.action-buttons a {
-      white-space: normal;
+  .action-buttons a {
+    white-space: normal;
+  }
+  @media (min-width: $screen-sm-min) {
+    th {
+      width: 15%;
+      &.wide {
+        width: 55%;
+      }
     }
   }
 }
