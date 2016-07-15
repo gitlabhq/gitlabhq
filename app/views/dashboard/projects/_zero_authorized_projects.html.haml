@@ -6,7 +6,7 @@
     Code, test, and deploy together
 .blank-state
   .blank-state-icon
-    = navbar_icon("project", size: 50)
+    = custom_icon("project", size: 50)
   %h3.blank-state-title
     You don't have access to any projects right now
   %p.blank-state-text
@@ -24,7 +24,7 @@
 - if current_user.can_create_group?
   .blank-state
     .blank-state-icon
-      = navbar_icon("group", size: 50)
+      = custom_icon("group", size: 50)
     %h3.blank-state-title
       You can create a group for several dependent projects.
     %p.blank-state-text
