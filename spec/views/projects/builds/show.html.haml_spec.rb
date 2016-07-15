@@ -10,7 +10,6 @@ describe 'projects/builds/show' do
   before do
     assign(:build, build)
     assign(:project, project)
-    assign(:commit_title, build.project.commit.title)
 
     allow(view).to receive(:can?).and_return(true)
   end
