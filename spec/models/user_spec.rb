@@ -89,7 +89,7 @@ describe User, models: true do
     end
 
     describe 'email' do
-      context 'when no signup domains white listed' do
+      context 'when no signup domains whitelisted' do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
         end
@@ -100,7 +100,7 @@ describe User, models: true do
         end
       end
 
-      context 'when a signup domain is white listed and subdomains are allowed' do
+      context 'when a signup domain is whitelisted and subdomains are allowed' do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
         end
@@ -121,7 +121,7 @@ describe User, models: true do
         end
       end
 
-      context 'when a signup domain is white listed and subdomains are not allowed' do
+      context 'when a signup domain is whitelisted and subdomains are not allowed' do
         before do
           allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
         end

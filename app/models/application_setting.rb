@@ -4,6 +4,12 @@ class ApplicationSetting < ActiveRecord::Base
   add_authentication_token_field :health_check_access_token
 
   CACHE_KEY = 'application_setting.last'
+  DOMAIN_LIST_SEPARATOR = %r{\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
+                            |               # or
+                            \s              # any whitespace character
+                            |               # or
+                            [\r\n]          # any number of newline characters
+                          }x
 
   serialize :restricted_visibility_levels
   serialize :import_sources
@@ -164,25 +170,18 @@ class ApplicationSetting < ActiveRecord::Base
     self.domain_blacklist.join("\n") unless self.domain_blacklist.nil?
   end
 
-  def splitter
-    /\s*[,;]\s*     # comma or semicolon, optionally surrounded by whitespace
-      |               # or
-      \s              # any whitespace character
-      |               # or
-      [\r\n]          # any number of newline characters
-    /x
-  end
-
   def restricted_signup_domains_raw=(values)
     self.restricted_signup_domains = []
-    self.restricted_signup_domains = values.split(splitter)
+    self.restricted_signup_domains = values.split(DOMAIN_LIST_SEPARATOR)
     self.restricted_signup_domains.reject! { |d| d.empty? }
+    self.restricted_signup_domains
   end
 
   def domain_blacklist_raw=(values)
     self.domain_blacklist = []
-    self.domain_blacklist = values.split(splitter)
+    self.domain_blacklist = values.split(DOMAIN_LIST_SEPARATOR)
     self.domain_blacklist.reject! { |d| d.empty? }
+    self.domain_blacklist
   end
 
   def domain_blacklist_file=(file)

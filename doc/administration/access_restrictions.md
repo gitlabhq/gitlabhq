@@ -39,7 +39,7 @@ not selected.
 
 ## Blacklist email domains
 
-With this feature enabled, you can block email addresses of an specific domain
+With this feature enabled, you can block email addresses of a specific domain
 from creating an account on your GitLab server. This is particularly useful to
 prevent spam. Disposable email addresses are usually used by malicious users to
 create dummy accounts and spam issues.

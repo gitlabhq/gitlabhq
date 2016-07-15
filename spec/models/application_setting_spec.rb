@@ -77,27 +77,27 @@ describe ApplicationSetting, models: true do
   context 'blacklisted signup domains' do
     it 'set single domain' do
       setting.domain_blacklist_raw = 'example.com'
-      expect(setting.domain_blacklist).to eq(['example.com'])
+      expect(setting.domain_blacklist).to contain_exactly('example.com')
     end
 
     it 'set multiple domains with spaces' do
       setting.domain_blacklist_raw = 'example.com *.example.com'
-      expect(setting.domain_blacklist).to eq(['example.com', '*.example.com'])
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
     end
 
     it 'set multiple domains with newlines and a space' do
       setting.domain_blacklist_raw = "example.com\n *.example.com"
-      expect(setting.domain_blacklist).to eq(['example.com', '*.example.com'])
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
     end
 
     it 'set multiple domains with commas' do
       setting.domain_blacklist_raw = "example.com, *.example.com"
-      expect(setting.domain_blacklist).to eq(['example.com', '*.example.com'])
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
     end
 
     it 'set multiple domain with file' do
       setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'blacklist.txt'))
-      expect(setting.domain_blacklist).to eq(%w(example.com test.com foo.bar))
+      expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
     end
   end
 end
