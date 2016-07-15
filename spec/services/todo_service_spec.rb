@@ -435,6 +435,24 @@ describe TodoService, services: true do
         should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
       end
     end
+
+    describe '#new_note' do
+      let(:mention) { john_doe.to_reference }
+      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
+      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
+
+      it 'creates a todo for mentioned user on new diff note' do
+        service.new_note(diff_note_on_merge_request, author)
+
+        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: diff_note_on_merge_request)
+      end
+
+      it 'creates a todo for mentioned user on legacy diff note' do
+        service.new_note(legacy_diff_note_on_merge_request, author)
+
+        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: legacy_diff_note_on_merge_request)
+      end
+    end
   end
 
   it 'updates cached counts when a todo is created' do
