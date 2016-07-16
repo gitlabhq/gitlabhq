@@ -106,6 +106,10 @@ module Ci
       end
     end
 
+    def skip_ci?
+      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
+    end
+
     def environments
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end

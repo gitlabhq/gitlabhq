@@ -1,10 +1,9 @@
 module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
-    attr_reader :yaml_errors
     attr_reader :trigger_request
 
-    def execute(skip_ci: true, save_yaml_error: true, trigger_request: nil)
+    def execute(skip_ci: true, save_on_errors: true, trigger_request: nil)
       @pipeline = project.pipelines.new(
         ref: ref_name,
         sha: real_sha,
@@ -29,14 +28,15 @@ module Ci
         return error('Commit not found')
       end
 
-      if skip_ci && config_processor.skip_ci?
-        return error('Creation of pipeline is skipped')
+      unless config_processor
+        unless ci_yaml_file
+          return error('Missing .gitlab-ci.yml file')
+        end
+        return error(pipeline.yaml_errors, save: save_on_errors)
       end
 
-      unless config_processor
-        pipeline.yaml_errors = yaml_errors || 'Missing .gitlab-ci.yml file'
-        pipeline.save if save_yaml_error
-        return error(pipeline.yaml_errors)
+      if skip_ci && pipeline.skip_ci?
+        return error('Creation of pipeline is skipped', save: save_on_errors)
       end
 
       unless builds_attributes.any?
@@ -105,22 +105,30 @@ module Ci
       sha != Gitlab::Git::BLANK_SHA
     end
 
-    def error(message)
+    def error(message, save: false)
       pipeline.errors.add(:base, message)
+      if save
+        pipeline.save
+        pipeline.touch
+      end
       return pipeline
     end
 
+    def ci_yaml_file
+      pipeline.ci_yaml_file
+    end
+
     def config_processor
-      return nil unless pipeline.ci_yaml_file
+      return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(pipeline.ci_yaml_file, project.path_with_namespace)
+        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
       rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-        self.yaml_errors = e.message
+        pipeline.yaml_errors = e.message
         nil
       rescue
-        self.yaml_errors = 'Undefined error'
+        pipeline.yaml_errors = 'Undefined error'
         nil
       end
     end
