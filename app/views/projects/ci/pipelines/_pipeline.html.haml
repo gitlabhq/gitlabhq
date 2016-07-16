@@ -71,7 +71,7 @@
                     %span Download '#{build.name}' artifacts
 
       - if can?(current_user, :update_pipeline, @project)
-        .cancel-retry-btns
+        .cancel-retry-btns.inline
           - if pipeline.retryable?
             = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
               = icon("repeat")
