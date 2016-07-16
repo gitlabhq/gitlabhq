@@ -96,10 +96,6 @@ module Ci
       self.when == 'manual'
     end
 
-    def playable_actions
-      pipeline.playable_actions
-    end
-
     def playable?
       project.builds_enabled? && commands.present? && manual?
     end

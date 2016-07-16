@@ -1,5 +1,5 @@
-- playable = deployment.playable_actions
-- if playable.any?
+- actions = deployment.manual_actions
+- if actions.any?
   .btn-group.inline
     .btn-group
       %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
@@ -9,4 +9,4 @@
         %li
           = link_to play_namespace_project_build_path(@project.namespace, @project, build), rel: 'nofollow' do
             = icon("play")
-            %span= playable.name.titleize
+            %span= actions.name.titleize
