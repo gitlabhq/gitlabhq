@@ -54,6 +54,7 @@ module Ci
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.yaml_variables = build.yaml_variables
+        new_build.when = build.when
         new_build.user = user
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
