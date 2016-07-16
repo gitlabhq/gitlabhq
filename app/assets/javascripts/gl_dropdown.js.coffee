@@ -479,7 +479,7 @@ class GitLabDropdown
     if el.hasClass(ACTIVE_CLASS)
       el.removeClass(ACTIVE_CLASS)
 
-      if isInput
+      if isInput or $(@el).is('.js-dropdown-keep-input')
         field.val('')
       else
         field.remove()

@@ -55,13 +55,13 @@
             - project = @target_project || @project
             - if issuable.assignee_id
               = hidden_field_tag("#{issuable.class.model_name.param_key}[assignee_id]", issuable.assignee_id)
-            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-user-search js-issuable-form-dropdown js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
+            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-dropdown-keep-input js-user-search js-issuable-form-dropdown js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
               placeholder: "Search assignee", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (project.id if project), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee" } })
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone_id, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, extra_class: 'js-issuable-form-dropdown'
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone_id, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, extra_class: "js-issuable-form-dropdown js-dropdown-keep-input"
       .form-group
         - has_labels = issuable.project.labels.any?
         - selected_labels = issuable.label_ids.any? ? issuable.label_ids : nil
