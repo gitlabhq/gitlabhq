@@ -29,8 +29,8 @@ class GitlabUsagePingWorker
   end
 
   def data
-    usage_data = { version: Gitlab::VERSION }
-    usage_data[:active_users] = current_active_user_count
+    usage_data = { version: Gitlab::VERSION,
+                   active_users: current_active_user_count }
     license = License.current
 
     if license
@@ -48,6 +48,6 @@ class GitlabUsagePingWorker
   end
 
   def url
-    'https://version.gitlab.com/usage_ping'
+    'https://version.gitlab.com/usage_data'
   end
 end

@@ -22,7 +22,7 @@ describe GitlabUsagePingWorker do
   it "sends POST request" do
     stub_application_setting(usage_ping_enabled: true)
 
-    stub_request(:post, "https://version.gitlab.com/usage_ping").
+    stub_request(:post, "https://version.gitlab.com/usage_data").
         to_return(status: 200, body: '', headers: {})
     expect(subject).to receive(:try_obtain_lease).and_return(true)
 
