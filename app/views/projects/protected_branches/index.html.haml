@@ -8,12 +8,13 @@
     %p.prepend-top-20
       Protected branches are designed to:
       %ul
-        %li prevent pushes from everybody except #{link_to "masters", help_page_path("user/permissions"), class: "vlink"}
+        %li prevent pushes from everybody except masters or developers with permissions
         %li prevent anyone from force pushing to the branch
         %li prevent anyone from deleting the branch
-      %p.append-bottom-0 Read more about #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}
+        %li prevent the creation of a new branch by unauthorized users if the branch matches the regex
+      %p.append-bottom-0 Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
   .col-lg-9
-    %h5.prepend-top-0
+    %h4.prepend-top-0
       Protect a branch
     - if can? current_user, :admin_project, @project
       = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
