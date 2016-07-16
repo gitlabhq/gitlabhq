@@ -14,11 +14,12 @@
 
 - if selected.present?
   - if selected.respond_to?('any?')
+    - selected = project.labels.find(selected)
     - selected.each do |label|
-      = hidden_field_tag data_options[:field_name], label, id: nil
+      = hidden_field_tag data_options[:field_name], label.id, id: nil, data: { title: label.title }
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
-    %span.dropdown-toggle-text{ class: ("is-default" if selected_toggle) }
+    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil?) }
       = h(multi_label_name(selected_toggle || selected, "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable

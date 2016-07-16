@@ -66,10 +66,12 @@
         - has_labels = issuable.project.labels.any?
         - selected_labels = issuable.label_ids.any? ? issuable.label_ids : nil
         - label_dropdown_toggle = issuable.labels.map { |label| label.title }
+        - field_name = "#{issuable.class.model_name.param_key}[label_ids][]"
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
+        = hidden_field_tag field_name, ""
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
           .issuable-form-select-holder
-            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: selected_labels, selected_toggle: label_dropdown_toggle, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: "false" }
+            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: selected_labels, selected_toggle: label_dropdown_toggle, data_options: { field_name: field_name, show_any: "false" }
     - if has_due_date
       .col-lg-6
         .form-group

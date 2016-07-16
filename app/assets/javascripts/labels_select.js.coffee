@@ -27,6 +27,10 @@ class @LabelsSelect
       $newLabelCreateButton = $('.js-new-label-btn')
       selectedLabels = []
 
+      $("input[name='#{$dropdown.data('field-name')}']").each ->
+        title = $(this).data('title')
+        selectedLabels.push($(this).data('title')) if title
+
       $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
 
