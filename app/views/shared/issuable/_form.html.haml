@@ -61,7 +61,7 @@
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone_id, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false
+            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone_id, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false, extra_class: 'js-issuable-form-dropdown'
       .form-group
         - has_labels = issuable.project.labels.any?
         - selected_labels = issuable.label_ids.any? ? issuable.label_ids : nil
