@@ -32,4 +32,8 @@ class Deployment < ActiveRecord::Base
   def keep_around_commit
     project.repository.keep_around(self.sha)
   end
+
+  def playable_actions
+    deployable.try(:playable_actions)
+  end
 end

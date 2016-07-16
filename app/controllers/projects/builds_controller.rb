@@ -55,6 +55,15 @@ class Projects::BuildsController < Projects::ApplicationController
     redirect_to build_path(build)
   end
 
+  def play
+    unless @build.playable?
+      return render_404
+    end
+
+    build = @build.play(current_user)
+    redirect_to build_path(build)
+  end
+
   def cancel
     @build.cancel
     redirect_to build_path(@build)

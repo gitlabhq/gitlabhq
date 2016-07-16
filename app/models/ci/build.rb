@@ -15,6 +15,7 @@ module Ci
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
+    scope :manual_actions, ->() { where(when: :manual).without_created }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -90,6 +91,29 @@ module Ci
                                                 tag: build.tag)
           service.execute(build)
         end
+      end
+    end
+
+    def manual?
+      self.when == 'manual'
+    end
+
+    def playable_actions
+      pipeline.playable_actions
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      if skipped?
+        # We can run skipped build
+        new_build.user = current_user
+        new_build.queue
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
       end
     end
 
