@@ -19,20 +19,21 @@ module Banzai
         language = node.attr('class')
         code     = node.text
 
-        lexer = Rouge::Lexer.find_fancy(language)
+        css_classes = "code highlight"
+
+        lexer = Rouge::Lexer.find_fancy(language) || Rouge::Lexers::PlainText
         formatter = Rouge::Formatters::HTML.new
-        css_classes = "code highlight js-syntax-highlight #{lexer.tag}"
 
         begin
-          highlighted = ''
-          highlighted << %(<pre class="#{css_classes}"><code>)
-          highlighted << formatter.format(lexer.lex(code))
-          highlighted << %(</code></pre>)
+          code = formatter.format(lexer.lex(code))
+
+          css_classes << " js-syntax-highlight #{lexer.tag}"
         rescue
           # Gracefully handle syntax highlighter bugs/errors to ensure
           # users can still access an issue/comment/etc.
-          highlighted = "<pre>#{code}</pre>"
         end
+
+        highlighted = %(<pre class="#{css_classes}"><code>#{code}</code></pre>)
 
         # Extracted to a method to measure it
         replace_parent_pre_element(node, highlighted)
