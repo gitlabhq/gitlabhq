@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe CreateCommitBuildsService, services: true do
-  let(:service) { CreateCommitBuildsService.new }
+describe CreatePipelineFromPushService, services: true do
+  let(:service) { CreatePipelineFromPushService.new }
   let(:project) { FactoryGirl.create(:empty_project) }
   let(:user) { nil }
 

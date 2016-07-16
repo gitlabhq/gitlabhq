@@ -11,6 +11,7 @@ module Ci
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
 
     validates_presence_of :sha
+    validates_presence_of :ref
     validates_presence_of :status
     validate :valid_commit_sha
 
@@ -94,37 +95,6 @@ module Ci
       trigger_requests.any?
     end
 
-    def create_builds(user, trigger_request = nil)
-      ##
-      # We persist pipeline only if there are builds available
-      #
-      return unless config_processor
-
-      build_builds_for_stages(config_processor.stages, user,
-                              'success', trigger_request) && save
-    end
-
-    def create_next_builds(build)
-      return unless config_processor
-
-      # don't create other builds if this one is retried
-      latest_builds = builds.latest
-      return unless latest_builds.exists?(build.id)
-
-      # get list of stages after this build
-      next_stages = config_processor.stages.drop_while { |stage| stage != build.stage }
-      next_stages.delete(build.stage)
-
-      # get status for all prior builds
-      prior_builds = latest_builds.where.not(stage: next_stages)
-      prior_status = prior_builds.status
-
-      # build builds for next stage that has builds available
-      # and save pipeline if we have builds
-      build_builds_for_stages(next_stages, build.user, prior_status,
-                              build.trigger_request) && save
-    end
-
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
@@ -134,37 +104,6 @@ module Ci
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
-    end
-
-    def config_processor
-      return nil unless ci_yaml_file
-      return @config_processor if defined?(@config_processor)
-
-      @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
-      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-        self.yaml_errors = e.message
-        nil
-      rescue
-        self.yaml_errors = 'Undefined error'
-        nil
-      end
-    end
-
-    def ci_yaml_file
-      return @ci_yaml_file if defined?(@ci_yaml_file)
-
-      @ci_yaml_file ||= begin
-        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
-        blob.load_all_data!(project.repository)
-        blob.data
-      rescue
-        nil
-      end
-    end
-
-    def skip_ci?
-      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
     end
 
     def environments
@@ -188,18 +127,24 @@ module Ci
       Note.for_commit_id(sha)
     end
 
-    private
+    def ci_yaml_file
+      return @ci_yaml_file if defined?(@ci_yaml_file)
 
-    def build_builds_for_stages(stages, user, status, trigger_request)
-      ##
-      # Note that `Array#any?` implements a short circuit evaluation, so we
-      # build builds only for the first stage that has builds available.
-      #
-      stages.any? do |stage|
-        CreateBuildsService.new(self)
-          .execute(stage, user, status, trigger_request).present?
+      @ci_yaml_file ||= begin
+        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
+        blob.load_all_data!(project.repository)
+        blob.data
+      rescue
+        nil
       end
     end
+
+    def process!
+      # TODO: pass pipeline.user when is merged https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5272
+      Ci::ProcessPipelineService.new(project, nil).execute(self)
+    end
+
+    private
 
     def update_state
       statuses.reload

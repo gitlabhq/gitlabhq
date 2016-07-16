@@ -31,10 +31,27 @@ module Ci
       raise ValidationError, e.message
     end
 
+    def jobs_for_ref(ref, tag = false, trigger_request = nil)
+      @jobs.select do |_, job|
+        process?(job[:only], job[:except], ref, tag, trigger_request)
+      end
+    end
+
+    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).select do |_, job|
+        job[:stage] == stage
+      end
+    end
+
+    def builds_for_ref(ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).map do |name, job|
+        build_job(name, job)
+      end
+    end
+
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      builds.select do |build|
-        build[:stage] == stage &&
-          process?(build[:only], build[:except], ref, tag, trigger_request)
+      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, job|
+        build_job(name, job)
       end
     end
 
@@ -45,7 +62,7 @@ module Ci
     end
 
     def global_variables
-      @variables
+      @variables || {}
     end
 
     def job_variables(name)
@@ -95,11 +112,10 @@ module Ci
         commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: name,
-        only: job[:only],
-        except: job[:except],
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
         environment: job[:environment],
+        yaml_variables: global_variables.merge(job[:variables] || {}),
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services,
