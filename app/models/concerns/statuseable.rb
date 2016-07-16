@@ -5,7 +5,7 @@ module Statuseable
 
   class_methods do
     def status_sql
-      scope = all.without_created
+      scope = all.relevant
       builds = scope.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
       ignored = scope.ignored.select('count(*)').to_sql if scope.respond_to?(:ignored)
@@ -60,7 +60,7 @@ module Statuseable
     end
 
     scope :created, -> { where(status: 'created') }
-    scope :without_created, -> { where.not(status: 'created') }
+    scope :relevant, -> { where.not(status: 'created') }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
