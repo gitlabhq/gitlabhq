@@ -881,7 +881,7 @@ module Ci
             when: "on_success",
             allow_failure: false,
             environment: nil,
-            yaml_variables: {}
+            yaml_variables: []
           })
         end
       end
