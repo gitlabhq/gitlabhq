@@ -72,7 +72,9 @@ describe Ci::ProcessPipelineService, services: true do
         create(:ci_build, :created, pipeline: pipeline, name: 'test', stage_idx: 1)
         create(:ci_build, :created, pipeline: pipeline, name: 'test_failure', stage_idx: 2, when: 'on_failure')
         create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 3)
+        create(:ci_build, :created, pipeline: pipeline, name: 'production', stage_idx: 3, when: 'manual')
         create(:ci_build, :created, pipeline: pipeline, name: 'cleanup', stage_idx: 4, when: 'always')
+        create(:ci_build, :created, pipeline: pipeline, name: 'clear cache', stage_idx: 4, when: 'manual')
       end
 
       context 'when builds are successful' do
@@ -191,6 +193,30 @@ describe Ci::ProcessPipelineService, services: true do
 
           expect(builds.running_or_pending).to be_empty
           expect(pipeline.reload.status).to eq('canceled')
+        end
+      end
+
+      context 'when listing manual actions' do
+        it 'returns only for skipped builds' do
+          # currently all builds are created
+          expect(create_builds).to be_truthy
+          expect(manual_actions).to be_empty
+
+          # succeed stage build
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage test
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_one # production
+
+          # succeed stage deploy
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_many # production and clear cache
+        end
+
+        def manual_actions
+          pipeline.manual_actions
         end
       end
     end

@@ -60,16 +60,17 @@
       - actions = pipeline.manual_actions
       - if artifacts.present? || actions.any?
         .btn-group.inline
-          - if playable.any?
+          - if actions.any?
             .btn-group
               %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
                 = icon("play")
                 %b.caret
               %ul.dropdown-menu.dropdown-menu-align-right
-                %li
-                  = link_to play_namespace_project_build_path(@project.namespace, @project, build), rel: 'nofollow' do
-                    = icon("play")
-                    %span= actions.name.titleize
+                - actions.each do |build|
+                  %li
+                    = link_to play_namespace_project_build_path(@project.namespace, @project, build), method: :post, rel: 'nofollow' do
+                      = icon("play")
+                      %span= build.name.titleize
           - if artifacts.present?
             .btn-group
               %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}

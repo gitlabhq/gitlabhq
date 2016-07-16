@@ -17,5 +17,4 @@
       #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td
-    - if can?(current_user, :create_deployment, last_deployment) && last_deployment.deployable
-      = render 'projects/deployments/playable', deployment: last_deployment
+    = render 'projects/deployments/actions', deployment: last_deployment

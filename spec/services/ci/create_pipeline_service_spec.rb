@@ -192,5 +192,22 @@ describe Ci::CreatePipelineService, services: true do
         expect(Ci::Pipeline.count).to eq(0)
       end
     end
+
+    context 'with manual actions' do
+      before do
+        config = YAML.dump({ deploy: { script: 'ls', when: 'manual' } })
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'does not create a new pipeline' do
+        result = execute(ref: 'refs/heads/master',
+                         before: '00000000',
+                         after: project.commit.id,
+                         commits: [{ message: 'some msg' }])
+
+        expect(result).to be_persisted
+        expect(result.manual_actions).not_to be_empty
+      end
+    end
   end
 end

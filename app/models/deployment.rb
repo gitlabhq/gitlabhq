@@ -34,6 +34,6 @@ class Deployment < ActiveRecord::Base
   end
 
   def manual_actions
-    deployable.try(:manual_actions)
+    deployable.try(:other_actions)
   end
 end

@@ -191,4 +191,28 @@ describe Ci::Pipeline, models: true do
       end
     end
   end
+
+  describe '#manual_actions' do
+    subject { pipeline.manual_actions }
+
+    it 'when none defined' do
+      is_expected.to be_empty
+    end
+
+    context 'when action defined' do
+      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+      it 'returns one action' do
+        is_expected.to contain_exactly(manual)
+      end
+
+      context 'there are multiple of the same name' do
+        let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        it 'returns latest one' do
+          is_expected.to contain_exactly(manual2)
+        end
+      end
+    end
+  end
 end

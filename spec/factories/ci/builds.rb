@@ -48,6 +48,11 @@ FactoryGirl.define do
       status 'created'
     end
 
+    trait :manual do
+      status 'skipped'
+      self.when 'manual'
+    end
+
     trait :allowed_to_fail do
       allow_failure true
     end

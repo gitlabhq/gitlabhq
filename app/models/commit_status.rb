@@ -23,7 +23,7 @@ class CommitStatus < ActiveRecord::Base
 
   state_machine :status do
     event :queue do
-      transition created: :pending
+      transition [:created, :skipped] => :pending
     end
 
     event :run do
