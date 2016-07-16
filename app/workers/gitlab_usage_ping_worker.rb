@@ -30,7 +30,7 @@ class GitlabUsagePingWorker
 
   def data
     usage_data = { version: Gitlab::VERSION,
-                   active_users: current_active_user_count }
+                   active_user_count: current_active_user_count }
     license = License.current
 
     if license
