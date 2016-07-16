@@ -865,7 +865,7 @@ class User < ActiveRecord::Base
 
     if current_application_settings.domain_blacklist_enabled?
       blocked_domains = current_application_settings.domain_blacklist
-      if match_domain(blocked_domains, self.email)
+      if domain_matches?(blocked_domains, self.email)
         error = 'is not from an allowed domain.'
         valid = false
       end
@@ -873,7 +873,7 @@ class User < ActiveRecord::Base
 
     allowed_domains = current_application_settings.domain_whitelist
     unless allowed_domains.blank?
-      if match_domain(allowed_domains, self.email)
+      if domain_matches?(allowed_domains, self.email)
         valid = true
       else
         error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
@@ -886,7 +886,7 @@ class User < ActiveRecord::Base
     valid
   end
 
-  def match_domain(email_domains, email)
+  def domain_matches?(email_domains, email)
     signup_domain = Mail::Address.new(email).domain
     email_domains.any? do |domain|
       escaped = Regexp.escape(domain).gsub('\*', '.*?')
