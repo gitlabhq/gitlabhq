@@ -155,7 +155,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @diff_notes_disabled = true
 
     @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses if @pipeline
+    @statuses = @pipeline.statuses.without_created if @pipeline
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
@@ -358,7 +358,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits_count = @merge_request.commits.count
 
     @pipeline = @merge_request.pipeline
-    @statuses = @pipeline.statuses if @pipeline
+    @statuses = @pipeline.statuses.without_created if @pipeline
 
     if @merge_request.locked_long_ago?
       @merge_request.unlock_mr

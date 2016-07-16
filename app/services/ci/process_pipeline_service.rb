@@ -48,7 +48,7 @@ module Ci
     end
 
     def prior_builds(index)
-      pipeline.builds.where('stage_idx < ?', index).latest.status  || 'success'
+      pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
     end
 
     def new_builds_for_stage(index)

@@ -134,8 +134,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_status_vars
-    @statuses = CommitStatus.where(pipeline: pipelines)
-    @builds = Ci::Build.where(pipeline: pipelines)
+    @statuses = CommitStatus.where(pipeline: pipelines).without_created
+    @builds = Ci::Build.where(pipeline: pipelines).without_created
   end
 
   def assign_change_commit_vars(mr_source_branch)

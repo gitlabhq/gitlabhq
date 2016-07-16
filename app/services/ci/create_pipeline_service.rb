@@ -111,7 +111,7 @@ module Ci
         pipeline.save
         pipeline.touch
       end
-      return pipeline
+      pipeline
     end
 
     def ci_yaml_file
