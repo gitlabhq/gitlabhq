@@ -1,16 +1,17 @@
+- project = @target_project || @project
 - if selected.present?
   = hidden_field_tag(name, selected)
 = dropdown_tag(milestone_dropdown_label(selected), options: { title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
-  placeholder: "Search milestones", footer_content: @project.present?, data: { show_no: true, show_any: show_any, show_upcoming: show_upcoming, field_name: name, selected: selected, project_id: @project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
-  - if @project
+  placeholder: "Search milestones", footer_content: project.present?, data: { show_no: true, show_any: show_any, show_upcoming: show_upcoming, field_name: name, selected: selected, project_id: project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
+  - if project
     %ul.dropdown-footer-list
-      - if can? current_user, :admin_milestone, @project
+      - if can? current_user, :admin_milestone, project
         %li
-          = link_to new_namespace_project_milestone_path(@project.namespace, @project), title: "New Milestone" do
+          = link_to new_namespace_project_milestone_path(project.namespace, project), title: "New Milestone" do
             Create new
       %li
-        = link_to namespace_project_milestones_path(@project.namespace, @project) do
-          - if can? current_user, :admin_milestone, @project
+        = link_to namespace_project_milestones_path(project.namespace, project) do
+          - if can? current_user, :admin_milestone, project
             Manage milestones
           - else
             View milestones

@@ -1,3 +1,4 @@
+- project = @target_project || @project
 - show_create = local_assigns.fetch(:show_create, true)
 - extra_options = local_assigns.fetch(:extra_options, true)
 - filter_submit = local_assigns.fetch(:filter_submit, true)
@@ -6,7 +7,7 @@
 - classes = local_assigns.fetch(:classes, [])
 - selected = local_assigns.fetch(:selected, nil)
 - selected_toggle = local_assigns.fetch(:selected_toggle, nil)
-- dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", selected: selected, project_id: @project.try(:id), labels: labels_filter_path, default_label: "Label"}
+- dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", selected: selected, project_id: project.try(:id), labels: labels_filter_path, default_label: "Label"}
 - dropdown_data.merge!(data_options)
 - classes << 'js-extra-options' if extra_options
 - classes << 'js-filter-submit' if filter_submit
@@ -22,6 +23,6 @@
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }
-    - if show_create and @project and can?(current_user, :admin_label, @project)
+    - if show_create and project and can?(current_user, :admin_label, project)
       = render partial: "shared/issuable/label_page_create"
     = dropdown_loading
