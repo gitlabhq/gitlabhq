@@ -14,10 +14,14 @@ class GitlabUsagePingWorker
     # Multiple Sidekiq workers could run this. We should only do this at most once a day.
     return unless try_obtain_lease
 
-    HTTParty.post(url,
-                  body: data.to_json,
-                  headers: { 'Content-type' => 'application/json' }
-                 )
+    begin
+      HTTParty.post(url,
+                    body: data.to_json,
+                    headers: { 'Content-type' => 'application/json' }
+                   )
+    rescue HTTParty::Error => e
+      Rails.logger.info "Unable to contact GitLab, Inc.: #{e}"
+    end
   end
 
   def try_obtain_lease
@@ -30,6 +34,7 @@ class GitlabUsagePingWorker
     license = License.current
 
     if license
+      usage_data[:license_md5] = Digest::MD5.hexdigest(license.data)
       usage_data[:historical_max_users] = max_historical_user_count
       usage_data[:licensee] = license.licensee
       usage_data[:license_user_count] = license.user_count

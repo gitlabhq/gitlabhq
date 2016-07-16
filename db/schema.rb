@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 20160713222618) do
     t.string   "elasticsearch_host",                    default: "localhost"
     t.string   "elasticsearch_port",                    default: "9200"
     t.string   "repository_storage",                    default: "default"
-    t.string   "enabled_git_access_protocol",
+    t.string   "enabled_git_access_protocol"
     t.boolean  "usage_ping_enabled",                    default: true,        null: false
   end
 

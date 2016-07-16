@@ -7,6 +7,7 @@ describe GitlabUsagePingWorker do
     data = subject.data
     license = License.current
 
+    expect(data[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
     expect(data[:version]).to eq(Gitlab::VERSION)
     expect(data[:licensee]).to eq(license.licensee)
     expect(data[:active_users]).to eq(User.active.count)
