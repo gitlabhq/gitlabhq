@@ -194,8 +194,8 @@ module Ci
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
-      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
-        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      if job[:when] && !job[:when].in?(%w[on_success on_failure always manual])
+        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure, always or manual"
       end
 
       if job[:environment] && !validate_environment(job[:environment])
