@@ -14,9 +14,11 @@
 
 - if selected.present?
   - if selected.respond_to?('any?')
-    - selected = project.labels.find(selected)
+    - selected = project.labels.find_by_id(selected) || selected
     - selected.each do |label|
-      = hidden_field_tag data_options[:field_name], label.id, id: nil, data: { title: label.title }
+      - id = label.try(:id) || label
+      - title = label.try(:title) || label
+      = hidden_field_tag data_options[:field_name], id, id: nil, data: { title: title }
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil?) }

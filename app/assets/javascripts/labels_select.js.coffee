@@ -293,6 +293,7 @@ class @LabelsSelect
           else if selectedLabels.length is 1
             selectedLabels[0]
           else
+            console.log selectedLabels.length, defaultLabel
             defaultLabel
         defaultLabel: defaultLabel
         fieldName: $dropdown.data('field-name')

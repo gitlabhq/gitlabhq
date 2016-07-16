@@ -10,10 +10,11 @@ module IssuablesHelper
   def multi_label_name(current_labels, default_label)
     # current_labels may be a string from before
     if current_labels.is_a?(Array) && current_labels.any?
+      title = current_labels[0].try(:title) || current_labels[0]
       if current_labels.count > 1
-        "#{current_labels[0]} +#{current_labels.count - 1} more"
+        "#{title} +#{current_labels.count - 1} more"
       else
-        current_labels[0]
+        title
       end
     elsif current_labels.is_a?(String)
       if current_labels.nil? || current_labels.empty?

@@ -1,4 +1,5 @@
 - project = @target_project || @project
+- extra_class = extra_class || ''
 - selected_text = project.milestones.find_by_id(selected).try(:name)
 - if selected.present?
   = hidden_field_tag(name, selected)
