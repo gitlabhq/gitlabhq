@@ -28,10 +28,10 @@ describe Ci::API::API do
         expect(runner.reload.platform).to eq("darwin")
         expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
         expect(json_response["variables"]).to eq([
-                                                   { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-                                                   { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-                                                   { "key" => "DB_NAME", "postgres" => "true", "public" => true }
-                                                 ])
+          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+          { "key" => "DB_NAME", "value" => "postgres", "public" => true }
+        ])
       end
 
       context 'when builds are finished' do
@@ -84,7 +84,7 @@ describe Ci::API::API do
             { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
             { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
             { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
-            { "key" => "DB_NAME", "postgres" => "true", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true },
             { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
             { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false },
           ])

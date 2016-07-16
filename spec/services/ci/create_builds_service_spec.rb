@@ -19,11 +19,11 @@ describe Ci::ProcessPipelineService, services: true do
 
     context 'start queuing next builds' do
       before do
-        create(:ci_build, pipeline: pipeline, name: 'linux', stage_idx: 0)
-        create(:ci_build, pipeline: pipeline, name: 'mac', stage_idx: 0)
-        create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1)
-        create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1)
-        create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 2)
+        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rspec', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rubocop', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 2)
       end
 
       it 'processes a pipeline' do
@@ -53,8 +53,8 @@ describe Ci::ProcessPipelineService, services: true do
 
     context 'custom stage with first job allowed to fail' do
       before do
-        create(:ci_build, pipeline: pipeline, name: 'clean_job', stage_idx: 0, allow_failure: true)
-        create(:ci_build, pipeline: pipeline, name: 'test_job', stage_idx: 1, allow_failure: true)
+        create(:ci_build, :created, pipeline: pipeline, name: 'clean_job', stage_idx: 0, allow_failure: true)
+        create(:ci_build, :created, pipeline: pipeline, name: 'test_job', stage_idx: 1, allow_failure: true)
       end
 
       it 'automatically triggers a next stage when build finishes' do
@@ -68,11 +68,11 @@ describe Ci::ProcessPipelineService, services: true do
 
     context 'properly creates builds when "when" is defined' do
       before do
-        create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0)
-        create(:ci_build, pipeline: pipeline, name: 'test', stage_idx: 1)
-        create(:ci_build, pipeline: pipeline, name: 'test_failure', stage_idx: 2, when: 'on_failure')
-        create(:ci_build, pipeline: pipeline, name: 'deploy', stage_idx: 3)
-        create(:ci_build, pipeline: pipeline, name: 'cleanup', stage_idx: 4, when: 'always')
+        create(:ci_build, :created, pipeline: pipeline, name: 'build', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'test', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'test_failure', stage_idx: 2, when: 'on_failure')
+        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 3)
+        create(:ci_build, :created, pipeline: pipeline, name: 'cleanup', stage_idx: 4, when: 'always')
       end
 
       context 'when builds are successful' do
