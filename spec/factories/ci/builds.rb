@@ -38,6 +38,10 @@ FactoryGirl.define do
       status 'pending'
     end
 
+    trait :created do
+      status 'created'
+    end
+
     trait :allowed_to_fail do
       allow_failure true
     end

@@ -70,7 +70,7 @@ module Ci
       around_transition any => [:success, :failed, :canceled] do |build, block|
         block.call
         if build.pipeline
-          build.process!(build.user, build.trigger_request)
+          build.pipeline.process!
         end
       end
 

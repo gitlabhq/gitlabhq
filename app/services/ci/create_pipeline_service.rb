@@ -94,7 +94,7 @@ module Ci
     end
 
     def tag?
-      Gitlab::Git.tag_ref?(ref)
+      project.repository.find_tag(ref_name).present?
     end
 
     def ref_name
