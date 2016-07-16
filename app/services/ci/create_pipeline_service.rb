@@ -9,7 +9,7 @@ module Ci
         sha: sha,
         before_sha: before_sha,
         tag: tag?,
-        trigger_requests: [trigger_request]
+        trigger_requests: [trigger_request].compact
       )
       @trigger_request = trigger_request
 

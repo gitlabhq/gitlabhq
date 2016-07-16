@@ -71,7 +71,7 @@ describe Ci::API::API do
       context 'for triggered build' do
         before do
           trigger = create(:ci_trigger, project: project)
-          trigger_request = create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [build], trigger: trigger)
+          create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [build], trigger: trigger)
           project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
         end
 
