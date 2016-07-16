@@ -15,7 +15,7 @@ module Ci
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual).without_created }
+    scope :manual_actions, ->() { where(when: :manual).relevant }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -96,15 +96,19 @@ module Ci
       self.when == 'manual'
     end
 
+    def other_actions
+      pipeline.manual_actions.where.not(id: self)
+    end
+
     def playable?
       project.builds_enabled? && commands.present? && manual?
     end
 
     def play(current_user = nil)
-      if skipped?
-        # We can run skipped build
-        new_build.user = current_user
-        new_build.queue
+      # Try to queue a current build
+      if self.queue
+       self.update(user: current_user)
+       self
       else
         # Otherwise we need to create a duplicate
         Ci::Build.retry(self, current_user)
