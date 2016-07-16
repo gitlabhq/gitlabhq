@@ -33,7 +33,7 @@ class Deployment < ActiveRecord::Base
     project.repository.keep_around(self.sha)
   end
 
-  def playable_actions
-    deployable.try(:playable_actions)
+  def manual_actions
+    deployable.try(:manual_actions)
   end
 end

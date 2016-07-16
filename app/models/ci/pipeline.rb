@@ -66,8 +66,8 @@ module Ci
       !tag?
     end
 
-    def playable_actions
-      builds.manual_actions.latest
+    def manual_actions
+      builds.latest.manual_actions
     end
 
     def retryable?
