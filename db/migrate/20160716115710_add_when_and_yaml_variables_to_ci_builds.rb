@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-class AddWhenVariablesAndQueuedAtToCiBuilds < ActiveRecord::Migration
+class AddWhenAndYamlVariablesCiBuilds < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   # When using the methods "add_concurrent_index" or "add_column_with_default"
@@ -18,6 +18,5 @@ class AddWhenVariablesAndQueuedAtToCiBuilds < ActiveRecord::Migration
   def change
     add_column :ci_builds, :when, :string
     add_column :ci_builds, :yaml_variables, :text
-    add_column :ci_builds, :queued_at, :timestamp
   end
 end

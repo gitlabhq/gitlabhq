@@ -471,7 +471,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
-          yaml_variables: {}
+          yaml_variables: []
         })
       end
     end
