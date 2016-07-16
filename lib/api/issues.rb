@@ -21,17 +21,6 @@ module API
       def filter_issues_milestone(issues, milestone)
         issues.includes(:milestone).where('milestones.title' => milestone)
       end
-
-      def create_spam_log(project, current_user, attrs)
-        params = attrs.merge({
-          source_ip: client_ip(env),
-          user_agent: user_agent(env),
-          noteable_type: 'Issue',
-          via_api: true
-        })
-
-        ::CreateSpamLogService.new(project, current_user, params).execute
-      end
     end
 
     resource :issues do
@@ -171,7 +160,7 @@ module API
         text = [attrs[:title], attrs[:description]].reject(&:blank?).join("\n")
 
         if check_for_spam?(project, current_user) && is_spam?(env, current_user, text)
-          create_spam_log(project, current_user, attrs)
+          create_spam_log(project, current_user, attrs, env)
           render_api_error!({ error: 'Spam detected' }, 400)
         end
 

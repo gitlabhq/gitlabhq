@@ -5,6 +5,9 @@ GitLab uses Akismet to prevent users who are not members of a project from
 creating spam via the GitLab API. Detected spam will be rejected, and
 an entry in the "Spam Log" section in the Admin page will be created.
 
+> *Note:* As of 8.10 GitLab also submits issues created via the WebUI by non
+project members to Akismet to prevent spam.
+
 Privacy note: GitLab submits the user's IP and user agent to Akismet. Note that
 adding a user to a project will disable the Akismet check and prevent this
 from happening.
