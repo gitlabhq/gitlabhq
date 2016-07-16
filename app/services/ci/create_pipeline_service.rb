@@ -5,8 +5,8 @@ module Ci
 
     def execute(skip_ci: true, save_on_errors: true, trigger_request: nil)
       @pipeline = project.pipelines.new(
-        ref: ref_name,
-        sha: real_sha,
+        ref: ref,
+        sha: sha,
         before_sha: before_sha,
         tag: tag?
       )
@@ -20,7 +20,7 @@ module Ci
         return error('Insufficient permissions to create a new pipeline')
       end
 
-      unless ref_names.include?(ref_name)
+      unless ref_names.include?(ref)
         return error('Reference not found')
       end
 
@@ -74,10 +74,10 @@ module Ci
     end
 
     def commit
-      @commit ||= project.commit(sha || ref)
+      @commit ||= project.commit(origin_sha || origin_ref)
     end
 
-    def real_sha
+    def sha
       commit.try(:id)
     end
 
@@ -85,24 +85,24 @@ module Ci
       params[:checkout_sha] || params[:before] || Gitlab::Git::BLANK_SHA
     end
 
-    def sha
+    def origin_sha
       params[:checkout_sha] || params[:after]
     end
 
-    def ref
+    def origin_ref
       params[:ref]
     end
 
     def tag?
-      project.repository.find_tag(ref_name).present?
+      project.repository.find_tag(ref).present?
     end
 
-    def ref_name
-      Gitlab::Git.ref_name(ref)
+    def ref
+      Gitlab::Git.ref_name(origin_ref)
     end
 
     def valid_sha?
-      sha != Gitlab::Git::BLANK_SHA
+      origin_sha != Gitlab::Git::BLANK_SHA
     end
 
     def error(message, save: false)
