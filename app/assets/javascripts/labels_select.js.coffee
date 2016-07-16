@@ -24,6 +24,7 @@ class @LabelsSelect
       $newLabelError = $('.js-label-error')
       $colorPreview = $('.js-dropdown-label-color-preview')
       $newLabelCreateButton = $('.js-new-label-btn')
+      selectedLabels = []
 
       $newLabelError.hide()
       $loading = $block.find('.block-loading').fadeOut()
@@ -272,19 +273,17 @@ class @LabelsSelect
           fields: ['title']
         selectable: true
         filterable: true
-        toggleLabel: (selected, el) ->
-          selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active')
+        toggleLabel: (selected, el, e, added) ->
+          if added
+            selectedLabels.push selected.title
+          else
+            index = selectedLabels.indexOf selected.title
+            selectedLabels.splice index, 1
 
-          if selected and selected.title?
-            if selected_labels.length > 1
-              "#{selected.title} +#{selected_labels.length - 1} more"
-            else
-              selected.title
-          else if not selected and selected_labels.length isnt 0
-            if selected_labels.length > 1
-              "#{$(selected_labels[0]).text()} +#{selected_labels.length - 1} more"
-            else if selected_labels.length is 1
-              $(selected_labels).text()
+          if selectedLabels.length > 1
+            "#{selectedLabels[0]} +#{selectedLabels.length - 1} more"
+          else if selectedLabels.length is 1
+            selectedLabels[0]
           else
             defaultLabel
         fieldName: $dropdown.data('field-name')
