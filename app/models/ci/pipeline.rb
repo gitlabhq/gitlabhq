@@ -106,6 +106,18 @@ module Ci
       end
     end
 
+    def ci_yaml_file
+      return @ci_yaml_file if defined?(@ci_yaml_file)
+
+      @ci_yaml_file ||= begin
+        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
+        blob.load_all_data!(project.repository)
+        blob.data
+      rescue
+        nil
+      end
+    end
+
     def skip_ci?
       git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
     end
@@ -129,18 +141,6 @@ module Ci
 
     def notes
       Note.for_commit_id(sha)
-    end
-
-    def ci_yaml_file
-      return @ci_yaml_file if defined?(@ci_yaml_file)
-
-      @ci_yaml_file ||= begin
-        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
-        blob.load_all_data!(project.repository)
-        blob.data
-      rescue
-        nil
-      end
     end
 
     def process!

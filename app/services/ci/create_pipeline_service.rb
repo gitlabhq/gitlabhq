@@ -8,7 +8,8 @@ module Ci
         ref: ref,
         sha: sha,
         before_sha: before_sha,
-        tag: tag?
+        tag: tag?,
+        trigger_requests: [trigger_request]
       )
       @trigger_request = trigger_request
 
@@ -16,7 +17,7 @@ module Ci
         return error('Pipeline is disabled')
       end
 
-      unless can?(current_user, :create_pipeline, project)
+      unless trigger_request || can?(current_user, :create_pipeline, project)
         return error('Insufficient permissions to create a new pipeline')
       end
 
@@ -58,8 +59,8 @@ module Ci
           project: pipeline.project,
           ref: pipeline.ref,
           tag: pipeline.tag,
-          trigger_request: trigger_request,
           user: current_user,
+          trigger_request: trigger_request
         )
         pipeline.builds.create(build_attributes)
       end

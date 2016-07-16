@@ -29,7 +29,7 @@ module CiStatusHelper
         'check'
       when 'failed'
         'close'
-      when 'new', 'pending'
+      when 'pending'
         'clock-o'
       when 'running'
         'spinner'

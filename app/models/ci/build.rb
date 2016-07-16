@@ -5,7 +5,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options
-    serialize :yaml_variables, JSON
+    serialize :yaml_variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
