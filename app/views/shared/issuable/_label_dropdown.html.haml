@@ -18,7 +18,7 @@
       = hidden_field_tag data_options[:field_name], label, id: nil
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
-    %span.dropdown-toggle-text
+    %span.dropdown-toggle-text{ class: ("is-default" if selected_toggle) }
       = h(multi_label_name(selected_toggle || selected, "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable

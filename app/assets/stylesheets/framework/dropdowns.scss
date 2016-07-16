@@ -562,3 +562,9 @@
   display: block;
   color: $gl-placeholder-color;
 }
+
+.dropdown-toggle-text {
+  &.is-default {
+    color: $gl-placeholder-color;
+  }
+}

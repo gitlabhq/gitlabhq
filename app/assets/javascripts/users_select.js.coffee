@@ -142,12 +142,12 @@ class @UsersSelect
         selectable: true
         fieldName: $dropdown.data('field-name')
 
-        toggleLabel: (selected) ->
-          if selected && 'id' of selected
+        toggleLabel: (selected, el, e, added) ->
+          if selected and 'id' of selected and added
             if selected.text then selected.text else selected.name
           else
             defaultLabel
-
+        defaultLabel: defaultLabel
         inputId: 'issue_assignee_id'
 
         hidden: (e) ->

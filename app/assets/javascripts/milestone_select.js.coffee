@@ -70,11 +70,12 @@ class @MilestoneSelect
         search:
           fields: ['title']
         selectable: true
-        toggleLabel: (selected) ->
-          if selected && 'id' of selected
+        toggleLabel: (selected, el, e, added) ->
+          if selected and 'id' of selected and added
             selected.title
           else
             defaultLabel
+        defaultLabel: defaultLabel
         fieldName: $dropdown.data('field-name')
         text: (milestone) ->
           _.escape(milestone.title)

@@ -4,6 +4,7 @@ class @LabelsSelect
 
     $('.js-label-select').each (i, dropdown) ->
       $dropdown = $(dropdown)
+      $toggleText = $dropdown.find('.dropdown-toggle-text')
       projectId = $dropdown.data('project-id')
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
@@ -280,12 +281,16 @@ class @LabelsSelect
             index = selectedLabels.indexOf selected.title
             selectedLabels.splice index, 1
 
+          if selected.id? and selected.id is 0
+            selectedLabels = []
+
           if selectedLabels.length > 1
             "#{selectedLabels[0]} +#{selectedLabels.length - 1} more"
           else if selectedLabels.length is 1
             selectedLabels[0]
           else
             defaultLabel
+        defaultLabel: defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->
           if $dropdown.hasClass('js-issuable-form-dropdown')

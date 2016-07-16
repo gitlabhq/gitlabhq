@@ -617,7 +617,14 @@ class GitLabDropdown
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
   updateLabel: (selected = null, el = null, instance = null, added = false) =>
-    $(@el).find(".dropdown-toggle-text").text @options.toggleLabel(selected, el, instance, added)
+    $toggleText = $(@el).find(".dropdown-toggle-text")
+    $toggleText.text @options.toggleLabel(selected, el, instance, added)
+
+    if @options.defaultLabel
+      if $toggleText.text().trim() is @options.defaultLabel
+        $toggleText.addClass('is-default')
+      else
+        $toggleText.removeClass('is-default')
 
 $.fn.glDropdown = (opts) ->
   return @.each ->

@@ -1,5 +1,5 @@
 - project = @target_project || @project
-- selected_text = project.milestones.find(selected).try(:name)
+- selected_text = project.milestones.find_by_id(selected).try(:name)
 - if selected.present?
   = hidden_field_tag(name, selected)
 = dropdown_tag(milestone_dropdown_label(selected_text), options: { title: "Filter by milestone", toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable",
