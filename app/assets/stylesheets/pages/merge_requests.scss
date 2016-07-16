@@ -336,6 +336,10 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .table-holder {

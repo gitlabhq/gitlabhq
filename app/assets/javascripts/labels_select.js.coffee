@@ -184,20 +184,22 @@ class @LabelsSelect
               .value()
 
             if $dropdown.hasClass 'js-extra-options'
-              if showNo
-                data.unshift(
-                  id: 0
-                  title: 'No Label'
-                )
-
+              extraData = []
               if showAny
-                data.unshift(
+                extraData.push(
                   isAny: true
                   title: 'Any Label'
                 )
 
-              if data.length > 2
-                data.splice 2, 0, 'divider'
+              if showNo
+                extraData.push(
+                  id: 0
+                  title: 'No Label'
+                )
+
+              if extraData.length
+                extraData.push 'divider'
+                data = extraData.concat(data)
 
             callback data
 
@@ -287,6 +289,12 @@ class @LabelsSelect
             defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->
+          if $dropdown.hasClass('js-issuable-form-dropdown')
+            if label.id is 0
+              return
+            else
+              return label.id
+
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
             label.title
           else
@@ -300,6 +308,9 @@ class @LabelsSelect
           $selectbox.hide()
           # display:block overrides the hide-collapse rule
           $value.removeAttr('style')
+
+          return if $dropdown.hasClass('js-issuable-form-dropdown')
+
           if $dropdown.hasClass 'js-multiselect'
             if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
               selectedLabels = $dropdown
@@ -321,7 +332,7 @@ class @LabelsSelect
         clicked: (label) ->
           _this.enableBulkLabelDropdown()
 
-          if $dropdown.hasClass('js-filter-bulk-update')
+          if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
             return
 
           page = $('body').data 'page'

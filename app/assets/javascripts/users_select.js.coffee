@@ -155,11 +155,13 @@ class @UsersSelect
           # display:block overrides the hide-collapse rule
           $value.css('display', '')
 
-        clicked: (user) ->
+        clicked: (user, $el, e) ->
           page = $('body').data 'page'
           isIssueIndex = page is 'projects:issues:index'
           isMRIndex = page is page is 'projects:merge_requests:index'
-          if $dropdown.hasClass('js-filter-bulk-update')
+          if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
+            e.preventDefault()
+            selectedId = user.id
             return
 
           if $dropdown.hasClass('js-filter-submit') and (isIssueIndex or isMRIndex)
@@ -172,7 +174,8 @@ class @UsersSelect
               .closest('.selectbox')
               .find("input[name='#{$dropdown.data('field-name')}']").val()
             assignTo(selected)
-
+        id: (user) ->
+          user.id
         renderRow: (user) ->
           username = if user.username then "@#{user.username}" else ""
           avatar = if user.avatar_url then user.avatar_url else false
