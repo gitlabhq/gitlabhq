@@ -511,9 +511,6 @@ class GitLabDropdown
       # Toggle active class for the tick mark
       el.addClass ACTIVE_CLASS
 
-      # Toggle the dropdown label
-      if @options.toggleLabel
-        @updateLabel(selectedObject, el, @)
       if value?
         if !field.length and fieldName
           @addInput(fieldName, value)
@@ -521,6 +518,10 @@ class GitLabDropdown
           field
             .val value
             .trigger 'change'
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        @updateLabel(selectedObject, el, @)
 
       return selectedObject
 
