@@ -47,8 +47,9 @@ module MilestonesHelper
   end
 
   def milestones_filter_dropdown_path
+    project = @target_project || @project
     if @project
-      namespace_project_milestones_path(@project.namespace, @project, :json)
+      namespace_project_milestones_path(project.namespace, project, :json)
     else
       dashboard_milestones_path(:json)
     end

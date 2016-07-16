@@ -14,7 +14,7 @@
 
 - if selected.present?
   - if selected.respond_to?('any?')
-    - selected = project.labels.find_by_id(selected) || selected
+    - selected = project.labels.where(id: selected) || selected
     - selected.each do |label|
       - id = label.try(:id) || label
       - title = label.try(:title) || label
