@@ -19,15 +19,14 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref(type, "master").first).to eq({
           stage: "test",
           stage_idx: 1,
-          except: nil,
           name: :rspec,
-          only: nil,
           commands: "pwd\nrspec",
           tag_list: [],
           options: {},
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          yaml_variables: {}
         })
       end
 
@@ -432,11 +431,9 @@ module Ci
 
         expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          except: nil,
           stage: "test",
           stage_idx: 1,
           name: :rspec,
-          only: nil,
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -446,6 +443,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          yaml_variables: {}
         })
       end
 
@@ -461,11 +459,9 @@ module Ci
 
         expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          except: nil,
           stage: "test",
           stage_idx: 1,
           name: :rspec,
-          only: nil,
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -475,6 +471,7 @@ module Ci
           allow_failure: false,
           when: "on_success",
           environment: nil,
+          yaml_variables: []
         })
       end
     end
@@ -681,11 +678,9 @@ module Ci
 
         expect(config_processor.builds_for_stage_and_ref("test", "master").size).to eq(1)
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
-          except: nil,
           stage: "test",
           stage_idx: 1,
           name: :rspec,
-          only: nil,
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -701,6 +696,7 @@ module Ci
           when: "on_success",
           allow_failure: false,
           environment: nil,
+          yaml_variables: {}
         })
       end
 
@@ -819,17 +815,16 @@ module Ci
         it "doesn't create jobs that start with dot" do
           expect(subject.size).to eq(1)
           expect(subject.first).to eq({
-            except: nil,
             stage: "test",
             stage_idx: 1,
             name: :normal_job,
-            only: nil,
             commands: "test",
             tag_list: [],
             options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            yaml_variables: {}
           })
         end
       end
@@ -865,30 +860,28 @@ module Ci
         it "is correctly supported for jobs" do
           expect(subject.size).to eq(2)
           expect(subject.first).to eq({
-            except: nil,
             stage: "build",
             stage_idx: 0,
             name: :job1,
-            only: nil,
             commands: "execute-script-for-job",
             tag_list: [],
             options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            yaml_variables: {}
           })
           expect(subject.second).to eq({
-            except: nil,
             stage: "build",
             stage_idx: 0,
             name: :job2,
-            only: nil,
             commands: "execute-script-for-job",
             tag_list: [],
             options: {},
             when: "on_success",
             allow_failure: false,
             environment: nil,
+            yaml_variables: {}
           })
         end
       end

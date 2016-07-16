@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712171823) do
+ActiveRecord::Schema.define(version: 20160716115710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -168,6 +168,8 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.datetime "artifacts_expire_at"
     t.string   "environment"
     t.integer  "artifacts_size"
+    t.string   "when"
+    t.text     "yaml_variables"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
