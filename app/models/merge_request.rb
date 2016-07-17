@@ -560,11 +560,36 @@ class MergeRequest < ActiveRecord::Base
     locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 
-  def approvals_left
-    [approvals_required - approvals.count, potential_approvers].min
+  def requires_approve?
+    approvals_required.nonzero?
   end
 
-  def potential_approvers
+  def approved?
+    approvals_left < 1
+  end
+
+  # Number of approvals remaining (excluding existing approvals) before the MR is
+  # considered approved. If there are fewer potential approvers than approvals left,
+  # choose the lower so the MR doesn't get 'stuck' in a state where it can't be approved.
+  #
+  def approvals_left
+    [approvals_required - approvals.count, number_of_potential_approvers].min
+  end
+
+  def approvals_required
+    approvals_before_merge || target_project.approvals_before_merge
+  end
+
+  # An MR can potentially be approved by:
+  # - anyone in the approvers list
+  # - any other project member with developer access or higher (if there are no approvers
+  #   left)
+  #
+  # It cannot be approved by:
+  # - a user who has already approved the MR
+  # - the MR author
+  #
+  def number_of_potential_approvers
     has_access = ['access_level > ?', Member::REPORTER]
     wheres = [
       "id IN (#{overall_approvers.select(:user_id).to_sql})",
@@ -575,21 +600,18 @@ class MergeRequest < ActiveRecord::Base
       wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
     end
 
-    User.count_by_sql("SELECT COUNT(*) FROM users WHERE (#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}")
+    User.where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}").count
   end
 
+  # Users in the list of approvers who have not already approved this MR.
+  #
   def approvers_left
     User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
   end
 
-  def approvals_required
-    approvals_before_merge || target_project.approvals_before_merge
-  end
-
-  def requires_approve?
-    approvals_required.nonzero?
-  end
-
+  # The list of approvers from either this MR (if they've been set on the MR) or the
+  # target project. Excludes the author by default.
+  #
   # Before a merge request has been created, author will be nil, so pass the current user
   # on the MR create page.
   #
@@ -600,28 +622,31 @@ class MergeRequest < ActiveRecord::Base
     exclude_user ? approvers_relation.where.not(user_id: exclude_user.id) : approvers_relation
   end
 
-  def approved?
-    approvals_left < 1
+  def can_approve?(user)
+    return true if approvers_left.include?(user)
+    return false if user == author
+    return false unless user.can?(:update_merge_request, self)
+
+    any_approver_allowed? && approvals.where(user: user).empty?
   end
 
-  def approved_by?(user)
-    approved_by_users.include?(user)
+  # Once there are fewer approvers left in the list than approvals required, allow other
+  # project members to approve the MR.
+  #
+  def any_approver_allowed?
+    approvals_left > approvers_left.count
   end
 
   def approved_by_users
     approvals.map(&:user)
   end
 
-  def can_approve?(user)
-    return true if approvers_left.include?(user)
-    return false if user == author
-    return false unless user.can?(:update_merge_request, self)
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      next if author && user_id == author.id
 
-    any_approver_allowed? && !approved_by?(user)
-  end
-
-  def any_approver_allowed?
-    approvals_left > approvers_left.count
+      approvers.find_or_initialize_by(user_id: user_id, target_id: id)
+    end
   end
 
   def has_ci?
@@ -653,14 +678,6 @@ class MergeRequest < ActiveRecord::Base
       "Closed"
     else
       "Open"
-    end
-  end
-
-  def approver_ids=(value)
-    value.split(",").map(&:strip).each do |user_id|
-      next if author && user_id == author.id
-
-      approvers.find_or_initialize_by(user_id: user_id, target_id: id)
     end
   end
 

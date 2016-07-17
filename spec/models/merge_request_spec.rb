@@ -264,7 +264,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#potential_approvers" do
+  describe "#number_of_potential_approvers" do
     let(:project) { create(:empty_project) }
     let(:author) { create(:user) }
     let(:merge_request) { create(:merge_request, source_project: project, author: author) }
@@ -272,7 +272,7 @@ describe MergeRequest, models: true do
     it "includes approvers set on the MR" do
       expect do
         create(:approver, user: create(:user), target: merge_request)
-      end.to change { merge_request.potential_approvers }.by(1)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
     end
 
     it "includes project members with developer access and up" do
@@ -281,7 +281,7 @@ describe MergeRequest, models: true do
         project.team << [create(:user), :reporter]
         project.team << [create(:user), :developer]
         project.team << [create(:user), :master]
-      end.to change { merge_request.potential_approvers }.by(2)
+      end.to change { merge_request.number_of_potential_approvers }.by(2)
     end
 
     it "excludes users who have already approved the MR" do
@@ -289,14 +289,14 @@ describe MergeRequest, models: true do
         approver = create(:user)
         create(:approver, user: approver, target: merge_request)
         create(:approval, user: approver, merge_request: merge_request)
-      end.not_to change { merge_request.potential_approvers }
+      end.not_to change { merge_request.number_of_potential_approvers }
     end
 
     it "excludes the MR author" do
       expect do
         create(:approver, user: create(:user), target: merge_request)
         create(:approver, user: author, target: merge_request)
-      end.to change { merge_request.potential_approvers }.by(1)
+      end.to change { merge_request.number_of_potential_approvers }.by(1)
     end
 
     context "when the project is part of a group" do
@@ -309,7 +309,7 @@ describe MergeRequest, models: true do
           group.add_reporter(create(:user))
           group.add_developer(create(:user))
           group.add_master(create(:user))
-        end.to change { merge_request.potential_approvers }.by(2)
+        end.to change { merge_request.number_of_potential_approvers }.by(2)
       end
     end
   end
