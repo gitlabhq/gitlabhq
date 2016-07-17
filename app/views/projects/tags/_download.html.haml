@@ -12,21 +12,10 @@
     %li
       = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
         %span Download tar.gz
-    - job_names = project.latest_success_builds_for('v8.9.6').pluck(:name)
-    %li.dropdown-header Artifacts
-
-
-
--#
--# - artifacts = pipeline.builds.latest.select { |b| b.artifacts? }
--# - if artifacts.present?
--#   .dropdown.inline.build-artifacts
--#     %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
--#       = icon('download')
--#       %b.caret
--#     %ul.dropdown-menu.dropdown-menu-align-right
--#       - artifacts.each do |build|
--#         %li
--#           = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
--#             = icon("download")
--#             %span Download '#{build.name}' artifacts
+    - artifacts = project.builds_for(ref).latest.with_artifacts
+    - if artifacts.any?
+      %li.dropdown-header Artifacts
+      - artifacts.each do |job|
+        %li
+          = link_to download_namespace_project_build_artifacts_path(project.namespace, project, job), rel: 'nofollow' do
+            %span Download '#{job.name}'
