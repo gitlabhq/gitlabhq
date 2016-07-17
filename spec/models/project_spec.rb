@@ -458,6 +458,47 @@ describe Project, models: true do
     end
   end
 
+  describe "#cache_has_external_wiki" do
+    let(:project) { create(:project) }
+
+    it "stores true if there is an external wiki" do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(true)
+    end
+
+    it "stores false if there is no external wiki" do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(false)
+    end
+
+    it "changes to true if an external wiki service is created later" do
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(false)
+
+      expect do
+        create(:service, type: "ExternalWikiService", project: project)
+      end.to change { project.has_external_wiki }.to(true)
+    end
+
+    it "changes to false if an external wiki service is destroyed later" do
+      service = create(:service, type: "ExternalWikiService", project: project)
+      expect(project.has_external_wiki).to be_truthy
+
+      expect do
+        service.destroy
+      end.to change { project.has_external_wiki }.to(false)
+    end
+  end
+
   describe '#open_branches' do
     let(:project) { create(:project) }
 
