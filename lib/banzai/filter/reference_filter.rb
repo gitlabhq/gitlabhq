@@ -52,7 +52,7 @@ module Banzai
       end
 
       def reference_class(type)
-        "gfm gfm-#{type}"
+        "gfm gfm-#{type} has-tooltip"
       end
 
       # Ensure that a :project key exists in context

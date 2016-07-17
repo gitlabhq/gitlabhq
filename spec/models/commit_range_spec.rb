@@ -76,16 +76,6 @@ describe CommitRange, models: true do
     end
   end
 
-  describe '#reference_title' do
-    it 'returns the correct String for three-dot ranges' do
-      expect(range.reference_title).to eq "Commits #{full_sha_from} through #{full_sha_to}"
-    end
-
-    it 'returns the correct String for two-dot ranges' do
-      expect(range2.reference_title).to eq "Commits #{full_sha_from}^ through #{full_sha_to}"
-    end
-  end
-
   describe '#to_param' do
     it 'includes the correct keys' do
       expect(range.to_param.keys).to eq %i(from to)
