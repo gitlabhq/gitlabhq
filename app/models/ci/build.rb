@@ -107,8 +107,8 @@ module Ci
     def play(current_user = nil)
       # Try to queue a current build
       if self.queue
-       self.update(user: current_user)
-       self
+        self.update(user: current_user)
+        self
       else
         # Otherwise we need to create a duplicate
         Ci::Build.retry(self, current_user)
