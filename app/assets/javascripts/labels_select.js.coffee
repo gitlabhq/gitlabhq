@@ -278,23 +278,61 @@ class @LabelsSelect
           fields: ['title']
         selectable: true
         filterable: true
-        toggleLabel: (selected, el, e, added) ->
-          if added
-            selectedLabels.push selected.title
-          else
-            index = selectedLabels.indexOf selected.title
-            selectedLabels.splice index, 1
+        toggleLabel: (selected, $el, glDropdownInstance) ->
+          # When comes from a triggered event handle it VERY differently
+          if selected instanceof jQuery.Event
+            $dropdownParent = $dropdown.closest '.labels-filter'
+            $labelInputs = $dropdownParent.find "input[name='#{@fieldName}']"
+            numberSelectedLabels = $labelInputs.length
+            firstLabel = _.pluck($labelInputs, 'value')[0]
 
-          if selected.id? and selected.id is 0
-            selectedLabels = []
-
-          if selectedLabels.length > 1
-            "#{selectedLabels[0]} +#{selectedLabels.length - 1} more"
-          else if selectedLabels.length is 1
-            selectedLabels[0]
+            if numberSelectedLabels is 1
+                firstLabel
+            else if numberSelectedLabels > 1
+              "#{firstLabel} +#{numberSelectedLabels - 1} more"
+            else
+              defaultLabel
+          # when clicking on a dropdown option
           else
-            console.log selectedLabels.length, defaultLabel
-            defaultLabel
+            # Return when clicking "No Label"
+            return if selected.id is 0
+            return 'Any Label' if selected.isAny is true
+
+            if glDropdownInstance?
+              $dropdownParent = glDropdownInstance.dropdown.closest '.issuable-form-select-holder, .labels-filter'
+            else
+              $dropdownParent = $()
+
+            $labelInputs = $dropdownParent.find "input[name='#{@fieldName}']"
+
+            # Find the label by its attribute according the dropdown settings
+            if $dropdown.hasClass 'js-issuable-form-dropdown'
+              # When settings labels to a issuable we find the label for its ID
+              whereQuery = { id: parseInt $labelInputs.first().val() }
+            else
+              # When filtering issuables we find the label for its title
+              whereQuery = { title: $labelInputs.first().val() }
+
+            firstLabel = _.findWhere glDropdownInstance.fullData, whereQuery
+
+            # Better rely on inputs since filtering may returns invalid number of active labels
+            numberSelectedLabels = $labelInputs.length
+
+            # If we are adding a label
+            if $el.is '.is-active'
+              if numberSelectedLabels is 1
+                selected.title
+              else
+                "#{selected.title} +#{numberSelectedLabels - 1} more"
+
+            # otherwise we are removing a label
+            else
+              if numberSelectedLabels is 1
+                firstLabel.title
+              else if numberSelectedLabels > 1
+                "#{firstLabel.title} +#{numberSelectedLabels - 1} more"
+              else
+                defaultLabel
         defaultLabel: defaultLabel
         fieldName: $dropdown.data('field-name')
         id: (label) ->

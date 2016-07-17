@@ -486,7 +486,7 @@ class GitLabDropdown
 
       # Toggle the dropdown label
       if @options.toggleLabel
-        @updateLabel(selectedObject, el, @, false)
+        @updateLabel(selectedObject, el, @)
       else
         selectedObject
     else if el.hasClass(INDETERMINATE_CLASS)
@@ -513,9 +513,6 @@ class GitLabDropdown
       # Toggle active class for the tick mark
       el.addClass ACTIVE_CLASS
 
-      # Toggle the dropdown label
-      if @options.toggleLabel
-        @updateLabel(selectedObject, el, @, true)
       if value?
         if !field.length and fieldName
           @addInput(fieldName, value)
@@ -523,6 +520,10 @@ class GitLabDropdown
           field
             .val value
             .trigger 'change'
+
+      # Toggle the dropdown label
+      if @options.toggleLabel
+        @updateLabel(selectedObject, el, @)
 
       return selectedObject
 
@@ -616,15 +617,12 @@ class GitLabDropdown
       # Scroll the dropdown content up
       $dropdownContent.scrollTop(listItemTop - dropdownContentTop)
 
-  updateLabel: (selected = null, el = null, instance = null, added = false) =>
-    $toggleText = $(@el).find(".dropdown-toggle-text")
-    $toggleText.text @options.toggleLabel(selected, el, instance, added)
+  updateLabel: (selected = null, el = null, instance = null) =>
+    $toggleText = @getElement '.dropdown-toggle-text'
+    $toggleText.text @options.toggleLabel(selected, el, instance)
 
     if @options.defaultLabel
-      if $toggleText.text().trim() is @options.defaultLabel
-        $toggleText.addClass('is-default')
-      else
-        $toggleText.removeClass('is-default')
+      $toggleText.toggleClass('is-default', $toggleText.text().trim() is @options.defaultLabel)
 
 $.fn.glDropdown = (opts) ->
   return @.each ->
