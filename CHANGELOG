@@ -23,6 +23,7 @@ v 8.11.0 (unreleased)
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
   - Optimize checking if a user has read access to a list of issues !5370
+  - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Nokogiri's various parsing methods are now instrumented
   - Add simple identifier to public SSH keys (muteor)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
@@ -133,7 +134,6 @@ v 8.10.0
   - Add API "deploy_keys" for admins to get all deploy keys
   - Allow to pull code with deploy key from public projects
   - Use limit parameter rather than hardcoded value in `ldap:check` rake task (Mike Ricketts)
-  - Store OTP secret key in secrets.yml with other DB encryption keys
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds`. !4964
   - Let Workhorse serve format-patch diffs

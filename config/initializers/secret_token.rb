@@ -14,35 +14,21 @@ def create_tokens
   secret_file = Rails.root.join('.secret')
   file_key = File.read(secret_file).chomp if File.exist?(secret_file)
   env_key = ENV['SECRET_KEY_BASE']
-  secret_key_base = env_key.present? ? env_key : file_key
-
-  if secret_key_base.blank?
-    secret_key_base = generate_new_secure_token
-    File.write(secret_file, secret_key_base)
-  end
-
-  Rails.application.config.secret_key_base = secret_key_base
-
-  otp_key_base = Rails.application.secrets.otp_key_base
-  db_key_base = Rails.application.secrets.db_key_base
   yaml_additions = {}
 
-  if otp_key_base.blank?
-    warn_missing_secret('otp_key_base')
+  defaults = {
+    secret_key_base: env_key || file_key || generate_new_secure_token,
+    otp_key_base: env_key || file_key || generate_new_secure_token,
+    db_key_base: generate_new_secure_token
+  }
 
-    otp_key_base ||= env_key || file_key || generate_new_secure_token
-    yaml_additions['otp_key_base'] = otp_key_base
+  defaults.stringify_keys.each do |key, default|
+    if Rails.application.secrets[key].blank?
+      warn_missing_secret(key)
+
+      yaml_additions[key] = Rails.application.secrets[key] = default
+    end
   end
-
-  Rails.application.secrets.otp_key_base = otp_key_base
-
-  if db_key_base.blank?
-    warn_missing_secret('db_key_base')
-
-    yaml_additions['db_key_base'] = db_key_base = generate_new_secure_token
-  end
-
-  Rails.application.secrets.db_key_base = db_key_base
 
   unless yaml_additions.empty?
     secrets_yml = Rails.root.join('config/secrets.yml')
@@ -53,6 +39,12 @@ def create_tokens
     all_secrets[Rails.env.to_s] = env_secrets.merge(yaml_additions)
 
     File.write(secrets_yml, YAML.dump(all_secrets), mode: 'w', perm: 0600)
+  end
+
+  begin
+    File.delete(secret_file) if file_key
+  rescue => e
+    warn "Error deleting useless .secret file: #{e}"
   end
 end
 
