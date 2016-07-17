@@ -13,16 +13,20 @@
 - classes << 'js-filter-submit' if filter_submit
 
 - if selected.present?
-  - if selected.respond_to?('any?')
-    - selected = project.labels.where(id: selected) || selected
-    - selected.each do |label|
-      - id = label.try(:id) || label
-      - title = label.try(:title) || label
-      = hidden_field_tag data_options[:field_name], id, id: nil, data: { title: title }
+  - labelQuery = { id: selected }
+  - useId = true
+- if selected_toggle.present?
+  - labelQuery = { title: selected_toggle }
+- if labelQuery
+  - selected = project.labels.where(labelQuery)
+  - selected.each do |label|
+    - id = label.try(:id) || label
+    - title = label.try(:title) || label
+    = hidden_field_tag data_options[:field_name], useId ? id : title, id: nil, data: { title: title }
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil?) }
-      = h(multi_label_name(selected_toggle || selected, "Label"))
+      = h(multi_label_name(selected.to_a, "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }
