@@ -55,6 +55,12 @@ module MilestonesHelper
     end
   end
 
+  def milestone_dropdown_selected_text
+    project = @target_project || @project || @projects
+
+    Milestone.of_projects(project).where(title: params[:milestone_title]).first().try(:name)
+  end
+
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
