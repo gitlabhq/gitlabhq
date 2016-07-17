@@ -477,96 +477,120 @@ module Ci
     end
 
     describe 'Variables' do
-      context 'when global variables are defined' do
-        it 'returns global variables' do
-          variables = {
-            VAR1: 'value1',
-            VAR2: 'value2',
-          }
+      let(:config_processor) { GitlabCiYamlProcessor.new(YAML.dump(config), path) }
 
-          config = YAML.dump({
+      subject { config_processor.builds.first[:yaml_variables] }
+
+      context 'when global variables are defined' do
+        let(:variables) do
+          { VAR1: 'value1', VAR2: 'value2' }
+        end
+        let(:config) do
+          {
             variables: variables,
             before_script: ['pwd'],
             rspec: { script: 'rspec' }
-          })
+          }
+        end
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
+        it 'returns global variables' do
+          expect(subject).to contain_exactly(
+            { key: :VAR1, value: 'value1', public: true },
+            { key: :VAR2, value: 'value2', public: true }
+          )
+        end
+      end
 
-          expect(config_processor.global_variables).to eq(variables)
+      context 'when job and global variables are defined' do
+        let(:global_variables) do
+          { VAR1: 'global1', VAR3: 'global3' }
+        end
+        let(:job_variables) do
+          { VAR1: 'value1', VAR2: 'value2' }
+        end
+        let(:config) do
+          {
+            before_script: ['pwd'],
+            variables: global_variables,
+            rspec: { script: 'rspec', variables: job_variables }
+          }
+        end
+
+        it 'returns all unique variables' do
+          expect(subject).to contain_exactly(
+            { key: :VAR3, value: 'global3', public: true },
+            { key: :VAR1, value: 'value1', public: true },
+            { key: :VAR2, value: 'value2', public: true }
+          )
         end
       end
 
       context 'when job variables are defined' do
+        let(:config) do
+          {
+            before_script: ['pwd'],
+            rspec: { script: 'rspec', variables: variables }
+          }
+        end
+
+        context 'when also global variables are defined' do
+
+        end
+
         context 'when syntax is correct' do
+          let(:variables) do
+            { VAR1: 'value1', VAR2: 'value2' }
+          end
+
           it 'returns job variables' do
-            variables = {
-              KEY1: 'value1',
-              SOME_KEY_2: 'value2'
-            }
-
-            config = YAML.dump(
-              { before_script: ['pwd'],
-                rspec: {
-                  variables: variables,
-                  script: 'rspec' }
-              })
-
-            config_processor = GitlabCiYamlProcessor.new(config, path)
-
-            expect(config_processor.job_variables(:rspec)).to eq variables
+            expect(subject).to contain_exactly(
+              { key: :VAR1, value: 'value1', public: true },
+              { key: :VAR2, value: 'value2', public: true }
+            )
           end
         end
 
         context 'when syntax is incorrect' do
           context 'when variables defined but invalid' do
+            let(:variables) do
+              [ :VAR1, 'value1', :VAR2, 'value2' ]
+            end
+
             it 'raises error' do
-              variables = [:KEY1, 'value1', :KEY2, 'value2']
-
-              config =  YAML.dump(
-                { before_script: ['pwd'],
-                  rspec: {
-                    variables: variables,
-                    script: 'rspec' }
-                })
-
-              expect { GitlabCiYamlProcessor.new(config, path) }
+              expect { subject }
                 .to raise_error(GitlabCiYamlProcessor::ValidationError,
-                                 /job: variables should be a map/)
+                                /job: variables should be a map/)
             end
           end
 
           context 'when variables key defined but value not specified' do
+            let(:variables) do
+              nil
+            end
+
             it 'returns empty array' do
-              config =  YAML.dump(
-                { before_script: ['pwd'],
-                  rspec: {
-                    variables: nil,
-                    script: 'rspec' }
-                })
-
-              config_processor = GitlabCiYamlProcessor.new(config, path)
-
               ##
               # When variables config is empty, we assume this is a valid
               # configuration, see issue #18775
               #
-              expect(config_processor.job_variables(:rspec))
-                .to be_an_instance_of(Array).and be_empty
+              expect(subject).to be_an_instance_of(Array)
+              expect(subject).to be_empty
             end
           end
         end
       end
 
       context 'when job variables are not defined' do
-        it 'returns empty array' do
-          config = YAML.dump({
+        let(:config) do
+          {
             before_script: ['pwd'],
             rspec: { script: 'rspec' }
-          })
+          }
+        end
 
-          config_processor = GitlabCiYamlProcessor.new(config, path)
-
-          expect(config_processor.job_variables(:rspec)).to eq []
+        it 'returns empty array' do
+          expect(subject).to be_an_instance_of(Array)
+          expect(subject).to be_empty
         end
       end
     end
