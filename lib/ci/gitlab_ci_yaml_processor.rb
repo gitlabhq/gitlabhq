@@ -61,17 +61,6 @@ module Ci
       end
     end
 
-    def global_variables
-      @variables || {}
-    end
-
-    def job_variables(name)
-      job = @jobs[name.to_sym]
-      return [] unless job
-
-      job[:variables] || []
-    end
-
     private
 
     def initial_parsing
@@ -115,7 +104,7 @@ module Ci
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
         environment: job[:environment],
-        yaml_variables: global_variables.merge(job[:variables] || {}),
+        yaml_variables: yaml_variables(name),
         options: {
           image: job[:image] || @image,
           services: job[:services] || @services,
@@ -125,6 +114,24 @@ module Ci
           after_script: job[:after_script] || @after_script,
         }.compact
       }
+    end
+
+    def yaml_variables(name)
+      variables = global_variables.merge(job_variables(name))
+      variables.map do |key, value|
+        { key: key, value: value, public: true }
+      end
+    end
+
+    def global_variables
+      @variables || {}
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      return {} unless job
+
+      job[:variables] || {}
     end
 
     def validate!
