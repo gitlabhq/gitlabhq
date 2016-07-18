@@ -43,7 +43,7 @@
                 = " (not latest, but #{link_to(pipeline.short_sha, namespace_project_commits_path(@project.namespace, @project, pipeline.sha))})"
               - artifacts.each do |job|
                 %li
-                  = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, job), rel: 'nofollow' do
+                  = link_to search_namespace_project_artifacts_path(@project.namespace, @project, branch.name, 'download', job: job.name), rel: 'nofollow' do
                     %span Download '#{job.name}'
 
       - if can_remove_branch?(@project, branch.name)
