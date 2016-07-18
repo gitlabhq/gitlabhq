@@ -84,13 +84,9 @@ module API
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         builds = user_project.latest_success_builds_for(params[:ref_name])
-        latest_build = builds.where(name: params[:job]).first
+        latest_build = builds.find_by!(name: params[:job])
 
-        if latest_build
-          present_artifact!(latest_build.artifacts_file)
-        else
-          not_found!
-        end
+        present_artifact!(latest_build.artifacts_file)
       end
 
       # Get a trace of a specific build of a project
