@@ -205,10 +205,8 @@ module API
       def present_artifact!(artifacts_file)
         if !artifacts_file.file_storage?
           redirect_to(build.artifacts_file.url)
-
         elsif artifacts_file.exists?
           present_file!(artifacts_file.path, artifacts_file.filename)
-
         else
           not_found!
         end
