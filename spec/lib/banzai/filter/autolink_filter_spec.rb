@@ -15,6 +15,16 @@ describe Banzai::Filter::AutolinkFilter, lib: true do
     expect(filter(act).to_html).to eq exp
   end
 
+  context 'when the input contains no links' do
+    it 'does not parse_html back the rinku returned value' do
+      act = HTML::Pipeline.parse('<p>This text contains no links to autolink</p>')
+
+      expect_any_instance_of(described_class).not_to receive(:parse_html)
+
+      filter(act).to_html
+    end
+  end
+
   context 'Rinku schemes' do
     it 'autolinks http' do
       doc = filter("See #{link}")
@@ -56,6 +66,16 @@ describe Banzai::Filter::AutolinkFilter, lib: true do
       it "ignores valid links contained inside '#{elem}' element" do
         exp = act = "<#{elem}>See #{link}</#{elem}>"
         expect(filter(act).to_html).to eq exp
+      end
+    end
+
+    context 'when the input contains link' do
+      it 'does parse_html back the rinku returned value' do
+        act = HTML::Pipeline.parse("<p>See #{link}</p>")
+
+        expect_any_instance_of(described_class).to receive(:parse_html).at_least(:once).and_call_original
+
+        filter(act).to_html
       end
     end
   end
