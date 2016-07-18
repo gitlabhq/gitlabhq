@@ -56,6 +56,7 @@ v 8.10.0 (unreleased)
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms
+  - Protected branches have a "Developers can Merge" setting. !4892 (original implementation by Mathias Vestergaard)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
