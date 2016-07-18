@@ -63,6 +63,18 @@ module Gitlab
         ]
       end
 
+      def send_artifacts_entry(build, entry)
+        params = {
+          'Archive' => build.artifacts_file.path,
+          'Entry' => Base64.encode64(entry.path)
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "artifacts-entry:#{encode(params)}"
+        ]
+      end
+
       protected
 
       def encode(hash)

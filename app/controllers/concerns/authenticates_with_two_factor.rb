@@ -57,7 +57,7 @@ module AuthenticatesWithTwoFactor
 
   # Authenticate using the response from a U2F (universal 2nd factor) device
   def authenticate_with_two_factor_via_u2f(user)
-    if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenges])
+    if U2fRegistration.authenticate(user, u2f_app_id, user_params[:device_response], session[:challenge])
       # Remove any lingering user data from login
       session.delete(:otp_user_id)
       session.delete(:challenges)
@@ -77,11 +77,9 @@ module AuthenticatesWithTwoFactor
 
     if key_handles.present?
       sign_requests = u2f.authentication_requests(key_handles)
-      challenges = sign_requests.map(&:challenge)
-      session[:challenges] = challenges
-      gon.push(u2f: { challenges: challenges, app_id: u2f_app_id,
-                      sign_requests: sign_requests,
-                      browser_supports_u2f: browser_supports_u2f? })
+      session[:challenge] ||= u2f.challenge
+      gon.push(u2f: { challenge: session[:challenge], app_id: u2f_app_id,
+                      sign_requests: sign_requests })
     end
   end
 end

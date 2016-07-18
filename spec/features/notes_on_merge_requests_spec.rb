@@ -135,6 +135,28 @@ describe 'Comments', feature: true do
     end
   end
 
+  describe 'Handles cross-project system notes', js: true, feature: true do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:project2) { create(:project, :private) }
+    let(:issue) { create(:issue, project: project2) }
+    let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'markdown') }
+    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "mentioned in #{issue.to_reference(project)}") }
+
+    it 'shows the system note' do
+      login_as :admin
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).to have_css('.system-note')
+    end
+
+    it 'hides redacted system note' do
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).not_to have_css('.system-note')
+    end
+  end
+
   describe 'On a merge request diff', js: true, feature: true do
     let(:merge_request) { create(:merge_request) }
     let(:project) { merge_request.source_project }
@@ -231,6 +253,7 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    execute_script("$('button[data-line-code=\"#{data}\"]').click()")
+    find(".line_holder[id='#{data}'] td.line_content").hover
+    find(".line_holder[id='#{data}'] button").trigger('click')
   end
 end

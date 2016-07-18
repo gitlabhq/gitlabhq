@@ -133,7 +133,7 @@ builds, including deploy builds. This can be an array or a multi-line string.
 ### after_script
 
 >**Note:**
-Introduced in GitLab 8.7 and requires Gitlab Runner v1.2 (not yet released)
+Introduced in GitLab 8.7 and requires Gitlab Runner v1.2
 
 `after_script` is used to define the command that will be run after for all
 builds. This has to be an array or a multi-line string.
@@ -985,11 +985,11 @@ directive defined in `.postgres_services` and `.mysql_services` respectively:
     - ruby
 
 test:postgres:
-  << *job_definition
+  <<: *job_definition
   services: *postgres_definition
 
 test:mysql:
-  << *job_definition
+  <<: *job_definition
   services: *mysql_definition
 ```
 

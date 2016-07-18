@@ -25,17 +25,16 @@ module SharedDiffNote
 
       page.within("form[data-line-code='#{sample_commit.line_code}']") do
         fill_in "note[note]", with: "Typo, please fix"
-        find(".js-comment-button").trigger("click")
-        sleep 0.05
+        find(".js-comment-button").click
       end
     end
   end
 
   step 'I leave a diff comment in a parallel view on the left side like "Old comment"' do
-    click_parallel_diff_line(sample_commit.line_code, 'old')
-    page.within("#{diff_file_selector} form[data-line-code='#{sample_commit.line_code}']") do
+    click_parallel_diff_line(sample_commit.del_line_code, 'old')
+    page.within("#{diff_file_selector} form[data-line-code='#{sample_commit.del_line_code}']") do
       fill_in "note[note]", with: "Old comment"
-      find(".js-comment-button").trigger("click")
+      find(".js-comment-button").click
     end
   end
 
@@ -43,7 +42,7 @@ module SharedDiffNote
     click_parallel_diff_line(sample_commit.line_code, 'new')
     page.within("#{diff_file_selector} form[data-line-code='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "New comment"
-      find(".js-comment-button").trigger("click")
+      find(".js-comment-button").click
     end
   end
 
@@ -165,10 +164,6 @@ module SharedDiffNote
     end
   end
 
-  step 'I should see add a diff comment button' do
-    expect(page).to have_css('.js-add-diff-note-button')
-  end
-
   step 'I should see an empty diff comment form' do
     page.within(diff_file_selector) do
       expect(page).to have_field("note[note]", with: "")
@@ -215,7 +210,7 @@ module SharedDiffNote
   end
 
   step 'I click side-by-side diff button' do
-    find('#parallel-diff-btn').trigger('click')
+    find('#parallel-diff-btn').click
   end
 
   step 'I see side-by-side diff button' do
@@ -227,10 +222,12 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find("button[data-line-code='#{code}']").trigger('click')
+    find(".line_holder[id='#{code}'] td:nth-of-type(1)").trigger 'mouseover'
+    find(".line_holder[id='#{code}'] button").trigger 'click'
   end
 
   def click_parallel_diff_line(code, line_type)
-    find("button[data-line-code='#{code}'][data-line-type='#{line_type}']").trigger('click')
+    find(".line_content.parallel.#{line_type}[data-line-code='#{code}']").trigger 'mouseover'
+    find(".line_holder.parallel button[data-line-code='#{code}']").trigger 'click'
   end
 end

@@ -5,13 +5,12 @@
 #= require ./mock_u2f_device
 
 describe 'U2FAuthenticate', ->
-  U2FUtil.enableTestMode()
   fixture.load('u2f/authenticate')
 
   beforeEach ->
     @u2fDevice = new MockU2FDevice
     @container = $("#js-authenticate-u2f")
-    @component = new U2FAuthenticate(@container, {}, "token")
+    @component = new U2FAuthenticate(@container, {sign_requests: []}, "token")
     @component.start()
 
   it 'allows authenticating via a U2F device', ->

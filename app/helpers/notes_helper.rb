@@ -24,7 +24,15 @@ module NotesHelper
     }.to_json
   end
 
-  def link_to_new_diff_note(line_code, position, line_type = nil)
+  def diff_view_data
+    return {} unless @comments_target
+
+    @comments_target.slice(:noteable_id, :noteable_type, :commit_id)
+  end
+
+  def diff_view_line_data(line_code, position, line_type)
+    return if @diff_notes_disabled
+
     use_legacy_diff_note = @use_legacy_diff_notes
     # If the controller doesn't force the use of legacy diff notes, we
     # determine this on a line-by-line basis by seeing if there already exist
@@ -41,11 +49,8 @@ module NotesHelper
     end
 
     data = {
-      noteable_type: @comments_target[:noteable_type],
-      noteable_id:   @comments_target[:noteable_id],
-      commit_id:     @comments_target[:commit_id],
-      line_type:     line_type,
-      line_code:     line_code
+      line_code: line_code,
+      line_type: line_type,
     }
 
     if use_legacy_diff_note
@@ -73,11 +78,7 @@ module NotesHelper
       )
     end
 
-    button_tag(class: 'btn add-diff-note js-add-diff-note-button',
-               data: data,
-               title: 'Add a comment to this line') do
-      icon('comment-o')
-    end
+    data
   end
 
   def link_to_reply_discussion(note, line_type = nil)

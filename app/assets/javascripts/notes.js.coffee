@@ -194,8 +194,7 @@ class @Notes
   renderNote: (note) ->
     unless note.valid
       if note.award
-        flash = new Flash('You have already awarded this emoji!', 'alert')
-        flash.pinTo('.header-content')
+        new Flash('You have already awarded this emoji!', 'alert')
       return
 
     if note.award
@@ -325,6 +324,8 @@ class @Notes
     form.find("#note_position").remove()
     form.find("#note_type").remove()
 
+    @parentTimeline = form.parents('.timeline')
+
   ###
   General note form setup.
 
@@ -357,8 +358,7 @@ class @Notes
     @renderNote(note)
 
   addNoteError: (xhr, note, status) =>
-    flash = new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert')
-    flash.pinTo('.md-area')
+    new Flash('Your comment could not be submitted! Please check your network connection and try again.', 'alert', @parentTimeline)
 
   ###
   Called in response to the new note form being submitted

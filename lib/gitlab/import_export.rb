@@ -3,6 +3,7 @@ module Gitlab
     extend self
 
     VERSION = '0.1.1'
+    FILENAME_LIMIT = 50
 
     def export_path(relative_path:)
       File.join(storage_path, relative_path)
@@ -26,6 +27,12 @@ module Gitlab
 
     def version_filename
       'VERSION'
+    end
+
+    def export_filename(project:)
+      basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{project.namespace.path}_#{project.path}"
+
+      "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
     end
 
     def version

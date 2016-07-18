@@ -18,7 +18,7 @@ describe ForkedProjectLink, "add link on fork" do
   end
 end
 
-describe :forked_from_project do
+describe '#forked?' do
   let(:forked_project_link) { build(:forked_project_link) }
   let(:project_from) { create(:project) }
   let(:project_to) { create(:project, forked_project_link: forked_project_link) }

@@ -6,6 +6,8 @@
 
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
+    - unless expand_all_diffs?
+      = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), class: 'btn btn-default'
     - if show_whitespace_toggle
       - if current_controller?(:commit)
         = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
@@ -21,7 +23,7 @@
 - if diff_files.overflow?
   = render 'projects/diffs/warning', diff_files: diff_files
 
-.files
+.files{data: {can_create_note: (!@diff_notes_disabled && can?(current_user, :create_note, @project))}}
   - diff_files.each_with_index do |diff_file, index|
     - diff_commit = commit_for_diff(diff_file)
     - blob = diff_file.blob(diff_commit)

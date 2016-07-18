@@ -68,7 +68,9 @@ Parameters:
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
-    "user_notes_count": 1
+    "user_notes_count": 1,
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false
   }
 ]
 ```
@@ -132,7 +134,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -233,6 +237,8 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false,
   "changes": [
     {
     "old_path": "VERSION",
@@ -312,7 +318,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 0
+  "user_notes_count": 0,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -383,7 +391,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -481,7 +491,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -547,7 +559,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -866,7 +880,9 @@ Example response:
     "merge_when_build_succeeds": false,
     "merge_status": "unchecked",
     "subscribed": true,
-    "user_notes_count": 7
+    "user_notes_count": 7,
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",

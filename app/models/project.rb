@@ -470,8 +470,8 @@ class Project < ActiveRecord::Base
     return super(value) unless Gitlab::UrlSanitizer.valid?(value)
 
     import_url = Gitlab::UrlSanitizer.new(value)
-    create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
+    create_or_update_import_data(credentials: import_url.credentials)
   end
 
   def import_url
@@ -483,7 +483,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def valid_import_url?
+    valid? || errors.messages[:import_url].nil?
+  end
+
   def create_or_update_import_data(data: nil, credentials: nil)
+    return unless import_url.present? && valid_import_url?
+
     project_import_data = import_data || build_import_data
     if data
       project_import_data.data ||= {}
@@ -1038,8 +1044,8 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref, current_user = nil)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci

@@ -112,7 +112,7 @@ module Banzai
         data = data_attribute(project: project.id, author: author.try(:id))
         text = link_text || User.reference_prefix + 'all'
 
-        link_tag(url, data, text)
+        link_tag(url, data, text, 'All Project and Group Members')
       end
 
       def link_to_namespace(namespace, link_text: nil)
@@ -128,7 +128,7 @@ module Banzai
         data = data_attribute(group: namespace.id)
         text = link_text || Group.reference_prefix + group
 
-        link_tag(url, data, text)
+        link_tag(url, data, text, namespace.name)
       end
 
       def link_to_user(user, namespace, link_text: nil)
@@ -136,11 +136,11 @@ module Banzai
         data = data_attribute(user: namespace.owner_id)
         text = link_text || User.reference_prefix + user
 
-        link_tag(url, data, text)
+        link_tag(url, data, text, namespace.owner_name)
       end
 
-      def link_tag(url, data, text)
-        %(<a href="#{url}" #{data} class="#{link_class}">#{escape_once(text)}</a>)
+      def link_tag(url, data, text, title)
+        %(<a href="#{url}" #{data} class="#{link_class}" title="#{escape_once(title)}">#{escape_once(text)}</a>)
       end
     end
   end
