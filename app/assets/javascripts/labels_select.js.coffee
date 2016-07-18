@@ -333,6 +333,12 @@ class @LabelsSelect
         clicked: (label) ->
           _this.enableBulkLabelDropdown()
 
+          if $dropdown.parent().find('.is-active:not(.dropdown-clear-active)').length
+            $dropdown
+              .parent()
+              .find('.dropdown-clear-active')
+              .removeClass('is-active')
+
           if $dropdown.hasClass('js-filter-bulk-update') or $dropdown.hasClass('js-issuable-form-dropdown')
             return
 
