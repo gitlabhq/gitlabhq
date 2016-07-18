@@ -437,10 +437,11 @@ class Project < ActiveRecord::Base
     commit_object = commit(ref)
 
     if commit_object.nil?
-      builds.none
+      Ci::Build.none
     else
-      builds.joins(:pipeline).
-        merge(Ci::Pipeline.where(sha: commit_object.sha))
+      Ci::Build.joins(:pipeline).
+        merge(Ci::Pipeline.where(sha: commit_object.sha,
+                                 project: self))
     end
   end
 
