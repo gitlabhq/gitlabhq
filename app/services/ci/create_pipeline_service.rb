@@ -2,6 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     def execute
       pipeline = project.pipelines.new(params)
+      pipeline.user = current_user
 
       unless ref_names.include?(params[:ref])
         pipeline.errors.add(:base, 'Reference not found')
