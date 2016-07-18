@@ -167,3 +167,22 @@ of those assets. Unless you are modifying the JavaScript / CSS code on your
 production machine after installing the package, there should be no reason to redo
 rake assets:precompile on the production machine. If you suspect that assets
 have been corrupted, you should reinstall the omnibus package.
+
+## Tracking Deployments
+
+GitLab provides a Rake task that lets you track deployments in GitLab
+Performance Monitoring. This Rake task simply stores the current GitLab version
+in the GitLab Performance Monitoring database.
+
+For Omnibus-packages:
+
+```
+sudo gitlab-rake gitlab:track_deployment
+```
+
+For installations from source:
+
+```
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:track_deployment RAILS_ENV=production
+```
