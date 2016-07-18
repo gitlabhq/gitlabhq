@@ -1172,30 +1172,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '.clean_old_archives' do
-    let(:path) { Gitlab.config.gitlab.repository_downloads_path }
-
-    context 'when the downloads directory does not exist' do
-      it 'does not remove any archives' do
-        expect(File).to receive(:directory?).with(path).and_return(false)
-
-        expect(Gitlab::Popen).not_to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-
-    context 'when the downloads directory exists' do
-      it 'removes old archives' do
-        expect(File).to receive(:directory?).with(path).and_return(true)
-
-        expect(Gitlab::Popen).to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-  end
-
   describe "#keep_around" do
     it "stores a reference to the specified commit sha so it isn't garbage collected" do
       repository.keep_around(sample_commit.id)
