@@ -19,7 +19,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                target_project: project,
                                source_branch: 'fix',
                                target_branch: 'master'
-                              )
+                            )
 
       login_as(user)
 
@@ -27,7 +27,36 @@ describe 'New/edit merge request', feature: true, js: true do
     end
 
     it 'should update merge request' do
-      update_merge_request
+      click_button 'Assignee'
+      click_link user.name
+
+      page.find '.js-assignee-search' do
+        expect(page).to have_content user.name
+      end
+
+      click_button 'Milestone'
+      click_link milestone.title
+
+      page.find '.js-milestone-select' do
+        expect(page).to have_content milestone.title
+      end
+
+      click_button 'Labels'
+      click_link label.title
+      click_link label2.title
+
+      page.find '.js-label-select' do
+        expect(page).to have_content label2.title
+      end
+
+      click_button 'Save changes'
+
+      page.find '.issuable-sidebar' do
+        expect(page).to have_content user.name
+        expect(page).to have_content milestone.title
+        expect(page).to have_content label.title
+        expect(page).to have_content label2.title
+      end
     end
   end
 
@@ -40,7 +69,7 @@ describe 'New/edit merge request', feature: true, js: true do
                                target_project: project,
                                source_branch: 'fix',
                                target_branch: 'master'
-                              )
+                            )
 
       login_as(user)
 
@@ -48,40 +77,36 @@ describe 'New/edit merge request', feature: true, js: true do
     end
 
     it 'should update merge request' do
-      update_merge_request
-    end
-  end
+      click_button 'Assignee'
+      click_link user.name
 
-  def update_merge_request
-    click_button 'Assignee'
-    click_link user.name
+      page.find '.js-assignee-search' do
+        expect(page).to have_content user.name
+      end
 
-    page.find '.js-assignee-search' do
-      expect(page).to have_content user.name
-    end
+      click_button 'Milestone'
+      click_link milestone.title
 
-    click_button 'Milestone'
-    click_link milestone.title
+      page.find '.js-milestone-select' do
+        expect(page).to have_content milestone.title
+      end
 
-    page.find '.js-milestone-select' do
-      expect(page).to have_content milestone.title
-    end
+      click_button 'Labels'
+      click_link label.title
+      click_link label2.title
 
-    click_button 'Labels'
-    click_link label.title
-    click_link label2.title
+      page.find '.js-label-select' do
+        expect(page).to have_content label2.title
+      end
 
-    page.find '.js-label-select' do
-      expect(page).to have_content label2.title
-    end
+      click_button 'Save changes'
 
-    click_button 'Save changes'
-
-    page.find '.issuable-sidebar' do
-      expect(page).to have_content user.name
-      expect(page).to have_content milestone.title
-      expect(page).to have_content label.title
-      expect(page).to have_content label2.title
+      page.find '.issuable-sidebar' do
+        expect(page).to have_content user.name
+        expect(page).to have_content milestone.title
+        expect(page).to have_content label.title
+        expect(page).to have_content label2.title
+      end
     end
   end
 end
