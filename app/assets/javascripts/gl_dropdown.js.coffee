@@ -250,6 +250,8 @@ class GitLabDropdown
         if self.options.clicked
           self.options.clicked(selected, $el, e)
 
+        $el.trigger('blur')
+
   # Finds an element inside wrapper element
   getElement: (selector) ->
     @dropdown.find selector
