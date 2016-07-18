@@ -78,7 +78,7 @@ module IssuablesHelper
   end
 
   def selected_labels(project, label_query)
-    Label.where(label_query.merge(project_id: project))
+    Label.where(label_query.merge(project_id: project)).pluck(:title).uniq
   end
 
   private
