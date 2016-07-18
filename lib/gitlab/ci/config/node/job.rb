@@ -9,6 +9,11 @@ module Gitlab
           include Configurable
 
           validations do
+            validates :config, allowed_keys:
+              %i[tags script only except type image services allow_failure
+                 type stage when artifacts cache dependencies before_script
+                 after_script variables environment]
+
             validates :config, presence: true
             validates :name, presence: true
             validates :name, type: Symbol

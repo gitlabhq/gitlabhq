@@ -4,15 +4,6 @@ module Ci
 
     include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    DEFAULT_STAGE = 'test'
-    ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
-    ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
-                        :allow_failure, :type, :stage, :when, :artifacts, :cache,
-                        :dependencies, :before_script, :after_script, :variables,
-                        :environment]
-    ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
-    ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
-
     attr_reader :path, :cache, :stages
 
     def initialize(config, path = nil)
@@ -102,19 +93,9 @@ module Ci
     def validate_job!(name, job)
       raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
 
-      validate_job_keys!(name, job)
       validate_job_types!(name, job)
-
       validate_job_stage!(name, job) if job[:stage]
       validate_job_dependencies!(name, job) if job[:dependencies]
-    end
-
-    def validate_job_keys!(name, job)
-      job.keys.each do |key|
-        unless (ALLOWED_JOB_KEYS + %i[name]).include? key
-          raise ValidationError, "#{name} job: unknown parameter #{key}"
-        end
-      end
     end
 
     def validate_job_types!(name, job)

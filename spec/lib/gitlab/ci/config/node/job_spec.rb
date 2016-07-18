@@ -46,6 +46,16 @@ describe Gitlab::Ci::Config::Node::Job do
           end
         end
       end
+
+      context 'when unknown keys detected' do
+        let(:config) { { unknown: true } }
+
+        describe '#valid' do
+          it 'is not valid' do
+            expect(entry).not_to be_valid
+          end
+        end
+      end
     end
   end
 
