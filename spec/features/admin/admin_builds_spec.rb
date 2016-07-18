@@ -36,12 +36,45 @@ describe 'Admin Builds' do
       end
     end
 
+    context 'Pending tab' do
+      context 'when have pending builds' do
+        it 'shows pending builds' do
+          build1 = create(:ci_build, pipeline: pipeline, status: :pending)
+          build2 = create(:ci_build, pipeline: pipeline, status: :running)
+          build3 = create(:ci_build, pipeline: pipeline, status: :success)
+          build4 = create(:ci_build, pipeline: pipeline, status: :failed)
+
+          visit admin_builds_path(scope: :pending)
+
+          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page.find('.build-link')).to have_content(build1.id)
+          expect(page.find('.build-link')).not_to have_content(build2.id)
+          expect(page.find('.build-link')).not_to have_content(build3.id)
+          expect(page.find('.build-link')).not_to have_content(build4.id)
+          expect(page).to have_link 'Cancel all'
+        end
+      end
+
+      context 'when have no builds pending' do
+        it 'shows a message' do
+          create(:ci_build, pipeline: pipeline, status: :success)
+
+          visit admin_builds_path(scope: :pending)
+
+          expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+          expect(page).to have_content 'No builds to show'
+          expect(page).not_to have_link 'Cancel all'
+        end
+      end
+    end
+
     context 'Running tab' do
       context 'when have running builds' do
         it 'shows running builds' do
-          build1 = create(:ci_build, pipeline: pipeline, status: :pending)
+          build1 = create(:ci_build, pipeline: pipeline, status: :running)
           build2 = create(:ci_build, pipeline: pipeline, status: :success)
           build3 = create(:ci_build, pipeline: pipeline, status: :failed)
+          build4 = create(:ci_build, pipeline: pipeline, status: :pending)
 
           visit admin_builds_path(scope: :running)
 
@@ -49,6 +82,7 @@ describe 'Admin Builds' do
           expect(page.find('.build-link')).to have_content(build1.id)
           expect(page.find('.build-link')).not_to have_content(build2.id)
           expect(page.find('.build-link')).not_to have_content(build3.id)
+          expect(page.find('.build-link')).not_to have_content(build4.id)
           expect(page).to have_link 'Cancel all'
         end
       end

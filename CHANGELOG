@@ -16,6 +16,7 @@ v 8.10.0 (unreleased)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
   - Use default cursor for table header of project files !5165 (winniehell)
+  - Store when and yaml variables in builds table
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
@@ -91,6 +92,7 @@ v 8.10.0 (unreleased)
   - Handle custom Git hook result in GitLab UI
   - Allow to access Container Registry for Public and Internal projects
   - Allow '?', or '&' for label names
+  - Support redirected blobs for Container Registry integration
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
@@ -111,6 +113,7 @@ v 8.10.0 (unreleased)
   - Fix creating group with space in group path
   - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
   - Limit the number of retries on error to 3 for exporting projects
+  - Allow empty repositories on project import/export
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
@@ -119,6 +122,7 @@ v 8.9.6
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
+  - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
 
 v 8.9.7 (unreleased)
   - Fix import_data wrongly saved as a result of an invalid import_url
