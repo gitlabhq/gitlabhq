@@ -91,6 +91,7 @@ v 8.10.0 (unreleased)
   - Handle custom Git hook result in GitLab UI
   - Allow to access Container Registry for Public and Internal projects
   - Allow '?', or '&' for label names
+  - Support redirected blobs for Container Registry integration
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
   - Fix 404 redirect after validation fails importing a GitLab project
