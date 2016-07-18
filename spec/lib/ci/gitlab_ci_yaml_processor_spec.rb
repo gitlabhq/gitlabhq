@@ -163,7 +163,7 @@ module Ci
 
           shared_examples 'raises an error' do
             it do
-              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: only parameter should be an array of strings or regexps')
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'jobs:rspec:only config should be an array of strings or regexps')
             end
           end
 
@@ -319,7 +319,7 @@ module Ci
 
           shared_examples 'raises an error' do
             it do
-              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'rspec job: except parameter should be an array of strings or regexps')
+              expect { processor }.to raise_error(GitlabCiYamlProcessor::ValidationError, 'jobs:rspec:except config should be an array of strings or regexps')
             end
           end
 

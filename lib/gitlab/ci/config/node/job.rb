@@ -38,8 +38,14 @@ module Gitlab
           node :services, Services,
             description: 'Services that will be used to execute this job.'
 
+          node :only, While,
+            description: 'Refs policy this job will be executed for.'
+
+          node :except, While,
+            description: 'Refs policy this job will be executed for.'
+
           helpers :before_script, :script, :stage, :type, :after_script,
-                  :cache, :image, :services
+                  :cache, :image, :services, :only, :except
 
           def name
             @metadata[:name]
@@ -59,6 +65,8 @@ module Gitlab
               services: services,
               stage: stage,
               cache: cache,
+              only: only,
+              except: except,
               after_script: after_script }
           end
 
