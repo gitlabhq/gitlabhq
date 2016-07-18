@@ -63,7 +63,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     if params[:ref_name]
       builds = project.latest_success_builds_for(params[:ref_name])
 
-      builds.where(name: params[:job]).first
+      builds.find_by(name: params[:job])
     end
   end
 
