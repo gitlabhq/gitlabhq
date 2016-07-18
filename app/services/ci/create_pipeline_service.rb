@@ -4,7 +4,8 @@ module Ci
     attr_reader :trigger_request
 
     def execute(skip_ci: true, save_on_errors: true, trigger_request: nil)
-      @pipeline = project.pipelines.new(
+      @pipeline = Ci::Pipeline.new(
+        project: project,
         ref: ref,
         sha: sha,
         before_sha: before_sha,
