@@ -125,6 +125,14 @@ class Settings < Settingslogic
 
       URI.parse(url_without_path).host
     end
+
+    # Random cron time every Sunday to load balance usage pings
+    def cron_random_weekly_time
+      hour = rand(24)
+      minute = rand(60)
+
+      "#{minute} #{hour} * * 0"
+    end
   end
 end
 
@@ -370,6 +378,9 @@ Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWork
 Settings.cron_jobs['gitlab_remove_project_export_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_remove_project_export_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'GitlabRemoveProjectExportWorker'
+Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 #
 # GitLab Shell

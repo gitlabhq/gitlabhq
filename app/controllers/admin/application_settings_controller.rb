@@ -118,6 +118,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :elasticsearch_search,
       :elasticsearch_host,
       :elasticsearch_port,
+      :usage_ping_enabled,
       :repository_storage,
       :enabled_git_access_protocol,
       restricted_visibility_levels: [],
