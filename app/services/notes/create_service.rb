@@ -8,7 +8,6 @@ module Notes
       if note.award_emoji?
         noteable = note.noteable
         todo_service.new_award_emoji(noteable, current_user)
-
         return noteable.create_award_emoji(note.award_emoji_name, current_user)
       end
 

@@ -53,6 +53,7 @@ module Ci
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
         new_build.user = user
+        new_build.environment = build.environment
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
