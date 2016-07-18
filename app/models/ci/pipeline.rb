@@ -51,6 +51,10 @@ module Ci
       commit.try(:message)
     end
 
+    def git_commit_title
+      commit.try(:title)
+    end
+
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
