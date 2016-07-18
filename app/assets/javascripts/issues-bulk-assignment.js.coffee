@@ -85,12 +85,13 @@ class @IssuableBulkActions
   getFormDataAsObject: ->
     formData =
       update:
-        state_event       : @form.find('input[name="update[state_event]"]').val()
-        assignee_id       : @form.find('input[name="update[assignee_id]"]').val()
-        milestone_id      : @form.find('input[name="update[milestone_id]"]').val()
-        issues_ids        : @form.find('input[name="update[issues_ids]"]').val()
-        add_label_ids     : []
-        remove_label_ids  : []
+        state_event        : @form.find('input[name="update[state_event]"]').val()
+        assignee_id        : @form.find('input[name="update[assignee_id]"]').val()
+        milestone_id       : @form.find('input[name="update[milestone_id]"]').val()
+        issues_ids         : @form.find('input[name="update[issues_ids]"]').val()
+        subscription_event : @form.find('input[name="update[subscription_event]"]').val()
+        add_label_ids      : []
+        remove_label_ids   : []
 
     if @willUpdateLabels
       @getLabelsToApply().map (id) ->

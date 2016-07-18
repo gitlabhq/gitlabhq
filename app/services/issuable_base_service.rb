@@ -101,6 +101,7 @@ class IssuableBaseService < BaseService
 
   def update(issuable)
     change_state(issuable)
+    change_subscription(issuable)
     filter_params
     old_labels = issuable.labels.to_a
 
@@ -121,6 +122,15 @@ class IssuableBaseService < BaseService
       reopen_service.new(project, current_user, {}).execute(issuable)
     when 'close'
       close_service.new(project, current_user, {}).execute(issuable)
+    end
+  end
+
+  def change_subscription(issuable)
+    case params.delete(:subscription_event)
+    when 'subscribe'
+      issuable.subscribe(current_user)
+    when 'unsubscribe'
+      issuable.unsubscribe(current_user)
     end
   end
 
