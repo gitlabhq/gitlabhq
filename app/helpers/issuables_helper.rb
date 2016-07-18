@@ -7,7 +7,7 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
-  def multi_label_name(current_labels, default_label)
+  def multi_label_name(current_labels, param, default_label)
     # current_labels may be a string from before
     if current_labels.is_a?(Array) && current_labels.any?
       title = current_labels[0].try(:title) || current_labels[0]
@@ -23,7 +23,11 @@ module IssuablesHelper
         current_labels
       end
     else
-      default_label
+      if !param.empty?
+        param
+      else
+        default_label
+      end
     end
   end
 
@@ -71,6 +75,10 @@ module IssuablesHelper
     if current_user
       current_user.todos.find_by(target: issuable, state: :pending)
     end
+  end
+
+  def selected_labels(project, labelQuery)
+    Label.where(labelQuery.merge(project_id: project))
   end
 
   private

@@ -306,7 +306,7 @@ class @LabelsSelect
             $labelInputs = $dropdownParent.find "input[name='#{@fieldName}']"
 
             # Find the label by its attribute according the dropdown settings
-            if $dropdown.hasClass 'js-issuable-form-dropdown'
+            if $dropdown.hasClass('js-issuable-form-dropdown') or $dropdown.hasClass('js-filter-bulk-update')
               # When settings labels to a issuable we find the label for its ID
               whereQuery = { id: parseInt $labelInputs.first().val() }
             else

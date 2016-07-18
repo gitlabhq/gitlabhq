@@ -1,4 +1,4 @@
-- project = @target_project || @project
+- project = @target_project || @project || @projects
 - show_create = local_assigns.fetch(:show_create, true)
 - extra_options = local_assigns.fetch(:extra_options, true)
 - filter_submit = local_assigns.fetch(:filter_submit, true)
@@ -18,15 +18,15 @@
 - if selected_toggle.present?
   - labelQuery = { title: selected_toggle }
 - if labelQuery
-  - selected = project.labels.where(labelQuery)
+  - selected = selected_labels(project, labelQuery)
   - selected.each do |label|
     - id = label.try(:id) || label
     - title = label.try(:title) || label
     = hidden_field_tag data_options[:field_name], useId ? id : title, id: nil, data: { title: title }
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
-    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil?) }
-      = h(multi_label_name(selected.to_a, "Label"))
+    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.to_a.size == 0) }
+      = h(multi_label_name(selected.to_a, h(selected_toggle.to_a[0]), "Label"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }
