@@ -18,7 +18,9 @@ module TestEnv
     'orphaned-branch'       => '45127a9',
     'binary-encoding'       => '7b1cf43',
     'gitattributes'         => '5a62481',
-    'expand-collapse-diffs' => '4842455'
+    'expand-collapse-diffs' => '4842455',
+    'expand-collapse-files' => '025db92',
+    'expand-collapse-lines' => '238e82d'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

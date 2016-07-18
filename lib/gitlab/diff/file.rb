@@ -5,7 +5,7 @@ module Gitlab
 
       delegate :new_file, :deleted_file, :renamed_file,
         :old_path, :new_path, :a_mode, :b_mode,
-        :submodule?, :too_large?, to: :diff, prefix: false
+        :submodule?, :too_large?, :collapsed?, to: :diff, prefix: false
 
       def initialize(diff, repository:, diff_refs: nil)
         @diff = diff
@@ -66,10 +66,6 @@ module Gitlab
       # Array of Gitlab::Diff::Line objects
       def diff_lines
         @lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
-      end
-
-      def collapsed_by_default?
-        diff.diff.bytesize > 10240 # 10 KB
       end
 
       def highlighted_diff_lines

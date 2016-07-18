@@ -32,4 +32,18 @@ describe Gitlab::Diff::File, lib: true do
       expect(diff_file.too_large?).to eq(false)
     end
   end
+
+  describe '#collapsed?' do
+    it 'returns true for a file that is quite big' do
+      expect(diff).to receive(:collapsed?).and_return(true)
+
+      expect(diff_file.collapsed?).to eq(true)
+    end
+
+    it 'returns false for a file that is small enough' do
+      expect(diff).to receive(:collapsed?).and_return(false)
+
+      expect(diff_file.collapsed?).to eq(false)
+    end
+  end
 end
