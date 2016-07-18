@@ -16,6 +16,7 @@ v 8.10.0 (unreleased)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
   - Use default cursor for table header of project files !5165 (winniehell)
+  - Store when and yaml variables in builds table
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack

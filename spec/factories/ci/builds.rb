@@ -15,6 +15,11 @@ FactoryGirl.define do
         services: ["postgres"]
       }
     end
+    yaml_variables do
+      [
+        { key: :DB_NAME, value: 'postgres', public: true }
+      ]
+    end
 
     pipeline factory: :ci_pipeline
 
