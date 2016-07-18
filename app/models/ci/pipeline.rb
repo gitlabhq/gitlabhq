@@ -112,6 +112,21 @@ module Ci
       end
     end
 
+    def config_processor
+      return nil unless ci_yaml_file
+      return @config_processor if defined?(@config_processor)
+
+      @config_processor ||= begin
+        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.path_with_namespace)
+      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        self.yaml_errors = e.message
+        nil
+      rescue
+        self.yaml_errors = 'Undefined error'
+        nil
+      end
+    end
+
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
@@ -122,10 +137,6 @@ module Ci
       rescue
         nil
       end
-    end
-
-    def skip_ci?
-      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
     end
 
     def environments
@@ -150,8 +161,7 @@ module Ci
     end
 
     def process!
-      # TODO: pass pipeline.user when is merged https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5272
-      Ci::ProcessPipelineService.new(project, nil).execute(self)
+      Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
     private

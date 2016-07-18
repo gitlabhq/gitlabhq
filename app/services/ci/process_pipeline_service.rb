@@ -7,17 +7,26 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      stages_indexes_for_created.any? do |index|
+      # This a method that will ensure that our pipeline does have all builds for all stages created
+      if created_builds.empty?
+        create_builds!
+      end
+
+      stage_indexes_with_created_builds.any? do |index|
         process_stage(index).any?
       end
     end
 
     private
 
+    def create_builds!
+      Ci::CreatePipelineBuildsService.new(project, user).execute(pipeline)
+    end
+
     def process_stage(index)
       status = status_for_prior_stages(index)
 
-      builds_for_created_in_stage(index).select do |build|
+      created_builds_in_stage(index).select do |build|
         process_build(build, status)
       end
     end
@@ -51,12 +60,16 @@ module Ci
       pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
     end
 
-    def builds_for_created_in_stage(index)
-      pipeline.builds.created.where(stage_idx: index)
+    def stage_indexes_with_created_builds
+      created_builds.order(:stage_idx).pluck('distinct stage_idx')
     end
 
-    def stages_indexes_for_created
-      pipeline.builds.created.order(:stage_idx).pluck('distinct stage_idx')
+    def created_builds_in_stage(index)
+      created_builds.where(stage_idx: index)
+    end
+
+    def created_builds
+      pipeline.builds.created
     end
   end
 end
