@@ -49,7 +49,7 @@ describe API::Helpers, api: true do
 
       it "should return nil for a user without access" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
-        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
         expect(current_user).to be_nil
       end
 
@@ -73,7 +73,7 @@ describe API::Helpers, api: true do
 
       it "should return nil for a user without access" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
         expect(current_user).to be_nil
       end
 
