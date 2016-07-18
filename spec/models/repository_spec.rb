@@ -129,6 +129,20 @@ describe Repository, models: true do
     end
   end
 
+  describe :update_file do
+    it 'updates filename successfully' do
+      expect{repository.update_file(user, 'NEWLICENSE', 'Copyright!',
+                                     branch: 'master',
+                                     previous_path: 'LICENSE',
+                                     message: 'Changes filename')}.to change { repository.commits('master').count }.by(1)
+
+      files = repository.ls_files('master')
+
+      expect(files).not_to include('LICENSE')
+      expect(files).to include('NEWLICENSE')
+    end
+  end
+
   describe "search_files" do
     let(:results) { repository.search_files('feature', 'master') }
     subject { results }
