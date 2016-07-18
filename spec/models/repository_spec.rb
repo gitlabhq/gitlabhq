@@ -129,12 +129,28 @@ describe Repository, models: true do
     end
   end
 
+  describe :create_file do
+    it 'commits change to a file successfully' do
+      expect do
+        repository.commit_file(user, 'LICENSE', 'Copyright!',
+                              'Updates filename',
+                              'master', true)
+      end.to change { repository.commits('master').count }.by(1)
+
+      blob = Blob.decorate(repository.blob_at(repository.commits('master').first.id, 'LICENSE'))
+
+      expect(blob.data).to eq('Copyright!')
+    end
+  end
+
   describe :update_file do
     it 'updates filename successfully' do
-      expect{repository.update_file(user, 'NEWLICENSE', 'Copyright!',
+      expect do
+        repository.update_file(user, 'NEWLICENSE', 'Copyright!',
                                      branch: 'master',
                                      previous_path: 'LICENSE',
-                                     message: 'Changes filename')}.to change { repository.commits('master').count }.by(1)
+                                     message: 'Changes filename')
+      end.to change { repository.commits('master').count }.by(1)
 
       files = repository.ls_files('master')
 
