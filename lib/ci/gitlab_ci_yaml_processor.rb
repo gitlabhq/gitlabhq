@@ -106,7 +106,6 @@ module Ci
       validate_job_types!(name, job)
 
       validate_job_stage!(name, job) if job[:stage]
-      validate_job_variables!(name, job) if job[:variables]
       validate_job_artifacts!(name, job) if job[:artifacts]
       validate_job_dependencies!(name, job) if job[:dependencies]
     end
@@ -122,14 +121,6 @@ module Ci
     def validate_job_types!(name, job)
       if job[:tags] && !validate_array_of_strings(job[:tags])
         raise ValidationError, "#{name} job: tags parameter should be an array of strings"
-      end
-
-      if job[:only] && !validate_array_of_strings_or_regexps(job[:only])
-        raise ValidationError, "#{name} job: only parameter should be an array of strings or regexps"
-      end
-
-      if job[:except] && !validate_array_of_strings_or_regexps(job[:except])
-        raise ValidationError, "#{name} job: except parameter should be an array of strings or regexps"
       end
 
       if job[:allow_failure] && !validate_boolean(job[:allow_failure])
@@ -148,13 +139,6 @@ module Ci
     def validate_job_stage!(name, job)
       unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
         raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
-      end
-    end
-
-    def validate_job_variables!(name, job)
-      unless validate_variables(job[:variables])
-        raise ValidationError,
-          "#{name} job: variables should be a map of key-value strings"
       end
     end
 

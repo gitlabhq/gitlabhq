@@ -534,7 +534,7 @@ module Ci
 
               expect { GitlabCiYamlProcessor.new(config, path) }
                 .to raise_error(GitlabCiYamlProcessor::ValidationError,
-                                 /job: variables should be a map/)
+                                 /jobs:rspec:variables config should be a hash of key value pairs/)
             end
           end
 

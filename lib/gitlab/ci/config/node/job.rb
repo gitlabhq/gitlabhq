@@ -44,8 +44,11 @@ module Gitlab
           node :except, While,
             description: 'Refs policy this job will be executed for.'
 
+          node :variables, Variables,
+            description: 'Environment variables available for this job.'
+
           helpers :before_script, :script, :stage, :type, :after_script,
-                  :cache, :image, :services, :only, :except
+                  :cache, :image, :services, :only, :except, :variables
 
           def name
             @metadata[:name]
@@ -67,6 +70,7 @@ module Gitlab
               cache: cache,
               only: only,
               except: except,
+              variables: variables_defined? ? variables : nil,
               after_script: after_script }
           end
 
