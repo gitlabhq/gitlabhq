@@ -698,9 +698,9 @@ describe Ci::Build, models: true do
     end
 
     it 'returns builds from ref' do
-      build_ids = project.latest_success_builds_for('HEAD').map(&:id)
+      builds = project.latest_success_builds_for('HEAD')
 
-      expect(build_ids).to eq([build.id])
+      expect(builds).to contain_exactly(build)
     end
 
     it 'returns empty relation if the build cannot be found' do
