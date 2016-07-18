@@ -142,7 +142,7 @@ class @UsersSelect
         selectable: true
         fieldName: $dropdown.data('field-name')
 
-        toggleLabel: (selected, el, e) ->
+        toggleLabel: (selected, el) ->
           if selected and 'id' of selected and $(el).hasClass('is-active')
             if selected.text then selected.text else selected.name
           else

@@ -26,7 +26,7 @@ class @LabelsSelect
       $colorPreview = $('.js-dropdown-label-color-preview')
       $newLabelCreateButton = $('.js-new-label-btn')
       fieldName = $dropdown.data('field-name')
-      useId = $dropdown.hasClass('js-issuable-form-dropdown') or $dropdown.hasClass('js-filter-bulk-update')
+      useId = $dropdown.is('.js-issuable-form-dropdown, .js-filter-bulk-update, .js-label-sidebar-dropdown')
       propertyName = if useId then "id" else "title"
 
       $newLabelError.hide()
