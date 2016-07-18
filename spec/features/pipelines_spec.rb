@@ -67,10 +67,10 @@ describe "Pipelines" do
 
       before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-      it { expect(page).to have_link('Manual Build') }
+      it { expect(page).to have_link('Manual build') }
 
       context 'when playing' do
-        before { click_link('Manual Build') }
+        before { click_link('Manual build') }
 
         it { expect(manual.reload).to be_pending }
       end

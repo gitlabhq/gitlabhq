@@ -52,12 +52,12 @@ feature 'Environments', feature: true do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
           scenario 'does show a play button' do
-            expect(page).to have_link(manual.name.titleize)
+            expect(page).to have_link(manual.name.capitalize)
           end
 
           scenario 'does allow to play manual action' do
             expect(manual).to be_skipped
-            expect{ click_link(manual.name.titleize) }.to change{ Ci::Pipeline.count }.by(0)
+            expect{ click_link(manual.name.capitalize) }.to change{ Ci::Pipeline.count }.by(0)
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending
           end
@@ -113,12 +113,12 @@ feature 'Environments', feature: true do
           given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
 
           scenario 'does show a play button' do
-            expect(page).to have_link(manual.name.titleize)
+            expect(page).to have_link(manual.name.capitalize)
           end
 
           scenario 'does allow to play manual action' do
             expect(manual).to be_skipped
-            expect{ click_link(manual.name.titleize) }.to change{ Ci::Pipeline.count }.by(0)
+            expect{ click_link(manual.name.capitalize) }.to change{ Ci::Pipeline.count }.by(0)
             expect(page).to have_content(manual.name)
             expect(manual.reload).to be_pending
           end
