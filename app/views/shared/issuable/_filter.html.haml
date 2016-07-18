@@ -24,7 +24,7 @@
           = render "shared/issuable/milestone_dropdown", selected: params[:milestone_title], name: :milestone_title, show_any: true, show_upcoming: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown", selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
+          = render "shared/issuable/label_dropdown", selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }, show_create: controller.controller_name != "groups"
 
         .pull-right
           = render 'shared/sort_dropdown'
