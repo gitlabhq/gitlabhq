@@ -65,8 +65,7 @@ module Awardable
 
   def create_award_emoji(name, current_user)
     return unless emoji_awardable?
-
-    award_emoji.create(name: name, user: current_user)
+    award_emoji.create(name: normalize_name(name), user: current_user)
   end
 
   def remove_award_emoji(name, current_user)
@@ -79,5 +78,11 @@ module Awardable
     else
       create_award_emoji(emoji_name, current_user)
     end
+  end
+
+  private
+
+  def normalize_name(name)
+    Gitlab::AwardEmoji.normalize_emoji_name(name)
   end
 end

@@ -56,6 +56,7 @@ module Ci
         new_build.yaml_variables = build.yaml_variables
         new_build.when = build.when
         new_build.user = user
+        new_build.environment = build.environment
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build

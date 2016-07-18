@@ -7,7 +7,8 @@ module Gitlab
         new(*args).save
       end
 
-      def initialize(shared:)
+      def initialize(project:, shared:)
+        @project = project
         @shared = shared
       end
 
@@ -36,7 +37,7 @@ module Gitlab
       end
 
       def archive_file
-        @archive_file ||= File.join(@shared.export_path, '..', "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_project_export.tar.gz")
+        @archive_file ||= File.join(@shared.export_path, '..', Gitlab::ImportExport.export_filename(project: @project))
       end
     end
   end

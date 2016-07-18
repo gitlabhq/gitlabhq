@@ -26,6 +26,7 @@
       "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
+      "test_ee_field": "test",
       "notes": [
         {
           "id": 351,

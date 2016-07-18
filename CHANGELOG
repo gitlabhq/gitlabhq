@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
+  - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
@@ -23,12 +24,15 @@ v 8.10.0 (unreleased)
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
+  - Display tooltip for mentioned users and groups !5261 (winniehell)
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
+  - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Fix fetching LFS objects for private CI projects
   - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
   - Updated compare dropdown menus to use GL dropdown
@@ -53,12 +57,16 @@ v 8.10.0 (unreleased)
   - Fix user creation with stronger minimum password requirements !4054 (nathan-pmt)
   - Only show New Snippet button to users that can create snippets.
   - PipelinesFinder uses git cache data
+  - Track a user who created a pipeline
   - Actually render old and new sections of parallel diff next to each other
   - Throttle the update of `project.pushes_since_gc` to 1 minute.
   - Allow expanding and collapsing files in diff view (!4990)
   - Collapse large diffs by default (!4990)
+  - Fix mentioned users list on diff notes
+  - Fix creation of deployment on build that is retried, redeployed or rollback
   - Check for conflicts with existing Project's wiki path when creating a new project.
   - Show last push widget in upstream after push to fork
+  - Fix stage status shown for pipelines
   - Cache todos pending/done dashboard query counts.
   - Don't instantiate a git tree on Projects show default view
   - Bump Rinku to 2.0.0
@@ -79,7 +87,9 @@ v 8.10.0 (unreleased)
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
   - More descriptive message for git hooks and file locks
+  - Aliases of award emoji should be stored as original name. !5060 (dixpac)
   - Handle custom Git hook result in GitLab UI
+  - Allow to access Container Registry for Public and Internal projects
   - Allow '?', or '&' for label names
   - Fix importer for GitHub Pull Requests when a branch was reused across Pull Requests
   - Add date when user joined the team on the member page
@@ -95,6 +105,12 @@ v 8.10.0 (unreleased)
   - Redesign Builds and Pipelines pages
   - Change status color and icon for running builds
   - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
+  - Project export filename now includes the project and namespace path
+  - Fix last update timestamp on issues not preserved on gitlab.com and project imports
+  - Fix issues importing projects from EE to CE
+  - Fix creating group with space in group path
+  - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
+  - Limit the number of retries on error to 3 for exporting projects
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154

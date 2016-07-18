@@ -41,9 +41,12 @@ module Participable
     def participant(attr)
       participant_attrs << attr
     end
+  end
 
-    def participant_attrs
-      @participant_attrs ||= []
+  included do
+    # Accessor for participant attributes.
+    cattr_accessor :participant_attrs, instance_accessor: false do
+      []
     end
   end
 

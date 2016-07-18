@@ -70,11 +70,11 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "recaptcha_site_key"
     t.string   "recaptcha_private_key"
     t.integer  "metrics_port",                          default: 8089
+    t.boolean  "akismet_enabled",                       default: false
+    t.string   "akismet_api_key"
     t.integer  "metrics_sample_interval",               default: 15
     t.boolean  "sentry_enabled",                        default: false
     t.string   "sentry_dsn"
-    t.boolean  "akismet_enabled",                       default: false
-    t.string   "akismet_api_key"
     t.boolean  "email_author_in_body",                  default: false
     t.integer  "default_group_visibility"
     t.boolean  "repository_checks_enabled",             default: false
@@ -84,10 +84,10 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
-    t.boolean  "user_default_external",                 default: false,       null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -165,8 +165,8 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
-    t.datetime "artifacts_expire_at"
     t.string   "environment"
+    t.datetime "artifacts_expire_at"
     t.integer  "artifacts_size"
     t.string   "when"
     t.text     "yaml_variables"
@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "duration"
+    t.integer  "user_id"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
@@ -212,6 +213,7 @@ ActiveRecord::Schema.define(version: 20160716115710) do
   add_index "ci_commits", ["project_id"], name: "index_ci_commits_on_project_id", using: :btree
   add_index "ci_commits", ["sha"], name: "index_ci_commits_on_sha", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
+  add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
 
   create_table "ci_events", force: :cascade do |t|
     t.integer  "project_id"
@@ -483,11 +485,10 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "state"
     t.integer  "iid"
     t.integer  "updated_by_id"
-    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
-    t.integer  "lock_version",  default: 0,     null: false
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -627,7 +628,6 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
-    t.integer  "lock_version",              default: 0,     null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -777,10 +777,10 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.integer  "user_id",                    null: false
     t.string   "token",                      null: false
     t.string   "name",                       null: false
-    t.boolean  "revoked",    default: false
-    t.datetime "expires_at"
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
+    t.boolean  "revoked",    default: false
+    t.datetime "expires_at"
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -900,9 +900,9 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "type"
     t.string   "title"
     t.integer  "project_id"
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
-    t.boolean  "active",                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "active",                default: false,    null: false
     t.text     "properties"
     t.boolean  "template",              default: false
     t.boolean  "push_events",           default: true
