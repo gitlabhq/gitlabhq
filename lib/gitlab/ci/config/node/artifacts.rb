@@ -13,6 +13,8 @@ module Gitlab
 
           validations do
             validates :config, type: Hash
+            validates :config,
+              allowed_keys: %i[name untracked paths when expire_in]
 
             with_options allow_nil: true do
               validates :name, type: String

@@ -21,12 +21,23 @@ describe Gitlab::Ci::Config::Node::Artifacts do
     end
 
     context 'when entry value is not correct' do
-      let(:config) { { name: 10 } }
-
       describe '#errors' do
-        it 'saves errors' do
-          expect(entry.errors)
-            .to include 'artifacts name should be a string'
+        context 'when value of attribute is invalid' do
+          let(:config) { { name: 10 } }
+
+          it 'reports error' do
+            expect(entry.errors)
+              .to include 'artifacts name should be a string'
+          end
+        end
+
+        context 'when there is uknown key' do
+          let(:config) { { test: 100 } }
+
+          it 'reports error' do
+            expect(entry.errors)
+              .to include 'artifacts config contains unknown keys: test'
+          end
         end
       end
     end

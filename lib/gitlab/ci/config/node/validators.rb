@@ -5,10 +5,11 @@ module Gitlab
         module Validators
           class AllowedKeysValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
-              if record.unknown_keys.any?
-                unknown_list = record.unknown_keys.join(', ')
-                record.errors.add(:config,
-                                  "contains unknown keys: #{unknown_list}")
+              unknown_keys = record.config.try(:keys).to_a - options[:in]
+
+              if unknown_keys.any?
+                record.errors.add(:config, 'contains unknown keys: ' +
+                                            unknown_keys.join(', '))
               end
             end
           end

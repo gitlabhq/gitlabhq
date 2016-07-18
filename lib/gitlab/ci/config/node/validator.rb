@@ -21,12 +21,6 @@ module Gitlab
             'Validator'
           end
 
-          def unknown_keys
-            return [] unless config.is_a?(Hash)
-
-            config.keys - @node.class.nodes.keys
-          end
-
           private
 
           def location
@@ -35,7 +29,7 @@ module Gitlab
           end
 
           def key_name
-            if key.blank? || key.nil?
+            if key.blank?
               @node.class.name.demodulize.underscore.humanize
             else
               key
