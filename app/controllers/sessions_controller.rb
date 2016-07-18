@@ -101,7 +101,7 @@ class SessionsController < Devise::SessionsController
     # Prevent alert from popping up on the first page shown after authentication.
     flash[:alert] = nil
 
-    redirect_to user_omniauth_authorize_path(provider.to_sym)
+    redirect_to provider_path(provider)
   end
 
   def valid_otp_attempt?(user)

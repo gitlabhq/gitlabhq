@@ -60,6 +60,12 @@ module AuthHelper
     end
   end
 
+  # Constructs the OAuth provider path.
+  # For example: user_google_omniauth_authorize_path
+  def provider_path(provider)
+    send("user_#{provider.underscore}_omniauth_authorize_path")
+  end
+
   def auth_active?(provider)
     current_user.identities.exists?(provider: provider.to_s)
   end
