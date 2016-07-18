@@ -23,7 +23,7 @@ module Ci
         return error('Insufficient permissions to create a new pipeline')
       end
 
-      unless ref_names.include?(ref)
+      unless project.repository.ref_exists?(ref)
         return error('Reference not found')
       end
 
@@ -70,10 +70,6 @@ module Ci
 
     def builds_attributes
       config_processor.builds_for_ref(ref, tag?, trigger_request).sort_by { |build| build[:stage_idx] }
-    end
-
-    def ref_names
-      @ref_names ||= project.repository.ref_names
     end
 
     def commit
