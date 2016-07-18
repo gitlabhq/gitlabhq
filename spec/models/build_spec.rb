@@ -628,7 +628,7 @@ describe Ci::Build, models: true do
 
       describe '#erasable?' do
         subject { build.erasable? }
-        it { is_expected.to eq true }
+        it { is_expected.to be_truthy }
       end
 
       describe '#erased?' do
@@ -636,7 +636,7 @@ describe Ci::Build, models: true do
         subject { build.erased? }
 
         context 'build has not been erased' do
-          it { is_expected.to be false }
+          it { is_expected.to be_falsey }
         end
 
         context 'build has been erased' do
@@ -644,12 +644,13 @@ describe Ci::Build, models: true do
             build.erase
           end
 
-          it { is_expected.to be true }
+          it { is_expected.to be_truthy }
         end
       end
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
+
         before do
           build.remove_artifacts_metadata!
         end
@@ -676,7 +677,7 @@ describe Ci::Build, models: true do
       end
 
       it 'returns false' do
-        expect(build.retryable?).to be(false)
+        expect(build).not_to be_retryable
       end
     end
 
@@ -686,7 +687,7 @@ describe Ci::Build, models: true do
       end
 
       it 'returns true' do
-        expect(build.retryable?).to be(true)
+        expect(build).to be_retryable
       end
     end
   end
