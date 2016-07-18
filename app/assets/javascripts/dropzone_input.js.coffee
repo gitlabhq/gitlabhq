@@ -70,12 +70,12 @@ class @DropzoneInput
         pasteText response.link.markdown
         return
 
-      error: (temp, errorMessage) ->
+      error: (temp) ->
         errorAlert = $(form).find('.error-alert')
         checkIfMsgExists = errorAlert.children().length
         if checkIfMsgExists is 0
           errorAlert.append divAlert
-          $(".div-dropzone-alert").append btnAlert + errorMessage
+          $(".div-dropzone-alert").append "#{btnAlert}Attaching the file failed."
         return
 
       totaluploadprogress: (totalUploadProgress) ->

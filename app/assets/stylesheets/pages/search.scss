@@ -185,7 +185,7 @@
     padding-right: $gl-padding + 15px;
   }
 
-  .btn-search {
+  .btn-search, .btn-new {
     width: 100%;
     margin-top: 5px;
 
@@ -208,7 +208,7 @@
     margin-top: 5px;
 
     @media (min-width: $screen-sm-min) {
-      width: 160px;
+      width: 180px;
       margin-top: 0;
     }
   }

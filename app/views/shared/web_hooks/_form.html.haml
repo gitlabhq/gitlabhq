@@ -6,7 +6,7 @@
     %h4.prepend-top-0
       = page_title
     %p
-      #{link_to "Webhooks", help_page_path("web_hooks", "web_hooks")} can be
+      #{link_to "Webhooks", help_page_path("web_hooks/web_hooks")} can be
       used for binding events when something is happening within the project.
   .col-lg-9.append-bottom-default
     = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|

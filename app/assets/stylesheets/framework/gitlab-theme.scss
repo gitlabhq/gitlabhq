@@ -11,7 +11,6 @@
     .toggle-nav-collapse,
     .pin-nav-btn {
       color: $color-light;
-      background: $color;
 
       &:hover {
         color: $white-light;
@@ -20,17 +19,6 @@
 
     .sidebar-wrapper {
       background: $color-darker;
-
-      .sidebar-user {
-        background: $color-darker;
-        color: $color-light;
-
-        &:hover {
-          background-color: $color-dark;
-          color: $white-light;
-          text-decoration: none;
-        }
-      }
     }
 
     .nav-sidebar li {

@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
-  default_value_for :external, false
+  default_value_for(:external) { current_application_settings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
-  has_many :award_emoji,              as: :awardable, dependent: :destroy
+  has_many :award_emoji,              dependent: :destroy
 
   #
   # Validations
@@ -653,7 +653,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_url(size = nil, scale = 2)
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     else
       GravatarService.new.execute(email, size, scale)

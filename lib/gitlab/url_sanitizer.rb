@@ -4,10 +4,20 @@ module Gitlab
       regexp = URI::Parser.new.make_regexp(['http', 'https', 'ssh', 'git'])
 
       content.gsub(regexp) { |url| new(url).masked_url }
+    rescue Addressable::URI::InvalidURIError
+      content.gsub(regexp, '')
+    end
+
+    def self.valid?(url)
+      Addressable::URI.parse(url.strip)
+
+      true
+    rescue Addressable::URI::InvalidURIError
+      false
     end
 
     def initialize(url, credentials: nil)
-      @url = Addressable::URI.parse(url)
+      @url = Addressable::URI.parse(url.strip)
       @credentials = credentials
     end
 

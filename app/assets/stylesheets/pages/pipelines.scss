@@ -1,13 +1,10 @@
 .pipelines {
   .stage {
-    max-width: 100px;
+    max-width: 80px;
+    width: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .duration, .finished_at {
-    margin: 4px 0;
   }
 
   .commit-title {
@@ -20,5 +17,158 @@
 
   .btn {
     margin: 4px;
+  }
+}
+
+.content-list {
+
+  &.pipelines,
+  &.builds-content-list {
+    width: 100%;
+    overflow: auto;
+  }
+}
+
+.table.builds {
+  min-width: 1100px;
+
+  tr {
+    th {
+      padding: 16px;
+      border: none;
+    }
+  }
+
+  tbody {
+    border-top-width: 1px;
+  }
+
+  .commit-link {
+
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
+  .branch-commit {
+
+    .branch-name {
+      margin-left: 8px;
+      font-weight: bold;
+      max-width: 180px;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      vertical-align: top;
+      text-overflow: ellipsis;
+    }
+
+    svg {
+      margin: 0 6px;
+      height: 14px;
+      width: auto;
+      vertical-align: middle;
+    }
+
+    .commit-id {
+      color: $gl-link-color;
+      margin-right: 8px;
+    }
+
+    .commit-title {
+      margin-top: 4px;
+      max-width: 320px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .avatar {
+      margin-left: 0;
+    }
+
+    .label {
+      margin-right: 4px;
+    }
+
+    .label-container {
+      font-size: 0;
+
+      .label {
+        margin-top: 5px;
+      }
+    }
+  }
+
+  .duration,
+  .finished-at {
+    color: $table-text-gray;
+    margin: 4px 0;
+
+    .fa {
+      font-size: 12px;
+    }
+
+    svg {
+      height: 12px;
+      width: auto;
+      vertical-align: middle;
+    }
+
+    .fa,
+    svg {
+      margin-right: 5px;
+    }
+  }
+
+  .pipeline-actions {
+
+    .btn {
+      margin: 0;
+      color: $table-text-gray;
+    }
+
+    .cancel-retry-btns {
+      vertical-align: middle;
+
+      .btn:not(:first-child) {
+        margin-left: 8px;
+      }
+    }
+
+    .dropdown-toggle,
+    .dropdown-menu {
+      color: $table-text-gray;
+
+      .fa {
+        color: $table-text-gray;
+        margin-right: 6px;
+        font-size: 14px;
+      }
+    }
+
+    .btn-remove {
+      color: $white-light;
+    }
+
+    .btn-group {
+      &.open {
+        .btn-default {
+          background-color: $white-normal;
+          border-color: $border-white-normal;
+        }
+      }
+    }
+  }
+
+  .build-link {
+
+    a {
+      color: $gl-dark-link-color;
+    }
+  }
+
+  .btn-group.open .dropdown-toggle {
+    box-shadow: none;
   }
 }

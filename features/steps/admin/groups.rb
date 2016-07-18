@@ -62,7 +62,8 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   step 'I should see "johndoe@gitlab.com" in team list in every project as "Reporter"' do
     page.within ".group-users-list" do
-      expect(page).to have_content "johndoe@gitlab.com – Invited by"
+      expect(page).to have_content "johndoe@gitlab.com"
+      expect(page).to have_content "Invited by"
       expect(page).to have_content "Reporter"
     end
   end

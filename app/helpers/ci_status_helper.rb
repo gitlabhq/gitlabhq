@@ -29,8 +29,10 @@ module CiStatusHelper
         'check'
       when 'failed'
         'close'
-      when 'running', 'pending'
+      when 'pending'
         'clock-o'
+      when 'running'
+        'spinner'
       else
         'circle'
       end

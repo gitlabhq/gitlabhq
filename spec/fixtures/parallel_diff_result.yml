@@ -3,322 +3,798 @@
     :type: match
     :number: 6
     :text: "@@ -6,12 +6,18 @@ module Popen"
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+    :line_code:
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: match
     :number: 6
     :text: "@@ -6,12 +6,18 @@ module Popen"
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+    :line_code:
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 6
     :text: |2
        <span id="LC6" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 6
+        :new_line: 6
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 6
     :text: |2
        <span id="LC6" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_6_6
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 6
+        :new_line: 6
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 7
     :text: |2
        <span id="LC7" class="line">  <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 7
+        :new_line: 7
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 7
     :text: |2
        <span id="LC7" class="line">  <span class="k">def</span> <span class="nf">popen</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kp">nil</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 7
+        :new_line: 7
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 8
     :text: |2
        <span id="LC8" class="line">    <span class="k">unless</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Array</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 8
+        :new_line: 8
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 8
     :text: |2
        <span id="LC8" class="line">    <span class="k">unless</span> <span class="n">cmd</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Array</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_8_8
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 8
+        :new_line: 8
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type: old
     :number: 9
     :text: |
-      -<span id="LC9" class="line">      <span class="k">raise</span> <span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>
+      -<span id="LC9" class="line">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 9
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 9
     :text: |
-      +<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff left'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span><span class='idiff right'> </span><span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>
+      +<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff left'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span><span class='idiff right'> </span><span class="s2">"System commands must be given as an array of strings"</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 9
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 10
     :text: |2
        <span id="LC10" class="line">    <span class="k">end</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 10
+        :new_line: 10
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 10
     :text: |2
        <span id="LC10" class="line">    <span class="k">end</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_10
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 10
+        :new_line: 10
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 11
     :text: |2
        <span id="LC11" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_11_11
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 11
+        :new_line: 11
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 11
     :text: |2
        <span id="LC11" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_11_11
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 11
+        :new_line: 11
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 12
     :text: |2
        <span id="LC12" class="line">    <span class="n">path</span> <span class="o">||=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_12_12
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 12
+        :new_line: 12
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 12
     :text: |2
        <span id="LC12" class="line">    <span class="n">path</span> <span class="o">||=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">pwd</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_12_12
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 12
+        :new_line: 12
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type: old
     :number: 13
     :text: |
-      -<span id="LC13" class="line">    <span class="n">vars</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">&quot;PWD&quot;</span> <span class="o">=&gt;</span> <span class="n">path</span> <span class="p">}</span></span>
+      -<span id="LC13" class="line">    <span class="n">vars</span> <span class="o">=</span> <span class="p">{</span> <span class="s2">"PWD"</span> <span class="o">=&gt;</span> <span class="n">path</span> <span class="p">}</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13
-  :right:
-    :type: old
-    :number:
-    :text: ''
-    :line_code:
-- :left:
-    :type: old
-    :number: 14
-    :text: |
-      -<span id="LC14" class="line">    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">chdir: </span><span class="n">path</span> <span class="p">}</span></span>
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_13
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 13
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 13
     :text: |
       +<span id="LC13" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_13
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 13
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
-    :type:
-    :number:
-    :text: ''
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14
+    :type: old
+    :number: 14
+    :text: |
+      -<span id="LC14" class="line">    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">chdir: </span><span class="n">path</span> <span class="p">}</span></span>
+    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_13
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 14
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 14
     :text: |
       +<span id="LC14" class="line">    <span class="n">vars</span> <span class="o">=</span> <span class="p">{</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 14
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 15
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 15
     :text: |
-      +<span id="LC15" class="line">      <span class="s2">&quot;PWD&quot;</span> <span class="o">=&gt;</span> <span class="n">path</span></span>
+      +<span id="LC15" class="line">      <span class="s2">"PWD"</span> <span class="o">=&gt;</span> <span class="n">path</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 15
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_16
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 16
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 16
     :text: |
       +<span id="LC16" class="line">    <span class="p">}</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_16
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 16
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_17
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 17
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 17
     :text: |
       +<span id="LC17" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_17
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 17
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_18
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 18
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 18
     :text: |
       +<span id="LC18" class="line">    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_18
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 18
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_19
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 19
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 19
     :text: |
       +<span id="LC19" class="line">      <span class="ss">chdir: </span><span class="n">path</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_19
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 19
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_20
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 20
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 20
     :text: |
       +<span id="LC20" class="line">    <span class="p">}</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_20
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 20
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 15
     :text: |2
        <span id="LC21" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_21
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 15
+        :new_line: 21
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 21
     :text: |2
        <span id="LC21" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_21
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 15
+        :new_line: 21
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 16
     :text: |2
        <span id="LC22" class="line">    <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_16_22
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 16
+        :new_line: 22
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 22
     :text: |2
        <span id="LC22" class="line">    <span class="k">unless</span> <span class="no">File</span><span class="p">.</span><span class="nf">directory?</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_16_22
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 16
+        :new_line: 22
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 17
     :text: |2
        <span id="LC23" class="line">      <span class="no">FileUtils</span><span class="p">.</span><span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_17_23
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 17
+        :new_line: 23
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 23
     :text: |2
        <span id="LC23" class="line">      <span class="no">FileUtils</span><span class="p">.</span><span class="nf">mkdir_p</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_17_23
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 17
+        :new_line: 23
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type: match
     :number: 19
     :text: "@@ -19,6 +25,7 @@ module Popen"
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+    :line_code:
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: match
     :number: 25
     :text: "@@ -19,6 +25,7 @@ module Popen"
-    :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+    :line_code:
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line:
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 19
     :text: |2
        <span id="LC25" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 19
+        :new_line: 25
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 25
     :text: |2
        <span id="LC25" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_19_25
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 19
+        :new_line: 25
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 20
     :text: |2
-       <span id="LC26" class="line">    <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></span>
+       <span id="LC26" class="line">    <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">""</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_20_26
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 20
+        :new_line: 26
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 26
     :text: |2
-       <span id="LC26" class="line">    <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></span>
+       <span id="LC26" class="line">    <span class="vi">@cmd_output</span> <span class="o">=</span> <span class="s2">""</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_20_26
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 20
+        :new_line: 26
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 21
     :text: |2
        <span id="LC27" class="line">    <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_21_27
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 21
+        :new_line: 27
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 27
     :text: |2
        <span id="LC27" class="line">    <span class="vi">@cmd_status</span> <span class="o">=</span> <span class="mi">0</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_21_27
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 21
+        :new_line: 27
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number:
     :text: ''
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_28
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 28
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type: new
     :number: 28
     :text: |
       +<span id="LC28" class="line"></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_28
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line:
+        :new_line: 28
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 22
     :text: |2
        <span id="LC29" class="line">    <span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="n">vars</span><span class="p">,</span> <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thr</span><span class="o">|</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_29
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 22
+        :new_line: 29
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 29
     :text: |2
        <span id="LC29" class="line">    <span class="no">Open3</span><span class="p">.</span><span class="nf">popen3</span><span class="p">(</span><span class="n">vars</span><span class="p">,</span> <span class="o">*</span><span class="n">cmd</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span><span class="p">,</span> <span class="n">wait_thr</span><span class="o">|</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_22_29
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 22
+        :new_line: 29
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 23
     :text: |2
        <span id="LC30" class="line">      <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stdout</span><span class="p">.</span><span class="nf">read</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_23_30
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 23
+        :new_line: 30
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 30
     :text: |2
        <span id="LC30" class="line">      <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stdout</span><span class="p">.</span><span class="nf">read</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_23_30
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 23
+        :new_line: 30
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
 - :left:
     :type:
     :number: 24
     :text: |2
        <span id="LC31" class="line">      <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_24_31
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 24
+        :new_line: 31
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
   :right:
     :type:
     :number: 31
     :text: |2
        <span id="LC31" class="line">      <span class="vi">@cmd_output</span> <span class="o">&lt;&lt;</span> <span class="n">stderr</span><span class="p">.</span><span class="nf">read</span></span>
     :line_code: 2f6fcd96b88b36ce98c38da085c795a27d92a3dd_24_31
+    :position: !ruby/object:Gitlab::Diff::Position
+      attributes:
+        :old_path: files/ruby/popen.rb
+        :new_path: files/ruby/popen.rb
+        :old_line: 24
+        :new_line: 31
+        :base_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :start_sha: 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9
+        :head_sha: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d

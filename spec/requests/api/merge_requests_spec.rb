@@ -138,6 +138,8 @@ describe API::API, api: true  do
       expect(json_response['work_in_progress']).to be_falsy
       expect(json_response['merge_when_build_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
+      expect(json_response['should_close_merge_request']).to be_falsy
+      expect(json_response['force_close_merge_request']).to be_falsy
     end
 
     it "should return merge_request" do
@@ -147,6 +149,8 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(merge_request.iid)
       expect(json_response['work_in_progress']).to eq(false)
       expect(json_response['merge_status']).to eq('can_be_merged')
+      expect(json_response['should_close_merge_request']).to be_falsy
+      expect(json_response['force_close_merge_request']).to be_falsy
     end
 
     it 'should return merge_request by iid' do
@@ -243,17 +247,19 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'should return 400 on invalid label names' do
+      it 'should allow special label names' do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
              source_branch: 'markdown',
              target_branch: 'master',
              author: user,
-             labels: 'label, ?'
-        expect(response).to have_http_status(400)
-        expect(json_response['message']['labels']['?']['title']).to eq(
-          ['is invalid']
-        )
+             labels: 'label, label?, label&foo, ?, &'
+        expect(response.status).to eq(201)
+        expect(json_response['labels']).to include 'label'
+        expect(json_response['labels']).to include 'label?'
+        expect(json_response['labels']).to include 'label&foo'
+        expect(json_response['labels']).to include '?'
+        expect(json_response['labels']).to include '&'
       end
 
       context 'with existing MR' do
@@ -437,14 +443,14 @@ describe API::API, api: true  do
     end
 
     it "returns 409 if the SHA parameter doesn't match" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha.succ
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.diff_head_sha.reverse
 
       expect(response).to have_http_status(409)
       expect(json_response['message']).to start_with('SHA does not match HEAD of source branch')
     end
 
     it "succeeds if the SHA parameter matches" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.source_sha
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user), sha: merge_request.diff_head_sha
 
       expect(response).to have_http_status(200)
     end
@@ -492,13 +498,17 @@ describe API::API, api: true  do
       expect(json_response['target_branch']).to eq('wiki')
     end
 
-    it 'should return 400 on invalid label names' do
+    it 'should allow special label names' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}",
               user),
           title: 'new issue',
-          labels: 'label, ?'
-      expect(response).to have_http_status(400)
-      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
+          labels: 'label, label?, label&foo, ?, &'
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'label'
+      expect(json_response['labels']).to include 'label?'
+      expect(json_response['labels']).to include 'label&foo'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
     end
   end
 

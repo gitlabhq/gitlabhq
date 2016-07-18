@@ -16,6 +16,15 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 36px;
+
+  &.diff-collapsed {
+    padding: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $row-hover;
+    }
+  }
 }
 
 .row-content-block {

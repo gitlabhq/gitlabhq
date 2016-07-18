@@ -1,29 +1,8 @@
-.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_commit, diff_file)}
+.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_file)}
   .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
-    - if diff_file.diff.submodule?
-      %span
-        = icon('archive fw')
-        %span
-          = submodule_link(blob, @commit.id, project.repository)
-    - else
-      = blob_icon blob.mode, blob.name
+    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{i}"
 
-      = link_to "#diff-#{i}" do
-        - if diff_file.renamed_file
-          - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
-          = old_path
-          &rarr;
-          = new_path
-        - else
-          %span
-            = diff_file.new_path
-          - if diff_file.deleted_file
-            deleted
-
-      - if diff_file.mode_changed?
-        %small
-          = "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
-
+    - unless diff_file.submodule?
       .file-actions.hidden-xs
         - if blob_text_viewable?(blob)
           = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip btn-file-option', title: "Toggle comments for this file" do
@@ -37,22 +16,4 @@
 
         = view_file_btn(diff_commit.id, diff_file, project)
 
-  .diff-content.diff-wrap-lines
-    - # Skip all non non-supported blobs
-    - return unless blob.respond_to?(:text?)
-    - if diff_file.too_large?
-      .nothing-here-block This diff could not be displayed because it is too large.
-    - elsif blob_text_viewable?(blob) && !project.repository.diffable?(blob)
-      .nothing-here-block This diff was suppressed by a .gitattributes entry.
-    - elsif blob_text_viewable?(blob)
-      - if diff_view == 'parallel'
-        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
-      - else
-        = render "projects/diffs/text_file", diff_file: diff_file, index: i
-    - elsif blob.only_display_raw?
-      .nothing-here-block This file is too large to display.
-    - elsif blob.image?
-      - old_file = project.repository.prev_blob_for_diff(diff_commit, diff_file)
-      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i, diff_refs: diff_refs
-    - else
-      .nothing-here-block No preview for this file type
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, diff_refs: diff_refs, blob: blob, project: project

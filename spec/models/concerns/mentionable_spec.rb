@@ -7,7 +7,7 @@ describe Mentionable do
     nil
   end
 
-  describe :references do
+  describe 'references' do
     let(:project) { create(:project) }
 
     it 'excludes JIRA references' do

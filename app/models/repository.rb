@@ -78,9 +78,9 @@ class Repository
     end
   end
 
-  def commit(id = 'HEAD')
+  def commit(ref = 'HEAD')
     return nil unless exists?
-    commit = Gitlab::Git::Commit.find(raw_repository, id)
+    commit = Gitlab::Git::Commit.find(raw_repository, ref)
     commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
@@ -653,16 +653,6 @@ class Repository
     end
   end
 
-  def blob_for_diff(commit, diff)
-    blob_at(commit.id, diff.file_path)
-  end
-
-  def prev_blob_for_diff(commit, diff)
-    if commit.parent_id
-      blob_at(commit.parent_id, diff.old_path)
-    end
-  end
-
   def refs_contains_sha(ref_type, sha)
     args = %W(#{Gitlab.config.git.bin_path} #{ref_type} --contains #{sha})
     names = Gitlab::Popen.popen(args, path_to_repo).first
@@ -911,7 +901,7 @@ class Repository
       if line =~ /^.*:.*:\d+:/
         ref, filename, startline = line.split(':')
         startline = startline.to_i - index
-        extname = File.extname(filename)
+        extname = Regexp.escape(File.extname(filename))
         basename = filename.sub(/#{extname}$/, '')
         break
       end

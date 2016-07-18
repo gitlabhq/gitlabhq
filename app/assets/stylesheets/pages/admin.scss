@@ -71,3 +71,30 @@
   @extend .broadcast-message;
   margin-bottom: 20px;
 }
+
+
+// Users List
+
+.users-list {
+  .user-row {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+  }
+
+  .user-details {
+    flex: 1 1 auto;
+  }
+
+  .user-name {
+    display: inline-block;
+    font-weight: 600;
+  }
+
+  .dropdown {
+    .btn-block {
+      margin-bottom: 0;
+      line-height: inherit;
+    }
+  }
+}

@@ -131,8 +131,10 @@ module Gitlab
       def clean_up_restored_branches(branches)
         branches.each do |name, _|
           client.delete_ref(repo, "heads/#{name}")
-          project.repository.rm_branch(project.creator, name)
+          project.repository.delete_branch(name) rescue Rugged::ReferenceError
         end
+
+        project.repository.after_remove_branch
       end
 
       def apply_labels(issuable)

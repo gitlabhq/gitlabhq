@@ -18,9 +18,9 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
     end
   end
 
-  step 'I check "Show archived projects"' do
-    page.check 'Show archived projects'
-    click_button "Search"
+  step 'I select "Show archived projects"' do
+    find(:css, '#sort-projects-dropdown').click
+    click_link 'Show archived projects'
   end
 
   step 'I should see "archived" label' do
@@ -45,7 +45,8 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   step 'I transfer project to group \'Web\'' do
     allow_any_instance_of(Projects::TransferService).
       to receive(:move_uploads_to_new_namespace).and_return(true)
-    find(:xpath, "//input[@id='new_namespace_id']").set group.id
+    click_button 'Search for Namespace'
+    click_link 'group: web'
     click_button 'Transfer'
   end
 

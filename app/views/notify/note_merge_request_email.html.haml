@@ -1,7 +1,7 @@
-- if @note.legacy_diff_note?
+- if @note.diff_note? && @note.diff_file
   %p.details
     New comment on diff for
-    = link_to @note.diff_file_path, @target_url
+    = link_to @note.diff_file.file_path, @target_url
     \:
 
 = render 'note_message'

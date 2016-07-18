@@ -56,13 +56,21 @@ describe API::API, api: true  do
 
       context "git push with project.wiki" do
         it 'responds with success' do
-          project_wiki = create(:project, name: 'my.wiki', path: 'my.wiki')
-          project_wiki.team << [user, :developer]
-
-          push(key, project_wiki)
+          push(key, project.wiki)
 
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
+          expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
+        end
+      end
+
+      context "git pull with project.wiki" do
+        it 'responds with success' do
+          pull(key, project.wiki)
+
+          expect(response).to have_http_status(200)
+          expect(json_response["status"]).to be_truthy
+          expect(json_response["repository_path"]).to eq(project.wiki.repository.path_to_repo)
         end
       end
 
@@ -207,26 +215,86 @@ describe API::API, api: true  do
         expect(json_response["status"]).to be_falsey
       end
     end
+
+    context 'ssh access has been disabled' do
+      before do
+        settings = ::ApplicationSetting.create_from_defaults
+        settings.update_attribute(:enabled_git_access_protocol, 'http')
+      end
+
+      it 'rejects the SSH push' do
+        push(key, project)
+
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq 'Git access over SSH is not allowed'
+      end
+
+      it 'rejects the SSH pull' do
+        pull(key, project)
+
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq 'Git access over SSH is not allowed'
+      end
+    end
+
+    context 'http access has been disabled' do
+      before do
+        settings = ::ApplicationSetting.create_from_defaults
+        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+      end
+
+      it 'rejects the HTTP push' do
+        push(key, project, 'http')
+
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
+      end
+
+      it 'rejects the HTTP pull' do
+        pull(key, project, 'http')
+
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to be_falsey
+        expect(json_response['message']).to eq 'Git access over HTTP is not allowed'
+      end
+    end
+
+    context 'web actions are always allowed' do
+      it 'allows WEB push' do
+        settings = ::ApplicationSetting.create_from_defaults
+        settings.update_attribute(:enabled_git_access_protocol, 'ssh')
+        project.team << [user, :developer]
+        push(key, project, 'web')
+
+        expect(response.status).to eq(200)
+        expect(json_response['status']).to be_truthy
+      end
+    end
   end
 
-  def pull(key, project)
+  def pull(key, project, protocol = 'ssh')
     post(
       api("/internal/allowed"),
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-upload-pack',
-      secret_token: secret_token
+      secret_token: secret_token,
+      protocol: protocol
     )
   end
 
-  def push(key, project)
+  def push(key, project, protocol = 'ssh')
     post(
       api("/internal/allowed"),
       changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-receive-pack',
-      secret_token: secret_token
+      secret_token: secret_token,
+      protocol: protocol
     )
   end
 
@@ -237,7 +305,8 @@ describe API::API, api: true  do
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-upload-archive',
-      secret_token: secret_token
+      secret_token: secret_token,
+      protocol: 'ssh'
     )
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160628085157) do
+ActiveRecord::Schema.define(version: 20160712171823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,8 +84,10 @@ ActiveRecord::Schema.define(version: 20160628085157) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
+    t.boolean  "user_default_external",                 default: false,        null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
+    t.string   "enabled_git_access_protocol"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -112,6 +114,7 @@ ActiveRecord::Schema.define(version: 20160628085157) do
   end
 
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
+  add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
@@ -591,6 +594,8 @@ ActiveRecord::Schema.define(version: 20160628085157) do
     t.datetime "updated_at"
     t.string   "base_commit_sha"
     t.string   "real_size"
+    t.string   "head_commit_sha"
+    t.string   "start_commit_sha"
   end
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
@@ -687,10 +692,12 @@ ActiveRecord::Schema.define(version: 20160628085157) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
+    t.boolean  "system",            default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
     t.string   "type"
+    t.text     "position"
+    t.text     "original_position"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -879,6 +886,8 @@ ActiveRecord::Schema.define(version: 20160628085157) do
     t.string  "commit_id"
     t.string  "reply_key",     null: false
     t.string  "line_code"
+    t.string  "note_type"
+    t.text    "position"
   end
 
   add_index "sent_notifications", ["reply_key"], name: "index_sent_notifications_on_reply_key", unique: true, using: :btree

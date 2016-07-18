@@ -427,7 +427,7 @@ describe User, models: true do
     end
   end
 
-  describe :not_in_project do
+  describe '.not_in_project' do
     before do
       User.delete_all
       @user = create :user
@@ -446,6 +446,7 @@ describe User, models: true do
       it { expect(user.can_create_group?).to be_truthy }
       it { expect(user.can_create_project?).to be_truthy }
       it { expect(user.first_name).to eq('John') }
+      it { expect(user.external).to be_falsey }
     end
 
     describe 'with defaults' do
@@ -466,6 +467,26 @@ describe User, models: true do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
+      end
+    end
+
+    context 'when current_application_settings.user_default_external is true' do
+      before do
+        stub_application_setting(user_default_external: true)
+      end
+
+      it "creates external user by default" do
+        user = build(:user)
+
+        expect(user.external).to be_truthy
+      end
+
+      describe 'with default overrides' do
+        it "creates a non-external user" do
+          user = build(:user, external: false)
+
+          expect(user.external).to be_falsey
+        end
       end
     end
   end
@@ -577,7 +598,7 @@ describe User, models: true do
     end
   end
 
-  describe :avatar_type do
+  describe '#avatar_type' do
     let(:user) { create(:user) }
 
     it "should be true if avatar is image" do
@@ -591,7 +612,7 @@ describe User, models: true do
     end
   end
 
-  describe :requires_ldap_check? do
+  describe '#requires_ldap_check?' do
     let(:user) { User.new }
 
     it 'is false when LDAP is disabled' do
@@ -630,7 +651,7 @@ describe User, models: true do
   end
 
   context 'ldap synchronized user' do
-    describe :ldap_user? do
+    describe '#ldap_user?' do
       it 'is true if provider name starts with ldap' do
         user = create(:omniauth_user, provider: 'ldapmain')
         expect(user.ldap_user?).to be_truthy
@@ -647,7 +668,7 @@ describe User, models: true do
       end
     end
 
-    describe :ldap_identity do
+    describe '#ldap_identity' do
       it 'returns ldap identity' do
         user = create :omniauth_user
         expect(user.ldap_identity.provider).not_to be_empty
@@ -804,7 +825,7 @@ describe User, models: true do
     end
   end
 
-  describe :can_be_removed? do
+  describe '#can_be_removed?' do
     subject { create(:user) }
 
     context 'no owned groups' do

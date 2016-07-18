@@ -77,10 +77,10 @@
 
   &.sub-nav {
     text-align: center;
-    background-color: $background-color;
+    background-color: $dark-background-color;
 
     .container-fluid {
-      background-color: $background-color;
+      background-color: $dark-background-color;
       margin-bottom: 0;
     }
 
@@ -134,6 +134,11 @@
     margin-bottom: 0;
     border-bottom: none;
 
+    &.wide {
+      width: 100%;
+      display: block;
+    }
+
     li a {
       padding: 16px 10px 11px;
     }
@@ -164,6 +169,7 @@
     > .btn {
       margin-right: $gl-padding-top;
       display: inline-block;
+      vertical-align: top;
 
       &:last-child {
         margin-right: 0;

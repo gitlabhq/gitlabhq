@@ -31,17 +31,15 @@ module Banzai
       redacted = redact_documents(documents)
 
       objects.each_with_index do |object, index|
-        object.__send__("#{attribute}_html=", redacted.fetch(index))
+        redacted_data = redacted[index]
+        object.__send__("#{attribute}_html=", redacted_data[:document].to_html.html_safe)
+        object.user_visible_reference_count = redacted_data[:visible_reference_count]
       end
-
-      objects
     end
 
     # Renders the attribute of every given object.
     def render_objects(objects, attribute)
-      objects.map do |object|
-        render_attribute(object, attribute)
-      end
+      render_attributes(objects, attribute)
     end
 
     # Redacts the list of documents.
@@ -50,9 +48,7 @@ module Banzai
     def redact_documents(documents)
       redactor = Redactor.new(project, user)
 
-      redactor.redact(documents).map do |document|
-        document.to_html.html_safe
-      end
+      redactor.redact(documents)
     end
 
     # Returns a Banzai context for the given object and attribute.
@@ -66,16 +62,21 @@ module Banzai
       context
     end
 
-    # Renders the attribute of an object.
+    # Renders the attributes of a set of objects.
     #
-    # Returns a `Nokogiri::HTML::Document`.
-    def render_attribute(object, attribute)
-      context = context_for(object, attribute)
+    # Returns an Array of `Nokogiri::HTML::Document`.
+    def render_attributes(objects, attribute)
+      strings_and_contexts = objects.map do |object|
+        context = context_for(object, attribute)
 
-      string = object.__send__(attribute)
-      html = Banzai.render(string, context)
+        string = object.__send__(attribute)
 
-      Banzai::Pipeline[:relative_link].to_document(html, context)
+        { text: string, context: context }
+      end
+
+      Banzai.cache_collection_render(strings_and_contexts).each_with_index.map do |html, index|
+        Banzai::Pipeline[:relative_link].to_document(html, strings_and_contexts[index][:context])
+      end
     end
 
     def base_context

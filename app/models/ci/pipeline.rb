@@ -215,6 +215,8 @@ module Ci
     end
 
     def keep_around_commits
+      return unless project
+      
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
     end

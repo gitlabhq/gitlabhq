@@ -23,4 +23,11 @@ module TimeHelper
   def date_from_to(from, to)
     "#{from.to_s(:short)} - #{to.to_s(:short)}"
   end
+
+  def duration_in_numbers(finished_at, started_at)
+    diff_in_seconds = finished_at.to_i - started_at.to_i
+    time_format = diff_in_seconds < 1.hour ? "%M:%S" : "%H:%M:%S"
+
+    Time.at(diff_in_seconds).utc.strftime(time_format)
+  end
 end

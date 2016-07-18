@@ -83,11 +83,6 @@ Feature: Project Commits
     #Given I visit my project's commits stats page
     #Then I see commits stats
 
-  Scenario: I browse big commit
-    Given I visit big commit page
-    Then I see big commit warning
-    And I see "Reload with full diff" link
-
   Scenario: I browse a commit with an image
     Given I visit a commit with an image that changed
     Then The diff links to both the previous and current image

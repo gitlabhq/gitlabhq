@@ -128,7 +128,7 @@ class Projects::NotesController < Projects::ApplicationController
     elsif note.valid?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
-      {
+      attrs = {
         valid: true,
         id: note.id,
         discussion_id: note.discussion_id,
@@ -138,6 +138,23 @@ class Projects::NotesController < Projects::ApplicationController
         discussion_html: note_to_discussion_html(note),
         discussion_with_diff_html: note_to_discussion_with_diff_html(note)
       }
+
+      # The discussion_id is used to add the comment to the correct discussion
+      # element on the merge request page. Among other things, the discussion_id
+      # contains the sha of head commit of the merge request.
+      # When new commits are pushed into the merge request after the initial
+      # load of the merge request page, the discussion elements will still have
+      # the old discussion_ids, with the old head commit sha. The new comment,
+      # however, will have the new discussion_id with the new commit sha.
+      # To ensure that these new comments will still end up in the correct
+      # discussion element, we also send the original discussion_id, with the
+      # old commit sha, along, and fall back on this value when no discussion
+      # element with the new discussion_id could be found.
+      if note.new_diff_note? && note.position != note.original_position
+        attrs[:original_discussion_id] = note.original_discussion_id
+      end
+
+      attrs
     else
       {
         valid: false,
@@ -154,7 +171,7 @@ class Projects::NotesController < Projects::ApplicationController
   def note_params
     params.require(:note).permit(
       :note, :noteable, :noteable_id, :noteable_type, :project_id,
-      :attachment, :line_code, :commit_id, :type
+      :attachment, :line_code, :commit_id, :type, :position
     )
   end
 

@@ -107,7 +107,7 @@
         .form-group.project-visibility-level-holder
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
-            = link_to "(?)", help_page_path("public_access", "public_access")
+            = link_to "(?)", help_page_path("public_access/public_access")
           = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
 
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
@@ -154,4 +154,9 @@
       $('.import_gitlab_project').attr('disabled',true);
       $('.import_gitlab_project').attr('title', 'Project path required.');
     }
-  })
+  });
+
+  $('.import_git').click(function( event ) {
+    $projectImportUrl = $('#project_import_url')
+    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
+  });

@@ -21,8 +21,6 @@ class UpdateReleaseService < BaseService
   end
 
   def success(release)
-    out = super()
-    out[:release] = release
-    out
+    super().merge(release: release)
   end
 end

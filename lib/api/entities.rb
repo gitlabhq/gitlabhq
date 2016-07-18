@@ -54,8 +54,17 @@ module API
 
     class BasicProjectDetails < Grape::Entity
       expose :id
+      expose :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+    end
+
+    class SharedGroup < Grape::Entity
+      expose :group_id
+      expose :group_name do |group_link, options|
+        group_link.group.name
+      end
+      expose :group_access, as: :group_access_level
     end
 
     class Project < Grape::Entity
@@ -77,6 +86,9 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds
+      expose :shared_with_groups do |project, options|
+        SharedGroup.represent(project.project_group_links.all, options)
+      end
     end
 
     class ProjectMember < UserBasic
@@ -93,6 +105,7 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project
+      expose :shared_projects, using: Entities::Project
     end
 
     class GroupMember < UserBasic
@@ -187,7 +200,6 @@ module API
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
-      expose :description
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
@@ -196,6 +208,8 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
+      expose :should_remove_source_branch?, as: :should_remove_source_branch
+      expose :force_remove_source_branch?, as: :force_remove_source_branch
     end
 
     class MergeRequestChanges < MergeRequest
@@ -240,9 +254,9 @@ module API
 
     class CommitNote < Grape::Entity
       expose :note
-      expose(:path) { |note| note.diff_file_path if note.legacy_diff_note? }
-      expose(:line) { |note| note.diff_new_line if note.legacy_diff_note? }
-      expose(:line_type) { |note| note.diff_line_type if note.legacy_diff_note? }
+      expose(:path) { |note| note.diff_file.try(:file_path) if note.diff_note? }
+      expose(:line) { |note| note.diff_line.try(:new_line) if note.diff_note? }
+      expose(:line_type) { |note| note.diff_line.try(:type) if note.diff_note? }
       expose :author, using: Entities::UserBasic
       expose :created_at
     end

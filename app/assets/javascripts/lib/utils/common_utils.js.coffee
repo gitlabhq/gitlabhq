@@ -5,12 +5,12 @@
 
   w.gl.utils.isInGroupsPage = ->
 
-    return $('body').data('page').split(':')[0] is 'groups'
+    return gl.utils.getPagePath() is 'groups'
 
 
   w.gl.utils.isInProjectPage = ->
 
-    return $('body').data('page').split(':')[0] is 'projects'
+    return gl.utils.getPagePath() is 'projects'
 
 
   w.gl.utils.getProjectSlug = ->
@@ -39,6 +39,9 @@
         e.preventDefault()
         e.stopImmediatePropagation()
         return false
+
+  gl.utils.getPagePath = ->
+    return $('body').data('page').split(':')[0]
 
 
   jQuery.timefor = (time, suffix, expiredLabel) ->
