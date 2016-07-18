@@ -204,7 +204,8 @@ class Ability
         :download_code,
         :fork_project,
         :read_commit_status,
-        :read_pipeline
+        :read_pipeline,
+        :read_container_image
       ]
     end
 
