@@ -2,7 +2,10 @@ shared_context 'artifacts from ref and build name' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:pipeline) do
-    create(:ci_pipeline, project: project, sha: project.commit('fix').sha)
+    create(:ci_pipeline,
+            project: project,
+            sha: project.commit('fix').sha,
+            ref: 'fix')
   end
   let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
@@ -30,17 +33,10 @@ shared_examples 'artifacts from ref with 404' do
 end
 
 shared_examples 'artifacts from ref successfully' do
-  context 'with sha' do
-    before do
-      get path_from_ref
-    end
-
-    it('gives the file') { verify }
-  end
-
   context 'with regular branch' do
     before do
-      pipeline.update(sha: project.commit('master').sha)
+      pipeline.update(ref: 'master',
+                      sha: project.commit('master').sha)
     end
 
     before do
@@ -52,7 +48,8 @@ shared_examples 'artifacts from ref successfully' do
 
   context 'with branch name containing slash' do
     before do
-      pipeline.update(sha: project.commit('improve/awesome').sha)
+      pipeline.update(ref: 'improve/awesome',
+                      sha: project.commit('improve/awesome').sha)
     end
 
     before do

@@ -434,15 +434,8 @@ class Project < ActiveRecord::Base
   end
 
   def builds_for(ref = 'HEAD')
-    commit_object = commit(ref)
-
-    if commit_object.nil?
-      Ci::Build.none
-    else
-      Ci::Build.joins(:pipeline).
-        merge(Ci::Pipeline.where(sha: commit_object.sha,
-                                 project: self))
-    end
+    Ci::Build.joins(:pipeline).
+      merge(Ci::Pipeline.where(ref: ref, project: self))
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

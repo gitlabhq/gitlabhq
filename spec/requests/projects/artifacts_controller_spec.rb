@@ -10,7 +10,7 @@ describe Projects::ArtifactsController do
     end
 
     def path_from_ref(
-      ref = pipeline.sha, job = build.name, path = 'browse')
+      ref = pipeline.ref, job = build.name, path = 'browse')
       search_namespace_project_artifacts_path(
         project.namespace,
         project,

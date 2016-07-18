@@ -5,7 +5,8 @@ describe Ci::Build, models: true do
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
+                         sha: project.commit.id,
+                         ref: 'fix')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -698,7 +699,7 @@ describe Ci::Build, models: true do
     end
 
     it 'returns builds from ref' do
-      builds = project.latest_success_builds_for('HEAD')
+      builds = project.latest_success_builds_for('fix')
 
       expect(builds).to contain_exactly(build)
     end
