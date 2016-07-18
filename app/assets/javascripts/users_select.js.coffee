@@ -220,6 +220,7 @@ class @UsersSelect
       @showCurrentUser = $(select).data('current-user')
       @pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches')
       @authorId = $(select).data('author-id')
+      @skipUsers = $(select).data('skip-users')
       showNullUser = $(select).data('null-user')
       showAnyUser = $(select).data('any-user')
       showEmailUser = $(select).data('email-user')
@@ -328,6 +329,7 @@ class @UsersSelect
         current_user: @showCurrentUser
         push_code_to_protected_branches: @pushCodeToProtectedBranches
         author_id: @authorId
+        skip_users: @skipUsers
       dataType: "json"
     ).done (users) ->
       callback(users)

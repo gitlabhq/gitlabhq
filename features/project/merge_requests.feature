@@ -320,27 +320,12 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
-  Scenario: I approve merge request
-    Given merge request 'Bug NS-04' must be approved
-    And I click link "Bug NS-04"
-    And I should not see merge button
-    When I click link "Approve"
-    Then I should see approved merge request "Bug NS-04"
-
-  Scenario: Reporter can approve merge request
-    Given I am a "Shop" reporter
+  Scenario: Developer can approve merge request
+    Given I am a "Shop" developer
     And I visit project "Shop" merge requests page
     And merge request 'Bug NS-04' must be approved
     And I click link "Bug NS-04"
     And I should not see merge button
-    When I click link "Approve"
-    Then I should see message that merge request can be merged
-
-  Scenario: I approve merge request if I am an approver
-    Given merge request 'Bug NS-04' must be approved by current user
-    And I click link "Bug NS-04"
-    And I should not see merge button
-    And I should see message that MR require an approval from me
     When I click link "Approve"
     Then I should see approved merge request "Bug NS-04"
 
@@ -353,15 +338,19 @@ Feature: Project Merge Requests
 
   @javascript
   Scenario: I see suggested approvers on new merge request form
-    Given project settings contain list of approvers
+    Given I am a "Shop" developer
+    And project settings contain list of approvers
+    And I visit project "Shop" merge requests page
     When I click link "New Merge Request"
     And I select "feature_conflict" as source
     Then I see suggested approver
 
   @javascript
   Scenario: I see auto-suggested approvers on new merge request form
-    Given project settings contain list of approvers
+    Given I am a "Shop" developer
+    And project settings contain list of approvers
     And there is one auto-suggested approver
+    And I visit project "Shop" merge requests page
     When I click link "New Merge Request"
     And I select "feature_conflict" as source
     Then I see auto-suggested approver

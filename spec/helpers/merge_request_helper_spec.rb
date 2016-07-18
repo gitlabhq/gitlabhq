@@ -56,45 +56,47 @@ describe MergeRequestsHelper do
   end
 
   describe 'render_require_section' do
+    let(:merge_request) { create(:merge_request, target_project: project, source_project: project) }
+    let(:approver) { create(:user) }
+
+    before do
+      5.times { project.team << [create(:user), :developer] }
+      project.team << [approver, :developer]
+    end
+
     it "returns correct value in case - one approval" do
       project.update(approvals_before_merge: 1)
-      merge_request = create(:merge_request, target_project: project, source_project: project)
+
       expect(render_require_section(merge_request)).to eq("Requires one more approval")
     end
 
     it "returns correct value in case - two approval" do
       project.update(approvals_before_merge: 2)
-      merge_request = create(:merge_request, target_project: project, source_project: project)
+
       expect(render_require_section(merge_request)).to eq("Requires 2 more approvals")
     end
 
     it "returns correct value in case - one approver" do
       project.update(approvals_before_merge: 1)
-      merge_request = create(:merge_request, target_project: project, source_project: project)
-      user = create :user
-      merge_request.approvers.create(user_id: user.id)
+      create(:approver, user: approver, target: merge_request)
 
-      expect(render_require_section(merge_request)).to eq("Requires one more approval (from #{user.name})")
+      expect(render_require_section(merge_request)).to eq("Requires one more approval (from #{approver.name})")
     end
 
     it "returns correct value in case - one approver and one more" do
       project.update(approvals_before_merge: 2)
-      merge_request = create(:merge_request, target_project: project, source_project: project)
-      user = create :user
-      merge_request.approvers.create(user_id: user.id)
+      create(:approver, user: approver, target: merge_request)
 
-      expect(render_require_section(merge_request)).to eq("Requires 2 more approvals (from #{user.name} and 1 more)")
+      expect(render_require_section(merge_request)).to eq("Requires 2 more approvals (from #{approver.name} and 1 more)")
     end
 
     it "returns correct value in case - two approver and one more" do
       project.update(approvals_before_merge: 3)
-      merge_request = create(:merge_request, target_project: project, source_project: project)
-      user = create :user
-      user1 = create :user
-      merge_request.approvers.create(user_id: user.id)
-      merge_request.approvers.create(user_id: user1.id)
+      approver2 = create(:user)
+      create(:approver, user: approver, target: merge_request)
+      create(:approver, user: approver2, target: merge_request)
 
-      expect(render_require_section(merge_request)).to eq("Requires 3 more approvals (from #{user1.name}, #{user.name} and 1 more)")
+      expect(render_require_section(merge_request)).to eq("Requires 3 more approvals (from #{approver2.name}, #{approver.name} and 1 more)")
     end
   end
 end

@@ -5,6 +5,7 @@ class AutocompleteController < ApplicationController
   def users
     @users = @users.non_ldap if params[:skip_ldap] == 'true'
     @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
 
