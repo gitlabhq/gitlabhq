@@ -220,13 +220,13 @@
       originalTitle = this.getAwardTooltip(awardBlock);
       authors = originalTitle.split(FROM_SENTENCE_REGEX);
       authors.splice(authors.indexOf('You'), 1);
-      awardBlock
+      return awardBlock
         .closest('.js-emoji-btn')
         .removeData('title')
         .removeAttr('data-title')
         .removeAttr('data-original-title')
-        .attr('title', this.toSentence(authors));
-      return this.resetTooltip(awardBlock);
+        .attr('title', this.toSentence(authors))
+        .tooltip('fixTitle');
     };
 
     AwardsHandler.prototype.addYouToUserList = function(votesBlock, emoji) {
@@ -238,17 +238,9 @@
         users = origTitle.trim().split(FROM_SENTENCE_REGEX);
       }
       users.unshift('You');
-      awardBlock.attr('title', this.toSentence(users));
-      return this.resetTooltip(awardBlock);
-    };
-
-    AwardsHandler.prototype.resetTooltip = function(award) {
-      var cb;
-      award.tooltip('destroy');
-      cb = function() {
-        return award.tooltip();
-      };
-      return setTimeout(cb, 200);
+      return awardBlock
+        .attr('title', this.toSentence(users))
+        .tooltip('fixTitle');
     };
 
     AwardsHandler.prototype.createEmoji_ = function(votesBlock, emoji) {
