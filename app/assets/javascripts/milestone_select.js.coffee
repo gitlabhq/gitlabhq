@@ -70,8 +70,8 @@ class @MilestoneSelect
         search:
           fields: ['title']
         selectable: true
-        toggleLabel: (selected, el, e, added) ->
-          if selected and 'id' of selected and added
+        toggleLabel: (selected, el, e) ->
+          if selected and 'id' of selected and $(el).hasClass('is-active')
             selected.title
           else
             defaultLabel
@@ -80,7 +80,7 @@ class @MilestoneSelect
         text: (milestone) ->
           _.escape(milestone.title)
         id: (milestone) ->
-          if !useId and not $dropdown.is('.js-issuable-form-dropdown')
+          if not useId and not $dropdown.is('.js-issuable-form-dropdown')
             milestone.name
           else
             milestone.id

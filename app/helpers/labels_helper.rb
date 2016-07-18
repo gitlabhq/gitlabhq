@@ -116,7 +116,7 @@ module LabelsHelper
 
   def labels_filter_path
     project = @target_project || @project
-    if @project
+    if project
       namespace_project_labels_path(project.namespace, project, :json)
     else
       dashboard_labels_path(:json)
