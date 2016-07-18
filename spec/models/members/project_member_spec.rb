@@ -101,7 +101,7 @@ describe ProjectMember, models: true do
     end
   end
 
-  describe :add_users_into_projects do
+  describe '.add_users_into_projects' do
     before do
       @project_1 = create :project
       @project_2 = create :project
@@ -123,7 +123,7 @@ describe ProjectMember, models: true do
     it { expect(@project_2.users).to include(@user_2) }
   end
 
-  describe :truncate_teams do
+  describe '.truncate_teams' do
     before do
       @project_1 = create :project
       @project_2 = create :project

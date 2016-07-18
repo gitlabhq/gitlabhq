@@ -56,6 +56,11 @@ class @UsersSelect
               username: ''
               avatar: ''
           $value.html(assigneeTemplate(user))
+
+          $collapsedSidebar
+            .attr('title', user.name)
+            .tooltip('fixTitle')
+
           $collapsedSidebar.html(collapsedAssigneeTemplate(user))
 
 
@@ -63,7 +68,6 @@ class @UsersSelect
         '<% if( avatar ) { %>
         <a class="author_link" href="/u/<%- username %>">
           <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>">
-          <span class="author">Toni Boehm</span>
         </a>
         <% } else { %>
         <i class="fa fa-user"></i>

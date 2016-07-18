@@ -89,6 +89,12 @@ describe CreateDeploymentService, services: true do
         expect_any_instance_of(described_class).to receive(:execute)
         subject
       end
+
+      it 'is set as deployable' do
+        subject
+
+        expect(Deployment.last.deployable).to eq(deployable)
+      end
     end
 
     context 'without environment specified' do
@@ -105,6 +111,8 @@ describe CreateDeploymentService, services: true do
 
       context 'when build succeeds' do
         it_behaves_like 'does create environment and deployment' do
+          let(:deployable) { build }
+
           subject { build.success }
         end
       end
@@ -112,6 +120,14 @@ describe CreateDeploymentService, services: true do
       context 'when build fails' do
         it_behaves_like 'does not create environment and deployment' do
           subject { build.drop }
+        end
+      end
+
+      context 'when build is retried' do
+        it_behaves_like 'does create environment and deployment' do
+          let(:deployable) { Ci::Build.retry(build) }
+
+          subject { deployable.success }
         end
       end
     end

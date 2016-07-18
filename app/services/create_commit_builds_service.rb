@@ -14,7 +14,13 @@ class CreateCommitBuildsService
       return false
     end
 
-    @pipeline = Ci::Pipeline.new(project: project, sha: sha, ref: ref, before_sha: before_sha, tag: tag)
+    @pipeline = Ci::Pipeline.new(
+      project: project,
+      sha: sha,
+      ref: ref,
+      before_sha: before_sha,
+      tag: tag,
+      user: user)
 
     ##
     # Skip creating pipeline if no gitlab-ci.yml is found

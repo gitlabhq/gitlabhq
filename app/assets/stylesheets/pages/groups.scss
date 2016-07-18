@@ -38,33 +38,6 @@
       margin-right: 15px;
     }
   }
-
-  &.group-admin {
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-
-    .group-avatar, .group-details, .group-controls {
-      display: -webkit-flex;
-      display: -ms-flexbox;
-      display: flex;
-    }
-
-    .group-details {
-      flex: 1 1 auto;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .group-controls {
-      align-items: center;
-
-      a {
-        margin-left: 5px;
-      }
-    }
-  }
-
 }
 
 .ldap-group-links {

@@ -138,7 +138,7 @@ This setting is only available on GitLab 8.7 and above.
 
 SAML login includes support for external groups. You can define in the SAML
 settings which groups, to which your users belong in your IdP, you wish to be
-marked as [external](../permissions/permissions.md).
+marked as [external](../user/permissions.md).
 
 ### Requirements
 

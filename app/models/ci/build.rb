@@ -5,6 +5,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options
+    serialize :yaml_variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -52,7 +53,10 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
+        new_build.yaml_variables = build.yaml_variables
+        new_build.when = build.when
         new_build.user = user
+        new_build.environment = build.environment
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -117,7 +121,12 @@ module Ci
     end
 
     def variables
-      predefined_variables + yaml_variables + project_variables + trigger_variables
+      variables = []
+      variables += predefined_variables
+      variables += yaml_variables if yaml_variables
+      variables += project_variables
+      variables += trigger_variables
+      variables
     end
 
     def merge_request
@@ -392,30 +401,6 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
-    end
-
-    def yaml_variables
-      global_yaml_variables + job_yaml_variables
-    end
-
-    def global_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.global_variables.map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
-    end
-
-    def job_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.job_variables(name).map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
     end
 
     def project_variables

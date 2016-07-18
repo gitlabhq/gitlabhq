@@ -54,6 +54,7 @@ module API
 
     class BasicProjectDetails < Grape::Entity
       expose :id
+      expose :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
     end
@@ -186,6 +187,7 @@ module API
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
+      expose :due_date
     end
 
     class ExternalIssue < Grape::Entity
