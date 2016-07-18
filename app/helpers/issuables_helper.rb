@@ -77,8 +77,8 @@ module IssuablesHelper
     end
   end
 
-  def selected_labels(project, labelQuery)
-    Label.where(labelQuery.merge(project_id: project))
+  def selected_labels(project, label_query)
+    Label.where(label_query.merge(project_id: project))
   end
 
   private
