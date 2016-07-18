@@ -258,16 +258,26 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     context "when license blocks changes" do
-      before { allow(License).to receive(:block_changes?).and_return(true) }
+      before do
+        create(:protected_branch, name: 'feature', project: project)
+        allow(License).to receive(:block_changes?).and_return(true)
+      end
+
+      # All permissions are `false`
+      permissions_matrix = Hash.new(Hash.new(false))
 
       run_permission_checks(permissions_matrix)
     end
 
     context "when in a secondary gitlab geo node" do
       before do
+        create(:protected_branch, name: 'feature', project: project)
         allow(Gitlab::Geo).to receive(:enabled?) { true }
         allow(Gitlab::Geo).to receive(:secondary?) { true }
       end
+
+      # All permissions are `false`
+      permissions_matrix = Hash.new(Hash.new(false))
 
       run_permission_checks(permissions_matrix)
     end
@@ -352,21 +362,23 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe "push_rule_check" do
+    before { project.team << [user, :developer] }
+
     describe "author email check" do
       it 'returns true' do
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_truthy
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_truthy
       end
 
       it 'returns false' do
         project.create_push_rule
         project.push_rule.update(commit_message_regex: "@only.com")
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
       end
 
       it 'returns true for tags' do
         project.create_push_rule
         project.push_rule.update(commit_message_regex: "@only.com")
-        expect(access.push_rule_check(user, project, 'refs/tags/v1', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/tags/v1')).to be_allowed
       end
 
       it 'allows githook for new branch with an old bad commit' do
@@ -379,7 +391,7 @@ describe Gitlab::GitAccess, lib: true do
         project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.push_rule_check(user, project, 'refs/heads/new-branch', Gitlab::Git::BLANK_SHA, '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_access_check("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new-branch")).to be_allowed
       end
 
       it 'allows githook for any change with an old bad commit' do
@@ -392,7 +404,7 @@ describe Gitlab::GitAccess, lib: true do
         project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
       end
 
       it 'does not allow any change from Web UI with bad commit' do
@@ -406,7 +418,7 @@ describe Gitlab::GitAccess, lib: true do
         project.push_rule.update(commit_message_regex: "Change some files")
 
         # push to new branch, so use a blank old rev and new ref
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
       end
     end
 
@@ -417,12 +429,12 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       it 'returns false for non-member user' do
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).not_to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
       end
 
       it 'returns true if committer is a gitlab member' do
         create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')).to be_allowed
+        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
       end
     end
 
@@ -430,13 +442,13 @@ describe Gitlab::GitAccess, lib: true do
       it 'returns false when filename is prohibited' do
         project.create_push_rule
         project.push_rule.update(file_name_regex: "jpg$")
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).not_to be_allowed
+        expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).not_to be_allowed
       end
 
       it 'returns true if file name is allowed' do
         project.create_push_rule
         project.push_rule.update(file_name_regex: "exe$")
-        expect(access.push_rule_check(user, project, 'refs/heads/master', '913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')).to be_allowed
+        expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).to be_allowed
       end
     end
 
@@ -448,20 +460,20 @@ describe Gitlab::GitAccess, lib: true do
       it "returns false when size is too large" do
         project.create_push_rule
         project.push_rule.update(max_file_size: 1)
-        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).not_to be_allowed
+        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).not_to be_allowed
       end
 
       it "returns true when size is allowed" do
         project.create_push_rule
         project.push_rule.update(max_file_size: 2)
-        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
+        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
       end
 
       it "returns true when size is nil" do
         allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
         project.create_push_rule
         project.push_rule.update(max_file_size: 2)
-        expect(access.push_rule_check(user, project, 'refs/heads/master', 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660', '913c66a37b4a45b9769037c55c2d238bd0942d2e')).to be_allowed
+        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
       end
     end
   end
