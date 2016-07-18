@@ -177,10 +177,10 @@ describe CommitStatus, models: true do
 
   describe '#stages' do
     before do
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'success'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'failed'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'deploy', stage_idx: 2, status: 'running'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'test', stage_idx: 1, status: 'success'
+      create :commit_status, pipeline: pipeline, stage: 'build', name: 'linux', stage_idx: 0, status: 'success'
+      create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'failed'
+      create :commit_status, pipeline: pipeline, stage: 'deploy', name: 'staging', stage_idx: 2, status: 'running'
+      create :commit_status, pipeline: pipeline, stage: 'test', name: 'rspec', stage_idx: 1, status: 'success'
     end
 
     context 'stages list' do
@@ -192,7 +192,7 @@ describe CommitStatus, models: true do
     end
 
     context 'stages with statuses' do
-      subject { CommitStatus.where(pipeline: pipeline).stages_status }
+      subject { CommitStatus.where(pipeline: pipeline).latest.stages_status }
 
       it 'return list of stages with statuses' do
         is_expected.to eq({
@@ -200,6 +200,20 @@ describe CommitStatus, models: true do
           'test' => 'success',
           'deploy' => 'running'
         })
+      end
+
+      context 'when build is retried' do
+        before do
+          create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'success'
+        end
+
+        it 'ignores a previous state' do
+          is_expected.to eq({
+            'build' => 'success',
+            'test' => 'success',
+            'deploy' => 'running'
+          })
+        end
       end
     end
   end
