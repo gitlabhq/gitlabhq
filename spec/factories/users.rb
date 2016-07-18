@@ -14,6 +14,10 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :external do
+      external true
+    end
+
     trait :two_factor do
       two_factor_via_otp
     end
@@ -51,5 +55,6 @@ FactoryGirl.define do
     end
 
     factory :admin, traits: [:admin]
+    factory :external_user, traits: [:external]
   end
 end
