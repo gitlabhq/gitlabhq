@@ -1,4 +1,5 @@
 require 'spec_helper'
+require_relative '../../config/initializers/6_validations.rb'
 
 describe '6_validations', lib: true do
   before :all do
@@ -17,7 +18,7 @@ describe '6_validations', lib: true do
     end
 
     it 'passes through' do
-      expect { load_validations }.not_to raise_error
+      expect { validate_storages }.not_to raise_error
     end
   end
 
@@ -27,7 +28,7 @@ describe '6_validations', lib: true do
     end
 
     it 'throws an error' do
-      expect { load_validations }.to raise_error('"name with spaces" is not a valid storage name. Please fix this in your gitlab.yml before starting GitLab.')
+      expect { validate_storages }.to raise_error('"name with spaces" is not a valid storage name. Please fix this in your gitlab.yml before starting GitLab.')
     end
   end
 
@@ -37,7 +38,7 @@ describe '6_validations', lib: true do
     end
 
     it 'throws an error' do
-      expect { load_validations }.to raise_error('bar is a nested path of foo. Nested paths are not supported for repository storages. Please fix this in your gitlab.yml before starting GitLab.')
+      expect { validate_storages }.to raise_error('bar is a nested path of foo. Nested paths are not supported for repository storages. Please fix this in your gitlab.yml before starting GitLab.')
     end
   end
 
@@ -47,15 +48,11 @@ describe '6_validations', lib: true do
     end
 
     it 'passes through' do
-      expect { load_validations }.not_to raise_error
+      expect { validate_storages }.not_to raise_error
     end
   end
 
   def mock_storages(storages)
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
-  end
-
-  def load_validations
-    load File.join(__dir__, '../../config/initializers/6_validations.rb')
   end
 end
