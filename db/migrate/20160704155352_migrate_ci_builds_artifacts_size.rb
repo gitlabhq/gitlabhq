@@ -8,6 +8,16 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   def up
     cleanup_ci_builds_artifacts_file
 
+    loop_through_builds_with_artifacts do |id, store_path, artifacts_size|
+      if artifacts_size
+        execute(update_build_sql(id, artifacts_size))
+      else
+        say("File is unexpectedly missing for #{id} at #{store_path}")
+      end
+    end
+  end
+
+  def loop_through_builds_with_artifacts(&block)
     n = 0
 
     loop do
@@ -18,7 +28,7 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
       if result.empty?
         break
       else
-        fill_artifacts_size(result)
+        fill_artifacts_size(result, &block)
         n += BATCH
       end
     end
@@ -30,12 +40,9 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
       store_path = File.join(store_dir, build['artifacts_file'])
       id = build['id']
 
-      if File.exist?(store_path)
-        artifacts_size = File.size(store_path)
-        execute(update_build_sql(id, artifacts_size))
-      else
-        say("File is unexpectedly missing for #{id} at #{store_path}")
-      end
+      artifacts_size = File.size(store_path) if File.exist?(store_path)
+
+      yield(id, store_path, artifacts_size) if block_given?
     end
   end
 
