@@ -31,7 +31,7 @@ class GitLabDropdownFilter
       .on 'keyup', (e) =>
         keyCode = e.which
 
-        return if ARROW_KEY_CODES.indexOf(keyCode) >= 0
+        return unless ARROW_KEY_CODES.indexOf(keyCode) is -1
 
         if @input.val() isnt '' and !$inputContainer.hasClass HAS_VALUE_CLASS
           $inputContainer.addClass HAS_VALUE_CLASS
