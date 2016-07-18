@@ -31,7 +31,6 @@
       margin-right: 7px;
     }
 
-    // Issue title
     span a {
       color: $gl-text-color;
       word-wrap: break-word;
@@ -40,7 +39,6 @@
 }
 
 .milestone-summary {
-
   h4 {
     margin-bottom: 0;
   }
@@ -48,8 +46,9 @@
   .milestone-stat {
     white-space: nowrap;
     margin-right: 10px;
+
     &.with-drilldown {
-      margin-right: 2px; // the drill down element should sit closer to its parent
+      margin-right: 2px;
     }
   }
 
@@ -60,23 +59,19 @@
   .milestone-stats-and-buttons {
     display: flex;
     justify-content: flex-start;
-    // on small screens split into two line
     flex-wrap: wrap;
 
     @media (min-width: $screen-xs-min) {
-      // on bigger screens show on one line
       justify-content: space-between;
       flex-wrap: nowrap;
     }
   }
 
   .milestone-progress-buttons {
-    // for small devices buttons go first
     order: 1;
-    // buttons go on its own line below the header and need some margin
     margin-top: 10px;
+
     @media (min-width: $screen-xs-min) {
-      // when displayed on one line stats go first, buttons second
       order: 2;
       margin-top: 0;
       flex-shrink: 0;
@@ -85,6 +80,9 @@
     .btn {
       float: left;
       margin-right: $btn-side-margin;
+      &:last-child {
+        margin-right: 0;
+      }
     }
   }
 
@@ -143,21 +141,23 @@
   flex-flow: row;
   align-items: center;
   flex-wrap: wrap;
+
   .status-box {
-    margin-top: 0; // no need for margin-top, vertical alignment is done by flexbox
+    margin-top: 0;
   }
+
   .milestone-buttons {
-    // flex flow is row (left to right)
-    // but buttons should stick to the right side
     margin-left: auto;
   }
 
   .status-box {
     order: 1;
   }
+
   .milestone-buttons {
     order: 2;
   }
+
   .header-text-content {
     order: 3;
     width: 100%;
@@ -168,7 +168,6 @@
   }
 
   @media (min-width: $screen-xs-min) {
-
     .milestone-buttons .verbose {
       display: inline;
     }
@@ -177,6 +176,7 @@
       order: 2;
       width: auto;
     }
+
     .milestone-buttons {
       order: 3;
     }
