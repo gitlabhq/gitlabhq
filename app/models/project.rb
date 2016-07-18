@@ -429,10 +429,16 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
-  def latest_success_builds_for(ref = 'HEAD')
+  # ref can't be HEAD or SHA, can only be branch/tag name
+  def latest_success_pipeline_for(ref = 'master')
+    pipelines.where(ref: ref).success.latest
+  end
+
+  # ref can't be HEAD or SHA, can only be branch/tag name
+  def latest_success_builds_for(ref = 'master')
     Ci::Build.joins(:pipeline).
-      merge(pipelines.where(ref: ref).success.latest).
-      with_artifacts.success.latest
+      merge(latest_success_pipeline_for(ref)).
+      latest_success_with_artifacts
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
