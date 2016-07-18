@@ -22,17 +22,6 @@ class @Shortcuts
       $modal.modal('toggle')
       return
 
-    $.ajax(
-      url: gon.shortcuts_path,
-      dataType: 'script',
-      success: (e) ->
-        if location and location.length > 0
-          $(l).show() for l in location
-        else
-          $('.hidden-shortcut').show()
-          $('.js-more-help-button').remove()
-    )
-
   focusFilter: (e) ->
     @filterInput ?= $('input[type=search]', '.nav-controls')
     @filterInput.focus()
