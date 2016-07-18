@@ -47,8 +47,12 @@ module Gitlab
           node :variables, Variables,
             description: 'Environment variables available for this job.'
 
+          node :artifacts, Artifacts,
+            description: 'Artifacts configuration for this job.'
+
           helpers :before_script, :script, :stage, :type, :after_script,
-                  :cache, :image, :services, :only, :except, :variables
+                  :cache, :image, :services, :only, :except, :variables,
+                  :artifacts
 
           def name
             @metadata[:name]
@@ -71,6 +75,7 @@ module Gitlab
               only: only,
               except: except,
               variables: variables_defined? ? variables : nil,
+              artifacts: artifacts,
               after_script: after_script }
           end
 

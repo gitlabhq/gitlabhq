@@ -1138,42 +1138,42 @@ EOT
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { name: 1 } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:name parameter should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts name should be a string")
       end
 
       it "returns errors if job artifacts:when is not an a predefined value" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { when: 1 } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:when parameter should be on_success, on_failure or always")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts when should be on_success, on_failure or always")
       end
 
       it "returns errors if job artifacts:expire_in is not an a string" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: 1 } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts expire in should be a duration")
       end
 
       it "returns errors if job artifacts:expire_in is not an a valid duration" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { expire_in: "7 elephants" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:expire_in parameter should be a duration")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts expire in should be a duration")
       end
 
       it "returns errors if job artifacts:untracked is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { untracked: "string" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:untracked parameter should be an boolean")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts untracked should be a boolean value")
       end
 
       it "returns errors if job artifacts:paths is not an array of strings" do
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", artifacts: { paths: "string" } } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: artifacts:paths parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:artifacts paths should be an array of strings")
       end
 
       it "returns errors if cache:untracked is not an array of strings" do

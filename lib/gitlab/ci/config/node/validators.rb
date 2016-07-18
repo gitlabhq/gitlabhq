@@ -33,6 +33,16 @@ module Gitlab
             end
           end
 
+          class DurationValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_duration(value)
+                record.errors.add(attribute, 'should be a duration')
+              end
+            end
+          end
+
           class RequiredValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
               if value.nil?

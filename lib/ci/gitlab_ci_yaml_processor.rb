@@ -148,26 +148,6 @@ module Ci
           raise ValidationError, "#{name} job: artifacts unknown parameter #{key}"
         end
       end
-
-      if job[:artifacts][:name] && !validate_string(job[:artifacts][:name])
-        raise ValidationError, "#{name} job: artifacts:name parameter should be a string"
-      end
-
-      if job[:artifacts][:untracked] && !validate_boolean(job[:artifacts][:untracked])
-        raise ValidationError, "#{name} job: artifacts:untracked parameter should be an boolean"
-      end
-
-      if job[:artifacts][:paths] && !validate_array_of_strings(job[:artifacts][:paths])
-        raise ValidationError, "#{name} job: artifacts:paths parameter should be an array of strings"
-      end
-
-      if job[:artifacts][:when] && !job[:artifacts][:when].in?(%w[on_success on_failure always])
-        raise ValidationError, "#{name} job: artifacts:when parameter should be on_success, on_failure or always"
-      end
-
-      if job[:artifacts][:expire_in] && !validate_duration(job[:artifacts][:expire_in])
-        raise ValidationError, "#{name} job: artifacts:expire_in parameter should be a duration"
-      end
     end
 
     def validate_job_dependencies!(name, job)
