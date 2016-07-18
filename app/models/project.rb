@@ -430,12 +430,9 @@ class Project < ActiveRecord::Base
   end
 
   def latest_success_builds_for(ref = 'HEAD')
-    builds_for(ref).success.latest
-  end
-
-  def builds_for(ref = 'HEAD')
     Ci::Build.joins(:pipeline).
-      merge(Ci::Pipeline.where(ref: ref, project: self))
+      merge(pipelines.where(ref: ref).success.latest).
+      with_artifacts
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

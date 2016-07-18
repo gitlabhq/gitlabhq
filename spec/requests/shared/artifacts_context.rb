@@ -25,7 +25,7 @@ shared_examples 'artifacts from ref with 404' do
 
   context 'has no such build' do
     before do
-      get path_from_ref(pipeline.sha, 'NOBUILD')
+      get path_from_ref(pipeline.ref, 'NOBUILD')
     end
 
     it('gives 404') { verify }
@@ -33,6 +33,11 @@ shared_examples 'artifacts from ref with 404' do
 end
 
 shared_examples 'artifacts from ref successfully' do
+  def create_new_pipeline(status)
+    new_pipeline = create(:ci_pipeline, status: 'success')
+    create(:ci_build, status, :artifacts, pipeline: new_pipeline)
+  end
+
   context 'with regular branch' do
     before do
       pipeline.update(ref: 'master',
@@ -59,10 +64,10 @@ shared_examples 'artifacts from ref successfully' do
     it('gives the file') { verify }
   end
 
-  context 'with latest build' do
+  context 'with latest pipeline' do
     before do
-      3.times do # creating some old builds
-        create(:ci_build, :success, :artifacts, pipeline: pipeline)
+      3.times do # creating some old pipelines
+        create_new_pipeline(:success)
       end
     end
 
@@ -73,10 +78,10 @@ shared_examples 'artifacts from ref successfully' do
     it('gives the file') { verify }
   end
 
-  context 'with success build' do
+  context 'with success pipeline' do
     before do
-      build # make sure build was old, but still the latest success one
-      create(:ci_build, :pending, :artifacts, pipeline: pipeline)
+      build # make sure pipeline was old, but still the latest success one
+      create_new_pipeline(:pending)
     end
 
     before do

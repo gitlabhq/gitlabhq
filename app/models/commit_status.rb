@@ -18,8 +18,8 @@ class CommitStatus < ActiveRecord::Base
 
   scope :latest, -> do
     max_id = unscope(:select).
-           select("max(#{table_name}.id)").
-           group(:name, :commit_id)
+               select("max(#{table_name}.id)").
+               group(:name, :commit_id)
 
     where(id: max_id)
   end
