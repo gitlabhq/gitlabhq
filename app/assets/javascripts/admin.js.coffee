@@ -40,7 +40,7 @@ class @Admin
       Turbolinks.visit(location.href)
 
     showBlacklistType = ->
-      if $('input[name=\'blacklist_type\']:checked').val() == 'file'
+      if $("input[name='blacklist_type']:checked").val() == 'file'
         $('.blacklist-file').show()
         $('.blacklist-raw').hide()
       else
