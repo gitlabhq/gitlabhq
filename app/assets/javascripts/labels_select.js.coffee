@@ -278,7 +278,7 @@ class @LabelsSelect
         filterable: true
         toggleLabel: (selected, el, glDropdown) ->
           if glDropdown?
-            selectedIds = $("input[name='#{fieldName}']").map(-> $(this).val()).get()
+            selectedIds = $("input[name='#{fieldName}']").map(-> @value).get()
 
             selected = _.filter glDropdown.fullData, (label) ->
               selectedIds.indexOf("#{label[propertyName]}") >= 0 if label[propertyName]?
