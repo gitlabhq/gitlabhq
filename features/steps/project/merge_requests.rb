@@ -401,15 +401,17 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I click link "Hide inline discussion" of the third file' do
-    page.within '.files [id^=diff]:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
+  step 'I click link "Hide inline discussion" button' do
+    page.within '#diffs' do
+      find('.inline-parallel-buttons [data-toggle=dropdown]').trigger('click')
+      find('.js-diff-comments-button').trigger('click')
     end
   end
 
-  step 'I click link "Show inline discussion" of the third file' do
-    page.within '.files [id^=diff]:nth-child(3)' do
-      find('.js-toggle-diff-comments').trigger('click')
+  step 'I click link "Show inline discussion" button' do
+    page.within '#diffs' do
+      find('.inline-parallel-buttons [data-toggle=dropdown]').trigger('click')
+      find('.js-diff-comments-button').trigger('click')
     end
   end
 

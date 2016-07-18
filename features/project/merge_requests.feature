@@ -194,7 +194,7 @@ Feature: Project Merge Requests
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
     And I leave a comment like "Line is wrong" on line 39 of the third file
-    And I click link "Hide inline discussion" of the third file
+    And I click link "Hide inline discussion" button
     Then I should not see a comment like "Line is wrong here" in the third file
 
   @javascript
@@ -212,9 +212,8 @@ Feature: Project Merge Requests
     And I click on the Changes tab
     And I leave a comment like "Line is correct" on line 12 of the second file
     And I leave a comment like "Line is wrong" on line 39 of the third file
-    And I click link "Hide inline discussion" of the third file
+    And I click link "Hide inline discussion" button
     Then I should not see a comment like "Line is wrong here" in the third file
-    And I should still see a comment like "Line is correct" in the second file
 
   @javascript
   Scenario: I show comments on a merge request diff with comments in multiple files
@@ -223,8 +222,8 @@ Feature: Project Merge Requests
     And I click on the Changes tab
     And I leave a comment like "Line is correct" on line 12 of the second file
     And I leave a comment like "Line is wrong" on line 39 of the third file
-    And I click link "Hide inline discussion" of the third file
-    And I click link "Show inline discussion" of the third file
+    And I click link "Hide inline discussion" button
+    And I click link "Show inline discussion" button
     Then I should see a comment like "Line is wrong" in the third file
     And I should still see a comment like "Line is correct" in the second file
 

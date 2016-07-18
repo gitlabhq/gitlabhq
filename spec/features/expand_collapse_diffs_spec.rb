@@ -210,7 +210,8 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
   context 'expanding all diffs' do
     before do
-      click_link('Expand all')
+      find('.inline-parallel-buttons [data-toggle=dropdown]').trigger('click')
+      find('.inline-parallel-buttons .expand-all').trigger('click')
       wait_for_ajax
       execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
     end

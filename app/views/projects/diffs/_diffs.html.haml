@@ -11,7 +11,7 @@
       %span.caret
     %ul.dropdown-menu
       %li
-        %a.is-unselectable.js-diff-comments-button{ href: "#", data: { state: "visible" } }
+        %a.js-diff-comments-button{ href: "#", data: { state: "visible" } }
           Hide all comments
       %li
         - if show_whitespace_toggle
@@ -20,10 +20,10 @@
           - elsif current_controller?(:merge_requests)
             = diff_merge_request_whitespace_link(@project, @merge_request, {})
           - elsif current_controller?(:compare)
-            = diff_compare_whitespace_link(@project, params[:from], params[:to])
+            = diff_compare_whitespace_link(@project, params[:from], params[:to], {})
       %li
         - if !expand_all_diffs? && diff_files.any? { |diff_file| diff_file.collapsed? }
-          = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), class: 'is-unselectable'
+          = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), {class: 'expand-all'}
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn
