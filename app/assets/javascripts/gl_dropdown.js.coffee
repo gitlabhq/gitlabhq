@@ -217,7 +217,6 @@ class GitLabDropdown
 
     @dropdown.on "shown.bs.dropdown", @opened
     @dropdown.on "hidden.bs.dropdown", @hidden
-    $(@el).on "update.label", @updateLabel
     @dropdown.on "click", ".dropdown-menu, .dropdown-menu-close", @shouldPropagate
     @dropdown.on 'keyup', (e) =>
       if e.which is 27 # Escape key

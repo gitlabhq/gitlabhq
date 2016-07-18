@@ -52,7 +52,6 @@ issuable_created = false
 
         # Submit the form to get new data
         Issuable.filterResults $('.filter-form')
-        $('.js-label-select').trigger('update.label')
 
   filterResults: (form) =>
     formData = form.serialize()
