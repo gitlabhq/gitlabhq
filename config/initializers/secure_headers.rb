@@ -1,3 +1,6 @@
+# CSP headers have to have single quotes, so failures relating to quotes
+# inside Ruby string arrays are irrelevant.
+# rubocop:disable Lint/PercentStringArray
 require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
 
@@ -23,8 +26,6 @@ SecureHeaders::Configuration.default do |config|
       strict: true 
     }
   }
-  # Disallow iframes.
-  config.x_frame_options = "DENY"
   config.x_content_type_options = "nosniff"
   config.x_xss_protection = "1; mode=block"
   config.x_download_options = "noopen"
@@ -45,13 +46,13 @@ SecureHeaders::Configuration.default do |config|
     # Only load local fonts.
     font_src: %w('self'),
     # Load local images, any external image available over HTTPS.
-    img_src: %w('self' https:),
+    img_src: %w(* 'self' data:),
     # Audio and video can't be played on GitLab currently, so it's disabled.
     media_src: %w('none'),
     # Don't allow <object>, <embed>, or <applet> elements.
     object_src: %w('none'),
     # Allow local scripts and inline scripts.
-    script_src: %w('unsafe-inline' 'self'),
+    script_src: %w('unsafe-inline' 'unsafe-eval' 'self'),
     # Allow local stylesheets and inline styles.
     style_src: %w('unsafe-inline' 'self'),
     # The URIs that a user agent may use as the document base URL.
@@ -63,14 +64,17 @@ SecureHeaders::Configuration.default do |config|
     # Disallow any parents from embedding a page in an iframe.
     frame_ancestors: %w('none'),
     # Don't allow any plugins (Flash, Shockwave, etc.)
-    plugin_types: %w('none'),
+    plugin_types: %w(),
     # Blocks all mixed (HTTP) content.
     block_all_mixed_content: true,
     # Upgrades insecure requests to HTTPS when possible.
-    upgrade_insecure_requests: true,
-    # Reports are sent to Sentry if it's enabled, nowhere otherwise.
-    report_uri: %W(#{CSP_REPORT_URI})
+    upgrade_insecure_requests: true
   }
+
+  # Reports are sent to Sentry if it's enabled.
+  if current_application_settings.sentry_enabled
+    config.csp[:report_uri] = %W(#{CSP_REPORT_URI})
+  end
 
   # Allow Bootstrap Linter in development mode.
   if Rails.env.development?
