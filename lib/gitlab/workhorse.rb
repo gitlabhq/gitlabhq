@@ -4,6 +4,7 @@ require 'json'
 module Gitlab
   class Workhorse
     SEND_DATA_HEADER = 'Gitlab-Workhorse-Send-Data'
+    VERSION_FILE = 'GITLAB_WORKHORSE_VERSION'
 
     class << self
       def git_http_ok(repository, user)
@@ -73,6 +74,12 @@ module Gitlab
           SEND_DATA_HEADER,
           "artifacts-entry:#{encode(params)}"
         ]
+      end
+
+      def version
+        if File.readable?(File.join(Rails.root, VERSION_FILE))
+          File.read(File.join(Rails.root, VERSION_FILE))
+        end
       end
 
       protected
