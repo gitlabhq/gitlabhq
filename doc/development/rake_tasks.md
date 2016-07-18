@@ -53,3 +53,8 @@ Generating a sprite file containing all the Emoji can be done by running:
 ```
 bundle exec rake gemojione:sprite
 ```
+
+If new emoji are added, the spritesheet may change size. To compensate for
+such changes, first generate the `emoji.png` spritesheet with the above Rake
+task, then check the dimensions of the new spritesheet and update the
+`SPRITESHEET_WIDTH` and `SPRITESHEET_HEIGHT` constants accordingly.

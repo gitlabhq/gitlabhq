@@ -255,7 +255,7 @@ GEM
       ruby-progressbar (~> 1.4)
     gemnasium-gitlab-service (0.2.6)
       rugged (~> 0.21)
-    gemojione (2.6.1)
+    gemojione (3.0.1)
       json
     get_process_mem (0.2.0)
     gherkin-ruby (0.3.2)
@@ -860,7 +860,7 @@ DEPENDENCIES
   foreman (~> 0.78.0)
   fuubar (~> 2.0.0)
   gemnasium-gitlab-service (~> 0.2)
-  gemojione (~> 2.6)
+  gemojione (~> 3.0)
   github-linguist (~> 4.7.0)
   github-markup (~> 1.4)
   gitlab-flowdock-git-hook (~> 1.0.1)
