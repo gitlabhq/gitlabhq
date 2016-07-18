@@ -1012,7 +1012,7 @@ EOT
         config = YAML.dump({ rspec: { script: "test", image: ["test"] } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: image should be a string")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:image config should be a string")
       end
 
       it "returns errors if services parameter is not an array" do
@@ -1033,14 +1033,14 @@ EOT
         config = YAML.dump({ rspec: { script: "test", services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:services config should be an array of strings")
       end
 
       it "returns errors if job services parameter is not an array of strings" do
         config = YAML.dump({ rspec: { script: "test", services: [10, "test"] } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: services should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec:services config should be an array of strings")
       end
 
       it "returns error if job configuration is invalid" do
@@ -1054,7 +1054,7 @@ EOT
         config = YAML.dump({ extra: { services: "test" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "Unknown parameter: extra")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:extra:services config should be an array of strings")
       end
 
       it "returns errors if there are no jobs defined" do

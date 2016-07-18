@@ -120,14 +120,6 @@ module Ci
     end
 
     def validate_job_types!(name, job)
-      if job[:image] && !validate_string(job[:image])
-        raise ValidationError, "#{name} job: image should be a string"
-      end
-
-      if job[:services] && !validate_array_of_strings(job[:services])
-        raise ValidationError, "#{name} job: services should be an array of strings"
-      end
-
       if job[:tags] && !validate_array_of_strings(job[:tags])
         raise ValidationError, "#{name} job: tags parameter should be an array of strings"
       end

@@ -32,7 +32,14 @@ module Gitlab
           node :cache, Cache,
             description: 'Cache definition for this job.'
 
-          helpers :before_script, :script, :stage, :type, :after_script, :cache
+          node :image, Image,
+            description: 'Image that will be used to execute this job.'
+
+          node :services, Services,
+            description: 'Services that will be used to execute this job.'
+
+          helpers :before_script, :script, :stage, :type, :after_script,
+                  :cache, :image, :services
 
           def name
             @metadata[:name]
@@ -48,6 +55,8 @@ module Gitlab
             { name: name,
               before_script: before_script,
               script: script,
+              image: image,
+              services: services,
               stage: stage,
               cache: cache,
               after_script: after_script }
