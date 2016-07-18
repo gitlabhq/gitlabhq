@@ -27,7 +27,7 @@
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default', method: :post, title: "Compare" do
           Compare
 
-      - artifacts = @project.builds_for(@repository.root_ref).latest.with_artifacts
+      - artifacts = @project.latest_success_builds_for(@repository.root_ref)
       - if artifacts.any?
         .dropdown.inline.artifacts-btn
           %a.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
