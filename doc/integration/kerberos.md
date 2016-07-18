@@ -32,7 +32,7 @@ Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-c
 ```yaml
   omniauth:
     enabled: true
-  allow_single_sign_on: ['kerberos']
+    allow_single_sign_on: ['kerberos']
 
   kerberos:
     # Allow the HTTP Negotiate authentication method for Git clients
