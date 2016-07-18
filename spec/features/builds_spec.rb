@@ -13,17 +13,33 @@ describe "Builds" do
   end
 
   describe "GET /:project/builds" do
+    context "Pending scope" do
+      before do
+        visit namespace_project_builds_path(@project.namespace, @project, scope: :pending)
+      end
+
+      it "shows Pending tab builds" do
+        expect(page).to have_link 'Cancel running'
+        expect(page).to have_selector('.nav-links li.active', text: 'Pending')
+        expect(page).to have_content @build.short_sha
+        expect(page).to have_content @build.ref
+        expect(page).to have_content @build.name
+      end
+    end
+
     context "Running scope" do
       before do
         @build.run!
         visit namespace_project_builds_path(@project.namespace, @project, scope: :running)
       end
 
-      it { expect(page).to have_selector('.nav-links li.active', text: 'Running') }
-      it { expect(page).to have_link 'Cancel running' }
-      it { expect(page).to have_content @build.short_sha }
-      it { expect(page).to have_content @build.ref }
-      it { expect(page).to have_content @build.name }
+      it "shows Running tab builds" do
+        expect(page).to have_selector('.nav-links li.active', text: 'Running')
+        expect(page).to have_link 'Cancel running'
+        expect(page).to have_content @build.short_sha
+        expect(page).to have_content @build.ref
+        expect(page).to have_content @build.name
+      end
     end
 
     context "Finished scope" do
@@ -32,9 +48,11 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project, scope: :finished)
       end
 
-      it { expect(page).to have_selector('.nav-links li.active', text: 'Finished') }
-      it { expect(page).to have_content 'No builds to show' }
-      it { expect(page).to have_link 'Cancel running' }
+      it "shows Finished tab builds" do
+        expect(page).to have_selector('.nav-links li.active', text: 'Finished')
+        expect(page).to have_content 'No builds to show'
+        expect(page).to have_link 'Cancel running'
+      end
     end
 
     context "All builds" do
@@ -43,11 +61,13 @@ describe "Builds" do
         visit namespace_project_builds_path(@project.namespace, @project)
       end
 
-      it { expect(page).to have_selector('.nav-links li.active', text: 'All') }
-      it { expect(page).to have_content @build.short_sha }
-      it { expect(page).to have_content @build.ref }
-      it { expect(page).to have_content @build.name }
-      it { expect(page).not_to have_link 'Cancel running' }
+      it "shows All tab builds" do
+        expect(page).to have_selector('.nav-links li.active', text: 'All')
+        expect(page).to have_content @build.short_sha
+        expect(page).to have_content @build.ref
+        expect(page).to have_content @build.name
+        expect(page).not_to have_link 'Cancel running'
+      end
     end
   end
 

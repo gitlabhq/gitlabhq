@@ -120,6 +120,7 @@ v 8.9.6
   - Fix broken migration in MySQL. !5005
   - Overwrite Host and X-Forwarded-Host headers in NGINX !5213
   - Keeps issue number when importing from Gitlab.com
+  - Add Pending tab for Builds (Katarzyna Kobierska, Urszula Budziszewska)
 
 v 8.9.7 (unreleased)
   - Fix import_data wrongly saved as a result of an invalid import_url
