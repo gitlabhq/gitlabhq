@@ -105,6 +105,7 @@ v 8.10.0 (unreleased)
   - Fix issues importing projects from EE to CE
   - Fix creating group with space in group path
   - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
+  - Limit the number of retries on error to 3 for exporting projects
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
