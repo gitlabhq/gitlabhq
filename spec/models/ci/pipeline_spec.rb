@@ -260,6 +260,68 @@ describe Ci::Pipeline, models: true do
           expect(pipeline.reload.status).to eq('canceled')
         end
       end
+
+      context 'when listing manual actions' do
+        let(:yaml) do
+          {
+            stages: ["build", "test", "test_failure", "deploy", "cleanup"],
+            build: {
+              stage: "build",
+              script: "BUILD",
+            },
+            test: {
+              stage: "test",
+              script: "TEST",
+            },
+            test_failure: {
+              stage: "test_failure",
+              script: "ON test failure",
+              when: "on_failure",
+            },
+            deploy: {
+              stage: "deploy",
+              script: "PUBLISH",
+            },
+            production: {
+              stage: "deploy",
+              script: "PUBLISH",
+              when: "manual",
+            },
+            cleanup: {
+              stage: "cleanup",
+              script: "TIDY UP",
+              when: "always",
+            },
+            clear_cache: {
+              stage: "cleanup",
+              script: "CLEAR CACHE",
+              when: "manual",
+            }
+          }
+        end
+
+        it 'returns only for skipped builds' do
+          # currently all builds are created
+          expect(create_builds).to be_truthy
+          expect(manual_actions).to be_empty
+
+          # succeed stage build
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage test
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_one # production
+
+          # succeed stage deploy
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_many # production and clear cache
+        end
+
+        def manual_actions
+          pipeline.manual_actions
+        end
+      end
     end
 
     context 'when no builds created' do
