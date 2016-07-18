@@ -5,16 +5,25 @@
 - diff_files = safe_diff_files(diffs, diff_refs: diff_refs, repository: project.repository)
 
 .content-block.oneline-block.files-changed
-  .inline-parallel-buttons
-    - if !expand_all_diffs? && diff_files.any? { |diff_file| diff_file.collapsed? }
-      = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), class: 'btn btn-default'
-    - if show_whitespace_toggle
-      - if current_controller?(:commit)
-        = commit_diff_whitespace_link(@project, @commit, class: 'hidden-xs')
-      - elsif current_controller?(:merge_requests)
-        = diff_merge_request_whitespace_link(@project, @merge_request, class: 'hidden-xs')
-      - elsif current_controller?(:compare)
-        = diff_compare_whitespace_link(@project, params[:from], params[:to], class: 'hidden-xs')
+  .inline-parallel-buttons.dropdown
+    %button.btn.btn-default{ type: "button", data: { toggle: "dropdown" } }
+      Options
+      %span.caret
+    %ul.dropdown-menu
+      %li
+        %a.is-unselectable.js-diff-comments-button{ href: "#", data: { state: "visible" } }
+          Hide all comments
+      %li
+        - if show_whitespace_toggle
+          - if current_controller?(:commit)
+            = commit_diff_whitespace_link(@project, @commit, {})
+          - elsif current_controller?(:merge_requests)
+            = diff_merge_request_whitespace_link(@project, @merge_request, {})
+          - elsif current_controller?(:compare)
+            = diff_compare_whitespace_link(@project, params[:from], params[:to])
+      %li
+        - if !expand_all_diffs? && diff_files.any? { |diff_file| diff_file.collapsed? }
+          = link_to 'Expand all', url_for(params.merge(expand_all_diffs: 1, format: 'html')), class: 'is-unselectable'
     .btn-group
       = inline_diff_btn
       = parallel_diff_btn

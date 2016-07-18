@@ -164,6 +164,7 @@ class @MergeRequestTabs
         @diffsLoaded = true
         @scrollToElement("#diffs")
         @highlighSelectedLine()
+        @bindDiffOptionsEvents()
         @filesCommentButton = $('.files .diff-file').filesCommentButton()
 
         $(document)
@@ -173,6 +174,26 @@ class @MergeRequestTabs
             window.location.hash = $(e.currentTarget).attr 'href'
             @highlighSelectedLine()
             @scrollToElement("#diffs")
+
+
+  bindDiffOptionsEvents: ->
+
+    $('.inline-parallel-buttons .js-diff-comments-button').on 'click', (e) ->
+      e.preventDefault()
+
+      $el      = $ this
+      state    = $el.data 'state'
+      newState = 'hidden'
+      newLabel = 'Show all comments'
+
+      if state is 'hidden'
+        newLabel = 'Hide all comments'
+        newState = 'visible'
+
+      $("#diffs .notes_holder").toggle()
+      $el.text newLabel
+      $el.data 'state', newState
+
 
   highlighSelectedLine: ->
     $('.hll').removeClass 'hll'

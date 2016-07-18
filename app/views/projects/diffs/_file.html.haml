@@ -4,11 +4,6 @@
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
-        - if blob_text_viewable?(blob)
-          = link_to '#', class: 'js-toggle-diff-comments btn active has-tooltip btn-file-option', title: "Toggle comments for this file" do
-            = icon('comment')
-          \
-
         - if editable_diff?(diff_file)
           = edit_blob_link(@merge_request.source_project,
               @merge_request.source_branch, diff_file.new_path,
