@@ -956,7 +956,7 @@ EOT
         config = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: tags parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec tags should be an array of strings")
       end
 
       it "returns errors if before_script parameter is invalid" do
@@ -1075,7 +1075,7 @@ EOT
         config = YAML.dump({ rspec: { script: "test", allow_failure: "string" } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: allow_failure parameter should be an boolean")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec allow failure should be a boolean value")
       end
 
       it "returns errors if job stage is not a string" do

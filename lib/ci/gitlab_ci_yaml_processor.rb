@@ -99,14 +99,6 @@ module Ci
     end
 
     def validate_job_types!(name, job)
-      if job[:tags] && !validate_array_of_strings(job[:tags])
-        raise ValidationError, "#{name} job: tags parameter should be an array of strings"
-      end
-
-      if job[:allow_failure] && !validate_boolean(job[:allow_failure])
-        raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
-      end
-
       if job[:when] && !job[:when].in?(%w[on_success on_failure always])
         raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
       end

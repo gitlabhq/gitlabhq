@@ -7,6 +7,9 @@ module Gitlab
         #
         class Job < Entry
           include Configurable
+          include Attributable
+
+          attributes :tags, :allow_failure
 
           validations do
             validates :config, allowed_keys:
@@ -17,6 +20,11 @@ module Gitlab
             validates :config, presence: true
             validates :name, presence: true
             validates :name, type: Symbol
+
+            with_options allow_nil: true do
+              validates :tags, array_of_strings: true
+              validates :allow_failure, boolean: true
+            end
           end
 
           node :before_script, Script,
