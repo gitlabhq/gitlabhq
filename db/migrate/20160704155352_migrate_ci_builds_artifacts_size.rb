@@ -93,6 +93,7 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
         INNER JOIN projects p ON p.id = b.gl_project_id
         WHERE b.artifacts_size IS NULL
           AND b.artifacts_file IS NOT NULL
+          AND b.artifacts_file <> ''
         ORDER BY b.id
         LIMIT #{limit}
         OFFSET #{offset}
