@@ -212,7 +212,7 @@ class @LabelsSelect
           $a  = $('<a href="#">')
 
           selectedClass = []
-          removesAll = label.id is 0 or not label.id?
+          removesAll = label.id <= 0 or not label.id?
 
           if $dropdown.hasClass('js-filter-bulk-update')
             indeterminate = instance.indeterminateIds
@@ -281,7 +281,7 @@ class @LabelsSelect
             selectedIds = $("input[name='#{fieldName}']").map(-> @value).get()
 
             selected = _.filter glDropdown.fullData, (label) ->
-              selectedIds.indexOf("#{label[propertyName]}") >= 0 if label[propertyName]?
+              selectedIds.indexOf("#{label[propertyName]}") >= 0 if label[propertyName]? and label.id > 0
 
             if selected.length is 1
               selected[0].title
@@ -292,11 +292,9 @@ class @LabelsSelect
         defaultLabel: defaultLabel
         fieldName: fieldName
         id: (label) ->
+          return if label.id <= 0
           if $dropdown.hasClass('js-issuable-form-dropdown')
-            if label.id is 0
-              return
-            else
-              return label.id
+            return label.id
 
           if $dropdown.hasClass("js-filter-submit") and not label.isAny?
             label.title
