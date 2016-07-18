@@ -46,7 +46,6 @@ class @Admin
       else
         $('.blacklist-file').hide()
         $('.blacklist-raw').show()
-      return
 
-    $('input[name=\'blacklist_type\']').click showBlacklistType
+    $("input[name='blacklist_type']").click showBlacklistType
     showBlacklistType()  

@@ -148,7 +148,7 @@ describe User, models: true do
           allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['example.com'])
         end
 
-        context 'when a signup domain is black listed' do
+        context 'when a signup domain is blacklisted' do
           it 'accepts info@test.com' do
             user = build(:user, email: 'info@test.com')
             expect(user).to be_valid
@@ -160,7 +160,7 @@ describe User, models: true do
           end
         end
 
-        context 'when a signup domain is black listed but a wildcard subdomain is allowed' do
+        context 'when a signup domain is blacklisted but a wildcard subdomain is allowed' do
           before do
             allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['test.example.com'])
             allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['*.example.com'])

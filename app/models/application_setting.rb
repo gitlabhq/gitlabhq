@@ -71,7 +71,7 @@ class ApplicationSetting < ActiveRecord::Base
             inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
 
   validates :domain_blacklist,
-            presence: true,
+            presence: { message: 'Domain blacklist cannot be empty if Blacklist is enabled.' },
             if: :domain_blacklist_enabled?
 
   validates_each :restricted_visibility_levels do |record, attr, value|

@@ -95,8 +95,18 @@ describe ApplicationSetting, models: true do
       expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
     end
 
+    it 'set multiple domains with semicolon' do
+      setting.domain_blacklist_raw = "example.com; *.example.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
+    end
+
+    it 'set multiple domains with mixture of everything' do
+      setting.domain_blacklist_raw = "example.com; *.example.com\n test.com\sblock.com   yes.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com', 'test.com', 'block.com', 'yes.com')
+    end
+
     it 'set multiple domain with file' do
-      setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'blacklist.txt'))
+      setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
       expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
     end
   end
