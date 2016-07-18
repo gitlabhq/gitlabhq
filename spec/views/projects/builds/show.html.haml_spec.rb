@@ -4,7 +4,10 @@ describe 'projects/builds/show' do
   include Devise::TestHelpers
 
   let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:pipeline) do
+    create(:ci_pipeline, project: project,
+                         sha: project.commit.id)
+  end
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   before do
@@ -36,13 +39,14 @@ describe 'projects/builds/show' do
     end
   end
 
-  describe 'projects/builds/show/commit title' do
-    let(:commit_title) {build.project.commit.title}
-    
-    it 'shows commit title' do
-      within('p.build-light-text.append-bottom-0') do
-        expect(rendered).to have_content(commit_title)
-      end
-    end 
+  describe 'commit title in sidebar' do
+    let(:commit_title) { project.commit.title }
+
+    it 'shows commit title and not show commit message' do
+      render
+      
+      expect(rendered).to have_css('p.build-light-text.append-bottom-0',
+        text: /\A\n#{Regexp.escape(commit_title)}\n\Z/)
+    end
   end
 end
