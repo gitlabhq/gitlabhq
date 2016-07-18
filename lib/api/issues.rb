@@ -157,14 +157,12 @@ module API
         end
 
         project = user_project
-        text = [attrs[:title], attrs[:description]].reject(&:blank?).join("\n")
 
-        if check_for_spam?(project, current_user) && is_spam?(env, current_user, text)
-          create_spam_log(project, current_user, attrs, env)
+        issue = ::Issues::CreateService.new(project, current_user, attrs.merge({ request: request })).execute
+
+        if issue.nil?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
-
-        issue = ::Issues::CreateService.new(project, current_user, attrs).execute
 
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because

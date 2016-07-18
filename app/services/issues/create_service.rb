@@ -3,8 +3,12 @@ module Issues
     def execute
       filter_params
       label_params = params[:label_ids]
-      issue = project.issues.new(params.except(:label_ids))
+      issue = project.issues.new(params.except(:label_ids, :request))
       issue.author = params[:author] || current_user
+
+      if Issues::SpamCheckService.new(project, current_user, params).spam_detected?
+        return nil
+      end
 
       if issue.save
         issue.update_attributes(label_ids: label_params)

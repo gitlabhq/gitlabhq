@@ -2,7 +2,6 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
-  include Gitlab::AkismetHelper
 
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -80,22 +79,13 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    text = [params[:issue][:title], params[:issue][:description]].reject(&:blank?).join("\n")
+    @issue = Issues::CreateService.new(project, current_user, issue_params.merge({ request: request })).execute
 
-    if check_for_spam?(project, current_user) && is_spam?(request.env, current_user, text)
-      attrs = {
-        user_id: current_user.id,
-        project_id: project.id,
-        title: params[:issue][:title],
-        description: params[:issue][:description]
-      }
-      create_spam_log(project, current_user, attrs, request.env, api: false)
+    if @issue.nil?
       @issue = @project.issues.new
       flash[:notice] = 'Your issue has been recognized as spam and has been discarded.'
       render :new and return
     end
-
-    @issue = Issues::CreateService.new(project, current_user, issue_params).execute
 
     respond_to do |format|
       format.html do

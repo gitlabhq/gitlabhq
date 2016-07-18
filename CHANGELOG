@@ -94,6 +94,7 @@ v 8.10.0
   - Updated compare dropdown menus to use GL dropdown
   - Redirects back to issue after clicking login link
   - Submit issues created via the WebUI by non project members to Akismet !5333
+  - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - Eager load award emoji on notes
   - Allow to define manual actions/builds on Pipelines and Environments
   - Fix pagination when sorting by columns with lots of ties (like priority)

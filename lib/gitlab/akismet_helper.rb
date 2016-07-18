@@ -17,8 +17,8 @@ module Gitlab
       env['HTTP_USER_AGENT']
     end
 
-    def check_for_spam?(project, user)
-      akismet_enabled? && !project.team.member?(user)
+    def check_for_spam?(project)
+      akismet_enabled? && project.public?
     end
 
     def is_spam?(environment, user, text)
