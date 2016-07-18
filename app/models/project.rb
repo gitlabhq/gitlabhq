@@ -162,7 +162,7 @@ class Project < ActiveRecord::Base
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-  validates :import_url, addressable_url: true, if: :import_url
+  validates :import_url, addressable_url: true, if: "import_url.present?"
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -482,7 +482,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless valid_import_url?
+    return unless import_url.present? && valid_import_url?
 
     project_import_data = import_data || build_import_data
     if data
