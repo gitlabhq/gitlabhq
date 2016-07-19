@@ -15,7 +15,7 @@ module Ci
           status == 'success'
         when 'on_failure'
           status == 'failed'
-        when 'always'
+        when 'always', 'manual'
           %w(success failed).include?(status)
         end
       end
@@ -46,6 +46,10 @@ module Ci
                            trigger_request: trigger_request,
                            user: user,
                            project: @pipeline.project)
+
+        # TODO: The proper implementation for this is in
+        # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5295
+        build_attrs[:status] = 'skipped' if build_attrs[:when] == 'manual'
 
         ##
         # We do not persist new builds here.

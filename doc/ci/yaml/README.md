@@ -485,6 +485,7 @@ failure.
 1. `on_failure` - execute build only when at least one build from prior stages
     fails.
 1. `always` - execute build regardless of the status of builds from prior stages.
+1. `manual` - execute build manually.
 
 For example:
 
@@ -516,6 +517,7 @@ deploy_job:
   stage: deploy
   script:
   - make deploy
+  when: manual
 
 cleanup_job:
   stage: cleanup
@@ -527,7 +529,20 @@ cleanup_job:
 The above script will:
 
 1. Execute `cleanup_build_job` only when `build_job` fails
-2. Always execute `cleanup_job` as the last step in pipeline.
+2. Always execute `cleanup_job` as the last step in pipeline
+3. Allow you to manually execute `deploy_job` from GitLab
+
+#### Manual actions
+
+>**Note:**
+Introduced in GitLab 8.10.
+
+Manual actions are special type of jobs that are not executed automatically in pipeline.
+They need to be explicitly started by the user. 
+Manual actions can be started from pipelines, builds, environments and deployments views.
+You can execute the same manual action multiple times.
+
+Example usage of manual actions is deployment, ex. promote a staging environment to production.
 
 ### environment
 
@@ -757,12 +772,13 @@ Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 This feature should be used in conjunction with [`artifacts`](#artifacts) and
 allows you to define the artifacts to pass between different builds.
 
-Note that `artifacts` from previous [stages](#stages) are passed by default.
+Note that `artifacts` from all previous [stages](#stages) are passed by default.
 
 To use this feature, define `dependencies` in context of the job and pass
 a list of all previous builds from which the artifacts should be downloaded.
 You can only define builds from stages that are executed before the current one.
 An error will be shown if you define builds from the current stage or next ones.
+Defining an empty array will skip downloading any artifacts for that job.
 
 ---
 

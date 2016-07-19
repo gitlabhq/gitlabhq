@@ -3,6 +3,8 @@ include ActionDispatch::TestProcess
 FactoryGirl.define do
   factory :ci_build, class: Ci::Build do
     name 'test'
+    stage 'test'
+    stage_idx 0
     ref 'master'
     tag false
     created_at 'Di 29. Okt 09:50:00 CET 2013'
@@ -41,6 +43,11 @@ FactoryGirl.define do
 
     trait :pending do
       status 'pending'
+    end
+
+    trait :manual do
+      status 'skipped'
+      self.when 'manual'
     end
 
     trait :allowed_to_fail do

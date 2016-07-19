@@ -811,6 +811,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
+            post :play
             post :erase
             get :trace
             get :raw
