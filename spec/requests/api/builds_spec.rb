@@ -201,7 +201,7 @@ describe API::API, api: true do
       project.team << [user, :developer]
     end
 
-    def path_from_ref(ref = pipeline.ref, job = build.name)
+    def path_for_ref(ref = pipeline.ref, job = build.name)
       api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", user)
     end
 
@@ -209,7 +209,7 @@ describe API::API, api: true do
       let(:user) { nil }
 
       before do
-        get path_from_ref
+        get path_for_ref
       end
 
       it { expect(response).to have_http_status(401) }
@@ -222,7 +222,7 @@ describe API::API, api: true do
 
       context 'has no such ref' do
         before do
-          get path_from_ref('TAIL', build.name)
+          get path_for_ref('TAIL', build.name)
         end
 
         it('gives 404') { verify }
@@ -230,7 +230,7 @@ describe API::API, api: true do
 
       context 'has no such build' do
         before do
-          get path_from_ref(pipeline.ref, 'NOBUILD')
+          get path_for_ref(pipeline.ref, 'NOBUILD')
         end
 
         it('gives 404') { verify }
@@ -260,7 +260,7 @@ describe API::API, api: true do
         end
 
         before do
-          get path_from_ref('master')
+          get path_for_ref('master')
         end
 
         it('gives the file') { verify }
@@ -273,7 +273,7 @@ describe API::API, api: true do
         end
 
         before do
-          get path_from_ref('improve/awesome')
+          get path_for_ref('improve/awesome')
         end
 
         it('gives the file') { verify }
@@ -287,7 +287,7 @@ describe API::API, api: true do
         end
 
         before do
-          get path_from_ref
+          get path_for_ref
         end
 
         it('gives the file') { verify }
@@ -300,7 +300,7 @@ describe API::API, api: true do
         end
 
         before do
-          get path_from_ref
+          get path_for_ref
         end
 
         it('gives the file') { verify }
