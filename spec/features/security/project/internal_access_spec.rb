@@ -453,6 +453,7 @@ describe "Internal Project Access", feature: true  do
       it { is_expected.to be_denied_for :user }
       it { is_expected.to be_denied_for :visitor }
     end
+  end
   
   describe "GET /:project_path/container_registry" do
     before do
