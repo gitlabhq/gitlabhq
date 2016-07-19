@@ -205,7 +205,7 @@ describe API::API, api: true do
       api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", user)
     end
 
-    context 'not logging in' do
+    context 'when unauthorized' do
       let(:user) { nil }
 
       before do
