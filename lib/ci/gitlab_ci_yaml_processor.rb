@@ -44,21 +44,49 @@ module Ci
     end
 
     def builds_for_ref(ref, tag = false, trigger_request = nil)
-      jobs_for_ref(ref, tag, trigger_request).map do |name, job|
-        build_job(name, job)
+      jobs_for_ref(ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
       end
     end
 
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, job|
-        build_job(name, job)
+      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
       end
     end
 
     def builds
-      @jobs.map do |name, job|
-        build_job(name, job)
+      @jobs.map do |name, _|
+        build_attributes(name)
       end
+    end
+
+    def build_attributes(name)
+      job = @jobs[name.to_sym] || {}
+      {
+        stage_idx: @stages.index(job[:stage]),
+        stage: job[:stage],
+        ##
+        # Refactoring note:
+        #  - before script behaves differently than after script
+        #  - after script returns an array of commands
+        #  - before script should be a concatenated command
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        tag_list: job[:tags] || [],
+        name: name,
+        allow_failure: job[:allow_failure] || false,
+        when: job[:when] || 'on_success',
+        environment: job[:environment],
+        yaml_variables: yaml_variables(name),
+        options: {
+          image: job[:image] || @image,
+          services: job[:services] || @services,
+          artifacts: job[:artifacts],
+          cache: job[:cache] || @cache,
+          dependencies: job[:dependencies],
+          after_script: job[:after_script] || @after_script,
+        }.compact
+      }
     end
 
     private
@@ -87,33 +115,6 @@ module Ci
 
       stage = job[:stage] || job[:type] || DEFAULT_STAGE
       @jobs[name] = { stage: stage }.merge(job)
-    end
-
-    def build_job(name, job)
-      {
-        stage_idx: @stages.index(job[:stage]),
-        stage: job[:stage],
-        ##
-        # Refactoring note:
-        #  - before script behaves differently than after script
-        #  - after script returns an array of commands
-        #  - before script should be a concatenated command
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
-        tag_list: job[:tags] || [],
-        name: name,
-        allow_failure: job[:allow_failure] || false,
-        when: job[:when] || 'on_success',
-        environment: job[:environment],
-        yaml_variables: yaml_variables(name),
-        options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
-          artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
-          dependencies: job[:dependencies],
-          after_script: job[:after_script] || @after_script,
-        }.compact
-      }
     end
 
     def yaml_variables(name)
