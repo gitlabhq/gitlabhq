@@ -20,6 +20,8 @@
     border-left: 1px solid;
 
     code {
+      display: inline-block;
+      min-width: 100%;
       font-family: $monospace_font;
       white-space: normal;
       word-wrap: normal;
@@ -31,6 +33,7 @@
         min-height: 19px;
         padding-left: 10px;
         padding-right: 10px;
+        white-space: pre;
       }
     }
   }
