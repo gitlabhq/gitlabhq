@@ -16,10 +16,10 @@ module Statuseable
 
       deduce_status = "(CASE
         WHEN (#{builds})=0 THEN NULL
-        WHEN (#{builds})=(#{success})+(#{ignored}) THEN 'success'
-        WHEN (#{builds})=(#{pending}) THEN 'pending'
-        WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored}) THEN 'canceled'
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
+        WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
+        WHEN (#{builds})=(#{pending})+(#{skipped}) THEN 'pending'
+        WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
         WHEN (#{running})+(#{pending})>0 THEN 'running'
         ELSE 'failed'
       END)"

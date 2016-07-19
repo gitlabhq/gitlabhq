@@ -18,6 +18,7 @@ module Ci
     scope :latest_successful_with_artifacts, ->() do
       with_artifacts.success.order(id: :desc)
     end
+    scope :manual_actions, ->() { where(when: :manual) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -91,6 +92,29 @@ module Ci
                                                 tag: build.tag)
           service.execute(build)
         end
+      end
+    end
+
+    def manual?
+      self.when == 'manual'
+    end
+
+    def other_actions
+      pipeline.manual_actions.where.not(id: self)
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      # Try to queue a current build
+      if self.queue
+        self.update(user: current_user)
+        self
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
       end
     end
 
