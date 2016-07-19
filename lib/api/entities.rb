@@ -136,6 +136,12 @@ module API
           options[:project].developers_can_push_to_protected_branch? repo_obj.name
         end
       end
+
+      expose :developers_can_merge do |repo_obj, options|
+        if options[:project]
+          options[:project].developers_can_merge_to_protected_branch? repo_obj.name
+        end
+      end
     end
 
     class RepoTreeObject < Grape::Entity

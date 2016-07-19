@@ -24,6 +24,7 @@ Example response:
     "name": "master",
     "protected": true,
     "developers_can_push": false,
+    "developers_can_merge": false,
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -66,6 +67,7 @@ Example response:
   "name": "master",
   "protected": true,
   "developers_can_push": false,
+  "developers_can_merge": false,
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -93,7 +95,7 @@ PUT /projects/:id/repository/branches/:branch/protect
 ```
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect?developers_can_push=true
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect?developers_can_push=true&developers_can_merge=true
 ```
 
 | Attribute | Type | Required | Description |
@@ -101,6 +103,7 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/
 | `id` | integer | yes | The ID of a project |
 | `branch` | string | yes | The name of the branch |
 | `developers_can_push` | boolean | no | Flag if developers can push to the branch |
+| `developers_can_merge` | boolean | no | Flag if developers can merge to the branch |
 
 Example response:
 
@@ -121,7 +124,8 @@ Example response:
   },
   "name": "master",
   "protected": true,
-  "developers_can_push": true
+  "developers_can_push": true,
+  "developers_can_merge": true
 }
 ```
 
@@ -163,7 +167,8 @@ Example response:
   },
   "name": "master",
   "protected": false,
-  "developers_can_push": false
+  "developers_can_push": false,
+  "developers_can_merge": false
 }
 ```
 
@@ -202,7 +207,8 @@ Example response:
   },
   "name": "newbranch",
   "protected": false,
-  "developers_can_push": false
+  "developers_can_push": false,
+  "developers_can_merge": false
 }
 ```
 
