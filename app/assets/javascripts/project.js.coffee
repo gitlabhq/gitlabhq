@@ -86,7 +86,8 @@ class @Project
           $el.attr('data-ref')
         toggleLabel: (obj, $el) ->
           $el.text().trim()
-        clicked: (e) ->
+        clicked: (selected, $el, e) ->
+          e.preventDefault()
           if $('input[name="ref"]').length
             $form = $dropdown.closest('form')
             action = $form.attr('action')
