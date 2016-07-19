@@ -129,6 +129,8 @@
     }
 
     .cancel-retry-btns {
+      vertical-align: middle;
+
       .btn:not(:first-child) {
         margin-left: 8px;
       }

@@ -32,7 +32,7 @@
           Cant find HEAD commit for this branch
 
 
-    - stages_status = pipeline.statuses.stages_status
+    - stages_status = pipeline.statuses.latest.stages_status
     - stages.each do |stage|
       %td
         - status = stages_status[stage]
@@ -58,16 +58,7 @@
     .controls.hidden-xs.pull-right
       - artifacts = pipeline.builds.latest.select { |b| b.artifacts? }
       - if artifacts.present?
-        .btn-group.inline
-          .btn-group
-            %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-              = icon("play")
-              %b.caret
-            %ul.dropdown-menu.dropdown-menu-align-right
-              %li
-                = link_to '#' do
-                  = icon("play")
-                  %span Deploy to production
+        .inline
           .btn-group
             %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}
               = icon("download")
@@ -80,7 +71,7 @@
                     %span Download '#{build.name}' artifacts
 
       - if can?(current_user, :update_pipeline, @project)
-        .cancel-retry-btns
+        .cancel-retry-btns.inline
           - if pipeline.retryable?
             = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
               = icon("repeat")

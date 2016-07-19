@@ -56,6 +56,8 @@ module Banzai
         # period (e.g., http://localhost:3000/)
         rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a, 1)
 
+        return if rinku == html
+
         # Rinku returns a String, so parse it back to a Nokogiri::XML::Document
         # for further processing.
         @doc = parse_html(rinku)

@@ -87,7 +87,7 @@ module Gitlab
         project_id = @relation_hash.delete('project_id')
 
         # project_id may not be part of the export, but we always need to populate it if required.
-        @relation_hash['project_id'] = project_id if relation_class.column_names.include?('project_id')
+        @relation_hash['project_id'] = project_id
         @relation_hash['gl_project_id'] = project_id if @relation_hash['gl_project_id']
         @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
         @relation_hash['source_project_id'] = -1 if @relation_hash['source_project_id']
@@ -111,7 +111,7 @@ module Gitlab
       end
 
       def imported_object
-        imported_object = relation_class.new(@relation_hash)
+        imported_object = relation_class.new(parsed_relation_hash)
         yield(imported_object) if block_given?
         imported_object.importing = true if imported_object.respond_to?(:importing)
         imported_object
@@ -124,6 +124,10 @@ module Gitlab
 
       def admin_user?
         @user.is_admin?
+      end
+
+      def parsed_relation_hash
+        @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
       end
     end
   end

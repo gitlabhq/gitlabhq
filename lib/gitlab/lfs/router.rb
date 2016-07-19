@@ -74,8 +74,6 @@ module Gitlab
           lfs.render_storage_upload_authorize_response(oid, size)
         else
           tmp_file_name = sanitize_tmp_filename(@request.env['HTTP_X_GITLAB_LFS_TMP'])
-          return nil unless tmp_file_name
-
           lfs.render_storage_upload_store_response(oid, size, tmp_file_name)
         end
       end

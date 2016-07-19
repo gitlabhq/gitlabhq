@@ -60,16 +60,6 @@
     "digest": "5544eace06b8e1b6ea91940e893e013d33d6b166e14e6d128a87f2cd2de88332"
   },
   {
-    "name": "airplane_northeast",
-    "unicode": "1F6EA",
-    "digest": "fdddc2cd3618ec6661612581b8b93553cb086b0bb197e96aedf1bee8055e7bb4"
-  },
-  {
-    "name": "northeast_pointing_airplane",
-    "unicode": "1F6EA",
-    "digest": "fdddc2cd3618ec6661612581b8b93553cb086b0bb197e96aedf1bee8055e7bb4"
-  },
-  {
     "name": "airplane_small",
     "unicode": "1F6E9",
     "digest": "1a2e07abbbe90d05cee7ff8dd52f443d595ccb38959f3089fe016b77e5d6de7d"
@@ -78,26 +68,6 @@
     "name": "small_airplane",
     "unicode": "1F6E9",
     "digest": "1a2e07abbbe90d05cee7ff8dd52f443d595ccb38959f3089fe016b77e5d6de7d"
-  },
-  {
-    "name": "airplane_small_up",
-    "unicode": "1F6E8",
-    "digest": "029752b29a757c087dec60f45ea242e974fc181129e20390d5d4a2f90442091a"
-  },
-  {
-    "name": "up_pointing_small_airplane",
-    "unicode": "1F6E8",
-    "digest": "029752b29a757c087dec60f45ea242e974fc181129e20390d5d4a2f90442091a"
-  },
-  {
-    "name": "airplane_up",
-    "unicode": "1F6E7",
-    "digest": "ec45d4dbfce1f75dc59339417b1dcf5f1e1359cd9d04ff233babf359a3330e77"
-  },
-  {
-    "name": "up_pointing_airplane",
-    "unicode": "1F6E7",
-    "digest": "ec45d4dbfce1f75dc59339417b1dcf5f1e1359cd9d04ff233babf359a3330e77"
   },
   {
     "name": "alarm_clock",
@@ -163,16 +133,6 @@
     "name": "anger",
     "unicode": "1F4A2",
     "digest": "332493913891aa0eda2743b4bb16c4682400f249998bf34eb292246c9009e17f"
-  },
-  {
-    "name": "anger_left",
-    "unicode": "1F5EE",
-    "digest": "f2711991e8b386b2d5b12f296ce20a9b4b00ef91d6d67af2cf4e06abf2faa1dc"
-  },
-  {
-    "name": "left_anger_bubble",
-    "unicode": "1F5EE",
-    "digest": "f2711991e8b386b2d5b12f296ce20a9b4b00ef91d6d67af2cf4e06abf2faa1dc"
   },
   {
     "name": "anger_right",
@@ -325,11 +285,6 @@
     "digest": "c115e6613ebd718268aa31d265e017138b9fb58bbb8201eb3f40de2380e460aa"
   },
   {
-    "name": "ascending_notes",
-    "unicode": "1F39C",
-    "digest": "33432042771d456338dda5d98e49322d3600f2cc9049963480c7c38d9de1ef0a"
-  },
-  {
     "name": "asterisk",
     "unicode": "002A-20E3",
     "digest": "33d92093f2914448d5a939cf62e8ee3e32931923abdef5f0210e8a8150fa312d"
@@ -363,6 +318,11 @@
     "name": "atom_symbol",
     "unicode": "269B",
     "digest": "6b6bb83b00707a314e46ff8eefbda40978a291ec7881caba1b1ee273f49c1368"
+  },
+  {
+    "name": "avocado",
+    "unicode": "1F951",
+    "digest": "bc1fb203d63b18985598400925de24050bb192afda1cbf0813f85cb139869eff"
   },
   {
     "name": "b",
@@ -420,6 +380,11 @@
     "digest": "083e4e48b51092c28efb4532e840e1091b5d4b685c6e0f221aa0228f061cd91e"
   },
   {
+    "name": "bacon",
+    "unicode": "1F953",
+    "digest": "18ad3817f1f88a69706db5727a58e763dde6c21a2d4f184c3d728c32dc5fa05a"
+  },
+  {
     "name": "badminton",
     "unicode": "1F3F8",
     "digest": "353eb7ee93decd9fe0072e4d78a5618d5e2d9e77a6e4de9fe171870d75e02a66"
@@ -445,39 +410,9 @@
     "digest": "4175a56eca5c6458574a681e109b1403fbb143cf27f69ae6c1917650f3e08892"
   },
   {
-    "name": "ballot_box_check",
-    "unicode": "1F5F9",
-    "digest": "fc3ba16c009d963a4a0ea20a348ac98eee3c4c18c481df19a5ada0d1de7fcc15"
-  },
-  {
-    "name": "ballot_box_with_bold_check",
-    "unicode": "1F5F9",
-    "digest": "fc3ba16c009d963a4a0ea20a348ac98eee3c4c18c481df19a5ada0d1de7fcc15"
-  },
-  {
     "name": "ballot_box_with_check",
     "unicode": "2611",
     "digest": "c98d6f3588dd87e2f318bbfe6c646399a905450edfd814edae4e5b1bddef2134"
-  },
-  {
-    "name": "ballot_box_x",
-    "unicode": "1F5F5",
-    "digest": "861dcfc2361298262587b5d0e163fed96a55c44636361f5b4a9ab1d6502b8928"
-  },
-  {
-    "name": "ballot_box_with_script_x",
-    "unicode": "1F5F5",
-    "digest": "861dcfc2361298262587b5d0e163fed96a55c44636361f5b4a9ab1d6502b8928"
-  },
-  {
-    "name": "ballot_x",
-    "unicode": "1F5F4",
-    "digest": "0b73b89847eb82bcad5664644c8af237e0aef6c3d8c94b7a5df94e05d0ebf4e1"
-  },
-  {
-    "name": "ballot_script_x",
-    "unicode": "1F5F4",
-    "digest": "0b73b89847eb82bcad5664644c8af237e0aef6c3d8c94b7a5df94e05d0ebf4e1"
   },
   {
     "name": "bamboo",
@@ -578,6 +513,11 @@
     "name": "person_with_ball_tone5",
     "unicode": "26F9-1F3FF",
     "digest": "c631cefc5d2a0a31bdb9f0a0d97ea68b1c6928e565468998403034644572a0b0"
+  },
+  {
+    "name": "bat",
+    "unicode": "1F987",
+    "digest": "8fc19e0d7d6f80906bdbc06d616a810de66180d96cf28070a53fa61b88904535"
   },
   {
     "name": "bath",
@@ -760,6 +700,11 @@
     "digest": "c2ba672994ad0f99d7fdc449f3fee45a2dca68a58f9fe95825b38465a30ef44e"
   },
   {
+    "name": "black_heart",
+    "unicode": "1F5A4",
+    "digest": "f334679168d6dd7328c28e9ae3cb2b1fca0e9c2777938d586bfe623db2a688b9"
+  },
+  {
     "name": "black_joker",
     "unicode": "1F0CF",
     "digest": "d004b25f186494d5b2c65204caa9daecd749c840a0bea5718735e18109e5394d"
@@ -840,11 +785,6 @@
     "digest": "9d912a9d1bb10dc7f2645b345ed09e90461e83df0de275acb806f1f75cef1fcf"
   },
   {
-    "name": "book2",
-    "unicode": "1F56E",
-    "digest": "26d6b66a1957e7750b3e22eb2e46d0cc85932977bbb81d3d8482ec1ec58ee12b"
-  },
-  {
     "name": "bookmark",
     "unicode": "1F516",
     "digest": "5705e3108259d6900649157843c50e22d0086c3630b291d3f942da1a736e3e3d"
@@ -873,16 +813,6 @@
     "name": "bouquet",
     "unicode": "1F490",
     "digest": "b93751a27b40f6185a22b3e8b413f0fe09b6010d1057c672e1a23088e0b8286f"
-  },
-  {
-    "name": "bouquet2",
-    "unicode": "1F395",
-    "digest": "1643ec51ff26fc1ac0c67859e202386398650bf2a996c82b68e1b73fa52abf7d"
-  },
-  {
-    "name": "bouquet_of_flowers",
-    "unicode": "1F395",
-    "digest": "1643ec51ff26fc1ac0c67859e202386398650bf2a996c82b68e1b73fa52abf7d"
   },
   {
     "name": "bow",
@@ -930,6 +860,16 @@
     "digest": "737f2cdfa4ac964baade585a39771b18080bd5e9b55c8661d3518f468f344662"
   },
   {
+    "name": "boxing_glove",
+    "unicode": "1F94A",
+    "digest": "c914b2ce45f20afad66ad6f0d1b0750c4469e4f48b686dfc4aad1ec8d289c563"
+  },
+  {
+    "name": "boxing_gloves",
+    "unicode": "1F94A",
+    "digest": "c914b2ce45f20afad66ad6f0d1b0750c4469e4f48b686dfc4aad1ec8d289c563"
+  },
+  {
     "name": "boy",
     "unicode": "1F466",
     "digest": "7bc0173d8c88f3f12d41f213f7a3a9f5ebf65efad610fd5a2a31935128a6a6c1"
@@ -958,11 +898,6 @@
     "name": "boy_tone5",
     "unicode": "1F466-1F3FF",
     "digest": "0f76e97237203950da36c737dcc6f56dcd6c123401a8c817a0636376c7f38ef5"
-  },
-  {
-    "name": "boys_symbol",
-    "unicode": "1F6C9",
-    "digest": "47fadbcb876ca436264ce2f3ebd1472bd68f55cc2b4833bf054335be9dc7a0f2"
   },
   {
     "name": "bread",
@@ -1035,21 +970,6 @@
     "digest": "96e74842e919716b7bbbab57339bfd70f099a9bcb4710dffd7c80cf38a7bbff7"
   },
   {
-    "name": "bullhorn",
-    "unicode": "1F56B",
-    "digest": "a4ca5cbfe299e8ccd148d17055d2d395cf8515e416bf771044c9a670509a8254"
-  },
-  {
-    "name": "bullhorn_waves",
-    "unicode": "1F56C",
-    "digest": "92493636cf086205d1e12cc19e613b84152ef10b8cd0215619a0fc813bfc9a7c"
-  },
-  {
-    "name": "bullhorn_with_sound_waves",
-    "unicode": "1F56C",
-    "digest": "92493636cf086205d1e12cc19e613b84152ef10b8cd0215619a0fc813bfc9a7c"
-  },
-  {
     "name": "burrito",
     "unicode": "1F32F",
     "digest": "b2cf81f1efdf87e674461f73f67cd4b58a5f695e65598d0dd3899f2597da43cf"
@@ -1075,6 +995,11 @@
     "digest": "7fee96f1b68bb2c6002e47f2ed13c06baa6a3168441b9aca572db7ec45612f7b"
   },
   {
+    "name": "butterfly",
+    "unicode": "1F98B",
+    "digest": "a91b6598c17b44a8dc8935a1d99e25f4483ea41470cdd2da343039a9eec29ef1"
+  },
+  {
     "name": "cactus",
     "unicode": "1F335",
     "digest": "2c5c4c35f26c7046fdc002b337e0d939729b33a26980e675950f9934c91e40fd"
@@ -1083,16 +1008,6 @@
     "name": "cake",
     "unicode": "1F370",
     "digest": "b928902df8084210d51c1da36f9119164a325393c391b28cd8ea914e0b95c17b"
-  },
-  {
-    "name": "calculator",
-    "unicode": "1F5A9",
-    "digest": "01b47b5c69c12b65fa4f4c0d580f2a98280d6116f4ad2cf8be378759008bcc3c"
-  },
-  {
-    "name": "pocket calculator",
-    "unicode": "1F5A9",
-    "digest": "01b47b5c69c12b65fa4f4c0d580f2a98280d6116f4ad2cf8be378759008bcc3c"
   },
   {
     "name": "calendar",
@@ -1108,6 +1023,66 @@
     "name": "spiral_calendar_pad",
     "unicode": "1F5D3",
     "digest": "441a0750eade7ce33e28e58bec76958990c412b68409fcdde59ebad1f25361bb"
+  },
+  {
+    "name": "call_me",
+    "unicode": "1F919",
+    "digest": "83d2ed96dcb8b4adf4f4d030ffd07e25ca16351e1a4fbefdf9f46f5ca496a55f"
+  },
+  {
+    "name": "call_me_hand",
+    "unicode": "1F919",
+    "digest": "83d2ed96dcb8b4adf4f4d030ffd07e25ca16351e1a4fbefdf9f46f5ca496a55f"
+  },
+  {
+    "name": "call_me_tone1",
+    "unicode": "1F919-1F3FB",
+    "digest": "4a5748efa83e7294e8338b8795d4d315ff1cd31ead6759004d0eb330e50de8cd"
+  },
+  {
+    "name": "call_me_hand_tone1",
+    "unicode": "1F919-1F3FB",
+    "digest": "4a5748efa83e7294e8338b8795d4d315ff1cd31ead6759004d0eb330e50de8cd"
+  },
+  {
+    "name": "call_me_tone2",
+    "unicode": "1F919-1F3FC",
+    "digest": "54feaa6e3c5789ae6e15622127f0e0213234b4b886e1588ce95814348b1f1519"
+  },
+  {
+    "name": "call_me_hand_tone2",
+    "unicode": "1F919-1F3FC",
+    "digest": "54feaa6e3c5789ae6e15622127f0e0213234b4b886e1588ce95814348b1f1519"
+  },
+  {
+    "name": "call_me_tone3",
+    "unicode": "1F919-1F3FD",
+    "digest": "57e949b951e14843b712dab5a828f915ee255f5bb973db33946aab4057427419"
+  },
+  {
+    "name": "call_me_hand_tone3",
+    "unicode": "1F919-1F3FD",
+    "digest": "57e949b951e14843b712dab5a828f915ee255f5bb973db33946aab4057427419"
+  },
+  {
+    "name": "call_me_tone4",
+    "unicode": "1F919-1F3FE",
+    "digest": "f7787e933978a09c7b8ab8d3b1e1ab395aaae998c455e93bb3db24a4c8a60fe0"
+  },
+  {
+    "name": "call_me_hand_tone4",
+    "unicode": "1F919-1F3FE",
+    "digest": "f7787e933978a09c7b8ab8d3b1e1ab395aaae998c455e93bb3db24a4c8a60fe0"
+  },
+  {
+    "name": "call_me_tone5",
+    "unicode": "1F919-1F3FF",
+    "digest": "1fdb7d833d000b117d20d48142d3026a61cc9c8b712ebb498fa66bf75c74d7a5"
+  },
+  {
+    "name": "call_me_hand_tone5",
+    "unicode": "1F919-1F3FF",
+    "digest": "1fdb7d833d000b117d20d48142d3026a61cc9c8b712ebb498fa66bf75c74d7a5"
   },
   {
     "name": "calling",
@@ -1135,11 +1110,6 @@
     "digest": "a42a4ff9521affa72db7b0f01da169b4cb6afb9db1c5dfad47dd4c507bfc30d9"
   },
   {
-    "name": "cancellation_x",
-    "unicode": "1F5D9",
-    "digest": "cea2f7a48543207615ee06755ded62c2a95a7eaf7d7b68a3fc25e74d94e2c92c"
-  },
-  {
     "name": "cancer",
     "unicode": "264B",
     "digest": "528c6f21df99a756b553d93a7f395b0f662b30a323affd05f0cedee8ff7b41d6"
@@ -1153,6 +1123,16 @@
     "name": "candy",
     "unicode": "1F36C",
     "digest": "9cff4538918f60f770fceb96e964f5dc3ce31fd08ddd2ab3bfdf2981bfa74100"
+  },
+  {
+    "name": "canoe",
+    "unicode": "1F6F6",
+    "digest": "56ca308cc2ad4827468cf58c4ccf6ef6b3382835a91e935540a2b973e01d2572"
+  },
+  {
+    "name": "kayak",
+    "unicode": "1F6F6",
+    "digest": "56ca308cc2ad4827468cf58c4ccf6ef6b3382835a91e935540a2b973e01d2572"
   },
   {
     "name": "capital_abcd",
@@ -1185,14 +1165,69 @@
     "digest": "c0e7059efc39a64233f774c02ddb1ab51888fff180f906ce13a6e4f9509672fe"
   },
   {
-    "name": "cartridge",
-    "unicode": "1F5AD",
-    "digest": "0b1625eea118060b51a70905c1eb3313ed632e989f70943eca16aa29fe8a34f2"
+    "name": "carrot",
+    "unicode": "1F955",
+    "digest": "3a6fd98b63ee73d982a9cdacb08cf7b4014368cde8ffce6056b7df25a5a472b1"
   },
   {
-    "name": "tape_cartridge",
-    "unicode": "1F5AD",
-    "digest": "0b1625eea118060b51a70905c1eb3313ed632e989f70943eca16aa29fe8a34f2"
+    "name": "cartwheel",
+    "unicode": "1F938",
+    "digest": "d78de3435e0b04a9b1a1048ae12e63e3248f9ace3a0db4d3bda584f22af18863"
+  },
+  {
+    "name": "person_doing_cartwheel",
+    "unicode": "1F938",
+    "digest": "d78de3435e0b04a9b1a1048ae12e63e3248f9ace3a0db4d3bda584f22af18863"
+  },
+  {
+    "name": "cartwheel_tone1",
+    "unicode": "1F938-1F3FB",
+    "digest": "39a49781a269bb40d8efc8fd73c973b00fb2e192850ea6073062b5dea0cd5b74"
+  },
+  {
+    "name": "person_doing_cartwheel_tone1",
+    "unicode": "1F938-1F3FB",
+    "digest": "39a49781a269bb40d8efc8fd73c973b00fb2e192850ea6073062b5dea0cd5b74"
+  },
+  {
+    "name": "cartwheel_tone2",
+    "unicode": "1F938-1F3FC",
+    "digest": "6231eb35be45457fd648f8f4b79983f03705c9d983a18067f7e6d9ae47bc1958"
+  },
+  {
+    "name": "person_doing_cartwheel_tone2",
+    "unicode": "1F938-1F3FC",
+    "digest": "6231eb35be45457fd648f8f4b79983f03705c9d983a18067f7e6d9ae47bc1958"
+  },
+  {
+    "name": "cartwheel_tone3",
+    "unicode": "1F938-1F3FD",
+    "digest": "ca483c78cc823811a8c279c501d9b283e4c990dafc5995ad40e68ecb0af554df"
+  },
+  {
+    "name": "person_doing_cartwheel_tone3",
+    "unicode": "1F938-1F3FD",
+    "digest": "ca483c78cc823811a8c279c501d9b283e4c990dafc5995ad40e68ecb0af554df"
+  },
+  {
+    "name": "cartwheel_tone4",
+    "unicode": "1F938-1F3FE",
+    "digest": "8253afb672431c84e498014c30babb00b9284bec773009e79f7f06aa7108643e"
+  },
+  {
+    "name": "person_doing_cartwheel_tone4",
+    "unicode": "1F938-1F3FE",
+    "digest": "8253afb672431c84e498014c30babb00b9284bec773009e79f7f06aa7108643e"
+  },
+  {
+    "name": "cartwheel_tone5",
+    "unicode": "1F938-1F3FF",
+    "digest": "6fd92baff57c38b3adb6753d9e7e547e762971a8872fd3f1e71c6aaf0b1d3ab9"
+  },
+  {
+    "name": "person_doing_cartwheel_tone5",
+    "unicode": "1F938-1F3FF",
+    "digest": "6fd92baff57c38b3adb6753d9e7e547e762971a8872fd3f1e71c6aaf0b1d3ab9"
   },
   {
     "name": "cat",
@@ -1210,11 +1245,6 @@
     "digest": "16363d8a34b873c12df6354b99f575cae3d80e0d27100ed7eea70f0310953c7b"
   },
   {
-    "name": "celtic_cross",
-    "unicode": "1F548",
-    "digest": "187aac988d7e02085a15f31c4cc0ff25127be5b088e354e65c7b1152bffb40ff"
-  },
-  {
     "name": "chains",
     "unicode": "26D3",
     "digest": "3884cdbc6f2b433062af06f942552e563231c24727a2f10fa280b3bb7aa614e2"
@@ -1228,6 +1258,16 @@
     "name": "bottle_with_popping_cork",
     "unicode": "1F37E",
     "digest": "9e6e8987f30a37ae0f3d7dab2f5eeb50aa32b4f31402b29315eb2994afc72457"
+  },
+  {
+    "name": "champagne_glass",
+    "unicode": "1F942",
+    "digest": "5a2e4773f7eb126a00122cbfa4dc535da51ce00e0bf0d8d6ff8bab8b3365f8d2"
+  },
+  {
+    "name": "clinking_glass",
+    "unicode": "1F942",
+    "digest": "5a2e4773f7eb126a00122cbfa4dc535da51ce00e0bf0d8d6ff8bab8b3365f8d2"
   },
   {
     "name": "chart",
@@ -1515,16 +1555,6 @@
     "digest": "9fdef6a4939315c017b165e1dbac7710fb335df8c309be3fe2a011ef7fc28d74"
   },
   {
-    "name": "clockwise_arrows",
-    "unicode": "1F5D8",
-    "digest": "67027b7e1a4d800a3ce7d731c21c098d1109d217159a27665eebb7e080fc2622"
-  },
-  {
-    "name": "clockwise_right_and_left_semicircle_arrows",
-    "unicode": "1F5D8",
-    "digest": "67027b7e1a4d800a3ce7d731c21c098d1109d217159a27665eebb7e080fc2622"
-  },
-  {
     "name": "closed_book",
     "unicode": "1F4D5",
     "digest": "b18288629d201bfdfc5d66ec47df89809d00642b15732757e6a04789f36a7d9f"
@@ -1585,6 +1615,16 @@
     "digest": "7cbed2343c280ba3996082b3d0fb9d8cd57d6e62fe6c9ecb159f46b4a2e49151"
   },
   {
+    "name": "clown",
+    "unicode": "1F921",
+    "digest": "eea95687caabc9e808514c2450ba599e5e24ef47923dbec86f5297a64438e2e5"
+  },
+  {
+    "name": "clown_face",
+    "unicode": "1F921",
+    "digest": "eea95687caabc9e808514c2450ba599e5e24ef47923dbec86f5297a64438e2e5"
+  },
+  {
     "name": "clubs",
     "unicode": "2663",
     "digest": "b8cf72ecd8568ced077b475d94788fb282bdb06d25031b5d54dd63e25effb138"
@@ -1625,16 +1665,6 @@
     "digest": "c970ce76b5607434895b0407bdaa93140f887930781a17dd7dcf16f711451d93"
   },
   {
-    "name": "computer_old",
-    "unicode": "1F5B3",
-    "digest": "b27c30d74f205a8a3bd00a55ca17da7cf6ae3b65ae33e949755a4c6bd69a9fd3"
-  },
-  {
-    "name": "old_personal_computer",
-    "unicode": "1F5B3",
-    "digest": "b27c30d74f205a8a3bd00a55ca17da7cf6ae3b65ae33e949755a4c6bd69a9fd3"
-  },
-  {
     "name": "confetti_ball",
     "unicode": "1F38A",
     "digest": "a638b16f1acdbcf69edf760161b1bd7ff1fd5426c5b1203ad9d294dcc0701f10"
@@ -1661,6 +1691,11 @@
   },
   {
     "name": "construction_site",
+    "unicode": "1F3D7",
+    "digest": "c611f0a5de10f000a0756935f226845c7292f19ff5581d1f7a7554316338bbcb"
+  },
+  {
+    "name": "building_construction",
     "unicode": "1F3D7",
     "digest": "c611f0a5de10f000a0756935f226845c7292f19ff5581d1f7a7554316338bbcb"
   },
@@ -1700,16 +1735,6 @@
     "digest": "0d7f33ff7acc1cc3a81e6a786ff007df20da145e3070f338505dfed5100e9fcb"
   },
   {
-    "name": "contruction_site",
-    "unicode": "1F3D7",
-    "digest": "c611f0a5de10f000a0756935f226845c7292f19ff5581d1f7a7554316338bbcb"
-  },
-  {
-    "name": "building_construction",
-    "unicode": "1F3D7",
-    "digest": "c611f0a5de10f000a0756935f226845c7292f19ff5581d1f7a7554316338bbcb"
-  },
-  {
     "name": "convenience_store",
     "unicode": "1F3EA",
     "digest": "975dcf9b8e9e3fb1e29574b41300b9d96fd64703b3c18ff52f9f1875d1cf1b52"
@@ -1718,6 +1743,11 @@
     "name": "cookie",
     "unicode": "1F36A",
     "digest": "4bed3522bd50091ac5b68ca760661eb484d7f1b9c9d564d2097bd812b7f28ae4"
+  },
+  {
+    "name": "cooking",
+    "unicode": "1F373",
+    "digest": "563ffd6cae381ce1e318cdacc54e70040d6a01a50d0db8aeb50edbbe413eac58"
   },
   {
     "name": "cool",
@@ -1820,6 +1850,16 @@
     "digest": "e7a5131d7dee0f3356814b0ac1ea8ff280b12a7b580181e20ddb0b7eeb7e7339"
   },
   {
+    "name": "cowboy",
+    "unicode": "1F920",
+    "digest": "1aabf23f6b95a9b772fdb8eb45b8ec93584a5357f9131c6eabc9d1b83fe67e89"
+  },
+  {
+    "name": "face_with_cowboy_hat",
+    "unicode": "1F920",
+    "digest": "1aabf23f6b95a9b772fdb8eb45b8ec93584a5357f9131c6eabc9d1b83fe67e89"
+  },
+  {
     "name": "crab",
     "unicode": "1F980",
     "digest": "e6be16699fdb5d87f42f28f6cc141a44b7ffd834ecdd536813c4b5b86d3fc4a5"
@@ -1860,6 +1900,11 @@
     "digest": "59cb4164c50b6bc9ae311ce6f7610467c1aaafa848b5fff7614f064715f91992"
   },
   {
+    "name": "croissant",
+    "unicode": "1F950",
+    "digest": "b751e287157a1e276617a841a5b5f7f1208ca226cfd8fa947f144390b65a5e16"
+  },
+  {
     "name": "cross",
     "unicode": "271D",
     "digest": "a6b07c838fb75ef2ebefa2df6005e8d784753239ec03c37695a13e3b1954d653"
@@ -1868,36 +1913,6 @@
     "name": "latin_cross",
     "unicode": "271D",
     "digest": "a6b07c838fb75ef2ebefa2df6005e8d784753239ec03c37695a13e3b1954d653"
-  },
-  {
-    "name": "cross_heavy",
-    "unicode": "1F547",
-    "digest": "2e37c26b9bad0beb019c7f3e7a3892352d0ad9ca1b90c4333d42e8d56680be70"
-  },
-  {
-    "name": "heavy_latin_cross",
-    "unicode": "1F547",
-    "digest": "2e37c26b9bad0beb019c7f3e7a3892352d0ad9ca1b90c4333d42e8d56680be70"
-  },
-  {
-    "name": "cross_white",
-    "unicode": "1F546",
-    "digest": "3452e667010d7e49a51d7e1f4ba8ed4f303e33ed43255a051e9a18832a1efba6"
-  },
-  {
-    "name": "white_latin_cross",
-    "unicode": "1F546",
-    "digest": "3452e667010d7e49a51d7e1f4ba8ed4f303e33ed43255a051e9a18832a1efba6"
-  },
-  {
-    "name": "crossbones",
-    "unicode": "1F571",
-    "digest": "f5e7ce293c1a3282711073e68f033a3876e8428d1218cb2f8294630f9124e584"
-  },
-  {
-    "name": "black_skull_and_crossbones",
-    "unicode": "1F571",
-    "digest": "f5e7ce293c1a3282711073e68f033a3876e8428d1218cb2f8294630f9124e584"
   },
   {
     "name": "crossed_flags",
@@ -1938,6 +1953,11 @@
     "name": "crystal_ball",
     "unicode": "1F52E",
     "digest": "05f73b30b1e5b0fc66fb5dc6caddd2d547ee7b9d2f97513dc908ba1a2e352e30"
+  },
+  {
+    "name": "cucumber",
+    "unicode": "1F952",
+    "digest": "d1196e23f2f155ef5c1330f8497f40957a7357cb177127f457c5c471f0a23727"
   },
   {
     "name": "cupid",
@@ -2050,14 +2070,14 @@
     "digest": "3c70f1a77f2754f41c830e88d43b7d53c14311d64626ded164aa9ac7d2695790"
   },
   {
+    "name": "deer",
+    "unicode": "1F98C",
+    "digest": "7f4302ca68fd121ee73be48d0a0a0fb9e7e2741071a491ad2b7b0eab9f11ad25"
+  },
+  {
     "name": "department_store",
     "unicode": "1F3EC",
     "digest": "4be910d2efe74d8ce2c1f41d7753c8873579faca83fcf779a4887d8ab9e5923b"
-  },
-  {
-    "name": "descending_notes",
-    "unicode": "1F39D",
-    "digest": "f09c6a2e094b13bf91cc07b7b776e43348ccef9f91247ca36cc02e7d91098af0"
   },
   {
     "name": "desert",
@@ -2073,11 +2093,6 @@
     "name": "desktop_computer",
     "unicode": "1F5A5",
     "digest": "cde5bfb6c71bb7d663808a3561b24cb5b5560f95f510b40f81250cac1b21933e"
-  },
-  {
-    "name": "desktop_window",
-    "unicode": "1F5D4",
-    "digest": "d5b6c4a847e2a96f97f50fd353a22cb121915cb1d7bbc0f02df38769819b6b7e"
   },
   {
     "name": "diamond_shape_with_a_dot_inside",
@@ -2123,21 +2138,6 @@
     "name": "do_not_litter",
     "unicode": "1F6AF",
     "digest": "98b07fbbcdb438d1b8a755869fa2de8e180a77fce359ec830eb46d38ec3e67cb"
-  },
-  {
-    "name": "document",
-    "unicode": "1F5CE",
-    "digest": "2cbca96cc69306a10f1a9b6505723e027239439d899f6b395dc43f3c37d2d777"
-  },
-  {
-    "name": "document_text",
-    "unicode": "1F5B9",
-    "digest": "29407b12409c9673f3d89ef1f86ee50cbc7ed53b1870e33b4a29bbc609017f72"
-  },
-  {
-    "name": "document_with_text",
-    "unicode": "1F5B9",
-    "digest": "29407b12409c9673f3d89ef1f86ee50cbc7ed53b1870e33b4a29bbc609017f72"
   },
   {
     "name": "dog",
@@ -2205,9 +2205,34 @@
     "digest": "e06ef69c29f0fb12481727c0b4124e700572d3d7955e173279320f43f286518d"
   },
   {
+    "name": "drooling_face",
+    "unicode": "1F924",
+    "digest": "5203cb05cd266d7a7c929ab40364ad68571d380d9c7ff93a8d6d55261abaa1ba"
+  },
+  {
+    "name": "drool",
+    "unicode": "1F924",
+    "digest": "5203cb05cd266d7a7c929ab40364ad68571d380d9c7ff93a8d6d55261abaa1ba"
+  },
+  {
     "name": "droplet",
     "unicode": "1F4A7",
     "digest": "6475b4a4460a672c436a68f282ac97fb31e2934db4b80620063ee816159aa7c3"
+  },
+  {
+    "name": "drum",
+    "unicode": "1F941",
+    "digest": "0d0639980b1a5dcbf1c3e7ef47263fb6543b871242c58452a8c2f642525d9dd8"
+  },
+  {
+    "name": "drum_with_drumsticks",
+    "unicode": "1F941",
+    "digest": "0d0639980b1a5dcbf1c3e7ef47263fb6543b871242c58452a8c2f642525d9dd8"
+  },
+  {
+    "name": "duck",
+    "unicode": "1F986",
+    "digest": "8f8373798a7727368b32328e7a9a349727a949e7391ddd243b6456141a4f7e94"
   },
   {
     "name": "dvd",
@@ -2223,6 +2248,11 @@
     "name": "email",
     "unicode": "1F4E7",
     "digest": "39b5a57a2376e4a1137e381be02a1775bd580e0371438f5297a401ea634f1830"
+  },
+  {
+    "name": "eagle",
+    "unicode": "1F985",
+    "digest": "b44fd4f61b83c5114358a272343ac9b0eabbc70847f739bbdbf8aae3ade5bc1d"
   },
   {
     "name": "ear",
@@ -2276,8 +2306,8 @@
   },
   {
     "name": "egg",
-    "unicode": "1F373",
-    "digest": "563ffd6cae381ce1e318cdacc54e70040d6a01a50d0db8aeb50edbbe413eac58"
+    "unicode": "1F95A",
+    "digest": "72b9c841af784e7cbccbbe48ba833df5cecdd284397c199cab079872e879d92f"
   },
   {
     "name": "eggplant",
@@ -2300,6 +2330,16 @@
     "digest": "bb0758e7cc0e357285937671a91489bd32ce9d248eecdcc9c275a53a66325b26"
   },
   {
+    "name": "eject",
+    "unicode": "23CF",
+    "digest": "eeb0cd23ead0c965e307de517a6805265f0c780c3e454e64bc4c1425dfe7548e"
+  },
+  {
+    "name": "eject_symbol",
+    "unicode": "23CF",
+    "digest": "eeb0cd23ead0c965e307de517a6805265f0c780c3e454e64bc4c1425dfe7548e"
+  },
+  {
     "name": "electric_plug",
     "unicode": "1F50C",
     "digest": "b10ce87af86fa4f4022572ceb5ecd73bea867347a86832a7ea248364b0aad8d0"
@@ -2318,46 +2358,6 @@
     "name": "envelope",
     "unicode": "2709",
     "digest": "f5a512022a2f5280f372ff39c22cbda815f698710ca66f8f8c4d08418f98ca78"
-  },
-  {
-    "name": "envelope_back",
-    "unicode": "1F582",
-    "digest": "bc60b6d375feee00758a94a05b42eeb165f4084b20eb3e6012b72faa221f7e75"
-  },
-  {
-    "name": "back_of_envelope",
-    "unicode": "1F582",
-    "digest": "bc60b6d375feee00758a94a05b42eeb165f4084b20eb3e6012b72faa221f7e75"
-  },
-  {
-    "name": "envelope_flying",
-    "unicode": "1F585",
-    "digest": "9d6b6ca4c08006062a6f11948de3e15b13cf5c458967e39a9358665a8e13e214"
-  },
-  {
-    "name": "flying_envelope",
-    "unicode": "1F585",
-    "digest": "9d6b6ca4c08006062a6f11948de3e15b13cf5c458967e39a9358665a8e13e214"
-  },
-  {
-    "name": "envelope_stamped",
-    "unicode": "1F583",
-    "digest": "f6102aea7283ddc136bfeb09589573420b9279105045fc6b965c1633c1297468"
-  },
-  {
-    "name": "stamped_envelope",
-    "unicode": "1F583",
-    "digest": "f6102aea7283ddc136bfeb09589573420b9279105045fc6b965c1633c1297468"
-  },
-  {
-    "name": "envelope_stamped_pen",
-    "unicode": "1F586",
-    "digest": "80ea471318d1e04f8e525ff236b3cd4a4c864e66c6246b6aad77d92f56895f33"
-  },
-  {
-    "name": "pen_over_stamped_envelope",
-    "unicode": "1F586",
-    "digest": "80ea471318d1e04f8e525ff236b3cd4a4c864e66c6246b6aad77d92f56895f33"
   },
   {
     "name": "envelope_with_arrow",
@@ -2413,6 +2413,36 @@
     "name": "eyes",
     "unicode": "1F440",
     "digest": "1d5cae0b9b2e51e1de54295685d7f0c72ee794e2e6335a95b1d056c7e77260e8"
+  },
+  {
+    "name": "face_palm",
+    "unicode": "1F926",
+    "digest": "4ec873048b34b1bb34430724cf28e4bee6c0a9eee88ce39b9d1565047dc92420"
+  },
+  {
+    "name": "face_palm_tone1",
+    "unicode": "1F926-1F3FB",
+    "digest": "e93ef92b4c01dbea6c400e708e23dd36da92ccfbf5eb4f177b3b20c3a46bdc19"
+  },
+  {
+    "name": "face_palm_tone2",
+    "unicode": "1F926-1F3FC",
+    "digest": "22c8bf9fd9fa2ed9dca7a6397ed00ba6cfe9aeef2b0fb7b516ee4dda0df050ea"
+  },
+  {
+    "name": "face_palm_tone3",
+    "unicode": "1F926-1F3FD",
+    "digest": "c0b8bb9d2423e6787b6bdf1ca5a13f52853e4f48a9a1af0f2d4af1364fff022e"
+  },
+  {
+    "name": "face_palm_tone4",
+    "unicode": "1F926-1F3FE",
+    "digest": "f522ab186adcbb4549ea2c03500cdd7a86add548e43ebf7a54d58cc24deea072"
+  },
+  {
+    "name": "face_palm_tone5",
+    "unicode": "1F926-1F3FF",
+    "digest": "363507ae7178b5ec583635f47bcab10c897346f48b85d8759b1004c32cd8ad65"
   },
   {
     "name": "factory",
@@ -2520,6 +2550,16 @@
     "digest": "45aca538d3a9831a0c7de491e5656c17705c07b8f4ac8e85254656b608976016"
   },
   {
+    "name": "fencer",
+    "unicode": "1F93A",
+    "digest": "5db00fa456af9f6c7cb88d300579dd63e426bcb97ad25486b664aff25c688e21"
+  },
+  {
+    "name": "fencing",
+    "unicode": "1F93A",
+    "digest": "5db00fa456af9f6c7cb88d300579dd63e426bcb97ad25486b664aff25c688e21"
+  },
+  {
     "name": "ferris_wheel",
     "unicode": "1F3A1",
     "digest": "24b4551b7b79a2a5fd73de61542f2b444f896a52030c5f29791c8fcfcc28b95c"
@@ -2550,54 +2590,64 @@
     "digest": "4da212148cadb9c4ea91e60d2d8316e38cea99ef4f14afc023711dd7c54ade5a"
   },
   {
-    "name": "finger_pointing_down",
-    "unicode": "1F597",
-    "digest": "0c542ac3141e8f2e74767acd0eb399c2d68c779cb78bf16d437ad3b1f8134ad9"
+    "name": "fingers_crossed",
+    "unicode": "1F91E",
+    "digest": "a5c797ead191b9712e185083266b455cdf09f6a34c10f8c51aa145e6073427e1"
   },
   {
-    "name": "white_down_pointing_left_hand_index",
-    "unicode": "1F597",
-    "digest": "0c542ac3141e8f2e74767acd0eb399c2d68c779cb78bf16d437ad3b1f8134ad9"
+    "name": "hand_with_index_and_middle_finger_crossed",
+    "unicode": "1F91E",
+    "digest": "a5c797ead191b9712e185083266b455cdf09f6a34c10f8c51aa145e6073427e1"
   },
   {
-    "name": "finger_pointing_down2",
-    "unicode": "1F59F",
-    "digest": "c5b128a232cbf518544802a2ae1459368274297163721fa05d0103cf95b2b1ee"
+    "name": "fingers_crossed_tone1",
+    "unicode": "1F91E-1F3FB",
+    "digest": "db56d47bf887f2d8459a3aaba23f15c0087234ae5a54125052e7046e034a4988"
   },
   {
-    "name": "sideways_white_down_pointing_index",
-    "unicode": "1F59F",
-    "digest": "c5b128a232cbf518544802a2ae1459368274297163721fa05d0103cf95b2b1ee"
+    "name": "hand_with_index_and_middle_fingers_crossed_tone1",
+    "unicode": "1F91E-1F3FB",
+    "digest": "db56d47bf887f2d8459a3aaba23f15c0087234ae5a54125052e7046e034a4988"
   },
   {
-    "name": "finger_pointing_left",
-    "unicode": "1F598",
-    "digest": "d178ece691e2091be08db77fda9cf05462934628557358a8cb6222587b291f7e"
+    "name": "fingers_crossed_tone2",
+    "unicode": "1F91E-1F3FC",
+    "digest": "19f1bcca3991db7ed2037278c0baab6cd7f12aeaf2e0074de402c4d9e45c1899"
   },
   {
-    "name": "sideways_white_left_pointing_index",
-    "unicode": "1F598",
-    "digest": "d178ece691e2091be08db77fda9cf05462934628557358a8cb6222587b291f7e"
+    "name": "hand_with_index_and_middle_fingers_crossed_tone2",
+    "unicode": "1F91E-1F3FC",
+    "digest": "19f1bcca3991db7ed2037278c0baab6cd7f12aeaf2e0074de402c4d9e45c1899"
   },
   {
-    "name": "finger_pointing_right",
-    "unicode": "1F599",
-    "digest": "a412a47544d8f401f9181f8826c5fa3d6b42a1d76f6926963c2d9cd2a01be06d"
+    "name": "fingers_crossed_tone3",
+    "unicode": "1F91E-1F3FD",
+    "digest": "895a3314f6a310f31f7e728bcca20ff834fbfac62ce00e27e3ea5ad0dfc1ba35"
   },
   {
-    "name": "sideways_white_right_pointing_index",
-    "unicode": "1F599",
-    "digest": "a412a47544d8f401f9181f8826c5fa3d6b42a1d76f6926963c2d9cd2a01be06d"
+    "name": "hand_with_index_and_middle_fingers_crossed_tone3",
+    "unicode": "1F91E-1F3FD",
+    "digest": "895a3314f6a310f31f7e728bcca20ff834fbfac62ce00e27e3ea5ad0dfc1ba35"
   },
   {
-    "name": "finger_pointing_up",
-    "unicode": "1F59E",
-    "digest": "32c2ccab52aa318a47c816d1bcf9c076e667c9ef3e64ce37d7ba7e827238690d"
+    "name": "fingers_crossed_tone4",
+    "unicode": "1F91E-1F3FE",
+    "digest": "fcb5c4de2001d23a5df1b8702624d134b7f94e93e2dcc8adf6c1033c77722b0e"
   },
   {
-    "name": "sideways_white_up_pointing_index",
-    "unicode": "1F59E",
-    "digest": "32c2ccab52aa318a47c816d1bcf9c076e667c9ef3e64ce37d7ba7e827238690d"
+    "name": "hand_with_index_and_middle_fingers_crossed_tone4",
+    "unicode": "1F91E-1F3FE",
+    "digest": "fcb5c4de2001d23a5df1b8702624d134b7f94e93e2dcc8adf6c1033c77722b0e"
+  },
+  {
+    "name": "fingers_crossed_tone5",
+    "unicode": "1F91E-1F3FF",
+    "digest": "50132c78d530b048c21be4e788b446872a79b3b3a91009db12f4021c44c8469d"
+  },
+  {
+    "name": "hand_with_index_and_middle_fingers_crossed_tone5",
+    "unicode": "1F91E-1F3FF",
+    "digest": "50132c78d530b048c21be4e788b446872a79b3b3a91009db12f4021c44c8469d"
   },
   {
     "name": "fire",
@@ -2615,19 +2665,19 @@
     "digest": "c3a518f27d625e3b62dffa227eb82764bf0a147f10ec0e7f4f43f3f96751af20"
   },
   {
-    "name": "fire_engine_oncoming",
-    "unicode": "1F6F1",
-    "digest": "e2482c450136d373f74dfafddf502e0b675eb5d2e1e1c645f163db0e4d15fbb6"
-  },
-  {
-    "name": "oncoming_fire_engine",
-    "unicode": "1F6F1",
-    "digest": "e2482c450136d373f74dfafddf502e0b675eb5d2e1e1c645f163db0e4d15fbb6"
-  },
-  {
     "name": "fireworks",
     "unicode": "1F386",
     "digest": "b62ae08a00c0cc6eba8f9666c8fd9946ce57c3cfc01fe99542a8690a4a566a65"
+  },
+  {
+    "name": "first_place",
+    "unicode": "1F947",
+    "digest": "e3de5d9f14f05544dbee5965cc2baa20e7b417a488c8a18598979038860fd901"
+  },
+  {
+    "name": "first_place_medal",
+    "unicode": "1F947",
+    "digest": "e3de5d9f14f05544dbee5965cc2baa20e7b417a488c8a18598979038860fd901"
   },
   {
     "name": "first_quarter_moon",
@@ -5300,39 +5350,9 @@
     "digest": "ebf49007f367dc05580e9dab942e93e9dda12fa1dc2caa410ac7f8d8cd55d2a3"
   },
   {
-    "name": "flip_phone",
-    "unicode": "1F581",
-    "digest": "be59efba4bc0759af5a726c06619090ef5071bf2541611d71691dedecee6c697"
-  },
-  {
-    "name": "clamshell_mobile_phone",
-    "unicode": "1F581",
-    "digest": "be59efba4bc0759af5a726c06619090ef5071bf2541611d71691dedecee6c697"
-  },
-  {
-    "name": "floppy_black",
-    "unicode": "1F5AA",
-    "digest": "9022f51bb09c5130c6d46bb2accb159bed6f54d6fbffda6ecad62965ebc958ea"
-  },
-  {
-    "name": "black_hard_shell_floppy_disk",
-    "unicode": "1F5AA",
-    "digest": "9022f51bb09c5130c6d46bb2accb159bed6f54d6fbffda6ecad62965ebc958ea"
-  },
-  {
     "name": "floppy_disk",
     "unicode": "1F4BE",
     "digest": "4ee0b5bba41b9e301ed125d3ee1c263bef171ca499e6e1b89276b09af2bc03a0"
-  },
-  {
-    "name": "floppy_white",
-    "unicode": "1F5AB",
-    "digest": "ec79c400117c4506ef8cf3eebef6c42dd37e60b3079d3e98b6ccd06e517e2af0"
-  },
-  {
-    "name": "white_hard_shell_floppy_disk",
-    "unicode": "1F5AB",
-    "digest": "ec79c400117c4506ef8cf3eebef6c42dd37e60b3079d3e98b6ccd06e517e2af0"
   },
   {
     "name": "flower_playing_cards",
@@ -5353,21 +5373,6 @@
     "name": "foggy",
     "unicode": "1F301",
     "digest": "bc3631a4e9e8473b92e842008937add2cd9ffad5b7d772ce759fb5ff6c0e3dca"
-  },
-  {
-    "name": "folder",
-    "unicode": "1F5C0",
-    "digest": "8932141321911032ce8469ba85fe309b78384545c3b9946978b383670b956644"
-  },
-  {
-    "name": "folder_open",
-    "unicode": "1F5C1",
-    "digest": "74f3b484771c3d6ef61cf003de25c1a59b875afa46c057b5b1d92d9f99460685"
-  },
-  {
-    "name": "open_folder",
-    "unicode": "1F5C1",
-    "digest": "74f3b484771c3d6ef61cf003de25c1a59b875afa46c057b5b1d92d9f99460685"
   },
   {
     "name": "football",
@@ -5410,6 +5415,16 @@
     "digest": "ebee16e86bc9be843dfc72ab5372fb462f06be4486b5b25d7d4cac9b2c8b01c8"
   },
   {
+    "name": "fox",
+    "unicode": "1F98A",
+    "digest": "e9903cb0396f7e49bdd2c384b38e614c13bfa576b3ecc1ec7b9819e4a40d91d1"
+  },
+  {
+    "name": "fox_face",
+    "unicode": "1F98A",
+    "digest": "e9903cb0396f7e49bdd2c384b38e614c13bfa576b3ecc1ec7b9819e4a40d91d1"
+  },
+  {
     "name": "frame_photo",
     "unicode": "1F5BC",
     "digest": "d5074f748a15055ec1fb812c1e5e169e6e3cc73c522c54be1359b0e26c0fc75c"
@@ -5420,29 +5435,19 @@
     "digest": "d5074f748a15055ec1fb812c1e5e169e6e3cc73c522c54be1359b0e26c0fc75c"
   },
   {
-    "name": "frame_tiles",
-    "unicode": "1F5BD",
-    "digest": "34a5bb044b4b3ad94b116ad106f7b6747fb8612dc0e9f8ccd4313c2920508df0"
-  },
-  {
-    "name": "frame_with_tiles",
-    "unicode": "1F5BD",
-    "digest": "34a5bb044b4b3ad94b116ad106f7b6747fb8612dc0e9f8ccd4313c2920508df0"
-  },
-  {
-    "name": "frame_x",
-    "unicode": "1F5BE",
-    "digest": "2e427688fd70361c8c59787d0722ad68abe1c3f968258ee99c0c77ce4b8a8e15"
-  },
-  {
-    "name": "frame_with_an_x",
-    "unicode": "1F5BE",
-    "digest": "2e427688fd70361c8c59787d0722ad68abe1c3f968258ee99c0c77ce4b8a8e15"
-  },
-  {
     "name": "free",
     "unicode": "1F193",
     "digest": "9973522457158362fc5bdd7da858e6371e28a8403d1ef9e4b6427195c7f72cfa"
+  },
+  {
+    "name": "french_bread",
+    "unicode": "1F956",
+    "digest": "47518a4312f57207b8e8c38188d4a2bd8b16830a885cfcf2d281cfab50c1bc6e"
+  },
+  {
+    "name": "baguette_bread",
+    "unicode": "1F956",
+    "digest": "47518a4312f57207b8e8c38188d4a2bd8b16830a885cfcf2d281cfab50c1bc6e"
   },
   {
     "name": "fried_shrimp",
@@ -5560,14 +5565,19 @@
     "digest": "f55e4b16a41b6f5e3c817a301420360ba4486e4e82e1092a56a3e3cc4069087d"
   },
   {
-    "name": "girls_symbol",
-    "unicode": "1F6CA",
-    "digest": "2c55aee81defd7a1620ffeaad8d9bcc1835f19237c72c79633aec45671ddb9ff"
-  },
-  {
     "name": "globe_with_meridians",
     "unicode": "1F310",
     "digest": "725bebeb3c09a9e3701ebe49e672dcfbf2b73575e05f0821263511577b013b75"
+  },
+  {
+    "name": "goal",
+    "unicode": "1F945",
+    "digest": "7088c432f276ff6f447dc0d431b9062b394fb401de1072fe59ca56267bfd6717"
+  },
+  {
+    "name": "goal_net",
+    "unicode": "1F945",
+    "digest": "7088c432f276ff6f447dc0d431b9062b394fb401de1072fe59ca56267bfd6717"
   },
   {
     "name": "goat",
@@ -5583,6 +5593,11 @@
     "name": "golfer",
     "unicode": "1F3CC",
     "digest": "7d7ecc6e226596f646030a4109c2b0001ef0cc690e4863e450bf5d29e7a90344"
+  },
+  {
+    "name": "gorilla",
+    "unicode": "1F98D",
+    "digest": "4a564dc14f8ae5450d094f6410ec7f099a7f07dc5254b6395f44a35527bdb4b7"
   },
   {
     "name": "grapes",
@@ -5735,16 +5750,6 @@
     "digest": "c51a30cb7e575d29ffed16780a6c95ae3f300b8ac523012f4a6e116d68c1fd15"
   },
   {
-    "name": "hand_splayed_reverse",
-    "unicode": "1F591",
-    "digest": "ff0af0fe9def7388adca6836e5958492282b1afae99f1b6e1e65d11ba68b96db"
-  },
-  {
-    "name": "reversed_raised_hand_with_fingers_splayed",
-    "unicode": "1F591",
-    "digest": "ff0af0fe9def7388adca6836e5958492282b1afae99f1b6e1e65d11ba68b96db"
-  },
-  {
     "name": "hand_splayed_tone1",
     "unicode": "1F590-1F3FB",
     "digest": "c31fb44a982ed8808e1c311ec1b0b9c5afcb47f16bb1fc731dc483adf8f0d049"
@@ -5795,24 +5800,99 @@
     "digest": "4b3a0aba7829772fec09f26d6facc19a2f822d2998015297b18b5cab85190ee2"
   },
   {
-    "name": "hand_victory",
-    "unicode": "1F594",
-    "digest": "2d512ced4e8a438f2a346aed67310d3080f9828c748ade1be95943c32ba1c735"
-  },
-  {
-    "name": "reversed_victory_hand",
-    "unicode": "1F594",
-    "digest": "2d512ced4e8a438f2a346aed67310d3080f9828c748ade1be95943c32ba1c735"
-  },
-  {
     "name": "handbag",
     "unicode": "1F45C",
     "digest": "45410a3eed0c2e3f68748d7649fa9e33a90f4e80d5291206bdd0b40380c6da45"
   },
   {
-    "name": "hard_disk",
-    "unicode": "1F5B4",
-    "digest": "df8549d4281f5ae70fb6792a02c078e651764b0276aa43b7407236bd38fc21b4"
+    "name": "handball",
+    "unicode": "1F93E",
+    "digest": "94ceb28024eb3259d8b137cafd7438773e717fbc04f5da810f85e43ca0fa9e00"
+  },
+  {
+    "name": "handball_tone1",
+    "unicode": "1F93E-1F3FB",
+    "digest": "8bec4de0d05c80e335e44d65598d186ca92696977353c9fd9c2a5efa122cb842"
+  },
+  {
+    "name": "handball_tone2",
+    "unicode": "1F93E-1F3FC",
+    "digest": "2ff4131e1e2f089b315d8e176c9348877c26c2bd03706fb75d41bc61bc99bf93"
+  },
+  {
+    "name": "handball_tone3",
+    "unicode": "1F93E-1F3FD",
+    "digest": "224a71f94dd37d3729325d11412334667a81422e21f6d7c008730ff350f51a80"
+  },
+  {
+    "name": "handball_tone4",
+    "unicode": "1F93E-1F3FE",
+    "digest": "a5f7a9db790565981bad2d0d9e09554c8c509a8179b4705a418300d58a7894b4"
+  },
+  {
+    "name": "handball_tone5",
+    "unicode": "1F93E-1F3FF",
+    "digest": "00404572d4683f2e8e8a494aa733e96fbec1723634d0a8cb8d75f2829a789d27"
+  },
+  {
+    "name": "handshake",
+    "unicode": "1F91D",
+    "digest": "cb4b08b70560908f96bda0aecd2f4c966bea180f9b7200e4c81d342dc8d36087"
+  },
+  {
+    "name": "shaking_hands",
+    "unicode": "1F91D",
+    "digest": "cb4b08b70560908f96bda0aecd2f4c966bea180f9b7200e4c81d342dc8d36087"
+  },
+  {
+    "name": "handshake_tone1",
+    "unicode": "1F91D-1F3FB",
+    "digest": "40470e224683ba375ed8698c0cbd560556be5a8898237ddf504377a3a7e89ff0"
+  },
+  {
+    "name": "shaking_hands_tone1",
+    "unicode": "1F91D-1F3FB",
+    "digest": "40470e224683ba375ed8698c0cbd560556be5a8898237ddf504377a3a7e89ff0"
+  },
+  {
+    "name": "handshake_tone2",
+    "unicode": "1F91D-1F3FC",
+    "digest": "77ed378243bf682f1f4f1a8caeabcbedf772f54631cc40ea46c099e46a499b18"
+  },
+  {
+    "name": "shaking_hands_tone2",
+    "unicode": "1F91D-1F3FC",
+    "digest": "77ed378243bf682f1f4f1a8caeabcbedf772f54631cc40ea46c099e46a499b18"
+  },
+  {
+    "name": "handshake_tone3",
+    "unicode": "1F91D-1F3FD",
+    "digest": "81b95050f0878b617f5d2640e34031c26a0072e46ca5a688eb4356e48bc74c92"
+  },
+  {
+    "name": "shaking_hands_tone3",
+    "unicode": "1F91D-1F3FD",
+    "digest": "81b95050f0878b617f5d2640e34031c26a0072e46ca5a688eb4356e48bc74c92"
+  },
+  {
+    "name": "handshake_tone4",
+    "unicode": "1F91D-1F3FE",
+    "digest": "74919a6f026fbbd0ccdbdbd4288d1b2ef3bda8930e9142c07736db4a7f3ef345"
+  },
+  {
+    "name": "shaking_hands_tone4",
+    "unicode": "1F91D-1F3FE",
+    "digest": "74919a6f026fbbd0ccdbdbd4288d1b2ef3bda8930e9142c07736db4a7f3ef345"
+  },
+  {
+    "name": "handshake_tone5",
+    "unicode": "1F91D-1F3FF",
+    "digest": "a30d662bfad0074ca7e32cf6f7229b643b636c4beaec496777eb7e1d5b6fc470"
+  },
+  {
+    "name": "shaking_hands_tone5",
+    "unicode": "1F91D-1F3FF",
+    "digest": "a30d662bfad0074ca7e32cf6f7229b643b636c4beaec496777eb7e1d5b6fc470"
   },
   {
     "name": "hash",
@@ -5878,16 +5958,6 @@
     "name": "heart_eyes_cat",
     "unicode": "1F63B",
     "digest": "8a1f28b97d661ca4cff5ee13889ca61b5fa745ccb590e80832b7d7701df101d6"
-  },
-  {
-    "name": "heart_tip",
-    "unicode": "1F394",
-    "digest": "2178829e2c85accda55d2f685544587f6de5c8398a127ae1e08ff1c4ab282204"
-  },
-  {
-    "name": "heart_with_tip_on_the_left",
-    "unicode": "1F394",
-    "digest": "2178829e2c85accda55d2f685544587f6de5c8398a127ae1e08ff1c4ab282204"
   },
   {
     "name": "heartbeat",
@@ -6145,16 +6215,6 @@
     "digest": "310b7bdcca93452fe10c72c03d0aafa12b98e5d3408896d275d06d3693812c7a"
   },
   {
-    "name": "info",
-    "unicode": "1F6C8",
-    "digest": "59c35e77d5ee663c5d56f7d8af845ce8aeb9935e526ae4a06e02ae70e71212ca"
-  },
-  {
-    "name": "circled_information_source",
-    "unicode": "1F6C8",
-    "digest": "59c35e77d5ee663c5d56f7d8af845ce8aeb9935e526ae4a06e02ae70e71212ca"
-  },
-  {
     "name": "information_desk_person",
     "unicode": "1F481",
     "digest": "9f12a4a58a650e8e1d3836ef857003c3ccd42ad4203a2479eb95100bf6559064"
@@ -6250,16 +6310,6 @@
     "digest": "f986ad32e419cca81c995f8371f0189d1490172a97ebbeac60054a1af08949c5"
   },
   {
-    "name": "jet_up",
-    "unicode": "1F6E6",
-    "digest": "3708e5e034b1c64d1268d66527e13c369aa0f8903bce9172bef773b2d1940948"
-  },
-  {
-    "name": "up_pointing_military_airplane",
-    "unicode": "1F6E6",
-    "digest": "3708e5e034b1c64d1268d66527e13c369aa0f8903bce9172bef773b2d1940948"
-  },
-  {
     "name": "joy",
     "unicode": "1F602",
     "digest": "75d7a05043523d290c46d3b313b19ed3c95271f1110bcf234cf13d4273625b08"
@@ -6273,6 +6323,66 @@
     "name": "joystick",
     "unicode": "1F579",
     "digest": "671ee588f397a96f27056a67e6a06d6e8d22c2109ec57b2859badb5fec9cf8dd"
+  },
+  {
+    "name": "juggling",
+    "unicode": "1F939",
+    "digest": "1f5dafa78de8b37f3df88fdf3084d2380666bd74ab2f449754d8724f6f8dbfa5"
+  },
+  {
+    "name": "juggler",
+    "unicode": "1F939",
+    "digest": "1f5dafa78de8b37f3df88fdf3084d2380666bd74ab2f449754d8724f6f8dbfa5"
+  },
+  {
+    "name": "juggling_tone1",
+    "unicode": "1F939-1F3FB",
+    "digest": "b0b4d020148c896be69c28b08e3c486f6db270d138c7ccf4be362b29eb99878d"
+  },
+  {
+    "name": "juggler_tone1",
+    "unicode": "1F939-1F3FB",
+    "digest": "b0b4d020148c896be69c28b08e3c486f6db270d138c7ccf4be362b29eb99878d"
+  },
+  {
+    "name": "juggling_tone2",
+    "unicode": "1F939-1F3FC",
+    "digest": "cfe0c1649b2fdca03673e0e64f3a7d06d4bd49b8954c769aeb7eb88b70ec99f4"
+  },
+  {
+    "name": "juggler_tone2",
+    "unicode": "1F939-1F3FC",
+    "digest": "cfe0c1649b2fdca03673e0e64f3a7d06d4bd49b8954c769aeb7eb88b70ec99f4"
+  },
+  {
+    "name": "juggling_tone3",
+    "unicode": "1F939-1F3FD",
+    "digest": "7f87022722008bb265abe245e8157dc7a61944f5da62b3cf86f26ee1b3bdef63"
+  },
+  {
+    "name": "juggler_tone3",
+    "unicode": "1F939-1F3FD",
+    "digest": "7f87022722008bb265abe245e8157dc7a61944f5da62b3cf86f26ee1b3bdef63"
+  },
+  {
+    "name": "juggling_tone4",
+    "unicode": "1F939-1F3FE",
+    "digest": "1f00da8c05582c95501cc6c3fe5ce0f9bfbc16789dcee59844a8fe7831198583"
+  },
+  {
+    "name": "juggler_tone4",
+    "unicode": "1F939-1F3FE",
+    "digest": "1f00da8c05582c95501cc6c3fe5ce0f9bfbc16789dcee59844a8fe7831198583"
+  },
+  {
+    "name": "juggling_tone5",
+    "unicode": "1F939-1F3FF",
+    "digest": "a195bf734788eb7961c00dbc05255a49da8b9d5042fada29b26cc20393d3ce52"
+  },
+  {
+    "name": "juggler_tone5",
+    "unicode": "1F939-1F3FF",
+    "digest": "a195bf734788eb7961c00dbc05255a49da8b9d5042fada29b26cc20393d3ce52"
   },
   {
     "name": "kaaba",
@@ -6296,38 +6406,8 @@
   },
   {
     "name": "keyboard",
-    "unicode": "1F5AE",
-    "digest": "3b254cbf19946df3af05e501d11653d89fcda91684b7248d86186f842b83bf16"
-  },
-  {
-    "name": "wired_keyboard",
-    "unicode": "1F5AE",
-    "digest": "3b254cbf19946df3af05e501d11653d89fcda91684b7248d86186f842b83bf16"
-  },
-  {
-    "name": "keyboard_mouse",
-    "unicode": "1F5A6",
-    "digest": "95b523e55d8afeaeb06442bbe20e47f49643bb0c32d89a8cdbbccdead20532b3"
-  },
-  {
-    "name": "keyboard_and_mouse",
-    "unicode": "1F5A6",
-    "digest": "95b523e55d8afeaeb06442bbe20e47f49643bb0c32d89a8cdbbccdead20532b3"
-  },
-  {
-    "name": "keyboard_with_jacks",
-    "unicode": "1F398",
-    "digest": "e29a0d0b8018d13458469edca13c60a882a2817957c1aa11b050684c995a47ee"
-  },
-  {
-    "name": "musical_keyboard_with_jacks",
-    "unicode": "1F398",
-    "digest": "e29a0d0b8018d13458469edca13c60a882a2817957c1aa11b050684c995a47ee"
-  },
-  {
-    "name": "keycap_ten",
-    "unicode": "1F51F",
-    "digest": "c7c9491021740d2c17edddb856f79579b0b943d8dc85a2f48dbaac84f35b8a40"
+    "unicode": "2328",
+    "digest": "34da8ff62ca964142f9281b80123dbba74deaac8d77fa61758c30cfb36c31386"
   },
   {
     "name": "kimono",
@@ -6383,6 +6463,16 @@
     "name": "kissing_smiling_eyes",
     "unicode": "1F619",
     "digest": "f0f8636cb1a02b93cc72ce1b194b890fca823d91e35926b889be3ecfae79207f"
+  },
+  {
+    "name": "kiwi",
+    "unicode": "1F95D",
+    "digest": "70a3a05f333d9455d2da12eed970bc3baae416286848fed8e5dd31b5be0819be"
+  },
+  {
+    "name": "kiwifruit",
+    "unicode": "1F95D",
+    "digest": "70a3a05f333d9455d2da12eed970bc3baae416286848fed8e5dd31b5be0819be"
   },
   {
     "name": "knife",
@@ -6450,19 +6540,69 @@
     "digest": "e58cb714353e96a2891a5d97910ff79660e637af909b81c49c919d3735db55b4"
   },
   {
+    "name": "left_facing_fist",
+    "unicode": "1F91B",
+    "digest": "7861be485beefae0de341df2f21576666e22f63511a033e785752f30c07291da"
+  },
+  {
+    "name": "left_fist",
+    "unicode": "1F91B",
+    "digest": "7861be485beefae0de341df2f21576666e22f63511a033e785752f30c07291da"
+  },
+  {
+    "name": "left_facing_fist_tone1",
+    "unicode": "1F91B-1F3FB",
+    "digest": "2e4c4dd96b0e4b46fe0f9ce5666344d266d0f17a8544cbae73d96638d1955296"
+  },
+  {
+    "name": "left_fist_tone1",
+    "unicode": "1F91B-1F3FB",
+    "digest": "2e4c4dd96b0e4b46fe0f9ce5666344d266d0f17a8544cbae73d96638d1955296"
+  },
+  {
+    "name": "left_facing_fist_tone2",
+    "unicode": "1F91B-1F3FC",
+    "digest": "b96a63a801175ce98a75f0edad7b5574251a3fbbd894d8ab3f21aeeda366cc13"
+  },
+  {
+    "name": "left_fist_tone2",
+    "unicode": "1F91B-1F3FC",
+    "digest": "b96a63a801175ce98a75f0edad7b5574251a3fbbd894d8ab3f21aeeda366cc13"
+  },
+  {
+    "name": "left_facing_fist_tone3",
+    "unicode": "1F91B-1F3FD",
+    "digest": "99df84635513c2ebfef24df1bd3705233e02149eef788c7b82ca0548df6f6ea5"
+  },
+  {
+    "name": "left_fist_tone3",
+    "unicode": "1F91B-1F3FD",
+    "digest": "99df84635513c2ebfef24df1bd3705233e02149eef788c7b82ca0548df6f6ea5"
+  },
+  {
+    "name": "left_facing_fist_tone4",
+    "unicode": "1F91B-1F3FE",
+    "digest": "68954842ca725aec0aa39bce4aa81aad17ac30f5f298561dfa411feb07414cd3"
+  },
+  {
+    "name": "left_fist_tone4",
+    "unicode": "1F91B-1F3FE",
+    "digest": "68954842ca725aec0aa39bce4aa81aad17ac30f5f298561dfa411feb07414cd3"
+  },
+  {
+    "name": "left_facing_fist_tone5",
+    "unicode": "1F91B-1F3FF",
+    "digest": "a419b33fae82612dc860ff48950c0547a1642d4f0c94b6547324440837d3bb21"
+  },
+  {
+    "name": "left_fist_tone5",
+    "unicode": "1F91B-1F3FF",
+    "digest": "a419b33fae82612dc860ff48950c0547a1642d4f0c94b6547324440837d3bb21"
+  },
+  {
     "name": "left_luggage",
     "unicode": "1F6C5",
     "digest": "6625077767a51163ea20cbc299f3c13fd5ccf1b5ce365ee702ef1fef6be3dadf"
-  },
-  {
-    "name": "left_receiver",
-    "unicode": "1F57B",
-    "digest": "8052e44951afee04c87296128744b5019ec783c9ed1a231f659af6c8ddaa50f3"
-  },
-  {
-    "name": "left_hand_telephone_receiver",
-    "unicode": "1F57B",
-    "digest": "8052e44951afee04c87296128744b5019ec783c9ed1a231f659af6c8ddaa50f3"
   },
   {
     "name": "left_right_arrow",
@@ -6570,16 +6710,6 @@
     "digest": "79b0edf6ce1fd024dd7f458e322ad8588af0b789a04cc1cf38380dc8b9c76f55"
   },
   {
-    "name": "light_check_mark",
-    "unicode": "1F5F8",
-    "digest": "7842b0df8c2b6703bed0cce5d2790d394eec7120b2a245a76f375528f2729a7b"
-  },
-  {
-    "name": "light_mark",
-    "unicode": "1F5F8",
-    "digest": "7842b0df8c2b6703bed0cce5d2790d394eec7120b2a245a76f375528f2729a7b"
-  },
-  {
     "name": "light_rail",
     "unicode": "1F688",
     "digest": "2f30b23a738371690b2f00d96ddb5ceb90a1442b5478754626a3dfa263ed2fc1"
@@ -6605,14 +6735,14 @@
     "digest": "8740d8086525c7a836d64625a6915cc1c59af69ba143456dbb59e0179276895e"
   },
   {
-    "name": "lips2",
-    "unicode": "1F5E2",
-    "digest": "c6ba915982ac47d8aaf14ad3605949df95588acfb4e147bf608f8c1714cdf19b"
-  },
-  {
     "name": "lipstick",
     "unicode": "1F484",
     "digest": "751dcb22706a796033b13a2ccb94304236ec13207ad4d011e02d230ae33ab5c1"
+  },
+  {
+    "name": "lizard",
+    "unicode": "1F98E",
+    "digest": "fb9191f9eab58b8403d4c4626ccbb14ba05c1f6944011751a8edcc4dd03c66e6"
   },
   {
     "name": "lock",
@@ -6660,6 +6790,16 @@
     "digest": "a065d00a416e297c168b0a675cafcf492fedf94865cb21801a1be5a3914593d4"
   },
   {
+    "name": "lying_face",
+    "unicode": "1F925",
+    "digest": "ce836170165e1b70938273f289c02c2106873cd9ab5472dbcd487c2f9f53f13d"
+  },
+  {
+    "name": "liar",
+    "unicode": "1F925",
+    "digest": "ce836170165e1b70938273f289c02c2106873cd9ab5472dbcd487c2f9f53f13d"
+  },
+  {
     "name": "m",
     "unicode": "24C2",
     "digest": "54588ac2b7fcd53a96f17124e9de69b617613fcd5af9ad2930a094cb795bb9f4"
@@ -6703,6 +6843,121 @@
     "name": "man",
     "unicode": "1F468",
     "digest": "42b882d2c6aa095f1afcf901203838d95c1908bdc725519779186b9c33c728d7"
+  },
+  {
+    "name": "man_dancing",
+    "unicode": "1F57A",
+    "digest": "9f632ee0c886d5f03c61e5f3a27668262c0cc2693b857a91c23c1e5ea3785b9e"
+  },
+  {
+    "name": "male_dancer",
+    "unicode": "1F57A",
+    "digest": "9f632ee0c886d5f03c61e5f3a27668262c0cc2693b857a91c23c1e5ea3785b9e"
+  },
+  {
+    "name": "man_dancing_tone1",
+    "unicode": "1F57A-1F3FB",
+    "digest": "6c56a16cb105bcdd97472645b3a351cebdbb1132cbfd18b0118f289db5fbe741"
+  },
+  {
+    "name": "male_dancer_tone1",
+    "unicode": "1F57A-1F3FB",
+    "digest": "6c56a16cb105bcdd97472645b3a351cebdbb1132cbfd18b0118f289db5fbe741"
+  },
+  {
+    "name": "man_dancing_tone2",
+    "unicode": "1F57A-1F3FC",
+    "digest": "ed7e78c14d205a03fdd5581e5213add69a55e13b4cbaf76a6d5a0d6c80f53327"
+  },
+  {
+    "name": "male_dancer_tone2",
+    "unicode": "1F57A-1F3FC",
+    "digest": "ed7e78c14d205a03fdd5581e5213add69a55e13b4cbaf76a6d5a0d6c80f53327"
+  },
+  {
+    "name": "man_dancing_tone3",
+    "unicode": "1F57A-1F3FD",
+    "digest": "13b45403e11800163406206eedeb8b579cc83eca2f60246be97e099164387bc8"
+  },
+  {
+    "name": "male_dancer_tone3",
+    "unicode": "1F57A-1F3FD",
+    "digest": "13b45403e11800163406206eedeb8b579cc83eca2f60246be97e099164387bc8"
+  },
+  {
+    "name": "man_dancing_tone4",
+    "unicode": "1F57A-1F3FE",
+    "digest": "f6feb1b0b83565fadcdd1a8737d3daa08893e919547d2a06de899160162d9c4a"
+  },
+  {
+    "name": "male_dancer_tone4",
+    "unicode": "1F57A-1F3FE",
+    "digest": "f6feb1b0b83565fadcdd1a8737d3daa08893e919547d2a06de899160162d9c4a"
+  },
+  {
+    "name": "man_dancing_tone5",
+    "unicode": "1F57A-1F3FF",
+    "digest": "fe20a9ed9ba991653b4d0683de347ed7c226a5d75610307584a2ddd6fcd1e3f2"
+  },
+  {
+    "name": "male_dancer_tone5",
+    "unicode": "1F57A-1F3FF",
+    "digest": "fe20a9ed9ba991653b4d0683de347ed7c226a5d75610307584a2ddd6fcd1e3f2"
+  },
+  {
+    "name": "man_in_tuxedo",
+    "unicode": "1F935",
+    "digest": "4d451a971dfefedc4830ba78e19b123f250e09ae65baddccdc56c0f8aa3a9b50"
+  },
+  {
+    "name": "man_in_tuxedo_tone1",
+    "unicode": "1F935-1F3FB",
+    "digest": "2814833334fb211ae2ecb1fb5964e9752282d0fb4d7f3477de5dd2a4f812a793"
+  },
+  {
+    "name": "tuxedo_tone1",
+    "unicode": "1F935-1F3FB",
+    "digest": "2814833334fb211ae2ecb1fb5964e9752282d0fb4d7f3477de5dd2a4f812a793"
+  },
+  {
+    "name": "man_in_tuxedo_tone2",
+    "unicode": "1F935-1F3FC",
+    "digest": "cd1bab9ee0e2335d3cd99d51216cccdc4fc3c2cf20129b8b7e11a51a77258f68"
+  },
+  {
+    "name": "tuxedo_tone2",
+    "unicode": "1F935-1F3FC",
+    "digest": "cd1bab9ee0e2335d3cd99d51216cccdc4fc3c2cf20129b8b7e11a51a77258f68"
+  },
+  {
+    "name": "man_in_tuxedo_tone3",
+    "unicode": "1F935-1F3FD",
+    "digest": "f387775f925fe60b9f3e7cad63a55d4d196ddd41658029a70440d14c17cb99f9"
+  },
+  {
+    "name": "tuxedo_tone3",
+    "unicode": "1F935-1F3FD",
+    "digest": "f387775f925fe60b9f3e7cad63a55d4d196ddd41658029a70440d14c17cb99f9"
+  },
+  {
+    "name": "man_in_tuxedo_tone4",
+    "unicode": "1F935-1F3FE",
+    "digest": "08debd7a573d1201aee8a2f281ef7cb638d4a2a096222150391f36963f07c622"
+  },
+  {
+    "name": "tuxedo_tone4",
+    "unicode": "1F935-1F3FE",
+    "digest": "08debd7a573d1201aee8a2f281ef7cb638d4a2a096222150391f36963f07c622"
+  },
+  {
+    "name": "man_in_tuxedo_tone5",
+    "unicode": "1F935-1F3FF",
+    "digest": "e3b10e0619f0911cf9b665a265f4ef829b8f6ba6e9c3a021d0539a27e315f8fe"
+  },
+  {
+    "name": "tuxedo_tone5",
+    "unicode": "1F935-1F3FF",
+    "digest": "e3b10e0619f0911cf9b665a265f4ef829b8f6ba6e9c3a021d0539a27e315f8fe"
   },
   {
     "name": "man_tone1",
@@ -6808,6 +7063,16 @@
     "name": "maple_leaf",
     "unicode": "1F341",
     "digest": "72629a205e33f89337815ad7e51bb5c73947d1a9f98afe5072bdf4846827ae72"
+  },
+  {
+    "name": "martial_arts_uniform",
+    "unicode": "1F94B",
+    "digest": "a1ae797b31081425b388ab31efc635d8eb73a40980fd0fae4708aa5313e2a964"
+  },
+  {
+    "name": "karate_uniform",
+    "unicode": "1F94B",
+    "digest": "a1ae797b31081425b388ab31efc635d8eb73a40980fd0fae4708aa5313e2a964"
   },
   {
     "name": "mask",
@@ -7030,6 +7295,16 @@
     "digest": "5da18351dc14b66cfc070148c83b7c8e67e6b1e3f515ae501133c38ee5c28d3d"
   },
   {
+    "name": "milk",
+    "unicode": "1F95B",
+    "digest": "38b28ea40399601fabc95bac5eaaf5a9e4e25548ec80325bd5069395ea884f85"
+  },
+  {
+    "name": "glass_of_milk",
+    "unicode": "1F95B",
+    "digest": "38b28ea40399601fabc95bac5eaaf5a9e4e25548ec80325bd5069395ea884f85"
+  },
+  {
     "name": "milky_way",
     "unicode": "1F30C",
     "digest": "17405ff31d94b13a1fb0adcda204b8adb95ca340bc3980d9ad9f42ba1e366e7d"
@@ -7085,31 +7360,6 @@
     "digest": "2c9f185babcb4001fcef2b8dfc4a32126729843084d0076c3e3ccdc845ab23ad"
   },
   {
-    "name": "mood_bubble",
-    "unicode": "1F5F0",
-    "digest": "1df7061217e478d43ab9a87d4f351c4ca56705acd6b4e0b0bedfdece77635f1b"
-  },
-  {
-    "name": "mood_bubble_lightning",
-    "unicode": "1F5F1",
-    "digest": "4af3e4e53eaa328b0d20542ab31705a74bf9fd368cd0673b706838ce1681d3c9"
-  },
-  {
-    "name": "lightning_mood_bubble",
-    "unicode": "1F5F1",
-    "digest": "4af3e4e53eaa328b0d20542ab31705a74bf9fd368cd0673b706838ce1681d3c9"
-  },
-  {
-    "name": "mood_lightning",
-    "unicode": "1F5F2",
-    "digest": "6784635e81ec722fd50a1c2a23b0f9679e4bf1b5ae2b5a01eeb995bc1f7a426f"
-  },
-  {
-    "name": "lightning_mood",
-    "unicode": "1F5F2",
-    "digest": "6784635e81ec722fd50a1c2a23b0f9679e4bf1b5ae2b5a01eeb995bc1f7a426f"
-  },
-  {
     "name": "mortar_board",
     "unicode": "1F393",
     "digest": "d7fbe41d4b340d3564e484aec46a22c9613521414b2ba6eece2180db4d23e410"
@@ -7118,6 +7368,16 @@
     "name": "mosque",
     "unicode": "1F54C",
     "digest": "5f3d3de7feac953a70a318113531c2857d760a516c3d8d6f42d2a3b3b67ed196"
+  },
+  {
+    "name": "motor_scooter",
+    "unicode": "1F6F5",
+    "digest": "e2dc7c981744a71f46858bd0858ff91af704ac06425ed80377bc3b119e57c872"
+  },
+  {
+    "name": "motorbike",
+    "unicode": "1F6F5",
+    "digest": "e2dc7c981744a71f46858bd0858ff91af704ac06425ed80377bc3b119e57c872"
   },
   {
     "name": "motorboat",
@@ -7210,16 +7470,6 @@
     "digest": "f3ed37b639b7c16aae49502bd423f9fdeabaf15bc6f0f74063954b189e176b5d"
   },
   {
-    "name": "mouse_one",
-    "unicode": "1F5AF",
-    "digest": "e0d2055ccba489d24e0c0b6d2f22793efe48a734b0fd50f5af88f721b40665c0"
-  },
-  {
-    "name": "one_button_mouse",
-    "unicode": "1F5AF",
-    "digest": "e0d2055ccba489d24e0c0b6d2f22793efe48a734b0fd50f5af88f721b40665c0"
-  },
-  {
     "name": "mouse_three_button",
     "unicode": "1F5B1",
     "digest": "3724341ac5ad0d01027ef1575db64f1db7619f590ca6ada960d1f2c18dc7fc6a"
@@ -7238,6 +7488,66 @@
     "name": "moyai",
     "unicode": "1F5FF",
     "digest": "2c1d0662c95928936e6b9ab5a40c6110ff1cea5339f2803c7b63aabc76115afb"
+  },
+  {
+    "name": "mrs_claus",
+    "unicode": "1F936",
+    "digest": "1f72f586ca75bd7ebb4150cdcc8199a930c32fa4b81510cb8d200f1b3ddd4076"
+  },
+  {
+    "name": "mother_christmas",
+    "unicode": "1F936",
+    "digest": "1f72f586ca75bd7ebb4150cdcc8199a930c32fa4b81510cb8d200f1b3ddd4076"
+  },
+  {
+    "name": "mrs_claus_tone1",
+    "unicode": "1F936-1F3FB",
+    "digest": "244596919e0fed050203cf9e040899de323d7821235929f175852439927bd129"
+  },
+  {
+    "name": "mother_christmas_tone1",
+    "unicode": "1F936-1F3FB",
+    "digest": "244596919e0fed050203cf9e040899de323d7821235929f175852439927bd129"
+  },
+  {
+    "name": "mrs_claus_tone2",
+    "unicode": "1F936-1F3FC",
+    "digest": "8cde96e8521f3a90262a7f5f8a2989a9590d9a02cda2c37e92335dc05975c18d"
+  },
+  {
+    "name": "mother_christmas_tone2",
+    "unicode": "1F936-1F3FC",
+    "digest": "8cde96e8521f3a90262a7f5f8a2989a9590d9a02cda2c37e92335dc05975c18d"
+  },
+  {
+    "name": "mrs_claus_tone3",
+    "unicode": "1F936-1F3FD",
+    "digest": "c39cd4346d4581799dd0e9a6447c91a954a75747bf2682c8e4d79c3b0fcf7405"
+  },
+  {
+    "name": "mother_christmas_tone3",
+    "unicode": "1F936-1F3FD",
+    "digest": "c39cd4346d4581799dd0e9a6447c91a954a75747bf2682c8e4d79c3b0fcf7405"
+  },
+  {
+    "name": "mrs_claus_tone4",
+    "unicode": "1F936-1F3FE",
+    "digest": "84c85cf54559ea2d78d196fee96149a249af4f959b78e223a0ec4fb72abdbcab"
+  },
+  {
+    "name": "mother_christmas_tone4",
+    "unicode": "1F936-1F3FE",
+    "digest": "84c85cf54559ea2d78d196fee96149a249af4f959b78e223a0ec4fb72abdbcab"
+  },
+  {
+    "name": "mrs_claus_tone5",
+    "unicode": "1F936-1F3FF",
+    "digest": "ce26c0e0645713b17e7497d9f2d0484cc5477564dae99320cabf04d160d3b2ff"
+  },
+  {
+    "name": "mother_christmas_tone5",
+    "unicode": "1F936-1F3FF",
+    "digest": "ce26c0e0645713b17e7497d9f2d0484cc5477564dae99320cabf04d160d3b2ff"
   },
   {
     "name": "muscle",
@@ -7330,6 +7640,16 @@
     "digest": "f9f6a4895ff0be8fb2ccc7ad195b94e9650f742f66ead999e90724cfb77af628"
   },
   {
+    "name": "nauseated_face",
+    "unicode": "1F922",
+    "digest": "f8471cf4720948d8246ec9d30e29783e819f90e3cfe8b1ba628671a1aad1a91c"
+  },
+  {
+    "name": "sick",
+    "unicode": "1F922",
+    "digest": "f8471cf4720948d8246ec9d30e29783e819f90e3cfe8b1ba628671a1aad1a91c"
+  },
+  {
     "name": "necktie",
     "unicode": "1F454",
     "digest": "01bb18dc8bfe787daa9613b5d09988cd5a065449ef906099ce3cb308c8a7da68"
@@ -7348,16 +7668,6 @@
     "name": "nerd_face",
     "unicode": "1F913",
     "digest": "9e5f3c93db25cf1d0f9d6e6bd2993161afec6c30573ba3fe85e13b8c84483d66"
-  },
-  {
-    "name": "network",
-    "unicode": "1F5A7",
-    "digest": "1dbaa54deeb2328fd8a3f044e450c97ac3ff39627c598bb2f4312d677482ee06"
-  },
-  {
-    "name": "three_networked_computers",
-    "unicode": "1F5A7",
-    "digest": "1dbaa54deeb2328fd8a3f044e450c97ac3ff39627c598bb2f4312d677482ee06"
   },
   {
     "name": "neutral_face",
@@ -7515,26 +7825,6 @@
     "digest": "1e0f9842e0f8ad5805eabd3f35a6038b7a2e49d566a1f5c17271f9cdf467ca60"
   },
   {
-    "name": "note",
-    "unicode": "1F5C9",
-    "digest": "073660fdaa02ecf98d04f61f8d65d6cc447ccae3825fccaff19a2c99ebba52af"
-  },
-  {
-    "name": "note_page",
-    "unicode": "1F5C9",
-    "digest": "073660fdaa02ecf98d04f61f8d65d6cc447ccae3825fccaff19a2c99ebba52af"
-  },
-  {
-    "name": "note_empty",
-    "unicode": "1F5C6",
-    "digest": "06b56eeaca6349bbcf1020bea98f937450a7e086db65cd5d7497748e0fb607be"
-  },
-  {
-    "name": "empty_note_page",
-    "unicode": "1F5C6",
-    "digest": "06b56eeaca6349bbcf1020bea98f937450a7e086db65cd5d7497748e0fb607be"
-  },
-  {
     "name": "notebook",
     "unicode": "1F4D3",
     "digest": "fc679d3728f86073d1607a926885dd8b0261132f5c4a0322f1e46ea9f95c8cb8"
@@ -7543,26 +7833,6 @@
     "name": "notebook_with_decorative_cover",
     "unicode": "1F4D4",
     "digest": "d822eda4b49cbfa399b36f134c1a0b8dcfdd27ed89f12c50bc18f6f0a9aa56ef"
-  },
-  {
-    "name": "notepad",
-    "unicode": "1F5CA",
-    "digest": "85069e2d13540886457368a57295072aec44c7137d9223bfcf908ce1f0e5124e"
-  },
-  {
-    "name": "note_pad",
-    "unicode": "1F5CA",
-    "digest": "85069e2d13540886457368a57295072aec44c7137d9223bfcf908ce1f0e5124e"
-  },
-  {
-    "name": "notepad_empty",
-    "unicode": "1F5C7",
-    "digest": "8be5053e74c13d8220917c5aee1f4afdecb001612886438f283b0c2a0fecf6af"
-  },
-  {
-    "name": "empty_note_pad",
-    "unicode": "1F5C7",
-    "digest": "8be5053e74c13d8220917c5aee1f4afdecb001612886438f283b0c2a0fecf6af"
   },
   {
     "name": "notepad_spiral",
@@ -7598,6 +7868,16 @@
     "name": "ocean",
     "unicode": "1F30A",
     "digest": "1a9ca9848d4fb75852addfc10bf84eccf7caa5339714b90e3de4cb6f2518465e"
+  },
+  {
+    "name": "octagonal_sign",
+    "unicode": "1F6D1",
+    "digest": "9f6927048e1f9da57f89d1ae1eb86fa4ab7abdbabca756a738a799e948d0b3f9"
+  },
+  {
+    "name": "stop_sign",
+    "unicode": "1F6D1",
+    "digest": "9f6927048e1f9da57f89d1ae1eb86fa4ab7abdbabca756a738a799e948d0b3f9"
   },
   {
     "name": "octopus",
@@ -7860,16 +8140,6 @@
     "digest": "6112e2a1656b1cb8bd9a8b0dfa6cbf66d30cae671710a9ef75c821de344aab2b"
   },
   {
-    "name": "optical_disk",
-    "unicode": "1F5B8",
-    "digest": "df8c10028d29d65f144a6b789d1c3294e7b3293554c4c30d28d72dc7ba8d9a5d"
-  },
-  {
-    "name": "optical_disc_icon",
-    "unicode": "1F5B8",
-    "digest": "df8c10028d29d65f144a6b789d1c3294e7b3293554c4c30d28d72dc7ba8d9a5d"
-  },
-  {
     "name": "orange_book",
     "unicode": "1F4D9",
     "digest": "41141b08d2beceded21a94795431603c47fd7d42a3a472a2aa8b2bb25fa87ebf"
@@ -7885,6 +8155,11 @@
     "digest": "e47cb481a0ffcb39996f32fd313e19b362a91d8dda15ffca48ac23a3b5bb5baf"
   },
   {
+    "name": "owl",
+    "unicode": "1F989",
+    "digest": "f62ec1ad23ad9038966eea8d8b79660ac212f291af2e89bcdb0fdc683caf41e5"
+  },
+  {
     "name": "ox",
     "unicode": "1F402",
     "digest": "d13bc60552190bb9936bf32d681bdc742439b702a09cfc62137ea09a98624aed"
@@ -7893,11 +8168,6 @@
     "name": "package",
     "unicode": "1F4E6",
     "digest": "e82bf5accebb65136e897c15607eef635fb79fd7b2d8c8e19a9eb00b6786918c"
-  },
-  {
-    "name": "page",
-    "unicode": "1F5CF",
-    "digest": "cc745056525f59d9128d1d03b14770376bb09ab64b8ef4ac994ab7f38efd4783"
   },
   {
     "name": "page_facing_up",
@@ -7915,11 +8185,6 @@
     "digest": "e21c756cc1c58ebc1b37ebcd38e22a25b31e2e81306c6f18285d6a7671f9eb12"
   },
   {
-    "name": "pages",
-    "unicode": "1F5D0",
-    "digest": "05bd47b78f089389356d9d839c736843f56b959ab4277056606ffcbb013390bc"
-  },
-  {
     "name": "paintbrush",
     "unicode": "1F58C",
     "digest": "fc0da7a25b726b8be9dd6467953e27293d2313a21eeff21424c2a19be614fff2"
@@ -7933,6 +8198,11 @@
     "name": "palm_tree",
     "unicode": "1F334",
     "digest": "90fedafd62fe0abf51325174d0f293ebb9a4794913b9ba93b12f2d0119056df1"
+  },
+  {
+    "name": "pancakes",
+    "unicode": "1F95E",
+    "digest": "5256b4832431e8a88555796b1a9726f12d909a26fb2bdc3a0abff76412c45903"
   },
   {
     "name": "panda_face",
@@ -8010,6 +8280,16 @@
     "digest": "768d1f4f29e1e06aff5abb29043be83087ded16427ce6a2d0f682814e665e311"
   },
   {
+    "name": "peanuts",
+    "unicode": "1F95C",
+    "digest": "e2384846b6e4a6c3a56e991ebb749cb68b330ac00a9e9d888b2c39105ff7ff5d"
+  },
+  {
+    "name": "shelled_peanut",
+    "unicode": "1F95C",
+    "digest": "e2384846b6e4a6c3a56e991ebb749cb68b330ac00a9e9d888b2c39105ff7ff5d"
+  },
+  {
     "name": "pear",
     "unicode": "1F350",
     "digest": "b7c9cf90bb979649b863d2f4132f1b51f6f8107d42e08fb8b4033fea32844948"
@@ -8050,39 +8330,9 @@
     "digest": "9ca1b56b5726f472b1f1b23050ed163e213916dac379d22e38e4c8358fe871e0"
   },
   {
-    "name": "pencil3",
-    "unicode": "1F589",
-    "digest": "52c1ba1228917eb491ac1745a495e0fdafba6b985a81caba250f71d1f94c725c"
-  },
-  {
-    "name": "lower_left_pencil",
-    "unicode": "1F589",
-    "digest": "52c1ba1228917eb491ac1745a495e0fdafba6b985a81caba250f71d1f94c725c"
-  },
-  {
     "name": "penguin",
     "unicode": "1F427",
     "digest": "a1800ab931d6dc84a9c89bfab2c815198025c276d952509c55b18dd20bd9d316"
-  },
-  {
-    "name": "pennant_black",
-    "unicode": "1F3F2",
-    "digest": "cd3c33bfc3c7fbe84b98d2d481d56a7bf5488ff94afadd8b5a0e454768b80269"
-  },
-  {
-    "name": "black_pennant",
-    "unicode": "1F3F2",
-    "digest": "cd3c33bfc3c7fbe84b98d2d481d56a7bf5488ff94afadd8b5a0e454768b80269"
-  },
-  {
-    "name": "pennant_white",
-    "unicode": "1F3F1",
-    "digest": "818b1be73540f2cfeb1c514e1ee75d18715af317f0db817d9ae081b9ea33d4b0"
-  },
-  {
-    "name": "white_pennant",
-    "unicode": "1F3F1",
-    "digest": "818b1be73540f2cfeb1c514e1ee75d18715af317f0db817d9ae081b9ea33d4b0"
   },
   {
     "name": "pensive",
@@ -8228,16 +8478,6 @@
     "name": "table_tennis",
     "unicode": "1F3D3",
     "digest": "943a858bd054c81a08a08951f8351c27c8009b85a9359729c7362868298b58e1"
-  },
-  {
-    "name": "piracy",
-    "unicode": "1F572",
-    "digest": "f42955ba75c598392e5e258be49968d858c876e0d6e7aa9dc795f7e8cff42be9"
-  },
-  {
-    "name": "no_piracy",
-    "unicode": "1F572",
-    "digest": "f42955ba75c598392e5e258be49968d858c876e0d6e7aa9dc795f7e8cff42be9"
   },
   {
     "name": "pisces",
@@ -8470,6 +8710,11 @@
     "digest": "dbe80d9637837377cc2a290da2e895f81a3108cc18b049e3d87212402c1c2098"
   },
   {
+    "name": "potato",
+    "unicode": "1F954",
+    "digest": "a56a69f36f3a0793f278726d92c0cea2960554f3062ef1a0904526a04511d8e1"
+  },
+  {
     "name": "pouch",
     "unicode": "1F45D",
     "digest": "9f012b90310b4a072b6a8fa2c64def087b5f7ffffaafc36e1856ba943a170351"
@@ -8525,6 +8770,96 @@
     "digest": "80177091264430cbcf7c994fbe5ee17319d1a58d933636cc752a54dafcf98a05"
   },
   {
+    "name": "pregnant_woman",
+    "unicode": "1F930",
+    "digest": "49abb86409103338bdb6ae43c13a78ca2dc9cd158a26df35eadd0da3c84a4352"
+  },
+  {
+    "name": "expecting_woman",
+    "unicode": "1F930",
+    "digest": "49abb86409103338bdb6ae43c13a78ca2dc9cd158a26df35eadd0da3c84a4352"
+  },
+  {
+    "name": "pregnant_woman_tone1",
+    "unicode": "1F930-1F3FB",
+    "digest": "5a9f8ed2b631ecf8af111803a5c11f4c156435a5293cb50329c7b98697c8da25"
+  },
+  {
+    "name": "expecting_woman_tone1",
+    "unicode": "1F930-1F3FB",
+    "digest": "5a9f8ed2b631ecf8af111803a5c11f4c156435a5293cb50329c7b98697c8da25"
+  },
+  {
+    "name": "pregnant_woman_tone2",
+    "unicode": "1F930-1F3FC",
+    "digest": "279a2eafff603b11629c955b05f5bd3d7da9a271d4fb3f02e9ccd457b8d2d815"
+  },
+  {
+    "name": "expecting_woman_tone2",
+    "unicode": "1F930-1F3FC",
+    "digest": "279a2eafff603b11629c955b05f5bd3d7da9a271d4fb3f02e9ccd457b8d2d815"
+  },
+  {
+    "name": "pregnant_woman_tone3",
+    "unicode": "1F930-1F3FD",
+    "digest": "93bb63ec2312db315e3f0065520b715cc413ac0fd65538ec9b5cd97df2a42b20"
+  },
+  {
+    "name": "expecting_woman_tone3",
+    "unicode": "1F930-1F3FD",
+    "digest": "93bb63ec2312db315e3f0065520b715cc413ac0fd65538ec9b5cd97df2a42b20"
+  },
+  {
+    "name": "pregnant_woman_tone4",
+    "unicode": "1F930-1F3FE",
+    "digest": "b8dc3dcec894bfd832a249459b10850f8786b6778d8887a677d1291865623da2"
+  },
+  {
+    "name": "expecting_woman_tone4",
+    "unicode": "1F930-1F3FE",
+    "digest": "b8dc3dcec894bfd832a249459b10850f8786b6778d8887a677d1291865623da2"
+  },
+  {
+    "name": "pregnant_woman_tone5",
+    "unicode": "1F930-1F3FF",
+    "digest": "73ee432752f81980f353a7f9b9f7a5ece62512dca08e15c1876b89227face21c"
+  },
+  {
+    "name": "expecting_woman_tone5",
+    "unicode": "1F930-1F3FF",
+    "digest": "73ee432752f81980f353a7f9b9f7a5ece62512dca08e15c1876b89227face21c"
+  },
+  {
+    "name": "prince",
+    "unicode": "1F934",
+    "digest": "34a0e0625f0a9825d3674192d6233b6cae4d8130451293df09f91a6a4165869c"
+  },
+  {
+    "name": "prince_tone1",
+    "unicode": "1F934-1F3FB",
+    "digest": "ccecdfeccb2ab1fceceae14f3fba875c8c7099785a4c40131c08a697b5b675fc"
+  },
+  {
+    "name": "prince_tone2",
+    "unicode": "1F934-1F3FC",
+    "digest": "c373fd3e0c1798415e3d8d88fab6c98c1bbdedcbe6f52f3a3899f6e2124a768d"
+  },
+  {
+    "name": "prince_tone3",
+    "unicode": "1F934-1F3FD",
+    "digest": "71d15695ca954d55aa69d3c753c7d31a8ba5329713a8ddbc90dafc11e524c4ef"
+  },
+  {
+    "name": "prince_tone4",
+    "unicode": "1F934-1F3FE",
+    "digest": "08f6cb32424f15cc3aaf83c31a5dac7c01a6be2f37ea8f13aed579ce6fb4db19"
+  },
+  {
+    "name": "prince_tone5",
+    "unicode": "1F934-1F3FF",
+    "digest": "77d521148efa33fa4d3409693d050fecfd948411e807327484f174e289834649"
+  },
+  {
     "name": "princess",
     "unicode": "1F478",
     "digest": "efabd28480a843c735f0868734da2f9ce28133933b02ab07b645498f494f3f80"
@@ -8558,16 +8893,6 @@
     "name": "printer",
     "unicode": "1F5A8",
     "digest": "5e5307e3dc7ec4e16c9978fb00934c99c4adefca7d32732a244d1f2de71ce6f8"
-  },
-  {
-    "name": "prohibited",
-    "unicode": "1F6C7",
-    "digest": "bc6cdea2269a0ec39576d98dc4cda2bd9efa4dc330dde870148c6a85ad9cc63f"
-  },
-  {
-    "name": "prohibited_sign",
-    "unicode": "1F6C7",
-    "digest": "bc6cdea2269a0ec39576d98dc4cda2bd9efa4dc330dde870148c6a85ad9cc63f"
   },
   {
     "name": "projector",
@@ -8623,11 +8948,6 @@
     "name": "pushpin",
     "unicode": "1F4CC",
     "digest": "c3f7d7008be6bab8dc02284d4d759abf7aafbb3dbbe3a53f0f5b2ff685af88f8"
-  },
-  {
-    "name": "pushpin_black",
-    "unicode": "1F588",
-    "digest": "80ebac74edb9e8e1f8a219b32a676d318ed73b359cd8193b91b493d775307f63"
   },
   {
     "name": "put_litter_in_its_place",
@@ -8708,6 +9028,66 @@
     "name": "rainbow",
     "unicode": "1F308",
     "digest": "a93aceb54e965f35e397e8c8716b1831614933308d026012d5464ee42783ed4d"
+  },
+  {
+    "name": "raised_back_of_hand",
+    "unicode": "1F91A",
+    "digest": "20973a697e826625deba5ee3c4f25eb5e1737f2e860ac6fe4ee4d0e0c84b5e12"
+  },
+  {
+    "name": "back_of_hand",
+    "unicode": "1F91A",
+    "digest": "20973a697e826625deba5ee3c4f25eb5e1737f2e860ac6fe4ee4d0e0c84b5e12"
+  },
+  {
+    "name": "raised_back_of_hand_tone1",
+    "unicode": "1F91A-1F3FB",
+    "digest": "06af5941255ca69d10d99d0a512bbda6141a296453835dbccf259ce0afe1dd3d"
+  },
+  {
+    "name": "back_of_hand_tone1",
+    "unicode": "1F91A-1F3FB",
+    "digest": "06af5941255ca69d10d99d0a512bbda6141a296453835dbccf259ce0afe1dd3d"
+  },
+  {
+    "name": "raised_back_of_hand_tone2",
+    "unicode": "1F91A-1F3FC",
+    "digest": "429ed19555c9e5197b729b3e7bd8013346551051cb0b3fbc8a4372717c9a027d"
+  },
+  {
+    "name": "back_of_hand_tone2",
+    "unicode": "1F91A-1F3FC",
+    "digest": "429ed19555c9e5197b729b3e7bd8013346551051cb0b3fbc8a4372717c9a027d"
+  },
+  {
+    "name": "raised_back_of_hand_tone3",
+    "unicode": "1F91A-1F3FD",
+    "digest": "487a1c3f19e77c99b520ec073de2acc4a9e585b739a84b3989f7de85d2c2045c"
+  },
+  {
+    "name": "back_of_hand_tone3",
+    "unicode": "1F91A-1F3FD",
+    "digest": "487a1c3f19e77c99b520ec073de2acc4a9e585b739a84b3989f7de85d2c2045c"
+  },
+  {
+    "name": "raised_back_of_hand_tone4",
+    "unicode": "1F91A-1F3FE",
+    "digest": "154254d8500c55ec3de698be4a352f9bcf06e2950cabc4eabaccad0f39a1e1e9"
+  },
+  {
+    "name": "back_of_hand_tone4",
+    "unicode": "1F91A-1F3FE",
+    "digest": "154254d8500c55ec3de698be4a352f9bcf06e2950cabc4eabaccad0f39a1e1e9"
+  },
+  {
+    "name": "raised_back_of_hand_tone5",
+    "unicode": "1F91A-1F3FF",
+    "digest": "6e9c0855ecd5f14adca5e5862427c3d39ffcf86f7ddd3aaa1fefc3cefc7483c8"
+  },
+  {
+    "name": "back_of_hand_tone5",
+    "unicode": "1F91A-1F3FF",
+    "digest": "6e9c0855ecd5f14adca5e5862427c3d39ffcf86f7ddd3aaa1fefc3cefc7483c8"
   },
   {
     "name": "raised_hand",
@@ -8880,6 +9260,16 @@
     "digest": "d20c918c1e528ff0947312738501ca9a6fb6ff4016aad07db7a8125d00fd65cd"
   },
   {
+    "name": "rhino",
+    "unicode": "1F98F",
+    "digest": "163fa3acd78eead72c431a1f48b8465a6d45272a9169560e456d30b4df93dc6b"
+  },
+  {
+    "name": "rhinoceros",
+    "unicode": "1F98F",
+    "digest": "163fa3acd78eead72c431a1f48b8465a6d45272a9169560e456d30b4df93dc6b"
+  },
+  {
     "name": "ribbon",
     "unicode": "1F380",
     "digest": "74315fe907f9f0203afe139cd4552aa442eecfa2a64fac12db3e1292fc5a8828"
@@ -8905,39 +9295,69 @@
     "digest": "b942a06d3da0570aca59bab0af57cd8c16863934f12a38f70339fd0a36f675f5"
   },
   {
-    "name": "right_speaker",
-    "unicode": "1F568",
-    "digest": "d268bb84be863c0884620dfc6d2a764b0c7466d2f9810549b138e21ac70add4e"
+    "name": "right_facing_fist",
+    "unicode": "1F91C",
+    "digest": "f815d1cc0c0345ddcc8886ae9c133582d7dc779732ac9b93dde1ab4fdd3b251d"
   },
   {
-    "name": "right_speaker_one",
-    "unicode": "1F569",
-    "digest": "5b92daa87bdf6ee15e798bec382a2ee885f4e6e77a68a3f626adcfe4c782b375"
+    "name": "right_fist",
+    "unicode": "1F91C",
+    "digest": "f815d1cc0c0345ddcc8886ae9c133582d7dc779732ac9b93dde1ab4fdd3b251d"
   },
   {
-    "name": "right_speaker_with_one_sound_wave",
-    "unicode": "1F569",
-    "digest": "5b92daa87bdf6ee15e798bec382a2ee885f4e6e77a68a3f626adcfe4c782b375"
+    "name": "right_facing_fist_tone1",
+    "unicode": "1F91C-1F3FB",
+    "digest": "0f9269b70cf68071d97389e059a2bdacffd73f2afd2ce6cfd7447bb1a4e9abbb"
   },
   {
-    "name": "right_speaker_three",
-    "unicode": "1F56A",
-    "digest": "4d00b720a65bd0f4c3682b290b1976ec2388d6ae61225398f4e70556ae9e5f80"
+    "name": "right_fist_tone1",
+    "unicode": "1F91C-1F3FB",
+    "digest": "0f9269b70cf68071d97389e059a2bdacffd73f2afd2ce6cfd7447bb1a4e9abbb"
   },
   {
-    "name": "right_speaker_with_three_sound_waves",
-    "unicode": "1F56A",
-    "digest": "4d00b720a65bd0f4c3682b290b1976ec2388d6ae61225398f4e70556ae9e5f80"
+    "name": "right_facing_fist_tone2",
+    "unicode": "1F91C-1F3FC",
+    "digest": "32a9833db853972e49e65aa227fb0512c57362da190aa1cc40e1d64f238e837e"
+  },
+  {
+    "name": "right_fist_tone2",
+    "unicode": "1F91C-1F3FC",
+    "digest": "32a9833db853972e49e65aa227fb0512c57362da190aa1cc40e1d64f238e837e"
+  },
+  {
+    "name": "right_facing_fist_tone3",
+    "unicode": "1F91C-1F3FD",
+    "digest": "be4706f8bb088411f5cbbf9065a0ae5b773c97456bd975c2b6789765657847b9"
+  },
+  {
+    "name": "right_fist_tone3",
+    "unicode": "1F91C-1F3FD",
+    "digest": "be4706f8bb088411f5cbbf9065a0ae5b773c97456bd975c2b6789765657847b9"
+  },
+  {
+    "name": "right_facing_fist_tone4",
+    "unicode": "1F91C-1F3FE",
+    "digest": "1680862891a9d85c4b6f76232a80e2ef7428bcec93087c86eae2efaba9c6a3f7"
+  },
+  {
+    "name": "right_fist_tone4",
+    "unicode": "1F91C-1F3FE",
+    "digest": "1680862891a9d85c4b6f76232a80e2ef7428bcec93087c86eae2efaba9c6a3f7"
+  },
+  {
+    "name": "right_facing_fist_tone5",
+    "unicode": "1F91C-1F3FF",
+    "digest": "388715a4bc2178c52bbb3bc2729f57be50acab5d751784c9f3220e86c6b1fbcc"
+  },
+  {
+    "name": "right_fist_tone5",
+    "unicode": "1F91C-1F3FF",
+    "digest": "388715a4bc2178c52bbb3bc2729f57be50acab5d751784c9f3220e86c6b1fbcc"
   },
   {
     "name": "ring",
     "unicode": "1F48D",
     "digest": "b5322907222797b5e1786209cda88513e76cd397a40f0a7da24847245c95ef9d"
-  },
-  {
-    "name": "ringing_bell",
-    "unicode": "1F56D",
-    "digest": "d71ab7fa937fc4af507b5b07ea58a4f31e875d9e8304ef2b850d7cebe0e9cd66"
   },
   {
     "name": "robot",
@@ -8953,6 +9373,16 @@
     "name": "rocket",
     "unicode": "1F680",
     "digest": "b82e68a95aa89a6de344d6e256fef86a848ebc91de560b043b3e1f7fd072d57d"
+  },
+  {
+    "name": "rofl",
+    "unicode": "1F923",
+    "digest": "f4f99ba2ac67b97338f904f9384ff03fb832a2e427bf6e74611bf5fee45f1f48"
+  },
+  {
+    "name": "rolling_on_the_floor_laughing",
+    "unicode": "1F923",
+    "digest": "f4f99ba2ac67b97338f904f9384ff03fb832a2e427bf6e74611bf5fee45f1f48"
   },
   {
     "name": "roller_coaster",
@@ -8983,11 +9413,6 @@
     "name": "rosette",
     "unicode": "1F3F5",
     "digest": "2537def4deef422d4e669b28b1a0675259306ab38601019df3ec3482b14e52d5"
-  },
-  {
-    "name": "rosette_black",
-    "unicode": "1F3F6",
-    "digest": "ae8675891c88f9d98463d35178445950c39b0deb0f0e8b3f341228a6e0d0e477"
   },
   {
     "name": "rotating_light",
@@ -9090,6 +9515,16 @@
     "digest": "0a786075f3d9da48ae91afccf6ae0d097888da9509d354ee1d3cb99afcc88fe4"
   },
   {
+    "name": "salad",
+    "unicode": "1F957",
+    "digest": "fe321487ab847abe670e68a83f1d9e096129741c689c769ee7de4a65aeac29f8"
+  },
+  {
+    "name": "green_salad",
+    "unicode": "1F957",
+    "digest": "fe321487ab847abe670e68a83f1d9e096129741c689c769ee7de4a65aeac29f8"
+  },
+  {
     "name": "sandal",
     "unicode": "1F461",
     "digest": "03c3077cb4bd900934f9bdf921165b465e5cc9a6bee53e45a091411bceb8892d"
@@ -9160,6 +9595,11 @@
     "digest": "95225be28f05d8b5a6b6e6bf58d973f61f183ad4fef55a558dc1b810796b85c8"
   },
   {
+    "name": "scooter",
+    "unicode": "1F6F4",
+    "digest": "4a7db148880398db75e059711cb53edefb6b8fa9d442009f52856b887ab1dde4"
+  },
+  {
     "name": "scorpion",
     "unicode": "1F982",
     "digest": "d41119d1ea5daf727c17dbea7dadec1718c72fc9f98ae88252161df5fde0938a"
@@ -9190,6 +9630,16 @@
     "digest": "ae68d86fc2a07cae332451b23bd1ceba3f6526a6c56d8c1089777fa4632850e1"
   },
   {
+    "name": "second_place",
+    "unicode": "1F948",
+    "digest": "9e2336fc16e532829b55380252f94655b58817d47c909fc2570002c5b06b9c40"
+  },
+  {
+    "name": "second_place_medal",
+    "unicode": "1F948",
+    "digest": "9e2336fc16e532829b55380252f94655b58817d47c909fc2570002c5b06b9c40"
+  },
+  {
     "name": "secret",
     "unicode": "3299",
     "digest": "1d0b9adde2657f41421b135962de20820cf4b4eb0204044f9859522ab9d211b0"
@@ -9205,14 +9655,59 @@
     "digest": "c0ec5e6d20e1afdc4e78eeddb1301c8b708ad6278e7287a4e4e825417c858e75"
   },
   {
+    "name": "selfie",
+    "unicode": "1F933",
+    "digest": "2a1bc9f18ad4d6fb893d91c88ef1b2d9bd063dc2bb1a4b08c248c30f52545d4e"
+  },
+  {
+    "name": "selfie_tone1",
+    "unicode": "1F933-1F3FB",
+    "digest": "26dc212ffed30c276bd6a66a72bc4513e68098a2205fb4ca5b51ccfa1de5b544"
+  },
+  {
+    "name": "selfie_tone2",
+    "unicode": "1F933-1F3FC",
+    "digest": "71eceaefda46e3521f374f76693e7fa8f215067498067900080e2925ca94d7de"
+  },
+  {
+    "name": "selfie_tone3",
+    "unicode": "1F933-1F3FD",
+    "digest": "53eabbd4f6b8ebbd2f7af7bf5cd64309c4039ac1c5b2180290a547deaafcebdf"
+  },
+  {
+    "name": "selfie_tone4",
+    "unicode": "1F933-1F3FE",
+    "digest": "0baad378b09652b99c5d458db2e03b4db14a1557db4ea0969806a0ca1d33d40c"
+  },
+  {
+    "name": "selfie_tone5",
+    "unicode": "1F933-1F3FF",
+    "digest": "9a07608f34ec4dad48764a855f83f3965709d7b2fd2342e6dc9ed61f23f4adfd"
+  },
+  {
     "name": "seven",
     "unicode": "0037-20E3",
     "digest": "ae85172d2c76c44afb4e3b45d277d400abb2dc895244b9abfbd1dac1cd7c53c2"
   },
   {
+    "name": "shallow_pan_of_food",
+    "unicode": "1F958",
+    "digest": "7c7ad9d5d3f7226427d310b5853e8257fad899febe58dcbc5adb4677964f5c6d"
+  },
+  {
+    "name": "paella",
+    "unicode": "1F958",
+    "digest": "7c7ad9d5d3f7226427d310b5853e8257fad899febe58dcbc5adb4677964f5c6d"
+  },
+  {
     "name": "shamrock",
     "unicode": "2618",
     "digest": "68ed70c26e04a818439a1742d2da6bc169edd02db86b6e6f8014b651f3235488"
+  },
+  {
+    "name": "shark",
+    "unicode": "1F988",
+    "digest": "23a2364b6356e7bbb84c138e9cf58e2c68cd8caabb337a0c4d365ce87bf5d2da"
   },
   {
     "name": "shaved_ice",
@@ -9255,9 +9750,54 @@
     "digest": "95a3f03c675207bb1354270d02a630c204455c47b3edca23c48523a40cf3ea3b"
   },
   {
+    "name": "shopping_cart",
+    "unicode": "1F6D2",
+    "digest": "4599b63f6861cdb4d8272cac84435c24c1d4d6a73c66d51e04a1cd14a1d333e6"
+  },
+  {
+    "name": "shopping_trolley",
+    "unicode": "1F6D2",
+    "digest": "4599b63f6861cdb4d8272cac84435c24c1d4d6a73c66d51e04a1cd14a1d333e6"
+  },
+  {
     "name": "shower",
     "unicode": "1F6BF",
     "digest": "6b3c767c0eb472d4861c6c3cc2735a5e2c09681872ef42a11dc89f3c80b9da01"
+  },
+  {
+    "name": "shrimp",
+    "unicode": "1F990",
+    "digest": "b3651f3be3767125076a013fe903854f5b456a8afae865cb219cf528e0f44caa"
+  },
+  {
+    "name": "shrug",
+    "unicode": "1F937",
+    "digest": "6e264243cc3b6e396069dea4357a958bdcd4081cb1af0ed6aa47235bef88cf27"
+  },
+  {
+    "name": "shrug_tone1",
+    "unicode": "1F937-1F3FB",
+    "digest": "0567b9fd95c8a857914003a5465a500ca79c8111811d45b865021b1b1d92d0b1"
+  },
+  {
+    "name": "shrug_tone2",
+    "unicode": "1F937-1F3FC",
+    "digest": "1557c2f5e3d4599c806d74c0b78afcca940678787534b6862bb89a20601bac8a"
+  },
+  {
+    "name": "shrug_tone3",
+    "unicode": "1F937-1F3FD",
+    "digest": "f02754541a7bf74ba7eebe6c27daf1e3e1dac25172c35b8ba45641e278dfda3d"
+  },
+  {
+    "name": "shrug_tone4",
+    "unicode": "1F937-1F3FE",
+    "digest": "2b5121164cb5f4e253d8fb31f6445cf8afaf30dba41732edc511440cdb78d15c"
+  },
+  {
+    "name": "shrug_tone5",
+    "unicode": "1F937-1F3FF",
+    "digest": "62d99a26bbad479f574f66208c41b9960cd41fb9d79d3a13fbdaa44682077115"
   },
   {
     "name": "signal_strength",
@@ -9415,6 +9955,16 @@
     "digest": "18da2d97c771149ef5454dd23470e900903a62ab93f9e2ce301aad5a8181d773"
   },
   {
+    "name": "sneezing_face",
+    "unicode": "1F927",
+    "digest": "c20ef571dc7e35572fe3c18b7845aefc89af083ea925c48a29de3b7387af6e17"
+  },
+  {
+    "name": "sneeze",
+    "unicode": "1F927",
+    "digest": "c20ef571dc7e35572fe3c18b7845aefc89af083ea925c48a29de3b7387af6e17"
+  },
+  {
     "name": "snowboarder",
     "unicode": "1F3C2",
     "digest": "c6e074139b851aa53b1ba6464d84da14b3da7412fc44c6c196a8469d76915c19"
@@ -9520,46 +10070,6 @@
     "digest": "817100d9979456e7d2f253ac22e13b7a2302dc1590566214915b003e403c53ca"
   },
   {
-    "name": "speech_left",
-    "unicode": "1F5E8",
-    "digest": "912797107d574f5665411498b6e349dbdec69846f085b6dc356548c4155e90b0"
-  },
-  {
-    "name": "left_speech_bubble",
-    "unicode": "1F5E8",
-    "digest": "912797107d574f5665411498b6e349dbdec69846f085b6dc356548c4155e90b0"
-  },
-  {
-    "name": "speech_right",
-    "unicode": "1F5E9",
-    "digest": "8439b13779163c15e678a78b08ebeeb7d131632df21d2a7868de7fed38ca9d8a"
-  },
-  {
-    "name": "right_speech_bubble",
-    "unicode": "1F5E9",
-    "digest": "8439b13779163c15e678a78b08ebeeb7d131632df21d2a7868de7fed38ca9d8a"
-  },
-  {
-    "name": "speech_three",
-    "unicode": "1F5EB",
-    "digest": "55a934f3659b6e75fdce0d0c4e2ea56dd34a43892c85a6666bd1882a0bfb92a9"
-  },
-  {
-    "name": "three_speech_bubbles",
-    "unicode": "1F5EB",
-    "digest": "55a934f3659b6e75fdce0d0c4e2ea56dd34a43892c85a6666bd1882a0bfb92a9"
-  },
-  {
-    "name": "speech_two",
-    "unicode": "1F5EA",
-    "digest": "0563ef0591da243673cf877462acc5d8e1d980a56e81668ac627de74d0c33983"
-  },
-  {
-    "name": "two_speech_bubbles",
-    "unicode": "1F5EA",
-    "digest": "0563ef0591da243673cf877462acc5d8e1d980a56e81668ac627de74d0c33983"
-  },
-  {
     "name": "speedboat",
     "unicode": "1F6A4",
     "digest": "a523b2320f0b24be1e9fdbc1ff828e28d8fd9a64d51e5888ab453ef0bc9f0576"
@@ -9573,6 +10083,11 @@
     "name": "spider_web",
     "unicode": "1F578",
     "digest": "2434bdfbe56dcc4a43699dd59b638af431486b52fb1d6d685451f3b231b2be23"
+  },
+  {
+    "name": "spoon",
+    "unicode": "1F944",
+    "digest": "4fa31d59e5bffd2c45a8e01fcd5652e78a5691cbfa744e69882bc67173ddea05"
   },
   {
     "name": "spy",
@@ -9635,6 +10150,11 @@
     "digest": "ffc6fefd9a537124ebf0a9ddf387414dce1291335026064644f6cf9315591129"
   },
   {
+    "name": "squid",
+    "unicode": "1F991",
+    "digest": "65a1b318c2c506b9d26cfd8282a5cf9922109595c8d12e92c3f7481ac7c08c49"
+  },
+  {
     "name": "stadium",
     "unicode": "1F3DF",
     "digest": "73bf955e767ba1518c9c92b2ba59a2aa1ec4b018652dffd97bcd74832a33789f"
@@ -9680,24 +10200,9 @@
     "digest": "52ad0073f37b978faf3884fb193046f2b0614e1557bbcc9de1b020e42aff2dba"
   },
   {
-    "name": "stereo",
-    "unicode": "1F4FE",
-    "digest": "1ce1f9a83867514b8351ad4fd80c46bba04ad67dfb9874e63d7296e1a21161a5"
-  },
-  {
-    "name": "portable_stereo",
-    "unicode": "1F4FE",
-    "digest": "1ce1f9a83867514b8351ad4fd80c46bba04ad67dfb9874e63d7296e1a21161a5"
-  },
-  {
     "name": "stew",
     "unicode": "1F372",
     "digest": "c16f61236db314ad8d9f2dd241ec1e15c8d64e5872cce93ec4d0996490dd39df"
-  },
-  {
-    "name": "stock_chart",
-    "unicode": "1F5E0",
-    "digest": "4a0fbf54d19b0b5626f91c932a24e6ac12a65b4fc276d852ff4356c8c579d28a"
   },
   {
     "name": "stop_button",
@@ -9733,6 +10238,16 @@
     "name": "stuck_out_tongue_winking_eye",
     "unicode": "1F61C",
     "digest": "dbacd6428a2a2933212e6a4dc0c7f302177fb23b963626ccb26f27f91737f03d"
+  },
+  {
+    "name": "stuffed_flatbread",
+    "unicode": "1F959",
+    "digest": "9f841f2520640d69be4f20a3199023d5811842b28556b5e1152e5ec11f0fda07"
+  },
+  {
+    "name": "stuffed_pita",
+    "unicode": "1F959",
+    "digest": "9f841f2520640d69be4f20a3199023d5811842b28556b5e1152e5ec11f0fda07"
   },
   {
     "name": "sun_with_face",
@@ -9910,29 +10425,9 @@
     "digest": "3a53851e641f8ad938ce3597b1afca2ea63c9314ff81f62563b99937496a13d7"
   },
   {
-    "name": "telephone_black",
-    "unicode": "1F57F",
-    "digest": "c3a42a653a91d90c6b668f678419d5438f2e546050914b841623e57107e805db"
-  },
-  {
-    "name": "black_touchtone_telephone",
-    "unicode": "1F57F",
-    "digest": "c3a42a653a91d90c6b668f678419d5438f2e546050914b841623e57107e805db"
-  },
-  {
     "name": "telephone_receiver",
     "unicode": "1F4DE",
     "digest": "1614d67f3d8814b0d75f39d55f9149e4d28ef57b343498625e62fcfff8365046"
-  },
-  {
-    "name": "telephone_white",
-    "unicode": "1F57E",
-    "digest": "62a7e0e50c53e9f85eba51a92882e6064be05997910d3f7700e1e957dbaf0581"
-  },
-  {
-    "name": "white_touchtone_telephone",
-    "unicode": "1F57E",
-    "digest": "62a7e0e50c53e9f85eba51a92882e6064be05997910d3f7700e1e957dbaf0581"
   },
   {
     "name": "telescope",
@@ -9980,54 +10475,24 @@
     "digest": "4f0b84e5ab8a650cafb166e93688f0e9b31b9ade22a91035261ac90490edb9d3"
   },
   {
+    "name": "third_place",
+    "unicode": "1F949",
+    "digest": "27c9bcba44ad95bee30882cc0722e8b0a798206306655dd648e884447ed26808"
+  },
+  {
+    "name": "third_place_medal",
+    "unicode": "1F949",
+    "digest": "27c9bcba44ad95bee30882cc0722e8b0a798206306655dd648e884447ed26808"
+  },
+  {
     "name": "thought_balloon",
     "unicode": "1F4AD",
     "digest": "bf59624560c333561d636aedf2c8827089e275895cf434974daaabb3d5cea46e"
   },
   {
-    "name": "thought_left",
-    "unicode": "1F5EC",
-    "digest": "4fd591bf4318df73d1b17f434a449d8e95f49cca53a3d8f4d1ca983f3809ef46"
-  },
-  {
-    "name": "left_thought_bubble",
-    "unicode": "1F5EC",
-    "digest": "4fd591bf4318df73d1b17f434a449d8e95f49cca53a3d8f4d1ca983f3809ef46"
-  },
-  {
-    "name": "thought_right",
-    "unicode": "1F5ED",
-    "digest": "0e8c0ce26e2d0e30894f5394b0736456e8268f775e0e7eda4c7dc3c2ff9231ae"
-  },
-  {
-    "name": "right_thought_bubble",
-    "unicode": "1F5ED",
-    "digest": "0e8c0ce26e2d0e30894f5394b0736456e8268f775e0e7eda4c7dc3c2ff9231ae"
-  },
-  {
     "name": "three",
     "unicode": "0033-20E3",
     "digest": "d3f85828787799c769655c38a519cad0743ab799ab276c7606e6e6894cc442e6"
-  },
-  {
-    "name": "thumbs_down_reverse",
-    "unicode": "1F593",
-    "digest": "a8b561e389bc4e4b07fba70994f6445e5ddc6afe68922fcb6e9e7282d19ad958"
-  },
-  {
-    "name": "reversed_thumbs_down_sign",
-    "unicode": "1F593",
-    "digest": "a8b561e389bc4e4b07fba70994f6445e5ddc6afe68922fcb6e9e7282d19ad958"
-  },
-  {
-    "name": "thumbs_up_reverse",
-    "unicode": "1F592",
-    "digest": "b6e52715c5ce590bfd08f6e05058ec3765ea2da341b11f9825d100608b173837"
-  },
-  {
-    "name": "reversed_thumbs_up_sign",
-    "unicode": "1F592",
-    "digest": "b6e52715c5ce590bfd08f6e05058ec3765ea2da341b11f9825d100608b173837"
   },
   {
     "name": "thumbsdown",
@@ -10315,29 +10780,9 @@
     "digest": "06e65d549e771632f3c64287a38ba67236f9800ccb6a23c3b592bc010e24e122"
   },
   {
-    "name": "train_diesel",
-    "unicode": "1F6F2",
-    "digest": "621bb967cd93fa9f8fd4b155965cc7572d3f91f88d94938ba10c8626718b623c"
-  },
-  {
-    "name": "diesel_locomotive",
-    "unicode": "1F6F2",
-    "digest": "621bb967cd93fa9f8fd4b155965cc7572d3f91f88d94938ba10c8626718b623c"
-  },
-  {
     "name": "tram",
     "unicode": "1F68A",
     "digest": "21a7699f1a94f06dcb4d1e896448b98a4205f8efe902a8ac169a5005d11ab100"
-  },
-  {
-    "name": "triangle_round",
-    "unicode": "1F6C6",
-    "digest": "e24bb39ecfaaa746b03dc8418697d09ef327d5b077db39014f39d5fb87e23bd5"
-  },
-  {
-    "name": "triangle_with_rounded_corners",
-    "unicode": "1F6C6",
-    "digest": "e24bb39ecfaaa746b03dc8418697d09ef327d5b077db39014f39d5fb87e23bd5"
   },
   {
     "name": "triangular_flag_on_post",
@@ -10395,19 +10840,19 @@
     "digest": "e744e8dbbdc6b126bd5b15aad56b524191de5a604189f4ab6d96730dfef4d086"
   },
   {
+    "name": "tumbler_glass",
+    "unicode": "1F943",
+    "digest": "7a38658274b9ff28836725a1dbfad49b8fa3af5ec8385e629db6bfdc7d93907a"
+  },
+  {
+    "name": "whisky",
+    "unicode": "1F943",
+    "digest": "7a38658274b9ff28836725a1dbfad49b8fa3af5ec8385e629db6bfdc7d93907a"
+  },
+  {
     "name": "turkey",
     "unicode": "1F983",
     "digest": "bf5daef15716b66636a5fdb6d059420521443c0603e2d56bd7c99c791a7285f4"
-  },
-  {
-    "name": "turned_ok_hand",
-    "unicode": "1F58F",
-    "digest": "8a6c5b7d4c737866e7e32c6d9f7f447a48a0ac57a8909d43f87367d4a9b59246"
-  },
-  {
-    "name": "turned_ok_hand_sign",
-    "unicode": "1F58F",
-    "digest": "8a6c5b7d4c737866e7e32c6d9f7f447a48a0ac57a8909d43f87367d4a9b59246"
   },
   {
     "name": "turtle",
@@ -10760,6 +11205,36 @@
     "digest": "ba6a840d4f57f8f9f3e9f29b8a030faf02a3a3d912e3e31b067616b2ac48a3d1"
   },
   {
+    "name": "water_polo",
+    "unicode": "1F93D",
+    "digest": "fc77e1d2a84a9f4cf0cf19c1ea10cf137cf0940b9103a523121eda87677ad148"
+  },
+  {
+    "name": "water_polo_tone1",
+    "unicode": "1F93D-1F3FB",
+    "digest": "3be28384edd29ada8109f07720d601a9d5866ed63e6234efe9ee1a194ed5d0c5"
+  },
+  {
+    "name": "water_polo_tone2",
+    "unicode": "1F93D-1F3FC",
+    "digest": "afcd3f28c6719f869ca79a6fd1ccade2ea976ade844fbc1081fc72865bcb652f"
+  },
+  {
+    "name": "water_polo_tone3",
+    "unicode": "1F93D-1F3FD",
+    "digest": "d19481c9b82d9413e99c2652e020fd763f2b54408dedaffec8dfe80973ded407"
+  },
+  {
+    "name": "water_polo_tone4",
+    "unicode": "1F93D-1F3FE",
+    "digest": "375972d882b627e8d525e632e58b30346fc3e01858d7d08d62a9d3bf8132bbc7"
+  },
+  {
+    "name": "water_polo_tone5",
+    "unicode": "1F93D-1F3FF",
+    "digest": "a8e1ced1c5382a8147a1d1801a133cada9a0e52e41de6272e56c3c1f426f6048"
+  },
+  {
     "name": "watermelon",
     "unicode": "1F349",
     "digest": "42a3821d2e4dd595c93f5db7a5c70b7af486b8f0ddd3b9d26bc4e743a88e699a"
@@ -10915,6 +11390,16 @@
     "digest": "0a6164cdadf2413555b7ef47b95f823f5a010f36d2dacfb1a38335a0f59e9601"
   },
   {
+    "name": "wilted_rose",
+    "unicode": "1F940",
+    "digest": "2c9e01ab9a61d057c71478b09ba7d82ae08f4a5a1c2212b7ad562b74f616677f"
+  },
+  {
+    "name": "wilted_flower",
+    "unicode": "1F940",
+    "digest": "2c9e01ab9a61d057c71478b09ba7d82ae08f4a5a1c2212b7ad562b74f616677f"
+  },
+  {
     "name": "wind_blowing_face",
     "unicode": "1F32C",
     "digest": "e4f63149cbc8829118571f6a93487b96d26665fc15d17d578cca4e5c752cd54f"
@@ -10995,14 +11480,69 @@
     "digest": "81aae53bc892035b905bf3ec5b442a8ecc95027c5fa9eb51b7c3e7d8fad3f3f4"
   },
   {
-    "name": "writing_hand",
-    "unicode": "1F58E",
-    "digest": "c4fc18ece6778339ebe14438aaf570e22385c3010c2d341824fa72ac6068cfeb"
+    "name": "wrestlers",
+    "unicode": "1F93C",
+    "digest": "9be983f3f9438f3ab8f6b643a958371d1e710c6d78e728f3465141811f05c2d5"
   },
   {
-    "name": "left_writing_hand",
-    "unicode": "1F58E",
-    "digest": "c4fc18ece6778339ebe14438aaf570e22385c3010c2d341824fa72ac6068cfeb"
+    "name": "wrestling",
+    "unicode": "1F93C",
+    "digest": "9be983f3f9438f3ab8f6b643a958371d1e710c6d78e728f3465141811f05c2d5"
+  },
+  {
+    "name": "wrestlers_tone1",
+    "unicode": "1F93C-1F3FB",
+    "digest": "60461f83bfc93ce59dd027eab4782b7f206a7b142719fa72f301e047dc83a5d9"
+  },
+  {
+    "name": "wrestling_tone1",
+    "unicode": "1F93C-1F3FB",
+    "digest": "60461f83bfc93ce59dd027eab4782b7f206a7b142719fa72f301e047dc83a5d9"
+  },
+  {
+    "name": "wrestlers_tone2",
+    "unicode": "1F93C-1F3FC",
+    "digest": "67ad93c86e6c58d552c18e7a0105cc81fd9bb0474da51f788eba2e4c14b4a636"
+  },
+  {
+    "name": "wrestling_tone2",
+    "unicode": "1F93C-1F3FC",
+    "digest": "67ad93c86e6c58d552c18e7a0105cc81fd9bb0474da51f788eba2e4c14b4a636"
+  },
+  {
+    "name": "wrestlers_tone3",
+    "unicode": "1F93C-1F3FD",
+    "digest": "6bfd06c4435cabf2def153912040e05bf8db424fa383148ddda6d0ce8a8a3349"
+  },
+  {
+    "name": "wrestling_tone3",
+    "unicode": "1F93C-1F3FD",
+    "digest": "6bfd06c4435cabf2def153912040e05bf8db424fa383148ddda6d0ce8a8a3349"
+  },
+  {
+    "name": "wrestlers_tone4",
+    "unicode": "1F93C-1F3FE",
+    "digest": "597312678834c4d288c238482879856d5eba4620deb1eaef495f428e2ba5f2a5"
+  },
+  {
+    "name": "wrestling_tone4",
+    "unicode": "1F93C-1F3FE",
+    "digest": "597312678834c4d288c238482879856d5eba4620deb1eaef495f428e2ba5f2a5"
+  },
+  {
+    "name": "wrestlers_tone5",
+    "unicode": "1F93C-1F3FF",
+    "digest": "d6aebdf1e44fd825b9a5b3716aefbc53f4b4dbb73cb2a628c0f2994ebfd34614"
+  },
+  {
+    "name": "wrestling_tone5",
+    "unicode": "1F93C-1F3FF",
+    "digest": "d6aebdf1e44fd825b9a5b3716aefbc53f4b4dbb73cb2a628c0f2994ebfd34614"
+  },
+  {
+    "name": "writing_hand",
+    "unicode": "270D",
+    "digest": "110517ae4da5587e8b0662881658e27da4120bfacec54734fd6657831d4d782f"
   },
   {
     "name": "writing_hand_tone1",

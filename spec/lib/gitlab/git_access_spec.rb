@@ -133,6 +133,7 @@ describe Gitlab::GitAccess, lib: true do
     def stub_git_hooks
       # Running the `pre-receive` hook is expensive, and not necessary for this test.
       allow_any_instance_of(GitHooksService).to receive(:execute).and_yield
+<<<<<<< HEAD
     end
 
     def merge_into_protected_branch
@@ -214,6 +215,32 @@ describe Gitlab::GitAccess, lib: true do
     [['feature', 'exact'], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before { create(:protected_branch, name: protected_branch_name, project: project) }
+=======
+    end
+
+    def merge_into_protected_branch
+      @protected_branch_merge_commit ||= begin
+        stub_git_hooks
+        project.repository.add_branch(user, unprotected_branch, 'feature')
+        target_branch = project.repository.lookup('feature')
+        source_branch = project.repository.commit_file(user, FFaker::InternetSE.login_user_name, FFaker::HipsterIpsum.paragraph, FFaker::HipsterIpsum.sentence, unprotected_branch, false)
+        rugged = project.repository.rugged
+        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+
+        merge_index = rugged.merge_commits(target_branch, source_branch)
+        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+      end
+    end
+
+    def self.run_permission_checks(permissions_matrix)
+      permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { project.team << [user, role] }
+
+          permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(changes[action]) }
+>>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
 
         run_permission_checks(permissions_matrix)
       end
@@ -474,6 +501,98 @@ describe Gitlab::GitAccess, lib: true do
         project.create_push_rule
         project.push_rule.update(max_file_size: 2)
         expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+      end
+    end
+
+    permissions_matrix = {
+      master: {
+        push_new_branch: true,
+        push_master: true,
+        push_protected_branch: true,
+        push_remove_protected_branch: false,
+        push_tag: true,
+        push_new_tag: true,
+        push_all: true,
+        merge_into_protected_branch: true
+      },
+
+      developer: {
+        push_new_branch: true,
+        push_master: true,
+        push_protected_branch: false,
+        push_remove_protected_branch: false,
+        push_tag: false,
+        push_new_tag: true,
+        push_all: false,
+        merge_into_protected_branch: false
+      },
+
+      reporter: {
+        push_new_branch: false,
+        push_master: false,
+        push_protected_branch: false,
+        push_remove_protected_branch: false,
+        push_tag: false,
+        push_new_tag: false,
+        push_all: false,
+        merge_into_protected_branch: false
+      },
+
+      guest: {
+        push_new_branch: false,
+        push_master: false,
+        push_protected_branch: false,
+        push_remove_protected_branch: false,
+        push_tag: false,
+        push_new_tag: false,
+        push_all: false,
+        merge_into_protected_branch: false
+      }
+    }
+
+    [['feature', 'exact'], ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
+      context do
+        before { create(:protected_branch, name: protected_branch_name, project: project) }
+
+        run_permission_checks(permissions_matrix)
+      end
+
+      context "when 'developers can push' is turned on for the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, name: protected_branch_name, developers_can_push: true, project: project) }
+
+        run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
+      end
+
+      context "when 'developers can merge' is turned on for the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, name: protected_branch_name, developers_can_merge: true, project: project) }
+
+        context "when a merge request exists for the given source/target branch" do
+          context "when the merge request is in progress" do
+            before do
+              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+            end
+
+            run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: true }))
+          end
+
+          context "when the merge request is not in progress" do
+            before do
+              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', in_progress_merge_commit_sha: nil)
+            end
+
+            run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
+          end
+        end
+
+        context "when a merge request does not exist for the given source/target branch" do
+          run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
+        end
+      end
+
+      context "when 'developers can merge' and 'developers can push' are turned on for the #{protected_branch_type} protected branch" do
+        before { create(:protected_branch, name: protected_branch_name, developers_can_merge: true, developers_can_push: true, project: project) }
+
+        run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
       end
     end
   end

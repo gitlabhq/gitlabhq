@@ -6,8 +6,20 @@
 class @U2FAuthenticate
   constructor: (@container, u2fParams) ->
     @appId = u2fParams.app_id
-    @challenges = u2fParams.challenges
-    @signRequests = u2fParams.sign_requests
+    @challenge = u2fParams.challenge
+
+    # The U2F Javascript API v1.1 requires a single challenge, with
+    # _no challenges per-request_. The U2F Javascript API v1.0 requires a
+    # challenge per-request, which is done by copying the single challenge
+    # into every request.
+    #
+    # In either case, we don't need the per-request challenges that the server
+    # has generated, so we can remove them.
+    #
+    # Note: The server library fixes this behaviour in (unreleased) version 1.0.0.
+    # This can be removed once we upgrade.
+    # https://github.com/castle/ruby-u2f/commit/103f428071a81cd3d5f80c2e77d522d5029946a4
+    @signRequests = u2fParams.sign_requests.map (request) -> _(request).omit('challenge')
 
   start: () =>
     if U2FUtil.isU2FSupported()
@@ -16,7 +28,7 @@ class @U2FAuthenticate
       @renderNotSupported()
 
   authenticate: () =>
-    u2f.sign(@appId, @challenges, @signRequests, (response) =>
+    u2f.sign(@appId, @challenge, @signRequests, (response) =>
       if response.errorCode
         error = new U2FError(response.errorCode)
         @renderError(error);

@@ -18,8 +18,8 @@ class FakeU2fDevice
 
   def respond_to_u2f_authentication
     app_id = @page.evaluate_script('gon.u2f.app_id')
-    challenges = @page.evaluate_script('gon.u2f.challenges')
-    json_response = u2f_device(app_id).sign_response(challenges[0])
+    challenge = @page.evaluate_script('gon.u2f.challenge')
+    json_response = u2f_device(app_id).sign_response(challenge)
 
     @page.execute_script("
     u2f.sign = function(appId, challenges, signRequests, callback) {
