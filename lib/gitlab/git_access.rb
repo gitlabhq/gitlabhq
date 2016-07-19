@@ -124,7 +124,6 @@ module Gitlab
 
     private
 
-<<<<<<< HEAD
     def commits(newrev, oldrev, project)
       if oldrev
         project.repository.commits_between(oldrev, newrev)
@@ -220,14 +219,6 @@ module Gitlab
 
     def geo_node_key
       actor if actor.is_a?(GeoNodeKey)
-=======
-    def matching_merge_request?(newrev, branch_name)
-      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
-    end
-
-    def deploy_key
-      actor if actor.is_a?(DeployKey)
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
     end
 
     def deploy_key_can_read_project?
@@ -249,11 +240,8 @@ module Gitlab
           actor
         when DeployKey
           nil
-<<<<<<< HEAD
         when GeoNodeKey
           nil
-=======
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
         when Key
           actor.user
         end

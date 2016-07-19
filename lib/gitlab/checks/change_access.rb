@@ -1,10 +1,7 @@
 module Gitlab
   module Checks
     class ChangeAccess
-<<<<<<< HEAD
       include PathLocksHelper
-=======
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
       attr_reader :user_access, :project
 
       def initialize(change, user_access:, project:)
@@ -15,11 +12,7 @@ module Gitlab
       end
 
       def exec
-<<<<<<< HEAD
         error = protected_branch_checks || tag_checks || push_checks || push_rules_checks
-=======
-        error = protected_branch_checks || tag_checks || push_checks
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
 
         if error
           GitAccessStatus.new(false, error)
@@ -68,7 +61,6 @@ module Gitlab
         end
       end
 
-<<<<<<< HEAD
       def push_rules_checks
         # Returns nil if all push rule checks passed successfully
         # or the error if any hook fails
@@ -81,8 +73,6 @@ module Gitlab
         error
       end
 
-=======
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
       private
 
       def protected_tag?(tag_name)
@@ -114,7 +104,6 @@ module Gitlab
           nil
         end
       end
-<<<<<<< HEAD
 
       def push_rule_check
         return unless project.push_rule && @newrev && @oldrev
@@ -246,8 +235,6 @@ module Gitlab
         # We skip refs/tmp ref because we use it for Web UI commiting
         commit.refs(project.repository).reject { |ref| ref.name.start_with?('refs/tmp') }.any?
       end
-=======
->>>>>>> a27212ab908d5161f5a75b27c4616c11f497f5d4
     end
   end
 end
