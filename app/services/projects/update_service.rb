@@ -23,7 +23,6 @@ module Projects
         if project.previous_changes.include?('path')
           project.rename_repo
         end
-        true
       end
     end
   end

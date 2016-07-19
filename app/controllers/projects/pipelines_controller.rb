@@ -50,20 +50,14 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def update_settings
-    status = ::Projects::UpdateService.new(@project, current_user, pipelines_settings_params).execute
-
-    respond_to do |format|
-      if status
-        flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
-        format.html do
-          redirect_to(
-            settings_namespace_project_pipelines_path(@project.namespace, @project),
-            notice: "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
-          )
-        end
-      else
-        format.html { render 'settings' }
-      end
+    if @project.update_attributes(pipelines_settings_params)
+      flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
+      redirect_to(
+        settings_namespace_project_pipelines_path(@project.namespace, @project),
+        notice: "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
+      )
+    else
+      render 'settings'
     end
   end
 
