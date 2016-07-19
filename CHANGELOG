@@ -24,6 +24,7 @@ v 8.10.0 (unreleased)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Upgrade to Rails 4.2.7. !5236
+  - Allow to pull code with deploy key from public projects
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
