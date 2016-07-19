@@ -9,7 +9,7 @@ module DiffHelper
   end
 
   def expand_all_diffs?
-    @expand_all_diffs || params[:expand_all_diffs].present?
+    params[:expand_all_diffs].present?
   end
 
   def diff_view
@@ -23,13 +23,14 @@ module DiffHelper
   end
 
   def diff_options
-    default_options = Commit.max_diff_options
+    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
 
     if action_name == 'diff_for_path'
-      default_options[:paths] = params.values_at(:old_path, :new_path)
+      options[:no_collapse] = true
+      options[:paths] = params.values_at(:old_path, :new_path)
     end
 
-    default_options.merge(ignore_whitespace_change: hide_whitespace?)
+    Commit.max_diff_options.merge(options)
   end
 
   def safe_diff_files(diffs, diff_refs: nil, repository: nil)

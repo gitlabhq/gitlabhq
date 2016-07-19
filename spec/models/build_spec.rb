@@ -191,16 +191,16 @@ describe Ci::Build, models: true do
   end
 
   describe '#variables' do
+    let(:predefined_variables) do
+      [
+        { key: :CI_BUILD_NAME, value: 'test', public: true },
+        { key: :CI_BUILD_STAGE, value: 'test', public: true },
+      ]
+    end
+
+    subject { build.variables }
+
     context 'returns variables' do
-      subject { build.variables }
-
-      let(:predefined_variables) do
-        [
-          { key: :CI_BUILD_NAME, value: 'test', public: true },
-          { key: :CI_BUILD_STAGE, value: 'stage', public: true },
-        ]
-      end
-
       let(:yaml_variables) do
         [
           { key: :DB_NAME, value: 'postgres', public: true }
@@ -208,7 +208,7 @@ describe Ci::Build, models: true do
       end
 
       before do
-        build.update_attributes(stage: 'stage', yaml_variables: yaml_variables)
+        build.yaml_variables = yaml_variables
       end
 
       it { is_expected.to eq(predefined_variables + yaml_variables) }
@@ -259,6 +259,54 @@ describe Ci::Build, models: true do
           end
 
           it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
+        end
+      end
+    end
+
+    context 'when yaml_variables is undefined' do
+      before do
+        build.yaml_variables = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config has variables' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          variables: {
+                            KEY: 'value'
+                          }
+                        }
+                      })
+          end
+          let(:variables) do
+            [{ key: :KEY, value: 'value', public: true }]
+          end
+
+          it { is_expected.to eq(predefined_variables + variables) }
         end
       end
     end
@@ -650,6 +698,53 @@ describe Ci::Build, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
+    end
+  end
+
+  describe '#when' do
+    subject { build.when }
+
+    context 'if is undefined' do
+      before do
+        build.when = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config has when' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('always') }
+        end
+      end
     end
   end
 

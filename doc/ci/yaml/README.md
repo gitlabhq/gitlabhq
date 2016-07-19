@@ -772,12 +772,13 @@ Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 This feature should be used in conjunction with [`artifacts`](#artifacts) and
 allows you to define the artifacts to pass between different builds.
 
-Note that `artifacts` from previous [stages](#stages) are passed by default.
+Note that `artifacts` from all previous [stages](#stages) are passed by default.
 
 To use this feature, define `dependencies` in context of the job and pass
 a list of all previous builds from which the artifacts should be downloaded.
 You can only define builds from stages that are executed before the current one.
 An error will be shown if you define builds from the current stage or next ones.
+Defining an empty array will skip downloading any artifacts for that job.
 
 ---
 
