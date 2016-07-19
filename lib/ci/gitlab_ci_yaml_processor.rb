@@ -45,7 +45,7 @@ module Ci
 
     def builds_for_ref(ref, tag = false, trigger_request = nil)
       jobs_for_ref(ref, tag, trigger_request).map do |name, job|
-        build_attributes(name, _)
+        build_attributes(name)
       end
     end
 
