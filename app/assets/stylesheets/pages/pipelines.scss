@@ -49,7 +49,7 @@
 
   .commit-link {
 
-    .ci-running {
+    .ci-status {
 
       svg {
         top: 1px;
@@ -135,9 +135,8 @@
   .stage-cell {
 
     svg {
-      height: 13px;
-      width: 13px;
-      margin-left: 3px;
+      height: 18px;
+      width: 18px;
     }
   }
 

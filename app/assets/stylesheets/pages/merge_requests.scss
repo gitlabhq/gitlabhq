@@ -60,8 +60,10 @@
   .ci_widget {
     border-bottom: 1px solid #eef0f2;
 
-    i {
+    svg {
       margin-right: 4px;
+      position: relative;
+      top: 1px;
     }
 
     &.ci-success {
@@ -196,6 +198,16 @@
 
     .merge-request-title {
       margin-bottom: 2px;
+
+      .ci-status-link {
+
+        svg {
+          height: 16px;
+          width: 16px;
+          position: relative;
+          top: 3px;
+        }
+      }
     }
   }
 

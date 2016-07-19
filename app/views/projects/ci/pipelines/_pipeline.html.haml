@@ -35,7 +35,7 @@
 
     - stages_status = pipeline.statuses.latest.stages_status
     - stages.each do |stage|
-      %td
+      %td.stage-cell
         - status = stages_status[stage]
         - tooltip = "#{stage.titleize}: #{status || 'not found'}"
         - if status
