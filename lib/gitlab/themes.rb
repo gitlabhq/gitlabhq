@@ -2,6 +2,8 @@ module Gitlab
   # Module containing GitLab's application theme definitions and helper methods
   # for accessing them.
   module Themes
+    extend self
+
     # Theme ID used when no `default_theme` configuration setting is provided.
     APPLICATION_DEFAULT = 2
 
@@ -22,7 +24,7 @@ module Gitlab
     # classes that might be applied to the `body` element
     #
     # Returns a String
-    def self.body_classes
+    def body_classes
       THEMES.collect(&:css_class).uniq.join(' ')
     end
 
@@ -33,26 +35,26 @@ module Gitlab
     # id - Integer ID
     #
     # Returns a Theme
-    def self.by_id(id)
+    def by_id(id)
       THEMES.detect { |t| t.id == id } || default
     end
 
     # Returns the number of defined Themes
-    def self.count
+    def count
       THEMES.size
     end
 
     # Get the default Theme
     #
     # Returns a Theme
-    def self.default
+    def default
       by_id(default_id)
     end
 
     # Iterate through each Theme
     #
     # Yields the Theme object
-    def self.each(&block)
+    def each(&block)
       THEMES.each(&block)
     end
 
@@ -61,7 +63,7 @@ module Gitlab
     # user - User record
     #
     # Returns a Theme
-    def self.for_user(user)
+    def for_user(user)
       if user
         by_id(user.theme_id)
       else
@@ -71,7 +73,7 @@ module Gitlab
 
     private
 
-    def self.default_id
+    def default_id
       id = Gitlab.config.gitlab.default_theme.to_i
 
       # Prevent an invalid configuration setting from causing an infinite loop
