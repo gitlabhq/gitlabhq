@@ -12,7 +12,6 @@ See the documentation below for details on how to configure these services.
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
-- [Slack](slack.md) Integrate with the Slack chat service
 - [Kerberos](kerberos.md) Integrate with Kerberos
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
