@@ -1,5 +1,5 @@
 class Projects::BuildsController < Projects::ApplicationController
-  before_action :build, except: [:index, :cancel_all, :settings]
+  before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
   before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
   layout 'project'
@@ -25,11 +25,6 @@ class Projects::BuildsController < Projects::ApplicationController
   def cancel_all
     @project.builds.running_or_pending.each(&:cancel)
     redirect_to namespace_project_builds_path(project.namespace, project)
-  end
-
-  def settings
-    @ref = params[:ref] || @project.default_branch || 'master'
-    @build_badge = Gitlab::Badge::Build.new(@project, @ref)
   end
 
   def show

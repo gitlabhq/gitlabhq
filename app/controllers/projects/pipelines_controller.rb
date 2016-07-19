@@ -1,9 +1,10 @@
 class Projects::PipelinesController < Projects::ApplicationController
-  before_action :pipeline, except: [:index, :new, :create]
+  before_action :pipeline, except: [:index, :new, :create, :settings, :update_settings]
   before_action :commit, only: [:show]
   before_action :authorize_read_pipeline!
   before_action :authorize_create_pipeline!, only: [:new, :create]
   before_action :authorize_update_pipeline!, only: [:retry, :cancel]
+  before_action :authorize_admin_pipeline!, only: [:settings, :update_settings]
 
   def index
     @scope = params[:scope]
@@ -43,10 +44,40 @@ class Projects::PipelinesController < Projects::ApplicationController
     redirect_back_or_default default: namespace_project_pipelines_path(project.namespace, project)
   end
 
+  def settings
+    @ref = params[:ref] || @project.default_branch || 'master'
+    @build_badge = Gitlab::Badge::Build.new(@project, @ref)
+  end
+
+  def update_settings
+    status = ::Projects::UpdateService.new(@project, current_user, pipelines_settings_params).execute
+
+    respond_to do |format|
+      if status
+        flash[:notice] = "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
+        format.html do
+          redirect_to(
+            settings_namespace_project_pipelines_path(@project.namespace, @project),
+            notice: "CI/CD Pipelines settings for '#{@project.name}' was successfully updated."
+          )
+        end
+      else
+        format.html { render 'settings' }
+      end
+    end
+  end
+
   private
 
   def create_params
     params.require(:pipeline).permit(:ref)
+  end
+
+  def pipelines_settings_params
+    params.require(:project).permit(
+      :runners_token, :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+      :public_builds
+    )
   end
 
   def pipeline

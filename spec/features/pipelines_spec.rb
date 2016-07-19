@@ -1,14 +1,15 @@
 require 'spec_helper'
 
-describe "Pipelines" do
+feature "Pipelines", feature: true do
   include GitlabRoutingHelper
 
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
+  let(:role) { :developer }
 
   before do
     login_as(user)
-    project.team << [user, :developer]
+    project.team << [user, role]
   end
 
   describe 'GET /:project/pipelines' do
@@ -184,6 +185,32 @@ describe "Pipelines" do
       end
 
       it { expect(page).to have_content('Reference not found') }
+    end
+  end
+
+  describe 'Pipelines settings' do
+    background do
+      visit settings_namespace_project_pipelines_path(project.namespace, project)
+    end
+
+    context 'for developer' do
+      given(:role) { :developer }
+
+      scenario 'to be disallowed to view' do
+        expect(page.status_code).to eq(404)
+      end
+    end
+
+    context 'for master' do
+      given(:role) { :master }
+
+      scenario 'be allowed to change' do
+        fill_in('Test coverage parsing', with: 'coverage_regex')
+        click_on 'Save changes'
+
+        expect(page.status_code).to eq(200)
+        expect(page).to have_field('Test coverage parsing', with: 'coverage_regex')
+      end
     end
   end
 end

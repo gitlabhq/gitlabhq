@@ -6,7 +6,7 @@ feature 'list of badges' do
     project = create(:project)
     project.team << [user, :master]
     login_as(user)
-    visit settings_namespace_project_builds_path(project.namespace, project)
+    visit settings_namespace_project_pipelines_path(project.namespace, project)
   end
 
   scenario 'user displays list of badges' do

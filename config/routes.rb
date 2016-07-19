@@ -733,6 +733,11 @@ Rails.application.routes.draw do
         resources :triggers, only: [:index, :create, :destroy]
 
         resources :pipelines, only: [:index, :new, :create, :show] do
+          collection do
+            get :settings
+            patch :settings, to: 'pipelines#update_settings'
+          end
+
           member do
             post :cancel
             post :retry
@@ -744,7 +749,6 @@ Rails.application.routes.draw do
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
-            get :settings
           end
 
           member do
