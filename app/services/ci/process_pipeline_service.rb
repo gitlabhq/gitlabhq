@@ -7,7 +7,7 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      # This a method that will ensure that our pipeline does have all builds for all stages created
+      # This method will ensure that our pipeline does have all builds for all stages created
       if created_builds.empty?
         create_builds!
       end
@@ -24,10 +24,10 @@ module Ci
     end
 
     def process_stage(index)
-      status = status_for_prior_stages(index)
+      prior_stages_status = status_for_prior_stages(index)
 
       created_builds_in_stage(index).select do |build|
-        process_build(build, status)
+        process_build(build, prior_stages_status)
       end
     end
 
@@ -45,7 +45,7 @@ module Ci
 
     def valid_statuses_for_when(value)
       case value
-      when 'on_success', nil
+      when 'on_success'
         %w[success]
       when 'on_failure'
         %w[failed]

@@ -27,12 +27,12 @@ module Ci
     end
 
     def new_builds
-      @new_builds ||= pipeline.builds_attributes.
-        reject { |build| existing_builds.include?(build[:name]) }
+      @new_builds ||= builds_attributes.
+        reject { |build| existing_build_names.include?(build[:name]) }
     end
 
-    def existing_builds
-      @existing_builds ||= pipeline.builds.pluck(:name)
+    def existing_build_names
+      @existing_build_names ||= pipeline.builds.pluck(:name)
     end
 
     def builds_attributes
@@ -43,6 +43,7 @@ module Ci
 
     def trigger_request
       return @trigger_request if defined?(@trigger_request)
+
       @trigger_request ||= pipeline.trigger_requests.first
     end
   end
