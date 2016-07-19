@@ -145,12 +145,7 @@ module Ci
     end
 
     def variables
-      variables = []
-      variables += predefined_variables
-      variables += yaml_variables if yaml_variables
-      variables += project_variables
-      variables += trigger_variables
-      variables
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def merge_request
@@ -409,6 +404,14 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def when
+      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+    end
+
+    def yaml_variables
+      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+    end
+
     private
 
     def update_artifacts_size
@@ -450,6 +453,11 @@ module Ci
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
       variables
+    end
+
+    def build_attributes_from_config
+      return {} unless pipeline.config_processor
+      pipeline.config_processor.build_attributes(name)
     end
   end
 end
