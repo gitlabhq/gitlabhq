@@ -52,8 +52,7 @@ module API
       get ':id/builds/:build_id' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
@@ -69,18 +68,25 @@ module API
       get ':id/builds/:build_id/artifacts' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
-        artifacts_file = build.artifacts_file
+        present_artifact!(build.artifacts_file)
+      end
 
-        unless artifacts_file.file_storage?
-          return redirect_to build.artifacts_file.url
-        end
+      # Download the artifacts file from ref_name and job
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   ref_name (required) - The ref from repository
+      #   job (required) - The name for the build
+      # Example Request:
+      #   GET /projects/:id/artifacts/:ref_name/download?job=name
+      get ':id/builds/artifacts/:ref_name/download',
+        requirements: { ref_name: /.+/ } do
+        builds = user_project.latest_successful_builds_for(params[:ref_name])
+        latest_build = builds.find_by!(name: params[:job])
 
-        return not_found! unless artifacts_file.exists?
-
-        present_file!(artifacts_file.path, artifacts_file.filename)
+        present_artifact!(latest_build.artifacts_file)
       end
 
       # Get a trace of a specific build of a project
@@ -97,8 +103,7 @@ module API
       get ':id/builds/:build_id/trace' do
         authorize_read_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         header 'Content-Disposition', "infile; filename=\"#{build.id}.log\""
         content_type 'text/plain'
@@ -118,8 +123,7 @@ module API
       post ':id/builds/:build_id/cancel' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
 
         build.cancel
 
@@ -137,8 +141,7 @@ module API
       post ':id/builds/:build_id/retry' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
         return forbidden!('Build is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
@@ -157,8 +160,7 @@ module API
       post ':id/builds/:build_id/erase' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build
+        build = get_build!(params[:build_id])
         return forbidden!('Build is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
@@ -176,8 +178,8 @@ module API
       post ':id/builds/:build_id/artifacts/keep' do
         authorize_update_builds!
 
-        build = get_build(params[:build_id])
-        return not_found!(build) unless build && build.artifacts?
+        build = get_build!(params[:build_id])
+        return not_found!(build) unless build.artifacts?
 
         build.keep_artifacts!
 
@@ -190,6 +192,20 @@ module API
     helpers do
       def get_build(id)
         user_project.builds.find_by(id: id.to_i)
+      end
+
+      def get_build!(id)
+        get_build(id) || not_found!
+      end
+
+      def present_artifact!(artifacts_file)
+        if !artifacts_file.file_storage?
+          redirect_to(build.artifacts_file.url)
+        elsif artifacts_file.exists?
+          present_file!(artifacts_file.path, artifacts_file.filename)
+        else
+          not_found!
+        end
       end
 
       def filter_builds(builds, scope)

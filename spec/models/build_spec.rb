@@ -5,7 +5,9 @@ describe Ci::Build, models: true do
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
+                         sha: project.commit.id,
+                         ref: 'fix',
+                         status: 'success')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -612,7 +614,7 @@ describe Ci::Build, models: true do
 
       describe '#erasable?' do
         subject { build.erasable? }
-        it { is_expected.to eq true }
+        it { is_expected.to be_truthy }
       end
 
       describe '#erased?' do
@@ -620,7 +622,7 @@ describe Ci::Build, models: true do
         subject { build.erased? }
 
         context 'build has not been erased' do
-          it { is_expected.to be false }
+          it { is_expected.to be_falsey }
         end
 
         context 'build has been erased' do
@@ -628,12 +630,13 @@ describe Ci::Build, models: true do
             build.erase
           end
 
-          it { is_expected.to be true }
+          it { is_expected.to be_truthy }
         end
       end
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
+
         before do
           build.remove_artifacts_metadata!
         end
@@ -655,18 +658,58 @@ describe Ci::Build, models: true do
 
   describe '#retryable?' do
     context 'when build is running' do
-      before { build.run! }
+      before do
+        build.run!
+      end
 
-      it 'should return false' do
-        expect(build.retryable?).to be false
+      it 'returns false' do
+        expect(build).not_to be_retryable
       end
     end
 
     context 'when build is finished' do
-      before { build.success! }
+      before do
+        build.success!
+      end
 
-      it 'should return true' do
-        expect(build.retryable?).to be true
+      it 'returns true' do
+        expect(build).to be_retryable
+      end
+    end
+  end
+
+  describe 'Project#latest_successful_builds_for' do
+    let(:build) do
+      create(:ci_build, :artifacts, :success, pipeline: pipeline)
+    end
+
+    before do
+      build
+    end
+
+    context 'with succeed pipeline' do
+      it 'returns builds from ref' do
+        builds = project.latest_successful_builds_for('fix')
+
+        expect(builds).to contain_exactly(build)
+      end
+
+      it 'returns empty relation if the build cannot be found' do
+        builds = project.latest_successful_builds_for('TAIL').all
+
+        expect(builds).to be_empty
+      end
+    end
+
+    context 'with pending pipeline' do
+      before do
+        pipeline.update(status: 'pending')
+      end
+
+      it 'returns empty relation' do
+        builds = project.latest_successful_builds_for('fix').all
+
+        expect(builds).to be_empty
       end
     end
   end

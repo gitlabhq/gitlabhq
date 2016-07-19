@@ -429,6 +429,13 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  # ref can't be HEAD, can only be branch/tag name or SHA
+  def latest_successful_builds_for(ref = 'master')
+    Ci::Build.joins(:pipeline).
+      merge(pipelines.latest_successful_for(ref)).
+      latest_successful_with_artifacts
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha

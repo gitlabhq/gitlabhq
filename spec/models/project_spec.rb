@@ -377,7 +377,7 @@ describe Project, models: true do
   describe '#repository' do
     let(:project) { create(:project) }
 
-    it 'should return valid repo' do
+    it 'returns valid repo' do
       expect(project.repository).to be_kind_of(Repository)
     end
   end

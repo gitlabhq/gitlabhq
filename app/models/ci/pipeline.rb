@@ -20,6 +20,14 @@ module Ci
     after_touch :update_state
     after_save :keep_around_commits
 
+    # ref can't be HEAD, can only be branch/tag name or SHA
+    scope :latest_successful_for, ->(ref) do
+      table = quoted_table_name
+      # TODO: Use `where(ref: ref).or(sha: ref)` in Rails 5
+      where("#{table}.ref = ? OR #{table}.sha = ?", ref, ref).
+        success.order(id: :desc)
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -222,7 +230,7 @@ module Ci
 
     def keep_around_commits
       return unless project
-      
+
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
     end
