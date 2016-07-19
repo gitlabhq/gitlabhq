@@ -130,17 +130,17 @@ describe Repository, models: true do
     end
   end
 
-  describe :create_file do
+  describe :commit_file do
     it 'commits change to a file successfully' do
       expect do
-        repository.commit_file(user, 'LICENSE', 'Copyright!',
-                              'Updates filename',
+        repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                              'Updates file content',
                               'master', true)
       end.to change { repository.commits('master').count }.by(1)
 
-      blob = Blob.decorate(repository.blob_at(repository.commits('master').first.id, 'LICENSE'))
+      blob = repository.blob_at('master', 'CHANGELOG')
 
-      expect(blob.data).to eq('Copyright!')
+      expect(blob.data).to eq('Changelog!')
     end
   end
 
