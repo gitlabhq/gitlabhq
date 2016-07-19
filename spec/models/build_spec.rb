@@ -687,8 +687,9 @@ describe Ci::Build, models: true do
       end
 
       it 'returns empty relation if the build cannot be found' do
-        builds = project.latest_successful_builds_for('TAIL').all
+        builds = project.latest_successful_builds_for('TAIL')
 
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
       end
     end
@@ -699,8 +700,9 @@ describe Ci::Build, models: true do
       end
 
       it 'returns empty relation' do
-        builds = project.latest_successful_builds_for('fix').all
+        builds = project.latest_successful_builds_for('fix')
 
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
       end
     end
