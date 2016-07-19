@@ -212,9 +212,7 @@ describe API::API, api: true do
         get path_from_ref
       end
 
-      it 'gives 401 for unauthorized user' do
-        expect(response).to have_http_status(401)
-      end
+      it { expect(response).to have_http_status(401) }
     end
 
     context 'non-existing build' do
