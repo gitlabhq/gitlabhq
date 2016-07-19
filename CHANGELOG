@@ -36,12 +36,14 @@ v 8.10.0 (unreleased)
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Added Rake task for tracking deployments !5320
   - Fix fetching LFS objects for private CI projects
   - Add the new 2016 Emoji! Adds 72 new emoji including bacon, facepalm, and selfie. !5237
   - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
   - Updated compare dropdown menus to use GL dropdown
   - Eager load award emoji on notes
+  - Allow to define manual actions/builds on Pipelines and Environments
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
@@ -57,6 +59,7 @@ v 8.10.0 (unreleased)
   - API: Expose `due_date` for issues (Robert Schilling)
   - API: Todos !3188 (Robert Schilling)
   - API: Expose shared groups for projects and shared projects for groups !5050 (Robert Schilling)
+  - API: Expose `developers_can_push` and `developers_can_merge` for branches !5208 (Robert Schilling)
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms
