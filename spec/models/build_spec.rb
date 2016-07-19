@@ -675,12 +675,8 @@ describe Ci::Build, models: true do
   end
 
   describe 'Project#latest_successful_builds_for' do
-    let(:build) do
+    let!(:build) do
       create(:ci_build, :artifacts, :success, pipeline: pipeline)
-    end
-
-    before do
-      build
     end
 
     context 'with succeed pipeline' do
