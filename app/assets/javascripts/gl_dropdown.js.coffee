@@ -311,6 +311,7 @@ class GitLabDropdown
         return true
 
   opened: =>
+    currentIndex = -1
     @addArrowKeyEvent()
 
     if @options.setIndeterminateIds
@@ -568,9 +569,6 @@ class GitLabDropdown
         PREV_INDEX = currentIndex
         $listItems = $(selector, @dropdown)
 
-        # if @options.filterable
-        #   $input.blur()
-
         if currentKeyCode is 40
           # Move down
           currentIndex += 1 if currentIndex < ($listItems.length - 1)
@@ -583,7 +581,7 @@ class GitLabDropdown
         return false
 
       if currentKeyCode is 13 and currentIndex isnt -1
-        @selectRowAtIndex e, currentIndex
+        @selectRowAtIndex e, $('.is-focused', @dropdown).closest('li').index() - 1
 
   removeArrayKeyEvent: ->
     $('body').off 'keydown'
