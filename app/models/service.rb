@@ -76,6 +76,10 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def test_data(project, user)
+    Gitlab::PushDataBuilder.build_sample(project, user)
+  end
+
   def supported_events
     %w(push tag_push issue merge_request wiki_page)
   end
@@ -92,6 +96,11 @@ class Service < ActiveRecord::Base
 
   def can_test?
     !project.empty_repo?
+  end
+
+  # reason why service cannot be tested
+  def disabled_title
+    "Please setup a project repository."
   end
 
   # Provide convenient accessor methods
@@ -170,6 +179,7 @@ class Service < ActiveRecord::Base
       bamboo
       buildkite
       builds_email
+      bugzilla
       campfire
       custom_issue_tracker
       drone_ci

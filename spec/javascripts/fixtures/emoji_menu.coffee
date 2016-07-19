@@ -1,7 +1,7 @@
 window.emojiMenu = """
   <div class='emoji-menu'>
+    <input type="text" name="emoji_search" id="emoji_search" value="" class="emoji-search search-input form-control" />
     <div class='emoji-menu-content'>
-      <input type="text" name="emoji_search" id="emoji_search" value="" class="emoji-search search-input form-control" />
       <h5 class='emoji-menu-title'>
       Emoticons
       </h5>

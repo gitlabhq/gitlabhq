@@ -1,6 +1,6 @@
 %h5.prepend-top-0
-  Already Protected (#{@branches.size})
-- if @branches.empty?
+  Already Protected (#{@protected_branches.size})
+- if @protected_branches.empty?
   %p.settings-message.text-center
     No branches are protected, protect a branch with the form above.
 - else
@@ -8,34 +8,21 @@
   .table-responsive
     %table.table.protected-branches-list
       %colgroup
+        %col{ width: "20%" }
         %col{ width: "30%" }
-        %col{ width: "30%" }
+        %col{ width: "25%" }
         %col{ width: "25%" }
         - if can_admin_project
           %col
       %thead
         %tr
-          %th Branch
-          %th Last commit
-          %th Developers can push
+          %th Protected Branch
+          %th Commit
+          %th Developers Can Push
+          %th Developers Can Merge
           - if can_admin_project
             %th
       %tbody
-        - @branches.each do |branch|
-          - @url = namespace_project_protected_branch_path(@project.namespace, @project, branch)
-          %tr
-            %td
-              = link_to(branch.name, namespace_project_commits_path(@project.namespace, @project, branch.name))
-              - if @project.root_ref?(branch.name)
-                %span.label.label-info.prepend-left-5 default
-            %td
-              - if commit = branch.commit
-                = link_to(commit.short_id, namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id')
-                #{time_ago_with_tooltip(commit.committed_date)}
-              - else
-                (branch was removed from repository)
-            %td
-              = check_box_tag("developers_can_push", branch.id, branch.developers_can_push, data: { url: @url })
-            - if can_admin_project
-              %td
-                = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning btn-sm"
+        = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
+
+  = paginate @protected_branches, theme: 'gitlab'

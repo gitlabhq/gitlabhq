@@ -179,6 +179,10 @@
   border-top: 1px solid $border-color;
 }
 
+.md-helper {
+  padding-top: 10px;
+}
+
 .toolbar-button {
   padding: 0;
   background: none;
@@ -217,5 +221,18 @@
 
   @media (min-width: $screen-md-min) {
     float: left;
+  }
+}
+
+.note-form-actions {
+  @media (max-width: $screen-xs-max) {
+    .btn {
+      float: none;
+      width: 100%;
+
+      &:not(:last-child) {
+        margin-bottom: 10px;
+      }
+    }
   }
 }

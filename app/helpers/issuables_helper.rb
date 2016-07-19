@@ -1,5 +1,4 @@
 module IssuablesHelper
-
   def sidebar_gutter_toggle_icon
     sidebar_gutter_collapsed? ? icon('angle-double-left') : icon('angle-double-right')
   end
@@ -62,7 +61,7 @@ module IssuablesHelper
     output = content_tag :strong, "#{text} #{issuable.to_reference}", class: "identifier"
     output << " opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs")
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "hidden-xs", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "hidden-sm hidden-md hidden-lg")
     end
   end

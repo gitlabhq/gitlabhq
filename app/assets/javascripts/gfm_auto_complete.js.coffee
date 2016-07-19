@@ -4,7 +4,7 @@ window.GitLab ?= {}
 GitLab.GfmAutoComplete =
   dataLoading: false
   dataLoaded: false
-
+  cachedData: {}
   dataSource: ''
 
   # Emoji
@@ -55,7 +55,7 @@ GitLab.GfmAutoComplete =
     @setupAtWho()
 
     if @dataSource
-      if !@dataLoading
+      if not @dataLoading and not @cachedData
         @dataLoading = true
 
         # We should wait until initializations are done
@@ -70,6 +70,8 @@ GitLab.GfmAutoComplete =
             @loadData(data)
         , 1000)
 
+      if @cachedData?
+        @loadData(@cachedData)
 
   setupAtWho: ->
     # Emoji
@@ -188,7 +190,7 @@ GitLab.GfmAutoComplete =
       callbacks:
         beforeSave: (merges) ->
           sanitizeLabelTitle = (title)->
-            if /\w+\s+\w+/g.test(title)
+            if /[\w\?&]+\s+[\w\?&]+/g.test(title)
               "\"#{sanitize(title)}\""
             else
               sanitize(title)
@@ -205,6 +207,7 @@ GitLab.GfmAutoComplete =
     $.getJSON(dataSource)
 
   loadData: (data) ->
+    @cachedData = data
     @dataLoaded = true
 
     # load members

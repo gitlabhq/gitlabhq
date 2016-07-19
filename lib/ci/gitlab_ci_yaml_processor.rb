@@ -2,9 +2,8 @@ module Ci
   class GitlabCiYamlProcessor
     class ValidationError < StandardError; end
 
-    include Gitlab::Ci::Config::Node::ValidationHelpers
+    include Gitlab::Ci::Config::Node::LegacyValidationHelpers
 
-    DEFAULT_STAGES = %w(build test deploy)
     DEFAULT_STAGE = 'test'
     ALLOWED_YAML_KEYS = [:before_script, :after_script, :image, :services, :types, :stages, :variables, :cache]
     ALLOWED_JOB_KEYS = [:tags, :script, :only, :except, :type, :image, :services,
@@ -14,7 +13,7 @@ module Ci
     ALLOWED_CACHE_KEYS = [:key, :untracked, :paths]
     ALLOWED_ARTIFACTS_KEYS = [:name, :untracked, :paths, :when, :expire_in]
 
-    attr_reader :after_script, :image, :services, :path, :cache
+    attr_reader :path, :cache, :stages
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
@@ -22,50 +21,85 @@ module Ci
 
       @path = path
 
-      initial_parsing
+      unless @ci_config.valid?
+        raise ValidationError, @ci_config.errors.first
+      end
 
+      initial_parsing
       validate!
     rescue Gitlab::Ci::Config::Loader::FormatError => e
       raise ValidationError, e.message
     end
 
+    def jobs_for_ref(ref, tag = false, trigger_request = nil)
+      @jobs.select do |_, job|
+        process?(job[:only], job[:except], ref, tag, trigger_request)
+      end
+    end
+
+    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).select do |_, job|
+        job[:stage] == stage
+      end
+    end
+
+    def builds_for_ref(ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
+      end
+    end
+
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      builds.select do |build|
-        build[:stage] == stage &&
-          process?(build[:only], build[:except], ref, tag, trigger_request)
+      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
       end
     end
 
     def builds
-      @jobs.map do |name, job|
-        build_job(name, job)
+      @jobs.map do |name, _|
+        build_attributes(name)
       end
     end
 
-    def stages
-      @stages || DEFAULT_STAGES
-    end
-
-    def global_variables
-      @variables
-    end
-
-    def job_variables(name)
-      job = @jobs[name.to_sym]
-      return [] unless job
-
-      job[:variables] || []
+    def build_attributes(name)
+      job = @jobs[name.to_sym] || {}
+      {
+        stage_idx: @stages.index(job[:stage]),
+        stage: job[:stage],
+        ##
+        # Refactoring note:
+        #  - before script behaves differently than after script
+        #  - after script returns an array of commands
+        #  - before script should be a concatenated command
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        tag_list: job[:tags] || [],
+        name: name,
+        allow_failure: job[:allow_failure] || false,
+        when: job[:when] || 'on_success',
+        environment: job[:environment],
+        yaml_variables: yaml_variables(name),
+        options: {
+          image: job[:image] || @image,
+          services: job[:services] || @services,
+          artifacts: job[:artifacts],
+          cache: job[:cache] || @cache,
+          dependencies: job[:dependencies],
+          after_script: job[:after_script] || @after_script,
+        }.compact
+      }
     end
 
     private
 
     def initial_parsing
-      @after_script = @config[:after_script]
-      @image = @config[:image]
-      @services = @config[:services]
-      @stages = @config[:stages] || @config[:types]
-      @variables = @config[:variables] || {}
-      @cache = @config[:cache]
+      @before_script = @ci_config.before_script
+      @image = @ci_config.image
+      @after_script = @ci_config.after_script
+      @services = @ci_config.services
+      @variables = @ci_config.variables
+      @stages = @ci_config.stages
+      @cache = @ci_config.cache
+
       @jobs = {}
 
       @config.except!(*ALLOWED_YAML_KEYS)
@@ -83,85 +117,30 @@ module Ci
       @jobs[name] = { stage: stage }.merge(job)
     end
 
-    def build_job(name, job)
-      {
-        stage_idx: stages.index(job[:stage]),
-        stage: job[:stage],
-        commands: [job[:before_script] || [@ci_config.before_script], job[:script]].flatten.compact.join("\n"),
-        tag_list: job[:tags] || [],
-        name: name,
-        only: job[:only],
-        except: job[:except],
-        allow_failure: job[:allow_failure] || false,
-        when: job[:when] || 'on_success',
-        environment: job[:environment],
-        options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
-          artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
-          dependencies: job[:dependencies],
-          after_script: job[:after_script] || @after_script,
-        }.compact
-      }
+    def yaml_variables(name)
+      variables = global_variables.merge(job_variables(name))
+      variables.map do |key, value|
+        { key: key, value: value, public: true }
+      end
+    end
+
+    def global_variables
+      @variables || {}
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      return {} unless job
+
+      job[:variables] || {}
     end
 
     def validate!
-      unless @ci_config.valid?
-        raise ValidationError, @ci_config.errors.first
-      end
-
-      validate_global!
-
       @jobs.each do |name, job|
         validate_job!(name, job)
       end
 
       true
-    end
-
-    def validate_global!
-      unless @after_script.nil? || validate_array_of_strings(@after_script)
-        raise ValidationError, "after_script should be an array of strings"
-      end
-
-      unless @image.nil? || @image.is_a?(String)
-        raise ValidationError, "image should be a string"
-      end
-
-      unless @services.nil? || validate_array_of_strings(@services)
-        raise ValidationError, "services should be an array of strings"
-      end
-
-      unless @stages.nil? || validate_array_of_strings(@stages)
-        raise ValidationError, "stages should be an array of strings"
-      end
-
-      unless @variables.nil? || validate_variables(@variables)
-        raise ValidationError, "variables should be a map of key-value strings"
-      end
-
-      validate_global_cache! if @cache
-    end
-
-    def validate_global_cache!
-      @cache.keys.each do |key|
-        unless ALLOWED_CACHE_KEYS.include? key
-          raise ValidationError, "#{name} cache unknown parameter #{key}"
-        end
-      end
-
-      if @cache[:key] && !validate_string(@cache[:key])
-        raise ValidationError, "cache:key parameter should be a string"
-      end
-
-      if @cache[:untracked] && !validate_boolean(@cache[:untracked])
-        raise ValidationError, "cache:untracked parameter should be an boolean"
-      end
-
-      if @cache[:paths] && !validate_array_of_strings(@cache[:paths])
-        raise ValidationError, "cache:paths parameter should be an array of strings"
-      end
     end
 
     def validate_job!(name, job)
@@ -216,8 +195,8 @@ module Ci
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
-      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
-        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      if job[:when] && !job[:when].in?(%w[on_success on_failure always manual])
+        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure, always or manual"
       end
 
       if job[:environment] && !validate_environment(job[:environment])
@@ -240,8 +219,8 @@ module Ci
     end
 
     def validate_job_stage!(name, job)
-      unless job[:stage].is_a?(String) && job[:stage].in?(stages)
-        raise ValidationError, "#{name} job: stage parameter should be #{stages.join(", ")}"
+      unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
+        raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
       end
     end
 
@@ -305,12 +284,12 @@ module Ci
         raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
       end
 
-      stage_index = stages.index(job[:stage])
+      stage_index = @stages.index(job[:stage])
 
       job[:dependencies].each do |dependency|
         raise ValidationError, "#{name} job: undefined dependency: #{dependency}" unless @jobs[dependency.to_sym]
 
-        unless stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
+        unless @stages.index(@jobs[dependency.to_sym][:stage]) < stage_index
           raise ValidationError, "#{name} job: dependency #{dependency} is not defined in prior stages"
         end
       end

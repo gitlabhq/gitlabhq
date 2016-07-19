@@ -1,0 +1,11 @@
+# Full project: https://gitlab.com/pages/hugo
+image: publysher/hugo
+
+pages:
+  script:
+  - hugo
+  artifacts:
+    paths:
+    - public
+  only:
+  - master

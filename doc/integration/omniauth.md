@@ -127,9 +127,15 @@ The chosen OmniAuth provider is now active and can be used to sign in to GitLab 
 This setting was introduced with version 8.7 of GitLab
 
 You can define which OmniAuth providers you want to be `external` so that all users
-creating accounts via these providers will not be able to have access to internal
-projects. You will need to use the full name of the provider, like `google_oauth2`
-for Google. Refer to the examples for the full names of the supported providers.
+**creating accounts, or logging in via these providers** will not be able to have
+access to internal projects. You will need to use the full name of the provider,
+like `google_oauth2` for Google. Refer to the examples for the full names of the
+supported providers.
+
+>**Note:**
+If you decide to remove an OmniAuth provider from the external providers list
+you will need to manually update the users that use this method to login, if you
+want their accounts to be upgraded to full internal accounts.
 
 **For Omnibus installations**
 

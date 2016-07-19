@@ -4,7 +4,7 @@ namespace :gemojione do
     require 'digest/sha2'
     require 'json'
 
-    dir = Gemojione.index.images_path
+    dir = Gemojione.images_path
     digests = []
     aliases = Hash.new { |hash, key| hash[key] = [] }
     aliases_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
@@ -13,7 +13,7 @@ namespace :gemojione do
       aliases[real_name] << alias_name
     end
 
-    AwardEmoji.emojis.map do |name, emoji_hash|
+    Gitlab::AwardEmoji.emojis.map do |name, emoji_hash|
       fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
       digest = Digest::SHA256.file(fpath).hexdigest
 
@@ -50,9 +50,14 @@ namespace :gemojione do
     SIZE   = 20
     RETINA = SIZE * 2
 
+    # Update these values to the width and height of the spritesheet when
+    # new emoji are added.
+    SPRITESHEET_WIDTH = 860
+    SPRITESHEET_HEIGHT = 840
+
     Dir.mktmpdir do |tmpdir|
       # Copy the Gemojione assets to the temporary folder for resizing
-      FileUtils.cp_r(Gemojione.index.images_path, tmpdir)
+      FileUtils.cp_r(Gemojione.images_path, tmpdir)
 
       Dir.chdir(tmpdir) do
         Dir["**/*.png"].each do |png|
@@ -64,7 +69,7 @@ namespace :gemojione do
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
       SpriteFactory.cssurl = "image-url('$IMAGE')"
-      SpriteFactory.run!(File.join(tmpdir, 'images'), {
+      SpriteFactory.run!(File.join(tmpdir, 'png'), {
         output_style: style_path,
         output_image: "app/assets/images/emoji.png",
         selector:     '.emoji-',
@@ -97,7 +102,7 @@ namespace :gemojione do
                  only screen and (min-resolution: 192dpi),
                  only screen and (min-resolution: 2dppx) {
             background-image: image-url('emoji@2x.png');
-            background-size: 840px 820px;
+            background-size: #{SPRITESHEET_WIDTH}px #{SPRITESHEET_HEIGHT}px;
           }
         }
         CSS
@@ -107,7 +112,7 @@ namespace :gemojione do
     # Now do it again but for Retina
     Dir.mktmpdir do |tmpdir|
       # Copy the Gemojione assets to the temporary folder for resizing
-      FileUtils.cp_r(Gemojione.index.images_path, tmpdir)
+      FileUtils.cp_r(Gemojione.images_path, tmpdir)
 
       Dir.chdir(tmpdir) do
         Dir["**/*.png"].each do |png|
@@ -116,7 +121,7 @@ namespace :gemojione do
       end
 
       # Combine the resized assets into a packed sprite and re-generate the SCSS
-      SpriteFactory.run!(File.join(tmpdir, 'images'), {
+      SpriteFactory.run!(File.join(tmpdir), {
         output_image: "app/assets/images/emoji@2x.png",
         style:        false,
         nocomments:   true,

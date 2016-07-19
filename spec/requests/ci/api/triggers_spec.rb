@@ -21,17 +21,17 @@ describe Ci::API::API do
     context 'Handles errors' do
       it 'should return bad request if token is missing' do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger")
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
       end
 
       it 'should return not found if project is not found' do
         post ci_api('/projects/0/refs/master/trigger'), options
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
 
       it 'should return unauthorized if token is for different project' do
         post ci_api("/projects/#{project2.ci_id}/refs/master/trigger"), options
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
@@ -40,14 +40,14 @@ describe Ci::API::API do
 
       it 'should create builds' do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         pipeline.builds.reload
         expect(pipeline.builds.size).to eq(2)
       end
 
       it 'should return bad request with no builds created if there\'s no commit for that ref' do
         post ci_api("/projects/#{project.ci_id}/refs/other-branch/trigger"), options
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('No builds created')
       end
 
@@ -58,19 +58,19 @@ describe Ci::API::API do
 
         it 'should validate variables to be a hash' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: 'value')
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a hash')
         end
 
         it 'should validate variables needs to be a map of key-valued strings' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: { key: %w(1 2) })
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end
 
         it 'create trigger request with variables' do
           post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options.merge(variables: variables)
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
           pipeline.builds.reload
           expect(pipeline.builds.first.trigger_request.variables).to eq(variables)
         end

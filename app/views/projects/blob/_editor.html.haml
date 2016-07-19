@@ -4,7 +4,9 @@
       = icon('code-fork')
       = ref
     %span.editor-file-name
-      = @path
+      - if current_action?(:edit) || current_action?(:update)
+        = text_field_tag 'file_path', (params[:file_path] || @path),
+                                      class: 'form-control new-file-path'
 
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name
@@ -17,6 +19,8 @@
         = dropdown_tag("Choose a License template", options: { toggle_class: 'js-license-selector', title: "Choose a license", filter: true, placeholder: "Filter", data: { data: licenses_for_select, project: @project.name, fullname: @project.namespace.human_name } } )
       .gitignore-selector.js-gitignore-selector-wrap.hidden
         = dropdown_tag("Choose a .gitignore template", options: { toggle_class: 'js-gitignore-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitignore_names } } )
+      .gitlab-ci-yml-selector.js-gitlab-ci-yml-selector-wrap.hidden
+        = dropdown_tag("Choose a GitLab CI Yaml template", options: { toggle_class: 'js-gitlab-ci-yml-selector', title: "Choose a template", filter: true, placeholder: "Filter", data: { data: gitlab_ci_ymls } } )
       .encoding-selector
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
 

@@ -26,7 +26,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "user", mounted_as: "avatar", id: user.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -35,7 +35,7 @@ describe UploadsController do
         it "responds with status 200" do
           get :show, model: "user", mounted_as: "avatar", id: user.id, filename: "image.png"
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -52,7 +52,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -64,7 +64,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -109,7 +109,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
           end
@@ -118,7 +118,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "project", mounted_as: "avatar", id: project.id, filename: "image.png"
 
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -133,7 +133,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -145,7 +145,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -181,7 +181,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
           end
@@ -190,7 +190,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "group", mounted_as: "avatar", id: group.id, filename: "image.png"
 
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -210,7 +210,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -222,7 +222,7 @@ describe UploadsController do
           it "responds with status 200" do
             get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -267,7 +267,7 @@ describe UploadsController do
               it "responds with status 200" do
                 get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
           end
@@ -276,7 +276,7 @@ describe UploadsController do
             it "responds with status 404" do
               get :show, model: "note", mounted_as: "attachment", id: note.id, filename: "image.png"
 
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end

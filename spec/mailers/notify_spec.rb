@@ -401,23 +401,56 @@ describe Notify do
     end
 
     describe 'project access requested' do
-      let(:project) { create(:project) }
-      let(:user) { create(:user) }
-      let(:project_member) do
-        project.request_access(user)
-        project.members.request.find_by(user_id: user.id)
+      context 'for a project in a user namespace' do
+        let(:project) { create(:project).tap { |p| p.team << [p.owner, :master, p.owner] } }
+        let(:user) { create(:user) }
+        let(:project_member) do
+          project.request_access(user)
+          project.requesters.find_by(user_id: user.id)
+        end
+        subject { Notify.member_access_requested_email('project', project_member.id) }
+
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+
+        it 'contains all the useful information' do
+          to_emails = subject.header[:to].addrs
+          expect(to_emails.size).to eq(1)
+          expect(to_emails[0].address).to eq(project.members.owners_and_masters.first.user.notification_email)
+
+          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+          is_expected.to have_body_text /#{project.name_with_namespace}/
+          is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
+          is_expected.to have_body_text /#{project_member.human_access}/
+        end
       end
-      subject { Notify.member_access_requested_email('project', project_member.id) }
 
-      it_behaves_like 'an email sent from GitLab'
-      it_behaves_like 'it should not have Gmail Actions links'
-      it_behaves_like "a user cannot unsubscribe through footer link"
+      context 'for a project in a group' do
+        let(:group_owner) { create(:user) }
+        let(:group) { create(:group).tap { |g| g.add_owner(group_owner) } }
+        let(:project) { create(:project, namespace: group) }
+        let(:user) { create(:user) }
+        let(:project_member) do
+          project.request_access(user)
+          project.requesters.find_by(user_id: user.id)
+        end
+        subject { Notify.member_access_requested_email('project', project_member.id) }
 
-      it 'contains all the useful information' do
-        is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
-        is_expected.to have_body_text /#{project.name_with_namespace}/
-        is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
-        is_expected.to have_body_text /#{project_member.human_access}/
+        it_behaves_like 'an email sent from GitLab'
+        it_behaves_like 'it should not have Gmail Actions links'
+        it_behaves_like "a user cannot unsubscribe through footer link"
+
+        it 'contains all the useful information' do
+          to_emails = subject.header[:to].addrs
+          expect(to_emails.size).to eq(1)
+          expect(to_emails[0].address).to eq(group.members.owners_and_masters.first.user.notification_email)
+
+          is_expected.to have_subject "Request to join the #{project.name_with_namespace} project"
+          is_expected.to have_body_text /#{project.name_with_namespace}/
+          is_expected.to have_body_text /#{namespace_project_project_members_url(project.namespace, project)}/
+          is_expected.to have_body_text /#{project_member.human_access}/
+        end
       end
     end
 
@@ -426,7 +459,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:project_member) do
         project.request_access(user)
-        project.members.request.find_by(user_id: user.id)
+        project.requesters.find_by(user_id: user.id)
       end
       subject { Notify.member_access_denied_email('project', project.id, user.id) }
 
@@ -651,7 +684,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.members.request.find_by(user_id: user.id)
+        group.requesters.find_by(user_id: user.id)
       end
       subject { Notify.member_access_requested_email('group', group_member.id) }
 
@@ -672,7 +705,7 @@ describe Notify do
       let(:user) { create(:user) }
       let(:group_member) do
         group.request_access(user)
-        group.members.request.find_by(user_id: user.id)
+        group.requesters.find_by(user_id: user.id)
       end
       subject { Notify.member_access_denied_email('group', group.id, user.id) }
 
@@ -915,7 +948,7 @@ describe Notify do
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
-    let(:diff_refs) { [project.merge_base_commit(sample_image_commit.id, sample_commit.id), project.commit(sample_commit.id)] }
+    let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, reverse_compare: false, diff_refs: diff_refs, send_from_committer_email: send_from_committer_email) }
 
@@ -951,7 +984,6 @@ describe Notify do
     end
 
     context "when set to send from committer email if domain matches" do
-
       let(:send_from_committer_email) { true }
 
       before do
@@ -959,7 +991,6 @@ describe Notify do
       end
 
       context "when the committer email domain is within the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@company.com")
           user.confirm
@@ -977,7 +1008,6 @@ describe Notify do
       end
 
       context "when the committer email domain is not completely within the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@something.company.com")
           user.confirm
@@ -995,7 +1025,6 @@ describe Notify do
       end
 
       context "when the committer email domain is outside the GitLab domain" do
-
         before do
           user.update_attribute(:email, "user@mpany.com")
           user.confirm
@@ -1020,7 +1049,7 @@ describe Notify do
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits, nil) }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
-    let(:diff_refs) { [project.merge_base_commit(sample_commit.parent_id, sample_commit.id), project.commit(sample_commit.id)] }
+    let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 
     subject { Notify.repository_push_email(project.id, author_id: user.id, ref: 'refs/heads/master', action: :push, compare: compare, diff_refs: diff_refs) }
 
@@ -1051,5 +1080,4 @@ describe Notify do
       is_expected.to have_body_text /#{diff_path}/
     end
   end
-
 end

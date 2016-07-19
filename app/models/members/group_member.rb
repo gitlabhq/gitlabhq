@@ -33,12 +33,6 @@ class GroupMember < Member
     super
   end
 
-  def send_request
-    notification_service.new_group_access_request(self)
-
-    super
-  end
-
   def post_create_hook
     notification_service.new_group_member(self)
 
@@ -61,12 +55,6 @@ class GroupMember < Member
 
   def after_decline_invite
     notification_service.decline_group_invite(self)
-
-    super
-  end
-
-  def post_decline_request
-    notification_service.decline_group_access_request(self)
 
     super
   end

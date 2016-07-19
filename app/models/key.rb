@@ -9,7 +9,7 @@ class Key < ActiveRecord::Base
   before_validation :strip_white_space, :generate_fingerprint
 
   validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
+  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }
   validates :key, format: { without: /\n|\r/, message: 'should be a single line' }
   validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
 

@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class ProjectCreator
-
       def initialize(namespace_id, current_user, file, project_path)
         @namespace_id = namespace_id
         @current_user = current_user

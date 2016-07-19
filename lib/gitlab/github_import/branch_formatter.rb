@@ -4,7 +4,7 @@ module Gitlab
       delegate :repo, :sha, :ref, to: :raw_data
 
       def exists?
-        project.repository.branch_exists?(ref)
+        branch_exists? && commit_exists?
       end
 
       def name
@@ -15,11 +15,15 @@ module Gitlab
         repo.present?
       end
 
-      def valid?
-        repo.present?
+      private
+
+      def branch_exists?
+        project.repository.branch_exists?(ref)
       end
 
-      private
+      def commit_exists?
+        project.repository.commit(sha).present?
+      end
 
       def short_id
         sha.to_s[0..7]

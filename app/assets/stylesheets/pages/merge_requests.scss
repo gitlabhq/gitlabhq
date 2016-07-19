@@ -60,8 +60,10 @@
   .ci_widget {
     border-bottom: 1px solid #eef0f2;
 
-    i {
+    svg {
       margin-right: 4px;
+      position: relative;
+      top: 1px;
     }
 
     &.ci-success {
@@ -73,9 +75,12 @@
       color: #888;
     }
 
-    &.ci-pending,
-    &.ci-running {
+    &.ci-pending {
       color: $gl-warning;
+    }
+
+    &.ci-running {
+      color: $blue-normal;
     }
 
     &.ci-failed,
@@ -119,7 +124,12 @@
       margin-bottom: 0;
     }
 
-    @media (max-width: $screen-sm-max) {
+    .btn-grouped {
+      margin-left: 0;
+      margin-right: 7px;
+    }
+
+    @media (max-width: $screen-xs-max) {
       h4 {
         font-size: 15px;
       }
@@ -131,8 +141,12 @@
       .btn,
       .btn-group,
       .accept-action {
-        width: 100%;
         margin-bottom: 4px;
+      }
+
+      .accept-action {
+        width: 100%;
+        text-align: center;
       }
 
       .accept-control {
@@ -158,7 +172,8 @@
 
   .commit {
     margin: 0;
-    padding: 2px 0;
+    padding-top: 2px;
+    padding-bottom: 2px;
     list-style: none;
     &:hover {
       background: none;
@@ -183,6 +198,16 @@
 
     .merge-request-title {
       margin-bottom: 2px;
+
+      .ci-status-link {
+
+        svg {
+          height: 16px;
+          width: 16px;
+          position: relative;
+          top: 3px;
+        }
+      }
     }
   }
 
@@ -255,8 +280,15 @@
       margin-bottom: 4px;
     }
 
+    .item-title {
+      @media (min-width: $screen-sm-min) {
+        width: 45%;
+      }
+    }
+
     .avatar {
-      margin-left: 0;
+      left: 0;
+      top: 2px;
     }
 
     .commit-row-info {
@@ -284,7 +316,7 @@
     margin-bottom: 0;
   }
 
-  @media (min-width: $screen-sm-min) {
+  @media (min-width: $screen-xs-min) {
     float: left;
     width: 50%;
     margin-bottom: 0;

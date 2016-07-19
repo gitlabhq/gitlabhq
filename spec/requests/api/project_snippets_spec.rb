@@ -27,7 +27,7 @@ describe API::API, api: true do
 
       get api("/projects/#{project.id}/snippets/", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response.size).to eq(3)
       expect(json_response.map{ |snippet| snippet['id']} ).to include(public_snippet.id, internal_snippet.id, private_snippet.id)
     end
@@ -38,7 +38,7 @@ describe API::API, api: true do
       create(:project_snippet, :private, project: project)
 
       get api("/projects/#{project.id}/snippets/", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response.size).to eq(0)
     end
   end
@@ -56,7 +56,7 @@ describe API::API, api: true do
 
       post api("/projects/#{project.id}/snippets/", admin), params
 
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       snippet = ProjectSnippet.find(json_response['id'])
       expect(snippet.content).to eq(params[:code])
       expect(snippet.title).to eq(params[:title])
@@ -73,7 +73,7 @@ describe API::API, api: true do
 
       put api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin), code: new_content
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       snippet.reload
       expect(snippet.content).to eq(new_content)
     end
@@ -86,7 +86,7 @@ describe API::API, api: true do
 
       delete api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/", admin)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 
@@ -97,7 +97,7 @@ describe API::API, api: true do
 
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/raw", admin)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(response.content_type).to eq 'text/plain'
       expect(response.body).to eq(snippet.content)
     end

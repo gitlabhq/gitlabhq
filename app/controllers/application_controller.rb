@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     render_404
   end
 
+  rescue_from Gitlab::Access::AccessDeniedError do |exception|
+    render_403
+  end
+
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end
@@ -338,10 +342,6 @@ class ApplicationController < ActionController::Base
 
   def skip_two_factor?
     session[:skip_tfa] && session[:skip_tfa] > Time.current
-  end
-
-  def browser_supports_u2f?
-    browser.chrome? && browser.version.to_i >= 41 && !browser.device.mobile?
   end
 
   def redirect_to_home_page_url?

@@ -79,7 +79,7 @@
         .panel-body.form-holder
           %p.light
             Read more about project permissions
-            %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+            %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
           = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
@@ -88,28 +88,17 @@
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr
             = button_tag 'Add users to group', class: "btn btn-create"
+
+    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
+
     .panel.panel-default
       .panel-heading
-        %h3.panel-title
-          Members
-          %span.badge
-            #{@group.group_members.count}
-      %ul.well-list.group-users-list
-        - @members.each do |member|
-          - user = member.user
-          %li{class: dom_class(member), id: (dom_id(user) if user)}
-            .list-item-name
-              - if user
-                %strong
-                  = link_to user.name, admin_user_path(user)
-              - else
-                %strong
-                  = member.invite_email
-                (invited)
-            %span.pull-right.light
-              = member.human_access
-              - if can?(current_user, :destroy_group_member, member)
-                = link_to group_group_member_path(@group, member), data: { confirm: remove_member_message(member) }, method: :delete, remote: true, class: "btn-xs btn btn-remove", title: 'Remove user from group' do
-                  %i.fa.fa-minus.fa-inverse
+        %strong= @group.name
+        group members
+        %span.badge= @group.members.size
+        .pull-right
+          = link_to icon('pencil-square-o', text: 'Manage Access'), polymorphic_url([@group, :members]), class: "btn btn-xs"
+      %ul.well-list.group-users-list.content-list
+        = render partial: 'shared/members/member', collection: @members, as: :member, locals: { show_controls: false }
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

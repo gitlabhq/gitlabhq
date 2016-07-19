@@ -27,13 +27,6 @@ Feature: Admin Groups
     Then I should see project shared with group
 
   @javascript
-  Scenario: Remove user from group
-    Given we have user "John Doe" in group
-    When I visit admin group page
-    And I remove user "John Doe" from group
-    Then I should not see "John Doe" in team list
-
-  @javascript
   Scenario: Invite user to a group by e-mail
     When I visit admin group page
     When I select user "johndoe@gitlab.com" from user list as "Reporter"

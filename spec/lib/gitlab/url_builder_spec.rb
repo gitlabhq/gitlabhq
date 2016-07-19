@@ -43,9 +43,9 @@ describe Gitlab::UrlBuilder, lib: true do
         end
       end
 
-      context 'on a CommitDiff' do
+      context 'on a Commit Diff' do
         it 'returns a proper URL' do
-          note = build_stubbed(:note_on_commit_diff)
+          note = build_stubbed(:diff_note_on_commit)
 
           url = described_class.build(note)
 
@@ -75,10 +75,10 @@ describe Gitlab::UrlBuilder, lib: true do
         end
       end
 
-      context 'on a MergeRequestDiff' do
+      context 'on a MergeRequest Diff' do
         it 'returns a proper URL' do
           merge_request = create(:merge_request, iid: 42)
-          note = build_stubbed(:note_on_merge_request_diff, noteable: merge_request)
+          note = build_stubbed(:diff_note_on_merge_request, noteable: merge_request)
 
           url = described_class.build(note)
 

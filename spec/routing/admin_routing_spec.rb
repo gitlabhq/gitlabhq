@@ -95,7 +95,6 @@ describe Admin::HooksController, "routing" do
   it "to #destroy" do
     expect(delete("/admin/hooks/1")).to route_to('admin/hooks#destroy', id: '1')
   end
-
 end
 
 # admin_logs GET    /admin/logs(.:format) admin/logs#show

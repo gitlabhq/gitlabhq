@@ -1,5 +1,10 @@
 - page_title 'Two-Factor Authentication', 'Account'
 - header_title "Two-Factor Authentication", profile_two_factor_auth_path
+= render 'profiles/head'
+
+- if inject_u2f_api?
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_tag('u2f.js')
 
 .row.prepend-top-default
   .col-lg-3
@@ -13,7 +18,7 @@
     - else
       %p
         Download the Google Authenticator application from App Store or Google Play Store and scan this code.
-        More information is available in the #{link_to('documentation', help_page_path('profile', 'two_factor_authentication'))}.
+        More information is available in the #{link_to('documentation', help_page_path('profile/two_factor_authentication'))}.
       .row.append-bottom-10
         .col-md-3
           = raw @qr_code

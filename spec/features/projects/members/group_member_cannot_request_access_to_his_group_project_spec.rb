@@ -5,9 +5,6 @@ feature 'Projects > Members > Group member cannot request access to his group pr
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
 
-  background do
-  end
-
   scenario 'owner does not see the request access button' do
     group.add_owner(user)
     login_and_visit_project_page(user)

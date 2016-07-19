@@ -13,7 +13,6 @@ module Gitlab
       "Cannot start with '-' or end in '.'." \
     end
 
-
     def namespace_name_regex
       @namespace_name_regex ||= /\A[\p{Alnum}\p{Pd}_\. ]*\z/.freeze
     end
@@ -21,7 +20,6 @@ module Gitlab
     def namespace_name_regex_message
       "can contain only letters, digits, '_', '.', dash and space."
     end
-
 
     def project_name_regex
       @project_name_regex ||= /\A[\p{Alnum}_][\p{Alnum}\p{Pd}_\. ]*\z/.freeze
@@ -32,7 +30,6 @@ module Gitlab
       "It must start with letter, digit or '_'."
     end
 
-
     def project_path_regex
       @project_path_regex ||= /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git|\.atom)\z/.freeze
     end
@@ -41,7 +38,6 @@ module Gitlab
       "can contain only letters, digits, '_', '-' and '.'. " \
       "Cannot start with '-', end in '.git' or end in '.atom'" \
     end
-
 
     def file_name_regex
       @file_name_regex ||= /\A[a-zA-Z0-9_\-\.\@]*\z/.freeze
@@ -59,7 +55,6 @@ module Gitlab
       "can contain only letters, digits, '_', '-', '@' and '.'. Separate directories with a '/'. "
     end
 
-
     def directory_traversal_regex
       @directory_traversal_regex ||= /\.{2}/.freeze
     end
@@ -67,7 +62,6 @@ module Gitlab
     def directory_traversal_regex_message
       "cannot include directory traversal. "
     end
-
 
     def archive_formats_regex
       #                           |zip|tar|    tar.gz    |         tar.bz2         |

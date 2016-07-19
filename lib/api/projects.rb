@@ -25,7 +25,11 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        if params[:simple]
+          present @projects, with: Entities::BasicProjectDetails, user: current_user
+        else
+          present @projects, with: Entities::ProjectWithAccess, user: current_user
+        end
       end
 
       # Get an owned projects list for authenticated user
@@ -341,7 +345,6 @@ module API
         else
           not_found!("Source Project")
         end
-
       end
 
       # Remove a forked_from relationship
@@ -417,7 +420,6 @@ module API
 
         present paginate(projects), with: Entities::Project
       end
-
 
       # Get a users list
       #

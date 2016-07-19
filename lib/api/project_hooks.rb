@@ -28,7 +28,6 @@ module API
         present @hook, with: Entities::ProjectHook
       end
 
-
       # Add hook to project
       #
       # Parameters:

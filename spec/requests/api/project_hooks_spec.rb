@@ -22,7 +22,7 @@ describe API::API, 'ProjectHooks', api: true do
     context "authorized user" do
       it "should return project hooks" do
         get api("/projects/#{project.id}/hooks", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
 
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
@@ -40,7 +40,7 @@ describe API::API, 'ProjectHooks', api: true do
     context "unauthorized user" do
       it "should not access project hooks" do
         get api("/projects/#{project.id}/hooks", user3)
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
   end
@@ -49,7 +49,7 @@ describe API::API, 'ProjectHooks', api: true do
     context "authorized user" do
       it "should return a project hook" do
         get api("/projects/#{project.id}/hooks/#{hook.id}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['url']).to eq(hook.url)
         expect(json_response['issues_events']).to eq(hook.issues_events)
         expect(json_response['push_events']).to eq(hook.push_events)
@@ -61,20 +61,20 @@ describe API::API, 'ProjectHooks', api: true do
 
       it "should return a 404 error if hook id is not available" do
         get api("/projects/#{project.id}/hooks/1234", user)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
     context "unauthorized user" do
       it "should not access an existing hook" do
         get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
     it "should return a 404 error if hook id is not available" do
       get api("/projects/#{project.id}/hooks/1234", user)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -83,7 +83,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect do
         post api("/projects/#{project.id}/hooks", user), url: "http://example.com", issues_events: true
       end.to change {project.hooks.count}.by(1)
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['url']).to eq('http://example.com')
       expect(json_response['issues_events']).to eq(true)
       expect(json_response['push_events']).to eq(true)
@@ -96,12 +96,12 @@ describe API::API, 'ProjectHooks', api: true do
 
     it "should return a 400 error if url not given" do
       post api("/projects/#{project.id}/hooks", user)
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
     end
 
     it "should return a 422 error if url not valid" do
       post api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
-      expect(response.status).to eq(422)
+      expect(response).to have_http_status(422)
     end
   end
 
@@ -109,7 +109,7 @@ describe API::API, 'ProjectHooks', api: true do
     it "should update an existing project hook" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user),
         url: 'http://example.org', push_events: false
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['url']).to eq('http://example.org')
       expect(json_response['issues_events']).to eq(hook.issues_events)
       expect(json_response['push_events']).to eq(false)
@@ -121,17 +121,17 @@ describe API::API, 'ProjectHooks', api: true do
 
     it "should return 404 error if hook id not found" do
       put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     it "should return 400 error if url is not given" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
     end
 
     it "should return a 422 error if url is not valid" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
-      expect(response.status).to eq(422)
+      expect(response).to have_http_status(422)
     end
   end
 
@@ -140,22 +140,22 @@ describe API::API, 'ProjectHooks', api: true do
       expect do
         delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
       end.to change {project.hooks.count}.by(-1)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
 
     it "should return success when deleting hook" do
       delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
 
     it "should return a 404 error when deleting non existent hook" do
       delete api("/projects/#{project.id}/hooks/42", user)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     it "should return a 405 error if hook id not given" do
       delete api("/projects/#{project.id}/hooks", user)
-      expect(response.status).to eq(405)
+      expect(response).to have_http_status(405)
     end
 
     it "shold return a 404 if a user attempts to delete project hooks he/she does not own" do
@@ -164,7 +164,7 @@ describe API::API, 'ProjectHooks', api: true do
       other_project.team << [test_user, :master]
 
       delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
       expect(WebHook.exists?(hook.id)).to be_truthy
     end
   end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "Dashboard > User filters projects", feature: true do
-
   describe 'filtering personal projects' do
     before do
       user = create(:user)

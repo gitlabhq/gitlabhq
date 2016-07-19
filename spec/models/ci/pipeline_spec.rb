@@ -5,9 +5,12 @@ describe Ci::Pipeline, models: true do
   let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:user) }
+
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
+
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
 
@@ -15,7 +18,7 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
-  describe :valid_commit_sha do
+  describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
         pipeline.sha = '0' * 40
@@ -26,7 +29,7 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe :short_sha do
+  describe '#short_sha' do
     subject { pipeline.short_sha }
 
     it 'has 8 items' do
@@ -35,10 +38,10 @@ describe Ci::Pipeline, models: true do
     it { expect(pipeline.sha).to start_with(subject) }
   end
 
-  describe :create_next_builds do
+  describe '#create_next_builds' do
   end
 
-  describe :retried do
+  describe '#retried' do
     subject { pipeline.retried }
 
     before do
@@ -51,7 +54,7 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe :create_builds do
+  describe '#create_builds' do
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project, ref: 'master', tag: false }
 
     def create_builds(trigger_request = nil)
@@ -257,6 +260,68 @@ describe Ci::Pipeline, models: true do
           expect(pipeline.reload.status).to eq('canceled')
         end
       end
+
+      context 'when listing manual actions' do
+        let(:yaml) do
+          {
+            stages: ["build", "test", "test_failure", "deploy", "cleanup"],
+            build: {
+              stage: "build",
+              script: "BUILD",
+            },
+            test: {
+              stage: "test",
+              script: "TEST",
+            },
+            test_failure: {
+              stage: "test_failure",
+              script: "ON test failure",
+              when: "on_failure",
+            },
+            deploy: {
+              stage: "deploy",
+              script: "PUBLISH",
+            },
+            production: {
+              stage: "deploy",
+              script: "PUBLISH",
+              when: "manual",
+            },
+            cleanup: {
+              stage: "cleanup",
+              script: "TIDY UP",
+              when: "always",
+            },
+            clear_cache: {
+              stage: "cleanup",
+              script: "CLEAR CACHE",
+              when: "manual",
+            }
+          }
+        end
+
+        it 'returns only for skipped builds' do
+          # currently all builds are created
+          expect(create_builds).to be_truthy
+          expect(manual_actions).to be_empty
+
+          # succeed stage build
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage test
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_one # production
+
+          # succeed stage deploy
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_many # production and clear cache
+        end
+
+        def manual_actions
+          pipeline.manual_actions
+        end
+      end
     end
 
     context 'when no builds created' do
@@ -410,6 +475,30 @@ describe Ci::Pipeline, models: true do
 
       it 'return false when tag is set to true' do
         is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#manual_actions' do
+    subject { pipeline.manual_actions }
+
+    it 'when none defined' do
+      is_expected.to be_empty
+    end
+
+    context 'when action defined' do
+      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+      it 'returns one action' do
+        is_expected.to contain_exactly(manual)
+      end
+
+      context 'there are multiple of the same name' do
+        let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        it 'returns latest one' do
+          is_expected.to contain_exactly(manual2)
+        end
       end
     end
   end

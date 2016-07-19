@@ -2,10 +2,10 @@
 - page_title "Environments"
 = render "projects/pipelines/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   .top-area
     .col-md-9
-      %h3.page-title= @environment.name.titleize
+      %h3.page-title= @environment.name.capitalize
 
     .col-md-3
       .nav-controls
@@ -13,10 +13,14 @@
           = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to delete this environment?' }, class: 'btn btn-danger', method: :delete
 
   - if @deployments.blank?
-    %ul.content-list.environments
-      %li.nothing-here-block
-        No deployments for
-        %strong= @environment.name
+    .blank-state.blank-state-no-icon
+      %h2.blank-state-title
+        You don't have any deployments right now.
+      %p.blank-state-text
+        Define environments in the deploy stage(s) in
+        %code .gitlab-ci.yml
+        to track deployments here.
+      = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
   - else
     .table-holder
       %table.table.environments

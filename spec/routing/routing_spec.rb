@@ -98,7 +98,7 @@ describe SnippetsController, "routing" do
 end
 
 #            help GET /help(.:format)                 help#index
-#       help_page GET /help/:category/:file(.:format) help#show {:category=>/.*/, :file=>/[^\/\.]+/}
+#       help_page GET /help/*path(.:format)           help#show
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
 #         help_ui GET /help/ui(.:format)              help#ui
 describe HelpController, "routing" do
@@ -109,23 +109,16 @@ describe HelpController, "routing" do
   it 'to #show' do
     path = '/help/markdown/markdown.md'
     expect(get(path)).to route_to('help#show',
-                                  category: 'markdown',
-                                  file: 'markdown',
+                                  path: 'markdown/markdown',
                                   format: 'md')
 
     path = '/help/workflow/protected_branches/protected_branches1.png'
     expect(get(path)).to route_to('help#show',
-                                  category: 'workflow/protected_branches',
-                                  file: 'protected_branches1',
+                                  path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-  end
-
-  it 'to #shortcuts' do
-    expect(get('/help/shortcuts')).to route_to('help#shortcuts')
-  end
-
-  it 'to #ui' do
-    expect(get('/help/ui')).to route_to('help#ui')
+    
+    path = '/help/ui'
+    expect(get(path)).to route_to('help#ui')
   end
 end
 
@@ -252,7 +245,6 @@ describe RootController, 'routing' do
     expect(get('/')).to route_to('root#index')
   end
 end
-
 
 #        new_user_session GET    /users/sign_in(.:format)               devise/sessions#new
 #            user_session POST   /users/sign_in(.:format)               devise/sessions#create

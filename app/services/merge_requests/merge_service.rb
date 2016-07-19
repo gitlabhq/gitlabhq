@@ -34,12 +34,17 @@ module MergeRequests
         committer: committer
       }
 
-      commit_id = repository.merge(current_user, merge_request.source_sha, merge_request.target_branch, options)
+      commit_id = repository.merge(current_user, merge_request, options)
       merge_request.update(merge_commit_sha: commit_id)
+    rescue GitHooksService::PreReceiveError => e
+      merge_request.update(merge_error: e.message)
+      false
     rescue StandardError => e
       merge_request.update(merge_error: "Something went wrong during merge")
       Rails.logger.error(e.message)
-      return false
+      false
+    ensure
+      merge_request.update(in_progress_merge_commit_sha: nil)
     end
 
     def after_merge

@@ -5,18 +5,22 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'empty-branch'     => '7efb185',
-    'flatten-dir'      => 'e56497b',
-    'feature'          => '0b4bc9a',
-    'feature_conflict' => 'bb5206f',
-    'fix'              => '48f0be4',
-    'improve/awesome'  => '5937ac0',
-    'markdown'         => '0ed8c6c',
-    'lfs'              => 'be93687',
-    'master'           => '5937ac0',
-    "'test'"           => 'e56497b',
-    'orphaned-branch'  => '45127a9',
-    'binary-encoding'  => '7b1cf43',
+    'empty-branch'          => '7efb185',
+    'flatten-dir'           => 'e56497b',
+    'feature'               => '0b4bc9a',
+    'feature_conflict'      => 'bb5206f',
+    'fix'                   => '48f0be4',
+    'improve/awesome'       => '5937ac0',
+    'markdown'              => '0ed8c6c',
+    'lfs'                   => 'be93687',
+    'master'                => '5937ac0',
+    "'test'"                => 'e56497b',
+    'orphaned-branch'       => '45127a9',
+    'binary-encoding'       => '7b1cf43',
+    'gitattributes'         => '5a62481',
+    'expand-collapse-diffs' => '4842455',
+    'expand-collapse-files' => '025db92',
+    'expand-collapse-lines' => '238e82d'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -62,7 +66,7 @@ module TestEnv
   end
 
   def disable_pre_receive
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return(true)
+    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
   end
 
   # Clean /tmp/tests
@@ -79,7 +83,7 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    unless File.directory?(Rails.root.join(*%w(tmp tests gitlab-shell)))
+    unless File.directory?(Gitlab.config.gitlab_shell.path)
       `rake gitlab:shell:install`
     end
   end
@@ -126,14 +130,14 @@ module TestEnv
 
   def copy_repo(project)
     base_repo_path = File.expand_path(factory_repo_path_bare)
-    target_repo_path = File.expand_path(repos_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
   end
 
   def repos_path
-    Gitlab.config.gitlab_shell.repos_path
+    Gitlab.config.repositories.storages.default
   end
 
   def backup_path
@@ -142,7 +146,7 @@ module TestEnv
 
   def copy_forked_repo_with_submodules(project)
     base_repo_path = File.expand_path(forked_repo_path_bare)
-    target_repo_path = File.expand_path(repos_path + "/#{project.namespace.path}/#{project.path}.git")
+    target_repo_path = File.expand_path(project.repository_storage_path + "/#{project.namespace.path}/#{project.path}.git")
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path

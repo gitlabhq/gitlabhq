@@ -56,14 +56,18 @@ class @UsersSelect
               username: ''
               avatar: ''
           $value.html(assigneeTemplate(user))
+
+          $collapsedSidebar
+            .attr('title', user.name)
+            .tooltip('fixTitle')
+
           $collapsedSidebar.html(collapsedAssigneeTemplate(user))
 
 
       collapsedAssigneeTemplate = _.template(
         '<% if( avatar ) { %>
-        <a class="author_link" href="/u/<%= username %>">
-          <img width="24" class="avatar avatar-inline s24" alt="" src="<%= avatar %>">
-          <span class="author">Toni Boehm</span>
+        <a class="author_link" href="/u/<%- username %>">
+          <img width="24" class="avatar avatar-inline s24" alt="" src="<%- avatar %>">
         </a>
         <% } else { %>
         <i class="fa fa-user"></i>
@@ -72,13 +76,13 @@ class @UsersSelect
 
       assigneeTemplate = _.template(
         '<% if (username) { %>
-        <a class="author_link bold" href="/u/<%= username %>">
+        <a class="author_link bold" href="/u/<%- username %>">
           <% if( avatar ) { %>
-          <img width="32" class="avatar avatar-inline s32" alt="" src="<%= avatar %>">
+          <img width="32" class="avatar avatar-inline s32" alt="" src="<%- avatar %>">
           <% } %>
-          <span class="author"><%= name %></span>
+          <span class="author"><%- name %></span>
           <span class="username">
-            @<%= username %>
+            @<%- username %>
           </span>
         </a>
           <% } else { %>

@@ -1,14 +1,10 @@
-- member = source.members.find_by(user_id: current_user.id)
-- group_member = source.group.members.find_by(user_id: current_user.id) if source.respond_to?(:group) && source.group
-
-- unless group_member
-  - if member
-    - if member.request?
-      = link_to 'Withdraw Access Request', polymorphic_path([:leave, source, :members]),
-                method: :delete,
-                data: { confirm: remove_member_message(member) },
-                class: 'btn access-request-button hidden-xs'
+- if can?(current_user, :request_access, source)
+  - if requester = source.requesters.find_by(user_id: current_user.id)
+    = link_to 'Withdraw Access Request', polymorphic_path([:leave, source, :members]),
+              method: :delete,
+              data: { confirm: remove_member_message(requester) },
+              class: 'btn'
   - else
     = link_to 'Request Access', polymorphic_path([:request_access, source, :members]),
               method: :post,
-              class: 'btn access-request-button hidden-xs'
+              class: 'btn'

@@ -1,11 +1,9 @@
-- css_class = '' unless local_assigns[:css_class]
-- css_class += ' no-description' if group.description.blank?
+- css_class = 'no-description' if group.description.blank?
 
 %li.group-row{ class: css_class }
-  .controls.hidden-xs
-    = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn btn-grouped btn-sm'
-    = link_to 'Destroy', [:admin, group], data: {confirm: "REMOVE #{group.name}? Are you sure?"}, method: :delete, class: 'btn btn-grouped btn-sm btn-remove'
-
+  .controls
+    = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
+    = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
   .stats
     %span
       = icon('bookmark')
@@ -18,7 +16,7 @@
     %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
       = visibility_level_icon(group.visibility_level, fw: false)
 
-  = image_tag group_icon(group), class: 'avatar s40 hidden-xs'
+  = image_tag group_icon(group), class: "avatar s40 hidden-xs"
   .title
     = link_to [:admin, group], class: 'group-name' do
       = group.name

@@ -19,8 +19,13 @@ module Issuable
     belongs_to :milestone
     has_many :notes, as: :noteable, dependent: :destroy do
       def authors_loaded?
-        # We check first if we're loaded to not load unnecesarily.
+        # We check first if we're loaded to not load unnecessarily.
         loaded? && to_a.all? { |note| note.association(:author).loaded? }
+      end
+
+      def award_emojis_loaded?
+        # We check first if we're loaded to not load unnecessarily.
+        loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
       end
     end
     has_many :label_links, as: :target, dependent: :destroy
@@ -49,10 +54,9 @@ module Issuable
 
     scope :without_label, -> { joins("LEFT OUTER JOIN label_links ON label_links.target_type = '#{name}' AND label_links.target_id = #{table_name}.id").where(label_links: { id: nil }) }
     scope :join_project, -> { joins(:project) }
-    scope :inc_notes_with_associations, -> { includes(notes: :author) }
+    scope :inc_notes_with_associations, -> { includes(notes: [ :project, :author, :award_emoji ]) }
     scope :references_project, -> { references(:project) }
     scope :non_archived, -> { join_project.where(projects: { archived: false }) }
-
 
     delegate :name,
              :email,
@@ -112,15 +116,18 @@ module Issuable
     end
 
     def sort(method, excluded_labels: [])
-      case method.to_s
-      when 'milestone_due_asc' then order_milestone_due_asc
-      when 'milestone_due_desc' then order_milestone_due_desc
-      when 'downvotes_desc' then order_downvotes_desc
-      when 'upvotes_desc' then order_upvotes_desc
-      when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
-      else
-        order_by(method)
-      end
+      sorted = case method.to_s
+               when 'milestone_due_asc' then order_milestone_due_asc
+               when 'milestone_due_desc' then order_milestone_due_desc
+               when 'downvotes_desc' then order_downvotes_desc
+               when 'upvotes_desc' then order_upvotes_desc
+               when 'priority' then order_labels_priority(excluded_labels: excluded_labels)
+               else
+                 order_by(method)
+               end
+
+      # Break ties with the ID column for pagination
+      sorted.order(id: :desc)
     end
 
     def order_labels_priority(excluded_labels: [])
@@ -257,7 +264,14 @@ module Issuable
     # already have their authors loaded (possibly because the scope
     # `inc_notes_with_associations` was used) and skip the inclusion if that's
     # the case.
-    notes.authors_loaded? ? notes : notes.includes(:author)
+    includes = []
+    includes << :author unless notes.authors_loaded?
+    includes << :award_emoji unless notes.award_emojis_loaded?
+    if includes.any?
+      notes.includes(includes)
+    else
+      notes
+    end
   end
 
   def updated_tasks

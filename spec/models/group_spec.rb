@@ -7,9 +7,38 @@ describe Group, models: true do
     it { is_expected.to have_many :projects }
     it { is_expected.to have_many(:group_members).dependent(:destroy) }
     it { is_expected.to have_many(:users).through(:group_members) }
+    it { is_expected.to have_many(:owners).through(:group_members) }
+    it { is_expected.to have_many(:requesters).dependent(:destroy) }
     it { is_expected.to have_many(:project_group_links).dependent(:destroy) }
     it { is_expected.to have_many(:shared_projects).through(:project_group_links) }
     it { is_expected.to have_many(:notification_settings).dependent(:destroy) }
+
+    describe '#members & #requesters' do
+      let(:requester) { create(:user) }
+      let(:developer) { create(:user) }
+      before do
+        group.request_access(requester)
+        group.add_developer(developer)
+      end
+
+      describe '#members' do
+        it 'includes members and exclude requesters' do
+          member_user_ids = group.members.pluck(:user_id)
+
+          expect(member_user_ids).to include(developer.id)
+          expect(member_user_ids).not_to include(requester.id)
+        end
+      end
+
+      describe '#requesters' do
+        it 'does not include requesters' do
+          requester_user_ids = group.requesters.pluck(:user_id)
+
+          expect(requester_user_ids).to include(requester.id)
+          expect(requester_user_ids).not_to include(developer.id)
+        end
+      end
+    end
   end
 
   describe 'modules' do
@@ -68,22 +97,22 @@ describe Group, models: true do
     end
   end
 
-  describe :users do
+  describe '#users' do
     it { expect(group.users).to eq(group.owners) }
   end
 
-  describe :human_name do
+  describe '#human_name' do
     it { expect(group.human_name).to eq(group.name) }
   end
 
-  describe :add_users do
+  describe '#add_user' do
     let(:user) { create(:user) }
     before { group.add_user(user, GroupMember::MASTER) }
 
     it { expect(group.group_members.masters.map(&:user)).to include(user) }
   end
 
-  describe :add_users do
+  describe '#add_users' do
     let(:user) { create(:user) }
     before { group.add_users([user.id], GroupMember::GUEST) }
 
@@ -95,7 +124,7 @@ describe Group, models: true do
     end
   end
 
-  describe :avatar_type do
+  describe '#avatar_type' do
     let(:user) { create(:user) }
     before { group.add_user(user, GroupMember::MASTER) }
 

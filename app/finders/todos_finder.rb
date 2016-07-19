@@ -8,7 +8,7 @@
 #     action_id: integer
 #     author_id: integer
 #     project_id; integer
-#     state: 'pending' or 'done'
+#     state: 'pending' (default) or 'done'
 #     type: 'Issue' or 'MergeRequest'
 #
 
@@ -25,6 +25,7 @@ class TodosFinder
   def execute
     items = current_user.todos
     items = by_action_id(items)
+    items = by_action(items)
     items = by_author(items)
     items = by_project(items)
     items = by_state(items)
@@ -36,11 +37,23 @@ class TodosFinder
   private
 
   def action_id?
-    action_id.present? && [Todo::ASSIGNED, Todo::MENTIONED, Todo::BUILD_FAILED, Todo::MARKED].include?(action_id.to_i)
+    action_id.present? && Todo::ACTION_NAMES.has_key?(action_id.to_i)
   end
 
   def action_id
     params[:action_id]
+  end
+
+  def to_action_id
+    Todo::ACTION_NAMES.key(action.to_sym)
+  end
+
+  def action?
+    action.present? && to_action_id
+  end
+
+  def action
+    params[:action]
   end
 
   def author?
@@ -94,6 +107,14 @@ class TodosFinder
 
   def type
     params[:type]
+  end
+
+  def by_action(items)
+    if action?
+      items = items.where(action: to_action_id)
+    end
+
+    items
   end
 
   def by_action_id(items)

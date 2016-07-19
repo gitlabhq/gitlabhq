@@ -14,14 +14,14 @@ module Mentionable
       attr = attr.to_s
       mentionable_attrs << [attr, options]
     end
-
-    # Accessor for attributes marked mentionable.
-    def mentionable_attrs
-      @mentionable_attrs ||= []
-    end
   end
 
   included do
+    # Accessor for attributes marked mentionable.
+    cattr_accessor :mentionable_attrs, instance_accessor: false do
+      []
+    end
+
     if self < Participable
       participant -> (user, ext) { all_references(user, extractor: ext) }
     end
@@ -45,7 +45,7 @@ module Mentionable
 
   def all_references(current_user = nil, text = nil, extractor: nil)
     extractor ||= Gitlab::ReferenceExtractor.
-      new(project, current_user || author)
+      new(project, current_user)
 
     if text
       extractor.analyze(text, author: author)

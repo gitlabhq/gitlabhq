@@ -1,5 +1,4 @@
 module SearchHelper
-
   def search_autocomplete_opts(term)
     return unless current_user
 
@@ -44,15 +43,15 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: "API Help",           url: help_page_path("api", "README") },
-      { category: "Help", label: "Markdown Help",      url: help_page_path("markdown", "markdown") },
-      { category: "Help", label: "Permissions Help",   url: help_page_path("permissions", "permissions") },
-      { category: "Help", label: "Public Access Help", url: help_page_path("public_access", "public_access") },
-      { category: "Help", label: "Rake Tasks Help",    url: help_page_path("raketasks", "README") },
-      { category: "Help", label: "SSH Keys Help",      url: help_page_path("ssh", "README") },
-      { category: "Help", label: "System Hooks Help",  url: help_page_path("system_hooks", "system_hooks") },
-      { category: "Help", label: "Webhooks Help",      url: help_page_path("web_hooks", "web_hooks") },
-      { category: "Help", label: "Workflow Help",      url: help_page_path("workflow", "README") },
+      { category: "Help", label: "API Help",           url: help_page_path("api/README") },
+      { category: "Help", label: "Markdown Help",      url: help_page_path("markdown/markdown") },
+      { category: "Help", label: "Permissions Help",   url: help_page_path("user/permissions") },
+      { category: "Help", label: "Public Access Help", url: help_page_path("public_access/public_access") },
+      { category: "Help", label: "Rake Tasks Help",    url: help_page_path("raketasks/README") },
+      { category: "Help", label: "SSH Keys Help",      url: help_page_path("ssh/README") },
+      { category: "Help", label: "System Hooks Help",  url: help_page_path("system_hooks/system_hooks") },
+      { category: "Help", label: "Webhooks Help",      url: help_page_path("web_hooks/web_hooks") },
+      { category: "Help", label: "Workflow Help",      url: help_page_path("workflow/README") },
     ]
   end
 

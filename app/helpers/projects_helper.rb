@@ -15,11 +15,11 @@ module ProjectsHelper
   def link_to_member_avatar(author, opts = {})
     default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
     opts = default_opts.merge(opts)
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -27,13 +27,14 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt: '') if opts[:avatar]
 
     # Build name span tag
     if opts[:by_username]
       author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
     else
-      author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
+      tooltip_data = { placement: 'top' }
+      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
     end
 
     author_html << capture(&block) if block
@@ -60,7 +61,7 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe
@@ -206,10 +207,14 @@ module ProjectsHelper
   end
 
   def default_clone_protocol
-    if !current_user || current_user.require_ssh_key?
-      gitlab_config.protocol
+    if allowed_protocols_present?
+      enabled_protocol
     else
-      "ssh"
+      if !current_user || current_user.require_ssh_key?
+        gitlab_config.protocol
+      else
+        'ssh'
+      end
     end
   end
 
@@ -289,7 +294,11 @@ module ProjectsHelper
   end
 
   def last_push_event
-    if current_user
+    return unless current_user
+
+    if fork = current_user.fork_of(@project)
+      current_user.recent_push(fork.id)
+    else
       current_user.recent_push(@project.id)
     end
   end
@@ -327,9 +336,9 @@ module ProjectsHelper
     end
   end
 
-  def sanitize_repo_path(message)
+  def sanitize_repo_path(project, message)
     return '' unless message.present?
 
-    message.strip.gsub(Gitlab.config.gitlab_shell.repos_path.chomp('/'), "[REPOS PATH]")
+    message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
   end
 end

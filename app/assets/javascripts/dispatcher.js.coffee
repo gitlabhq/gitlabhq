@@ -84,6 +84,8 @@ class Dispatcher
         new Activities()
       when 'groups:show'
         shortcut_handler = new ShortcutsNavigation()
+        new NotificationsForm()
+        new NotificationsDropdown()
       when 'groups:group_members:index'
         new GroupMembers()
         new UsersSelect()
@@ -125,17 +127,18 @@ class Dispatcher
           when 'groups'
             new UsersSelect()
           when 'projects'
-            new NamespaceSelect()
+            new NamespaceSelects()
       when 'dashboard', 'root'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'profiles'
-        new Profile()
         new NotificationsForm()
         new NotificationsDropdown()
       when 'projects'
         new Project()
         new ProjectAvatar()
         switch path[1]
+          when 'compare'
+            new CompareAutocomplete()
           when 'edit'
             shortcut_handler = new ShortcutsNavigation()
             new ProjectNew()

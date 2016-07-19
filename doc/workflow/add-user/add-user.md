@@ -8,7 +8,7 @@ You should have `master` or `owner` permissions to add or import a new user
 to your project.
 
 The first step to add or import a user, go to your project and click on
-**Members** on the left side of your screen.
+**Members** in the drop-down menu on the right side of your screen.
 
 ![Members](img/add_user_members_menu.png)
 
@@ -23,7 +23,7 @@ want to add.
 
 ---
 
-Select the user and the [permission level](../../permissions/permissions.md)
+Select the user and the [permission level](../../user/permissions.md)
 that you'd like to give the user. Note that you can select more than one user.
 
 ![Give user permissions](img/add_user_give_permissions.png)
@@ -87,3 +87,25 @@ invitation, change their access level or even delete them.
 
 Once the user accepts the invitation, they will be prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
+
+## Request access to a project
+
+As a user, you can request to be a member of a project. Go to the project you'd
+like to be a member of, and click the **Request Access** button on the right
+side of your screen.
+
+![Request access button](img/request_access_button.png)
+
+---
+
+Project owners & masters will be notified of your request and will be able to approve or
+decline it on the members page.
+
+![Manage access requests](img/access_requests_management.png)
+
+---
+
+If you change your mind before your request is approved, just click the
+**Withdraw Access Request** button.
+
+![Withdraw access request button](img/withdraw_access_request_button.png)

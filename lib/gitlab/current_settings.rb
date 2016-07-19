@@ -9,10 +9,14 @@ module Gitlab
     end
 
     def ensure_application_settings!
-      settings = ::ApplicationSetting.cached
+      if connect_to_db?
+        begin
+          settings = ::ApplicationSetting.current
+        # In case Redis isn't running or the Redis UNIX socket file is not available
+        rescue ::Redis::BaseError, ::Errno::ENOENT
+          settings = ::ApplicationSetting.last
+        end
 
-      if !settings && connect_to_db?
-        settings = ::ApplicationSetting.current
         settings ||= ::ApplicationSetting.create_from_defaults unless ActiveRecord::Migrator.needs_migration?
       end
 
@@ -44,6 +48,7 @@ module Gitlab
         akismet_enabled: false,
         repository_checks_enabled: true,
         container_registry_token_expire_delay: 5,
+        user_default_external: false,
       )
     end
 

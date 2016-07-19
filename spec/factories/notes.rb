@@ -10,21 +10,46 @@ FactoryGirl.define do
     on_issue
 
     factory :note_on_commit,             traits: [:on_commit]
-    factory :note_on_commit_diff,        traits: [:on_commit, :on_diff], class: LegacyDiffNote
     factory :note_on_issue,              traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_merge_request,      traits: [:on_merge_request]
-    factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff], class: LegacyDiffNote
     factory :note_on_project_snippet,    traits: [:on_project_snippet]
     factory :system_note,                traits: [:system]
 
+    factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: LegacyDiffNote
+    factory :legacy_diff_note_on_merge_request, traits: [:on_merge_request, :legacy_diff_note], class: LegacyDiffNote
+
+    factory :diff_note_on_merge_request, traits: [:on_merge_request], class: DiffNote do
+      position do
+        Gitlab::Diff::Position.new(
+          old_path: "files/ruby/popen.rb",
+          new_path: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: 14,
+          diff_refs: noteable.diff_refs
+        )
+      end
+    end
+
+    factory :diff_note_on_commit, traits: [:on_commit], class: DiffNote do
+      position do
+        Gitlab::Diff::Position.new(
+          old_path: "files/ruby/popen.rb",
+          new_path: "files/ruby/popen.rb",
+          old_line: nil,
+          new_line: 14,
+          diff_refs: project.commit(commit_id).try(:diff_refs)
+        )
+      end
+    end
+
     trait :on_commit do
       noteable nil
-      noteable_id nil
       noteable_type 'Commit'
+      noteable_id nil
       commit_id RepoHelpers.sample_commit.id
     end
 
-    trait :on_diff do
+    trait :legacy_diff_note do
       line_code "0_184_184"
     end
 

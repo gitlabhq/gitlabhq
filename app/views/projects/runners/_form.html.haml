@@ -13,6 +13,12 @@
         = f.check_box :run_untagged
         %span.light Indicates whether this runner can pick jobs without tags
   .form-group
+    = label :locked, 'Lock to current projects', class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :locked
+        %span.light When a runner is locked, it cannot be assigned to other projects
+  .form-group
     = label_tag :token, class: 'control-label' do
       Token
     .col-sm-10

@@ -29,10 +29,10 @@ class PipelinesFinder
   end
 
   def branches
-    project.repository.branches.map(&:name)
+    project.repository.branch_names
   end
 
   def tags
-    project.repository.tags.map(&:name)
+    project.repository.tag_names
   end
 end

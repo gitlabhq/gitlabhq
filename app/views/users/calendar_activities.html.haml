@@ -14,7 +14,7 @@
         - else
           = event_action_name(event)
           - if event.target
-            %strong= link_to "##{event.target_iid}", [event.project.namespace.becomes(Namespace), event.project, event.target]
+            %strong= link_to "#{event.target.to_reference}", [event.project.namespace.becomes(Namespace), event.project, event.target]
 
         at
         %strong

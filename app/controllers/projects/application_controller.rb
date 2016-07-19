@@ -74,7 +74,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def require_branch_head
-    unless @repository.branch_names.include?(@ref)
+    unless @repository.branch_exists?(@ref)
       redirect_to(
         namespace_project_tree_path(@project.namespace, @project, @ref),
         notice: "This action is not allowed unless you are on a branch"

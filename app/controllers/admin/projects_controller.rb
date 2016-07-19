@@ -5,11 +5,12 @@ class Admin::ProjectsController < Admin::ApplicationController
   def index
     @projects = Project.all
     @projects = @projects.in_namespace(params[:namespace_id]) if params[:namespace_id].present?
-    @projects = @projects.where("projects.visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
+    @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.where(last_repository_check_failed: true) if params[:last_repository_check_failed].present?
-    @projects = @projects.non_archived unless params[:with_archived].present?
+    @projects = @projects.non_archived unless params[:archived].present?
+    @projects = @projects.personal(current_user) if params[:personal].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
     @projects = @projects.sort(@sort = params[:sort])
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page])
@@ -20,7 +21,8 @@ class Admin::ProjectsController < Admin::ApplicationController
       @group_members = @group.members.order("access_level DESC").page(params[:group_members_page])
     end
 
-    @project_members = @project.project_members.page(params[:project_members_page])
+    @project_members = @project.members.page(params[:project_members_page])
+    @requesters = @project.requesters
   end
 
   def transfer

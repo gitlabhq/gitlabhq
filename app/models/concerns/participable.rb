@@ -41,9 +41,12 @@ module Participable
     def participant(attr)
       participant_attrs << attr
     end
+  end
 
-    def participant_attrs
-      @participant_attrs ||= []
+  included do
+    # Accessor for participant attributes.
+    cattr_accessor :participant_attrs, instance_accessor: false do
+      []
     end
   end
 
@@ -53,6 +56,16 @@ module Participable
   #
   # Returns an Array of User instances.
   def participants(current_user = nil)
+    @participants ||= Hash.new do |hash, user|
+      hash[user] = raw_participants(user)
+    end
+
+    @participants[current_user]
+  end
+
+  private
+
+  def raw_participants(current_user = nil)
     current_user ||= author
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     participants = Set.new

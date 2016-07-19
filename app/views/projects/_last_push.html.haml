@@ -1,13 +1,15 @@
 - if event = last_push_event
   - if show_last_push_widget?(event)
     .row-content-block.top-block.clear-block.hidden-xs
-      %div{ class: (container_class) }
+      %div{ class: container_class }
         .event-last-push
           .event-last-push-text
             %span You pushed to
             = link_to namespace_project_commits_path(event.project.namespace, event.project, event.ref_name) do
               %strong= event.ref_name
-            branch
+            - if @project && event.project != @project
+              %span at
+              %strong= link_to_project event.project
             #{time_ago_with_tooltip(event.created_at)}
 
           .pull-right

@@ -55,6 +55,13 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :repository_storage,
+    presence: true,
+    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+
+  validates :enabled_git_access_protocol,
+            inclusion: { in: %w(ssh http), allow_blank: true, allow_nil: true }
+
   validates_each :restricted_visibility_levels do |record, attr, value|
     unless value.nil?
       value.each do |level|
@@ -134,6 +141,8 @@ class ApplicationSetting < ActiveRecord::Base
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,
       container_registry_token_expire_delay: 5,
+      repository_storage: 'default',
+      user_default_external: false,
     )
   end
 

@@ -50,7 +50,7 @@
     }
 
     a:not(.btn) {
-      color: $gl-dark-link-color;
+      color: $gl-text-color;
     }
 
     .left-options {
@@ -70,7 +70,7 @@
     }
 
     &.wiki {
-      padding: $gl-padding;
+      padding: 30px $gl-padding;
 
       .highlight {
         margin-bottom: 9px;

@@ -131,8 +131,10 @@ module Gitlab
       def clean_up_restored_branches(branches)
         branches.each do |name, _|
           client.delete_ref(repo, "heads/#{name}")
-          project.repository.rm_branch(project.creator, name)
+          project.repository.delete_branch(name) rescue Rugged::ReferenceError
         end
+
+        project.repository.after_remove_branch
       end
 
       def apply_labels(issuable)
@@ -167,7 +169,7 @@ module Gitlab
       def import_wiki
         unless project.wiki_enabled?
           wiki = WikiFormatter.new(project)
-          gitlab_shell.import_repository(wiki.path_with_namespace, wiki.import_url)
+          gitlab_shell.import_repository(project.repository_storage_path, wiki.path_with_namespace, wiki.import_url)
           project.update_attribute(:wiki_enabled, true)
         end
 

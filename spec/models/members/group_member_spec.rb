@@ -61,16 +61,6 @@ describe GroupMember, models: true do
       end
     end
 
-    describe '#post_decline_request' do
-      it 'calls NotificationService.decline_group_access_request' do
-        member = create(:group_member, user: build_stubbed(:user), requested_at: Time.now)
-
-        expect_any_instance_of(NotificationService).to receive(:decline_group_access_request)
-
-        member.__send__(:post_decline_request)
-      end
-    end
-
     describe '#real_source_type' do
       subject { create(:group_member).real_source_type }
 

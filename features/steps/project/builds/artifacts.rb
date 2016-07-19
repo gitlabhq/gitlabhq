@@ -68,10 +68,16 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
   end
 
   step 'download of a file extracted from build artifacts should start' do
-    # this will be accelerated by Workhorse
-    response_json = JSON.parse(page.body, symbolize_names: true)
-    expect(response_json[:archive]).to end_with('build_artifacts.zip')
-    expect(response_json[:entry]).to eq Base64.encode64('ci_artifacts.txt')
+    send_data = response_headers[Gitlab::Workhorse::SEND_DATA_HEADER]
+
+    expect(send_data).to start_with('artifacts-entry:')
+
+    base64_params = send_data.sub(/\Aartifacts\-entry:/, '')
+    params = JSON.parse(Base64.urlsafe_decode64(base64_params))
+
+    expect(params.keys).to eq(['Archive', 'Entry'])
+    expect(params['Archive']).to end_with('build_artifacts.zip')
+    expect(params['Entry']).to eq(Base64.encode64('ci_artifacts.txt'))
   end
 
   step 'I click a first row within build artifacts table' do

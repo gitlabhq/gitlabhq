@@ -61,7 +61,7 @@ module Banzai
 
       # Build a regexp that matches all valid :emoji: names.
       def self.emoji_pattern
-        @emoji_pattern ||= /:(#{Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):/
+        @emoji_pattern ||= /:(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):/
       end
 
       def emoji_pattern
@@ -69,7 +69,7 @@ module Banzai
       end
 
       def emoji_filename(name)
-        "#{Emoji.emoji_filename(name)}.png"
+        "#{Gitlab::Emoji.emoji_filename(name)}.png"
       end
     end
   end

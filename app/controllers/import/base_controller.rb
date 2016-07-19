@@ -1,5 +1,4 @@
 class Import::BaseController < ApplicationController
-
   private
 
   def get_or_create_namespace

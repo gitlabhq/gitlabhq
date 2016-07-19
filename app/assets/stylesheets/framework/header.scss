@@ -26,7 +26,6 @@ header {
       text-align: center;
 
       #tanuki-logo, img {
-        width: 36px;
         height: 36px;
       }
     }
@@ -61,7 +60,7 @@ header {
         margin: ($header-height - 28) / 2 0;
         margin-left: 10px;
         height: 28px;
-        width: 28px;
+        min-width: 28px;
         line-height: 28px;
         text-align: center;
 
@@ -131,6 +130,10 @@ header {
       top: 7px;
       transition-duration: .3s;
       z-index: 999;
+
+      svg, img {
+        height: 36px;
+      }
 
       &:hover {
         cursor: pointer;
@@ -238,14 +241,23 @@ header {
     .navbar-collapse {
       padding-left: 5px;
 
-      li {
+      .nav > li {
         display: table-cell;
         width: 1%;
-
-        a {
-          margin-left: 8px !important;
-        }
       }
     }
   }
+}
+
+.header-user {
+  .dropdown-menu-nav {
+    width: 140px;
+    margin-top: -5px;
+  }
+}
+
+.header-user-avatar {
+  float: left;
+  margin-right: 5px;
+  border-radius: 50%;
 }

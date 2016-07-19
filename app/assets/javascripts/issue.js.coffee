@@ -99,7 +99,7 @@ class @Issue
 
     # If the user doesn't have the required permissions the container isn't
     # rendered at all.
-    return unless $container
+    return if $container.length is 0
 
     $.getJSON($container.data('path'))
       .error ->

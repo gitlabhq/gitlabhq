@@ -4,10 +4,10 @@ class PostReceive
   sidekiq_options queue: :post_receive
 
   def perform(repo_path, identifier, changes)
-    if repo_path.start_with?(Gitlab.config.gitlab_shell.repos_path.to_s)
-      repo_path.gsub!(Gitlab.config.gitlab_shell.repos_path.to_s, "")
+    if path = Gitlab.config.repositories.storages.find { |p| repo_path.start_with?(p[1].to_s) }
+      repo_path.gsub!(path[1].to_s, "")
     else
-      log("Check gitlab.yml config for correct gitlab_shell.repos_path variable. \"#{Gitlab.config.gitlab_shell.repos_path}\" does not match \"#{repo_path}\"")
+      log("Check gitlab.yml config for correct repositories.storages values. No repository storage path matches \"#{repo_path}\"")
     end
 
     post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)

@@ -1,8 +1,10 @@
-%div{ class: nav_control_class }
+.scrolling-tabs-container{ class: nav_control_class }
   = render 'layouts/nav/group_settings'
-
+  .fade-left
+    = icon('angle-left')
+  .fade-right
+    = icon('angle-right')
   %ul.nav-links.scrolling-tabs
-    .fade-left
     = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
       = link_to group_path(@group), title: 'Home' do
         %span
@@ -31,4 +33,3 @@
       = link_to group_group_members_path(@group), title: 'Members' do
         %span
           Members
-    .fade-right

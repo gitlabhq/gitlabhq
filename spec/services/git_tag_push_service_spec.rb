@@ -11,6 +11,31 @@ describe GitTagPushService, services: true do
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
   let(:ref) { 'refs/tags/v1.1.0' }
 
+  describe "Push tags" do
+    subject do
+      service.execute
+      service
+    end
+
+    it 'flushes general cached data' do
+      expect(project.repository).to receive(:expire_cache)
+
+      subject
+    end
+
+    it 'flushes the tags cache' do
+      expect(project.repository).to receive(:expire_tags_cache)
+
+      subject
+    end
+
+    it 'flushes the tag count cache' do
+      expect(project.repository).to receive(:expire_tag_count_cache)
+
+      subject
+    end
+  end
+
   describe "Git Tag Push Data" do
     before do
       service.execute

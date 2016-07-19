@@ -19,7 +19,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace.path, project_id: project.path
 
           expect(assigns(:snippets)).not_to include(project_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -30,7 +30,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace.path, project_id: project.path
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
@@ -41,7 +41,7 @@ describe Projects::SnippetsController do
           get :index, namespace_id: project.namespace.path, project_id: project.path
 
           expect(assigns(:snippets)).to include(project_snippet)
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
     end
@@ -56,7 +56,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -67,7 +67,7 @@ describe Projects::SnippetsController do
             get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -78,7 +78,7 @@ describe Projects::SnippetsController do
             get action, namespace_id: project.namespace.path, project_id: project.path, id: project_snippet.to_param
 
             expect(assigns(:snippet)).to eq(project_snippet)
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
       end
@@ -88,7 +88,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace.path, project_id: project.path, id: 42
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -98,7 +98,7 @@ describe Projects::SnippetsController do
           it 'responds with status 404' do
             get action, namespace_id: project.namespace.path, project_id: project.path, id: 42
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
       end

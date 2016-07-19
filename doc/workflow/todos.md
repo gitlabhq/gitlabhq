@@ -1,4 +1,4 @@
-# GitLab ToDos
+# GitLab Todos
 
 >**Note:** This feature was [introduced][ce-2817] in GitLab 8.5.
 
@@ -14,8 +14,9 @@ in a simple dashboard.
 
 ---
 
-You can access quickly your Todos dashboard by clicking the round gray icon
-next to the search bar in the upper right corner.
+You can quickly access the Todos dashboard using the bell icon next to the
+search bar in the upper right corner. The number in blue is the number of Todos
+you still have open.
 
 ![Todos icon](img/todos_icon.png)
 
@@ -29,45 +30,61 @@ A Todo appears in your Todos dashboard when:
 
 >**Note:** Commenting on a commit will _not_ trigger a Todo.
 
-## How a Todo is marked as Done
+### Manually creating a Todo
+
+You can also add an issue or merge request to your Todos dashboard by clicking
+the "Add Todo" button in the issue or merge request sidebar.
+
+![Adding a Todo from the issuable sidebar](img/todos_add_todo_sidebar.png)
+
+## Marking a Todo as done
 
 Any action to the corresponding issue or merge request will mark your Todo as
-**Done**. This action can include:
+**Done**. Actions that dismiss Todos include:
 
 - changing the assignee
 - changing the milestone
 - adding/removing a label
 - commenting on the issue
 
-In case where you think no action is needed, you can manually mark the todo as
-done by clicking the corresponding **Done** button, and it will disappear from
-your Todos list. If you want to mark all your Todos as done, just click on the
-**Mark all as done** button.
-
 ---
 
-In order for a Todo to be marked as done, the action must be coming from you.
-So, if you close the related issue or merge the merge request yourself, and you
-had a Todo for that, it will automatically get marked as done. On the other
-hand, if someone else closes, merges or takes action on the issue or merge
-request, your Todo will remain pending. This makes sense because you may need
-to give attention to an issue even if it has been resolved.
+Todos are personal, and they're only marked as done if the action is coming from
+you. If you close the issue or merge request, your Todo will automatically
+be marked as done.
+
+If someone else closes, merges, or takes action on the issue or merge
+request, your Todo will remain pending. This prevents other users from closing issues without you being notified.
 
 There is just one Todo per issue or merge request, so mentioning a user a
 hundred times in an issue will only trigger one Todo.
 
+---
+
+If no action is needed, you can manually mark the Todo as done by clicking the
+corresponding **Done** button, and it will disappear from your Todo list.
+
+![A Todo in the Todos dashboard](img/todo_list_item.png)
+
+A Todo can also be marked as done from the issue or merge request sidebar using
+the "Mark Done" button.
+
+![Mark Done from the issuable sidebar](img/todos_mark_done_sidebar.png)
+
+You can mark all your Todos as done at once by clicking on the **Mark all as
+done** button.
+
 ## Filtering your Todos
 
-In general, there are four kinds of filters you can use on your Todos
-dashboard:
+There are four kinds of filters you can use on your Todos dashboard.
 
-| Filter | Description |
-| ------ | ----------- |
+| Filter  | Description |
+| ------- | ----------- |
 | Project | Filter by project |
 | Author  | Filter by the author that triggered the Todo |
 | Type    | Filter by issue or merge request |
 | Action  | Filter by the action that triggered the Todo (Assigned or Mentioned)|
 
-You can choose more than one filters at the same time.
+You can also filter by more than one of these at the same time.
 
 [ce-2817]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2817

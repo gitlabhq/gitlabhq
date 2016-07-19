@@ -1,0 +1,29 @@
+.diff-content.diff-wrap-lines
+  - # Skip all non non-supported blobs
+  - return unless blob.respond_to?(:text?)
+  - if diff_file.too_large?
+    .nothing-here-block This diff could not be displayed because it is too large.
+  - elsif blob.only_display_raw?
+    .nothing-here-block This file is too large to display.
+  - elsif blob_text_viewable?(blob)
+    - if !project.repository.diffable?(blob)
+      .nothing-here-block This diff was suppressed by a .gitattributes entry.
+    - elsif diff_file.collapsed?
+      - url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path))
+      .nothing-here-block.diff-collapsed{data: { diff_for_path: url } }
+        This diff is collapsed. Click to expand it.
+    - elsif diff_file.diff_lines.length > 0
+      - if diff_view == 'parallel'
+        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob
+      - else
+        = render "projects/diffs/text_file", diff_file: diff_file
+    - else
+      - if diff_file.mode_changed?
+        .nothing-here-block File mode changed
+      - elsif diff_file.renamed_file
+        .nothing-here-block File moved
+  - elsif blob.image?
+    - old_blob = diff_file.old_blob(diff_commit)
+    = render "projects/diffs/image", diff_file: diff_file, old_file: old_blob, file: blob
+  - else
+    .nothing-here-block No preview for this file type

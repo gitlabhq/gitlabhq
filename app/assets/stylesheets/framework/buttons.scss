@@ -49,6 +49,17 @@
     border-color: $border-dark;
     color: $color;
   }
+
+  svg {
+
+    path {
+      fill: $color;
+    }
+
+    use {
+      stroke: $color;
+    }
+  }
 }
 
 @mixin btn-green {
@@ -173,6 +184,13 @@
   .caret {
     margin-left: 5px;
   }
+
+  svg {
+    height: 15px;
+    width: auto;
+    position: relative;
+    top: 2px;
+  }
 }
 
 .btn-lg {
@@ -279,5 +297,23 @@
   margin-left: 10px;
   i {
     color: $gl-icon-color;
+  }
+}
+
+.clone-dropdown-btn a {
+  color: $dropdown-link-color;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.btn-static {
+  background-color: $background-color !important;
+  border: 1px solid lightgrey;
+  cursor: default;
+  &:active {
+    -moz-box-shadow: inset 0 0 0 white;
+    -webkit-box-shadow: inset 0 0 0 white;
+    box-shadow: inset 0 0 0 white;
   }
 }

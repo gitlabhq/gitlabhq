@@ -6,7 +6,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @project_members = @project.project_members
-    @project_members = @project_members.non_pending unless can?(current_user, :admin_project, @project)
+    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
@@ -19,7 +19,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     if @group
       @group_members = @group.group_members
-      @group_members = @group_members.non_pending unless can?(current_user, :admin_group, @group)
+      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
 
       if params[:search].present?
         users = @group.users.search(params[:search]).to_a
@@ -28,6 +28,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
       @group_members = @group_members.order('access_level DESC')
     end
+
+    @requesters = @project.requesters if can?(current_user, :admin_project, @project)
 
     @project_member = @project.project_members.new
     @project_group_links = @project.project_group_links
@@ -48,11 +50,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def destroy
-    @project_member = @project.project_members.find(params[:id])
+    @project_member = @project.members.find_by(id: params[:id]) ||
+      @project.requesters.find_by(id: params[:id])
 
-    return render_403 unless can?(current_user, :destroy_project_member, @project_member)
-
-    @project_member.destroy
+    Members::DestroyService.new(@project_member, current_user).execute
 
     respond_to do |format|
       format.html do
@@ -98,8 +99,4 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :project
-
-  def cannot_leave?
-    current_user == @project.owner
-  end
 end

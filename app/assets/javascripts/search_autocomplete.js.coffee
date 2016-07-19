@@ -171,21 +171,14 @@ class @SearchAutocomplete
     }
 
   bindEvents: ->
-    $(document).on 'click', @onDocumentClick
     @searchInput.on 'keydown', @onSearchInputKeyDown
     @searchInput.on 'keyup', @onSearchInputKeyUp
     @searchInput.on 'click', @onSearchInputClick
     @searchInput.on 'focus', @onSearchInputFocus
+    @searchInput.on 'blur', @onSearchInputBlur
     @clearInput.on 'click', @onClearInputClick
     @locationBadgeEl.on 'click', =>
       @searchInput.focus()
-
-  onDocumentClick: (e) =>
-    # If clicking outside the search box
-    # And search input is not focused
-    # And we are not clicking inside a suggestion
-    if not $.contains(@dropdown[0], e.target) and @isFocused and not $(e.target).closest('.search-form').length
-      @onSearchInputBlur()
 
   enableAutocomplete: ->
     # No need to enable anything if user is not logged in
@@ -286,8 +279,6 @@ class @SearchAutocomplete
       @addLocationBadge(
         value: @originalState._location
       )
-
-    @dropdown.removeClass 'open'
 
   badgePresent: ->
     @locationBadgeEl.length

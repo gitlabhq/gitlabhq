@@ -21,7 +21,7 @@ module Ci
         end
 
       build = builds.find do |build|
-        build.can_be_served?(current_runner)
+        current_runner.can_pick?(build)
       end
 
       if build

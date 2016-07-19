@@ -1,15 +1,12 @@
 class Admin::RunnerProjectsController < Admin::ApplicationController
   before_action :project, only: [:create]
 
-  def index
-    @runner_projects = project.runner_projects.all
-    @runner_project = project.runner_projects.new
-  end
-
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    if @runner.assign_to(@project, current_user)
+    runner_project = @runner.assign_to(@project, current_user)
+
+    if runner_project.persisted?
       redirect_to admin_runner_path(@runner)
     else
       redirect_to admin_runner_path(@runner), alert: 'Failed adding runner to project'

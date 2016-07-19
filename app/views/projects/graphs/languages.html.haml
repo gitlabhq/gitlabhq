@@ -1,24 +1,26 @@
+- @no_container = true
 - page_title "Languages", "Graphs"
 = render 'head'
 
-.row-content-block.append-bottom-default
-  .oneline
-    Programming languages used in this repository
+%div{ class: container_class }
+  .sub-header-block
+    .oneline
+      Programming languages used in this repository
 
-.row
-  .col-md-8
-    %canvas#languages-chart{ height: 400 }
-  .col-md-4
-    %ul.bordered-list
-      - @languages.each do |language|
-        %li
-          %span{ style: "color: #{language[:color]}" }
-            = icon('circle')
-          &nbsp;
-          = language[:label]
-          .pull-right
-            = language[:value]
-            \%
+  .row
+    .col-md-8
+      %canvas#languages-chart{ height: 400 }
+    .col-md-4
+      %ul.bordered-list
+        - @languages.each do |language|
+          %li
+            %span{ style: "color: #{language[:color]}" }
+              = icon('circle')
+            &nbsp;
+            = language[:label]
+            .pull-right
+              = language[:value]
+              \%
 
 :javascript
   var data = #{@languages.to_json};

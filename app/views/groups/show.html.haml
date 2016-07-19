@@ -5,9 +5,8 @@
     = auto_discovery_link_tag(:atom, group_url(@group, format: :atom, private_token: current_user.private_token), title: "#{@group.name} activity")
 
 .cover-block.groups-cover-block
-  %div{ class: (container_class) }
-    = link_to group_icon(@group), target: '_blank' do
-      = image_tag group_icon(@group), class: "avatar group-avatar s70"
+  %div{ class: container_class }
+    = image_tag group_icon(@group), class: "avatar group-avatar s70"
     .group-info
       .cover-title
         %h1
@@ -15,12 +14,14 @@
           %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
             = visibility_level_icon(@group.visibility_level, fw: false)
 
+        .group-right-buttons.btn-group
+          - if current_user
+            .pull-left.append-right-10= render 'shared/members/access_request_buttons', source: @group
+          = render 'shared/notifications/button', notification_setting: @notification_setting
+
       - if @group.description.present?
         .cover-desc.description
           = markdown(@group.description, pipeline: :description)
-
-    - if current_user
-      = render 'shared/members/access_request_buttons', source: @group
 
 %div{ class: container_class }
   .top-area
@@ -33,7 +34,7 @@
           = link_to "#shared", 'data-toggle' => 'tab' do
             Shared Projects
     .nav-controls
-      = form_tag request.original_url, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
+      = form_tag request.path, method: :get, class: 'project-filter-form', id: 'project-filter-form' do |f|
         = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'projects-list-filter form-control', spellcheck: false
       = render 'shared/projects/dropdown'
       - if can? current_user, :create_projects, @group

@@ -30,7 +30,7 @@ feature 'Merge request created from fork' do
 
     given(:pipeline) do
       create(:ci_pipeline_with_two_job, project: fork_project,
-                                        sha: merge_request.last_commit.id,
+                                        sha: merge_request.diff_head_sha,
                                         ref: merge_request.source_branch)
     end
 

@@ -8,6 +8,10 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
+  def expand_all_diffs?
+    params[:expand_all_diffs].present?
+  end
+
   def diff_view
     diff_views = %w(inline parallel)
 
@@ -18,28 +22,23 @@ module DiffHelper
     end
   end
 
-  def diff_hard_limit_enabled?
-    params[:force_show_diff].present?
-  end
-
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace? }
-    if diff_hard_limit_enabled?
-      options.merge!(Commit.max_diff_options)
+    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
+
+    if action_name == 'diff_for_path'
+      options[:no_collapse] = true
+      options[:paths] = params.values_at(:old_path, :new_path)
     end
-    options
+
+    Commit.max_diff_options.merge(options)
   end
 
-  def safe_diff_files(diffs, diff_refs)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs) }
-  end
-
-  def generate_line_code(file_path, line)
-    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
+    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
   end
 
   def unfold_bottom_class(bottom)
-    bottom ? 'js-unfold-bottom' : ''
+    bottom ? 'js-unfold js-unfold-bottom' : ''
   end
 
   def unfold_class(unfold)
@@ -93,6 +92,8 @@ module DiffHelper
   end
 
   def commit_for_diff(diff_file)
+    return diff_file.content_commit if diff_file.content_commit
+
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else
@@ -100,10 +101,11 @@ module DiffHelper
     end
   end
 
-  def diff_file_html_data(project, diff_commit, diff_file)
+  def diff_file_html_data(project, diff_file)
+    commit = commit_for_diff(diff_file)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
-                                                       tree_join(diff_commit.id, diff_file.file_path))
+                                                       tree_join(commit.id, diff_file.file_path))
     }
   end
 

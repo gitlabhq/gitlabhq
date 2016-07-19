@@ -28,8 +28,20 @@ describe Gitlab::Metrics::System do
   end
 
   describe '.cpu_time' do
-    it 'returns a Fixnum' do
-      expect(described_class.cpu_time).to be_an_instance_of(Fixnum)
+    it 'returns a Float' do
+      expect(described_class.cpu_time).to be_an_instance_of(Float)
+    end
+  end
+
+  describe '.real_time' do
+    it 'returns a Float' do
+      expect(described_class.real_time).to be_an_instance_of(Float)
+    end
+  end
+
+  describe '.monotonic_time' do
+    it 'returns a Float' do
+      expect(described_class.monotonic_time).to be_an_instance_of(Float)
     end
   end
 end

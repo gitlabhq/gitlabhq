@@ -14,7 +14,7 @@ describe 'Git HTTP requests', lib: true do
     context "when no authentication is provided" do
       it "responds with status 401 (no project existence information leak)" do
         download('doesnt/exist.git') do |response|
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -23,7 +23,7 @@ describe 'Git HTTP requests', lib: true do
       context "when authentication fails" do
         it "responds with status 401" do
           download('doesnt/exist.git', user: user.username, password: "nope") do |response|
-            expect(response.status).to eq(401)
+            expect(response).to have_http_status(401)
           end
         end
       end
@@ -31,7 +31,7 @@ describe 'Git HTTP requests', lib: true do
       context "when authentication succeeds" do
         it "responds with status 404" do
           download('/doesnt/exist.git', user: user.username, password: user.password) do |response|
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
       end
@@ -46,7 +46,7 @@ describe 'Git HTTP requests', lib: true do
       download("/#{wiki.repository.path_with_namespace}.git") do |response|
         json_body = ActiveSupport::JSON.decode(response.body)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_body['RepoPath']).to include(wiki.repository.path_with_namespace)
       end
     end
@@ -62,13 +62,13 @@ describe 'Git HTTP requests', lib: true do
 
       it "downloads get status 200" do
         download(path, {}) do |response|
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
       end
 
       it "uploads get status 401" do
         upload(path, {}) do |response|
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(401)
         end
       end
 
@@ -77,7 +77,7 @@ describe 'Git HTTP requests', lib: true do
 
         it "uploads get status 200 (because Git hooks do the real check)" do
           upload(path, env) do |response|
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -86,7 +86,7 @@ describe 'Git HTTP requests', lib: true do
             allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
 
             upload(path, env) do |response|
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end
@@ -97,7 +97,7 @@ describe 'Git HTTP requests', lib: true do
           allow(Gitlab.config.gitlab_shell).to receive(:upload_pack).and_return(false)
 
           download(path, {}) do |response|
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
       end
@@ -111,13 +111,13 @@ describe 'Git HTTP requests', lib: true do
       context "when no authentication is provided" do
         it "responds with status 401 to downloads" do
           download(path, {}) do |response|
-            expect(response.status).to eq(401)
+            expect(response).to have_http_status(401)
           end
         end
 
         it "responds with status 401 to uploads" do
           upload(path, {}) do |response|
-            expect(response.status).to eq(401)
+            expect(response).to have_http_status(401)
           end
         end
       end
@@ -128,7 +128,7 @@ describe 'Git HTTP requests', lib: true do
         context "when authentication fails" do
           it "responds with status 401" do
             download(path, env) do |response|
-              expect(response.status).to eq(401)
+              expect(response).to have_http_status(401)
             end
           end
 
@@ -139,7 +139,7 @@ describe 'Git HTTP requests', lib: true do
 
               clone_get(path, env)
 
-              expect(response.status).to eq(401)
+              expect(response).to have_http_status(401)
             end
           end
         end
@@ -158,7 +158,7 @@ describe 'Git HTTP requests', lib: true do
                 project.team << [user, :master]
 
                 download(path, env) do |response|
-                  expect(response.status).to eq(404)
+                  expect(response).to have_http_status(404)
                 end
               end
             end
@@ -169,12 +169,12 @@ describe 'Git HTTP requests', lib: true do
 
                 clone_get(path, env)
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
 
               it "uploads get status 200" do
                 upload(path, env) do |response|
-                  expect(response.status).to eq(200)
+                  expect(response).to have_http_status(200)
                 end
               end
             end
@@ -188,13 +188,13 @@ describe 'Git HTTP requests', lib: true do
               it "downloads get status 200" do
                 clone_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
 
               it "uploads get status 401 (no project existence information leak)" do
                 push_get "#{project.path_with_namespace}.git", user: 'oauth2', password: @token.token
 
-                expect(response.status).to eq(401)
+                expect(response).to have_http_status(401)
               end
             end
 
@@ -232,13 +232,13 @@ describe 'Git HTTP requests', lib: true do
           context "when the user doesn't have access to the project" do
             it "downloads get status 404" do
               download(path, user: user.username, password: user.password) do |response|
-                expect(response.status).to eq(404)
+                expect(response).to have_http_status(404)
               end
             end
 
             it "uploads get status 200 (because Git hooks do the real check)" do
               upload(path, user: user.username, password: user.password) do |response|
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
           end
@@ -256,13 +256,13 @@ describe 'Git HTTP requests', lib: true do
         it "downloads get status 200" do
           clone_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
         end
 
         it "uploads get status 401 (no project existence information leak)" do
           push_get "#{project.path_with_namespace}.git", user: 'gitlab-ci-token', password: token
 
-          expect(response.status).to eq(401)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -336,7 +336,7 @@ describe 'Git HTTP requests', lib: true do
       end
 
       it "returns the file" do
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
       end
     end
 
@@ -344,29 +344,29 @@ describe 'Git HTTP requests', lib: true do
       before { get "/#{project.path_with_namespace}/blob/master/info/refs" }
 
       it "returns not found" do
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end
 
   def clone_get(project, options={})
-    get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password))
+    get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def clone_post(project, options={})
-    post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password))
+    post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def push_get(project, options={})
-    get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password))
+    get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
   def push_post(project, options={})
-    post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password))
+    post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def download(project, user: nil, password: nil)
-    args = [project, { user: user, password: password }]
+  def download(project, user: nil, password: nil, spnego_request_token: nil)
+    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
 
     clone_get(*args)
     yield response
@@ -375,8 +375,8 @@ describe 'Git HTTP requests', lib: true do
     yield response
   end
 
-  def upload(project, user: nil, password: nil)
-    args = [project, { user: user, password: password }]
+  def upload(project, user: nil, password: nil, spnego_request_token: nil)
+    args = [project, { user: user, password: password, spnego_request_token: spnego_request_token }]
 
     push_get(*args)
     yield response
@@ -385,11 +385,14 @@ describe 'Git HTTP requests', lib: true do
     yield response
   end
 
-  def auth_env(user, password)
+  def auth_env(user, password, spnego_request_token)
+    env = {}
     if user && password
-      { 'HTTP_AUTHORIZATION' => ActionController::HttpAuthentication::Basic.encode_credentials(user, password) }
-    else
-      {}
+      env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user, password)
+    elsif spnego_request_token
+      env['HTTP_AUTHORIZATION'] = "Negotiate #{::Base64.strict_encode64('opaque_request_token')}"
     end
+
+    env
   end
 end

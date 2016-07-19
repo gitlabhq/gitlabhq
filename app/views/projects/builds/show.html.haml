@@ -67,4 +67,4 @@
 = render "sidebar"
 
 :javascript
-  new CiBuild("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{@build.status}", "#{trace_with_state[:state]}")
+  new Build("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}", "#{@build.status}", "#{trace_with_state[:state]}")

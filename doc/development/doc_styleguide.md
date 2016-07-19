@@ -44,7 +44,7 @@ it organized and easy to find.
 - When introducing a new document, be careful for the headings to be
   grammatically and syntactically correct. It is advised to mention one or all
   of the following GitLab members for a review: `@axil`, `@rspeicher`,
-  `@dblessing`, `@ashleys`, `@nearlythere`. This is to ensure that no document
+  `@dblessing`, `@ashleys`. This is to ensure that no document
   with wrong heading is going live without an audit, thus preventing dead links
   and redirection issues when corrected
 - Leave exactly one newline after a heading
@@ -182,6 +182,62 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     (`lfs_administration.md`) and not the whole the relative path
     (`workflow/lfs/lfs_administration.md`).
 
+
+## Configuration documentation for source and Omnibus installations
+
+GitLab currently officially supports two installation methods: installations
+from source and Omnibus packages installations.
+
+Whenever there is a setting that is configurable for both installation methods,
+prefer to document it in the CE docs to avoid duplication.
+
+Configuration settings include:
+
+- settings that touch configuration files in `config/`
+- NGINX settings and settings in `lib/support/` in general
+
+When there is a list of steps to perform, usually that entails editing the
+configuration file and reconfiguring/restarting GitLab. In such case, follow
+the style below as a guide:
+
+````
+**For Omnibus installations**
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    external_url "https://gitlab.example.com"
+    ```
+
+1. Save the file and [reconfigure] GitLab for the changes to take effect.
+
+---
+
+**For installations from source**
+
+1. Edit `config/gitlab.yml`:
+
+    ```yaml
+    gitlab:
+      host: "gitlab.example.com"
+    ```
+
+1. Save the file and [restart] GitLab for the changes to take effect.
+
+
+[reconfigure]: path/to/administration/gitlab_restart.md#omnibus-gitlab-reconfigure
+[restart]: path/to/administration/gitlab_restart.md#installations-from-source
+````
+
+In this case:
+
+- before each step list the installation method is declared in bold
+- three dashes (`---`) are used to create an horizontal line and separate the
+  two methods
+- the code blocks are indented one or more spaces under the list item to render
+  correctly
+- different highlighting languages are used for each config in the code block
+- the [references](#references) guide is used for reconfigure/restart
 
 ## API
 

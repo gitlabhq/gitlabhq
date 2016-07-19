@@ -1,5 +1,5 @@
 class @NotificationsDropdown
-  $ ->
+  constructor: ->
     $(document)
       .off 'click', '.update-notification'
       .on 'click', '.update-notification', (e) ->
@@ -18,7 +18,8 @@ class @NotificationsDropdown
       .off 'ajax:success', '.notification-form'
       .on 'ajax:success', '.notification-form', (e, data) ->
         if data.saved
-          new Flash('Notification settings saved', 'notice')
-          $(e.currentTarget).closest('.notification-dropdown').replaceWith(data.html)
+          $(e.currentTarget)
+            .closest('.notification-dropdown')
+            .replaceWith(data.html)
         else
           new Flash('Failed to save new settings', 'alert')

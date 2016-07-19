@@ -23,10 +23,9 @@ class Projects::ArtifactsController < Projects::ApplicationController
     entry = build.artifacts_metadata_entry(params[:path])
 
     if entry.exists?
-      render json: { archive: build.artifacts_file.path,
-                     entry: Base64.encode64(entry.path) }
+      send_artifacts_entry(build, entry)
     else
-      render json: {}, status: 404
+      render_404
     end
   end
 

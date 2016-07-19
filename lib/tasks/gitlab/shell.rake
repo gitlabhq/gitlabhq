@@ -12,7 +12,6 @@ namespace :gitlab do
       gitlab_url = Gitlab.config.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += '/' unless gitlab_url.end_with?('/')
-      repos_path = Gitlab.config.gitlab_shell.repos_path
       target_dir = Gitlab.config.gitlab_shell.path
 
       # Clone if needed
@@ -35,7 +34,6 @@ namespace :gitlab do
           user: user,
           gitlab_url: gitlab_url,
           http_settings: {self_signed_cert: false}.stringify_keys,
-          repos_path: repos_path,
           auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
           redis: {
             bin: %x{which redis-cli}.chomp,
@@ -58,10 +56,10 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        system(*%W(bin/install))
+        system(*%W(bin/install) + repository_storage_paths_args)
 
         # (Re)create hooks
-        system(*%W(bin/create-hooks))
+        system(*%W(bin/create-hooks) + repository_storage_paths_args)
       end
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
@@ -73,6 +71,8 @@ namespace :gitlab do
       File.open(File.join(home_dir, ".ssh", "environment"), "w+") do |f|
         f.puts "PATH=#{ENV['PATH']}"
       end
+
+      Gitlab::Shell.new.generate_and_link_secret_token
     end
 
     desc "GitLab | Setup gitlab-shell"
@@ -87,7 +87,8 @@ namespace :gitlab do
         if File.exists?(path_to_repo)
           print '-'
         else
-          if Gitlab::Shell.new.add_repository(project.path_with_namespace)
+          if Gitlab::Shell.new.add_repository(project.repository_storage_path,
+                                              project.path_with_namespace)
             print '.'
           else
             print 'F'
@@ -138,4 +139,3 @@ namespace :gitlab do
     system(*%W(#{Gitlab.config.git.bin_path} reset --hard #{tag}))
   end
 end
-

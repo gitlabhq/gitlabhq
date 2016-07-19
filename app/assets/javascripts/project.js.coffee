@@ -19,6 +19,7 @@ class @Project
       $('.clone').text(url)
 
     # Ref switcher
+    @initRefSwitcher()
     $('.project-refs-select').on 'change', ->
       $(@).parents('form').submit()
 
@@ -33,7 +34,6 @@ class @Project
       $.cookie('hide_no_password_message', 'false', { path: path })
       $(@).parents('.no-password-message').remove()
       e.preventDefault()
-
 
     @projectSelectDropdown()
 
@@ -50,3 +50,42 @@ class @Project
 
   changeProject: (url) ->
     window.location = url
+
+  initRefSwitcher: ->
+    $('.js-project-refs-dropdown').each ->
+      $dropdown = $(@)
+      selected = $dropdown.data('selected')
+
+      $dropdown.glDropdown(
+        data: (term, callback) ->
+          $.ajax(
+            url: $dropdown.data('refs-url')
+            data:
+              ref: $dropdown.data('ref')
+          ).done (refs) ->
+            callback(refs)
+        selectable: true
+        filterable: true
+        filterByText: true
+        fieldName: 'ref'
+        renderRow: (ref) ->
+          if ref.header?
+            $('<li />')
+              .addClass('dropdown-header')
+              .text(ref.header)
+          else
+            link = $('<a />')
+              .attr('href', '#')
+              .addClass(if ref is selected then 'is-active' else '')
+              .text(ref)
+              .attr('data-ref', escape(ref))
+
+            $('<li />')
+              .append(link)
+        id: (obj, $el) ->
+          $el.attr('data-ref')
+        toggleLabel: (obj, $el) ->
+          $el.text().trim()
+        clicked: (e) ->
+          $dropdown.closest('form').submit()
+      )

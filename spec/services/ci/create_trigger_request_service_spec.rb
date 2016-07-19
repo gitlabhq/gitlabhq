@@ -9,7 +9,7 @@ describe Ci::CreateTriggerRequestService, services: true do
     stub_ci_pipeline_to_return_yaml_file
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       subject { service.execute(project, trigger, 'master') }
 

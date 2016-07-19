@@ -61,7 +61,7 @@ module API
       #   tag_name (required) - The name of the tag
       # Example Request:
       #   DELETE /projects/:id/repository/tags/:tag
-      delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.*/ } do
+      delete ":id/repository/tags/:tag_name", requirements: { tag_name: /.+/ } do
         authorize_push_project
         result = DeleteTagService.new(user_project, current_user).
           execute(params[:tag_name])
@@ -83,7 +83,7 @@ module API
       #   description (required) - Release notes with markdown support
       # Example Request:
       #   POST /projects/:id/repository/tags/:tag_name/release
-      post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
+      post ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
         required_attributes! [:description]
         result = CreateReleaseService.new(user_project, current_user).
@@ -104,7 +104,7 @@ module API
       #   description (required) - Release notes with markdown support
       # Example Request:
       #   PUT /projects/:id/repository/tags/:tag_name/release
-      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.*/ } do
+      put ':id/repository/tags/:tag_name/release', requirements: { tag_name: /.+/ } do
         authorize_push_project
         required_attributes! [:description]
         result = UpdateReleaseService.new(user_project, current_user).

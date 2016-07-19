@@ -31,18 +31,12 @@
     - if current_user && can?(current_user, :fork_project, @project)
       - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
         = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: 'Go to your fork', class: 'btn btn-new' do
-          = icon('code-fork fw')
+          = custom_icon('icon_fork')
           Fork
       - else
         = link_to new_namespace_project_fork_path(@project.namespace, @project), title: "Fork project", class: 'btn btn-new' do
-          = icon('code-fork fw')
+          = custom_icon('icon_fork')
           Fork
 
 
 = render 'projects', projects: @forks
-
-- if @private_forks_count > 0
-  .private-forks-notice
-    = icon('lock fw', base: 'circle', class: 'fa-lg private-fork-icon')
-    %strong= pluralize(@private_forks_count, 'private fork')
-    %span you have no access to.

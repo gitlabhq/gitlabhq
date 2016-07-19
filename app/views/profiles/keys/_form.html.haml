@@ -4,7 +4,7 @@
 
     .form-group
       = f.label :key, class: 'label-light'
-      = f.text_area :key, class: "form-control", rows: 8, required: true
+      = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: "Don't paste the private part of the SSH key. Paste the public part, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'."
     .form-group
       = f.label :title, class: 'label-light'
       = f.text_field :title, class: "form-control", required: true

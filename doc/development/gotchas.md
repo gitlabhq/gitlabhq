@@ -46,7 +46,7 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 Using the inline `:coffee` or `:coffeescript` Haml filters comes with a
 performance overhead.
 
-_**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-5-stable/config/initializers/haml.rb)
+_**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/hamlit.rb)
 in an initializer._
 
 ### Further reading

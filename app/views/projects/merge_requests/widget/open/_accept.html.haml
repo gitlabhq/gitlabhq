@@ -2,7 +2,7 @@
 
 = form_for [:merge, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'accept-mr-form js-quick-submit js-requires-input' } do |f|
   = hidden_field_tag :authenticity_token, form_authenticity_token
-  = hidden_field_tag :sha, @merge_request.source_sha
+  = hidden_field_tag :sha, @merge_request.diff_head_sha
   .accept-merge-holder.clearfix.js-toggle-container
     .clearfix
       .accept-action

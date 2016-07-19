@@ -2,7 +2,7 @@
 - page_title "Builds"
 = render "projects/pipelines/head"
 
-%div{ class: (container_class) }
+%div{ class: container_class }
   .top-area
     %ul.nav-links
       %li{class: ('active' if @scope.nil?)}
@@ -11,17 +11,22 @@
           %span.badge.js-totalbuilds-count
             = number_with_delimiter(@all_builds.count(:id))
 
+      %li{class: ('active' if @scope == 'pending')}
+        = link_to project_builds_path(@project, scope: :pending) do
+          Pending
+          %span.badge
+            = number_with_delimiter(@all_builds.pending.count(:id))
 
       %li{class: ('active' if @scope == 'running')}
         = link_to project_builds_path(@project, scope: :running) do
           Running
-          %span.badge.js-running-count
-            = number_with_delimiter(@all_builds.running_or_pending.count(:id))
+          %span.badge
+            = number_with_delimiter(@all_builds.running.count(:id))
 
       %li{class: ('active' if @scope == 'finished')}
         = link_to project_builds_path(@project, scope: :finished) do
           Finished
-          %span.badge.js-running-count
+          %span.badge
             = number_with_delimiter(@all_builds.finished.count(:id))
 
     .nav-controls
@@ -31,12 +36,12 @@
             data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', method: :post
 
         - unless @repository.gitlab_ci_yml
-          = link_to 'Get started with Builds', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+          = link_to 'Get started with Builds', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
 
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
 
-  %ul.content-list
+  %ul.content-list.builds-content-list
     - if @builds.blank?
       %li
         .nothing-here-block No builds to show
@@ -46,14 +51,10 @@
           %thead
             %tr
               %th Status
-              %th Build ID
               %th Commit
-              %th Ref
               %th Stage
               %th Name
-              %th Tags
-              %th Duration
-              %th Finished at
+              %th
               - if @project.build_coverage_enabled?
                 %th Coverage
               %th

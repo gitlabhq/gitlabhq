@@ -1,30 +1,17 @@
 - note = discussion_notes.first
-- diff = note.diff
-- return unless diff
+- diff_file = note.diff_file
+- return unless diff_file
 
-.diff-file
-  .diff-header
-    %span
-      - if diff.deleted_file
-        = diff.old_path
-      - else
-        = diff.new_path
-        - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
-          %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+- blob = note.blob
+
+.diff-file.file-holder
+  .file-title
+    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_file.content_commit, project: note.project, url: diff_note_path(note)
+
   .diff-content.code.js-syntax-highlight
     %table
       - note.truncated_diff_lines.each do |line|
-        - type = line.type
-        - line_code = generate_line_code(note.diff_file_path, line)
-        %tr.line_holder{ id: line_code, class: "#{type}" }
-          - if type == "match"
-            %td.old_line.diff-line-num= "..."
-            %td.new_line.diff-line-num= "..."
-            %td.line_content.match= line.text
-          - else
-            %td.old_line.diff-line-num{ data: { linenumber: type == "new" ? "&nbsp;".html_safe : line.old_pos } }
-            %td.new_line.diff-line-num{ data: { linenumber: type == "old" ? "&nbsp;".html_safe : line.new_pos } }
-            %td.line_content{ class: ['noteable_line', type, line_code], line_code: line_code }= diff_line_content(line.text, type)
+        = render "projects/diffs/line", line: line, diff_file: diff_file, plain: true
 
-            - if line_code == note.line_code
-              = render "projects/notes/diff_notes_with_reply", notes: discussion_notes
+        - if note.for_line?(line)
+          = render "projects/notes/diff_notes_with_reply", notes: discussion_notes

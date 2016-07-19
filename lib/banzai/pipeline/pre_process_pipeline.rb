@@ -3,7 +3,8 @@ module Banzai
     class PreProcessPipeline < BasePipeline
       def self.filters
         FilterArray[
-          Filter::YamlFrontMatterFilter
+          Filter::YamlFrontMatterFilter,
+          Filter::BlockquoteFenceFilter,
         ]
       end
 

@@ -51,14 +51,14 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/issues")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context "when authenticated" do
       it "should return an array of issues" do
         get api("/issues", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(issue.title)
       end
@@ -72,7 +72,7 @@ describe API::API, api: true  do
 
       it 'should return an array of closed issues' do
         get api('/issues?state=closed', user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(closed_issue.id)
@@ -80,7 +80,7 @@ describe API::API, api: true  do
 
       it 'should return an array of opened issues' do
         get api('/issues?state=opened', user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(issue.id)
@@ -88,7 +88,7 @@ describe API::API, api: true  do
 
       it 'should return an array of all issues' do
         get api('/issues?state=all', user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(2)
         expect(json_response.first['id']).to eq(issue.id)
@@ -97,7 +97,7 @@ describe API::API, api: true  do
 
       it 'should return an array of labeled issues' do
         get api("/issues?labels=#{label.title}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -105,7 +105,7 @@ describe API::API, api: true  do
 
       it 'should return an array of labeled issues when at least one label matches' do
         get api("/issues?labels=#{label.title},foo,bar", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -113,14 +113,14 @@ describe API::API, api: true  do
 
       it 'should return an empty array if no issue matches labels' do
         get api('/issues?labels=foo,bar', user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
 
       it 'should return an array of labeled issues matching given state' do
         get api("/issues?labels=#{label.title}&state=opened", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['labels']).to eq([label.title])
@@ -129,10 +129,152 @@ describe API::API, api: true  do
 
       it 'should return an empty array if no issue matches labels and state filters' do
         get api("/issues?labels=#{label.title}&state=closed", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
+    end
+  end
+
+  describe "GET /groups/:id/issues" do
+    let!(:group)            { create(:group) }
+    let!(:group_project)    { create(:project, :public, creator_id: user.id, namespace: group) }
+    let!(:group_closed_issue) do
+      create :closed_issue,
+             author: user,
+             assignee: user,
+             project: group_project,
+             state: :closed,
+             milestone: group_milestone
+    end
+    let!(:group_confidential_issue) do
+      create :issue,
+             :confidential,
+             project: group_project,
+             author: author,
+             assignee: assignee
+    end
+    let!(:group_issue) do
+      create :issue,
+             author: user,
+             assignee: user,
+             project: group_project,
+             milestone: group_milestone
+    end
+    let!(:group_label) do
+      create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
+    end
+    let!(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
+    let!(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
+    let!(:group_empty_milestone) do
+      create(:milestone, title: '4.0.0', project: group_project)
+    end
+    let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
+
+    before do
+      group_project.team << [user, :reporter]
+    end
+    let(:base_url) { "/groups/#{group.id}/issues" }
+
+    it 'returns group issues without confidential issues for non project members' do
+      get api(base_url, non_member)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['title']).to eq(group_issue.title)
+    end
+
+    it 'returns group confidential issues for author' do
+      get api(base_url, author)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group confidential issues for assignee' do
+      get api(base_url, assignee)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group issues with confidential issues for project members' do
+      get api(base_url, user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns group confidential issues for admin' do
+      get api(base_url, admin)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+    end
+
+    it 'returns an array of labeled group issues' do
+      get api("#{base_url}?labels=#{group_label.title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([group_label.title])
+    end
+
+    it 'returns an array of labeled group issues where all labels match' do
+      get api("#{base_url}?labels=#{group_label.title},foo,bar", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if no group issue matches labels' do
+      get api("#{base_url}?labels=foo,bar", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if no issue matches milestone' do
+      get api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an empty array if milestone does not exist' do
+      get api("#{base_url}?milestone=foo", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
+    end
+
+    it 'returns an array of issues in given milestone' do
+      get api("#{base_url}?milestone=#{group_milestone.title}", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_issue.id)
+    end
+
+    it 'returns an array of issues matching state in milestone' do
+      get api("#{base_url}?milestone=#{group_milestone.title}"\
+              '&state=closed', user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(group_closed_issue.id)
     end
   end
 
@@ -142,7 +284,7 @@ describe API::API, api: true  do
 
     it 'should return project issues without confidential issues for non project members' do
       get api("#{base_url}/issues", non_member)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['title']).to eq(issue.title)
@@ -150,7 +292,7 @@ describe API::API, api: true  do
 
     it 'should return project issues without confidential issues for project members with guest role' do
       get api("#{base_url}/issues", guest)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['title']).to eq(issue.title)
@@ -158,7 +300,7 @@ describe API::API, api: true  do
 
     it 'should return project confidential issues for author' do
       get api("#{base_url}/issues", author)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -166,7 +308,7 @@ describe API::API, api: true  do
 
     it 'should return project confidential issues for assignee' do
       get api("#{base_url}/issues", assignee)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -174,7 +316,7 @@ describe API::API, api: true  do
 
     it 'should return project issues with confidential issues for project members' do
       get api("#{base_url}/issues", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -182,7 +324,7 @@ describe API::API, api: true  do
 
     it 'should return project confidential issues for admin' do
       get api("#{base_url}/issues", admin)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(3)
       expect(json_response.first['title']).to eq(issue.title)
@@ -190,7 +332,7 @@ describe API::API, api: true  do
 
     it 'should return an array of labeled project issues' do
       get api("#{base_url}/issues?labels=#{label.title}", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label.title])
@@ -198,7 +340,7 @@ describe API::API, api: true  do
 
     it 'should return an array of labeled project issues when at least one label matches' do
       get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['labels']).to eq([label.title])
@@ -206,28 +348,28 @@ describe API::API, api: true  do
 
     it 'should return an empty array if no project issue matches labels' do
       get api("#{base_url}/issues?labels=foo,bar", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
     it 'should return an empty array if no issue matches milestone' do
       get api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
     it 'should return an empty array if milestone does not exist' do
       get api("#{base_url}/issues?milestone=foo", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(0)
     end
 
     it 'should return an array of issues in given milestone' do
       get api("#{base_url}/issues?milestone=#{title}", user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['id']).to eq(issue.id)
@@ -237,7 +379,7 @@ describe API::API, api: true  do
     it 'should return an array of issues matching state in milestone' do
       get api("#{base_url}/issues?milestone=#{milestone.title}"\
               '&state=closed', user)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
@@ -248,7 +390,7 @@ describe API::API, api: true  do
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['id']).to eq(issue.id)
       expect(json_response['iid']).to eq(issue.iid)
       expect(json_response['project_id']).to eq(issue.project.id)
@@ -266,7 +408,7 @@ describe API::API, api: true  do
     it "should return a project issue by id" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(issue.title)
       expect(json_response['iid']).to eq(issue.iid)
     end
@@ -281,44 +423,44 @@ describe API::API, api: true  do
 
     it "should return 404 if issue id not found" do
       get api("/projects/#{project.id}/issues/54321", user)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     context 'confidential issues' do
       it "should return 404 for non project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
 
       it "should return 404 for project members with guest role" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest)
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
 
       it "should return confidential issue for project members" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", user)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
       it "should return confidential issue for author" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", author)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
       it "should return confidential issue for assignee" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", assignee)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
 
       it "should return confidential issue for admin" do
         get api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq(confidential_issue.title)
         expect(json_response['iid']).to eq(confidential_issue.iid)
       end
@@ -329,7 +471,7 @@ describe API::API, api: true  do
     it "should create a new project issue" do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2'
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(['label', 'label2'])
@@ -337,24 +479,42 @@ describe API::API, api: true  do
 
     it "should return a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
     end
 
-    it 'should return 400 on invalid label names' do
+    it 'should allow special label names' do
       post api("/projects/#{project.id}/issues", user),
            title: 'new issue',
-           labels: 'label, ?'
-      expect(response.status).to eq(400)
-      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
+           labels: 'label, label?, label&foo, ?, &'
+      expect(response.status).to eq(201)
+      expect(json_response['labels']).to include 'label'
+      expect(json_response['labels']).to include 'label?'
+      expect(json_response['labels']).to include 'label&foo'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
     end
 
     it 'should return 400 if title is too long' do
       post api("/projects/#{project.id}/issues", user),
            title: 'g' * 256
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
+    end
+
+    context 'with due date' do
+      it 'creates a new project issue' do
+        due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', due_date: due_date
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['description']).to be_nil
+        expect(json_response['due_date']).to eq(due_date)
+      end
     end
 
     context 'when an admin or owner makes the request' do
@@ -363,7 +523,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', labels: 'label, label2', created_at: creation_time
 
-        expect(response.status).to eq(201)
+        expect(response).to have_http_status(201)
         expect(Time.parse(json_response['created_at'])).to be_within(1.second).of(creation_time)
       end
     end
@@ -387,7 +547,7 @@ describe API::API, api: true  do
 
     it "should not create a new project issue" do
       expect { post api("/projects/#{project.id}/issues", user), params }.not_to change(Issue, :count)
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']).to eq({ "error" => "Spam detected" })
 
       spam_logs = SpamLog.all
@@ -404,7 +564,7 @@ describe API::API, api: true  do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         title: 'updated title'
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
 
       expect(json_response['title']).to eq('updated title')
     end
@@ -412,48 +572,53 @@ describe API::API, api: true  do
     it "should return 404 error if issue id not found" do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
-    it 'should return 400 on invalid label names' do
+    it 'should allow special label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title',
-          labels: 'label, ?'
-      expect(response.status).to eq(400)
-      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
+          labels: 'label, label?, label&foo, ?, &'
+
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'label'
+      expect(json_response['labels']).to include 'label?'
+      expect(json_response['labels']).to include 'label&foo'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
     end
 
     context 'confidential issues' do
       it "should return 403 for non project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", non_member),
           title: 'updated title'
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
 
       it "should return 403 for project members with guest role" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", guest),
           title: 'updated title'
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
 
       it "should update a confidential issue for project members" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
           title: 'updated title'
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
       it "should update a confidential issue for author" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", author),
           title: 'updated title'
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
 
       it "should update a confidential issue for admin" do
         put api("/projects/#{project.id}/issues/#{confidential_issue.id}", admin),
           title: 'updated title'
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
       end
     end
@@ -466,46 +631,43 @@ describe API::API, api: true  do
     it 'should not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title'
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([label.title])
     end
 
     it 'should remove all labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: ''
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([])
     end
 
     it 'should update labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'foo,bar'
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
     end
 
-    it 'should return 400 on invalid label names' do
-      put api("/projects/#{project.id}/issues/#{issue.id}", user),
-          labels: 'label, ?'
-      expect(response.status).to eq(400)
-      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
-    end
-
     it 'should allow special label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
-          labels: 'label:foo, label-bar,label_bar,label/bar'
+          labels: 'label:foo, label-bar,label_bar,label/bar,label?bar,label&bar,?,&'
       expect(response.status).to eq(200)
       expect(json_response['labels']).to include 'label:foo'
       expect(json_response['labels']).to include 'label-bar'
       expect(json_response['labels']).to include 'label_bar'
       expect(json_response['labels']).to include 'label/bar'
+      expect(json_response['labels']).to include 'label?bar'
+      expect(json_response['labels']).to include 'label&bar'
+      expect(json_response['labels']).to include '?'
+      expect(json_response['labels']).to include '&'
     end
 
     it 'should return 400 if title is too long' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'g' * 256
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
       expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
       ])
@@ -516,7 +678,7 @@ describe API::API, api: true  do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         labels: 'label2', state_event: "close"
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
 
       expect(json_response['labels']).to include 'label2'
       expect(json_response['state']).to eq "closed"
@@ -527,7 +689,7 @@ describe API::API, api: true  do
         update_time = 2.weeks.ago
         put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label3', state_event: 'close', updated_at: update_time
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
 
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_within(1.second).of(update_time)
@@ -535,15 +697,26 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'PUT /projects/:id/issues/:issue_id to update due date' do
+    it 'creates a new project issue' do
+      due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), due_date: due_date
+
+      expect(response).to have_http_status(200)
+      expect(json_response['due_date']).to eq(due_date)
+    end
+  end
+
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "rejects a non member from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", non_member)
-      expect(response.status).to be(403)
+      expect(response).to have_http_status(403)
     end
 
     it "rejects a developer from deleting an issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", author)
-      expect(response.status).to be(403)
+      expect(response).to have_http_status(403)
     end
 
     context "when the user is project owner" do
@@ -552,7 +725,7 @@ describe API::API, api: true  do
 
       it "deletes the issue if an admin requests it" do
         delete api("/projects/#{project.id}/issues/#{issue.id}", owner)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['state']).to eq 'opened'
       end
     end
@@ -566,7 +739,7 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                to_project_id: target_project.id
 
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['project_id']).to eq(target_project.id)
     end
 
@@ -575,7 +748,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: project.id
 
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue to project it originates from!')
       end
     end
@@ -585,7 +758,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: target_project2.id
 
-        expect(response.status).to eq(400)
+        expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('Cannot move issue due to insufficient permissions!')
       end
     end
@@ -594,7 +767,7 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues/#{issue.id}/move", admin),
                to_project_id: target_project2.id
 
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['project_id']).to eq(target_project2.id)
     end
 
@@ -603,7 +776,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/123/move", user),
                  to_project_id: target_project.id
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -612,7 +785,7 @@ describe API::API, api: true  do
         post api("/projects/123/issues/#{issue.id}/move", user),
                  to_project_id: target_project.id
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -621,7 +794,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/move", user),
                  to_project_id: 123
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -630,26 +803,26 @@ describe API::API, api: true  do
     it 'subscribes to an issue' do
       post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
 
-      expect(response.status).to eq(201)
+      expect(response).to have_http_status(201)
       expect(json_response['subscribed']).to eq(true)
     end
 
     it 'returns 304 if already subscribed' do
       post api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       post api("/projects/#{project.id}/issues/123/subscription", user)
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       post api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -657,26 +830,26 @@ describe API::API, api: true  do
     it 'unsubscribes from an issue' do
       delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['subscribed']).to eq(false)
     end
 
     it 'returns 304 if not subscribed' do
       delete api("/projects/#{project.id}/issues/#{issue.id}/subscription", user2)
 
-      expect(response.status).to eq(304)
+      expect(response).to have_http_status(304)
     end
 
     it 'returns 404 if the issue is not found' do
       delete api("/projects/#{project.id}/issues/123/subscription", user)
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
 
     it 'returns 404 if the issue is confidential' do
       delete api("/projects/#{project.id}/issues/#{confidential_issue.id}/subscription", non_member)
 
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 end

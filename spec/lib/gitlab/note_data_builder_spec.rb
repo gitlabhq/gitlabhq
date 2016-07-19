@@ -27,7 +27,7 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
   end
 
   describe 'When asking for a note on commit diff' do
-    let(:note) { create(:note_on_commit_diff, project: project) }
+    let(:note) { create(:diff_note_on_commit, project: project) }
 
     it 'returns the note and commit-specific data' do
       expect(data).to have_key(:commit)
@@ -90,7 +90,7 @@ describe 'Gitlab::NoteDataBuilder', lib: true do
     end
 
     let(:note) do
-      create(:note_on_merge_request_diff, noteable: merge_request,
+      create(:diff_note_on_merge_request, noteable: merge_request,
                                           project: project)
     end
 

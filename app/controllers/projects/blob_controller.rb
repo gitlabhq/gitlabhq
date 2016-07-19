@@ -16,6 +16,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :from_merge_request, only: [:edit, :update]
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
+  before_action :validate_diff_params, only: :diff
 
   def new
     commit unless @repository.empty?
@@ -37,6 +38,12 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
+    if params[:file_path].present?
+      @previous_path = @path
+      @path = params[:file_path]
+      @commit_params[:file_path] = @path
+    end
+
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
@@ -56,7 +63,7 @@ class Projects::BlobController < Projects::ApplicationController
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3', include_diff_info: true)
     diff_lines = diffy.diff.scan(/.*\n/)[2..-1]
     diff_lines = Gitlab::Diff::Parser.new.parse(diff_lines)
-    @diff_lines = Gitlab::Diff::Highlight.new(diff_lines).highlight
+    @diff_lines = Gitlab::Diff::Highlight.new(diff_lines, repository: @repository).highlight
 
     render layout: false
   end
@@ -145,5 +152,11 @@ class Projects::BlobController < Projects::ApplicationController
       file_content: params[:content],
       file_content_encoding: params[:encoding]
     }
+  end
+
+  def validate_diff_params
+    if [:since, :to, :offset].any? { |key| params[key].blank? }
+      render nothing: true
+    end
   end
 end

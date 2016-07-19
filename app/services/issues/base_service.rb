@@ -1,6 +1,5 @@
 module Issues
   class BaseService < ::IssuableBaseService
-
     def hook_data(issue, action)
       issue_data = issue.to_hook_data(current_user)
       issue_url = Gitlab::UrlBuilder.build(issue)

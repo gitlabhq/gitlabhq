@@ -54,8 +54,17 @@ module API
 
     class BasicProjectDetails < Grape::Entity
       expose :id
+      expose :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+    end
+
+    class SharedGroup < Grape::Entity
+      expose :group_id
+      expose :group_name do |group_link, options|
+        group_link.group.name
+      end
+      expose :group_access, as: :group_access_level
     end
 
     class Project < Grape::Entity
@@ -77,6 +86,9 @@ module API
       expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds
+      expose :shared_with_groups do |project, options|
+        SharedGroup.represent(project.project_group_links.all, options)
+      end
     end
 
     class ProjectMember < UserBasic
@@ -93,6 +105,7 @@ module API
 
     class GroupDetail < Group
       expose :projects, using: Entities::Project
+      expose :shared_projects, using: Entities::Project
     end
 
     class GroupMember < UserBasic
@@ -101,21 +114,23 @@ module API
       end
     end
 
-    class RepoObject < Grape::Entity
+    class RepoBranch < Grape::Entity
       expose :name
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
+      expose :commit do |repo_branch, options|
+        options[:project].repository.commit(repo_branch.target)
       end
 
-      expose :protected do |repo, options|
-        if options[:project]
-          options[:project].protected_branch? repo.name
-        end
+      expose :protected do |repo_branch, options|
+        options[:project].protected_branch? repo_branch.name
+      end
+
+      expose :developers_can_push do |repo_branch, options|
+        options[:project].developers_can_push_to_protected_branch? repo_branch.name
+      end
+
+      expose :developers_can_merge do |repo_branch, options|
+        options[:project].developers_can_merge_to_protected_branch? repo_branch.name
       end
     end
 
@@ -174,6 +189,7 @@ module API
       end
       expose :user_notes_count
       expose :upvotes, :downvotes
+      expose :due_date
     end
 
     class ExternalIssue < Grape::Entity
@@ -187,7 +203,6 @@ module API
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
-      expose :description
       expose :work_in_progress?, as: :work_in_progress
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
@@ -196,6 +211,8 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
+      expose :should_remove_source_branch?, as: :should_remove_source_branch
+      expose :force_remove_source_branch?, as: :force_remove_source_branch
     end
 
     class MergeRequestChanges < MergeRequest
@@ -240,9 +257,9 @@ module API
 
     class CommitNote < Grape::Entity
       expose :note
-      expose(:path) { |note| note.diff_file_path if note.legacy_diff_note? }
-      expose(:line) { |note| note.diff_new_line if note.legacy_diff_note? }
-      expose(:line_type) { |note| note.diff_line_type if note.legacy_diff_note? }
+      expose(:path) { |note| note.diff_file.try(:file_path) if note.diff_note? }
+      expose(:line) { |note| note.diff_line.try(:new_line) if note.diff_note? }
+      expose(:line_type) { |note| note.diff_line.try(:type) if note.diff_note? }
       expose :author, using: Entities::UserBasic
       expose :created_at
     end
@@ -270,6 +287,31 @@ module API
 
     class ProjectGroupLink < Grape::Entity
       expose :id, :project_id, :group_id, :group_access
+    end
+
+    class Todo < Grape::Entity
+      expose :id
+      expose :project, using: Entities::BasicProjectDetails
+      expose :author, using: Entities::UserBasic
+      expose :action_name
+      expose :target_type
+
+      expose :target do |todo, options|
+        Entities.const_get(todo.target_type).represent(todo.target, options)
+      end
+
+      expose :target_url do |todo, options|
+        target_type   = todo.target_type.underscore
+        target_url    = "namespace_project_#{target_type}_url"
+        target_anchor = "note_#{todo.note_id}" if todo.note_id?
+
+        Gitlab::Application.routes.url_helpers.public_send(target_url,
+          todo.project.namespace, todo.project, todo.target, anchor: target_anchor)
+      end
+
+      expose :body
+      expose :state
+      expose :created_at
     end
 
     class Namespace < Grape::Entity
@@ -376,6 +418,7 @@ module API
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
+      expose :repository_storage
     end
 
     class Release < Grape::Entity
@@ -384,27 +427,14 @@ module API
     end
 
     class RepoTag < Grape::Entity
-      expose :name
-      expose :message do |repo_obj, _options|
-        if repo_obj.respond_to?(:message)
-          repo_obj.message
-        else
-          nil
-        end
+      expose :name, :message
+
+      expose :commit do |repo_tag, options|
+        options[:project].repository.commit(repo_tag.target)
       end
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
-      end
-
-      expose :release, using: Entities::Release do |repo_obj, options|
-        if options[:project]
-          options[:project].releases.find_by(tag: repo_obj.name)
-        end
+      expose :release, using: Entities::Release do |repo_tag, options|
+        options[:project].releases.find_by(tag: repo_tag.name)
       end
     end
 
@@ -423,6 +453,7 @@ module API
     class RunnerDetails < Runner
       expose :tag_list
       expose :run_untagged
+      expose :locked
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
       expose :token, if: lambda { |runner, options| options[:current_user].is_admin? || !runner.is_shared? }
@@ -444,11 +475,7 @@ module API
       expose :created_at, :started_at, :finished_at
       expose :user, with: User
       expose :artifacts_file, using: BuildArtifactFile, if: -> (build, opts) { build.artifacts? }
-      expose :commit, with: RepoCommit do |repo_obj, _options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit.commit_data
-        end
-      end
+      expose :commit, with: RepoCommit
       expose :runner, with: Runner
     end
 
@@ -472,11 +499,11 @@ module API
       expose :content
     end
 
-    class GitignoresList < Grape::Entity
+    class TemplatesList < Grape::Entity
       expose :name
     end
 
-    class Gitignore < Grape::Entity
+    class Template < Grape::Entity
       expose :name, :content
     end
   end

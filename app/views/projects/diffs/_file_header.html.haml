@@ -1,0 +1,25 @@
+- if defined?(blob) && blob && diff_file.submodule?
+  %span
+    = icon('archive fw')
+    %span
+      = submodule_link(blob, diff_commit.id, project.repository)
+- else
+  = conditional_link_to url.present?, url do
+    = blob_icon diff_file.b_mode, diff_file.file_path
+
+    - if diff_file.renamed_file
+      - old_path, new_path = mark_inline_diffs(diff_file.old_path, diff_file.new_path)
+      %strong
+        = old_path
+      &rarr;
+      %strong
+        = new_path
+    - else
+      %strong
+        = diff_file.new_path
+      - if diff_file.deleted_file
+        deleted
+
+  - if diff_file.mode_changed?
+    %small
+      = "#{diff_file.a_mode} → #{diff_file.b_mode}"

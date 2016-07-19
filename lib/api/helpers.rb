@@ -9,6 +9,13 @@ module API
       [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
     end
 
+    def to_boolean(value)
+      return true if value =~ /^(true|t|yes|y|1|on)$/i
+      return false if value =~ /^(false|f|no|n|0|off)$/i
+
+      nil
+    end
+
     def find_user_by_private_token
       token_string = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
       User.find_by_authentication_token(token_string) || User.find_by_personal_access_token(token_string)
@@ -17,7 +24,7 @@ module API
     def current_user
       @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
-      unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
+      unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
         return nil
       end
 

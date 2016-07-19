@@ -154,10 +154,8 @@ describe JiraService, models: true do
         expect(@jira_service.password).to eq("password")
         expect(@jira_service.api_url).to eq("http://jira_edited.example.com/rest/api/2")
       end
-
     end
   end
-
 
   describe "Validations" do
     context "active" do

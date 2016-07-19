@@ -1,6 +1,6 @@
 class Projects::BuildsController < Projects::ApplicationController
   before_action :build, except: [:index, :cancel_all]
-  before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry]
+  before_action :authorize_read_build!, except: [:cancel, :cancel_all, :retry, :play]
   before_action :authorize_update_build!, except: [:index, :show, :status, :raw]
   layout 'project'
 
@@ -10,8 +10,10 @@ class Projects::BuildsController < Projects::ApplicationController
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope
+      when 'pending'
+        @builds.pending.reverse_order
       when 'running'
-        @builds.running_or_pending.reverse_order
+        @builds.running.reverse_order
       when 'finished'
         @builds.finished
       else
@@ -47,11 +49,16 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def retry
-    unless @build.retryable?
-      return render_404
-    end
+    return render_404 unless @build.retryable?
 
     build = Ci::Build.retry(@build, current_user)
+    redirect_to build_path(build)
+  end
+
+  def play
+    return render_404 unless @build.playable?
+
+    build = @build.play(current_user)
     redirect_to build_path(build)
   end
 

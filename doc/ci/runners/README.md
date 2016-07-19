@@ -96,6 +96,12 @@ To register the runner, run the command below and follow instructions:
 sudo gitlab-ci-multi-runner register
 ```
 
+###  Lock a specific runner from being enabled for other projects
+
+You can configure a runner to assign it exclusively to a project. When a
+runner is locked this way, it can no longer be enabled for other projects.
+This setting is available on each runner in *Project Settings* > *Runners*.
+
 ###  Making an existing Shared Runner Specific
 
 If you are an admin on your GitLab instance,
@@ -128,7 +134,7 @@ the appropriate dependencies to run Rails test suites.
 ### Prevent runner with tags from picking jobs without tags
 
 You can configure a runner to prevent it from picking jobs with tags when
-the runnner does not have tags assigned. This setting is available on each
+the runner does not have tags assigned. This setting is available on each
 runner in *Project Settings* > *Runners*.
 
 ### Be careful with sensitive information

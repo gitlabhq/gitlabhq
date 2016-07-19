@@ -26,7 +26,8 @@ describe "Container Registry" do
     end
 
     context 'when there are tags' do
-      it { expect(page).to have_content(tag_name)}
+      it { expect(page).to have_content(tag_name) }
+      it { expect(page).to have_content('d7a513a66') }
     end
   end
 

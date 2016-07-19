@@ -1,41 +1,29 @@
 - empty_repo = @project.empty_repo?
-.project-home-panel.cover-block.clearfix{:class => ("empty-project" if empty_repo)}
-  %div{ class: (container_class) }
-    .row
-      .project-image-container
-        = project_icon(@project, alt: '', class: 'project-avatar avatar s70')
-      .project-info
-        .cover-title.project-home-desc
-          %h1
-            = @project.name
-            %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
-              = visibility_level_icon(@project.visibility_level, fw: false)
+.project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
+  %div{ class: container_class }
+    = project_icon(@project, alt: @project.name, class: 'project-avatar avatar s70')
+    %h1.project-title
+      = @project.name
+      %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}
+        = visibility_level_icon(@project.visibility_level, fw: false)
 
-        - if @project.description.present?
-          .cover-desc.project-home-desc
-            = markdown(@project.description, pipeline: :description)
+    .project-home-desc
+      - if @project.description.present?
+        = markdown(@project.description, pipeline: :description)
 
-        - if forked_from_project = @project.forked_from_project
-          .cover-desc
-            Forked from
-            = link_to project_path(forked_from_project) do
-              = forked_from_project.namespace.try(:name)
+      - if forked_from_project = @project.forked_from_project
+        %p
+          Forked from
+          = link_to project_path(forked_from_project) do
+            = forked_from_project.namespace.try(:name)
 
-        .project-repo-buttons.project-action-buttons
-          .count-buttons
-            = render 'projects/buttons/star'
-            = render 'projects/buttons/fork'
+    .project-repo-buttons.project-action-buttons
+      .count-buttons
+        = render 'projects/buttons/star'
+        = render 'projects/buttons/fork'
 
-          .project-clone-holder
-            = render "shared/clone_panel"
-
-      .project-repo-buttons.btn-group.project-right-buttons
-        - if current_user
-          = render 'shared/members/access_request_buttons', source: @project
-
-        = render "projects/buttons/download"
-        = render 'projects/buttons/dropdown'
-        = render 'shared/notifications/button', notification_setting: @notification_setting
+      .project-clone-holder
+        = render "shared/clone_panel"
 
 :javascript
   new Star();

@@ -54,6 +54,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @pipeline.commit_data
+    @commit ||= @pipeline.commit
   end
 end

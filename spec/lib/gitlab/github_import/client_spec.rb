@@ -20,6 +20,20 @@ describe Gitlab::GithubImport::Client, lib: true do
     expect { client.api }.not_to raise_error
   end
 
+  context 'when config is missing' do
+    before do
+      allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
+    end
+
+    it 'is still possible to get an Octokit client' do
+      expect { client.api }.not_to raise_error
+    end
+
+    it 'is not be possible to get an OAuth2 client' do
+      expect { client.client }.to raise_error(Projects::ImportService::Error)
+    end
+  end
+
   context 'allow SSL verification to be configurable on API' do
     before do
       github_provider['verify_ssl'] = false
@@ -46,5 +60,12 @@ describe Gitlab::GithubImport::Client, lib: true do
       expect(OmniAuth::Strategies::GitHub).not_to receive(:default_options)
       expect(client.api.api_endpoint).to eq 'https://github.company.com/'
     end
+  end
+
+  it 'does not raise error when rate limit is disabled' do
+    stub_request(:get, /api.github.com/)
+    allow(client.api).to receive(:rate_limit!).and_raise(Octokit::NotFound)
+
+    expect { client.issues }.not_to raise_error
   end
 end

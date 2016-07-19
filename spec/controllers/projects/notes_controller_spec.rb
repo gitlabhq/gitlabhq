@@ -18,7 +18,7 @@ describe Projects::NotesController do
                                   project_id: project.path, id: note.id, name: "thumbsup")
       end.to change { note.award_emoji.count }.by(1)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
 
     it "removes the already awarded emoji" do
@@ -30,7 +30,7 @@ describe Projects::NotesController do
                                   project_id: project.path, id: note.id, name: "thumbsup")
       end.to change { AwardEmoji.count }.by(-1)
 
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 end

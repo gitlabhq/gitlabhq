@@ -11,7 +11,6 @@ describe API::CommitStatuses, api: true do
   let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
 
-
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
     let(:get_url) { "/projects/#{project.id}/repository/commits/#{sha}/statuses" }
 
@@ -41,7 +40,7 @@ describe API::CommitStatuses, api: true do
           before { get api(get_url, reporter) }
 
           it 'returns latest commit statuses' do
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
 
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status4.id, status5.id, status6.id)
@@ -54,7 +53,7 @@ describe API::CommitStatuses, api: true do
           before { get api(get_url, reporter), all: 1 }
 
           it 'returns all commit statuses' do
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
 
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status1.id, status2.id,
@@ -67,7 +66,7 @@ describe API::CommitStatuses, api: true do
           before { get api(get_url, reporter), ref: 'develop' }
 
           it 'returns latest commit statuses for specific ref' do
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
 
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status3.id, status5.id)
@@ -78,7 +77,7 @@ describe API::CommitStatuses, api: true do
           before { get api(get_url, reporter), name: 'coverage' }
 
           it 'return latest commit statuses for specific name' do
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
 
             expect(json_response).to be_an Array
             expect(statuses_id).to contain_exactly(status4.id, status5.id)
@@ -101,7 +100,7 @@ describe API::CommitStatuses, api: true do
       before { get api(get_url, guest) }
 
       it "should not return project commits" do
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -109,7 +108,7 @@ describe API::CommitStatuses, api: true do
       before { get api(get_url) }
 
       it "should not return project commits" do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end
@@ -122,7 +121,7 @@ describe API::CommitStatuses, api: true do
         before { post api(post_url, developer), state: 'success' }
 
         it 'creates commit status' do
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
           expect(json_response['sha']).to eq(commit.id)
           expect(json_response['status']).to eq('success')
           expect(json_response['name']).to eq('default')
@@ -141,7 +140,7 @@ describe API::CommitStatuses, api: true do
         end
 
         it 'creates commit status' do
-          expect(response.status).to eq(201)
+          expect(response).to have_http_status(201)
           expect(json_response['sha']).to eq(commit.id)
           expect(json_response['status']).to eq('success')
           expect(json_response['name']).to eq('coverage')
@@ -155,7 +154,7 @@ describe API::CommitStatuses, api: true do
         before { post api(post_url, developer), state: 'invalid' }
 
         it 'does not create commit status' do
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(400)
         end
       end
 
@@ -163,7 +162,7 @@ describe API::CommitStatuses, api: true do
         before { post api(post_url, developer) }
 
         it 'does not create commit status' do
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(400)
         end
       end
 
@@ -172,7 +171,7 @@ describe API::CommitStatuses, api: true do
         before { post api(post_url, developer), state: 'running' }
 
         it 'returns not found error' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -181,7 +180,7 @@ describe API::CommitStatuses, api: true do
       before { post api(post_url, reporter) }
 
       it 'should not create commit status' do
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -189,7 +188,7 @@ describe API::CommitStatuses, api: true do
       before { post api(post_url, guest) }
 
       it 'should not create commit status' do
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -197,7 +196,7 @@ describe API::CommitStatuses, api: true do
       before { post api(post_url) }
 
       it 'should not create commit status' do
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
   end

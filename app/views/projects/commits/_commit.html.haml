@@ -10,29 +10,30 @@
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     = commit_author_avatar(commit, size: 36)
-    .commit-row-title
-      %span.item-title
-        = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
-        %span.commit-row-message.visible-xs-inline
-          &middot;
-          = commit.short_id
-        - if commit.status
-          = render_commit_status(commit, cssclass: 'visible-xs-inline')
-        - if commit.description?
-          %a.text-expander.hidden-xs.js-toggle-button ...
+    .commit-info-block
+      .commit-row-title
+        %span.item-title
+          = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
+          %span.commit-row-message.visible-xs-inline
+            &middot;
+            = commit.short_id
+          - if commit.status
+            = render_commit_status(commit, cssclass: 'visible-xs-inline')
+          - if commit.description?
+            %a.text-expander.hidden-xs.js-toggle-button ...
 
-      .commit-actions.hidden-xs
-        - if commit.status
-          = render_commit_status(commit, cssclass: 'btn btn-transparent')
-        = clipboard_button_with_class({ clipboard_text: commit.id }, css_class: 'btn-transparent')
-        = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
-        = link_to_browse_code(project, commit)
+        .commit-actions.hidden-xs
+          - if commit.status
+            = render_commit_status(commit, cssclass: 'btn btn-transparent')
+          = clipboard_button(clipboard_text: commit.id)
+          = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-short-id btn btn-transparent"
+          = link_to_browse_code(project, commit)
 
-    - if commit.description?
-      %pre.commit-row-description.js-toggle-content
-        = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
+      - if commit.description?
+        %pre.commit-row-description.js-toggle-content
+          = preserve(markdown(escape_once(commit.description), pipeline: :single_line, author: commit.author))
 
-    .commit-row-info
-      = commit_author_link(commit, avatar: false, size: 24)
-      authored
-      #{time_ago_with_tooltip(commit.committed_date)}
+      .commit-row-info
+        = commit_author_link(commit, avatar: false, size: 24)
+        authored
+        #{time_ago_with_tooltip(commit.committed_date)}

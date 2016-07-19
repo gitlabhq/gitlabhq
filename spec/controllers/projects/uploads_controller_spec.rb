@@ -18,7 +18,7 @@ describe Projects::UploadsController do
           namespace_id: project.namespace.to_param,
           project_id: project.to_param, 
           format: :json
-        expect(response.status).to eq(422)
+        expect(response).to have_http_status(422)
       end
     end
 
@@ -79,7 +79,7 @@ describe Projects::UploadsController do
           it "responds with status 200" do
             go
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -87,7 +87,7 @@ describe Projects::UploadsController do
           it "responds with status 404" do
             go
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
       end
@@ -106,7 +106,7 @@ describe Projects::UploadsController do
           it "responds with status 200" do
             go
 
-            expect(response.status).to eq(200)
+            expect(response).to have_http_status(200)
           end
         end
 
@@ -114,7 +114,7 @@ describe Projects::UploadsController do
           it "responds with status 404" do
             go
 
-            expect(response.status).to eq(404)
+            expect(response).to have_http_status(404)
           end
         end
       end
@@ -140,7 +140,7 @@ describe Projects::UploadsController do
             it "responds with status 200" do
               go
 
-              expect(response.status).to eq(200)
+              expect(response).to have_http_status(200)
             end
           end
 
@@ -192,7 +192,7 @@ describe Projects::UploadsController do
                 it "responds with status 200" do
                   go
 
-                  expect(response.status).to eq(200)
+                  expect(response).to have_http_status(200)
                 end
               end
 
@@ -224,7 +224,7 @@ describe Projects::UploadsController do
               it "responds with status 200" do
                 go
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
 
@@ -232,7 +232,7 @@ describe Projects::UploadsController do
               it "responds with status 404" do
                 go
 
-                expect(response.status).to eq(404)
+                expect(response).to have_http_status(404)
               end
             end
           end
@@ -253,7 +253,7 @@ describe Projects::UploadsController do
               it "responds with status 200" do
                 go
 
-                expect(response.status).to eq(200)
+                expect(response).to have_http_status(200)
               end
             end
 
@@ -261,7 +261,7 @@ describe Projects::UploadsController do
               it "responds with status 404" do
                 go
 
-                expect(response.status).to eq(404)
+                expect(response).to have_http_status(404)
               end
             end
           end
@@ -270,7 +270,7 @@ describe Projects::UploadsController do
             it "responds with status 404" do
               go
 
-              expect(response.status).to eq(404)
+              expect(response).to have_http_status(404)
             end
           end
         end

@@ -24,7 +24,11 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
+  default_value_for(:repository_storage) { current_application_settings.repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
+
+  after_create :ensure_dir_exist
+  after_save :ensure_dir_exist, if: :namespace_id_changed?
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -81,6 +85,7 @@ class Project < ActiveRecord::Base
   has_one :jira_service, dependent: :destroy
   has_one :redmine_service, dependent: :destroy
   has_one :custom_issue_tracker_service, dependent: :destroy
+  has_one :bugzilla_service, dependent: :destroy
   has_one :gitlab_issue_tracker_service, dependent: :destroy, inverse_of: :project
   has_one :external_wiki_service, dependent: :destroy
 
@@ -103,9 +108,13 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: 'ProjectSnippet'
   has_many :hooks,              dependent: :destroy, class_name: 'ProjectHook'
   has_many :protected_branches, dependent: :destroy
-  has_many :project_members,    dependent: :destroy, as: :source, class_name: 'ProjectMember'
+
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
   alias_method :members, :project_members
-  has_many :users, -> { where(members: { requested_at: nil }) }, through: :project_members
+  has_many :users, through: :project_members
+
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -153,9 +162,7 @@ class Project < ActiveRecord::Base
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-  validates :import_url,
-    url: { protocols: %w(ssh git http https) },
-    if: :external_import?
+  validates :import_url, addressable_url: true, if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -163,6 +170,10 @@ class Project < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
   validate :visibility_level_allowed_by_group
   validate :visibility_level_allowed_as_fork
+  validate :check_wiki_path_conflict
+  validates :repository_storage,
+    presence: true,
+    inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
@@ -374,6 +385,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def repository_storage_path
+    Gitlab.config.repositories.storages[repository_storage]
+  end
+
   def team
     @team ||= ProjectTeam.new(self)
   end
@@ -410,8 +425,8 @@ class Project < ActiveRecord::Base
     container_registry_repository.tags.any?
   end
 
-  def commit(id = 'HEAD')
-    repository.commit(id)
+  def commit(ref = 'HEAD')
+    repository.commit(ref)
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -446,9 +461,11 @@ class Project < ActiveRecord::Base
   end
 
   def import_url=(value)
+    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+
     import_url = Gitlab::UrlSanitizer.new(value)
-    create_or_update_import_data(credentials: import_url.credentials)
     super(import_url.sanitized_url)
+    create_or_update_import_data(credentials: import_url.credentials)
   end
 
   def import_url
@@ -460,7 +477,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def valid_import_url?
+    valid? || errors.messages[:import_url].nil?
+  end
+
   def create_or_update_import_data(data: nil, credentials: nil)
+    return unless import_url.present? && valid_import_url?
+
     project_import_data = import_data || build_import_data
     if data
       project_import_data.data ||= {}
@@ -537,6 +560,16 @@ class Project < ActiveRecord::Base
 
     level_name = Gitlab::VisibilityLevel.level_name(self.visibility_level).downcase
     self.errors.add(:visibility_level, "#{level_name} is not allowed since the fork source project has lower visibility.")
+  end
+
+  def check_wiki_path_conflict
+    return if path.blank?
+
+    path_to_check = path.ends_with?('.wiki') ? path.chomp('.wiki') : "#{path}.wiki"
+
+    if Project.where(namespace_id: namespace_id, path: path_to_check).exists?
+      errors.add(:name, 'has already been taken')
+    end
   end
 
   def to_param
@@ -674,7 +707,7 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_url
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     elsif avatar_in_git
       Gitlab::Routing.url_helpers.namespace_project_avatar_url(namespace, self)
@@ -775,18 +808,12 @@ class Project < ActiveRecord::Base
     @repo_exists = false
   end
 
+  # Branches that are not _exactly_ matched by a protected branch.
   def open_branches
-    # We're using a Set here as checking values in a large Set is faster than
-    # checking values in a large Array.
-    protected_set = Set.new(protected_branch_names)
-
-    repository.branches.reject do |branch|
-      protected_set.include?(branch.name)
-    end
-  end
-
-  def protected_branch_names
-    @protected_branch_names ||= protected_branches.pluck(:name)
+    exact_protected_branch_names = protected_branches.reject(&:wildcard?).map(&:name)
+    branch_names = repository.branches.map(&:name)
+    non_open_branch_names = Set.new(exact_protected_branch_names).intersection(Set.new(branch_names))
+    repository.branches.reject { |branch| non_open_branch_names.include? branch.name }
   end
 
   def root_ref?(branch)
@@ -803,11 +830,16 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
-    protected_branch_names.include?(branch_name)
+    @protected_branches ||= self.protected_branches.to_a
+    ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
   def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
+    protected_branches.matching(branch_name).any?(&:developers_can_push)
+  end
+
+  def developers_can_merge_to_protected_branch?(branch_name)
+    protected_branches.matching(branch_name).any?(&:developers_can_merge)
   end
 
   def forked?
@@ -830,12 +862,12 @@ class Project < ActiveRecord::Base
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
 
-    if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+    if gitlab_shell.mv_repository(repository_storage_path, old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to send update instructions to users.
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
-        gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
+        gitlab_shell.mv_repository(repository_storage_path, "#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         send_move_instructions(old_path_with_namespace)
         reset_events_cache
 
@@ -976,7 +1008,7 @@ class Project < ActiveRecord::Base
   def create_repository
     # Forked import is handled asynchronously
     unless forked?
-      if gitlab_shell.add_repository(path_with_namespace)
+      if gitlab_shell.add_repository(repository_storage_path, path_with_namespace)
         repository.after_create
         true
       else
@@ -1010,8 +1042,8 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref, current_user = nil)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
@@ -1127,5 +1159,9 @@ class Project < ActiveRecord::Base
   def remove_exports
     _, status = Gitlab::Popen.popen(%W(find #{export_path} -not -path #{export_path} -delete))
     status.zero?
+  end
+
+  def ensure_dir_exist
+    gitlab_shell.add_namespace(repository_storage_path, namespace.path)
   end
 end

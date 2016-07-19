@@ -11,11 +11,11 @@ issuable_created = false
   initTemplates: ->
     Issuable.labelRow = _.template(
       '<% _.each(labels, function(label){ %>
-        <span class="label-row btn-group" role="group" aria-label="<%= _.escape(label.title) %>" style="color: <%= label.text_color %>;">
-          <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%= label.color %>;" title="<%= _.escape(label.description) %>" data-container="body">
-            <%= _.escape(label.title) %>
+        <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;">
+          <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body">
+            <%- label.title %>
           </a>
-          <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%= label.color %>;" data-label="<%= _.escape(label.title) %>">
+          <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>">
             <i class="fa fa-times"></i>
           </button>
         </span>
@@ -32,13 +32,11 @@ issuable_created = false
           $search = $('#issue_search')
           $form = $('.js-filter-form')
           $input = $("input[name='#{$search.attr('name')}']", $form)
-
           if $input.length is 0
             $form.append "<input type='hidden' name='#{$search.attr('name')}' value='#{_.escape($search.val())}'/>"
           else
             $input.val $search.val()
-
-          Issuable.filterResults $form
+          Issuable.filterResults $form if $search.val() isnt ''
         , 500)
 
   initLabelFilterRemove: ->
@@ -59,21 +57,23 @@ issuable_created = false
   filterResults: (form) =>
     formData = form.serialize()
 
-    $('.issues-holder, .merge-requests-holder').css('opacity', '0.5')
     formAction = form.attr('action')
     issuesUrl = formAction
     issuesUrl += ("#{if formAction.indexOf('?') < 0 then '?' else '&'}")
     issuesUrl += formData
 
-    Turbolinks.visit(issuesUrl);
+    Turbolinks.visit(issuesUrl)
 
   initChecks: ->
+    @issuableBulkActions = $('.bulk-update').data('bulkActions')
+
     $('.check_all_issues').off('click').on('click', ->
       $('.selected_issue').prop('checked', @checked)
       Issuable.checkChanged()
     )
 
-    $('.selected_issue').off('change').on('change', Issuable.checkChanged)
+    $('.selected_issue').off('change').on('change', Issuable.checkChanged.bind(@))
+
 
   checkChanged: ->
     checked_issues = $('.selected_issue:checked')
@@ -88,3 +88,6 @@ issuable_created = false
       $('#update_issues_ids').val []
       $('.issues_bulk_update').hide()
       $('.issues-other-filters').show()
+      @issuableBulkActions.willUpdateLabels = false
+
+    return true

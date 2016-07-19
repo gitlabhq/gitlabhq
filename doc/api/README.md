@@ -32,9 +32,11 @@ following locations:
 - [Services](services.md)
 - [Session](session.md)
 - [Settings](settings.md)
+- [Sidekiq metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
 - [Users](users.md)
+- [Todos](todos.md)
 
 ### Internal CI API
 

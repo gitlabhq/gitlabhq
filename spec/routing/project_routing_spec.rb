@@ -165,7 +165,6 @@ describe Projects::TagsController, 'routing' do
   end
 end
 
-
 #     project_deploy_keys GET    /:project_id/deploy_keys(.:format)          deploy_keys#index
 #                         POST   /:project_id/deploy_keys(.:format)          deploy_keys#create
 #  new_project_deploy_key GET    /:project_id/deploy_keys/new(.:format)      deploy_keys#new

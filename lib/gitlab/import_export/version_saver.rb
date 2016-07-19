@@ -1,7 +1,6 @@
 module Gitlab
   module ImportExport
     class VersionSaver
-
       def initialize(shared:)
         @shared = shared
       end

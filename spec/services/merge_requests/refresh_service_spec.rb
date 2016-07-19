@@ -5,7 +5,7 @@ describe MergeRequests::RefreshService, services: true do
   let(:user) { create(:user) }
   let(:service) { MergeRequests::RefreshService }
 
-  describe :execute do
+  describe '#execute' do
     before do
       @user = create(:user)
       group = create(:group)
@@ -88,8 +88,7 @@ describe MergeRequests::RefreshService, services: true do
         # Merge master -> feature branch
         author = { email: 'test@gitlab.com', time: Time.now, name: "Me" }
         commit_options = { message: 'Test message', committer: author, author: author }
-        master_commit = @project.repository.commit('master')
-        @project.repository.merge(@user, master_commit.id, 'feature', commit_options)
+        @project.repository.merge(@user, @merge_request, commit_options)
         commit = @project.repository.commit('feature')
         service.new(@project, @user).execute(@oldrev, commit.id, 'refs/heads/feature')
         reload_mrs
@@ -174,7 +173,6 @@ describe MergeRequests::RefreshService, services: true do
         expect(@fork_merge_request).to be_open
       end
     end
-
 
     def reload_mrs
       @merge_request.reload

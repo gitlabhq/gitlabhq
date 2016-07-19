@@ -30,7 +30,7 @@ module Gitlab
       end
 
       def duration
-        @finished_at ? (@finished_at - @started_at) * 1000.0 : 0.0
+        @finished_at ? (@finished_at - @started_at) : 0.0
       end
 
       def allocated_memory
@@ -41,12 +41,12 @@ module Gitlab
         Thread.current[THREAD_KEY] = self
 
         @memory_before = System.memory_usage
-        @started_at    = Time.now
+        @started_at    = System.monotonic_time
 
         yield
       ensure
         @memory_after = System.memory_usage
-        @finished_at  = Time.now
+        @finished_at  = System.monotonic_time
 
         Thread.current[THREAD_KEY] = nil
       end

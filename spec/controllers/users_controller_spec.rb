@@ -33,7 +33,7 @@ describe UsersController do
         it 'renders the show template' do
           get :show, username: user.username
 
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(response).to render_template('show')
         end
       end
@@ -47,7 +47,7 @@ describe UsersController do
       context 'when logged out' do
         it 'renders 404' do
           get :show, username: user.username
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
         end
       end
 
@@ -56,7 +56,7 @@ describe UsersController do
 
         it 'renders show' do
           get :show, username: user.username
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(200)
           expect(response).to render_template('show')
         end
       end
@@ -64,7 +64,6 @@ describe UsersController do
   end
 
   describe 'GET #calendar' do
-
     it 'renders calendar' do
       sign_in(user)
 
@@ -121,7 +120,7 @@ describe UsersController do
     context 'format html' do
       it 'renders snippets page' do
         get :snippets, username: user.username
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(response).to render_template('show')
       end
     end
@@ -129,7 +128,7 @@ describe UsersController do
     context 'format json' do
       it 'response with snippets json data' do
         get :snippets, username: user.username, format: :json
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(JSON.parse(response.body)).to have_key('html')
       end
     end

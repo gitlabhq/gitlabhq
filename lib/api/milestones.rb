@@ -115,7 +115,6 @@ module API
         issues = IssuesFinder.new(current_user, finder_params).execute
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
-
     end
   end
 end

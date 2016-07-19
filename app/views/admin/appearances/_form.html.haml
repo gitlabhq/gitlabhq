@@ -13,7 +13,7 @@
     .col-sm-10
       = f.text_area :description, class: "form-control", rows: 10
       .hint
-        Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('markdown', 'markdown'), target: '_blank'}.
+        Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('markdown/markdown'), target: '_blank'}.
   .form-group
     = f.label :logo, class: 'control-label'
     .col-sm-10
@@ -46,7 +46,7 @@
         Maximum file size is 1MB. Pages are optimized for a 72x72 px header logo
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = f.submit 'Save', class: 'btn btn-save append-right-10'
     - if @appearance.persisted?
       = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn', target: '_blank'
 

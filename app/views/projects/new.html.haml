@@ -1,110 +1,115 @@
 - page_title    'New Project'
 - header_title  "Projects", dashboard_projects_path
 
-%h3.page-title
-  New Project
-%hr
-
 .project-edit-container
   .project-edit-errors
     = render 'projects/errors'
-  .project-edit-content
+  .row.prepend-top-default
+    .col-lg-3.profile-settings-sidebar
+      %h4.prepend-top-0
+        New project
+      %p
+        Create or Import your project from popular Git services
+    .col-lg-9
+      = form_for @project, html: { class: 'new_project' } do |f|
+        %fieldset.append-bottom-0
+          .form-group.col-xs-12.col-sm-6
+            = f.label :namespace_id, class: 'label-light' do
+              %span
+                Project path
+            .form-group
+              .input-group
+                - if current_user.can_select_namespace?
+                  .input-group-addon
+                    = root_url
+                  = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user, display_path: true), {}, {class: 'select2 js-select-namespace', tabindex: 1}
 
-    = form_for @project, html: { class: 'new_project form-horizontal js-requires-input' } do |f|
-      .form-group
-        = f.label :path, class: 'control-label' do
-          Project owner
-        .col-sm-10
-          = f.select :namespace_id, namespaces_options(:current_user), {}, {class: 'select2 js-select-namespace', tabindex: 1}
-        
-          - if current_user.can_create_group?
-            .help-block
-              Want to house several dependent projects under the same namespace?
-              = link_to "Create a group", new_group_path
-              
-      .form-group
-        = f.label :path, class: 'control-label' do
-          Project name
-        .col-sm-10
-          = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
-
-      - if import_sources_enabled?
-        .project-import.js-toggle-container
-          .form-group
-            %label.control-label Import project from
-            .col-sm-10
-              - if github_import_enabled?
-                - if github_import_configured?
-                  = link_to status_import_github_path, class: 'btn import_github' do
-                    %i.fa.fa-github
-                    GitHub
                 - else
-                  = link_to '#', class: 'how_to_import_link btn import_github' do
-                    %i.fa.fa-github
-                    GitHub
-                  = render 'github_import_modal'
+                  .input-group-addon.static-namespace
+                    #{root_url}#{current_user.username}/
+          .form-group.col-xs-12.col-sm-6.project-path
+            = f.label :namespace_id, class: 'label-light' do
+              %span
+                Project name
+            = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
+        - if current_user.can_create_group?
+          .help-block
+            Want to house several dependent projects under the same namespace?
+            = link_to "Create a group", new_group_path
 
-              - if bitbucket_import_enabled?
-                - if bitbucket_import_configured?
-                  = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
-                    %i.fa.fa-bitbucket
-                    Bitbucket
-                - else
-                  = link_to status_import_bitbucket_path, class: 'how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true" do
-                    %i.fa.fa-bitbucket
-                    Bitbucket
-                  = render 'bitbucket_import_modal'
+        - if import_sources_enabled?
+          .project-import.js-toggle-container
+            .form-group.clearfix
+              = f.label :visibility_level, class: 'label-light' do
+                Import project from
+              .col-sm-12.import-buttons
+                %div
+                  - if github_import_enabled?
+                    = link_to new_import_github_path, class: 'btn import_github' do
+                      = icon 'github', text: 'GitHub'
+                %div
+                  - if bitbucket_import_enabled?
+                    - if bitbucket_import_configured?
+                      = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
+                        %i.fa.fa-bitbucket
+                        Bitbucket
+                    - else
+                      = link_to status_import_bitbucket_path, class: 'how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true" do
+                        %i.fa.fa-bitbucket
+                        Bitbucket
+                      = render 'bitbucket_import_modal'
+                %div
+                  - if gitlab_import_enabled?
+                    - if gitlab_import_configured?
+                      = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
+                        %i.fa.fa-heart
+                        GitLab.com
+                    - else
+                      = link_to status_import_gitlab_path, class: 'how_to_import_link btn import_gitlab' do
+                        %i.fa.fa-heart
+                        GitLab.com
+                      = render 'gitlab_import_modal'
+                %div
+                  - if gitorious_import_enabled?
+                    = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
+                      %i.icon-gitorious.icon-gitorious-small
+                      Gitorious.org
+                %div
+                  - if google_code_import_enabled?
+                    = link_to new_import_google_code_path, class: 'btn import_google_code' do
+                      %i.fa.fa-google
+                      Google Code
+                %div
+                  - if fogbugz_import_enabled?
+                    = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
+                      %i.fa.fa-bug
+                      Fogbugz
+                %div
+                  - if git_import_enabled?
+                    = link_to "#", class: 'btn js-toggle-button import_git' do
+                      %i.fa.fa-git
+                      %span Repo by URL
+                %div
+                  - if gitlab_project_import_enabled?
+                    = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project project-submit' do
+                      %i.fa.fa-gitlab
+                      %span GitLab export
 
-              - if gitlab_import_enabled?
-                - if gitlab_import_configured?
-                  = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
-                    %i.fa.fa-heart
-                    GitLab.com
-                - else
-                  = link_to status_import_gitlab_path, class: 'how_to_import_link btn import_gitlab' do
-                    %i.fa.fa-heart
-                    GitLab.com
-                  = render 'gitlab_import_modal'
+            .js-toggle-content.hide
+              = render "shared/import_form", f: f
 
-              - if gitorious_import_enabled?
-                = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
-                  %i.icon-gitorious.icon-gitorious-small
-                  Gitorious.org
+        .form-group
+          = f.label :description, class: 'label-light' do
+            Project description
+            %span.light (optional)
+          = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250
 
-              - if google_code_import_enabled?
-                = link_to new_import_google_code_path, class: 'btn import_google_code' do
-                  %i.fa.fa-google
-                  Google Code
+        .form-group.project-visibility-level-holder
+          = f.label :visibility_level, class: 'label-light' do
+            Visibility Level
+            = link_to "(?)", help_page_path("public_access/public_access")
+          = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
 
-              - if fogbugz_import_enabled?
-                = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
-                  %i.fa.fa-bug
-                  Fogbugz
-
-              - if git_import_enabled?
-                = link_to "#", class: 'btn js-toggle-button import_git' do
-                  %i.fa.fa-git
-                  %span Repo by URL
-
-              - if gitlab_project_import_enabled?
-                = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project project-submit' do
-                  %i.fa.fa-gitlab
-                  %span GitLab export
-
-          .js-toggle-content.hide
-            = render "shared/import_form", f: f
-
-      .prepend-botton-10
-
-      .form-group
-        = f.label :description, class: 'control-label' do
-          Description
-          %span.light (optional)
-        .col-sm-10
-          = f.text_area :description, class: "form-control", rows: 3, maxlength: 250, tabindex: 3
-      = render 'shared/visibility_level', f: f, visibility_level: default_project_visibility, can_change_visibility_level: true, form_model: @project
-
-      .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
         = link_to 'Cancel', dashboard_projects_path, class: 'btn btn-cancel'
 
@@ -149,4 +154,9 @@
       $('.import_gitlab_project').attr('disabled',true);
       $('.import_gitlab_project').attr('title', 'Project path required.');
     }
-  })
+  });
+
+  $('.import_git').click(function( event ) {
+    $projectImportUrl = $('#project_import_url')
+    $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
+  });

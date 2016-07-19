@@ -14,7 +14,7 @@ describe API::API, api: true  do
       it "should update #{service} settings" do
         put api("/projects/#{project.id}/services/#{dashed_service}", user), service_attrs
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
       end
 
       it "should return if required fields missing" do
@@ -45,7 +45,7 @@ describe API::API, api: true  do
       it "should delete #{service}" do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         project.send(service_method).reload
         expect(project.send(service_method).activated?).to be_falsey
       end
@@ -64,20 +64,20 @@ describe API::API, api: true  do
 
       it 'should return authentication error when unauthenticated' do
         get api("/projects/#{project.id}/services/#{dashed_service}")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
       
       it "should return all properties of service #{service} when authenticated as admin" do
         get api("/projects/#{project.id}/services/#{dashed_service}", admin)
         
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list.map)
       end
 
       it "should return properties of service #{service} other than passwords when authenticated as project owner" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list_without_passwords)
       end
 
@@ -85,9 +85,8 @@ describe API::API, api: true  do
         project.team << [user2, :developer]
         get api("/projects/#{project.id}/services/#{dashed_service}", user2)
         
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
-
     end
   end
 end

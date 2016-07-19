@@ -1,5 +1,4 @@
 class RedmineService < IssueTrackerService
-
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
 
   def title

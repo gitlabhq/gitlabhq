@@ -2,11 +2,9 @@ class NotificationSettingsController < ApplicationController
   before_action :authenticate_user!
 
   def create
-    project = Project.find(params[:project][:id])
+    return render_404 unless can_read?(resource)
 
-    return render_404 unless can?(current_user, :read_project, project)
-
-    @notification_setting = current_user.notification_settings_for(project)
+    @notification_setting = current_user.notification_settings_for(resource)
     @saved = @notification_setting.update_attributes(notification_setting_params)
 
     render_response
@@ -20,6 +18,22 @@ class NotificationSettingsController < ApplicationController
   end
 
   private
+
+  def resource
+    @resource ||=
+      if params[:project_id].present?
+        Project.find(params[:project_id])
+      elsif params[:namespace_id].present?
+        Group.find(params[:namespace_id])
+      end
+  end
+
+  def can_read?(resource)
+    ability_name = resource.class.name.downcase
+    ability_name = "read_#{ability_name}".to_sym
+
+    can?(current_user, ability_name, resource)
+  end
 
   def render_response
     render json: {

@@ -8,7 +8,6 @@ module Banzai
     # Context options:
     #   :project_wiki
     class WikiLinkFilter < HTML::Pipeline::Filter
-
       def call
         return doc unless project_wiki?
 

@@ -33,12 +33,13 @@ namespace :gitlab do
 
       unless backup.skipped?('db')
         unless ENV['force'] == 'yes'
-          warning = warning = <<-MSG.strip_heredoc
+          warning = <<-MSG.strip_heredoc
             Before restoring the database we recommend removing all existing
             tables to avoid future upgrade problems. Be aware that if you have
             custom tables in the GitLab database these tables and all data will be
             removed.
           MSG
+          puts warning.color(:red)
           ask_to_continue
           puts 'Removing all tables. Press `Ctrl-C` within 5 seconds to abort'.color(:yellow)
           sleep(5)

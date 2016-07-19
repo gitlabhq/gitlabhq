@@ -45,6 +45,12 @@ describe Gitlab::UrlSanitizer, lib: true do
 
       expect(filtered_content).to include("user@server:project.git")
     end
+
+    it 'returns an empty string for invalid URLs' do
+      filtered_content = sanitize_url('ssh://')
+
+      expect(filtered_content).to include("repository '' not found")
+    end
   end
 
   describe '#sanitized_url' do
@@ -64,5 +70,4 @@ describe Gitlab::UrlSanitizer, lib: true do
       expect(sanitizer.full_url).to eq('user@server:project.git')
     end
   end
-
 end

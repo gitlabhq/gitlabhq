@@ -1,0 +1,10 @@
+# Full project: https://gitlab.com/pages/pelican
+image: python:2.7-alpine
+
+pages:
+  script:
+  - pip install -r requirements.txt
+  - pelican -s publishconf.py
+  artifacts:
+    paths:
+    - public/

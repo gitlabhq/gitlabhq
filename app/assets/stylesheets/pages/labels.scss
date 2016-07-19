@@ -6,6 +6,7 @@
     height: 30px;
     display: inline-block;
     margin-right: 10px;
+    margin-bottom: 10px;
   }
 
   &.suggest-colors-dropdown {
@@ -50,11 +51,10 @@
 
 .label-row {
   .label-name {
-    display: block;
+    display: inline-block;
     margin-bottom: 10px;
 
     @media (min-width: $screen-sm-min) {
-      display: inline-block;
       width: 200px;
       margin-bottom: 0;
     }
@@ -63,6 +63,7 @@
   .label-description {
     display: block;
     margin-bottom: 10px;
+    margin-left: 50px;
 
     @media (min-width: $screen-sm-min) {
       display: inline-block;
@@ -161,9 +162,15 @@
 }
 
 .filtered-labels {
+  font-size: 0;
+  padding: 12px 16px;
+
   .label-row {
+    margin-top: 4px;
+    margin-bottom: 4px;
+
     &:not(:last-child) {
-      margin-right: 5px;
+      margin-right: 8px;
     }
   }
 

@@ -65,21 +65,21 @@ describe HealthCheckController do
       it 'supports passing the token in the header' do
         request.headers['TOKEN'] = token
         get :index
-        expect(response.status).to eq(500)
+        expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'text/plain'
         expect(response.body).to include('The server is on fire')
       end
 
       it 'supports failure plaintest response' do
         get :index, token: token
-        expect(response.status).to eq(500)
+        expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'text/plain'
         expect(response.body).to include('The server is on fire')
       end
 
       it 'supports failure json response' do
         get :index, token: token, format: :json
-        expect(response.status).to eq(500)
+        expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false
         expect(json_response['message']).to include('The server is on fire')
@@ -87,7 +87,7 @@ describe HealthCheckController do
 
       it 'supports failure xml response' do
         get :index, token: token, format: :xml
-        expect(response.status).to eq(500)
+        expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/xml'
         expect(xml_response['healthy']).to be false
         expect(xml_response['message']).to include('The server is on fire')
@@ -95,7 +95,7 @@ describe HealthCheckController do
 
       it 'supports failure responses for specific checks' do
         get :index, token: token, checks: 'email', format: :json
-        expect(response.status).to eq(500)
+        expect(response).to have_http_status(500)
         expect(response.content_type).to eq 'application/json'
         expect(json_response['healthy']).to be false
         expect(json_response['message']).to include('Email is on fire')

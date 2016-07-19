@@ -1,15 +1,18 @@
+- @no_container = true
 - page_title "Continuous Integration", "Graphs"
 = render 'head'
-.row-content-block.append-bottom-default
-  .oneline
-    A collection of graphs for Continuous Integration
 
-#charts.ci-charts
-  .row
-    .col-md-6
-      = render 'projects/graphs/ci/overall'
-    .col-md-6
-      = render 'projects/graphs/ci/build_times'
+%div{ class: container_class }
+  .sub-header-block
+    .oneline
+      A collection of graphs for Continuous Integration
 
-  %hr
-  = render 'projects/graphs/ci/builds'
+  #charts.ci-charts
+    .row
+      .col-md-6
+        = render 'projects/graphs/ci/overall'
+      .col-md-6
+        = render 'projects/graphs/ci/build_times'
+
+    %hr
+    = render 'projects/graphs/ci/builds'

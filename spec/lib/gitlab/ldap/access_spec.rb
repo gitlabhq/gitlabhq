@@ -4,7 +4,7 @@ describe Gitlab::LDAP::Access, lib: true do
   let(:access) { Gitlab::LDAP::Access.new user }
   let(:user) { create(:omniauth_user) }
 
-  describe :allowed? do
+  describe '#allowed?' do
     subject { access.allowed? }
 
     context 'when the user cannot be found' do

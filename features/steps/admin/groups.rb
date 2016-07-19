@@ -62,7 +62,8 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   step 'I should see "johndoe@gitlab.com" in team list in every project as "Reporter"' do
     page.within ".group-users-list" do
-      expect(page).to have_content "johndoe@gitlab.com (invited)"
+      expect(page).to have_content "johndoe@gitlab.com"
+      expect(page).to have_content "Invited by"
       expect(page).to have_content "Reporter"
     end
   end
@@ -90,12 +91,6 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   step 'we have user "John Doe" in group' do
     current_group.add_reporter(user_john)
-  end
-
-  step 'I remove user "John Doe" from group' do
-    page.within "#user_#{user_john.id}" do
-      click_link 'Remove user from group'
-    end
   end
 
   step 'I should not see "John Doe" in team list' do

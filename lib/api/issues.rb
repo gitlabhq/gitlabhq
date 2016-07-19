@@ -59,6 +59,41 @@ module API
       end
     end
 
+    resource :groups do
+      # Get a list of group issues
+      #
+      # Parameters:
+      #   id (required) - The ID of a group
+      #   state (optional) - Return "opened" or "closed" issues
+      #   labels (optional) - Comma-separated list of label names
+      #   milestone (optional) - Milestone title
+      #   order_by (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
+      #   sort (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+      #
+      # Example Requests:
+      #   GET /groups/:id/issues
+      #   GET /groups/:id/issues?state=opened
+      #   GET /groups/:id/issues?state=closed
+      #   GET /groups/:id/issues?labels=foo
+      #   GET /groups/:id/issues?labels=foo,bar
+      #   GET /groups/:id/issues?labels=foo,bar&state=opened
+      #   GET /groups/:id/issues?milestone=1.0.0
+      #   GET /groups/:id/issues?milestone=1.0.0&state=closed
+      get ":id/issues" do
+        group = find_group(params[:id])
+
+        params[:state] ||= 'opened'
+        params[:group_id] = group.id
+        params[:milestone_title] = params.delete(:milestone)
+        params[:label_name] = params.delete(:labels)
+        params[:sort] = "#{params.delete(:order_by)}_#{params.delete(:sort)}" if params[:order_by] && params[:sort]
+
+        issues = IssuesFinder.new(current_user, params).execute
+
+        present paginate(issues), with: Entities::Issue, current_user: current_user
+      end
+    end
+
     resource :projects do
       # Get a list of project issues
       #
@@ -117,12 +152,13 @@ module API
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional)       - The labels of an issue
       #   created_at (optional)   - Date time string, ISO 8601 formatted
+      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
       # Example Request:
       #   POST /projects/:id/issues
-      post ":id/issues" do
+      post ':id/issues' do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id]
+        keys = [:title, :description, :assignee_id, :milestone_id, :due_date]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 
@@ -166,12 +202,13 @@ module API
       #   labels (optional) - The labels of an issue
       #   state_event (optional) - The state event of an issue (close|reopen)
       #   updated_at (optional) - Date time string, ISO 8601 formatted
+      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
-      put ":id/issues/:issue_id" do
+      put ':id/issues/:issue_id' do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        keys = [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date]
         keys << :updated_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 

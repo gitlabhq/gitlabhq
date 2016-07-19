@@ -64,4 +64,73 @@ describe Projects::CompareController do
       expect(assigns(:commits)).to eq(nil)
     end
   end
+
+  describe 'GET diff_for_path' do
+    def diff_for_path(extra_params = {})
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project.to_param
+      }
+
+      get :diff_for_path, params.merge(extra_params)
+    end
+
+    let(:existing_path) { 'files/ruby/feature.rb' }
+
+    context 'when the from and to refs exist' do
+      context 'when the user has access to the project' do
+        context 'when the path exists in the diff' do
+          it 'disables diff notes' do
+            diff_for_path(from: ref_from, to: ref_to, old_path: existing_path, new_path: existing_path)
+
+            expect(assigns(:diff_notes_disabled)).to be_truthy
+          end
+
+          it 'only renders the diffs for the path given' do
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
+              expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(diffs, diff_refs, project)
+            end
+
+            diff_for_path(from: ref_from, to: ref_to, old_path: existing_path, new_path: existing_path)
+          end
+        end
+
+        context 'when the path does not exist in the diff' do
+          before { diff_for_path(from: ref_from, to: ref_to, old_path: existing_path.succ, new_path: existing_path.succ) }
+
+          it 'returns a 404' do
+            expect(response).to have_http_status(404)
+          end
+        end
+      end
+
+      context 'when the user does not have access to the project' do
+        before do
+          project.team.truncate
+          diff_for_path(from: ref_from, to: ref_to, old_path: existing_path, new_path: existing_path)
+        end
+
+        it 'returns a 404' do
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    context 'when the from ref does not exist' do
+      before { diff_for_path(from: ref_from.succ, to: ref_to, old_path: existing_path, new_path: existing_path) }
+
+      it 'returns a 404' do
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    context 'when the to ref does not exist' do
+      before { diff_for_path(from: ref_from, to: ref_to.succ, old_path: existing_path, new_path: existing_path) }
+
+      it 'returns a 404' do
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
 end

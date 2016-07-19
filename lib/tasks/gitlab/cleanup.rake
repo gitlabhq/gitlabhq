@@ -5,36 +5,36 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
-
       namespaces = Namespace.pluck(:path)
-      git_base_path = Gitlab.config.gitlab_shell.repos_path
-      all_dirs = Dir.glob(git_base_path + '/*')
+      Gitlab.config.repositories.storages.each do |name, git_base_path|
+        all_dirs = Dir.glob(git_base_path + '/*')
 
-      puts git_base_path.color(:yellow)
-      puts "Looking for directories to remove... "
+        puts git_base_path.color(:yellow)
+        puts "Looking for directories to remove... "
 
-      all_dirs.reject! do |dir|
-        # skip if git repo
-        dir =~ /.git$/
-      end
+        all_dirs.reject! do |dir|
+          # skip if git repo
+          dir =~ /.git$/
+        end
 
-      all_dirs.reject! do |dir|
-        dir_name = File.basename dir
+        all_dirs.reject! do |dir|
+          dir_name = File.basename dir
 
-        # skip if namespace present
-        namespaces.include?(dir_name)
-      end
+          # skip if namespace present
+          namespaces.include?(dir_name)
+        end
 
-      all_dirs.each do |dir_path|
+        all_dirs.each do |dir_path|
 
-        if remove_flag
-          if FileUtils.rm_rf dir_path
-            puts "Removed...#{dir_path}".color(:red)
+          if remove_flag
+            if FileUtils.rm_rf dir_path
+              puts "Removed...#{dir_path}".color(:red)
+            else
+              puts "Cannot remove #{dir_path}".color(:red)
+            end
           else
-            puts "Cannot remove #{dir_path}".color(:red)
+            puts "Can be removed: #{dir_path}".color(:red)
           end
-        else
-          puts "Can be removed: #{dir_path}".color(:red)
         end
       end
 
@@ -48,20 +48,21 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
-      repo_root = Gitlab.config.gitlab_shell.repos_path
-      # Look for global repos (legacy, depth 1) and normal repos (depth 2)
-      IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
-        find.each_line do |path|
-          path.chomp!
-          repo_with_namespace = path.
-            sub(repo_root, '').
-            sub(%r{^/*}, '').
-            chomp('.git').
-            chomp('.wiki')
-          next if Project.find_with_namespace(repo_with_namespace)
-          new_path = path + move_suffix
-          puts path.inspect + ' -> ' + new_path.inspect
-          File.rename(path, new_path)
+      Gitlab.config.repositories.storages.each do |name, repo_root|
+        # Look for global repos (legacy, depth 1) and normal repos (depth 2)
+        IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
+          find.each_line do |path|
+            path.chomp!
+            repo_with_namespace = path.
+              sub(repo_root, '').
+              sub(%r{^/*}, '').
+              chomp('.git').
+              chomp('.wiki')
+            next if Project.find_with_namespace(repo_with_namespace)
+            new_path = path + move_suffix
+            puts path.inspect + ' -> ' + new_path.inspect
+            File.rename(path, new_path)
+          end
         end
       end
     end

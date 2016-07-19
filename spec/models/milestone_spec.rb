@@ -70,7 +70,7 @@ describe Milestone, models: true do
     end
   end
 
-  describe :expired? do
+  describe '#expired?' do
     context "expired" do
       before do
         allow(milestone).to receive(:due_date).and_return(Date.today.prev_year)
@@ -88,7 +88,7 @@ describe Milestone, models: true do
     end
   end
 
-  describe :percent_complete do
+  describe '#percent_complete' do
     before do
       allow(milestone).to receive_messages(
         closed_items_count: 3,
@@ -111,11 +111,11 @@ describe Milestone, models: true do
     it { expect(milestone.is_empty?(user)).to be_falsey }
   end
 
-  describe :can_be_closed? do
+  describe '#can_be_closed?' do
     it { expect(milestone.can_be_closed?).to be_truthy }
   end
 
-  describe :total_items_count do
+  describe '#total_items_count' do
     before do
       create :closed_issue, milestone: milestone
       create :merge_request, milestone: milestone
@@ -126,7 +126,7 @@ describe Milestone, models: true do
     end
   end
 
-  describe :can_be_closed? do
+  describe '#can_be_closed?' do
     before do
       milestone = create :milestone
       create :closed_issue, milestone: milestone

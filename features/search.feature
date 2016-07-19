@@ -73,13 +73,15 @@ Feature: Search
 
   Scenario: I logout and should see project I am looking for
     Given project "Shop" is public
-    And I logout
+    And I logout directly
+    And I visit dashboard search page
     And I search for "Sho"
     Then I should see "Shop" project link
 
   Scenario: I logout and should see issues I am looking for
     Given project "Shop" is public
-    And I logout
+    And I logout directly
+    And I visit dashboard search page
     And project has issues
     When I search for "Foo"
     And I click "Issues" link
@@ -88,7 +90,7 @@ Feature: Search
 
   Scenario: I logout and should see project code I am looking for
     Given project "Shop" is public
-    And I logout
+    And I logout directly
     When I visit project "Shop" page
     And I search for "rspec" on project page
     Then I should see code results for project "Shop"

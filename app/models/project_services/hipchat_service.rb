@@ -106,7 +106,7 @@ class HipchatService < Service
     else
       message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{CGI.escape(ref)}\">#{ref}</a> "
-      message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
+      message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/, '')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
       push[:commits].take(MAX_COMMITS).each do |commit|

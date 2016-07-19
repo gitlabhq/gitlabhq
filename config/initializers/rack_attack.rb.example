@@ -10,7 +10,8 @@ paths_to_be_protected = [
   "#{Rails.application.config.relative_url_root}/api/#{API::API.version}/session",
   "#{Rails.application.config.relative_url_root}/users",
   "#{Rails.application.config.relative_url_root}/users/confirmation",
-  "#{Rails.application.config.relative_url_root}/unsubscribes/"
+  "#{Rails.application.config.relative_url_root}/unsubscribes/",
+  "#{Rails.application.config.relative_url_root}/import/github/personal_access_token"
 
 ]
 

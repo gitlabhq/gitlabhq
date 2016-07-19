@@ -2,17 +2,18 @@ require 'spec_helper'
 
 describe Gitlab::GithubImport::BranchFormatter, lib: true do
   let(:project) { create(:project) }
+  let(:commit) { create(:commit, project: project) }
   let(:repo) { double }
   let(:raw) do
     {
       ref: 'feature',
       repo: repo,
-      sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+      sha: commit.id
     }
   end
 
   describe '#exists?' do
-    it 'returns true when branch exists' do
+    it 'returns true when both branch, and commit exists' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.exists?).to eq true
@@ -20,6 +21,12 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
 
     it 'returns false when branch does not exist' do
       branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
+
+      expect(branch.exists?).to eq false
+    end
+
+    it 'returns false when commit does not exist' do
+      branch = described_class.new(project, double(raw.merge(sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b')))
 
       expect(branch.exists?).to eq false
     end
@@ -33,7 +40,7 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
     end
 
     it 'returns formatted ref when branch does not exist' do
-      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch')))
+      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch', sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b')))
 
       expect(branch.name).to eq 'removed-branch-2e5d3239'
     end
@@ -51,18 +58,18 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
     it 'returns raw sha' do
       branch = described_class.new(project, double(raw))
 
-      expect(branch.sha).to eq '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+      expect(branch.sha).to eq commit.id
     end
   end
 
   describe '#valid?' do
-    it 'returns true when repository exists' do
+    it 'returns true when raw repo is present' do
       branch = described_class.new(project, double(raw))
 
       expect(branch.valid?).to eq true
     end
 
-    it 'returns false when repository does not exist' do
+    it 'returns false when raw repo is blank' do
       branch = described_class.new(project, double(raw.merge(repo: nil)))
 
       expect(branch.valid?).to eq false

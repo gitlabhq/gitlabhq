@@ -40,7 +40,6 @@ module Gitlab
               line_obj_index += 1
             end
 
-
             case line[0]
             when "+"
               line_new += 1

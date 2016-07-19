@@ -5,6 +5,7 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options
+    serialize :yaml_variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
@@ -13,21 +14,20 @@ module Ci
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
+    scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
+    scope :manual_actions, ->() { where(when: :manual) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
 
     acts_as_taggable
 
+    before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_destroy { project }
 
     after_create :execute_hooks
 
     class << self
-      def last_month
-        where('created_at > ?', Date.today - 1.month)
-      end
-
       def first_pending
         pending.unstarted.order('created_at ASC').first
       end
@@ -54,7 +54,10 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
+        new_build.yaml_variables = build.yaml_variables
+        new_build.when = build.when
         new_build.user = user
+        new_build.environment = build.environment
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -89,8 +92,31 @@ module Ci
       end
     end
 
+    def manual?
+      self.when == 'manual'
+    end
+
+    def other_actions
+      pipeline.manual_actions.where.not(id: self)
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      # Try to queue a current build
+      if self.queue
+        self.update(user: current_user)
+        self
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
+      end
+    end
+
     def retryable?
-      project.builds_enabled? && commands.present?
+      project.builds_enabled? && commands.present? && complete?
     end
 
     def retried?
@@ -300,18 +326,12 @@ module Ci
       project.valid_runners_token? token
     end
 
-    def can_be_served?(runner)
-      return false unless has_tags? || runner.run_untagged?
-
-      (tag_list - runner.tag_list).empty?
-    end
-
     def has_tags?
       tag_list.any?
     end
 
     def any_runners_online?
-      project.any_runners? { |runner| runner.active? && runner.online? && can_be_served?(runner) }
+      project.any_runners? { |runner| runner.active? && runner.online? && runner.can_pick?(self) }
     end
 
     def stuck?
@@ -335,7 +355,12 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      Gitlab::Ci::Build::Artifacts::Metadata.new(artifacts_metadata.path, path, **options).to_entry
+      metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
+        artifacts_metadata.path,
+        path,
+        **options)
+
+      metadata.to_entry
     end
 
     def erase_artifacts!
@@ -379,7 +404,23 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def when
+      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+    end
+
+    def yaml_variables
+      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+    end
+
     private
+
+    def update_artifacts_size
+      self.artifacts_size = if artifacts_file.exists?
+                              artifacts_file.size
+                            else
+                              nil
+                            end
+    end
 
     def erase_trace!
       self.trace = nil
@@ -387,30 +428,6 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
-    end
-
-    def yaml_variables
-      global_yaml_variables + job_yaml_variables
-    end
-
-    def global_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.global_variables.map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
-    end
-
-    def job_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.job_variables(name).map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
     end
 
     def project_variables
@@ -460,6 +477,12 @@ module Ci
       variables << { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
       variables << { key: 'CI_SERVER_URL', value: Gitlab::REVISION, public: true }
       variables
+    end
+
+    def build_attributes_from_config
+      return {} unless pipeline.config_processor
+      
+      pipeline.config_processor.build_attributes(name)
     end
   end
 end

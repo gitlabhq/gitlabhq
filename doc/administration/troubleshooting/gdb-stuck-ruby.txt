@@ -1,0 +1,142 @@
+# Here's the script I'll use to demonstrate - it just loops forever:
+
+$ cat test.rb 
+#!/usr/bin/env ruby
+
+loop do
+  sleep 1
+end
+
+# Now, I'll start the script in the background, and redirect stdout and stderr
+# to /dev/null:
+
+$ ruby ./test.rb >/dev/null 2>/dev/null &
+[1] 1343
+
+# Next, I'll grab the PID of the script (1343):
+
+$ ps aux | grep test.rb
+vagrant   1343  0.0  0.4   3884  1652 pts/0    S    14:42   0:00 ruby ./test.rb
+vagrant   1345  0.0  0.2   4624   852 pts/0    S+   14:42   0:00 grep --color=auto test.rb
+
+# Now I start gdb. Note that I'm using sudo here. This may or may not be
+# necessary in your setup. I'd try without sudo first, and fall back to adding
+# it if the next step fails:
+
+$ sudo gdb
+GNU gdb (Ubuntu/Linaro 7.4-2012.04-0ubuntu2.1) 7.4-2012.04
+Copyright (C) 2012 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.  Type "show copying"
+and "show warranty" for details.
+This GDB was configured as "i686-linux-gnu".
+For bug reporting instructions, please see:
+<http://bugs.launchpad.net/gdb-linaro/>.
+
+# OK, now I'm in gdb, and I want to instruct it to attach to our Ruby process.
+# I can do that using the 'attach' command, which takes a PID (the one we
+# gathered above):
+
+(gdb) attach 1343
+Attaching to process 1343
+Reading symbols from /opt/vagrant_ruby/bin/ruby...done.
+Reading symbols from /lib/i386-linux-gnu/librt.so.1...(no debugging symbols found)...done.
+Loaded symbols for /lib/i386-linux-gnu/librt.so.1
+Reading symbols from /lib/i386-linux-gnu/libdl.so.2...(no debugging symbols found)...done.
+Loaded symbols for /lib/i386-linux-gnu/libdl.so.2
+Reading symbols from /lib/i386-linux-gnu/libcrypt.so.1...(no debugging symbols found)...done.
+Loaded symbols for /lib/i386-linux-gnu/libcrypt.so.1
+Reading symbols from /lib/i386-linux-gnu/libm.so.6...(no debugging symbols found)...done.
+Loaded symbols for /lib/i386-linux-gnu/libm.so.6
+Reading symbols from /lib/i386-linux-gnu/libc.so.6...(no debugging symbols found)...done.
+Loaded symbols for /lib/i386-linux-gnu/libc.so.6
+Reading symbols from /lib/i386-linux-gnu/libpthread.so.0...(no debugging symbols found)...done.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/i386-linux-gnu/libthread_db.so.1".
+Loaded symbols for /lib/i386-linux-gnu/libpthread.so.0
+Reading symbols from /lib/ld-linux.so.2...(no debugging symbols found)...done.
+Loaded symbols for /lib/ld-linux.so.2
+0xb770c424 in __kernel_vsyscall ()
+
+# Great, now gdb is attached to the target process. If the step above fails, try
+# going back and running gdb under sudo. The next thing I want to do is gather
+# C-level backtraces from all threads in the process. The following command
+# stands for 'thread apply all backtrace':
+
+(gdb) t a a bt
+
+Thread 1 (Thread 0xb74d76c0 (LWP 1343)):
+#0  0xb770c424 in __kernel_vsyscall ()
+#1  0xb75d7abd in select () from /lib/i386-linux-gnu/libc.so.6
+#2  0x08069c56 in rb_thread_wait_for (time=...) at eval.c:11376
+#3  0x080a20fd in rb_f_sleep (argc=1, argv=0xbf85f490) at process.c:1633
+#4  0x0805e0e2 in call_cfunc (argv=0xbf85f490, argc=1, len=-1, recv=3075299660, func=0x80a20b0 <rb_f_sleep>)
+    at eval.c:5778
+#5  rb_call0 (klass=3075304600, recv=3075299660, id=9393, oid=9393, argc=1, argv=0xbf85f490, body=0xb74c85a8, flags=2)
+    at eval.c:5928
+#6  0x0805e35d in rb_call (klass=3075304600, recv=3075299660, mid=9393, argc=1, argv=0xbf85f490, scope=1, 
+    self=<optimized out>) at eval.c:6176
+#7  0x080651ec in rb_eval (self=3075299660, n=0xb74c4e1c) at eval.c:3521
+#8  0x0805c31c in rb_yield_0 (val=6, self=3075299660, klass=<optimized out>, flags=0, avalue=0) at eval.c:5095
+#9  0x0806a1e5 in loop_i () at eval.c:5227
+#10 0x08058dbd in rb_rescue2 (b_proc=0x806a1c0 <loop_i>, data1=0, r_proc=0, data2=0) at eval.c:5491
+#11 0x08058f28 in rb_f_loop () at eval.c:5252
+#12 0x0805e0c1 in call_cfunc (argv=0x0, argc=0, len=0, recv=3075299660, func=0x8058ef0 <rb_f_loop>) at eval.c:5781
+#13 rb_call0 (klass=3075304600, recv=3075299660, id=4121, oid=4121, argc=0, argv=0x0, body=0xb74d4dbc, flags=2)
+    at eval.c:5928
+#14 0x0805e35d in rb_call (klass=3075304600, recv=3075299660, mid=4121, argc=0, argv=0x0, scope=1, self=<optimized out>)
+    at eval.c:6176
+#15 0x080651ec in rb_eval (self=3075299660, n=0xb74c4dcc) at eval.c:3521
+#16 0x080662c6 in rb_eval (self=3075299660, n=0xb74c4de0) at eval.c:3236
+#17 0x08068ee4 in ruby_exec_internal () at eval.c:1654
+#18 0x08068f24 in ruby_exec () at eval.c:1674
+#19 0x0806b2cd in ruby_run () at eval.c:1684
+#20 0x08053771 in main (argc=2, argv=0xbf860204, envp=0xbf860210) at main.c:48
+
+# C backtraces are sometimes sufficient, but often Ruby backtraces are necessary
+# for debugging as well. Ruby has a built-in function called rb_backtrace() that
+# we can use to dump out a Ruby backtrace, but it prints to stdout or stderr
+# (depending on your Ruby version), which might have been redirected to a file
+# or to /dev/null (as in our example) when the process started up.
+#
+# To get aroundt this, we'll do a little trick and redirect the target process's
+# stdout and stderr to the current TTY, so that any output from the process
+# will appear directly on our screen.
+
+# First, let's close the existing file descriptors for stdout and stderr
+# (FD 1 and 2, respectively):
+(gdb) call (void) close(1)
+(gdb) call (void) close(2)
+
+# Next, we need to figure out the device name for the current TTY:
+(gdb) shell tty
+/dev/pts/0
+
+# OK, now we can pass the device name obtained above to open() and attach
+# file descriptors 1 and 2 back to the current TTY with these calls:
+
+(gdb) call (int) open("/dev/pts/0", 2, 0)
+$1 = 1
+(gdb) call (int) open("/dev/pts/0", 2, 0)
+$2 = 2
+
+# Finally, we call rb_backtrace() in order to dump the Ruby backtrace:
+
+(gdb) call (void) rb_backtrace()
+  from ./test.rb:4:in `sleep'
+  from ./test.rb:4
+  from ./test.rb:3:in `loop'
+  from ./test.rb:3
+
+# And here's how we get out of gdb. Once you've quit, you'll probably want to
+# clean up the stuck process by killing it.
+
+(gdb) quit
+A debugging session is active.
+
+  Inferior 1 [process 1343] will be detached.
+
+Quit anyway? (y or n) y
+Detaching from program: /opt/vagrant_ruby/bin/ruby, process 1343
+$ 

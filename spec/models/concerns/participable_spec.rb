@@ -37,6 +37,16 @@ describe Participable, models: true do
       expect(participants).to include(user3)
     end
 
+    it 'caches the raw list of participants' do
+      instance = model.new
+      user1 = build(:user)
+
+      expect(instance).to receive(:raw_participants).once
+
+      instance.participants(user1)
+      instance.participants(user1)
+    end
+
     it 'supports attributes returning another Participable' do
       other_model = Class.new { include Participable }
 

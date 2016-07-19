@@ -290,15 +290,23 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step "I switch ref to 'test'" do
-    select "'test'", from: 'ref'
+    first('.js-project-refs-dropdown').click
+
+    page.within '.project-refs-form' do
+      click_link 'test'
+    end
   end
 
   step "I switch ref to fix" do
-    select "fix", from: 'ref'
+    first('.js-project-refs-dropdown').click
+
+    page.within '.project-refs-form' do
+      click_link 'fix'
+    end
   end
 
   step "I see the ref 'test' has been selected" do
-    expect(page).to have_selector '.select2-chosen', text: "'test'"
+    expect(page).to have_selector '.dropdown-toggle-text', text: "'test'"
   end
 
   step "I visit the 'test' tree" do

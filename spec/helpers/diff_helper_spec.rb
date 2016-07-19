@@ -9,7 +9,7 @@ describe DiffHelper do
   let(:diffs) { commit.diffs }
   let(:diff) { diffs.first }
   let(:diff_refs) { [commit.parent, commit] }
-  let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs) }
+  let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
 
   describe 'diff_view' do
     it 'returns a valid value when cookie is set' do
@@ -30,26 +30,30 @@ describe DiffHelper do
       expect(helper.diff_view).to eq 'inline'
     end
   end
-
-  describe 'diff_hard_limit_enabled?' do
-    it 'should return true if param is provided' do
-      allow(controller).to receive(:params) { { force_show_diff: true } }
-      expect(diff_hard_limit_enabled?).to be_truthy
-    end
-
-    it 'should return false if param is not provided' do
-      expect(diff_hard_limit_enabled?).to be_falsey
-    end
-  end
-
+  
   describe 'diff_options' do
     it 'should return hard limit for a diff if force diff is true' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
       expect(diff_options).to include(Commit.max_diff_options)
     end
 
-    it 'should return safe limit for a diff if force diff is false' do
-      expect(diff_options).not_to include(:max_lines, :max_files)
+    it 'should return hard limit for a diff if expand_all_diffs is true' do
+      allow(controller).to receive(:params) { { expand_all_diffs: true } }
+      expect(diff_options).to include(Commit.max_diff_options)
+    end
+
+    it 'should return no collapse false' do
+      expect(diff_options).to include(no_collapse: false)
+    end
+
+    it 'should return no collapse true if expand_all_diffs' do
+      allow(controller).to receive(:params) { { expand_all_diffs: true } }
+      expect(diff_options).to include(no_collapse: true)
+    end
+
+    it 'should return no collapse true if action name diff_for_path' do
+      allow(controller).to receive(:action_name) { 'diff_for_path' }
+      expect(diff_options).to include(no_collapse: true)
     end
   end
 
@@ -59,7 +63,7 @@ describe DiffHelper do
     end
 
     it 'should return js class when bottom lines should be unfolded' do
-      expect(unfold_bottom_class(true)).to eq('js-unfold-bottom')
+      expect(unfold_bottom_class(true)).to include('js-unfold-bottom')
     end
   end
 

@@ -23,7 +23,7 @@ class CommitRange
   attr_reader :commit_from, :notation, :commit_to
   attr_reader :ref_from, :ref_to
 
-  # Optional Project model
+  # The Project model
   attr_accessor :project
 
   # The beginning and ending refs can be named or SHAs, and
@@ -56,7 +56,7 @@ class CommitRange
   # Initialize a CommitRange
   #
   # range_string - The String commit range.
-  # project      - An optional Project model.
+  # project      - The Project model.
   #
   # Raises ArgumentError if `range_string` does not match `PATTERN`.
   def initialize(range_string, project)

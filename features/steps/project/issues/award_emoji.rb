@@ -81,9 +81,7 @@ class Spinach::Features::AwardEmoji < Spinach::FeatureSteps
   end
 
   step 'I search "hand"' do
-    page.within('.emoji-menu-content') do
-      fill_in 'emoji_search', with: 'hand'
-    end
+    fill_in 'emoji_search', with: 'hand'
   end
 
   step 'I see search result for "hand"' do

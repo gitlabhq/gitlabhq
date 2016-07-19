@@ -91,6 +91,6 @@ describe PostReceive do
   end
 
   def pwd(project)
-    File.join(Gitlab.config.gitlab_shell.repos_path, project.path_with_namespace)
+    File.join(Gitlab.config.repositories.storages.default, project.path_with_namespace)
   end
 end

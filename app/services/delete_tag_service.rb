@@ -5,7 +5,6 @@ class DeleteTagService < BaseService
     repository = project.repository
     tag = repository.find_tag(tag_name)
 
-    # No such tag
     unless tag
       return error('No such tag', 404)
     end
@@ -26,15 +25,11 @@ class DeleteTagService < BaseService
   end
 
   def error(message, return_code = 400)
-    out = super(message)
-    out[:return_code] = return_code
-    out
+    super(message).merge(return_code: return_code)
   end
 
   def success(message)
-    out = super()
-    out[:message] = message
-    out
+    super().merge(message: message)
   end
 
   def build_push_data(tag)

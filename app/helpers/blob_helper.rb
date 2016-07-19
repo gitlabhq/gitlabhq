@@ -1,10 +1,7 @@
 module BlobHelper
-  def highlighter(blob_name, blob_content, nowrap: false)
-    Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap)
-  end
-
-  def highlight(blob_name, blob_content, nowrap: false, plain: false)
-    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap, plain: plain)
+  def highlight(blob_name, blob_content, repository: nil, plain: false)
+    highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
+    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end
 
   def no_highlight_files
@@ -29,7 +26,7 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       button_tag "Edit", class: "btn disabled has-tooltip btn-file-option", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     elsif can_edit_blob?(blob, project, ref)
-      link_to "Edit", edit_path, class: 'btn btn-file-option'
+      link_to "Edit", edit_path, class: 'btn btn-sm'
     elsif can?(current_user, :fork_project, project)
       continue_params = {
         to:     edit_path,
@@ -186,12 +183,16 @@ module BlobHelper
   end
 
   def gitignore_names
-    return @gitignore_names if defined?(@gitignore_names)
+    @gitignore_names ||=
+      Gitlab::Template::Gitignore.categories.keys.map do |k|
+        [k, Gitlab::Template::Gitignore.by_category(k).map { |t| { name: t.name } }]
+      end.to_h
+  end
 
-    @gitignore_names = {
-      Global: Gitlab::Gitignore.global.map { |gitignore| { name: gitignore.name } },
-      # Note that the key here doesn't cover it really
-      Languages: Gitlab::Gitignore.languages_frameworks.map{ |gitignore| { name: gitignore.name } }
-    }
+  def gitlab_ci_ymls
+    @gitlab_ci_ymls ||=
+      Gitlab::Template::GitlabCiYml.categories.keys.map do |k|
+        [k, Gitlab::Template::GitlabCiYml.by_category(k).map { |t| { name: t.name } }]
+      end.to_h
   end
 end

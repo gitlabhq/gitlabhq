@@ -1,13 +1,10 @@
 .pipelines {
   .stage {
-    max-width: 100px;
+    max-width: 90px;
+    width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
-
-  .duration, .finished_at {
-    margin: 4px 0;
   }
 
   .commit-title {
@@ -20,5 +17,197 @@
 
   .btn {
     margin: 4px;
+  }
+}
+
+.content-list {
+
+  &.pipelines,
+  &.builds-content-list {
+    width: 100%;
+    overflow: auto;
+  }
+}
+
+.table.builds {
+  min-width: 1200px;
+
+  tr {
+    th {
+      padding: 16px 8px;
+      border: none;
+    }
+
+    td {
+      padding: 10px 8px;
+    }
+  }
+
+  tbody {
+    border-top-width: 1px;
+  }
+
+  .commit-link {
+
+    .ci-status {
+
+      svg {
+        top: 1px;
+        margin-right: 0;
+      }
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
+  .branch-commit {
+
+    .branch-name {
+      font-weight: bold;
+      max-width: 150px;
+      overflow: hidden;
+      display: inline-block;
+      white-space: nowrap;
+      vertical-align: top;
+      text-overflow: ellipsis;
+    }
+
+    svg {
+      height: 14px;
+      width: auto;
+      vertical-align: middle;
+      fill: $table-text-gray;
+    }
+
+    .fa {
+      font-size: 12px;
+      color: $table-text-gray;
+    }
+
+    .commit-id {
+      color: $gl-link-color;
+      margin-right: 8px;
+    }
+
+    .commit-title {
+      margin-top: 4px;
+      max-width: 320px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .avatar {
+      margin-left: 0;
+    }
+
+    .label {
+      margin-right: 4px;
+    }
+
+    .label-container {
+      font-size: 0;
+
+      .label {
+        margin-top: 5px;
+      }
+    }
+  }
+
+  .icon-container {
+    display: inline-block;
+    text-align: right;
+    width: 20px;
+
+    .fa {
+      position: relative;
+      right: 3px;
+    }
+
+    svg {
+      position: relative;
+      right: 1px;
+    }
+  }
+
+  .stage-cell {
+
+    svg {
+      height: 18px;
+      width: 18px;
+      vertical-align: middle;
+    }
+  }
+
+  .duration,
+  .finished-at {
+    color: $table-text-gray;
+    margin: 4px 0;
+
+    .fa {
+      font-size: 12px;
+      margin-right: 4px;
+    }
+
+    svg {
+      width: 12px;
+      height: auto;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+  }
+
+  .pipeline-actions {
+    min-width: 140px;
+
+    .btn {
+      margin: 0;
+      color: $table-text-gray;
+    }
+
+    .cancel-retry-btns {
+      vertical-align: middle;
+
+      .btn:not(:first-child) {
+        margin-left: 8px;
+      }
+    }
+
+    .dropdown-toggle,
+    .dropdown-menu {
+      color: $table-text-gray;
+
+      .fa {
+        color: $table-text-gray;
+        margin-right: 6px;
+        font-size: 14px;
+      }
+    }
+
+    .btn-remove {
+      color: $white-light;
+    }
+
+    .btn-group {
+      &.open {
+        .btn-default {
+          background-color: $white-normal;
+          border-color: $border-white-normal;
+        }
+      }
+    }
+  }
+
+  .build-link {
+
+    a {
+      color: $gl-dark-link-color;
+    }
+  }
+
+  .btn-group.open .dropdown-toggle {
+    box-shadow: none;
   }
 }

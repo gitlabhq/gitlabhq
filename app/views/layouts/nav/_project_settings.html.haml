@@ -3,7 +3,7 @@
     = link_to namespace_project_project_members_path(@project.namespace, @project), title: 'Members', class: 'team-tab tab' do
       %span
         Members
-- if access && can_edit
+- if can_edit
   - if @project.allowed_to_share_with_group?
     = nav_link(controller: :group_links) do
       = link_to namespace_project_group_links_path(@project.namespace, @project), title: "Groups" do

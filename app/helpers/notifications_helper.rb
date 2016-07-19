@@ -72,6 +72,6 @@ module NotificationsHelper
   # Create hidden field to send notification setting source to controller
   def hidden_setting_source_input(notification_setting)
     return unless notification_setting.source_type
-    hidden_field_tag "#{notification_setting.source_type.downcase}[id]", notification_setting.source_id
+    hidden_field_tag "#{notification_setting.source_type.downcase}_id", notification_setting.source_id
   end
 end

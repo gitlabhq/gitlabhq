@@ -17,7 +17,7 @@ describe Admin::UsersController do
 
     it 'deletes user' do
       delete :destroy, id: user.username, format: :json
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect { User.find(user.id) }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end

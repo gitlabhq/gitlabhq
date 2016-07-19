@@ -23,8 +23,8 @@ describe DestroyGroupService, services: true do
         Sidekiq::Testing.inline! { destroy_group(group, user) }
       end
 
-      it { expect(gitlab_shell.exists?(group.path)).to be_falsey }
-      it { expect(gitlab_shell.exists?(remove_path)).to be_falsey }
+      it { expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey }
+      it { expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_falsey }
     end
 
     context 'Sidekiq fake' do
@@ -33,8 +33,8 @@ describe DestroyGroupService, services: true do
         Sidekiq::Testing.fake! { destroy_group(group, user) }
       end
 
-      it { expect(gitlab_shell.exists?(group.path)).to be_falsey }
-      it { expect(gitlab_shell.exists?(remove_path)).to be_truthy }
+      it { expect(gitlab_shell.exists?(project.repository_storage_path, group.path)).to be_falsey }
+      it { expect(gitlab_shell.exists?(project.repository_storage_path, remove_path)).to be_truthy }
     end
   end
 

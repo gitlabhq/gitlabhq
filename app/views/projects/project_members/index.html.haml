@@ -13,9 +13,9 @@
           Users with access to this project are listed below.
         = render "new_project_member"
 
-    = render 'shared/members/requests', membership_source: @project, members: @project_members.request
+    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
 
-  = render 'team', members: @project_members.non_request
+  = render 'team', members: @project_members
 
   - if @group
     = render "group_members", members: @group_members

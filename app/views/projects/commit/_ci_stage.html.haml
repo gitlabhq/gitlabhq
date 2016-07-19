@@ -7,7 +7,7 @@
         = ci_icon_for_status(status)
       - if stage
         &nbsp;
-        = stage.titleize.pluralize
+        = stage.titleize
   = render statuses.latest.ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, allow_retry: true
   = render statuses.retried.ordered, coverage: @project.build_coverage_enabled?, stage: false, ref: false, retried: true
   %tr

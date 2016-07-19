@@ -2,44 +2,34 @@
 - page_title "Groups"
 = render "admin/dashboard/head"
 
-%div{ class: (container_class) }
-  %h3.page-title
-    Groups (#{number_with_delimiter(@groups.total_count)})
-
-  %p.light
-    Group allows you to keep projects organized.
-    Use groups for uniting related projects.
-
+%div{ class: container_class }
   .top-area
-    .nav-search
-      = form_tag admin_groups_path, method: :get, class: 'form-inline' do
+    .prepend-top-default.append-bottom-default
+      = form_tag admin_groups_path, method: :get, class: 'js-search-form' do |f|
         = hidden_field_tag :sort, @sort
-        = text_field_tag :name, params[:name], class: "form-control"
-        = button_tag "Search", class: "btn submit btn-primary"
-
-    .nav-controls
-      .dropdown.inline
-        %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-          %span.light
-          - if @sort.present?
-            = sort_options_hash[@sort]
-          - else
-            = sort_title_recently_created
-          %b.caret
-        %ul.dropdown-menu
-          %li
-            = link_to admin_groups_path(sort: sort_value_recently_created) do
-              = sort_title_recently_created
-            = link_to admin_groups_path(sort: sort_value_oldest_created) do
-              = sort_title_oldest_created
-            = link_to admin_groups_path(sort: sort_value_recently_updated) do
-              = sort_title_recently_updated
-            = link_to admin_groups_path(sort: sort_value_oldest_updated) do
-              = sort_title_oldest_updated
-      = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
-
+        .search-holder
+          - project_name = params[:name].present? ? params[:name] : nil
+          .search-field-holder
+            = search_field_tag :name, project_name, class: "form-control search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: 'Search by name'
+            = icon("search", class: "search-icon")
+          .dropdown
+            - toggle_text = @sort.present? ? sort_options_hash[@sort] : sort_title_recently_created
+            = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
+            %ul.dropdown-menu.dropdown-menu-align-right
+              %li.dropdown-header
+                Sort by
+              %li
+                = link_to admin_groups_path(sort: sort_value_recently_created, name: project_name) do
+                  = sort_title_recently_created
+                = link_to admin_groups_path(sort: sort_value_oldest_created, name: project_name) do
+                  = sort_title_oldest_created
+                = link_to admin_groups_path(sort: sort_value_recently_updated, name: project_name) do
+                  = sort_title_recently_updated
+                = link_to admin_groups_path(sort: sort_value_oldest_updated, name: project_name) do
+                  = sort_title_oldest_updated
+          = link_to new_admin_group_path, class: "btn btn-new" do
+            New Group
   %ul.content-list
-    - @groups.each do |group|
-      = render 'group', group: group
+    = render @groups
 
   = paginate @groups, theme: "gitlab"

@@ -8,7 +8,7 @@ describe Gitlab::Diff::Parser, lib: true do
   let(:diff) { commit.diffs.first }
   let(:parser) { Gitlab::Diff::Parser.new }
 
-  describe :parse do
+  describe '#parse' do
     let(:diff) do
       <<eos
 --- a/files/ruby/popen.rb

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe NotificationSettingsController do
   let(:project) { create(:empty_project) }
+  let(:group) { create(:group, :internal) }
   let(:user) { create(:user) }
 
   before do
@@ -12,7 +13,7 @@ describe NotificationSettingsController do
     context 'when not authorized' do
       it 'redirects to sign in page' do
         post :create,
-             project: { id: project.id },
+             project_id: project.id,
              notification_setting: { level: :participating }
 
         expect(response).to redirect_to(new_user_session_path)
@@ -20,33 +21,73 @@ describe NotificationSettingsController do
     end
 
     context 'when authorized' do
+      let(:custom_events) do
+        events = {}
+
+        NotificationSetting::EMAIL_EVENTS.each do |event|
+          events[event.to_s] = true
+        end
+
+        events
+      end
+
       before do
         sign_in(user)
       end
 
-      it 'returns success' do
-        post :create,
-             project: { id: project.id },
-             notification_setting: { level: :participating }
+      context 'for projects' do
+        let(:notification_setting) { user.notification_settings_for(project) }
 
-        expect(response.status).to eq 200
-      end
-
-      context 'and setting custom notification setting' do
-        let(:custom_events) do
-          events = {}
-
-          NotificationSetting::EMAIL_EVENTS.each do |event|
-            events[event] = "true"
-          end
-        end
-
-        it 'returns success' do
+        it 'creates notification setting' do
           post :create,
-               project: { id: project.id },
-               notification_setting: { level: :participating, events: custom_events }
+               project_id: project.id,
+               notification_setting: { level: :participating }
 
           expect(response.status).to eq 200
+          expect(notification_setting.level).to eq("participating")
+          expect(notification_setting.user_id).to eq(user.id)
+          expect(notification_setting.source_id).to eq(project.id)
+          expect(notification_setting.source_type).to eq("Project")
+        end
+
+        context 'with custom settings' do
+          it 'creates notification setting' do
+            post :create,
+                 project_id: project.id,
+                 notification_setting: { level: :custom }.merge(custom_events)
+
+            expect(response.status).to eq 200
+            expect(notification_setting.level).to eq("custom")
+            expect(notification_setting.events).to eq(custom_events)
+          end
+        end
+      end
+
+      context 'for groups' do
+        let(:notification_setting) { user.notification_settings_for(group) }
+
+        it 'creates notification setting' do
+          post :create,
+               namespace_id: group.id,
+               notification_setting: { level: :watch }
+
+          expect(response.status).to eq 200
+          expect(notification_setting.level).to eq("watch")
+          expect(notification_setting.user_id).to eq(user.id)
+          expect(notification_setting.source_id).to eq(group.id)
+          expect(notification_setting.source_type).to eq("Namespace")
+        end
+
+        context 'with custom settings' do
+          it 'creates notification setting' do
+            post :create,
+                 namespace_id: group.id,
+                 notification_setting: { level: :custom }.merge(custom_events)
+
+            expect(response.status).to eq 200
+            expect(notification_setting.level).to eq("custom")
+            expect(notification_setting.events).to eq(custom_events)
+          end
         end
       end
     end
@@ -57,10 +98,10 @@ describe NotificationSettingsController do
 
       it 'returns 404' do
         post :create,
-             project: { id: private_project.id },
+             project_id: private_project.id,
              notification_setting: { level: :participating }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end
@@ -118,7 +159,7 @@ describe NotificationSettingsController do
             id: notification_setting,
             notification_setting: { level: :participating }
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
   end

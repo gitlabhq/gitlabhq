@@ -72,7 +72,7 @@ describe Snippet, models: true do
     end
   end
 
-  describe '#search_code' do
+  describe '.search_code' do
     let(:snippet) { create(:snippet, content: 'class Foo; end') }
 
     it 'returns snippets with matching content' do
@@ -85,6 +85,46 @@ describe Snippet, models: true do
 
     it 'returns snippets with matching content regardless of the casing' do
       expect(described_class.search_code('FOO')).to eq([snippet])
+    end
+  end
+
+  describe '.accessible_to' do
+    let(:author)  { create(:author) }
+    let(:project) { create(:empty_project) }
+
+    let!(:public_snippet)   { create(:snippet, :public) }
+    let!(:internal_snippet) { create(:snippet, :internal) }
+    let!(:private_snippet)  { create(:snippet, :private, author: author) }
+
+    let!(:project_public_snippet)   { create(:snippet, :public, project: project) }
+    let!(:project_internal_snippet) { create(:snippet, :internal, project: project) }
+    let!(:project_private_snippet)  { create(:snippet, :private, project: project) }
+
+    it 'returns only public snippets when user is blank' do
+      expect(described_class.accessible_to(nil)).to match_array [public_snippet, project_public_snippet]
+    end
+
+    it 'returns only public, and internal snippets for regular users' do
+      user = create(:user)
+
+      expect(described_class.accessible_to(user)).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet]
+    end
+
+    it 'returns public, internal snippets and project private snippets for project members' do
+      member = create(:user)
+      project.team << [member, :developer]
+
+      expect(described_class.accessible_to(member)).to match_array [public_snippet, internal_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
+    end
+
+    it 'returns private snippets where the user is the author' do
+      expect(described_class.accessible_to(author)).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet]
+    end
+
+    it 'returns all snippets when for admins' do
+      admin = create(:admin)
+
+      expect(described_class.accessible_to(admin)).to match_array [public_snippet, internal_snippet, private_snippet, project_public_snippet, project_internal_snippet, project_private_snippet]
     end
   end
 

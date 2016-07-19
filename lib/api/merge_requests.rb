@@ -233,8 +233,8 @@ module API
 
           render_api_error!('Branch cannot be merged', 406) unless merge_request.mergeable?
 
-          if params[:sha] && merge_request.source_sha != params[:sha]
-            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.source_sha}", 409)
+          if params[:sha] && merge_request.diff_head_sha != params[:sha]
+            render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
           end
 
           merge_params = {

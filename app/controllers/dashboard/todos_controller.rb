@@ -1,6 +1,4 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
-  include TodosHelper
-
   before_action :find_todos, only: [:index, :destroy_all]
 
   def index
@@ -13,7 +11,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
       format.js { head :ok }
-      format.json { render json: { count: todos_pending_count, done_count: todos_done_count } }
+      format.json { render json: todos_counts }
     end
   end
 
@@ -23,7 +21,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'All todos were marked as done.' }
       format.js { head :ok }
-      format.json { render json: { count: todos_pending_count, done_count: todos_done_count } }
+      format.json { render json: todos_counts }
     end
   end
 
@@ -35,5 +33,12 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def find_todos
     @todos ||= TodosFinder.new(current_user, params).execute
+  end
+
+  def todos_counts
+    {
+      count: TodosFinder.new(current_user, state: :pending).execute.count,
+      done_count: TodosFinder.new(current_user, state: :done).execute.count
+    }
   end
 end

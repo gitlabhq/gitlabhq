@@ -65,6 +65,11 @@
     a {
       padding-top: 0;
       line-height: 1;
+      border-bottom: 1px solid $border-color;
+
+      &.btn.btn-xs {
+        padding: 2px 5px;
+      }
     }
   }
 }
@@ -97,5 +102,31 @@
       white-space: pre-wrap;
       word-break: keep-all;
     }
+
+    @include bulleted-list;
+  }
+}
+
+.toolbar-group {
+  float: left;
+  margin-right: -5px;
+  margin-left: $gl-padding;
+
+  &:first-child {
+    margin-left: 0;
+  }
+}
+
+.toolbar-btn {
+  float: left;
+  padding: 0 5px;
+  color: #959494;
+  background: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover,
+  &:focus {
+    color: $gl-link-color;
   }
 }

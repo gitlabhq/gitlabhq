@@ -107,6 +107,11 @@ Example of response
 
 Get a list of builds for specific commit in a project.
 
+This endpoint will return all builds, from all pipelines for a given commit.
+If the commit SHA is not found, it will respond with 404, otherwise it will
+return an array of builds (an empty array if there are no builds for this
+particular commit).
+
 ```
 GET /projects/:id/repository/commits/:sha/builds
 ```

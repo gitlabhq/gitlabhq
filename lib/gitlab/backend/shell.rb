@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Gitlab
   class Shell
     class Error < StandardError; end
@@ -18,77 +20,82 @@ module Gitlab
 
     # Init new repository
     #
+    # storage - project's storage path
     # name - project path with namespace
     #
     # Ex.
-    #   add_repository("gitlab/gitlab-ci")
+    #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def add_repository(name)
+    def add_repository(storage, name)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path,
-                                   'add-project', "#{name}.git"])
+                                   'add-project', storage, "#{name}.git"])
     end
 
     # Import repository
     #
+    # storage - project's storage path
     # name - project path with namespace
     #
     # Ex.
-    #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
+    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
-    def import_repository(name, url)
-      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project', "#{name}.git", url, '900'])
+    def import_repository(storage, name, url)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'import-project',
+                                     storage, "#{name}.git", url, '900'])
       raise Error, output unless status.zero?
       true
     end
 
     # Move repository
-    #
+    # storage - project's storage path
     # path - project path with namespace
     # new_path - new project path with namespace
     #
     # Ex.
-    #   mv_repository("gitlab/gitlab-ci", "randx/gitlab-ci-new")
+    #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
-    def mv_repository(path, new_path)
+    def mv_repository(storage, path, new_path)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'mv-project',
-                                   "#{path}.git", "#{new_path}.git"])
+                                   storage, "#{path}.git", "#{new_path}.git"])
     end
 
     # Fork repository to new namespace
-    #
+    # storage - project's storage path
     # path - project path with namespace
     # fork_namespace - namespace for forked project
     #
     # Ex.
-    #  fork_repository("gitlab/gitlab-ci", "randx")
+    #  fork_repository("/path/to/storage", "gitlab/gitlab-ci", "randx")
     #
-    def fork_repository(path, fork_namespace)
+    def fork_repository(storage, path, fork_namespace)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'fork-project',
-                                   "#{path}.git", fork_namespace])
+                                   storage, "#{path}.git", fork_namespace])
     end
 
     # Remove repository from file system
     #
+    # storage - project's storage path
     # name - project path with namespace
     #
     # Ex.
-    #   remove_repository("gitlab/gitlab-ci")
+    #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def remove_repository(name)
+    def remove_repository(storage, name)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path,
-                                   'rm-project', "#{name}.git"])
+                                   'rm-project', storage, "#{name}.git"])
     end
 
     # Gc repository
     #
+    # storage - project storage path
     # path - project path with namespace
     #
     # Ex.
-    #   gc("gitlab/gitlab-ci")
+    #   gc("/path/to/storage", "gitlab/gitlab-ci")
     #
-    def gc(path)
+    def gc(storage, path)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'gc',
-                                   "#{path}.git"])
+                                   storage, "#{path}.git"])
     end
 
     # Add new key to gitlab-shell
@@ -133,31 +140,31 @@ module Gitlab
     # Add empty directory for storing repositories
     #
     # Ex.
-    #   add_namespace("gitlab")
+    #   add_namespace("/path/to/storage", "gitlab")
     #
-    def add_namespace(name)
-      FileUtils.mkdir(full_path(name), mode: 0770) unless exists?(name)
+    def add_namespace(storage, name)
+      FileUtils.mkdir(full_path(storage, name), mode: 0770) unless exists?(storage, name)
     end
 
     # Remove directory from repositories storage
     # Every repository inside this directory will be removed too
     #
     # Ex.
-    #   rm_namespace("gitlab")
+    #   rm_namespace("/path/to/storage", "gitlab")
     #
-    def rm_namespace(name)
-      FileUtils.rm_r(full_path(name), force: true)
+    def rm_namespace(storage, name)
+      FileUtils.rm_r(full_path(storage, name), force: true)
     end
 
     # Move namespace directory inside repositories storage
     #
     # Ex.
-    #   mv_namespace("gitlab", "gitlabhq")
+    #   mv_namespace("/path/to/storage", "gitlab", "gitlabhq")
     #
-    def mv_namespace(old_name, new_name)
-      return false if exists?(new_name) || !exists?(old_name)
+    def mv_namespace(storage, old_name, new_name)
+      return false if exists?(storage, new_name) || !exists?(storage, old_name)
 
-      FileUtils.mv(full_path(old_name), full_path(new_name))
+      FileUtils.mv(full_path(storage, old_name), full_path(storage, new_name))
     end
 
     def url_to_repo(path)
@@ -176,11 +183,26 @@ module Gitlab
     # Check if such directory exists in repositories.
     #
     # Usage:
-    #   exists?('gitlab')
-    #   exists?('gitlab/cookies.git')
+    #   exists?(storage, 'gitlab')
+    #   exists?(storage, 'gitlab/cookies.git')
     #
-    def exists?(dir_name)
-      File.exist?(full_path(dir_name))
+    def exists?(storage, dir_name)
+      File.exist?(full_path(storage, dir_name))
+    end
+
+    # Create (if necessary) and link the secret token file
+    def generate_and_link_secret_token
+      secret_file = Gitlab.config.gitlab_shell.secret_file
+      unless File.exist? secret_file
+        # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
+        token = SecureRandom.hex(16)
+        File.write(secret_file, token)
+      end
+
+      link_path = File.join(gitlab_shell_path, '.gitlab_shell_secret')
+      if File.exist?(gitlab_shell_path) && !File.exist?(link_path)
+        FileUtils.symlink(secret_file, link_path)
+      end
     end
 
     protected
@@ -193,14 +215,10 @@ module Gitlab
       File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
     end
 
-    def repos_path
-      Gitlab.config.gitlab_shell.repos_path
-    end
-
-    def full_path(dir_name)
+    def full_path(storage, dir_name)
       raise ArgumentError.new("Directory name can't be blank") if dir_name.blank?
 
-      File.join(repos_path, dir_name)
+      File.join(storage, dir_name)
     end
 
     def gitlab_shell_projects_path

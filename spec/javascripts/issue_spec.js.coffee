@@ -1,3 +1,4 @@
+#= require lib/utils/text_utility
 #= require issue
 
 describe 'Issue', ->
@@ -38,7 +39,7 @@ describe 'reopen/close issue', ->
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
 
     $btnClose.trigger('click')
-    
+
     expect($btnReopen).toBeVisible()
     expect($btnClose).toBeHidden()
     expect($('div.status-box-closed')).toBeVisible()
@@ -50,7 +51,7 @@ describe 'reopen/close issue', ->
       expect(req.type).toBe('PUT')
       expect(req.url).toBe('http://goesnowhere.nothing/whereami')
       req.success saved: false
-    
+
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
     $btnClose.attr('href','http://goesnowhere.nothing/whereami')
@@ -59,7 +60,7 @@ describe 'reopen/close issue', ->
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
 
     $btnClose.trigger('click')
-    
+
     expect($btnReopen).toBeHidden()
     expect($btnClose).toBeVisible()
     expect($('div.status-box-closed')).toBeHidden()
@@ -73,7 +74,7 @@ describe 'reopen/close issue', ->
       expect(req.type).toBe('PUT')
       expect(req.url).toBe('http://goesnowhere.nothing/whereami')
       req.error()
-    
+
     $btnClose = $('a.btn-close')
     $btnReopen = $('a.btn-reopen')
     $btnClose.attr('href','http://goesnowhere.nothing/whereami')
@@ -82,7 +83,7 @@ describe 'reopen/close issue', ->
     expect(typeof $btnClose.prop('disabled')).toBe('undefined')
 
     $btnClose.trigger('click')
-    
+
     expect($btnReopen).toBeHidden()
     expect($btnClose).toBeVisible()
     expect($('div.status-box-closed')).toBeHidden()

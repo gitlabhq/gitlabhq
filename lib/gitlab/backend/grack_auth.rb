@@ -8,7 +8,6 @@ module Grack
   end
 
   class Auth < Rack::Auth::Basic
-
     attr_accessor :user, :project, :env
 
     def call(env)
@@ -22,7 +21,7 @@ module Grack
       # Need this if under RELATIVE_URL_ROOT
       unless Gitlab.config.gitlab.relative_url_root.empty?
         # If website is mounted using relative_url_root need to remove it first
-        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root,'')
+        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root, '')
       else
         @env['PATH_INFO'] = @request.path
       end
@@ -31,7 +30,7 @@ module Grack
 
       auth!
 
-      lfs_response = Gitlab::Lfs::Router.new(project, @user, @request).try_call
+      lfs_response = Gitlab::Lfs::Router.new(project, @user, @ci, @request).try_call
       return lfs_response unless lfs_response.nil?
 
       if @user.nil? && !@ci
@@ -64,7 +63,7 @@ module Grack
     def ci_request?(login, password)
       matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
 
-      if project && matched_login.present? && git_cmd == 'git-upload-pack'
+      if project && matched_login.present?
         underscored_service = matched_login['s'].underscore
 
         if underscored_service == 'gitlab_ci'

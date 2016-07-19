@@ -42,4 +42,7 @@ Rails.application.configure do
   config.action_mailer.preview_path = 'spec/mailers/previews'
 
   config.eager_load = false
+
+  # Do not log asset requests
+  config.assets.quiet = true
 end

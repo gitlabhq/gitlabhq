@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::RepoSaver, services: true do
   describe 'bundle a project Git repo' do
-
     let(:user) { create(:user) }
     let!(:project) { create(:project, :public, name: 'searchable_project') }
     let(:export_path) { "#{Dir::tmpdir}/project_tree_saver_spec" }

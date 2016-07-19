@@ -37,39 +37,41 @@
   }
 
   h1 {
-    font-size: 1.3em;
+    font-size: 2em;
     font-weight: 600;
-    margin: 24px 0 12px;
-    padding: 0 0 10px;
-    border-bottom: 1px solid #e7e9ed;
+    margin: 1em 0 10px;
+    padding: 0 0 0.3em;
+    border-bottom: 1px solid $btn-default-border;
     color: $gl-gray-dark;
   }
 
   h2 {
-    font-size: 1.2em;
+    font-size: 1.6em;
     font-weight: 600;
-    margin: 24px 0 12px;
+    margin: 1em 0 10px;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid $btn-default-border;
     color: $gl-gray-dark;
   }
 
   h3 {
-    margin: 24px 0 12px;
-    font-size: 1.1em;
+    margin: 1em 0 10px;
+    font-size: 1.4em;
   }
 
   h4 {
-    margin: 24px 0 12px;
-    font-size: 0.98em;
+    margin: 1em 0 10px;
+    font-size: 1.25em;
   }
 
   h5 {
-    margin: 24px 0 12px;
-    font-size: 0.95em;
+    margin: 1em 0 10px;
+    font-size: 1em;
   }
 
   h6 {
-    margin: 24px 0 12px;
-    font-size: 0.90em;
+    margin: 1em 0 10px;
+    font-size: 0.95em;
   }
 
   blockquote {
@@ -115,7 +117,7 @@
 
   ul, ol {
     padding: 0;
-    margin: 6px 0 6px 28px !important;
+    margin: 3px 0 3px 28px !important;
   }
 
   li {

@@ -42,7 +42,7 @@
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-    - if @commits.present?
+    - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
           = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
@@ -51,7 +51,7 @@
         %li.commits-tab
           = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
             Commits
-            %span.badge= @commits.size
+            %span.badge= @commits_count
         - if @pipeline
           %li.builds-tab
             = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do

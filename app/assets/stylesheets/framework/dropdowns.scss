@@ -20,8 +20,12 @@
 }
 
 .open {
-  .dropdown-menu {
+  .dropdown-menu,
+  .dropdown-menu-nav {
     display: block;
+    @media (max-width: $screen-xs-max) {
+      width: 100%;
+    }
   }
 
   .dropdown-menu-toggle {
@@ -64,9 +68,14 @@
       color: $dropdown-toggle-hover-icon-color;
     }
   }
+
+  &.large {
+    width: 200px;
+  }
 }
 
-.dropdown-menu {
+.dropdown-menu,
+.dropdown-menu-nav {
   display: none;
   position: absolute;
   top: 100%;
@@ -77,7 +86,7 @@
   margin-bottom: 0;
   font-size: 15px;
   font-weight: normal;
-  padding: 10px 0;
+  padding: 8px 0;
   background-color: $dropdown-bg;
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
@@ -101,12 +110,12 @@
   li {
     text-align: left;
     list-style: none;
-    padding: 0 10px;
+    padding: 0 8px;
   }
 
   .divider {
     height: 1px;
-    margin: 8px 10px;
+    margin: 8px;
     padding: 0;
     background-color: $dropdown-divider-color;
   }
@@ -122,7 +131,7 @@
   a {
     display: block;
     position: relative;
-    padding: 5px 10px;
+    padding: 5px 8px;
     color: $dropdown-link-color;
     line-height: initial;
     text-overflow: ellipsis;
@@ -461,10 +470,12 @@
       }
     }
 
-    .ui-state-active,
-    .ui-state-hover {
-      color: $md-link-color;
-      background-color: $calendar-hover-bg;
+    .ui-datepicker-calendar {
+      .ui-state-hover,
+      .ui-state-active {
+        color: #fff;
+        border: 0;
+      }
     }
 
     .ui-datepicker-prev,

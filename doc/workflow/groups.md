@@ -51,6 +51,28 @@ If necessary, you can increase the access level of an individual user for a spec
 
 ![Barry effectively has 'Master' access to GitLab CI now](groups/override_access_level.png)
 
+## Requesting access to a group
+
+As a user, you can request to be a member of a group. Go to the group you'd
+like to be a member of, and click the **Request Access** button on the right
+side of your screen.
+
+![Request access button](groups/request_access_button.png)
+
+---
+
+Group owners & masters will be notified of your request and will be able to approve or
+decline it on the members page.
+
+![Manage access requests](groups/access_requests_management.png)
+
+---
+
+If you change your mind before your request is approved, just click the
+**Withdraw Access Request** button.
+
+![Withdraw access request button](groups/withdraw_access_request_button.png)
+
 ## Managing group memberships via LDAP
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.

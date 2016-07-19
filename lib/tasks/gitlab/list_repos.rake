@@ -9,7 +9,7 @@ namespace :gitlab do
       scope = scope.where('id IN (?) OR namespace_id in (?)', project_ids, namespace_ids)
     end
     scope.find_each do |project|
-      base = File.join(Gitlab.config.gitlab_shell.repos_path, project.path_with_namespace)
+      base = File.join(project.repository_storage_path, project.path_with_namespace)
       puts base + '.git'
       puts base + '.wiki.git'
     end

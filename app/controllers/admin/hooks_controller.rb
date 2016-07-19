@@ -22,7 +22,6 @@ class Admin::HooksController < Admin::ApplicationController
     redirect_to admin_hooks_path
   end
 
-
   def test
     @hook = SystemHook.find(params[:hook_id])
     data = {

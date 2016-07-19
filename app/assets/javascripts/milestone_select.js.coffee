@@ -24,14 +24,14 @@ class @MilestoneSelect
 
       if issueUpdateURL
         milestoneLinkTemplate = _.template(
-          '<a href="/<%= namespace %>/<%= path %>/milestones/<%= iid %>" class="bold has-tooltip" data-container="body" title="<%= remaining %>"><%= _.escape(title) %></a>'
+          '<a href="/<%- namespace %>/<%- path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>'
         )
 
         milestoneLinkNoneTemplate = '<span class="no-value">None</span>'
 
         collapsedSidebarLabelTemplate = _.template(
-          '<span class="has-tooltip" data-container="body" title="<%= remaining %>" data-placement="left">
-            <%= _.escape(title) %>
+          '<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left">
+            <%- title %>
           </span>'
         )
 

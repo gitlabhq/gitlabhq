@@ -132,11 +132,8 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
       path = 'files/images/한글.png'
       escaped = Addressable::URI.escape(path)
 
-      # Stub these methods so the file doesn't actually need to be in the repo
-      allow_any_instance_of(described_class).
-        to receive(:file_exists?).and_return(true)
-      allow_any_instance_of(described_class).
-        to receive(:image?).with(path).and_return(true)
+      # Stub this method so the file doesn't actually need to be in the repo
+      allow_any_instance_of(described_class).to receive(:uri_type).and_return(:raw)
 
       doc = filter(image(escaped))
       expect(doc.at_css('img')['src']).to match '/raw/'

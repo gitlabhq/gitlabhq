@@ -1,8 +1,8 @@
 #= require gl_dropdown
 #= require search_autocomplete
 #= require jquery
-#= require lib/common_utils
-#= require lib/type_utility
+#= require lib/utils/common_utils
+#= require lib/utils/type_utility
 #= require fuzzaldrin-plus
 
 

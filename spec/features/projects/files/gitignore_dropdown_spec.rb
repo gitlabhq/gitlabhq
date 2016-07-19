@@ -24,6 +24,7 @@ feature 'User wants to add a .gitignore file', feature: true do
     end
     wait_for_ajax
 
+    expect(page).to have_css('.gitignore-selector .dropdown-toggle-text', text: 'Rails')
     expect(page).to have_content('/.bundle')
     expect(page).to have_content('# Gemfile.lock, .ruby-version, .ruby-gemset')
   end

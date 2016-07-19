@@ -10,7 +10,7 @@
     .panel-body
       %pre
         :preserve
-          #{sanitize_repo_path(@project.import_error)}
+          #{sanitize_repo_path(@project, @project.import_error)}
 
 = form_for @project, url: namespace_project_import_path(@project.namespace, @project), method: :post, html: { class: 'form-horizontal' } do |f|
   = render "shared/import_form", f: f

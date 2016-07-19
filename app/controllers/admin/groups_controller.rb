@@ -10,6 +10,7 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def show
     @members = @group.members.order("access_level DESC").page(params[:members_page])
+    @requesters = @group.requesters
     @projects = @group.projects.page(params[:projects_page])
   end
 

@@ -8,14 +8,14 @@ module Gitlab
         class Entry
           class InvalidError < StandardError; end
 
-          attr_accessor :description
+          attr_reader :config
+          attr_accessor :key, :parent, :description
 
-          def initialize(value)
-            @value = value
+          def initialize(config)
+            @config = config
             @nodes = {}
-            @errors = []
-
-            prevalidate!
+            @validator = self.class.validator.new(self)
+            @validator.validate
           end
 
           def process!
@@ -23,48 +23,63 @@ module Gitlab
             return unless valid?
 
             compose!
-
-            nodes.each(&:process!)
-            nodes.each(&:validate!)
+            process_nodes!
           end
 
           def nodes
             @nodes.values
           end
 
+          def leaf?
+            self.class.nodes.none?
+          end
+
+          def ancestors
+            @parent ? @parent.ancestors + [@parent] : []
+          end
+
           def valid?
             errors.none?
           end
 
-          def leaf?
-            allowed_nodes.none?
-          end
-
           def errors
-            @errors + nodes.map(&:errors).flatten
-          end
-
-          def allowed_nodes
-            {}
-          end
-
-          def validate!
-            raise NotImplementedError
+            @validator.messages + nodes.flat_map(&:errors)
           end
 
           def value
-            raise NotImplementedError
+            if leaf?
+              @config
+            else
+              defined = @nodes.select { |_key, value| value.defined? }
+              Hash[defined.map { |key, node| [key, node.value] }]
+            end
+          end
+
+          def defined?
+            true
+          end
+
+          def self.default
+          end
+
+          def self.nodes
+            {}
+          end
+
+          def self.validator
+            Validator
           end
 
           private
 
-          def prevalidate!
-          end
-
           def compose!
-            allowed_nodes.each do |key, essence|
+            self.class.nodes.each do |key, essence|
               @nodes[key] = create_node(key, essence)
             end
+          end
+
+          def process_nodes!
+            nodes.each(&:process!)
           end
 
           def create_node(key, essence)

@@ -4,7 +4,6 @@ module API
     before { authenticate! }
     before { authorize_admin_project }
 
-
     resource :projects do
       # Set <service_slug> service for project
       #

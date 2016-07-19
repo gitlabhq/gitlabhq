@@ -7,7 +7,7 @@ describe Mentionable do
     nil
   end
 
-  describe :references do
+  describe 'references' do
     let(:project) { create(:project) }
 
     it 'excludes JIRA references' do
@@ -27,6 +27,43 @@ describe Issue, "Mentionable" do
 
     it { is_expected.to include(user) }
     it { is_expected.not_to include(user2) }
+  end
+
+  describe '#referenced_mentionables' do
+    context 'with an issue on a private project' do
+      let(:project) { create(:empty_project, :public) }
+      let(:issue) { create(:issue, project: project) }
+      let(:public_issue) { create(:issue, project: project) }
+      let(:private_project) { create(:empty_project, :private) }
+      let(:private_issue) { create(:issue, project: private_project) }
+      let(:user) { create(:user) }
+
+      def referenced_issues(current_user)
+        text = "#{private_issue.to_reference(project)} and #{public_issue.to_reference}"
+
+        issue.referenced_mentionables(current_user, text)
+      end
+
+      context 'when the current user can see the issue' do
+        before { private_project.team << [user, Gitlab::Access::DEVELOPER] }
+
+        it 'includes the reference' do
+          expect(referenced_issues(user)).to contain_exactly(private_issue, public_issue)
+        end
+      end
+
+      context 'when the current user cannot see the issue' do
+        it 'does not include the reference' do
+          expect(referenced_issues(user)).to contain_exactly(public_issue)
+        end
+      end
+
+      context 'when there is no current user' do
+        it 'does not include the reference' do
+          expect(referenced_issues(nil)).to contain_exactly(public_issue)
+        end
+      end
+    end
   end
 
   describe '#create_cross_references!' do

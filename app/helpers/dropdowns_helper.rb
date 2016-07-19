@@ -39,7 +39,7 @@ module DropdownsHelper
     end
   end
 
-  def dropdown_toggle(toggle_text, data_attr, options)
+  def dropdown_toggle(toggle_text, data_attr, options = {})
     content_tag(:button, class: "dropdown-menu-toggle #{options[:toggle_class] if options.has_key?(:toggle_class)}", id: (options[:id] if options.has_key?(:id)), type: "button", data: data_attr) do
       output = content_tag(:span, toggle_text, class: "dropdown-toggle-text")
       output << icon('chevron-down')
@@ -69,7 +69,7 @@ module DropdownsHelper
 
   def dropdown_filter(placeholder, search_id: nil)
     content_tag :div, class: "dropdown-input" do
-      filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", placeholder: placeholder
+      filter_output = search_field_tag search_id, nil, class: "dropdown-input-field", placeholder: placeholder, autocomplete: 'off'
       filter_output << icon('search', class: "dropdown-input-search")
       filter_output << icon('times', class: "dropdown-input-clear js-dropdown-input-clear", role: "button")
 

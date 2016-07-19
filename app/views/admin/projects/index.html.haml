@@ -1,97 +1,94 @@
 - @no_container = true
 - page_title "Projects"
-= render 'shared/show_aside'
+- params[:visibility_level] ||= []
+
 = render "admin/dashboard/head"
 
-%div{ class: (container_class) }
-  .row.prepend-top-default
-    %aside.col-md-3
-      .panel.admin-filter
-        = form_tag admin_namespaces_projects_path, method: :get, class: '' do
-          .form-group
-            = label_tag :name, 'Name:'
-            = text_field_tag :name, params[:name], class: "form-control"
+%div{ class: container_class }
+  .top-area
+    .prepend-top-default
+      = form_tag admin_namespaces_projects_path, method: :get do |f|
+        .search-holder
+          .search-field-holder
+            = search_field_tag :name, params[:name], class: "form-control search-text-input js-search-input", id: "dashboard_search", autofocus: true, spellcheck: false, placeholder: 'Search by name'
 
-          .form-group
-            = label_tag :namespace_id, "Namespace"
-            = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
+            - if params[:visibility_level].present?
+              = hidden_field_tag 'visibility_level', params[:visibility_level]
 
-          .form-group
-            %strong Activity
-            .checkbox
-              = label_tag :with_push do
-                = check_box_tag :with_push, 1, params[:with_push]
-                %span Projects with push events
-            .checkbox
-              = label_tag :abandoned do
-                = check_box_tag :abandoned, 1, params[:abandoned]
-                %span No activity over 6 month
-            .checkbox
-              = label_tag :with_archived do
-                = check_box_tag :with_archived, 1, params[:with_archived]
-                %span Show archived projects
+            - if params[:sort].present?
+              = hidden_field_tag 'sort', params[:sort]
 
-          %fieldset
-            %strong Visibility level:
-            .visibility-levels
-              - Project.visibility_levels.each do |label, level|
-                .checkbox
-                  %label
-                    = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
-                    %span.descr
-                      = visibility_level_icon(level)
-                      = label
-          %fieldset
-            %strong Problems
-            .checkbox
-              = label_tag :last_repository_check_failed do
-                = check_box_tag :last_repository_check_failed, 1, params[:last_repository_check_failed]
-                %span Last repository check failed
+            - if params[:personal].present?
+              = hidden_field_tag 'visibility_level', 'true'
 
-          = hidden_field_tag :sort, params[:sort]
-          = button_tag "Search", class: "btn submit btn-primary"
-          = link_to "Reset", admin_namespaces_projects_path, class: "btn btn-cancel"
+            - if params[:archived].present?
+              = hidden_field_tag 'archived', 'true'
 
-    %section.col-md-9
-      .panel.panel-default
-        .panel-heading
-          Projects (#{@projects.total_count})
-          .controls
-            .dropdown.inline
-              %button.dropdown-toggle.btn.btn-sm{type: 'button', 'data-toggle' => 'dropdown'}
-                %span.light
-                - if @sort.present?
-                  = sort_options_hash[@sort]
-                - else
-                  = sort_title_recently_created
-                %b.caret
-              %ul.dropdown-menu
-                %li
-                  = link_to admin_namespaces_projects_path(sort: sort_value_recently_created) do
-                    = sort_title_recently_created
-                  = link_to admin_namespaces_projects_path(sort: sort_value_oldest_created) do
-                    = sort_title_oldest_created
-                  = link_to admin_namespaces_projects_path(sort: sort_value_recently_updated) do
-                    = sort_title_recently_updated
-                  = link_to admin_namespaces_projects_path(sort: sort_value_oldest_updated) do
-                    = sort_title_oldest_updated
-                  = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
-                    = sort_title_largest_repo
-            = link_to 'New Project', new_project_path, class: "btn btn-sm btn-success"
-        %ul.well-list
-          - @projects.each do |project|
-            %li
-              .list-item-name
-                %span{ class: visibility_level_color(project.visibility_level) }
-                  = visibility_level_icon(project.visibility_level)
-                = link_to project.name_with_namespace, [:admin, project.namespace.becomes(Namespace), project]
-              .pull-right
-                - if project.archived
-                  %span.label.label-warning archived
-                %span.label.label-gray
-                  = repository_size(project)
-                = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
-                = link_to 'Destroy', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-sm btn-remove"
-          - if @projects.blank?
-            .nothing-here-block 0 projects matches
-      = paginate @projects, theme: "gitlab"
+            = icon("search", class: "search-icon")
+
+          .dropdown
+            - toggle_text = 'Search for Namespace'
+            - if params[:namespace_id].present?
+              - namespace = Namespace.find(params[:namespace_id])
+              - toggle_text = "#{namespace.kind}: #{namespace.path}"
+            = dropdown_toggle(toggle_text, { toggle: 'dropdown' }, { toggle_class: 'js-namespace-select large' })
+            .dropdown-menu.dropdown-select.dropdown-menu-align-right
+              = dropdown_title('Namespaces')
+              = dropdown_filter("Search for Namespace")
+              = dropdown_content
+              = dropdown_loading
+
+          = button_tag "Search", class: "btn btn-primary btn-search"
+
+    %ul.nav-links
+      - opts = params[:visibility_level].present? ? {} : { page: admin_namespaces_projects_path }
+      = nav_link(opts) do
+        = link_to admin_namespaces_projects_path do
+          All
+
+      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PRIVATE.to_s ? 'active' : '' }) do
+        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE) do
+          Private
+      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::INTERNAL.to_s ? 'active' : '' }) do
+        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL) do
+          Internal
+      = nav_link(html_options: { class: params[:visibility_level] == Gitlab::VisibilityLevel::PUBLIC.to_s ? 'active' : '' }) do
+        = link_to admin_namespaces_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC) do
+          Public
+
+    .nav-controls
+      = render 'shared/projects/dropdown'
+      = link_to new_project_path, class: 'btn btn-new' do
+        New Project
+
+  .projects-list-holder
+    - if @projects.any?
+      %ul.projects-list.content-list
+        - @projects.each_with_index do |project|
+          %li.project-row
+            .controls
+              - if project.archived
+                %span.label.label-warning archived
+              %span.label.label-gray
+                = repository_size(project)
+              = link_to 'Edit', edit_namespace_project_path(project.namespace, project), id: "edit_#{dom_id(project)}", class: "btn"
+              = link_to 'Delete', [project.namespace.becomes(Namespace), project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-remove"
+            .title
+              = link_to [:admin, project.namespace.becomes(Namespace), project] do
+                .dash-project-avatar
+                  = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+                %span.project-full-name
+                  %span.namespace-name
+                    - if project.namespace
+                      = project.namespace.human_name
+                      \/
+                  %span.project-name.filter-title
+                    = project.name
+
+            - if project.description.present?
+              .description
+                = markdown(project.description, pipeline: :description)
+
+      = paginate @projects, theme: 'gitlab'
+    - else
+      .nothing-here-block No projects found

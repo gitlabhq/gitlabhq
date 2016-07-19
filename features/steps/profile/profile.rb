@@ -155,8 +155,11 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I click on my profile picture' do
-    find(:css, '.side-nav-toggle').click
-    find(:css, '.sidebar-user').click
+    find(:css, '.header-user-dropdown-toggle').click
+
+    page.within ".header-user" do
+      click_link "Profile"
+    end
   end
 
   step 'I should see my user page' do

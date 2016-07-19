@@ -1,110 +1,78 @@
 - @no_container = true
 - page_title "Users"
-= render 'shared/show_aside'
 = render "admin/dashboard/head"
 
-%div{ class: (container_class) }
-  .admin-filter
-    %ul.nav-links
-      %li{class: "#{'active' unless params[:filter]}"}
-        = link_to admin_users_path do
-          Active
-          %small.badge= number_with_delimiter(User.active.count)
-      %li{class: "#{'active' if params[:filter] == "admins"}"}
-        = link_to admin_users_path(filter: "admins") do
-          Admins
-          %small.badge= number_with_delimiter(User.admins.count)
-      %li.filter-two-factor-enabled{class: "#{'active' if params[:filter] == 'two_factor_enabled'}"}
-        = link_to admin_users_path(filter: 'two_factor_enabled') do
-          2FA Enabled
-          %small.badge= number_with_delimiter(User.with_two_factor.count)
-      %li.filter-two-factor-disabled{class: "#{'active' if params[:filter] == 'two_factor_disabled'}"}
-        = link_to admin_users_path(filter: 'two_factor_disabled') do
-          2FA Disabled
-          %small.badge= number_with_delimiter(User.without_two_factor.count)
-      %li.filter-external{class: "#{'active' if params[:filter] == 'external'}"}
-        = link_to admin_users_path(filter: 'external') do
-          External
-          %small.badge= number_with_delimiter(User.external.count)
-      %li{class: "#{'active' if params[:filter] == "blocked"}"}
-        = link_to admin_users_path(filter: "blocked") do
-          Blocked
-          %small.badge= number_with_delimiter(User.blocked.count)
-      %li{class: "#{'active' if params[:filter] == "wop"}"}
-        = link_to admin_users_path(filter: "wop") do
-          Without projects
-          %small.badge= number_with_delimiter(User.without_projects.count)
+%div{ class: container_class }
+  .top-area
+    .prepend-top-default
+      = form_tag admin_users_path, method: :get do
+        - if params[:filter].present?
+          = hidden_field_tag "filter", h(params[:filter])
+        .search-holder
+          .search-field-holder
+            = search_field_tag :name, params[:name], placeholder: 'Search by name, email or username', class: 'form-control search-text-input js-search-input', spellcheck: false
+            = icon("search", class: "search-icon")
+          .dropdown
+            - toggle_text = if @sort.present? then sort_options_hash[@sort] else sort_title_name end
+            = dropdown_toggle(toggle_text, { toggle: 'dropdown' })
+            %ul.dropdown-menu.dropdown-menu-align-right
+              %li.dropdown-header
+                Sort by
+              %li
+                = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
+                  = sort_title_name
+                = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
+                  = sort_title_recently_signin
+                = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do
+                  = sort_title_oldest_signin
+                = link_to admin_users_path(sort: sort_value_recently_created, filter: params[:filter]) do
+                  = sort_title_recently_created
+                = link_to admin_users_path(sort: sort_value_oldest_created, filter: params[:filter]) do
+                  = sort_title_oldest_created
+                = link_to admin_users_path(sort: sort_value_recently_updated, filter: params[:filter]) do
+                  = sort_title_recently_updated
+                = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
+                  = sort_title_oldest_updated
+          = link_to 'New User', new_admin_user_path, class: 'btn btn-new btn-search'
 
-    .row-content-block.second-block
-      .pull-right
-        .dropdown.inline
-          %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
-            %span.light
-            - if @sort.present?
-              = sort_options_hash[@sort]
-            - else
-              = sort_title_name
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to admin_users_path(sort: sort_value_name, filter: params[:filter]) do
-                = sort_title_name
-              = link_to admin_users_path(sort: sort_value_recently_signin, filter: params[:filter]) do
-                = sort_title_recently_signin
-              = link_to admin_users_path(sort: sort_value_oldest_signin, filter: params[:filter]) do
-                = sort_title_oldest_signin
-              = link_to admin_users_path(sort: sort_value_recently_created, filter: params[:filter]) do
-                = sort_title_recently_created
-              = link_to admin_users_path(sort: sort_value_oldest_created, filter: params[:filter]) do
-                = sort_title_oldest_created
-              = link_to admin_users_path(sort: sort_value_recently_updated, filter: params[:filter]) do
-                = sort_title_recently_updated
-              = link_to admin_users_path(sort: sort_value_oldest_updated, filter: params[:filter]) do
-                = sort_title_oldest_updated
+    .nav-block
+      %ul.nav-links.wide.scrolling-tabs.white.scrolling-tabs
+        .fade-left
+        = nav_link(html_options: { class: ('active' unless params[:filter]) }) do
+          = link_to admin_users_path do
+            Active
+            %small.badge= number_with_delimiter(User.active.count)
+        = nav_link(html_options: { class: ('active' if params[:filter] == 'admins') }) do
+          = link_to admin_users_path(filter: "admins") do
+            Admins
+            %small.badge= number_with_delimiter(User.admins.count)
+        = nav_link(html_options: { class: "#{'active' if params[:filter] == 'two_factor_enabled'} filter-two-factor-enabled" }) do
+          = link_to admin_users_path(filter: 'two_factor_enabled') do
+            2FA Enabled
+            %small.badge= number_with_delimiter(User.with_two_factor.count)
+        = nav_link(html_options: { class: "#{'active' if params[:filter] == 'two_factor_disabled'} filter-two-factor-disabled" }) do
+          = link_to admin_users_path(filter: 'two_factor_disabled') do
+            2FA Disabled
+            %small.badge= number_with_delimiter(User.without_two_factor.count)
+        = nav_link(html_options: { class: ('active' if params[:filter] == 'external') }) do
+          = link_to admin_users_path(filter: 'external') do
+            External
+            %small.badge= number_with_delimiter(User.external.count)
+        = nav_link(html_options: { class: ('active' if params[:filter] == 'blocked') }) do
+          = link_to admin_users_path(filter: "blocked") do
+            Blocked
+            %small.badge= number_with_delimiter(User.blocked.count)
+        = nav_link(html_options: { class: ('active' if params[:filter] == 'wop') }) do
+          = link_to admin_users_path(filter: "wop") do
+            Without projects
+            %small.badge= number_with_delimiter(User.without_projects.count)
+        .fade-right
 
-        = link_to 'New User', new_admin_user_path, class: "btn btn-new"
-      = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        .form-group
-          = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control', spellcheck: false
-          = hidden_field_tag "filter", params[:filter]
-        = button_tag class: 'btn btn-primary' do
-          %i.fa.fa-search
+  %ul.users-list.content-list
+    - if @users.empty?
+      %li
+        .nothing-here-block No users found.
+    - else
+      = render partial: 'admin/users/user', collection: @users
 
-
-  .panel.panel-default
-    %ul.well-list
-      - @users.each do |user|
-        %li
-          .list-item-name
-            - if user.blocked?
-              = icon("lock", class: "cred")
-            - else
-              = icon("user", class: "cgreen")
-            = link_to user.name, [:admin, user]
-            - if user.admin?
-              %strong.cred (Admin)
-            - if user.external?
-              %strong.cred (External)
-            - if user == current_user
-              %span.cred It's you!
-          .pull-right
-            %span.light
-              %i.fa.fa-envelope
-              = mail_to user.email, user.email, class: 'light'
-            &nbsp;
-            .pull-right
-              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn-grouped btn btn-xs'
-              - unless user == current_user
-                - if user.ldap_blocked?
-                  = link_to '#', title: 'Cannot unblock LDAP blocked users', data: {toggle: 'tooltip'}, class: 'btn-grouped btn btn-xs btn-success disabled' do
-                    %i.fa.fa-lock
-                    Unblock
-                - elsif user.blocked?
-                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success'
-                - else
-                  = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: 'btn-grouped btn btn-xs btn-warning'
-                - if user.access_locked?
-                  = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
-                - if user.can_be_removed?
-                  = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: 'btn-grouped btn btn-xs btn-remove'
   = paginate @users, theme: "gitlab"

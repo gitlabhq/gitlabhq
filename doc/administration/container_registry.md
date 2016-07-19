@@ -22,6 +22,7 @@ You can read more about Docker Registry at https://docs.docker.com/registry/intr
 - [Disable Container Registry per project](#disable-container-registry-per-project)
 - [Disable Container Registry for new projects site-wide](#disable-container-registry-for-new-projects-site-wide)
 - [Container Registry storage path](#container-registry-storage-path)
+- [Container Registry storage driver](#container-registry-storage-driver)
 - [Storage limitations](#storage-limitations)
 - [Changelog](#changelog)
 
@@ -83,6 +84,17 @@ where:
 GitLab does not ship with a Registry init file. Hence, [restarting GitLab][restart gitlab]
 will not restart the Registry should you modify its settings. Read the upstream
 documentation on how to achieve that.
+
+The Docker Registry configuration will need `container_registry` as the service and `https://gitlab.example.com/jwt/auth` as the realm:
+
+```
+auth:
+  token:
+    realm: https://gitlab.example.com/jwt/auth
+    service: container_registry
+    issuer: gitlab-issuer
+    rootcertbundle: /root/certs/certbundle
+```
 
 ## Container Registry domain configuration
 
@@ -306,8 +318,12 @@ the Container Registry by themselves, follow the steps below.
 
 ## Container Registry storage path
 
-To change the storage path where Docker images will be stored, follow the
-steps below.
+>**Note:**
+For configuring storage in the cloud instead of the filesystem, see the
+[storage driver configuration](#container-registry-storage-driver).
+
+If you want to store your images on the filesystem, you can change the storage
+path for the Container Registry, follow the steps below.
 
 This path is accessible to:
 
@@ -348,6 +364,72 @@ The default location where images are stored in source installations, is
     ```
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
+
+## Container Registry storage driver
+
+You can configure the Container Registry to use a different storage backend by
+configuring a different storage driver. By default the GitLab Container Registry
+is configured to use the filesystem driver, which makes use of [storage path](#container-registry-storage-path)
+configuration.
+
+The different supported drivers are:
+
+| Driver     | Description                         |
+|------------|-------------------------------------|
+| filesystem | Uses a path on the local filesystem |
+| azure      | Microsoft Azure Blob Storage        |
+| gcs        | Google Cloud Storage                |
+| s3         | Amazon Simple Storage Service       |
+| swift      | OpenStack Swift Object Storage      |
+| oss        | Aliyun OSS                          |
+
+Read more about the individual driver's config options in the
+[Docker Registry docs][storage-config].
+
+> **Warning** GitLab will not backup Docker images that are not stored on the
+filesystem. Remember to enable backups with your object storage provider if
+desired.
+
+---
+
+**Omnibus GitLab installations**
+
+To configure the storage driver in Omnibus:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+    ```ruby
+    registry['storage'] = {
+      's3' => {
+        'accesskey' => 's3-access-key',
+        'secretkey' => 's3-secret-key-for-access-key',
+        'bucket' => 'your-s3-bucket'
+      }
+    }
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
+
+---
+
+**Installations from source**
+
+Configuring the storage driver is done in your registry config YML file created
+when you [deployed your docker registry][registry-deploy].
+
+Example:
+
+```
+storage:
+  s3:
+    accesskey: 'AKIAKIAKI'
+    secretkey: 'secret123'
+    bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+  cache:
+    blobdescriptor: inmemory
+  delete:
+    enabled: true
+```
 
 ## Storage limitations
 

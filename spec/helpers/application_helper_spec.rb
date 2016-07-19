@@ -174,51 +174,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe 'grouped_options_refs' do
-    let(:options) { helper.grouped_options_refs }
-    let(:project) { create(:project) }
-
-    before do
-      assign(:project, project)
-
-      # Override Rails' grouped_options_for_select helper to just return the
-      # first argument (`options`), since it's easier to work with than the
-      # generated HTML.
-      allow(helper).to receive(:grouped_options_for_select).
-        and_wrap_original { |_, *args| args.first }
-    end
-
-    it 'includes a list of branch names' do
-      expect(options[0][0]).to eq('Branches')
-      expect(options[0][1]).to include('master', 'feature')
-    end
-
-    it 'includes a list of tag names' do
-      expect(options[1][0]).to eq('Tags')
-      expect(options[1][1]).to include('v1.0.0', 'v1.1.0')
-    end
-
-    it 'includes a specific commit ref if defined' do
-      # Must be an instance variable
-      ref = '2ed06dc41dbb5936af845b87d79e05bbf24c73b8'
-      assign(:ref, ref)
-
-      expect(options[2][0]).to eq('Commit')
-      expect(options[2][1]).to eq([ref])
-    end
-
-    it 'sorts tags in a natural order' do
-      # Stub repository.tag_names to make sure we get some valid testing data
-      expect(project.repository).to receive(:tag_names).
-        and_return(['v1.0.9', 'v1.0.10', 'v2.0', 'v3.1.4.2', 'v2.0rc1¿',
-                    'v1.0.9a', 'v2.0-rc1', 'v2.0rc2'])
-
-      expect(options[1][1]).
-        to eq(['v3.1.4.2', 'v2.0', 'v2.0rc2', 'v2.0rc1¿', 'v2.0-rc1', 'v1.0.10',
-               'v1.0.9', 'v1.0.9a'])
-    end
-  end
-
   describe 'simple_sanitize' do
     let(:a_tag) { '<a href="#">Foo</a>' }
 

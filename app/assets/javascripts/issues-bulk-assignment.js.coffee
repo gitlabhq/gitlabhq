@@ -7,6 +7,11 @@ class @IssuableBulkActions
       @issues = @getElement('.issues-list .issue')
     } = opts
 
+    # Save instance
+    @form.data 'bulkActions', @
+
+    @willUpdateLabels = false
+
     @bindEvents()
 
     # Fixes bulk-assign not working when navigating through pages
@@ -80,18 +85,20 @@ class @IssuableBulkActions
   getFormDataAsObject: ->
     formData =
       update:
-        state_event       : @form.find('input[name="update[state_event]"]').val()
-        assignee_id       : @form.find('input[name="update[assignee_id]"]').val()
-        milestone_id      : @form.find('input[name="update[milestone_id]"]').val()
-        issues_ids        : @form.find('input[name="update[issues_ids]"]').val()
-        add_label_ids     : []
-        remove_label_ids  : []
+        state_event        : @form.find('input[name="update[state_event]"]').val()
+        assignee_id        : @form.find('input[name="update[assignee_id]"]').val()
+        milestone_id       : @form.find('input[name="update[milestone_id]"]').val()
+        issues_ids         : @form.find('input[name="update[issues_ids]"]').val()
+        subscription_event : @form.find('input[name="update[subscription_event]"]').val()
+        add_label_ids      : []
+        remove_label_ids   : []
 
-    @getLabelsToApply().map (id) ->
-      formData.update.add_label_ids.push id
+    if @willUpdateLabels
+      @getLabelsToApply().map (id) ->
+        formData.update.add_label_ids.push id
 
-    @getLabelsToRemove().map (id) ->
-      formData.update.remove_label_ids.push id
+      @getLabelsToRemove().map (id) ->
+        formData.update.remove_label_ids.push id
 
     formData
 

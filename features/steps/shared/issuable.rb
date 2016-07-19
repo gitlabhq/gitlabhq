@@ -189,5 +189,4 @@ module SharedIssuable
       expect(page).to have_content content
     end
   end
-
 end

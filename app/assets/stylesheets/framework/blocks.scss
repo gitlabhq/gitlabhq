@@ -16,6 +16,15 @@
   font-weight: normal;
   font-size: 16px;
   line-height: 36px;
+
+  &.diff-collapsed {
+    padding: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $row-hover;
+    }
+  }
 }
 
 .row-content-block {
@@ -97,6 +106,22 @@
   }
 }
 
+.sub-header-block {
+  background-color: $white-light;
+  border-bottom: 1px solid $white-dark;
+  padding: 11px 0;
+  margin-bottom: 11px;
+
+  .oneline {
+    line-height: 35px;
+  }
+
+  &.no-bottom-space {
+    border-bottom: 0;
+    margin-bottom: 0;
+  }
+}
+
 .cover-block {
   text-align: center;
   background: $background-color;
@@ -121,7 +146,7 @@
     margin: 0;
     font-size: 24px;
     font-weight: normal;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     color: #4c4e54;
     font-size: 23px;
     line-height: 1.1;

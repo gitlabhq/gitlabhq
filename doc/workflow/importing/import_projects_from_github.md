@@ -1,8 +1,10 @@
 # Import your project from GitHub to GitLab
 
 >**Note:**
-In order to enable the GitHub import setting, you should first
-enable the [GitHub integration][gh-import] in your GitLab instance.
+In order to enable the GitHub import setting, you may also want to
+enable the [GitHub integration][gh-import] in your GitLab instance. This
+configuration is optional, you will be able import your GitHub repositories
+with a Personal Access Token.
 
 At its current state, GitHub importer can import:
 
@@ -20,9 +22,15 @@ It is not yet possible to import your cross-repository pull requests (those from
 forks). We are working on improving this in the near future.
 
 The importer page is visible when you [create a new project][new-project].
-Click on the **GitHub** link and you will be redirected to GitHub for
-permission to access your projects. After accepting, you'll be automatically
-redirected to the importer.
+Click on the **GitHub** link and, if you are logged in via the GitHub
+integration, you will be redirected to GitHub for permission to access your
+projects. After accepting, you'll be automatically redirected to the importer.
+
+If you are not using the GitHub integration, you can still perform a one-off
+authorization with GitHub to access your projects.
+
+Alternatively, you can also enter a GitHub Personal Access Token. Once you enter
+your token, you'll be taken to the importer.
 
 ![New project page on GitLab](img/import_projects_from_github_new_project_page.png)
 

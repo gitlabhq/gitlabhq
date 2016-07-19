@@ -33,3 +33,28 @@ bundle exec rake gitlab:generate_docs
 ```
 bundle exec rake services:doc
 ```
+
+## Updating Emoji Digests
+
+To update the Emoji digests file (used for Emoji autocomplete) you must run the
+following:
+
+```
+bundle exec rake gemojione:digests
+```
+
+This will update the file `fixtures/emojis/digests.json` based on the currently
+available Emoji.
+
+## Emoji Sprites
+
+Generating a sprite file containing all the Emoji can be done by running:
+
+```
+bundle exec rake gemojione:sprite
+```
+
+If new emoji are added, the spritesheet may change size. To compensate for
+such changes, first generate the `emoji.png` spritesheet with the above Rake
+task, then check the dimensions of the new spritesheet and update the
+`SPRITESHEET_WIDTH` and `SPRITESHEET_HEIGHT` constants accordingly.

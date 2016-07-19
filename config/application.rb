@@ -76,7 +76,7 @@ module Gitlab
 
     # Enable the asset pipeline
     config.assets.enabled = true
-    config.assets.paths << Gemojione.index.images_path
+    config.assets.paths << Gemojione.images_path
     config.assets.precompile << "*.png"
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
@@ -84,6 +84,10 @@ module Gitlab
     config.assets.precompile << "graphs/application.js"
     config.assets.precompile << "users/application.js"
     config.assets.precompile << "network/application.js"
+    config.assets.precompile << "profile/application.js"
+    config.assets.precompile << "lib/utils/*.js"
+    config.assets.precompile << "lib/*.js"
+    config.assets.precompile << "u2f.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

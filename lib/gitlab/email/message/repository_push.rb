@@ -33,11 +33,15 @@ module Gitlab
         end
 
         def commits
-          @commits ||= (Commit.decorate(compare.commits, project) if compare)
+          return unless compare
+
+          @commits ||= Commit.decorate(compare.commits, project)
         end
 
         def diffs
-          @diffs ||= (safe_diff_files(compare.diffs, diff_refs) if compare)
+          return unless compare
+          
+          @diffs ||= safe_diff_files(compare.diffs(max_files: 30), diff_refs: diff_refs, repository: project.repository)
         end
 
         def diffs_count

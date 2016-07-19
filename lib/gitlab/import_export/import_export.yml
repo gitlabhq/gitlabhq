@@ -1,24 +1,29 @@
 # Model relationships to be included in the project import/export
 project_tree:
   - issues:
+    - :events
     - notes:
-        :author
+        - :author
+        - :events
   - :labels
-  - :milestones
+  - milestones:
+    - :events
   - snippets:
     - notes:
         :author
   - :releases
-  - :events
   - project_members:
     - :user
   - merge_requests:
     - notes:
-        :author
+      - :author
+      - :events
     - :merge_request_diff
+    - :events
   - pipelines:
     - notes:
-        :author
+      - :author
+      - :events
     - :statuses
   - :variables
   - :triggers
@@ -48,7 +53,11 @@ included_attributes:
 excluded_attributes:
   snippets:
     - :expired_at
+  merge_request_diff:
+    - :st_diffs
 
 methods:
   statuses:
     - :type
+  merge_request_diff:
+    - :utf8_st_diffs

@@ -7,7 +7,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   def index
     @project = @group.projects.find(params[:project_id]) if params[:project_id]
     @members = @group.group_members
-    @members = @members.non_pending unless can?(current_user, :admin_group, @group)
+    @members = @members.non_invite unless can?(current_user, :admin_group, @group)
 
     if params[:search].present?
       users = @group.users.search(params[:search]).to_a
@@ -15,6 +15,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
 
     @members = @members.order('access_level DESC').page(params[:page]).per(50)
+    @requesters = @group.requesters if can?(current_user, :admin_group, @group)
 
     @group_member = @group.group_members.new
   end
@@ -34,11 +35,10 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def destroy
-    @group_member = @group.group_members.find(params[:id])
+    @group_member = @group.members.find_by(id: params[:id]) ||
+      @group.requesters.find_by(id: params[:id])
 
-    return render_403 unless can?(current_user, :destroy_group_member, @group_member)
-
-    @group_member.destroy
+    Members::DestroyService.new(@group_member, current_user).execute
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }
@@ -68,8 +68,4 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   # MembershipActions concern
   alias_method :membershipable, :group
-
-  def cannot_leave?
-    @group.last_owner?(current_user)
-  end
 end

@@ -3,11 +3,10 @@ hideEndFade = ($scrollingTabs) ->
     $this = $(@)
 
     $this
-      .find('.fade-right')
-      .toggleClass('end-scroll', $this.width() is $this.prop('scrollWidth'))
+      .siblings('.fade-right')
+      .toggleClass('scrolling', $this.width() < $this.prop('scrollWidth'))
 
 $ ->
-  $('.fade-left').addClass('end-scroll')
 
   hideEndFade($('.scrolling-tabs'))
 
@@ -21,5 +20,5 @@ $ ->
     currentPosition = $this.scrollLeft()
     maxPosition = $this.prop('scrollWidth') - $this.outerWidth()
 
-    $this.find('.fade-left').toggleClass('end-scroll', currentPosition is 0)
-    $this.find('.fade-right').toggleClass('end-scroll', currentPosition is maxPosition)
+    $this.siblings('.fade-left').toggleClass('scrolling', currentPosition > 0)
+    $this.siblings('.fade-right').toggleClass('scrolling', currentPosition < maxPosition - 1)

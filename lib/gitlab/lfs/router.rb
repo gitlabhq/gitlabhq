@@ -1,9 +1,12 @@
 module Gitlab
   module Lfs
     class Router
-      def initialize(project, user, request)
+      attr_reader :project, :user, :ci, :request
+
+      def initialize(project, user, ci, request)
         @project = project
         @user = user
+        @ci = ci
         @env = request.env
         @request = request
       end
@@ -71,8 +74,6 @@ module Gitlab
           lfs.render_storage_upload_authorize_response(oid, size)
         else
           tmp_file_name = sanitize_tmp_filename(@request.env['HTTP_X_GITLAB_LFS_TMP'])
-          return nil unless tmp_file_name
-
           lfs.render_storage_upload_store_response(oid, size, tmp_file_name)
         end
       end
@@ -80,7 +81,7 @@ module Gitlab
       def lfs
         return unless @project
 
-        Gitlab::Lfs::Response.new(@project, @user, @request)
+        Gitlab::Lfs::Response.new(@project, @user, @ci, @request)
       end
 
       def sanitize_tmp_filename(name)

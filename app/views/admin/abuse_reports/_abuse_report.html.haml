@@ -3,14 +3,14 @@
 %tr
   %td
     - if user
-      = link_to user.name, [:admin, user]
+      = link_to user.name, user
       .light.small
         Joined #{time_ago_with_tooltip(user.created_at)}
     - else
       (removed)
   %td
     - if reporter
-      = link_to reporter.name, [:admin, reporter]
+      = link_to reporter.name, reporter
     - else
       (removed)
     .light.small

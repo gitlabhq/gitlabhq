@@ -44,13 +44,13 @@ to avoid getting this error, you need to remove all instances of the
 **Omnibus Installation**
 
 ```
-$ sudo gitlab-rails runner "Service.where(type: 'JenkinsService').delete_all"
+$ sudo gitlab-rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService']).delete_all"
 ```
 
 **Source Installation**
 
 ```
-$ bundle exec rails runner "Service.where(type: 'JenkinsService').delete_all" production
+$ bundle exec rails runner "Service.where(type: ['JenkinsService', 'JenkinsDeprecatedService']).delete_all" production
 ```
 
 ## Downgrade to CE

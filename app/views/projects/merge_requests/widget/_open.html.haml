@@ -22,10 +22,10 @@
     - elsif @merge_request.can_be_merged?
       = render 'projects/merge_requests/widget/open/accept'
 
-  - if @closes_issues.present?
+  - if mr_closes_issues.present?
     .mr-widget-footer
       %span
         %i.fa.fa-check
-        Accepting this merge request will close #{"issue".pluralize(@closes_issues.size)}
+        Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
         = succeed '.' do
-          != markdown issues_sentence(@closes_issues), pipeline: :gfm, author: @merge_request.author
+          != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author

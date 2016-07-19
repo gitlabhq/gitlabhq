@@ -1,5 +1,4 @@
 module JiraServiceHelper
-
   def jira_service_settings
     properties = {
       "title" => "JIRA tracker",

@@ -54,7 +54,7 @@ module Network
       @map = {}
       @reserved = {}
 
-      @commits.each_with_index do |c,i|
+      @commits.each_with_index do |c, i|
         c.time = i
         days[i] = c.committed_date
         @map[c.id] = c
@@ -116,7 +116,7 @@ module Network
     end
 
     def commits_sort_by_ref
-      @commits.sort do |a,b|
+      @commits.sort do |a, b|
         if include_ref?(a)
           -1
         elsif include_ref?(b)

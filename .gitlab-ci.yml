@@ -18,6 +18,7 @@ variables:
   SIMPLECOV: "true"
   USE_DB: "true"
   USE_BUNDLE_INSTALL: "true"
+  GIT_DEPTH: "20"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -134,6 +135,11 @@ spinach 9 10: *spinach-knapsack
   image: "ruby:2.3"
   only:
     - master
+  cache:
+    key: "ruby-23"
+    paths:
+      - vendor/apt
+      - vendor/ruby
 
 .rspec-knapsack-ruby23: &rspec-knapsack-ruby23
   <<: *rspec-knapsack

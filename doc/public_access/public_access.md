@@ -17,7 +17,7 @@ Public projects can be cloned **without any** authentication.
 
 They will also be listed on the public access directory (`/public`).
 
-**Any logged in user** will have [Guest](../permissions/permissions)
+**Any logged in user** will have [Guest](../user/permissions.md)
 permissions on the repository.
 
 ### Internal projects
@@ -27,8 +27,8 @@ Internal projects can be cloned by any logged in user.
 They will also be listed on the public access directory (`/public`) for logged
 in users.
 
-Any logged in user will have [Guest](../permissions/permissions) permissions on
-the repository.
+Any logged in user will have [Guest](../user/permissions.md) permissions
+on the repository.
 
 ### How to change project visibility
 

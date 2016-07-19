@@ -1,8 +1,10 @@
 - page_title "Network", @ref
-- page_specific_javascripts asset_path("network/application.js")
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/raphael.js')
+  = page_specific_javascript_tag('network/application.js')
 = render "projects/commits/head"
 = render "head"
-%div{ class: (container_class) }
+%div{ class: container_class }
   .project-network
     .controls
       = form_tag namespace_project_network_path(@project.namespace, @project, @id), method: :get, class: 'form-inline network-form' do |f|
@@ -15,5 +17,5 @@
               = check_box_tag :filter_ref, 1, @options[:filter_ref]
               %span Begin with the selected commit
 
-    .network-graph{ data: { url: '#{escape_javascript(@url)}', commit_url: '#{escape_javascript(@commit_url)}', ref: '#{escape_javascript(@ref)}', commit_id: '#{escape_javascript(@commit.id)}' } }
+    .network-graph{ data: { url: @url, commit_url: @commit_url, ref: @ref, commit_id: @commit.id } }
       = spinner nil, true

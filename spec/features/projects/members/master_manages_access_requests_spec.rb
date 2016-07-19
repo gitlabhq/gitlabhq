@@ -40,8 +40,8 @@ feature 'Projects > Members > Master manages access requests', feature: true do
   end
 
   def expect_visible_access_request(project, user)
-    expect(project.members.request.exists?(user_id: user)).to be_truthy
-    expect(page).to have_content "#{project.name} access requests (1)"
+    expect(project.requesters.exists?(user_id: user)).to be_truthy
+    expect(page).to have_content "#{project.name} access requests 1"
     expect(page).to have_content user.name
   end
 end

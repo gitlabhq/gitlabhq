@@ -4,7 +4,7 @@ describe Milestones::CreateService, services: true do
   let(:project) { create(:empty_project) }
   let(:user) { create(:user) }
 
-  describe :execute do
+  describe '#execute' do
     context "valid params" do
       before do
         project.team << [user, :master]

@@ -1,7 +1,6 @@
 module Projects
   module ImportExport
     class ExportService < BaseService
-
       def execute(_options = {})
         @shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(project.path_with_namespace, 'work'))
         save_all
@@ -10,8 +9,8 @@ module Projects
       private
 
       def save_all
-        if [version_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver].all?(&:save)
-          Gitlab::ImportExport::Saver.save(shared: @shared)
+        if [version_saver, avatar_saver, project_tree_saver, uploads_saver, repo_saver, wiki_repo_saver].all?(&:save)
+          Gitlab::ImportExport::Saver.save(project: project, shared: @shared)
           notify_success
         else
           cleanup_and_notify
@@ -20,6 +19,10 @@ module Projects
 
       def version_saver
         Gitlab::ImportExport::VersionSaver.new(shared: @shared)
+      end
+
+      def avatar_saver
+        Gitlab::ImportExport::AvatarSaver.new(project: project, shared: @shared)
       end
 
       def project_tree_saver
@@ -39,6 +42,8 @@ module Projects
       end
 
       def cleanup_and_notify
+        Rails.logger.error("Import/Export - Project #{project.name} with ID: #{project.id} export error - #{@shared.errors.join(', ')}")
+
         FileUtils.rm_rf(@shared.export_path)
 
         notify_error
@@ -46,6 +51,8 @@ module Projects
       end
 
       def notify_success
+        Rails.logger.info("Import/Export - Project #{project.name} with ID: #{project.id} successfully exported")
+
         notification_service.project_exported(@project, @current_user)
       end
 

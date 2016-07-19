@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   add_authentication_token_field :authentication_token
 
   default_value_for :admin, false
-  default_value_for :external, false
+  default_value_for(:external) { current_application_settings.user_default_external }
   default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   attr_encrypted :otp_secret,
     key:       Gitlab::Application.config.secret_key_base,
     mode:      :per_attribute_iv_and_salt,
+    insecure_mode: true,
     algorithm: 'aes-256-cbc'
 
   devise :two_factor_authenticatable,
@@ -57,7 +58,7 @@ class User < ActiveRecord::Base
 
   # Groups
   has_many :members, dependent: :destroy
-  has_many :group_members, dependent: :destroy, source: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
   has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
@@ -65,7 +66,7 @@ class User < ActiveRecord::Base
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
+  has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
@@ -84,9 +85,10 @@ class User < ActiveRecord::Base
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
+  has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline'
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
-  has_many :award_emoji,              as: :awardable, dependent: :destroy
+  has_many :award_emoji,              dependent: :destroy
 
   #
   # Validations
@@ -308,7 +310,7 @@ class User < ActiveRecord::Base
 
   def generate_password
     if self.force_random_password
-      self.password = self.password_confirmation = Devise.friendly_token.first(8)
+      self.password = self.password_confirmation = Devise.friendly_token.first(Devise.password_length.min)
     end
   end
 
@@ -487,9 +489,8 @@ class User < ActiveRecord::Base
     events.recent.find do |event|
       project = Project.find_by_id(event.project_id)
       next unless project
-      repo = project.repository
 
-      if repo.branch_names.include?(event.branch_name)
+      if project.repository.branch_exists?(event.branch_name)
         merge_requests = MergeRequest.where("created_at >= ?", event.created_at).
             where(source_project_id: project.id,
                   source_branch: event.branch_name)
@@ -653,7 +654,7 @@ class User < ActiveRecord::Base
   end
 
   def avatar_url(size = nil, scale = 2)
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     else
       GravatarService.new.execute(email, size, scale)
@@ -764,7 +765,7 @@ class User < ActiveRecord::Base
 
     unless email_domains.blank?
       match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*','.*?')
+        escaped = Regexp.escape(domain).gsub('\*', '.*?')
         regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
         email_domain = Mail::Address.new(self.email).domain
         email_domain =~ regexp
@@ -852,9 +853,8 @@ class User < ActiveRecord::Base
                  projects.select(:id),
                  groups.joins(:shared_projects).select(:project_id)]
 
-
     if min_access_level
-      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      scope = { access_level: Gitlab::Access.all_values.select { |access| access >= min_access_level } }
       relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
     end
 

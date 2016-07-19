@@ -33,14 +33,13 @@ module API
     mount ::API::Commits
     mount ::API::DeployKeys
     mount ::API::Files
-    mount ::API::Gitignores
     mount ::API::GroupMembers
     mount ::API::Groups
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Keys
     mount ::API::Labels
-    mount ::API::Licenses
+    mount ::API::LicenseTemplates
     mount ::API::MergeRequests
     mount ::API::Milestones
     mount ::API::Namespaces
@@ -58,6 +57,8 @@ module API
     mount ::API::Subscriptions
     mount ::API::SystemHooks
     mount ::API::Tags
+    mount ::API::Templates
+    mount ::API::Todos
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables

@@ -58,7 +58,7 @@ describe Projects::ProjectMembersController do
         get :index, namespace_id: project.namespace, project_id: project
       end
 
-      it { expect(response.status).to eq(200) }
+      it { expect(response).to have_http_status(200) }
     end
   end
 
@@ -71,7 +71,7 @@ describe Projects::ProjectMembersController do
                          project_id: project,
                          id: 42
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -94,7 +94,7 @@ describe Projects::ProjectMembersController do
                            project_id: project,
                            id: member
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
           expect(project.users).to include team_user
         end
       end
@@ -139,7 +139,7 @@ describe Projects::ProjectMembersController do
         delete :leave, namespace_id: project.namespace,
                        project_id: project
 
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -171,11 +171,7 @@ describe Projects::ProjectMembersController do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 
-          expect(response).to redirect_to(
-            namespace_project_path(project.namespace, project)
-          )
-          expect(response).to set_flash[:alert].to "You can not leave the \"#{project.human_name}\" project. Transfer or delete the project."
-          expect(project.users).to include user
+          expect(response).to have_http_status(403)
         end
       end
 
@@ -190,8 +186,8 @@ describe Projects::ProjectMembersController do
                          project_id: project
 
           expect(response).to set_flash.to 'Your access request to the project has been withdrawn.'
-          expect(response).to redirect_to(dashboard_projects_path)
-          expect(project.members.request).to be_empty
+          expect(response).to redirect_to(namespace_project_path(project.namespace, project))
+          expect(project.requesters).to be_empty
           expect(project.users).not_to include user
         end
       end
@@ -214,7 +210,7 @@ describe Projects::ProjectMembersController do
       expect(response).to redirect_to(
         namespace_project_path(project.namespace, project)
       )
-      expect(project.members.request.exists?(user_id: user)).to be_truthy
+      expect(project.requesters.exists?(user_id: user)).to be_truthy
       expect(project.users).not_to include user
     end
   end
@@ -228,7 +224,7 @@ describe Projects::ProjectMembersController do
                                       project_id: project,
                                       id: 42
 
-        expect(response.status).to eq(404)
+        expect(response).to have_http_status(404)
       end
     end
 
@@ -237,7 +233,7 @@ describe Projects::ProjectMembersController do
       let(:team_requester) { create(:user) }
       let(:member) do
         project.request_access(team_requester)
-        project.members.request.find_by(user_id: team_requester.id)
+        project.requesters.find_by(user_id: team_requester.id)
       end
 
       context 'when user does not have enough rights' do
@@ -251,7 +247,7 @@ describe Projects::ProjectMembersController do
                                         project_id: project,
                                         id: member
 
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(404)
           expect(project.users).not_to include team_requester
         end
       end

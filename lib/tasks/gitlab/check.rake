@@ -356,97 +356,108 @@ namespace :gitlab do
     ########################
 
     def check_repo_base_exists
-      print "Repo base directory exists? ... "
+      puts "Repo base directory exists?"
 
-      repo_base_path = Gitlab.config.gitlab_shell.repos_path
+      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+        print "#{name}... "
 
-      if File.exists?(repo_base_path)
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        puts "#{repo_base_path} is missing".color(:red)
-        try_fixing_it(
-          "This should have been created when setting up GitLab Shell.",
-          "Make sure it's set correctly in config/gitlab.yml",
-          "Make sure GitLab Shell is installed correctly."
-        )
-        for_more_information(
-          see_installation_guide_section "GitLab Shell"
-        )
-        fix_and_rerun
+        if File.exists?(repo_base_path)
+          puts "yes".color(:green)
+        else
+          puts "no".color(:red)
+          puts "#{repo_base_path} is missing".color(:red)
+          try_fixing_it(
+            "This should have been created when setting up GitLab Shell.",
+            "Make sure it's set correctly in config/gitlab.yml",
+            "Make sure GitLab Shell is installed correctly."
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab Shell"
+          )
+          fix_and_rerun
+        end
       end
     end
 
     def check_repo_base_is_not_symlink
-      print "Repo base directory is a symlink? ... "
+      puts "Repo storage directories are symlinks?"
 
-      repo_base_path = Gitlab.config.gitlab_shell.repos_path
-      unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".color(:magenta)
-        return
-      end
+      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+        print "#{name}... "
 
-      unless File.symlink?(repo_base_path)
-        puts "no".color(:green)
-      else
-        puts "yes".color(:red)
-        try_fixing_it(
-          "Make sure it's set to the real directory in config/gitlab.yml"
-        )
-        fix_and_rerun
+        unless File.exists?(repo_base_path)
+          puts "can't check because of previous errors".color(:magenta)
+          return
+        end
+
+        unless File.symlink?(repo_base_path)
+          puts "no".color(:green)
+        else
+          puts "yes".color(:red)
+          try_fixing_it(
+            "Make sure it's set to the real directory in config/gitlab.yml"
+          )
+          fix_and_rerun
+        end
       end
     end
 
     def check_repo_base_permissions
-      print "Repo base access is drwxrws---? ... "
+      puts "Repo paths access is drwxrws---?"
 
-      repo_base_path = Gitlab.config.gitlab_shell.repos_path
-      unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".color(:magenta)
-        return
-      end
+      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+        print "#{name}... "
 
-      if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        try_fixing_it(
-          "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
-          "sudo chmod -R ug-s #{repo_base_path}",
-          "sudo find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
-        )
-        for_more_information(
-          see_installation_guide_section "GitLab Shell"
-        )
-        fix_and_rerun
+        unless File.exists?(repo_base_path)
+          puts "can't check because of previous errors".color(:magenta)
+          return
+        end
+
+        if File.stat(repo_base_path).mode.to_s(8).ends_with?("2770")
+          puts "yes".color(:green)
+        else
+          puts "no".color(:red)
+          try_fixing_it(
+            "sudo chmod -R ug+rwX,o-rwx #{repo_base_path}",
+            "sudo chmod -R ug-s #{repo_base_path}",
+            "sudo find #{repo_base_path} -type d -print0 | sudo xargs -0 chmod g+s"
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab Shell"
+          )
+          fix_and_rerun
+        end
       end
     end
 
     def check_repo_base_user_and_group
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
-      print "Repo base owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}? ... "
+      puts "Repo paths owned by #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group}?"
 
-      repo_base_path = Gitlab.config.gitlab_shell.repos_path
-      unless File.exists?(repo_base_path)
-        puts "can't check because of previous errors".color(:magenta)
-        return
-      end
+      Gitlab.config.repositories.storages.each do |name, repo_base_path|
+        print "#{name}... "
 
-      uid = uid_for(gitlab_shell_ssh_user)
-      gid = gid_for(gitlab_shell_owner_group)
-      if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
-        puts "yes".color(:green)
-      else
-        puts "no".color(:red)
-        puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".color(:blue)
-        try_fixing_it(
-          "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
-        )
-        for_more_information(
-          see_installation_guide_section "GitLab Shell"
-        )
-        fix_and_rerun
+        unless File.exists?(repo_base_path)
+          puts "can't check because of previous errors".color(:magenta)
+          return
+        end
+
+        uid = uid_for(gitlab_shell_ssh_user)
+        gid = gid_for(gitlab_shell_owner_group)
+        if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
+          puts "yes".color(:green)
+        else
+          puts "no".color(:red)
+          puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".color(:blue)
+          try_fixing_it(
+            "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab Shell"
+          )
+          fix_and_rerun
+        end
       end
     end
 
@@ -473,7 +484,7 @@ namespace :gitlab do
         else
           puts "wrong or missing hooks".color(:red)
           try_fixing_it(
-            sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')}"),
+            sudo_gitlab("#{File.join(gitlab_shell_path, 'bin/create-hooks')} #{repository_storage_paths_args.join(' ')}"),
             'Check the hooks_path in config/gitlab.yml',
             'Check your gitlab-shell installation'
           )
@@ -785,13 +796,13 @@ namespace :gitlab do
   namespace :repo do
     desc "GitLab | Check the integrity of the repositories managed by GitLab"
     task check: :environment do
-      namespace_dirs = Dir.glob(
-        File.join(Gitlab.config.gitlab_shell.repos_path, '*')
-      )
+      Gitlab.config.repositories.storages.each do |name, path|
+        namespace_dirs = Dir.glob(File.join(path, '*'))
 
-      namespace_dirs.each do |namespace_dir|
-        repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
-        repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+        namespace_dirs.each do |namespace_dir|
+          repo_dirs = Dir.glob(File.join(namespace_dir, '*'))
+          repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
+        end
       end
     end
   end
@@ -799,12 +810,12 @@ namespace :gitlab do
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for which username? ".color(:blue))
+      username = args[:username] || prompt("Check repository integrity for fsername? ".color(:blue))
       user = User.find_by(username: username)
       if user
         repo_dirs = user.authorized_projects.map do |p|
                       File.join(
-                        Gitlab.config.gitlab_shell.repos_path,
+                        p.repository_storage_path,
                         "#{p.path_with_namespace}.git"
                       )
                     end

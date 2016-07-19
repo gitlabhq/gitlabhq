@@ -13,6 +13,7 @@ module API
       #   action - git action (git-upload-pack or git-receive-pack)
       #   ref - branch name
       #   forced_push - forced_push
+      #   protocol - Git access protocol being used, e.g. HTTP or SSH
       #
 
       helpers do
@@ -20,11 +21,23 @@ module API
           @wiki ||= params[:project].end_with?('.wiki') &&
             !Project.find_with_namespace(params[:project])
         end
+
+        def project
+          @project ||= begin
+            project_path = params[:project]
+
+            # Check for *.wiki repositories.
+            # Strip out the .wiki from the pathname before finding the
+            # project. This applies the correct project permissions to
+            # the wiki repository as well.
+            project_path.chomp!('.wiki') if wiki?
+
+            Project.find_with_namespace(project_path)
+          end
+        end
       end
 
       post "/allowed" do
-        Gitlab::Metrics.action = 'Grape#/internal/allowed'
-
         status 200
 
         actor =
@@ -34,24 +47,31 @@ module API
             User.find_by(id: params[:user_id])
           end
 
-        project_path = params[:project]
-
-        # Check for *.wiki repositories.
-        # Strip out the .wiki from the pathname before finding the
-        # project. This applies the correct project permissions to
-        # the wiki repository as well.
-        project_path.chomp!('.wiki') if wiki?
-
-        project = Project.find_with_namespace(project_path)
+        protocol = params[:protocol]
 
         access =
           if wiki?
-            Gitlab::GitAccessWiki.new(actor, project)
+            Gitlab::GitAccessWiki.new(actor, project, protocol)
           else
-            Gitlab::GitAccess.new(actor, project)
+            Gitlab::GitAccess.new(actor, project, protocol)
           end
 
-        access.check(params[:action], params[:changes])
+        access_status = access.check(params[:action], params[:changes])
+
+        response = { status: access_status.status, message: access_status.message }
+
+        if access_status.status
+          # Return the repository full path so that gitlab-shell has it when
+          # handling ssh commands
+          response[:repository_path] =
+            if wiki?
+              project.wiki.repository.path_to_repo
+            else
+              project.repository.path_to_repo
+            end
+        end
+
+        response
       end
 
       #

@@ -4,6 +4,14 @@
       margin-right: 1px;
     }
   }
+
+  // Border around images in issue and MR descriptions.
+  .description img:not(.emoji) {
+    border: 1px solid $table-border-gray;
+    padding: 5px;
+    margin: 5px;
+    max-height: calc(100vh - 100px);
+  }
 }
 
 .issuable-filter-count {
@@ -114,7 +122,8 @@
 
     button {
       float: right;
-      padding: 3px 5px;
+      padding: 1px 5px;
+      background-color: $gray-light;
     }
   }
 

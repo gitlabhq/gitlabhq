@@ -44,7 +44,7 @@
           name: "#{j(@project.name)}"
         };
 
-    - if @group and @group.path
+    - if @group && @group.persisted? && @group.path
       :javascript
         gl.groupOptions = gl.groupOptions || {};
         gl.groupOptions["#{j(@group.path)}"] = {

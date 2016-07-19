@@ -18,18 +18,16 @@ describe ForkedProjectLink, "add link on fork" do
   end
 end
 
-describe :forked_from_project do
+describe '#forked?' do
   let(:forked_project_link) { build(:forked_project_link) }
   let(:project_from) { create(:project) }
   let(:project_to) { create(:project, forked_project_link: forked_project_link) }
-
 
   before :each do
     forked_project_link.forked_from_project = project_from
     forked_project_link.forked_to_project = project_to
     forked_project_link.save!
   end
-
 
   it "project_to should know it is forked" do
     expect(project_to.forked?).to be_truthy
@@ -43,7 +41,6 @@ describe :forked_from_project do
     expect(forked_project_link).to receive(:destroy)
     project_to.destroy
   end
-
 end
 
 def fork_project(from_project, user)

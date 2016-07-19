@@ -20,7 +20,6 @@ feature 'project commit builds' do
       visit builds_namespace_project_commit_path(project.namespace,
                                                  project, project.commit.sha)
 
-
       expect(page).to have_content('Builds')
     end
   end

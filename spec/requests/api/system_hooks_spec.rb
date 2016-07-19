@@ -13,21 +13,21 @@ describe API::API, api: true  do
     context "when no user" do
       it "should return authentication error" do
         get api("/hooks")
-        expect(response.status).to eq(401)
+        expect(response).to have_http_status(401)
       end
     end
 
     context "when not an admin" do
       it "should return forbidden error" do
         get api("/hooks", user)
-        expect(response.status).to eq(403)
+        expect(response).to have_http_status(403)
       end
     end
 
     context "when authenticated as admin" do
       it "should return an array of hooks" do
         get api("/hooks", admin)
-        expect(response.status).to eq(200)
+        expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['url']).to eq(hook.url)
       end
@@ -43,7 +43,7 @@ describe API::API, api: true  do
 
     it "should respond with 400 if url not given" do
       post api("/hooks", admin)
-      expect(response.status).to eq(400)
+      expect(response).to have_http_status(400)
     end
 
     it "should not create new hook without url" do
@@ -56,13 +56,13 @@ describe API::API, api: true  do
   describe "GET /hooks/:id" do
     it "should return hook by id" do
       get api("/hooks/#{hook.id}", admin)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
       expect(json_response['event_name']).to eq('project_create')
     end
 
     it "should return 404 on failure" do
       get api("/hooks/404", admin)
-      expect(response.status).to eq(404)
+      expect(response).to have_http_status(404)
     end
   end
 
@@ -75,7 +75,7 @@ describe API::API, api: true  do
 
     it "should return success if hook id not found" do
       delete api("/hooks/12345", admin)
-      expect(response.status).to eq(200)
+      expect(response).to have_http_status(200)
     end
   end
 end

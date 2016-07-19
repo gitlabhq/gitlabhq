@@ -13,6 +13,10 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
     context 'outside a transaction' do
       before do
         expect(model).to receive(:transaction_open?).and_return(false)
+
+        unless Gitlab::Database.postgresql?
+          allow_any_instance_of(Gitlab::Database::MigrationHelpers).to receive(:disable_statement_timeout)
+        end
       end
 
       context 'using PostgreSQL' do

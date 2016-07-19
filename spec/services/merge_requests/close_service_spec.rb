@@ -12,7 +12,7 @@ describe MergeRequests::CloseService, services: true do
     project.team << [user2, :developer]
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       let(:service) { MergeRequests::CloseService.new(project, user, {}) }
 

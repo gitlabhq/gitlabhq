@@ -33,5 +33,4 @@ class Spinach::Features::ProjectArchived < Spinach::FeatureSteps
   When 'I set project unarchived' do
     click_link "Unarchive"
   end
-
 end

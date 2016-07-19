@@ -198,4 +198,53 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
     end
   end
+
+  context 'referencing external issues' do
+    let(:project) { create(:redmine_project) }
+
+    it 'renders internal issue IDs as external issue links' do
+      doc = reference_filter('#1')
+      link = doc.css('a').first
+
+      expect(link.attr('data-reference-type')).to eq('external_issue')
+      expect(link.attr('title')).to eq('Issue in Redmine')
+      expect(link.attr('data-external-issue')).to eq('1')
+    end
+  end
+
+  describe '#issues_per_Project' do
+    context 'using an internal issue tracker' do
+      it 'returns a Hash containing the issues per project' do
+        doc = Nokogiri::HTML.fragment('')
+        filter = described_class.new(doc, project: project)
+
+        expect(filter).to receive(:projects_per_reference).
+          and_return({ project.path_with_namespace => project })
+
+        expect(filter).to receive(:references_per_project).
+          and_return({ project.path_with_namespace => Set.new([issue.iid]) })
+
+        expect(filter.issues_per_project).
+          to eq({ project => { issue.iid => issue } })
+      end
+    end
+
+    context 'using an external issue tracker' do
+      it 'returns a Hash containing the issues per project' do
+        doc = Nokogiri::HTML.fragment('')
+        filter = described_class.new(doc, project: project)
+
+        expect(project).to receive(:default_issues_tracker?).and_return(false)
+
+        expect(filter).to receive(:projects_per_reference).
+          and_return({ project.path_with_namespace => project })
+
+        expect(filter).to receive(:references_per_project).
+          and_return({ project.path_with_namespace => Set.new([1]) })
+
+        expect(filter.issues_per_project[project][1]).
+          to be_an_instance_of(ExternalIssue)
+      end
+    end
+  end
 end

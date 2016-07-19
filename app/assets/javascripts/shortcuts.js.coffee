@@ -2,19 +2,20 @@ class @Shortcuts
   constructor: (skipResetBindings) ->
     @enabledHelp = []
     Mousetrap.reset() if not skipResetBindings
-    Mousetrap.bind('?', @onToggleHelp)
-    Mousetrap.bind('s', Shortcuts.focusSearch)
-    Mousetrap.bind(['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview)
+    Mousetrap.bind '?', @onToggleHelp
+    Mousetrap.bind 's', Shortcuts.focusSearch
+    Mousetrap.bind 'f', (e) => @focusFilter e
+    Mousetrap.bind ['ctrl+shift+p', 'command+shift+p'], @toggleMarkdownPreview
     Mousetrap.bind('t', -> Turbolinks.visit(findFileURL)) if findFileURL?
 
   onToggleHelp: (e) =>
     e.preventDefault()
-    @toggleHelp(@enabledHelp)
+    Shortcuts.toggleHelp(@enabledHelp)
 
-  toggleMarkdownPreview: (e) =>
+  toggleMarkdownPreview: (e) ->
     $(document).triggerHandler('markdown-preview:toggle', [e])
 
-  toggleHelp: (location) ->
+  @toggleHelp: (location) ->
     $modal = $('#modal-shortcuts')
 
     if $modal.length
@@ -32,9 +33,15 @@ class @Shortcuts
           $('.js-more-help-button').remove()
     )
 
+  focusFilter: (e) ->
+    @filterInput ?= $('input[type=search]', '.nav-controls')
+    @filterInput.focus()
+    e.preventDefault()
+
   @focusSearch: (e) ->
     $('#search').focus()
     e.preventDefault()
+
 
 $(document).on 'click.more_help', '.js-more-help-button', (e) ->
   $(@).remove()

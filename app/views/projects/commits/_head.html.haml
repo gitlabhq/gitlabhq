@@ -1,7 +1,10 @@
-.scrolling-tabs-container
+.scrolling-tabs-container.sub-nav-scroll
+  .fade-left
+    = icon('angle-left')
+  .fade-right
+    = icon('angle-right')
   .nav-links.sub-nav.scrolling-tabs
     %ul{ class: (container_class) }
-      .fade-left
       = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do
         = link_to project_files_path(@project) do
           Files
@@ -25,4 +28,3 @@
       = nav_link(controller: [:tags, :releases]) do
         = link_to namespace_project_tags_path(@project.namespace, @project) do
           Tags
-      .fade-right

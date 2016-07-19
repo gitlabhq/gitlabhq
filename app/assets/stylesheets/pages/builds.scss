@@ -83,14 +83,6 @@
   }
 }
 
-table.builds {
-  .build-link {
-    a {
-      color: $gl-dark-link-color;
-    }
-  }
-}
-
 .build-trace {
   background: $ci-output-bg;
   color: $ci-text-color;

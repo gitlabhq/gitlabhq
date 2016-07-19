@@ -6,6 +6,8 @@ module Ci
     self.table_name = 'ci_commits'
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :user
+
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
@@ -16,6 +18,7 @@ module Ci
 
     # Invalidate object and save if when touched
     after_touch :update_state
+    after_save :keep_around_commits
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -37,22 +40,26 @@ module Ci
     end
 
     def git_author_name
-      commit_data.author_name if commit_data
+      commit.try(:author_name)
     end
 
     def git_author_email
-      commit_data.author_email if commit_data
+      commit.try(:author_email)
     end
 
     def git_commit_message
-      commit_data.message if commit_data
+      commit.try(:message)
+    end
+
+    def git_commit_title
+      commit.try(:title)
     end
 
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
 
-    def commit_data
+    def commit
       @commit ||= project.commit(sha)
     rescue
       nil
@@ -60,6 +67,10 @@ module Ci
 
     def branch?
       !tag?
+    end
+
+    def manual_actions
+      builds.latest.manual_actions
     end
 
     def retryable?
@@ -163,11 +174,24 @@ module Ci
     end
 
     def skip_ci?
-      git_commit_message =~ /(\[ci skip\])/ if git_commit_message
+      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
     end
 
     def environments
       builds.where.not(environment: nil).success.pluck(:environment).uniq
+    end
+
+    # Manually set the notes for a Ci::Pipeline
+    # There is no ActiveRecord relation between Ci::Pipeline and notes
+    # as they are related to a commit sha. This method helps importing
+    # them using the +Gitlab::ImportExport::RelationFactory+ class.
+    def notes=(notes)
+      notes.each do |note|
+        note[:id] = nil
+        note[:commit_id] = sha
+        note[:noteable_id] = self['id']
+        note.save!
+      end
     end
 
     def notes
@@ -198,6 +222,13 @@ module Ci
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
+    end
+
+    def keep_around_commits
+      return unless project
+      
+      project.repository.keep_around(self.sha)
+      project.repository.keep_around(self.before_sha)
     end
   end
 end

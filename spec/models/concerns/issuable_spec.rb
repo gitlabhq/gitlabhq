@@ -154,8 +154,21 @@ describe Issue, "Issuable" do
         expect(issues).to match_array([issue1, issue2, issue, issue3])
       end
     end
-  end
 
+    context 'when all of the results are level on the sort key' do
+      let!(:issues) do
+        10.times { create(:issue, project: project) }
+      end
+
+      it 'has no duplicates across pages' do
+        sorted_issue_ids = 1.upto(10).map do |i|
+          project.issues.sort('milestone_due_desc').page(i).per(1).first.id
+        end
+
+        expect(sorted_issue_ids).to eq(sorted_issue_ids.uniq)
+      end
+    end
+  end
 
   describe '#subscribed?' do
     context 'user is not a participant in the issue' do

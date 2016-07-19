@@ -2,8 +2,7 @@
   .panel-heading
     %strong #{@project.name}
     project members
-    %small
-      (#{members.count})
+    %span.badge= members.size
     .controls
       = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
         .form-group

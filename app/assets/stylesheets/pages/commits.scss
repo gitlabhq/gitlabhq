@@ -61,7 +61,7 @@
     font-size: 0;
   }
 
-  .btn-transparent {
+  .btn-clipboard, .btn-transparent {
     padding-left: 0;
     padding-right: 0;
   }
@@ -80,6 +80,7 @@
 
 .commit {
   padding: 10px 0;
+  position: relative;
 
   @media (min-width: $screen-sm-min) {
     padding-left: 46px;
@@ -94,6 +95,7 @@
     color: $gl-dark-link-color;
     vertical-align: baseline;
   }
+
 
   .avatar {
     margin-left: -46px;

@@ -50,7 +50,7 @@ describe NotificationService, services: true do
         update_custom_notification(:new_note, @u_custom_global)
       end
 
-      describe :new_note do
+      describe '#new_note' do
         it do
           add_users_with_subscription(note.project, issue)
 
@@ -94,7 +94,6 @@ describe NotificationService, services: true do
               note.save
               notification.new_note(note)
             end
-
 
             it { should_not_email(@u_lazy_participant) }
           end
@@ -294,6 +293,30 @@ describe NotificationService, services: true do
         end
       end
     end
+
+    context "merge request diff note" do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, source_project: project, assignee: user) }
+      let(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request) }
+
+      before do
+        build_team(note.project)
+        project.team << [merge_request.author, :master]
+        project.team << [merge_request.assignee, :master]
+      end
+
+      describe '#new_note' do
+        it "records sent notifications" do
+          # Ensure create SentNotification by noteable = merge_request 6 times, not noteable = note
+          expect(SentNotification).to receive(:record_note).with(note, any_args).exactly(4).times.and_call_original
+
+          notification.new_note(note)
+
+          expect(SentNotification.last.position).to eq(note.position)
+        end
+      end
+    end
   end
 
   describe 'Issues' do
@@ -377,7 +400,6 @@ describe NotificationService, services: true do
     end
 
     describe '#reassigned_issue' do
-
       before do
         update_custom_notification(:reassign_issue, @u_guest_custom, project)
         update_custom_notification(:reassign_issue, @u_custom_global)
@@ -566,7 +588,6 @@ describe NotificationService, services: true do
     end
 
     describe '#close_issue' do
-
       before do
         update_custom_notification(:close_issue, @u_guest_custom, project)
         update_custom_notification(:close_issue, @u_custom_global)
@@ -711,7 +732,6 @@ describe NotificationService, services: true do
 
         should_email(subscriber)
       end
-
 
       context 'participating' do
         context 'by assignee' do
@@ -880,7 +900,6 @@ describe NotificationService, services: true do
     end
 
     describe '#merged_merge_request' do
-
       before do
         update_custom_notification(:merge_merge_request, @u_guest_custom, project)
         update_custom_notification(:merge_merge_request, @u_custom_global)

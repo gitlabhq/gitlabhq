@@ -3,9 +3,9 @@
     = escape_once(tag.name)
     = clipboard_button(clipboard_text: "docker pull #{tag.path}")
   %td
-    - if layer = tag.layers.first
-      %span.has-tooltip{ title: "#{layer.revision}" }
-        = layer.short_revision
+    - if tag.revision
+      %span.has-tooltip{ title: "#{tag.revision}" }
+        = tag.short_revision
     - else
       \-
   %td

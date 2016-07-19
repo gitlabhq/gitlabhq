@@ -153,6 +153,7 @@ class NotificationService
       else
         mentioned_users
       end
+
     recipients = recipients.concat(participants)
 
     # Merge project watchers
@@ -176,20 +177,22 @@ class NotificationService
 
     # build notify method like 'note_commit_email'
     notify_method = "note_#{note.noteable_type.underscore}_email".to_sym
+    
     recipients.each do |recipient|
       mailer.send(notify_method, recipient.id, note.id).deliver_later
     end
   end
 
-  # Project access request
-  def new_project_access_request(project_member)
-    mailer.member_access_requested_email(project_member.real_source_type, project_member.id).deliver_later
+  # Members
+  def new_access_request(member)
+    mailer.member_access_requested_email(member.real_source_type, member.id).deliver_later
   end
 
-  def decline_project_access_request(project_member)
-    mailer.member_access_denied_email(project_member.real_source_type, project_member.project.id, project_member.user.id).deliver_later
+  def decline_access_request(member)
+    mailer.member_access_denied_email(member.real_source_type, member.source_id, member.user_id).deliver_later
   end
 
+  # Project invite
   def invite_project_member(project_member, token)
     mailer.member_invited_email(project_member.real_source_type, project_member.id, token).deliver_later
   end
@@ -216,15 +219,7 @@ class NotificationService
     mailer.member_access_granted_email(project_member.real_source_type, project_member.id).deliver_later
   end
 
-  # Group access request
-  def new_group_access_request(group_member)
-    mailer.member_access_requested_email(group_member.real_source_type, group_member.id).deliver_later
-  end
-
-  def decline_group_access_request(group_member)
-    mailer.member_access_denied_email(group_member.real_source_type, group_member.group.id, group_member.user.id).deliver_later
-  end
-
+  # Group invite
   def invite_group_member(group_member, token)
     mailer.member_invited_email(group_member.real_source_type, group_member.id, token).deliver_later
   end

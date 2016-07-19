@@ -3,9 +3,45 @@
 - user = member.user
 
 %li.js-toggle-container{ class: dom_class(member), id: dom_id(member) }
+  - if show_roles
+    .controls
+      %strong.control-text= member.human_access
+      - if show_controls
+        - if !user && can?(current_user, action_member_permission(:admin, member), member.source)
+          = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
+                    method: :post,
+                    class: 'btn'
+
+        - if can?(current_user, action_member_permission(:update, member), member)
+          = button_tag icon('pencil'),
+                       type: 'button',
+                       class: 'btn inline js-toggle-button',
+                       title: 'Edit access level'
+
+          - if member.request?
+            = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
+                      method: :post,
+                      class: 'btn btn-success',
+                      title: 'Grant access'
+
+        - if can?(current_user, action_member_permission(:destroy, member), member)
+          - if current_user == user
+            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
+                      method: :delete,
+                      data: { confirm: leave_confirmation_message(member.source) },
+                      class: 'btn btn-remove'
+          - else
+            = link_to icon('trash'), member,
+                      remote: true,
+                      method: :delete,
+                      data: { confirm: remove_member_message(member) },
+                      class: 'btn btn-remove',
+                      title: remove_member_title(member)
+
+
   %span{ class: ("list-item-name" if show_controls) }
     - if user
-      = image_tag avatar_icon(user, 24), class: "avatar s24", alt: ''
+      = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
       %strong
         = link_to user.name, user_path(user)
       %span.cgray= user.username
@@ -17,57 +53,24 @@
         %label.label.label-danger
           %strong Blocked
 
-      - if member.request?
-        %span.cgray
-          – Requested
+      .cgray
+        - if member.request?
+          Requested
           = time_ago_with_tooltip(member.requested_at)
+        - else
+          Joined #{time_ago_with_tooltip(member.created_at)}
+
     - else
-      = image_tag avatar_icon(member.invite_email, 24), class: "avatar s24", alt: ''
+      = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
       %strong= member.invite_email
-      %span.cgray
-        – Invited
+      .cgray
+        Invited
         - if member.created_by
           by
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
 
-      - if show_controls && can?(current_user, action_member_permission(:admin, member), member.source)
-        = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
-                  method: :post,
-                  class: 'btn-xs btn'
-
   - if show_roles
-    %span.pull-right
-      %strong= member.human_access
-      - if show_controls
-        - if can?(current_user, action_member_permission(:update, member), member)
-          = button_tag icon('pencil'),
-                       type: 'button',
-                       class: 'btn-xs btn btn-grouped inline js-toggle-button',
-                       title: 'Edit access level'
-
-          - if member.request?
-            &nbsp;
-            = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
-                      method: :post,
-                      class: 'btn-xs btn btn-success',
-                      title: 'Grant access'
-
-        - if can?(current_user, action_member_permission(:destroy, member), member)
-          &nbsp;
-          - if current_user == user
-            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
-                      method: :delete,
-                      data: { confirm: leave_confirmation_message(member.source) },
-                      class: 'btn-xs btn btn-remove'
-          - else
-            = link_to icon('trash'), member,
-                      remote: true,
-                      method: :delete,
-                      data: { confirm: remove_member_message(member) },
-                      class: 'btn-xs btn btn-remove',
-                      title: remove_member_title(member)
-
     .edit-member.hide.js-toggle-content
       %br
       = form_for member, remote: true do |f|

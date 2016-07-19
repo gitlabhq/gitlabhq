@@ -260,4 +260,125 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
+
+  describe "GET /:project_path/pipelines" do
+    subject { namespace_project_pipelines_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/pipelines/:id" do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    subject { namespace_project_pipeline_path(project.namespace, project, pipeline) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/builds" do
+    subject { namespace_project_builds_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/builds/:id" do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:build) { create(:ci_build, pipeline: pipeline) }
+    subject { namespace_project_build_path(project.namespace, project, build.id) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/environments" do
+    subject { namespace_project_environments_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/environments/:id" do
+    let(:environment) { create(:environment, project: project) }
+    subject { namespace_project_environment_path(project.namespace, project, environment) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/environments/new" do
+    subject { new_namespace_project_environment_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_denied_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
+  describe "GET /:project_path/container_registry" do
+    before do
+      stub_container_registry_tags('latest')
+      stub_container_registry_config(enabled: true)
+    end
+
+    subject { namespace_project_container_registry_index_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
 end

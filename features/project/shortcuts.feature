@@ -8,21 +8,21 @@ Feature: Project Shortcuts
   @javascript
   Scenario: Navigate to files tab
     Given I press "g" and "f"
-    Then the active main tab should be Code
+    Then the active main tab should be Repository
     Then the active sub tab should be Files
 
   @javascript
   Scenario: Navigate to commits tab
     Given I visit my project's files page
     Given I press "g" and "c"
-    Then the active main tab should be Code
+    Then the active main tab should be Repository
     Then the active sub tab should be Commits
 
   @javascript
   Scenario: Navigate to network tab
     Given I press "g" and "n"
     Then the active sub tab should be Network
-    And the active main tab should be Code
+    And the active main tab should be Repository
 
   @javascript
   Scenario: Navigate to graphs tab

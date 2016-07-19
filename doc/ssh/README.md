@@ -17,10 +17,6 @@ cat ~/.ssh/id_rsa.pub
 
 If you see a long string starting with `ssh-rsa`, you can skip the `ssh-keygen` step.
 
-Note: It is a best practice to use a password for an SSH key, but it is not
-required and you can skip creating a password by pressing enter. Note that
-the password you choose here can't be altered or retrieved.
-
 To generate a new SSH key, use the following command:
 ```bash
 ssh-keygen -t rsa -C "$your_email"
@@ -29,6 +25,12 @@ This command will prompt you for a location and filename to store the key
 pair and for a password. When prompted for the location and filename, just
 press enter to use the default. If you use a different name, the key will not
 be used automatically.
+
+Note: It is a best practice to use a password for an SSH key, but it is not
+required and you can skip creating a password by pressing enter.
+
+If you want to change the password of your key later, you can use the following
+command: `ssh-keygen -p <keyname>`
 
 Use the command below to show your public key:
 

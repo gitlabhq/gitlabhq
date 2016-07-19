@@ -1,6 +1,6 @@
 @mixin fade($gradient-direction, $rgba, $gradient-color) {
-  visibility: visible;
-  opacity: 1;
+  visibility: hidden;
+  opacity: 0;
   z-index: 2;
   position: absolute;
   bottom: 12px;
@@ -13,10 +13,16 @@
   background: -moz-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
   background: linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
 
-  &.end-scroll {
-    visibility: hidden;
-    opacity: 0;
+  &.scrolling {
+    visibility: visible;
+    opacity: 1;
     transition-duration: .3s;
+  }
+
+  .fa {
+    position: relative;
+    top: 5px;
+    font-size: 18px;
   }
 }
 
@@ -25,6 +31,7 @@
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
+
   &::-webkit-scrollbar {
     display: none;
   }
@@ -70,10 +77,10 @@
 
   &.sub-nav {
     text-align: center;
-    background-color: $background-color;
+    background-color: $dark-background-color;
 
     .container-fluid {
-      background-color: $background-color;
+      background-color: $dark-background-color;
       margin-bottom: 0;
     }
 
@@ -104,10 +111,6 @@
     width: 50%;
     line-height: 28px;
 
-    &.wiki-page {
-      padding: 16px 10px 11px;
-    }
-
     /* Small devices (phones, tablets, 768px and lower) */
     @media (max-width: $screen-sm-min) {
       width: 100%;
@@ -131,12 +134,17 @@
     margin-bottom: 0;
     border-bottom: none;
 
+    &.wide {
+      width: 100%;
+      display: block;
+    }
+
     li a {
       padding: 16px 10px 11px;
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-sm-max) {
+    @media (max-width: $screen-xs-max) {
       width: 100%;
     }
   }
@@ -161,6 +169,7 @@
     > .btn {
       margin-right: $gl-padding-top;
       display: inline-block;
+      vertical-align: top;
 
       &:last-child {
         margin-right: 0;
@@ -220,6 +229,7 @@
       form {
         display: block;
         height: auto;
+        margin-bottom: 14px;
 
         input {
           width: 100%;
@@ -268,7 +278,7 @@
     float: right;
     padding: 7px 0 0;
 
-    @media (max-width: $screen-xs-max) {
+    @media (max-width: $screen-sm-max) {
       display: none;
     }
 
@@ -299,32 +309,8 @@
   }
 
   .nav-links {
-    @include scrolling-links();
     border-bottom: none;
     height: 51px;
-
-    svg {
-      position: relative;
-      top: 2px;
-      margin-right: 2px;
-      height: 15px;
-      width: auto;
-
-      path,
-      polygon {
-        fill: $layout-link-gray;
-      }
-    }
-
-    .fade-right {
-      @include fade(left, rgba(250, 250, 250, 0.4), $background-color);
-      right: 0;
-    }
-
-    .fade-left {
-      @include fade(right, rgba(250, 250, 250, 0.4), $background-color);
-      left: 0;
-    }
 
     li {
 
@@ -361,18 +347,6 @@
       }
     }
   }
-
-  .nav-control {
-
-    .fade-right {
-      @media (min-width: $screen-xs-max) {
-        right: 68px;
-      }
-      @media (max-width: $screen-xs-min) {
-        right: 0;
-      }
-    }
-  }
 }
 
 .scrolling-tabs-container {
@@ -380,15 +354,42 @@
 
   .nav-links {
     @include scrolling-links();
+  }
+
+  .fade-right {
+    @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+    right: -5px;
+
+    .fa {
+      right: -7px;
+    }
+  }
+
+  .fade-left {
+    @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+    left: -5px;
+
+    .fa {
+      left: -7px;
+    }
+  }
+
+  &.sub-nav-scroll {
 
     .fade-right {
-      @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
       right: 0;
+
+      .fa {
+        right: -23px;
+      }
     }
 
     .fade-left {
-      @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
       left: 0;
+
+      .fa {
+        left: 10px;
+      }
     }
   }
 }
@@ -401,21 +402,19 @@
 
     .fade-right {
       @include fade(left, rgba(255, 255, 255, 0.4), $white-light);
-      right: 0;
+      right: -5px;
+
+      .fa {
+        right: -7px;
+      }
     }
 
     .fade-left {
       @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
-      left: 0;
-    }
+      left: -5px;
 
-    &.event-filter {
-      .fade-right {
-        visibility: hidden;
-
-        @media (max-width: $screen-xs-max) {
-          visibility: visible;
-        }
+      .fa {
+        left: -7px;
       }
     }
   }

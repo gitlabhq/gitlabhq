@@ -1,12 +1,14 @@
+- @no_container = true
 - page_title "Pages", "Wiki"
 
 = render 'nav'
 
-%ul.content-list
-  - @wiki_pages.each do |wiki_page|
-    %li
-      = link_to wiki_page.title, namespace_project_wiki_path(@project.namespace, @project, wiki_page)
-      %small (#{wiki_page.format})
-      .pull-right
-        %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
-= paginate @wiki_pages, theme: 'gitlab'
+%div{ class: container_class }
+  %ul.content-list
+    - @wiki_pages.each do |wiki_page|
+      %li
+        = link_to wiki_page.title, namespace_project_wiki_path(@project.namespace, @project, wiki_page)
+        %small (#{wiki_page.format})
+        .pull-right
+          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
+  = paginate @wiki_pages, theme: 'gitlab'

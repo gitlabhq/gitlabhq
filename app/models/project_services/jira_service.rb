@@ -124,7 +124,7 @@ class JiraService < IssueTrackerService
 
   def build_api_url_from_project_url
     server = URI(project_url)
-    default_ports = [["http",80],["https",443]].include?([server.scheme,server.port])
+    default_ports = [["http", 80], ["https", 443]].include?([server.scheme, server.port])
     server_url = "#{server.scheme}://#{server.host}"
     server_url.concat(":#{server.port}") unless default_ports
     "#{server_url}/rest/api/#{DEFAULT_API_VERSION}"
@@ -144,7 +144,7 @@ class JiraService < IssueTrackerService
     commit_id = if entity.is_a?(Commit)
                   entity.id
                 elsif entity.is_a?(MergeRequest)
-                  entity.last_commit.id
+                  entity.diff_head_sha
                 end
     commit_url = build_entity_url(:commit, commit_id)
 
@@ -189,7 +189,6 @@ class JiraService < IssueTrackerService
       send_message(url, message.to_json)
     end
   end
-
 
   def auth
     require 'base64'

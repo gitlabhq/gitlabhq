@@ -62,8 +62,12 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def show
+    raw_notes = @issue.notes_with_associations.fresh
+
+    @notes = Banzai::NoteRenderer.
+      render(raw_notes, @project, current_user, @path, @project_wiki, @ref)
+
     @note     = @project.notes.new(noteable: @issue)
-    @notes    = @issue.notes.with_associations.fresh
     @noteable = @issue
 
     respond_to do |format|
@@ -72,7 +76,6 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: @issue.to_json(include: [:milestone, :labels])
       end
     end
-
   end
 
   def create
@@ -111,6 +114,7 @@ class Projects::IssuesController < Projects::ApplicationController
           render :edit
         end
       end
+
       format.json do
         render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
       end
@@ -222,6 +226,7 @@ class Projects::IssuesController < Projects::ApplicationController
       :assignee_id,
       :milestone_id,
       :state_event,
+      :subscription_event,
       label_ids: [],
       add_label_ids: [],
       remove_label_ids: []

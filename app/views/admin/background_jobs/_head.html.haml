@@ -1,5 +1,9 @@
 .nav-links.sub-nav
   %ul{ class: (container_class) }
+    = nav_link(controller: :system_info) do
+      = link_to admin_system_info_path, title: 'System Info' do
+        %span
+          System Info
     = nav_link(controller: :background_jobs) do
       = link_to admin_background_jobs_path, title: 'Background Jobs' do
         %span

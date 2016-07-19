@@ -1,6 +1,7 @@
 - @project_group_links.each do |group_links|
   - shared_group = group_links.group
-  - shared_group_users_count = group_links.group.group_members.count
+  - shared_group_members = shared_group.members
+  - shared_group_users_count = shared_group_members.size
   .panel.panel-default
     .panel-heading
       Shared with
@@ -15,7 +16,7 @@
             Edit group members
     %ul.content-list
       = render partial: 'shared/members/member',
-               collection: shared_group.group_members.order(access_level: :desc).limit(20),
+               collection: shared_group_members.order(access_level: :desc).limit(20),
                as: :member,
                locals: { show_controls: false, show_roles: false }
       - if shared_group_users_count > 20

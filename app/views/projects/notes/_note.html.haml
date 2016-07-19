@@ -17,10 +17,10 @@
           %a{ href: "##{dom_id(note)}" }
             = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         .note-actions
-          - access = note.project.team.human_max_access(note.author.id)
-          - if access
+          - access = note_max_access_for_user(note)
+          - if access and not note.system
             %span.note-role.hidden-xs= access
-          - if current_user
+          - if current_user and not note.system
             = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
               = icon('spinner spin')
               = icon('smile-o')
@@ -32,7 +32,7 @@
       .note-body{class: note_editable ? 'js-task-list-container' : ''}
         .note-text
           = preserve do
-            = markdown(note.note, pipeline: :note, cache_key: [note, "note"], author: note.author)
+            = note.note_html
           = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)
         - if note_editable
           = render 'projects/notes/edit_form', note: note

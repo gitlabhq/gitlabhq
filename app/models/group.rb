@@ -6,14 +6,15 @@ class Group < Namespace
   include AccessRequestable
   include Referable
 
-  has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
   alias_method :members, :group_members
-  has_many :users, -> { where(members: { requested_at: nil }) }, through: :group_members
-
+  has_many :users, through: :group_members
   has_many :owners,
     -> { where(members: { access_level: Gitlab::Access::OWNER }) },
     through: :group_members,
     source: :user
+
+  has_many :requesters, -> { where.not(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
 
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
@@ -89,7 +90,7 @@ class Group < Namespace
   end
 
   def avatar_url(size = nil)
-    if avatar.present?
+    if self[:avatar].present?
       [gitlab_config.url, avatar.url].join
     end
   end

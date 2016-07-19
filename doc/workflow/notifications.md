@@ -37,12 +37,14 @@ This means that you can set a different level of notifications per group while s
 to have a finer level setting per project.
 Organization like this is suitable for users that belong to different groups but don't have the
 same need for being notified for every group they are member of.
+These settings can be configured on group page or user profile notifications dropdown.
 
 #### Project Settings
 
 Project Settings are at the top level and any setting placed at this level will take precedence of any
 other setting.
 This is suitable for users that have different needs for notifications per project basis.
+These settings can be configured on project page or user profile notifications dropdown.
 
 ## Notification events
 

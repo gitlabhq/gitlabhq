@@ -1,0 +1,42 @@
+%li.user-row
+  .user-avatar
+    = image_tag avatar_icon(user), class: "avatar", alt: ''
+  .user-details
+    .user-name
+      = link_to user.name, [:admin, user]
+    - if user.blocked?
+      %span.label.label-danger blocked
+    - if user.admin?
+      %span.label.label-success Admin
+    - if user.external?
+      %span.label.label-default External
+    - if user == current_user
+      %span It's you!
+    .user-email
+      = mail_to user.email, user.email
+  .controls
+    = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn'
+    - unless user == current_user
+      .dropdown.inline
+        %a.dropdown-new.btn.btn-default#project-settings-button{href: '#', data: { toggle: 'dropdown' } }
+          = icon('cog')
+          = icon('caret-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li.dropdown-header
+            Settings
+            %li
+              - if user.ldap_blocked?
+                %span.small Cannot unblock LDAP blocked users
+              - elsif user.blocked?
+                = link_to 'Unblock', unblock_admin_user_path(user), method: :put
+              - else
+                = link_to 'Block', block_admin_user_path(user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put
+            - if user.access_locked?
+              %li
+                = link_to 'Unlock', unlock_admin_user_path(user), method: :put, class: 'btn-grouped btn btn-xs btn-success', data: { confirm: 'Are you sure?' }
+          - if user.can_be_removed?
+            %li.divider
+            %li
+              = link_to 'Delete User', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All issues, merge requests and groups linked to this user will also be removed! Consider cancelling this deletion and blocking the user instead. Are you sure?" },
+                                                   class: 'btn btn-remove btn-block',
+                                                   method: :delete

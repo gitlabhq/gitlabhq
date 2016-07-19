@@ -144,9 +144,7 @@ describe "Admin::Users", feature: true  do
         before { click_link 'Impersonate' }
 
         it 'logs in as the user when impersonate is clicked' do
-          page.within '.sidebar-wrapper' do
-            expect(page.find('.sidebar-user')['data-user']).to eql(another_user.username)
-          end
+          expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(another_user.username)
         end
 
         it 'sees impersonation log out icon' do
@@ -158,9 +156,7 @@ describe "Admin::Users", feature: true  do
         it 'can log out of impersonated user back to original user' do
           find(:css, 'li.impersonation a').click
 
-          page.within '.sidebar-wrapper' do
-            expect(page.find('.sidebar-user')['data-user']).to eql(@user.username)
-          end
+          expect(page.find(:css, '.header-user .profile-link')['data-user']).to eql(@user.username)
         end
 
         it 'is redirected back to the impersonated users page in the admin after stopping' do

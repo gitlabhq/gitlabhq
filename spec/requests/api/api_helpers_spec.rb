@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe API::Helpers, api: true do
-
   include API::Helpers
   include ApiHelpers
 
@@ -50,7 +49,7 @@ describe API::Helpers, api: true do
 
       it "should return nil for a user without access" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = user.private_token
-        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
         expect(current_user).to be_nil
       end
 
@@ -74,7 +73,7 @@ describe API::Helpers, api: true do
 
       it "should return nil for a user without access" do
         env[API::Helpers::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        allow(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
+        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
         expect(current_user).to be_nil
       end
 
@@ -210,6 +209,29 @@ describe API::Helpers, api: true do
       expect(sudo_identifier).to eq('hello')
       set_param(admin, ' 123')
       expect(sudo_identifier).to eq(' 123')
+    end
+  end
+
+  describe '.to_boolean' do
+    it 'converts a valid string to a boolean' do
+      expect(to_boolean('true')).to be_truthy
+      expect(to_boolean('YeS')).to be_truthy
+      expect(to_boolean('t')).to be_truthy
+      expect(to_boolean('1')).to be_truthy
+      expect(to_boolean('ON')).to be_truthy
+      expect(to_boolean('FaLse')).to be_falsy
+      expect(to_boolean('F')).to be_falsy
+      expect(to_boolean('NO')).to be_falsy
+      expect(to_boolean('n')).to be_falsy
+      expect(to_boolean('0')).to be_falsy
+      expect(to_boolean('oFF')).to be_falsy
+    end
+
+    it 'converts an invalid string to nil' do
+      expect(to_boolean('fals')).to be_nil
+      expect(to_boolean('yeah')).to be_nil
+      expect(to_boolean('')).to be_nil
+      expect(to_boolean(nil)).to be_nil
     end
   end
 end

@@ -19,7 +19,6 @@ describe Gitlab::GoogleCodeImport::Importer, lib: true do
   end
 
   describe "#execute" do
-
     it "imports status labels" do
       subject.execute
 

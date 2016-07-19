@@ -49,10 +49,10 @@ Parameters:
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
     },
-    "source_project_id": "2",
-    "target_project_id": "3",
+    "source_project_id": 2,
+    "target_project_id": 3,
     "labels": [ ],
-    "description":"fixed login page css paddings",
+    "description": "fixed login page css paddings",
     "work_in_progress": false,
     "milestone": {
       "id": 5,
@@ -68,7 +68,9 @@ Parameters:
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
-    "user_notes_count": 1
+    "user_notes_count": 1,
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false
   }
 ]
 ```
@@ -113,10 +115,10 @@ Parameters:
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
   },
-  "source_project_id": "2",
-  "target_project_id": "3",
+  "source_project_id": 2,
+  "target_project_id": 3,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -132,7 +134,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -233,6 +237,8 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false,
   "changes": [
     {
     "old_path": "VERSION",
@@ -296,7 +302,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -312,7 +318,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 0
+  "user_notes_count": 0,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -383,7 +391,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -433,7 +443,7 @@ Parameters:
 - `merge_request_id` (required)             - ID of MR
 - `merge_commit_message` (optional)         - Custom merge commit message
 - `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merged_when_build_succeeds` (optional)   - if `true` the MR is merged when the build succeeds
+- `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
 - `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
 
 ```json
@@ -465,7 +475,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -481,7 +491,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -531,7 +543,7 @@ Parameters:
   "source_project_id": 4,
   "target_project_id": 4,
   "labels": [ ],
-  "description":"fixed login page css paddings",
+  "description": "fixed login page css paddings",
   "work_in_progress": false,
   "milestone": {
     "id": 5,
@@ -547,7 +559,9 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
-  "user_notes_count": 1
+  "user_notes_count": 1,
+  "should_remove_source_branch": true,
+  "force_remove_source_branch": false
 }
 ```
 
@@ -774,5 +788,105 @@ Example response:
   "merge_when_build_succeeds": false,
   "merge_status": "cannot_be_merged",
   "subscribed": false
+}
+```
+
+## Create a todo
+
+Manually creates a todo for the current user on a merge request. If the
+request is successful, status code `200` together with the created todo is
+returned. If there already exists a todo for the user on that merge request,
+status code `304` is returned.
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/todo
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes   | The ID of the merge request |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/27/todo
+```
+
+Example response:
+
+```json
+{
+  "id": 113,
+  "project": {
+    "id": 3,
+    "name": "Gitlab Ci",
+    "name_with_namespace": "Gitlab Org / Gitlab Ci",
+    "path": "gitlab-ci",
+    "path_with_namespace": "gitlab-org/gitlab-ci"
+  },
+  "author": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/u/root"
+  },
+  "action_name": "marked",
+  "target_type": "MergeRequest",
+  "target": {
+    "id": 27,
+    "iid": 7,
+    "project_id": 3,
+    "title": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
+    "description": "Veniam sunt nihil modi earum cumque illum delectus. Nihil ad quis distinctio quia. Autem eligendi at quibusdam repellendus.",
+    "state": "opened",
+    "created_at": "2016-06-17T07:48:04.330Z",
+    "updated_at": "2016-07-01T11:14:15.537Z",
+    "target_branch": "allow_regex_for_project_skip_ref",
+    "source_branch": "backup",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "name": "Jarret O'Keefe",
+      "username": "francisca",
+      "id": 14,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a7fa515d53450023c83d62986d0658a8?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/u/francisca"
+    },
+    "assignee": {
+      "name": "Dr. Gabrielle Strosin",
+      "username": "barrett.krajcik",
+      "id": 4,
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/733005fcd7e6df12d2d8580171ccb966?s=80&d=identicon",
+      "web_url": "https://gitlab.example.com/u/barrett.krajcik"
+    },
+    "source_project_id": 3,
+    "target_project_id": 3,
+    "labels": [],
+    "work_in_progress": false,
+    "milestone": {
+      "id": 27,
+      "iid": 2,
+      "project_id": 3,
+      "title": "v1.0",
+      "description": "Quis ea accusantium animi hic fuga assumenda.",
+      "state": "active",
+      "created_at": "2016-06-17T07:47:33.840Z",
+      "updated_at": "2016-06-17T07:47:33.840Z",
+      "due_date": null
+    },
+    "merge_when_build_succeeds": false,
+    "merge_status": "unchecked",
+    "subscribed": true,
+    "user_notes_count": 7,
+    "should_remove_source_branch": true,
+    "force_remove_source_branch": false
+  },
+  "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
+  "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
+  "state": "pending",
+  "created_at": "2016-07-01T11:14:15.530Z"
 }
 ```

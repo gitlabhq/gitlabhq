@@ -130,27 +130,27 @@ main: # 'main' is the GitLab 'provider ID' of this LDAP server
     first_name: 'givenName'
     last_name:  'sn'
 
-    ## EE only
+  ## EE only
 
-    # Base where we can search for groups
-    #
-    #   Ex. ou=groups,dc=gitlab,dc=example
-    #
-    group_base: ''
+  # Base where we can search for groups
+  #
+  #   Ex. ou=groups,dc=gitlab,dc=example
+  #
+  group_base: ''
 
-    # The CN of a group containing GitLab administrators
-    #
-    #   Ex. administrators
-    #
-    #   Note: Not `cn=administrators` or the full DN
-    #
-    admin_group: ''
+  # The CN of a group containing GitLab administrators
+  #
+  #   Ex. administrators
+  #
+  #   Note: Not `cn=administrators` or the full DN
+  #
+  admin_group: ''
 
-    # The LDAP attribute containing a user's public SSH key
-    #
-    #   Ex. ssh_public_key
-    #
-    sync_ssh_keys: false
+  # The LDAP attribute containing a user's public SSH key
+  #
+  #   Ex. ssh_public_key
+  #
+  sync_ssh_keys: false
 
 # GitLab EE only: add more LDAP servers
 # Choose an ID made of a-z and 0-9 . This ID will be stored in the database

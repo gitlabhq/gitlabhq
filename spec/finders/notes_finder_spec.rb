@@ -11,7 +11,7 @@ describe NotesFinder do
     project.team << [user, :master]
   end
 
-  describe :execute do
+  describe '#execute' do
     let(:params)  { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
 
     before do

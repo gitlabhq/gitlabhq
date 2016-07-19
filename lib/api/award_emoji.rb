@@ -11,7 +11,6 @@ module API
         [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
         ].each do |endpoint|
-
           # Get a list of project +awardable+ award emoji
           #
           # Parameters:
@@ -57,9 +56,9 @@ module API
 
             not_found!('Award Emoji') unless can_read_awardable?
 
-            award = awardable.award_emoji.new(name: params[:name], user: current_user)
+            award = awardable.create_award_emoji(params[:name], current_user)
 
-            if award.save
+            if award.persisted?
               present award, with: Entities::AwardEmoji
             else
               not_found!("Award Emoji #{award.errors.messages}")

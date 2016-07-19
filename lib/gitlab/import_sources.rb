@@ -24,8 +24,6 @@ module Gitlab
           'GitLab export' => 'gitlab_project'
         }
       end
-
     end
-
   end
 end

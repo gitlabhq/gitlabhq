@@ -34,12 +34,28 @@ module Gitlab
       # THREAD_CPUTIME is not supported on OS X
       if Process.const_defined?(:CLOCK_THREAD_CPUTIME_ID)
         def self.cpu_time
-          Process.clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond)
+          Process.
+            clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond).to_f
         end
       else
         def self.cpu_time
-          Process.clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond)
+          Process.
+            clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond).to_f
         end
+      end
+
+      # Returns the current real time in a given precision.
+      #
+      # Returns the time as a Float.
+      def self.real_time(precision = :millisecond)
+        Process.clock_gettime(Process::CLOCK_REALTIME, precision).to_f
+      end
+
+      # Returns the current monotonic clock time in a given precision.
+      #
+      # Returns the time as a Float.
+      def self.monotonic_time(precision = :millisecond)
+        Process.clock_gettime(Process::CLOCK_MONOTONIC, precision).to_f
       end
     end
   end

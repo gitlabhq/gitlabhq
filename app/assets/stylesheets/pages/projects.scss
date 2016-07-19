@@ -13,95 +13,102 @@
 
 .new_project,
 .edit-project {
-  fieldset.features {
-    .control-label {
+  fieldset {
+    &.features .control-label {
       font-weight: normal;
+    }
+    .form-group {
+      margin-bottom: 5px;
+    }
+    &> .form-group {
+      padding-left: 0;
+    }
+  }
+  .help-block {
+    margin-bottom: 10px;
+  }
+  .project-path {
+    padding-right: 0;
+    .form-control {
+      border-radius: $border-radius-base;
+    }
+  }
+  .input-group > div {
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+  @media (max-width: $screen-xs-max) {
+    .input-group > div {
+      margin-bottom: 14px;
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+    fieldset > .form-group:first-child {
+      padding-right: 0;
+    }
+  }
+
+  .input-group-addon {
+    &.static-namespace {
+      height: 35px;
+      border-radius: 3px;
+      border: 1px solid #e5e5e5;
+    }
+    &+ .select2 a {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
     }
   }
 }
 
 .project-home-panel {
-  background: $white-light;
-  text-align: left;
-  padding: 24px 0;
+  padding-top: 24px;
+  padding-bottom: 24px;
 
-  .container-fluid {
-    position: relative;
-
-    @media (min-width: $screen-lg-min) {
-      .row {
-        display: flex;
-        -ms-flex-align: center;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-      }
-    }
+  @media (min-width: $screen-sm-min) {
+    border-bottom: 1px solid $border-color;
   }
 
-  .cover-controls {
-    .project-settings-dropdown {
-      margin-left: 10px;
-      display: inline-block;
-
-      .dropdown-menu {
-        left: auto;
-        width: auto;
-        right: 0;
-        max-width: 240px;
-      }
-    }
-  }
-
-  .cover-title {
-    margin-bottom: 0;
-  }
-
-  .project-image-container {
-    @include make-sm-column(1);
-    max-width: 86px;
-    min-width: 86px;
-    padding-right: 0;
-
-    @media (max-width: $screen-md-max) {
-      padding-left: 0;
-      margin: 0 0 10px;
-      max-width: none;
-      min-width: none;
-
-      .avatar.s70 {
-        margin: auto;
-      }
-    }
-  }
-
-  .project-info {
-    @include make-sm-column(10);
-
-    h1 {
-      font-size: 24px;
-      font-weight: normal;
-      margin: 0;
-    }
-
-    .project-home-desc {
-      p {
-        margin: 0;
-      }
-    }
-  }
-
-  .identicon {
-    float: left;
-    @include border-radius(50%);
-  }
-
-  .avatar {
+  .project-avatar {
     float: none;
+    margin-left: auto;
+    margin-right: auto;
+
+    &.identicon {
+      border-radius: 50%;
+    }
+  }
+
+  .project-title {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1;
+
+    .fa {
+      margin-left: 2px;
+      font-size: 12px;
+      vertical-align: middle;
+    }
+  }
+
+  .project-home-desc {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+    max-width: 480px;
+
+    > p {
+      margin-bottom: 0;
+    }
   }
 
   .notifications-btn {
-
-    .fa-bell {
+    .fa-bell,
+    .fa-spinner {
       margin-right: 6px;
     }
 
@@ -109,139 +116,117 @@
       margin-left: 6px;
     }
   }
+}
 
-  .project-repo-buttons {
-    font-size: 0;
+.project-repo-buttons {
+  font-size: 0;
 
-    .btn {
-      @include btn-gray;
-      padding: 3px 10px;
-      text-transform: none;
-      background-color: $background-color;
+  .btn {
+    @include btn-gray;
+    padding: 3px 10px;
 
-      .fa {
-        color: $layout-link-gray;
+    .fa {
+      color: $layout-link-gray;
+    }
+
+    svg {
+
+      path {
+        fill: $layout-link-gray;
       }
 
-      .fa-caret-down {
-        margin-left: 3px;
-      }
-    }
-
-    form {
-      margin-left: 10px;
-    }
-
-    .count-buttons {
-      display: inline-block;
-      vertical-align: top;
-      margin-top: 16px;
-    }
-
-    .project-clone-holder {
-      display: inline-block;
-      margin-top: 16px;
-
-      input {
-        height: 29px;
+      use {
+        stroke: $layout-link-gray;
       }
     }
 
-    .count-with-arrow {
-      display: inline-block;
-      position: relative;
-      margin-left: 4px;
+    .fa-caret-down {
+      margin-left: 3px;
+    }
+  }
 
-      .arrow {
-        &:before {
-          content: '';
-          display: inline-block;
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-color: transparent;
-          border-style: solid;
-          top: 50%;
-          left: 0;
-          margin-top: -6px;
-          border-width: 7px 5px 7px 0;
-          border-right-color: #dce0e5;
-        }
+  .project-repo-btn-group,
+  .notification-dropdown {
+    margin-left: 10px;
+  }
 
-        &:after {
-          content: '';
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-color: transparent;
-          border-style: solid;
-          top: 50%;
-          left: 1px;
-          margin-top: -9px;
-          border-width: 10px 7px 10px 0;
-          border-right-color: #fff;
-        }
-      }
-      .count {
-        @include btn-gray;
+  .count-buttons {
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .project-clone-holder {
+    display: inline-block;
+
+    input {
+      height: 29px;
+    }
+  }
+
+  .count-with-arrow {
+    display: inline-block;
+    position: relative;
+    margin-left: 4px;
+
+    .arrow {
+      &:before {
+        content: '';
         display: inline-block;
-        background: white;
-        border-radius: 2px;
-        border-width: 1px;
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
         border-style: solid;
-        font-size: 13px;
-        font-weight: 600;
-        line-height: 13px;
-        padding: $gl-vert-padding $gl-padding;
-        letter-spacing: .4px;
-        padding: 7px 14px;
-        text-align: center;
-        vertical-align: middle;
-        touch-action: manipulation;
-        cursor: pointer;
-        background-image: none;
-        white-space: nowrap;
-        margin: 0 10px 0 4px;
+        top: 50%;
+        left: 0;
+        margin-top: -6px;
+        border-width: 7px 5px 7px 0;
+        border-right-color: #dce0e5;
+        pointer-events: none;
+      }
 
-        a {
-          color: inherit;
-        }
-
-        &:hover {
-          background: #fff;
-        }
+      &:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        top: 50%;
+        left: 1px;
+        margin-top: -9px;
+        border-width: 10px 7px 10px 0;
+        border-right-color: #fff;
+        pointer-events: none;
       }
     }
-  }
+    .count {
+      @include btn-gray;
+      display: inline-block;
+      background: white;
+      border-radius: 2px;
+      border-width: 1px;
+      border-style: solid;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 13px;
+      padding: $gl-vert-padding $gl-padding;
+      letter-spacing: .4px;
+      padding: 7px 14px;
+      text-align: center;
+      vertical-align: middle;
+      touch-action: manipulation;
+      background-image: none;
+      white-space: nowrap;
+      margin: 0 10px 0 4px;
 
-  .project-right-buttons {
-    position: absolute;
-    right: 16px;
-    bottom: 0;
-
-    @media (max-width: $screen-md-max) {
-      top: 0;
-    }
-
-    .access-request-button {
-      position: absolute;
-      right: 0;
-      bottom: 61px;
-
-      @media (max-width: $screen-md-max) {
-        position: relative;
-        bottom: 0;
-        margin-right: 10px;
+      a {
+        color: inherit;
       }
-    }
-  }
 
-  @media (max-width: $screen-md-max) {
-    text-align: center;
-
-    .project-info,
-    .project-image-container {
-      width: 100%;
+      &:hover {
+        background: #fff;
+      }
     }
   }
 }
@@ -364,55 +349,90 @@ a.deploy-project-label {
   }
 }
 
-.project-import .btn {
-  float: left;
-  margin-bottom: 10px;
-  margin-right: 10px;
+.project-import {
+  .form-group {
+    margin-bottom: 5px;
+  }
+
+  .import-buttons {
+    padding-left: 0;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+
+    .btn {
+      margin: 0 10px 10px 0;
+      padding: 8px;
+    }
+
+    > div {
+      padding-left: 0;
+
+      &:last-child {
+        margin-bottom: 0;
+
+        .btn {
+          margin-right: 0;
+        }
+      }
+    }
+  }
 }
 
 .project-stats {
-  margin-top: $gl-padding;
-  margin-bottom: 0;
-  padding: 16px 0;
-  background-color: $white-light;
   font-size: 0;
+  border-bottom: 1px solid $border-color;
 
-  ul.nav {
+  .nav {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .nav > li {
     display: inline-block;
-  }
 
-  .nav li {
-    display: inline;
-  }
+    &:not(:last-child) {
+      margin-right: $gl-padding;
+    }
 
-  .nav > li > a {
-    background-color: transparent;
-    margin-right: 12px;
-    padding: 0 10px;
-    font-size: 15px;
-    color: $notes-light-color;
-  }
+    &.project-repo-buttons-right {
+      margin-top: 10px;
 
-  li {
-    display: inline;
-  }
-
-  a {
-    float: left;
-    font-size: 17px;
-  }
-
-  li.missing a {
-    color: #5a6069;
-    border: 1px dashed #dce0e5;
-
-    &:hover {
-      background-color: #f0f2f5;
+      @media (min-width: $screen-md-min) {
+        float: right;
+        margin-top: 0;
+      }
     }
   }
 
-  &.row-content-block.second-block {
-    margin-top: 0;
+  .nav > li > a {
+    padding: 0;
+    background-color: transparent;
+    font-size: 15px;
+    line-height: 29px;
+    color: $notes-light-color;
+
+    &:hover,
+    &:focus {
+      color: darken($notes-light-color, 15%);
+    }
+  }
+
+  li.missing {
+    border: 1px dashed $border-gray-light;
+    border-radius: $border-radius-default;
+
+    a {
+      padding-left: 10px;
+      padding-right: 10px;
+      color: $notes-light-color;
+      display: block;
+    }
+
+    &:hover {
+      background-color: $gray-normal;
+    }
   }
 }
 
@@ -477,6 +497,11 @@ pre.light-well {
       > span {
         margin-left: 10px;
       }
+
+      svg {
+        position: relative;
+        top: 2px;
+      }
     }
   }
 
@@ -501,8 +526,32 @@ pre.light-well {
 }
 
 .project-last-commit {
+  @media (min-width: $screen-sm-min) {
+    margin-top: $gl-padding;
+  }
+
+  &.container-fluid {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    background-color: $background-color;
+    border: 1px solid $border-color;
+    border-right-width: 0;
+    border-left-width: 0;
+
+    @media (min-width: $screen-sm-min) {
+      border-right-width: 1px;
+      border-left-width: 1px;
+    }
+  }
+
+  &.container-limited {
+    @media (min-width: 1281px) {
+      border-radius: $border-radius-base;
+    }
+  }
+
   .ci-status {
-    margin-right: 16px;
+    margin-right: $gl-padding;
   }
 
   .commit-row-message {
@@ -510,19 +559,12 @@ pre.light-well {
   }
 
   .commit_short_id {
-    margin: 0 5px;
+    margin-right: 5px;
     color: $gl-link-color;
     font-weight: 600;
   }
 
   .commit-author-link {
-    margin-left: 7px;
-    text-decoration: none;
-    .avatar {
-      float: none;
-      margin-right: 4px;
-    }
-
     .commit-author-name {
       font-weight: 600;
     }
@@ -545,15 +587,10 @@ pre.light-well {
 }
 
 .git-clone-holder {
-  width: 498px;
+  width: 380px;
 
   .btn-clipboard {
     border: 1px solid $border-color;
-    padding: 6px $gl-padding;
-  }
-
-  .project-home-dropdown + & {
-    margin-right: 45px;
   }
 
   .clone-options {
@@ -614,5 +651,17 @@ pre.light-well {
 
   &.is-done {
     color: $gl-text-green;
+  }
+}
+
+.project-refs-form {
+  .dropdown-menu {
+    width: 300px;
+  }
+}
+
+.compare-form-group {
+  .dropdown-menu {
+    width: 300px;
   }
 }

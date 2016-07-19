@@ -159,7 +159,7 @@ class ProjectWiki
   private
 
   def init_repo(path_with_namespace)
-    gitlab_shell.add_repository(path_with_namespace)
+    gitlab_shell.add_repository(project.repository_storage_path, path_with_namespace)
   end
 
   def commit_details(action, message = nil, title = nil)
@@ -173,7 +173,7 @@ class ProjectWiki
   end
 
   def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, "#{path_with_namespace}.git")
+    @path_to_repo ||= File.join(project.repository_storage_path, "#{path_with_namespace}.git")
   end
 
   def update_project_activity

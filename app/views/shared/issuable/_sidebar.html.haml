@@ -19,7 +19,7 @@
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
-        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
+        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.name if issuable.assignee)}
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 24)
           - else

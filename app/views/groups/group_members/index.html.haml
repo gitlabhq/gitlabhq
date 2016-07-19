@@ -1,7 +1,7 @@
 - page_title "Members"
 
 .group-members-page.prepend-top-default
-  - if current_user && current_user.can?(:admin_group_member, @group)
+  - if can?(current_user, :admin_group_member, @group)
     .panel.panel-default
       .panel-heading
         Add new user to group
@@ -11,14 +11,13 @@
         .new-group-member-holder
           = render "new_group_member"
 
-    = render 'shared/members/requests', membership_source: @group, members: @members.request
+    = render 'shared/members/requests', membership_source: @group, requesters: @requesters
 
   .panel.panel-default
     .panel-heading
       %strong #{@group.name}
       group members
-      %small
-        (#{@members.total_count})
+      %span.badge= @members.size
       .controls
         = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
           .form-group
@@ -26,8 +25,8 @@
           = button_tag class: 'btn', title: 'Search' do
             = icon("search")
     %ul.content-list
-      = render partial: 'shared/members/member', collection: @members.non_request, as: :member
-    = paginate @members.non_request, theme: 'gitlab'
+      = render partial: 'shared/members/member', collection: @members, as: :member
+    = paginate @members, theme: 'gitlab'
 
 :javascript
   $('form.member-search-form').on('submit', function(event) {

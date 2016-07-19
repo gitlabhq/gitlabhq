@@ -4,9 +4,6 @@
 # It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 # the compiled file.
 #
-#= require raphael
-#= require g.raphael
-#= require g.bar
 #= require_tree .
 
 $ ->

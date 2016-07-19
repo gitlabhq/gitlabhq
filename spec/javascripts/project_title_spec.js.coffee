@@ -1,6 +1,6 @@
 #= require bootstrap
 #= require select2
-#= require lib/type_utility
+#= require lib/utils/type_utility
 #= require gl_dropdown
 #= require api
 #= require project_select
@@ -22,7 +22,7 @@ describe 'Project Title', ->
       @projects_data = fixture.load('projects.json')[0]
 
       spyOn(jQuery, 'ajax').and.callFake (req) =>
-        expect(req.url).toBe('/api/v3/projects.json')
+        expect(req.url).toBe('/api/v3/projects.json?simple=true')
         d = $.Deferred()
         d.resolve @projects_data
         d.promise()

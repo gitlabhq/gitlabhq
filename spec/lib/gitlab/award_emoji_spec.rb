@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe Gitlab::AwardEmoji do
   describe '.urls' do
+    after do
+      Gitlab::AwardEmoji.instance_variable_set(:@urls, nil)
+    end
+
     subject { Gitlab::AwardEmoji.urls }
 
     it { is_expected.to be_an_instance_of(Array) }
@@ -12,6 +16,17 @@ describe Gitlab::AwardEmoji do
         subject.each do |hash|
           expect(hash[:name]).to be_an_instance_of(String)
           expect(hash[:path]).to be_an_instance_of(String)
+        end
+      end
+    end
+
+    context 'handles relative root' do
+      it 'includes the full path' do
+        allow(Gitlab::Application.config).to receive(:relative_url_root).and_return('/gitlab')
+
+        subject.each do |hash|
+          expect(hash[:name]).to be_an_instance_of(String)
+          expect(hash[:path]).to start_with('/gitlab')
         end
       end
     end

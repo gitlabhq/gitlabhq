@@ -118,7 +118,7 @@ module IssuesHelper
   end
 
   def emoji_icon(name, unicode = nil, aliases = [], sprite: true)
-    unicode ||= Emoji.emoji_filename(name) rescue ""
+    unicode ||= Gitlab::Emoji.emoji_filename(name) rescue ""
 
     data = {
       aliases: aliases.join(" "),

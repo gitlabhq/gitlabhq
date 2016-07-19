@@ -113,6 +113,10 @@ if Gitlab::Metrics.enabled?
     config.instrument_methods(Banzai::Renderer)
     config.instrument_methods(Banzai::Querying)
 
+    config.instrument_instance_methods(Banzai::ObjectRenderer)
+    config.instrument_instance_methods(Banzai::Redactor)
+    config.instrument_methods(Banzai::NoteRenderer)
+
     [Issuable, Mentionable, Participable].each do |klass|
       config.instrument_instance_methods(klass)
       config.instrument_instance_methods(klass::ClassMethods)
@@ -128,6 +132,11 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(API::Helpers)
 
     config.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
+
+    config.instrument_instance_methods(Rouge::Plugins::Redcarpet)
+    config.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
+
+    config.instrument_methods(Rinku)
   end
 
   GC::Profiler.enable

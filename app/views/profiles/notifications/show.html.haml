@@ -1,4 +1,5 @@
 - page_title "Notifications"
+= render 'profiles/head'
 
 %div
   - if @user.errors.any?
@@ -28,7 +29,7 @@
       = label_tag :global_notification_level, "Global notification level", class: "label-light"
       %br
       .clearfix
-      .form-group.pull-left
+      .form-group.pull-left.global-notification-setting
         = render 'shared/notifications/button', notification_setting: @global_notification_setting, left_align: true
 
       .clearfix

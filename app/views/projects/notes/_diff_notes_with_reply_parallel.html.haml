@@ -8,8 +8,7 @@
       %ul.notes{ data: { discussion_id: note_left.discussion_id } }
         = render partial: "projects/notes/note", collection: notes_left, as: :note
 
-      .discussion-reply-holder
-        = link_to_reply_discussion(note_left, 'old')
+      = link_to_reply_discussion(note_left, 'old')
   - else
     %td.notes_line.old= ""
     %td.notes_content.parallel.old= ""
@@ -20,8 +19,7 @@
       %ul.notes{ data: { discussion_id: note_right.discussion_id } }
         = render partial: "projects/notes/note", collection: notes_right, as: :note
 
-      .discussion-reply-holder
-        = link_to_reply_discussion(note_right, 'new')
+      = link_to_reply_discussion(note_right, 'new')
   - else
     %td.notes_line.new= ""
     %td.notes_content.parallel.new= ""

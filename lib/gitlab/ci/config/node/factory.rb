@@ -5,13 +5,11 @@ module Gitlab
         ##
         # Factory class responsible for fabricating node entry objects.
         #
-        # It uses Fluent Interface pattern to set all necessary attributes.
-        #
         class Factory
           class InvalidFactory < StandardError; end
 
-          def initialize(entry_class)
-            @entry_class = entry_class
+          def initialize(node)
+            @node = node
             @attributes = {}
           end
 
@@ -20,16 +18,27 @@ module Gitlab
             self
           end
 
-          def nullify!
-            @entry_class = Node::Null
-            self
-          end
-
           def create!
             raise InvalidFactory unless @attributes.has_key?(:value)
 
-            @entry_class.new(@attributes[:value]).tap do |entry|
+            fabricate.tap do |entry|
+              entry.key = @attributes[:key]
+              entry.parent = @attributes[:parent]
               entry.description = @attributes[:description]
+            end
+          end
+
+          private
+
+          def fabricate
+            ##
+            # We assume that unspecified entry is undefined.
+            # See issue #18775.
+            #
+            if @attributes[:value].nil?
+              Node::Undefined.new(@node)
+            else
+              @node.new(@attributes[:value])
             end
           end
         end
