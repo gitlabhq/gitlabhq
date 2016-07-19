@@ -403,7 +403,11 @@ To configure the storage driver in Omnibus:
       's3' => {
         'accesskey' => 's3-access-key',
         'secretkey' => 's3-secret-key-for-access-key',
-        'bucket' => 'your-s3-bucket'
+        'bucket' => 'your-s3-bucket',
+        'region' => 'your-s3-region'
+      },
+    'redirect' => {
+        'disable' => true
       }
     }
     ```
@@ -425,6 +429,7 @@ storage:
     accesskey: 'AKIAKIAKI'
     secretkey: 'secret123'
     bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+    region: 'your-s3-region'
   cache:
     blobdescriptor: inmemory
   delete:
