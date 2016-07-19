@@ -34,6 +34,8 @@ Example response:
    "home_page_url" : null,
    "default_snippet_visibility" : 0,
    "domain_whitelist" : [],
+   "domain_blacklist_enabled" : false,
+   "domain_blacklist" : [],
    "created_at" : "2016-01-04T15:44:55.176Z",
    "default_project_visibility" : 0,
    "gravatar_enabled" : true,
@@ -64,6 +66,8 @@ PUT /application/settings
 | `default_project_visibility` | integer | no | What visibility level new projects receive. Can take `0` _(Private)_, `1` _(Internal)_ and `2` _(Public)_ as a parameter. Default is `0`.|
 | `default_snippet_visibility` | integer | no | What visibility level new snippets receive. Can take `0` _(Private)_, `1` _(Internal)_ and `2` _(Public)_ as a parameter. Default is `0`.|
 | `domain_whitelist` | array of strings | no | Force people to use only corporate emails for sign-up. Default is null, meaning there is no restriction. |
+| `domain_blacklist_enabled` | boolean | no | Enable/disable the `domain_blacklist` |
+| `domain_blacklist` | array of strings | yes (if `domain_whitelist_enabled` is `true` | People trying to sign-up with emails from this domain will not be allowed to do so. |
 | `user_oauth_applications` | boolean | no | Allow users to register any application to use GitLab as an OAuth provider |
 | `after_sign_out_path` | string | no | Where to redirect users after logout |
 | `container_registry_token_expire_delay` | integer | no | Container Registry token duration in minutes |
@@ -94,6 +98,8 @@ Example response:
   "default_project_visibility": 1,
   "default_snippet_visibility": 0,
   "domain_whitelist": [],
+  "domain_blacklist_enabled" : false,
+  "domain_blacklist" : [],
   "user_oauth_applications": true,
   "after_sign_out_path": "",
   "container_registry_token_expire_delay": 5,
