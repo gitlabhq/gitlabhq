@@ -24,8 +24,12 @@ module Auth
       token[:access] = names.map do |name|
         { type: 'repository', name: name, actions: %w(*) }
       end
-      
+
       token.encoded
+    end
+
+    def self.token_expire_at
+      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
     end
 
     private
@@ -35,7 +39,7 @@ module Auth
       token.issuer = registry.issuer
       token.audience = params[:service]
       token.subject = current_user.try(:username)
-      token.expire_time = ContainerRegistryAuthenticationService.token_expire_at
+      token.expire_time = self.class.token_expire_at
       token[:access] = accesses.compact
       token
     end
@@ -80,10 +84,6 @@ module Auth
 
     def registry
       Gitlab.config.registry
-    end
-
-    def self.token_expire_at
-      Time.now + current_application_settings.container_registry_token_expire_delay.minutes
     end
   end
 end
