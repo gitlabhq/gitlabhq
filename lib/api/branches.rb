@@ -51,8 +51,9 @@ module API
         developers_can_merge = to_boolean(params[:developers_can_merge])
 
         if protected_branch
-          protected_branch.update(developers_can_push: developers_can_push) unless developers_can_push.nil?
-          protected_branch.update(developers_can_merge: developers_can_merge) unless developers_can_merge.nil?
+          protected_branch.developers_can_push = developers_can_push unless developers_can_push.nil?
+          protected_branch.developers_can_merge = developers_can_merge unless developers_can_merge.nil?
+          protected_branch.save
         else
           user_project.protected_branches.create(name: @branch.name,
                                                  developers_can_push: developers_can_push || false,
