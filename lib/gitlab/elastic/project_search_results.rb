@@ -1,6 +1,9 @@
 module Gitlab
   module Elastic
-    class ProjectSearchResults < SearchResults
+    # Always prefer to use the full class namespace when specifying a
+    # superclass inside a module, because autoloading can occur in a
+    # different order between execution environments.
+    class ProjectSearchResults < Gitlab::Elastic::SearchResults
       attr_reader :project, :repository_ref
 
       def initialize(current_user, project_id, query, repository_ref = nil)
