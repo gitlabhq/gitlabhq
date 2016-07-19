@@ -34,5 +34,11 @@ module Ci
     def existing_build_names
       @existing_build_names ||= pipeline.builds.pluck(:name)
     end
+
+    def trigger_request
+      return @trigger_request if defined?(@trigger_request)
+
+      @trigger_request ||= pipeline.trigger_requests.first
+    end
   end
 end

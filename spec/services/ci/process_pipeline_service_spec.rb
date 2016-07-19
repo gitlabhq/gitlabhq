@@ -3,7 +3,13 @@ require 'spec_helper'
 describe Ci::ProcessPipelineService, services: true do
   let(:pipeline) { create(:ci_pipeline, ref: 'master') }
   let(:user) { create(:user) }
-  let(:builds) { pipeline.builds.where.not(status: [:created, :skipped]) }
+  let(:all_builds) { pipeline.builds }
+  let(:builds) { all_builds.where.not(status: [:created, :skipped]) }
+  let(:config) { nil }
+
+  before do
+    allow(pipeline).to receive(:ci_yaml_file).and_return(config)
+  end
 
   describe '#execute' do
     def create_builds
@@ -219,30 +225,64 @@ describe Ci::ProcessPipelineService, services: true do
     end
 
     context 'creates a builds from .gitlab-ci.yml' do
+      let(:config) do
+        YAML.dump({
+          rspec: {
+            stage: 'test',
+            script: 'rspec'
+          },
+          rubocop: {
+            stage: 'test',
+            script: 'rubocop'
+          },
+          deploy: {
+            stage: 'deploy',
+            script: 'deploy'
+          }
+        })
+      end
+
       # Using stubbed .gitlab-ci.yml created in commit factory
       #
 
       before do
-        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage_idx: 0)
-        create(:ci_build, :created, pipeline: pipeline, name: 'rspec', stage_idx: 1)
-        create(:ci_build, :created, pipeline: pipeline, name: 'rubocop', stage_idx: 1)
-        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 2)
+        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage: 'build', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage: 'build', stage_idx: 0)
       end
 
       it 'when processing a pipeline' do
+        # Currently we have two builds with state created
+        expect(builds.count).to eq(0)
+        expect(all_builds.count).to eq(2)
+
+        # Create builds will mark the created as pending
         expect(create_builds).to be_truthy
+        expect(builds.count).to eq(2)
+        expect(all_builds.count).to eq(2)
+
+        # When we builds succeed we will create a rest of pipeline from .gitlab-ci.yml
+        # We will have 2 succeeded, 2 pending (from stage test), total 5 (one more build from deploy)
         succeed_pending
+        expect(create_builds).to be_truthy
         expect(builds.success.count).to eq(2)
+        expect(builds.pending.count).to eq(2)
+        expect(all_builds.count).to eq(5)
 
-        expect(create_builds).to be_truthy
+        # When we succeed the 2 pending from stage test,
+        # We will queue a deploy stage, no new builds will be created
         succeed_pending
+        expect(create_builds).to be_truthy
+        expect(builds.pending.count).to eq(1)
         expect(builds.success.count).to eq(4)
+        expect(all_builds.count).to eq(5)
 
-        expect(create_builds).to be_truthy
+        # When we succeed last pending build, we will have a total of 5 succeeded builds
         succeed_pending
-        expect(builds.success.count).to eq(5)
+        expect(create_builds).to be_truthy
+        expect(builds.success.count).to eq(4)
+        expect(all_builds.count).to eq(5)
 
+        # No new builds will be processed
         expect(create_builds).to be_falsey
       end
     end
