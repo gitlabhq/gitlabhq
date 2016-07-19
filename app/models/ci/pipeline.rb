@@ -69,6 +69,10 @@ module Ci
       !tag?
     end
 
+    def manual_actions
+      builds.latest.manual_actions
+    end
+
     def retryable?
       builds.latest.any? do |build|
         build.failed? && build.retryable?
