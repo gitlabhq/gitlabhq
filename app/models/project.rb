@@ -431,7 +431,7 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD or SHA, can only be branch/tag name
   def latest_success_pipeline_for(ref = 'master')
-    pipelines.where(ref: ref).success.latest
+    pipelines.where(ref: ref).success.order(id: :desc)
   end
 
   # ref can't be HEAD or SHA, can only be branch/tag name

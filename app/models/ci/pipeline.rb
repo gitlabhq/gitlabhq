@@ -20,14 +20,6 @@ module Ci
     after_touch :update_state
     after_save :keep_around_commits
 
-    scope :latest, -> do
-      max_id = unscope(:select).
-                 select("max(#{table_name}.id)").
-                 group(:ref)
-
-      where(id: max_id)
-    end
-
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -226,7 +218,7 @@ module Ci
 
     def keep_around_commits
       return unless project
-      
+
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
     end
