@@ -15,7 +15,8 @@ module API
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
         branches = user_project.repository.branches.sort_by(&:name)
-        present branches, with: Entities::RepoObject, project: user_project
+
+        present branches, with: Entities::RepoBranch, project: user_project
       end
 
       # Get a single branch
@@ -28,7 +29,8 @@ module API
       get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
         @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
         not_found!("Branch") unless @branch
-        present @branch, with: Entities::RepoObject, project: user_project
+
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Protect a single branch
@@ -60,7 +62,7 @@ module API
                                                  developers_can_merge: developers_can_merge || false)
         end
 
-        present @branch, with: Entities::RepoObject, project: user_project
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Unprotect a single branch
@@ -79,7 +81,7 @@ module API
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
-        present @branch, with: Entities::RepoObject, project: user_project
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Create branch
@@ -97,7 +99,7 @@ module API
 
         if result[:status] == :success
           present result[:branch],
-                  with: Entities::RepoObject,
+                  with: Entities::RepoBranch,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

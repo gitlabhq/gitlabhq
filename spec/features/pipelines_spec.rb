@@ -63,6 +63,20 @@ feature "Pipelines", feature: true do
       end
     end
 
+    context 'with manual actions' do
+      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'manual build', stage: 'test', commands: 'test') }
+
+      before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+      it { expect(page).to have_link('Manual build') }
+
+      context 'when playing' do
+        before { click_link('Manual build') }
+
+        it { expect(manual.reload).to be_pending }
+      end
+    end
+
     context 'for generic statuses' do
       context 'when running' do
         let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
@@ -118,6 +132,7 @@ feature "Pipelines", feature: true do
       @success = create(:ci_build, :success, pipeline: pipeline, stage: 'build', name: 'build')
       @failed = create(:ci_build, :failed, pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
       @running = create(:ci_build, :running, pipeline: pipeline, stage: 'deploy', name: 'deploy')
+      @manual = create(:ci_build, :manual, pipeline: pipeline, stage: 'deploy', name: 'manual build')
       @external = create(:generic_commit_status, status: 'success', pipeline: pipeline, name: 'jenkins', stage: 'external')
     end
 
@@ -132,6 +147,7 @@ feature "Pipelines", feature: true do
       expect(page).to have_content(@external.id)
       expect(page).to have_content('Retry failed')
       expect(page).to have_content('Cancel running')
+      expect(page).to have_link('Play')
     end
 
     context 'retrying builds' do
@@ -154,6 +170,12 @@ feature "Pipelines", feature: true do
         it { expect(page).not_to have_content('Cancel running') }
         it { expect(page).to have_selector('.ci-canceled') }
       end
+    end
+
+    context 'playing manual build' do
+      before { click_link('Play') }
+
+      it { expect(@manual.reload).to be_pending }
     end
   end
 

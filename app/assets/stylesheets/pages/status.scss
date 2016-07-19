@@ -41,6 +41,14 @@
       color: $blue-normal;
       border-color: $blue-normal;
     }
+
+    svg {
+      height: 13px;
+      width: 13px;
+      position: relative;
+      top: 1px;
+      margin: 0 3px;
+    }
   }
 
   .ci-status-icon-success {

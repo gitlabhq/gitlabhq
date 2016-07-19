@@ -89,11 +89,10 @@ Rails.application.routes.draw do
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
-
-  get 'help'                  => 'help#index'
-  get 'help/*path'            => 'help#show', as: :help_page
-  get 'help/shortcuts'
-  get 'help/ui' => 'help#ui'
+  get 'help'           => 'help#index'
+  get 'help/shortcuts' => 'help#shortcuts'
+  get 'help/ui'        => 'help#ui'
+  get 'help/*path'     => 'help#show', as: :help_page
 
   #
   # Global snippets
@@ -755,6 +754,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
+            post :play
             post :erase
             get :trace
             get :raw

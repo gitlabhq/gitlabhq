@@ -26,18 +26,20 @@ module CiStatusHelper
     icon_name =
       case status
       when 'success'
-        'check'
+        'icon_status_success'
+      when 'success_with_warnings'
+        'icon_status_warning'
       when 'failed'
-        'close'
+        'icon_status_failed'
       when 'pending'
-        'clock-o'
+        'icon_status_pending'
       when 'running'
-        'spinner'
+        'icon_status_running'
       else
-        'circle'
+        'icon_status_cancel'
       end
 
-    icon(icon_name + ' fw')
+    custom_icon(icon_name)
   end
 
   def render_commit_status(commit, tooltip_placement: 'auto left', cssclass: '')

@@ -44,12 +44,12 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'download_access_check' do
+    subject { access.check('git-upload-pack') }
+
     describe 'master permissions' do
       before { project.team << [user, :master] }
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_truthy }
       end
     end
@@ -58,8 +58,6 @@ describe Gitlab::GitAccess, lib: true do
       before { project.team << [user, :guest] }
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
@@ -71,16 +69,12 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
 
     describe 'without acccess to project' do
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
@@ -90,10 +84,31 @@ describe Gitlab::GitAccess, lib: true do
       let(:actor) { key }
 
       context 'pull code' do
-        before { key.projects << project }
-        subject { access.download_access_check }
+        context 'when project is authorized' do
+          before { key.projects << project }
 
-        it { expect(subject.allowed?).to be_truthy }
+          it { expect(subject).to be_allowed }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public) }
+
+            it { expect(subject).to be_allowed }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+        end
       end
     end
   end
@@ -238,6 +253,41 @@ describe Gitlab::GitAccess, lib: true do
         before { create(:protected_branch, name: protected_branch_name, developers_can_merge: true, developers_can_push: true, project: project) }
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
+      end
+    end
+
+    describe 'deploy key permissions' do
+      let(:key) { create(:deploy_key) }
+      let(:actor) { key }
+
+      context 'push code' do
+        subject { access.check('git-receive-pack') }
+
+        context 'when project is authorized' do
+          before { key.projects << project }
+
+          it { expect(subject).not_to be_allowed }
+        end
+
+        context 'when unauthorized' do
+          context 'to public project' do
+            let(:project) { create(:project, :public) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'to internal project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'to private project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+        end
       end
     end
   end

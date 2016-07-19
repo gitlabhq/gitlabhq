@@ -1,10 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Limit git rev-list output count to one in forced push check
 
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
+  - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
   - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
@@ -24,6 +26,7 @@ v 8.10.0 (unreleased)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Upgrade to Rails 4.2.7. !5236
+  - Allow to pull code with deploy key from public projects
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
@@ -36,12 +39,15 @@ v 8.10.0 (unreleased)
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Added Rake task for tracking deployments !5320
   - Fix fetching LFS objects for private CI projects
   - Add the new 2016 Emoji! Adds 72 new emoji including bacon, facepalm, and selfie. !5237
   - Add syntax for multiline blockquote using `>>>` fence !3954
   - Fix viewing notification settings when a project is pending deletion
   - Updated compare dropdown menus to use GL dropdown
+  - Redirects back to issue after clicking login link
   - Eager load award emoji on notes
+  - Allow to define manual actions/builds on Pipelines and Environments
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
@@ -129,6 +135,7 @@ v 8.10.0 (unreleased)
   - Fix MR diff encoding issues exporting GitLab projects
   - Move builds settings out of project settings and rename Pipelines
   - Add builds badge to Pipelines settings page
+  - Export and import avatar as part of project import/export
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154

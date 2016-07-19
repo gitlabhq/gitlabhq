@@ -15,6 +15,7 @@ module Ci
     scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
+    scope :manual_actions, ->() { where(when: :manual) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -91,6 +92,29 @@ module Ci
       end
     end
 
+    def manual?
+      self.when == 'manual'
+    end
+
+    def other_actions
+      pipeline.manual_actions.where.not(id: self)
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      # Try to queue a current build
+      if self.queue
+        self.update(user: current_user)
+        self
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
+      end
+    end
+
     def retryable?
       project.builds_enabled? && commands.present? && complete?
     end
@@ -121,12 +145,7 @@ module Ci
     end
 
     def variables
-      variables = []
-      variables += predefined_variables
-      variables += yaml_variables if yaml_variables
-      variables += project_variables
-      variables += trigger_variables
-      variables
+      predefined_variables + yaml_variables + project_variables + trigger_variables
     end
 
     def merge_request
@@ -385,6 +404,14 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def when
+      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+    end
+
+    def yaml_variables
+      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+    end
+
     private
 
     def update_artifacts_size
@@ -426,6 +453,12 @@ module Ci
       variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
       variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
       variables
+    end
+
+    def build_attributes_from_config
+      return {} unless pipeline.config_processor
+      
+      pipeline.config_processor.build_attributes(name)
     end
   end
 end
