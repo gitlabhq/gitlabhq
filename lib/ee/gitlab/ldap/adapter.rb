@@ -22,7 +22,7 @@ module EE
           options.merge!(size: size) if size
 
           ldap_search(options).map do |entry|
-            Group.new(entry, self)
+            LDAP::Group.new(entry, self)
           end
         end
 
