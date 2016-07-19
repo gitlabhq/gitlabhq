@@ -1,5 +1,5 @@
 class Gitlab::Seeder::Builds
-  STAGES = %w(build notify_build test notify_test deploy notify_deploy)
+  STAGES = %w[build notify_build test notify_test deploy notify_deploy]
   
   def initialize(project)
     @project = project

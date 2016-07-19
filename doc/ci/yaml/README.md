@@ -530,7 +530,7 @@ The above script will:
 
 1. Execute `cleanup_build_job` only when `build_job` fails
 2. Always execute `cleanup_job` as the last step in pipeline
-3. Allow you to manually execute `deploy_job` form GitLab
+3. Allow you to manually execute `deploy_job` from GitLab
 
 #### Manual actions
 

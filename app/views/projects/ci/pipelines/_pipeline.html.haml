@@ -70,7 +70,7 @@
                   %li
                     = link_to play_namespace_project_build_path(@project.namespace, @project, build), method: :post, rel: 'nofollow' do
                       = icon("play")
-                      %span= build.name.capitalize
+                      %span= build.name.humanize
           - if artifacts.present?
             .btn-group
               %a.dropdown-toggle.btn.btn-default.build-artifacts{type: 'button', 'data-toggle' => 'dropdown'}

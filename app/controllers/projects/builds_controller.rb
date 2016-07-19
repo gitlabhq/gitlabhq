@@ -49,18 +49,14 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def retry
-    unless @build.retryable?
-      return render_404
-    end
+    return render_404 unless @build.retryable?
 
     build = Ci::Build.retry(@build, current_user)
     redirect_to build_path(build)
   end
 
   def play
-    unless @build.playable?
-      return render_404
-    end
+    return render_404 unless @build.playable?
 
     build = @build.play(current_user)
     redirect_to build_path(build)
