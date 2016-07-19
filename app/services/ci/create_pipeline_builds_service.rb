@@ -5,7 +5,7 @@ module Ci
     def execute(pipeline)
       @pipeline = pipeline
 
-      return unless pipeline.config_processor
+      return unless pipeline.config_builds_attributes
 
       new_builds.map do |build_attributes|
         create_build(build_attributes)
@@ -27,24 +27,12 @@ module Ci
     end
 
     def new_builds
-      @new_builds ||= builds_attributes.
+      @new_builds ||= pipeline.config_builds_attributes.
         reject { |build| existing_build_names.include?(build[:name]) }
     end
 
     def existing_build_names
       @existing_build_names ||= pipeline.builds.pluck(:name)
-    end
-
-    def builds_attributes
-      pipeline.config_processor.
-        builds_for_ref(ref, tag?, trigger_request).
-        sort_by { |build| build[:stage_idx] }
-    end
-
-    def trigger_request
-      return @trigger_request if defined?(@trigger_request)
-
-      @trigger_request ||= pipeline.trigger_requests.first
     end
   end
 end

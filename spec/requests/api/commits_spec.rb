@@ -71,25 +71,25 @@ describe API::API, api: true  do
 
   describe "GET /projects:id/repository/commits/:sha" do
     context "authorized user" do
-      it "should return a commit by sha" do
+      it "return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(project.repository.commit.id)
         expect(json_response['title']).to eq(project.repository.commit.title)
       end
 
-      it "should return a 404 error if not found" do
+      it "return a 404 error if not found" do
         get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
         expect(response).to have_http_status(404)
       end
 
-      it "should return nil for commit without CI" do
+      it "returns nil for commit without CI" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
-      it "should return status for CI when pipeline succeeded" do
+      it "returns status for CI when pipeline succeeded" do
         pipeline = project.ensure_pipeline(project.repository.commit.sha, 'master')
         pipeline.update(status: 'success')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
@@ -97,7 +97,7 @@ describe API::API, api: true  do
         expect(json_response['status']).to eq(pipeline.status)
       end
 
-      it "should return status for CI when pipeline is created" do
+      it "returns status for CI when pipeline is created" do
         project.ensure_pipeline(project.repository.commit.sha, 'master')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response).to have_http_status(200)

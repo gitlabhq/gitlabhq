@@ -20,7 +20,7 @@ module Ci
     private
 
     def create_builds!
-      Ci::CreatePipelineBuildsService.new(project, user).execute(pipeline)
+      Ci::CreatePipelineBuildsService.new(project, current_user).execute(pipeline)
     end
 
     def process_stage(index)

@@ -40,7 +40,7 @@ module Ci
         return error('Creation of pipeline is skipped', save: save_on_errors)
       end
 
-      unless pipeline.builds_attributes.present?
+      unless pipeline.config_builds_attributes.present?
         return error('No builds for this pipeline.')
       end
 

@@ -116,6 +116,14 @@ module Ci
       end
     end
 
+    def config_builds_attributes
+      return unless config_processor
+
+      config_processor.
+        builds_for_ref(ref, tag?, trigger_requests.first).
+        sort_by { |build| build[:stage_idx] }
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
