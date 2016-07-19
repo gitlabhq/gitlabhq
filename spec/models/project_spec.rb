@@ -1114,6 +1114,49 @@ describe Project, models: true do
     end
   end
 
+  describe '#latest_successful_builds_for' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline, project: project,
+                           sha: project.commit.id,
+                           ref: project.default_branch,
+                           status: 'success')
+    end
+
+    let!(:build) do
+      create(:ci_build, :artifacts, :success, pipeline: pipeline)
+    end
+
+    context 'with succeed pipeline' do
+      it 'returns builds for ref for default_branch' do
+        builds = project.latest_successful_builds_for
+
+        expect(builds).to contain_exactly(build)
+      end
+
+      it 'returns empty relation if the build cannot be found' do
+        builds = project.latest_successful_builds_for('TAIL')
+
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
+        expect(builds).to be_empty
+      end
+    end
+
+    context 'with pending pipeline' do
+      before do
+        pipeline.update(status: 'pending')
+      end
+
+      it 'returns empty relation' do
+        builds = project.latest_successful_builds_for
+
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
+        expect(builds).to be_empty
+      end
+    end
+  end
+
   describe '.where_paths_in' do
     context 'without any paths' do
       it 'returns an empty relation' do
