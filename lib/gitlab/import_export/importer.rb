@@ -9,7 +9,7 @@ module Gitlab
       end
 
       def execute
-        if import_file && check_version! && [project_tree, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
+        if import_file && check_version! && [project_tree, avatar_restorer, repo_restorer, wiki_restorer, uploads_restorer].all?(&:restore)
           project_tree.restored_project
         else
           raise Projects::ImportService::Error.new(@shared.errors.join(', '))
@@ -33,6 +33,10 @@ module Gitlab
         @project_tree ||= Gitlab::ImportExport::ProjectTreeRestorer.new(user: @current_user,
                                                                         shared: @shared,
                                                                         project: @project)
+      end
+
+      def avatar_restorer
+        Gitlab::ImportExport::AvatarRestorer.new(project: project_tree.restored_project, shared: @shared)
       end
 
       def repo_restorer
