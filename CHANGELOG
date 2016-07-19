@@ -34,6 +34,7 @@ v 8.10.0 (unreleased)
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
   - Add Spring EmojiOne updates.
+  - Added Rake task for tracking deployments !5320
   - Fix fetching LFS objects for private CI projects
   - Add the new 2016 Emoji! Adds 72 new emoji including bacon, facepalm, and selfie. !5237
   - Add syntax for multiline blockquote using `>>>` fence !3954
