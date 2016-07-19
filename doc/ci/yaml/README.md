@@ -49,6 +49,7 @@ If you want a quick introduction to GitLab CI, follow our
 ---
 
 ## .gitlab-ci.yml
+{: #gitlab-ci-yml}
 
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
 file (`.gitlab-ci.yml`) for the project configuration. It is placed in the root
