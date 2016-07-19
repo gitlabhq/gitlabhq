@@ -20,7 +20,7 @@ module TokenAuthenticatable
       @token_fields || []
     end
 
-    private
+    private # rubocop:disable Lint/UselessAccessModifier
 
     def add_authentication_token_field(token_field)
       @token_fields = [] unless @token_fields
