@@ -2,7 +2,9 @@
 #
 # Used for creating system notes (e.g., when a user references a merge request
 # from an issue, an issue's assignee changes, an issue is closed, etc.)
-class SystemNoteService
+module SystemNoteService
+  extend self
+
   # Called when commits are added to a Merge Request
   #
   # noteable         - Noteable object
@@ -15,7 +17,7 @@ class SystemNoteService
   # See new_commit_summary and existing_commit_summary.
   #
   # Returns the created Note object
-  def self.add_commits(noteable, project, author, new_commits, existing_commits = [], oldrev = nil)
+  def add_commits(noteable, project, author, new_commits, existing_commits = [], oldrev = nil)
     total_count  = new_commits.length + existing_commits.length
     commits_text = "#{total_count} commit".pluralize(total_count)
 
@@ -40,7 +42,7 @@ class SystemNoteService
   #   "Reassigned to @rspeicher"
   #
   # Returns the created Note object
-  def self.change_assignee(noteable, project, author, assignee)
+  def change_assignee(noteable, project, author, assignee)
     body = assignee.nil? ? 'Assignee removed' : "Reassigned to #{assignee.to_reference}"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -63,7 +65,7 @@ class SystemNoteService
   #   "Removed ~5 label"
   #
   # Returns the created Note object
-  def self.change_label(noteable, project, author, added_labels, removed_labels)
+  def change_label(noteable, project, author, added_labels, removed_labels)
     labels_count = added_labels.count + removed_labels.count
 
     references     = ->(label) { label.to_reference(format: :id) }
@@ -101,7 +103,7 @@ class SystemNoteService
   #   "Miletone changed to 7.11"
   #
   # Returns the created Note object
-  def self.change_milestone(noteable, project, author, milestone)
+  def change_milestone(noteable, project, author, milestone)
     body = 'Milestone '
     body += milestone.nil? ? 'removed' : "changed to #{milestone.to_reference(project)}"
 
@@ -123,7 +125,7 @@ class SystemNoteService
   #   "Status changed to closed by bc17db76"
   #
   # Returns the created Note object
-  def self.change_status(noteable, project, author, status, source)
+  def change_status(noteable, project, author, status, source)
     body = "Status changed to #{status}"
     body << " by #{source.gfm_reference(project)}" if source
 
@@ -131,26 +133,26 @@ class SystemNoteService
   end
 
   # Called when 'merge when build succeeds' is executed
-  def self.merge_when_build_succeeds(noteable, project, author, last_commit)
+  def merge_when_build_succeeds(noteable, project, author, last_commit)
     body = "Enabled an automatic merge when the build for #{last_commit.to_reference(project)} succeeds"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
   # Called when 'merge when build succeeds' is canceled
-  def self.cancel_merge_when_build_succeeds(noteable, project, author)
+  def cancel_merge_when_build_succeeds(noteable, project, author)
     body = 'Canceled the automatic merge'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
-  def self.remove_merge_request_wip(noteable, project, author)
+  def remove_merge_request_wip(noteable, project, author)
     body = 'Unmarked this merge request as a Work In Progress'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
-  def self.add_merge_request_wip(noteable, project, author)
+  def add_merge_request_wip(noteable, project, author)
     body = 'Marked this merge request as a **Work In Progress**'
 
     create_note(noteable: noteable, project: project, author: author, note: body)
@@ -168,7 +170,7 @@ class SystemNoteService
   #   "Title changed from **Old** to **New**"
   #
   # Returns the created Note object
-  def self.change_title(noteable, project, author, old_title)
+  def change_title(noteable, project, author, old_title)
     new_title = noteable.title.dup
 
     old_diffs, new_diffs = Gitlab::Diff::InlineDiff.new(old_title, new_title).inline_diffs
@@ -191,7 +193,7 @@ class SystemNoteService
   # "Made the issue confidential"
   #
   # Returns the created Note object
-  def self.change_issue_confidentiality(issue, project, author)
+  def change_issue_confidentiality(issue, project, author)
     body = issue.confidential ? 'Made the issue confidential' : 'Made the issue visible'
     create_note(noteable: issue, project: project, author: author, note: body)
   end
@@ -210,7 +212,7 @@ class SystemNoteService
   #   "Target branch changed from `Old` to `New`"
   #
   # Returns the created Note object
-  def self.change_branch(noteable, project, author, branch_type, old_branch, new_branch)
+  def change_branch(noteable, project, author, branch_type, old_branch, new_branch)
     body = "#{branch_type} branch changed from `#{old_branch}` to `#{new_branch}`".capitalize
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
@@ -229,7 +231,7 @@ class SystemNoteService
   #   "Restored target branch `feature`"
   #
   # Returns the created Note object
-  def self.change_branch_presence(noteable, project, author, branch_type, branch, presence)
+  def change_branch_presence(noteable, project, author, branch_type, branch, presence)
     verb =
       if presence == :add
         'restored'
@@ -245,7 +247,7 @@ class SystemNoteService
   # Example note text:
   #
   #   "Started branch `201-issue-branch-button`"
-  def self.new_issue_branch(issue, project, author, branch)
+  def new_issue_branch(issue, project, author, branch)
     h = Gitlab::Routing.url_helpers
     link = h.namespace_project_compare_url(project.namespace, project, from: project.default_branch, to: branch)
 
@@ -270,7 +272,7 @@ class SystemNoteService
   # See cross_reference_note_content.
   #
   # Returns the created Note object
-  def self.cross_reference(noteable, mentioner, author)
+  def cross_reference(noteable, mentioner, author)
     return if cross_reference_disallowed?(noteable, mentioner)
 
     gfm_reference = mentioner.gfm_reference(noteable.project)
@@ -294,7 +296,7 @@ class SystemNoteService
     end
   end
 
-  def self.cross_reference?(note_text)
+  def cross_reference?(note_text)
     note_text.start_with?(cross_reference_note_prefix)
   end
 
@@ -308,7 +310,7 @@ class SystemNoteService
   # mentioner - Mentionable object
   #
   # Returns Boolean
-  def self.cross_reference_disallowed?(noteable, mentioner)
+  def cross_reference_disallowed?(noteable, mentioner)
     return true if noteable.is_a?(ExternalIssue) && !noteable.project.jira_tracker_active?
     return false unless mentioner.is_a?(MergeRequest)
     return false unless noteable.is_a?(Commit)
@@ -328,7 +330,7 @@ class SystemNoteService
   #
   # Returns Boolean
 
-  def self.cross_reference_exists?(noteable, mentioner)
+  def cross_reference_exists?(noteable, mentioner)
     # Initial scope should be system notes of this noteable type
     notes = Note.system.where(noteable_type: noteable.class)
 
@@ -342,9 +344,60 @@ class SystemNoteService
     notes_for_mentioner(mentioner, noteable, notes).count > 0
   end
 
+  # Build an Array of lines detailing each commit added in a merge request
+  #
+  # new_commits - Array of new Commit objects
+  #
+  # Returns an Array of Strings
+  def new_commit_summary(new_commits)
+    new_commits.collect do |commit|
+      "* #{commit.short_id} - #{escape_html(commit.title)}"
+    end
+  end
+
+  # Called when the status of a Task has changed
+  #
+  # noteable  - Noteable object.
+  # project   - Project owning noteable
+  # author    - User performing the change
+  # new_task  - TaskList::Item object.
+  #
+  # Example Note text:
+  #
+  #   "Soandso marked the task Whatever as completed."
+  #
+  # Returns the created Note object
+  def change_task_status(noteable, project, author, new_task)
+    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
+    body = "Marked the task **#{new_task.source}** as #{status_label}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
+  # Called when noteable has been moved to another project
+  #
+  # direction    - symbol, :to or :from
+  # noteable     - Noteable object
+  # noteable_ref - Referenced noteable
+  # author       - User performing the move
+  #
+  # Example Note text:
+  #
+  #   "Moved to some_namespace/project_new#11"
+  #
+  # Returns the created Note object
+  def noteable_moved(noteable, project, noteable_ref, author, direction:)
+    unless [:to, :from].include?(direction)
+      raise ArgumentError, "Invalid direction `#{direction}`"
+    end
+
+    cross_reference = noteable_ref.to_reference(project)
+    body = "Moved #{direction} #{cross_reference}"
+    create_note(noteable: noteable, project: project, author: author, note: body)
+  end
+
   private
 
-  def self.notes_for_mentioner(mentioner, noteable, notes)
+  def notes_for_mentioner(mentioner, noteable, notes)
     if mentioner.is_a?(Commit)
       notes.where('note LIKE ?', "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}")
     else
@@ -353,27 +406,16 @@ class SystemNoteService
     end
   end
 
-  def self.create_note(args = {})
+  def create_note(args = {})
     Note.create(args.merge(system: true))
   end
 
-  def self.cross_reference_note_prefix
+  def cross_reference_note_prefix
     'mentioned in '
   end
 
-  def self.cross_reference_note_content(gfm_reference)
+  def cross_reference_note_content(gfm_reference)
     "#{cross_reference_note_prefix}#{gfm_reference}"
-  end
-
-  # Build an Array of lines detailing each commit added in a merge request
-  #
-  # new_commits - Array of new Commit objects
-  #
-  # Returns an Array of Strings
-  def self.new_commit_summary(new_commits)
-    new_commits.collect do |commit|
-      "* #{commit.short_id} - #{escape_html(commit.title)}"
-    end
   end
 
   # Build a single line summarizing existing commits being added in a merge
@@ -392,7 +434,7 @@ class SystemNoteService
   #   "* ea0f8418 - 1 commit from branch `feature`"
   #
   # Returns a newline-terminated String
-  def self.existing_commit_summary(noteable, existing_commits, oldrev = nil)
+  def existing_commit_summary(noteable, existing_commits, oldrev = nil)
     return '' if existing_commits.empty?
 
     count = existing_commits.size
@@ -415,47 +457,7 @@ class SystemNoteService
     "* #{commit_ids} - #{commits_text} from branch `#{branch}`\n"
   end
 
-  # Called when the status of a Task has changed
-  #
-  # noteable  - Noteable object.
-  # project   - Project owning noteable
-  # author    - User performing the change
-  # new_task  - TaskList::Item object.
-  #
-  # Example Note text:
-  #
-  #   "Soandso marked the task Whatever as completed."
-  #
-  # Returns the created Note object
-  def self.change_task_status(noteable, project, author, new_task)
-    status_label = new_task.complete? ? Taskable::COMPLETED : Taskable::INCOMPLETE
-    body = "Marked the task **#{new_task.source}** as #{status_label}"
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
-  # Called when noteable has been moved to another project
-  #
-  # direction    - symbol, :to or :from
-  # noteable     - Noteable object
-  # noteable_ref - Referenced noteable
-  # author       - User performing the move
-  #
-  # Example Note text:
-  #
-  #   "Moved to some_namespace/project_new#11"
-  #
-  # Returns the created Note object
-  def self.noteable_moved(noteable, project, noteable_ref, author, direction:)
-    unless [:to, :from].include?(direction)
-      raise ArgumentError, "Invalid direction `#{direction}`"
-    end
-
-    cross_reference = noteable_ref.to_reference(project)
-    body = "Moved #{direction} #{cross_reference}"
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
-  def self.escape_html(text)
+  def escape_html(text)
     Rack::Utils.escape_html(text)
   end
 end
