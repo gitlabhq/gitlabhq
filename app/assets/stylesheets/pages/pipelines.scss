@@ -1,7 +1,7 @@
 .pipelines {
   .stage {
-    max-width: 80px;
-    width: 80px;
+    max-width: 90px;
+    width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -30,12 +30,16 @@
 }
 
 .table.builds {
-  min-width: 1100px;
+  min-width: 1200px;
 
   tr {
     th {
-      padding: 16px;
+      padding: 16px 8px;
       border: none;
+    }
+
+    td {
+      padding: 10px 8px;
     }
   }
 
@@ -53,9 +57,8 @@
   .branch-commit {
 
     .branch-name {
-      margin-left: 8px;
       font-weight: bold;
-      max-width: 180px;
+      max-width: 150px;
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
@@ -64,10 +67,15 @@
     }
 
     svg {
-      margin: 0 6px;
       height: 14px;
       width: auto;
       vertical-align: middle;
+      fill: $table-text-gray;
+    }
+
+    .fa {
+      font-size: 12px;
+      color: $table-text-gray;
     }
 
     .commit-id {
@@ -100,6 +108,22 @@
     }
   }
 
+  .icon-container {
+    display: inline-block;
+    text-align: right;
+    width: 20px;
+
+    .fa {
+      position: relative;
+      right: 3px;
+    }
+
+    svg {
+      position: relative;
+      right: 1px;
+    }
+  }
+
   .duration,
   .finished-at {
     color: $table-text-gray;
@@ -107,21 +131,19 @@
 
     .fa {
       font-size: 12px;
+      margin-right: 4px;
     }
 
     svg {
-      height: 12px;
-      width: auto;
+      width: 12px;
+      height: auto;
       vertical-align: middle;
-    }
-
-    .fa,
-    svg {
-      margin-right: 5px;
+      margin-right: 4px;
     }
   }
 
   .pipeline-actions {
+    min-width: 140px;
 
     .btn {
       margin: 0;
