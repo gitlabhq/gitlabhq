@@ -1141,7 +1141,7 @@ EOT
         config = YAML.dump({ rspec: { script: "test", when: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure, always or manual")
       end
 
       it "returns errors if job artifacts:name is not an a string" do

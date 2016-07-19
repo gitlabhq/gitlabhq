@@ -39,6 +39,8 @@
           %span.label.label-danger allowed to fail
         - if defined?(retried) && retried
           %span.label.label-warning retried
+        - if build.manual?
+          %span.label.label-info manual
 
 
   - if defined?(runner) && runner
@@ -79,6 +81,11 @@
         - if build.active?
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
-        - elsif defined?(allow_retry) && allow_retry && build.retryable?
-          = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
-            = icon('repeat')
+        - elsif defined?(allow_retry) && allow_retry
+          - if build.retryable?
+            = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
+              = icon('repeat')
+          - elsif build.playable?
+            = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
+              = icon('play')
+
