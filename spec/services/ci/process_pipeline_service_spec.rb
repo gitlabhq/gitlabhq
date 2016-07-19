@@ -6,9 +6,6 @@ describe Ci::ProcessPipelineService, services: true do
   let(:builds) { pipeline.builds.where.not(status: [:created, :skipped]) }
 
   describe '#execute' do
-    # Using stubbed .gitlab-ci.yml created in commit factory
-    #
-
     def create_builds
       described_class.new(pipeline.project, user).execute(pipeline)
     end
@@ -218,6 +215,35 @@ describe Ci::ProcessPipelineService, services: true do
         def manual_actions
           pipeline.manual_actions
         end
+      end
+    end
+
+    context 'creates a builds from .gitlab-ci.yml' do
+      # Using stubbed .gitlab-ci.yml created in commit factory
+      #
+
+      before do
+        create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage_idx: 0)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rspec', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'rubocop', stage_idx: 1)
+        create(:ci_build, :created, pipeline: pipeline, name: 'deploy', stage_idx: 2)
+      end
+
+      it 'when processing a pipeline' do
+        expect(create_builds).to be_truthy
+        succeed_pending
+        expect(builds.success.count).to eq(2)
+
+        expect(create_builds).to be_truthy
+        succeed_pending
+        expect(builds.success.count).to eq(4)
+
+        expect(create_builds).to be_truthy
+        succeed_pending
+        expect(builds.success.count).to eq(5)
+
+        expect(create_builds).to be_falsey
       end
     end
   end
