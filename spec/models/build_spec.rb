@@ -680,7 +680,7 @@ describe Ci::Build, models: true do
     end
 
     context 'with succeed pipeline' do
-      it 'returns builds from ref' do
+      it 'returns builds for ref' do
         builds = project.latest_successful_builds_for('fix')
 
         expect(builds).to contain_exactly(build)
