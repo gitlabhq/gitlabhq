@@ -21,10 +21,10 @@
             placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (@project.id if @project), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown", selected: params[:milestone_title], name: :milestone_title, show_any: true, show_upcoming: true
+          = render "shared/issuable/milestone_dropdown", selected: (@issuable_finder.milestones.first unless @issuable_finder.milestones.nil?), name: :milestone_title, show_any: true, show_upcoming: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown", selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }, show_create: controller.controller_name != "groups"
+          = render "shared/issuable/label_dropdown", selected: @issuable_finder.labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }, show_create: controller.controller_name != "groups"
 
         .pull-right
           = render 'shared/sort_dropdown'

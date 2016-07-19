@@ -3,33 +3,28 @@
 - extra_options = local_assigns.fetch(:extra_options, true)
 - filter_submit = local_assigns.fetch(:filter_submit, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
+- use_id = local_assigns.fetch(:use_id, true)
 - data_options = local_assigns.fetch(:data_options, {})
 - classes = local_assigns.fetch(:classes, [])
 - selected = local_assigns.fetch(:selected, nil)
 - selected_toggle = local_assigns.fetch(:selected_toggle, nil)
-- dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", selected: selected, project_id: project.try(:id), labels: labels_filter_path, default_label: "Labels"}
+- dropdown_data = {toggle: 'dropdown', field_name: "label_name[]", show_no: "true", show_any: "true", project_id: project.try(:id), labels: labels_filter_path, default_label: "Labels"}
 - dropdown_data.merge!(data_options)
 - classes << 'js-extra-options' if extra_options
 - classes << 'js-filter-submit' if filter_submit
 
-- if selected.present?
-  - labelQuery = { id: selected }
-  - useId = true
-- if selected_toggle.present?
-  - labelQuery = { title: selected_toggle }
-- if labelQuery
-  - selected = selected_labels(project, labelQuery)
+- if selected
   - selected.each do |label|
     - id = label.try(:id) || label
     - title = label.try(:title) || label
-    = hidden_field_tag data_options[:field_name], useId ? id : title, id: nil
+    = hidden_field_tag data_options[:field_name], use_id ? id : title, id: nil
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
-    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.to_a.size == 0) }
-      = h(multi_label_name(selected.to_a, h(selected_toggle.to_a[0]), "Labels"))
+    %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }
+      = h(multi_label_name(selected, selected_toggle.to_a.first, "Labels"))
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }
-    - if show_create and project and can?(current_user, :admin_label, project)
+    - if show_create && project && can?(current_user, :admin_label, project)
       = render partial: "shared/issuable/label_page_create"
     = dropdown_loading

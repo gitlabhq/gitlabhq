@@ -7,27 +7,16 @@ module IssuablesHelper
     "right-sidebar-#{sidebar_gutter_collapsed? ? 'collapsed' : 'expanded'}"
   end
 
-  def multi_label_name(current_labels, param, default_label)
-    # current_labels may be a string from before
-    if current_labels.is_a?(Array) && current_labels.any?
-      title = current_labels[0].try(:title) || current_labels[0]
+  def multi_label_name(current_labels, selected_param, default_label)
+    if current_labels.any?
+      title = current_labels.first.try(:title)
       if current_labels.count > 1
         "#{title} +#{current_labels.count - 1} more"
       else
         title
       end
-    elsif current_labels.is_a?(String)
-      if current_labels.nil? || current_labels.empty?
-        default_label
-      else
-        current_labels
-      end
     else
-      if !param.empty?
-        param
-      else
-        default_label
-      end
+      selected_param.presence || default_label
     end
   end
 

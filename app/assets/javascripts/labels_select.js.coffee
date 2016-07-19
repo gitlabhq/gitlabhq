@@ -9,8 +9,6 @@ class @LabelsSelect
       labelUrl = $dropdown.data('labels')
       issueUpdateURL = $dropdown.data('issueUpdate')
       selectedLabel = $dropdown.data('selected')
-      if selectedLabel? and not $dropdown.hasClass 'js-multiselect'
-        selectedLabel = selectedLabel.split(',')
       newLabelField = $('#new_label_name')
       newColorField = $('#new_label_color')
       showNo = $dropdown.data('show-no')

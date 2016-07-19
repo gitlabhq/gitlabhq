@@ -14,48 +14,129 @@ describe 'New/edit merge request', feature: true, js: true do
 
   context 'owned projects' do
     before do
-      merge_request = create(:merge_request,
-                               source_project: project,
-                               target_project: project,
-                               source_branch: 'fix',
-                               target_branch: 'master'
-                            )
-
       login_as(user)
+    end
+    
+    context 'new merge request' do
+      before do
+        visit new_namespace_project_merge_request_path(
+          project.namespace,
+          project,
+          merge_request: {
+            source_project_id: project.id,
+            target_project_id: project.id,
+            source_branch: 'fix',
+            target_branch: 'master'
+          })
+      end
 
-      visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
+      it 'should create new merge request' do
+        click_button 'Assignee'
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user.name
+        end
+
+        click_button 'Milestone'
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+        expect(find('input[name="merge_request[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+        end
+
+        click_button 'Labels'
+        page.within '.dropdown-menu-labels' do
+          click_link label.title
+          click_link label2.title
+        end
+        page.within '.js-label-select' do
+          expect(page).to have_content label.title
+        end
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
+
+        click_button 'Submit merge request'
+
+        page.within '.issuable-sidebar' do
+          page.within '.assignee' do
+            expect(page).to have_content user.name
+          end
+
+          page.within '.milestone' do
+            expect(page).to have_content milestone.title
+          end
+
+          page.within '.labels' do
+            expect(page).to have_content label.title
+            expect(page).to have_content label2.title
+          end
+        end
+      end
     end
 
-    it 'should update merge request' do
-      click_button 'Assignee'
-      click_link user.name
+    context 'edit merge request' do
+      before do
+        merge_request = create(:merge_request,
+                                 source_project: project,
+                                 target_project: project,
+                                 source_branch: 'fix',
+                                 target_branch: 'master'
+                              )
 
-      page.find '.js-assignee-search' do
-        expect(page).to have_content user.name
+        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
-      click_button 'Milestone'
-      click_link milestone.title
+      it 'should update merge request' do
+        click_button 'Assignee'
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user.name
+        end
 
-      page.find '.js-milestone-select' do
-        expect(page).to have_content milestone.title
-      end
+        click_button 'Milestone'
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+        expect(find('input[name="merge_request[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+        end
 
-      click_button 'Labels'
-      click_link label.title
-      click_link label2.title
+        click_button 'Labels'
+        page.within '.dropdown-menu-labels' do
+          click_link label.title
+          click_link label2.title
+        end
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
+        page.within '.js-label-select' do
+          expect(page).to have_content label.title
+        end
 
-      page.find '.js-label-select' do
-        expect(page).to have_content label2.title
-      end
+        click_button 'Save changes'
 
-      click_button 'Save changes'
+        page.within '.issuable-sidebar' do
+          page.within '.assignee' do
+            expect(page).to have_content user.name
+          end
 
-      page.find '.issuable-sidebar' do
-        expect(page).to have_content user.name
-        expect(page).to have_content milestone.title
-        expect(page).to have_content label.title
-        expect(page).to have_content label2.title
+          page.within '.milestone' do
+            expect(page).to have_content milestone.title
+          end
+
+          page.within '.labels' do
+            expect(page).to have_content label.title
+            expect(page).to have_content label2.title
+          end
+        end
       end
     end
   end
@@ -63,49 +144,129 @@ describe 'New/edit merge request', feature: true, js: true do
   context 'forked project' do
     before do
       fork_project.team << [user, :master]
-
-      merge_request = create(:merge_request,
-                               source_project: fork_project,
-                               target_project: project,
-                               source_branch: 'fix',
-                               target_branch: 'master'
-                            )
-
       login_as(user)
-
-      visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    it 'should update merge request' do
-      click_button 'Assignee'
-      click_link user.name
-
-      page.find '.js-assignee-search' do
-        expect(page).to have_content user.name
+    context 'new merge request' do
+      before do
+        visit new_namespace_project_merge_request_path(
+          fork_project.namespace,
+          fork_project,
+          merge_request: {
+            source_project_id: fork_project.id,
+            target_project_id: project.id,
+            source_branch: 'fix',
+            target_branch: 'master'
+          })
       end
 
-      click_button 'Milestone'
-      click_link milestone.title
+      it 'should create new merge request' do
+        click_button 'Assignee'
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user.name
+        end
 
-      page.find '.js-milestone-select' do
-        expect(page).to have_content milestone.title
+        click_button 'Milestone'
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+        expect(find('input[name="merge_request[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+        end
+
+        click_button 'Labels'
+        page.within '.dropdown-menu-labels' do
+          click_link label.title
+          click_link label2.title
+        end
+        page.within '.js-label-select' do
+          expect(page).to have_content label.title
+        end
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
+
+        click_button 'Submit merge request'
+
+        page.within '.issuable-sidebar' do
+          page.within '.assignee' do
+            expect(page).to have_content user.name
+          end
+
+          page.within '.milestone' do
+            expect(page).to have_content milestone.title
+          end
+
+          page.within '.labels' do
+            expect(page).to have_content label.title
+            expect(page).to have_content label2.title
+          end
+        end
+      end
+    end
+
+    context 'edit merge request' do
+      before do
+        merge_request = create(:merge_request,
+                                 source_project: fork_project,
+                                 target_project: project,
+                                 source_branch: 'fix',
+                                 target_branch: 'master'
+                              )
+
+        visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
-      click_button 'Labels'
-      click_link label.title
-      click_link label2.title
+      it 'should update merge request' do
+        click_button 'Assignee'
+        page.within '.dropdown-menu-user' do
+          click_link user.name
+        end
+        expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
+        page.within '.js-assignee-search' do
+          expect(page).to have_content user.name
+        end
 
-      page.find '.js-label-select' do
-        expect(page).to have_content label2.title
-      end
+        click_button 'Milestone'
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+        expect(find('input[name="merge_request[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+        end
 
-      click_button 'Save changes'
+        click_button 'Labels'
+        page.within '.dropdown-menu-labels' do
+          click_link label.title
+          click_link label2.title
+        end
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[1].value).to match(label.id.to_s)
+        expect(page.all('input[name="merge_request[label_ids][]"]', visible: false)[2].value).to match(label2.id.to_s)
+        page.within '.js-label-select' do
+          expect(page).to have_content label.title
+        end
 
-      page.find '.issuable-sidebar' do
-        expect(page).to have_content user.name
-        expect(page).to have_content milestone.title
-        expect(page).to have_content label.title
-        expect(page).to have_content label2.title
+        click_button 'Save changes'
+
+        page.within '.issuable-sidebar' do
+          page.within '.assignee' do
+            expect(page).to have_content user.name
+          end
+
+          page.within '.milestone' do
+            expect(page).to have_content milestone.title
+          end
+
+          page.within '.labels' do
+            expect(page).to have_content label.title
+            expect(page).to have_content label2.title
+          end
+        end
       end
     end
   end

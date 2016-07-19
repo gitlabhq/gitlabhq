@@ -56,13 +56,7 @@ module MilestonesHelper
   end
 
   def milestone_dropdown_selected_text(selected)
-    project = @target_project || @project || @projects
-
-    if selected.is_a? Integer
-      Milestone.of_projects(project).where(id: selected).first.try(:title)
-    else
-      Milestone.of_projects(project).where(title: selected).first.try(:title)
-    end
+    selected.try(:title) unless selected.nil?
   end
 
   def milestone_remaining_days(milestone)
