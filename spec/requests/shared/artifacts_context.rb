@@ -38,6 +38,14 @@ shared_examples 'artifacts from ref successfully' do
     create(:ci_build, status, :artifacts, pipeline: new_pipeline)
   end
 
+  context 'with sha' do
+    before do
+      get path_from_ref(pipeline.sha)
+    end
+
+    it('gives the file') { verify }
+  end
+
   context 'with regular branch' do
     before do
       pipeline.update(ref: 'master',
