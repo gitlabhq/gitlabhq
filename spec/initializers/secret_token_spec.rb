@@ -10,6 +10,8 @@ describe 'create_tokens', lib: true do
     allow(File).to receive(:delete)
     allow(Rails).to receive_message_chain(:application, :secrets).and_return(secrets)
     allow(Rails).to receive_message_chain(:root, :join) { |string| string }
+    allow(self).to receive(:warn)
+    allow(self).to receive(:exit)
   end
 
   context 'setting secret_key_base and otp_key_base' do
@@ -61,9 +63,34 @@ describe 'create_tokens', lib: true do
       before do
         secrets.db_key_base = 'db_key_base'
 
-        allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return('env_key')
         allow(File).to receive(:exist?).with('.secret').and_return(true)
         allow(File).to receive(:read).with('.secret').and_return('file_key')
+      end
+
+      context 'when secret_key_base exists in the environment and secrets.yml' do
+        before do
+          allow(ENV).to receive(:[]).with('SECRET_KEY_BASE').and_return('env_key')
+          secrets.secret_key_base = 'secret_key_base'
+          secrets.otp_key_base = 'otp_key_base'
+        end
+
+        it 'does not issue a warning' do
+          expect(self).not_to receive(:warn)
+
+          create_tokens
+        end
+
+        it 'uses the environment variable' do
+          create_tokens
+
+          expect(secrets.secret_key_base).to eq('env_key')
+        end
+
+        it 'does not update secrets.yml' do
+          expect(File).not_to receive(:write)
+
+          create_tokens
+        end
       end
 
       context 'when secret_key_base and otp_key_base exist' do
@@ -78,7 +105,7 @@ describe 'create_tokens', lib: true do
           create_tokens
         end
 
-        it 'sets the the keys to the values from secrets.yml' do
+        it 'sets the the keys to the values from the environment and secrets.yml' do
           create_tokens
 
           expect(secrets.secret_key_base).to eq('secret_key_base')
@@ -100,18 +127,18 @@ describe 'create_tokens', lib: true do
           allow(self).to receive(:warn_missing_secret)
         end
 
-        it 'uses the env secret' do
+        it 'uses the file secret' do
           expect(File).to receive(:write) do |filename, contents, options|
             new_secrets = YAML.load(contents)[Rails.env]
 
-            expect(new_secrets['secret_key_base']).to eq('env_key')
-            expect(new_secrets['otp_key_base']).to eq('env_key')
+            expect(new_secrets['secret_key_base']).to eq('file_key')
+            expect(new_secrets['otp_key_base']).to eq('file_key')
             expect(new_secrets['db_key_base']).to eq('db_key_base')
           end
 
           create_tokens
 
-          expect(secrets.otp_key_base).to eq('env_key')
+          expect(secrets.otp_key_base).to eq('file_key')
         end
 
         it 'keeps the other secrets as they were' do
@@ -132,6 +159,41 @@ describe 'create_tokens', lib: true do
 
           create_tokens
         end
+      end
+    end
+
+    context 'when db_key_base is blank but exists in secrets.yml' do
+      before do
+        secrets.otp_key_base = 'otp_key_base'
+        secrets.secret_key_base = 'secret_key_base'
+        yaml_secrets = secrets.to_h.stringify_keys.merge('db_key_base' => '<%= an_erb_expression %>')
+
+        allow(File).to receive(:exist?).with('.secret').and_return(false)
+        allow(File).to receive(:exist?).with('config/secrets.yml').and_return(true)
+        allow(YAML).to receive(:load_file).with('config/secrets.yml').and_return('test' => yaml_secrets)
+        allow(self).to receive(:warn_missing_secret)
+      end
+
+      it 'warns about updating db_key_base' do
+        expect(self).to receive(:warn_missing_secret).with('db_key_base')
+
+        create_tokens
+      end
+
+      it 'warns about the blank value existing in secrets.yml and exits' do
+        expect(self).to receive(:warn) do |warning|
+          expect(warning).to include('db_key_base')
+          expect(warning).to include('<%= an_erb_expression %>')
+        end
+
+        create_tokens
+      end
+
+      it 'does not update secrets.yml' do
+        expect(self).to receive(:exit).with(1).and_call_original
+        expect(File).not_to receive(:write)
+
+        expect { create_tokens }.to raise_error(SystemExit)
       end
     end
   end

@@ -7,7 +7,7 @@ def generate_new_secure_token
 end
 
 def warn_missing_secret(secret)
-  warn "Missing `#{secret}` for '#{Rails.env}' environment. The secret will be generated and stored in `config/secrets.yml`"
+  warn "Missing Rails.application.secrets.#{secret} for #{Rails.env} environment. The secret will be generated and stored in config/secrets.yml."
 end
 
 def create_tokens
@@ -16,8 +16,11 @@ def create_tokens
   env_key = ENV['SECRET_KEY_BASE']
   yaml_additions = {}
 
+  # Ensure environment variable always overrides secrets.yml.
+  Rails.application.secrets.secret_key_base = env_key if env_key.present?
+
   defaults = {
-    secret_key_base: env_key || file_key || generate_new_secure_token,
+    secret_key_base: file_key || generate_new_secure_token,
     otp_key_base: env_key || file_key || generate_new_secure_token,
     db_key_base: generate_new_secure_token
   }
@@ -34,9 +37,22 @@ def create_tokens
     secrets_yml = Rails.root.join('config/secrets.yml')
     all_secrets = YAML.load_file(secrets_yml) if File.exist?(secrets_yml)
     all_secrets ||= {}
-
     env_secrets = all_secrets[Rails.env.to_s] || {}
-    all_secrets[Rails.env.to_s] = env_secrets.merge(yaml_additions)
+
+    all_secrets[Rails.env.to_s] = env_secrets.merge(yaml_additions) do |key, old, new|
+      if old.present?
+        warn <<EOM
+Rails.application.secrets.#{key} was blank, but the literal value in config/secrets.yml was:
+  #{old}
+
+This probably isn't the expected value for this secret. To keep using a literal Erb string in config/secrets.yml, replace `<%` with `<%%`.
+EOM
+
+        exit 1
+      end
+
+      new
+    end
 
     File.write(secrets_yml, YAML.dump(all_secrets), mode: 'w', perm: 0600)
   end
