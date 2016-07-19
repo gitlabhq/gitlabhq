@@ -411,14 +411,6 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
-    def when
-      read_attribute(:when) || build_attributes[:when]
-    end
-
-    def yaml_variables
-      read_attribute(:yaml_variables) || build_attributes[:yaml_variables]
-    end
-
     private
 
     def update_artifacts_size
@@ -435,10 +427,6 @@ module Ci
 
     def update_erased!(user = nil)
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
-    end
-
-    def build_attributes
-      config_processor.try(:build_attributes, name) || {}
     end
 
     def project_variables
