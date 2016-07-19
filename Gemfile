@@ -56,7 +56,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.2'
+gem 'gitlab_git', '~> 10.3.2'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -66,7 +66,7 @@ gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
-gem 'gollum-lib', '~> 4.1.0', require: false
+gem 'gollum-lib', '~> 4.2', require: false
 gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 
 # Language detection
@@ -115,7 +115,7 @@ gem 'gitlab-elasticsearch-git', '~> 0.0.15', require: "elasticsearch/git"
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
 gem 'task_list',     '~> 1.0.2', require: 'task_list/railtie'
-gem 'github-markup', '~> 1.3.1'
+gem 'github-markup', '~> 1.4'
 gem 'redcarpet',     '~> 3.3.3'
 gem 'RedCloth',      '~> 4.3.2'
 gem 'rdoc',          '~>3.6'
@@ -123,7 +123,7 @@ gem 'org-ruby',      '~> 0.9.12'
 gem 'creole',        '~> 0.5.0'
 gem 'wikicloth',     '0.8.1'
 gem 'asciidoctor',   '~> 1.5.2'
-gem 'rouge',         '~> 1.11'
+gem 'rouge',         '~> 2.0'
 
 # See https://groups.google.com/forum/#!topic/ruby-security-ann/aSbgDiwb24s
 # and https://groups.google.com/forum/#!topic/ruby-security-ann/Dy7YiKb_pMM
@@ -233,7 +233,7 @@ gem 'jquery-turbolinks', '~> 2.1.0'
 gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.6.1'
-gem 'gemojione',          '~> 2.6'
+gem 'gemojione',          '~> 3.0'
 gem 'gon',                '~> 6.0.1'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
@@ -360,3 +360,6 @@ gem 'health_check', '~> 2.1.0'
 # System information
 gem 'vmstat', '~> 2.1.0'
 gem 'sys-filesystem', '~> 1.1.6'
+
+# Secure headers for Content Security Policy
+gem 'secure_headers', '~> 3.3'

@@ -169,10 +169,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url, addressable_url: true, if: :external_import?
-  validates :import_url, presence: true, if: :mirror?
-  validate  :import_url_availability, if: :import_url_changed?
   validates :mirror_user, presence: true, if: :mirror?
-  validates :import_url, addressable_url: true, if: :import_url
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -516,7 +513,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless valid_import_url?
+    return unless import_url.present? && valid_import_url?
 
     project_import_data = import_data || build_import_data
     if data
@@ -1175,8 +1172,8 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref, current_user = nil)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci

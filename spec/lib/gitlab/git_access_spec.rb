@@ -359,121 +359,121 @@ describe Gitlab::GitAccess, lib: true do
         end
       end
     end
-  end
 
-  describe "push_rule_check" do
-    before { project.team << [user, :developer] }
+    describe "push_rule_check" do
+      before { project.team << [user, :developer] }
 
-    describe "author email check" do
-      it 'returns true' do
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_truthy
+      describe "author email check" do
+        it 'returns true' do
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_truthy
+        end
+
+        it 'returns false' do
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "@only.com")
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
+        end
+
+        it 'returns true for tags' do
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "@only.com")
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/tags/v1')).to be_allowed
+        end
+
+        it 'allows githook for new branch with an old bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          ref_object = double(name: 'heads/master')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect(access.push_access_check("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new-branch")).to be_allowed
+        end
+
+        it 'allows githook for any change with an old bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          ref_object = double(name: 'heads/master')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
+        end
+
+        it 'does not allow any change from Web UI with bad commit' do
+          bad_commit = double("Commit", safe_message: 'Some change').as_null_object
+          # We use tmp ref a a temporary for Web UI commiting
+          ref_object = double(name: 'refs/tmp')
+          allow(bad_commit).to receive(:refs).and_return([ref_object])
+          allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+
+          project.create_push_rule
+          project.push_rule.update(commit_message_regex: "Change some files")
+
+          # push to new branch, so use a blank old rev and new ref
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
+        end
       end
 
-      it 'returns false' do
-        project.create_push_rule
-        project.push_rule.update(commit_message_regex: "@only.com")
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
+      describe "member_check" do
+        before do
+          project.create_push_rule
+          project.push_rule.update(member_check: true)
+        end
+
+        it 'returns false for non-member user' do
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
+        end
+
+        it 'returns true if committer is a gitlab member' do
+          create(:user, email: 'dmitriy.zaporozhets@gmail.com')
+          expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
+        end
       end
 
-      it 'returns true for tags' do
-        project.create_push_rule
-        project.push_rule.update(commit_message_regex: "@only.com")
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/tags/v1')).to be_allowed
+      describe "file names check" do
+        it 'returns false when filename is prohibited' do
+          project.create_push_rule
+          project.push_rule.update(file_name_regex: "jpg$")
+          expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).not_to be_allowed
+        end
+
+        it 'returns true if file name is allowed' do
+          project.create_push_rule
+          project.push_rule.update(file_name_regex: "exe$")
+          expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).to be_allowed
+        end
       end
 
-      it 'allows githook for new branch with an old bad commit' do
-        bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-        ref_object = double(name: 'heads/master')
-        allow(bad_commit).to receive(:refs).and_return([ref_object])
-        allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+      describe "max file size check" do
+        before do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
+        end
 
-        project.create_push_rule
-        project.push_rule.update(commit_message_regex: "Change some files")
+        it "returns false when size is too large" do
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 1)
+          expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).not_to be_allowed
+        end
 
-        # push to new branch, so use a blank old rev and new ref
-        expect(access.push_access_check("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new-branch")).to be_allowed
-      end
+        it "returns true when size is allowed" do
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 2)
+          expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+        end
 
-      it 'allows githook for any change with an old bad commit' do
-        bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-        ref_object = double(name: 'heads/master')
-        allow(bad_commit).to receive(:refs).and_return([ref_object])
-        allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
-
-        project.create_push_rule
-        project.push_rule.update(commit_message_regex: "Change some files")
-
-        # push to new branch, so use a blank old rev and new ref
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
-      end
-
-      it 'does not allow any change from Web UI with bad commit' do
-        bad_commit = double("Commit", safe_message: 'Some change').as_null_object
-        # We use tmp ref a a temporary for Web UI commiting
-        ref_object = double(name: 'refs/tmp')
-        allow(bad_commit).to receive(:refs).and_return([ref_object])
-        allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
-
-        project.create_push_rule
-        project.push_rule.update(commit_message_regex: "Change some files")
-
-        # push to new branch, so use a blank old rev and new ref
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
-      end
-    end
-
-    describe "member_check" do
-      before do
-        project.create_push_rule
-        project.push_rule.update(member_check: true)
-      end
-
-      it 'returns false for non-member user' do
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).not_to be_allowed
-      end
-
-      it 'returns true if committer is a gitlab member' do
-        create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        expect(access.push_access_check('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master')).to be_allowed
-      end
-    end
-
-    describe "file names check" do
-      it 'returns false when filename is prohibited' do
-        project.create_push_rule
-        project.push_rule.update(file_name_regex: "jpg$")
-        expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).not_to be_allowed
-      end
-
-      it 'returns true if file name is allowed' do
-        project.create_push_rule
-        project.push_rule.update(file_name_regex: "exe$")
-        expect(access.push_access_check('913c66a37b4a45b9769037c55c2d238bd0942d2e 33f3729a45c02fc67d00adb1b8bca394b0e761d9 refs/heads/master')).to be_allowed
-      end
-    end
-
-    describe "max file size check" do
-      before do
-        allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(1.5.megabytes.to_i)
-      end
-
-      it "returns false when size is too large" do
-        project.create_push_rule
-        project.push_rule.update(max_file_size: 1)
-        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).not_to be_allowed
-      end
-
-      it "returns true when size is allowed" do
-        project.create_push_rule
-        project.push_rule.update(max_file_size: 2)
-        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
-      end
-
-      it "returns true when size is nil" do
-        allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
-        project.create_push_rule
-        project.push_rule.update(max_file_size: 2)
-        expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+        it "returns true when size is nil" do
+          allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
+          project.create_push_rule
+          project.push_rule.update(max_file_size: 2)
+          expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+        end
       end
     end
   end

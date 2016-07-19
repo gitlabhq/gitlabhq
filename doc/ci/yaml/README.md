@@ -985,11 +985,11 @@ directive defined in `.postgres_services` and `.mysql_services` respectively:
     - ruby
 
 test:postgres:
-  << *job_definition
+  <<: *job_definition
   services: *postgres_definition
 
 test:mysql:
-  << *job_definition
+  <<: *job_definition
   services: *mysql_definition
 ```
 

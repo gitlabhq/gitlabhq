@@ -135,6 +135,22 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(401)
       end
+
+      it "normalizes +1 as thumbsup award" do
+        post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user), name: '+1'
+
+        expect(issue.award_emoji.last.name).to eq("thumbsup")
+      end
+
+      context 'when the emoji already has been awarded' do
+        it 'returns a 404 status code' do
+          post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user), name: 'thumbsup'
+          post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user), name: 'thumbsup'
+
+          expect(response).to have_http_status(404)
+          expect(json_response["message"]).to match("has already been taken")
+        end
+      end
     end
   end
 
@@ -146,6 +162,22 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(201)
       expect(json_response['user']['username']).to eq(user.username)
+    end
+
+    it "normalizes +1 as thumbsup award" do
+      post api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note.id}/award_emoji", user), name: '+1'
+
+      expect(note.award_emoji.last.name).to eq("thumbsup")
+    end
+
+    context 'when the emoji already has been awarded' do
+      it 'returns a 404 status code' do
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note.id}/award_emoji", user), name: 'rocket'
+        post api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note.id}/award_emoji", user), name: 'rocket'
+
+        expect(response).to have_http_status(404)
+        expect(json_response["message"]).to match("has already been taken")
+      end
     end
   end
 

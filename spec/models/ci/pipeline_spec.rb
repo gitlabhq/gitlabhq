@@ -5,9 +5,12 @@ describe Ci::Pipeline, models: true do
   let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:user) }
+
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
+
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
 

@@ -235,8 +235,7 @@ class Note < ActiveRecord::Base
   end
 
   def award_emoji_name
-    original_name = note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
-    Gitlab::AwardEmoji.normalize_emoji_name(original_name)
+    note.match(Banzai::Filter::EmojiFilter.emoji_pattern)[1]
   end
 
   private

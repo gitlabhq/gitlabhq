@@ -114,10 +114,6 @@ module Gitlab
       Checks::ChangeAccess.new(change, user_access: user_access, project: project).exec
     end
 
-    def forced_push?(oldrev, newrev)
-      Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
-    end
-
     def protocol_allowed?
       Gitlab::ProtocolAccess.allowed?(protocol)
     end

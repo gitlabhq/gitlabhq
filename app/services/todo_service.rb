@@ -207,7 +207,7 @@ class TodoService
   end
 
   def create_assignment_todo(issuable, author)
-    if issuable.assignee && issuable.assignee != author
+    if issuable.assignee
       attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
       create_todos(issuable.assignee, attributes)
     end
@@ -257,7 +257,6 @@ class TodoService
   def filter_mentioned_users(project, target, author)
     mentioned_users = target.mentioned_users(author)
     mentioned_users = reject_users_without_access(mentioned_users, project, target)
-    mentioned_users.delete(author)
     mentioned_users.uniq
   end
 
