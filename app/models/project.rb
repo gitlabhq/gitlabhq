@@ -431,8 +431,7 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
-    Ci::Build.joins(:pipeline).
-      merge(pipelines.latest_successful_for(ref)).
+    builds.where(pipeline: pipelines.latest_successful_for(ref)).
       latest_successful_with_artifacts
   end
 
