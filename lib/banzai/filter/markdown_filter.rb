@@ -12,7 +12,12 @@ module Banzai
         html
       end
 
-      private
+      def self.renderer
+        @renderer ||= begin
+          renderer = Redcarpet::Render::HTML.new
+          Redcarpet::Markdown.new(renderer, redcarpet_options)
+        end
+      end
 
       def self.redcarpet_options
         # https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
@@ -28,12 +33,7 @@ module Banzai
         }.freeze
       end
 
-      def self.renderer
-        @renderer ||= begin
-          renderer = Redcarpet::Render::HTML.new
-          Redcarpet::Markdown.new(renderer, redcarpet_options)
-        end
-      end
+      private_class_method :redcarpet_options
     end
   end
 end
