@@ -1,16 +1,14 @@
 - ref = ref || nil
 - btn_class = btn_class || ''
-- split_button = split_button || false
-- if split_button == true
-  %span.btn-group{class: btn_class}
-    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn col-xs-10', rel: 'nofollow' do
-      %i.fa.fa-download
-      %span Download zip
-    %a.col-xs-2.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+%span.btn-group{class: btn_class}
+  .dropdown.inline
+    %button.btn{ 'data-toggle' => 'dropdown' }
+      = icon('download')
       %span.caret
       %span.sr-only
         Select Archive Format
-    %ul.col-xs-10.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
+    %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
+      %li.dropdown-header Source code
       %li
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), rel: 'nofollow' do
           %i.fa.fa-download
@@ -27,11 +25,10 @@
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar'), rel: 'nofollow' do
           %i.fa.fa-download
           %span Download tar
-- else
-  %span.btn-group{class: btn_class}
-    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
-      %i.fa.fa-download
-      %span zip
-    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar.gz'), class: 'btn', rel: 'nofollow' do
-      %i.fa.fa-download
-      %span tar.gz
+      - artifacts = @project.latest_success_builds_for(@ref)
+      - if artifacts.any?
+        %li.dropdown-header Artifacts
+        - artifacts.each do |job|
+          %li
+            = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, job), rel: 'nofollow' do
+              %span Download '#{job.name}'
