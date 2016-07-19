@@ -430,7 +430,7 @@ class Project < ActiveRecord::Base
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_success_pipeline_for(ref = 'master')
+  def latest_successful_pipeline_for(ref = 'master')
     table = Ci::Pipeline.quoted_table_name
     # TODO: Use `where(ref: ref).or(sha: ref)` in Rails 5
     pipelines.where("#{table}.ref = ? OR #{table}.sha = ?", ref, ref).
@@ -438,10 +438,10 @@ class Project < ActiveRecord::Base
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_success_builds_for(ref = 'master')
+  def latest_successful_builds_for(ref = 'master')
     Ci::Build.joins(:pipeline).
-      merge(latest_success_pipeline_for(ref)).
-      latest_success_with_artifacts
+      merge(latest_successful_pipeline_for(ref)).
+      latest_successful_with_artifacts
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)

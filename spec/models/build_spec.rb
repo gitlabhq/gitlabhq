@@ -678,7 +678,7 @@ describe Ci::Build, models: true do
     end
   end
 
-  describe 'Project#latest_success_builds_for' do
+  describe 'Project#latest_successful_builds_for' do
     let(:build) do
       create(:ci_build, :artifacts, :success, pipeline: pipeline)
     end
@@ -689,13 +689,13 @@ describe Ci::Build, models: true do
 
     context 'with succeed pipeline' do
       it 'returns builds from ref' do
-        builds = project.latest_success_builds_for('fix')
+        builds = project.latest_successful_builds_for('fix')
 
         expect(builds).to contain_exactly(build)
       end
 
       it 'returns empty relation if the build cannot be found' do
-        builds = project.latest_success_builds_for('TAIL').all
+        builds = project.latest_successful_builds_for('TAIL').all
 
         expect(builds).to be_empty
       end
@@ -707,7 +707,7 @@ describe Ci::Build, models: true do
       end
 
       it 'returns empty relation' do
-        builds = project.latest_success_builds_for('fix').all
+        builds = project.latest_successful_builds_for('fix').all
 
         expect(builds).to be_empty
       end
