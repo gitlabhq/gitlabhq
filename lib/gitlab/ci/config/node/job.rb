@@ -9,7 +9,7 @@ module Gitlab
           include Configurable
           include Attributable
 
-          attributes :tags, :allow_failure
+          attributes :tags, :allow_failure, :when, :environment
 
           validations do
             validates :config, allowed_keys:
@@ -24,6 +24,18 @@ module Gitlab
             with_options allow_nil: true do
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
+              validates :when,
+                inclusion: { in: %w[on_success on_failure always],
+                             message: 'should be on_success, on_failure ' \
+                                      'or always' }
+              validates :environment,
+                type: {
+                  with: String,
+                  message: Gitlab::Regex.environment_name_regex_message }
+              validates :environment,
+                format: {
+                  with: Gitlab::Regex.environment_name_regex,
+                  message: Gitlab::Regex.environment_name_regex_message }
             end
           end
 

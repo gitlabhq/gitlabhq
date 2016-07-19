@@ -69,7 +69,8 @@ module Gitlab
               raise unless type.is_a?(Class)
 
               unless value.is_a?(type)
-                record.errors.add(attribute, "should be a #{type.name}")
+                message = options[:message] || "should be a #{type.name}"
+                record.errors.add(attribute, message)
               end
             end
           end

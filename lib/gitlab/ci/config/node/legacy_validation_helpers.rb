@@ -41,10 +41,6 @@ module Gitlab
             false
           end
 
-          def validate_environment(value)
-            value.is_a?(String) && value =~ Gitlab::Regex.environment_name_regex
-          end
-
           def validate_boolean(value)
             value.in?([true, false])
           end

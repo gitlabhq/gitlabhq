@@ -93,19 +93,8 @@ module Ci
     def validate_job!(name, job)
       raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
 
-      validate_job_types!(name, job)
       validate_job_stage!(name, job) if job[:stage]
       validate_job_dependencies!(name, job) if job[:dependencies]
-    end
-
-    def validate_job_types!(name, job)
-      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
-        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
-      end
-
-      if job[:environment] && !validate_environment(job[:environment])
-        raise ValidationError, "#{name} job: environment parameter #{Gitlab::Regex.environment_name_regex_message}"
-      end
     end
 
     def validate_job_stage!(name, job)

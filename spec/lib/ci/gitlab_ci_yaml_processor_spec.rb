@@ -754,7 +754,7 @@ module Ci
         let(:environment) { 1 }
 
         it 'raises error' do
-          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
         end
       end
 
@@ -762,7 +762,7 @@ module Ci
         let(:environment) { 'production staging' }
 
         it 'raises error' do
-          expect { builds }.to raise_error("deploy_to_production job: environment parameter #{Gitlab::Regex.environment_name_regex_message}")
+          expect { builds }.to raise_error("jobs:deploy_to_production environment #{Gitlab::Regex.environment_name_regex_message}")
         end
       end
     end
@@ -1131,7 +1131,7 @@ EOT
         config = YAML.dump({ rspec: { script: "test", when: 1 } })
         expect do
           GitlabCiYamlProcessor.new(config, path)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: when parameter should be on_success, on_failure or always")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec when should be on_success, on_failure or always")
       end
 
       it "returns errors if job artifacts:name is not an a string" do
