@@ -36,6 +36,8 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   branch (required) - The name of the branch
+      #   developers_can_push (optional) - Flag if developers can push to that branch
+      #   developers_can_merge (optional) - Flag if developers can merge to that branch
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ':id/repository/branches/:branch/protect',
@@ -43,9 +45,20 @@ module API
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
-        not_found!("Branch") unless @branch
+        not_found!('Branch') unless @branch
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
-        user_project.protected_branches.create(name: @branch.name) unless protected_branch
+        developers_can_push = to_boolean(params[:developers_can_push])
+        developers_can_merge = to_boolean(params[:developers_can_merge])
+
+        if protected_branch
+          protected_branch.developers_can_push = developers_can_push unless developers_can_push.nil?
+          protected_branch.developers_can_merge = developers_can_merge unless developers_can_merge.nil?
+          protected_branch.save
+        else
+          user_project.protected_branches.create(name: @branch.name,
+                                                 developers_can_push: developers_can_push || false,
+                                                 developers_can_merge: developers_can_merge || false)
+        end
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
