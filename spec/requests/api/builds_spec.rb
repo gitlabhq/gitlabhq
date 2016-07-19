@@ -287,8 +287,6 @@ describe API::API, api: true do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
 
     before do
-      developer
-
       get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
     end
 
