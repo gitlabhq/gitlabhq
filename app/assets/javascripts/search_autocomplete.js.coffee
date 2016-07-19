@@ -315,11 +315,10 @@ class @SearchAutocomplete
 
   disableAutocomplete: ->
     # If not disabled already, disable
-    if not @searchInput.hasClass('disabled') && @dropdown.hasClass('open')
+    if not @searchInput.hasClass('disabled') and @dropdown.hasClass 'open'
       @searchInput.addClass('disabled')
       # Close dropdown and invoke its hidden() method
-      @dropdown.removeClass('open')
-        .trigger('hidden.bs.dropdown')
+      @dropdown.removeClass('open').trigger 'hidden.bs.dropdown'
       @restoreMenu()
 
   restoreMenu: ->
