@@ -95,9 +95,9 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
 
       page.within '.labels-filter' do
-        expect(page).to have_content 'No Label'
+        expect(page).to have_content 'Labels'
       end
-      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('No Label')
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content('Labels')
     end
 
     it 'should filter by no label' do
