@@ -21,7 +21,7 @@ module Ci
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_successful_for, ->(ref) do
+    scope :latest_successful_for, ->(ref = default_branch) do
       where(ref: ref).success.order(id: :desc)
     end
 
