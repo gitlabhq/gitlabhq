@@ -3,7 +3,16 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.0 (unreleased)
   - Rename Git Hooks to Push Rules
   - Fix EE keys fingerprint add index migration if came from CE
+  - Add todos for MR approvers !547
+  - Prevent the author of an MR from being on the approvers list
   - Isolate EE LDAP library code in EE module (Part 1) !511
+  - Make Elasticsearch indexer run as an async task
+
+v.8.9.7 (unreleased)
+  - Fix error in admin dashboard when Geo is enabled and current node is nil.
+
+v 8.9.6
+  - Avoid adding index for key fingerprint if it already exists. !539
 
 v 8.9.5
   - Fix of quoted text in lock tooltip. !518

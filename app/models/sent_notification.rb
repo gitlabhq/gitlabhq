@@ -72,6 +72,19 @@ class SentNotification < ActiveRecord::Base
     end
   end
 
+  def position=(new_position)
+    if new_position.is_a?(String)
+      new_position = JSON.parse(new_position) rescue nil
+    end
+
+    if new_position.is_a?(Hash)
+      new_position = new_position.with_indifferent_access
+      new_position = Gitlab::Diff::Position.new(new_position)
+    end
+
+    super(new_position)
+  end
+
   def to_param
     self.reply_key
   end

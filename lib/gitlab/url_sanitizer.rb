@@ -4,6 +4,8 @@ module Gitlab
       regexp = URI::Parser.new.make_regexp(['http', 'https', 'ssh', 'git'])
 
       content.gsub(regexp) { |url| new(url).masked_url }
+    rescue Addressable::URI::InvalidURIError
+      content.gsub(regexp, '')
     end
 
     def self.valid?(url)

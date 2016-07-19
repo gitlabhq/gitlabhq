@@ -23,7 +23,7 @@
         .form-group.project-visibility-level-holder
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
-            = link_to "(?)", help_page_path("public_access", "public_access")
+            = link_to "(?)", help_page_path("public_access/public_access")
           - if can_change_visibility_level?(@project, current_user)
             = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
           - else

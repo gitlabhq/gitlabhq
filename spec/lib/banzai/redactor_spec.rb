@@ -15,10 +15,30 @@ describe Banzai::Redactor do
 
       expect(redactor).to receive(:nodes_visible_to_user).and_return([])
 
-      expect(redactor.redact([doc1, doc2])).to eq([doc1, doc2])
+      redacted_data = redactor.redact([doc1, doc2])
 
+      expect(redacted_data.map { |data| data[:document] }).to eq([doc1, doc2])
+      expect(redacted_data.map { |data| data[:visible_reference_count] }).to eq([0, 0])
       expect(doc1.to_html).to eq('foo')
       expect(doc2.to_html).to eq('bar')
+    end
+
+    it 'does not redact an Array of documents' do
+      doc1_html = '<a class="gfm" data-reference-type="issue">foo</a>'
+      doc1 = Nokogiri::HTML.fragment(doc1_html)
+
+      doc2_html = '<a class="gfm" data-reference-type="issue">bar</a>'
+      doc2 = Nokogiri::HTML.fragment(doc2_html)
+
+      nodes = redactor.document_nodes([doc1, doc2]).map { |x| x[:nodes] }
+      expect(redactor).to receive(:nodes_visible_to_user).and_return(nodes.flatten)
+
+      redacted_data = redactor.redact([doc1, doc2])
+
+      expect(redacted_data.map { |data| data[:document] }).to eq([doc1, doc2])
+      expect(redacted_data.map { |data| data[:visible_reference_count] }).to eq([1, 1])
+      expect(doc1.to_html).to eq(doc1_html)
+      expect(doc2.to_html).to eq(doc2_html)
     end
   end
 
@@ -31,7 +51,7 @@ describe Banzai::Redactor do
         with([node]).
         and_return(Set.new)
 
-      redactor.redact_nodes([node])
+      redactor.redact_document_nodes([{ document: doc, nodes: [node] }])
 
       expect(doc.to_html).to eq('foo')
     end

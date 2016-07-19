@@ -13,7 +13,7 @@ require_relative 'rerun'
 
 if ENV['CI']
   require 'knapsack'
-  Knapsack::Adapters::RSpecAdapter.bind
+  Knapsack::Adapters::SpinachAdapter.bind
 end
 
 %w(select2_helper test_env repo_helpers license).each do |f|
@@ -29,6 +29,7 @@ Spinach.hooks.before_run do
   include ActiveJob::TestHelper
   RSpec::Mocks.setup
   TestEnv.init(mailer: false)
+  License.destroy_all
   TestLicense.init
 
   # skip pre-receive hook check so we can use

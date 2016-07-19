@@ -32,10 +32,14 @@
       border-color: $gl-gray;
     }
 
-    &.ci-pending,
-    &.ci-running {
+    &.ci-pending {
       color: $gl-warning;
       border-color: $gl-warning;
+    }
+
+    &.ci-running {
+      color: $blue-normal;
+      border-color: $blue-normal;
     }
   }
 
@@ -45,9 +49,11 @@
   .ci-status-icon-failed {
     color: $gl-danger;
   }
-  .ci-status-icon-running,
   .ci-status-icon-pending {
     color: $gl-warning;
+  }
+  .ci-status-icon-running {
+    color: $blue-normal;
   }
   .ci-status-icon-canceled,
   .ci-status-icon-disabled,

@@ -28,10 +28,10 @@
     .nav-controls
       - if can? current_user, :create_pipeline, @project
         = link_to new_namespace_project_pipeline_path(@project.namespace, @project), class: 'btn btn-create' do
-          New pipeline
+          Run pipeline
 
         - unless @repository.gitlab_ci_yml
-          = link_to 'Get started with Pipelines', help_page_path('ci/quick_start', 'README'), class: 'btn btn-info'
+          = link_to 'Get started with Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
 
         = link_to ci_lint_path, class: 'btn btn-default' do
           %span CI Lint
@@ -45,13 +45,13 @@
       .table-holder
         %table.table.builds
           %tbody
-            %th ID
+            %th Status
             %th Commit
             - stages.each do |stage|
               %th.stage
                 %span.has-tooltip{ title: "#{stage.titleize}" }
                   = stage.titleize
-            %th Duration
+            %th
             %th
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
 

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.7'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -28,7 +28,7 @@ gem 'omniauth-cas3',          '~> 1.1.2'
 gem 'omniauth-facebook',      '~> 3.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
-gem 'omniauth-google-oauth2', '~> 0.2.0'
+gem 'omniauth-google-oauth2', '~> 0.4.1'
 gem 'omniauth-kerberos',      '~> 0.3.0', group: :kerberos
 gem 'omniauth-saml',          '~> 1.6.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
@@ -243,7 +243,7 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
-gem "gitlab-license", "~> 0.0.4"
+gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
 gem 'sentry-raven', '~> 1.1.0'
@@ -310,7 +310,7 @@ group :development, :test do
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
 
-  gem 'rubocop', '~> 0.40.0', require: false
+  gem 'rubocop', '~> 0.41.2', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
   gem 'simplecov', '~> 0.11.0', require: false
@@ -355,7 +355,7 @@ gem 'oauth2', '~> 1.2.0'
 gem 'paranoia', '~> 2.0'
 
 # Health check
-gem 'health_check', '~> 1.5.1'
+gem 'health_check', '~> 2.1.0'
 
 # System information
 gem 'vmstat', '~> 2.1.0'

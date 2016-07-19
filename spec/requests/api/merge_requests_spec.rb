@@ -138,6 +138,8 @@ describe API::API, api: true  do
       expect(json_response['work_in_progress']).to be_falsy
       expect(json_response['merge_when_build_succeeds']).to be_falsy
       expect(json_response['merge_status']).to eq('can_be_merged')
+      expect(json_response['should_close_merge_request']).to be_falsy
+      expect(json_response['force_close_merge_request']).to be_falsy
     end
 
     it "should return merge_request" do
@@ -147,6 +149,8 @@ describe API::API, api: true  do
       expect(json_response['iid']).to eq(merge_request.iid)
       expect(json_response['work_in_progress']).to eq(false)
       expect(json_response['merge_status']).to eq('can_be_merged')
+      expect(json_response['should_close_merge_request']).to be_falsy
+      expect(json_response['force_close_merge_request']).to be_falsy
     end
 
     it 'should return merge_request by iid' do
@@ -700,14 +704,31 @@ describe API::API, api: true  do
   end
 
   describe 'POST :id/merge_requests/:merge_request_id/approve' do
-    it 'approves the merge request' do
-      project.update_attribute(:approvals_before_merge, 2)
+    before { project.update_attribute(:approvals_before_merge, 2) }
 
-      post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user)
+    context 'as the author of the merge request' do
+      before { post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", user) }
 
-      expect(response.status).to eq(201)
-      expect(json_response['approvals_left']).to eq(1)
-      expect(json_response['approved_by'][0]['user']['username']).to eq(user.username)
+      it 'returns a 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'as a valid approver' do
+      let(:approver) { create(:user) }
+
+      before do
+        project.team << [approver, :developer]
+        project.team << [create(:user), :developer]
+
+        post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/approve", approver)
+      end
+
+      it 'approves the merge request' do
+        expect(response.status).to eq(201)
+        expect(json_response['approvals_left']).to eq(1)
+        expect(json_response['approved_by'][0]['user']['username']).to eq(approver.username)
+      end
     end
   end
 

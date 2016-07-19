@@ -14,7 +14,7 @@ describe GlobalMilestone, models: true do
   let(:milestone2_project2) { create(:milestone, title: "VD-123", project: project2) }
   let(:milestone2_project3) { create(:milestone, title: "VD-123", project: project3) }
 
-  describe :build_collection do
+  describe '.build_collection' do
     before do
       milestones =
         [
@@ -42,7 +42,7 @@ describe GlobalMilestone, models: true do
     end
   end
 
-  describe :initialize do
+  describe '#initialize' do
     before do
       milestones =
         [
@@ -63,7 +63,7 @@ describe GlobalMilestone, models: true do
     end
   end
 
-  describe :safe_title do
+  describe '#safe_title' do
     let(:milestone) { create(:milestone, title: "git / test", project: project1) }
 
     it 'should strip out slashes and spaces' do

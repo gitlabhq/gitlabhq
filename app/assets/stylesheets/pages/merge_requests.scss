@@ -73,9 +73,12 @@
       color: #888;
     }
 
-    &.ci-pending,
-    &.ci-running {
+    &.ci-pending {
       color: $gl-warning;
+    }
+
+    &.ci-running {
+      color: $blue-normal;
     }
 
     &.ci-failed,
@@ -321,6 +324,10 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
+
+  .dropdown-menu-toggle {
+    width: 100%;
+  }
 }
 
 .table-holder {

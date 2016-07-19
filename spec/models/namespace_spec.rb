@@ -18,11 +18,11 @@ describe Namespace, models: true do
     it { is_expected.to respond_to(:to_param) }
   end
 
-  describe :to_param do
+  describe '#to_param' do
     it { expect(namespace.to_param).to eq(namespace.path) }
   end
 
-  describe :human_name do
+  describe '#human_name' do
     it { expect(namespace.human_name).to eq(namespace.owner_name) }
   end
 
@@ -54,7 +54,7 @@ describe Namespace, models: true do
     end
   end
 
-  describe :move_dir do
+  describe '#move_dir' do
     before do
       @namespace = create :namespace
       @project = create :project, namespace: @namespace
@@ -98,7 +98,7 @@ describe Namespace, models: true do
     end
   end
 
-  describe :find_by_path_or_name do
+  describe '.find_by_path_or_name' do
     before do
       @namespace = create(:namespace, name: 'WoW', path: 'woW')
     end

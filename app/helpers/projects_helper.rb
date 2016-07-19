@@ -19,7 +19,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -33,7 +33,8 @@ module ProjectsHelper
     if opts[:by_username]
       author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
     else
-      author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
+      tooltip_data = { placement: 'top' }
+      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
     end
 
     author_html << capture(&block) if block
@@ -60,7 +61,7 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe

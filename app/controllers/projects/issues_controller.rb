@@ -191,10 +191,6 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :read_issue, @issue)
   end
 
-  def authorize_read_issue!
-    return render_404 unless can?(current_user, :read_issue, @issue)
-  end
-
   def authorize_update_issue!
     return render_404 unless can?(current_user, :update_issue, @issue)
   end

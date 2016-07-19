@@ -7,11 +7,12 @@
 * [Newlines](#newlines)
 * [Multiple underscores in words](#multiple-underscores-in-words)
 * [URL auto-linking](#url-auto-linking)
+* [Multiline Blockquote](#multiline-blockquote)
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Inline Diff](#inline-diff)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
-* [Task lists](#task-lists)
+* [Task Lists](#task-lists)
 
 **[Standard Markdown](#standard-markdown)**
 
@@ -88,6 +89,37 @@ GFM will autolink almost any URL you copy and paste into your text.
 * smb://foo/bar/baz
 * irc://irc.freenode.net/gitlab
 * http://localhost:3000
+
+## Multiline Blockquote
+
+On top of standard Markdown [blockquotes](#blockquotes), which require prepending `>` to quoted lines,
+GFM supports multiline blockquotes fenced by <code>>>></code>.
+
+```no-highlight
+>>>
+If you paste a message from somewhere else
+
+that
+
+spans
+
+multiple lines,
+
+you can quote that without having to manually prepend `>` to every line!
+>>>
+```
+
+>>>
+If you paste a message from somewhere else
+
+that
+
+spans
+
+multiple lines,
+
+you can quote that without having to manually prepend `>` to every line!
+>>>
 
 ## Code and Syntax Highlighting
 

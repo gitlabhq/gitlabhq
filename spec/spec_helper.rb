@@ -33,7 +33,6 @@ RSpec.configure do |config|
   config.include LoginHelpers,        type: :request
   config.include StubConfiguration
   config.include EmailHelpers
-  config.include RelativeUrl,         type: feature
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
@@ -48,6 +47,7 @@ RSpec.configure do |config|
   end
 
   config.before(:all) do
+    License.destroy_all
     TestLicense.init
   end
 end

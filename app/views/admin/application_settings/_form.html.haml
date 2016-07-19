@@ -38,11 +38,11 @@
             = source
         %span.help-block#import-sources-help
           Enabled sources for code import during project creation. OmniAuth must be configured for GitHub
-          = link_to "(?)", help_page_path("integration", "github")
+          = link_to "(?)", help_page_path("integration/github")
           , Bitbucket
-          = link_to "(?)", help_page_path("integration", "bitbucket")
+          = link_to "(?)", help_page_path("integration/bitbucket")
           and GitLab.com
-          = link_to "(?)", help_page_path("integration", "gitlab")
+          = link_to "(?)", help_page_path("integration/gitlab")
     .form-group
       %label.control-label.col-sm-2 Enabled Git access protocols
       .col-sm-10
@@ -55,6 +55,15 @@
           = f.label :version_check_enabled do
             = f.check_box :version_check_enabled
             Version check enabled
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :usage_ping_enabled do
+            = f.check_box :usage_ping_enabled
+            Usage ping enabled
+          .help-block
+            Every week GitLab will report license usage back to GitLab, Inc.
+            Disable this option if you do not want this to occur.
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox

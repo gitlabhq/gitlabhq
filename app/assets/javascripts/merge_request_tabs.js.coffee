@@ -153,17 +153,18 @@ class @MergeRequestTabs
 
   loadDiff: (source) ->
     return if @diffsLoaded
-
     @_get
       url: "#{source}.json" + @_location.search
       success: (data) =>
         $('#diffs').html data.html
         gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'))
         $('#diffs .js-syntax-highlight').syntaxHighlight()
+        $('#diffs .diff-file').singleFileDiff()
         @expandViewContainer() if @diffViewType() is 'parallel'
         @diffsLoaded = true
         @scrollToElement("#diffs")
         @highlighSelectedLine()
+        @filesCommentButton = $('.files .diff-file').filesCommentButton()
 
         $(document)
           .off 'click', '.diff-line-num a'

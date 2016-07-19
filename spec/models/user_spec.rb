@@ -441,7 +441,7 @@ describe User, models: true do
     end
   end
 
-  describe :not_in_project do
+  describe '.not_in_project' do
     before do
       User.delete_all
       @user = create :user
@@ -612,7 +612,7 @@ describe User, models: true do
     end
   end
 
-  describe :avatar_type do
+  describe '#avatar_type' do
     let(:user) { create(:user) }
 
     it "should be true if avatar is image" do
@@ -626,7 +626,7 @@ describe User, models: true do
     end
   end
 
-  describe :requires_ldap_check? do
+  describe '#requires_ldap_check?' do
     let(:user) { User.new }
 
     it 'is false when LDAP is disabled' do
@@ -665,7 +665,7 @@ describe User, models: true do
   end
 
   context 'ldap synchronized user' do
-    describe :ldap_user? do
+    describe '#ldap_user?' do
       it 'is true if provider name starts with ldap' do
         user = create(:omniauth_user, provider: 'ldapmain')
         expect(user.ldap_user?).to be_truthy
@@ -682,7 +682,7 @@ describe User, models: true do
       end
     end
 
-    describe :ldap_identity do
+    describe '#ldap_identity' do
       it 'returns ldap identity' do
         user = create :omniauth_user
         expect(user.ldap_identity.provider).not_to be_empty
@@ -860,7 +860,7 @@ describe User, models: true do
     end
   end
 
-  describe :can_be_removed? do
+  describe '#can_be_removed?' do
     subject { create(:user) }
 
     context 'no owned groups' do

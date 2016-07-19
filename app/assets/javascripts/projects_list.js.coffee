@@ -5,13 +5,12 @@
     this.initPagination()
 
   initSearch: ->
-    @timer = null
-    $(".projects-list-filter").on('keyup', ->
-      clearTimeout(@timer)
-      @timer = setTimeout(ProjectsList.filterResults, 500)
-    )
+    projectsListFilter = $('.projects-list-filter')
+    debounceFilter = _.debounce ProjectsList.filterResults, 500
+    projectsListFilter.on 'keyup', (e) ->
+      debounceFilter() if projectsListFilter.val() isnt ''
 
-  filterResults: =>
+  filterResults: ->
     $('.projects-list-holder').fadeTo(250, 0.5)
 
     form = null

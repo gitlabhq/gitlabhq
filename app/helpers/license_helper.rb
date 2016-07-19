@@ -3,6 +3,11 @@ module LicenseHelper
     User.active.count
   end
 
+  def max_historical_user_count
+    date_range = (Date.today - 1.year)..Date.today
+    HistoricalData.during(date_range).maximum(:active_user_count) || 0
+  end
+
   def license_message(signed_in: signed_in?, is_admin: (current_user && current_user.is_admin?))
     @license_message ||=
       if License.current

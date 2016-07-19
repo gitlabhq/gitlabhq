@@ -132,16 +132,34 @@ describe Project, models: true do
       end
     end
 
-    it 'should not allow an invalid URI as import_url' do
+    it 'does not allow an invalid URI as import_url' do
       project2 = build(:project, import_url: 'invalid://')
 
       expect(project2).not_to be_valid
     end
 
-    it 'should allow a valid URI as import_url' do
+    it 'does allow a valid URI as import_url' do
       project2 = build(:project, import_url: 'ssh://test@gitlab.com/project.git')
 
       expect(project2).to be_valid
+    end
+
+    it 'does not allow to introduce an empty URI' do
+      project2 = build(:project, import_url: '')
+
+      expect(project2).not_to be_valid
+    end
+
+    it 'does not produce import data on an empty URI' do
+      project2 = build(:project, import_url: '')
+
+      expect(project2.import_data).to be_nil
+    end
+
+    it 'does not produce import data on an invalid URI' do
+      project2 = build(:project, import_url: 'test://')
+
+      expect(project2.import_data).to be_nil
     end
   end
 
@@ -306,7 +324,7 @@ describe Project, models: true do
     end
   end
 
-  describe :update_merge_requests do
+  describe '#update_merge_requests' do
     let(:project) { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
     let(:key) { create(:key, user_id: project.owner.id) }
@@ -355,7 +373,7 @@ describe Project, models: true do
     end
   end
 
-  describe :to_param do
+  describe '#to_param' do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
@@ -366,7 +384,7 @@ describe Project, models: true do
     end
   end
 
-  describe :repository do
+  describe '#repository' do
     let(:project) { create(:project) }
 
     it 'should return valid repo' do
@@ -374,7 +392,7 @@ describe Project, models: true do
     end
   end
 
-  describe :default_issues_tracker? do
+  describe '#default_issues_tracker?' do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
@@ -387,7 +405,7 @@ describe Project, models: true do
     end
   end
 
-  describe :external_issue_tracker do
+  describe '#external_issue_tracker' do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
@@ -428,7 +446,7 @@ describe Project, models: true do
     end
   end
 
-  describe :cache_has_external_issue_tracker do
+  describe '#cache_has_external_issue_tracker' do
     let(:project) { create(:project) }
 
     it 'stores true if there is any external_issue_tracker' do
@@ -450,7 +468,7 @@ describe Project, models: true do
     end
   end
 
-  describe :open_branches do
+  describe '#open_branches' do
     let(:project) { create(:project) }
 
     before do
@@ -527,7 +545,7 @@ describe Project, models: true do
     end
   end
 
-  describe :avatar_type do
+  describe '#avatar_type' do
     let(:project) { create(:project) }
 
     it 'should be true if avatar is image' do
@@ -541,7 +559,7 @@ describe Project, models: true do
     end
   end
 
-  describe :execute_hooks do
+  describe '#execute_hooks' do
     it "triggers project and group hooks" do
       group = create :group, name: 'gitlab'
       project = create(:project, name: 'gitlabhq', namespace: group)
@@ -558,7 +576,7 @@ describe Project, models: true do
     end
   end
 
-  describe :avatar_url do
+  describe '#avatar_url' do
     subject { project.avatar_url }
 
     let(:project) { create(:project) }
@@ -595,7 +613,7 @@ describe Project, models: true do
     end
   end
 
-  describe :allowed_to_share_with_group? do
+  describe '#allowed_to_share_with_group?' do
     let(:project) { create(:project) }
 
     it "returns true" do
@@ -608,7 +626,7 @@ describe Project, models: true do
     end
   end
 
-  describe :pipeline do
+  describe '#pipeline' do
     let(:project) { create :project }
     let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
@@ -628,7 +646,7 @@ describe Project, models: true do
     end
   end
 
-  describe :builds_enabled do
+  describe '#builds_enabled' do
     let(:project) { create :project }
 
     before { project.builds_enabled = true }
@@ -730,7 +748,7 @@ describe Project, models: true do
     end
   end
 
-  describe :any_runners do
+  describe '#any_runners' do
     let(:project) { create(:empty_project, shared_runners_enabled: shared_runners_enabled) }
     let(:specific_runner) { create(:ci_runner) }
     let(:shared_runner) { create(:ci_runner, :shared) }

@@ -1,30 +1,40 @@
 - project = build.project
-%tr.build
+%tr.build.commit
   %td.status
     = ci_status_with_icon(build.status)
 
-  %td.build-link
-    - if can?(current_user, :read_build, build.project)
-      = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-        %strong Build ##{build.id}
-    - else
-      %strong Build ##{build.id}
+  %td
+    .branch-commit
+      - if can?(current_user, :read_build, build.project)
+        = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
+          %span.build-link ##{build.id}
+      - else
+        %span.build-link ##{build.id}
 
-    - if build.stuck?
-      %i.fa.fa-warning.text-warning
+      - if build.stuck?
+        %i.fa.fa-warning.text-warning
+
+      - if build.ref
+        = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
+      - else
+        .light none
+      = custom_icon("icon_commit")
+
+      = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace commit-id"
+
+      .label-container
+        - if build.tags.any?
+          - build.tags.each do |tag|
+            %span.label.label-primary
+              = tag
+        - if build.try(:trigger_request)
+          %span.label.label-info triggered
+        - if build.try(:allow_failure)
+          %span.label.label-danger allowed to fail
 
   %td
     - if project
       = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project)
-
-  %td
-    = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace"
-
-  %td
-    - if build.ref
-      = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref)
-    - else
-      .light none
 
   %td
     - if build.try(:runner)
@@ -36,22 +46,15 @@
     #{build.stage} / #{build.name}
 
   %td
-    - if build.tags.any?
-      - build.tags.each do |tag|
-        %span.label.label-primary
-          = tag
-    - if build.try(:trigger_request)
-      %span.label.label-info triggered
-    - if build.try(:allow_failure)
-      %span.label.label-danger allowed to fail
-
-  %td.duration
     - if build.duration
-      #{duration_in_words(build.finished_at, build.started_at)}
+      %p.duration
+        = custom_icon("icon_timer")
+        = duration_in_numbers(build.finished_at, build.started_at)
 
-  %td.timestamp
     - if build.finished_at
-      %span #{time_ago_with_tooltip(build.finished_at)}
+      %p.finished-at
+        = icon("calendar")
+        %span #{time_ago_with_tooltip(build.finished_at)}
 
   - if defined?(coverage) && coverage
     %td.coverage

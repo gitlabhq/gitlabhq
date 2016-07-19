@@ -15,7 +15,7 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
 
-  describe :valid_commit_sha do
+  describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
       before do
         pipeline.sha = '0' * 40
@@ -26,7 +26,7 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe :short_sha do
+  describe '#short_sha' do
     subject { pipeline.short_sha }
 
     it 'has 8 items' do
@@ -35,10 +35,10 @@ describe Ci::Pipeline, models: true do
     it { expect(pipeline.sha).to start_with(subject) }
   end
 
-  describe :create_next_builds do
+  describe '#create_next_builds' do
   end
 
-  describe :retried do
+  describe '#retried' do
     subject { pipeline.retried }
 
     before do
@@ -51,7 +51,7 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe :create_builds do
+  describe '#create_builds' do
     let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project, ref: 'master', tag: false }
 
     def create_builds(trigger_request = nil)
