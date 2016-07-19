@@ -18,7 +18,7 @@
       - if artifacts.any?
         %li.dropdown-header Artifacts
         - unless pipeline.latest?
-          = " (not latest, but #{link_to(pipeline.short_sha, namespace_project_tree_path(project.namespace, project, pipeline.sha))})"
+          = " (not latest, but #{link_to(pipeline.short_sha, namespace_project_pipeline_path(project.namespace, project, pipeline))})"
         - artifacts.each do |job|
           %li
             = link_to search_namespace_project_artifacts_path(project.namespace, project, ref, 'download', job: job.name), rel: 'nofollow' do
