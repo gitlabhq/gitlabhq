@@ -6,7 +6,7 @@ describe Ci::Build, models: true do
   let(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
-                         ref: 'fix',
+                         ref: project.default_branch,
                          status: 'success')
   end
 
@@ -680,8 +680,8 @@ describe Ci::Build, models: true do
     end
 
     context 'with succeed pipeline' do
-      it 'returns builds for ref' do
-        builds = project.latest_successful_builds_for('fix')
+      it 'returns builds for ref for default_branch' do
+        builds = project.latest_successful_builds_for
 
         expect(builds).to contain_exactly(build)
       end
@@ -700,7 +700,7 @@ describe Ci::Build, models: true do
       end
 
       it 'returns empty relation' do
-        builds = project.latest_successful_builds_for('fix')
+        builds = project.latest_successful_builds_for
 
         expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty

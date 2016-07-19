@@ -192,8 +192,8 @@ describe API::API, api: true do
     let(:pipeline) do
       create(:ci_pipeline,
               project: project,
-              sha: project.commit('fix').sha,
-              ref: 'fix')
+              sha: project.commit.sha,
+              ref: project.default_branch)
     end
     let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
