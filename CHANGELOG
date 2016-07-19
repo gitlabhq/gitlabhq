@@ -5,6 +5,7 @@ v 8.11.0 (unreleased)
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
+  - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
   - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
