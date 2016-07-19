@@ -792,10 +792,10 @@ describe Ci::Build, models: true do
         context 'if config does not have a questioned job' do
           let(:config) do
             YAML.dump({
-              test_other: {
-                script: 'Hello World'
-              }
-            })
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
           end
 
           it { is_expected.to eq('on_success') }
@@ -804,15 +804,33 @@ describe Ci::Build, models: true do
         context 'if config has when' do
           let(:config) do
             YAML.dump({
-              test: {
-                script: 'Hello World',
-                when: 'always'
-              }
-            })
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
           end
 
           it { is_expected.to eq('always') }
         end
+      end
+    end
+  end
+
+  describe '#retryable?' do
+    context 'when build is running' do
+      before { build.run! }
+
+      it 'should return false' do
+        expect(build.retryable?).to be false
+      end
+    end
+
+    context 'when build is finished' do
+      before { build.success! }
+
+      it 'should return true' do
+        expect(build.retryable?).to be true
       end
     end
   end
