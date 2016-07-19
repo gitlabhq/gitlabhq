@@ -499,6 +499,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
     get '/users/almost_there' => 'confirmations#almost_there'
+    get '/users/auth/kerberos_spnego/negotiate' => 'omniauth_kerberos_spnego#negotiate'
   end
 
   root to: "root#index"

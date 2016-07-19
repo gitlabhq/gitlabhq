@@ -1,50 +1,39 @@
 # Kerberos integration
 
 GitLab can be configured to allow your users to sign with their Kerberos credentials.
-Kerberos integration can be enabled as a regular omniauth provider, edit [gitlab.rb (omnibus-gitlab)](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template) or [gitlab.yml (source installations)](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) on your GitLab server and restart GitLab. You only need to specify the provider name. For example for GitLab omnibus add the following:
 
-```
-gitlab_rails['omniauth_enabled'] = true
-gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
-gitlab_rails['omniauth_providers'] = [
-    {"name" => "kerberos"}
-]
-```
+## Configuration
 
-NB: for source installations, make sure the `kerberos` gem group [has been installed](../install/installation.md#install-gems).
+For GitLab to offer Kerberos token-based authentication, perform the
+following prerequisites. You still need to configure your system for
+Kerberos usage, such as specifying realms. GitLab will make use of the
+system's Kerberos settings.
 
-You still need to configure your system for Kerberos usage, such as specifying realms. GitLab will make use of the system's Kerberos settings.
 
-The Administrative user can navigate to **Admin > Users > Example User > Identities** and attach a Kerberos account.
-Existing GitLab users can go to profile > account and attach a Kerberos account. if you want to allow users without a GitLab account to login you should enable the option `omniauth_allow_single_sign_on` in config file (default: false). Then, the first time a user signs in with Kerberos credentials, GitLab will create a new GitLab user associated with the email, which is built from the kerberos username and realm.
-User accounts will be created automatically when authentication was successful.
-
-### HTTP git access
-
-A linked Kerberos account enables you to `git pull` and `git push` using your Kerberos account, as well as your standard GitLab credentials.
-
-### HTTP git access with Kerberos token (passwordless authentication)
-
-GitLab users with a linked Kerberos account can also `git pull` and `git push` using Kerberos tokens, i.e. without having to send their password with each operation.
-
-For GitLab to offer Kerberos token-based authentication, perform the following prerequisites:
+### GitLab keytab
 
 1. Create a Kerberos Service Principal for the HTTP service on your GitLab server. If your GitLab server is gitlab.example.com and your Kerberos realm EXAMPLE.COM, create a Service Principal `HTTP/gitlab.example.com@EXAMPLE.COM` in your Kerberos database.
 
-1. Create a keytab for the above Service Principal, e.g. `/etc/http.keytab`.
+1. Create a keytab on the GitLab server for the above Service Principal, e.g. `/etc/http.keytab`.
 
 The keytab is a sensitive file and must be readable by the GitLab user. Set ownership and protect the file appropriately:
 
 ```
 $ sudo chown git /etc/http.keytab
-$ sudo chmod 0700 /etc/http.keytab
+$ sudo chmod 0600 /etc/http.keytab
 ```
 
-#### Installations from source
+### Installations from source
+
+NB: for source installations, make sure the `kerberos` gem group [has been installed](../install/installation.md#install-gems).
 
 Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) to enable Kerberos ticket-based authentication. In most cases, you only need to enable Kerberos and specify the location of the keytab:
 
 ```yaml
+  omniauth:
+    enabled: true
+    allow_single_sign_on: ['kerberos']
+
   kerberos:
     # Allow the HTTP Negotiate authentication method for Git clients
     enabled: true
@@ -55,19 +44,36 @@ Edit the kerberos section of [gitlab.yml](https://gitlab.com/gitlab-org/gitlab-c
     keytab: /etc/http.keytab
 ```
 
-Restart GitLab to apply the changes. GitLab will now offer the `negotiate` authentication method for HTTP git access, enabling git clients that support this authentication protocol to authenticate with Kerberos tokens.
+Restart GitLab to apply the changes. GitLab will now offer the `negotiate` authentication method for signing in and HTTP git access, enabling git clients that support this authentication protocol to authenticate with Kerberos tokens.
 
-##### Omnibus package installations
+### Omnibus package installations
 
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
+gitlab_rails['omniauth_enabled'] = true
+gitlab_rails['omniauth_allow_single_sign_on'] = ['kerberos']
 
 gitlab_rails['kerberos_enabled'] = true
 gitlab_rails['kerberos_keytab'] = "/etc/http.keytab"
 ```
 
 and run `sudo gitlab-ctl reconfigure` for changes to take effect.
+
+
+## Creating and linking Kerberos accounts
+
+The Administrative user can navigate to **Admin > Users > Example User > Identities** and attach a Kerberos account.
+Existing GitLab users can go to profile > account and attach a Kerberos account. if you want to allow users without a GitLab account to login you should enable the option `omniauth_allow_single_sign_on` in config file (default: false). Then, the first time a user signs in with Kerberos credentials, GitLab will create a new GitLab user associated with the email, which is built from the kerberos username and realm.
+User accounts will be created automatically when authentication was successful.
+
+## HTTP git access
+
+A linked Kerberos account enables you to `git pull` and `git push` using your Kerberos account, as well as your standard GitLab credentials.
+
+GitLab users with a linked Kerberos account can also `git pull` and `git push` using Kerberos tokens, i.e. without having to send their password with each operation.
+
+### HTTP git access with Kerberos token (passwordless authentication)
 
 #### Support for Git before 2.4
 
@@ -115,11 +121,11 @@ and run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 Git remote URLs will have to be updated to `https://gitlab.example.com:8443/mygroup/myproject.git` in order to use Kerberos ticket-based authentication.
 
-#### Support for Active Directory Kerberos environments
+## Support for Active Directory Kerberos environments
 
 When using Kerberos ticket-based authentication in an Active Directory domain, it may be necessary to increase the maximum header size allowed by nginx, as extensions to the Kerberos protocol may result in HTTP authentication headers larger than the default size of 8kB. Configure `large_client_header_buffers` to a larger value in [the nginx configuration](http://nginx.org/en/docs/http/ngx_http_core_module.html#large_client_header_buffers).
 
-### Helpful links to setup development kerberos environment.
+## Helpful links to setup development kerberos environment.
 
 https://help.ubuntu.com/community/Kerberos
 
