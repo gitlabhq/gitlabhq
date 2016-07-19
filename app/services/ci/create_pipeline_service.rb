@@ -21,7 +21,7 @@ module Ci
         return error('Insufficient permissions to create a new pipeline')
       end
 
-      unless project.repository.ref_exists?(ref)
+      unless branch? || tag?
         return error('Reference not found')
       end
 
@@ -75,8 +75,12 @@ module Ci
       params[:ref]
     end
 
+    def branch?
+      project.repository.ref_exists?(Gitlab::Git::BRANCH_REF_PREFIX + ref)
+    end
+
     def tag?
-      project.repository.find_tag(ref).present?
+      project.repository.ref_exists?(Gitlab::Git::TAG_REF_PREFIX + ref)
     end
 
     def ref
