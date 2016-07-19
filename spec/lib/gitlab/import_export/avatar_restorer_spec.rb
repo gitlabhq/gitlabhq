@@ -5,7 +5,7 @@ describe Gitlab::ImportExport::AvatarRestorer, lib: true do
   let(:project) { create(:empty_project) }
 
   before do
-    allow_any_instance_of(described_class).to receive(:avatar_export_path)
+    allow_any_instance_of(described_class).to receive(:avatar_export_file)
                                                 .and_return(Rails.root + "spec/fixtures/dk.png")
   end
 
