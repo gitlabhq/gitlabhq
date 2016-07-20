@@ -29,6 +29,7 @@ v 8.10.0 (unreleased)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Add "passing with warnings" to the merge request pipeline possible statuses, this happens when builds that allow failures have failed. !5004
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
+  - Added the ability to block sign ups using a domain blacklist !5259
   - Upgrade to Rails 4.2.7. !5236
   - Extend exposed environment variables for CI builds
   - Deprecate APIs "projects/:id/keys/...". Use "projects/:id/deploy_keys/..." instead
