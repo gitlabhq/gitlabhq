@@ -255,7 +255,7 @@ describe API::API, api: true do
 
       context 'with latest pipeline' do
         before do
-          pipelines = 3.times.map do # creating some old pipelines
+          pipelines = Array.new(3).map do # creating some old pipelines
             create(:ci_pipeline, status: 'success')
           end
 
