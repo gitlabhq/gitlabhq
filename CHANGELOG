@@ -29,6 +29,12 @@ v 8.10.1
   - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page. !5446
   - Ignore invalid trusted proxies in X-Forwarded-For header. !5454
   - Add links to the real markdown.md file for all GFM examples. !5458
+  - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
+
+v 8.10.1 (unreleased)
+  - Fix Error 500 when creating Wiki pages with hyphens or spaces
+  - Ignore invalid trusted proxies in X-Forwarded-For header
+  - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)

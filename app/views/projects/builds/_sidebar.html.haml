@@ -88,8 +88,9 @@
         %p
           %span.build-light-text Variables:
 
-        %code
-          - @build.trigger_request.variables.each do |key, value|
+
+        - @build.trigger_request.variables.each do |key, value|
+          %code
             #{key}=#{value}
 
   .block
