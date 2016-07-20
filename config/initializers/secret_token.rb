@@ -2,6 +2,41 @@
 
 require 'securerandom'
 
+# Transition material in .secret to the secret_key_base key in config/secrets.yml.
+# Historically, ENV['SECRET_KEY_BASE'] takes precedence over .secret, so we maintain that
+# behavior.
+#
+# It also used to be the case that the key material in ENV['SECRET_KEY_BASE'] or .secret
+# was used to encrypt OTP (two-factor authentication) data so if present, we copy that key
+# material into config/secrets.yml under otp_key_base.
+#
+# Finally, if we have successfully migrated all secrets to config/secrets.yml, delete the
+# .secret file to avoid confusion.
+#
+def create_tokens
+  secret_file = Rails.root.join('.secret')
+  file_secret_key = File.read(secret_file).chomp if File.exist?(secret_file)
+  env_secret_key = ENV['SECRET_KEY_BASE']
+
+  # Ensure environment variable always overrides secrets.yml.
+  Rails.application.secrets.secret_key_base = env_secret_key if env_secret_key.present?
+
+  defaults = {
+    secret_key_base: file_secret_key || generate_new_secure_token,
+    otp_key_base: env_secret_key || file_secret_key || generate_new_secure_token,
+    db_key_base: generate_new_secure_token
+  }
+
+  missing_secrets = set_missing_keys(defaults)
+  write_secrets_yml(missing_secrets) unless missing_secrets.empty?
+
+  begin
+    File.delete(secret_file) if file_secret_key
+  rescue => e
+    warn "Error deleting useless .secret file: #{e}"
+  end
+end
+
 def generate_new_secure_token
   SecureRandom.hex(64)
 end
@@ -10,58 +45,43 @@ def warn_missing_secret(secret)
   warn "Missing Rails.application.secrets.#{secret} for #{Rails.env} environment. The secret will be generated and stored in config/secrets.yml."
 end
 
-def create_tokens
-  secret_file = Rails.root.join('.secret')
-  file_key = File.read(secret_file).chomp if File.exist?(secret_file)
-  env_key = ENV['SECRET_KEY_BASE']
-  yaml_additions = {}
-
-  # Ensure environment variable always overrides secrets.yml.
-  Rails.application.secrets.secret_key_base = env_key if env_key.present?
-
-  defaults = {
-    secret_key_base: file_key || generate_new_secure_token,
-    otp_key_base: env_key || file_key || generate_new_secure_token,
-    db_key_base: generate_new_secure_token
-  }
-
-  defaults.stringify_keys.each do |key, default|
+def set_missing_keys(defaults)
+  defaults.stringify_keys.each_with_object({}) do |(key, default), missing|
     if Rails.application.secrets[key].blank?
       warn_missing_secret(key)
 
-      yaml_additions[key] = Rails.application.secrets[key] = default
+      missing[key] = Rails.application.secrets[key] = default
     end
   end
+end
 
-  unless yaml_additions.empty?
-    secrets_yml = Rails.root.join('config/secrets.yml')
-    all_secrets = YAML.load_file(secrets_yml) if File.exist?(secrets_yml)
-    all_secrets ||= {}
-    env_secrets = all_secrets[Rails.env.to_s] || {}
+def write_secrets_yml(missing_secrets)
+  secrets_yml = Rails.root.join('config/secrets.yml')
+  rails_env = Rails.env.to_s
+  secrets = YAML.load_file(secrets_yml) if File.exist?(secrets_yml)
+  secrets ||= {}
+  secrets[rails_env] ||= {}
 
-    all_secrets[Rails.env.to_s] = env_secrets.merge(yaml_additions) do |key, old, new|
-      if old.present?
-        warn <<EOM
+  secrets[rails_env].merge!(missing_secrets) do |key, old, new|
+    # Previously, it was possible this was set to the literal contents of an Erb
+    # expression that evaluated to an empty value. We don't want to support that
+    # specifically, just ensure we don't break things further.
+    #
+    if old.present?
+      warn <<EOM
 Rails.application.secrets.#{key} was blank, but the literal value in config/secrets.yml was:
   #{old}
 
 This probably isn't the expected value for this secret. To keep using a literal Erb string in config/secrets.yml, replace `<%` with `<%%`.
 EOM
 
-        exit 1
-      end
-
-      new
+      exit 1
     end
 
-    File.write(secrets_yml, YAML.dump(all_secrets), mode: 'w', perm: 0600)
+    new
   end
 
-  begin
-    File.delete(secret_file) if file_key
-  rescue => e
-    warn "Error deleting useless .secret file: #{e}"
-  end
+  File.write(secrets_yml, YAML.dump(secrets), mode: 'w', perm: 0600)
 end
 
 create_tokens
