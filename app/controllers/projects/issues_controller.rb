@@ -1,4 +1,5 @@
 class Projects::IssuesController < Projects::ApplicationController
+  include NotesHelper
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
@@ -69,6 +70,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
     @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
+
+    preload_max_access_for_authors(@notes, @project) if @notes
 
     respond_to do |format|
       format.html

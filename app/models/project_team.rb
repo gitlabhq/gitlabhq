@@ -132,22 +132,41 @@ class ProjectTeam
     Gitlab::Access.options_with_owner.key(max_member_access(user_id))
   end
 
-  # This method assumes project and group members are eager loaded for optimal
-  # performance.
+  # Determine the maximum access level for a group of users in bulk.
+  #
+  # Returns a Hash mapping user ID -> maxmum access level.
+  def max_member_access_for_user_ids(user_ids)
+    user_ids = user_ids.uniq
+    key = "max_member_access:#{project.id}"
+    RequestStore.store[key] ||= Hash.new
+    access = RequestStore.store[key]
+
+    # Lookup only the IDs we need
+    user_ids = user_ids - access.keys
+
+    if user_ids.present?
+      user_ids.map { |id| access[id] = Gitlab::Access::NO_ACCESS }
+
+      member_access = project.members.where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+      merge_max!(access, member_access)
+
+      if group
+        group_access = group.members.where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+        merge_max!(access, group_access)
+      end
+
+      if project.invited_groups.any? && project.allowed_to_share_with_group?
+        # Not optimized
+        invited_levels = user_ids.map { |id| [id, max_invited_level(id)] }.to_h
+        merge_max!(access, invited_levels)
+      end
+    end
+
+    access
+  end
+
   def max_member_access(user_id)
-    access = []
-
-    access += project.members.where(user_id: user_id).has_access.pluck(:access_level)
-
-    if group
-      access += group.members.where(user_id: user_id).has_access.pluck(:access_level)
-    end
-
-    if project.invited_groups.any? && project.allowed_to_share_with_group?
-      access << max_invited_level(user_id)
-    end
-
-    access.compact.max
+    max_member_access_for_user_ids([user_id])[user_id]
   end
 
   private
@@ -156,6 +175,7 @@ class ProjectTeam
     project.project_group_links.map do |group_link|
       invited_group = group_link.group
       access = invited_group.group_members.find_by(user_id: user_id).try(:access_field)
+      access = Gitlab::Access::NO_ACCESS unless access.present?
 
       # If group member has higher access level we should restrict it
       # to max allowed access level
@@ -214,5 +234,9 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def merge_max!(first_hash, second_hash)
+    first_hash.merge!(second_hash) { |_key, old, new| old > new ? old : new }
   end
 end

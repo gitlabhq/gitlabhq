@@ -3,6 +3,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include IssuableActions
+  include NotesHelper
   include ToggleAwardEmoji
 
   before_action :module_enabled
@@ -385,6 +386,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @project_wiki,
       @ref
     )
+
+    preload_max_access_for_authors(@notes, @project) if @notes
   end
 
   def define_widget_vars

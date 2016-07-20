@@ -151,8 +151,8 @@ describe ProjectTeam, models: true do
         it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
         it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
         it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
-        it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
-        it { expect(project.team.max_member_access(requester.id)).to be_nil }
+        it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
+        it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
       end
 
       context 'when project is shared with group' do
@@ -168,14 +168,14 @@ describe ProjectTeam, models: true do
 
         it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::DEVELOPER) }
         it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
-        it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
-        it { expect(project.team.max_member_access(requester.id)).to be_nil }
+        it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
+        it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
 
         context 'but share_with_group_lock is true' do
           before { project.namespace.update(share_with_group_lock: true) }
 
-          it { expect(project.team.max_member_access(master.id)).to be_nil }
-          it { expect(project.team.max_member_access(reporter.id)).to be_nil }
+          it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::NO_ACCESS) }
+          it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::NO_ACCESS) }
         end
       end
     end
@@ -194,8 +194,43 @@ describe ProjectTeam, models: true do
       it { expect(project.team.max_member_access(master.id)).to eq(Gitlab::Access::MASTER) }
       it { expect(project.team.max_member_access(reporter.id)).to eq(Gitlab::Access::REPORTER) }
       it { expect(project.team.max_member_access(guest.id)).to eq(Gitlab::Access::GUEST) }
-      it { expect(project.team.max_member_access(nonmember.id)).to be_nil }
-      it { expect(project.team.max_member_access(requester.id)).to be_nil }
+      it { expect(project.team.max_member_access(nonmember.id)).to eq(Gitlab::Access::NO_ACCESS) }
+      it { expect(project.team.max_member_access(requester.id)).to eq(Gitlab::Access::NO_ACCESS) }
+    end
+  end
+
+  describe "#max_member_access_for_users" do
+    it 'returns correct roles for different users' do
+      master = create(:user)
+      reporter = create(:user)
+      promoted_guest = create(:user)
+      guest = create(:user)
+      project = create(:project)
+
+      project.team << [master, :master]
+      project.team << [reporter, :reporter]
+      project.team << [promoted_guest, :guest]
+      project.team << [guest, :guest]
+
+      group = create(:group)
+      group_developer = create(:user)
+      project.project_group_links.create(
+        group: group,
+        group_access: Gitlab::Access::DEVELOPER)
+
+      group.add_master(promoted_guest)
+      group.add_developer(group_developer)
+      users = [master, reporter, promoted_guest, guest, group_developer].map(&:id)
+
+      expected = {
+          master.id => Gitlab::Access::MASTER,
+          reporter.id => Gitlab::Access::REPORTER,
+          promoted_guest.id => Gitlab::Access::DEVELOPER,
+          guest.id => Gitlab::Access::GUEST,
+          group_developer.id => Gitlab::Access::DEVELOPER
+      }
+
+      expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)
     end
   end
 end
