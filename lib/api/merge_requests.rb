@@ -242,7 +242,7 @@ module API
             should_remove_source_branch: params[:should_remove_source_branch]
           }
 
-          if parse_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
+          if to_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
             ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
               execute(merge_request)
           else
