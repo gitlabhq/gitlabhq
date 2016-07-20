@@ -82,6 +82,18 @@ class Service < ActiveRecord::Base
     Gitlab::PushDataBuilder.build_sample(project, user)
   end
 
+  def event_channel_names
+    []
+  end
+
+  def event_field(event)
+    nil
+  end
+
+  def global_fields
+    fields
+  end
+
   def supported_events
     %w(push tag_push issue merge_request wiki_page)
   end
