@@ -97,7 +97,6 @@ SecureHeaders::Configuration.default do |config|
     config.csp[:script_src] << "https://www.google-analytics.com"
   end
 
-
   # Allow connecting accounts to Twitter, Google, GitLab.com, Bitbucket, and GitHub.
   if Gitlab.config.omniauth.enabled
     config.csp[:form_action] << "api.twitter.com"
@@ -105,6 +104,7 @@ SecureHeaders::Configuration.default do |config|
     config.csp[:form_action] << "gitlab.com"
     config.csp[:form_action] << "bitbucket.org"
     config.csp[:form_action] << "github.com"
+    config.csp[:form_action] << "facebook.com"
   end
 end
 
