@@ -232,9 +232,7 @@ describe API::API, api: true do
         before do
           pipeline.update(ref: 'master',
                           sha: project.commit('master').sha)
-        end
 
-        before do
           get path_for_ref('master')
         end
 
