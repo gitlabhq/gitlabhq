@@ -1115,18 +1115,22 @@ describe Project, models: true do
   end
 
   describe '#latest_successful_builds_for' do
-    let(:project) { create(:project) }
-
-    let(:pipeline) do
+    def create_pipeline
       create(:ci_pipeline, project: project,
-                           sha: project.commit.id,
+                           sha: project.commit.sha,
                            ref: project.default_branch,
                            status: 'success')
     end
 
-    let(:build) do
-      create(:ci_build, :artifacts, :success, pipeline: pipeline)
+    def create_build(new_pipeline = pipeline, name = 'test')
+      create(:ci_build, :success, :artifacts,
+             pipeline: new_pipeline,
+             name: name)
     end
+
+    let(:project) { create(:project) }
+    let(:pipeline) { create_pipeline }
+    let(:build) { create_build }
 
     context 'with succeeded pipeline' do
       context 'standalone pipeline' do
@@ -1162,19 +1166,6 @@ describe Project, models: true do
           latest_builds = project.latest_successful_builds_for
 
           expect(latest_builds).to contain_exactly(@build2_p2, @build1_p2)
-        end
-
-        def create_pipeline
-          create(:ci_pipeline, project: project,
-                 sha: project.commit.sha,
-                 ref: project.default_branch,
-                 status: 'success')
-        end
-
-        def create_build(pipe, name = 'test')
-          create(:ci_build, :success, :artifacts,
-                 pipeline: pipe,
-                 name: name)
         end
       end
 
