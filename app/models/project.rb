@@ -431,13 +431,8 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
-    latest_successful_pipeline = pipelines.latest_successful_for(ref).first
-
-    if latest_successful_pipeline
-      latest_successful_pipeline.builds.with_artifacts.latest
-    else
-      builds.none
-    end
+    pipeline = pipelines.latest_successful_for(ref)
+    builds.where(pipeline: pipeline).latest.with_artifacts
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
