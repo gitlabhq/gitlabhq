@@ -1158,7 +1158,7 @@ describe Project, models: true do
           @build2_p2 = create_build(@pipeline2, 'test2')
         end
 
-        it 'gives the latest build from latest pipeline' do
+        it 'gives the latest builds from latest pipeline' do
           latest_builds = project.latest_successful_builds_for
 
           expect(latest_builds).to contain_exactly(@build2_p2, @build1_p2)
