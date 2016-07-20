@@ -34,18 +34,18 @@
         .form-group
           .prepend-left-10
             = f.hidden_field :allowed_to_merge
-            = f.label :allowed_to_merge, "Allowed to Merge: ", class: "label-light append-bottom-0"
+            = f.label :allowed_to_merge, "Allowed to merge: ", class: "label-light append-bottom-0"
             = dropdown_tag("<Make a selection>",
-                           options: { title: "Allowed To Merge", toggle_class: 'allowed-to-merge',
+                           options: { title: "Allowed to merge", toggle_class: 'allowed-to-merge',
                                       dropdown_class: 'dropdown-menu-selectable',
                                       data: { field_name: "protected_branch[allowed_to_merge]" }})
 
         .form-group
           .prepend-left-10
             = f.hidden_field :allowed_to_push
-            = f.label :allowed_to_push, "Allowed to Push: ", class: "label-light append-bottom-0"
+            = f.label :allowed_to_push, "Allowed to push: ", class: "label-light append-bottom-0"
             = dropdown_tag("<Make a selection>",
-                           options: { title: "Allowed To Push", toggle_class: 'allowed-to-push',
+                           options: { title: "Allowed to push", toggle_class: 'allowed-to-push',
                                       dropdown_class: 'dropdown-menu-selectable',
                                       data: { field_name: "protected_branch[allowed_to_push]" }})
 
