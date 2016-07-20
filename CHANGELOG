@@ -1,9 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Limit git rev-list output count to one in forced push check
 
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
+  - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
   - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
   - Disable PostgreSQL statement timeout during migrations
@@ -34,6 +36,7 @@ v 8.10.0 (unreleased)
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
+  - Fix GFM autocomplete not working on wiki pages
   - Fix MR-auto-close text added to description. !4836
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
@@ -133,6 +136,7 @@ v 8.10.0 (unreleased)
   - Allow bulk (un)subscription from issues in issue index
   - Fix MR diff encoding issues exporting GitLab projects
   - Export and import avatar as part of project import/export
+  - Fix migration corrupting import data for old version upgrades
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154

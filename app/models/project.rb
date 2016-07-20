@@ -650,6 +650,22 @@ class Project < ActiveRecord::Base
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
+  def external_wiki
+    if has_external_wiki.nil?
+      cache_has_external_wiki # Populate
+    end
+
+    if has_external_wiki
+      @external_wiki ||= services.external_wikis.first
+    else
+      nil
+    end
+  end
+
+  def cache_has_external_wiki
+    update_column(:has_external_wiki, services.external_wikis.any?)
+  end
+
   def build_missing_services
     services_templates = Service.where(template: true)
 

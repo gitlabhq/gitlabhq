@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160716115710) do
+ActiveRecord::Schema.define(version: 20160718153603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -843,6 +843,7 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
     t.string   "repository_storage",                 default: "default", null: false
+    t.boolean  "has_external_wiki"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
