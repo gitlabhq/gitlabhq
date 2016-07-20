@@ -11,6 +11,7 @@
 // explicit child selectors.
 
 .code {
+  background-color: #fff;
   font-family: monospace;
   font-size: $code_font_size;
   -premailer-cellpadding: 0;
@@ -25,8 +26,8 @@
 .diff-line-num {
   padding: 0 5px;
   text-align: right;
-  max-width: 50px;
   width: 35px;
+  background-color: $background-color;
   color: $black-transparent;
   border-right: 1px solid $table-border-gray;
 
@@ -42,8 +43,9 @@
 }
 
 .line_content {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
   white-space: pre;
-  background-color: #fff;
 
   &.old {
     background-color: $line-removed;
@@ -67,10 +69,6 @@
     color: $black-transparent;
     background-color: $match-line;
   }
-}
-
-.diff-line-num {
-  background-color: $background-color;
 }
 
 span.highlight_word {
