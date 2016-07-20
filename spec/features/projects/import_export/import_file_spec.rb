@@ -60,7 +60,7 @@ feature 'project import', feature: true, js: true do
   end
 
   scenario 'project with no name' do
-    project = create(:project, namespace_id: 2)
+    create(:project, namespace_id: 2)
 
     visit new_project_path
 
