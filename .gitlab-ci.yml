@@ -148,7 +148,7 @@ spinach 9 10: *spinach-knapsack
 .spinach-knapsack-ruby23: &spinach-knapsack-ruby23
   <<: *spinach-knapsack
   <<: *ruby-23
-  
+
 rspec 0 20 ruby23: *rspec-knapsack-ruby23
 rspec 1 20 ruby23: *rspec-knapsack-ruby23
 rspec 2 20 ruby23: *rspec-knapsack-ruby23
@@ -196,6 +196,7 @@ rake flog: *exec
 rake flay: *exec
 rake db:migrate:reset: *exec
 license_finder: *exec
+rake downtime_check: *exec
 
 bundler:audit:
   stage: test
