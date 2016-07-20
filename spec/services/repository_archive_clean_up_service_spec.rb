@@ -30,13 +30,9 @@ describe RepositoryArchiveCleanUpService, services: true do
       end
 
       context 'when archives older than 2 hours exists' do
-        before do
-          allow_any_instance_of(File).to receive(:mtime).and_return(2.hours.ago)
-        end
-
         it 'removes old files that matches valid archive extensions' do
           dirname = File.join(path, 'sample.git')
-          files = create_temporary_files(dirname, %w[tar tar.bz2 tar.gz zip])
+          files = create_temporary_files(dirname, %w[tar tar.bz2 tar.gz zip], 2.hours)
 
           service.execute
 
@@ -46,7 +42,7 @@ describe RepositoryArchiveCleanUpService, services: true do
 
         it 'keeps old files that does not matches valid archive extensions' do
           dirname = File.join(path, 'sample.git')
-          files = create_temporary_files(dirname, %w[conf rb])
+          files = create_temporary_files(dirname, %w[conf rb], 2.hours)
 
           service.execute
 
@@ -56,7 +52,7 @@ describe RepositoryArchiveCleanUpService, services: true do
 
         it 'keeps old files inside invalid directories' do
           dirname = File.join(path, 'john_doe/sample.git')
-          files = create_temporary_files(dirname, %w[conf rb tar tar.gz])
+          files = create_temporary_files(dirname, %w[conf rb tar tar.gz], 2.hours)
 
           service.execute
 
@@ -66,13 +62,9 @@ describe RepositoryArchiveCleanUpService, services: true do
       end
 
       context 'when archives older than 2 hours does not exist' do
-        before do
-          allow_any_instance_of(File).to receive(:mtime).and_return(1.hour.ago)
-        end
-
         it 'keeps files that matches valid archive extensions' do
           dirname = File.join(path, 'sample.git')
-          files = create_temporary_files(dirname, %w[tar tar.bz2 tar.gz zip])
+          files = create_temporary_files(dirname, %w[tar tar.bz2 tar.gz zip], 1.hour)
 
           service.execute
 
@@ -82,7 +74,7 @@ describe RepositoryArchiveCleanUpService, services: true do
 
         it 'keeps files that does not matches valid archive extensions' do
           dirname = File.join(path, 'sample.git')
-          files = create_temporary_files(dirname, %w[conf rb])
+          files = create_temporary_files(dirname, %w[conf rb], 1.hour)
 
           service.execute
 
@@ -92,7 +84,7 @@ describe RepositoryArchiveCleanUpService, services: true do
 
         it 'keeps files inside invalid directories' do
           dirname = File.join(path, 'john_doe/sample.git')
-          files = create_temporary_files(dirname, %w[conf rb tar tar.gz])
+          files = create_temporary_files(dirname, %w[conf rb tar tar.gz], 1.hour)
 
           service.execute
 
@@ -101,12 +93,9 @@ describe RepositoryArchiveCleanUpService, services: true do
         end
       end
 
-      def create_temporary_files(dirname, extensions)
+      def create_temporary_files(dirname, extensions, mtime)
         FileUtils.mkdir_p(dirname)
-
-        extensions.flat_map do |extension|
-          FileUtils.touch(File.join(dirname, "sample.#{extension}"))
-        end
+        FileUtils.touch(extensions.map { |ext| File.join(dirname, "sample.#{ext}") }, mtime: Time.now - mtime)
       end
     end
   end
