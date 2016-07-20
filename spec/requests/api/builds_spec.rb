@@ -182,7 +182,7 @@ describe API::API, api: true do
       api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
     end
 
-    context 'when unauthorized' do
+    context 'when not logged in' do
       let(:api_user) { nil }
 
       before do
