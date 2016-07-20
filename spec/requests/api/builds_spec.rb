@@ -5,12 +5,10 @@ describe API::API, api: true do
 
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let(:reporter_user) { create(:user) }
-  let(:guest_user) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
-  let!(:reporter) { create(:project_member, :reporter, user: reporter_user, project: project) }
-  let!(:guest) { create(:project_member, :guest, user: guest_user, project: project) }
+  let(:reporter) { create(:project_member, :reporter, project: project) }
+  let(:guest) { create(:project_member, :guest, project: project) }
   let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -175,7 +173,7 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
-    let(:api_user) { reporter_user }
+    let(:api_user) { reporter.user }
     let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
     def path_for_ref(ref = pipeline.ref, job = build.name)
@@ -195,7 +193,7 @@ describe API::API, api: true do
     end
 
     context 'when logging as guest' do
-      let(:api_user) { guest_user }
+      let(:api_user) { guest.user }
 
       before do
         get path_for_ref
@@ -301,7 +299,7 @@ describe API::API, api: true do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { reporter_user }
+        let(:api_user) { reporter.user }
 
         it 'should not cancel build' do
           expect(response).to have_http_status(403)
@@ -333,7 +331,7 @@ describe API::API, api: true do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { reporter_user }
+        let(:api_user) { reporter.user }
 
         it 'should not retry build' do
           expect(response).to have_http_status(403)
