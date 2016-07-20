@@ -35,8 +35,6 @@ class GitLabDropdownFilter
         $inputContainer.removeClass HAS_VALUE_CLASS
 
       if keyCode is 13
-        if @input.val() isnt "" and @options.enterCallback
-          @options.enterCallback(e)
         return false
 
       # Only filter asynchronously only if option remote is set
@@ -212,7 +210,6 @@ class GitLabDropdown
         data: =>
           return @fullData
         callback: (data) =>
-          currentIndex = -1
           @parseData data
 
           unless @filterInput.val() is ''
@@ -225,8 +222,8 @@ class GitLabDropdown
               .first()
               .find('a')
               .addClass('is-focused')
-        enterCallback: (e) =>
-          @selectRowAtIndex(e, 0)
+
+            currentIndex = 0
 
 
     # Event listeners
