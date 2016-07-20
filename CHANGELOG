@@ -134,6 +134,7 @@ v 8.10.0 (unreleased)
   - Fix issues importing projects from EE to CE
   - Fix creating group with space in group path
   - Improve cron_jobs loading error messages !5318 / !5360
+  - Prevent toggling sidebar when clipboard icon clicked
   - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
   - Limit the number of retries on error to 3 for exporting projects
   - Allow empty repositories on project import/export
