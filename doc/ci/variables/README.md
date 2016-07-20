@@ -44,7 +44,7 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
 | **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returnes the address of the registry tied to the specific project |
-| **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of the used runner |
+| **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
 | **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 

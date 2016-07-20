@@ -1182,7 +1182,10 @@ class Project < ActiveRecord::Base
       { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
     ]
 
-    variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true } if container_registry_enabled?
+    if container_registry_enabled?
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+    end
+
     variables
   end
 
