@@ -500,6 +500,10 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
+  def same_source_branch_merge_requests?
+    target_project.merge_requests.opened.where(source_branch: source_branch).exists?
+  end
+
   # Reset merge request events cache
   #
   # Since we do cache @event we need to reset cache in special cases:
