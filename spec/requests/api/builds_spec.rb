@@ -213,6 +213,10 @@ describe API::API, api: true do
     end
 
     context 'find proper build' do
+      let(:another_artifacts) do
+        fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif')
+      end
+
       def verify
         download_headers =
           { 'Content-Transfer-Encoding' => 'binary',
@@ -221,11 +225,6 @@ describe API::API, api: true do
 
         expect(response).to have_http_status(200)
         expect(response.headers).to include(download_headers)
-      end
-
-      def create_new_pipeline(status)
-        new_pipeline = create(:ci_pipeline, status: 'success')
-        create(:ci_build, status, :artifacts, pipeline: new_pipeline)
       end
 
       context 'with regular branch' do
@@ -256,8 +255,13 @@ describe API::API, api: true do
 
       context 'with latest pipeline' do
         before do
-          3.times do # creating some old pipelines
-            create_new_pipeline(:success)
+          pipelines = 3.times.map do # creating some old pipelines
+            create(:ci_pipeline, status: 'success')
+          end
+
+          pipelines.reverse_each do |pipe|
+            new_build = create(:ci_build, :success, pipeline: pipe)
+            new_build.update(artifacts_file: another_artifacts)
           end
         end
 
@@ -271,7 +275,10 @@ describe API::API, api: true do
       context 'with success pipeline' do
         before do
           build # make sure pipeline was old, but still the latest success one
-          create_new_pipeline(:pending)
+          new_pipeline = create(:ci_pipeline, status: 'success')
+          new_build = create(:ci_build, :pending,
+                             pipeline: new_pipeline)
+          new_build.update(artifacts_file: another_artifacts)
         end
 
         before do
