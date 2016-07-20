@@ -203,15 +203,15 @@ describe Ci::Build, models: true do
         { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
         { key: 'CI_BUILD_NAME', value: 'test', public: true },
         { key: 'CI_BUILD_STAGE', value: 'test', public: true },
-        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
         { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
         { key: 'CI_PROJECT_NAME', value: project.path, public: true },
         { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
-        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
-        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
-        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
       ]
     end
 
@@ -362,12 +362,13 @@ describe Ci::Build, models: true do
     context 'returns variables in valid order' do
       before do
         allow(build).to receive(:predefined_variables) { ['predefined'] }
-        allow(build).to receive(:yaml_variables) { ['yaml variables'] }
-        allow(build).to receive(:project_variables) { ['secure variables'] }
-        allow(build).to receive(:trigger_variables) { ['trigger variables'] }
+        allow(project).to receive(:predefined_variables) { ['project'] }
+        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
+        allow(build).to receive(:yaml_variables) { ['yaml'] }
+        allow(project).to receive(:secret_variables) { ['secret'] }
       end
 
-      it { is_expected.to eq(['predefined', 'yaml variables', 'secure variables', 'trigger variables']) }
+      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
     end
   end
 

@@ -1164,4 +1164,31 @@ class Project < ActiveRecord::Base
   def ensure_dir_exist
     gitlab_shell.add_namespace(repository_storage_path, namespace.path)
   end
+
+  def predefined_variables
+    [
+      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
+      { key: 'CI_PROJECT_NAME', value: path, public: true },
+      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_NAMESPACE', value: namespace.path, public: true },
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+    ]
+  end
+
+  def container_registry_variables
+    return [] unless Gitlab.config.registry.enabled
+
+    variables = [
+      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
+    ]
+
+    variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true } if container_registry_enabled?
+    variables
+  end
+
+  def secret_variables
+    variables.map do |variable|
+      { key: variable.key, value: variable.value, public: false }
+    end
+  end
 end

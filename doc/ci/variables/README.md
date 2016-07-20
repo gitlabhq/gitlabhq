@@ -37,15 +37,15 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_BUILD_TOKEN**      | all    | 1.2    | Token used for authenticating with the GitLab Container Registry |
 | **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_NAME**     | 8.10   | 0.5    | The project name that is currently build |
-| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace that is currently build |
+| **CI_PROJECT_NAME**     | 8.10   | 0.5    | The project name that is currently being built |
+| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace that is currently being built |
 | **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
-| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is ran |
-| **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns address of GitLab's Container Registry |
-| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is for project it returns the address of registry tied to specific project |
+| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
+| **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
+| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returnes the address of the registry tied to the specific project |
 | **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of the used runner |
-| **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of runners as saved in GitLab |
+| **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 
 **Some of the variables are only available when using runner with at least defined version.**
@@ -68,7 +68,7 @@ export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"
 export CI_PROJECT_NAMESPACE="gitlab-org"
 export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
-export CI_PROJECT_URL="https://gitlab.com/gitlab-org/gitlab-ce.git"
+export CI_PROJECT_URL="https://gitlab.com/gitlab-org/gitlab-ce"
 export CI_REGISTRY="registry.gitlab.com"
 export CI_REGISTRY_IMAGE="registry.gitlab.com/gitlab-org/gitlab-ce"
 export CI_RUNNER_ID="10"
