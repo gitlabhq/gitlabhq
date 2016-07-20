@@ -73,12 +73,12 @@ describe Ci::API::API do
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response).to have_http_status(201)
-        expect(json_response["variables"]).to eq([
+        expect(json_response["variables"]).to include(
           { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
           { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
           { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false }
-        ])
+        )
       end
 
       it "returns variables for triggers" do
@@ -92,14 +92,14 @@ describe Ci::API::API do
         post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
 
         expect(response).to have_http_status(201)
-        expect(json_response["variables"]).to eq([
+        expect(json_response["variables"]).to include(
           { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
           { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
           { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
           { "key" => "DB_NAME", "value" => "postgres", "public" => true },
           { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
-          { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false },
-        ])
+          { "key" => "TRIGGER_KEY", "value" => "TRIGGER_VALUE", "public" => false }
+        )
       end
 
       it "returns dependent builds" do

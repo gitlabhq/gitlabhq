@@ -114,6 +114,14 @@ module Ci
       tag_list.any?
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_RUNNER_ID', value: id.to_s, public: true },
+        { key: 'CI_RUNNER_DESCRIPTION', value: description, public: true },
+        { key: 'CI_RUNNER_TAGS', value: tag_list.to_s, public: true }
+      ]
+    end
+
     private
 
     def tag_constraints

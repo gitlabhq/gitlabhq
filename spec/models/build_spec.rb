@@ -191,79 +191,87 @@ describe Ci::Build, models: true do
   end
 
   describe '#variables' do
+    let(:container_registry_enabled) { false }
     let(:predefined_variables) do
       [
-        { key: :CI_BUILD_NAME, value: 'test', public: true },
-        { key: :CI_BUILD_STAGE, value: 'test', public: true },
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
+        { key: 'CI_BUILD_REF', value: build.sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
+        { key: 'CI_BUILD_NAME', value: 'test', public: true },
+        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
+        { key: 'CI_PROJECT_NAME', value: project.path, public: true },
+        { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
+        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
+        { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
       ]
+    end
+
+    before do
+      stub_container_registry_config(enabled: container_registry_enabled, host_port: 'registry.example.com')
     end
 
     subject { build.variables }
 
     context 'returns variables' do
-      let(:yaml_variables) do
-        [
-          { key: :DB_NAME, value: 'postgres', public: true }
-        ]
+      before do
+        build.yaml_variables = []
+      end
+
+      it { is_expected.to eq(predefined_variables) }
+    end
+
+    context 'when build is for tag' do
+      let(:tag_variable) do
+        { key: 'CI_BUILD_TAG', value: 'master', public: true }
       end
 
       before do
-        build.yaml_variables = yaml_variables
+        build.update_attributes(tag: true)
       end
 
-      it { is_expected.to eq(predefined_variables + yaml_variables) }
-
-      context 'for tag' do
-        let(:tag_variable) do
-          [
-            { key: :CI_BUILD_TAG, value: 'master', public: true }
-          ]
-        end
-
-        before do
-          build.update_attributes(tag: true)
-        end
-
-        it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
-      end
-
-      context 'and secure variables' do
-        let(:secure_variables) do
-          [
-            { key: 'SECRET_KEY', value: 'secret_value', public: false }
-          ]
-        end
-
-        before do
-          build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
-        end
-
-        it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
-
-        context 'and trigger variables' do
-          let(:trigger) { create(:ci_trigger, project: project) }
-          let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
-          let(:trigger_variables) do
-            [
-              { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
-            ]
-          end
-          let(:predefined_trigger_variable) do
-            [
-              { key: :CI_BUILD_TRIGGERED, value: 'true', public: true }
-            ]
-          end
-
-          before do
-            build.trigger_request = trigger_request
-          end
-
-          it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
-        end
-      end
+      it { is_expected.to include(tag_variable) }
     end
 
-    context 'when yaml_variables is undefined' do
+    context 'when secure variable is defined' do
+      let(:secure_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
+
+      before do
+        build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+      end
+
+      it { is_expected.to include(secure_variable) }
+    end
+
+    context 'when build is for triggers' do
+      let(:trigger) { create(:ci_trigger, project: project) }
+      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+      let(:user_trigger_variable) do
+        { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
+      end
+      let(:predefined_trigger_variable) do
+        { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
+      end
+
+      before do
+        build.trigger_request = trigger_request
+      end
+
+      it { is_expected.to include(user_trigger_variable) }
+      it { is_expected.to include(predefined_trigger_variable) }
+    end
+
+    context 'when yaml_variables are undefined' do
       before do
         build.yaml_variables = nil
       end
@@ -282,10 +290,10 @@ describe Ci::Build, models: true do
         context 'if config does not have a questioned job' do
           let(:config) do
             YAML.dump({
-                        test_other: {
-                          script: 'Hello World'
-                        }
-                      })
+              test_other: {
+                script: 'Hello World'
+              }
+            })
           end
 
           it { is_expected.to eq(predefined_variables) }
@@ -294,13 +302,13 @@ describe Ci::Build, models: true do
         context 'if config has variables' do
           let(:config) do
             YAML.dump({
-                        test: {
-                          script: 'Hello World',
-                          variables: {
-                            KEY: 'value'
-                          }
-                        }
-                      })
+              test: {
+                script: 'Hello World',
+                variables: {
+                  KEY: 'value'
+                }
+              }
+            })
           end
           let(:variables) do
             [{ key: :KEY, value: 'value', public: true }]
@@ -309,6 +317,58 @@ describe Ci::Build, models: true do
           it { is_expected.to eq(predefined_variables + variables) }
         end
       end
+    end
+
+    context 'when container registry is enabled' do
+      let(:container_registry_enabled) { true }
+      let(:ci_registry) do
+        { key: 'CI_REGISTRY',  value: 'registry.example.com',  public: true }
+      end
+      let(:ci_registry_image) do
+        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_repository_url, public: true }
+      end
+
+      context 'and is disabled for project' do
+        before do
+          project.update(container_registry_enabled: false)
+        end
+
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.not_to include(ci_registry_image) }
+      end
+
+      context 'and is enabled for project' do
+        before do
+          project.update(container_registry_enabled: true)
+        end
+
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.to include(ci_registry_image) }
+      end
+    end
+
+    context 'when runner is assigned to build' do
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+
+      before do
+        build.update(runner: runner)
+      end
+
+      it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
+    end
+
+    context 'returns variables in valid order' do
+      before do
+        allow(build).to receive(:predefined_variables) { ['predefined'] }
+        allow(project).to receive(:predefined_variables) { ['project'] }
+        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
+        allow(build).to receive(:yaml_variables) { ['yaml'] }
+        allow(project).to receive(:secret_variables) { ['secret'] }
+      end
+
+      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
     end
   end
 
