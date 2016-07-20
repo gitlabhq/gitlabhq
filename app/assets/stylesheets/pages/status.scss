@@ -15,7 +15,8 @@
       border-color: $gl-danger;
     }
 
-    &.ci-success {
+    &.ci-success,
+    &.ci-success_with_warnings {
       color: $gl-success;
       border-color: $gl-success;
     }
@@ -57,9 +58,12 @@
   .ci-status-icon-failed {
     color: $gl-danger;
   }
-  .ci-status-icon-pending {
+
+  .ci-status-icon-pending,
+  .ci-status-icon-success_with_warning {
     color: $gl-warning;
   }
+  
   .ci-status-icon-running {
     color: $blue-normal;
   }
