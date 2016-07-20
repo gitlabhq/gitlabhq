@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
+  - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
   - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
