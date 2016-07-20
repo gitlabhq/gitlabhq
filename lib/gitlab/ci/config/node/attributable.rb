@@ -7,7 +7,7 @@ module Gitlab
 
           class_methods do
             def attributes(*attributes)
-              attributes.each do |attribute|
+              attributes.flatten.each do |attribute|
                 define_method(attribute) do
                   return unless config.is_a?(Hash)
 

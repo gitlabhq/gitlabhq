@@ -8,7 +8,8 @@ module Ci
 
     def initialize(config, path = nil)
       @ci_config = Gitlab::Ci::Config.new(config)
-      @config, @path = @ci_config.to_hash, path
+      @config = @ci_config.to_hash
+      @path = path
 
       unless @ci_config.valid?
         raise ValidationError, @ci_config.errors.first
@@ -120,8 +121,6 @@ module Ci
     end
 
     def validate_job!(name, job)
-      raise ValidationError, "Unknown parameter: #{name}" unless job.is_a?(Hash) && job.has_key?(:script)
-
       validate_job_stage!(name, job) if job[:stage]
       validate_job_dependencies!(name, job) if job[:dependencies]
     end

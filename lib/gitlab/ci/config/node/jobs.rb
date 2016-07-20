@@ -18,8 +18,12 @@ module Gitlab
             end
 
             def has_visible_job?
-              config.any? { |key, _| !key.to_s.start_with?('.') }
+              config.any? { |name, _| !hidden?(name) }
             end
+          end
+
+          def hidden?(name)
+            name.to_s.start_with?('.')
           end
 
           private
@@ -36,10 +40,6 @@ module Gitlab
 
               @entries[name] = factory.create!
             end
-          end
-
-          def hidden?(name)
-            name.to_s.start_with?('.')
           end
         end
       end

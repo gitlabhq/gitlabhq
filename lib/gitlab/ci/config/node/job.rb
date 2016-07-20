@@ -9,13 +9,14 @@ module Gitlab
           include Configurable
           include Attributable
 
+          ALLOWED_KEYS = %i[tags script only except type image services allow_failure
+                            type stage when artifacts cache dependencies before_script
+                            after_script variables environment]
+
           attributes :tags, :allow_failure, :when, :environment
 
           validations do
-            validates :config, allowed_keys:
-              %i[tags script only except type image services allow_failure
-                 type stage when artifacts cache dependencies before_script
-                 after_script variables environment]
+            validates :config, allowed_keys: ALLOWED_KEYS
 
             validates :config, presence: true
             validates :name, presence: true

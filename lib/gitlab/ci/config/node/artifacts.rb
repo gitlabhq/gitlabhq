@@ -9,12 +9,13 @@ module Gitlab
           include Validatable
           include Attributable
 
-          attributes :name, :untracked, :paths, :when, :expire_in
+          ALLOWED_KEYS = %i[name untracked paths when expire_in]
+
+          attributes ALLOWED_KEYS
 
           validations do
             validates :config, type: Hash
-            validates :config,
-              allowed_keys: %i[name untracked paths when expire_in]
+            validates :config, allowed_keys: ALLOWED_KEYS
 
             with_options allow_nil: true do
               validates :name, type: String

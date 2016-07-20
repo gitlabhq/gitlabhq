@@ -31,7 +31,7 @@ describe Gitlab::Ci::Config::Node::Artifacts do
           end
         end
 
-        context 'when there is uknown key' do
+        context 'when there is an unknown key present' do
           let(:config) { { test: 100 } }
 
           it 'reports error' do

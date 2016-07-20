@@ -5,7 +5,7 @@ module Gitlab
         ##
         # This class represents an undefined and unspecified entry node.
         #
-        # It decorates original entry adding method that idicates it is
+        # It decorates original entry adding method that indicates it is
         # unspecified.
         #
         class Undefined < SimpleDelegator

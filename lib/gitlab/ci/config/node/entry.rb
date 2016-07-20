@@ -24,7 +24,7 @@ module Gitlab
             return unless valid?
 
             compose!
-            @entries.each_value(&:process!)
+            descendants.each(&:process!)
           end
 
           def leaf?
@@ -44,7 +44,7 @@ module Gitlab
           end
 
           def errors
-            @validator.messages + @entries.values.flat_map(&:errors)
+            @validator.messages + descendants.flat_map(&:errors)
           end
 
           def value
