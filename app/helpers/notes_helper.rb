@@ -1,9 +1,4 @@
 module NotesHelper
-  # Helps to distinguish e.g. commit notes in mr notes list
-  def note_for_main_target?(note)
-    @noteable.class.name == note.noteable_type && !note.diff_note?
-  end
-
   def note_target_fields(note)
     if note.noteable
       hidden_field_tag(:target_type, note.noteable.class.name.underscore) +
@@ -44,8 +39,8 @@ module NotesHelper
     # If we didn't, diff notes that would show for the same line on the changes
     # tab, would show in different discussions on the discussion tab.
     use_legacy_diff_note ||= begin
-      line_diff_notes = @grouped_diff_notes[line_code]
-      line_diff_notes && line_diff_notes.any?(&:legacy_diff_note?)
+      discussion = @grouped_diff_discussions[line_code]
+      discussion && discussion.legacy_diff_discussion?
     end
 
     data = {
@@ -81,22 +76,10 @@ module NotesHelper
     data
   end
 
-  def link_to_reply_discussion(note, line_type = nil)
+  def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = {
-      noteable_type: note.noteable_type,
-      noteable_id:   note.noteable_id,
-      commit_id:     note.commit_id,
-      discussion_id: note.discussion_id,
-      line_type:     line_type
-    }
-
-    if note.diff_note?
-      data[:note_type] = note.type
-
-      data.merge!(note.diff_attributes)
-    end
+    data = discussion.reply_attributes.merge(line_type: line_type)
 
     content_tag(:div, class: "discussion-reply-holder") do
       button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
@@ -114,13 +97,13 @@ module NotesHelper
     @max_access_by_user_id[full_key]
   end
 
-  def diff_note_path(note)
-    return unless note.diff_note?
+  def discussion_diff_path(discussion)
+    return unless discussion.diff_discussion?
 
-    if note.for_merge_request? && note.active?
-      diffs_namespace_project_merge_request_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code)
-    elsif note.for_commit?
-      namespace_project_commit_path(note.project.namespace, note.project, note.noteable, anchor: note.line_code)
+    if discussion.for_merge_request? && discussion.active?
+      diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code)
+    elsif discussion.for_commit?
+      namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code)
     end
   end
 end
