@@ -1134,12 +1134,12 @@ describe Project, models: true do
 
     context 'with many builds' do
       before do
-        @pipeline1 = create_pipeline
-        @pipeline2 = create_pipeline
-        @build1_p2 = create_build(@pipeline2, 'test')
-        @build1_p1 = create_build(@pipeline1, 'test')
-        @build2_p1 = create_build(@pipeline1, 'test2')
-        @build2_p2 = create_build(@pipeline2, 'test2')
+        pipeline1 = create_pipeline
+        pipeline2 = create_pipeline
+        @build1_p2 = create_build(pipeline2, 'test')
+        create_build(pipeline1, 'test')
+        create_build(pipeline1, 'test2')
+        @build2_p2 = create_build(pipeline2, 'test2')
       end
 
       it 'gives the latest builds from latest pipeline' do
