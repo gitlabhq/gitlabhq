@@ -4,14 +4,7 @@
 require 'gitlab/current_settings'
 include Gitlab::CurrentSettings
 
-# If Sentry is enabled and the Rails app is running in production mode,
-# this will construct the Report URI for Sentry.
-if Rails.env.production? && current_application_settings.sentry_enabled
-  uri = URI.parse(current_application_settings.sentry_dsn)
-  CSP_REPORT_URI = "#{uri.scheme}://#{uri.host}/api#{uri.path}/csp-report/?sentry_key=#{uri.user}"
-else
-  CSP_REPORT_URI = ''
-end
+CSP_REPORT_URI = ''
 
 # Content Security Policy Headers
 # For more information on CSP see:
@@ -71,10 +64,7 @@ SecureHeaders::Configuration.default do |config|
     upgrade_insecure_requests: true
   }
 
-  # Reports are sent to Sentry if it's enabled.
-  if current_application_settings.sentry_enabled
-    config.csp[:report_uri] = %W(#{CSP_REPORT_URI})
-  end
+  config.csp[:report_uri] = %W(#{CSP_REPORT_URI})
 
   # Allow Bootstrap Linter in development mode.
   if Rails.env.development?

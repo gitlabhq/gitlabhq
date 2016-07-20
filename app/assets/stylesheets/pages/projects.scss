@@ -129,6 +129,17 @@
       color: $layout-link-gray;
     }
 
+    svg {
+
+      path {
+        fill: $layout-link-gray;
+      }
+
+      use {
+        stroke: $layout-link-gray;
+      }
+    }
+
     .fa-caret-down {
       margin-left: 3px;
     }
@@ -322,18 +333,53 @@ a.deploy-project-label {
 }
 
 .fork-namespaces {
-  .fork-thumbnail {
-    text-align: center;
-    margin-bottom: $gl-padding;
+  .row {
+    -webkit-flex-wrap: wrap;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 
-    .caption {
-      padding: $gl-padding 0;
-      min-height: 30px;
-    }
+    .fork-thumbnail {
+      @include border-radius($border-radius-base);
+      background-color: $white-light;
+      border: 1px solid $border-white-light;
+      height: 202px;
+      margin: $gl-padding;
+      text-align: center;
+      width: 169px;
+      &:hover, &.forked {
+        background-color: $row-hover;
+        border-color: $row-hover-border;
+      }
+      .no-avatar {
+        width: 100px;
+        height: 100px;
+        background-color: $gray-light;
+        border: 1px solid $gray-dark;
+        margin: 0 auto;
+        @include border-radius(50%);
+        i {
+          font-size: 100px;
+          color: $gray-dark;
+        }
+      }
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding-top: $gl-padding;
+        color: $gl-gray;
+        .caption {
+          min-height: 30px;
+          padding: $gl-padding 0;
+        }
+      }
 
-    img {
-      @include border-radius(50%);
-      max-width: 100px;
+      img {
+        @include border-radius(50%);
+        max-width: 100px;
+      }
     }
   }
 }
@@ -485,6 +531,11 @@ pre.light-well {
 
       > span {
         margin-left: 10px;
+      }
+
+      svg {
+        position: relative;
+        top: 2px;
       }
     }
   }

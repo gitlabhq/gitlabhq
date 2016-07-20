@@ -264,7 +264,7 @@ describe Ci::Pipeline, models: true do
       context 'when listing manual actions' do
         let(:yaml) do
           {
-            stages: ["build", "test", "test_failure", "deploy", "cleanup"],
+            stages: ["build", "test", "staging", "production", "cleanup"],
             build: {
               stage: "build",
               script: "BUILD",
@@ -273,17 +273,12 @@ describe Ci::Pipeline, models: true do
               stage: "test",
               script: "TEST",
             },
-            test_failure: {
-              stage: "test_failure",
-              script: "ON test failure",
-              when: "on_failure",
-            },
-            deploy: {
-              stage: "deploy",
+            staging: {
+              stage: "staging",
               script: "PUBLISH",
             },
             production: {
-              stage: "deploy",
+              stage: "production",
               script: "PUBLISH",
               when: "manual",
             },
@@ -311,11 +306,18 @@ describe Ci::Pipeline, models: true do
 
           # succeed stage test
           pipeline.builds.running_or_pending.each(&:success)
-          expect(manual_actions).to be_one # production
+          expect(manual_actions).to be_empty
 
-          # succeed stage deploy
+          # succeed stage staging and skip stage production
           pipeline.builds.running_or_pending.each(&:success)
           expect(manual_actions).to be_many # production and clear cache
+
+          # succeed stage cleanup
+          pipeline.builds.running_or_pending.each(&:success)
+
+          # after processing a pipeline we should have 6 builds, 5 succeeded
+          expect(pipeline.builds.count).to eq(6)
+          expect(pipeline.builds.success.count).to eq(4)
         end
 
         def manual_actions

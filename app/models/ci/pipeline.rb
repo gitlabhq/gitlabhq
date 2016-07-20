@@ -203,6 +203,12 @@ module Ci
       Note.for_commit_id(sha)
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+      ]
+    end
+
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
@@ -211,8 +217,9 @@ module Ci
       # build builds only for the first stage that has builds available.
       #
       stages.any? do |stage|
-        CreateBuildsService.new(self)
-          .execute(stage, user, status, trigger_request).present?
+        CreateBuildsService.new(self).
+          execute(stage, user, status, trigger_request).
+          any?(&:active?)
       end
     end
 

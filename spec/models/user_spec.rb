@@ -887,16 +887,25 @@ describe User, models: true do
   end
 
   describe '#authorized_projects' do
-    let!(:user) { create(:user) }
-    let!(:private_project) { create(:project, :private) }
+    context 'with a minimum access level' do
+      it 'includes projects for which the user is an owner' do
+        user = create(:user)
+        project = create(:empty_project, :private, namespace: user.namespace)
 
-    before do
-      private_project.team << [user, Gitlab::Access::MASTER]
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
+      end
+
+      it 'includes projects for which the user is a master' do
+        user = create(:user)
+        project = create(:empty_project, :private)
+
+        project.team << [user, Gitlab::Access::MASTER]
+
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
+      end
     end
-
-    subject { user.authorized_projects }
-
-    it { is_expected.to eq([private_project]) }
   end
 
   describe '#ci_authorized_runners' do

@@ -1,21 +1,26 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Limit git rev-list output count to one in forced push check
 
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
+  - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
+  - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
   - Disable PostgreSQL statement timeout during migrations
   - Fix projects dropdown loading performance with a simplified api cal. !5113 (tiagonbotelho)
   - Fix commit builds API, return all builds for all pipelines for given commit. !4849
   - Replace Haml with Hamlit to make view rendering faster. !3666
   - Refresh the branch cache after `git gc` runs
+  - Allow to disable request access button on projects/groups
   - Refactor repository paths handling to allow multiple git mount points
   - Optimize system note visibility checking by memoizing the visible reference count !5070
   - Add Application Setting to configure default Repository Path for new projects
   - Delete award emoji when deleting a user
   - Remove pinTo from Flash and make inline flash messages look nicer !4854 (winniehell)
   - Add an API for downloading latest successful build from a particular branch or tag !5347
+  - Add link to profile to commit avatar !5163 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content !4959 (winniehell)
   - Display tooltip for "Copy to Clipboard" button !5164 (winniehell)
@@ -25,6 +30,9 @@ v 8.10.0 (unreleased)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Upgrade to Rails 4.2.7. !5236
+  - Extend exposed environment variables for CI builds
+  - Allow to pull code with deploy key from public projects
+  - Use limit parameter rather than hardcoded value in `ldap:check` rake task (Mike Ricketts)
   - Add Sidekiq queue duration to transaction metrics.
   - Add a new column `artifacts_size` to table `ci_builds` !4964
   - Let Workhorse serve format-patch diffs
@@ -33,6 +41,7 @@ v 8.10.0 (unreleased)
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
+  - Fix GFM autocomplete not working on wiki pages
   - Fix MR-auto-close text added to description. !4836
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
@@ -50,6 +59,7 @@ v 8.10.0 (unreleased)
   - The Markdown reference parsers now re-use query results to prevent running the same queries multiple times !5020
   - Updated project header design
   - Issuable collapsed assignee tooltip is now the users name
+  - Fix compare view not changing code view rendering style
   - Exclude email check from the standard health check
   - Updated layout for Projects, Groups, Users on Admin area !4424
   - Fix changing issue state columns in milestone view
@@ -89,6 +99,7 @@ v 8.10.0 (unreleased)
   - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Be explicit to define merge request discussion variables
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
@@ -99,6 +110,7 @@ v 8.10.0 (unreleased)
   - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
+  - Allow to setup event by channel on slack service
   - More descriptive message for git hooks and file locks
   - Aliases of award emoji should be stored as original name. !5060 (dixpac)
   - Handle custom Git hook result in GitLab UI
@@ -124,13 +136,17 @@ v 8.10.0 (unreleased)
   - Fix last update timestamp on issues not preserved on gitlab.com and project imports
   - Fix issues importing projects from EE to CE
   - Fix creating group with space in group path
-  - Improve cron_jobs loading error messages !5318
+  - Improve cron_jobs loading error messages !5318 / !5360
   - Create Todos for Issue author when assign or mention himself (Katarzyna Kobierska)
   - Limit the number of retries on error to 3 for exporting projects
   - Allow empty repositories on project import/export
   - Render only commit message title in builds (Katarzyna Kobierska Ula Budziszewska)
   - Allow bulk (un)subscription from issues in issue index
   - Fix MR diff encoding issues exporting GitLab projects
+  - Move builds settings out of project settings and rename Pipelines
+  - Add builds badge to Pipelines settings page
+  - Export and import avatar as part of project import/export
+  - Fix migration corrupting import data for old version upgrades
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154

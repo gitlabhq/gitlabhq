@@ -3,6 +3,8 @@ include ActionDispatch::TestProcess
 FactoryGirl.define do
   factory :ci_build, class: Ci::Build do
     name 'test'
+    stage 'test'
+    stage_idx 0
     ref 'master'
     tag false
     created_at 'Di 29. Okt 09:50:00 CET 2013'

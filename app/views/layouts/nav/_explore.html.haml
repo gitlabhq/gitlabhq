@@ -1,21 +1,17 @@
 %ul.nav.nav-sidebar
   = nav_link(path: ['dashboard#show', 'root#show', 'projects#trending', 'projects#starred', 'projects#index'], html_options: {class: 'home'}) do
     = link_to explore_root_path, title: 'Projects' do
-      = icon('bookmark fw')
       %span
         Projects
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to explore_groups_path, title: 'Groups' do
-      = icon('group fw')
       %span
         Groups
   = nav_link(controller: :snippets) do
     = link_to explore_snippets_path, title: 'Snippets' do
-      = icon('clipboard fw')
       %span
         Snippets
   = nav_link(controller: :help) do
     = link_to help_path, title: 'Help' do
-      = icon('question-circle fw')
       %span
         Help

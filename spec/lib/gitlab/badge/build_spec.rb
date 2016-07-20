@@ -113,7 +113,7 @@ describe Gitlab::Badge::Build do
                                     sha: sha,
                                     ref: branch)
 
-    create(:ci_build, pipeline: pipeline)
+    create(:ci_build, pipeline: pipeline, stage: 'notify')
   end
 
   def status_node(data, status)

@@ -392,6 +392,11 @@ class Repository
 
     expire_cache if exists?
 
+    # expire cache that don't depend on repository data (when expiring)
+    expire_tags_cache
+    expire_tag_count_cache
+    expire_branches_cache
+    expire_branch_count_cache
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
@@ -730,6 +735,33 @@ class Repository
       }
 
       Gitlab::Git::Blob.commit(raw_repository, options)
+    end
+  end
+
+  def update_file(user, path, content, branch:, previous_path:, message:)
+    commit_with_hooks(user, branch) do |ref|
+      committer = user_to_committer(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref,
+        update_ref: false
+      }
+
+      options[:file] = {
+        content: content,
+        path: path,
+        update: true
+      }
+
+      if previous_path
+        options[:file][:previous_path] = previous_path
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
     end
   end
 

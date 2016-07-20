@@ -1,45 +1,54 @@
 - page_title "Fork project"
-- if @namespaces.present?
-  %h3.page-title Fork project
-  %p.lead
-    Click to fork the project to a user or group
-  %hr
 
-  .fork-namespaces
-    - @namespaces.in_groups_of(6, false) do |group|
-      .row
-        - group.each do |namespace|
-          .col-md-2.col-sm-3
-            - if fork = namespace.find_fork_of(@project)
-              .fork-thumbnail
-                = link_to project_path(fork), title: "Visit project fork", class: 'has-tooltip' do
-                  = image_tag namespace_icon(namespace, 100)
-                  .caption
-                    %strong
-                      = namespace.human_name
-                    %div.text-primary
-                      Already forked
-
-            - else
-              .fork-thumbnail
-                = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), title: "Fork here", method: "POST", class: 'has-tooltip' do
-                  = image_tag namespace_icon(namespace, 100)
-                  .caption
-                    %strong
-                      = namespace.human_name
-
-    %p.light
-      Fork is a copy of a project repository.
+.row.prepend-top-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Fork project
+    %p
+      A fork is a copy of a project.
       %br
-      Forking a repository allows you to do changes without affecting the original project.
-- else
-  %h3 No available namespaces to fork the project
-  %p.slead
-    You must have permission to create a project in a namespace before forking.
+      Forking a repository allows you to make changes without affecting the original project.
+  .col-lg-9
+    .fork-namespaces
+      - if @namespaces.present?
+        %label.label-light
+          %span
+            Click to fork the project to a user or group
+          - @namespaces.in_groups_of(6, false) do |group|
+            .row
+              - group.each do |namespace|
+                - avatar = namespace_icon(namespace, 100)
+                - if fork = namespace.find_fork_of(@project)
+                  .fork-thumbnail.forked
+                    = link_to project_path(fork) do
+                      - if /no_((\w*)_)*avatar/.match(avatar)
+                        .no-avatar
+                          = icon 'question'
+                      - else
+                        = image_tag avatar
+                      .caption
+                        = namespace.human_name
+                - else
+                  .fork-thumbnail
+                    = link_to namespace_project_forks_path(@project.namespace, @project, namespace_key: namespace.id), method: "POST" do
+                      - if /no_((\w*)_)*avatar/.match(avatar)
+                        .no-avatar
+                          = icon 'question'
+                      - else
+                        = image_tag avatar
+                      .caption
+                        = namespace.human_name
+      - else
+        %label.label-light
+          %span
+            No available namespaces to fork the project.
+            %br
+            %small
+              You must have permission to create a project in a namespace before forking.
 
-.save-project-loader.hide
-  .center
-    %h2
-      %i.fa.fa-spinner.fa-spin
-      Forking repository
-    %p Please wait a moment, this page will automatically refresh when ready.
+    .save-project-loader.hide
+      .center
+        %h2
+          %i.fa.fa-spinner.fa-spin
+          Forking repository
+        %p Please wait a moment, this page will automatically refresh when ready.
