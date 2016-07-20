@@ -21,7 +21,7 @@ class ElasticIndexerWorker
 
       clear_project_indexes(record_id) if klass == Project
     end
-  rescue Elasticsearch::Transport::Transport::Errors::NotFound
+  rescue Elasticsearch::Transport::Transport::Errors::NotFound, ActiveRecord::RecordNotFound
     true # Less work to do!
   end
 
