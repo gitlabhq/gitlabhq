@@ -1183,6 +1183,7 @@ describe Project, models: true do
     context 'with pending pipeline' do
       before do
         pipeline.update(status: 'pending')
+        create_build(pipeline)
       end
 
       it 'returns empty relation' do
