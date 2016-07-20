@@ -217,14 +217,15 @@ describe API::API, api: true do
         fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif')
       end
 
-      def verify
-        download_headers =
-          { 'Content-Transfer-Encoding' => 'binary',
-            'Content-Disposition' =>
-              "attachment; filename=#{build.artifacts_file.filename}" }
+      let(:download_headers) do
+        { 'Content-Transfer-Encoding' => 'binary',
+          'Content-Disposition' =>
+            "attachment; filename=#{build.artifacts_file.filename}" }
+      end
 
-        expect(response).to have_http_status(200)
-        expect(response.headers).to include(download_headers)
+      shared_examples 'a valid file' do
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.headers).to include(download_headers) }
       end
 
       context 'with regular branch' do
@@ -237,7 +238,7 @@ describe API::API, api: true do
           get path_for_ref('master')
         end
 
-        it('gives the file') { verify }
+        it_behaves_like 'a valid file'
       end
 
       context 'with branch name containing slash' do
@@ -250,7 +251,7 @@ describe API::API, api: true do
           get path_for_ref('improve/awesome')
         end
 
-        it('gives the file') { verify }
+        it_behaves_like 'a valid file'
       end
 
       context 'with latest pipeline' do
@@ -269,7 +270,7 @@ describe API::API, api: true do
           get path_for_ref
         end
 
-        it('gives the file') { verify }
+        it_behaves_like 'a valid file'
       end
 
       context 'with success pipeline' do
@@ -285,7 +286,7 @@ describe API::API, api: true do
           get path_for_ref
         end
 
-        it('gives the file') { verify }
+        it_behaves_like 'a valid file'
       end
     end
   end
