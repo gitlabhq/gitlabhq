@@ -12,6 +12,13 @@ feature 'Groups > Members > User requests access', feature: true do
     visit group_path(group)
   end
 
+  scenario 'request access feature is disabled' do
+    group.update_attributes(request_access_enabled: false)
+    visit group_path(group)
+
+    expect(page).not_to have_content 'Request Access'
+  end
+
   scenario 'user can request access to a group' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
