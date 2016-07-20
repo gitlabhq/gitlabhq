@@ -30,6 +30,8 @@ v 8.10.0 (unreleased)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Upgrade to Rails 4.2.7. !5236
   - Extend exposed environment variables for CI builds
+  - Deprecate APIs "projects/:id/keys/...". Use "projects/:id/deploy_keys/..." instead
+  - Add API "deploy_keys" for admins to get all deploy keys
   - Allow to pull code with deploy key from public projects
   - Use limit parameter rather than hardcoded value in `ldap:check` rake task (Mike Ricketts)
   - Add Sidekiq queue duration to transaction metrics.
