@@ -63,7 +63,8 @@
             Usage ping enabled
           .help-block
             Every week GitLab will report license usage back to GitLab, Inc.
-            Disable this option if you do not want this to occur.
+            Disable this option if you do not want this to occur. This is the JSON payload that will be sent:
+            %pre.js-syntax-highlight.code.highlight= Gitlab::Highlight.highlight('payload.json', license_usage_data.to_json)
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
