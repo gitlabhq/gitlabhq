@@ -92,6 +92,7 @@ v 8.10.0 (unreleased)
   - Avoid to retrieve MR closes_issues as much as possible.
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
+  - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Be explicit to define merge request discussion variables
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
