@@ -217,8 +217,9 @@ module Ci
       # build builds only for the first stage that has builds available.
       #
       stages.any? do |stage|
-        CreateBuildsService.new(self)
-          .execute(stage, user, status, trigger_request).present?
+        CreateBuildsService.new(self).
+          execute(stage, user, status, trigger_request).
+          any?(&:active?)
       end
     end
 

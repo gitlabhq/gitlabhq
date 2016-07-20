@@ -811,6 +811,22 @@ describe Ci::Build, models: true do
     it 'returns other actions' do
       is_expected.to contain_exactly(other_build)
     end
+
+    context 'when build is retried' do
+      let!(:new_build) { Ci::Build.retry(build) }
+
+      it 'does not return any of them' do
+        is_expected.not_to include(build, new_build)
+      end
+    end
+
+    context 'when other build is retried' do
+      let!(:retried_build) { Ci::Build.retry(other_build) }
+
+      it 'returns a retried build' do
+        is_expected.to contain_exactly(retried_build)
+      end
+    end
   end
 
   describe '#play' do
