@@ -11,13 +11,13 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 on, for example 7.2.1. The best way to migrate your repositories from one server to
 another is through backup restore.
 
-You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json` (for
-omnibus packages) or `/home/git/gitlab/config/secrets.yml` (for installations
-from source). This file contains the database encryption keys used for
-two-factor authentication and project import credentials, among other things. If
-you restore a GitLab backup without restoring the database encryption key, users
-who have two-factor authentication enabled will lose access to your GitLab
-server.
+You need to keep separate copies of `/etc/gitlab/gitlab-secrets.json` and
+`/etc/gitlab/gitlab.rb` (for omnibus packages) or
+`/home/git/gitlab/config/secrets.yml` (for installations from source). This file
+contains the database encryption keys used for two-factor authentication and
+project import credentials, among other things. If you restore a GitLab backup
+without restoring the database encryption key, users who have two-factor
+authentication enabled will lose access to your GitLab server.
 
 ```
 # use this command if you've installed GitLab with the Omnibus package
