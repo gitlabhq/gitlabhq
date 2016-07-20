@@ -8,9 +8,12 @@ class Projects::ImportsController < Projects::ApplicationController
   before_action :redirect_if_no_import, only: :show
 
   def new
+    use_secure_headers_override(:import)
   end
 
   def create
+    use_secure_headers_override(:import)
+
     @project.import_url = params[:project][:import_url]
 
     if @project.save
@@ -28,6 +31,8 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def show
+    use_secure_headers_override(:import)
+
     if @project.import_finished?
       if continue_params
         redirect_to continue_params[:to], notice: continue_params[:notice]

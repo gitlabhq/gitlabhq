@@ -96,4 +96,22 @@ SecureHeaders::Configuration.default do |config|
   if Gitlab.config.extra.has_key?('google_analytics_id')
     config.csp[:script_src] << "https://www.google-analytics.com"
   end
+
+
+  # Allow connecting accounts to Twitter, Google, GitLab.com, Bitbucket, and GitHub.
+  if Gitlab.config.omniauth.enabled
+    config.csp[:form_action] << "api.twitter.com"
+    config.csp[:form_action] << "accounts.google.com"
+    config.csp[:form_action] << "gitlab.com"
+    config.csp[:form_action] << "bitbucket.org"
+    config.csp[:form_action] << "github.com"
+  end
+end
+
+# Allow importing repositories from GitLab.com, GitHub, and Bitbucket.
+# Only applies to the import controller routes.
+SecureHeaders::Configuration.override(:import) do |config|
+  config.csp[:connect_src] << "gitlab.com"
+  config.csp[:connect_src] << "github.com"
+  config.csp[:connect_src] << "bitbucket.org"
 end
