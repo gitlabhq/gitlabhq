@@ -9,8 +9,9 @@ describe ContainerRegistry::Blob do
       'size' => 1000
     }
   end
+  let(:token) { 'authorization-token' }
   
-  let(:registry) { ContainerRegistry::Registry.new('http://example.com') }
+  let(:registry) { ContainerRegistry::Registry.new('http://example.com', token: token) }
   let(:repository) { registry.repository('group/test') }
   let(:blob) { repository.blob(config) }
 
@@ -57,5 +58,54 @@ describe ContainerRegistry::Blob do
     subject { blob.delete }
 
     it { is_expected.to be_truthy }
+  end
+
+  context '#data' do
+    let(:data) { '{"key":"value"}' }
+
+    subject { blob.data }
+
+    context 'when locally stored' do
+      before do
+        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+          to_return(
+            status: 200,
+            headers: { 'Content-Type' => 'application/json' },
+            body: data)
+      end
+
+      it { is_expected.to eq(data) }
+    end
+
+    context 'when externally stored' do
+      before do
+        stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:0123456789012345').
+          with(headers: { 'Authorization' => "bearer #{token}" }).
+          to_return(
+            status: 307,
+            headers: { 'Location' => location })
+      end
+
+      context 'for a valid address' do
+        let(:location) { 'http://external.com/blob/file' }
+
+        before do
+          stub_request(:get, location).
+            with(headers: { 'Authorization' => nil }).
+            to_return(
+              status: 200,
+              headers: { 'Content-Type' => 'application/json' },
+              body: data)
+        end
+
+        it { is_expected.to eq(data) }
+      end
+
+      context 'for invalid file' do
+        let(:location) { 'file:///etc/passwd' }
+
+        it { expect{ subject }.to raise_error(ArgumentError, 'invalid address') }
+      end
+    end
   end
 end

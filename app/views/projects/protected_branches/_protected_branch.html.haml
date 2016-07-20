@@ -16,6 +16,8 @@
         (branch was removed from repository)
   %td
     = check_box_tag("developers_can_push", protected_branch.id, protected_branch.developers_can_push, data: { url: url })
+  %td
+    = check_box_tag("developers_can_merge", protected_branch.id, protected_branch.developers_can_merge, data: { url: url })
   - if can_admin_project
     %td
       = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-warning btn-sm pull-right"

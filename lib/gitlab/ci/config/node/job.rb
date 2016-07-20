@@ -25,9 +25,9 @@ module Gitlab
               validates :tags, array_of_strings: true
               validates :allow_failure, boolean: true
               validates :when,
-                inclusion: { in: %w[on_success on_failure always],
-                             message: 'should be on_success, on_failure ' \
-                                      'or always' }
+                inclusion: { in: %w[on_success on_failure always manual],
+                             message: 'should be on_success, on_failure, ' \
+                                      'always or manual' }
               validates :environment,
                 type: {
                   with: String,

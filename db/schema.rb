@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712171823) do
+ActiveRecord::Schema.define(version: 20160716115710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -168,6 +168,8 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.string   "environment"
     t.datetime "artifacts_expire_at"
     t.integer  "artifacts_size"
+    t.string   "when"
+    t.text     "yaml_variables"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree
@@ -199,6 +201,7 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "duration"
+    t.integer  "user_id"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
@@ -210,6 +213,7 @@ ActiveRecord::Schema.define(version: 20160712171823) do
   add_index "ci_commits", ["project_id"], name: "index_ci_commits_on_project_id", using: :btree
   add_index "ci_commits", ["sha"], name: "index_ci_commits_on_sha", using: :btree
   add_index "ci_commits", ["status"], name: "index_ci_commits_on_status", using: :btree
+  add_index "ci_commits", ["user_id"], name: "index_ci_commits_on_user_id", using: :btree
 
   create_table "ci_events", force: :cascade do |t|
     t.integer  "project_id"
@@ -624,8 +628,8 @@ ActiveRecord::Schema.define(version: 20160712171823) do
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
+    t.string   "in_progress_merge_commit_sha"
   end
-
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
@@ -858,11 +862,12 @@ ActiveRecord::Schema.define(version: 20160712171823) do
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branches", force: :cascade do |t|
-    t.integer  "project_id",                          null: false
-    t.string   "name",                                null: false
+    t.integer  "project_id",                           null: false
+    t.string   "name",                                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "developers_can_push", default: false, null: false
+    t.boolean  "developers_can_push",  default: false, null: false
+    t.boolean  "developers_can_merge", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree

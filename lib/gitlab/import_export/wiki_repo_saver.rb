@@ -4,6 +4,7 @@ module Gitlab
       def save
         @wiki = ProjectWiki.new(@project)
         return true unless wiki_repository_exists? # it's okay to have no Wiki
+
         bundle_to_disk(File.join(@shared.export_path, project_filename))
       end
 

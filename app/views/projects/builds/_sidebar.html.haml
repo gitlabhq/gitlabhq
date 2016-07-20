@@ -49,7 +49,7 @@
     - if @build.duration
       %p.build-detail-row
         %span.build-light-text Duration:
-        #{duration_in_words(@build.finished_at, @build.started_at)}
+        = time_interval_in_words(@build.duration)
     - if @build.finished_at
       %p.build-detail-row
         %span.build-light-text Finished:
@@ -94,9 +94,9 @@
 
   .block
     .title
-      Commit message
+      Commit title
     %p.build-light-text.append-bottom-0
-      #{@build.pipeline.git_commit_message}
+      #{@build.pipeline.git_commit_title}
 
   - if @build.tags.any?
     .block

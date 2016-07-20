@@ -78,7 +78,8 @@ Example response:
       "iid" : 6,
       "labels" : [],
       "subscribed" : false,
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "due_date": "2016-07-22"
    }
 ]
 ```
@@ -154,7 +155,8 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "subscribed" : false,
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "due_date": null
    }
 ]
 ```
@@ -232,7 +234,8 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "subscribed" : false,
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "due_date": "2016-07-22"
    }
 ]
 ```
@@ -295,7 +298,8 @@ Example response:
    "updated_at" : "2016-01-04T15:31:46.176Z",
    "created_at" : "2016-01-04T15:31:46.176Z",
    "subscribed": false,
-   "user_notes_count": 1
+   "user_notes_count": 1,
+   "due_date": null
 }
 ```
 
@@ -320,6 +324,7 @@ POST /projects/:id/issues
 | `milestone_id`  | integer | no  | The ID of a milestone to assign issue |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
+| `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -351,7 +356,8 @@ Example response:
    "updated_at" : "2016-01-07T12:44:33.959Z",
    "milestone" : null,
    "subscribed" : true,
-   "user_notes_count": 0
+   "user_notes_count": 0,
+   "due_date": null
 }
 ```
 
@@ -379,6 +385,7 @@ PUT /projects/:id/issues/:issue_id
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
 | `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
+| `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
@@ -410,7 +417,8 @@ Example response:
    "assignee" : null,
    "milestone" : null,
    "subscribed" : true,
-   "user_notes_count": 0
+   "user_notes_count": 0,
+   "due_date": "2016-07-22"
 }
 ```
 
@@ -487,7 +495,8 @@ Example response:
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/u/solon.cremin"
-  }
+  },
+  "due_date": null
 }
 ```
 
@@ -541,7 +550,8 @@ Example response:
     "state": "active",
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/u/solon.cremin"
-  }
+  },
+  "due_date": null
 }
 ```
 
@@ -596,7 +606,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/5224fd70153710e92fb8bcf79ac29d67?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/u/orville"
   },
-  "subscribed": false
+  "subscribed": false,
+  "due_date": null
 }
 ```
 

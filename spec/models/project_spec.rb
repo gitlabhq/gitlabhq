@@ -142,10 +142,10 @@ describe Project, models: true do
       expect(project2).to be_valid
     end
 
-    it 'does not allow to introduce an empty URI' do
+    it 'allows an empty URI' do
       project2 = build(:project, import_url: '')
 
-      expect(project2).not_to be_valid
+      expect(project2).to be_valid
     end
 
     it 'does not produce import data on an empty URI' do

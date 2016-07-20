@@ -2,7 +2,7 @@
 
   w.gl ?= {}
   w.gl.utils ?= {}
-  w.gl.utils.days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  w.gl.utils.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
   w.gl.utils.formatDate = (datetime) ->
     dateFormat(datetime, 'mmm d, yyyy h:MMtt Z')

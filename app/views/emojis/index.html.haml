@@ -1,5 +1,5 @@
 .emoji-menu
-  = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control", placeholder: "Seach emojis"
+  = text_field_tag :emoji_search, "", class: "emoji-search search-input form-control", placeholder: "Search emoji"
   .emoji-menu-content
     - Gitlab::AwardEmoji.emoji_by_category.each do |category, emojis|
       %h5.emoji-menu-title

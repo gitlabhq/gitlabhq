@@ -63,7 +63,7 @@ form.edit-issue {
 .merge-request,
 .issue {
   &.today {
-    background: #f8feef;
+    background: #f3fff2;
     border-color: #e1e8d5;
   }
 
@@ -75,6 +75,14 @@ form.edit-issue {
   &.merged {
     background: #f9f9f9;
     border-color: #e5e5e5;
+  }
+}
+
+.merge-request-ci-status {
+  svg {
+    margin-right: 4px;
+    position: relative;
+    top: 1px;
   }
 }
 

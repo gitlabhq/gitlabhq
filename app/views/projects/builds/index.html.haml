@@ -11,17 +11,22 @@
           %span.badge.js-totalbuilds-count
             = number_with_delimiter(@all_builds.count(:id))
 
+      %li{class: ('active' if @scope == 'pending')}
+        = link_to project_builds_path(@project, scope: :pending) do
+          Pending
+          %span.badge
+            = number_with_delimiter(@all_builds.pending.count(:id))
 
       %li{class: ('active' if @scope == 'running')}
         = link_to project_builds_path(@project, scope: :running) do
           Running
-          %span.badge.js-running-count
-            = number_with_delimiter(@all_builds.running_or_pending.count(:id))
+          %span.badge
+            = number_with_delimiter(@all_builds.running.count(:id))
 
       %li{class: ('active' if @scope == 'finished')}
         = link_to project_builds_path(@project, scope: :finished) do
           Finished
-          %span.badge.js-running-count
+          %span.badge
             = number_with_delimiter(@all_builds.finished.count(:id))
 
     .nav-controls

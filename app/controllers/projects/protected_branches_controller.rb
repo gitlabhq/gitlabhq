@@ -50,6 +50,6 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def protected_branch_params
-    params.require(:protected_branch).permit(:name, :developers_can_push)
+    params.require(:protected_branch).permit(:name, :developers_can_push, :developers_can_merge)
   end
 end

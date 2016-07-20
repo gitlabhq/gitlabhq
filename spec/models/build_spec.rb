@@ -191,16 +191,16 @@ describe Ci::Build, models: true do
   end
 
   describe '#variables' do
+    let(:predefined_variables) do
+      [
+        { key: :CI_BUILD_NAME, value: 'test', public: true },
+        { key: :CI_BUILD_STAGE, value: 'test', public: true },
+      ]
+    end
+
+    subject { build.variables }
+
     context 'returns variables' do
-      subject { build.variables }
-
-      let(:predefined_variables) do
-        [
-          { key: :CI_BUILD_NAME, value: 'test', public: true },
-          { key: :CI_BUILD_STAGE, value: 'stage', public: true },
-        ]
-      end
-
       let(:yaml_variables) do
         [
           { key: :DB_NAME, value: 'postgres', public: true }
@@ -208,7 +208,7 @@ describe Ci::Build, models: true do
       end
 
       before do
-        build.update_attributes(stage: 'stage')
+        build.yaml_variables = yaml_variables
       end
 
       it { is_expected.to eq(predefined_variables + yaml_variables) }
@@ -260,21 +260,53 @@ describe Ci::Build, models: true do
 
           it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
         end
+      end
+    end
 
-        context 'when job variables are defined' do
-          ##
-          # Job-level variables are defined in gitlab_ci.yml fixture
-          #
-          context 'when job variables are unique' do
-            let(:build) { create(:ci_build, name: 'staging') }
+    context 'when yaml_variables is undefined' do
+      before do
+        build.yaml_variables = nil
+      end
 
-            it 'includes job variables' do
-              expect(subject).to include(
-                { key: :KEY1, value: 'value1', public: true },
-                { key: :KEY2, value: 'value2', public: true }
-              )
-            end
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
           end
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config has variables' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          variables: {
+                            KEY: 'value'
+                          }
+                        }
+                      })
+          end
+          let(:variables) do
+            [{ key: :KEY, value: 'value', public: true }]
+          end
+
+          it { is_expected.to eq(predefined_variables + variables) }
         end
       end
     end
@@ -666,6 +698,122 @@ describe Ci::Build, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
+    end
+  end
+
+  describe '#retryable?' do
+    context 'when build is running' do
+      before { build.run! }
+
+      it 'should return false' do
+        expect(build.retryable?).to be false
+      end
+    end
+
+    context 'when build is finished' do
+      before { build.success! }
+
+      it 'should return true' do
+        expect(build.retryable?).to be true
+      end
+    end
+  end
+
+  describe '#manual?' do
+    before do
+      build.update(when: value)
+    end
+
+    subject { build.manual? }
+
+    context 'when is set to manual' do
+      let(:value) { 'manual' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when set to something else' do
+      let(:value) { 'something else' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#other_actions' do
+    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+    let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
+
+    subject { build.other_actions }
+
+    it 'returns other actions' do
+      is_expected.to contain_exactly(other_build)
+    end
+  end
+
+  describe '#play' do
+    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+
+    subject { build.play }
+
+    it 'enques a build' do
+      is_expected.to be_pending
+      is_expected.to eq(build)
+    end
+
+    context 'for success build' do
+      before { build.queue }
+
+      it 'creates a new build' do
+        is_expected.to be_pending
+        is_expected.not_to eq(build)
+      end
+    end
+  end
+
+  describe '#when' do
+    subject { build.when }
+
+    context 'if is undefined' do
+      before do
+        build.when = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config has when' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('always') }
+        end
+      end
     end
   end
 
