@@ -130,6 +130,7 @@ v 8.10.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (Title and description overriding prevention)
   - Redesign Builds and Pipelines pages
   - Change status color and icon for running builds
+  - Fix commenting issue in side by side diff view for unchanged lines
   - Fix markdown rendering for: consecutive labels references, label references that begin with a digit or contains `.`
   - Project export filename now includes the project and namespace path
   - Fix last update timestamp on issues not preserved on gitlab.com and project imports

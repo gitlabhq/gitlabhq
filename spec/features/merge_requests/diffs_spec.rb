@@ -22,4 +22,98 @@ feature 'Diffs URL', js: true, feature: true do
       expect(page).to have_css('.diffs.tab-pane.active')
     end
   end
+
+  context 'when hovering over the parallel view diff file' do
+    let(:comment_button_class) { '.add-diff-note' }
+
+    before(:each) do
+      visit diffs_namespace_project_merge_request_path @project.namespace, @project, @merge_request
+      click_link 'Side-by-side'
+      @old_line_number = first '.diff-line-num.old_line:not(.empty-cell)'
+      @new_line_number = first '.diff-line-num.new_line:not(.empty-cell)'
+      @old_line = first '.line_content[data-line-type="old"]'
+      @new_line = first '.line_content[data-line-type="new"]'
+    end
+
+    it 'shows a comment button on the old side when hovering over an old line number' do
+      @old_line_number.hover
+      expect(@old_line_number).to have_css comment_button_class
+      expect(@new_line_number).not_to have_css comment_button_class
+    end
+
+    it 'shows a comment button on the old side when hovering over an old line' do
+      @old_line.hover
+      expect(@old_line_number).to have_css comment_button_class
+      expect(@new_line_number).not_to have_css comment_button_class
+    end
+
+    it 'shows a comment button on the new side when hovering over a new line number' do
+      @new_line_number.hover
+      expect(@new_line_number).to have_css comment_button_class
+      expect(@old_line_number).not_to have_css comment_button_class
+    end
+
+    it 'shows a comment button on the new side when hovering over a new line' do
+      @new_line.hover
+      expect(@new_line_number).to have_css comment_button_class
+      expect(@old_line_number).not_to have_css comment_button_class
+    end
+  end
+
+  context 'when hovering over the inline view diff file' do
+    let(:comment_button_class) { '.add-diff-note' }
+
+    before(:each) do
+      visit diffs_namespace_project_merge_request_path @project.namespace, @project, @merge_request
+      click_link 'Inline'
+      @old_line_number = first '.diff-line-num.old_line:not(.unfold)'
+      @new_line_number = first '.diff-line-num.new_line:not(.unfold)'
+      @new_line = first '.line_content:not(.match)'
+    end
+
+    it 'shows a comment button on the old side when hovering over an old line number' do
+      @old_line_number.hover
+      expect(@old_line_number).to have_css comment_button_class
+      expect(@new_line_number).not_to have_css comment_button_class
+    end
+
+    it 'shows a comment button on the new side when hovering over a new line number' do
+      @new_line_number.hover
+      expect(@old_line_number).to have_css comment_button_class
+      expect(@new_line_number).not_to have_css comment_button_class
+    end
+
+    it 'shows a comment button on the new side when hovering over a new line' do
+      @new_line.hover
+      expect(@old_line_number).to have_css comment_button_class
+      expect(@new_line_number).not_to have_css comment_button_class
+    end
+  end
+
+  context 'when clicking a comment button' do
+    let(:test_note_comment) { 'this is a test note!' }
+    let(:note_class) { '.new-note' }
+
+    before(:each) do
+      visit diffs_namespace_project_merge_request_path @project.namespace, @project, @merge_request
+      click_link 'Inline'
+      first('.diff-line-num.old_line:not(.unfold)').hover
+      find('.add-diff-note').click
+    end
+
+    it 'shows a note form' do
+      expect(page).to have_css note_class
+    end
+
+    it 'can be submitted and viewed' do
+      fill_in 'note[note]', with: :test_note_comment
+      click_button 'Comment'
+      expect(page).to have_content :test_note_comment
+    end
+
+    it 'can be closed' do
+      find('.note-form-actions .btn-cancel').click
+      expect(page).not_to have_css note_class
+    end
+  end
 end
