@@ -412,6 +412,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
+  #
+  # If you change the logic of this method, please also update `Project#authorized_for_user`
   def authorized_projects(min_access_level = nil)
     Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end

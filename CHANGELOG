@@ -42,6 +42,7 @@ v 8.10.0 (unreleased)
   - Display tooltip for mentioned users and groups !5261 (winniehell)
   - Allow build email service to be tested
   - Added day name to contribution calendar tooltips
+  - Refactor user authorization check for a single project to avoid querying all user projects
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix GFM autocomplete not working on wiki pages
