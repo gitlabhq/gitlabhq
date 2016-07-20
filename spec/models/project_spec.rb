@@ -1157,7 +1157,7 @@ describe Project, models: true do
           end
         end
 
-        context 'with all success pipeline' do
+        context 'with all succeeded pipeline' do
           before do
             old_pipelines = Array.new(3).map do
               create(:ci_pipeline, project: project,
