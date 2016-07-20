@@ -10,6 +10,10 @@ class Spinach::Features::AdminLicense < Spinach::FeatureSteps
     create(:license)
   end
 
+  step 'there is no license' do
+    License.destroy_all
+  end
+
   step 'I should see a warning telling me there is no license' do
     expect(page).to have_content "No GitLab Enterprise Edition license has been provided yet."
   end

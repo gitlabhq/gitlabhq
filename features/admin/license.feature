@@ -9,7 +9,8 @@ Feature: Admin license
     Then I should see to whom the license is licensed
 
   Scenario: Viewing license when there is none
-    Given I visit admin license page
+    Given There is no license
+    And I visit admin license page
     Then I should see a warning telling me there is no license
     And I should be redirected to the license upload page
 
