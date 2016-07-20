@@ -7,7 +7,13 @@ class RemoveWrongImportUrlFromProjects < ActiveRecord::Migration
   class ProjectImportDataFake
     extend AttrEncrypted
     attr_accessor :credentials
-    attr_encrypted :credentials, key: Gitlab::Application.secrets.db_key_base, marshal: true, encode: true, :mode => :per_attribute_iv_and_salt
+    attr_encrypted :credentials,
+                   key: Gitlab::Application.secrets.db_key_base,
+                   marshal: true,
+                   encode: true,
+                   :mode => :per_attribute_iv_and_salt,
+                   insecure_mode: true,
+                   algorithm: 'aes-256-cbc'
   end
 
   def up
