@@ -253,44 +253,6 @@ describe API::API, api: true do
 
         it_behaves_like 'a valid file'
       end
-
-      context 'with latest pipeline' do
-        before do
-          old_pipelines = Array.new(3).map do # creating some old pipelines
-            create(:ci_pipeline, status: 'success')
-          end
-
-          old_pipelines.reverse_each do |pipe|
-            old_build = create(:ci_build, :success, pipeline: pipe)
-            old_build.update(artifacts_file: another_artifacts)
-          end
-
-          wrong_build = create(:ci_build, :success, pipeline: pipeline)
-          wrong_build.update(artifacts_file: another_artifacts)
-        end
-
-        before do
-          get path_for_ref
-        end
-
-        it_behaves_like 'a valid file'
-      end
-
-      context 'with success pipeline' do
-        before do
-          build # make sure pipeline was old, but still the latest success one
-          new_pipeline = create(:ci_pipeline, status: 'success')
-          new_build = create(:ci_build, :pending,
-                             pipeline: new_pipeline)
-          new_build.update(artifacts_file: another_artifacts)
-        end
-
-        before do
-          get path_for_ref
-        end
-
-        it_behaves_like 'a valid file'
-      end
     end
   end
 

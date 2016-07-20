@@ -1124,22 +1124,74 @@ describe Project, models: true do
                            status: 'success')
     end
 
-    let!(:build) do
+    let(:build) do
       create(:ci_build, :artifacts, :success, pipeline: pipeline)
     end
 
     context 'with succeed pipeline' do
-      it 'returns builds for ref for default_branch' do
-        builds = project.latest_successful_builds_for
+      context 'standalone pipeline' do
+        before do
+          build
+        end
 
-        expect(builds).to contain_exactly(build)
+        it 'returns builds for ref for default_branch' do
+          builds = project.latest_successful_builds_for
+
+          expect(builds).to contain_exactly(build)
+        end
+
+        it 'returns empty relation if the build cannot be found' do
+          builds = project.latest_successful_builds_for('TAIL')
+
+          expect(builds).to be_kind_of(ActiveRecord::Relation)
+          expect(builds).to be_empty
+        end
       end
 
-      it 'returns empty relation if the build cannot be found' do
-        builds = project.latest_successful_builds_for('TAIL')
+      context 'with multiple pipelines and builds' do
+        shared_examples 'latest successful one' do
+          it 'gives the latest build from latest pipeline' do
+            latest_build = project.latest_successful_builds_for.first
 
-        expect(builds).to be_kind_of(ActiveRecord::Relation)
-        expect(builds).to be_empty
+            expect(latest_build).to eq(build)
+          end
+        end
+
+        context 'with all success pipeline' do
+          before do
+            old_pipelines = Array.new(3).map do
+              create(:ci_pipeline, project: project,
+                                   sha: project.commit.sha,
+                                   ref: project.default_branch,
+                                   status: 'success')
+            end
+
+            # should not give this old build for the latest pipeline
+            create(:ci_build, :success, :artifacts, pipeline: pipeline)
+            build
+
+            old_pipelines.reverse_each do |pipe|
+              create(:ci_build, :success, :artifacts, pipeline: pipe)
+            end
+          end
+
+          it_behaves_like 'latest successful one'
+        end
+
+        context 'with some pending pipeline' do
+          before do
+            # make sure pipeline was old, but still the latest success one
+            build
+
+            new_pipeline = create(:ci_pipeline, project: project,
+                                                sha: project.commit.sha,
+                                                ref: project.default_branch,
+                                                status: 'pending')
+            create(:ci_build, :pending, :artifacts, pipeline: new_pipeline)
+          end
+
+          it_behaves_like 'latest successful one'
+        end
       end
     end
 
