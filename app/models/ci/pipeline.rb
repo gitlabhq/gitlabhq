@@ -198,6 +198,12 @@ module Ci
       Note.for_commit_id(sha)
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+      ]
+    end
+
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
