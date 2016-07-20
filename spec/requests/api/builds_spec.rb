@@ -194,7 +194,7 @@ describe API::API, api: true do
       end
     end
 
-    context 'when forbidden' do
+    context 'when logging as guest' do
       let(:api_user) { guest_user }
 
       before do
