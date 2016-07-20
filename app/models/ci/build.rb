@@ -97,7 +97,7 @@ module Ci
     end
 
     def other_actions
-      pipeline.manual_actions.where.not(id: self)
+      pipeline.manual_actions.where.not(name: name)
     end
 
     def playable?
