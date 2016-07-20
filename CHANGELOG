@@ -280,7 +280,6 @@ v 8.9.0
   - Reduce number of fog gem dependencies
   - Add number of merge requests for a given milestone to the milestones view.
   - Implement a fair usage of shared runners
-  - Add predefined CI variables to GitLab for container registry, pipelines, project name, etc.
   - Remove project notification settings associated with deleted projects
   - Fix 404 page when viewing TODOs that contain milestones or labels in different projects
   - Add a metric for the number of new Redis connections created by a transaction
