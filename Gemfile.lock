@@ -1,14 +1,3 @@
-GIT
-  remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: 0df0cdd9bb1164a7595f1f69f5dfa79489e3eaf1
-  branch: optional_branch_update
-  specs:
-    gitlab_git (10.3.0)
-      activesupport (~> 4.0)
-      charlock_holmes (~> 0.7.3)
-      github-linguist (~> 4.7.0)
-      rugged (~> 0.24.0)
-
 GEM
   remote: https://rubygems.org/
   specs:
