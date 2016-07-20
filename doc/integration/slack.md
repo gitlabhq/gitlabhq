@@ -26,14 +26,13 @@ After Slack is ready we need to setup GitLab. Here are the steps to achieve this
 
 1.  Navigate to Settings -> Services -> Slack
 
-1. Pick the triggers you want to activate
+1. Pick the triggers you want to activate and respective channel (`#general` by default).
 
 1.  Fill in your Slack details
     - Webhook: Paste the Webhook URL from the step above
     - Username: Fill this in if you want to change the username of the bot
-    - Channel: Fill this in if you want to change the channel where the messages will be posted
     - Mark it as active
-    
+
 1. Save your settings
 
 Have fun :)

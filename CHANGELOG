@@ -108,6 +108,7 @@ v 8.10.0 (unreleased)
   - Don't render discussion notes when requesting diff tab through AJAX
   - Add basic system information like memory and disk usage to the admin panel
   - Don't garbage collect commits that have related DB records like comments
+  - Allow to setup event by channel on slack service
   - More descriptive message for git hooks and file locks
   - Aliases of award emoji should be stored as original name. !5060 (dixpac)
   - Handle custom Git hook result in GitLab UI
