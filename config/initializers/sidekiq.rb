@@ -18,7 +18,8 @@ Sidekiq.configure_server do |config|
     if cron_jobs[k] && cron_jobs_required_keys.all? { |s| cron_jobs[k].key?(s) }
       cron_jobs[k]['class'] = cron_jobs[k].delete('job_class')
     else
-      raise("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.")
+      cron_jobs.delete(k)
+      Rails.logger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.")
     end
   end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
