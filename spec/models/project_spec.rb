@@ -1133,19 +1133,17 @@ describe Project, models: true do
     let(:pipeline) { create_pipeline }
 
     context 'with many builds' do
-      before do
+      it 'gives the latest builds from latest pipeline' do
         pipeline1 = create_pipeline
         pipeline2 = create_pipeline
-        @build1_p2 = create_build(pipeline2, 'test')
+        build1_p2 = create_build(pipeline2, 'test')
         create_build(pipeline1, 'test')
         create_build(pipeline1, 'test2')
-        @build2_p2 = create_build(pipeline2, 'test2')
-      end
+        build2_p2 = create_build(pipeline2, 'test2')
 
-      it 'gives the latest builds from latest pipeline' do
         latest_builds = project.latest_successful_builds_for
 
-        expect(latest_builds).to contain_exactly(@build2_p2, @build1_p2)
+        expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
       end
     end
 
