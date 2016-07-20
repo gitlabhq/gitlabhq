@@ -1128,7 +1128,7 @@ describe Project, models: true do
       create(:ci_build, :artifacts, :success, pipeline: pipeline)
     end
 
-    context 'with succeed pipeline' do
+    context 'with succeeded pipeline' do
       context 'standalone pipeline' do
         before do
           build
