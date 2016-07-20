@@ -13,7 +13,7 @@ module Gitlab
                             type stage when artifacts cache dependencies before_script
                             after_script variables environment]
 
-          attributes :tags, :allow_failure, :when, :environment
+          attributes :tags, :allow_failure, :when, :environment, :dependencies
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -37,6 +37,8 @@ module Gitlab
                 format: {
                   with: Gitlab::Regex.environment_name_regex,
                   message: Gitlab::Regex.environment_name_regex_message }
+
+              validates :dependencies, array_of_strings: true
             end
           end
 

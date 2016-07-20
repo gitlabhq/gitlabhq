@@ -1239,7 +1239,7 @@ EOT
         config = YAML.dump({ types: ["build", "test"], rspec: { script: "test", dependencies: "string" } })
         expect do
           GitlabCiYamlProcessor.new(config)
-        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "rspec job: dependencies parameter should be an array of strings")
+        end.to raise_error(GitlabCiYamlProcessor::ValidationError, "jobs:rspec dependencies should be an array of strings")
       end
     end
 

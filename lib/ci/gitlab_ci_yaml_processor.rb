@@ -98,19 +98,20 @@ module Ci
       @jobs = @ci_config.jobs
 
       @jobs.each do |name, job|
-        validate_job!(name, job)
+        # logical validation for job
+
+        validate_job_stage!(name, job)
+        validate_job_dependencies!(name, job)
       end
     end
 
     def yaml_variables(name)
-      variables = global_variables.merge(job_variables(name))
+      variables = (@variables || {})
+        .merge(job_variables(name))
+
       variables.map do |key, value|
         { key: key, value: value, public: true }
       end
-    end
-
-    def global_variables
-      @variables || {}
     end
 
     def job_variables(name)
@@ -120,21 +121,16 @@ module Ci
       job[:variables] || {}
     end
 
-    def validate_job!(name, job)
-      validate_job_stage!(name, job) if job[:stage]
-      validate_job_dependencies!(name, job) if job[:dependencies]
-    end
-
     def validate_job_stage!(name, job)
+      return unless job[:stage]
+
       unless job[:stage].is_a?(String) && job[:stage].in?(@stages)
         raise ValidationError, "#{name} job: stage parameter should be #{@stages.join(", ")}"
       end
     end
 
     def validate_job_dependencies!(name, job)
-      unless validate_array_of_strings(job[:dependencies])
-        raise ValidationError, "#{name} job: dependencies parameter should be an array of strings"
-      end
+      return unless job[:dependencies]
 
       stage_index = @stages.index(job[:stage])
 
