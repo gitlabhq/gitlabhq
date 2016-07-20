@@ -14,20 +14,26 @@ class License < ActiveRecord::Base
 
   class << self
     def current
-      return @current if @current
-
-      license = self.last
-      return unless license && license.valid?
-
-      @current = license
+      if RequestStore.active?
+        RequestStore.fetch(:current_license) { load_license }
+      else
+        load_license
+      end
     end
 
     def reset_current
-      @current = nil
+      RequestStore.delete(:current_license)
     end
 
     def block_changes?
       !current || current.block_changes?
+    end
+
+    def load_license
+      license = self.last
+
+      return unless license && license.valid?
+      license
     end
   end
 
