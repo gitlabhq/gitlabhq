@@ -78,6 +78,14 @@ form.edit-issue {
   }
 }
 
+.merge-request-ci-status {
+  svg {
+    margin-right: 4px;
+    position: relative;
+    top: 1px;
+  }
+}
+
 @media (max-width: $screen-xs-max) {
   .issue-btn-group {
     width: 100%;

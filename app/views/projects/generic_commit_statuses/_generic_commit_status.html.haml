@@ -51,7 +51,7 @@
   %td.duration
     - if generic_commit_status.duration
       = icon("clock-o")
-      #{duration_in_words(generic_commit_status.finished_at, generic_commit_status.started_at)}
+      = time_interval_in_words(generic_commit_status.duration)
 
   %td.timestamp
     - if generic_commit_status.finished_at

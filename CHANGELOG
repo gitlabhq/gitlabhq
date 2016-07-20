@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Limit git rev-list output count to one in forced push check
 
 v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
@@ -35,6 +36,7 @@ v 8.10.0 (unreleased)
   - Added day name to contribution calendar tooltips
   - Make images fit to the size of the viewport !4810
   - Fix check for New Branch button on Issue page !4630 (winniehell)
+  - Fix GFM autocomplete not working on wiki pages
   - Fix MR-auto-close text added to description. !4836
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags !5105 (redetection)
