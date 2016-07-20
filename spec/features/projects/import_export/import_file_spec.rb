@@ -65,7 +65,9 @@ feature 'project import', feature: true, js: true do
     visit new_project_path
 
     select2('2', from: '#project_namespace_id')
-    click_link 'GitLab export'
+
+    # click on disabled element
+    find(:link, 'GitLab export').trigger('click')
 
     page.within('.flash-container') do
       expect(page).to have_content('Please enter path and name')
