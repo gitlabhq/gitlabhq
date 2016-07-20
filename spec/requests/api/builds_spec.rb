@@ -213,17 +213,13 @@ describe API::API, api: true do
     end
 
     context 'find proper build' do
-      let(:another_artifacts) do
-        fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif')
-      end
-
-      let(:download_headers) do
-        { 'Content-Transfer-Encoding' => 'binary',
-          'Content-Disposition' =>
-            "attachment; filename=#{build.artifacts_file.filename}" }
-      end
-
       shared_examples 'a valid file' do
+        let(:download_headers) do
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' =>
+              "attachment; filename=#{build.artifacts_file.filename}" }
+        end
+
         it { expect(response).to have_http_status(200) }
         it { expect(response.headers).to include(download_headers) }
       end
