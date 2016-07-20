@@ -187,7 +187,9 @@ describe API::API, api: true do
         get path_for_ref
       end
 
-      it { expect(response).to have_http_status(401) }
+      it 'gives 401' do
+        expect(response).to have_http_status(401)
+      end
     end
 
     context 'non-existing build' do
