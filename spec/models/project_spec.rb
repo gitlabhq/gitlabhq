@@ -1115,29 +1115,44 @@ describe Project, models: true do
   end
 
   describe '#latest_successful_builds_for' do
-    def create_pipeline
+    def create_pipeline(status = 'success')
       create(:ci_pipeline, project: project,
                            sha: project.commit.sha,
                            ref: project.default_branch,
-                           status: 'success')
+                           status: status)
     end
 
     def create_build(new_pipeline = pipeline, name = 'test')
       create(:ci_build, :success, :artifacts,
              pipeline: new_pipeline,
+             status: new_pipeline.status,
              name: name)
     end
 
     let(:project) { create(:project) }
     let(:pipeline) { create_pipeline }
-    let(:build) { create_build }
+
+    context 'with many builds' do
+      before do
+        @pipeline1 = create_pipeline
+        @pipeline2 = create_pipeline
+        @build1_p2 = create_build(@pipeline2, 'test')
+        @build1_p1 = create_build(@pipeline1, 'test')
+        @build2_p1 = create_build(@pipeline1, 'test2')
+        @build2_p2 = create_build(@pipeline2, 'test2')
+      end
+
+      it 'gives the latest builds from latest pipeline' do
+        latest_builds = project.latest_successful_builds_for
+
+        expect(latest_builds).to contain_exactly(@build2_p2, @build1_p2)
+      end
+    end
 
     context 'with succeeded pipeline' do
-      context 'standalone pipeline' do
-        before do
-          build
-        end
+      let!(:build) { create_build }
 
+      context 'standalone pipeline' do
         it 'returns builds for ref for default_branch' do
           builds = project.latest_successful_builds_for
 
@@ -1152,45 +1167,15 @@ describe Project, models: true do
         end
       end
 
-      context 'with many builds' do
+      context 'with some pending pipeline' do
         before do
-          @pipeline1 = create_pipeline
-          @pipeline2 = create_pipeline
-          @build1_p2 = create_build(@pipeline2, 'test')
-          @build1_p1 = create_build(@pipeline1, 'test')
-          @build2_p1 = create_build(@pipeline1, 'test2')
-          @build2_p2 = create_build(@pipeline2, 'test2')
+          create_build(create_pipeline('pending'))
         end
 
-        it 'gives the latest builds from latest pipeline' do
-          latest_builds = project.latest_successful_builds_for
+        it 'gives the latest build from latest pipeline' do
+          latest_build = project.latest_successful_builds_for
 
-          expect(latest_builds).to contain_exactly(@build2_p2, @build1_p2)
-        end
-      end
-
-      context 'with multiple pipelines and builds' do
-        shared_examples 'latest successful one' do
-          it 'gives the latest build from latest pipeline' do
-            latest_build = project.latest_successful_builds_for.first
-
-            expect(latest_build).to eq(build)
-          end
-        end
-
-        context 'with some pending pipeline' do
-          before do
-            # make sure pipeline was old, but still the latest success one
-            build
-
-            new_pipeline = create(:ci_pipeline, project: project,
-                                                sha: project.commit.sha,
-                                                ref: project.default_branch,
-                                                status: 'pending')
-            create(:ci_build, :pending, :artifacts, pipeline: new_pipeline)
-          end
-
-          it_behaves_like 'latest successful one'
+          expect(latest_build).to contain_exactly(build)
         end
       end
     end
