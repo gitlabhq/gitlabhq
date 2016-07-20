@@ -256,14 +256,17 @@ describe API::API, api: true do
 
       context 'with latest pipeline' do
         before do
-          pipelines = Array.new(3).map do # creating some old pipelines
+          old_pipelines = Array.new(3).map do # creating some old pipelines
             create(:ci_pipeline, status: 'success')
           end
 
-          pipelines.reverse_each do |pipe|
-            new_build = create(:ci_build, :success, pipeline: pipe)
-            new_build.update(artifacts_file: another_artifacts)
+          old_pipelines.reverse_each do |pipe|
+            old_build = create(:ci_build, :success, pipeline: pipe)
+            old_build.update(artifacts_file: another_artifacts)
           end
+
+          wrong_build = create(:ci_build, :success, pipeline: pipeline)
+          wrong_build.update(artifacts_file: another_artifacts)
         end
 
         before do
