@@ -63,15 +63,18 @@ module Gitlab
         diff_refs.try(:head_sha)
       end
 
+      attr_writer :diff_lines, :highlighted_diff_lines
+
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
+        @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
       end
 
       def highlighted_diff_lines
         @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
+      # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted
       def parallel_diff_lines
         @parallel_diff_lines ||= Gitlab::Diff::ParallelDiff.new(self).parallelize
       end

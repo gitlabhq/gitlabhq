@@ -313,6 +313,8 @@ class MergeRequest < ActiveRecord::Base
 
     merge_request_diff.reload_content
 
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
+
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(

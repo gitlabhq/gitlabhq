@@ -83,7 +83,7 @@ describe Projects::CommitController do
       let(:format) { :diff }
 
       it "should really only be a git diff" do
-        go(id: commit.id, format: format)
+        go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format)
 
         expect(response.body).to start_with("diff --git")
       end
@@ -92,8 +92,9 @@ describe Projects::CommitController do
         go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format, w: 1)
 
         expect(response.body).to start_with("diff --git")
-        # without whitespace option, there are more than 2 diff_splits
-        diff_splits = assigns(:diffs).first.diff.split("\n")
+
+        # without whitespace option, there are more than 2 diff_splits for other formats
+        diff_splits = assigns(:diffs).diff_files.first.diff.diff.split("\n")
         expect(diff_splits.length).to be <= 2
       end
     end
@@ -266,9 +267,9 @@ describe Projects::CommitController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-              expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs, diff_refs, project)
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, safe_diffs|
+              expect(safe_diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(safe_diffs)
             end
 
             diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)

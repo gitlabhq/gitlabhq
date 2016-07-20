@@ -21,7 +21,7 @@ class Projects::CompareController < Projects::ApplicationController
   def diff_for_path
     return render_404 unless @compare
 
-    render_diff_for_path(@diffs, @diff_refs, @project)
+    render_diff_for_path(SafeDiffs::Compare.new(@compare, project: @project, diff_options: diff_options))
   end
 
   def create
@@ -46,12 +46,12 @@ class Projects::CompareController < Projects::ApplicationController
       @commit = @project.commit(@head_ref)
       @base_commit = @project.merge_base_commit(@start_ref, @head_ref)
 
-      @diffs = @compare.diffs(diff_options)
-      @diff_refs = Gitlab::Diff::DiffRefs.new(
+      diff_refs = Gitlab::Diff::DiffRefs.new(
         base_sha: @base_commit.try(:sha),
         start_sha: @start_commit.try(:sha),
         head_sha: @commit.try(:sha)
       )
+      @diffs = SafeDiffs::Compare.new(@compare, project: @project, diff_options: diff_options, diff_refs: diff_refs)
 
       @diff_notes_disabled = true
       @grouped_diff_discussions = {}

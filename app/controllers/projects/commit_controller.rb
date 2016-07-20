@@ -28,7 +28,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def diff_for_path
-    render_diff_for_path(@diffs, @commit.diff_refs, @project)
+    render_diff_for_path(SafeDiffs::Commit.new(@commit, diff_options: diff_options))
   end
 
   def builds
@@ -110,7 +110,7 @@ class Projects::CommitController < Projects::ApplicationController
     opts = diff_options
     opts[:ignore_whitespace_change] = true if params[:format] == 'diff'
 
-    @diffs = commit.diffs(opts)
+    @diffs = SafeDiffs::Commit.new(commit, diff_options: opts)
     @notes_count = commit.notes.count
   end
 

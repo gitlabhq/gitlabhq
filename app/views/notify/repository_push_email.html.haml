@@ -75,7 +75,7 @@
             - blob = diff_file.blob
             - if blob && blob.respond_to?(:text?) && blob_text_viewable?(blob)
               %table.code.white
-                - diff_file.highlighted_diff_lines.each do |line|
+                - diff_file.diff_lines.each do |line|
                   = render "projects/diffs/line", line: line, diff_file: diff_file, plain: true
             - else
               No preview for this file type

@@ -41,7 +41,7 @@ module Gitlab
         def diffs
           return unless compare
           
-          @diffs ||= safe_diff_files(compare.diffs(max_files: 30), diff_refs: diff_refs, repository: project.repository)
+          @diffs ||= SafeDiffs::Compare.new(compare, diff_options: { max_files: 30 }, project: project, diff_refs: diff_refs).diff_files
         end
 
         def diffs_count

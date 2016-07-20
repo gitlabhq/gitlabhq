@@ -103,9 +103,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     define_commit_vars
-    diffs = @merge_request.diffs(diff_options)
 
-    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
+    render_diff_for_path(SafeDiffs::MergeRequest.new(merge_request, diff_options: diff_options))
   end
 
   def commits
@@ -153,7 +152,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
-    @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    if @merge_request.compare
+      @diffs = SafeDiffs::Compare.new(@merge_request.compare,
+        project:      @merge_request.project,
+        diff_refs:    @merge_request.diff_refs,
+        diff_options: diff_options)
+    end
     @diff_notes_disabled = true
 
     @pipeline = @merge_request.pipeline

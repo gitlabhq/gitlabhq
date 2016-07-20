@@ -2,8 +2,6 @@
 - if diff_view == 'parallel'
   - fluid_layout true
 
-- diff_files = safe_diff_files(diffs, diff_refs: diff_refs, repository: project.repository)
-
 .content-block.oneline-block.files-changed
   .inline-parallel-buttons
     - if !expand_all_diffs? && diff_files.any? { |diff_file| diff_file.collapsed? }
