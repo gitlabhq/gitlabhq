@@ -6,9 +6,11 @@ describe API::API, api: true do
   let(:user) { create(:user) }
   let(:api_user) { user }
   let(:user2) { create(:user) }
+  let(:guest_user) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
+  let!(:guest) { create(:project_member, :guest, user: guest_user, project: project) }
   let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
@@ -189,6 +191,18 @@ describe API::API, api: true do
 
       it 'gives 401' do
         expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when forbidden' do
+      let(:api_user) { guest_user }
+
+      before do
+        get path_for_ref
+      end
+
+      it 'gives 403' do
+        expect(response).to have_http_status(403)
       end
     end
 

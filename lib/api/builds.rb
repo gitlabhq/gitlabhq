@@ -83,6 +83,8 @@ module API
       #   GET /projects/:id/artifacts/:ref_name/download?job=name
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
+        authorize_read_builds!
+
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
 
