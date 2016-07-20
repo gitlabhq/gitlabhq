@@ -8,7 +8,7 @@ module IssuablesHelper
   end
 
   def multi_label_name(current_labels, default_label)
-    if !current_labels.nil? && current_labels.any?
+    if current_labels && current_labels.any?
       title = current_labels.first.try(:title)
       if current_labels.size > 1
         "#{title} +#{current_labels.size - 1} more"

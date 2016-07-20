@@ -19,7 +19,7 @@
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text{ class: ("is-default" if selected.nil? || selected.empty?) }
-      = h(multi_label_name(selected, "Labels"))
+      = multi_label_name(selected, "Labels")
     = icon('chevron-down')
   .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
     = render partial: "shared/issuable/label_page_default", locals: { title: "Filter by label", show_footer: show_footer, show_create: show_create }

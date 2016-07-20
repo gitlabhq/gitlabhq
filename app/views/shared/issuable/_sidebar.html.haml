@@ -131,7 +131,7 @@
             .dropdown
               %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-label-sidebar-dropdown{type: "button", data: {toggle: "dropdown", default_label: "Labels", field_name: "#{issuable.to_ability_name}[label_names][]", ability_name: issuable.to_ability_name, show_no: "true", show_any: "true", project_id: (@project.id if @project), issue_update: issuable_json_path(issuable), labels: (namespace_project_labels_path(@project.namespace, @project, :json) if @project)}}
                 %span.dropdown-toggle-text{ class: ("is-default" if selected_labels.empty?)}
-                  = h(multi_label_name(selected_labels, "Labels"))
+                  = multi_label_name(selected_labels, "Labels")
                 = icon('chevron-down')
               .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
                 = render partial: "shared/issuable/label_page_default"

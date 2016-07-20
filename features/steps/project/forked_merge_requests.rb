@@ -143,9 +143,11 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see the users from the target project ID' do
-    expect(page).to have_content 'Unassigned'
-    expect(page).to have_content current_user.name
-    expect(page).to have_content @project.users.first.name
+    page.within '.dropdown-menu-user' do
+      expect(page).to have_content 'Unassigned'
+      expect(page).to have_content current_user.name
+      expect(page).to have_content @project.users.first.name
+    end
   end
 
   # Verify a link is generated against the correct project

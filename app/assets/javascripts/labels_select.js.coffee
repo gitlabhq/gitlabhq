@@ -231,7 +231,7 @@ class @LabelsSelect
 
           if $form.find("input[type='hidden']\
             [name='#{$dropdown.data('fieldName')}']\
-            [value='#{this.id(label)}']").length
+            [value=\"#{this.id(label)}\"]").length
             selectedClass.push 'is-active'
 
           if $dropdown.hasClass('js-multiselect') and removesAll

@@ -55,10 +55,6 @@ module MilestonesHelper
     end
   end
 
-  def milestone_dropdown_selected_text(selected)
-    selected.try(:title) unless selected.nil?
-  end
-
   def milestone_remaining_days(milestone)
     if milestone.expired?
       content_tag(:strong, 'Past due')
