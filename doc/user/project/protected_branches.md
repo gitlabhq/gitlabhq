@@ -8,11 +8,13 @@ created protected branches.
 A protected branch does four simple things:
 
 - it prevents its creation, if not already created, from everybody except users
-  with Master permission (or developers if configured)
-- it prevents pushes from everybody except users with Master permission (or
-  developers if configured)
+  with Master and/or Developer permission if configured
+- it prevents pushes from everybody except users with Master and/or Developer
+  permission if configured
 - it prevents **anyone** from force pushing to the branch
 - it prevents **anyone** from deleting the branch
+
+See the [Changelog](#changelog) section for changes over time.
 
 ## Configuring protected branches
 
@@ -80,5 +82,18 @@ all matching branches:
 
 ## Restrict the creation of protected branches
 
+## Changelog
+
+**8.10**
+
+Since GitLab 8.10, we added another layer of branch protection which provides
+more granular management of protected branches. The "Developers can push"
+option was replaced by an "Allowed to push" setting which can be set to
+allow/prohibit Masters and/or Developers to push to a protected branch.
+
+See [gitlab-org/gitlab-ce!5081][5081] for implementation details.
+
+---
 
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665
+[ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081
