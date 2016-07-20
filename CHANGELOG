@@ -140,6 +140,7 @@ v 8.10.0 (unreleased)
   - Fix MR diff encoding issues exporting GitLab projects
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
+  - Show tooltip on GitLab export link in new project page
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
