@@ -58,8 +58,8 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = {
-          'RepoPath'  => repository.path_to_repo,
+        params = { 
+          'RepoPath' => repository.path_to_repo,
           'ShaFrom'   => diff_refs.base_sha,
           'ShaTo'     => diff_refs.head_sha
         }
@@ -71,8 +71,8 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = {
-          'RepoPath'  => repository.path_to_repo,
+        params = { 
+          'RepoPath' => repository.path_to_repo,
           'ShaFrom'   => diff_refs.base_sha,
           'ShaTo'     => diff_refs.head_sha
         }
@@ -80,6 +80,19 @@ module Gitlab
         [
           SEND_DATA_HEADER,
           "git-format-patch:#{encode(params)}"
+        ]
+      end
+
+      def send_git_commit(repository, sha, format:)
+        params = {
+          'RepoPath' => repository.path_to_repo,
+          'Sha' => sha,
+          'Format' => format
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-show-commit:#{encode(params)}"
         ]
       end
 

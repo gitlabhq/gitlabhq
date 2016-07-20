@@ -23,8 +23,12 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.diff  { render text: @commit.to_diff }
-      format.patch { render text: @commit.to_patch }
+      format.diff do
+        send_git_commit @project.repository, @commit.id
+      end
+      format.patch do
+        send_git_commit @project.repository, @commit.id, format: :email
+      end
     end
   end
 

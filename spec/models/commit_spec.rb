@@ -120,7 +120,6 @@ eos
     it { is_expected.to respond_to(:diffs) }
     it { is_expected.to respond_to(:tree) }
     it { is_expected.to respond_to(:id) }
-    it { is_expected.to respond_to(:to_patch) }
   end
 
   describe '#closes_issues' do

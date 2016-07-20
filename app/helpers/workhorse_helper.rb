@@ -23,6 +23,13 @@ module WorkhorseHelper
     head :ok
   end
 
+  # Sends a single commit through Workhorse
+  def send_git_commit(repository, sha, format: :diff)
+    headers.store(*Gitlab::Workhorse.send_git_commit(repository, sha, format: format))
+    headers['Content-Disposition'] = 'inline'
+    head :ok
+  end
+
   # Archive a Git repository and send it through Workhorse
   def send_git_archive(repository, ref:, format:)
     headers.store(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))

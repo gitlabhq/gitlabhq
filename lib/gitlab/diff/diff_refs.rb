@@ -26,7 +26,7 @@ module Gitlab
       # `DiffRefs` are "complete" when they have `start_sha` and `head_sha`,
       # because `base_sha` can always be derived from this, to return an actual
       # sha, or `nil`.
-      # We have `base_sha` directly available on `DiffRefs` because it's faster#
+      # We have `base_sha` directly available on `DiffRefs` because it's faster
       # than having to look it up in the repo every time.
       def complete?
         start_sha && head_sha
