@@ -1,7 +1,7 @@
 - project = @target_project || @project
+- noteable_class = @noteable.class if @noteable.present?
 
-- if @noteable
-  :javascript
-    GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(project.namespace, project, type: @noteable.class, type_id: params[:id])}"
-    GitLab.GfmAutoComplete.cachedData = undefined;
-    GitLab.GfmAutoComplete.setup();
+:javascript
+  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(project.namespace, project, type: noteable_class, type_id: params[:id])}"
+  GitLab.GfmAutoComplete.cachedData = undefined;
+  GitLab.GfmAutoComplete.setup();
