@@ -297,8 +297,7 @@ module Gitlab
     end
 
     def old_commit?(commit)
-      # We skip refs/tmp ref because we use it for Web UI commiting
-      commit.refs(project.repository).reject { |ref| ref.name.start_with?('refs/tmp') }.any?
+      commit.refs(project.repository).any?
     end
   end
 end
