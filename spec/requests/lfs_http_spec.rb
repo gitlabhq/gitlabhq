@@ -31,6 +31,7 @@ describe Gitlab::Lfs::Router do
         'operation' => 'upload'
       }
     end
+    let(:authorization) { authorize_user }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
@@ -71,6 +72,7 @@ describe Gitlab::Lfs::Router do
     end
 
     context 'when handling lfs request using deprecated API' do
+      let(:authorization) { authorize_user }
       before do
         post_json "#{project.http_url_to_repo}/info/lfs/objects", nil, headers
       end
@@ -118,8 +120,8 @@ describe Gitlab::Lfs::Router do
               project.lfs_objects << lfs_object
             end
 
-            it 'responds with status 403' do
-              expect(response).to have_http_status(403)
+            it 'responds with status 404' do
+              expect(response).to have_http_status(404)
             end
           end
 
@@ -147,8 +149,8 @@ describe Gitlab::Lfs::Router do
       context 'without required headers' do
         let(:authorization) { authorize_user }
 
-        it 'responds with status 403' do
-          expect(response).to have_http_status(403)
+        it 'responds with status 404' do
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -304,10 +306,10 @@ describe Gitlab::Lfs::Router do
         end
 
         context 'when user does is not member of the project' do
-          let(:role) { :guest }
+          let(:update_user_permissions) { nil }
 
-          it 'responds with 403' do
-            expect(response).to have_http_status(403)
+          it 'responds with 404' do
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -510,6 +512,7 @@ describe Gitlab::Lfs::Router do
 
     describe 'unsupported' do
       let(:project) { create(:empty_project) }
+      let(:authorization) { authorize_user }
       let(:body) do
         { 'operation' => 'other',
           'objects' => [
@@ -557,7 +560,7 @@ describe Gitlab::Lfs::Router do
         end
 
         it 'does not recognize it as a valid lfs command' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -579,6 +582,16 @@ describe Gitlab::Lfs::Router do
         end
 
         it 'responds with 403' do
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'and request is sent with a malformed headers' do
+        before do
+          put_finalize('cat /etc/passwd')
+        end
+
+        it 'does not recognize it as a valid lfs command' do
           expect(response).to have_http_status(403)
         end
       end
@@ -627,6 +640,10 @@ describe Gitlab::Lfs::Router do
         end
 
         describe 'and user does not have push access' do
+          before do
+            project.team << [user, :reporter]
+          end
+
           it_behaves_like 'forbidden'
         end
       end
