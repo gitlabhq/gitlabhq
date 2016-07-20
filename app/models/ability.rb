@@ -372,8 +372,8 @@ class Ability
         ]
       end
 
-      if (group.public? || (group.internal? && !user.external?)) && group.request_access_enabled
-        rules << :request_access unless group.users.include?(user)
+      if group.public? || (group.internal? && !user.external?)
+        rules << :request_access if group.request_access_enabled && group.users.exclude?(user)
       end
 
       rules.flatten

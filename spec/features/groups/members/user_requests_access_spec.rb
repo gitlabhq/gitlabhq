@@ -9,19 +9,17 @@ feature 'Groups > Members > User requests access', feature: true do
   background do
     group.add_owner(owner)
     login_as(user)
+    visit group_path(group)
   end
 
   scenario 'request access feature is disabled' do
     group.update_attributes(request_access_enabled: false)
     visit group_path(group)
 
-    visit group_path(group)
     expect(page).not_to have_content 'Request Access'
   end
 
   scenario 'user can request access to a group' do
-    visit group_path(group)
-
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email]
@@ -35,15 +33,12 @@ feature 'Groups > Members > User requests access', feature: true do
   end
 
   scenario 'user does not see private projects' do
-    visit group_path(group)
-
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(page).not_to have_content project.name
   end
 
   scenario 'user does not see group in the Dashboard > Groups page' do
-    visit group_path(group)
     perform_enqueued_jobs { click_link 'Request Access' }
 
     visit dashboard_groups_path
@@ -52,8 +47,6 @@ feature 'Groups > Members > User requests access', feature: true do
   end
 
   scenario 'user is not listed in the group members page' do
-    visit group_path(group)
-
     click_link 'Request Access'
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
@@ -66,8 +59,6 @@ feature 'Groups > Members > User requests access', feature: true do
   end
 
   scenario 'user can withdraw its request for access' do
-    visit group_path(group)
-
     click_link 'Request Access'
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy

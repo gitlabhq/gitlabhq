@@ -8,17 +8,17 @@ feature 'Projects > Members > User requests access', feature: true do
   background do
     project.team << [master, :master]
     login_as(user)
+    visit namespace_project_path(project.namespace, project)
   end
 
   scenario 'request access feature is disabled' do
     project.update_attributes(request_access_enabled: false)
-
     visit namespace_project_path(project.namespace, project)
+
     expect(page).not_to have_content 'Request Access'
   end
 
   scenario 'user can request access to a project' do
-    visit namespace_project_path(project.namespace, project)
     perform_enqueued_jobs { click_link 'Request Access' }
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
@@ -32,7 +32,6 @@ feature 'Projects > Members > User requests access', feature: true do
   end
 
   scenario 'user is not listed in the project members page' do
-    visit namespace_project_path(project.namespace, project)
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
@@ -47,7 +46,6 @@ feature 'Projects > Members > User requests access', feature: true do
   end
 
   scenario 'user can withdraw its request for access' do
-    visit namespace_project_path(project.namespace, project)
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
