@@ -116,10 +116,49 @@ gitlab_rails['kerberos_use_dedicated_port'] = true
 gitlab_rails['kerberos_port'] = 8443
 gitlab_rails['kerberos_https'] = true
 ```
+
 and run `sudo gitlab-ctl reconfigure` for changes to take effect.
 
 
 Git remote URLs will have to be updated to `https://gitlab.example.com:8443/mygroup/myproject.git` in order to use Kerberos ticket-based authentication.
+
+## Upgrading from password-based Kerberos sign-ins
+
+Prior to GitLab 8.10 Enterprise Edition users had to submit their
+Kerberos username and password to GitLab when signing in. We will
+remove support for password-based Kerberos sign-ins in a future
+release so we recommend that you upgrade to ticket-based sign-ins.
+
+Depending on your existing GitLab configuration the 'Sign in with:
+Kerberos Spnego' button may already be visible on your GitLab sign-in
+page. If not then add the settings described [above](#configuration).
+
+Once you have verified that the 'Kerberos Spnego' button works,
+without entering any passwords, you can proceed to disable
+password-based Kerberos sign-ins. To do this you need only need to
+remove the OmniAuth provider named 'kerberos' from your gitlab.yml /
+gitlab.rb.
+
+For installations from source:
+
+```yaml
+  omniauth:
+    # ...
+    providers:
+      - { name: 'kerberos' } # <-- remove this line
+```
+
+For Omnibus:
+
+```
+gitlab_rails['omniauth_providers'] = [
+  { "name" => "kerberos" } # <-- remove this entry
+]
+```
+
+Save the file and [reconfigure
+GitLab](../administration/restart_gitlab.md) for the changes to take
+effect.
 
 ## Support for Active Directory Kerberos environments
 
