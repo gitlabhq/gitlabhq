@@ -191,8 +191,8 @@ describe API::API, api: true do
     end
 
     context 'non-existing build' do
-      def verify
-        expect(response).to have_http_status(404)
+      shared_examples 'not found' do
+        it { expect(response).to have_http_status(:not_found) }
       end
 
       context 'has no such ref' do
@@ -200,7 +200,7 @@ describe API::API, api: true do
           get path_for_ref('TAIL', build.name)
         end
 
-        it('gives 404') { verify }
+        it_behaves_like 'not found'
       end
 
       context 'has no such build' do
@@ -208,7 +208,7 @@ describe API::API, api: true do
           get path_for_ref(pipeline.ref, 'NOBUILD')
         end
 
-        it('gives 404') { verify }
+        it_behaves_like 'not found'
       end
     end
 
