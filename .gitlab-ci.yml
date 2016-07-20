@@ -63,11 +63,14 @@ update-knapsack:
 
 # Execute all testing suites
 
-.rspec-knapsack: &rspec-knapsack
-  stage: test
+.use-db: &use-db
   services:
     - mysql:latest
     - redis:alpine
+
+.rspec-knapsack: &rspec-knapsack
+  stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -83,9 +86,7 @@ update-knapsack:
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
-  services:
-    - mysql:latest
-    - redis:alpine
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -134,9 +135,7 @@ spinach 9 10: *spinach-knapsack
 # Execute all testing suites against Ruby 2.3
 .ruby-23: &ruby-23
   image: "ruby:2.3"
-  services:
-    - mysql:latest
-    - redis:alpine
+  <<: *use-db
   only:
     - master
   cache:
@@ -187,11 +186,14 @@ spinach 9 10 ruby23: *spinach-knapsack-ruby23
 
 # Other generic tests
 
-.exec: &exec
+.static-analyses-variables: &static-analyses-variables
   variables:
     SIMPLECOV: "false"
     USE_DB: "false"
     USE_BUNDLE_INSTALL: "true"
+
+.exec: &exec
+  <<: *static-analyses-variables
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
@@ -205,26 +207,19 @@ license_finder: *exec
 
 rake db:migrate:reset:
   stage: test
-  services:
-    - mysql:latest
-    - redis:alpine
+  <<: *use-db
   script:
     - rake db:migrate:reset
 
 teaspoon:
   stage: test
-  services:
-    - mysql:latest
-    - redis:alpine
+  <<: *use-db
   script:
     - teaspoon
 
 bundler:audit:
   stage: test
-  variables:
-    SIMPLECOV: "false"
-    USE_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
+  <<: *static-analyses-variables
   only:
     - master
   script:
