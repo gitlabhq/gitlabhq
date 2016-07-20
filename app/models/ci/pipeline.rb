@@ -146,6 +146,10 @@ module Ci
       end
     end
 
+    def has_warnings?
+      builds.latest.ignored.any?
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)

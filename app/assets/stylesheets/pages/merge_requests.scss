@@ -70,6 +70,14 @@
       color: $gl-success;
     }
 
+    &.ci-success_with_warnings {
+      color: $gl-success;
+
+      i {
+        color: $gl-warning;
+      }
+    }
+
     &.ci-skipped {
       background-color: #eee;
       color: #888;
