@@ -1,7 +1,8 @@
 require 'simplecov'
 
 SimpleCov.configure do
-  load_profile :rails
+  load_profile 'test_frameworks'
+  track_files '{app,lib}/**/*.rb'
 
   if ENV['CI_BUILD_NAME']
     coverage_dir "coverage/#{ENV['CI_BUILD_NAME']}"
@@ -17,7 +18,14 @@ SimpleCov.configure do
   end
 
   add_filter '/vendor/ruby/'
+  add_filter 'config/initializers/'
 
+  add_group 'Controllers', 'app/controllers'
+  add_group 'Models', 'app/models'
+  add_group 'Mailers', 'app/mailers'
+  add_group 'Helpers', 'app/helpers'
+  add_group 'Workers', %w(app/jobs app/workers)
+  add_group 'Libraries', 'lib'
   add_group 'Services', 'app/services'
   add_group 'Finders', 'app/finders'
   add_group 'Uploaders', 'app/uploaders'
