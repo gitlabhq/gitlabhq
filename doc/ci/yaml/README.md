@@ -538,7 +538,7 @@ The above script will:
 Introduced in GitLab 8.10.
 
 Manual actions are special type of jobs that are not executed automatically in pipeline.
-They need to be explicitly started by the user. 
+They need to be explicitly started by the user.
 Manual actions can be started from pipelines, builds, environments and deployments views.
 You can execute the same manual action multiple times.
 
@@ -645,9 +645,10 @@ be available for download in the GitLab UI.
 Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of the created artifacts
-archive. That way, you can have a unique name of every archive which could be
+archive. That way, you can have a unique name for every archive which could be
 useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
+The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
 ---
 
