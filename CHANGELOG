@@ -26,6 +26,7 @@ v 8.10.0 (unreleased)
   - Display last commit of deleted branch in push events !4699 (winniehell)
   - Escape file extension when parsing search results !5141 (winniehell)
   - Add "passing with warnings" to the merge request pipeline possible statuses, this happens when builds that allow failures have failed. !5004
+  - Add image border in Markdown preview !5162 (winniehell)
   - Apply the trusted_proxies config to the rack request object for use with rack_attack
   - Added the ability to block sign ups using a domain blacklist !5259
   - Upgrade to Rails 4.2.7. !5236
