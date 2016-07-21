@@ -44,9 +44,26 @@ describe 'projects/builds/show' do
 
     it 'shows commit title and not show commit message' do
       render
-      
+
       expect(rendered).to have_css('p.build-light-text.append-bottom-0',
         text: /\A\n#{Regexp.escape(commit_title)}\n\Z/)
+    end
+  end
+
+  describe 'shows trigger variables in sidebar' do
+    let(:trigger) { create(:ci_trigger, project: project) }
+    let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+
+    before do
+      build.trigger_request = trigger_request
+    end
+
+    it 'shows trigger variables in separate lines' do
+      trigger_request.update_attributes(variables: { TRIGGER_KEY: 'TRIGGER_VALUE', TRIGGER_KEY_1: 'TRIGGER_VALUE_1' })
+      render
+
+      expect(rendered).to have_css('code', text: /\A#{Regexp.escape('TRIGGER_KEY=TRIGGER_VALUE')}\Z/)
+      expect(rendered).to have_css('code', text: /\A#{Regexp.escape('TRIGGER_KEY_1=TRIGGER_VALUE_1')}\Z/)
     end
   end
 end
