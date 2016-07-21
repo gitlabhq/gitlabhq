@@ -94,6 +94,7 @@ module API
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
+      expose :repository_storage, if: lambda { |_project, options| options[:user].try(:admin?) }
     end
 
     class ProjectMember < UserBasic

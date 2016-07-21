@@ -969,6 +969,7 @@ ActiveRecord::Schema.define(version: 20160810153405) do
     t.string   "repository_storage",                 default: "default", null: false
     t.boolean  "request_access_enabled",             default: true,      null: false
     t.boolean  "has_external_wiki"
+    t.boolean  "repository_read_only"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

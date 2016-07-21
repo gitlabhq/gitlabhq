@@ -27,7 +27,7 @@ namespace :gitlab do
         all_dirs.each do |dir_path|
 
           if remove_flag
-            if FileUtils.rm_rf dir_path
+            if FileUtils.rm_rf(dir_path)
               puts "Removed...#{dir_path}".color(:red)
             else
               puts "Cannot remove #{dir_path}".color(:red)

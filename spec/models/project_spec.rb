@@ -1580,4 +1580,51 @@ describe Project, models: true do
       expect(shared_project.authorized_for_user?(master, Gitlab::Access::MASTER)).to be(true)
     end
   end
+
+  describe '#change_repository_storage' do
+    let(:project) { create(:project, repository_storage: 'a') }
+    let(:read_only_project) { create(:project, repository_storage: 'a', repository_read_only: true) }
+
+    before do
+      FileUtils.mkdir('tmp/tests/storage_a')
+      FileUtils.mkdir('tmp/tests/storage_b')
+
+      storages = { 'a' => 'tmp/tests/storage_a', 'b' => 'tmp/tests/storage_b' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    end
+
+    after do
+      FileUtils.rm_rf('tmp/tests/storage_a')
+      FileUtils.rm_rf('tmp/tests/storage_b')
+    end
+
+    it 'schedule the transfer of the repository to the new storage and locks the project' do
+      expect(ProjectUpdateRepositoryStorageWorker).to receive(:perform_async).with(project.id, 'b')
+
+      project.change_repository_storage('b')
+      project.save
+
+      expect(project).to be_repository_read_only
+    end
+
+    it "doesn't schedule the transfer if the repository is already read-only" do
+      expect(ProjectUpdateRepositoryStorageWorker).not_to receive(:perform_async)
+
+      read_only_project.change_repository_storage('b')
+      read_only_project.save
+    end
+
+    it "doesn't lock or schedule the transfer if the storage hasn't changed" do
+      expect(ProjectUpdateRepositoryStorageWorker).not_to receive(:perform_async)
+
+      project.change_repository_storage('a')
+      project.save
+
+      expect(project).not_to be_repository_read_only
+    end
+
+    it 'throws an error if an invalid repository storage is provided' do
+      expect { project.change_repository_storage('c') }.to raise_error
+    end
+  end
 end
