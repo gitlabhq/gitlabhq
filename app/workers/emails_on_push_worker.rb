@@ -28,12 +28,12 @@ class EmailsOnPushWorker
         :push
       end
 
-    merge_base_sha = project.merge_base_commit(before_sha, after_sha).try(:sha)
-
     diff_refs = nil
     compare = nil
     reverse_compare = false
+
     if action == :push
+      merge_base_sha = project.merge_base_commit(before_sha, after_sha).try(:sha)
       compare = Gitlab::Git::Compare.new(project.repository.raw_repository, before_sha, after_sha)
 
       diff_refs = Gitlab::Diff::DiffRefs.new(
