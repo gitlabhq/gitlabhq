@@ -6,8 +6,9 @@ module Issues
       issue = project.issues.new(params.except(:label_ids, :request))
       issue.author = params[:author] || current_user
 
-      if Issues::SpamCheckService.new(project, current_user, params).spam_detected?
-        return nil
+      if SpamCheckService.new(project, current_user, params).spam_detected?
+        issue.errors.add(:base, 'Your issue has been recognized as spam and has been discarded.')
+        return issue
       end
 
       if issue.save

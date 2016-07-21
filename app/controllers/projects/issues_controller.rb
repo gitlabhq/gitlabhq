@@ -81,15 +81,9 @@ class Projects::IssuesController < Projects::ApplicationController
   def create
     @issue = Issues::CreateService.new(project, current_user, issue_params.merge({ request: request })).execute
 
-    if @issue.nil?
-      @issue = @project.issues.new
-      flash[:notice] = 'Your issue has been recognized as spam and has been discarded.'
-      render :new and return
-    end
-
     respond_to do |format|
       format.html do
-        if @issue.valid?
+        if @issue.errors.empty? && @issue.valid?
           redirect_to issue_path(@issue)
         else
           render :new
