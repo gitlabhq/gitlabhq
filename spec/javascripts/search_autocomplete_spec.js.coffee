@@ -1,9 +1,21 @@
-#= require gl_dropdown
-#= require search_autocomplete
-#= require jquery
-#= require lib/utils/common_utils
-#= require lib/utils/type_utility
-#= require fuzzaldrin-plus
+###
+//= require gl_dropdown
+###
+###
+//= require search_autocomplete
+###
+###
+//= require jquery
+###
+###
+//= require lib/utils/common_utils
+###
+###
+//= require lib/utils/type_utility
+###
+###
+//= require fuzzaldrin-plus
+###
 
 
 widget       = null

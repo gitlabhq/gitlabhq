@@ -1,4 +1,6 @@
-#= require behaviors/requires_input
+###
+//= require behaviors/requires_input
+###
 
 describe 'requiresInput', ->
   fixture.preload('behaviors/requires_input.html')

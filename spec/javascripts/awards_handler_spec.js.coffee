@@ -1,7 +1,15 @@
-#= require awards_handler
-#= require jquery
-#= require jquery.cookie
-#= require ./fixtures/emoji_menu
+###
+//= require awards_handler
+###
+###
+//= require jquery
+###
+###
+//= require jquery.cookie
+###
+###
+//= require ./fixtures/emoji_menu
+###
 
 awardsHandler      = null
 window.gl        or= {}

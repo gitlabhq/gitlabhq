@@ -1,10 +1,24 @@
-#= require bootstrap
-#= require select2
-#= require lib/utils/type_utility
-#= require gl_dropdown
-#= require api
-#= require project_select
-#= require project
+###
+//= require bootstrap
+###
+###
+//= require select2
+###
+###
+//= require lib/utils/type_utility
+###
+###
+//= require gl_dropdown
+###
+###
+//= require api
+###
+###
+//= require project_select
+###
+###
+//= require project
+###
 
 window.gon or= {}
 window.gon.api_version = 'v3'

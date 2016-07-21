@@ -1,4 +1,6 @@
-#= require extensions/array
+###
+//= require extensions/array
+###
 
 describe 'Array extensions', ->
   describe 'first', ->

@@ -1,4 +1,6 @@
-#= require merge_request_widget
+###
+//= require merge_request_widget
+###
 
 describe 'MergeRequestWidget', ->
 

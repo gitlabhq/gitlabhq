@@ -1,4 +1,6 @@
-#= require behaviors/autosize
+###
+//= require behaviors/autosize
+###
 
 describe 'Autosize behavior', ->
   beforeEach ->

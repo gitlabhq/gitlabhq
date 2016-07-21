@@ -1,4 +1,6 @@
-#= require zen_mode
+###
+//= require zen_mode
+###
 
 describe 'ZenMode', ->
   fixture.preload('zen_mode.html')

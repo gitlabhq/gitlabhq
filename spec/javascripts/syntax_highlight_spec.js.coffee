@@ -1,4 +1,6 @@
-#= require syntax_highlight
+###
+//= require syntax_highlight
+###
 
 describe 'Syntax Highlighter', ->
   stubUserColorScheme = (value) ->

@@ -1,6 +1,12 @@
-#= require right_sidebar
-#= require jquery
-#= require jquery.cookie
+###
+//= require right_sidebar
+###
+###
+//= require jquery
+###
+###
+//= require jquery.cookie
+###
 
 @sidebar    = null
 $aside      = null

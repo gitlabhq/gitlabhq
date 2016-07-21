@@ -1,4 +1,6 @@
-#= require extensions/jquery
+###
+//= require extensions/jquery
+###
 
 describe 'jQuery extensions', ->
   describe 'disable', ->

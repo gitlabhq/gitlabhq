@@ -22,10 +22,18 @@
 
 # TaskList Behavior
 #
-#= provides tasklist:enabled
-#= provides tasklist:disabled
-#= provides tasklist:change
-#= provides tasklist:changed
+###
+//= provides tasklist:enabled
+###
+###
+//= provides tasklist:disabled
+###
+###
+//= provides tasklist:change
+###
+###
+//= provides tasklist:changed
+###
 #
 #
 # Enables Task List update behavior.

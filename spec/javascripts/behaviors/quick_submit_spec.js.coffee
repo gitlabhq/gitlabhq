@@ -1,4 +1,6 @@
-#= require behaviors/quick_submit
+###
+//= require behaviors/quick_submit
+###
 
 describe 'Quick Submit behavior', ->
   fixture.preload('behaviors/quick_submit.html')

@@ -1,4 +1,6 @@
-#= require shortcuts_issuable
+###
+//= require shortcuts_issuable
+###
 
 describe 'ShortcutsIssuable', ->
   fixture.preload('issuable.html')

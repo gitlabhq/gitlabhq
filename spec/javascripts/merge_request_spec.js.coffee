@@ -1,4 +1,6 @@
-#= require merge_request
+###
+//= require merge_request
+###
 
 describe 'MergeRequest', ->
   describe 'task lists', ->

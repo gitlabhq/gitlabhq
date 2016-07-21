@@ -1,4 +1,6 @@
-#= require merge_request_tabs
+###
+//= require merge_request_tabs
+###
 
 describe 'MergeRequestTabs', ->
   stubLocation = (stubs) ->

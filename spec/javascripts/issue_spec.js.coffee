@@ -1,5 +1,9 @@
-#= require lib/utils/text_utility
-#= require issue
+###
+//= require lib/utils/text_utility
+###
+###
+//= require issue
+###
 
 describe 'Issue', ->
   describe 'task lists', ->

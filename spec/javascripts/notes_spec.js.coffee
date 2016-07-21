@@ -1,5 +1,9 @@
-#= require notes
-#= require gl_form
+###
+//= require notes
+###
+###
+//= require gl_form
+###
 
 window.gon or= {}
 window.disableButtonIfEmptyField = -> null

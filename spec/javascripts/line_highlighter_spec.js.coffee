@@ -1,4 +1,6 @@
-#= require line_highlighter
+###
+//= require line_highlighter
+###
 
 describe 'LineHighlighter', ->
   fixture.preload('line_highlighter.html')
