@@ -16,7 +16,7 @@ describe 'New/edit merge request', feature: true, js: true do
     before do
       login_as(user)
     end
-    
+
     context 'new merge request' do
       before do
         visit new_namespace_project_merge_request_path(
@@ -30,7 +30,7 @@ describe 'New/edit merge request', feature: true, js: true do
           })
       end
 
-      it 'should create new merge request' do
+      it 'creates new merge request' do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
           click_link user.name
@@ -91,7 +91,7 @@ describe 'New/edit merge request', feature: true, js: true do
         visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
       end
 
-      it 'should update merge request' do
+      it 'updates merge request' do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
           click_link user.name
@@ -160,7 +160,7 @@ describe 'New/edit merge request', feature: true, js: true do
           })
       end
 
-      it 'should create new merge request' do
+      it 'creates new merge request' do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
           click_link user.name

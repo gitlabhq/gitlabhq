@@ -18,7 +18,7 @@ describe 'New/edit issue', feature: true, js: true do
       visit new_namespace_project_issue_path(project.namespace, project)
     end
 
-    it 'should allow user to create new issue' do
+    it 'allows user to create new issue' do
       fill_in 'issue_title', with: 'title'
       fill_in 'issue_description', with: 'title'
 
@@ -75,7 +75,7 @@ describe 'New/edit issue', feature: true, js: true do
       visit edit_namespace_project_issue_path(project.namespace, project, issue)
     end
 
-    it 'should allow user to update issue' do
+    it 'allows user to update issue' do
       expect(find('input[name="issue[assignee_id]"]', visible: false).value).to match(user.id.to_s)
       expect(find('input[name="issue[milestone_id]"]', visible: false).value).to match(milestone.id.to_s)
 
