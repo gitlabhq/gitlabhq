@@ -2,14 +2,13 @@ module Issues
   class CreateService < Issues::BaseService
     def execute
       filter_params
-      label_params = params[:label_ids]
-      issue = project.issues.new(params.except(:label_ids, :request))
+      label_params = params.delete(:label_ids)
+      request = params.delete(:request)
+      api = params.delete(:api)
+      issue = project.issues.new(params)
       issue.author = params[:author] || current_user
 
-      if SpamCheckService.new(project, current_user, params).spam_detected?
-        issue.errors.add(:base, 'Your issue has been recognized as spam and has been discarded.')
-        return issue
-      end
+      issue.spam = spam_check_service.execute(request, api)
 
       if issue.save
         issue.update_attributes(label_ids: label_params)
@@ -21,6 +20,12 @@ module Issues
       end
 
       issue
+    end
+
+    private
+
+    def spam_check_service
+      SpamCheckService.new(project, current_user, params)
     end
   end
 end

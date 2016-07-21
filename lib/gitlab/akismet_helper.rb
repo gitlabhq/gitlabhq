@@ -43,16 +43,5 @@ module Gitlab
         false
       end
     end
-
-    def create_spam_log(project, current_user, attrs, env, api: true)
-      params = attrs.merge({
-                             source_ip: client_ip(env),
-                             user_agent: user_agent(env),
-                             noteable_type: 'Issue',
-                             via_api: api
-                           })
-
-      ::CreateSpamLogService.new(project, current_user, params).execute
-    end
   end
 end

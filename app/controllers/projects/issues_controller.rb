@@ -79,11 +79,11 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    @issue = Issues::CreateService.new(project, current_user, issue_params.merge({ request: request })).execute
+    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
 
     respond_to do |format|
       format.html do
-        if @issue.errors.empty? && @issue.valid?
+        if @issue.valid?
           redirect_to issue_path(@issue)
         else
           render :new

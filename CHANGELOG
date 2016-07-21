@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Retrieve rendered HTML from cache in one request
   - Nokogiri's various parsing methods are now instrumented
   - Make fork counter always clickable. !5463 (winniehell)
+  - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
@@ -93,7 +94,6 @@ v 8.10.0
   - Fix viewing notification settings when a project is pending deletion
   - Updated compare dropdown menus to use GL dropdown
   - Redirects back to issue after clicking login link
-  - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - Eager load award emoji on notes
   - Allow to define manual actions/builds on Pipelines and Environments
   - Fix pagination when sorting by columns with lots of ties (like priority)

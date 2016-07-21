@@ -158,15 +158,13 @@ module API
 
         project = user_project
 
-        issue = ::Issues::CreateService.new(project, current_user, attrs.merge({ request: request })).execute
+        issue = ::Issues::CreateService.new(project, current_user, attrs.merge(request: request, api: true)).execute
+
+        if issue.spam?
+          render_api_error!({ error: 'Spam detected' }, 400)
+        end
 
         if issue.valid?
-          # Need to check if id is nil here, because if issue is spam, errors
-          # get added, but Rails still thinks it's valid, but it is never saved
-          # so id will be nil
-          if issue.id.nil?
-            render_api_error!({ error: 'Spam detected' }, 400)
-          end
           # Find or create labels and attach to issue. Labels are valid because
           # we already checked its name, so there can't be an error here
           if params[:labels].present?

@@ -1,6 +1,6 @@
 # Akismet
 
-> *Note:* Before 8.10 only issues submitted via the API and for non-project
+> *Note:* Before 8.11 only issues submitted via the API and for non-project
 members were submitted to Akismet.
 
 GitLab leverages [Akismet](http://akismet.com) to protect against spam. Currently
