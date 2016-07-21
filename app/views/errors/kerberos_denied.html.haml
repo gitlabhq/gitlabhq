@@ -3,6 +3,15 @@
 %h3 Kerberos authentication failed
 %hr
 %p
+  Possible causes:
+  %ul
+    %li
+      You do not have a local Ticket Granting Ticket
+    %li
+      Your browser does not support Kerberos
+    %li
+      You do not have access to this service
+%p
   Return to the
   = succeed "." do
     = link_to 'sign-in page', new_user_session_path
