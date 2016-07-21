@@ -781,6 +781,10 @@ describe MergeRequest, models: true do
           it 'does not allow the approver to approve the MR' do
             expect(merge_request.can_approve?(author)).to be_falsey
           end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
         end
 
         context 'when that approver is not the MR author' do
@@ -795,6 +799,10 @@ describe MergeRequest, models: true do
 
           it 'allows the approver to approve the MR' do
             expect(merge_request.can_approve?(approver)).to be_truthy
+          end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
           end
         end
       end
@@ -834,6 +842,10 @@ describe MergeRequest, models: true do
             expect(merge_request.can_approve?(reporter)).to be_falsey
             expect(merge_request.can_approve?(stranger)).to be_falsey
           end
+
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
         end
 
         context 'when that approver is not the MR author' do
@@ -850,6 +862,7 @@ describe MergeRequest, models: true do
             expect(merge_request.can_approve?(developer)).to be_falsey
             expect(merge_request.can_approve?(reporter)).to be_falsey
             expect(merge_request.can_approve?(stranger)).to be_falsey
+            expect(merge_request.can_approve?(nil)).to be_falsey
           end
         end
       end
@@ -876,6 +889,10 @@ describe MergeRequest, models: true do
             expect(merge_request.can_approve?(approver)).to be_truthy
           end
 
+          it 'does not allow a logged-out user to approve the MR' do
+            expect(merge_request.can_approve?(nil)).to be_falsey
+          end
+
           context 'when all of the valid approvers have approved the MR' do
             before do
               create(:approval, user: approver, merge_request: merge_request)
@@ -900,6 +917,7 @@ describe MergeRequest, models: true do
 
               expect(merge_request.can_approve?(reporter)).to be_falsey
               expect(merge_request.can_approve?(stranger)).to be_falsey
+              expect(merge_request.can_approve?(nil)).to be_falsey
             end
           end
         end
@@ -923,6 +941,7 @@ describe MergeRequest, models: true do
             expect(merge_request.can_approve?(author)).to be_falsey
             expect(merge_request.can_approve?(reporter)).to be_falsey
             expect(merge_request.can_approve?(stranger)).to be_falsey
+            expect(merge_request.can_approve?(nil)).to be_falsey
           end
         end
       end
