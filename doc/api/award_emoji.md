@@ -67,9 +67,9 @@ Example Response:
 ]
 ```
 
-### Get single issue note
+### Get single award emoji
 
-Gets a single award emoji
+Gets a single award emoji from an issue or merge request.
 
 ```
 GET /projects/:id/issues/:issue_id/award_emoji/:award_id

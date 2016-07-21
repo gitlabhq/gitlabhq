@@ -1,10 +1,5 @@
 image: "ruby:2.1"
 
-services:
-  - mysql:latest
-  - elasticsearch:latest
-  - redis:alpine
-
 cache:
   key: "ruby21"
   paths:
@@ -36,7 +31,6 @@ stages:
 - post-test
 
 # Prepare and merge knapsack tests
-
 .knapsack-state: &knapsack-state
   services: []
   variables:
@@ -70,8 +64,15 @@ update-knapsack:
 
 # Execute all testing suites
 
+.use-db: &use-db
+  services:
+    - mysql:latest
+    - redis:alpine
+    - elasticsearch:latest
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -87,6 +88,7 @@ update-knapsack:
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -135,6 +137,7 @@ spinach 9 10: *spinach-knapsack
 # Execute all testing suites against Ruby 2.3
 .ruby-23: &ruby-23
   image: "ruby:2.3"
+  <<: *use-db
   only:
     - master
   cache:
@@ -150,7 +153,7 @@ spinach 9 10: *spinach-knapsack
 .spinach-knapsack-ruby23: &spinach-knapsack-ruby23
   <<: *spinach-knapsack
   <<: *ruby-23
-  
+
 rspec 0 20 ruby23: *rspec-knapsack-ruby23
 rspec 1 20 ruby23: *rspec-knapsack-ruby23
 rspec 2 20 ruby23: *rspec-knapsack-ruby23
@@ -185,22 +188,41 @@ spinach 9 10 ruby23: *spinach-knapsack-ruby23
 
 # Other generic tests
 
+.static-analyses-variables: &static-analyses-variables
+  variables:
+    SIMPLECOV: "false"
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+
 .exec: &exec
+  <<: *static-analyses-variables
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
 
-teaspoon: *exec
 rubocop: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
 rake flog: *exec
 rake flay: *exec
-rake db:migrate:reset: *exec
 license_finder: *exec
+rake downtime_check: *exec
+
+rake db:migrate:reset:
+  stage: test
+  <<: *use-db
+  script:
+    - rake db:migrate:reset
+
+teaspoon:
+  stage: test
+  <<: *use-db
+  script:
+    - teaspoon
 
 bundler:audit:
   stage: test
+  <<: *static-analyses-variables
   only:
     - master
   script:

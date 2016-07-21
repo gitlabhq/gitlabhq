@@ -66,6 +66,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+    params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
       :default_projects_limit,
@@ -86,7 +87,10 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :default_project_visibility,
       :default_snippet_visibility,
       :default_group_visibility,
-      :restricted_signup_domains_raw,
+      :domain_whitelist_raw,
+      :domain_blacklist_enabled,
+      :domain_blacklist_raw,
+      :domain_blacklist_file,
       :version_check_enabled,
       :admin_notification_email,
       :user_oauth_applications,

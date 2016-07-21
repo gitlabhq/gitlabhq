@@ -17,6 +17,7 @@ class Service < ActiveRecord::Base
 
   after_commit :reset_updated_properties
   after_commit :cache_project_has_external_issue_tracker
+  after_commit :cache_project_has_external_wiki
 
   belongs_to :project, inverse_of: :services
   has_one :service_hook
@@ -25,6 +26,7 @@ class Service < ActiveRecord::Base
 
   scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
+  scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
 
@@ -78,6 +80,18 @@ class Service < ActiveRecord::Base
 
   def test_data(project, user)
     Gitlab::PushDataBuilder.build_sample(project, user)
+  end
+
+  def event_channel_names
+    []
+  end
+
+  def event_field(event)
+    nil
+  end
+
+  def global_fields
+    fields
   end
 
   def supported_events
@@ -212,6 +226,12 @@ class Service < ActiveRecord::Base
   def cache_project_has_external_issue_tracker
     if project && !project.destroyed?
       project.cache_has_external_issue_tracker
+    end
+  end
+
+  def cache_project_has_external_wiki
+    if project && !project.destroyed?
+      project.cache_has_external_wiki
     end
   end
 end

@@ -89,9 +89,9 @@
                     = link_to "#", class: 'btn js-toggle-button import_git' do
                       %i.fa.fa-git
                       %span Repo by URL
-                %div
+                %div{ class: 'import_gitlab_project' }
                   - if gitlab_project_import_enabled?
-                    = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project project-submit' do
+                    = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
                       %i.fa.fa-gitlab
                       %span GitLab export
 
@@ -130,29 +130,29 @@
     $(".modal").hide();
   });
 
-  $('.import_gitlab_project').bind('click', function() {
-    var _href = $("a.import_gitlab_project").attr("href");
-    $(".import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
+  $('.btn_import_gitlab_project').bind('click', function() {
+    var _href = $("a.btn_import_gitlab_project").attr("href");
+    $(".btn_import_gitlab_project").attr("href", _href + '?namespace_id=' + $("#project_namespace_id").val() + '&path=' + $("#project_path").val());
   });
 
-  $('.import_gitlab_project').attr('disabled',true)
-  $('.import_gitlab_project').attr('title', 'Project path required.');
+  $('.btn_import_gitlab_project').attr('disabled',true)
+  $('.import_gitlab_project').attr('title', 'Project path and name required.');
 
   $('.import_gitlab_project').click(function( event ) {
-    if($('.import_gitlab_project').attr('disabled')) {
+    if($('.btn_import_gitlab_project').attr('disabled')) {
       event.preventDefault();
-      new Flash("Please enter a path for the project to be imported to.");
+      new Flash("Please enter path and name for the project to be imported to.");
     }
   });
 
   $('#project_path').keyup(function(){
     if($(this).val().length !=0) {
-      $('.import_gitlab_project').attr('disabled', false);
+      $('.btn_import_gitlab_project').attr('disabled', false);
       $('.import_gitlab_project').attr('title','');
       $(".flash-container").html("")
     } else {
-      $('.import_gitlab_project').attr('disabled',true);
-      $('.import_gitlab_project').attr('title', 'Project path required.');
+      $('.btn_import_gitlab_project').attr('disabled',true);
+      $('.import_gitlab_project').attr('title', 'Project path and name required.');
     }
   });
 

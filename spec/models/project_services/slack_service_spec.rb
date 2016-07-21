@@ -124,6 +124,7 @@ describe SlackService, models: true do
        and_return(
          double(:slack_service).as_null_object
        )
+
       slack.execute(push_sample_data)
     end
 
@@ -135,6 +136,76 @@ describe SlackService, models: true do
           double(:slack_service).as_null_object
         )
       slack.execute(push_sample_data)
+    end
+
+    context "event channels" do
+      it "uses the right channel for push event" do
+        slack.update_attributes(push_channel: "random")
+
+        expect(Slack::Notifier).to receive(:new).
+         with(webhook_url, channel: "random").
+         and_return(
+           double(:slack_service).as_null_object
+         )
+
+        slack.execute(push_sample_data)
+      end
+
+      it "uses the right channel for merge request event" do
+        slack.update_attributes(merge_request_channel: "random")
+
+        expect(Slack::Notifier).to receive(:new).
+         with(webhook_url, channel: "random").
+         and_return(
+           double(:slack_service).as_null_object
+         )
+
+        slack.execute(@merge_sample_data)
+      end
+
+      it "uses the right channel for issue event" do
+        slack.update_attributes(issue_channel: "random")
+
+        expect(Slack::Notifier).to receive(:new).
+         with(webhook_url, channel: "random").
+         and_return(
+           double(:slack_service).as_null_object
+         )
+
+        slack.execute(@issues_sample_data)
+      end
+
+      it "uses the right channel for wiki event" do
+        slack.update_attributes(wiki_page_channel: "random")
+
+        expect(Slack::Notifier).to receive(:new).
+         with(webhook_url, channel: "random").
+         and_return(
+           double(:slack_service).as_null_object
+         )
+
+        slack.execute(@wiki_page_sample_data)
+      end
+
+      context "note event" do
+        let(:issue_note) do
+          create(:note_on_issue, project: project, note: "issue note")
+        end
+
+        it "uses the right channel" do
+          slack.update_attributes(note_channel: "random")
+
+          note_data = Gitlab::NoteDataBuilder.build(issue_note, user)
+
+          expect(Slack::Notifier).to receive(:new).
+           with(webhook_url, channel: "random").
+           and_return(
+             double(:slack_service).as_null_object
+           )
+
+          slack.execute(note_data)
+        end
+      end
     end
   end
 

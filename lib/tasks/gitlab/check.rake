@@ -785,7 +785,7 @@ namespace :gitlab do
       servers.each do |server|
         puts "Server: #{server}"
         Gitlab::LDAP::Adapter.open(server) do |adapter|
-          users = adapter.users(adapter.config.uid, '*', 100)
+          users = adapter.users(adapter.config.uid, '*', limit)
           users.each do |user|
             puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
           end

@@ -73,8 +73,8 @@ module Gitlab
           diff_refs.complete?
       end
 
-      def to_json
-        JSON.generate(self.to_h)
+      def to_json(opts = nil)
+        JSON.generate(self.to_h, opts)
       end
 
       def type

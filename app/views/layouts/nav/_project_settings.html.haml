@@ -39,10 +39,10 @@
       = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
         %span
           Triggers
-    = nav_link(controller: :badges) do
-      = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
+    = nav_link(controller: :pipelines_settings) do
+      = link_to namespace_project_pipelines_settings_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
         %span
-          Badges
+          CI/CD Pipelines
   = nav_link(controller: :push_rules) do
     = link_to namespace_project_push_rules_path(@project.namespace, @project), title: "Push Rules" do
       %span
