@@ -1,5 +1,6 @@
 module TimeHelper
   def time_interval_in_words(interval_in_seconds)
+    interval_in_seconds = interval_in_seconds.to_i
     minutes = interval_in_seconds / 60
     seconds = interval_in_seconds - minutes * 60
 
