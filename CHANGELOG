@@ -89,6 +89,7 @@ v 8.10.0 (unreleased)
   - Allow expanding and collapsing files in diff view (!4990)
   - Collapse large diffs by default (!4990)
   - Fix mentioned users list on diff notes
+  - Add support for inline videos in GitLab Flavored Markdown. !5215 (original implementation by Eric Hayes)
   - Fix creation of deployment on build that is retried, redeployed or rollback
   - Don't parse Rinku returned value to DocFragment when it didn't change the original html string.
   - Check for conflicts with existing Project's wiki path when creating a new project.
