@@ -537,12 +537,12 @@ The above script will:
 >**Note:**
 Introduced in GitLab 8.10.
 
-Manual actions are special type of jobs that are not executed automatically in pipeline.
-They need to be explicitly started by the user.
-Manual actions can be started from pipelines, builds, environments and deployments views.
-You can execute the same manual action multiple times.
+Manual actions are a special type of job that are not executed automatically;
+they need to be explicitly started by a user. Manual actions can be started
+from pipeline, build, environment, and deployment views. You can execute the
+same manual action multiple times.
 
-Example usage of manual actions is deployment, ex. promote a staging environment to production.
+An example usage of manual actions is deployment to production.
 
 ### environment
 
