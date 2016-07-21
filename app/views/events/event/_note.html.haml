@@ -1,14 +1,9 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label
-    = event.action_name
-    = event_note_title_html(event)
-    at
+  = event.action_name
+  = event_note_title_html(event)
 
-  - if event.project
-    = link_to_project event.project
-  - else
-    = event.project_name
+  = render "events/event_scope", event: event
 
 .event-body
   .event-note
