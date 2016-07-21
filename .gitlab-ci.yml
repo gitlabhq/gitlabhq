@@ -63,20 +63,6 @@ update-knapsack:
   only:
     - master
 
-update-coverage:
-  stage: post-test
-  services: []
-  variables:
-    USE_DB: "false"
-    USE_BUNDLE_INSTALL: "true"
-  script:
-    - bundle exec scripts/merge-simplecov
-  artifacts:
-    expire_in: 31d
-    paths:
-    - coverage/index.html
-    - coverage/assets/
-
 # Execute all testing suites
 
 .use-db: &use-db
@@ -246,6 +232,21 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+coverage:
+  stage: post-test
+  services: []
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+  script:
+    - bundle exec scripts/merge-simplecov
+  artifacts:
+    expire_in: 31d
+    paths:
+    - coverage/index.html
+    - coverage/assets/
+
+
 # Notify slack in the end
 
 notify:slack:
@@ -258,3 +259,17 @@ notify:slack:
     - tags@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
     - tags@gitlab-org/gitlab-ee
+
+pages:
+  before_script: []
+  services: []
+  variables: {}
+  stage: pages
+  dependencies:
+    - coverage
+  script:
+    - mkdir -p public/coverage-ruby
+    - mv coverage public/coverage-ruby
+  artifacts:
+    paths:
+      - public
