@@ -92,8 +92,8 @@ feature 'Environments', feature: true do
         expect(page).to have_link(deployment.short_sha)
       end
 
-      scenario 'does not show a retry button for deployment without build' do
-        expect(page).not_to have_link('Retry')
+      scenario 'does not show a re-deploy button for deployment without build' do
+        expect(page).not_to have_link('Re-deploy')
       end
 
       context 'with build' do
@@ -105,8 +105,8 @@ feature 'Environments', feature: true do
           expect(page).to have_link("#{build.name} (##{build.id})")
         end
 
-        scenario 'does show retry button' do
-          expect(page).to have_link('Retry')
+        scenario 'does show re-deploy button' do
+          expect(page).to have_link('Re-deploy')
         end
 
         context 'with manual action' do
