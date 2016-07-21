@@ -77,9 +77,8 @@ module Gitlab
       end
 
       def version
-        if File.readable?(File.join(Rails.root, VERSION_FILE))
-          File.read(File.join(Rails.root, VERSION_FILE))
-        end
+        path = Rails.root.join(VERSION_FILE)
+        path.readable? ? path.read.chomp : 'unknown'
       end
 
       protected

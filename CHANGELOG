@@ -5,6 +5,7 @@ v 8.11.0 (unreleased)
   - Limit git rev-list output count to one in forced push check
   - Retrieve rendered HTML from cache in one request
   - Load project invited groups and members eagerly in ProjectTeam#fetch_members
+  - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
@@ -164,7 +165,6 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
-  - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska)
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
