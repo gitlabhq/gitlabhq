@@ -5,7 +5,9 @@ describe Ci::Build, models: true do
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
+                         sha: project.commit.id,
+                         ref: project.default_branch,
+                         status: 'success')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -720,7 +722,7 @@ describe Ci::Build, models: true do
 
       describe '#erasable?' do
         subject { build.erasable? }
-        it { is_expected.to eq true }
+        it { is_expected.to be_truthy }
       end
 
       describe '#erased?' do
@@ -728,7 +730,7 @@ describe Ci::Build, models: true do
         subject { build.erased? }
 
         context 'build has not been erased' do
-          it { is_expected.to be false }
+          it { is_expected.to be_falsey }
         end
 
         context 'build has been erased' do
@@ -736,12 +738,13 @@ describe Ci::Build, models: true do
             build.erase
           end
 
-          it { is_expected.to be true }
+          it { is_expected.to be_truthy }
         end
       end
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
+
         before do
           build.remove_artifacts_metadata!
         end
@@ -763,19 +766,19 @@ describe Ci::Build, models: true do
 
   describe '#retryable?' do
     context 'when build is running' do
-      before { build.run! }
-
-      it 'should return false' do
-        expect(build.retryable?).to be false
+      before do
+        build.run!
       end
+
+      it { expect(build).not_to be_retryable }
     end
 
     context 'when build is finished' do
-      before { build.success! }
-
-      it 'should return true' do
-        expect(build.retryable?).to be true
+      before do
+        build.success!
       end
+
+      it { expect(build).to be_retryable }
     end
   end
 

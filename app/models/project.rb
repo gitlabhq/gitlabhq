@@ -429,6 +429,17 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  # ref can't be HEAD, can only be branch/tag name or SHA
+  def latest_successful_builds_for(ref = default_branch)
+    pipeline = pipelines.latest_successful_for(ref).to_sql
+    join_sql = "INNER JOIN (#{pipeline}) pipelines" +
+               " ON pipelines.id = #{Ci::Build.quoted_table_name}.commit_id"
+    builds.joins(join_sql).latest.with_artifacts
+    # TODO: Whenever we dropped support for MySQL, we could change to:
+    # pipeline = pipelines.latest_successful_for(ref)
+    # builds.where(pipeline: pipeline).latest.with_artifacts
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha
