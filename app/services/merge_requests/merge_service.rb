@@ -63,7 +63,7 @@ module MergeRequests
     end
 
     def branch_deletion_user
-      @merge_request.force_remove_source_branch? ? @merge_request.author : current_user
+      @merge_request.remove_source_branch? ? @merge_request.author : current_user
     end
 
     def remove_source_branch?

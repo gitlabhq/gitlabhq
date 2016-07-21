@@ -68,6 +68,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       expect(page).to have_link "Remove Source Branch When Merged"
 
       click_link "Remove Source Branch When Merged"
+
       expect(page).to have_content "The source branch will be removed"
     end
   end

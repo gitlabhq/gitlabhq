@@ -218,8 +218,8 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
-      expose :should_remove_source_branch?, as: :should_remove_source_branch
-      expose :force_remove_source_branch?, as: :force_remove_source_branch
+      expose(:should_remove_source_branch?) { |mr| mr.remove_source_branch }
+      expose(:force_remove_source_branch?) { |mr| mr.remove_source_branch }
     end
 
     class MergeRequestChanges < MergeRequest

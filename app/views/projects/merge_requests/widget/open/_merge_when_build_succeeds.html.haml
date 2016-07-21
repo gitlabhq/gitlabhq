@@ -16,7 +16,7 @@
   - if remove_source_branch_button || user_can_cancel_automatic_merge
     .clearfix.prepend-top-10
       - if remove_source_branch_button
-        = link_to merge_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, merge_when_build_succeeds: true, should_remove_source_branch: true, sha: @merge_request.diff_head_sha), remote: true, method: :post, class: "btn btn-grouped btn-primary btn-sm remove_source_branch" do
+        = link_to merge_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, merge_when_build_succeeds: true, remove_source_branch: true, sha: @merge_request.diff_head_sha), remote: true, method: :post, class: "btn btn-grouped btn-primary btn-sm remove_source_branch" do
           = icon('times')
           Remove Source Branch When Merged
 

@@ -18,6 +18,12 @@ module API
 
           render_api_error!(errors, 400)
         end
+
+        def remove_source_branch?
+          parse_boolean(params[:should_remove_source_branch]) ||
+          parse_boolean(params[:force_remove_source_branch]) ||
+          parse_boolean(params[:remove_source_branch])
+        end
       end
 
       # List merge requests
@@ -63,15 +69,16 @@ module API
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project - this will be the source of the merge request
-      #   source_branch (required) - The source branch
-      #   target_branch (required) - The target branch
-      #   target_project_id        - The target project of the merge request defaults to the :id of the project
-      #   assignee_id              - Assignee user ID
-      #   title (required)         - Title of MR
-      #   description              - Description of MR
-      #   labels (optional)        - Labels for MR as a comma-separated list
-      #   milestone_id (optional)   - Milestone ID
+      #   id (required)                   - The ID of a project - this will be the source of the merge request
+      #   source_branch (required)        - The source branch
+      #   target_branch (required)        - The target branch
+      #   target_project_id               - The target project of the merge request defaults to the :id of the project
+      #   assignee_id                     - Assignee user ID
+      #   title (required)                - Title of MR
+      #   description(optional)           - Description of MR
+      #   labels (optional)               - Labels for MR as a comma-separated list
+      #   milestone_id (optional)         - Milestone ID
+      #   remove_source_branch (optional) - Should the source branch be deleted if the MR is merged?
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -79,7 +86,7 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id, :remove_source_branch]
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -237,10 +244,8 @@ module API
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
           end
 
-          merge_params = {
-            commit_message: params[:merge_commit_message],
-            should_remove_source_branch: params[:should_remove_source_branch]
-          }
+          merge_params = { commit_message: params[:merge_commit_message] }
+          merge_request.remove_source_branch = remove_source_branch?
 
           if to_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
             ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).

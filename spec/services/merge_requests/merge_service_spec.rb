@@ -56,7 +56,7 @@ describe MergeRequests::MergeService, services: true do
       context 'when another merge request has the same source branch' do
         it 'removes the source branch' do
           create(:merge_request, source_project: merge_request.source_project,
-                  target_project: merge_request.target_project, target_branch: 'mepmep')
+                                 target_project: merge_request.target_project, target_branch: 'mepmep')
 
           expect(DeleteBranchService).not_to receive(:new)
 

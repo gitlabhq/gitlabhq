@@ -9,13 +9,11 @@ module MergeRequests
 
       filter_params
       label_params = params.delete(:label_ids)
-      force_remove_source_branch = params.delete(:force_remove_source_branch)
 
       merge_request = MergeRequest.new(params)
       merge_request.source_project = source_project
       merge_request.target_project ||= source_project
       merge_request.author = current_user
-      merge_request.merge_params['force_remove_source_branch'] = force_remove_source_branch
 
       if merge_request.save
         merge_request.update_attributes(label_ids: label_params)
