@@ -29,8 +29,17 @@
   }
 }
 
+.pipeline-holder {
+  width: 100%;
+  overflow: auto;
+}
+
 .table.builds {
   min-width: 1200px;
+
+  &.pipeline {
+    min-width: 650px;
+  }
 
   tr {
     th {
