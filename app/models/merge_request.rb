@@ -387,19 +387,8 @@ class MergeRequest < ActiveRecord::Base
     !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.abilities.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
-  end
-
-  def should_remove_source_branch?
-    merge_params['should_remove_source_branch'].present?
-  end
-
-  def force_remove_source_branch?
-    merge_params['force_remove_source_branch'].present?
-  end
-
-  def remove_source_branch?
-    should_remove_source_branch? || force_remove_source_branch?
+      diff_head_commit == source_branch_head &&
+      !same_source_branch_merge_requests?
   end
 
   def mr_and_commit_notes
@@ -532,11 +521,7 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-    if merge_params
-      merge_params.delete('should_remove_source_branch')
-      merge_params.delete('commit_message')
-    end
-
+    self.merge_params = nil
     self.save
   end
 

@@ -632,6 +632,7 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.string   "in_progress_merge_commit_sha"
+    t.boolean  "remove_source_branch",         default: true,  null: false
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

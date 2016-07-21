@@ -13,7 +13,7 @@ describe MergeRequests::CreateService, services: true do
           description: 'please fix',
           source_branch: 'feature',
           target_branch: 'master',
-          force_remove_source_branch: '1'
+          remove_source_branch: true
         }
       end
 
@@ -30,7 +30,7 @@ describe MergeRequests::CreateService, services: true do
       it { expect(@merge_request).to be_valid }
       it { expect(@merge_request.title).to eq('Awesome merge_request') }
       it { expect(@merge_request.assignee).to be_nil }
-      it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
+      it { expect(@merge_request.remove_source_branch).to be true }
 
       it 'executes hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)

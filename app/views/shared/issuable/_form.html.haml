@@ -124,8 +124,8 @@
     .form-group
       .col-sm-10.col-sm-offset-2
         .checkbox
-          = label_tag 'merge_request[force_remove_source_branch]' do
-            = check_box_tag 'merge_request[force_remove_source_branch]', '1', @merge_request.force_remove_source_branch?
+          = f.label :remove_source_branch do
+            = f.check_box :remove_source_branch
             Remove source branch when merge request is accepted.
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)

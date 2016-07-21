@@ -4,7 +4,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   let(:user) { create(:user) }
 
   let(:project)       { create(:project, :public) }
-  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
+  let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user) }
 
   before do
     project.team << [user, :master]
@@ -42,15 +42,16 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   end
 
   context 'When it is enabled' do
-    let(:merge_request) do
-      create(:merge_request_with_diffs, :simple,  source_project: project, author: user,
-                                                  merge_user: user, title: "MepMep", merge_when_build_succeeds: true)
-    end
-
     let!(:pipeline) { create(:ci_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch) }
     let!(:ci_build) { create(:ci_build, pipeline: pipeline) }
 
     before do
+      # Do not create a new MR here in this scope, this will yield a second MR with the same source branch
+      merge_request.remove_source_branch = false
+      merge_request.merge_when_build_succeeds = true
+      merge_request.merge_user = user
+      merge_request.save
+
       login_as user
       visit_merge_request(merge_request)
     end
@@ -68,6 +69,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       expect(page).to have_link "Remove Source Branch When Merged"
 
       click_link "Remove Source Branch When Merged"
+
       expect(page).to have_content "The source branch will be removed"
     end
   end

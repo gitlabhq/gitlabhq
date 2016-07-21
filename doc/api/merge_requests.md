@@ -1,5 +1,7 @@
 # Merge requests
 
+Merge requests provide a way to contribute your work into the specified branch so your changes can be combined with others.
+
 ## List merge requests
 
 Get all merge requests for this project.
@@ -15,11 +17,17 @@ GET /projects/:id/merge_requests?iid=42
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `iid` (optional) - Return the request having the given `iid`
-- `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
-- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at`
-- `sort` (optional) - Return requests sorted in `asc` or `desc` order. Default is `desc`
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `iid` | integer | no | Return the MRs having the given `iid` |
+| `state` | string | no | Return `all` MRs or just those that are `merged`, `opened` or `closed` |
+| `order_by` | string | no | Return MRs ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort` | string | no | Return MRs sorted in `asc` or `desc` order. Default is `desc` |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/
+```
 
 ```json
 [
@@ -70,12 +78,12 @@ Parameters:
     "subscribed" : false,
     "user_notes_count": 1,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": true
   }
 ]
 ```
 
-## Get single MR
+## Get a single Merge Request
 
 Shows information about a single merge request.
 
@@ -85,8 +93,14 @@ GET /projects/:id/merge_requests/:merge_request_id
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1
+```
 
 ```json
 {
@@ -136,7 +150,7 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": true
 }
 ```
 
@@ -150,9 +164,14 @@ GET /projects/:id/merge_requests/:merge_request_id/commits
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
 
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1/commits
+```
 
 ```json
 [
@@ -187,8 +206,14 @@ GET /projects/:id/merge_requests/:merge_request_id/changes
 
 Parameters:
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/21/merge_requests/1/changes
+```
 
 ```json
 {
@@ -238,7 +263,7 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false,
+  "force_remove_source_branch": true,
   "changes": [
     {
     "old_path": "VERSION",
@@ -257,21 +282,29 @@ Parameters:
 ## Create MR
 
 Creates a new merge request.
+
 ```
 POST /projects/:id/merge_requests
 ```
 
 Parameters:
 
-- `id` (required)                - The ID of a project
-- `source_branch` (required)     - The source branch
-- `target_branch` (required)     - The target branch
-- `assignee_id` (optional)       - Assignee user ID
-- `title` (required)             - Title of MR
-- `description` (optional)       - Description of MR
-- `target_project_id` (optional) - The target project (numeric id)
-- `labels` (optional)            - Labels for MR as a comma-separated list
-- `milestone_id` (optional)      - Milestone ID
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `source_branch` | string | yes | The source branch |
+| `target_branch` | string | yes | The target branch |
+| `assignee_id` | integer | no | Assignee user ID |
+| `title` | string | yes |  Title of the new MR |
+| `description` | string | no |  Description of MR |
+| `target_project_id` | integer | no | The target project |
+| `labels` | string | no | Labels for MR as a comma-separated list |
+| `milestone_id` | string | no | Milestone ID |
+| `remove_source_branch` | boolean | no | Remove the source branch when the MR is merged |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests?source_branch=test1&target_branch=master&title=test1
+```
 
 ```json
 {
@@ -338,15 +371,22 @@ PUT /projects/:id/merge_requests/:merge_request_id
 
 Parameters:
 
-- `id` (required)               - The ID of a project
-- `merge_request_id` (required) - ID of MR
-- `target_branch`               - The target branch
-- `assignee_id`                 - Assignee user ID
-- `title`                       - Title of MR
-- `description`                 - Description of MR
-- `state_event`                 - New state (close|reopen|merge)
-- `labels` (optional)           - Labels for MR as a comma-separated list
-- `milestone_id` (optional)     - Milestone ID
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | ID of MR |
+| `target_branch` | string | no | The target branch |
+| `assignee_id` | integer | no | Assignee user ID |
+| `title` | string | no |  Title of the new MR |
+| `description` | string | no |  Description of MR |
+| `target_project_id` | integer | no | The target project |
+| `labels` | string | no | Labels for MR as a comma-separated list |
+| `milestone_id` | string | no | Milestone ID |
+| `remove_source_branch` | boolean | no | Remove the source branch when the MR is merged |
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1&title=test11
+```
 
 ```json
 {
@@ -354,7 +394,7 @@ Parameters:
   "iid": 1,
   "target_branch": "master",
   "project_id": 3,
-  "title": "test1",
+  "title": "test11",
   "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
@@ -395,7 +435,7 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": true
 }
 ```
 
@@ -441,12 +481,18 @@ PUT /projects/:id/merge_requests/:merge_request_id/merge
 
 Parameters:
 
-- `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
-- `merge_commit_message` (optional)         - Custom merge commit message
-- `should_remove_source_branch` (optional)  - if `true` removes the source branch
-- `merge_when_build_succeeds` (optional)    - if `true` the MR is merged when the build succeeds
-- `sha` (optional)                          - if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | ID of MR |
+| `merge_commit_message` | string | no | Custom merge commit message |
+| `remove_source_branch` | boolean | no | if `true` removes the source branch |
+| `merge_when_build_succeeds` | boolean | no | if `true` the MR is merged when the build succeeds |
+| `sha` | string | no | if present, then this SHA must match the HEAD of the source branch, otherwise the merge will fail |
+
+```bash
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1/merge
+```
 
 ```json
 {
@@ -496,7 +542,7 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": true
 }
 ```
 
@@ -509,13 +555,22 @@ If you don't have permissions to accept this merge request - you'll get a 401
 If the merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
 
 In case the merge request is not set to be merged when the build succeeds, you'll also get a 406 error.
+
 ```
 PUT /projects/:id/merge_requests/:merge_request_id/cancel_merge_when_build_succeeds
 ```
+
 Parameters:
 
-- `id` (required)                           - The ID of a project
-- `merge_request_id` (required)             - ID of MR
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of a project |
+| `merge_request_id` | integer | yes | ID of MR |
+
+
+```bash
+curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1/cancel_merge_when_build_succeeds
+```
 
 ```json
 {
@@ -565,7 +620,7 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": true
 }
 ```
 
@@ -886,7 +941,7 @@ Example response:
     "subscribed": true,
     "user_notes_count": 7,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": true
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
