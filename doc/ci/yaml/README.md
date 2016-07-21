@@ -485,7 +485,8 @@ failure.
 1. `on_failure` - execute build only when at least one build from prior stages
     fails.
 1. `always` - execute build regardless of the status of builds from prior stages.
-1. `manual` - execute build manually.
+1. `manual` - execute build manually (added in GitLab 8.10). Read about
+    [manual actions](#manual-actions) below.
 
 For example:
 
@@ -528,9 +529,10 @@ cleanup_job:
 
 The above script will:
 
-1. Execute `cleanup_build_job` only when `build_job` fails
-2. Always execute `cleanup_job` as the last step in pipeline
-3. Allow you to manually execute `deploy_job` from GitLab
+1. Execute `cleanup_build_job` only when `build_job` fails.
+2. Always execute `cleanup_job` as the last step in pipeline regardless of
+   success or failure.
+3. Allow you to manually execute `deploy_job` from GitLab's UI.
 
 #### Manual actions
 
