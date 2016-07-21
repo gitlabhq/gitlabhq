@@ -51,19 +51,22 @@ describe 'projects/builds/show' do
   end
 
   describe 'shows trigger variables in sidebar' do
-    let(:trigger) { create(:ci_trigger, project: project) }
-    let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+    let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline) }
 
     before do
       build.trigger_request = trigger_request
+      render
     end
 
     it 'shows trigger variables in separate lines' do
-      trigger_request.update_attributes(variables: { TRIGGER_KEY: 'TRIGGER_VALUE', TRIGGER_KEY_1: 'TRIGGER_VALUE_1' })
-      render
-
-      expect(rendered).to have_css('code', text: /\A#{Regexp.escape('TRIGGER_KEY=TRIGGER_VALUE')}\Z/)
-      expect(rendered).to have_css('code', text: /\A#{Regexp.escape('TRIGGER_KEY_1=TRIGGER_VALUE_1')}\Z/)
+      expect(rendered).to have_css('code', text: variable_regexp('TRIGGER_KEY_1','TRIGGER_VALUE_1'))
+      expect(rendered).to have_css('code', text: variable_regexp('TRIGGER_KEY_2', 'TRIGGER_VALUE_2'))
     end
+  end
+
+  private
+
+  def variable_regexp(key, value)
+    /\A#{Regexp.escape("#{key}=#{value}")}\Z/
   end
 end

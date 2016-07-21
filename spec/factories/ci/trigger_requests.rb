@@ -5,7 +5,8 @@ FactoryGirl.define do
 
       variables do
         {
-          TRIGGER_KEY: 'TRIGGER_VALUE'
+          TRIGGER_KEY_1: 'TRIGGER_VALUE_1',
+          TRIGGER_KEY_2: 'TRIGGER_VALUE_2'
         }
       end
     end
