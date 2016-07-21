@@ -458,44 +458,54 @@ describe Project, models: true do
     end
   end
 
-  describe "#cache_has_external_wiki" do
+  describe '#external_wiki' do
     let(:project) { create(:project) }
 
-    it "stores true if there is an external wiki" do
-      services = double(:service, external_wikis: [ExternalWikiService.new])
-      expect(project).to receive(:services).and_return(services)
+    context 'with an active external wiki' do
+      before do
+        create(:service, project: project, type: 'ExternalWikiService', active: true)
+        project.external_wiki
+      end
 
-      expect do
-        project.cache_has_external_wiki
-      end.to change { project.has_external_wiki }.to(true)
+      it 'sets :has_external_wiki as true' do
+        expect(project.has_external_wiki).to be(true)
+      end
+
+      it 'sets :has_external_wiki as false if an external wiki service is destroyed later' do
+        expect(project.has_external_wiki).to be(true)
+
+        project.services.external_wikis.first.destroy
+
+        expect(project.has_external_wiki).to be(false)
+      end
     end
 
-    it "stores false if there is no external wiki" do
-      services = double(:service, external_wikis: [])
-      expect(project).to receive(:services).and_return(services)
+    context 'with an inactive external wiki' do
+      before do
+        create(:service, project: project, type: 'ExternalWikiService', active: false)
+      end
 
-      expect do
-        project.cache_has_external_wiki
-      end.to change { project.has_external_wiki }.to(false)
+      it 'sets :has_external_wiki as false' do
+        expect(project.has_external_wiki).to be(false)
+      end
     end
 
-    it "changes to true if an external wiki service is created later" do
-      expect do
-        project.cache_has_external_wiki
-      end.to change { project.has_external_wiki }.to(false)
+    context 'with no external wiki' do
+      before do
+        project.external_wiki
+      end
 
-      expect do
-        create(:service, type: "ExternalWikiService", project: project)
-      end.to change { project.has_external_wiki }.to(true)
-    end
+      it 'sets :has_external_wiki as false' do
+        expect(project.has_external_wiki).to be(false)
+      end
 
-    it "changes to false if an external wiki service is destroyed later" do
-      service = create(:service, type: "ExternalWikiService", project: project)
-      expect(project.has_external_wiki).to be_truthy
+      it 'sets :has_external_wiki as true if an external wiki service is created later' do
+        expect(project.has_external_wiki).to be(false)
 
-      expect do
-        service.destroy
-      end.to change { project.has_external_wiki }.to(false)
+        create(:service, project: project, type: 'ExternalWikiService', active: true)
+
+        expect(project.has_external_wiki).to be(true)
+      end
     end
   end
 
