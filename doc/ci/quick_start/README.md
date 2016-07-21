@@ -220,11 +220,7 @@ For more information read the
 
 ## Builds badge
 
-You can access a builds badge image using following link:
-
-```
-http://example.gitlab.com/namespace/project/badges/branch/build.svg
-```
+You can generate a build badge suitable for project README files by going to **Settings > CI/CD Pipelines** for your project. It will look something like: ![build:success](img/build.svg)
 
 Awesome! You started using CI in GitLab!
 
