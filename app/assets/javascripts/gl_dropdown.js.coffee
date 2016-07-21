@@ -210,8 +210,21 @@ class GitLabDropdown
         data: =>
           return @fullData
         callback: (data) =>
-          currentIndex = -1
           @parseData data
+
+          unless @filterInput.val() is ''
+            selector = '.dropdown-content li:not(.divider):visible'
+
+            if @dropdown.find('.dropdown-toggle-page').length
+              selector = ".dropdown-page-one #{selector}"
+
+            $(selector, @dropdown)
+              .first()
+              .find('a')
+              .addClass('is-focused')
+
+            currentIndex = 0
+
 
     # Event listeners
 

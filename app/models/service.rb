@@ -26,7 +26,7 @@ class Service < ActiveRecord::Base
 
   scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
-  scope :external_wikis, -> { where(type: 'ExternalWikiService') }
+  scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
 
@@ -80,6 +80,18 @@ class Service < ActiveRecord::Base
 
   def test_data(project, user)
     Gitlab::PushDataBuilder.build_sample(project, user)
+  end
+
+  def event_channel_names
+    []
+  end
+
+  def event_field(event)
+    nil
+  end
+
+  def global_fields
+    fields
   end
 
   def supported_events

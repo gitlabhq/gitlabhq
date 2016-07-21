@@ -12,6 +12,42 @@ describe EmailsOnPushWorker do
   subject { EmailsOnPushWorker.new }
 
   describe "#perform" do
+    context "when push is a new branch" do
+      let(:email) { ActionMailer::Base.deliveries.last }
+
+      before do
+        data_new_branch = data.stringify_keys.merge("before" => Gitlab::Git::BLANK_SHA)
+
+        subject.perform(project.id, recipients, data_new_branch)
+      end
+
+      it "sends a mail with the correct subject" do
+        expect(email.subject).to include("Pushed new branch")
+      end
+
+      it "sends the mail to the correct recipient" do
+        expect(email.to).to eq([user.email])
+      end
+    end
+
+    context "when push is a deleted branch" do
+      let(:email) { ActionMailer::Base.deliveries.last }
+
+      before do
+        data_deleted_branch = data.stringify_keys.merge("after" => Gitlab::Git::BLANK_SHA)
+
+        subject.perform(project.id, recipients, data_deleted_branch)
+      end
+
+      it "sends a mail with the correct subject" do
+        expect(email.subject).to include("Deleted branch")
+      end
+
+      it "sends the mail to the correct recipient" do
+        expect(email.to).to eq([user.email])
+      end
+    end
+
     context "when there are no errors in sending" do
       let(:email) { ActionMailer::Base.deliveries.last }
 

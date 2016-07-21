@@ -732,6 +732,10 @@ Rails.application.routes.draw do
         resources :triggers, only: [:index, :create, :destroy]
 
         resources :pipelines, only: [:index, :new, :create, :show] do
+          collection do
+            resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          end
+
           member do
             post :cancel
             post :retry

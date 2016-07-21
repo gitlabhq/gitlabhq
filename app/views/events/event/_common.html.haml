@@ -1,6 +1,6 @@
 .event-title
   %span.author_name= link_to_author event
-  %span.event_label{class: event.action_name}
+  %span{class: event.action_name}
   - if event.target
     = event.action_name
     %strong
@@ -10,12 +10,7 @@
   - else
     = event_action_name(event)
 
-  = event_preposition(event)
-
-  - if event.project
-    = link_to_project event.project
-  - else
-    = event.project_name
+  = render "events/event_scope", event: event
 
 - if event.target.respond_to?(:title)
   .event-body

@@ -120,6 +120,9 @@ class @Sidebar
       i.show()
 
   sidebarCollapseClicked: (e) ->
+
+    return if $(e.currentTarget).hasClass('dont-change-state')
+
     sidebar = e.data
     e.preventDefault()
     $block = $(@).closest('.block')

@@ -54,23 +54,60 @@ describe ApplicationSetting, models: true do
 
   context 'restricted signup domains' do
     it 'set single domain' do
-      setting.restricted_signup_domains_raw = 'example.com'
-      expect(setting.restricted_signup_domains).to eq(['example.com'])
+      setting.domain_whitelist_raw = 'example.com'
+      expect(setting.domain_whitelist).to eq(['example.com'])
     end
 
     it 'set multiple domains with spaces' do
-      setting.restricted_signup_domains_raw = 'example.com *.example.com'
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = 'example.com *.example.com'
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
     end
 
     it 'set multiple domains with newlines and a space' do
-      setting.restricted_signup_domains_raw = "example.com\n *.example.com"
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = "example.com\n *.example.com"
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
     end
 
     it 'set multiple domains with commas' do
-      setting.restricted_signup_domains_raw = "example.com, *.example.com"
-      expect(setting.restricted_signup_domains).to eq(['example.com', '*.example.com'])
+      setting.domain_whitelist_raw = "example.com, *.example.com"
+      expect(setting.domain_whitelist).to eq(['example.com', '*.example.com'])
+    end
+  end
+
+  context 'blacklisted signup domains' do
+    it 'set single domain' do
+      setting.domain_blacklist_raw = 'example.com'
+      expect(setting.domain_blacklist).to contain_exactly('example.com')
+    end
+
+    it 'set multiple domains with spaces' do
+      setting.domain_blacklist_raw = 'example.com *.example.com'
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
+    end
+
+    it 'set multiple domains with newlines and a space' do
+      setting.domain_blacklist_raw = "example.com\n *.example.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
+    end
+
+    it 'set multiple domains with commas' do
+      setting.domain_blacklist_raw = "example.com, *.example.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
+    end
+
+    it 'set multiple domains with semicolon' do
+      setting.domain_blacklist_raw = "example.com; *.example.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com')
+    end
+
+    it 'set multiple domains with mixture of everything' do
+      setting.domain_blacklist_raw = "example.com; *.example.com\n test.com\sblock.com   yes.com"
+      expect(setting.domain_blacklist).to contain_exactly('example.com', '*.example.com', 'test.com', 'block.com', 'yes.com')
+    end
+
+    it 'set multiple domain with file' do
+      setting.domain_blacklist_file = File.open(Rails.root.join('spec/fixtures/', 'domain_blacklist.txt'))
+      expect(setting.domain_blacklist).to contain_exactly('example.com', 'test.com', 'foo.bar')
     end
   end
 end

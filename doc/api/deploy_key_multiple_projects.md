@@ -24,6 +24,6 @@ With those IDs, add the same deploy key to all:
 ```
 for project_id in 321 456 987; do
     curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" \
-    --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' https://gitlab.example.com/api/v3/projects/${project_id}/keys
+    --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' https://gitlab.example.com/api/v3/projects/${project_id}/deploy_keys
 done
 ```

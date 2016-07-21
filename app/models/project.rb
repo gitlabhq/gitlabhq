@@ -429,6 +429,17 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  # ref can't be HEAD, can only be branch/tag name or SHA
+  def latest_successful_builds_for(ref = default_branch)
+    pipeline = pipelines.latest_successful_for(ref).to_sql
+    join_sql = "INNER JOIN (#{pipeline}) pipelines" +
+               " ON pipelines.id = #{Ci::Build.quoted_table_name}.commit_id"
+    builds.joins(join_sql).latest.with_artifacts
+    # TODO: Whenever we dropped support for MySQL, we could change to:
+    # pipeline = pipelines.latest_successful_for(ref)
+    # builds.where(pipeline: pipeline).latest.with_artifacts
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha
@@ -1179,5 +1190,75 @@ class Project < ActiveRecord::Base
 
   def ensure_dir_exist
     gitlab_shell.add_namespace(repository_storage_path, namespace.path)
+  end
+
+  def predefined_variables
+    [
+      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
+      { key: 'CI_PROJECT_NAME', value: path, public: true },
+      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_NAMESPACE', value: namespace.path, public: true },
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+    ]
+  end
+
+  def container_registry_variables
+    return [] unless Gitlab.config.registry.enabled
+
+    variables = [
+      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
+    ]
+
+    if container_registry_enabled?
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+    end
+
+    variables
+  end
+
+  def secret_variables
+    variables.map do |variable|
+      { key: variable.key, value: variable.value, public: false }
+    end
+  end
+
+  # Checks if `user` is authorized for this project, with at least the
+  # `min_access_level` (if given).
+  #
+  # If you change the logic of this method, please also update `User#authorized_projects`
+  def authorized_for_user?(user, min_access_level = nil)
+    return false unless user
+
+    return true if personal? && namespace_id == user.namespace_id
+
+    authorized_for_user_by_group?(user, min_access_level) ||
+      authorized_for_user_by_members?(user, min_access_level) ||
+      authorized_for_user_by_shared_projects?(user, min_access_level)
+  end
+
+  private
+
+  def authorized_for_user_by_group?(user, min_access_level)
+    member = user.group_members.find_by(source_id: group)
+
+    member && (!min_access_level || member.access_level >= min_access_level)
+  end
+
+  def authorized_for_user_by_members?(user, min_access_level)
+    member = members.find_by(user_id: user)
+
+    member && (!min_access_level || member.access_level >= min_access_level)
+  end
+
+  def authorized_for_user_by_shared_projects?(user, min_access_level)
+    shared_projects = user.group_members.joins(group: :shared_projects).
+      where(project_group_links: { project_id: self })
+
+    if min_access_level
+      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      shared_projects = shared_projects.where(members: members_scope)
+    end
+
+    shared_projects.any?
   end
 end

@@ -15,8 +15,11 @@ module CiStatusHelper
   end
 
   def ci_label_for_status(status)
-    if status == 'success'
+    case status
+    when 'success'
       'passed'
+    when 'success_with_warnings'
+      'passed with warnings'
     else
       status
     end

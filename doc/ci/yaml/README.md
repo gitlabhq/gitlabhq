@@ -485,7 +485,8 @@ failure.
 1. `on_failure` - execute build only when at least one build from prior stages
     fails.
 1. `always` - execute build regardless of the status of builds from prior stages.
-1. `manual` - execute build manually.
+1. `manual` - execute build manually (added in GitLab 8.10). Read about
+    [manual actions](#manual-actions) below.
 
 For example:
 
@@ -528,21 +529,22 @@ cleanup_job:
 
 The above script will:
 
-1. Execute `cleanup_build_job` only when `build_job` fails
-2. Always execute `cleanup_job` as the last step in pipeline
-3. Allow you to manually execute `deploy_job` from GitLab
+1. Execute `cleanup_build_job` only when `build_job` fails.
+2. Always execute `cleanup_job` as the last step in pipeline regardless of
+   success or failure.
+3. Allow you to manually execute `deploy_job` from GitLab's UI.
 
 #### Manual actions
 
 >**Note:**
 Introduced in GitLab 8.10.
 
-Manual actions are special type of jobs that are not executed automatically in pipeline.
-They need to be explicitly started by the user. 
-Manual actions can be started from pipelines, builds, environments and deployments views.
-You can execute the same manual action multiple times.
+Manual actions are a special type of job that are not executed automatically;
+they need to be explicitly started by a user. Manual actions can be started
+from pipeline, build, environment, and deployment views. You can execute the
+same manual action multiple times.
 
-Example usage of manual actions is deployment, ex. promote a staging environment to production.
+An example usage of manual actions is deployment to production.
 
 ### environment
 
@@ -645,9 +647,10 @@ be available for download in the GitLab UI.
 Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of the created artifacts
-archive. That way, you can have a unique name of every archive which could be
+archive. That way, you can have a unique name for every archive which could be
 useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
+The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
 ---
 
