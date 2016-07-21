@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.10.0 (unreleased)
+  - Add EE license usage ping !557
   - Rename Git Hooks to Push Rules
   - Fix EE keys fingerprint add index migration if came from CE
   - Add todos for MR approvers !547
