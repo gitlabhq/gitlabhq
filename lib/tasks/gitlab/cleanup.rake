@@ -43,6 +43,34 @@ namespace :gitlab do
       end
     end
 
+    desc "GitLab | Cleanup | Delete moved repositories"
+    task moved: :environment  do
+      warn_user_is_not_gitlab
+      remove_flag = ENV['REMOVE']
+
+      Gitlab.config.repositories.storages.each do |name, repo_root|
+        # Look for global repos (legacy, depth 1) and normal repos (depth 2)
+        IO.popen(%W(find #{repo_root.chomp('/')} -mindepth 1 -maxdepth 2 -name *+moved*.git)) do |find|
+          find.each_line do |path|
+            path.chomp!
+            if remove_flag
+              if FileUtils.rm_rf(path)
+                puts "Removed...#{path}".color(:green)
+              else
+                puts "Cannot remove #{path}".color(:red)
+              end
+            else
+              puts "Can be removed: #{path}".color(:green)
+            end
+          end
+        end
+      end
+
+      unless remove_flag
+        puts "To cleanup these repositories run this command with REMOVE=true".color(:yellow)
+      end
+    end
+
     desc "GitLab | Cleanup | Clean repositories"
     task repos: :environment  do
       warn_user_is_not_gitlab
