@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 
-require 'simplecov'
+require_relative '../spec/simplecov_env'
+SimpleCovEnv.configure_profile
 
 module SimpleCov
   module ResultMerger
@@ -25,11 +26,5 @@ module SimpleCov
     end
   end
 end
-
-# Ignore CI environment
-ENV['CI'] = nil
-ENV['CI_BUILD_NAME'] = nil
-
-require_relative '../spec/simplecov_env'
 
 SimpleCov::ResultMerger.merged_result.format!
