@@ -18,5 +18,15 @@ FactoryGirl.define do
 
     factory :closed_issue, traits: [:closed]
     factory :reopened_issue, traits: [:reopened]
+
+    factory :labeled_issue do
+      transient do
+        labels []
+      end
+
+      after(:create) do |issue, evaluator|
+        issue.update_attributes(labels: evaluator.labels)
+      end
+    end
   end
 end
