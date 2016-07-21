@@ -4,7 +4,7 @@
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search labels')
 .dropdown-page-one
   = dropdown_title(title)
-  = dropdown_filter(filter_placeholder, search_id: "label-name")
+  = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if @project && show_footer
     = dropdown_footer do

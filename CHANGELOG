@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - Retrieve rendered HTML from cache in one request
   - Load project invited groups and members eagerly in ProjectTeam#fetch_members
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view' !5368 (Scott Le)
 
 v 8.10.1 (unreleased)
  - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
