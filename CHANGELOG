@@ -82,6 +82,7 @@ v 8.10.0 (unreleased)
   - API: Todos. !3188 (Robert Schilling)
   - API: Expose shared groups for projects and shared projects for groups. !5050 (Robert Schilling)
   - API: Expose `developers_can_push` and `developers_can_merge` for branches. !5208 (Robert Schilling)
+  - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms
