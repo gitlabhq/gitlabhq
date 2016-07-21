@@ -84,6 +84,7 @@ GitLab.GfmAutoComplete =
           @Loading.template
       insertTpl: ':${name}:'
       data: ['loading']
+      startWithSpace: false
       callbacks:
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
@@ -100,6 +101,7 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${username}'
       searchKey: 'search'
       data: ['loading']
+      startWithSpace: false
       callbacks:
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
@@ -126,6 +128,7 @@ GitLab.GfmAutoComplete =
           @Loading.template
       data: ['loading']
       insertTpl: '${atwho-at}${id}'
+      startWithSpace: false
       callbacks:
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
@@ -149,6 +152,7 @@ GitLab.GfmAutoComplete =
           @Loading.template
       insertTpl: '${atwho-at}"${title}"'
       data: ['loading']
+      startWithSpace: false
       callbacks:
         beforeSave: (milestones) ->
           $.map milestones, (m) ->
@@ -169,6 +173,7 @@ GitLab.GfmAutoComplete =
           @Loading.template
       data: ['loading']
       insertTpl: '${atwho-at}${id}'
+      startWithSpace: false
       callbacks:
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
@@ -187,6 +192,7 @@ GitLab.GfmAutoComplete =
       searchKey: 'search'
       displayTpl: @Labels.template
       insertTpl: '${atwho-at}${title}'
+      startWithSpace: false
       callbacks:
         beforeSave: (merges) ->
           sanitizeLabelTitle = (title)->
