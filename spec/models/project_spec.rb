@@ -377,7 +377,7 @@ describe Project, models: true do
   describe '#repository' do
     let(:project) { create(:project) }
 
-    it 'should return valid repo' do
+    it 'returns valid repo' do
       expect(project.repository).to be_kind_of(Repository)
     end
   end
@@ -1152,6 +1152,85 @@ describe Project, models: true do
       before { stub_container_registry_config(enabled: false) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#latest_successful_builds_for' do
+    def create_pipeline(status = 'success')
+      create(:ci_pipeline, project: project,
+                           sha: project.commit.sha,
+                           ref: project.default_branch,
+                           status: status)
+    end
+
+    def create_build(new_pipeline = pipeline, name = 'test')
+      create(:ci_build, :success, :artifacts,
+             pipeline: new_pipeline,
+             status: new_pipeline.status,
+             name: name)
+    end
+
+    let(:project) { create(:project) }
+    let(:pipeline) { create_pipeline }
+
+    context 'with many builds' do
+      it 'gives the latest builds from latest pipeline' do
+        pipeline1 = create_pipeline
+        pipeline2 = create_pipeline
+        build1_p2 = create_build(pipeline2, 'test')
+        create_build(pipeline1, 'test')
+        create_build(pipeline1, 'test2')
+        build2_p2 = create_build(pipeline2, 'test2')
+
+        latest_builds = project.latest_successful_builds_for
+
+        expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
+      end
+    end
+
+    context 'with succeeded pipeline' do
+      let!(:build) { create_build }
+
+      context 'standalone pipeline' do
+        it 'returns builds for ref for default_branch' do
+          builds = project.latest_successful_builds_for
+
+          expect(builds).to contain_exactly(build)
+        end
+
+        it 'returns empty relation if the build cannot be found' do
+          builds = project.latest_successful_builds_for('TAIL')
+
+          expect(builds).to be_kind_of(ActiveRecord::Relation)
+          expect(builds).to be_empty
+        end
+      end
+
+      context 'with some pending pipeline' do
+        before do
+          create_build(create_pipeline('pending'))
+        end
+
+        it 'gives the latest build from latest pipeline' do
+          latest_build = project.latest_successful_builds_for
+
+          expect(latest_build).to contain_exactly(build)
+        end
+      end
+    end
+
+    context 'with pending pipeline' do
+      before do
+        pipeline.update(status: 'pending')
+        create_build(pipeline)
+      end
+
+      it 'returns empty relation' do
+        builds = project.latest_successful_builds_for
+
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
+        expect(builds).to be_empty
+      end
     end
   end
 
