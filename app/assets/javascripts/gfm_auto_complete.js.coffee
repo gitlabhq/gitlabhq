@@ -43,6 +43,17 @@ GitLab.GfmAutoComplete =
         @at
       else
         value
+    matcher: (flag, subtext, should_startWithSpace) ->
+      # escape RegExp
+      flag = flag.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+
+      # À
+      _a = decodeURI("%C3%80")
+      # ÿ
+      _y = decodeURI("%C3%BF")
+      regexp = new RegExp "(?:\\B|\\W|\\s)#{flag}([A-Za-z#{_a}-#{_y}0-9_\'\.\+\-]*)|([^\\x00-\\xff]*)$", 'gi'
+      match = regexp.exec subtext
+      if match then match[2] || match[1] else null
 
   # Add GFM auto-completion to all input fields, that accept GFM input.
   setup: (wrap) ->
@@ -89,6 +100,7 @@ GitLab.GfmAutoComplete =
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
         beforeInsert: @DefaultOptions.beforeInsert
+        matcher: @DefaultOptions.matcher
 
     # Team Members
     @input.atwho
@@ -106,6 +118,7 @@ GitLab.GfmAutoComplete =
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
         beforeInsert: @DefaultOptions.beforeInsert
+        matcher: @DefaultOptions.matcher
         beforeSave: (members) ->
           $.map members, (m) ->
             return m if not m.username?
@@ -133,6 +146,7 @@ GitLab.GfmAutoComplete =
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
         beforeInsert: @DefaultOptions.beforeInsert
+        matcher: @DefaultOptions.matcher
         beforeSave: (issues) ->
           $.map issues, (i) ->
             return i if not i.title?
@@ -154,6 +168,7 @@ GitLab.GfmAutoComplete =
       data: ['loading']
       startWithSpace: false
       callbacks:
+        matcher: @DefaultOptions.matcher
         beforeSave: (milestones) ->
           $.map milestones, (m) ->
             return m if not m.title?
@@ -178,6 +193,7 @@ GitLab.GfmAutoComplete =
         sorter: @DefaultOptions.sorter
         filter: @DefaultOptions.filter
         beforeInsert: @DefaultOptions.beforeInsert
+        matcher: @DefaultOptions.matcher
         beforeSave: (merges) ->
           $.map merges, (m) ->
             return m if not m.title?
@@ -194,6 +210,7 @@ GitLab.GfmAutoComplete =
       insertTpl: '${atwho-at}${title}'
       startWithSpace: false
       callbacks:
+        matcher: @DefaultOptions.matcher
         beforeSave: (merges) ->
           sanitizeLabelTitle = (title)->
             if /[\w\?&]+\s+[\w\?&]+/g.test(title)
