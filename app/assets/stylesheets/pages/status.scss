@@ -49,6 +49,7 @@
       position: relative;
       top: 1px;
       margin: 0 3px;
+      overflow: visible;
     }
   }
 
@@ -72,5 +73,13 @@
   .ci-status-icon-not-found,
   .ci-status-icon-skipped {
     color: $gl-gray;
+  }
+}
+
+.visible-xs-inline {
+  .ci-status-link {
+    position: relative;
+    top: 2px;
+    left: 5px;
   }
 }
