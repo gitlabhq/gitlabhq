@@ -1,5 +1,4 @@
 require 'spec_helper'
-require_relative '../shared/artifacts_context'
 
 describe API::API, api: true do
   include ApiHelpers
@@ -17,9 +16,6 @@ describe API::API, api: true do
     let(:query) { '' }
 
     before do
-      developer
-      build
-
       get api("/projects/#{project.id}/builds?#{query}", api_user)
     end
 
@@ -83,9 +79,9 @@ describe API::API, api: true do
       context 'when user is authorized' do
         context 'when pipeline has builds' do
           before do
-            developer
-            build
+            create(:ci_pipeline, project: project, sha: project.commit.id)
             create(:ci_build, pipeline: pipeline)
+            create(:ci_build)
 
             get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
           end
@@ -99,8 +95,6 @@ describe API::API, api: true do
 
         context 'when pipeline has no builds' do
           before do
-            developer
-
             branch_head = project.commit('feature').id
             get api("/projects/#{project.id}/repository/commits/#{branch_head}/builds", api_user)
           end
@@ -115,7 +109,8 @@ describe API::API, api: true do
 
       context 'when user is not authorized' do
         before do
-          build
+          create(:ci_pipeline, project: project, sha: project.commit.id)
+          create(:ci_build, pipeline: pipeline)
 
           get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", nil)
         end
@@ -130,8 +125,6 @@ describe API::API, api: true do
 
   describe 'GET /projects/:id/builds/:build_id' do
     before do
-      developer
-
       get api("/projects/#{project.id}/builds/#{build.id}", api_user)
     end
 
@@ -153,8 +146,6 @@ describe API::API, api: true do
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
     before do
-      developer
-
       get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
     end
 
@@ -304,9 +295,6 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
     before do
-      developer
-      reporter
-
       post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
     end
 
@@ -340,9 +328,6 @@ describe API::API, api: true do
     let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
     before do
-      developer
-      reporter
-
       post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
     end
 
@@ -375,8 +360,6 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/erase' do
     before do
-      developer
-
       post api("/projects/#{project.id}/builds/#{build.id}/erase", user)
     end
 
@@ -407,8 +390,6 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/builds/:build_id/artifacts/keep' do
     before do
-      developer
-
       post api("/projects/#{project.id}/builds/#{build.id}/artifacts/keep", user)
     end
 
