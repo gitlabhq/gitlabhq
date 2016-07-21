@@ -347,5 +347,5 @@ gem 'paranoia', '~> 2.0'
 gem 'health_check', '~> 2.1.0'
 
 # System information
-gem 'vmstat', '~> 2.1.0'
+gem 'vmstat', '~> 2.1.1'
 gem 'sys-filesystem', '~> 1.1.6'
