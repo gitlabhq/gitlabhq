@@ -286,7 +286,7 @@ Task lists can only be created in descriptions, not in titles. Task item state c
 
 Image tags with a video extension are automatically converted to a video player.
 
-The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, `.ogv`, and `.ogg`.
+The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`.
 
     Here's a sample video:
 
