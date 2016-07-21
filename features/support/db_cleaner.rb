@@ -1,6 +1,6 @@
 require 'database_cleaner'
 
-DatabaseCleaner.strategy = :truncation
+DatabaseCleaner.strategy = :truncation, { except: ['licenses'] }
 
 Spinach.hooks.before_scenario do
   DatabaseCleaner.start
