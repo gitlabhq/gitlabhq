@@ -1,9 +1,20 @@
 require 'spec_helper'
-require_relative '../shared/artifacts_context'
 
 describe Projects::ArtifactsController do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:pipeline) do
+    create(:ci_pipeline,
+            project: project,
+            sha: project.commit.sha,
+            ref: project.default_branch)
+  end
+  let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
   describe 'GET /:project/builds/artifacts/:ref_name/browse?job=name' do
-    include_context 'artifacts from ref and build name'
+    before do
+      project.team << [user, :developer]
+    end
 
     before do
       login_as(user)
@@ -19,33 +30,69 @@ describe Projects::ArtifactsController do
         job: job)
     end
 
-    context '404' do
-      def verify
-        expect(response.status).to eq(404)
+    context 'cannot find the build' do
+      shared_examples 'not found' do
+        it { expect(response).to have_http_status(:not_found) }
       end
 
-      it_behaves_like 'artifacts from ref with 404'
+      context 'has no such ref' do
+        before do
+          get path_from_ref('TAIL', build.name)
+        end
+
+        it_behaves_like 'not found'
+      end
+
+      context 'has no such build' do
+        before do
+          get path_from_ref(pipeline.ref, 'NOBUILD')
+        end
+
+        it_behaves_like 'not found'
+      end
 
       context 'has no path' do
         before do
           get path_from_ref(pipeline.sha, build.name, '')
         end
 
-        it('gives 404') { verify }
+        it_behaves_like 'not found'
       end
     end
 
-    context '302' do
-      def verify
-        path = browse_namespace_project_build_artifacts_path(
-          project.namespace,
-          project,
-          build)
+    context 'found the build and redirect' do
+      shared_examples 'redirect to the build' do
+        it 'redirects' do
+          path = browse_namespace_project_build_artifacts_path(
+            project.namespace,
+            project,
+            build)
 
-        expect(response).to redirect_to(path)
+          expect(response).to redirect_to(path)
+        end
       end
 
-      it_behaves_like 'artifacts from ref successfully'
+      context 'with regular branch' do
+        before do
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get path_from_ref('master')
+        end
+
+        it_behaves_like 'redirect to the build'
+      end
+
+      context 'with branch name containing slash' do
+        before do
+          pipeline.update(ref: 'improve/awesome',
+                          sha: project.commit('improve/awesome').sha)
+
+          get path_from_ref('improve/awesome')
+        end
+
+        it_behaves_like 'redirect to the build'
+      end
     end
   end
 end
