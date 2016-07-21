@@ -75,3 +75,11 @@
     color: $gl-gray;
   }
 }
+
+.visible-xs-inline {
+  .ci-status-link {
+    position: relative;
+    top: 2px;
+    left: 5px;
+  }
+}

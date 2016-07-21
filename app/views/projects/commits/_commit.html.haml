@@ -19,7 +19,8 @@
             &middot;
             = commit.short_id
           - if commit.status
-            = render_commit_status(commit)
+            .visible-xs-inline
+              = render_commit_status(commit)
           - if commit.description?
             %a.text-expander.hidden-xs.js-toggle-button ...
 
