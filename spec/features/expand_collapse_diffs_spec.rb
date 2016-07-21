@@ -3,10 +3,11 @@ require 'spec_helper'
 feature 'Expand and collapse diffs', js: true, feature: true do
   include WaitForAjax
 
+  let(:branch) { 'expand-collapse-diffs' }
+
   before do
     login_as :admin
     project = create(:project)
-    branch = 'expand-collapse-diffs'
 
     # Ensure that undiffable.md is in .gitattributes
     project.repository.copy_gitattributes(branch)
@@ -163,6 +164,46 @@ feature 'Expand and collapse diffs', js: true, feature: true do
         it 'does not make a new HTTP request' do
           expect(evaluate_script('ajaxUris')).not_to include(a_string_matching('small_diff.md'))
         end
+      end
+    end
+  end
+
+  context 'visiting a commit without collapsed diffs' do
+    let(:branch) { 'feature' }
+
+    it 'does not show Expand all button' do
+      expect(page).not_to have_link('Expand all')
+    end
+  end
+
+  context 'visiting a commit with more than safe files' do
+    let(:branch) { 'expand-collapse-files' }
+
+    # safe-files -> 100 | safe-lines -> 5000 | commit-files -> 105
+    it 'does collapsing from the safe number of files to the end on small files' do
+      expect(page).to have_link('Expand all')
+
+      expect(page).to have_selector('.diff-content', count: 105)
+      expect(page).to have_selector('.diff-collapsed', count: 5)
+
+      %w(file-95.txt file-96.txt file-97.txt file-98.txt file-99.txt).each do |filename|
+        expect(find("[data-blob-diff-path*='#{filename}']")).to have_selector('.diff-collapsed')
+      end
+    end
+  end
+
+  context 'visiting a commit with more than safe lines' do
+    let(:branch) { 'expand-collapse-lines' }
+
+    # safe-files -> 100 | safe-lines -> 5000 | commit_files -> 8 (each 1250 lines)
+    it 'does collapsing from the safe number of lines to the end' do
+      expect(page).to have_link('Expand all')
+
+      expect(page).to have_selector('.diff-content', count: 6)
+      expect(page).to have_selector('.diff-collapsed', count: 2)
+
+      %w(file-4.txt file-5.txt).each do |filename|
+        expect(find("[data-blob-diff-path*='#{filename}']")).to have_selector('.diff-collapsed')
       end
     end
   end

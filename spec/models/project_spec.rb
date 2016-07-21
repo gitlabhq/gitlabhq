@@ -458,6 +458,47 @@ describe Project, models: true do
     end
   end
 
+  describe "#cache_has_external_wiki" do
+    let(:project) { create(:project) }
+
+    it "stores true if there is an external wiki" do
+      services = double(:service, external_wikis: [ExternalWikiService.new])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(true)
+    end
+
+    it "stores false if there is no external wiki" do
+      services = double(:service, external_wikis: [])
+      expect(project).to receive(:services).and_return(services)
+
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(false)
+    end
+
+    it "changes to true if an external wiki service is created later" do
+      expect do
+        project.cache_has_external_wiki
+      end.to change { project.has_external_wiki }.to(false)
+
+      expect do
+        create(:service, type: "ExternalWikiService", project: project)
+      end.to change { project.has_external_wiki }.to(true)
+    end
+
+    it "changes to false if an external wiki service is destroyed later" do
+      service = create(:service, type: "ExternalWikiService", project: project)
+      expect(project.has_external_wiki).to be_truthy
+
+      expect do
+        service.destroy
+      end.to change { project.has_external_wiki }.to(false)
+    end
+  end
+
   describe '#open_branches' do
     let(:project) { create(:project) }
 
@@ -1111,6 +1152,85 @@ describe Project, models: true do
       before { stub_container_registry_config(enabled: false) }
 
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#latest_successful_builds_for' do
+    def create_pipeline(status = 'success')
+      create(:ci_pipeline, project: project,
+                           sha: project.commit.sha,
+                           ref: project.default_branch,
+                           status: status)
+    end
+
+    def create_build(new_pipeline = pipeline, name = 'test')
+      create(:ci_build, :success, :artifacts,
+             pipeline: new_pipeline,
+             status: new_pipeline.status,
+             name: name)
+    end
+
+    let(:project) { create(:project) }
+    let(:pipeline) { create_pipeline }
+
+    context 'with many builds' do
+      it 'gives the latest builds from latest pipeline' do
+        pipeline1 = create_pipeline
+        pipeline2 = create_pipeline
+        build1_p2 = create_build(pipeline2, 'test')
+        create_build(pipeline1, 'test')
+        create_build(pipeline1, 'test2')
+        build2_p2 = create_build(pipeline2, 'test2')
+
+        latest_builds = project.latest_successful_builds_for
+
+        expect(latest_builds).to contain_exactly(build2_p2, build1_p2)
+      end
+    end
+
+    context 'with succeeded pipeline' do
+      let!(:build) { create_build }
+
+      context 'standalone pipeline' do
+        it 'returns builds for ref for default_branch' do
+          builds = project.latest_successful_builds_for
+
+          expect(builds).to contain_exactly(build)
+        end
+
+        it 'returns empty relation if the build cannot be found' do
+          builds = project.latest_successful_builds_for('TAIL')
+
+          expect(builds).to be_kind_of(ActiveRecord::Relation)
+          expect(builds).to be_empty
+        end
+      end
+
+      context 'with some pending pipeline' do
+        before do
+          create_build(create_pipeline('pending'))
+        end
+
+        it 'gives the latest build from latest pipeline' do
+          latest_build = project.latest_successful_builds_for
+
+          expect(latest_build).to contain_exactly(build)
+        end
+      end
+    end
+
+    context 'with pending pipeline' do
+      before do
+        pipeline.update(status: 'pending')
+        create_build(pipeline)
+      end
+
+      it 'returns empty relation' do
+        builds = project.latest_successful_builds_for
+
+        expect(builds).to be_kind_of(ActiveRecord::Relation)
+        expect(builds).to be_empty
+      end
     end
   end
 

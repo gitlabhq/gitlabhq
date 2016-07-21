@@ -260,6 +260,70 @@ describe Ci::Pipeline, models: true do
           expect(pipeline.reload.status).to eq('canceled')
         end
       end
+
+      context 'when listing manual actions' do
+        let(:yaml) do
+          {
+            stages: ["build", "test", "staging", "production", "cleanup"],
+            build: {
+              stage: "build",
+              script: "BUILD",
+            },
+            test: {
+              stage: "test",
+              script: "TEST",
+            },
+            staging: {
+              stage: "staging",
+              script: "PUBLISH",
+            },
+            production: {
+              stage: "production",
+              script: "PUBLISH",
+              when: "manual",
+            },
+            cleanup: {
+              stage: "cleanup",
+              script: "TIDY UP",
+              when: "always",
+            },
+            clear_cache: {
+              stage: "cleanup",
+              script: "CLEAR CACHE",
+              when: "manual",
+            }
+          }
+        end
+
+        it 'returns only for skipped builds' do
+          # currently all builds are created
+          expect(create_builds).to be_truthy
+          expect(manual_actions).to be_empty
+
+          # succeed stage build
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage test
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage staging and skip stage production
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_many # production and clear cache
+
+          # succeed stage cleanup
+          pipeline.builds.running_or_pending.each(&:success)
+
+          # after processing a pipeline we should have 6 builds, 5 succeeded
+          expect(pipeline.builds.count).to eq(6)
+          expect(pipeline.builds.success.count).to eq(4)
+        end
+
+        def manual_actions
+          pipeline.manual_actions
+        end
+      end
     end
 
     context 'when no builds created' do
@@ -413,6 +477,30 @@ describe Ci::Pipeline, models: true do
 
       it 'return false when tag is set to true' do
         is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#manual_actions' do
+    subject { pipeline.manual_actions }
+
+    it 'when none defined' do
+      is_expected.to be_empty
+    end
+
+    context 'when action defined' do
+      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+      it 'returns one action' do
+        is_expected.to contain_exactly(manual)
+      end
+
+      context 'there are multiple of the same name' do
+        let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        it 'returns latest one' do
+          is_expected.to contain_exactly(manual2)
+        end
       end
     end
   end

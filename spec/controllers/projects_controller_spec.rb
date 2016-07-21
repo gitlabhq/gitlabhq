@@ -43,6 +43,26 @@ describe ProjectsController do
       end
     end
 
+    context "project with empty repo" do
+      let(:empty_project) { create(:project_empty_repo, :public) }
+
+      before { sign_in(user) }
+
+      User.project_views.keys.each do |project_view|
+        context "with #{project_view} view set" do
+          before do
+            user.update_attributes(project_view: project_view)
+
+            get :show, namespace_id: empty_project.namespace.path, id: empty_project.path
+          end
+
+          it "renders the empty project view" do
+            expect(response).to render_template('empty')
+          end
+        end
+      end
+    end
+
     context "rendering default project view" do
       render_views
 

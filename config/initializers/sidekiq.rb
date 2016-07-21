@@ -13,7 +13,15 @@ Sidekiq.configure_server do |config|
   # UGLY Hack to get nested hash from settingslogic
   cron_jobs = JSON.parse(Gitlab.config.cron_jobs.to_json)
   # UGLY hack: Settingslogic doesn't allow 'class' key
-  cron_jobs.each { |k, v| cron_jobs[k]['class'] = cron_jobs[k].delete('job_class') }
+  cron_jobs_required_keys = %w(job_class cron)
+  cron_jobs.each do |k, v|
+    if cron_jobs[k] && cron_jobs_required_keys.all? { |s| cron_jobs[k].key?(s) }
+      cron_jobs[k]['class'] = cron_jobs[k].delete('job_class')
+    else
+      cron_jobs.delete(k)
+      Rails.logger.error("Invalid cron_jobs config key: '#{k}'. Check your gitlab config file.")
+    end
+  end
   Sidekiq::Cron::Job.load_from_hash! cron_jobs
 
   # Database pool should be at least `sidekiq_concurrency` + 2

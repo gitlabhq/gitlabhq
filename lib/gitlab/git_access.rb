@@ -1,52 +1,17 @@
+# Check a user's access to perform a git action. All public methods in this
+# class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
 
-    attr_reader :actor, :project, :protocol
+    attr_reader :actor, :project, :protocol, :user_access
 
     def initialize(actor, project, protocol)
       @actor    = actor
       @project  = project
       @protocol = protocol
-    end
-
-    def user
-      return @user if defined?(@user)
-
-      @user =
-        case actor
-        when User
-          actor
-        when DeployKey
-          nil
-        when Key
-          actor.user
-        end
-    end
-
-    def deploy_key
-      actor if actor.is_a?(DeployKey)
-    end
-
-    def can_push_to_branch?(ref)
-      return false unless user
-
-      if project.protected_branch?(ref) && !project.developers_can_push_to_protected_branch?(ref)
-        user.can?(:push_code_to_protected_branches, project)
-      else
-        user.can?(:push_code, project)
-      end
-    end
-
-    def can_read_project?
-      if user
-        user.can?(:read_project, project)
-      elsif deploy_key
-        deploy_key.projects.include?(project)
-      else
-        false
-      end
+      @user_access = UserAccess.new(user, project: project)
     end
 
     def check(cmd, changes = nil)
@@ -56,11 +21,11 @@ module Gitlab
         return build_status_object(false, "No user or key was provided.")
       end
 
-      if user && !user_allowed?
+      if user && !user_access.allowed?
         return build_status_object(false, "Your account has been blocked.")
       end
 
-      unless project && can_read_project?
+      unless project && (user_access.can_read_project? || deploy_key_can_read_project?)
         return build_status_object(false, 'The project you were looking for could not be found.')
       end
 
@@ -95,7 +60,7 @@ module Gitlab
     end
 
     def user_download_access_check
-      unless user.can?(:download_code, project)
+      unless user_access.can_do_action?(:download_code)
         return build_status_object(false, "You are not allowed to download code from this project.")
       end
 
@@ -125,46 +90,8 @@ module Gitlab
       build_status_object(true)
     end
 
-    def can_user_do_action?(action)
-      @permission_cache ||= {}
-      @permission_cache[action] ||= user.can?(action, project)
-    end
-
     def change_access_check(change)
-      oldrev, newrev, ref = change.split(' ')
-
-      action =
-        if project.protected_branch?(branch_name(ref))
-          protected_branch_action(oldrev, newrev, branch_name(ref))
-        elsif (tag_ref = tag_name(ref)) && protected_tag?(tag_ref)
-          # Prevent any changes to existing git tag unless user has permissions
-          :admin_project
-        else
-          :push_code
-        end
-
-      unless can_user_do_action?(action)
-        status =
-          case action
-          when :force_push_code_to_protected_branches
-            build_status_object(false, "You are not allowed to force push code to a protected branch on this project.")
-          when :remove_protected_branches
-            build_status_object(false, "You are not allowed to deleted protected branches from this project.")
-          when :push_code_to_protected_branches
-            build_status_object(false, "You are not allowed to push code to protected branches on this project.")
-          when :admin_project
-            build_status_object(false, "You are not allowed to change existing tags on this project.")
-          else # :push_code
-            build_status_object(false, "You are not allowed to push code to this project.")
-          end
-        return status
-      end
-
-      build_status_object(true)
-    end
-
-    def forced_push?(oldrev, newrev)
-      Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
+      Checks::ChangeAccess.new(change, user_access: user_access, project: project).exec
     end
 
     def protocol_allowed?
@@ -173,47 +100,38 @@ module Gitlab
 
     private
 
-    def protected_branch_action(oldrev, newrev, branch_name)
-      # we dont allow force push to protected branch
-      if forced_push?(oldrev, newrev)
-        :force_push_code_to_protected_branches
-      elsif Gitlab::Git.blank_ref?(newrev)
-        # and we dont allow remove of protected branch
-        :remove_protected_branches
-      elsif project.developers_can_push_to_protected_branch?(branch_name)
-        :push_code
+    def matching_merge_request?(newrev, branch_name)
+      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
+    end
+
+    def deploy_key
+      actor if actor.is_a?(DeployKey)
+    end
+
+    def deploy_key_can_read_project?
+      if deploy_key
+        return true if project.public?
+        deploy_key.projects.include?(project)
       else
-        :push_code_to_protected_branches
-      end
-    end
-
-    def protected_tag?(tag_name)
-      project.repository.tag_exists?(tag_name)
-    end
-
-    def user_allowed?
-      Gitlab::UserAccess.allowed?(user)
-    end
-
-    def branch_name(ref)
-      ref = ref.to_s
-      if Gitlab::Git.branch_ref?(ref)
-        Gitlab::Git.ref_name(ref)
-      else
-        nil
-      end
-    end
-
-    def tag_name(ref)
-      ref = ref.to_s
-      if Gitlab::Git.tag_ref?(ref)
-        Gitlab::Git.ref_name(ref)
-      else
-        nil
+        false
       end
     end
 
     protected
+
+    def user
+      return @user if defined?(@user)
+
+      @user =
+        case actor
+        when User
+          actor
+        when DeployKey
+          nil
+        when Key
+          actor.user
+        end
+    end
 
     def build_status_object(status, message = '')
       GitAccessStatus.new(status, message)

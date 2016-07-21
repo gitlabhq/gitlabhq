@@ -5,8 +5,11 @@ module API
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
-    def parse_boolean(value)
-      [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
+    def to_boolean(value)
+      return true if value =~ /^(true|t|yes|y|1|on)$/i
+      return false if value =~ /^(false|f|no|n|0|off)$/i
+
+      nil
     end
 
     def find_user_by_private_token
@@ -17,7 +20,7 @@ module API
     def current_user
       @current_user ||= (find_user_by_private_token || doorkeeper_guard)
 
-      unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
+      unless @current_user && Gitlab::UserAccess.new(@current_user).allowed?
         return nil
       end
 
@@ -290,7 +293,7 @@ module API
     def filter_projects(projects)
       # If the archived parameter is passed, limit results accordingly
       if params[:archived].present?
-        projects = projects.where(archived: parse_boolean(params[:archived]))
+        projects = projects.where(archived: to_boolean(params[:archived]))
       end
 
       if params[:search].present?

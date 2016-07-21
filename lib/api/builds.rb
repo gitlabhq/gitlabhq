@@ -70,7 +70,7 @@ module API
 
         build = get_build!(params[:build_id])
 
-        present_artifact!(build.artifacts_file)
+        present_artifacts!(build.artifacts_file)
       end
 
       # Download the artifacts file from ref_name and job
@@ -83,10 +83,12 @@ module API
       #   GET /projects/:id/artifacts/:ref_name/download?job=name
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
+        authorize_read_builds!
+
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
 
-        present_artifact!(latest_build.artifacts_file)
+        present_artifacts!(latest_build.artifacts_file)
       end
 
       # Get a trace of a specific build of a project
@@ -198,7 +200,7 @@ module API
         get_build(id) || not_found!
       end
 
-      def present_artifact!(artifacts_file)
+      def present_artifacts!(artifacts_file)
         if !artifacts_file.file_storage?
           redirect_to(build.artifacts_file.url)
         elsif artifacts_file.exists?

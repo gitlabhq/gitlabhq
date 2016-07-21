@@ -30,11 +30,30 @@ describe DiffHelper do
       expect(helper.diff_view).to eq 'inline'
     end
   end
-
+  
   describe 'diff_options' do
-    it 'should return hard limit for a diff' do
+    it 'should return hard limit for a diff if force diff is true' do
       allow(controller).to receive(:params) { { force_show_diff: true } }
       expect(diff_options).to include(Commit.max_diff_options)
+    end
+
+    it 'should return hard limit for a diff if expand_all_diffs is true' do
+      allow(controller).to receive(:params) { { expand_all_diffs: true } }
+      expect(diff_options).to include(Commit.max_diff_options)
+    end
+
+    it 'should return no collapse false' do
+      expect(diff_options).to include(no_collapse: false)
+    end
+
+    it 'should return no collapse true if expand_all_diffs' do
+      allow(controller).to receive(:params) { { expand_all_diffs: true } }
+      expect(diff_options).to include(no_collapse: true)
+    end
+
+    it 'should return no collapse true if action name diff_for_path' do
+      allow(controller).to receive(:action_name) { 'diff_for_path' }
+      expect(diff_options).to include(no_collapse: true)
     end
   end
 

@@ -6,12 +6,12 @@ describe API::API, api: true do
 
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let(:user2) { create(:user) }
-  let(:project) { create(:project, creator_id: user.id) }
-  let(:developer) { create(:project_member, :developer, user: user, project: project) }
-  let(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
-  let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
+  let!(:project) { create(:project, creator_id: user.id) }
+  let!(:developer) { create(:project_member, :developer, user: user, project: project) }
+  let(:reporter) { create(:project_member, :reporter, project: project) }
+  let(:guest) { create(:project_member, :guest, project: project) }
+  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
+  let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
@@ -188,44 +188,94 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
-    include_context 'artifacts from ref and build name'
+    let(:api_user) { reporter.user }
+    let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
-    def path_from_ref(ref = pipeline.ref, job = build.name)
-      api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", user)
+    def path_for_ref(ref = pipeline.ref, job = build.name)
+      api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
     end
 
-    context '401' do
-      let(:user) { nil }
+    context 'when not logged in' do
+      let(:api_user) { nil }
 
       before do
-        get path_from_ref
+        get path_for_ref
       end
 
-      it 'gives 401 for unauthorized user' do
+      it 'gives 401' do
         expect(response).to have_http_status(401)
       end
     end
 
-    context '404' do
-      def verify
-        expect(response).to have_http_status(404)
+    context 'when logging as guest' do
+      let(:api_user) { guest.user }
+
+      before do
+        get path_for_ref
       end
 
-      it_behaves_like 'artifacts from ref with 404'
+      it 'gives 403' do
+        expect(response).to have_http_status(403)
+      end
     end
 
-    context '200' do
-      def verify
-        download_headers =
+    context 'non-existing build' do
+      shared_examples 'not found' do
+        it { expect(response).to have_http_status(:not_found) }
+      end
+
+      context 'has no such ref' do
+        before do
+          get path_for_ref('TAIL', build.name)
+        end
+
+        it_behaves_like 'not found'
+      end
+
+      context 'has no such build' do
+        before do
+          get path_for_ref(pipeline.ref, 'NOBUILD')
+        end
+
+        it_behaves_like 'not found'
+      end
+    end
+
+    context 'find proper build' do
+      shared_examples 'a valid file' do
+        let(:download_headers) do
           { 'Content-Transfer-Encoding' => 'binary',
             'Content-Disposition' =>
               "attachment; filename=#{build.artifacts_file.filename}" }
+        end
 
-        expect(response).to have_http_status(200)
-        expect(response.headers).to include(download_headers)
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.headers).to include(download_headers) }
       end
 
-      it_behaves_like 'artifacts from ref successfully'
+      context 'with regular branch' do
+        before do
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get path_for_ref('master')
+        end
+
+        it_behaves_like 'a valid file'
+      end
+
+      context 'with branch name containing slash' do
+        before do
+          pipeline.update(ref: 'improve/awesome',
+                          sha: project.commit('improve/awesome').sha)
+        end
+
+        before do
+          get path_for_ref('improve/awesome')
+        end
+
+        it_behaves_like 'a valid file'
+      end
     end
   end
 
@@ -233,8 +283,6 @@ describe API::API, api: true do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
 
     before do
-      developer
-
       get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
     end
 
@@ -271,7 +319,7 @@ describe API::API, api: true do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { user2 }
+        let(:api_user) { reporter.user }
 
         it 'should not cancel build' do
           expect(response).to have_http_status(403)
@@ -308,7 +356,7 @@ describe API::API, api: true do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { user2 }
+        let(:api_user) { reporter.user }
 
         it 'should not retry build' do
           expect(response).to have_http_status(403)

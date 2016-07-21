@@ -36,6 +36,14 @@
             = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
             %p.light.append-bottom-0
               Allow developers to push to this branch
+
+        .form-group
+          = f.check_box :developers_can_merge, class: "pull-left"
+          .prepend-left-20
+            = f.label :developers_can_merge, "Developers can merge", class: "label-light append-bottom-0"
+            %p.light.append-bottom-0
+              Allow developers to accept merge requests to this branch
         = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
+
     %hr
     = render "branches_list"

@@ -262,4 +262,42 @@ describe Issues::BulkUpdateService, services: true do
       end
     end
   end
+
+  describe :subscribe_issues do
+    let(:issues) { create_list(:issue, 5, project: project) }
+    let(:params) do
+      {
+        subscription_event: 'subscribe',
+        issues_ids: issues.map(&:id).join(',')
+      }
+    end
+
+    it 'subscribes the given user' do
+      issues.each do |issue|
+        expect(issue.subscribed?(user)).to be_truthy
+      end
+    end
+  end
+
+  describe :unsubscribe_issues do
+    let(:issues) { create_list(:closed_issue, 5, project: project) }
+    let(:params) do
+      {
+        subscription_event: 'unsubscribe',
+        issues_ids: issues.map(&:id).join(',')
+      }
+    end
+
+    before do
+      issues.each do |issue|
+        issue.subscriptions.create(user: user, subscribed: true)
+      end
+    end
+
+    it 'unsubscribes the given user' do
+      issues.each do |issue|
+        expect(issue.subscribed?(user)).to be_falsey
+      end
+    end
+  end
 end

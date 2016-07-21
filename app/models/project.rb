@@ -430,18 +430,14 @@ class Project < ActiveRecord::Base
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_successful_pipeline_for(ref = 'master')
-    table = Ci::Pipeline.quoted_table_name
-    # TODO: Use `where(ref: ref).or(sha: ref)` in Rails 5
-    pipelines.where("#{table}.ref = ? OR #{table}.sha = ?", ref, ref).
-      success.order(id: :desc)
-  end
+  def latest_successful_builds_for(ref = default_branch)
+    latest_pipeline = pipelines.latest_successful_for(ref).first
 
-  # ref can't be HEAD, can only be branch/tag name or SHA
-  def latest_successful_builds_for(ref = 'master')
-    Ci::Build.joins(:pipeline).
-      merge(latest_successful_pipeline_for(ref)).
-      latest_successful_with_artifacts
+    if latest_pipeline
+      latest_pipeline.builds.latest.with_artifacts
+    else
+      builds.none
+    end
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
@@ -665,6 +661,22 @@ class Project < ActiveRecord::Base
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
+  def external_wiki
+    if has_external_wiki.nil?
+      cache_has_external_wiki # Populate
+    end
+
+    if has_external_wiki
+      @external_wiki ||= services.external_wikis.first
+    else
+      nil
+    end
+  end
+
+  def cache_has_external_wiki
+    update_column(:has_external_wiki, services.external_wikis.any?)
+  end
+
   def build_missing_services
     services_templates = Service.where(template: true)
 
@@ -851,6 +863,10 @@ class Project < ActiveRecord::Base
 
   def developers_can_push_to_protected_branch?(branch_name)
     protected_branches.matching(branch_name).any?(&:developers_can_push)
+  end
+
+  def developers_can_merge_to_protected_branch?(branch_name)
+    protected_branches.matching(branch_name).any?(&:developers_can_merge)
   end
 
   def forked?
@@ -1174,5 +1190,35 @@ class Project < ActiveRecord::Base
 
   def ensure_dir_exist
     gitlab_shell.add_namespace(repository_storage_path, namespace.path)
+  end
+
+  def predefined_variables
+    [
+      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
+      { key: 'CI_PROJECT_NAME', value: path, public: true },
+      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_NAMESPACE', value: namespace.path, public: true },
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+    ]
+  end
+
+  def container_registry_variables
+    return [] unless Gitlab.config.registry.enabled
+
+    variables = [
+      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
+    ]
+
+    if container_registry_enabled?
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+    end
+
+    variables
+  end
+
+  def secret_variables
+    variables.map do |variable|
+      { key: variable.key, value: variable.value, public: false }
+    end
   end
 end

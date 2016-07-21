@@ -4,16 +4,17 @@ describe Repository, models: true do
   include RepoHelpers
   TestBlob = Struct.new(:name)
 
-  let(:repository) { create(:project).repository }
+  let(:project) { create(:project) }
+  let(:repository) { project.repository }
   let(:user) { create(:user) }
   let(:commit_options) do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
   let(:merge_commit) do
-    source_sha = repository.find_branch('feature').target
-    merge_commit_sha = repository.merge(user, source_sha, 'master', commit_options)
-    repository.commit(merge_commit_sha)
+    merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+    merge_commit_id = repository.merge(user, merge_request, commit_options)
+    repository.commit(merge_commit_id)
   end
 
   describe '#branch_names_contains' do
@@ -126,6 +127,36 @@ describe Repository, models: true do
       subject { repository.merged_to_root_ref?('non_existent_branch') }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe :commit_file do
+    it 'commits change to a file successfully' do
+      expect do
+        repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                              'Updates file content',
+                              'master', true)
+      end.to change { repository.commits('master').count }.by(1)
+
+      blob = repository.blob_at('master', 'CHANGELOG')
+
+      expect(blob.data).to eq('Changelog!')
+    end
+  end
+
+  describe :update_file do
+    it 'updates filename successfully' do
+      expect do
+        repository.update_file(user, 'NEWLICENSE', 'Copyright!',
+                                     branch: 'master',
+                                     previous_path: 'LICENSE',
+                                     message: 'Changes filename')
+      end.to change { repository.commits('master').count }.by(1)
+
+      files = repository.ls_files('master')
+
+      expect(files).not_to include('LICENSE')
+      expect(files).to include('NEWLICENSE')
     end
   end
 
@@ -718,6 +749,30 @@ describe Repository, models: true do
         repository.before_delete
       end
 
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
+
+        repository.before_delete
+      end
+
       it 'flushes the root ref cache' do
         expect(repository).to receive(:expire_root_ref_cache)
 
@@ -744,6 +799,30 @@ describe Repository, models: true do
 
       it 'flushes the caches that depend on repository data' do
         expect(repository).to receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
 
         repository.before_delete
       end

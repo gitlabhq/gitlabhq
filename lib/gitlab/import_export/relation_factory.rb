@@ -33,6 +33,7 @@ module Gitlab
         update_project_references
         reset_ci_tokens if @relation_name == 'Ci::Trigger'
         @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
+        set_st_diffs if @relation_name == :merge_request_diff
 
         generate_imported_object
       end
@@ -128,6 +129,10 @@ module Gitlab
 
       def parsed_relation_hash
         @relation_hash.reject { |k, _v| !relation_class.attribute_method?(k) }
+      end
+
+      def set_st_diffs
+        @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
       end
     end
   end

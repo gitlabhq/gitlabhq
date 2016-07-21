@@ -5,7 +5,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :project, except: [:new, :create]
   before_action :repository, except: [:new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
-  before_action :tree, only: [:show], if: :project_view_files?
+  before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -296,7 +296,7 @@ class ProjectsController < Projects::ApplicationController
       :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds
+      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled
     )
   end
 

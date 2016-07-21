@@ -38,6 +38,12 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def update
+    if params[:file_path].present?
+      @previous_path = @path
+      @path = params[:file_path]
+      @commit_params[:file_path] = @path
+    end
+
     after_edit_path =
       if from_merge_request && @target_branch == @ref
         diffs_namespace_project_merge_request_path(from_merge_request.target_project.namespace, from_merge_request.target_project, from_merge_request) +
