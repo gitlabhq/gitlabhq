@@ -249,6 +249,7 @@ v 8.9.1
   - Remove width restriction for logo on sign-in page. !4888
   - Bump gitlab_git to 10.2.3 to fix false truncated warnings with ISO-8559 files. !4884
   - Apply selected value as label. !4886
+  - Change Retry to Re-deploy on Deployments page
   - Fix temp file being deleted after the request while importing a GitLab project. !4894
   - Fix pagination when sorting by columns with lots of ties (like priority)
   - Implement Subresource Integrity for CSS and JavaScript assets. This prevents malicious assets from loading in the case of a CDN compromise.
