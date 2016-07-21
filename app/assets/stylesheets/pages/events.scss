@@ -176,3 +176,11 @@
     }
   }
 }
+
+// hide event scope (namespace + project) where it is not necessary
+.project-activity {
+  .event-scope {
+    display: none;
+  }
+}
+

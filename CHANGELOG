@@ -105,6 +105,7 @@ v 8.10.0 (unreleased)
   - ObjectRenderer retrieve renderer content using Rails.cache.read_multi
   - Better caching of git calls on ProjectsController#show.
   - Avoid to retrieve MR closes_issues as much as possible.
+  - Hide project name in project activities !5068 (winniehell)
   - Add API endpoint for a group issues !4520 (mahcsig)
   - Add Bugzilla integration !4930 (iamtjg)
   - Fix new snippet style bug (elliotec)
