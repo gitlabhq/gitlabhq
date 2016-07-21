@@ -1,0 +1,22 @@
+%tr.notes_holder
+  - if discussion_left
+    %td.notes_line.old
+    %td.notes_content.parallel.old
+      %ul.notes{ data: { discussion_id: discussion_left.id } }
+        = render partial: "projects/notes/note", collection: discussion_left.notes, as: :note
+
+      = link_to_reply_discussion(discussion_left, 'old')
+  - else
+    %td.notes_line.old= ""
+    %td.notes_content.parallel.old= ""
+
+  - if discussion_right
+    %td.notes_line.new
+    %td.notes_content.parallel.new
+      %ul.notes{ data: { discussion_id: discussion_right.id } }
+        = render partial: "projects/notes/note", collection: discussion_right.notes, as: :note
+
+      = link_to_reply_discussion(discussion_right, 'new')
+  - else
+    %td.notes_line.new= ""
+    %td.notes_content.parallel.new= ""
