@@ -173,7 +173,7 @@ class ProjectTeam
     invited_members = []
 
     if project.invited_groups.any? && project.allowed_to_share_with_group?
-      project.project_group_links.each do |group_link|
+      project.project_group_links.includes(group: [:group_members]).each do |group_link|
         invited_group = group_link.group
         im = invited_group.members
 
