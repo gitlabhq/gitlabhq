@@ -36,7 +36,7 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              path: 'workflow/protected_branches/protected_branches1',
+              path: 'user/project/img/labels_filter',
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
