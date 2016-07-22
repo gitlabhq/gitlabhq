@@ -41,9 +41,9 @@ module MilestonesHelper
   def milestone_counts(project:)
     counts = @project.milestones.reorder(nil).group(:state).count()
     {
-      'opened' => counts['active'],
-      'closed' => counts['closed'],
-      'all' => counts['active'] + counts['closed']
+      opened: counts['active'],
+      closed: counts['closed'],
+      all: counts['active'] + counts['closed']
     }
   end
 
