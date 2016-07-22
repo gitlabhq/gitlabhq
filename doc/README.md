@@ -25,7 +25,7 @@
 ## Administrator documentation
 
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
-- [Access restrictions](administration/access_restrictions.md) Define which Git access protocols can be used to talk to GitLab
+- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
