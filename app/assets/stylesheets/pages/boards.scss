@@ -1,3 +1,7 @@
+[v-cloak] {
+  display: none;
+}
+
 .issue-boards-page {
   .page-with-sidebar {
     display: flex;
@@ -20,6 +24,7 @@
 .boards-list {
   display: flex;
   height: 100%;
+  min-height: 455px;
   padding-top: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
@@ -29,7 +34,6 @@
 .board {
   min-width: 400px;
   height: 100%;
-  min-height: 500px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
 }
@@ -45,6 +49,16 @@
   border-radius: $border-radius-default;
 }
 
+.board-header {
+  border-top-left-radius: $border-radius-default;
+  border-top-right-radius: $border-radius-default;
+
+  &.has-border {
+    padding-top: ($gl-padding - 3px);
+    border-top: 3px solid;
+  }
+}
+
 .board-inner-container {
   border-bottom: 1px solid $border-color;
   padding: $gl-padding;
@@ -56,7 +70,37 @@
 }
 
 .board-search-container {
+  position: relative;
   background-color: #fff;
+
+  .form-control {
+    padding-right: 30px;
+  }
+}
+
+.board-search-icon,
+.board-search-clear-btn {
+  position: absolute;
+  right: $gl-padding + 10px;
+  top: 50%;
+  margin-top: -7px;
+  font-size: 14px;
+}
+
+.board-search-icon {
+  color: $gl-placeholder-color;
+}
+
+.board-search-clear-btn {
+  padding: 0;
+  line-height: 1;
+  background: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover {
+    color: $gl-link-color;
+  }
 }
 
 .board-list {
@@ -77,11 +121,26 @@
   &:not(:last-child) {
     margin-bottom: 5px;
   }
+
+  &.is-dragging {
+    cursor: -webkit-grabbing;
+    cursor: -moz-grabbing;
+    // Important because plugin sets inline CSS
+    opacity: 1!important;
+  }
+
+  &.is-ghost {
+    opacity: 0;
+  }
 }
 
 .card-title {
   margin: 0;
   font-size: 1em;
+
+  a {
+    color: inherit;
+  }
 }
 
 .card-footer {
@@ -89,7 +148,7 @@
 
   .label {
     margin-right: 4px;
-    font-size: (14px / $issue-boards-font-size);
+    font-size: (14px / $issue-boards-font-size) * 1em;
   }
 }
 

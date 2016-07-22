@@ -27,7 +27,11 @@
           = render "shared/issuable/label_dropdown"
 
         .pull-right
-          = render 'shared/sort_dropdown'
+          - if controller.controller_name != 'boards'
+            = render 'shared/sort_dropdown'
+          - else
+            %button.btn.btn-create{ type: "button" }
+              Create new list
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide

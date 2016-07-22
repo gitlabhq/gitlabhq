@@ -1,24 +1,14 @@
 - @no_container = true
 - @content_class = "issue-boards-content"
 - page_title "Boards"
+
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('boards/boards_bundle.js')
+
 = render "projects/issues/head"
 
-.boards-list
-  .board
-    .board-inner
-      %header.board-inner-container
-        %h3.board-title
-          Backlog
-          %span.pull-right
-            5
-      .board-inner-container.board-search-container
-        %input.form-control{ type: "text", placeholder: "Search issues" }
-      %ul.board-list
-        %li.card
-          %h4.card-title
-            Issue title
-          .card-footer
-            %span.card-number
-              \#288
-            %span.label.color-label{ style: "background-color: #428bca; color: #FFFFFF" }
-              label
+= render 'shared/issuable/filter', type: :boards
+
+.boards-list#board-app{ ":class" => "{ 'is-dragging': interaction.dragging }"}
+  {{ interaction.dragging }}
+  = render "projects/boards/components/board"

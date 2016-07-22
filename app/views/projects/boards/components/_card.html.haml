@@ -1,0 +1,9 @@
+%li.card{ "v-for" => "issue in board.issues", ":data-issue" => "issue.id" }
+  %h4.card-title
+    %a{ href: "#" }
+      {{ issue.title }}
+  .card-footer
+    %span.card-number
+      \#288
+    %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.backgroundColor, color: label.textColor }" }
+      {{ label.title }}

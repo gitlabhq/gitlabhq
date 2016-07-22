@@ -1,0 +1,17 @@
+%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in boards | orderBy 'index'", ":board" => "board", ":disabled" => "#{current_user.nil?}" }
+  .board
+    .board-inner
+      %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.backgroundColor }" }
+        %h3.board-title
+          {{ board.title }}
+          %span.pull-right
+            {{ board.issues.length }}
+      .board-inner-container.board-search-container{ "v-if" => "board.search" }
+        %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query" }
+        = icon("search", class: "board-search-icon", "v-show" => "!query")
+        %button.board-search-clear-btn{ type: "button", role: "button", "@click" => "clearSearch", "v-show" => "query" }
+          %span.sr-only
+            Clear search
+          = icon("times", class: "board-search-clear")
+      %ul.board-list{ "v-el:list" => true, ":data-board" => "board.id" }
+        = render "projects/boards/components/card"
