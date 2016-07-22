@@ -35,7 +35,7 @@ describe 'Git LFS API and storage' do
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
-      post_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+      post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
     end
 
     it 'responds with 501' do
@@ -74,7 +74,7 @@ describe 'Git LFS API and storage' do
     context 'when handling lfs request using deprecated API' do
       let(:authorization) { authorize_user }
       before do
-        post_json "#{project.http_url_to_repo}/info/lfs/objects", nil, headers
+        post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects", nil, headers
       end
 
       it_behaves_like 'a deprecated'
@@ -164,7 +164,7 @@ describe 'Git LFS API and storage' do
       enable_lfs
       update_lfs_permissions
       update_user_permissions
-      post_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+      post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
     end
 
     describe 'download' do
@@ -775,8 +775,8 @@ describe 'Git LFS API and storage' do
     Projects::ForkService.new(project, user, {}).execute
   end
 
-  def post_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/json'))
+  def post_lfs_json(url, body = nil, headers = nil)
+    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/vnd.git-lfs+json'))
   end
 
   def json_response
