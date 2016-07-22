@@ -1,5 +1,5 @@
-%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in boards | orderBy 'index'", ":board" => "board", ":disabled" => "#{current_user.nil?}" }
-  .board
+%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in boards | orderBy 'index'", ":board" => "board" }
+  .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.backgroundColor }" }
         %h3.board-title
@@ -13,5 +13,6 @@
           %span.sr-only
             Clear search
           = icon("times", class: "board-search-clear")
-      %ul.board-list{ "v-el:list" => true, ":data-board" => "board.id" }
-        = render "projects/boards/components/card"
+      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query" }
+        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId" }
+          = render "projects/boards/components/card"

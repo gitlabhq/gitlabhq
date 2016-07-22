@@ -9,6 +9,5 @@
 
 = render 'shared/issuable/filter', type: :boards
 
-.boards-list#board-app{ ":class" => "{ 'is-dragging': interaction.dragging }"}
-  {{ interaction.dragging }}
+.boards-list#board-app{ "data-endpoint" => "#{namespace_project_boards_path(@project.namespace, @project)}" }
   = render "projects/boards/components/board"

@@ -107,8 +107,16 @@
   flex: 1;
   margin: 0;
   padding: 5px;
-  list-style: none;
   overflow: scroll;
+}
+
+.is-ghost {
+  opacity: 0;
+}
+
+.is-dragging {
+  // Important because plugin sets inline CSS
+  opacity: 1!important;
 }
 
 .card {
@@ -117,20 +125,10 @@
   background: #fff;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
+  list-style: none;
 
   &:not(:last-child) {
     margin-bottom: 5px;
-  }
-
-  &.is-dragging {
-    cursor: -webkit-grabbing;
-    cursor: -moz-grabbing;
-    // Important because plugin sets inline CSS
-    opacity: 1!important;
-  }
-
-  &.is-ghost {
-    opacity: 0;
   }
 }
 

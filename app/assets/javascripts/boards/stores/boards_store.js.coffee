@@ -1,12 +1,19 @@
 @BoardsStore =
-  state: [
-    {id: 'backlog', title: 'Backlog', index: 0, search: true, issues: [{ id: 1, title: 'Test', labels: []}]},
-    {id: 1, title: 'Frontend', index: 1, label: { title: 'Frontend', backgroundColor: '#44ad8e', textColor: '#ffffff' }, issues: [{ id: 3, title: 'Frontend bug', labels: [{ title: 'Frontend', backgroundColor: '#44ad8e', textColor: '#ffffff' }, { title: 'UX', backgroundColor: '#44ad8e', textColor: '#ffffff' }]}]},
-    {id: 'done', title: 'Done', index: 99999999, issues: [{ id: 2, title: 'Testing done', labels: []}]}
-  ]
-  interaction: {
-    dragging: false
-  }
+  state: []
+  moveBoard: (oldIndex, newIndex) ->
+    boardFrom = _.find BoardsStore.state, (board) ->
+      board.index is oldIndex
+
+    service.updateBoard(boardFrom.id, newIndex)
+
+    boardTo = _.find BoardsStore.state, (board) ->
+      board.index is newIndex
+
+    boardFrom.index = newIndex
+    if newIndex > boardTo.index
+      boardTo.index--
+    else
+      boardTo.index++
   moveCardToBoard: (boardFromId, boardToId, issueId, toIndex) ->
     boardFrom = _.find BoardsStore.state, (board) ->
       board.id is boardFromId
@@ -19,7 +26,7 @@
     boardFrom.issues = _.reject boardFrom.issues, (issue) ->
       issue.id is issueId
 
-    # Add to new boards issues and increase count
+    # Add to new boards issues
     boardTo.issues.splice(toIndex, 0, issue)
 
     # If going to done - remove label

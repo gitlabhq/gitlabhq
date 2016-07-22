@@ -1,9 +1,10 @@
-%li.card{ "v-for" => "issue in board.issues", ":data-issue" => "issue.id" }
+%li.card{ ":data-issue" => "issue.id", "v-for" => "issue in issues | filterBy query in 'title'" }
   %h4.card-title
-    %a{ href: "#" }
+    %a{ href: "#", ":title" => "issue.title" }
       {{ issue.title }}
   .card-footer
     %span.card-number
-      \#288
+      = precede '#' do
+        {{ issue.id }}
     %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.backgroundColor, color: label.textColor }" }
       {{ label.title }}
