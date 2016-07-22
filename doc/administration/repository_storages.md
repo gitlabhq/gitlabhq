@@ -1,7 +1,8 @@
 # Repository storages
 
 GitLab allows you to define repository storage paths to enable distribution of
-storage load between several mount points.
+storage load between several mount points. You can choose where new projects are
+stored via the `Application Settings` in the Admin interface.
 
 ## For installations from source
 
