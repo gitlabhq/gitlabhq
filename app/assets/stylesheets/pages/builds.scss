@@ -53,6 +53,14 @@
       left: 70px;
     }
   }
+
+  .nav-links {
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
+    }
+  }
 }
 
 .build-header {

@@ -12,7 +12,7 @@
 - [Project Features](project_features.md)
 - [Project forking workflow](forking_workflow.md)
 - [Project users](add-user/add-user.md)
-- [Protected branches](protected_branches.md)
+- [Protected branches](../user/project/protected_branches.md)
 - [Sharing a project with a group](share_with_group.md)
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Web Editor](web_editor.md)

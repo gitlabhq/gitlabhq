@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160716115710) do
+ActiveRecord::Schema.define(version: 20160721081015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.integer  "max_attachment_size",                   default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
-    t.text     "restricted_signup_domains"
+    t.text     "domain_whitelist"
     t.boolean  "user_oauth_applications",               default: true
     t.string   "after_sign_out_path"
     t.integer  "session_expire_delay",                  default: 10080,       null: false
@@ -84,10 +84,12 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,        null: false
+    t.boolean  "user_default_external",                 default: false,       null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
+    t.boolean  "domain_blacklist_enabled",              default: false
+    t.text     "domain_blacklist"
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -605,9 +607,9 @@ ActiveRecord::Schema.define(version: 20160716115710) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
-    t.string   "target_branch",                             null: false
-    t.string   "source_branch",                             null: false
-    t.integer  "source_project_id",                         null: false
+    t.string   "target_branch",                                null: false
+    t.string   "source_branch",                                null: false
+    t.integer  "source_project_id",                            null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -616,20 +618,21 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",                         null: false
+    t.integer  "target_project_id",                            null: false
     t.integer  "iid"
     t.text     "description"
-    t.integer  "position",                  default: 0
+    t.integer  "position",                     default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
     t.string   "merge_error"
     t.text     "merge_params"
-    t.boolean  "merge_when_build_succeeds", default: false, null: false
+    t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.string   "in_progress_merge_commit_sha"
   end
+
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
@@ -664,16 +667,17 @@ ActiveRecord::Schema.define(version: 20160716115710) do
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                                  null: false
-    t.string   "path",                                  null: false
+    t.string   "name",                                   null: false
+    t.string   "path",                                   null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description",           default: "",    null: false
+    t.string   "description",            default: "",    null: false
     t.string   "avatar"
-    t.boolean  "share_with_group_lock", default: false
-    t.integer  "visibility_level",      default: 20,    null: false
+    t.boolean  "share_with_group_lock",  default: false
+    t.integer  "visibility_level",       default: 20,    null: false
+    t.boolean  "request_access_enabled", default: true,  null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -842,6 +846,8 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
     t.string   "repository_storage",                 default: "default", null: false
+    t.boolean  "has_external_wiki"
+    t.boolean  "request_access_enabled",             default: true,      null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

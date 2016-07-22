@@ -11,16 +11,6 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  def self.clean_old_archives
-    Gitlab::Metrics.measure(:clean_old_archives) do
-      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
-
-      return unless File.directory?(repository_downloads_path)
-
-      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
-    end
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -80,7 +70,12 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
-    commit = Gitlab::Git::Commit.find(raw_repository, ref)
+    commit =
+      if ref.is_a?(Gitlab::Git::Commit)
+        ref
+      else
+        Gitlab::Git::Commit.find(raw_repository, ref)
+      end
     commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
@@ -216,11 +211,20 @@ class Repository
 
     return if kept_around?(sha)
 
-    rugged.references.create(keep_around_ref_name(sha), sha)
+    # This will still fail if the file is corrupted (e.g. 0 bytes)
+    begin
+      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+    rescue Rugged::ReferenceError => ex
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    end
   end
 
   def kept_around?(sha)
-    ref_exists?(keep_around_ref_name(sha))
+    begin
+      ref_exists?(keep_around_ref_name(sha))
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def tag_names
@@ -257,10 +261,10 @@ class Repository
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind = raw_repository.
-        count_commits_between(branch.target, root_ref_hash)
+        count_commits_between(branch.target.sha, root_ref_hash)
 
       number_commits_ahead = raw_repository.
-        count_commits_between(root_ref_hash, branch.target)
+        count_commits_between(root_ref_hash, branch.target.sha)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -392,6 +396,11 @@ class Repository
 
     expire_cache if exists?
 
+    # expire cache that don't depend on repository data (when expiring)
+    expire_tags_cache
+    expire_tag_count_cache
+    expire_branches_cache
+    expire_branch_count_cache
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
@@ -681,9 +690,7 @@ class Repository
   end
 
   def local_branches
-    @local_branches ||= rugged.branches.each(:local).map do |branch|
-      Gitlab::Git::Branch.new(branch.name, branch.target)
-    end
+    @local_branches ||= raw_repository.local_branches
   end
 
   alias_method :branches, :local_branches
@@ -824,7 +831,7 @@ class Repository
   end
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = find_branch(base_branch).target
+    source_sha = find_branch(base_branch).target.sha
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
@@ -841,7 +848,7 @@ class Repository
   end
 
   def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = find_branch(base_branch).target
+    source_sha = find_branch(base_branch).target.sha
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
@@ -862,7 +869,7 @@ class Repository
   end
 
   def check_revert_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target
+    source_sha = find_branch(base_branch).target.sha
     args       = [commit.id, source_sha]
     args << { mainline: 1 } if commit.merge_commit?
 
@@ -876,7 +883,7 @@ class Repository
   end
 
   def check_cherry_pick_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target
+    source_sha = find_branch(base_branch).target.sha
     args       = [commit.id, source_sha]
     args << 1 if commit.merge_commit?
 
@@ -1041,7 +1048,7 @@ class Repository
   end
 
   def tags_sorted_by_committed_date
-    tags.sort_by { |tag| commit(tag.target).committed_date }
+    tags.sort_by { |tag| tag.target.committed_date }
   end
 
   def keep_around_ref_name(sha)

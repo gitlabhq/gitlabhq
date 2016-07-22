@@ -15,8 +15,11 @@ module CiStatusHelper
   end
 
   def ci_label_for_status(status)
-    if status == 'success'
+    case status
+    when 'success'
       'passed'
+    when 'success_with_warnings'
+      'passed with warnings'
     else
       status
     end
@@ -26,24 +29,26 @@ module CiStatusHelper
     icon_name =
       case status
       when 'success'
-        'check'
+        'icon_status_success'
+      when 'success_with_warnings'
+        'icon_status_warning'
       when 'failed'
-        'close'
+        'icon_status_failed'
       when 'pending'
-        'clock-o'
+        'icon_status_pending'
       when 'running'
-        'spinner'
+        'icon_status_running'
       else
-        'circle'
+        'icon_status_cancel'
       end
 
-    icon(icon_name + ' fw')
+    custom_icon(icon_name)
   end
 
-  def render_commit_status(commit, tooltip_placement: 'auto left', cssclass: '')
+  def render_commit_status(commit, tooltip_placement: 'auto left')
     project = commit.project
     path = builds_namespace_project_commit_path(project.namespace, project, commit)
-    render_status_with_link('commit', commit.status, path, tooltip_placement, cssclass: cssclass)
+    render_status_with_link('commit', commit.status, path, tooltip_placement)
   end
 
   def render_pipeline_status(pipeline, tooltip_placement: 'auto left')

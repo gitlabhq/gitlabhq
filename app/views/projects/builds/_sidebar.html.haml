@@ -49,7 +49,7 @@
     - if @build.duration
       %p.build-detail-row
         %span.build-light-text Duration:
-        #{duration_in_words(@build.finished_at, @build.started_at)}
+        = time_interval_in_words(@build.duration)
     - if @build.finished_at
       %p.build-detail-row
         %span.build-light-text Finished:

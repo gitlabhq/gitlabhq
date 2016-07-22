@@ -19,6 +19,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     click_on "Create page"
   end
 
+  step 'I create the Wiki Home page with no content' do
+    fill_in "wiki_content", with: ''
+    click_on "Create page"
+  end
+
   step 'I should see the newly created wiki page' do
     expect(page).to have_content "Home"
     expect(page).to have_content "link test"
@@ -171,6 +176,11 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
 
   step 'I should see a link with a version ID' do
     find('a[href*="?version_id"]')
+  end
+
+  step 'I should see a "Content can\'t be blank" error message' do
+    expect(page).to have_content('The form contains the following error:')
+    expect(page).to have_content('Content can\'t be blank')
   end
 
   def wiki
