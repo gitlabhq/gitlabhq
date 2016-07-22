@@ -28,7 +28,7 @@ Add a commit message based on what you just added and then click on "commit chan
 
 # On a new project
 
-When starting a new project, there are some common files which the new project might need too. Therefor a message will be displayed by GitLab to make this easy for you.
+When starting a new project, there are some common files which the new project might need too. Therefore a message will be displayed by GitLab to make this easy for you.
 
 ![First file for your project](basicsimages/first_file.png)
 
