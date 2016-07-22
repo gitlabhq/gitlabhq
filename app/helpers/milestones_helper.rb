@@ -35,17 +35,16 @@ module MilestonesHelper
     milestone.issues.with_label(label.title).send(state).size
   end
 
-  def milestone_count_by_state(project, state)
-    if project.nil?
-      nil
-    else
-      case state
-      when 'all' then @project.milestones.size
-      when 'closed' then @project.milestones.closed.size
-      when 'opened' then @project.milestones.active.size
-      else nil
-      end
-    end
+  # Returns count of milestones for different states
+  # Uses explicit hash keys as the 'opened' state URL params differs from the db value 
+  # and we need to add the total
+  def milestone_counts(project:)
+    counts = @project.milestones.reorder(nil).group(:state).count()
+    {
+      'opened' => counts['active'],
+      'closed' => counts['closed'],
+      'all' => counts['active'] + counts['closed']
+    }
   end
 
   def milestone_progress_bar(milestone)

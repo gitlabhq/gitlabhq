@@ -1,13 +1,15 @@
+- counts = milestone_counts(project: @project)
+
 %ul.nav-links
   %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
     = link_to milestones_filter_path(state: 'opened') do
       Open
-      %span.badge #{milestone_count_by_state(@project, 'opened')}
+      %span.badge #{counts['opened']}
   %li{class: ("active" if params[:state] == 'closed')}
     = link_to milestones_filter_path(state: 'closed') do
       Closed
-      %span.badge #{milestone_count_by_state(@project, 'closed')}
+      %span.badge #{counts['closed']}
   %li{class: ("active" if params[:state] == 'all')}
     = link_to milestones_filter_path(state: 'all') do
       All
-      %span.badge #{milestone_count_by_state(@project, 'all')}
+      %span.badge #{counts['all']}
