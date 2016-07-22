@@ -442,7 +442,7 @@ class GitLabDropdown
         text = @highlightTextMatches(text, @filterInput.val())
 
       if group
-        groupAttrs = "data-group='#{group}' data-index='#{index}'"
+        groupAttrs = "data-group=#{group} data-index=#{index}"
       else
         groupAttrs = ''
       html = _.template('<li>
