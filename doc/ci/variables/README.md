@@ -38,7 +38,7 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 | **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
 | **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**     | 8.10   | 0.5    | The project name that is currently being built |
-| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace that is currently being built |
+| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |

@@ -3,8 +3,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Limit git rev-list output count to one in forced push check
+  - Retrieve rendered HTML from cache in one request
 
-v 8.10.0 (unreleased)
+v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
@@ -21,6 +22,7 @@ v 8.10.0 (unreleased)
   - Delete award emoji when deleting a user
   - Remove pinTo from Flash and make inline flash messages look nicer. !4854 (winniehell)
   - Add an API for downloading latest successful build from a particular branch or tag. !5347
+  - Avoid data-integrity issue when cleaning up repository archive cache.
   - Add link to profile to commit avatar. !5163 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content. !4959 (winniehell)
@@ -80,6 +82,7 @@ v 8.10.0 (unreleased)
   - API: Todos. !3188 (Robert Schilling)
   - API: Expose shared groups for projects and shared projects for groups. !5050 (Robert Schilling)
   - API: Expose `developers_can_push` and `developers_can_merge` for branches. !5208 (Robert Schilling)
+  - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms

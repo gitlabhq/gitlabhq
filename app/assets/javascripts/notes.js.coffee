@@ -162,7 +162,7 @@ class @Notes
         @last_fetched_at = data.last_fetched_at
         @setPollingInterval(data.notes.length)
         $.each notes, (i, note) =>
-          if note.discussion_with_diff_html?
+          if note.discussion_html?
             @renderDiscussionNote(note)
           else
             @renderNote(note)
@@ -251,7 +251,7 @@ class @Notes
       discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']")
     if discussionContainer.length is 0
       # insert the note and the reply button after the temp row
-      row.after note.discussion_html
+      row.after note.diff_discussion_html
 
       # remove the note (will be added again below)
       row.next().find(".note").remove()
@@ -265,7 +265,7 @@ class @Notes
       # Init discussion on 'Discussion' page if it is merge request page
       if $('body').attr('data-page').indexOf('projects:merge_request') is 0
         $('ul.main-notes-list')
-          .append(note.discussion_with_diff_html)
+          .append(note.discussion_html)
           .syntaxHighlight()
     else
       # append new note to all matching discussions

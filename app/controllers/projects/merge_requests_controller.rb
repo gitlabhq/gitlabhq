@@ -97,7 +97,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       build_merge_request
       @diff_notes_disabled = true
-      @grouped_diff_notes = {}
+      @grouped_diff_discussions = {}
     end
 
     define_commit_vars
@@ -378,7 +378,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     # This is not executed lazily
     @notes = Banzai::NoteRenderer.render(
-      @discussions.flatten,
+      @discussions.flat_map(&:notes),
       @project,
       current_user,
       @path,
@@ -404,10 +404,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+    @grouped_diff_discussions = @merge_request.notes.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
-      @grouped_diff_notes.values.flatten,
+      @grouped_diff_discussions.values.flat_map(&:notes),
       @project,
       current_user,
       @path,

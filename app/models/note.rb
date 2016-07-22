@@ -82,11 +82,12 @@ class Note < ActiveRecord::Base
     end
 
     def discussions
-      all.group_by(&:discussion_id).values
+      Discussion.for_notes(all)
     end
 
-    def grouped_diff_notes
-      diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
+    def grouped_diff_discussions
+      notes = diff_notes.fresh.select(&:active?)
+      Discussion.for_diff_notes(notes).map { |d| [d.line_code, d] }.to_h
     end
 
     # Searches for notes matching the given query.

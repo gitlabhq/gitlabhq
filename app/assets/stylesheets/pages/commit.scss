@@ -68,6 +68,12 @@
   }
 }
 
+.ci-status-link {
+  svg {
+    overflow: visible;
+  }
+}
+
 .commit-box {
   border-top: 1px solid $border-color;
 

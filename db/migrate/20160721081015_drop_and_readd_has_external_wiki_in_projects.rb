@@ -5,8 +5,9 @@ class DropAndReaddHasExternalWikiInProjects < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    remove_column :projects, :has_external_wiki, :boolean
-    add_column :projects, :has_external_wiki, :boolean
+    update_column_in_batches(:projects, :has_external_wiki, nil) do |table, query|
+      query.where(table[:has_external_wiki].not_eq(nil))
+    end
   end
 
   def down
