@@ -1,0 +1,14 @@
+{
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "extends": "airbnb/base",
+  "rules": {
+    "no-var": 0,
+    "indent": [2, 2, {"VariableDeclarator": { "var": 2 }}],
+    "func-names": 0,
+    "strict": [2, "global"],
+  }
+}
+
