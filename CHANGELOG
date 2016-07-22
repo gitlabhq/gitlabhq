@@ -3,6 +3,7 @@ v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
 
 v 8.10.0 (unreleased)
+  - User can now search branches by name. !5144 (tiagonbotelho)
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
   - Add the functionality to be able to rename a file. !5049 (tiagonbotelho)
