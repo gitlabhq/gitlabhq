@@ -41,10 +41,10 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 
 [Exception]: http://stackoverflow.com/q/10048173/223897
 
-## Don't use inline CoffeeScript in views
+## Don't use inline CoffeeScript/Javascript in views
 
 Using the inline `:coffee` or `:coffeescript` Haml filters comes with a
-performance overhead.
+performance overhead. Using inline Javascript is not a good way to structure your code and should be avoided. 
 
 _**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/hamlit.rb)
 in an initializer._
@@ -52,6 +52,7 @@ in an initializer._
 ### Further reading
 
 - Pull Request: [Replace CoffeeScript block into JavaScript in Views](https://git.io/vztMu)
+- Stack Overflow: [Why you should not write inline JavaScript](http://programmers.stackexchange.com/questions/86589/why-should-i-avoid-inline-scripting)
 - Stack Overflow: [Performance implications of using :coffescript filter inside HAML templates?](http://stackoverflow.com/a/17571242/223897)
 
 ## ID-based CSS selectors need to be a bit more specific

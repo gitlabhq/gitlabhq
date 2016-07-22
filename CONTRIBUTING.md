@@ -460,7 +460,8 @@ merge request:
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](doc/development/testing.md)
-1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
+1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
