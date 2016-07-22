@@ -4,39 +4,29 @@
 .panel.panel-default
   .panel-heading{ id: "heading#{ abuse_report_counter }", role: 'tab' }
     .panel-title
+      %a.clickable-title{ role: 'button', href: "#collapse#{ abuse_report_counter }", data: { toggle: 'collapse', parent: '#accordion' }, aria: { expanded: 'true', controls: "collapse#{ abuse_report_counter }" } }
       - if user
-        = link_to user.name, user
+        = link_to user.name, user, { class: 'clickable-entity', data: { toggle: 'tooltip', placement: 'bottom', title: "Joined #{user.created_at}" } }
       - else
         (removed)
-      -# %a{ role: 'button', href: "#collapse#{ abuse_report_counter }", data: { toggle: 'collapse', parent: '#accordion' }, aria: { expanded: 'true', controls: "collapse#{ abuse_report_counter }" } }
       reported by
       - if reporter
-        = link_to reporter.name, reporter
+        = link_to reporter.name, reporter, { class: 'clickable-entity' }
       - else
         (removed)
+      .light.small.clickable-entity
+        = time_ago_with_tooltip(abuse_report.created_at)
       .btn-group.pull-right
         - if user
           = link_to 'Remove user & report', admin_abuse_report_path(abuse_report, remove_user: true),
-            data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, remote: true, method: :delete, class: "btn btn-sm btn-remove js-remove-tr"
+            data: { confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?" }, remote: true, method: :delete, class: 'btn btn-sm btn-remove js-remove-tr'
         - if user && !user.blocked?
-          = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-sm"
+          = link_to 'Block user', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: 'btn btn-sm'
         - else
           .btn.btn-sm.disabled
             Already Blocked
-        = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: "btn btn-sm btn-close js-remove-tr"
+        = link_to 'Remove report', [:admin, abuse_report], remote: true, method: :delete, class: 'btn btn-sm btn-close js-remove-tr'
       .clearfix
   .panel-collapse.collapse{ id: "collapse#{ abuse_report_counter }", class: (abuse_report_counter == 0 ? 'in' : ''), role: 'tabpanel', aria: { labelledby: "heading#{ abuse_report_counter }" } }
     .panel-body
       = markdown(abuse_report.message.squish!, pipeline: :single_line, author: reporter)
-
--# %tr
--#   %td
-
--#   %td
--#     .light.small
--#       = time_ago_with_tooltip(abuse_report.created_at)
--#   %td
--#     = markdown(abuse_report.message.squish!, pipeline: :single_line, author: reporter)
--#   %td
--#
--#   %td

@@ -103,9 +103,25 @@
     margin-top: 4px;
   }
   .panel-body {
-    overflow-y: scroll;
     max-height: 300px;
+    overflow-y: scroll;
   }
+  .panel-heading {
+    position: relative;
+  }
+  .clickable-entity {
+    display: inline;
+    position: relative;
+    z-index: 2;
+  }
+  .clickable-title {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
   .no-reports {
     .emoji-icon {
       margin-left: $btn-side-margin;
