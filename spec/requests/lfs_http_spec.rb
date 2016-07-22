@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Lfs::Router do
+describe 'Git LFS API and storage' do
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
 
