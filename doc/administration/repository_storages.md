@@ -15,13 +15,33 @@ storage load between several mount points.
 ## Configure GitLab
 
 >**Warning:**
-- In order for backups to work correctly the storage path must **not** be a
-  mount point and the GitLab user should have correct permissions for the parent
-  directory of the path.
+In order for [backups] to work correctly, the storage path must **not** be a
+mount point and the GitLab user should have correct permissions for the parent
+directory of the path. In Omnibus GitLab this is taken care of automatically,
+but for source installations you should be extra careful.
+>
+The thing is that for compatibility reasons `gitlab.yml` has a different
+structure than Omnibus. In `gitlab.yml` you indicate the path for the
+repositories, for example `/home/git/repositories`, while in Omnibus you
+indicate `git_data_dirs`, which for the example above would be `/home/git`.
+Then, Omnibus will create a `repositories` directory under that path to use with
+`gitlab.yml`.
+>
+This little detail matters because while restoring a backup, the current
+contents of  `/home/git/repositories` [are moved to][raketask] `/home/git/repositories.old`,
+so if `/home/git/repositories` is the mount point, then `mv` would be moving
+things between mount points, and bad things could happen. Ideally,
+`/home/git` would be the mount point, so then things would be moving within the
+same mount point. This is guaranteed with Omnibus installations (because they
+don't specify the full repository path but the parent path), but not for source
+installations.
 
-Edit the configuration files and add the full paths of the alternative repository
-storage paths. In the example below we added two more mountpoints that we named
-`nfs` and `cephfs` respectively.
+---
+
+Now that you've read that big fat warning above, let's edit the configuration
+files and add the full paths of the alternative repository storage paths. In
+the example below, we add two more mountpoints that are named `nfs` and `cephfs`
+respectively.
 
 **For installations from source**
 
@@ -39,17 +59,12 @@ storage paths. In the example below we added two more mountpoints that we named
 
 1. [Restart GitLab] for the changes to take effect.
 
-The `gitlab_shell: repos_path` entry in `gitlab.yml` will be deprecated and
-replaced by `repositories: storages` in the future, so if you are upgrading
-from a version prior to 8.10, make sure to add the configuration as described
-in the step above. After you make the changes and confirm they are working,
-you can remove:
-
-```yaml
-repos_path: /home/git/repositories
-```
-
-which is located under the `gitlab_shell` section.
+>**Note:**
+The [`gitlab_shell: repos_path` entry][repospath] in `gitlab.yml` will be
+deprecated and replaced by `repositories: storages` in the future, so if you
+are upgrading from a version prior to 8.10, make sure to add the configuration
+as described in the step above. After you make the changes and confirm they are
+working, you can remove the `repos_path` line.
 
 ---
 
@@ -79,3 +94,6 @@ be stored via the **Application Settings** in the Admin area.
 [ce-4578]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4578
 [restart gitlab]: restart_gitlab.md#installations-from-source
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure
+[backups]: ../raketasks/backup_restore.md
+[raketask]: https://gitlab.com/gitlab-org/gitlab-ce/blob/033e5423a2594e08a7ebcd2379bd2331f4c39032/lib/backup/repository.rb#L54-56
+[repospath]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-9-stable/config/gitlab.yml.example#L457
