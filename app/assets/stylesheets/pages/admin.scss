@@ -99,16 +99,20 @@
 }
 
 .abuse-reports {
-  table-layout: fixed;
-  .action-buttons a {
-    white-space: normal;
+  .btn-group {
+    margin-top: 4px;
   }
-  @media (min-width: $screen-sm-min) {
-    th {
-      width: 15%;
-      &.wide {
-        width: 55%;
-      }
+  .panel-body {
+    overflow-y: scroll;
+    max-height: 300px;
+  }
+  .no-reports {
+    .emoji-icon {
+      margin-left: $btn-side-margin;
+      margin-top: 3px;
+    }
+    span {
+      font-size: 19px;
     }
   }
 }
