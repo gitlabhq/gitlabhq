@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Limit git rev-list output count to one in forced push check
   - Retrieve rendered HTML from cache in one request
+  - Load project invited groups and members eagerly in ProjectTeam#fetch_members
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
