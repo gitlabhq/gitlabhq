@@ -21,7 +21,7 @@
 
 ## Administrator documentation
 
-- [Access restrictions](administration/access_restrictions.md) Define which Git access protocols can be used to talk to GitLab
+- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
