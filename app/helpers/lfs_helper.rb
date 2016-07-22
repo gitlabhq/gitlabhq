@@ -56,7 +56,8 @@ module LfsHelper
     @storage_project ||= begin
       result = project
 
-      while result.forked? do
+      loop do
+        break unless result.forked?
         result = result.forked_from_project
       end
 

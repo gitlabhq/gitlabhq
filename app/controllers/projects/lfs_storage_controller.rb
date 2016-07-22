@@ -16,12 +16,12 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
   def upload_authorize
     render(
-        json: {
-          StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
-          LfsOid: oid,
-          LfsSize: size,
-        },
-        content_type: 'application/json; charset=utf-8'
+      json: {
+        StoreLFSPath: "#{Gitlab.config.lfs.storage_path}/tmp/upload",
+        LfsOid: oid,
+        LfsSize: size,
+      },
+      content_type: 'application/json; charset=utf-8'
     )
   end
 
@@ -103,4 +103,3 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     end
   end
 end
-
