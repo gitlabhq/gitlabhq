@@ -3,11 +3,12 @@ project_tree:
   - issues:
     - :events
     - notes:
-        - :author
-        - :events
-  - :labels
-  - milestones:
-    - :events
+      - :author
+      - :events
+    - label_links:
+      - :label
+    - milestone:
+      - :events
   - snippets:
     - notes:
         :author
@@ -20,6 +21,10 @@ project_tree:
       - :events
     - :merge_request_diff
     - :events
+    - label_links:
+      - :label
+    - milestone:
+      - :events
   - pipelines:
     - notes:
       - :author
@@ -31,6 +36,9 @@ project_tree:
   - :services
   - :hooks
   - :protected_branches
+  - :labels
+  - milestones:
+    - :events
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -55,6 +63,10 @@ excluded_attributes:
     - :expired_at
   merge_request_diff:
     - :st_diffs
+  issues:
+    - :milestone_id
+  merge_requests:
+    - :milestone_id
 
 methods:
   statuses:
