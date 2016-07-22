@@ -32,7 +32,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   private
 
   def objects
-    (params[:objects] || []).to_a
+    @objects ||= (params[:objects] || []).to_a
   end
 
   def existing_oids
