@@ -35,6 +35,19 @@ module MilestonesHelper
     milestone.issues.with_label(label.title).send(state).size
   end
 
+  def milestone_count_by_state(project, state)
+    if project.nil?
+      nil
+    else
+      case state
+      when 'all' then @project.milestones.size
+      when 'closed' then @project.milestones.closed.size
+      when 'opened' then @project.milestones.active.size
+      else nil
+      end
+    end
+  end
+
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar progress-bar-success',

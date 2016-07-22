@@ -2,13 +2,17 @@
   max-width: 90%;
 }
 
-li.milestone {
-  h4 {
-    font-weight: bold;
-  }
+.milestones {
+  .milestone {
+    padding: 10px 16px;
 
-  .progress {
-    height: 6px;
+    h4 {
+      font-weight: bold;
+    }
+
+    .progress {
+      height: 6px;
+    }
   }
 }
 
