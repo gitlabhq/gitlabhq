@@ -216,11 +216,14 @@ describe API::API, api: true  do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             remove_source_branch: false
+
         expect(response).to have_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(['label', 'label2'])
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['should_remove_source_branch?']).to be false
       end
 
       it "should return 422 when source_branch equals target_branch" do
@@ -384,14 +387,6 @@ describe API::API, api: true  do
     end
   end
 
-  describe "PUT /projects/:id/merge_requests/:merge_request_id to close MR" do
-    it "should return merge_request" do
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
-      expect(response).to have_http_status(200)
-      expect(json_response['state']).to eq('closed')
-    end
-  end
-
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
     let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
@@ -470,8 +465,23 @@ describe API::API, api: true  do
   describe "PUT /projects/:id/merge_requests/:merge_request_id" do
     it "updates title and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), title: "New title"
+
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq('New title')
+    end
+
+    it "updates the state of the merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
+
+      expect(response).to have_http_status(200)
+      expect(json_response['state']).to eq('closed')
+    end
+
+    it 'updates the remove source branch setting' do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), remove_source_branch: false
+
+      expect(response).to have_http_status(200)
+      expect(json_response['should_remove_source_branch?']).to be false
     end
 
     it "updates description and returns merge_request" do
@@ -482,18 +492,21 @@ describe API::API, api: true  do
 
     it "updates milestone_id and returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), milestone_id: milestone.id
+
       expect(response).to have_http_status(200)
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
     it "should return 400 when source_branch is specified" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
+
       source_branch: "master", target_branch: "master"
       expect(response).to have_http_status(400)
     end
 
     it "should return merge_request with renamed target_branch" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
+
       expect(response).to have_http_status(200)
       expect(json_response['target_branch']).to eq('wiki')
     end
@@ -503,6 +516,7 @@ describe API::API, api: true  do
               user),
           title: 'new issue',
           labels: 'label, label?, label&foo, ?, &'
+
       expect(response.status).to eq(200)
       expect(json_response['labels']).to include 'label'
       expect(json_response['labels']).to include 'label?'

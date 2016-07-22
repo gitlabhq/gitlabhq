@@ -387,7 +387,8 @@ class MergeRequest < ActiveRecord::Base
     !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
       Ability.abilities.allowed?(current_user, :push_code, source_project) &&
-      diff_head_commit == source_branch_head
+      diff_head_commit == source_branch_head &&
+      !same_source_branch_merge_requests?
   end
 
   def mr_and_commit_notes
@@ -520,9 +521,7 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds = false
     self.merge_user = nil
-
-    merge_params.delete('commit_message') if merge_params
-
+    self.merge_params = nil
     self.save
   end
 

@@ -30,7 +30,7 @@ class Spinach::Features::ProjectMergeRequestsAcceptance < Spinach::FeatureSteps
     @user = create(:user)
     @project = create(:project, :public)
     @project_member = create(:project_member, :developer, user: @user, project: @project)
-    @merge_request = create(:merge_request, :with_diffs, :simple, source_project: @project)
+    @merge_request = create(:merge_request, :with_diffs, :simple, source_project: @project, remove_source_branch: false)
   end
 
   step 'I am signed in as a developer of the project' do

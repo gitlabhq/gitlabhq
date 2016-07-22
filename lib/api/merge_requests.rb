@@ -19,10 +19,17 @@ module API
           render_api_error!(errors, 400)
         end
 
-        def remove_source_branch?
-          parse_boolean(params[:should_remove_source_branch]) ||
-          parse_boolean(params[:force_remove_source_branch]) ||
-          parse_boolean(params[:remove_source_branch])
+        def remove_source_branch(merge_request)
+          # We only need the update the value if it differs from what we've got
+          # the to_boolean calls could return `nil`, which can't be inserted into
+          # to the `remove_source_branch` field as the column is restrained
+          new_value = to_boolean(params[:should_remove_source_branch]) ||
+                        to_boolean(params[:force_remove_source_branch]) ||
+                        to_boolean(params[:remove_source_branch])
+
+          if new_value != merge_request.remove_source_branch
+            merge_request.remove_source_branch = !merge_request.remove_source_branch
+          end
         end
       end
 
@@ -184,11 +191,13 @@ module API
         #   description                 - Description of MR
         #   labels (optional)           - Labels for a MR as a comma-separated list
         #   milestone_id (optional)     - Milestone ID
+        #   remove_source_branch (optional) - Should the source branch be deleted if the MR is merged?
+        #
         # Example:
         #   PUT /projects/:id/merge_requests/:merge_request_id
         #
         put path do
-          attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description, :milestone_id]
+          attrs = attributes_for_keys [:target_branch, :assignee_id, :title, :state_event, :description, :milestone_id, :remove_source_branch]
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           authorize! :update_merge_request, merge_request
 
@@ -223,7 +232,7 @@ module API
         #   id (required)                           - The ID of a project
         #   merge_request_id (required)             - ID of MR
         #   merge_commit_message (optional)         - Custom merge commit message
-        #   should_remove_source_branch (optional)  - When true, the source branch will be deleted if possible
+        #   remove_source_branch (optional)         - When true, the source branch will be deleted if possible
         #   merge_when_build_succeeds (optional)    - When true, this MR will be merged when the build succeeds
         #   sha (optional)                          - When present, must have the HEAD SHA of the source branch
         # Example:
@@ -245,7 +254,7 @@ module API
           end
 
           merge_params = { commit_message: params[:merge_commit_message] }
-          merge_request.remove_source_branch = remove_source_branch?
+          remove_source_branch(merge_request)
 
           if to_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
             ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).

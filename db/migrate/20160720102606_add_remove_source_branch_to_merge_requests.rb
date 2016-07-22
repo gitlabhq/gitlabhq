@@ -11,14 +11,14 @@ class AddRemoveSourceBranchToMergeRequests < ActiveRecord::Migration
   def up
     add_column_with_default(:merge_requests, :remove_source_branch, :boolean, default: true)
 
-    set_to_true = if Gitlab::Database.postgresql?
-                    execute "SELECT id FROM merge_requests WHERE merge_params ~* 'remove_source_branch:.+1';"
-                  else
-                    execute "SELECT id FROM merge_requests WHERE merge_params REGEXP 'remove_source_branch:.+1;'"
-                  end
+    set_to_false = if Gitlab::Database.postgresql?
+                     execute "SELECT id FROM merge_requests WHERE merge_params !~* 'remove_source_branch:.{0,2}1';"
+                   else
+                     execute "SELECT id FROM merge_requests WHERE merge_params NOT REGEXP 'remove_source_branch:.{0,2}1;'"
+                   end
 
-    set_to_true.each_slice(1000) do |ids|
-      MergeRequest.where(id: ids).update_all(remove_source_branch: true)
+    set_to_false.each_slice(1000) do |ids|
+      MergeRequest.where(id: ids).update_all(remove_source_branch: false)
     end
   end
 

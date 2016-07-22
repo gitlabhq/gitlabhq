@@ -56,7 +56,7 @@ module MergeRequests
     def after_merge
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
-      if remove_source_branch?
+      if merge_request.can_remove_source_branch?(branch_deletion_user)
         DeleteBranchService.new(@merge_request.source_project, branch_deletion_user).
           execute(merge_request.source_branch)
       end
@@ -64,14 +64,6 @@ module MergeRequests
 
     def branch_deletion_user
       @merge_request.remove_source_branch? ? @merge_request.author : current_user
-    end
-
-    def remove_source_branch?
-      return false unless @merge_request.remove_source_branch?
-
-      # If another MR in this project has the same source branch, we should not
-      # remove this branch
-      !@merge_request.same_source_branch_merge_requests?
     end
   end
 end

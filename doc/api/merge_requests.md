@@ -1,6 +1,6 @@
 # Merge requests
 
-Merge requests provide a way to contribute your way into the specified branch so your changes can combined with others.
+Merge requests provide a way to contribute your work into the specified branch so your changes can be combined with others.
 
 ## List merge requests
 
@@ -20,10 +20,10 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | no | Return the request having the given `iid` |
-| `state` | string | no | Return `all` requests or just those that are `merged`, `opened` or `closed` |
-| `order_by` | string | no | Return requests ordered by `created_at` or `updated_at` fields. Default is `created_at` |
-| `sort` | string | no | Return requests sorted in `asc` or `desc` order. Default is `desc` |
+| `iid` | integer | no | Return the MRs having the given `iid` |
+| `state` | string | no | Return `all` MRs or just those that are `merged`, `opened` or `closed` |
+| `order_by` | string | no | Return MRs ordered by `created_at` or `updated_at` fields. Default is `created_at` |
+| `sort` | string | no | Return MRs sorted in `asc` or `desc` order. Default is `desc` |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/
@@ -83,7 +83,7 @@ curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/p
 ]
 ```
 
-## Get single MR
+## Get a single Merge Request
 
 Shows information about a single merge request.
 
@@ -96,7 +96,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | no | Return the request having the given `iid` |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1
@@ -167,7 +167,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | no | Return the request having the given `iid` |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1/commits
@@ -209,12 +209,11 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | no | Return the request having the given `iid` |
+| `merge_request_id` | integer | no | Return the MR having the given `merge_request_id` |
 
 ```bash
 curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/21/merge_requests/1/changes
 ```
-
 
 ```json
 {
@@ -301,6 +300,7 @@ Parameters:
 | `target_project_id` | integer | no | The target project |
 | `labels` | string | no | Labels for MR as a comma-separated list |
 | `milestone_id` | string | no | Milestone ID |
+| `remove_source_branch` | boolean | no | Remove the source branch when the MR is merged |
 
 ```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests?source_branch=test1&target_branch=master&title=test1
@@ -366,7 +366,7 @@ If an error occurs, an error number and a message explaining the reason is retur
 Updates an existing merge request. You can change the target branch, title, or even close the MR.
 
 ```
-PUT /projects/:id/merge_requests/:iid
+PUT /projects/:id/merge_requests/:merge_request_id
 ```
 
 Parameters:
@@ -374,7 +374,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
-| `iid` | integer | yes | ID of MR |
+| `merge_request_id` | integer | yes | ID of MR |
 | `target_branch` | string | no | The target branch |
 | `assignee_id` | integer | no | Assignee user ID |
 | `title` | string | no |  Title of the new MR |
@@ -382,7 +382,7 @@ Parameters:
 | `target_project_id` | integer | no | The target project |
 | `labels` | string | no | Labels for MR as a comma-separated list |
 | `milestone_id` | string | no | Milestone ID |
-
+| `remove_source_branch` | boolean | no | Remove the source branch when the MR is merged |
 
 ```bash
 curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/merge_requests/1&title=test11
