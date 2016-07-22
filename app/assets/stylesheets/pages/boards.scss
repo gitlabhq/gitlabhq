@@ -1,0 +1,99 @@
+.issue-boards-page {
+  .page-with-sidebar {
+    display: flex;
+    min-height: 100vh;
+    max-height: 100vh;
+  }
+
+  .issue-boards-content {
+    display: flex;
+    height: 100%;
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
+}
+
+.boards-list {
+  display: flex;
+  height: 100%;
+  padding-top: 25px;
+  padding-right: ($gl-padding / 2);
+  padding-left: ($gl-padding / 2);
+  overflow-x: scroll;
+}
+
+.board {
+  min-width: 400px;
+  height: 100%;
+  min-height: 500px;
+  padding-right: ($gl-padding / 2);
+  padding-left: ($gl-padding / 2);
+}
+
+.board-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  font-size: $issue-boards-font-size;
+  background: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+}
+
+.board-inner-container {
+  border-bottom: 1px solid $border-color;
+  padding: $gl-padding;
+}
+
+.board-title {
+  margin: 0;
+  font-size: 1em;
+}
+
+.board-search-container {
+  background-color: #fff;
+}
+
+.board-list {
+  flex: 1;
+  margin: 0;
+  padding: 5px;
+  list-style: none;
+  overflow: scroll;
+}
+
+.card {
+  width: 100%;
+  padding: 10px $gl-padding;
+  background: #fff;
+  border-radius: $border-radius-default;
+  box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
+
+  &:not(:last-child) {
+    margin-bottom: 5px;
+  }
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1em;
+}
+
+.card-footer {
+  margin-top: 5px;
+
+  .label {
+    margin-right: 4px;
+    font-size: (14px / $issue-boards-font-size);
+  }
+}
+
+.card-number {
+  margin-right: 8px;
+  font-weight: 500;
+}
