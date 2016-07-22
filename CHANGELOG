@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.10.0 (unreleased)
+v 8.10.1 (unreleased)
+
+v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
