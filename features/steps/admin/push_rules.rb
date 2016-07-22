@@ -1,6 +1,6 @@
 require 'webmock'
 
-class Spinach::Features::AdminGitHooksSample < Spinach::FeatureSteps
+class Spinach::Features::AdminPushRulesSample < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
