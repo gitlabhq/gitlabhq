@@ -57,8 +57,15 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
 
 After installation or upgrade, remember to run the `add_limits_mysql` Rake task:
 
+**Omnibus GitLab installations**
 ```
-bundle exec rake add_limits_mysql
+sudo gitlab-rake add_limits_mysql
+```
+
+**Installations from source**
+
+```
+bundle exec rake add_limits_mysql RAILS_ENV=production
 ```
 
 The `text` type in MySQL has a different size limit than the `text` type in
