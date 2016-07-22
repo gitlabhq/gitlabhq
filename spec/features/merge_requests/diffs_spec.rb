@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Diffs URL', js: true, feature: true do
+  include WaitForAjax
+
   before do
     login_as :admin
     @merge_request = create(:merge_request)
@@ -153,6 +155,7 @@ feature 'Diffs URL', js: true, feature: true do
       expect(notes_holder_input[:class].include? notes_holder_input_class).to be true
       notes_holder_input.fill_in 'note[note]', with: test_note_comment
       click_button 'Comment'
+      wait_for_ajax
       expect(line_holder).to have_xpath notes_holder_input_xpath
       notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_saved[:class].include? notes_holder_input_class).to be false
