@@ -59,7 +59,7 @@ GEM
       oauth2 (~> 1.0)
     asciidoctor (1.5.3)
     ast (2.3.0)
-    attr_encrypted (3.0.1)
+    attr_encrypted (3.0.3)
       encryptor (~> 3.0.0)
     attr_required (1.0.0)
     autoprefixer-rails (6.2.3)
