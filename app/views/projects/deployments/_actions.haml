@@ -17,6 +17,6 @@
     - if local_assigns.fetch(:allow_rollback, false)
       = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
         - if deployment.last?
-          Retry
+          Re-deploy
         - else
           Rollback

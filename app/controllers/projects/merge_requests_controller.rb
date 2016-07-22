@@ -314,6 +314,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       status = pipeline.status
       coverage = pipeline.try(:coverage)
 
+      status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
+
       status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service

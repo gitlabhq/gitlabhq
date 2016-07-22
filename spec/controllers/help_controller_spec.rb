@@ -63,4 +63,13 @@ describe HelpController do
       end
     end
   end
+
+  describe 'GET #ui' do
+    context 'for UI Development Kit' do
+      it 'renders found' do
+        get :ui
+        expect(response).to have_http_status(200)
+      end
+    end
+  end
 end

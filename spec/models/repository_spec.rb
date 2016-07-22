@@ -130,6 +130,36 @@ describe Repository, models: true do
     end
   end
 
+  describe :commit_file do
+    it 'commits change to a file successfully' do
+      expect do
+        repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                              'Updates file content',
+                              'master', true)
+      end.to change { repository.commits('master').count }.by(1)
+
+      blob = repository.blob_at('master', 'CHANGELOG')
+
+      expect(blob.data).to eq('Changelog!')
+    end
+  end
+
+  describe :update_file do
+    it 'updates filename successfully' do
+      expect do
+        repository.update_file(user, 'NEWLICENSE', 'Copyright!',
+                                     branch: 'master',
+                                     previous_path: 'LICENSE',
+                                     message: 'Changes filename')
+      end.to change { repository.commits('master').count }.by(1)
+
+      files = repository.ls_files('master')
+
+      expect(files).not_to include('LICENSE')
+      expect(files).to include('NEWLICENSE')
+    end
+  end
+
   describe "search_files" do
     let(:results) { repository.search_files('feature', 'master') }
     subject { results }
@@ -719,6 +749,30 @@ describe Repository, models: true do
         repository.before_delete
       end
 
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
+
+        repository.before_delete
+      end
+
       it 'flushes the root ref cache' do
         expect(repository).to receive(:expire_root_ref_cache)
 
@@ -745,6 +799,30 @@ describe Repository, models: true do
 
       it 'flushes the caches that depend on repository data' do
         expect(repository).to receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
 
         repository.before_delete
       end

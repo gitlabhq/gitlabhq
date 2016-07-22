@@ -18,25 +18,35 @@ The `API_TOKEN` will take the Secure Variable value: `SECURE`.
 
 ### Predefined variables (Environment Variables)
 
-| Variable                | Runner | Description |
-|-------------------------|-----|--------|
-| **CI**                  | 0.4 | Mark that build is executed in CI environment |
-| **GITLAB_CI**           | all | Mark that build is executed in GitLab CI environment |
-| **CI_SERVER**           | all | Mark that build is executed in CI environment |
-| **CI_SERVER_NAME**      | all | CI server that is used to coordinate builds |
-| **CI_SERVER_VERSION**   | all | Not yet defined |
-| **CI_SERVER_REVISION**  | all | Not yet defined |
-| **CI_BUILD_REF**        | all | The commit revision for which project is built |
-| **CI_BUILD_TAG**        | 0.5 | The commit tag name. Present only when building tags. |
-| **CI_BUILD_NAME**       | 0.5 | The name of the build as defined in `.gitlab-ci.yml` |
-| **CI_BUILD_STAGE**      | 0.5 | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_BUILD_REF_NAME**   | all | The branch or tag name for which project is built |
-| **CI_BUILD_ID**         | all | The unique id of the current build that GitLab CI uses internally |
-| **CI_BUILD_REPO**       | all | The URL to clone the Git repository |
-| **CI_BUILD_TRIGGERED**  | 0.5 | The flag to indicate that build was [triggered] |
-| **CI_BUILD_TOKEN**      | 1.2 | Token used for authenticating with the GitLab Container Registry |
-| **CI_PROJECT_ID**       | all | The unique id of the current project that GitLab CI uses internally |
-| **CI_PROJECT_DIR**      | all | The full path where the repository is cloned and where the build is ran |
+| Variable                | GitLab | Runner | Description |
+|-------------------------|--------|--------|-------------|
+| **CI**                  | all    | 0.4    | Mark that build is executed in CI environment |
+| **GITLAB_CI**           | all    | all    | Mark that build is executed in GitLab CI environment |
+| **CI_SERVER**           | all    | all    | Mark that build is executed in CI environment |
+| **CI_SERVER_NAME**      | all    | all    | The name of CI server that is used to coordinate builds |
+| **CI_SERVER_VERSION**   | all    | all    | GitLab version that is used to schedule builds |
+| **CI_SERVER_REVISION**  | all    | all    | GitLab revision that is used to schedule builds |
+| **CI_BUILD_ID**         | all    | all    | The unique id of the current build that GitLab CI uses internally |
+| **CI_BUILD_REF**        | all    | all    | The commit revision for which project is built |
+| **CI_BUILD_TAG**        | all    | 0.5    | The commit tag name. Present only when building tags. |
+| **CI_BUILD_NAME**       | all    | 0.5    | The name of the build as defined in `.gitlab-ci.yml` |
+| **CI_BUILD_STAGE**      | all    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
+| **CI_BUILD_REF_NAME**   | all    | all    | The branch or tag name for which project is built |
+| **CI_BUILD_REPO**       | all    | all    | The URL to clone the Git repository |
+| **CI_BUILD_TRIGGERED**  | all    | 0.5    | The flag to indicate that build was [triggered] |
+| **CI_BUILD_TOKEN**      | all    | 1.2    | Token used for authenticating with the GitLab Container Registry |
+| **CI_PIPELINE_ID**      | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
+| **CI_PROJECT_ID**       | all    | all    | The unique id of the current project that GitLab CI uses internally |
+| **CI_PROJECT_NAME**     | 8.10   | 0.5    | The project name that is currently being built |
+| **CI_PROJECT_NAMESPACE**| 8.10   | 0.5    | The project namespace that is currently being built |
+| **CI_PROJECT_PATH**     | 8.10   | 0.5    | The namespace with project name |
+| **CI_PROJECT_URL**      | 8.10   | 0.5    | The HTTP address to access project |
+| **CI_PROJECT_DIR**      | all    | all    | The full path where the repository is cloned and where the build is run |
+| **CI_REGISTRY**         | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
+| **CI_REGISTRY_IMAGE**   | 8.10   | 0.5    | If the Container Registry is enabled for the project it returnes the address of the registry tied to the specific project |
+| **CI_RUNNER_ID**        | 8.10   | 0.5    | The unique id of runner being used |
+| **CI_RUNNER_DESCRIPTION** | 8.10 | 0.5    | The description of the runner as saved in GitLab |
+| **CI_RUNNER_TAGS**      | 8.10   | 0.5    | The defined runner tags |
 
 **Some of the variables are only available when using runner with at least defined version.**
 
@@ -46,18 +56,28 @@ Example values:
 export CI_BUILD_ID="50"
 export CI_BUILD_REF="1ecfd275763eff1d6b4844ea3168962458c9f27a"
 export CI_BUILD_REF_NAME="master"
-export CI_BUILD_REPO="https://gitlab.com/gitlab-org/gitlab-ce.git"
+export CI_BUILD_REPO="https://gitab-ci-token:abcde-1234ABCD5678ef@gitlab.com/gitlab-org/gitlab-ce.git"
 export CI_BUILD_TAG="1.0.0"
 export CI_BUILD_NAME="spec:other"
 export CI_BUILD_STAGE="test"
 export CI_BUILD_TRIGGERED="true"
 export CI_BUILD_TOKEN="abcde-1234ABCD5678ef"
-export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PIPELINE_ID="1000"
 export CI_PROJECT_ID="34"
+export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
+export CI_PROJECT_NAME="gitlab-ce"
+export CI_PROJECT_NAMESPACE="gitlab-org"
+export CI_PROJECT_PATH="gitlab-org/gitlab-ce"
+export CI_PROJECT_URL="https://gitlab.com/gitlab-org/gitlab-ce"
+export CI_REGISTRY="registry.gitlab.com"
+export CI_REGISTRY_IMAGE="registry.gitlab.com/gitlab-org/gitlab-ce"
+export CI_RUNNER_ID="10"
+export CI_RUNNER_DESCRIPTION="my runner"
+export CI_RUNNER_TAGS="docker, linux"
 export CI_SERVER="yes"
-export CI_SERVER_NAME="GitLab CI"
-export CI_SERVER_REVISION=""
-export CI_SERVER_VERSION=""
+export CI_SERVER_NAME="GitLab"
+export CI_SERVER_REVISION="8.9.0"
+export CI_SERVER_VERSION="70606bf"
 ```
 
 ### YAML-defined variables

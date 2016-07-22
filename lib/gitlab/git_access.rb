@@ -223,6 +223,7 @@ module Gitlab
 
     def deploy_key_can_read_project?
       if deploy_key
+        return true if project.public?
         deploy_key.projects.include?(project)
       else
         false

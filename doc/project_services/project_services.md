@@ -45,7 +45,7 @@ further configuration instructions and details. Contributions are welcome.
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |
 | [Redmine](redmine.md) | Redmine issue tracker |
-| Slack | A team communication tool for the 21st century |
+| [Slack](slack.md) | A team communication tool for the 21st century |
 
 ## Services Templates
 

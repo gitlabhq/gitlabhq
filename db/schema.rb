@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160716115710) do
+ActiveRecord::Schema.define(version: 20160721081015) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.integer  "max_attachment_size",                   default: 10,          null: false
     t.integer  "default_project_visibility"
     t.integer  "default_snippet_visibility"
-    t.text     "restricted_signup_domains"
+    t.text     "domain_whitelist"
     t.boolean  "user_oauth_applications",               default: true
     t.string   "after_sign_out_path"
     t.integer  "session_expire_delay",                  default: 10080,       null: false
@@ -96,6 +96,8 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
     t.boolean  "usage_ping_enabled",                    default: true,        null: false
+    t.boolean  "domain_blacklist_enabled",              default: false
+    t.text     "domain_blacklist"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -743,18 +745,19 @@ ActiveRecord::Schema.define(version: 20160716115710) do
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                                  null: false
-    t.string   "path",                                  null: false
+    t.string   "name",                                   null: false
+    t.string   "path",                                   null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description",           default: "",    null: false
+    t.string   "description",            default: "",    null: false
     t.string   "avatar"
     t.boolean  "membership_lock",       default: false
     t.boolean  "share_with_group_lock", default: false
     t.integer  "visibility_level",      default: 20,    null: false
     t.datetime "last_ldap_sync_at"
+    t.boolean  "request_access_enabled", default: true,  null: false
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
@@ -960,6 +963,8 @@ ActiveRecord::Schema.define(version: 20160716115710) do
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
     t.string   "repository_storage",                 default: "default", null: false
+    t.boolean  "has_external_wiki"
+    t.boolean  "request_access_enabled",             default: true,      null: false
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree

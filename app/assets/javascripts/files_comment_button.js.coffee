@@ -7,7 +7,6 @@ class @FilesCommentButton
   UNFOLDABLE_LINE_CLASS = 'js-unfold'
   EMPTY_CELL_CLASS = 'empty-cell'
   OLD_LINE_CLASS = 'old_line'
-  NEW_CLASS = 'new'
   LINE_COLUMN_CLASSES = ".#{LINE_NUMBER_CLASS}, .line_content"
   TEXT_FILE_SELECTOR = '.text-file'
   DEBOUNCE_TIMEOUT_DURATION = 100
@@ -18,6 +17,8 @@ class @FilesCommentButton
     debounce = _.debounce @render, DEBOUNCE_TIMEOUT_DURATION
 
     $(document)
+      .off 'mouseover', LINE_COLUMN_CLASSES
+      .off 'mouseleave', LINE_COLUMN_CLASSES
       .on 'mouseover', LINE_COLUMN_CLASSES, debounce
       .on 'mouseleave', LINE_COLUMN_CLASSES, @destroy
 
@@ -64,20 +65,20 @@ class @FilesCommentButton
   getLineContent: (hoveredElement) ->
     return hoveredElement if hoveredElement.hasClass LINE_CONTENT_CLASS
 
-    $(".#{LINE_CONTENT_CLASS + @diffTypeClass hoveredElement}", hoveredElement.parent())
+    if @VIEW_TYPE is 'inline'
+      return $(hoveredElement).closest(LINE_HOLDER_CLASS).find ".#{LINE_CONTENT_CLASS}"
+    else
+      return $(hoveredElement).next ".#{LINE_CONTENT_CLASS}"
 
   getButtonParent: (hoveredElement) ->
     if @VIEW_TYPE is 'inline'
       return hoveredElement if hoveredElement.hasClass OLD_LINE_CLASS
 
-      $(".#{OLD_LINE_CLASS}", hoveredElement.parent())
+      hoveredElement.parent().find ".#{OLD_LINE_CLASS}"
     else
       return hoveredElement if hoveredElement.hasClass LINE_NUMBER_CLASS
 
-      $(".#{LINE_NUMBER_CLASS + @diffTypeClass hoveredElement}", hoveredElement.parent())
-
-  diffTypeClass: (hoveredElement) ->
-    if hoveredElement.hasClass(NEW_CLASS) then '.new' else '.old'
+      $(hoveredElement).prev ".#{LINE_NUMBER_CLASS}"
 
   isMovingToSameType: (e) ->
     newButtonParent = @getButtonParent $(e.toElement)

@@ -112,8 +112,7 @@ module Banzai
       end
 
       def current_commit
-        @current_commit ||= context[:commit] ||
-          ref ? repository.commit(ref) : repository.head_commit
+        @current_commit ||= context[:commit] || ref ? repository.commit(ref) : repository.head_commit
       end
 
       def relative_url_root

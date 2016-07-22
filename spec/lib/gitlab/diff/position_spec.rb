@@ -338,4 +338,28 @@ describe Gitlab::Diff::Position, lib: true do
       end
     end
   end
+
+  describe "#to_json" do
+    let(:hash) do
+      {
+        old_path: "files/ruby/popen.rb",
+        new_path: "files/ruby/popen.rb",
+        old_line: nil,
+        new_line: 14,
+        base_sha: nil,
+        head_sha: nil,
+        start_sha: nil
+      }
+    end
+
+    let(:diff_position) { described_class.new(hash) }
+
+    it "returns the position as JSON" do
+      expect(JSON.parse(diff_position.to_json)).to eq(hash.stringify_keys)
+    end
+
+    it "works when nested under another hash" do
+      expect(JSON.parse(JSON.generate(pos: diff_position))).to eq('pos' => hash.stringify_keys)
+    end
+  end
 end

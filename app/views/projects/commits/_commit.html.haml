@@ -9,7 +9,8 @@
 
 = cache(cache_key) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
-    = commit_author_avatar(commit, size: 36)
+    = author_avatar(commit, size: 36)
+
     .commit-info-block
       .commit-row-title
         %span.item-title

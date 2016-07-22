@@ -9,12 +9,14 @@ module Files
 
       @commit_message = params[:commit_message]
       @file_path      = params[:file_path]
+      @previous_path  = params[:previous_path]
       @file_content   = if params[:file_content_encoding] == 'base64'
                           Base64.decode64(params[:file_content])
                         else
                           params[:file_content]
                         end
 
+      # Validate parameters
       validate
 
       # Create new branch if it different from source_branch

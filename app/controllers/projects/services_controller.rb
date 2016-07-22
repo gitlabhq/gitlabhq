@@ -1,21 +1,5 @@
 class Projects::ServicesController < Projects::ApplicationController
-  ALLOWED_PARAMS = [:title, :token, :type, :active, :api_key, :api_url, :api_version, :subdomain,
-                    :room, :recipients, :project_url, :webhook,
-                    :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
-                    :build_key, :server, :teamcity_url, :drone_url, :build_type,
-                    :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
-                    :colorize_messages, :channels,
-                    :push_events, :issues_events, :merge_requests_events, :tag_push_events,
-                    :note_events, :build_events,
-                    :notify_only_broken_builds, :add_pusher,
-                    :send_from_committer_email, :disable_diffs, :external_wiki_url,
-                    :notify, :color,
-                    :server_host, :server_port, :default_irc_uri, :enable_ssl_verification, :jira_issue_transition_id,
-                    :multiproject_enabled, :pass_unstable,
-                    :jenkins_url, :project_name]
-
-  # Parameters to ignore if no value is specified
-  FILTER_BLANK_PARAMS = [:password]
+  include ServiceParams
 
   # Authorize
   before_action :authorize_admin_project!
@@ -34,7 +18,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def update
-    if @service.update_attributes(service_params)
+    if @service.update_attributes(service_params[:service])
       redirect_to(
         edit_namespace_project_service_path(@project.namespace, @project,
                                             @service.to_param, notice:
@@ -64,13 +48,5 @@ class Projects::ServicesController < Projects::ApplicationController
 
   def service
     @service ||= @project.services.find { |service| service.to_param == params[:id] }
-  end
-
-  def service_params
-    service_params = params.require(:service).permit(ALLOWED_PARAMS)
-    FILTER_BLANK_PARAMS.each do |param|
-      service_params.delete(param) if service_params[param].blank?
-    end
-    service_params
   end
 end

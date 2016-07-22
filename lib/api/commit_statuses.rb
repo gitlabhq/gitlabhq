@@ -24,7 +24,7 @@ module API
 
         pipelines = user_project.pipelines.where(sha: params[:sha])
         statuses = ::CommitStatus.where(pipeline: pipelines)
-        statuses = statuses.latest unless parse_boolean(params[:all])
+        statuses = statuses.latest unless to_boolean(params[:all])
         statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
         statuses = statuses.where(stage: params[:stage]) if params[:stage].present?
         statuses = statuses.where(name: params[:name]) if params[:name].present?

@@ -90,6 +90,9 @@ GitLab account using the same e-mail address the invitation was sent to.
 
 ## Request access to a project
 
+As a project owner you can enable or disable non members to request access to
+your project. Go to the project settings and click on **Allow users to request access**.
+
 As a user, you can request to be a member of a project. Go to the project you'd
 like to be a member of, and click the **Request Access** button on the right
 side of your screen.

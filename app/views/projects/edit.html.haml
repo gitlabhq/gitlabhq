@@ -32,6 +32,10 @@
               %strong
                 = visibility_level_label(@project.visibility_level)
               .light= visibility_level_description(@project.visibility_level, @project)
+
+        .form-group
+          = render 'shared/allow_request_access', form: f
+
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
@@ -86,7 +90,6 @@
         %hr
         = render 'issues_settings', f: f
         = render 'merge_request_settings', f: f
-        = render 'builds_settings', f: f
         %hr
         %fieldset.features.append-bottom-default
           %h5.prepend-top-0

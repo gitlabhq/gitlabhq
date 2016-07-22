@@ -297,7 +297,7 @@ class ProjectsController < Projects::ApplicationController
       :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
       :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
-      :public_builds, :only_allow_merge_if_build_succeeds,
+      :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
 
       # EE-only
       :approvals_before_merge,

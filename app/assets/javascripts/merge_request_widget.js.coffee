@@ -66,10 +66,13 @@ class @MergeRequestWidget
       $('.mr-state-widget').replaceWith(data)
 
   ciLabelForStatus: (status) ->
-    if status is 'success'
-      'passed'
-    else
-      status
+    switch status
+      when 'success'
+        'passed'
+      when 'success_with_warnings'
+        'passed with warnings'
+      else
+        status
 
   pollCIStatus: ->
     @fetchBuildStatusInterval = setInterval ( =>
@@ -127,7 +130,7 @@ class @MergeRequestWidget
   showCIStatus: (state) ->
     return if not state?
     $('.ci_widget').hide()
-    allowed_states = ["failed", "canceled", "running", "pending", "success", "skipped", "not_found"]
+    allowed_states = ["failed", "canceled", "running", "pending", "success", "success_with_warnings", "skipped", "not_found"]
     if state in allowed_states
       $('.ci_widget.ci-' + state).show()
       switch state
@@ -135,7 +138,7 @@ class @MergeRequestWidget
           @setMergeButtonClass('btn-danger')
         when "running"
           @setMergeButtonClass('btn-warning')
-        when "success"
+        when "success", "success_with_warnings"
           @setMergeButtonClass('btn-create')
     else
       $('.ci_widget.ci-error').show()

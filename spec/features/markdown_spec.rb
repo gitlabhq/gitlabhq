@@ -236,6 +236,14 @@ describe 'GitLab Markdown', feature: true do
     it 'includes TaskListFilter' do
       expect(doc).to parse_task_lists
     end
+
+    it 'includes InlineDiffFilter' do
+      expect(doc).to parse_inline_diffs
+    end
+
+    it 'includes VideoLinkFilter' do
+      expect(doc).to parse_video_links
+    end
   end
 
   context 'wiki pipeline' do
@@ -292,6 +300,10 @@ describe 'GitLab Markdown', feature: true do
 
     it 'includes InlineDiffFilter' do
       expect(doc).to parse_inline_diffs
+    end
+
+    it 'includes VideoLinkFilter' do
+      expect(doc).to parse_video_links
     end
   end
 

@@ -49,12 +49,12 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'download_access_check' do
+    subject { access.check('git-upload-pack') }
+
     describe 'master permissions' do
       before { project.team << [user, :master] }
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_truthy }
       end
     end
@@ -63,8 +63,6 @@ describe Gitlab::GitAccess, lib: true do
       before { project.team << [user, :guest] }
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
@@ -76,16 +74,12 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
 
     describe 'without acccess to project' do
       context 'pull code' do
-        subject { access.download_access_check }
-
         it { expect(subject.allowed?).to be_falsey }
       end
     end
@@ -95,10 +89,31 @@ describe Gitlab::GitAccess, lib: true do
       let(:actor) { key }
 
       context 'pull code' do
-        before { key.projects << project }
-        subject { access.download_access_check }
+        context 'when project is authorized' do
+          before { key.projects << project }
 
-        it { expect(subject.allowed?).to be_truthy }
+          it { expect(subject).to be_allowed }
+        end
+
+        context 'when unauthorized' do
+          context 'from public project' do
+            let(:project) { create(:project, :public) }
+
+            it { expect(subject).to be_allowed }
+          end
+
+          context 'from internal project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'from private project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+        end
       end
     end
 
@@ -473,6 +488,41 @@ describe Gitlab::GitAccess, lib: true do
           project.create_push_rule
           project.push_rule.update(max_file_size: 2)
           expect(access.push_access_check('cfe32cf61b73a0d5e9f13e774abde7ff789b1660 913c66a37b4a45b9769037c55c2d238bd0942d2e refs/heads/master')).to be_allowed
+        end
+      end
+    end
+
+    describe 'deploy key permissions' do
+      let(:key) { create(:deploy_key) }
+      let(:actor) { key }
+
+      context 'push code' do
+        subject { access.check('git-receive-pack') }
+
+        context 'when project is authorized' do
+          before { key.projects << project }
+
+          it { expect(subject).not_to be_allowed }
+        end
+
+        context 'when unauthorized' do
+          context 'to public project' do
+            let(:project) { create(:project, :public) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'to internal project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
+
+          context 'to private project' do
+            let(:project) { create(:project, :internal) }
+
+            it { expect(subject).not_to be_allowed }
+          end
         end
       end
     end
