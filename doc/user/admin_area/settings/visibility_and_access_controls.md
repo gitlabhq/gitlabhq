@@ -1,6 +1,8 @@
-# Access Restrictions
+# Visibility and access controls
 
-> **Note:** These features are only available on versions 8.10 and above.
+## Enabled Git access protocols
+
+> [Introduced][ce-4696] in GitLab 8.10.
 
 With GitLab's Access restrictions you can choose which Git access protocols you
 want your users to use to communicate with GitLab. This feature can be enabled
@@ -14,8 +16,6 @@ to choose between:
 - Only HTTP(s)
 
 ![Settings Overview](img/access_restrictions.png)
-
-## Enabled Protocol
 
 When both SSH and HTTP(S) are enabled, GitLab will behave as usual, it will give
 your users the option to choose which protocol they would like to use.
@@ -37,20 +37,4 @@ not selected.
   HTTP, will still be accessible. What GitLab does is restrict access on the
   application level.
 
-## Blacklist email domains
-
-With this feature enabled, you can block email addresses of a specific domain
-from creating an account on your GitLab server. This is particularly useful to
-prevent spam. Disposable email addresses are usually used by malicious users to
-create dummy accounts and spam issues.
-
-This feature can be activated via the `Application Settings` in the Admin area,
-and you have the option of entering the list manually, or uploading a file with
-the list.
-
-The blacklist accepts wildcards, so you can use `*.test.com` to block every
-`test.com` subdomain, or `*.io` to block all domains ending in `.io`. Domains
-should be separated by a whitespace, semicolon, comma, or a new line.
-
-![Domain Blacklist](img/domain_blacklist.png)
-
+[ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
