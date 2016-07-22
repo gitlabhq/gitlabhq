@@ -1,11 +1,42 @@
 # Deploy Keys
 
-## List deploy keys
+## List all deploy keys
+
+Get a list of all deploy keys across all projects.
+
+```
+GET /deploy_keys
+```
+
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/deploy_keys"
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Public key",
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "created_at": "2013-10-02T10:12:29Z"
+  },
+  {
+    "id": 3,
+    "title": "Another Public key",
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "created_at": "2013-10-02T11:12:29Z"
+  }
+]
+```
+
+## List project deploy keys
 
 Get a list of a project's deploy keys.
 
 ```
-GET /projects/:id/keys
+GET /projects/:id/deploy_keys
 ```
 
 | Attribute | Type | Required | Description |
@@ -13,7 +44,7 @@ GET /projects/:id/keys
 | `id` | integer | yes | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys"
 ```
 
 Example response:
@@ -40,7 +71,7 @@ Example response:
 Get a single key.
 
 ```
-GET /projects/:id/keys/:key_id
+GET /projects/:id/deploy_keys/:key_id
 ```
 
 Parameters:
@@ -51,7 +82,7 @@ Parameters:
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys/11"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -73,7 +104,7 @@ If the deploy key already exists in another project, it will be joined to curren
 project only if original one was is accessible by the same user.
 
 ```
-POST /projects/:id/keys
+POST /projects/:id/deploy_keys
 ```
 
 | Attribute | Type | Required | Description |
@@ -83,7 +114,7 @@ POST /projects/:id/keys
 | `key`   | string  | yes | New deploy key |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/keys/"
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/deploy_keys/"
 ```
 
 Example response:
@@ -102,7 +133,7 @@ Example response:
 Delete a deploy key from a project
 
 ```
-DELETE /projects/:id/keys/:key_id
+DELETE /projects/:id/deploy_keys/:key_id
 ```
 
 | Attribute | Type | Required | Description |
@@ -111,7 +142,7 @@ DELETE /projects/:id/keys/:key_id
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/keys/13"
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/13"
 ```
 
 Example response:

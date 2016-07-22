@@ -1,6 +1,6 @@
 class Projects::UploadsController < Projects::ApplicationController
   skip_before_action :reject_blocked!, :project,
-    :repository, if: -> { action_name == 'show' && image? }
+    :repository, if: -> { action_name == 'show' && image_or_video? }
 
   before_action :authorize_upload_file!, only: [:create]
 
@@ -24,7 +24,7 @@ class Projects::UploadsController < Projects::ApplicationController
   def show
     return render_404 if uploader.nil? || !uploader.file.exists?
 
-    disposition = uploader.image? ? 'inline' : 'attachment'
+    disposition = uploader.image_or_video? ? 'inline' : 'attachment'
     send_file uploader.file.path, disposition: disposition
   end
 
@@ -49,7 +49,7 @@ class Projects::UploadsController < Projects::ApplicationController
     @uploader
   end
 
-  def image?
-    uploader && uploader.file.exists? && uploader.image?
+  def image_or_video?
+    uploader && uploader.file.exists? && uploader.image_or_video?
   end
 end

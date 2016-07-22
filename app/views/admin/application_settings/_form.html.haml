@@ -109,7 +109,7 @@
             Newly registered users will by default be external
 
   %fieldset
-    %legend Sign-in Restrictions
+    %legend Sign-up Restrictions
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -122,6 +122,49 @@
           = f.label :send_user_confirmation_email do
             = f.check_box :send_user_confirmation_email
             Send confirmation email on sign-up
+    .form-group
+      = f.label :domain_whitelist, 'Whitelisted domains for sign-ups', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :domain_whitelist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+        .help-block ONLY users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
+    .form-group
+      = f.label :domain_blacklist_enabled, 'Domain Blacklist', class: 'control-label col-sm-2'
+      .col-sm-10
+        .checkbox
+          = f.label :domain_blacklist_enabled do
+            = f.check_box :domain_blacklist_enabled
+            Enable domain blacklist for sign ups
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .radio
+          = label_tag :blacklist_type_file do
+            = radio_button_tag :blacklist_type, :file
+            .option-title
+              Upload blacklist file
+        .radio
+          = label_tag :blacklist_type_raw do
+            = radio_button_tag :blacklist_type, :raw, @application_setting.domain_blacklist.present? || @application_setting.domain_blacklist.blank?
+            .option-title
+              Enter blacklist manually
+    .form-group.blacklist-file
+      = f.label :domain_blacklist_file, 'Blacklist file', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.file_field :domain_blacklist_file, class: 'form-control', accept: '.txt,.conf'
+        .help-block Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines or commas for multiple entries.
+    .form-group.blacklist-raw
+      = f.label :domain_blacklist, 'Blacklisted domains for sign-ups', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :domain_blacklist_raw, placeholder: 'domain.com', class: 'form-control', rows: 8
+        .help-block Users with e-mail addresses that match these domain(s) will NOT be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
+
+    .form-group
+      = f.label :after_sign_up_text, class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
+        .help-block Markdown enabled
+
+  %fieldset
+    %legend Sign-in Restrictions
     .form-group
       .col-sm-offset-2.col-sm-10
         .checkbox
@@ -148,11 +191,6 @@
         = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
         .help-block Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
     .form-group
-      = f.label :restricted_signup_domains, 'Restricted domains for sign-ups', class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_area :restricted_signup_domains_raw, placeholder: 'domain.com', class: 'form-control'
-        .help-block Only users with e-mail addresses that match these domain(s) will be able to sign-up. Wildcards allowed. Use separate lines for multiple entries. Ex: domain.com, *.domain.com
-    .form-group
       = f.label :home_page_url, 'Home page URL', class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
@@ -166,11 +204,6 @@
       = f.label :sign_in_text, class: 'control-label col-sm-2'
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control', rows: 4
-        .help-block Markdown enabled
-    .form-group
-      = f.label :after_sign_up_text, class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.text_area :after_sign_up_text, class: 'form-control', rows: 4
         .help-block Markdown enabled
     .form-group
       = f.label :help_page_text, class: 'control-label col-sm-2'

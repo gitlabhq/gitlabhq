@@ -38,3 +38,14 @@ class @Admin
 
     $('li.group_member').bind 'ajax:success', ->
       Turbolinks.visit(location.href)
+
+    showBlacklistType = ->
+      if $("input[name='blacklist_type']:checked").val() == 'file'
+        $('.blacklist-file').show()
+        $('.blacklist-raw').hide()
+      else
+        $('.blacklist-file').hide()
+        $('.blacklist-raw').show()
+
+    $("input[name='blacklist_type']").click showBlacklistType
+    showBlacklistType()  

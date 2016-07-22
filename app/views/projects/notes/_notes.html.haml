@@ -1,10 +1,8 @@
 - if @discussions.present?
-  - @discussions.each do |discussion_notes|
-    - note = discussion_notes.first
-    - if note_for_main_target?(note)
-      = render partial: "projects/notes/note", object: note, as: :note
+  - @discussions.each do |discussion|
+    - if discussion.for_target?(@noteable)
+      = render partial: "projects/notes/note", object: discussion.first_note, as: :note
     - else
-      = render 'projects/notes/discussion', discussion_notes: discussion_notes
+      = render 'discussions/discussion', discussion: discussion
 - else
-  - @notes.each do |note|
-    = render partial: "projects/notes/note", object: note, as: :note
+  = render partial: "projects/notes/note", collection: @notes, as: :note

@@ -8,6 +8,7 @@
   .col-lg-9
     = form_for(@service, as: :service, url: namespace_project_service_path(@project.namespace, @project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |form|
       = render 'shared/service_settings', form: form
+
       = form.submit 'Save changes', class: 'btn btn-save'
       &nbsp;
       - if @service.valid? && @service.activated?

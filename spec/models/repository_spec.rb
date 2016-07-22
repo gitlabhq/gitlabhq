@@ -50,8 +50,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_first)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_last)
+          allow(tag_a).to receive(:target).and_return(double_first)
+          allow(tag_b).to receive(:target).and_return(double_last)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
@@ -64,8 +65,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_last)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_first)
+          allow(tag_a).to receive(:target).and_return(double_last)
+          allow(tag_b).to receive(:target).and_return(double_first)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
@@ -749,6 +751,30 @@ describe Repository, models: true do
         repository.before_delete
       end
 
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
+
+        repository.before_delete
+      end
+
       it 'flushes the root ref cache' do
         expect(repository).to receive(:expire_root_ref_cache)
 
@@ -775,6 +801,30 @@ describe Repository, models: true do
 
       it 'flushes the caches that depend on repository data' do
         expect(repository).to receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
 
         repository.before_delete
       end
@@ -1113,51 +1163,11 @@ describe Repository, models: true do
     end
   end
 
-  describe '#local_branches' do
-    it 'returns the local branches' do
-      masterrev = repository.find_branch('master').target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
-
-      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
-    end
-  end
-
-  describe '.clean_old_archives' do
-    let(:path) { Gitlab.config.gitlab.repository_downloads_path }
-
-    context 'when the downloads directory does not exist' do
-      it 'does not remove any archives' do
-        expect(File).to receive(:directory?).with(path).and_return(false)
-
-        expect(Gitlab::Popen).not_to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-
-    context 'when the downloads directory exists' do
-      it 'removes old archives' do
-        expect(File).to receive(:directory?).with(path).and_return(true)
-
-        expect(Gitlab::Popen).to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-  end
-
   describe "#keep_around" do
     it "stores a reference to the specified commit sha so it isn't garbage collected" do
       repository.keep_around(sample_commit.id)
 
       expect(repository.kept_around?(sample_commit.id)).to be_truthy
     end
-  end
-
-  def create_remote_branch(remote_name, branch_name, target)
-    rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
 end

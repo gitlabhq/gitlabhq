@@ -46,5 +46,20 @@ namespace :gitlab do
         Rake::Task['db:seed_fu'].invoke
       end
     end
+
+    desc 'Checks if migrations require downtime or not'
+    task :downtime_check, [:ref] => :environment do |_, args|
+      abort 'You must specify a Git reference to compare with' unless args[:ref]
+
+      require 'shellwords'
+
+      ref = Shellwords.escape(args[:ref])
+
+      migrations = `git diff #{ref}.. --name-only -- db/migrate`.lines.
+        map { |file| Rails.root.join(file.strip).to_s }.
+        select { |file| File.file?(file) }
+
+      Gitlab::DowntimeCheck.new.check_and_print(migrations)
+    end
   end
 end

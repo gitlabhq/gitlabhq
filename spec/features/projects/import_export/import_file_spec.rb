@@ -59,6 +59,21 @@ feature 'project import', feature: true, js: true do
     end
   end
 
+  scenario 'project with no name' do
+    create(:project, namespace_id: 2)
+
+    visit new_project_path
+
+    select2('2', from: '#project_namespace_id')
+
+    # click on disabled element
+    find(:link, 'GitLab export').trigger('click')
+
+    page.within('.flash-container') do
+      expect(page).to have_content('Please enter path and name')
+    end
+  end
+
   def wiki_exists?
     wiki = ProjectWiki.new(project)
     File.exist?(wiki.repository.path_to_repo) && !wiki.repository.empty?

@@ -16,7 +16,11 @@ class CommitStatus < ActiveRecord::Base
 
   alias_attribute :author, :user
 
-  scope :latest, -> { where(id: unscope(:select).select('max(id)').group(:name, :commit_id)) }
+  scope :latest, -> do
+    max_id = unscope(:select).select("max(#{quoted_table_name}.id)")
+
+    where(id: max_id.group(:name, :commit_id))
+  end
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }

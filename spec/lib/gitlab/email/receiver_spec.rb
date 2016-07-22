@@ -115,7 +115,6 @@ describe Gitlab::Email::Receiver, lib: true do
         [
           {
             url: "uploads/image.png",
-            is_image: true,
             alt: "image",
             markdown: markdown
           }
