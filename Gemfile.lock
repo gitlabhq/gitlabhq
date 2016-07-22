@@ -299,7 +299,7 @@ GEM
     gollum-rugged_adapter (0.4.2)
       mime-types (>= 1.15)
       rugged (~> 0.24.0, >= 0.21.3)
-    gon (6.0.1)
+    gon (6.1.0)
       actionpack (>= 3.0)
       json
       multi_json
@@ -571,7 +571,7 @@ GEM
       redis-store (~> 1.1.0)
     redis-store (1.1.7)
       redis (>= 2.2)
-    request_store (1.3.0)
+    request_store (1.3.1)
     rerun (0.11.0)
       listen (~> 3.0)
     responders (2.1.1)
@@ -866,7 +866,7 @@ DEPENDENCIES
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
   gollum-rugged_adapter (~> 0.4.2)
-  gon (~> 6.0.1)
+  gon (~> 6.1.0)
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
   hamlit (~> 2.5)
