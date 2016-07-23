@@ -882,9 +882,13 @@ class Project < ActiveRecord::Base
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
+    Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
     expire_caches_before_rename(old_path_with_namespace)
 
     if has_container_registry_tags?
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
+
       # we currently doesn't support renaming repository if it contains tags in container registry
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
@@ -903,16 +907,21 @@ class Project < ActiveRecord::Base
         SystemHooksService.new.execute_hooks_for(self, :rename)
 
         @repository = nil
-      rescue
+      rescue => e
+        Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end
     else
+      Rails.logger.error "Repository could not be renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
