@@ -47,6 +47,7 @@ class @MergeRequestWidget
     @cancelMergeOnSuccessButton = $('.js-cancel-automatic-merge')
     @mergeWhenSucceedsButton = $('.merge_when_build_succeeds')
     @removeSourceBranchButton = $('.remove_source_branch')
+    @removeSourceBranchWhenMergedButton = $('.remove_source_branch_when_merged')
     @addButtonEventListeners() unless skipListeners
 
   clearEventListeners: ->
@@ -57,6 +58,7 @@ class @MergeRequestWidget
     @acceptMergeRequestButton.off 'click'
     @cancelMergeOnSuccessButton.off 'click'
     @removeSourceBranchButton.off 'click'
+    @removeSourceBranchWhenMergedButton.off 'click'
 
   cancelPolling: ->
     @cancel = true
@@ -74,11 +76,12 @@ class @MergeRequestWidget
     @mergeWhenSucceedsButton.on 'click', (e) =>
       @mergeWhenSucceedsInput.val '1'
       @acceptMergeRequest e
+    @removeSourceBranchWhenMergedButton.on 'click', (e) =>
+      @mergeWhenSucceedsInput.val '1'
+      @acceptMergeRequest e, @removeSourceBranchWhenMergedButton.data 'url'
     @acceptMergeRequestButton.on 'click', (e) => @acceptMergeRequest e
     @cancelMergeOnSuccessButton.on 'click', (e) => @cancelMergeOnSuccess e
-    @removeSourceBranchButton.on 'click', (e) =>
-      @mergeWhenSucceedsInput.val '1'
-      @acceptMergeRequest e, @removeSourceBranchButton.data 'url'
+    @removeSourceBranchButton.on 'click', (e) => @removeSourceBranch e
 
   mergeInProgress: (deleteSourceBranch = false) ->
     $.ajax
@@ -206,7 +209,6 @@ class @MergeRequestWidget
         merge_when_build_succeeds: @mergeWhenSucceedsInput.val()
         should_remove_source_branch: @removeSourceBranchInput.val() if @removeSourceBranchInput.is ':checked'
     .done (res) =>
-      console.log res, 'res'
       if res.merge_in_progress?
         @mergeInProgress res.merge_in_progress
       else
@@ -223,3 +225,9 @@ class @MergeRequestWidget
       @mergeRequestWidgetBody.html res
       @getButtons()
       @getInputs()
+
+  removeSourceBranch: (e) ->
+    e.preventDefault()
+    $.ajax
+      method: 'DELETE',
+      url: @opts.removePath

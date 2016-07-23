@@ -5,7 +5,7 @@
 - if can_remove_source_branch || mr_can_be_reverted || mr_can_be_cherry_picked
   .clearfix.merged-buttons
     - if can_remove_source_branch
-      = link_to namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch), remote: true, method: :delete, class: "btn btn-default btn-sm remove_source_branch" do
+      = button_tag class: "btn btn-default btn-sm remove_source_branch" do
         = icon('trash-o')
         Remove Source Branch
     - if mr_can_be_reverted
