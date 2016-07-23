@@ -53,6 +53,10 @@
             Commits
             %span.badge= @commits_count
         - if @pipeline
+          %li.pipelines-tab
+            = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#pipelines', action: 'pipelines', toggle: 'tab'} do
+              Pipelines
+              %span.badge= @statuses.size
           %li.builds-tab
             = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
               Builds
@@ -75,6 +79,8 @@
         #commits.commits.tab-pane
           - # This tab is always loaded via AJAX
         #builds.builds.tab-pane
+          - # This tab is always loaded via AJAX
+        #pipelines.pipelines.tab-pane
           - # This tab is always loaded via AJAX
         #diffs.diffs.tab-pane
           - # This tab is always loaded via AJAX
