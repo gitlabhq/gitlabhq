@@ -1,11 +1,13 @@
 module MergeRequestsAction
   extend ActiveSupport::Concern
+  include IssuableCollections
 
   def merge_requests
-    @merge_requests = get_merge_requests_collection.non_archived
-    @merge_requests = @merge_requests.page(params[:page])
-    @merge_requests = @merge_requests.preload(:author, :target_project)
+    @label = merge_requests_finder.labels.first
 
-    @label = @issuable_finder.labels.first
+    @merge_requests = merge_requests_collection
+                      .non_archived
+                      .preload(:author, :target_project)
+                      .page(params[:page])
   end
 end

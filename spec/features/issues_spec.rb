@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include IssueHelpers
   include SortingHelper
 
   let(:project) { create(:project) }
@@ -186,15 +187,15 @@ describe 'Issues', feature: true do
     it 'sorts by newest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_recently_created)
 
-      expect(first_issue).to include('baz')
-      expect(last_issue).to include('foo')
+      expect(first_issue).to include('foo')
+      expect(last_issue).to include('baz')
     end
 
     it 'sorts by oldest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_oldest_created)
 
-      expect(first_issue).to include('foo')
-      expect(last_issue).to include('baz')
+      expect(first_issue).to include('baz')
+      expect(last_issue).to include('foo')
     end
 
     it 'sorts by most recently updated' do
@@ -350,8 +351,8 @@ describe 'Issues', feature: true do
                                             sort: sort_value_oldest_created,
                                             assignee_id: user2.id)
 
-        expect(first_issue).to include('foo')
-        expect(last_issue).to include('bar')
+        expect(first_issue).to include('bar')
+        expect(last_issue).to include('foo')
         expect(page).not_to have_content 'baz'
       end
     end
@@ -588,14 +589,6 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def first_issue
-    page.all('ul.issues-list > li').first.text
-  end
-
-  def last_issue
-    page.all('ul.issues-list > li').last.text
   end
 
   def drop_in_dropzone(file_path)

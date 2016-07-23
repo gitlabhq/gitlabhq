@@ -243,42 +243,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_filters_params
-    set_default_sort
-
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-
-    @sort = params[:sort]
-    @filter_params = params.dup
-
-    if @project
-      @filter_params[:project_id] = @project.id
-    elsif @group
-      @filter_params[:group_id] = @group.id
-    else
-      # TODO: this filter ignore issues/mr created in public or
-      # internal repos where you are not a member. Enable this filter
-      # or improve current implementation to filter only issues you
-      # created or assigned or mentioned
-      # @filter_params[:authorized_only] = true
-    end
-
-    @filter_params
-  end
-
-  def get_issues_collection
-    set_filters_params
-    @issuable_finder = IssuesFinder.new(current_user, @filter_params)
-    @issuable_finder.execute
-  end
-
-  def get_merge_requests_collection
-    set_filters_params
-    @issuable_finder = MergeRequestsFinder.new(current_user, @filter_params)
-    @issuable_finder.execute
-  end
-
   def import_sources_enabled?
     !current_application_settings.import_sources.empty?
   end
@@ -362,25 +326,5 @@ class ApplicationController < ActionController::Base
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
-  end
-
-  private
-
-  def set_default_sort
-    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
-            'issuable_sort'
-          end
-
-    cookies[key]  = params[:sort] if key && params[:sort].present?
-    params[:sort] = cookies[key] if key
-    params[:sort] ||= 'id_desc'
-  end
-
-  def is_a_listing_page_for?(page_type)
-    controller_name, action_name = params.values_at(:controller, :action)
-
-    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
-    (controller_name == 'groups' && action_name == page_type) ||
-    (controller_name == 'dashboard' && action_name == page_type)
   end
 end
