@@ -32,13 +32,13 @@ class @MergeRequestWidget
 
   getInputs: ->
     @acceptMergeRequestInput = $('.accept-mr-form :input')
+    @commitMessageInput = $('textarea[name=commit_message]')
     @mergeWhenSucceedsInput = $('input[name=merge_when_build_succeeds]')
     @removeSourceBranchInput = $('input[name=should_remove_source_branch]')
+    @shaInput = $('input[name=sha]')
+    @utfInput = $('input[name=utf8]')
 
     @authenticityTokenInput = $('input[name=authenticity_token]', @mergeRequestWidget)
-    @commitMessageInput = $('textarea[name=commit_message]', @mergeRequestWidget)
-    @shaInput = $('input[name=sha]', @mergeRequestWidget)
-    @utfInput = $('input[name=utf8]', @mergeRequestWidget)
 
   getButtons: (skipListeners) ->
     @dynamicMergeButton = $('.js-merge-button')
