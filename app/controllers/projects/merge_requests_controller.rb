@@ -356,7 +356,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def render_merge_request_widget_partial
     case @status
     when :success
-      render json: { merge_in_progress: true }
+      render json: { merge_in_progress: params[:should_remove_source_branch] == '1' }
     when :merge_when_build_succeeds
       render partial: 'projects/merge_requests/widget/open/merge_when_build_succeeds', layout: false
     when :sha_mismatch

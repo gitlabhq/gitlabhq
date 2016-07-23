@@ -206,7 +206,8 @@ class @MergeRequestWidget
         merge_when_build_succeeds: @mergeWhenSucceedsInput.val()
         should_remove_source_branch: @removeSourceBranchInput.val() if @removeSourceBranchInput.is ':checked'
     .done (res) =>
-      if res.merge_in_progress
+      console.log res, 'res'
+      if res.merge_in_progress?
         @mergeInProgress res.merge_in_progress
       else
         @mergeRequestWidgetBody.html res
