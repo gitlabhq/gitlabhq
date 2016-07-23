@@ -14,6 +14,7 @@ class @MergeRequestWidget
 
     @getInputs()
     @getButtons true
+
     @getMergeStatus() if @opts.checkStatus
 
     $('#modal_merge_info').modal(show: false)
@@ -99,6 +100,8 @@ class @MergeRequestWidget
   getMergeStatus: ->
     $.get @opts.mergeCheckUrl, (data) =>
       @mergeRequestWidget.replaceWith(data)
+      @getButtons()
+      @getInputs()
 
   ciLabelForStatus: (status) ->
     switch status
@@ -188,11 +191,10 @@ class @MergeRequestWidget
       .removeClass('btn-danger btn-warning btn-create')
       .addClass(css_class)
 
-  acceptMergeRequest: (e, url = null) ->
+  acceptMergeRequest: (e, url) ->
     e.preventDefault() if e
     @acceptMergeRequestInput.disable()
     @dynamicMergeButton.html '<i class="fa fa-spinner fa-spin"></i> Merge in progress'
-
     $.ajax
       method: 'POST'
       url: url || @opts.mergePath
@@ -202,7 +204,7 @@ class @MergeRequestWidget
         sha: @shaInput.val()
         commit_message: @commitMessageInput.val()
         merge_when_build_succeeds: @mergeWhenSucceedsInput.val()
-        should_remove_source_branch: @removeSourceBranchInput.val() if @removeSourceBranchInput.is ':checked' || removeSourceBranch
+        should_remove_source_branch: @removeSourceBranchInput.val() if @removeSourceBranchInput.is ':checked'
     .done (res) =>
       if res.merge_in_progress
         @mergeInProgress res.merge_in_progress

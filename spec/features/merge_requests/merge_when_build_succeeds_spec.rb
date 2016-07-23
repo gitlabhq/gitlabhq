@@ -30,7 +30,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
       end
 
       it 'activates Merge When Build Succeeds feature' do
-        expect(page).to have_link "Cancel Automatic Merge"
+        expect(page).to have_button "Cancel Automatic Merge"
 
         expect(page).to have_content "Set by #{user.name} to be merged automatically when the build succeeds."
         expect(page).to have_content "The source branch will not be removed."
@@ -56,7 +56,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
 
     it 'cancels the automatic merge' do
-      click_link "Cancel Automatic Merge"
+      click_button "Cancel Automatic Merge"
 
       expect(page).to have_button "Merge When Build Succeeds"
 
@@ -65,9 +65,9 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
     end
 
     it "allows the user to remove the source branch" do
-      expect(page).to have_link "Remove Source Branch When Merged"
+      expect(page).to have_button "Remove Source Branch When Merged"
 
-      click_link "Remove Source Branch When Merged"
+      click_button "Remove Source Branch When Merged"
       expect(page).to have_content "The source branch will be removed"
     end
   end
@@ -75,7 +75,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   context 'Build is not active' do
     it "does not allow for enabling" do
       visit_merge_request(merge_request)
-      expect(page).not_to have_link "Merge When Build Succeeds"
+      expect(page).not_to have_button "Merge When Build Succeeds"
     end
   end
 
