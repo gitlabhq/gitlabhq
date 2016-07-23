@@ -7,6 +7,9 @@ v 8.11.0 (unreleased)
   - Load project invited groups and members eagerly in ProjectTeam#fetch_members
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
 
+v 8.10.1 (unreleased)
+ - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
+
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Speed up ExternalWikiHelper#get_project_wiki_path
