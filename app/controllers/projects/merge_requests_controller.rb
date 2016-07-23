@@ -301,6 +301,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless @merge_request.can_cancel_merge_when_build_succeeds?(current_user)
 
     MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user).cancel(@merge_request)
+
+    render partial: 'projects/merge_requests/widget/open/accept', layout: false
   end
 
   def merge
@@ -344,6 +346,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       MergeWorker.perform_async(@merge_request.id, current_user.id, params)
       @status = :success
     end
+    case @status
+    when :success
+      render json: { merge_in_progress: (params[:should_remove_source_branch] == '1') }
+    when :merge_when_build_succeeds
+      render partial: 'projects/merge_requests/widget/open/merge_when_build_succeeds', layout: false
+    end
+    # - when :sha_mismatch
+    #   :plain
+    #     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/sha_mismatch'))}");
+    # - else
+    #   :plain
+    #     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");
   end
 
   def branch_from

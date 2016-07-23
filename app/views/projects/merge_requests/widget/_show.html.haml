@@ -18,4 +18,5 @@
   builds_path: builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
   pipelines_path: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
   merge_path: merge_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+  cancel_merge_on_success_path: cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request),
   check_status: (@merge_request.open? && @merge_request.unchecked?) } }

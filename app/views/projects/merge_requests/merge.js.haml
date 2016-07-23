@@ -1,10 +1,4 @@
 - case @status
-- when :success
-  :plain
-    merge_request_widget.mergeInProgress(#{params[:should_remove_source_branch] == '1'});
-- when :merge_when_build_succeeds
-  :plain
-    $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/merge_when_build_succeeds'))}");
 - when :sha_mismatch
   :plain
     $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/sha_mismatch'))}");

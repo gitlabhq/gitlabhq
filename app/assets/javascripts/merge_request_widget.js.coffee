@@ -1,15 +1,21 @@
 class @MergeRequestWidget
   # Initialize MergeRequestWidget behavior
   #
-  #   check_enable           - Boolean, whether to check automerge status
-  #   merge_check_url - String, URL to use to check automerge status
-  #   ci_status_url        - String, URL to use to check CI status
+  #   checkEnable           - Boolean, whether to check automerge status
+  #   mergeCheckUrl - String, URL to use to check automerge status
+  #   ciStatusUrl        - String, URL to use to check CI status
   #
 
   constructor: (opts) ->
+    @mergeRequestWidget = $('.mr-state-widget')
+    @mergeRequestWidgetBody = $('.mr-widget-body')
+
     @opts = opts || $('.js-merge-request-widget-options').data()
+
+    @getInputs()
+    @getButtons()
     console.log @opts
-    @getMergeStatus() if @opts.check_status
+    @getMergeStatus() if @opts.checkStatus
 
     $('#modal_merge_info').modal(show: false)
     @firstCICheck = true
@@ -23,9 +29,31 @@ class @MergeRequestWidget
     @pollCIStatus()
     notifyPermissions()
 
+  getInputs: ->
+    @acceptMergeRequestInput = $('.accept-mr-form :input')
+    @mergeWhenSucceedsInput = $('input[name=merge_when_build_succeeds]')
+    @removeSourceBranchInput = $('input[name=should_remove_source_branch]')
+
+    @utfInput = $('input[name=utf8]', @mergeRequestWidget)
+    @authenticityTokenInput = $('input[name=authenticity_token]', @mergeRequestWidget)
+    @shaInput = $('input[name=sha]', @mergeRequestWidget)
+    @commitMessageInput = $('textarea[name=commit_message]', @mergeRequestWidget)
+
+  getButtons: ->
+    @clearButtonEventListeners()
+    @dynamicMergeButton = $('.js-merge-button')
+    @acceptMergeRequestButton = $('.accept_merge_request')
+    @mergeWhenSucceedsButton = $('.merge_when_build_succeeds')
+    @cancelMergeOnSuccessButton = $('.js-cancel-automatic-merge')
+    @addButtonEventListeners()
+
   clearEventListeners: ->
     $(document).off 'page:change.merge_request'
-    $('.merge_when_build_succeeds').off 'click'
+
+  clearButtonEventListeners: ->
+    @mergeWhenSucceedsButton.off 'click' if @mergeWhenSucceedsButton
+    @acceptMergeRequestButton.off 'click' if @acceptMergeRequestButton
+    @cancelMergeOnSuccessButton.off 'click' if @cancelMergeOnSuccessButton
 
   cancelPolling: ->
     @cancel = true
@@ -38,28 +66,34 @@ class @MergeRequestWidget
         clearInterval @fetchBuildStatusInterval
         @cancelPolling()
         @clearEventListeners()
-    $('.merge_when_build_succeeds').on 'click', (e) => @setMergeWhenBuildSucceeds e
-    $('.accept_merge_request').on 'click', (e) => @acceptMergeRequest e
+
+  addButtonEventListeners: ->
+    @mergeWhenSucceedsButton.on 'click', (e) =>
+      @setMergeWhenBuildSucceeds e
+      @acceptMergeRequest()
+    @acceptMergeRequestButton.on 'click', (e) => @acceptMergeRequest e
+    @cancelMergeOnSuccessButton.on 'click', (e) => @cancelMergeOnSuccess e
 
   mergeInProgress: (deleteSourceBranch = false)->
     $.ajax
       type: 'GET'
       url: $('.merge-request').data('url')
-      success: (data) ->
+      dataType: 'json'
+      success: (data) =>
+        console.log 'mergeInProgress', data
         if data.state == "merged"
           urlSuffix = if deleteSourceBranch then '?delete_source=true' else ''
 
           window.location.href = window.location.pathname + urlSuffix
         else if data.merge_error
-          $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>")
+          @mergeRequestWidgetBody.html("<h4>" + data.merge_error + "</h4>")
         else
-          callback = -> merge_request_widget.mergeInProgress(deleteSourceBranch)
-          setTimeout(callback, 2000)
-      dataType: 'json'
+          setTimeout @mergeInProgress(deleteSourceBranch), 2000
 
   getMergeStatus: ->
-    $.get @opts.merge_check_url, (data) ->
-      $('.mr-state-widget').replaceWith(data)
+    $.get @opts.mergeCheckUrl, (data) =>
+      @mergeRequestWidget.replaceWith(data)
+      console.log @mergeRequestWidget
 
   ciLabelForStatus: (status) ->
     switch status
@@ -83,15 +117,15 @@ class @MergeRequestWidget
     _this = @
     $('.ci-widget-fetching').show()
 
-    $.getJSON @opts.ci_status_url, (data) =>
+    $.getJSON @opts.ciStatusUrl, (data) =>
       return if @cancel
       @readyForCICheck = true
 
       if data.status is ''
         return
 
-      if @firstCICheck || data.status isnt @opts.ci_status and data.status?
-        @opts.ci_status = data.status
+      if @firstCICheck || data.status isnt @opts.ciStatus and data.status?
+        @opts.ciStatus = data.status
         @showCIStatus data.status
         if data.coverage
           @showCICoverage data.coverage
@@ -102,12 +136,12 @@ class @MergeRequestWidget
           status = @ciLabelForStatus(data.status)
 
           if status is "preparing"
-            title = @opts.ci_title.preparing
+            title = @opts.ciTitle.preparing
             status = status.charAt(0).toUpperCase() + status.slice(1)
-            message = @opts.ci_message.preparing.replace('{{status}}', status)
+            message = @opts.ciMessage.preparing.replace('{{status}}', status)
           else
-            title = @opts.ci_title.normal
-            message = @opts.ci_message.normal.replace('{{status}}', status)
+            title = @opts.ciTitle.normal
+            message = @opts.ciMessage.normal.replace('{{status}}', status)
 
           title = title.replace('{{status}}', status)
           message = message.replace('{{sha}}', data.sha)
@@ -116,10 +150,10 @@ class @MergeRequestWidget
           notify(
             title,
             message,
-            @opts.gitlab_icon,
+            @opts.gitlabIcon,
             ->
               @close()
-              Turbolinks.visit _this.opts.builds_path
+              Turbolinks.visit _this.opts.buildsPath
           )
         @firstCICheck = false
 
@@ -151,19 +185,39 @@ class @MergeRequestWidget
 
   setMergeWhenBuildSucceeds: (e) ->
     e.preventDefault()
-    @whenBuildSucceedsInput ?= $("#merge_when_build_succeeds")
-    @whenBuildSucceedsInput.val '1'
-
+    @mergeWhenSucceedsInput.val '1'
 
   acceptMergeRequest: (e) ->
-    e.preventDefault()
-    @acceptMergeRequestInput ?= $('.accept-mr-form :input')
-    @acceptMergeButton ?= $('.js-merge-button')
+    e.preventDefault() if e
     @acceptMergeRequestInput.disable()
-    @acceptMergeButton.html '<i class="fa fa-spinner fa-spin"></i> Merge in progress'
+    @dynamicMergeButton.html '<i class="fa fa-spinner fa-spin"></i> Merge in progress'
+
     $.ajax
-      dataType: 'json'
       method: 'POST'
-      url: @opts.merge_path
-    .done (res) ->
-      console.log 'accept MR res', res
+      url: @opts.mergePath
+      data:
+        utf8: @utfInput.val()
+        authenticity_token: @authenticityTokenInput.val()
+        sha: @shaInput.val()
+        commit_message: @commitMessageInput.val()
+        merge_when_build_succeeds: @mergeWhenSucceedsInput.val()
+        should_remove_source_branch: @removeSourceBranchInput.val()
+    .done (res) =>
+      console.log 'accept mr res', res
+      if res.merge_in_progress
+        @mergeInProgress res.merge_in_progress
+      else
+        @mergeRequestWidgetBody.html res
+        @getButtons()
+        @getInputs()
+
+
+  cancelMergeOnSuccess: ->
+    $.ajax
+      method: 'POST'
+      url: @opts.cancelMergeOnSuccessPath
+    .done (res) =>
+      console.log 'cancel merge on success res', res
+      @mergeRequestWidgetBody.html res
+      @getButtons()
+      @getInputs()
