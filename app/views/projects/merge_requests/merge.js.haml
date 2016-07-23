@@ -1,7 +1,0 @@
-- case @status
-- when :sha_mismatch
-  :plain
-    $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/sha_mismatch'))}");
-- else
-  :plain
-    $('.mr-widget-body').html("#{escape_javascript(render('projects/merge_requests/widget/open/reload'))}");
