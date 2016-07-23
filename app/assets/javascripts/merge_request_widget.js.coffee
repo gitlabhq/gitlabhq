@@ -13,7 +13,7 @@ class @MergeRequestWidget
     @opts = opts || $('.js-merge-request-widget-options').data()
 
     @getInputs()
-    @getButtons()
+    @getButtons true
     @getMergeStatus() if @opts.checkStatus
 
     $('#modal_merge_info').modal(show: false)
@@ -22,7 +22,9 @@ class @MergeRequestWidget
     @cancel = false
     clearInterval @fetchBuildStatusInterval
 
+    @clearButtonEventListeners()
     @clearEventListeners()
+    @addButtonEventListeners()
     @addEventListeners()
     @getCIStatus(false)
     @pollCIStatus()
@@ -38,23 +40,22 @@ class @MergeRequestWidget
     @shaInput = $('input[name=sha]', @mergeRequestWidget)
     @utfInput = $('input[name=utf8]', @mergeRequestWidget)
 
-  getButtons: ->
-    @clearButtonEventListeners()
+  getButtons: (skipListeners) ->
     @dynamicMergeButton = $('.js-merge-button')
     @acceptMergeRequestButton = $('.accept_merge_request')
     @cancelMergeOnSuccessButton = $('.js-cancel-automatic-merge')
     @mergeWhenSucceedsButton = $('.merge_when_build_succeeds')
     @removeSourceBranchButton = $('.remove_source_branch')
-    @addButtonEventListeners()
+    @addButtonEventListeners() unless skipListeners
 
   clearEventListeners: ->
     $(document).off 'page:change.merge_request'
 
   clearButtonEventListeners: ->
-    @mergeWhenSucceedsButton.off 'click' if @mergeWhenSucceedsButton
-    @acceptMergeRequestButton.off 'click' if @acceptMergeRequestButton
-    @cancelMergeOnSuccessButton.off 'click' if @cancelMergeOnSuccessButton
-    @removeSourceBranchButton.off 'click' if @removeSourceBranchButton
+    @mergeWhenSucceedsButton.off 'click'
+    @acceptMergeRequestButton.off 'click'
+    @cancelMergeOnSuccessButton.off 'click'
+    @removeSourceBranchButton.off 'click'
 
   cancelPolling: ->
     @cancel = true
@@ -70,14 +71,13 @@ class @MergeRequestWidget
 
   addButtonEventListeners: ->
     @mergeWhenSucceedsButton.on 'click', (e) =>
-      @setMergeWhenBuildSucceeds e
-      @acceptMergeRequest()
+      @mergeWhenSucceedsInput.val '1'
+      @acceptMergeRequest e
     @acceptMergeRequestButton.on 'click', (e) => @acceptMergeRequest e
     @cancelMergeOnSuccessButton.on 'click', (e) => @cancelMergeOnSuccess e
     @removeSourceBranchButton.on 'click', (e) =>
-      @setRemoveSourceBranch e
-      @setMergeWhenBuildSucceeds()
-      @acceptMergeRequest()
+      @mergeWhenSucceedsInput.val '1'
+      @acceptMergeRequest e, @removeSourceBranchButton.data 'url'
 
   mergeInProgress: (deleteSourceBranch = false) ->
     $.ajax
@@ -188,29 +188,21 @@ class @MergeRequestWidget
       .removeClass('btn-danger btn-warning btn-create')
       .addClass(css_class)
 
-  setMergeWhenBuildSucceeds: (e) ->
-    e.preventDefault() if e
-    @mergeWhenSucceedsInput.val '1'
-
-  setRemoveSourceBranch: (e) ->
-    e.preventDefault() if e
-    @removeSourceBranchInput.val '1'
-
-  acceptMergeRequest: (e) ->
+  acceptMergeRequest: (e, url = null) ->
     e.preventDefault() if e
     @acceptMergeRequestInput.disable()
     @dynamicMergeButton.html '<i class="fa fa-spinner fa-spin"></i> Merge in progress'
 
     $.ajax
       method: 'POST'
-      url: @opts.mergePath
+      url: url || @opts.mergePath
       data:
         utf8: @utfInput.val()
         authenticity_token: @authenticityTokenInput.val()
         sha: @shaInput.val()
         commit_message: @commitMessageInput.val()
         merge_when_build_succeeds: @mergeWhenSucceedsInput.val()
-        should_remove_source_branch: @removeSourceBranchInput.val()
+        should_remove_source_branch: @removeSourceBranchInput.val() if @removeSourceBranchInput.is ':checked' || removeSourceBranch
     .done (res) =>
       if res.merge_in_progress
         @mergeInProgress res.merge_in_progress
@@ -218,7 +210,6 @@ class @MergeRequestWidget
         @mergeRequestWidgetBody.html res
         @getButtons()
         @getInputs()
-
 
   cancelMergeOnSuccess: (e) ->
     e.preventDefault() if e
