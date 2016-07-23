@@ -79,7 +79,7 @@ class @MergeRequestWidget
       @setMergeWhenBuildSucceeds()
       @acceptMergeRequest()
 
-  mergeInProgress: (deleteSourceBranch = false)->
+  mergeInProgress: (deleteSourceBranch = false) ->
     $.ajax
       type: 'GET'
       url: $('.merge-request').data('url')
@@ -92,7 +92,9 @@ class @MergeRequestWidget
         else if data.merge_error
           @mergeRequestWidgetBody.html("<h4>" + data.merge_error + "</h4>")
         else
-          setTimeout(@mergeInProgress(deleteSourceBranch), 2000)
+          setTimeout =>
+            @mergeInProgress(deleteSourceBranch)
+          , 2000
 
   getMergeStatus: ->
     $.get @opts.mergeCheckUrl, (data) =>
