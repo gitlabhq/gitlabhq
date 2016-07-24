@@ -70,12 +70,7 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
-    commit =
-      if ref.is_a?(Gitlab::Git::Commit)
-        ref
-      else
-        Gitlab::Git::Commit.find(raw_repository, ref)
-      end
+    commit = Gitlab::Git::Commit.find(raw_repository, ref)
     commit = ::Commit.new(commit, @project) if commit
     commit
   rescue Rugged::OdbError
@@ -261,10 +256,10 @@ class Repository
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
       number_commits_behind = raw_repository.
-        count_commits_between(branch.target.sha, root_ref_hash)
+        count_commits_between(branch.target, root_ref_hash)
 
       number_commits_ahead = raw_repository.
-        count_commits_between(root_ref_hash, branch.target.sha)
+        count_commits_between(root_ref_hash, branch.target)
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
@@ -688,7 +683,9 @@ class Repository
   end
 
   def local_branches
-    @local_branches ||= raw_repository.local_branches
+    @local_branches ||= rugged.branches.each(:local).map do |branch|
+      Gitlab::Git::Branch.new(branch.name, branch.target)
+    end
   end
 
   alias_method :branches, :local_branches
@@ -829,7 +826,7 @@ class Repository
   end
 
   def revert(user, commit, base_branch, revert_tree_id = nil)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).target
     revert_tree_id ||= check_revert_content(commit, base_branch)
 
     return false unless revert_tree_id
@@ -846,7 +843,7 @@ class Repository
   end
 
   def cherry_pick(user, commit, base_branch, cherry_pick_tree_id = nil)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).target
     cherry_pick_tree_id ||= check_cherry_pick_content(commit, base_branch)
 
     return false unless cherry_pick_tree_id
@@ -867,7 +864,7 @@ class Repository
   end
 
   def check_revert_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
     args << { mainline: 1 } if commit.merge_commit?
 
@@ -881,7 +878,7 @@ class Repository
   end
 
   def check_cherry_pick_content(commit, base_branch)
-    source_sha = find_branch(base_branch).target.sha
+    source_sha = find_branch(base_branch).target
     args       = [commit.id, source_sha]
     args << 1 if commit.merge_commit?
 
@@ -1046,7 +1043,7 @@ class Repository
   end
 
   def tags_sorted_by_committed_date
-    tags.sort_by { |tag| tag.target.committed_date }
+    tags.sort_by { |tag| commit(tag.target).committed_date }
   end
 
   def keep_around_ref_name(sha)

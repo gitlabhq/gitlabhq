@@ -1,5 +1,5 @@
 .branch-commit
-  = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-id monospace"
+  = link_to commit.short_id, namespace_project_commit_path(project.namespace, project, commit), class: "commit-id monospace"
   &middot;
   %span.str-truncated
     = link_to_gfm commit.title, namespace_project_commit_path(project.namespace, project, commit.id), class: "commit-row-message"
