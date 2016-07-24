@@ -32,26 +32,39 @@
 
 ## GitLab Flavored Markdown (GFM)
 
+> **Note:**
+Not all of the GitLab-specific extensions to Markdown that are described in
+this document currently work on our documentation website.
+>
+For the best result, we encourage you to check this document out as rendered
+by GitLab: [markdown.md]
+
 _GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
-You can use GFM in
+You can use GFM in the following areas:
 
 - comments
 - issues
 - merge requests
 - milestones
+- snippets (the snippet must be named with a `.md` extension)
 - wiki pages
+- markdown documents inside the repository
 
-You can also use other rich text files in GitLab. You might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+You can also use other rich text files in GitLab. You might have to install a
+dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
 ## Newlines
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#newlines
 
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
-Line-breaks, or softreturns, are rendered if you end a line with two or more spaces
+Line-breaks, or softreturns, are rendered if you end a line with two or more spaces:
 
     Roses are red [followed by two or more spaces]
     Violets are blue
@@ -65,17 +78,25 @@ Sugar is sweet
 
 ## Multiple underscores in words
 
-It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words.
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#multiple-underscores-in-words
+
+It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words:
 
     perform_complicated_task
+
     do_this_and_do_that_and_another_thing
 
 perform_complicated_task
+
 do_this_and_do_that_and_another_thing
 
 ## URL auto-linking
 
-GFM will autolink almost any URL you copy and paste into your text.
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#url-auto-linking
+
+GFM will autolink almost any URL you copy and paste into your text:
 
     * https://www.google.com
     * https://google.com/
@@ -93,8 +114,11 @@ GFM will autolink almost any URL you copy and paste into your text.
 
 ## Multiline Blockquote
 
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#multiline-blockquote
+
 On top of standard Markdown [blockquotes](#blockquotes), which require prepending `>` to quoted lines,
-GFM supports multiline blockquotes fenced by <code>>>></code>.
+GFM supports multiline blockquotes fenced by <code>>>></code>:
 
 ```no-highlight
 >>>
@@ -124,10 +148,15 @@ you can quote that without having to manually prepend `>` to every line!
 
 ## Code and Syntax Highlighting
 
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#code-and-syntax-highlighting
+
 _GitLab uses the [Rouge Ruby library][rouge] for syntax highlighting. For a
 list of supported languages visit the Rouge website._
 
-Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. Only the fenced code blocks support syntax highlighting.
+Blocks of code are either fenced by lines with three back-ticks <code>```</code>,
+or are indented with four spaces. Only the fenced code blocks support syntax
+highlighting:
 
 ```no-highlight
 Inline `code` has `back-ticks around` it.
@@ -189,6 +218,9 @@ But let's throw in a <b>tag</b>.
 
 ## Inline Diff
 
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#inline-diff
+
 With inline diffs tags you can display {+ additions +} or [- deletions -].
 
 The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
@@ -201,6 +233,9 @@ However the wrapping tags cannot be mixed as such:
 - [- deletions -}
 
 ## Emoji
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#emoji
 
 	Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
@@ -264,6 +299,9 @@ GFM also recognizes certain cross-project references:
 
 ## Task Lists
 
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#task-lists
+
 You can add task lists to issues, merge requests and comments. To create a task list, add a specially-formatted Markdown list, like so:
 
 ```no-highlight
@@ -283,6 +321,9 @@ You can add task lists to issues, merge requests and comments. To create a task 
 Task lists can only be created in descriptions, not in titles. Task item state can be managed by editing the description's Markdown or by toggling the rendered check boxes.
 
 ## Videos
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md#videos
 
 Image tags with a video extension are automatically converted to a video player.
 
@@ -599,7 +640,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is on its own line, because the previous line ends with two
 spaces.
 ```
@@ -611,7 +652,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is on its own line, because the previous line ends with two
 spaces.
 
@@ -657,6 +698,7 @@ By including colons in the header row, you can align the text within that column
 - The [Markdown Syntax Guide](https://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 - [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
 
+[markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/markdown/markdown.md
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [^1]: This link will be broken if you see this document from the Help page or docs.gitlab.com
