@@ -1,4 +1,0 @@
-%resolve-all{ ":namespace" => "'#{note.project.namespace.path}/#{note.project.path}'", ":discussion-id" => "'#{note.discussion_id}'", "inline-template" => true, "v-cloak" => true }
-  %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
-    = icon("spinner spin", "v-show" => "loading")
-    {{ buttonText }}

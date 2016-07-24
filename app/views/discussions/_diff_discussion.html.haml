@@ -7,6 +7,6 @@
     .discussion-reply-holder
       .discussion-with-resolve-btn{ role: "group" }
         .btn-group
-          = link_to_reply_discussion(note)
+          = link_to_reply_discussion(discussion)
         .btn-group
-          = render "projects/notes/discussions/resolve_all", note: note
+          = render "discussions/resolve_all", discussion: discussion

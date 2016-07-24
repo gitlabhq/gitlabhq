@@ -8,9 +8,9 @@
       .discussion-reply-holder
         .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
           .btn-group{ role: "group" }
-            = link_to_reply_discussion(note_left, 'old')
+            = link_to_reply_discussion(discussion_left, 'old')
           .btn-group{ role: "group" }
-            = render "projects/notes/discussions/resolve_all", note: note_left
+            = render "discussions/resolve_all", discussion: discussion_left
   - else
     %td.notes_line.old= ""
     %td.notes_content.parallel.old= ""
@@ -24,9 +24,9 @@
       .discussion-reply-holder
         .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
           .btn-group{ role: "group" }
-            = link_to_reply_discussion(note_right, 'new')
+            = link_to_reply_discussion(discussion_right, 'new')
           .btn-group{ role: "group" }
-            = render "projects/notes/discussions/resolve_all", note: note_right
+            = render "discussions/resolve_all", discussion: discussion_right
   - else
     %td.notes_line.new= ""
     %td.notes_content.parallel.new= ""
