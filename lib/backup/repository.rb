@@ -54,9 +54,9 @@ module Backup
         # Move repos dir to 'repositories.old' dir
         bk_repos_path = File.join(path, '..', 'repositories.old.' + Time.now.to_i.to_s)
         FileUtils.mv(path, bk_repos_path)
+        # This is expected from gitlab:check
+        FileUtils.mkdir_p(path, mode: 2770)
       end
-
-      FileUtils.mkdir_p(repos_path)
 
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
