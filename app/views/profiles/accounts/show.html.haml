@@ -70,7 +70,7 @@
               = link_to unlink_profile_account_path(provider: provider), method: :delete, class: 'provider-btn' do
                 Disconnect
           - else
-            = link_to provider_path(provider), method: :post, class: 'provider-btn not-active', "data-no-turbolink" => "true" do
+            = link_to omniauth_authorize_path(:user, provider), method: :post, class: 'provider-btn not-active', "data-no-turbolink" => "true" do
               Connect
   %hr
 - if current_user.can_change_username?
