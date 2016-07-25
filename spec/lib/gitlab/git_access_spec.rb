@@ -250,22 +250,20 @@ describe Gitlab::GitAccess, lib: true do
                                      state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             end
 
-            context "when the merge request is not in progress" do
-              before do
-                create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', in_progress_merge_commit_sha: nil)
-              end
+            run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: true }))
+          end
 
-              run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
+          context "when the merge request is not in progress" do
+            before do
+              create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', in_progress_merge_commit_sha: nil)
             end
+
+            run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
           end
 
           context "when a merge request does not exist for the given source/target branch" do
             run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
           end
-        end
-
-        context "when a merge request does not exist for the given source/target branch" do
-          run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: false }))
         end
       end
 
