@@ -111,7 +111,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :restricted_signup_domains, on: :create
+  before_validation :signup_domain_valid?, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -412,6 +412,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
+  #
+  # If you change the logic of this method, please also update `Project#authorized_for_user`
   def authorized_projects(min_access_level = nil)
     Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
@@ -760,29 +762,6 @@ class User < ActiveRecord::Base
     Project.where(id: events)
   end
 
-  def restricted_signup_domains
-    email_domains = current_application_settings.restricted_signup_domains
-
-    unless email_domains.blank?
-      match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*', '.*?')
-        regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
-        email_domain = Mail::Address.new(self.email).domain
-        email_domain =~ regexp
-      end
-
-      unless match_found
-        self.errors.add :email,
-                        'is not whitelisted. ' +
-                        'Email domains valid for registration are: ' +
-                        email_domains.join(', ')
-        return false
-      end
-    end
-
-    true
-  end
-
   def can_be_removed?
     !solo_owned_groups.present?
   end
@@ -880,5 +859,41 @@ class User < ActiveRecord::Base
 
     self.can_create_group   = false
     self.projects_limit     = 0
+  end
+
+  def signup_domain_valid?
+    valid = true
+    error = nil
+
+    if current_application_settings.domain_blacklist_enabled?
+      blocked_domains = current_application_settings.domain_blacklist
+      if domain_matches?(blocked_domains, self.email)
+        error = 'is not from an allowed domain.'
+        valid = false
+      end
+    end
+
+    allowed_domains = current_application_settings.domain_whitelist
+    unless allowed_domains.blank?
+      if domain_matches?(allowed_domains, self.email)
+        valid = true
+      else
+        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        valid = false
+      end
+    end
+
+    self.errors.add(:email, error) unless valid
+
+    valid
+  end
+
+  def domain_matches?(email_domains, email)
+    signup_domain = Mail::Address.new(email).domain
+    email_domains.any? do |domain|
+      escaped = Regexp.escape(domain).gsub('\*', '.*?')
+      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+      signup_domain =~ regexp
+    end
   end
 end

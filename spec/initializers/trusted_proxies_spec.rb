@@ -17,6 +17,12 @@ describe 'trusted_proxies', lib: true do
       expect(request.remote_ip).to eq('10.1.5.89')
       expect(request.ip).to eq('10.1.5.89')
     end
+
+    it 'filters out bad values' do
+      request = stub_request('HTTP_X_FORWARDED_FOR' => '(null), 10.1.5.89')
+      expect(request.remote_ip).to eq('10.1.5.89')
+      expect(request.ip).to eq('10.1.5.89')
+    end
   end
 
   context 'with private IP ranges added' do

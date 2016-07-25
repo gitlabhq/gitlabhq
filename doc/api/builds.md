@@ -291,7 +291,7 @@ Download the artifacts file from the given reference name and job provided the
 build finished successfully.
 
 ```
-GET /projects/:id/artifacts/:ref_name/download?job=name
+GET /projects/:id/builds/artifacts/:ref_name/download?job=name
 ```
 
 Parameters
@@ -305,7 +305,7 @@ Parameters
 Example request:
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/artifacts/master/download?job=test"
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/artifacts/master/download?job=test"
 ```
 
 Example response:

@@ -26,7 +26,7 @@ class Service < ActiveRecord::Base
 
   scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
-  scope :external_wikis, -> { where(type: 'ExternalWikiService') }
+  scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
 

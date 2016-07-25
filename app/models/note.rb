@@ -69,7 +69,7 @@ class Note < ActiveRecord::Base
              project: [:project_members, { group: [:group_members] }])
   end
 
-  before_validation :clear_blank_line_code!
+  before_validation :nullify_blank_type, :nullify_blank_line_code
   after_save :keep_around_commit
 
   class << self
@@ -82,11 +82,12 @@ class Note < ActiveRecord::Base
     end
 
     def discussions
-      all.group_by(&:discussion_id).values
+      Discussion.for_notes(all)
     end
 
-    def grouped_diff_notes
-      diff_notes.select(&:active?).sort_by(&:created_at).group_by(&:line_code)
+    def grouped_diff_discussions
+      notes = diff_notes.fresh.select(&:active?)
+      Discussion.for_diff_notes(notes).map { |d| [d.line_code, d] }.to_h
     end
 
     # Searches for notes matching the given query.
@@ -216,10 +217,6 @@ class Note < ActiveRecord::Base
     !system?
   end
 
-  def clear_blank_line_code!
-    self.line_code = nil if self.line_code.blank?
-  end
-
   def can_be_award_emoji?
     noteable.is_a?(Awardable)
   end
@@ -236,5 +233,13 @@ class Note < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.commit_id)
+  end
+
+  def nullify_blank_type
+    self.type = nil if self.type.blank?
+  end
+
+  def nullify_blank_line_code
+    self.line_code = nil if self.line_code.blank?
   end
 end

@@ -178,6 +178,17 @@ module MarkdownMatchers
       expect(actual).to have_selector('span.idiff.deletion', count: 2)
     end
   end
+
+  # VideoLinkFilter
+  matcher :parse_video_links do
+    set_default_markdown_messages
+
+    match do |actual|
+      video = actual.at_css('video')
+
+      expect(video['src']).to end_with('/assets/videos/gitlab-demo.mp4')
+    end
+  end
 end
 
 # Monkeypatch the matcher DSL so that we can reduce some noisy duplication for
