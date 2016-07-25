@@ -30,12 +30,12 @@ feature 'Diffs URL', js: true, feature: true do
     let(:notes_holder_input_class) { 'js-temp-notes-holder' }
     let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
     let(:test_note_comment) { 'this is a test note!' }
-    # line_holder = //*[contains(concat(" ", @class, " "), " line_holder "]
-    # old_line = child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " old ")]
-    # new_line = child::*[contains(concat(" ", @class, " ")," line_content ") and contains(concat(" ", @class, " ")," new ")]
-    # match_line = child::*[contains(concat(" ", @class, " ")," line_content ") and contains(concat(" ", @class, " ")," match ")]
-    # unchanged_line = child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and boolean(node()[1])]
-    # no_line = child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and not(boolean(node()[1]))]
+    # line_holder =
+    # old_line =
+    # new_line =
+    # match_line =
+    # unchanged_line =
+    # no_line =
 
     context 'when hovering over the parallel view diff file' do
       before(:each) do
@@ -146,35 +146,51 @@ feature 'Diffs URL', js: true, feature: true do
     end
 
     def should_allow_commenting(line_holder, diff_side = nil)
-      line = get_line diff_side
+      line = get_line_components line_holder, diff_side
       line[:content].hover
       expect(line[:num]).to have_css comment_button_class
+      comment_on_line line_holder, line
+      wait_for_ajax
+      assert_comment_persistence
+    end
+
+    def should_not_allow_commenting(line_holder, diff_side = nil)
+      line = get_line_components line_holder, diff_side
+      line[:content].hover
+      expect(line[:num]).not_to have_css comment_button_class
+    end
+
+    def get_line_components(line_holder, diff_side = nil)
+      if diff_side.nil?
+        get_inline_line_components line_holder
+      else
+        get_parallel_line_components line_holder, diff_side
+      end
+    end
+
+    def get_inline_line_components(line_holder)
+      { content: line_holder.first('.line_content'), num: line_holder.first('.diff-line-num') }
+    end
+
+    def get_parallel_line_components(line_holder, diff_side = nil)
+      side_index = diff_side == 'left' ? 0 : 1
+      { content: line_holder.all('.line_content')[side_index], num: line_holder.all('.diff-line-num')[side_index] }
+    end
+
+    def comment_on_line(line_holder, line)
       line[:num].find(comment_button_class).trigger 'click'
       expect(line_holder).to have_xpath notes_holder_input_xpath
       notes_holder_input = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_input[:class].include? notes_holder_input_class).to be true
       notes_holder_input.fill_in 'note[note]', with: test_note_comment
       click_button 'Comment'
-      wait_for_ajax
+    end
+
+    def assert_comment_persistence(line_holder)
       expect(line_holder).to have_xpath notes_holder_input_xpath
       notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_saved[:class].include? notes_holder_input_class).to be false
       expect(notes_holder_saved).to have_content test_note_comment
-    end
-
-    def should_not_allow_commenting(line_holder, diff_side = nil)
-      line = get_line diff_side
-      line[:content].hover
-      expect(line[:num]).not_to have_css comment_button_class
-    end
-
-    def get_line(diff_side = nil)
-      if diff_side.nil?
-        { content: line_holder.first('.line_content'), num: line_holder.first('.diff-line-num') }
-      else
-        side_index = diff_side == 'left' ? 0 : 1
-        { content: line_holder.all('.line_content')[side_index], num: line_holder.all('.diff-line-num')[side_index] }
-      end
     end
   end
 end
