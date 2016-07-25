@@ -1,4 +1,3 @@
-# encoding: utf-8
 class ArtifactUploader < CarrierWave::Uploader::Base
   storage :file
 

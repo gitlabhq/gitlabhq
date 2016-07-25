@@ -1,4 +1,3 @@
-# encoding: utf-8
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
