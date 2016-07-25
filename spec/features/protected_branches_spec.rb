@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Projected Branches', feature: true, js: true do
+  include WaitForAjax
+
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project) }
 
@@ -109,7 +111,7 @@ feature 'Projected Branches', feature: true, js: true do
           within('.dropdown-menu.push') { click_on access_type_name }
         end
 
-        expect(page).to have_content "Updated protected branch"
+        wait_for_ajax
         expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
       end
     end
@@ -140,7 +142,7 @@ feature 'Projected Branches', feature: true, js: true do
           within('.dropdown-menu.merge') { click_on access_type_name }
         end
 
-        expect(page).to have_content "Updated protected branch"
+        wait_for_ajax
         expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
       end
     end
