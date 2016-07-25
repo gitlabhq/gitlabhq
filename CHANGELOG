@@ -20,6 +20,7 @@ v 8.10.2 (unreleased)
   - Disable MySQL foreign key checks before dropping all tables. !5472
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
   - Ensure relative paths for video are rewritten as we do for images. !5474
+  - Ensure current user can retry a build before showing the 'Retry' button. !5476
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
