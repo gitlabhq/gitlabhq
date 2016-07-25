@@ -9,6 +9,7 @@ v 8.11.0 (unreleased)
 
 v 8.10.1 (unreleased)
  - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
+  - Fix Error 500 when creating Wiki pages with hyphens or spaces
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)

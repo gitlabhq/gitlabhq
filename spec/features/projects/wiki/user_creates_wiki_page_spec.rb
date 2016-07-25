@@ -30,18 +30,48 @@ feature 'Projects > Wiki > User creates wiki page', feature: true do
         WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
       end
 
-      scenario 'via the "new wiki page" page', js: true do
-        click_link 'New Page'
+      context 'via the "new wiki page" page' do
+        scenario 'when the wiki page has a single word name', js: true do
+          click_link 'New Page'
 
-        fill_in :new_wiki_path, with: 'foo'
-        click_button 'Create Page'
+          fill_in :new_wiki_path, with: 'foo'
+          click_button 'Create Page'
 
-        fill_in :wiki_content, with: 'My awesome wiki!'
-        click_button 'Create page'
+          fill_in :wiki_content, with: 'My awesome wiki!'
+          click_button 'Create page'
 
-        expect(page).to have_content('Foo')
-        expect(page).to have_content("last edited by #{user.name}")
-        expect(page).to have_content('My awesome wiki!')
+          expect(page).to have_content('Foo')
+          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content('My awesome wiki!')
+        end
+
+        scenario 'when the wiki page has spaces in the name', js: true do
+          click_link 'New Page'
+
+          fill_in :new_wiki_path, with: 'Spaces in the name'
+          click_button 'Create Page'
+
+          fill_in :wiki_content, with: 'My awesome wiki!'
+          click_button 'Create page'
+
+          expect(page).to have_content('Spaces in the name')
+          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content('My awesome wiki!')
+        end
+
+        scenario 'when the wiki page has hyphens in the name', js: true do
+          click_link 'New Page'
+
+          fill_in :new_wiki_path, with: 'hyphens-in-the-name'
+          click_button 'Create Page'
+
+          fill_in :wiki_content, with: 'My awesome wiki!'
+          click_button 'Create page'
+
+          expect(page).to have_content('Hyphens in the name')
+          expect(page).to have_content("last edited by #{user.name}")
+          expect(page).to have_content('My awesome wiki!')
+        end
       end
     end
   end
