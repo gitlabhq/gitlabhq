@@ -1,5 +1,5 @@
 %board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in state.boards | orderBy 'index'", ":board" => "board" }
-  .board{ ":class" => "{ 'is-draggable': !isPreset, 'is-faded': board.id != 'done' && newDone.issue }" }
+  .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.backgroundColor }" }
         %h3.board-title
@@ -18,20 +18,6 @@
           %span.sr-only
             Clear search
           = icon("times", class: "board-search-clear")
-      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters", ":done" => "newDone" }
-        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId", ":class" => "{ 'is-marking-done': boardId == 'done' && done.board }" }
+      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters" }
+        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId" }
           = render "projects/boards/components/card"
-        %issue-done{ "inline-template" => true, ":done" => "done", "v-if" => "boardId == 'done' && done.board" }
-          .board-done
-            %p
-              This issue is currently in the following lists:
-            %ul.board-done-label-list
-              %li{ "v-for" => "board in done.boards" }
-                %span.label{ ":style" => "{ 'background-color': board.label.backgroundColor, 'color': board.label.color }" }
-                {{ board.title }}
-            %p
-              Moving it to Done will remove it from all lists and close the issue.
-            %button.btn.btn-gray.btn-block.prepend-top-10{ type: "button", "@click" => "removeFromAll" }
-              Remove from all lists and close
-            %button.btn.btn-gray.btn-block{ type: "button", "@click" => "removeFromSingle" }
-              Remove from {{ done.board.title }} list

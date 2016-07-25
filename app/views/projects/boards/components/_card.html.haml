@@ -1,4 +1,4 @@
-%li.card{ ":data-issue" => "issue.id", "v-for" => "issue in issues | filterBy query in 'title' | filterBy customFilter | filterBy doneFilter" }
+%li.card{ ":data-issue" => "issue.id", "v-for" => "issue in issues | filterBy query in 'title' | filterBy customFilter" }
   %h4.card-title
     %a{ href: "#", ":title" => "issue.title" }
       {{ issue.title }}

@@ -27,25 +27,29 @@
       board.id is boardToId
     issue = _.find boardFrom.issues, (issue) ->
         issue.id is issueId
+    issueTo = _.find boardTo.issues, (issue) ->
+        issue.id is issueId
     issueBoards = BoardsStore.getBoardsForIssue(issue)
 
     # Remove the issue from old board
     boardFrom.issues = _.reject boardFrom.issues, (issue) ->
       issue.id is issueId
 
-    # Add to new boards issues
-    boardTo.issues.splice(toIndex, 0, issue)
+    # Add to new boards issues if it doesn't already exist
+    if issueTo?
+      issue = issueTo
+    else
+      boardTo.issues.splice(toIndex, 0, issue)
 
-    if boardTo.id is 'done' and issueBoards.length > 1
-      Vue.set(BoardsStore.state.done, 'board', boardFrom)
-      Vue.set(BoardsStore.state.done, 'issue', issue)
-      Vue.set(BoardsStore.state.done, 'boards', issueBoards)
-    else if boardTo.id is 'done' and boardFrom.id != 'backlog'
+    if boardTo.id is 'done' and boardFrom.id != 'backlog'
+      BoardsStore.removeIssueFromBoards(issue, issueBoards)
       issue.labels = _.reject issue.labels, (label) ->
         label.title is boardFrom.title
     else
       if boardTo.label?
-        BoardsStore.removeIssueFromBoard(issue, boardTo)
+        BoardsStore.removeIssueFromBoard(issue, boardFrom)
+        foundLabel = _.find issue.labels, (label) ->
+          label.title is boardTo.title
 
         unless foundLabel?
           issue.labels.push(boardTo.label)

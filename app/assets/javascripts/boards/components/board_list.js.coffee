@@ -5,13 +5,9 @@ BoardList = Vue.extend
     filters: Object
     issues: Array
     query: String
-    done: Object
   data: ->
     scrollOffset: 20
     loadMore: false
-  watch:
-    done: (done) ->
-      this.sortable.option('disabled', done.issue?)
   methods:
     listHeight: -> this.$els.list.getBoundingClientRect().height
     scrollHeight: -> this.$els.list.scrollHeight
@@ -21,11 +17,6 @@ BoardList = Vue.extend
       setTimeout =>
         this.loadMore = false
       , 2000
-    doneFilter: (issue) ->
-      if this.boardId is 'done' and this.done?.issue?
-        issue.id is this.done.issue.id
-      else
-        issue
     customFilter: (issue) ->
       returnIssue = issue
       if this.filters.author?.id
