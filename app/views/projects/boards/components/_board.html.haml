@@ -1,5 +1,5 @@
 %board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in state.boards | orderBy 'index'", ":board" => "board" }
-  .board{ ":class" => "{ 'is-draggable': !isPreset }" }
+  .board{ ":class" => "{ 'is-draggable': !isPreset, 'is-faded': board.id != 'done' && newDone.issue }" }
     .board-inner
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.backgroundColor }" }
         %h3.board-title
@@ -18,10 +18,10 @@
           %span.sr-only
             Clear search
           = icon("times", class: "board-search-clear")
-      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters" }
-        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId", ":class" => "{ 'is-marking-done': boardId == 'done' && newDone.board }" }
+      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters", ":done" => "newDone" }
+        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId", ":class" => "{ 'is-marking-done': boardId == 'done' && done.board }" }
           = render "projects/boards/components/card"
-        %issue-done{ "inline-template" => true, ":done" => "newDone", "v-if" => "boardId == 'done' && newDone.board" }
+        %issue-done{ "inline-template" => true, ":done" => "done", "v-if" => "boardId == 'done' && done.board" }
           .board-done
             %p
               This issue is currently in the following lists:

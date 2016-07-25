@@ -37,6 +37,10 @@
   height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
+
+  &.is-faded {
+    opacity: .4;
+  }
 }
 
 .board-inner {

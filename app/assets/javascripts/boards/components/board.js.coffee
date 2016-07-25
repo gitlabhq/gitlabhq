@@ -7,6 +7,7 @@ Board = Vue.extend
     clearSearch: ->
       this.query = ''
   computed:
+    newDone: -> BoardsStore.state.done
     isPreset: ->
       typeof this.board.id != 'number'
   ready: ->
