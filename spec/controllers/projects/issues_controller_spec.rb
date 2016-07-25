@@ -30,7 +30,7 @@ describe Projects::IssuesController do
         expect(response).to have_http_status(200)
       end
 
-      it "return 301 if request path doesn't match project path" do
+      it "returns 301 if request path doesn't match project path" do
         get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
 
         expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
@@ -119,21 +119,21 @@ describe Projects::IssuesController do
     let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
 
     describe 'GET #index' do
-      it 'should not list confidential issues for guests' do
+      it 'does not list confidential issues for guests' do
         sign_out(:user)
         get_issues
 
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should not list confidential issues for non project members' do
+      it 'does not list confidential issues for non project members' do
         sign_in(non_member)
         get_issues
 
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should not list confidential issues for project members with guest role' do
+      it 'does not list confidential issues for project members with guest role' do
         sign_in(member)
         project.team << [member, :guest]
 
@@ -142,7 +142,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should list confidential issues for author' do
+      it 'lists confidential issues for author' do
         sign_in(author)
         get_issues
 
@@ -150,7 +150,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).not_to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for assignee' do
+      it 'lists confidential issues for assignee' do
         sign_in(assignee)
         get_issues
 
@@ -158,7 +158,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for project members' do
+      it 'lists confidential issues for project members' do
         sign_in(member)
         project.team << [member, :developer]
 
@@ -168,7 +168,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for admin' do
+      it 'lists confidential issues for admin' do
         sign_in(admin)
         get_issues
 

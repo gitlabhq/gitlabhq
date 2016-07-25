@@ -87,7 +87,7 @@ feature 'Prioritize labels', feature: true do
   end
 
   context 'as a guest' do
-    it 'can not prioritize labels' do
+    it 'does not prioritize labels' do
       user = create(:user)
       guest = create(:user)
       project = create(:project, name: 'test', namespace: user.namespace)
@@ -102,7 +102,7 @@ feature 'Prioritize labels', feature: true do
   end
 
   context 'as a non signed in user' do
-    it 'can not prioritize labels' do
+    it 'does not prioritize labels' do
       user = create(:user)
       project = create(:project, name: 'test', namespace: user.namespace)
 
