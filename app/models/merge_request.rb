@@ -299,12 +299,8 @@ class MergeRequest < ActiveRecord::Base
   def reload_diff
     return unless open?
 
-    merge_request_diff = merge_request_diffs.create
-
     old_diff_refs = self.diff_refs
-
-    merge_request_diff.reload_content
-
+    create_merge_request_diff
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
