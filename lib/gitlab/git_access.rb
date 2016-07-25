@@ -134,7 +134,7 @@ module Gitlab
     end
 
     def build_status_object(status, message = '')
-      GitAccessStatus.new(status, message)
+      Gitlab::GitAccessStatus.new(status, message)
     end
   end
 end
