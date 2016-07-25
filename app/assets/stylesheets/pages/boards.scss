@@ -33,6 +33,7 @@
 
 .board {
   min-width: 400px;
+  max-width: 400px;
   height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
@@ -103,11 +104,27 @@
   }
 }
 
+.board-delete {
+  margin-right: 10px;
+  padding: 0;
+  color: $gray-darkest;
+  background-color: transparent;
+  border: 0;
+
+  &:hover {
+    color: $gl-link-color;
+  }
+}
+
 .board-list {
   flex: 1;
   margin: 0;
   padding: 5px;
   overflow: scroll;
+
+  &.is-marking-done {
+    flex: 0 0 auto;
+  }
 }
 
 .is-ghost {
@@ -153,4 +170,38 @@
 .card-number {
   margin-right: 8px;
   font-weight: 500;
+}
+
+.board-done {
+  flex: 1;
+  padding: 10px 18px;
+  color: #8c8c8c;
+  background-color: #fff;
+  border-top: 1px solid $border-color;
+
+  > p {
+    margin: 0;
+    font-size: 1em;
+  }
+}
+
+.board-done-label-list {
+  margin: 10px 0 10px 30px;
+  padding: 0;
+  color: #333;
+  list-style: none;
+
+  > li:not(:last-child) {
+    margin-bottom: 5px;
+  }
+
+  .label {
+    display: inline-block;
+    position: relative;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    border-radius: $border-radius-default;
+  }
 }

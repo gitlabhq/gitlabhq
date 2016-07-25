@@ -11,9 +11,9 @@ $ =>
   new Vue
     el: '#board-app'
     data:
-      boards: BoardsStore.state
+      state: BoardsStore.state
     ready: ->
       service
         .all()
         .then (resp) ->
-          BoardsStore.state.push(board) for board in resp.data
+          BoardsStore.state.boards.push(board) for board in resp.data

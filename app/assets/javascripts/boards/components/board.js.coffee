@@ -2,7 +2,7 @@ Board = Vue.extend
   props:
     board: Object
   data: ->
-    dragging: BoardsStore.dragging
+    filters: BoardsStore.state.filters
   methods:
     clearSearch: ->
       this.query = ''
