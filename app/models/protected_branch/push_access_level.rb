@@ -13,13 +13,16 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
   end
 
   def check_access(user)
-    if masters?
-      user.can?(:push_code, project) if project.team.master_or_greater?(user)
-    elsif developers?
-      user.can?(:push_code, project) if project.team.developer_or_greater?(user)
-    elsif no_one?
-      false
-    end
+    return false if no_one?
+    return true if user.is_admin?
+
+    min_member_access = if masters?
+                          Gitlab::Access::MASTER
+                        elsif developers?
+                          Gitlab::Access::DEVELOPER
+                        end
+
+    project.team.max_member_access(user.id) >= min_member_access
   end
 
   def humanize
