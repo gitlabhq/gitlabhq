@@ -4,6 +4,7 @@ v 8.10.1 (unreleased)
   - Refactor repository storages documentation. !5428
   - Gracefully handle case when keep-around references are corrupted or exist already. !5430
   - Add detailed info on storage path mountpoints. !5437
+  - Fix Error 500 when creating Wiki pages with hyphens or spaces. !5444
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
