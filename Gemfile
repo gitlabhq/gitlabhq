@@ -9,6 +9,7 @@ gem 'responders', '~> 2.0'
 # Specify a sprockets version due to increased performance
 # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
 gem 'sprockets', '~> 3.6.0'
+gem 'sprockets-es6'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
