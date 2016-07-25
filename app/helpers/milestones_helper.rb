@@ -38,12 +38,12 @@ module MilestonesHelper
   # Returns count of milestones for different states
   # Uses explicit hash keys as the 'opened' state URL params differs from the db value 
   # and we need to add the total
-  def milestone_counts(project:)
-    counts = @project.milestones.reorder(nil).group(:state).count()
+  def milestone_counts(milestones)
+    counts = milestones.reorder(nil).group(:state).count
     {
       opened: counts['active'],
       closed: counts['closed'],
-      all: counts['active'] + counts['closed']
+      all: counts.values.sum
     }
   end
 

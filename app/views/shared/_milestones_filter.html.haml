@@ -1,4 +1,4 @@
-- counts = milestone_counts(project: @project)
+- counts = milestone_counts(@project.milestones)
 
 %ul.nav-links
   %li{class: ("active" if params[:state].blank? || params[:state] == 'opened')}
