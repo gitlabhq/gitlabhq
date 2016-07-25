@@ -12,6 +12,7 @@ v 8.11.0 (unreleased)
 
 v 8.10.2 (unreleased)
   - Use project ID in repository cache to prevent stale data from persisting across projects
+  - Fix backup restore
 
 v 8.10.1 (unreleased)
   - Fix Error 500 when creating Wiki pages with hyphens or spaces
