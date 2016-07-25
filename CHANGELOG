@@ -13,6 +13,7 @@ v 8.11.0 (unreleased)
 
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
+  - Add ENV variable to skip repository storages validations
   - Fix backup restore. !5459
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
 
