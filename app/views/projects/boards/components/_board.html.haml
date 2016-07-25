@@ -31,7 +31,7 @@
                 {{ board.title }}
             %p
               Moving it to Done will remove it from all lists and close the issue.
-            %button.btn.btn-gray.btn-block.prepend-top-10{ type: "button" }
+            %button.btn.btn-gray.btn-block.prepend-top-10{ type: "button", "@click" => "removeFromAll" }
               Remove from all lists and close
-            %button.btn.btn-gray.btn-block{ type: "button" }
+            %button.btn.btn-gray.btn-block{ type: "button", "@click" => "removeFromSingle" }
               Remove from {{ done.board.title }} list

@@ -36,7 +36,7 @@
     # Add to new boards issues
     boardTo.issues.splice(toIndex, 0, issue)
 
-    if boardTo.id is 'done'
+    if boardTo.id is 'done' and issueBoards.length > 1
       Vue.set(BoardsStore.state.done, 'board', boardFrom)
       Vue.set(BoardsStore.state.done, 'issue', issue)
       Vue.set(BoardsStore.state.done, 'boards', issueBoards)
@@ -45,13 +45,23 @@
         label.title is boardFrom.title
     else
       if boardTo.label?
-        foundLabel = _.find issue.labels, (label) ->
-          label.title is boardTo.label.title
+        BoardsStore.removeIssueFromBoard(issue, boardTo)
 
         unless foundLabel?
           issue.labels.push(boardTo.label)
+  removeIssueFromBoards: (issue, boards) ->
+    boardLabels = _.map boards, (board) ->
+      board.label.title
+
+    issue.labels = _.reject issue.labels, (label) ->
+      boardLabels.indexOf(label.title) != -1
+  removeIssueFromBoard: (issue, board) ->
+    issue.labels = _.reject issue.labels, (label) ->
+      label.title is board.title
   getBoardsForIssue: (issue) ->
     _.filter BoardsStore.state.boards, (board) ->
       foundIssue = _.find board.issues, (boardIssue) ->
         issue?.id == boardIssue?.id
       foundIssue?
+  clearDone: ->
+    Vue.set(BoardsStore.state, 'done', {})
