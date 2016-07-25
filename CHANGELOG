@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.10.1 (unreleased)
+v 8.10.2 (unreleased)
+
+v 8.10.1
   - Refactor repository storages documentation. !5428
   - Gracefully handle case when keep-around references are corrupted or exist already. !5430
   - Add detailed info on storage path mountpoints. !5437
