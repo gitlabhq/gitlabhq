@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files !5456 (winniehell)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Limit git rev-list output count to one in forced push check
+  - Add green outline to New Branch button !5447 (winniehell)
   - Retrieve rendered HTML from cache in one request
   - Nokogiri's various parsing methods are now instrumented
   - Make fork counter always clickable !5463 (winniehell)

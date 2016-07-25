@@ -135,6 +135,15 @@
     @include btn-green;
   }
 
+  &.btn-inverted {
+    &.btn-success,
+    &.btn-new,
+    &.btn-create,
+    &.btn-save {
+      @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
+    }
+  }
+
   &.btn-gray {
     @include btn-gray;
   }
