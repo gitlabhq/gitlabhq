@@ -47,25 +47,25 @@ describe Projects::CommitController do
     end
 
     shared_examples "export as" do |format|
-      it "should generally work" do
+      it "does generally work" do
         go(id: commit.id, format: format)
 
         expect(response).to be_success
       end
 
-      it "should generate it" do
+      it "generates it" do
         expect_any_instance_of(Commit).to receive(:"to_#{format}")
 
         go(id: commit.id, format: format)
       end
 
-      it "should render it" do
+      it "renders it" do
         go(id: commit.id, format: format)
 
         expect(response.body).to eq(commit.send(:"to_#{format}"))
       end
 
-      it "should not escape Html" do
+      it "does not escape Html" do
         allow_any_instance_of(Commit).to receive(:"to_#{format}").
           and_return('HTML entities &<>" ')
 
@@ -88,7 +88,7 @@ describe Projects::CommitController do
         expect(response.body).to start_with("diff --git")
       end
 
-      it "should really only be a git diff without whitespace changes" do
+      it "is only be a git diff without whitespace changes" do
         go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format, w: 1)
 
         expect(response.body).to start_with("diff --git")
@@ -103,13 +103,13 @@ describe Projects::CommitController do
       include_examples "export as", :patch
       let(:format) { :patch }
 
-      it "should really be a git email patch" do
+      it "is a git email patch" do
         go(id: commit.id, format: format)
 
         expect(response.body).to start_with("From #{commit.id}")
       end
 
-      it "should contain a git diff" do
+      it "contains a git diff" do
         go(id: commit.id, format: format)
 
         expect(response.body).to match(/^diff --git/)
@@ -147,7 +147,7 @@ describe Projects::CommitController do
 
   describe 'POST revert' do
     context 'when target branch is not provided' do
-      it 'should render the 404 page' do
+      it 'renders the 404 page' do
         post(:revert,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -159,7 +159,7 @@ describe Projects::CommitController do
     end
 
     context 'when the revert was successful' do
-      it 'should redirect to the commits page' do
+      it 'redirects to the commits page' do
         post(:revert,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -180,7 +180,7 @@ describe Projects::CommitController do
             id: commit.id)
       end
 
-      it 'should redirect to the commit page' do
+      it 'redirects to the commit page' do
         # Reverting a commit that has been already reverted.
         post(:revert,
             namespace_id: project.namespace.to_param,
@@ -196,7 +196,7 @@ describe Projects::CommitController do
 
   describe 'POST cherry_pick' do
     context 'when target branch is not provided' do
-      it 'should render the 404 page' do
+      it 'renders the 404 page' do
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -208,7 +208,7 @@ describe Projects::CommitController do
     end
 
     context 'when the cherry-pick was successful' do
-      it 'should redirect to the commits page' do
+      it 'redirects to the commits page' do
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -229,7 +229,7 @@ describe Projects::CommitController do
             id: master_pickable_commit.id)
       end
 
-      it 'should redirect to the commit page' do
+      it 'redirects to the commit page' do
         # Cherry-picking a commit that has been already cherry-picked.
         post(:cherry_pick,
             namespace_id: project.namespace.to_param,
