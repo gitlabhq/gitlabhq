@@ -6,6 +6,7 @@ v 8.10.2 (unreleased)
   - Fix backup restore. !5459
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
   - Fix issue with autocomplete search not working with enter key. !5466
+  - Add iid to MR API response. !5468
   - Don't show comment button in gutter of diffs on MR discussion tab
 
 v 8.10.1
