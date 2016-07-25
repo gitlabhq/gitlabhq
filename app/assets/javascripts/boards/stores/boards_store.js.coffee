@@ -53,6 +53,10 @@
     boardLabels = _.map boards, (board) ->
       board.label.title
 
+    boards.issues = _.each boards, (board) ->
+      board.issues = _.reject board.issues, (boardIssue) ->
+        issue.id is boardIssue.id
+
     issue.labels = _.reject issue.labels, (label) ->
       boardLabels.indexOf(label.title) != -1
   removeIssueFromBoard: (issue, board) ->
