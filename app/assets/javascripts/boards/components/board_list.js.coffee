@@ -38,8 +38,6 @@ BoardList = Vue.extend
     Sortable.create this.$els.list,
       group: 'issues'
       disabled: this.disabled
-      animation: 150
-      scroll: document.getElementById('board-app')
       scrollSensitivity: 150
       scrollSpeed: 50
       forceFallback: true
