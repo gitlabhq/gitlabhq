@@ -63,6 +63,7 @@ class @SearchAutocomplete
         data: @getData.bind(@)
         selectable: true
         clicked: @onClick.bind(@)
+        id: (data) -> _.escape(data.text)
 
   getData: (term, callback) ->
     _this = @
