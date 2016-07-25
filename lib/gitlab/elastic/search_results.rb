@@ -16,13 +16,13 @@ module Gitlab
       def objects(scope, page = nil)
         case scope
         when 'projects'
-          projects.records.page(page).per(per_page)
+          projects.page(page).per(per_page).records
         when 'issues'
-          issues.records.page(page).per(per_page)
+          issues.page(page).per(per_page).records
         when 'merge_requests'
-          merge_requests.records.page(page).per(per_page)
+          merge_requests.page(page).per(per_page).records
         when 'milestones'
-          milestones.records.page(page).per(per_page)
+          milestones.page(page).per(per_page).records
         else
           Kaminari.paginate_array([])
         end

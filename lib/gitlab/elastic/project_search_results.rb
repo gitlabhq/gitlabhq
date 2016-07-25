@@ -21,7 +21,7 @@ module Gitlab
       def objects(scope, page = nil)
         case scope
         when 'notes'
-          notes.records.page(page).per(per_page)
+          notes.page(page).per(per_page).records
         when 'blobs'
           blobs.page(page).per(per_page)
         when 'wiki_blobs'
