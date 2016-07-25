@@ -1033,7 +1033,7 @@ class Repository
   private
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace)
+    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
   end
 
   def head_exists?
