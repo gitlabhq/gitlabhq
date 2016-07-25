@@ -14,6 +14,7 @@ v 8.11.0 (unreleased)
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
   - Fix backup restore. !5459
+  - Disable MySQL foreign key checks before dropping all tables. !5472
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
 
 v 8.10.1
