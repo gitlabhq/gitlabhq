@@ -1,6 +1,15 @@
 module ProtectedBranches
   class BaseService < ::BaseService
+    include API::Helpers
+
+    def initialize(project, current_user, params = {})
+      super(project, current_user, params)
+      @allowed_to_push = params[:allowed_to_push]
+      @allowed_to_merge = params[:allowed_to_merge]
+    end
+
     def set_access_levels!
+      translate_api_params!
       set_merge_access_levels!
       set_push_access_levels!
     end
@@ -8,7 +17,7 @@ module ProtectedBranches
     protected
 
     def set_merge_access_levels!
-      case params[:allowed_to_merge]
+      case @allowed_to_merge
       when 'masters'
         @protected_branch.merge_access_level.masters!
       when 'developers'
@@ -17,7 +26,7 @@ module ProtectedBranches
     end
 
     def set_push_access_levels!
-      case params[:allowed_to_push]
+      case @allowed_to_push
       when 'masters'
         @protected_branch.push_access_level.masters!
       when 'developers'
@@ -25,6 +34,27 @@ module ProtectedBranches
       when 'no_one'
         @protected_branch.push_access_level.no_one!
       end
+    end
+
+    # The `branches` API still uses `developers_can_push` and `developers_can_merge`,
+    # which need to be translated to `allowed_to_push` and `allowed_to_merge`,
+    # respectively.
+    def translate_api_params!
+      @allowed_to_push ||=
+        case to_boolean(params[:developers_can_push])
+        when true
+          'developers'
+        when false
+          'masters'
+        end
+
+      @allowed_to_merge ||=
+        case to_boolean(params[:developers_can_merge])
+        when true
+          'developers'
+        when false
+          'masters'
+        end
     end
   end
 end
