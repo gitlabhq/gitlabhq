@@ -30,12 +30,6 @@ feature 'Diffs URL', js: true, feature: true do
     let(:notes_holder_input_class) { 'js-temp-notes-holder' }
     let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
     let(:test_note_comment) { 'this is a test note!' }
-    # line_holder =
-    # old_line =
-    # new_line =
-    # match_line =
-    # unchanged_line =
-    # no_line =
 
     context 'when hovering over the parallel view diff file' do
       before(:each) do
@@ -44,7 +38,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with an old line on the left and no line on the right' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " old ")] and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and not(boolean(node()[1]))]]' }
+        let(:line_holder) { find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..') }
 
         it 'should allow commenting on the left side' do
           should_allow_commenting line_holder, 'left'
@@ -56,7 +50,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with no line on the left and a new line on the right' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and not(boolean(node()[1]))] and child::*[contains(concat(" ", @class, " ")," line_content ") and contains(concat(" ", @class, " ")," new ")]]' }
+        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..') }
 
         it 'should not allow commenting on the left side' do
           should_not_allow_commenting line_holder, 'left'
@@ -68,7 +62,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with an old line on the left and a new line on the right' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " old ")] and child::*[contains(concat(" ", @class, " ")," line_content ") and contains(concat(" ", @class, " ")," new ")]]' }
+        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..') }
 
         it 'should allow commenting on the left side' do
           should_allow_commenting line_holder, 'left'
@@ -80,7 +74,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with an unchanged line on the left and an unchanged line on the right' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and boolean(node()[1])] and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and boolean(node()[1])]]' }
+        let(:line_holder) { first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..') }
 
         it 'should allow commenting on the left side' do
           should_allow_commenting line_holder, 'left'
@@ -92,7 +86,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with a match line' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " match ")] and child::*[contains(concat(" ", @class, " ")," line_content ") and contains(concat(" ", @class, " ")," match ")]]' }
+        let(:line_holder) { first('.match').find(:xpath, '..') }
 
         it 'should not allow commenting on the left side' do
           should_not_allow_commenting line_holder, 'left'
@@ -113,7 +107,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with a new line' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " new ")]]' }
+        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]') }
 
         it 'should allow commenting' do
           should_allow_commenting line_holder
@@ -121,7 +115,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with an old line' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " old ")]]' }
+        let(:line_holder) { find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]') }
 
         it 'should allow commenting' do
           should_allow_commenting line_holder
@@ -129,7 +123,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with an unchanged line' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and boolean(node()[1])] and child::*[contains(concat(" ", @class, " ")," line_content ") and not(contains(concat(" ", @class, " ")," old ")) and not(contains(concat(" ", @class, " ")," new ")) and not(contains(concat(" ", @class, " ")," match ")) and boolean(node()[1])]]' }
+        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]') }
 
         it 'should allow commenting' do
           should_allow_commenting line_holder
@@ -137,7 +131,7 @@ feature 'Diffs URL', js: true, feature: true do
       end
 
       context 'with a match line' do
-        let(:line_holder) { first :xpath, '//*[contains(concat(" ", @class, " "), " line_holder ") and child::*[contains(concat(" ", @class, " "), " line_content ") and contains(concat(" ", @class, " "), " match ")]]' }
+        let(:line_holder) { first('.match') }
 
         it 'should not allow commenting' do
           should_not_allow_commenting line_holder
@@ -149,9 +143,11 @@ feature 'Diffs URL', js: true, feature: true do
       line = get_line_components line_holder, diff_side
       line[:content].hover
       expect(line[:num]).to have_css comment_button_class
+
       comment_on_line line_holder, line
       wait_for_ajax
-      assert_comment_persistence
+
+      assert_comment_persistence line_holder
     end
 
     def should_not_allow_commenting(line_holder, diff_side = nil)
@@ -180,14 +176,17 @@ feature 'Diffs URL', js: true, feature: true do
     def comment_on_line(line_holder, line)
       line[:num].find(comment_button_class).trigger 'click'
       expect(line_holder).to have_xpath notes_holder_input_xpath
+
       notes_holder_input = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_input[:class].include? notes_holder_input_class).to be true
+
       notes_holder_input.fill_in 'note[note]', with: test_note_comment
       click_button 'Comment'
     end
 
     def assert_comment_persistence(line_holder)
       expect(line_holder).to have_xpath notes_holder_input_xpath
+
       notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_saved[:class].include? notes_holder_input_class).to be false
       expect(notes_holder_saved).to have_content test_note_comment
