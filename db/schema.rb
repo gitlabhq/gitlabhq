@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160726093600) do
+ActiveRecord::Schema.define(version: 20160725104452) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 20160726093600) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,       null: false
     t.text     "after_sign_up_text"
+    t.boolean  "user_default_external",                 default: false,       null: false
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
     t.boolean  "domain_blacklist_enabled",              default: false
@@ -167,8 +167,8 @@ ActiveRecord::Schema.define(version: 20160726093600) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
-    t.string   "environment"
     t.datetime "artifacts_expire_at"
+    t.string   "environment"
     t.integer  "artifacts_size"
     t.string   "when"
     t.text     "yaml_variables"
@@ -605,7 +605,7 @@ ActiveRecord::Schema.define(version: 20160726093600) do
     t.string   "start_commit_sha"
   end
 
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
+  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string   "target_branch",                                null: false
@@ -782,10 +782,10 @@ ActiveRecord::Schema.define(version: 20160726093600) do
     t.integer  "user_id",                    null: false
     t.string   "token",                      null: false
     t.string   "name",                       null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
     t.boolean  "revoked",    default: false
     t.datetime "expires_at"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -847,8 +847,8 @@ ActiveRecord::Schema.define(version: 20160726093600) do
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
     t.string   "repository_storage",                 default: "default", null: false
-    t.boolean  "has_external_wiki"
     t.boolean  "request_access_enabled",             default: true,      null: false
+    t.boolean  "has_external_wiki"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
