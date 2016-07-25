@@ -54,7 +54,7 @@ describe MergeRequest, models: true do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }
     it { is_expected.to respond_to(:cannot_be_merged?) }
-    it { is_expected.to respond_to(:merge_params) }
+    it { is_expected.to respond_to(:commit_message) }
     it { is_expected.to respond_to(:merge_when_build_succeeds) }
   end
 
@@ -339,7 +339,7 @@ describe MergeRequest, models: true do
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
-      expect(merge_if_green.merge_params["commit_message"]).to be_nil
+      expect(merge_if_green.commit_message).to be_nil
     end
   end
 

@@ -519,9 +519,9 @@ class MergeRequest < ActiveRecord::Base
   def reset_merge_when_build_succeeds
     return unless merge_when_build_succeeds?
 
-    self.merge_when_build_succeeds = false
-    self.merge_user = nil
-    self.merge_params = nil
+    self.merge_when_build_succeeds  = false
+    self.merge_user                 = nil
+    self.commit_message             = nil
     self.save
   end
 

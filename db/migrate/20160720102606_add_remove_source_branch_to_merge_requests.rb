@@ -24,5 +24,6 @@ class AddRemoveSourceBranchToMergeRequests < ActiveRecord::Migration
 
   def down
     # noop - We don't want to serialize and deserialize, also, the keys are still there
+    # These will be removed in the MigrateMergeParamsCommitMessage migration
   end
 end

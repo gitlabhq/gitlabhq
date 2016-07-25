@@ -239,7 +239,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     TodoService.new.merge_merge_request(merge_request, current_user)
 
-    @merge_request.update(merge_error: nil, remove_source_branch: !!params[:remove_source_branch])
+    @merge_request.update(merge_request_params.merge(merge_error: nil))
 
     if params[:merge_when_build_succeeds].present?
       unless @merge_request.pipeline
@@ -435,12 +435,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
       :state_event, :description, :task_num, :remove_source_branch,
-      label_ids: []
-    )
-  end
-
-  def merge_params
-    params.permit(:commit_message, :remove_source_branch)
+      label_ids: [], :commit_message)
   end
 
   # Make sure merge requests created before 8.0
