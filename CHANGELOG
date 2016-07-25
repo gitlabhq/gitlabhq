@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
   - Add branch or tag icon to ref in builds page. !5434
+  - Fix backup restore. !5459
   - Don't show comment button in gutter of diffs on MR discussion tab
 
 v 8.10.1
@@ -13,6 +14,7 @@ v 8.10.1
   - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page. !5446
   - Ignore invalid trusted proxies in X-Forwarded-For header. !5454
   - Add links to the real markdown.md file for all GFM examples. !5458
+  - Use project ID in repository cache to prevent stale data from persisting across projects
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
