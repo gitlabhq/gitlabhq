@@ -13,7 +13,7 @@ libraries increase the page size significantly, and impact load times due to
 bandwidth bottlenecks and the browser needing to parse more JavaScript.
 
 In cases where libraries are only used on a few specific pages, we use
-"Page-specific JavaScript" to prevent the main `application.js` file from
+"page-specific JavaScript" to prevent the main `application.js` file from
 becoming unnecessarily large.
 
 Steps to split page-specific JavaScript from the main `application.js`:
@@ -21,7 +21,7 @@ Steps to split page-specific JavaScript from the main `application.js`:
 1. Create a directory for the specific page(s), e.g. `graphs/`.
 1. In that directory, create a `namespace_bundle.js` file, e.g. `graphs_bundle.js`.
 1. In `graphs_bundle.js` add the line `//= require_tree .`, this adds all other files in the directory to the bundle.
-1. Add any necessary libraries to `app/assets/javascripts/lib/`, all files directly descendant from this directory will be precompiled as separate assets. In this case, `chart.js` would be added.
+1. Add any necessary libraries to `app/assets/javascripts/lib/`, all files directly descendant from this directory will be precompiled as separate assets, in this case `chart.js` would be added.
 1. Add the new "bundle" file to the list of precompiled assets in
 `config/application.rb`.
   - For example: `config.assets.precompile << "graphs/graphs_bundle.js"`.
@@ -62,6 +62,62 @@ Accessibility best-practices and more in-depth information is available on
 
 ## Security
 
+[Mozilla’s HTTP Observatory CLI][observatory-cli] and the
+[Qualys SSL Labs Server Test][qualys-ssl] are good resources for finding
+potential problems and ensuring compliance with security best practices.
+
+<!-- Uncomment these sections when CSP/SRI are implemented.
+### Content Security Policy (CSP)
+
+Content Security Policy is a web standard that intends to mitigate certain
+forms of Cross-Site Scripting (XSS) as well as data injection.
+
+Content Security Policy rules should be taken into consideration when
+implementing new features, especially those that may rely on connection with
+external services.
+
+GitLab's CSP is used for the following:
+
+- Blocking plugins like Flash and Silverlight from running at all on our pages.
+- Blocking the use of scripts and stylesheets downloaded from external sources.
+- Upgrading `http` requests to `https` when possible.
+- Preventing `iframe` elements from loading in most contexts.
+
+Some exceptions include:
+
+- Scripts from Google Analytics and Piwik if either is enabled.
+- Connecting with GitHub, Bitbucket, GitLab.com, etc. to allow project importing.
+- Connecting with Google, Twitter, GitHub, etc. to allow OAuth authentication.
+
+We use [the Secure Headers gem][secure_headers] to enable Content
+Security Policy headers in the GitLab Rails app.
+
+Some resources on implementing Content Security Policy:
+
+- [MDN Article on CSP][mdn-csp]
+- [GitHub’s CSP Journey on the GitHub Engineering Blog][github-eng-csp]
+- The Dropbox Engineering Blog's series on CSP: [1][dropbox-csp-1], [2][dropbox-csp-2], [3][dropbox-csp-3], [4][dropbox-csp-4]
+
+### Subresource Integrity (SRI)
+
+Subresource Integrity prevents malicious assets from being provided by a CDN by
+guaranteeing that the asset downloaded is identical to the asset the server
+is expecting.
+
+The Rails app generates a unique hash of the asset, which is used as the
+asset's `integrity` attribute. The browser generates the hash of the asset
+on-load and will reject the asset if the hashes do not match.
+
+All CSS and JavaScript assets should use Subresource Integrity. For implementation details,
+see the documentation for [the Sprockets implementation of SRI][sprockets-sri].
+
+Some resources on implementing Subresource Integrity:
+
+- [MDN Article on SRI][mdn-sri]
+- [Subresource Integrity on the GitHub Engineering Blog][github-eng-sri]
+
+-->
+
 ### Including external resources
 
 External fonts, CSS, and JavaScript should never be used with the exception of
@@ -84,7 +140,7 @@ Inline styles should be avoided in almost all cases, they should only be used
 when no alternatives can be found. This allows reusability of styles as well as
 readability.
 
-## Style Guides and Linting
+## Style guides and linting
 
 See the relevant style guides for details and information on linting:
 
@@ -94,5 +150,17 @@ See the relevant style guides for details and information on linting:
 [chartjs]: http://www.chartjs.org/
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
+[observatory-cli]: https://github.com/mozilla/http-observatory-cli)
+[qualys-ssl]: https://www.ssllabs.com/ssltest/analyze.html
+[secure_headers]: https://github.com/twitter/secureheaders
+[mdn-csp]: https://developer.mozilla.org/en-US/docs/Web/Security/CSP
+[github-eng-csp]: http://githubengineering.com/githubs-csp-journey/
+[dropbox-csp-1]: https://blogs.dropbox.com/tech/2015/09/on-csp-reporting-and-filtering/
+[dropbox-csp-2]: https://blogs.dropbox.com/tech/2015/09/unsafe-inline-and-nonce-deployment/
+[dropbox-csp-3]: https://blogs.dropbox.com/tech/2015/09/csp-the-unexpected-eval/
+[dropbox-csp-4]: https://blogs.dropbox.com/tech/2015/09/csp-third-party-integrations-and-privilege-separation/
+[mdn-sri]: https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity
+[github-eng-sri]: http://githubengineering.com/subresource-integrity/
+[sprockets-sri]: https://github.com/rails/sprockets-rails#sri-support
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 [scss-style-guide]: scss_styleguide.md
