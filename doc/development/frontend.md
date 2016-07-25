@@ -1,7 +1,7 @@
-# Frontend Guidelines
+# Frontend Development Guidelines
 
-This document describes various guidelines to follow to ensure good and
-consistent performance of GitLab.
+This document describes various guidelines to ensure consistency and quality
+across GitLab's frontend.
 
 ## Performance
 
@@ -20,10 +20,12 @@ Steps to split page-specific JavaScript from the main `application.js`:
 
 1. Create a directory for the specific page(s), e.g. `graphs/`.
 1. In that directory, create a `namespace_bundle.js` file, e.g. `graphs_bundle.js`.
+1. In `graphs_bundle.js` add the line `//= require_tree .`, this adds all other files in the directory to the bundle.
+1. Add any necessary libraries to `app/assets/javascripts/lib/`, all files directly descendant from this directory will be precompiled as separate assets. In this case, `chart.js` would be added.
 1. Add the new "bundle" file to the list of precompiled assets in
 `config/application.rb`.
   - For example: `config.assets.precompile << "graphs/graphs_bundle.js"`.
-1. Add any necessary libraries to `app/assets/javascripts/lib/`, all files directly descendant from this directory will be precompiled as separate assets. In this case, `chart.js` would be added.
+1. Move code reliant on these libraries into the `graphs` directory.
 1. In the relevant views, add the scripts to the page with the following:
 
 ```haml
@@ -32,7 +34,9 @@ Steps to split page-specific JavaScript from the main `application.js`:
   = page_specific_javascript_tag('graphs/graphs_bundle.js')
 ```
 
-The above loads `chart.js` and `graphs_bundle.js` for only this page. `chart.js` is separated from the bundle file so it can be cached separately from the bundle and reused for other pages that also rely on the library.
+The above loads `chart.js` and `graphs_bundle.js` for only this page. `chart.js`
+is separated from the bundle file so it can be cached separately from the bundle
+and reused for other pages that also rely on the library.
 
 ### Minimizing page size
 
@@ -42,7 +46,7 @@ data is used for users with capped data plans.
 
 General tips:
 
-- Don't add fonts that are unnecessary.
+- Don't add unnecessary fonts.
 - Prefer font formats with better compression, e.g. WOFF2 is better than WOFF is better than TFF.
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets does this for us).
 - If a piece of functionality can be reasonably done without adding extra libraries, prefer not to use extra libraries.
@@ -80,8 +84,15 @@ Inline styles should be avoided in almost all cases, they should only be used
 when no alternatives can be found. This allows reusability of styles as well as
 readability.
 
+## Style Guides and Linting
+
+See the relevant style guides for details and information on linting:
+
+- [SCSS][scss-style-guide]
+
 [d3]: https://d3js.org/
 [chartjs]: http://www.chartjs.org/
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
+[scss-style-guide]: scss_styleguide.md
