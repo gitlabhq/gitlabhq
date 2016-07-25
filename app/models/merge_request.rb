@@ -286,6 +286,10 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def create_merge_request_diff
+    merge_request_diffs.create
+  end
+
   def update_merge_request_diff
     if source_branch_changed? || target_branch_changed?
       reload_diff
