@@ -1,54 +1,17 @@
-- status = pipeline.status
-
 %ul.content-list.pipelines
-
-  .table-holder
-    %table.table.builds
-      %tbody
-        %th Status
-        %th Commit
-        %th.stage
-        %th
-        %th
-      %tr.commit
-        %td.commit-link
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
-            = ci_status_with_icon(status)
-        %td
-          .branch-commit
-            = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
-              %span ##{pipeline.id}
-            - if pipeline.ref
-              .icon-container
-                = pipeline.tag? ? icon('tag') : icon('code-fork')
-              = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace branch-name"
-              .icon-container
-                = custom_icon("icon_commit")
-            = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: "commit-id monospace"
-            - if pipeline.latest?
-              %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
-            - if pipeline.triggered?
-              %span.label.label-primary triggered
-            - if pipeline.yaml_errors.present?
-              %span.label.label-danger.has-tooltip{ title: "#{pipeline.yaml_errors}" } yaml invalid
-            - if pipeline.builds.any?(&:stuck?)
-              %span.label.label-warning stuck
-
-            %p.commit-title
-              - if commit = pipeline.commit
-                = author_avatar(commit, size: 20)
-                = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "commit-row-message"
-              - else
-                Cant find HEAD commit for this branch
-
-          -# - stages_status = pipeline.statuses.latest.stages_status
-          -# - stages.each do |stage|
-          -#   %td.stage-cell
-          -#     - status = stages_status[stage]
-          -#     - tooltip = "#{stage.titleize}: #{status || 'not found'}"
-          -#     - if status
-          -#       = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
-          -#         = ci_icon_for_status(status)
-          -#     - else
-          -#       .light.has-tooltip{ title: tooltip }
-          -#         \-
+  - if pipelines.blank?
+    %li
+      .nothing-here-block No pipelines to show
+  - else
+    .table-holder
+      %table.table.builds
+        %tbody
+          %th Status
+          %th Commit
+          - pipelines.stages.each do |stage|
+            %th.stage
+              %span.has-tooltip{ title: "#{stage.titleize}" }
+                = stage.titleize
+          %th
+          %th
+        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
