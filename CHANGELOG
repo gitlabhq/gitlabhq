@@ -9,6 +9,7 @@ v 8.11.0 (unreleased)
   - Make fork counter always clickable !5463 (winniehell)
   - Load project invited groups and members eagerly in ProjectTeam#fetch_members
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Add ES6 gem
 
 v 8.10.2 (unreleased)
   - Use project ID in repository cache to prevent stale data from persisting across projects
