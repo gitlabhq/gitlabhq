@@ -17,7 +17,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
-  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
+  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -130,10 +130,38 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-
   def conflicts
+    return render_404 unless @merge_request.cannot_be_merged?
+
     respond_to do |format|
       format.html { render 'show' }
+      format.json do
+        rugged = @merge_request.project.repository.rugged
+        their_commit = rugged.branches[@merge_request.target_branch].target
+        our_commit = rugged.lookup(@merge_request.diff_head_sha)
+        merge = rugged.merge_commits(our_commit, their_commit)
+        commit_message = "Merge branch '#{@merge_request.target_branch}' into '#{@merge_request.source_branch}'\n\n# Conflicts:"
+
+        files = merge.conflicts.map do |conflict|
+          their_path = conflict[:theirs][:path]
+          our_path = conflict[:ours][:path]
+
+          raise 'path mismatch!' unless their_path == our_path
+
+          commit_message << "\n#   #{our_path}"
+          merge_file = merge.merge_file(our_path)
+
+          Gitlab::Conflict::File.new(merge_file, conflict, @merge_request.target_branch, @merge_request.source_branch, @merge_request.project.repository)
+        end
+
+        render json: {
+          target_branch: @merge_request.target_branch,
+          source_branch: @merge_request.source_branch,
+          commit_sha: @merge_request.diff_head_sha,
+          commit_message: commit_message,
+          files: files
+        }
+      end
     end
   end
 

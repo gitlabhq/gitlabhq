@@ -28,7 +28,7 @@
       .file-title
         %span {{file.new_path}}
         .file-actions
-          %a.btn.btn-sm View file @{{file.shortCommitSha}}
+          %a.btn.btn-sm View file @{{conflictsData.shortCommitShab}}
 
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
@@ -57,7 +57,7 @@
       .file-title
         %span {{file.new_path}}
         .file-actions
-          %a.btn.btn-sm View file @{{file.shortCommitSha}}
+          %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
 
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
@@ -75,13 +75,13 @@
                 %td.diff-line-num.new_line
                   %a {{line.new_line}}
                 %td.line_content
-                  {{{line.text}}}
+                  {{{line.rich_text}}}
 
               %template{"v-if" => "line.isHeader"}
                 %td.diff-line-num.header
                 %td.diff-line-num.header
                 %td.line_content.header
-                  %strong {{{line.text}}}
+                  %strong {{{line.richText}}}
                   %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
 
   .content-block.oneline-block.files-changed
@@ -92,7 +92,7 @@
 
     .commit-message-container.form-group
       .max-width-marker
-      %textarea.form-control.js-commit-message{"placeholder" => 'Your commit message', ":disabled" => "!allResolved"}
+      %textarea.form-control.js-commit-message{":disabled" => "!allResolved"} {{{conflictsData.commitMessage}}}
 
     %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved"}
       Commit conflict resolution

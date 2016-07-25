@@ -21,9 +21,9 @@ class window.MergeConflictResolver extends Vue
   fetchData: ->
 
     $.ajax
-      url    : '/emojis'
+      url    : './conflicts.json'
       success: (response) =>
-        @handleResponse window.mergeConflictsData
+        @handleResponse response
 
 
   handleResponse: (data) ->
@@ -81,6 +81,8 @@ class window.MergeConflictResolver extends Vue
 
     headHeaderText   = 'HEAD//our changes'
     originHeaderText = 'origin//their changes'
+    data.shortCommitSha = data.commit_sha.slice 0, 7
+    data.commitMessage = data.commit_message
 
     @updateResolutionsData data
 
@@ -88,7 +90,6 @@ class window.MergeConflictResolver extends Vue
     for file in data.files
       file.parallelLines  = { left: [], right: [] }
       file.inlineLines    = []
-      file.shortCommitSha = file.commit_sha.slice 0, 7
       currentLineType     = 'old'
 
       for section in file.sections
@@ -96,41 +97,42 @@ class window.MergeConflictResolver extends Vue
 
         if conflict
           # FIXME: Make these lines better
-          file.parallelLines.left.push  { isHeader: yes, id, text: headHeaderText, section: 'head', isHead: yes, isSelected: no, isUnselected: no }
-          file.parallelLines.right.push { isHeader: yes, id, text: originHeaderText, section: 'origin', isOrigin: yes, isSelected: no, isUnselected: no }
+          file.parallelLines.left.push  { isHeader: yes, id, richText: headHeaderText, section: 'head', isHead: yes, isSelected: no, isUnselected: no }
+          file.parallelLines.right.push { isHeader: yes, id, richText: originHeaderText, section: 'origin', isOrigin: yes, isSelected: no, isUnselected: no }
 
-          file.inlineLines.push { isHeader: yes, id, text: headHeaderText, type: 'old', section: 'head', isHead: yes, isSelected: no, isUnselected: no }
+          file.inlineLines.push { isHeader: yes, id, richText: headHeaderText, type: 'old', section: 'head', isHead: yes, isSelected: no, isUnselected: no }
 
         for line in lines
           if line.type in ['new', 'old'] and currentLineType isnt line.type
             currentLineType = line.type
             # FIXME: Find a better way to add a new line
-            file.inlineLines.push { lineType: 'emptyLine', text: '<span> </span>' }
+            file.inlineLines.push { lineType: 'emptyLine', richText: '<span> </span>' }
 
           # FIXME: Make these lines better
           line.conflict = conflict
           line.id = id
-          line.isHead = line.type is 'old'
-          line.isOrigin = line.type is 'new'
+          line.isHead = line.type is 'new'
+          line.isOrigin = line.type is 'old'
           line.isSelected = no
           line.isUnselected = no
+          line.richText = line.rich_text
           file.inlineLines.push line
 
           if conflict
             if line.type is 'old'
-              line = { lineType: 'conflict', lineNumber: line.old_line, text: line.text, section: 'head', id, isSelected: no, isUnselected: no, isHead: yes }
+              line = { lineType: 'conflict', lineNumber: line.old_line, richText: line.rich_text, section: 'origin', id, isSelected: no, isUnselected: no, isOrigin: yes }
               file.parallelLines.left.push  line
             else if line.type is 'new'
-              line = { lineType: 'conflict', lineNumber: line.new_line, text: line.text, section: 'origin', id, isSelected: no, isUnselected: no, isOrigin: yes }
+              line = { lineType: 'conflict', lineNumber: line.new_line, richText: line.rich_text, section: 'head', id, isSelected: no, isUnselected: no, isHead: yes }
               file.parallelLines.right.push line
             else
               console.log 'unhandled line type...', line
           else
-            file.parallelLines.left.push  { lineType: 'context', lineNumber: line.old_line, text: line.text }
-            file.parallelLines.right.push { lineType: 'context', lineNumber: line.new_line, text: line.text }
+            file.parallelLines.left.push  { lineType: 'context', lineNumber: line.old_line, richText: line.rich_text }
+            file.parallelLines.right.push { lineType: 'context', lineNumber: line.new_line, richText: line.rich_text }
 
         if conflict
-          file.inlineLines.push { isHeader: yes, id, type: 'new', text: originHeaderText, section: 'origin', isOrigin: yes, isSelected: no, isUnselected: no }
+          file.inlineLines.push { isHeader: yes, id, type: 'new', richText: originHeaderText, section: 'origin', isOrigin: yes, isSelected: no, isUnselected: no }
 
     return data
 

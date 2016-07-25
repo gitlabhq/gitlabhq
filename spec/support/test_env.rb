@@ -19,6 +19,8 @@ module TestEnv
     'orphaned-branch'       => '45127a9',
     'binary-encoding'       => '7b1cf43',
     'gitattributes'         => '5a62481',
+    'conflict-a'            => 'dfdd207',
+    'conflict-b'            => '4e75a62',
     'expand-collapse-diffs' => '4842455',
     'expand-collapse-files' => '025db92',
     'expand-collapse-lines' => '238e82d',

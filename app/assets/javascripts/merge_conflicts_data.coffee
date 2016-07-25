@@ -1,9 +1,9 @@
 window.mergeConflictsData = {
   "target_branch": "master",
   "source_branch": "mc-ui",
+  "commit_sha": "b5fa56eb3f2cea5e21c68b43c7c22b5b96e0e7b3",
   "files": [
     {
-      "commit_sha": "b5fa56eb3f2cea5e21c68b43c7c22b5b96e0e7b3",
       "old_path": "lib/component.js",
       "new_path": "lib/component.js",
       "sections": [

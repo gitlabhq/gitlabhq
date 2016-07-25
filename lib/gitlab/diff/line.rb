@@ -3,6 +3,7 @@ module Gitlab
     class Line
       attr_reader :type, :index, :old_pos, :new_pos
       attr_accessor :text
+      attr_accessor :rich_text
 
       def initialize(text, type, index, old_pos, new_pos)
         @text, @type, @index = text, type, index
@@ -45,6 +46,16 @@ module Gitlab
 
       def meta?
         type == 'match' || type == 'nonewline'
+      end
+
+      def as_json(opts = nil)
+        {
+          type: type,
+          old_line: old_line,
+          new_line: new_line,
+          text: text,
+          rich_text: rich_text || text
+        }
       end
     end
   end
