@@ -9,6 +9,9 @@ BoardList = Vue.extend
   data: ->
     scrollOffset: 20
     loadMore: false
+  watch:
+    done: (done) ->
+      this.sortable.option('disabled', done.issue?)
   methods:
     listHeight: -> this.$els.list.getBoundingClientRect().height
     scrollHeight: -> this.$els.list.scrollHeight
@@ -39,7 +42,7 @@ BoardList = Vue.extend
 
       return returnIssue
   ready: ->
-    Sortable.create this.$els.list,
+    this.sortable = Sortable.create this.$els.list,
       group: 'issues'
       disabled: this.disabled
       scrollSensitivity: 150
