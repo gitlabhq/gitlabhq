@@ -33,6 +33,22 @@ describe Blob do
     end
   end
 
+  describe '#video?' do
+    it 'is falsey with image extension' do
+      git_blob = Gitlab::Git::Blob.new(name: 'image.png')
+
+      expect(described_class.decorate(git_blob)).not_to be_video
+    end
+
+    UploaderHelper::VIDEO_EXT.each do |ext|
+      it "is truthy when extension is .#{ext}" do
+        git_blob = Gitlab::Git::Blob.new(name: "video.#{ext}")
+
+        expect(described_class.decorate(git_blob)).to be_video
+      end
+    end
+  end
+
   describe '#to_partial_path' do
     def stubbed_blob(overrides = {})
       overrides.reverse_merge!(

@@ -295,8 +295,8 @@ class Commit
   def uri_type(path)
     entry = @raw.tree.path(path)
     if entry[:type] == :blob
-      blob = Gitlab::Git::Blob.new(name: entry[:name])
-      blob.image? ? :raw : :blob
+      blob = ::Blob.decorate(Gitlab::Git::Blob.new(name: entry[:name]))
+      blob.image? || blob.video? ? :raw : :blob
     else
       entry[:type]
     end
