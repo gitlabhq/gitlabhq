@@ -10,8 +10,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_one :merge_request_diff, dependent: :destroy
-
+  has_many :merge_request_diffs, dependent: :destroy
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
@@ -294,7 +293,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_diff
-    return unless merge_request_diff && open?
+    return unless open?
+
+    merge_request_diff = merge_request_diffs.create
 
     old_diff_refs = self.diff_refs
 
@@ -690,5 +691,9 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
+  end
+
+  def merge_request_diff
+    merge_request_diffs.first
   end
 end
