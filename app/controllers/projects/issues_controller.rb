@@ -71,7 +71,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
 
-    preload_max_access_for_authors(@notes, @project) if @notes
+    preload_max_access_for_authors(@notes, @project)
 
     respond_to do |format|
       format.html

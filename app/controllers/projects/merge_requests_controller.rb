@@ -387,7 +387,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @ref
     )
 
-    preload_max_access_for_authors(@notes, @project) if @notes
+    preload_max_access_for_authors(@notes, @project)
   end
 
   def define_widget_vars

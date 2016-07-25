@@ -138,20 +138,20 @@ class ProjectTeam
   def max_member_access_for_user_ids(user_ids)
     user_ids = user_ids.uniq
     key = "max_member_access:#{project.id}"
-    RequestStore.store[key] ||= Hash.new
+    RequestStore.store[key] ||= {}
     access = RequestStore.store[key]
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys
 
     if user_ids.present?
-      user_ids.map { |id| access[id] = Gitlab::Access::NO_ACCESS }
+      user_ids.each { |id| access[id] = Gitlab::Access::NO_ACCESS }
 
-      member_access = project.members.where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+      member_access = project.members.access_for_user_ids(user_ids)
       merge_max!(access, member_access)
 
       if group
-        group_access = group.members.where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+        group_access = group.members.access_for_user_ids(user_ids)
         merge_max!(access, group_access)
       end
 

@@ -389,10 +389,8 @@ class Ability
     end
 
     def can_edit_note?(user, note)
-      return false unless note.editable?
-      return false unless user.present?
-      return true if note.author == user
-      return true if user.admin?
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
 
       if note.project
         max_access_level = note.project.team.max_member_access(user.id)
