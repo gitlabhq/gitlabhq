@@ -496,6 +496,10 @@ module API
       expose :key, :value
     end
 
+    class Environment < Grape::Entity
+      expose :id, :name, :external_url
+    end
+
     class RepoLicense < Grape::Entity
       expose :key, :name, :nickname
       expose :featured, as: :popular
