@@ -1,4 +1,4 @@
-(() => {
+((global) => {
   class EditBlob {
     constructor(assetsPath, aceMode = null) {
       ace.config.set('modePath', `${assetsPath}/ace`);
@@ -46,5 +46,5 @@
     }
   }
 
-  this.EditBlob = EditBlob;
-})();
+  global.EditBlob = EditBlob;
+})(window);
