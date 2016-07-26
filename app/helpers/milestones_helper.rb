@@ -47,6 +47,17 @@ module MilestonesHelper
     }
   end
 
+  # Show 'active' class if provided GET param matches check
+  # `or_blank` allows the function to return 'active' when given an empty param
+  # Could be refactored to be simpler but that may make it harder to read
+  def milestone_class_for_state(param, check, match_blank_param=false)
+    if match_blank_param
+      'active' if param.blank? || param == check
+    else
+      'active' if param == check
+    end
+  end
+
   def milestone_progress_bar(milestone)
     options = {
       class: 'progress-bar progress-bar-success',
