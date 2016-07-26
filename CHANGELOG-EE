@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
 
 v 8.10.2 (unreleased)
   - Dicouple an ES index update from RepositoryUpdateMirrorWorker
+  - Fix pagination on search result page when ES search is enabled 
 
 v 8.10.1
   - No EE-specific changes

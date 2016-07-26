@@ -31,6 +31,7 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
+  config.include SearchHelpers,       type: :feature
   config.include StubConfiguration
   config.include EmailHelpers
   config.include TestEnv
