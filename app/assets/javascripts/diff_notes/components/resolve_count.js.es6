@@ -10,8 +10,8 @@
       resolved: function () {
         let resolvedCount = 0;
 
-        for (const discussionId in this.comments) {
-          const comments = this.comments[discussionId];
+        for (const discussionId in this.discussions) {
+          const comments = this.discussions[discussionId];
           let resolved = true;
 
           for (const noteId in comments) {
@@ -33,7 +33,7 @@
         return Object.keys(this.discussions).length;
       },
       allResolved: function () {
-        return this.resolved === this.commentsCount;
+        return this.resolved === this.discussionCount;
       }
     }
   });

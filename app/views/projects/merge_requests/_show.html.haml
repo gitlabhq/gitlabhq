@@ -47,9 +47,12 @@
     - if current_user
       #resolve-count-app{ "v-cloak" => true }
         %resolve-count{ "inline-template" => true }
-          .line-resolve-all{ "v-show" => "commentsCount > 0" }
+          .line-resolve-all{ "v-show" => "discussionCount > 0" }
             %span.line-resolve-text
               {{ resolved }}/{{ discussionCount }} discussions resolved
+          %jump-to-discussion{ "inline-template" => true }
+            %button.btn.btn-default.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion", title: "Jump to next unresolved discussion", data: { container: "body" } }
+              = icon("caret-down")
 
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
