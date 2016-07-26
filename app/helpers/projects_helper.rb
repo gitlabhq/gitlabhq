@@ -236,6 +236,22 @@ module ProjectsHelper
     )
   end
 
+  def get_koding_link(project = nil, branch = nil)
+
+    if project
+      route = "/Home/Stacks/run/#{project.path_with_namespace}"
+      if branch
+        route = "#{route}/#{branch}"
+      end
+    else
+      route = ''
+    end
+
+    "#{Gitlab.config.koding.url}#{route}"
+
+  end
+
+
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
       namespace_project_blob_path(
