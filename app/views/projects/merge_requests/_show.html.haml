@@ -2,7 +2,7 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('line_comments/application.js')
+  = page_specific_javascript_tag('line_comments/line_comments_bundle.js')
 
 - if diff_view == 'parallel'
   - fluid_layout true
