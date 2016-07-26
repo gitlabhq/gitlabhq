@@ -181,7 +181,11 @@
             _this.last_fetched_at = data.last_fetched_at;
             _this.setPollingInterval(data.notes.length);
             return $.each(notes, function(i, note) {
+<<<<<<< HEAD
               if (note.discussion_with_diff_html != null) {
+=======
+              if (note.discussion_html != null) {
+>>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
                 return _this.renderDiscussionNote(note);
               } else {
                 return _this.renderNote(note);
@@ -287,12 +291,20 @@
         discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']");
       }
       if (discussionContainer.length === 0) {
+<<<<<<< HEAD
         row.after(note.discussion_html);
+=======
+        row.after(note.diff_discussion_html);
+>>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
         row.next().find(".note").remove();
         discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
         discussionContainer.append(note_html);
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
+<<<<<<< HEAD
           $('ul.main-notes-list').append(note.discussion_with_diff_html).syntaxHighlight();
+=======
+          $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
+>>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
         }
       } else {
         discussionContainer.append(note_html);

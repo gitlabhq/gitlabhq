@@ -18,16 +18,6 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  def self.clean_old_archives
-    Gitlab::Metrics.measure(:clean_old_archives) do
-      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
-
-      return unless File.directory?(repository_downloads_path)
-
-      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
-    end
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -279,11 +269,20 @@ class Repository
 
     return if kept_around?(sha)
 
-    rugged.references.create(keep_around_ref_name(sha), sha)
+    # This will still fail if the file is corrupted (e.g. 0 bytes)
+    begin
+      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+    rescue Rugged::ReferenceError => ex
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    end
   end
 
   def kept_around?(sha)
-    ref_exists?(keep_around_ref_name(sha))
+    begin
+      ref_exists?(keep_around_ref_name(sha))
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def tag_names
@@ -674,6 +673,8 @@ class Repository
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
+    when 'name'
+      branches.sort_by(&:name)
     when 'recently_updated'
       branches.sort do |a, b|
         commit(b.target).committed_date <=> commit(a.target).committed_date
@@ -1228,7 +1229,7 @@ class Repository
   private
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace)
+    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
   end
 
   def head_exists?

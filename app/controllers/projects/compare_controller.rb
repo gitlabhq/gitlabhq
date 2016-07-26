@@ -54,7 +54,7 @@ class Projects::CompareController < Projects::ApplicationController
       )
 
       @diff_notes_disabled = true
-      @grouped_diff_notes = {}
+      @grouped_diff_discussions = {}
     end
   end
 

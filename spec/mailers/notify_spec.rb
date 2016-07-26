@@ -12,7 +12,7 @@ describe Notify do
   context 'for a project' do
     describe 'items that are assignable, the email' do
       let(:current_user) { create(:user, email: "current@email.com") }
-      let(:assignee) { create(:user, email: 'assignee@example.com') }
+      let(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
       let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
 
       shared_examples 'an assignee email' do

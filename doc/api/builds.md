@@ -283,6 +283,40 @@ Response:
 
 [ce-2893]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2893
 
+## Download the artifacts file
+
+> [Introduced][ce-5347] in GitLab 8.10.
+
+Download the artifacts file from the given reference name and job provided the
+build finished successfully.
+
+```
+GET /projects/:id/builds/artifacts/:ref_name/download?job=name
+```
+
+Parameters
+
+| Attribute   | Type    | Required | Description               |
+|-------------|---------|----------|-------------------------- |
+| `id`        | integer | yes      | The ID of a project       |
+| `ref_name`  | string  | yes      | The ref from a repository |
+| `job`       | string  | yes      | The name of the job       |
+
+Example request:
+
+```
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/artifacts/master/download?job=test"
+```
+
+Example response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 200       | Serves the artifacts file       |
+| 404       | Build not found or no artifacts |
+
+[ce-5347]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5347
+
 ## Get a trace file
 
 Get a trace of a specific build of a project
@@ -409,7 +443,7 @@ POST /projects/:id/builds/:build_id/erase
 
 Parameters
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `build_id`  | integer | yes      | The ID of a build   |
@@ -459,7 +493,7 @@ POST /projects/:id/builds/:build_id/artifacts/keep
 
 Parameters
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `build_id`  | integer | yes      | The ID of a build   |

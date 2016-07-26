@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20160721081015) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,        null: false
+    t.boolean  "user_default_external",                 default: false,       null: false
     t.text     "after_sign_up_text"
     t.boolean  "elasticsearch_indexing",                default: false,       null: false
     t.boolean  "elasticsearch_search",                  default: false,       null: false
@@ -683,9 +683,9 @@ ActiveRecord::Schema.define(version: 20160721081015) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
-    t.string   "target_branch",                             null: false
-    t.string   "source_branch",                             null: false
-    t.integer  "source_project_id",                         null: false
+    t.string   "target_branch",                                null: false
+    t.string   "source_branch",                                null: false
+    t.integer  "source_project_id",                            null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -694,15 +694,15 @@ ActiveRecord::Schema.define(version: 20160721081015) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",                         null: false
+    t.integer  "target_project_id",                            null: false
     t.integer  "iid"
     t.text     "description"
-    t.integer  "position",                  default: 0
+    t.integer  "position",                     default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
     t.string   "merge_error"
     t.text     "merge_params"
-    t.boolean  "merge_when_build_succeeds", default: false, null: false
+    t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"

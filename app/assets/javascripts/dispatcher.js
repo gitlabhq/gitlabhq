@@ -171,6 +171,7 @@
           break;
         case 'search:show':
           new Search();
+<<<<<<< HEAD
           break;
         case 'projects:mirrors:show':
         case 'projects:mirrors:update':
@@ -178,6 +179,8 @@
           break;
         case 'admin:emails:show':
           new AdminEmailSelect();
+=======
+>>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
       }
       switch (path.first()) {
         case 'admin':

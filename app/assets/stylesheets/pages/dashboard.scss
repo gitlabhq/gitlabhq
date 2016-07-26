@@ -36,10 +36,6 @@
 
 .dash-project-avatar {
   float: left;
-
-  .avatar {
-    @include border-radius(50%);
-  }
 }
 
 .dash-project-access-icon {

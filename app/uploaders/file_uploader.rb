@@ -1,4 +1,3 @@
-# encoding: utf-8
 class FileUploader < CarrierWave::Uploader::Base
   include UploaderHelper
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}

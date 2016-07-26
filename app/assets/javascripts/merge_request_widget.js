@@ -61,6 +61,7 @@
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
               };
+<<<<<<< HEAD
               return setTimeout(callback, 1000);
             }
           };
@@ -79,6 +80,9 @@
               return setTimeout(merge_request_widget.rebaseInProgress, 1000);
             } else {
               return location.reload();
+=======
+              return setTimeout(callback, 2000);
+>>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
             }
           };
         })(this),
