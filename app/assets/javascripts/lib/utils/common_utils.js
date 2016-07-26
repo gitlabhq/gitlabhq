@@ -35,12 +35,9 @@
         }
       });
     };
-<<<<<<< HEAD
     gl.utils.capitalize = function(str) {
       return str[0].toUpperCase() + str.slice(1);
     };
-=======
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
     gl.utils.getPagePath = function() {
       return $('body').data('page').split(':')[0];
     };

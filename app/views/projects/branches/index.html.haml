@@ -27,14 +27,9 @@
                 = sort_title_recently_updated
               = link_to filter_branches_path(sort: 'last_updated') do
                 = sort_title_oldest_updated
-<<<<<<< HEAD
-
-  = render 'projects/commits/mirror_status'
-
-=======
         = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
           New branch
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
+  = render 'projects/commits/mirror_status'
   - if @branches.any?
     %ul.content-list.all-branches
       - @branches.each do |branch|

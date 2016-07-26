@@ -1,6 +1,5 @@
 (function() {
   this.ConfirmDangerModal = (function() {
-<<<<<<< HEAD
     function ConfirmDangerModal(form, text, arg) {
       var project_path, submit, warningMessage;
       warningMessage = (arg != null ? arg : {}).warningMessage;
@@ -9,12 +8,6 @@
       if (warningMessage) {
         $('.js-warning-text').html(warningMessage);
       }
-=======
-    function ConfirmDangerModal(form, text) {
-      var project_path, submit;
-      this.form = form;
-      $('.js-confirm-text').text(text || '');
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
       $('.js-confirm-danger-input').val('');
       $('#modal-confirm-danger').modal('show');
       project_path = $('.js-confirm-danger-match').text();

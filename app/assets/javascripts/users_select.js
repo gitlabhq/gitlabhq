@@ -185,7 +185,6 @@
       $('.ajax-users-select').each((function(_this) {
         return function(i, select) {
           var firstUser, showAnyUser, showEmailUser, showNullUser;
-<<<<<<< HEAD
           _this.skipLdap = $(select).hasClass('skip_ldap');
           _this.projectId = $(select).data('project-id');
           _this.groupId = $(select).data('group-id');
@@ -193,12 +192,6 @@
           _this.pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches');
           _this.authorId = $(select).data('author-id');
           _this.skipUsers = $(select).data('skip-users');
-=======
-          _this.projectId = $(select).data('project-id');
-          _this.groupId = $(select).data('group-id');
-          _this.showCurrentUser = $(select).data('current-user');
-          _this.authorId = $(select).data('author-id');
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
           showNullUser = $(select).data('null-user');
           showAnyUser = $(select).data('any-user');
           showEmailUser = $(select).data('email-user');
@@ -329,16 +322,11 @@
           active: true,
           project_id: this.projectId,
           group_id: this.groupId,
-<<<<<<< HEAD
           skip_ldap: this.skipLdap,
           current_user: this.showCurrentUser,
           push_code_to_protected_branches: this.pushCodeToProtectedBranches,
           author_id: this.authorId,
           skip_users: this.skipUsers
-=======
-          current_user: this.showCurrentUser,
-          author_id: this.authorId
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
         },
         dataType: "json"
       }).done(function(users) {

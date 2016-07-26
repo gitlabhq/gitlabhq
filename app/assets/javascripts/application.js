@@ -12,10 +12,7 @@
 /*= require jquery.atwho */
 /*= require jquery.scrollTo */
 /*= require jquery.turbolinks */
-<<<<<<< HEAD
 /*= require jquery.tablesorter */
-=======
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
 /*= require turbolinks */
 /*= require autosave */
 /*= require bootstrap/affix */
@@ -132,11 +129,8 @@
 
   window.addEventListener("hashchange", shiftWindow);
 
-<<<<<<< HEAD
   $.timeago.settings.allowFuture = true;
 
-=======
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
   window.onload = function() {
     if (location.hash) {
       return setTimeout(shiftWindow, 100);
@@ -238,7 +232,6 @@
     });
     $document.off("click", '.js-confirm-danger');
     $document.on("click", '.js-confirm-danger', function(e) {
-<<<<<<< HEAD
       var btn, form, text, warningMessage;
       e.preventDefault();
       btn = $(e.target);
@@ -248,14 +241,6 @@
       return new ConfirmDangerModal(form, text, {
         warningMessage: warningMessage
       });
-=======
-      var btn, form, text;
-      e.preventDefault();
-      btn = $(e.target);
-      text = btn.data("confirm-danger-message");
-      form = btn.closest("form");
-      return new ConfirmDangerModal(form, text);
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
     });
     $document.on('click', 'button', function() {
       return $(this).blur();

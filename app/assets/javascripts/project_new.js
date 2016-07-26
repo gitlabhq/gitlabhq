@@ -16,20 +16,12 @@
 
     ProjectNew.prototype.toggleSettings = function() {
       this._showOrHide('#project_builds_enabled', '.builds-feature');
-<<<<<<< HEAD
       this._showOrHide('#project_merge_requests_enabled', '.merge-requests-feature');
       return this._showOrHide('#project_issues_enabled', '.issues-feature');
     };
 
     ProjectNew.prototype.toggleSettingsOnclick = function() {
       return $('#project_builds_enabled, #project_merge_requests_enabled, #project_issues_enabled').on('click', this.toggleSettings);
-=======
-      return this._showOrHide('#project_merge_requests_enabled', '.merge-requests-feature');
-    };
-
-    ProjectNew.prototype.toggleSettingsOnclick = function() {
-      return $('#project_builds_enabled, #project_merge_requests_enabled').on('click', this.toggleSettings);
->>>>>>> 68162ba900f1b9003fa3d07613333f201be8154a
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {
