@@ -87,8 +87,20 @@ class Discussion
     self.noteable == target && !diff_discussion?
   end
 
+  def collapsed?
+    return false unless diff_discussion?
+
+    if resolvable?
+      # New diff discussions only disappear once they are marked resolved
+      resolved?
+    else
+      # Old diff discussions disappear once they become outdated
+      !active?
+    end
+  end
+
   def expanded?
-    !diff_discussion? || active?
+    !collapsed?
   end
 
   def reply_attributes

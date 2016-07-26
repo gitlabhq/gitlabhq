@@ -86,8 +86,10 @@ class Note < ActiveRecord::Base
     end
 
     def grouped_diff_discussions
-      notes = diff_notes.fresh.select(&:active?)
-      Discussion.for_diff_notes(notes).map { |d| [d.line_code, d] }.to_h
+      active_notes = diff_notes.fresh.select(&:active?)
+      Discussion.for_diff_notes(active_notes).
+        reject(&:resolved?).
+        map { |d| [d.line_code, d] }.to_h
     end
 
     # Searches for notes matching the given query.
