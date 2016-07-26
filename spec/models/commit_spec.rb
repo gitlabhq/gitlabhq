@@ -86,6 +86,27 @@ eos
     end
   end
 
+  describe '#full_title' do
+    it "returns no_commit_message when safe_message is blank" do
+      allow(commit).to receive(:safe_message).and_return('')
+      expect(commit.full_title).to eq("--no commit message")
+    end
+
+    it "returns entire message if there is no newline" do
+      message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
+
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.full_title).to eq(message)
+    end
+
+    it "returns first line of message if there is a newLine" do
+      message = commit.safe_message.split(" ").first
+
+      allow(commit).to receive(:safe_message).and_return(message + "\n" + message)
+      expect(commit.full_title).to eq(message)
+    end
+  end
+
   describe "delegation" do
     subject { commit }
 
