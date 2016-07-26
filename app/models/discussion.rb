@@ -63,6 +63,14 @@ class Discussion
     notes.any?(&:to_be_resolved?)
   end
 
+  def can_resolve?(current_user)
+    return false unless current_user
+    return false unless resolvable?
+
+    current_user == self.noteable.author ||
+      can?(current_user, :push_code, self.project)
+  end
+
   def resolve!(current_user)
     notes.each do |note|
       note.resolve!(current_user) if note.resolvable?
