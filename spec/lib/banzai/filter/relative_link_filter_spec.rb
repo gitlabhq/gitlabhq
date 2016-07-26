@@ -19,6 +19,10 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     %(<img src="#{path}" />)
   end
 
+  def video(path)
+    %(<video src="#{path}"></video>)
+  end
+
   def link(path)
     %(<a href="#{path}">#{path}</a>)
   end
@@ -38,6 +42,12 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     it 'does not modify any relative URL in image' do
       doc = filter(image('files/images/logo-black.png'))
       expect(doc.at_css('img')['src']).to eq 'files/images/logo-black.png'
+    end
+
+    it 'does not modify any relative URL in video' do
+      doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
+
+      expect(doc.at_css('video')['src']).to eq 'files/videos/intro.mp4'
     end
   end
 
@@ -113,9 +123,24 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     end
 
     it 'rebuilds relative URL for an image in the repo' do
+      doc = filter(image('files/images/logo-black.png'))
+
+      expect(doc.at_css('img')['src']).
+        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+    end
+
+    it 'rebuilds relative URL for link to an image in the repo' do
       doc = filter(link('files/images/logo-black.png'))
+
       expect(doc.at_css('a')['href']).
         to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+    end
+
+    it 'rebuilds relative URL for a video in the repo' do
+      doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
+
+      expect(doc.at_css('video')['src']).
+        to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
     end
 
     it 'does not modify relative URL with an anchor only' do

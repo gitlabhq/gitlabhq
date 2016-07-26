@@ -20,7 +20,7 @@ describe BranchesFinder do
 
         result = branches_finder.execute
 
-        expect(result.first.name).to eq('expand-collapse-lines')
+        expect(result.first.name).to eq('video')
       end
 
       it 'sorts by last_updated' do

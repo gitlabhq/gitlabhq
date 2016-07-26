@@ -8,6 +8,7 @@ v 8.10.2 (unreleased)
   - Fix issue with autocomplete search not working with enter key. !5466
   - Add iid to MR API response. !5468
   - Disable MySQL foreign key checks before dropping all tables. !5472
+  - Ensure relative paths for video are rewritten as we do for images. !5474
   - Don't show comment button in gutter of diffs on MR discussion tab
 
 v 8.10.1

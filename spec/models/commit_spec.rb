@@ -212,6 +212,7 @@ eos
     it 'returns the URI type at the given path' do
       expect(commit.uri_type('files/html')).to be(:tree)
       expect(commit.uri_type('files/images/logo-black.png')).to be(:raw)
+      expect(project.commit('video').uri_type('files/videos/intro.mp4')).to be(:raw)
       expect(commit.uri_type('files/js/application.js')).to be(:blob)
     end
 
