@@ -507,7 +507,7 @@
           notes = note.closest(".notes");
 
           if (DiffNotesApp != null) {
-            ref DiffNotesApp.$refs['' + noteId + ''];
+            ref = DiffNotesApp.$refs['' + noteId + ''];
 
             if (ref) {
               ref.$destroy(true);
@@ -763,7 +763,7 @@
       return this.notesCountBadge.text(parseInt(this.notesCountBadge.text()) + updateCount);
     };
 
-    Notes.prorotype.resolveDiscussion = function () {
+    Notes.prototype.resolveDiscussion = function () {
       var $this = $(this),
           discussionId = $this.attr('data-discussion-id');
 
