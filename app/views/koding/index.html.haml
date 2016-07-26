@@ -1,0 +1,27 @@
+
+.row-content-block.second-block.center
+  / %h3.page-title
+  /   Koding Dashboard
+  - if Gitlab.config.koding.enabled
+    %p
+      = icon('circle', class: 'cgreen')
+      Integration is active for
+      = link_to get_koding_link(), target: '_blank' do
+        #{Gitlab.config.koding.url}
+  - else
+    %p
+      = icon('circle', class: 'cred')
+      Integration is not active, you can activate it by providing your Koding URL in the settings.
+
+// Temporarily show the video of integration, we eventually will update
+// this page for the integration details ~GG
+- videoBaseURL = "http://www.koding.com/hubfs/koding-gitlab/media/GitLab-Koding"
+%div{ class: container_class }
+  .koding-video
+    %video{ preload: "auto", autoplay: 'true', width: 689, height: 465 }
+      %source{ type: 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"', src: "#{videoBaseURL}.mp4" }
+      %source{ type: 'video/webm;codecs="vp8, vorbis"', src: "#{videoBaseURL}.webm" }
+      %source{ type: 'video/ogg;codecs="theora, vorbis"', src: "#{videoBaseURL}.ogg" }
+      I'm sorry; your browser doesn't support HTML5 video in WebM with VP8 or MP4 with H.264.
+  .koding-video-title
+    Koding integration sneak preview
