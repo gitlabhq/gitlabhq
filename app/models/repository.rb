@@ -537,6 +537,14 @@ class Repository
     end
   end
 
+  def koding_yml
+    return nil if !exists? || empty?
+
+    @koding_yml ||= tree(:head).blobs.find do |file|
+      file.name == Gitlab.config.koding.file
+    end
+  end
+
   def gitlab_ci_yml
     return nil unless head_exists?
 
