@@ -4,11 +4,14 @@ class DiffNote < Note
   serialize :original_position, Gitlab::Diff::Position
   serialize :position, Gitlab::Diff::Position
 
+  belongs_to :resolved_by, class_name: "User"
+
   validates :original_position, presence: true
   validates :position, presence: true
   validates :diff_line, presence: true
   validates :line_code, presence: true, line_code: true
   validates :noteable_type, inclusion: { in: ['Commit', 'MergeRequest'] }
+  validates :resolved_by, presence: true, if: :resolved?
   validate :positions_complete
   validate :verify_supported
 
@@ -70,6 +73,16 @@ class DiffNote < Note
     diff_refs ||= self.noteable.diff_refs
 
     self.position.diff_refs == diff_refs
+  end
+
+  def resolvable?
+    !system? && !for_commit?
+  end
+
+  def resolved?
+    return false unless resolvable?
+
+    self.resolved_at.present?
   end
 
   private

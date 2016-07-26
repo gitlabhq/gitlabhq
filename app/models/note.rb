@@ -128,6 +128,18 @@ class Note < ActiveRecord::Base
     true
   end
 
+  def resolvable?
+    false
+  end
+
+  def resolved?
+    false
+  end
+
+  def to_be_resolved?
+    resolvable? && !resolved?
+  end
+
   def discussion_id
     @discussion_id ||=
       if for_merge_request?

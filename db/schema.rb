@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721081015) do
+ActiveRecord::Schema.define(version: 20160724205507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -705,6 +705,8 @@ ActiveRecord::Schema.define(version: 20160721081015) do
     t.string   "type"
     t.text     "position"
     t.text     "original_position"
+    t.datetime "resolved_at"
+    t.integer  "resolved_by_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
