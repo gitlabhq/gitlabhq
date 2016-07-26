@@ -49,7 +49,7 @@
         %resolve-count{ "inline-template" => true }
           .line-resolve-all{ "v-show" => "commentsCount > 0" }
             %span.line-resolve-text
-              {{ resolved }}/{{ commentsCount }} discussions resolved
+              {{ resolved }}/{{ discussionCount }} discussions resolved
 
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom

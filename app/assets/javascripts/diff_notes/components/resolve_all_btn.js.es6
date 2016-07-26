@@ -11,15 +11,15 @@
     },
     data: function() {
       return {
-        comments: CommentsStore.state,
+        discussions: CommentsStore.state,
         loadingObject: CommentsStore.loading,
       };
     },
     computed: {
       allResolved: function () {
         let isResolved = true;
-        for (const noteId in this.comments[this.discussionId]) {
-          const resolved = this.comments[this.discussionId][noteId].resolved;
+        for (const noteId in this.discussions[this.discussionId]) {
+          const resolved = this.discussions[this.discussionId][noteId].resolved;
 
           if (!resolved) {
             isResolved = false;

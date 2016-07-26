@@ -2,7 +2,7 @@
   w.ResolveCount = Vue.extend({
     data: function () {
       return {
-        comments: CommentsStore.state,
+        discussions: CommentsStore.state,
         loading: false
       };
     },
@@ -29,8 +29,8 @@
 
         return resolvedCount;
       },
-      commentsCount: function () {
-        return Object.keys(this.comments).length;
+      discussionCount: function () {
+        return Object.keys(this.discussions).length;
       },
       allResolved: function () {
         return this.resolved === this.commentsCount;

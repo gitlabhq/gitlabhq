@@ -14,7 +14,7 @@
     },
     data: function () {
       return {
-        comments: CommentsStore.state,
+        discussions: CommentsStore.state,
         loading: false
       };
     },
@@ -37,7 +37,7 @@
       },
       resolve: function () {
         if (!this.canResolve) return;
-        
+
         let promise;
         this.loading = true;
 
