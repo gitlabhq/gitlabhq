@@ -368,6 +368,14 @@ Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "t
 Settings['extra'] ||= Settingslogic.new({})
 
 #
+# Koding Integration
+#
+Settings['koding'] ||= Settingslogic.new({})
+Settings.koding['enabled'] ||= !ENV['GITLAB_KODING_URL'].nil?
+Settings.koding['url'] ||= ENV['GITLAB_KODING_URL'] || "http://gitlab.localhost:8090"
+Settings.koding['file'] ||= ENV['GITLAB_KODING_FILE'] || ".koding.yml"
+
+#
 # Rack::Attack settings
 #
 Settings['rack_attack'] ||= Settingslogic.new({})
