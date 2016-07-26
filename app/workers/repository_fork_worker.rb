@@ -4,7 +4,7 @@ class RepositoryForkWorker
 
   sidekiq_options queue: :gitlab_shell
 
-  def perform(project_id, source_path, target_path)
+  def perform(project_id, forked_from_repository_storage_path, source_path, target_path)
     project = Project.find_by_id(project_id)
 
     unless project.present?
@@ -12,7 +12,8 @@ class RepositoryForkWorker
       return
     end
 
-    result = gitlab_shell.fork_repository(project.repository_storage_path, source_path, target_path)
+    result = gitlab_shell.fork_repository(forked_from_repository_storage_path, source_path,
+                                          project.repository_storage_path, target_path)
     unless result
       logger.error("Unable to fork project #{project_id} for repository #{source_path} -> #{target_path}")
       project.mark_import_as_failed('The project could not be forked.')
