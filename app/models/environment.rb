@@ -10,6 +10,10 @@ class Environment < ActiveRecord::Base
             format: { with: Gitlab::Regex.environment_name_regex,
                       message: Gitlab::Regex.environment_name_regex_message }
 
+  validates :external_url,
+            uniqueness: { scope: :project_id },
+            length: { maximum: 255 }
+
   def last_deployment
     deployments.last
   end
