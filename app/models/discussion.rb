@@ -39,6 +39,14 @@ class Discussion
     @notes = notes
   end
 
+  def last_updated_at
+    last_note.created_at
+  end
+
+  def last_updated_by
+    last_note.author
+  end
+
   def id
     first_note.discussion_id
   end
