@@ -59,6 +59,7 @@ v 8.11.0 (unreleased)
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
+  - Fix syntax highlighting in file editor
   - Nokogiri's various parsing methods are now instrumented
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)

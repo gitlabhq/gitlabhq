@@ -2,7 +2,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.3.2)
-    ace-rails-ap (4.0.2)
+    ace-rails-ap (4.1.0)
     actionmailer (4.2.7.1)
       actionpack (= 4.2.7.1)
       actionview (= 4.2.7.1)
@@ -796,7 +796,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth (~> 4.3.2)
-  ace-rails-ap (~> 4.0.2)
+  ace-rails-ap (~> 4.1.0)
   activerecord-session_store (~> 1.0.0)
   acts-as-taggable-on (~> 3.4)
   addressable (~> 2.3.8)

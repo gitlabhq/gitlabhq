@@ -201,7 +201,7 @@ gem 'licensee', '~> 8.0.0'
 gem 'rack-attack', '~> 4.3.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 4.0.2'
+gem 'ace-rails-ap', '~> 4.1.0'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
