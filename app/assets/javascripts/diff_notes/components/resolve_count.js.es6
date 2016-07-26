@@ -15,7 +15,7 @@
           let resolved = true;
 
           for (const noteId in comments) {
-            const commentResolved = comments[noteId];
+            const commentResolved = comments[noteId].resolved;
 
             if (!commentResolved) {
               resolved = false;

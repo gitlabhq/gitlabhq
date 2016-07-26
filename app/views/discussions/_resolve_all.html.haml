@@ -2,7 +2,7 @@
   %resolve-all-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
       ":project-path" => "'#{discussion.project.path}'",
       ":discussion-id" => "'#{discussion.id}'",
-      ":merge-request-id" => "#{discussion.first_note.noteable.iid}",
+      ":merge-request-id" => "#{discussion.first_note.noteable.try(:iid)}",
       "inline-template" => true,
       "v-cloak" => true }
     %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }

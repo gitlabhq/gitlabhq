@@ -11,6 +11,7 @@ $(() => {
     components: {
       'resolve-btn': ResolveBtn,
       'resolve-all-btn': ResolveAllBtn,
+      'resolve-comment-btn': ResolveCommentBtn,
     }
   });
 

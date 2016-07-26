@@ -352,7 +352,7 @@
       form.find("#note_line_code").remove();
       form.find("#note_position").remove();
       form.find("#note_type").remove();
-      form.find('.js-comment-resolve-button').remove();
+      form.find('.js-comment-resolve-button').closest('resolve-comment-btn').remove();
       return this.parentTimeline = form.parents('.timeline');
     };
 
@@ -397,8 +397,6 @@
 
     Notes.prototype.addDiscussionNote = function(xhr, note, status) {
       var $form = $(xhr.target);
-      this.renderDiscussionNote(note);
-      this.removeDiscussionNoteForm($form);
 
       if ($form.attr('data-resolve-all') != null) {
         var namespacePath = $form.attr('data-namespace-path'),
@@ -411,6 +409,9 @@
           ResolveService.toggleResolveForDiscussion(namespace, mergeRequestId, discussionId);
         }
       }
+
+      this.renderDiscussionNote(note);
+      this.removeDiscussionNoteForm($form);
     };
 
 
@@ -588,6 +589,7 @@
      */
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
+      var canResolve = dataHolder.attr('data-resolvable');
       form.attr('id', "new-discussion-note-form-" + (dataHolder.data("discussionId")));
       form.attr("data-line-code", dataHolder.data("lineCode"));
       form.find("#note_type").val(dataHolder.data("noteType"));
@@ -598,6 +600,16 @@
       form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
+
+      if (canResolve === 'false') {
+        form.find('resolve-comment-btn').remove();
+      } else if (DiffNotesApp) {
+        var $commentBtn = form.find('resolve-comment-btn');
+        $commentBtn
+          .attr(':discussion-id', `'${dataHolder.data("discussionId")}'`);
+        DiffNotesApp.$compile($commentBtn.get(0));
+      }
+
       this.setupNoteForm(form);
       form.find(".js-note-text").focus();
       form

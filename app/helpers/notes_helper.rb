@@ -79,7 +79,7 @@ module NotesHelper
   def link_to_reply_discussion(discussion, line_type = nil)
     return unless current_user
 
-    data = discussion.reply_attributes.merge(line_type: line_type)
+    data = discussion.reply_attributes.merge(line_type: line_type, resolvable: discussion.can_resolve?(current_user))
 
     button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
                            data: data, title: 'Add a reply'
