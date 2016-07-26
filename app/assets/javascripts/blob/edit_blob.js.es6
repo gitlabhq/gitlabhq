@@ -6,7 +6,7 @@
 
       this.editor = ace.edit('editor');
       this.editor.focus();
-      if (aceMode) this.editor.getSession().setMode `ace/mode/${aceMode}`;
+      if (aceMode) this.editor.getSession().setMode(`ace/mode/${aceMode}`);
 
       $('form').submit(() => {
         $('#file-content').val(this.editor.getValue());
@@ -22,7 +22,7 @@
     initModePanesAndLinks() {
       this.$editModePanes = $('.js-edit-mode-pane');
       this.$editModeLinks = $('.js-edit-mode a');
-      this.$editModeLinks.click(this.editModeLinkClickHandler);
+      this.$editModeLinks.click((e) => this.editModeLinkClickHandler(e));
     }
 
     editModeLinkClickHandler(event) {
@@ -34,7 +34,7 @@
       $currentLink.parent().addClass('active hover');
       this.$editModePanes.hide();
       currentPane.fadeIn(200);
-      if (padeId === '#preview') {
+      if (paneId === '#preview') {
         $.post($currentLink.data('preview-url'), {
           content: this.editor.getValue()
         }, (response) => {
