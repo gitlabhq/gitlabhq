@@ -1,4 +1,4 @@
-(() => {
+((global) => {
   class TemplateSelector {
     constructor(opts = {}) {
       this.dropdown = opts.dropdown;
@@ -65,5 +65,5 @@
     }
   }
 
-  this.TemplateSelector = TemplateSelector;
-});
+  global.TemplateSelector = TemplateSelector;
+})(window);
