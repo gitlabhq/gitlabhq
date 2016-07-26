@@ -16,6 +16,7 @@ v 8.10.2 (unreleased)
   - Don't show comment button in gutter of diffs on MR discussion tab. !5493
   - Rescue Rugged::OSError (lock exists) when creating references. !5497
   - Fix expand all diffs button in compare view. !5500
+  - Show release notes in tags list. !5503
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
