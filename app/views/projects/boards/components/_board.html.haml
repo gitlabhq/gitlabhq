@@ -6,8 +6,8 @@
           {{ board.title }}
           %span.pull-right
             {{ board.issues.length }}
-          %board-delete{ "inline-template" => true, "v-if" => "!isPreset" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", data: { placement: "bottom" } }
+          %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
+            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", data: { placement: "bottom" }, "@click" => "deleteBoard" }
               %span.sr-only
                 Delete board
               = icon("trash")

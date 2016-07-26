@@ -6,6 +6,9 @@
       author: {}
       assignee: {}
       milestone: {}
+  removeBoard: (id) ->
+    BoardsStore.state.boards = _.reject BoardsStore.state.boards, (board) ->
+      board.id is id
   moveBoard: (oldIndex, newIndex) ->
     boardFrom = _.find BoardsStore.state.boards, (board) ->
       board.index is oldIndex

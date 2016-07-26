@@ -56,5 +56,7 @@ BoardList = Vue.extend
     this.$els.list.onscroll = =>
       if (this.scrollTop() > this.scrollHeight() - this.scrollOffset) and !this.loadMore
         this.loadFromLastId()
+  beforeDestroy: ->
+    this.sortable.destroy()
 
 Vue.component('board-list', BoardList)
