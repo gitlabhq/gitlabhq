@@ -224,7 +224,7 @@ describe GitPushService, services: true do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false })
+        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: false })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
 
@@ -242,7 +242,17 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: true })
+        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: true, developers_can_merge: false })
+
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
+      end
+
+      it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        expect(project).to receive(:execute_hooks)
+        expect(project.default_branch).to eq("master")
+        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: true })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
       end
 

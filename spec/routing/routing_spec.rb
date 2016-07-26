@@ -116,12 +116,9 @@ describe HelpController, "routing" do
     expect(get(path)).to route_to('help#show',
                                   path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-    path = '/help/shortcuts'
-    expect(get(path)).to route_to('help#show',
-                                  path: 'shortcuts')
+    
     path = '/help/ui'
-    expect(get(path)).to route_to('help#show',
-                                  path: 'ui')
+    expect(get(path)).to route_to('help#ui')
   end
 end
 

@@ -162,7 +162,7 @@ class Project < ActiveRecord::Base
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-  validates :import_url, addressable_url: true, if: :import_url
+  validates :import_url, addressable_url: true, if: :external_import?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -429,6 +429,17 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  # ref can't be HEAD, can only be branch/tag name or SHA
+  def latest_successful_builds_for(ref = default_branch)
+    latest_pipeline = pipelines.latest_successful_for(ref).first
+
+    if latest_pipeline
+      latest_pipeline.builds.latest.with_artifacts
+    else
+      builds.none
+    end
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha
@@ -482,7 +493,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_or_update_import_data(data: nil, credentials: nil)
-    return unless valid_import_url?
+    return unless import_url.present? && valid_import_url?
 
     project_import_data = import_data || build_import_data
     if data
@@ -655,6 +666,22 @@ class Project < ActiveRecord::Base
 
   def cache_has_external_issue_tracker
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
+  end
+
+  def external_wiki
+    if has_external_wiki.nil?
+      cache_has_external_wiki # Populate
+    end
+
+    if has_external_wiki
+      @external_wiki ||= services.external_wikis.first
+    else
+      nil
+    end
+  end
+
+  def cache_has_external_wiki
+    update_column(:has_external_wiki, services.external_wikis.any?)
   end
 
   def build_missing_services
@@ -845,6 +872,10 @@ class Project < ActiveRecord::Base
     protected_branches.matching(branch_name).any?(&:developers_can_push)
   end
 
+  def developers_can_merge_to_protected_branch?(branch_name)
+    protected_branches.matching(branch_name).any?(&:developers_can_merge)
+  end
+
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
@@ -858,9 +889,13 @@ class Project < ActiveRecord::Base
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
+    Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
     expire_caches_before_rename(old_path_with_namespace)
 
     if has_container_registry_tags?
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
+
       # we currently doesn't support renaming repository if it contains tags in container registry
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
@@ -879,16 +914,21 @@ class Project < ActiveRecord::Base
         SystemHooksService.new.execute_hooks_for(self, :rename)
 
         @repository = nil
-      rescue
+      rescue => e
+        Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end
     else
+      Rails.logger.error "Repository could not be renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
@@ -1045,8 +1085,8 @@ class Project < ActiveRecord::Base
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref)
+  def ensure_pipeline(sha, ref, current_user = nil)
+    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
@@ -1166,5 +1206,75 @@ class Project < ActiveRecord::Base
 
   def ensure_dir_exist
     gitlab_shell.add_namespace(repository_storage_path, namespace.path)
+  end
+
+  def predefined_variables
+    [
+      { key: 'CI_PROJECT_ID', value: id.to_s, public: true },
+      { key: 'CI_PROJECT_NAME', value: path, public: true },
+      { key: 'CI_PROJECT_PATH', value: path_with_namespace, public: true },
+      { key: 'CI_PROJECT_NAMESPACE', value: namespace.path, public: true },
+      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+    ]
+  end
+
+  def container_registry_variables
+    return [] unless Gitlab.config.registry.enabled
+
+    variables = [
+      { key: 'CI_REGISTRY', value: Gitlab.config.registry.host_port, public: true }
+    ]
+
+    if container_registry_enabled?
+      variables << { key: 'CI_REGISTRY_IMAGE', value: container_registry_repository_url, public: true }
+    end
+
+    variables
+  end
+
+  def secret_variables
+    variables.map do |variable|
+      { key: variable.key, value: variable.value, public: false }
+    end
+  end
+
+  # Checks if `user` is authorized for this project, with at least the
+  # `min_access_level` (if given).
+  #
+  # If you change the logic of this method, please also update `User#authorized_projects`
+  def authorized_for_user?(user, min_access_level = nil)
+    return false unless user
+
+    return true if personal? && namespace_id == user.namespace_id
+
+    authorized_for_user_by_group?(user, min_access_level) ||
+      authorized_for_user_by_members?(user, min_access_level) ||
+      authorized_for_user_by_shared_projects?(user, min_access_level)
+  end
+
+  private
+
+  def authorized_for_user_by_group?(user, min_access_level)
+    member = user.group_members.find_by(source_id: group)
+
+    member && (!min_access_level || member.access_level >= min_access_level)
+  end
+
+  def authorized_for_user_by_members?(user, min_access_level)
+    member = members.find_by(user_id: user)
+
+    member && (!min_access_level || member.access_level >= min_access_level)
+  end
+
+  def authorized_for_user_by_shared_projects?(user, min_access_level)
+    shared_projects = user.group_members.joins(group: :shared_projects).
+      where(project_group_links: { project_id: self })
+
+    if min_access_level
+      members_scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      shared_projects = shared_projects.where(members: members_scope)
+    end
+
+    shared_projects.any?
   end
 end

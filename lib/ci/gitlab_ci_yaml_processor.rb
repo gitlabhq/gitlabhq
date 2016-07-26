@@ -31,28 +31,62 @@ module Ci
       raise ValidationError, e.message
     end
 
+    def jobs_for_ref(ref, tag = false, trigger_request = nil)
+      @jobs.select do |_, job|
+        process?(job[:only], job[:except], ref, tag, trigger_request)
+      end
+    end
+
+    def jobs_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).select do |_, job|
+        job[:stage] == stage
+      end
+    end
+
+    def builds_for_ref(ref, tag = false, trigger_request = nil)
+      jobs_for_ref(ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
+      end
+    end
+
     def builds_for_stage_and_ref(stage, ref, tag = false, trigger_request = nil)
-      builds.select do |build|
-        build[:stage] == stage &&
-          process?(build[:only], build[:except], ref, tag, trigger_request)
+      jobs_for_stage_and_ref(stage, ref, tag, trigger_request).map do |name, _|
+        build_attributes(name)
       end
     end
 
     def builds
-      @jobs.map do |name, job|
-        build_job(name, job)
+      @jobs.map do |name, _|
+        build_attributes(name)
       end
     end
 
-    def global_variables
-      @variables
-    end
-
-    def job_variables(name)
-      job = @jobs[name.to_sym]
-      return [] unless job
-
-      job[:variables] || []
+    def build_attributes(name)
+      job = @jobs[name.to_sym] || {}
+      {
+        stage_idx: @stages.index(job[:stage]),
+        stage: job[:stage],
+        ##
+        # Refactoring note:
+        #  - before script behaves differently than after script
+        #  - after script returns an array of commands
+        #  - before script should be a concatenated command
+        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        tag_list: job[:tags] || [],
+        name: name,
+        allow_failure: job[:allow_failure] || false,
+        when: job[:when] || 'on_success',
+        environment: job[:environment],
+        yaml_variables: yaml_variables(name),
+        options: {
+          image: job[:image] || @image,
+          services: job[:services] || @services,
+          artifacts: job[:artifacts],
+          cache: job[:cache] || @cache,
+          dependencies: job[:dependencies],
+          after_script: job[:after_script] || @after_script,
+        }.compact
+      }
     end
 
     private
@@ -83,32 +117,22 @@ module Ci
       @jobs[name] = { stage: stage }.merge(job)
     end
 
-    def build_job(name, job)
-      {
-        stage_idx: @stages.index(job[:stage]),
-        stage: job[:stage],
-        ##
-        # Refactoring note:
-        #  - before script behaves differently than after script
-        #  - after script returns an array of commands
-        #  - before script should be a concatenated command
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
-        tag_list: job[:tags] || [],
-        name: name,
-        only: job[:only],
-        except: job[:except],
-        allow_failure: job[:allow_failure] || false,
-        when: job[:when] || 'on_success',
-        environment: job[:environment],
-        options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
-          artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
-          dependencies: job[:dependencies],
-          after_script: job[:after_script] || @after_script,
-        }.compact
-      }
+    def yaml_variables(name)
+      variables = global_variables.merge(job_variables(name))
+      variables.map do |key, value|
+        { key: key, value: value, public: true }
+      end
+    end
+
+    def global_variables
+      @variables || {}
+    end
+
+    def job_variables(name)
+      job = @jobs[name.to_sym]
+      return {} unless job
+
+      job[:variables] || {}
     end
 
     def validate!
@@ -171,8 +195,8 @@ module Ci
         raise ValidationError, "#{name} job: allow_failure parameter should be an boolean"
       end
 
-      if job[:when] && !job[:when].in?(%w[on_success on_failure always])
-        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure or always"
+      if job[:when] && !job[:when].in?(%w[on_success on_failure always manual])
+        raise ValidationError, "#{name} job: when parameter should be on_success, on_failure, always or manual"
       end
 
       if job[:environment] && !validate_environment(job[:environment])

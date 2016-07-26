@@ -5,15 +5,17 @@ module Ci
     belongs_to :erased_by, class_name: 'User'
 
     serialize :options
+    serialize :yaml_variables
 
     validates :coverage, numericality: true, allow_blank: true
     validates_presence_of :ref
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
+    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
+    scope :manual_actions, ->() { where(when: :manual) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -52,7 +54,10 @@ module Ci
         new_build.stage = build.stage
         new_build.stage_idx = build.stage_idx
         new_build.trigger_request = build.trigger_request
+        new_build.yaml_variables = build.yaml_variables
+        new_build.when = build.when
         new_build.user = user
+        new_build.environment = build.environment
         new_build.save
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -87,6 +92,29 @@ module Ci
       end
     end
 
+    def manual?
+      self.when == 'manual'
+    end
+
+    def other_actions
+      pipeline.manual_actions.where.not(name: name)
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      # Try to queue a current build
+      if self.queue
+        self.update(user: current_user)
+        self
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
+      end
+    end
+
     def retryable?
       project.builds_enabled? && commands.present? && complete?
     end
@@ -117,7 +145,15 @@ module Ci
     end
 
     def variables
-      predefined_variables + yaml_variables + project_variables + trigger_variables
+      variables = predefined_variables
+      variables += project.predefined_variables
+      variables += pipeline.predefined_variables
+      variables += runner.predefined_variables if runner
+      variables += project.container_registry_variables
+      variables += yaml_variables
+      variables += project.secret_variables
+      variables += trigger_request.user_variables if trigger_request
+      variables
     end
 
     def merge_request
@@ -376,6 +412,14 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def when
+      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+    end
+
+    def yaml_variables
+      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+    end
+
     private
 
     def update_artifacts_size
@@ -394,53 +438,30 @@ module Ci
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
     end
 
-    def yaml_variables
-      global_yaml_variables + job_yaml_variables
-    end
-
-    def global_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.global_variables.map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
-    end
-
-    def job_yaml_variables
-      if pipeline.config_processor
-        pipeline.config_processor.job_variables(name).map do |key, value|
-          { key: key, value: value, public: true }
-        end
-      else
-        []
-      end
-    end
-
-    def project_variables
-      project.variables.map do |variable|
-        { key: variable.key, value: variable.value, public: false }
-      end
-    end
-
-    def trigger_variables
-      if trigger_request && trigger_request.variables
-        trigger_request.variables.map do |key, value|
-          { key: key, value: value, public: false }
-        end
-      else
-        []
-      end
-    end
-
     def predefined_variables
-      variables = []
-      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
-      variables << { key: :CI_BUILD_NAME, value: name, public: true }
-      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
-      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables = [
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_BUILD_ID', value: id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: token, public: false },
+        { key: 'CI_BUILD_REF', value: sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
+        { key: 'CI_BUILD_NAME', value: name, public: true },
+        { key: 'CI_BUILD_STAGE', value: stage, public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+      ]
+      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
+      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
       variables
+    end
+
+    def build_attributes_from_config
+      return {} unless pipeline.config_processor
+      
+      pipeline.config_processor.build_attributes(name)
     end
   end
 end

@@ -11,16 +11,6 @@ class Repository
 
   attr_accessor :path_with_namespace, :project
 
-  def self.clean_old_archives
-    Gitlab::Metrics.measure(:clean_old_archives) do
-      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
-
-      return unless File.directory?(repository_downloads_path)
-
-      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
-    end
-  end
-
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
     @project = project
@@ -216,11 +206,20 @@ class Repository
 
     return if kept_around?(sha)
 
-    rugged.references.create(keep_around_ref_name(sha), sha)
+    # This will still fail if the file is corrupted (e.g. 0 bytes)
+    begin
+      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+    rescue Rugged::ReferenceError => ex
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    end
   end
 
   def kept_around?(sha)
-    ref_exists?(keep_around_ref_name(sha))
+    begin
+      ref_exists?(keep_around_ref_name(sha))
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def tag_names
@@ -392,6 +391,11 @@ class Repository
 
     expire_cache if exists?
 
+    # expire cache that don't depend on repository data (when expiring)
+    expire_tags_cache
+    expire_tag_count_cache
+    expire_branches_cache
+    expire_branch_count_cache
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
@@ -606,6 +610,8 @@ class Repository
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
+    when 'name'
+      branches.sort_by(&:name)
     when 'recently_updated'
       branches.sort do |a, b|
         commit(b.target).committed_date <=> commit(a.target).committed_date
@@ -704,6 +710,7 @@ class Repository
       options[:commit] = {
         message: message,
         branch: ref,
+        update_ref: false,
       }
 
       raw_repository.mkdir(path, options)
@@ -719,6 +726,7 @@ class Repository
       options[:commit] = {
         message: message,
         branch: ref,
+        update_ref: false,
       }
 
       options[:file] = {
@@ -731,6 +739,33 @@ class Repository
     end
   end
 
+  def update_file(user, path, content, branch:, previous_path:, message:)
+    commit_with_hooks(user, branch) do |ref|
+      committer = user_to_committer(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref,
+        update_ref: false
+      }
+
+      options[:file] = {
+        content: content,
+        path: path,
+        update: true
+      }
+
+      if previous_path
+        options[:file][:previous_path] = previous_path
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
+    end
+  end
+
   def remove_file(user, path, message, branch)
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
@@ -739,7 +774,8 @@ class Repository
       options[:author] = committer
       options[:commit] = {
         message: message,
-        branch: ref
+        branch: ref,
+        update_ref: false,
       }
 
       options[:file] = {
@@ -769,9 +805,9 @@ class Repository
     end
   end
 
-  def merge(user, source_sha, target_branch, options = {})
-    our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
+  def merge(user, merge_request, options = {})
+    our_commit = rugged.branches[merge_request.target_branch].target
+    their_commit = rugged.lookup(merge_request.diff_head_sha)
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
@@ -779,14 +815,15 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    commit_with_hooks(user, target_branch) do |ref|
+    commit_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
-        update_ref: ref
       )
 
-      Rugged::Commit.create(rugged, actual_options)
+      commit_id = Rugged::Commit.create(rugged, actual_options)
+      merge_request.update(in_progress_merge_commit_sha: commit_id)
+      commit_id
     end
   end
 
@@ -796,15 +833,14 @@ class Repository
 
     return false unless revert_tree_id
 
-    commit_with_hooks(user, base_branch) do |ref|
+    commit_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
         author: committer,
         committer: committer,
         tree: revert_tree_id,
-        parents: [rugged.lookup(source_sha)],
-        update_ref: ref)
+        parents: [rugged.lookup(source_sha)])
     end
   end
 
@@ -814,7 +850,7 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    commit_with_hooks(user, base_branch) do |ref|
+    commit_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.message,
@@ -825,8 +861,7 @@ class Repository
         },
         committer: committer,
         tree: cherry_pick_tree_id,
-        parents: [rugged.lookup(source_sha)],
-        update_ref: ref)
+        parents: [rugged.lookup(source_sha)])
     end
   end
 
@@ -927,20 +962,6 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
-  def with_tmp_ref(oldrev = nil)
-    random_string = SecureRandom.hex
-    tmp_ref = "refs/tmp/#{random_string}/head"
-
-    if oldrev && !Gitlab::Git.blank_ref?(oldrev)
-      rugged.references.create(tmp_ref, oldrev)
-    end
-
-    # Make commit in tmp ref
-    yield(tmp_ref)
-  ensure
-    rugged.references.delete(tmp_ref) rescue nil
-  end
-
   def commit_with_hooks(current_user, branch)
     update_autocrlf_option
 
@@ -953,33 +974,31 @@ class Repository
       oldrev = target_branch.target
     end
 
-    with_tmp_ref(oldrev) do |tmp_ref|
-      # Make commit in tmp ref
-      newrev = yield(tmp_ref)
+    # Make commit
+    newrev = yield(ref)
 
-      unless newrev
-        raise CommitError.new('Failed to create commit')
-      end
+    unless newrev
+      raise CommitError.new('Failed to create commit')
+    end
 
-      GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-        if was_empty || !target_branch
-          # Create branch
-          rugged.references.create(ref, newrev)
+    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
+      if was_empty || !target_branch
+        # Create branch
+        rugged.references.create(ref, newrev)
+      else
+        # Update head
+        current_head = find_branch(branch).target
+
+        # Make sure target branch was not changed during pre-receive hook
+        if current_head == oldrev
+          rugged.references.update(ref, newrev)
         else
-          # Update head
-          current_head = find_branch(branch).target
-
-          # Make sure target branch was not changed during pre-receive hook
-          if current_head == oldrev
-            rugged.references.update(ref, newrev)
-          else
-            raise CommitError.new('Commit was rejected because branch received new push')
-          end
+          raise CommitError.new('Commit was rejected because branch received new push')
         end
       end
-
-      newrev
     end
+
+    newrev
   end
 
   def ls_files(ref)
@@ -1014,7 +1033,7 @@ class Repository
   private
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace)
+    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
   end
 
   def head_exists?

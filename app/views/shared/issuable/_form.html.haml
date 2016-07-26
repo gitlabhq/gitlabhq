@@ -1,12 +1,5 @@
 = form_errors(issuable)
 
-- if @conflict
-  .alert.alert-danger
-    Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
-    Please check out
-    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank"
-    and make sure your changes will not unintentionally remove theirs
-
 .form-group
   = f.label :title, class: 'control-label'
   .col-sm-10
@@ -59,24 +52,38 @@
         = f.label :assignee_id, "Assignee", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
           .issuable-form-select-holder
-            - project = @target_project || @project
-            - if issuable.assignee_id
-              = hidden_field_tag("#{issuable.class.model_name.param_key}[assignee_id]", issuable.assignee_id)
-            = dropdown_tag(user_dropdown_label(issuable.assignee_id, "Assignee"), options: { toggle_class: "js-user-search js-issuable-form-dropdown js-assignee-search", title: "Filter by assignee", filter: true, dropdown_class: "dropdown-menu-user dropdown-menu-selectable dropdown-menu-assignee js-filter-submit",
-              placeholder: "Search assignee", data: { first_user: (current_user.username if current_user), null_user: true, current_user: true, project_id: (project.id if project), selected: issuable.assignee_id, field_name: "#{issuable.class.model_name.param_key}[assignee_id]", default_label: "Assignee" } })
+            = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
+                placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
+                selected: issuable.assignee_id, project: @target_project || @project,
+                first_user: true, current_user: true, include_blank: true)
+          %div
+            = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'
       .form-group.issue-milestone
         = f.label :milestone_id, "Milestone", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: ("col-lg-8" if has_due_date) }
-          .issuable-form-select-holder
-            = render "shared/issuable/milestone_dropdown", selected: issuable.milestone_id, name: "#{issuable.class.model_name.param_key}[milestone_id]", show_any: false, show_upcoming: false
+          - if milestone_options(issuable).present?
+            .issuable-form-select-holder
+              = f.select(:milestone_id, milestone_options(issuable),
+                { include_blank: true }, { class: 'select2', data: { placeholder: 'Select milestone' } })
+          - else
+            .prepend-top-10
+            %span.light No open milestones available.
+          - if can? current_user, :admin_milestone, issuable.project
+            %div
+              = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
       .form-group
         - has_labels = issuable.project.labels.any?
-        - selected_labels = issuable.label_ids.any? ? issuable.label_ids : nil
-        - label_dropdown_toggle = issuable.labels.map { |label| label.title }
         = f.label :label_ids, "Labels", class: "control-label #{"col-lg-4" if has_due_date}"
         .col-sm-10{ class: "#{"col-lg-8" if has_due_date} #{'issuable-form-padding-top' if !has_labels}" }
-          .issuable-form-select-holder
-            = render "shared/issuable/label_dropdown", classes: ["js-issuable-form-dropdown"], selected: selected_labels, selected_toggle: label_dropdown_toggle, data_options: { field_name: "#{issuable.class.model_name.param_key}[label_ids][]", show_any: "false" }
+          - if has_labels
+            .issuable-form-select-holder
+              = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+                { selected: issuable.label_ids }, multiple: true, class: 'select2', data: { placeholder: "Select labels" }
+          - else
+            %span.light No labels yet.
+          - if can? current_user, :admin_label, issuable.project
+            %div
+              = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
     - if has_due_date
       .col-lg-6
         .form-group
@@ -142,5 +149,3 @@
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
-
-= f.hidden_field :lock_version

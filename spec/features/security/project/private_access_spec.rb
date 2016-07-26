@@ -362,4 +362,23 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for :external }
     it { is_expected.to be_denied_for :visitor }
   end
+
+  describe "GET /:project_path/container_registry" do
+    before do
+      stub_container_registry_tags('latest')
+      stub_container_registry_config(enabled: true)
+    end
+
+    subject { namespace_project_container_registry_index_path(project.namespace, project) }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for owner }
+    it { is_expected.to be_allowed_for master }
+    it { is_expected.to be_allowed_for developer }
+    it { is_expected.to be_allowed_for reporter }
+    it { is_expected.to be_denied_for guest }
+    it { is_expected.to be_denied_for :user }
+    it { is_expected.to be_denied_for :external }
+    it { is_expected.to be_denied_for :visitor }
+  end
 end

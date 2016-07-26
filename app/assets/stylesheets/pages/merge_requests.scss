@@ -60,12 +60,23 @@
   .ci_widget {
     border-bottom: 1px solid #eef0f2;
 
-    i {
+    svg {
       margin-right: 4px;
+      position: relative;
+      top: 1px;
+      overflow: visible;
     }
 
     &.ci-success {
       color: $gl-success;
+    }
+
+    &.ci-success_with_warnings {
+      color: $gl-success;
+
+      i {
+        color: $gl-warning;
+      }
     }
 
     &.ci-skipped {
@@ -196,6 +207,21 @@
 
     .merge-request-title {
       margin-bottom: 2px;
+
+      .ci-status-link {
+
+        svg {
+          height: 16px;
+          width: 16px;
+          position: relative;
+          top: 3px;
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -270,7 +296,7 @@
 
     .item-title {
       @media (min-width: $screen-sm-min) {
-        width: 49%;
+        width: 45%;
       }
     }
 
@@ -324,10 +350,6 @@
 .issuable-form-select-holder {
   display: inline-block;
   width: 250px;
-
-  .dropdown-menu-toggle {
-    width: 100%;
-  }
 }
 
 .table-holder {

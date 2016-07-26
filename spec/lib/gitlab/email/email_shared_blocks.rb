@@ -10,7 +10,6 @@ shared_context :email_shared_context do
       [
         {
           url: "uploads/image.png",
-          is_image: true,
           alt: "image",
           markdown: markdown
         }

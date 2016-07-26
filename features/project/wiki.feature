@@ -8,6 +8,12 @@ Feature: Project Wiki
     Given I create the Wiki Home page
     Then I should see the newly created wiki page
 
+  Scenario: Add new page with errors
+    Given I create the Wiki Home page with no content
+    Then I should see a "Content can't be blank" error message
+    When I create the Wiki Home page
+    Then I should see the newly created wiki page
+
   Scenario: Pressing Cancel while editing a brand new Wiki
     Given I click on the Cancel button
     Then I should be redirected back to the Edit Home Wiki page

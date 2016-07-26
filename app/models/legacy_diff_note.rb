@@ -38,7 +38,7 @@ class LegacyDiffNote < Note
   end
 
   def diff_line
-    @diff_line ||= diff_file.line_for_line_code(self.line_code)
+    @diff_line ||= diff_file.line_for_line_code(self.line_code) if diff_file
   end
 
   def for_line?(line)
@@ -55,7 +55,7 @@ class LegacyDiffNote < Note
   def active?
     return @active if defined?(@active)
     return true if for_commit?
-    return true unless self.diff
+    return true unless diff_line
     return false unless noteable
 
     noteable_diff = find_noteable_diff

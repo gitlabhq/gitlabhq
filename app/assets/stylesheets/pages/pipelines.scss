@@ -1,7 +1,7 @@
 .pipelines {
   .stage {
-    max-width: 80px;
-    width: 80px;
+    max-width: 90px;
+    width: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -29,13 +29,26 @@
   }
 }
 
+.pipeline-holder {
+  width: 100%;
+  overflow: auto;
+}
+
 .table.builds {
-  min-width: 1100px;
+  min-width: 1200px;
+
+  &.pipeline {
+    min-width: 650px;
+  }
 
   tr {
     th {
-      padding: 16px;
+      padding: 16px 8px;
       border: none;
+    }
+
+    td {
+      padding: 10px 8px;
     }
   }
 
@@ -45,6 +58,14 @@
 
   .commit-link {
 
+    .ci-status {
+
+      svg {
+        top: 1px;
+        margin-right: 0;
+      }
+    }
+
     a:hover {
       text-decoration: none;
     }
@@ -53,9 +74,8 @@
   .branch-commit {
 
     .branch-name {
-      margin-left: 8px;
       font-weight: bold;
-      max-width: 180px;
+      max-width: 150px;
       overflow: hidden;
       display: inline-block;
       white-space: nowrap;
@@ -64,10 +84,15 @@
     }
 
     svg {
-      margin: 0 6px;
       height: 14px;
-      width: auto;
+      width: 14px;
       vertical-align: middle;
+      fill: $table-text-gray;
+    }
+
+    .fa {
+      font-size: 12px;
+      color: $table-text-gray;
     }
 
     .commit-id {
@@ -77,7 +102,7 @@
 
     .commit-title {
       margin-top: 4px;
-      max-width: 320px;
+      max-width: 300px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -100,6 +125,36 @@
     }
   }
 
+  .icon-container {
+    display: inline-block;
+    text-align: right;
+    width: 20px;
+
+    .fa {
+      position: relative;
+      right: 3px;
+    }
+
+    svg {
+      position: relative;
+      right: 1px;
+    }
+  }
+
+  .stage-cell {
+
+    svg {
+      height: 18px;
+      width: 18px;
+      vertical-align: middle;
+      overflow: visible;
+    }
+
+    .light {
+      width: 3px;
+    }
+  }
+
   .duration,
   .finished-at {
     color: $table-text-gray;
@@ -107,21 +162,19 @@
 
     .fa {
       font-size: 12px;
+      margin-right: 4px;
     }
 
     svg {
+      width: 12px;
       height: 12px;
-      width: auto;
       vertical-align: middle;
-    }
-
-    .fa,
-    svg {
-      margin-right: 5px;
+      margin-right: 4px;
     }
   }
 
   .pipeline-actions {
+    min-width: 140px;
 
     .btn {
       margin: 0;
@@ -129,6 +182,8 @@
     }
 
     .cancel-retry-btns {
+      vertical-align: middle;
+
       .btn:not(:first-child) {
         margin-left: 8px;
       }

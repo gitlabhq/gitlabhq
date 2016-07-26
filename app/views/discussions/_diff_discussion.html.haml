@@ -1,0 +1,6 @@
+%tr.notes_holder
+  %td.notes_line{ colspan: 2 }
+  %td.notes_content
+    %ul.notes{ data: { discussion_id: discussion.id } }
+      = render partial: "projects/notes/note", collection: discussion.notes, as: :note
+    = link_to_reply_discussion(discussion)

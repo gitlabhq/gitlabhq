@@ -11,6 +11,13 @@ feature 'Projects > Members > User requests access', feature: true do
     visit namespace_project_path(project.namespace, project)
   end
 
+  scenario 'request access feature is disabled' do
+    project.update_attributes(request_access_enabled: false)
+    visit namespace_project_path(project.namespace, project)
+
+    expect(page).not_to have_content 'Request Access'
+  end
+
   scenario 'user can request access to a project' do
     perform_enqueued_jobs { click_link 'Request Access' }
 

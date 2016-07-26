@@ -6,6 +6,8 @@ module Ci
     self.table_name = 'ci_commits'
 
     belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
+    belongs_to :user
+
     has_many :statuses, class_name: 'CommitStatus', foreign_key: :commit_id
     has_many :builds, class_name: 'Ci::Build', foreign_key: :commit_id
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
@@ -17,6 +19,11 @@ module Ci
     # Invalidate object and save if when touched
     after_touch :update_state
     after_save :keep_around_commits
+
+    # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest_successful_for, ->(ref = default_branch) do
+      where(ref: ref).success.order(id: :desc).limit(1)
+    end
 
     def self.truncate_sha(sha)
       sha[0...8]
@@ -49,6 +56,10 @@ module Ci
       commit.try(:message)
     end
 
+    def git_commit_title
+      commit.try(:title)
+    end
+
     def short_sha
       Ci::Pipeline.truncate_sha(sha)
     end
@@ -61,6 +72,10 @@ module Ci
 
     def branch?
       !tag?
+    end
+
+    def manual_actions
+      builds.latest.manual_actions
     end
 
     def retryable?
@@ -136,6 +151,10 @@ module Ci
       end
     end
 
+    def has_warnings?
+      builds.latest.ignored.any?
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -188,6 +207,12 @@ module Ci
       Note.for_commit_id(sha)
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+      ]
+    end
+
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
@@ -196,8 +221,9 @@ module Ci
       # build builds only for the first stage that has builds available.
       #
       stages.any? do |stage|
-        CreateBuildsService.new(self)
-          .execute(stage, user, status, trigger_request).present?
+        CreateBuildsService.new(self).
+          execute(stage, user, status, trigger_request).
+          any?(&:active?)
       end
     end
 
@@ -215,6 +241,8 @@ module Ci
     end
 
     def keep_around_commits
+      return unless project
+
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
     end

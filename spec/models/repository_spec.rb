@@ -4,16 +4,17 @@ describe Repository, models: true do
   include RepoHelpers
   TestBlob = Struct.new(:name)
 
-  let(:repository) { create(:project).repository }
+  let(:project) { create(:project) }
+  let(:repository) { project.repository }
   let(:user) { create(:user) }
   let(:commit_options) do
     author = repository.user_to_committer(user)
     { message: 'Test message', committer: author, author: author }
   end
   let(:merge_commit) do
-    source_sha = repository.find_branch('feature').target
-    merge_commit_sha = repository.merge(user, source_sha, 'master', commit_options)
-    repository.commit(merge_commit_sha)
+    merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+    merge_commit_id = repository.merge(user, merge_request, commit_options)
+    repository.commit(merge_commit_id)
   end
 
   describe '#branch_names_contains' do
@@ -126,6 +127,36 @@ describe Repository, models: true do
       subject { repository.merged_to_root_ref?('non_existent_branch') }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe :commit_file do
+    it 'commits change to a file successfully' do
+      expect do
+        repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                              'Updates file content',
+                              'master', true)
+      end.to change { repository.commits('master').count }.by(1)
+
+      blob = repository.blob_at('master', 'CHANGELOG')
+
+      expect(blob.data).to eq('Changelog!')
+    end
+  end
+
+  describe :update_file do
+    it 'updates filename successfully' do
+      expect do
+        repository.update_file(user, 'NEWLICENSE', 'Copyright!',
+                                     branch: 'master',
+                                     previous_path: 'LICENSE',
+                                     message: 'Changes filename')
+      end.to change { repository.commits('master').count }.by(1)
+
+      files = repository.ls_files('master')
+
+      expect(files).not_to include('LICENSE')
+      expect(files).to include('NEWLICENSE')
     end
   end
 
@@ -718,6 +749,30 @@ describe Repository, models: true do
         repository.before_delete
       end
 
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
+
+        repository.before_delete
+      end
+
       it 'flushes the root ref cache' do
         expect(repository).to receive(:expire_root_ref_cache)
 
@@ -744,6 +799,30 @@ describe Repository, models: true do
 
       it 'flushes the caches that depend on repository data' do
         expect(repository).to receive(:expire_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tags cache' do
+        expect(repository).to receive(:expire_tags_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the tag count cache' do
+        expect(repository).to receive(:expire_tag_count_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branches cache' do
+        expect(repository).to receive(:expire_branches_cache)
+
+        repository.before_delete
+      end
+
+      it 'flushes the branch count cache' do
+        expect(repository).to receive(:expire_branch_count_cache)
 
         repository.before_delete
       end
@@ -1093,35 +1172,31 @@ describe Repository, models: true do
     end
   end
 
-  describe '.clean_old_archives' do
-    let(:path) { Gitlab.config.gitlab.repository_downloads_path }
-
-    context 'when the downloads directory does not exist' do
-      it 'does not remove any archives' do
-        expect(File).to receive(:directory?).with(path).and_return(false)
-
-        expect(Gitlab::Popen).not_to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-
-    context 'when the downloads directory exists' do
-      it 'removes old archives' do
-        expect(File).to receive(:directory?).with(path).and_return(true)
-
-        expect(Gitlab::Popen).to receive(:popen)
-
-        described_class.clean_old_archives
-      end
-    end
-  end
-
   describe "#keep_around" do
+    it "does not fail if we attempt to reference bad commit" do
+      expect(repository.kept_around?('abc1234')).to be_falsey
+    end
+
     it "stores a reference to the specified commit sha so it isn't garbage collected" do
       repository.keep_around(sample_commit.id)
 
       expect(repository.kept_around?(sample_commit.id)).to be_truthy
+    end
+
+    it "attempting to call keep_around on truncated ref does not fail" do
+      repository.keep_around(sample_commit.id)
+      ref = repository.send(:keep_around_ref_name, sample_commit.id)
+      path = File.join(repository.path, ref)
+      # Corrupt the reference
+      File.truncate(path, 0)
+
+      expect(repository.kept_around?(sample_commit.id)).to be_falsey
+
+      repository.keep_around(sample_commit.id)
+
+      expect(repository.kept_around?(sample_commit.id)).to be_falsey
+
+      File.delete(path)
     end
   end
 

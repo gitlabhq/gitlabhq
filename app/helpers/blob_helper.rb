@@ -1,10 +1,7 @@
 module BlobHelper
-  def highlighter(blob_name, blob_content, repository: nil, nowrap: false)
-    Gitlab::Highlight.new(blob_name, blob_content, nowrap: nowrap, repository: repository)
-  end
-
-  def highlight(blob_name, blob_content, repository: nil, nowrap: false, plain: false)
-    Gitlab::Highlight.highlight(blob_name, blob_content, nowrap: nowrap, plain: plain, repository: repository)
+  def highlight(blob_name, blob_content, repository: nil, plain: false)
+    highlighted = Gitlab::Highlight.highlight(blob_name, blob_content, plain: plain, repository: repository)
+    raw %(<pre class="code highlight"><code>#{highlighted}</code></pre>)
   end
 
   def no_highlight_files

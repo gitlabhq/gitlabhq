@@ -26,6 +26,7 @@
       "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
+      "test_ee_field": "test",
       "notes": [
         {
           "id": 351,
@@ -2764,7 +2765,7 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "Binary files a/.DS_Store and /dev/null differ\n",
             "new_path": ".DS_Store",
@@ -3137,7 +3138,7 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,5 @@\n+class Feature\n+  def foo\n+    puts 'bar'\n+  end\n+end\n",
             "new_path": "files/ruby/feature.rb",
@@ -3422,7 +3423,7 @@
             "committer_email": "james@jameslopez.es"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "--- /dev/null\n+++ b/test\n",
             "new_path": "test",
@@ -3959,7 +3960,7 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "Binary files a/.DS_Store and /dev/null differ\n",
             "new_path": ".DS_Store",
@@ -4596,7 +4597,7 @@
             "committer_email": "marmis85@gmail.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "--- a/CHANGELOG\n+++ b/CHANGELOG\n@@ -1,4 +1,6 @@\n-v 6.7.0\n+v6.8.0\n+\n+v6.7.0\n   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)\n   - Add edit file button to MergeRequest diff\n   - Public groups (Jason Hollingsworth)\n",
             "new_path": "CHANGELOG",
@@ -5107,7 +5108,7 @@
             "committer_email": "stanhu@packetzoom.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "--- a/CHANGELOG\n+++ b/CHANGELOG\n@@ -1,4 +1,6 @@\n-v 6.7.0\n+v6.8.0\n+\n+v6.7.0\n   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)\n   - Add edit file button to MergeRequest diff\n   - Public groups (Jason Hollingsworth)\n",
             "new_path": "CHANGELOG",
@@ -5433,7 +5434,7 @@
         "id": 11,
         "state": "empty",
         "st_commits": null,
-        "st_diffs": [
+        "utf8_st_diffs": [
 
         ],
         "merge_request_id": 11,
@@ -5960,7 +5961,7 @@
             "committer_email": "dmitriy.zaporozhets@gmail.com"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "Binary files a/.DS_Store and /dev/null differ\n",
             "new_path": ".DS_Store",
@@ -6399,7 +6400,7 @@
             "committer_email": "james@jameslopez.es"
           }
         ],
-        "st_diffs": [
+        "utf8_st_diffs": [
           {
             "diff": "--- /dev/null\n+++ b/test\n",
             "new_path": "test",

@@ -4,6 +4,6 @@ class RepositoryArchiveCacheWorker
   sidekiq_options queue: :default
 
   def perform
-    Repository.clean_old_archives
+    RepositoryArchiveCleanUpService.new.execute
   end
 end

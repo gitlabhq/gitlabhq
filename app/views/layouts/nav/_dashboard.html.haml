@@ -30,7 +30,7 @@
       %span
         Merge Requests
         %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
-  = nav_link(controller: :snippets) do
+  = nav_link(controller: 'dashboard/snippets') do
     = link_to dashboard_snippets_path, title: 'Snippets' do
       %span
         Snippets

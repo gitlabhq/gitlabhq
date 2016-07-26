@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: true, js: true do
+  before { allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true) }
+
   def register_u2f_device(u2f_device = nil)
     u2f_device ||= FakeU2fDevice.new(page)
     u2f_device.respond_to_u2f_registration
@@ -208,21 +210,52 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         expect(page.body).to match('Authentication via U2F device failed')
       end
     end
-  end
 
-  describe "when two-factor authentication is disabled" do
-    let(:user) { create(:user) }
+    describe "when more than one device has been registered by the same user" do
+      it "allows logging in with either device" do
+        # Register first device
+        user = login_as(:user)
+        user.update_attribute(:otp_required_for_login, true)
+        visit profile_two_factor_auth_path
+        expect(page).to have_content("Your U2F device needs to be set up.")
+        first_device = register_u2f_device
 
-    before do
-      login_as(user)
-      user.update_attribute(:otp_required_for_login, true)
-      visit profile_account_path
-      click_on 'Manage Two-Factor Authentication'
-      register_u2f_device
+        # Register second device
+        visit profile_two_factor_auth_path
+        expect(page).to have_content("Your U2F device needs to be set up.")
+        second_device = register_u2f_device
+        logout
+
+        # Authenticate as both devices
+        [first_device, second_device].each do |device|
+          login_as(user)
+          device.respond_to_u2f_authentication
+          click_on "Login Via U2F Device"
+          expect(page.body).to match('We heard back from your U2F device')
+          click_on "Authenticate via U2F Device"
+
+          expect(page.body).to match('Signed in successfully')
+
+          logout
+        end
+      end
     end
 
-    it "deletes u2f registrations" do
-      expect { click_on "Disable" }.to change { U2fRegistration.count }.from(1).to(0)
+    describe "when two-factor authentication is disabled" do
+      let(:user) { create(:user) }
+
+      before do
+        user = login_as(:user)
+        user.update_attribute(:otp_required_for_login, true)
+        visit profile_account_path
+        click_on 'Manage Two-Factor Authentication'
+        expect(page).to have_content("Your U2F device needs to be set up.")
+        register_u2f_device
+      end
+
+      it "deletes u2f registrations" do
+        expect { click_on "Disable" }.to change { U2fRegistration.count }.by(-1)
+      end
     end
   end
 end

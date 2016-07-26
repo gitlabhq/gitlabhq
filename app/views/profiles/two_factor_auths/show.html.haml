@@ -2,6 +2,10 @@
 - header_title "Two-Factor Authentication", profile_two_factor_auth_path
 = render 'profiles/head'
 
+- if inject_u2f_api?
+  - content_for :page_specific_javascripts do
+    = page_specific_javascript_tag('u2f.js')
+
 .row.prepend-top-default
   .col-lg-3
     %h4.prepend-top-0

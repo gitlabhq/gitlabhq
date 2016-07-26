@@ -7,5 +7,13 @@ module Ci
     has_many :builds, class_name: 'Ci::Build'
 
     serialize :variables
+
+    def user_variables
+      return [] unless variables
+
+      variables.map do |key, value|
+        { key: key, value: value, public: false }
+      end
+    end
   end
 end

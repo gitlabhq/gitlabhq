@@ -503,6 +503,20 @@ describe API::API, api: true  do
       ])
     end
 
+    context 'with due date' do
+      it 'creates a new project issue' do
+        due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', due_date: due_date
+
+        expect(response).to have_http_status(201)
+        expect(json_response['title']).to eq('new issue')
+        expect(json_response['description']).to be_nil
+        expect(json_response['due_date']).to eq(due_date)
+      end
+    end
+
     context 'when an admin or owner makes the request' do
       it 'accepts the creation date to be set' do
         creation_time = 2.weeks.ago
@@ -680,6 +694,17 @@ describe API::API, api: true  do
         expect(json_response['labels']).to include 'label3'
         expect(Time.parse(json_response['updated_at'])).to be_within(1.second).of(update_time)
       end
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update due date' do
+    it 'creates a new project issue' do
+      due_date = 2.weeks.from_now.strftime('%Y-%m-%d')
+
+      put api("/projects/#{project.id}/issues/#{issue.id}", user), due_date: due_date
+
+      expect(response).to have_http_status(200)
+      expect(json_response['due_date']).to eq(due_date)
     end
   end
 

@@ -2,6 +2,8 @@ require:
   - rubocop-rspec
   - ./rubocop/rubocop
 
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   TargetRubyVersion: 2.1
   # Cop names are not displayed in offense messages by default. Change behavior
@@ -52,14 +54,6 @@ Style/AlignArray:
 Style/AlignHash:
   Enabled: true
 
-# Align the parameters of a method call if they span more than one line.
-Style/AlignParameters:
-  Enabled: false
-
-# Use &&/|| instead of and/or.
-Style/AndOr:
-  Enabled: false
-
 # Use `Array#join` instead of `Array#*`.
 Style/ArrayJoin:
   Enabled: true
@@ -80,10 +74,6 @@ Style/Attr:
 Style/BeginBlock:
   Enabled: true
 
-# Checks if usage of %() or %Q() matches configuration.
-Style/BarePercentLiterals:
-  Enabled: false
-
 # Do not use block comments.
 Style/BlockComments:
   Enabled: true
@@ -96,14 +86,6 @@ Style/BlockEndNewline:
 # ugly). Prefer {...} over do...end for single-line blocks.
 Style/BlockDelimiters:
   Enabled: true
-
-# Enforce braces style around hash parameters.
-Style/BracesAroundHashParameters:
-  Enabled: false
-
-# Avoid explicit use of the case equality operator(===).
-Style/CaseEquality:
-  Enabled: false
 
 # Indentation of when in a case/when/[else/]end.
 Style/CaseIndentation:
@@ -133,23 +115,9 @@ Style/ClassMethods:
 Style/ClassVars:
   Enabled: true
 
-# Do not use :: for method call.
-Style/ColonMethodCall:
-  Enabled: false
-
-# Checks formatting of special comments (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
-Style/CommentAnnotation:
-  Enabled: false
-
 # Indentation of comments.
 Style/CommentIndentation:
   Enabled: true
-
-# Use the return value of `if` and `case` statements for assignment to a
-# variable and variable comparison instead of assigning that variable
-# inside of each branch.
-Style/ConditionalAssignment:
-  Enabled: false
 
 # Constants should use SCREAMING_SNAKE_CASE.
 Style/ConstantName:
@@ -159,33 +127,13 @@ Style/ConstantName:
 Style/DefWithParentheses:
   Enabled: true
 
-# Checks for use of deprecated Hash methods.
-Style/DeprecatedHashMethods:
-  Enabled: false
-
 # Document classes and non-namespace modules.
 Style/Documentation:
-  Enabled: false
-
-# Checks the position of the dot in multi-line method calls.
-Style/DotPosition:
-  Enabled: false
-
-# Checks for uses of double negation (!!).
-Style/DoubleNegation:
-  Enabled: false
-
-# Prefer `each_with_object` over `inject` or `reduce`.
-Style/EachWithObject:
   Enabled: false
 
 # Align elses and elsifs correctly.
 Style/ElseAlignment:
   Enabled: true
-
-# Avoid empty else-clauses.
-Style/EmptyElse:
-  Enabled: false
 
 # Use empty lines between defs.
 Style/EmptyLineBetweenDefs:
@@ -215,10 +163,6 @@ Style/EmptyLinesAroundModuleBody:
 Style/EmptyLinesAroundMethodBody:
   Enabled: false
 
-# Prefer literals to Array.new/Hash.new/String.new.
-Style/EmptyLiteral:
-  Enabled: false
-
 # Avoid the use of END blocks.
 Style/EndBlock:
   Enabled: true
@@ -230,10 +174,6 @@ Style/EndOfLine:
 # Favor the use of Fixnum#even? && Fixnum#odd?
 Style/EvenOdd:
   Enabled: true
-
-# Do not use unnecessary spacing.
-Style/ExtraSpacing:
-  Enabled: false
 
 # Use snake_case for source file names.
 Style/FileName:
@@ -252,30 +192,14 @@ Style/FlipFlop:
 Style/For:
   Enabled: true
 
-# Enforce the use of Kernel#sprintf, Kernel#format or String#%.
-Style/FormatString:
-  Enabled: false
-
 # Do not introduce global variables.
 Style/GlobalVars:
   Enabled: true
-
-# Check for conditionals that can be replaced with guard clauses.
-Style/GuardClause:
-  Enabled: false
 
 # Prefer Ruby 1.9 hash syntax `{ a: 1, b: 2 }`
 # over 1.8 syntax `{ :a => 1, :b => 2 }`.
 Style/HashSyntax:
   Enabled: true
-
-# Finds if nodes inside else, which can be converted to elsif.
-Style/IfInsideElse:
-  Enabled: false
-
-# Favor modifier if/unless usage when you have a single-line body.
-Style/IfUnlessModifier:
-  Enabled: false
 
 # Do not use if x; .... Use the ternary operator instead.
 Style/IfWithSemicolon:
@@ -299,21 +223,9 @@ Style/IndentationConsistency:
 Style/IndentationWidth:
   Enabled: true
 
-# Checks the indentation of the first element in an array literal.
-Style/IndentArray:
-  Enabled: false
-
-# Checks the indentation of the first key in a hash literal.
-Style/IndentHash:
-  Enabled: false
-
 # Use Kernel#loop for infinite loops.
 Style/InfiniteLoop:
   Enabled: true
-
-# Use the new lambda literal syntax for single-line blocks.
-Style/Lambda:
-  Enabled: false
 
 # Use lambda.call(...) instead of lambda.(...).
 Style/LambdaCall:
@@ -322,14 +234,6 @@ Style/LambdaCall:
 # Comments should start with a space.
 Style/LeadingCommentSpace:
   Enabled: true
-
-# Use \ instead of + or << to concatenate two string literals at line end.
-Style/LineEndConcatenation:
-  Enabled: false
-
-# Do not use parentheses for method calls with no arguments.
-Style/MethodCallParentheses:
-  Enabled: false
 
 # Checks if the method definitions have or don't have parentheses.
 Style/MethodDefParentheses:
@@ -389,36 +293,19 @@ Style/MultilineOperationIndentation:
 
 # Avoid multi-line `? :` (the ternary operator), use if/unless instead.
 Style/MultilineTernaryOperator:
-  Enabled: false
-
-# Do not assign mutable objects to constants.
-Style/MutableConstant:
-  Enabled: false
+  Enabled: true
 
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
   Enabled: true
 
-# Favor until over while for negative conditions.
-Style/NegatedWhile:
-  Enabled: false
-
 # Avoid using nested modifiers.
 Style/NestedModifier:
   Enabled: true
 
-# Parenthesize method calls which are nested inside the argument list of
-# another parenthesized method call.
-Style/NestedParenthesizedCalls:
-  Enabled: false
-
 # Use one expression per branch in a ternary operator.
 Style/NestedTernaryOperator:
   Enabled: true
-
-# Use `next` to skip iteration instead of a condition at the end.
-Style/Next:
-  Enabled: false
 
 # Prefer x.nil? to x == nil.
 Style/NilComparison:
@@ -444,50 +331,9 @@ Style/OneLineConditional:
 Style/OpMethod:
   Enabled: true
 
-# Check for simple usages of parallel assignment. It will only warn when
-# the number of variables matches on both sides of the assignment.
-Style/ParallelAssignment:
-  Enabled: false
-
 # Don't use parentheses around the condition of an if/unless/while.
 Style/ParenthesesAroundCondition:
   Enabled: true
-
-# Use `%`-literal delimiters consistently.
-Style/PercentLiteralDelimiters:
-  Enabled: false
-
-# Checks if uses of %Q/%q match the configured preference.
-Style/PercentQLiterals:
-  Enabled: false
-
-# Avoid Perl-style regex back references.
-Style/PerlBackrefs:
-  Enabled: false
-
-# Check the names of predicate methods.
-Style/PredicateName:
-  Enabled: false
-
-# Use proc instead of Proc.new.
-Style/Proc:
-  Enabled: false
-
-# Checks the arguments passed to raise/fail.
-Style/RaiseArgs:
-  Enabled: false
-
-# Don't use begin blocks when they are not needed.
-Style/RedundantBegin:
-  Enabled: false
-
-# Checks for an obsolete RuntimeException argument in raise/fail.
-Style/RedundantException:
-  Enabled: false
-
-# Checks usages of Object#freeze on immutable objects.
-Style/RedundantFreeze:
-  Enabled: false
 
 # Checks for parentheses that seem not to serve any purpose.
 Style/RedundantParentheses:
@@ -497,24 +343,6 @@ Style/RedundantParentheses:
 Style/RedundantReturn:
   Enabled: true
 
-# Don't use self where it's not needed.
-Style/RedundantSelf:
-  Enabled: false
-
-# Use %r for regular expressions matching more than `MaxSlashes` '/'
-# characters. Use %r only for regular expressions matching more
-# than `MaxSlashes` '/' character.
-Style/RegexpLiteral:
-  Enabled: false
-
-# Avoid using rescue in its modifier form.
-Style/RescueModifier:
-  Enabled: false
-
-# Checks for places where self-assignment shorthand should have been used.
-Style/SelfAssignment:
-  Enabled: false
-
 # Don't use semicolons to terminate expressions.
 Style/Semicolon:
   Enabled: true
@@ -523,14 +351,6 @@ Style/Semicolon:
 Style/SignalException:
   EnforcedStyle: only_raise
   Enabled: true
-
-# Enforces the names of some block params.
-Style/SingleLineBlockParams:
-  Enabled: false
-
-# Avoid single-line methods.
-Style/SingleLineMethods:
-  Enabled: false
 
 # Use spaces after colons.
 Style/SpaceAfterColon:
@@ -553,11 +373,6 @@ Style/SpaceAfterNot:
 Style/SpaceAfterSemicolon:
   Enabled: true
 
-# Checks that the equals signs in parameter default assignments have or don't
-# have surrounding space depending on configuration.
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
 # Use a space around keywords if appropriate.
 Style/SpaceAroundKeyword:
   Enabled: true
@@ -565,10 +380,6 @@ Style/SpaceAroundKeyword:
 # Use a single space around operators.
 Style/SpaceAroundOperators:
   Enabled: true
-
-# Checks that the left block brace has or doesn't have space before it.
-Style/SpaceBeforeBlockBraces:
-  Enabled: false
 
 # No spaces before commas.
 Style/SpaceBeforeComma:
@@ -578,32 +389,13 @@ Style/SpaceBeforeComma:
 Style/SpaceBeforeComment:
   Enabled: true
 
-# Checks that exactly one space is used between a method name and the first
-# argument for method calls without parentheses.
-Style/SpaceBeforeFirstArg:
-  Enabled: false
-
 # No spaces before semicolons.
 Style/SpaceBeforeSemicolon:
   Enabled: true
 
-# Checks that block braces have or don't have surrounding space.
-# For blocks taking parameters, checks that the left brace has or doesn't
-# have trailing space.
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
-# No spaces after [ or before ].
-Style/SpaceInsideBrackets:
-  Enabled: false
-
 # Use spaces inside hash literal braces - or don't.
 Style/SpaceInsideHashLiteralBraces:
   Enabled: true
-
-# No spaces after ( or before ).
-Style/SpaceInsideParens:
-  Enabled: false
 
 # No spaces inside range literals.
 Style/SpaceInsideRangeLiteral:
@@ -614,10 +406,6 @@ Style/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space
   Enabled: true
 
-# Avoid Perl-style global variables.
-Style/SpecialGlobalVars:
-  Enabled: false
-
 # Check for the usage of parentheses around stabby lambda arguments.
 Style/StabbyLambdaParentheses:
   EnforcedStyle: require_parentheses
@@ -627,24 +415,11 @@ Style/StabbyLambdaParentheses:
 Style/StringLiterals:
   Enabled: false
 
-# Checks if uses of quotes inside expressions in interpolated strings match the
-# configured preference.
-Style/StringLiteralsInInterpolation:
-  Enabled: false
-
 # Checks if configured preferred methods are used over non-preferred.
 Style/StringMethods:
   PreferredMethods:
     intern: to_sym
   Enabled: true
-
-# Use %i or %I for arrays of symbols.
-Style/SymbolArray:
-  Enabled: false
-
-# Use symbols as procs instead of blocks when possible.
-Style/SymbolProc:
-  Enabled: false
 
 # No hard tabs.
 Style/Tab:
@@ -654,39 +429,9 @@ Style/Tab:
 Style/TrailingBlankLines:
   Enabled: true
 
-# Checks for trailing comma in array and hash literals.
-Style/TrailingCommaInLiteral:
-  Enabled: false
-
-# Checks for trailing comma in argument lists.
-Style/TrailingCommaInArguments:
-  Enabled: false
-
-# Avoid trailing whitespace.
-Style/TrailingWhitespace:
-  Enabled: false
-
-# Checks for the usage of unneeded trailing underscores at the end of
-# parallel variable assignment.
-Style/TrailingUnderscoreVariable:
-  Enabled: false
-
-# Prefer attr_* methods to trivial readers/writers.
-Style/TrivialAccessors:
-  Enabled: false
-
-# Do not use unless with else. Rewrite these with the positive case first.
-Style/UnlessElse:
-  Enabled: false
-
 # Checks for %W when interpolation is not needed.
 Style/UnneededCapitalW:
   Enabled: true
-
-# TODO: Enable UnneededInterpolation Cop.
-# Checks for strings that are just an interpolated expression.
-Style/UnneededInterpolation:
-  Enabled: false
 
 # Checks for %q/%Q when single quotes or double quotes would do.
 Style/UnneededPercentQ:
@@ -716,12 +461,6 @@ Style/WhileUntilModifier:
 # Use %w or %W for arrays of words.
 Style/WordArray:
   Enabled: false
-
-# TODO: Enable ZeroLengthPredicate Cop.
-# Use #empty? when testing for objects of length 0.
-Style/ZeroLengthPredicate:
-  Enabled: false
-
 
 #################### Metrics ################################
 
@@ -776,15 +515,6 @@ Metrics/PerceivedComplexity:
 Lint/AmbiguousOperator:
   Enabled: true
 
-# Checks for ambiguous regexp literals in the first argument of a method
-# invocation without parentheses.
-Lint/AmbiguousRegexpLiteral:
-  Enabled: false
-
-# Don't use assignment in conditions.
-Lint/AssignmentInCondition:
-  Enabled: false
-
 # Align block ends correctly.
 Lint/BlockAlignment:
   Enabled: true
@@ -810,14 +540,6 @@ Lint/DefEndAlignment:
 Lint/DeprecatedClassMethods:
   Enabled: true
 
-# Check for duplicate method definitions.
-Lint/DuplicateMethods:
-  Enabled: false
-
-# Check for duplicate keys in hash literals.
-Lint/DuplicatedKey:
-  Enabled: false
-
 # Check for immutable argument given to each_with_object.
 Lint/EachWithObjectArgument:
   Enabled: true
@@ -829,10 +551,6 @@ Lint/ElseLayout:
 # Checks for empty ensure block.
 Lint/EmptyEnsure:
   Enabled: true
-
-# Checks for empty string interpolation.
-Lint/EmptyInterpolation:
-  Enabled: false
 
 # Align ends correctly.
 Lint/EndAlignment:
@@ -858,20 +576,10 @@ Lint/FloatOutOfRange:
 Lint/FormatParameterMismatch:
   Enabled: true
 
-# Don't suppress exception.
-Lint/HandleExceptions:
-  Enabled: false
-
 # Checks for adjacent string literals on the same line, which could better be
 # represented as a single string literal.
 Lint/ImplicitStringConcatenation:
   Enabled: true
-
-# TODO: Enable IneffectiveAccessModifier Cop.
-# Checks for attempts to use `private` or `protected` to set the visibility
-# of a class method, which does not work.
-Lint/IneffectiveAccessModifier:
-  Enabled: false
 
 # Checks for invalid character literals with a non-escaped whitespace
 # character.
@@ -885,11 +593,6 @@ Lint/LiteralInCondition:
 # Checks for literals used in interpolation.
 Lint/LiteralInInterpolation:
   Enabled: true
-
-# Use Kernel#loop with break rather than begin/end/until or begin/end/while
-# for post-loop tests.
-Lint/Loop:
-  Enabled: false
 
 # Do not use nested method definitions.
 Lint/NestedMethodDefinition:
@@ -916,13 +619,8 @@ Lint/RequireParentheses:
 Lint/RescueException:
   Enabled: true
 
-# Do not use the same name as outer local variable for block arguments
-# or block local variables.
-Lint/ShadowingOuterLocalVariable:
-  Enabled: false
-
-# 'Checks for Object#to_s usage in string interpolation.
-Lint/StringConversionInInterpolation:
+# Checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception.
+Lint/ShadowedException:
   Enabled: false
 
 # Do not use prefix `_` for a variable that is used.
@@ -935,21 +633,9 @@ Lint/UnderscorePrefixedVariableName:
 Lint/UnneededDisable:
   Enabled: false
 
-# Checks for unused block arguments.
-Lint/UnusedBlockArgument:
-  Enabled: false
-
-# Checks for unused method arguments.
-Lint/UnusedMethodArgument:
-  Enabled: false
-
 # Unreachable code.
 Lint/UnreachableCode:
   Enabled: true
-
-# Checks for useless access modifiers.
-Lint/UselessAccessModifier:
-  Enabled: false
 
 # Checks for useless assignment to a local variable.
 Lint/UselessAssignment:
@@ -983,11 +669,6 @@ Performance/Casecmp:
 Performance/DoubleStartEndWith:
   Enabled: true
 
-# TODO: Enable EndWith Cop.
-# Use `end_with?` instead of a regex match anchored to the end of a string.
-Performance/EndWith:
-  Enabled: false
-
 # Use `strip` instead of `lstrip.rstrip`.
 Performance/LstripRstrip:
   Enabled: true
@@ -995,24 +676,6 @@ Performance/LstripRstrip:
 # Use `Range#cover?` instead of `Range#include?`.
 Performance/RangeInclude:
   Enabled: true
-
-# TODO: Enable RedundantBlockCall Cop.
-# Use `yield` instead of `block.call`.
-Performance/RedundantBlockCall:
-  Enabled: false
-
-# TODO: Enable RedundantMatch Cop.
-# Use `=~` instead of `String#match` or `Regexp#match` in a context where the
-# returned `MatchData` is not needed.
-Performance/RedundantMatch:
-  Enabled: false
-
-# TODO: Enable RedundantMerge Cop.
-# Use `Hash#[]=`, rather than `Hash#merge!` with a single key-value pair.
-Performance/RedundantMerge:
-  # Max number of key-value pairs to consider an offense
-  MaxKeyValuePairs: 2
-  Enabled: false
 
 # Use `sort` instead of `sort_by { |x| x }`.
 Performance/RedundantSortBy:
@@ -1081,18 +744,6 @@ Rails/ReadWriteAttribute:
 # Checks the arguments of ActiveRecord scopes.
 Rails/ScopeArgs:
   Enabled: true
-
-# Checks the correct usage of time zone aware methods.
-# http://danilenko.org/2012/7/6/rails_timezones
-Rails/TimeZone:
-  Enabled: false
-
-# Use validates :attribute, hash of validations.
-Rails/Validation:
-  Enabled: false
-
-Rails/UniqBeforePluck:
-  Enabled: false
 
 ##################### RSpec ##################################
 

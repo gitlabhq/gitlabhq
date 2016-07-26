@@ -63,7 +63,12 @@ module API
         if access_status.status
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
-          response[:repository_path] = project.repository.path_to_repo
+          response[:repository_path] =
+            if wiki?
+              project.wiki.repository.path_to_repo
+            else
+              project.repository.path_to_repo
+            end
         end
 
         response

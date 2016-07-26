@@ -100,7 +100,6 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
     gon.push(u2f: { challenges: session[:challenges], app_id: u2f_app_id,
                     register_requests: registration_requests,
-                    sign_requests: sign_requests,
-                    browser_supports_u2f: browser_supports_u2f? })
+                    sign_requests: sign_requests })
   end
 end

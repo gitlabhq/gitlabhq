@@ -10,7 +10,6 @@ module DiffForPath
 
     diff_commit = commit_for_diff(diff_file)
     blob = diff_file.blob(diff_commit)
-    @expand_all_diffs = true
 
     locals = {
       diff_file: diff_file,

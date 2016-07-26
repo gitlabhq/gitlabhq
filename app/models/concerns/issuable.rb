@@ -87,12 +87,6 @@ module Issuable
       User.find(assignee_id_was).update_cache_counts if assignee_id_was
       assignee.update_cache_counts if assignee
     end
-
-    # We want to use optimistic lock for cases when only title or description are involved
-    # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
-    def locking_enabled?
-      title_changed? || description_changed?
-    end
   end
 
   module ClassMethods

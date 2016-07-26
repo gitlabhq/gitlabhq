@@ -63,7 +63,7 @@ module Grack
     def ci_request?(login, password)
       matched_login = /(?<s>^[a-zA-Z]*-ci)-token$/.match(login)
 
-      if project && matched_login.present? && git_cmd == 'git-upload-pack'
+      if project && matched_login.present?
         underscored_service = matched_login['s'].underscore
 
         if underscored_service == 'gitlab_ci'

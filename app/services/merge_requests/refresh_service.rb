@@ -48,7 +48,7 @@ module MergeRequests
     end
 
     def force_push?
-      Gitlab::ForcePushCheck.force_push?(@project, @oldrev, @newrev)
+      Gitlab::Checks::ForcePush.force_push?(@project, @oldrev, @newrev)
     end
 
     # Refresh merge request diff if we push to source or target branch of merge request

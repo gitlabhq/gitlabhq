@@ -57,7 +57,7 @@ describe EventsHelper do
       expected = '<pre class="code highlight js-syntax-highlight ruby">' \
         "<code><span class=\"k\">def</span> <span class=\"nf\">test</span>\n" \
         "  <span class=\"s1\">\'hello world\'</span>\n" \
-        "<span class=\"k\">end</span>" \
+        "<span class=\"k\">end</span>\n" \
         '</code></pre>'
       expect(helper.event_note(input)).to eq(expected)
     end

@@ -172,7 +172,7 @@ class Ability
           rules << :read_build if project.public_builds?
 
           unless owner || project.team.member?(user) || project_group_member?(project, user)
-            rules << :request_access
+            rules << :request_access if project.request_access_enabled
           end
         end
 
@@ -204,7 +204,8 @@ class Ability
         :download_code,
         :fork_project,
         :read_commit_status,
-        :read_pipeline
+        :read_pipeline,
+        :read_container_image
       ]
     end
 
@@ -372,7 +373,7 @@ class Ability
       end
 
       if group.public? || (group.internal? && !user.external?)
-        rules << :request_access unless group.users.include?(user)
+        rules << :request_access if group.request_access_enabled && group.users.exclude?(user)
       end
 
       rules.flatten

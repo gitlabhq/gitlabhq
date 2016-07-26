@@ -3,11 +3,6 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:index]
   before_action :no_cache_headers, except: [:index]
 
-  def index
-    @ref = params[:ref] || @project.default_branch || 'master'
-    @build_badge = Gitlab::Badge::Build.new(@project, @ref)
-  end
-
   def build
     badge = Gitlab::Badge::Build.new(project, params[:ref])
 

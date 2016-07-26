@@ -5,9 +5,12 @@ describe Ci::Pipeline, models: true do
   let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:user) }
+
   it { is_expected.to have_many(:statuses) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:builds) }
+
   it { is_expected.to validate_presence_of :sha }
   it { is_expected.to validate_presence_of :status }
 
@@ -257,6 +260,70 @@ describe Ci::Pipeline, models: true do
           expect(pipeline.reload.status).to eq('canceled')
         end
       end
+
+      context 'when listing manual actions' do
+        let(:yaml) do
+          {
+            stages: ["build", "test", "staging", "production", "cleanup"],
+            build: {
+              stage: "build",
+              script: "BUILD",
+            },
+            test: {
+              stage: "test",
+              script: "TEST",
+            },
+            staging: {
+              stage: "staging",
+              script: "PUBLISH",
+            },
+            production: {
+              stage: "production",
+              script: "PUBLISH",
+              when: "manual",
+            },
+            cleanup: {
+              stage: "cleanup",
+              script: "TIDY UP",
+              when: "always",
+            },
+            clear_cache: {
+              stage: "cleanup",
+              script: "CLEAR CACHE",
+              when: "manual",
+            }
+          }
+        end
+
+        it 'returns only for skipped builds' do
+          # currently all builds are created
+          expect(create_builds).to be_truthy
+          expect(manual_actions).to be_empty
+
+          # succeed stage build
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage test
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_empty
+
+          # succeed stage staging and skip stage production
+          pipeline.builds.running_or_pending.each(&:success)
+          expect(manual_actions).to be_many # production and clear cache
+
+          # succeed stage cleanup
+          pipeline.builds.running_or_pending.each(&:success)
+
+          # after processing a pipeline we should have 6 builds, 5 succeeded
+          expect(pipeline.builds.count).to eq(6)
+          expect(pipeline.builds.success.count).to eq(4)
+        end
+
+        def manual_actions
+          pipeline.manual_actions
+        end
+      end
     end
 
     context 'when no builds created' do
@@ -409,6 +476,68 @@ describe Ci::Pipeline, models: true do
       end
 
       it 'return false when tag is set to true' do
+        is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#manual_actions' do
+    subject { pipeline.manual_actions }
+
+    it 'when none defined' do
+      is_expected.to be_empty
+    end
+
+    context 'when action defined' do
+      let!(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+      it 'returns one action' do
+        is_expected.to contain_exactly(manual)
+      end
+
+      context 'there are multiple of the same name' do
+        let!(:manual2) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy') }
+
+        it 'returns latest one' do
+          is_expected.to contain_exactly(manual2)
+        end
+      end
+    end
+  end
+
+  describe '#has_warnings?' do
+    subject { pipeline.has_warnings? }
+
+    context 'build which is allowed to fail fails' do
+      before do
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
+      end
+      
+      it 'returns true' do
+        is_expected.to be_truthy
+      end
+    end
+
+    context 'build which is allowed to fail succeeds' do
+      before do
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
+      end
+      
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'build is retried and succeeds' do
+      before do
+        create :ci_build, :success, pipeline: pipeline, name: 'rubocop'
+        create :ci_build, :failed, pipeline: pipeline, name: 'rspec'
+        create :ci_build, :success, pipeline: pipeline, name: 'rspec'
+      end
+
+      it 'returns false' do
         is_expected.to be_falsey
       end
     end

@@ -14,14 +14,14 @@ module Mentionable
       attr = attr.to_s
       mentionable_attrs << [attr, options]
     end
-
-    # Accessor for attributes marked mentionable.
-    def mentionable_attrs
-      @mentionable_attrs ||= []
-    end
   end
 
   included do
+    # Accessor for attributes marked mentionable.
+    cattr_accessor :mentionable_attrs, instance_accessor: false do
+      []
+    end
+
     if self < Participable
       participant -> (user, ext) { all_references(user, extractor: ext) }
     end

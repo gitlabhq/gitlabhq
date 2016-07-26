@@ -50,8 +50,9 @@ describe 'Issues', feature: true do
 
       expect(page).to have_content "Assignee #{@user.name}"
 
-      first('.js-user-search').click
-      click_link 'Unassigned'
+      first('#s2id_issue_assignee_id').click
+      sleep 2 # wait for ajax stuff to complete
+      first('.user-result').click
 
       click_button 'Save changes'
 
@@ -119,17 +120,6 @@ describe 'Issues', feature: true do
         page.within '.issuable-sidebar' do
           expect(page).to have_content date.to_s(:medium)
         end
-      end
-
-      it 'warns about version conflict' do
-        issue.update(title: "New title")
-
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-
-        click_button 'Save changes'
-
-        expect(page).to have_content 'Someone edited the issue the same time you did'
       end
     end
   end

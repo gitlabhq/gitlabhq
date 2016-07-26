@@ -16,10 +16,10 @@ describe LegacyDiffNote, models: true do
   end
 
   describe '#active?' do
-    it 'is always true when the note has no associated diff' do
+    it 'is always true when the note has no associated diff line' do
       note = build(:legacy_diff_note_on_merge_request)
 
-      expect(note).to receive(:diff).and_return(nil)
+      expect(note).to receive(:diff_line).and_return(nil)
 
       expect(note).to be_active
     end
@@ -27,7 +27,7 @@ describe LegacyDiffNote, models: true do
     it 'is never true when the note has no noteable associated' do
       note = build(:legacy_diff_note_on_merge_request)
 
-      expect(note).to receive(:diff).and_return(double)
+      expect(note).to receive(:diff_line).and_return(double)
       expect(note).to receive(:noteable).and_return(nil)
 
       expect(note).not_to be_active
@@ -47,7 +47,7 @@ describe LegacyDiffNote, models: true do
         merge = build_stubbed(:merge_request, :simple)
         note = build(:legacy_diff_note_on_merge_request, noteable: merge)
 
-        allow(note).to receive(:diff).and_return(double)
+        allow(note).to receive(:diff_line).and_return(double)
         expect(note).to receive(:find_noteable_diff).and_return(nil)
 
         expect(note).not_to be_active

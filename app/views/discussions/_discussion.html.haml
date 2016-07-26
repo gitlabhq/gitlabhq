@@ -1,0 +1,45 @@
+- expanded = discussion.expanded?
+%li.note.note-discussion.timeline-entry
+  .timeline-entry-inner
+    .timeline-icon
+      = link_to user_path(discussion.author) do
+        = image_tag avatar_icon(discussion.author), class: "avatar s40"
+    .timeline-content
+      .discussion.js-toggle-container{ class: discussion.id }
+        .discussion-header
+          = link_to_member(@project, discussion.author, avatar: false)
+
+          .inline.discussion-headline-light
+            = discussion.author.to_reference
+            started a discussion on
+
+            - if discussion.for_commit?
+              - commit = discussion.noteable
+              - if commit
+                commit
+                = link_to commit.short_id, namespace_project_commit_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code), class: 'monospace'
+              - else
+                a deleted commit
+            - else
+              - if discussion.active?
+                = link_to diffs_namespace_project_merge_request_path(discussion.project.namespace, discussion.project, discussion.noteable, anchor: discussion.line_code) do
+                  the diff
+              - else
+                an outdated diff
+
+            = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
+
+          .discussion-actions
+            = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
+              - if expanded
+                = icon("chevron-up")
+              - else
+                = icon("chevron-down")
+
+              Toggle discussion
+
+        .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
+          - if discussion.diff_discussion? && discussion.diff_file
+            = render "discussions/diff_with_notes", discussion: discussion
+          - else
+            = render "discussions/notes", discussion: discussion
