@@ -427,7 +427,22 @@
       $html.syntaxHighlight();
       $html.find('.js-task-list-container').taskList('enable');
       $note_li = $('.note-row-' + note.id);
-      return $note_li.replaceWith($html);
+
+      if (DiffNotesApp != null) {
+        ref = DiffNotesApp.$refs['' + note.id + ''];
+
+        if (ref) {
+          ref.$destroy(true);
+        }
+      }
+
+      $note_li.replaceWith($html);
+
+      if ($('resolve-btn, resolve-all-btn').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
+        $('resolve-btn, resolve-all-btn').each(function () {
+          DiffNotesApp.$compile($(this).get(0))
+        });
+      }
     };
 
 
