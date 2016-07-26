@@ -1,7 +1,7 @@
 class Discussion
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
-  attr_reader :first_note, :notes
+  attr_reader :first_note, :last_note, :notes
 
   delegate  :created_at,
             :project,
@@ -18,6 +18,11 @@ class Discussion
 
             to: :first_note
 
+  delegate  :resolved_at,
+            :resolved_by,
+
+            to: :last_note
+
   delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
 
   def self.for_notes(notes)
@@ -30,6 +35,7 @@ class Discussion
 
   def initialize(notes)
     @first_note = notes.first
+    @last_note = notes.last
     @notes = notes
   end
 
@@ -43,6 +49,18 @@ class Discussion
 
   def legacy_diff_discussion?
     notes.any?(&:legacy_diff_note?)
+  end
+
+  def resolvable?
+    diff_discussion? && notes.any?(&:resolvable?)
+  end
+
+  def resolved?
+    notes.none?(&:to_be_resolved?)
+  end
+
+  def to_be_resolved?
+    notes.any?(&:to_be_resolved?)
   end
 
   def for_target?(target)
