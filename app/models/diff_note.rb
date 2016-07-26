@@ -85,6 +85,24 @@ class DiffNote < Note
     self.resolved_at.present?
   end
 
+  def resolve!(current_user)
+    return unless resolvable?
+    return if resolved?
+
+    self.resolved_at = Time.now
+    self.resolved_by = current_user
+    save!
+  end
+
+  def unresolve!
+    return unless resolvable?
+    return unless resolved?
+
+    self.resolved_at = nil
+    self.resolved_by = nil
+    save!
+  end
+
   private
 
   def supported?

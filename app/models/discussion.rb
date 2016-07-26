@@ -63,6 +63,18 @@ class Discussion
     notes.any?(&:to_be_resolved?)
   end
 
+  def resolve!(current_user)
+    notes.each do |note|
+      note.resolve!(current_user) if note.resolvable?
+    end
+  end
+
+  def unresolve!
+    notes.each do |note|
+      note.unresolve! if note.resolvable?
+    end
+  end
+
   def for_target?(target)
     self.noteable == target && !diff_discussion?
   end
