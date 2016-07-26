@@ -274,7 +274,6 @@ resource:
 
   end
 
-
   def get_koding_link(project = nil, branch = nil)
 
     if project
@@ -289,7 +288,6 @@ resource:
     "#{Gitlab.config.koding.url}#{route}"
 
   end
-
 
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
