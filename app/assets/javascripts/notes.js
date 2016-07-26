@@ -181,7 +181,7 @@
             _this.last_fetched_at = data.last_fetched_at;
             _this.setPollingInterval(data.notes.length);
             return $.each(notes, function(i, note) {
-              if (note.discussion_with_diff_html != null) {
+              if (note.discussion_html != null) {
                 return _this.renderDiscussionNote(note);
               } else {
                 return _this.renderNote(note);
@@ -287,12 +287,12 @@
         discussionContainer = $(".notes[data-discussion-id='" + note.original_discussion_id + "']");
       }
       if (discussionContainer.length === 0) {
-        row.after(note.discussion_html);
+        row.after(note.diff_discussion_html);
         row.next().find(".note").remove();
         discussionContainer = $(".notes[data-discussion-id='" + note.discussion_id + "']");
         discussionContainer.append(note_html);
         if ($('body').attr('data-page').indexOf('projects:merge_request') === 0) {
-          $('ul.main-notes-list').append(note.discussion_with_diff_html).syntaxHighlight();
+          $('ul.main-notes-list').append(note.discussion_html).syntaxHighlight();
         }
       } else {
         discussionContainer.append(note_html);
