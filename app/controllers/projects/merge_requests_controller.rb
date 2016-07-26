@@ -81,7 +81,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     apply_diff_view_cookie!
 
-    @merge_request_diff = @merge_request.merge_request_diff
+    @merge_request_diff =
+      if params[:diff_id]
+        @merge_request.merge_request_diffs.find(params[:diff_id])
+      else
+        @merge_request.merge_request_diff
+      end
+
 
     respond_to do |format|
       format.html { define_discussion_vars }

@@ -96,6 +96,16 @@ class MergeRequestDiff < ActiveRecord::Base
       end
   end
 
+  def diff_refs
+    return unless start_commit || base_commit
+
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  base_commit_sha,
+      start_sha: start_commit_sha,
+      head_sha:  head_commit_sha
+    )
+  end
+
   private
 
   # Collect array of Git::Commit objects
