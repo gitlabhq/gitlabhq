@@ -300,8 +300,8 @@
         discussionContainer.append(note_html);
       }
 
-      if ($('resolve-btn, resolve-all').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
-        $('resolve-btn, resolve-all').each(function () {
+      if ($('resolve-btn, resolve-all-btn').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
+        $('resolve-btn, resolve-all-btn').each(function () {
           DiffNotesApp.$compile($(this).get(0))
         });
       }

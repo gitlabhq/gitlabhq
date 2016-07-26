@@ -2,7 +2,7 @@
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
-  = page_specific_javascript_tag('line_comments/line_comments_bundle.js')
+  = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
 - if diff_view == 'parallel'
   - fluid_layout true
@@ -71,7 +71,7 @@
             Changes
             %span.badge= @merge_request.diff_size
 
-      .tab-content#diff-comments-app
+      .tab-content#diff-notes-app
         #notes.notes.tab-pane.voting_notes
           .content-block.content-block-small.oneline-block
             = render 'award_emoji/awards_block', awardable: @merge_request, inline: true

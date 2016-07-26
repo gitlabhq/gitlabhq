@@ -24,5 +24,25 @@
         Vue.delete(this.loading, discussionId);
       }
     },
+    updateCommentsForDiscussion: function (discussionId, resolve) {
+      const noteIds = CommentsStore.notesForDiscussion(discussionId, resolve);
+
+      for (const noteId of noteIds) {
+        CommentsStore.update(discussionId, noteId, resolve);
+      }
+    },
+    notesForDiscussion: function (discussionId, resolve) {
+      let ids = [];
+
+      for (const noteId in CommentsStore.state[discussionId]) {
+        const resolved = CommentsStore.state[discussionId][noteId];
+
+        if (resolved !== resolve) {
+          ids.push(noteId);
+        }
+      }
+
+      return ids;
+    }
   };
 }(window));

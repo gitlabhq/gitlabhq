@@ -1,10 +1,14 @@
 ((w) => {
   w.ResolveBtn = Vue.extend({
+    mixins: [
+      ButtonMixins
+    ],
     props: {
       noteId: Number,
       discussionId: String,
       resolved: Boolean,
-      namespace: String
+      namespacePath: String,
+      projectPath: String,
     },
     data: function () {
       return {
@@ -29,13 +33,26 @@
           .tooltip('fixTitle');
       },
       resolve: function () {
+        let promise;
         this.loading = true;
-        ResolveService
-          .resolve(this.namespace, this.discussionId, this.noteId, !this.isResolved)
-          .then(() => {
-            this.loading = false;
-            this.$nextTick(this.updateTooltip);
-          });
+
+        if (this.isResolved) {
+          promise = ResolveService
+            .unresolve(this.namespace, this.noteId);
+        } else {
+          promise = ResolveService
+            .resolve(this.namespace, this.noteId);
+        }
+
+        promise.then((response) => {
+          this.loading = false;
+
+          if (response.status === 200) {
+            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved);
+          }
+
+          this.$nextTick(this.updateTooltip);
+        });
       }
     },
     compiled: function () {

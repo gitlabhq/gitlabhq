@@ -2,14 +2,15 @@
 //= require vue-resource
 //= require_directory ./stores
 //= require_directory ./services
+//= require_directory ./mixins
 //= require_directory ./components
 
 $(() => {
   window.DiffNotesApp = new Vue({
-    el: '#diff-comments-app',
+    el: '#diff-notes-app',
     components: {
       'resolve-btn': ResolveBtn,
-      'resolve-all': ResolveAll,
+      'resolve-all-btn': ResolveAllBtn,
     }
   });
 

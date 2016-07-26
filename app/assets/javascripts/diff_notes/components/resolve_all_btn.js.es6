@@ -1,8 +1,13 @@
 ((w) => {
-  w.ResolveAll = Vue.extend({
+  w.ResolveAllBtn = Vue.extend({
+    mixins: [
+      ButtonMixins
+    ],
     props: {
       discussionId: String,
-      namespace: String,
+      mergeRequestId: Number,
+      namespacePath: String,
+      projectPath: String,
     },
     data: function() {
       return {
@@ -35,8 +40,15 @@
     },
     methods: {
       resolve: function () {
-        ResolveService
-          .resolveAll(this.namespace, this.discussionId, this.allResolved);
+        let promise;
+
+        if (this.allResolved) {
+          promise = ResolveService
+            .unResolveAll(this.namespace, this.mergeRequestId, this.discussionId);
+        } else {
+          promise = ResolveService
+            .resolveAll(this.namespace, this.mergeRequestId, this.discussionId);
+        }
       }
     }
   });

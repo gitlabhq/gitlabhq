@@ -24,13 +24,14 @@
 
             - if note.resolvable?
               - if can?(current_user, :resolve_note, note)
-                %resolve-btn{ ":namespace" => "'#{note.project.namespace.path}/#{note.project.path}'",
+                %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
+                    ":project-path" => "'#{note.project.path}'",
                     ":discussion-id" => "'#{note.discussion_id}'",
                     ":note-id" => note.id,
                     ":resolved" => note.resolved?,
                     "inline-template" => true,
                     "v-ref:note_#{note.id}" => true }
-                    
+
                   .note-action-button
                     = icon("spin spinner", "v-show" => "loading")
                     %button.line-resolve-btn{ type: "button",
