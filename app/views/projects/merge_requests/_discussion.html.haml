@@ -4,6 +4,6 @@
       = link_to 'Close merge request', merge_request_path(@merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-nr btn-comment btn-close close-mr-link js-note-target-close", title: "Close merge request", data: {original_text: "Close merge request", alternative_text: "Comment & close merge request"}
     - if @merge_request.closed?
       = link_to 'Reopen merge request', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-nr btn-comment btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request", data: {original_text: "Reopen merge request", alternative_text: "Comment & reopen merge request"}
-  = submit_tag 'Comment & resolve all', class: "btn btn-nr btn-create append-right-10 comment-btn js-comment-resolve-button", data: { namespace: "#{@merge_request.project.namespace.path}/#{@merge_request.project.path}" }
+  = submit_tag 'Comment & resolve discussion', class: "btn btn-nr btn-create append-right-10 comment-btn js-comment-resolve-button", data: { namespace: "#{@merge_request.project.namespace.path}/#{@merge_request.project.path}" }
 
 #notes= render "projects/notes/notes_with_form"

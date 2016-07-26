@@ -12,7 +12,7 @@
         isResolved = false unless resolved
       isResolved
     buttonText: ->
-      if this.allResolved then "Un-resolve all" else "Resolve all"
+      if this.allResolved then "Unresolve discussion" else "Resolve discussion"
     loading: ->
       this.loadingObject[this.discussionId]
   methods:
