@@ -39,7 +39,6 @@
                       class: ("is-disabled" if !can?(current_user, :resolve_note, note)),
                       ":class" => "{ 'is-active': isResolved }",
                       ":aria-label" => "buttonText",
-                      ":disabled" => !can?(current_user, :resolve_note, note),
                       "@click" => "resolve",
                       ":title" => "buttonText",
                       "v-show" => "!loading",

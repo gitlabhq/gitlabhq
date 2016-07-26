@@ -20,11 +20,9 @@
     },
     computed: {
       buttonText: function () {
-        if (!this.canResolve) return;
-
         if (this.isResolved) {
           return `Resolved by ${this.resolvedByName}`;
-        } else {
+        } else if (this.canResolve) {
           return 'Mark as resolved';
         }
       },
@@ -33,13 +31,13 @@
     },
     methods: {
       updateTooltip: function () {
-        if (this.canResolve) {
-          $(this.$els.button)
-            .tooltip('hide')
-            .tooltip('fixTitle');
-        }
+        $(this.$els.button)
+          .tooltip('hide')
+          .tooltip('fixTitle');
       },
       resolve: function () {
+        if (!this.canResolve) return;
+        
         let promise;
         this.loading = true;
 
@@ -65,11 +63,9 @@
       }
     },
     compiled: function () {
-      if (this.canResolve) {
-        $(this.$els.button).tooltip({
-          container: 'body'
-        });
-      }
+      $(this.$els.button).tooltip({
+        container: 'body'
+      });
     },
     destroyed: function () {
       CommentsStore.delete(this.discussionId, this.noteId);

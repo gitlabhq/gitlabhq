@@ -411,6 +411,10 @@ ul.notes {
   outline: 0;
   vertical-align: middle;
 
+  &.is-disabled {
+    cursor: default;
+  }
+
   &:not(.is-disabled):hover,
   &.is-active {
     color: #fff;
