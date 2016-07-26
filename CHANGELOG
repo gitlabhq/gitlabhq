@@ -18,6 +18,7 @@ v 8.10.2 (unreleased)
   - Fix expand all diffs button in compare view. !5500
   - Show release notes in tags list. !5503
   - Fix a bug where forking a project from a repository storage to another would fail. !5509
+  - Fix missing schema update for `20160722221922`. !5512
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
