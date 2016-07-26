@@ -211,6 +211,9 @@ class Repository
       rugged.references.create(keep_around_ref_name(sha), sha, force: true)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    rescue Rugged::OSError => ex
+      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     end
   end
 
