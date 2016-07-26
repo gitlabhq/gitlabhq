@@ -9,7 +9,9 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
     discussion.resolve!(current_user)
 
-    head :ok
+    render json: {
+      resolved_by: discussion.resolved_by.try(:name)
+    }
   end
 
   def unresolve

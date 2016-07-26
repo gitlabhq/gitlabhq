@@ -9,6 +9,8 @@
       resolved: Boolean,
       namespacePath: String,
       projectPath: String,
+      canResolve: Boolean,
+      resolvedBy: String
     },
     data: function () {
       return {
@@ -18,19 +20,24 @@
     },
     computed: {
       buttonText: function () {
+        if (!this.canResolve) return;
+
         if (this.isResolved) {
-          return "Mark as unresolved";
+          return `Resolved by ${this.resolvedByName}`;
         } else {
-          return "Mark as resolved";
+          return 'Mark as resolved';
         }
       },
-      isResolved: function () { return CommentsStore.get(this.discussionId, this.noteId); },
+      isResolved: function () { return CommentsStore.get(this.discussionId, this.noteId).resolved; },
+      resolvedByName: function () { return CommentsStore.get(this.discussionId, this.noteId).user; },
     },
     methods: {
       updateTooltip: function () {
-        $(this.$els.button)
-          .tooltip('hide')
-          .tooltip('fixTitle');
+        if (this.canResolve) {
+          $(this.$els.button)
+            .tooltip('hide')
+            .tooltip('fixTitle');
+        }
       },
       resolve: function () {
         let promise;
@@ -45,10 +52,12 @@
         }
 
         promise.then((response) => {
+          const data = response.data;
+          const user = data ? data.resolved_by : null;
           this.loading = false;
 
           if (response.status === 200) {
-            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved);
+            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, user);
           }
 
           this.$nextTick(this.updateTooltip);
@@ -56,13 +65,17 @@
       }
     },
     compiled: function () {
-      $(this.$els.button).tooltip();
+      if (this.canResolve) {
+        $(this.$els.button).tooltip({
+          container: 'body'
+        });
+      }
     },
     destroyed: function () {
-      CommentsStore.delete(this.discussionId, this.noteId)
+      CommentsStore.delete(this.discussionId, this.noteId);
     },
     created: function () {
-      CommentsStore.create(this.discussionId, this.noteId, this.resolved)
+      CommentsStore.create(this.discussionId, this.noteId, this.resolved, this.resolvedBy);
     }
   });
 }(window));

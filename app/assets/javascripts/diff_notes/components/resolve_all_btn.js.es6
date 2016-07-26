@@ -19,7 +19,7 @@
       allResolved: function () {
         let isResolved = true;
         for (const noteId in this.comments[this.discussionId]) {
-          const resolved = this.comments[this.discussionId][noteId];
+          const resolved = this.comments[this.discussionId][noteId].resolved;
 
           if (!resolved) {
             isResolved = false;

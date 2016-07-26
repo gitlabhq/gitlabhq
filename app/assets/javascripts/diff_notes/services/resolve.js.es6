@@ -28,7 +28,7 @@
       let isResolved = true;
 
       for (const noteId of noteIds) {
-        const resolved = CommentsStore.state[discussionId][noteId];
+        const resolved = CommentsStore.state[discussionId][noteId].resolved;
 
         if (!resolved) {
           isResolved = false;
@@ -52,9 +52,11 @@
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
+        const data = response.data;
+        const user = data ? data.resolved_by : null;
         CommentsStore.loading[discussionId] = false;
 
-        CommentsStore.updateCommentsForDiscussion(discussionId, true);
+        CommentsStore.updateCommentsForDiscussion(discussionId, true, user);
       });
     }
 

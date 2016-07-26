@@ -23,28 +23,29 @@
               %span.note-role.hidden-xs= access
 
             - if note.resolvable?
-              - if can?(current_user, :resolve_note, note)
-                %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
-                    ":project-path" => "'#{note.project.path}'",
-                    ":discussion-id" => "'#{note.discussion_id}'",
-                    ":note-id" => note.id,
-                    ":resolved" => note.resolved?,
-                    "inline-template" => true,
-                    "v-ref:note_#{note.id}" => true }
+              %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
+                  ":project-path" => "'#{note.project.path}'",
+                  ":discussion-id" => "'#{note.discussion_id}'",
+                  ":note-id" => note.id,
+                  ":resolved" => note.resolved?,
+                  ":can-resolve" => can?(current_user, :resolve_note, note),
+                  ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
+                  "inline-template" => true,
+                  "v-ref:note_#{note.id}" => true }
 
-                  .note-action-button
-                    = icon("spin spinner", "v-show" => "loading")
-                    %button.line-resolve-btn{ type: "button",
-                        ":class" => "{ 'is-active': isResolved }",
-                        ":aria-label" => "buttonText",
-                        "@click" => "resolve",
-                        ":title" => "buttonText",
-                        "v-show" => "!loading",
-                        "v-el:button" => true }
+                .note-action-button
+                  = icon("spin spinner", "v-show" => "loading")
+                  %button.line-resolve-btn{ type: "button",
+                      class: ("is-disabled" if !can?(current_user, :resolve_note, note)),
+                      ":class" => "{ 'is-active': isResolved }",
+                      ":aria-label" => "buttonText",
+                      ":disabled" => !can?(current_user, :resolve_note, note),
+                      "@click" => "resolve",
+                      ":title" => "buttonText",
+                      "v-show" => "!loading",
+                      "v-el:button" => true }
 
-                      = icon("check")
-              - else
-                -# TODO: Just render status
+                    = icon("check")
 
             - if current_user
               - if note.emoji_awardable?

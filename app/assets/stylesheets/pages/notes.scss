@@ -411,7 +411,7 @@ ul.notes {
   outline: 0;
   vertical-align: middle;
 
-  &:hover,
+  &:not(.is-disabled):hover,
   &.is-active {
     color: #fff;
     background-color: $gl-text-green;

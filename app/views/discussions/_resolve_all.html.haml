@@ -1,4 +1,4 @@
-- if discussion.can_resolve?(current_user)
+- if discussion.can_resolve?(current_user) && discussion.resolvable?
   %resolve-all-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
       ":project-path" => "'#{discussion.project.path}'",
       ":discussion-id" => "'#{discussion.id}'",

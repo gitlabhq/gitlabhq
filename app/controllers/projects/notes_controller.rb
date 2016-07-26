@@ -72,7 +72,9 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
-    head :ok
+    render json: {
+      resolved_by: note.resolved_by.try(:name)
+    }
   end
 
   def unresolve
