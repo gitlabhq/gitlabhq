@@ -63,7 +63,7 @@ module Gitlab
         diff_refs.try(:head_sha)
       end
 
-      attr_writer :diff_lines, :highlighted_diff_lines
+      attr_writer :highlighted_diff_lines
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines

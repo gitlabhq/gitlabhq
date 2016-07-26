@@ -23,7 +23,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = SafeDiffs.default_options.merge(
+    options = Gitlab::Diff::FileCollection.default_options.merge(
       ignore_whitespace_change: hide_whitespace?,
       no_collapse: expand_all_diffs?
     )

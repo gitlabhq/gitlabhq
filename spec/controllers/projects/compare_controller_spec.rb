@@ -32,10 +32,11 @@ describe Projects::CompareController do
         w: 1)
 
     expect(response).to be_success
-    expect(assigns(:diffs).diff_files.first).not_to be_nil
+    diff_file = assigns(:diffs).diff_files.first
+    expect(diff_file).not_to be_nil
     expect(assigns(:commits).length).to be >= 1
     # without whitespace option, there are more than 2 diff_splits
-    diff_splits = assigns(:diffs).diff_files.first.diff.diff.split("\n")
+    diff_splits = diff_file.diff.diff.split("\n")
     expect(diff_splits.length).to be <= 2
   end
 
@@ -87,9 +88,9 @@ describe Projects::CompareController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, safe_diffs|
-              expect(safe_diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(safe_diffs)
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(diffs)
             end
 
             diff_for_path(from: ref_from, to: ref_to, old_path: existing_path, new_path: existing_path)

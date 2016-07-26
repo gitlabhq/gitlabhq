@@ -85,7 +85,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { define_discussion_vars }
-      format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
+      format.json do
+        @diffs = @merge_request.diff_file_collection(diff_options) if @merge_request_diff.collected?
+
+        render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
+      end
     end
   end
 
@@ -104,7 +108,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     define_commit_vars
 
-    render_diff_for_path(SafeDiffs::MergeRequest.new(merge_request, diff_options: diff_options))
+    render_diff_for_path(@merge_request.diff_file_collection(diff_options))
   end
 
   def commits
@@ -153,10 +157,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
     if @merge_request.compare
-      @diffs = SafeDiffs::Compare.new(@merge_request.compare,
-        project:      @merge_request.project,
-        diff_refs:    @merge_request.diff_refs,
-        diff_options: diff_options)
+      @diffs = Compare.decorate(@merge_request.compare, @project).diff_file_collection(
+        diff_options: diff_options,
+        diff_refs: @merge_request.diff_refs
+      )
     end
     @diff_notes_disabled = true
 

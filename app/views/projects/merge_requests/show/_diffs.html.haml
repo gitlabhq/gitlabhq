@@ -1,7 +1,6 @@
 - if @merge_request_diff.collected?
-  - diffs = SafeDiffs::MergeRequest.new(@merge_request, diff_options: diff_options)
-  = render "projects/diffs/diffs", diff_files: diffs.diff_files,
-    diff_refs: diffs.diff_refs, project: diffs.project
+  = render "projects/diffs/diffs", diff_files: @diffs.diff_files,
+    diff_refs: @diffs.diff_refs, project: @diffs.project
 - elsif @merge_request_diff.empty?
   .nothing-here-block Nothing to merge from #{@merge_request.source_branch} into #{@merge_request.target_branch}
 - else

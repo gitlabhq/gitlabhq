@@ -5,7 +5,7 @@
 
 %table.text-file.code.js-syntax-highlight{ data: diff_view_data, class: too_big ? 'hide' : '' }
   - last_line = 0
-  - diff_file.diff_lines.each do |line|
+  - diff_file.highlighted_diff_lines.each do |line|
     - last_line = line.new_pos
     = render "projects/diffs/line", line: line, diff_file: diff_file
 

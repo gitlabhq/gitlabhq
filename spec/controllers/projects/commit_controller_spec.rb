@@ -267,9 +267,9 @@ describe Projects::CommitController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, safe_diffs|
-              expect(safe_diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(safe_diffs)
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(diffs)
             end
 
             diff_for_path(id: commit.id, old_path: existing_path, new_path: existing_path)

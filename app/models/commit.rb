@@ -317,6 +317,10 @@ class Commit
     nil
   end
 
+  def diff_file_collection(diff_options)
+    Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
+  end
+
   private
 
   def find_author_by_any_email

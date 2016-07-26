@@ -660,6 +660,12 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
 
+    it "executs diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+
+      subject.reload_diff
+    end
+
     it "updates diff note positions" do
       old_diff_refs = subject.diff_refs
 

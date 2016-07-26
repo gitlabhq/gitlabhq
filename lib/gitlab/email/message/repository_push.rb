@@ -40,16 +40,18 @@ module Gitlab
 
         def diffs
           return unless compare
-          
-          @diffs ||= SafeDiffs::Compare.new(compare, diff_options: { max_files: 30 }, project: project, diff_refs: diff_refs).diff_files
+
+          @diffs ||= compare.diff_file_collection(diff_options: { max_files: 30 }, diff_refs: diff_refs).diff_files
         end
 
         def diffs_count
-          diffs.count if diffs
+          diffs.size if diffs
         end
 
         def compare
-          @opts[:compare]
+          if @opts[:compare]
+            Compare.decorate(@opts[:compare], project)
+          end
         end
 
         def diff_refs

@@ -62,12 +62,12 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#diffs_count' do
       subject { message.diffs_count }
-      it { is_expected.to eq compare.diffs.count }
+      it { is_expected.to eq compare.diffs.size }
     end
 
     describe '#compare' do
       subject { message.compare }
-      it { is_expected.to be_an_instance_of Gitlab::Git::Compare }
+      it { is_expected.to be_an_instance_of Compare }
     end
 
     describe '#compare_timeout' do
