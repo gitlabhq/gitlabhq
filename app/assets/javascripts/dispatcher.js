@@ -181,6 +181,9 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              new Labels();
           }
           break;
         case 'dashboard':
@@ -206,6 +209,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();
