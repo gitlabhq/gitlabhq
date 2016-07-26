@@ -401,11 +401,14 @@
       this.removeDiscussionNoteForm($form);
 
       if ($form.attr('data-resolve-all') != null) {
-        var namespace = $form.attr('data-namespace'),
-            discussionId = $form.attr('data-discussion-id');
+        var namespacePath = $form.attr('data-namespace-path'),
+            projectPath = $form.attr('data-project-path')
+            discussionId = $form.attr('data-discussion-id'),
+            mergeRequestId = $('input[name="noteable_iid"]', $form).val(),
+            namespace = `${namespacePath}/${projectPath}`;
 
         if (ResolveService != null) {
-          ResolveService.resolveAll(namespace, discussionId, false)
+          ResolveService.toggleResolveForDiscussion(namespace, mergeRequestId, discussionId);
         }
       }
     };
@@ -771,7 +774,8 @@
         .closest('form')
         .attr('data-discussion-id', discussionId)
         .attr('data-resolve-all', 'true')
-        .attr('data-namespace', $this.attr('data-namespace'));
+        .attr('data-namespace-path', $this.attr('data-namespace-path'))
+        .attr('data-project-path', $this.attr('data-project-path'));
     };
 
     return Notes;

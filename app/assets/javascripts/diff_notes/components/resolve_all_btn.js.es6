@@ -40,15 +40,7 @@
     },
     methods: {
       resolve: function () {
-        let promise;
-
-        if (this.allResolved) {
-          promise = ResolveService
-            .unResolveAll(this.namespace, this.mergeRequestId, this.discussionId);
-        } else {
-          promise = ResolveService
-            .resolveAll(this.namespace, this.mergeRequestId, this.discussionId);
-        }
+        ResolveService.toggleResolveForDiscussion(this.namespace, this.mergeRequestId, this.discussionId);
       }
     }
   });

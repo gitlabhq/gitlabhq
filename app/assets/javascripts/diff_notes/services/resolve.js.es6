@@ -23,6 +23,25 @@
       return this.noteResource.delete({ noteId }, {});
     }
 
+    toggleResolveForDiscussion(namespace, mergeRequestId, discussionId) {
+      const noteIds = CommentsStore.notesForDiscussion(discussionId);
+      let isResolved = true;
+
+      for (const noteId of noteIds) {
+        const resolved = CommentsStore.state[discussionId][noteId];
+
+        if (!resolved) {
+          isResolved = false;
+        }
+      }
+
+      if (isResolved) {
+        return this.unResolveAll(namespace, mergeRequestId, discussionId);
+      } else {
+        return this.resolveAll(namespace, mergeRequestId, discussionId);
+      }
+    }
+
     resolveAll(namespace, mergeRequestId, discussionId) {
       this.setCSRF();
       Vue.http.options.root = `/${namespace}`;

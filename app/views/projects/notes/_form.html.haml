@@ -5,6 +5,7 @@
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
   = f.hidden_field :noteable_id
+  = hidden_field_tag :noteable_iid, @note.noteable.iid
   = f.hidden_field :noteable_type
   = f.hidden_field :type
   = f.hidden_field :position

@@ -25,13 +25,22 @@
       }
     },
     updateCommentsForDiscussion: function (discussionId, resolve) {
-      const noteIds = CommentsStore.notesForDiscussion(discussionId, resolve);
+      const noteIds = CommentsStore.resolvedNotesForDiscussion(discussionId, resolve);
 
       for (const noteId of noteIds) {
         CommentsStore.update(discussionId, noteId, resolve);
       }
     },
-    notesForDiscussion: function (discussionId, resolve) {
+    notesForDiscussion: function (discussionId) {
+      let ids = [];
+
+      for (const noteId in CommentsStore.state[discussionId]) {
+        ids.push(noteId);
+      }
+
+      return ids;
+    },
+    resolvedNotesForDiscussion: function (discussionId, resolve) {
       let ids = [];
 
       for (const noteId in CommentsStore.state[discussionId]) {
