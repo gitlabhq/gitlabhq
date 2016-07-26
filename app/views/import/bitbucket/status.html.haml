@@ -74,6 +74,4 @@
     = link_to "import flow", status_import_bitbucket_path, "data-no-turbolink" => "true"
     again.
 
-
-:javascript
-  new ImporterStatus("#{jobs_import_bitbucket_path}", "#{import_bitbucket_path}");
+.js-importer-status{ data: { jobs_import_path: "#{jobs_import_bitbucket_path}", import_path: "#{import_bitbucket_path}" } }
