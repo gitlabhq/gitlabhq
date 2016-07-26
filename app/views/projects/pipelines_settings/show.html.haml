@@ -67,6 +67,9 @@
               %strong Public pipelines
             .help-block Allow everyone to access pipelines for Public and Internal projects
 
+        - if @project.mirror?
+          = render 'shared/mirror_trigger_builds_setting', f: f
+
         .form-group.append-bottom-default
           = f.label :runners_token, "Runners token", class: 'label-light'
           = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
