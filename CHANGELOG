@@ -29,6 +29,7 @@ v 8.11.0 (unreleased)
   - Show member roles to all users on members page
   - Project.visible_to_user is instrumented again
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
+  - Sort todos by date and priority
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
