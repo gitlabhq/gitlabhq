@@ -394,6 +394,13 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
+  def discussions
+    self.mr_and_commit_notes.
+      inc_author_project_award_emoji.
+      fresh.
+      discussions
+  end
+
   def hook_attrs
     attrs = {
       source: source_project.try(:hook_attrs),

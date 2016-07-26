@@ -369,12 +369,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # :show, :diff, :commits, :builds. but not when request the data through AJAX
   def define_discussion_vars
     # Build a note object for comment form
-    @note = @project.notes.new(noteable: @noteable)
+    @note = @project.notes.new(noteable: @merge_request)
 
-    @discussions = @noteable.mr_and_commit_notes.
-      inc_author_project_award_emoji.
-      fresh.
-      discussions
+    @discussions = @merge_request.discussions
 
     # This is not executed lazily
     @notes = Banzai::NoteRenderer.render(

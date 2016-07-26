@@ -720,6 +720,13 @@ Rails.application.routes.draw do
             get :update_branches
             get :diff_for_path
           end
+
+          resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
+          end
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
@@ -825,14 +832,11 @@ Rails.application.routes.draw do
         resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
-          collection do
-            post :resolve_all
-          end
-
           member do
             post :toggle_award_emoji
             delete :delete_attachment
             post :resolve
+            delete :resolve, action: :unresolve
           end
         end
 

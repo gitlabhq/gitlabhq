@@ -5,6 +5,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
+  before_action :authorize_resolve_note!, only: [:resolve]
   before_action :find_current_user_notes, only: [:index]
 
   def index
@@ -67,12 +68,18 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def resolve
-    sleep 2
+    return render_404 unless note.resolvable?
+
+    note.resolve!(current_user)
+
     head :ok
   end
 
-  def resolve_all
-    sleep 2
+  def unresolve
+    return render_404 unless note.resolvable?
+
+    note.unresolve!
+
     head :ok
   end
 
@@ -183,6 +190,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def authorize_admin_note!
     return access_denied! unless can?(current_user, :admin_note, note)
+  end
+
+  def authorize_resolve_note!
+    return access_denied! unless can?(current_user, :resolve_note, note)
   end
 
   def note_params
