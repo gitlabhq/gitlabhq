@@ -214,20 +214,30 @@ describe ProjectTeam, models: true do
 
       group = create(:group)
       group_developer = create(:user)
+      second_developer = create(:user)
       project.project_group_links.create(
         group: group,
         group_access: Gitlab::Access::DEVELOPER)
 
       group.add_master(promoted_guest)
       group.add_developer(group_developer)
-      users = [master, reporter, promoted_guest, guest, group_developer].map(&:id)
+      group.add_developer(second_developer)
+
+      second_group = create(:group)
+      project.project_group_links.create(
+          group: second_group,
+          group_access: Gitlab::Access::MASTER)
+      second_group.add_master(second_developer)
+
+      users = [master, reporter, promoted_guest, guest, group_developer, second_developer].map(&:id)
 
       expected = {
           master.id => Gitlab::Access::MASTER,
           reporter.id => Gitlab::Access::REPORTER,
           promoted_guest.id => Gitlab::Access::DEVELOPER,
           guest.id => Gitlab::Access::GUEST,
-          group_developer.id => Gitlab::Access::DEVELOPER
+          group_developer.id => Gitlab::Access::DEVELOPER,
+          second_developer.id => Gitlab::Access::MASTER
       }
 
       expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)

@@ -155,10 +155,13 @@ class ProjectTeam
         merge_max!(access, group_access)
       end
 
+      # Each group produces a list of maximum access level per user. We take the
+      # max of the values produced by each group.
       if project.invited_groups.any? && project.allowed_to_share_with_group?
-        # Not optimized
-        invited_levels = user_ids.map { |id| [id, max_invited_level(id)] }.to_h
-        merge_max!(access, invited_levels)
+        project.project_group_links.each do |group_link|
+          invited_access = max_invited_level_for_users(group_link, user_ids)
+          merge_max!(access, invited_access)
+        end
       end
     end
 
@@ -171,20 +174,21 @@ class ProjectTeam
 
   private
 
-  def max_invited_level(user_id)
-    project.project_group_links.map do |group_link|
-      invited_group = group_link.group
-      access = invited_group.group_members.find_by(user_id: user_id).try(:access_field)
-      access = Gitlab::Access::NO_ACCESS unless access.present?
+  # For a given group, return the maximum access level for the user. This is the min of
+  # the invited access level of the group and the access level of the user within the group.
+  # For example, if the group has been given DEVELOPER access but the member has MASTER access,
+  # the user should receive only DEVELOPER access.
+  def max_invited_level_for_users(group_link, user_ids)
+    invited_group = group_link.group
+    capped_access_level = group_link.group_access
+    access = invited_group.group_members.access_for_user_ids(user_ids)
 
-      # If group member has higher access level we should restrict it
-      # to max allowed access level
-      if access && access > group_link.group_access
-        access = group_link.group_access
-      end
+    # If the user is not in the list, assume he/she does not have access
+    missing_users = user_ids - access.keys
+    missing_users.each { |id| access[id] = Gitlab::Access::NO_ACCESS }
 
-      access
-    end.compact.max
+    # Cap the maximum access by the invited level access
+    access.each { |key, value| access[key] = [value, capped_access_level].min }
   end
 
   def fetch_members(level = nil)
