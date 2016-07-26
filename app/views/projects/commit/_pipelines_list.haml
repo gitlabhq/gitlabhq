@@ -14,4 +14,4 @@
                 = stage.titleize
           %th
           %th
-        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
+        = render pipelines, commit_sha: true, stage: true, allow_retry: true, stages: pipelines.stages

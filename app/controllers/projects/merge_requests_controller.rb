@@ -137,6 +137,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def pipelines
+    @pipelines = Ci::Pipeline.where(ref: @merge_request.source_branch)
+
     respond_to do |format|
       format.html do
         define_discussion_vars
