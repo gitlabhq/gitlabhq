@@ -525,7 +525,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'new issue by email' do
-    context 'find the modal for new issue by email', js: true do
+    context 'click the button to show modal for new issue email', js: true do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
@@ -533,7 +533,7 @@ describe 'Issues', feature: true do
         click_button('Email a new issue')
       end
 
-      it 'has a button to show the email address' do
+      it 'shows the email in the modal' do
         page.within '#issue-email-modal' do
           email = project.new_issue_address(@user)
 
