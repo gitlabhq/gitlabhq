@@ -130,15 +130,15 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
 
   step 'I create a New page with paths' do
     click_on 'New Page'
-    fill_in 'Page slug', with: 'one/two/three'
+    fill_in 'Page slug', with: 'one/two/three-test'
     click_on 'Create Page'
     fill_in "wiki_content", with: 'wiki content'
     click_on "Create page"
-    expect(current_path).to include 'one/two/three'
+    expect(current_path).to include 'one/two/three-test'
   end
 
   step 'I should see non-escaped link in the pages list' do
-    expect(page).to have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three']")
+    expect(page).to have_xpath("//a[@href='/#{project.path_with_namespace}/wikis/one/two/three-test']")
   end
 
   step 'I edit the Wiki page with a path' do
@@ -147,7 +147,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see a non-escaped path' do
-    expect(current_path).to include 'one/two/three'
+    expect(current_path).to include 'one/two/three-test'
   end
 
   step 'I should see the Editing page' do

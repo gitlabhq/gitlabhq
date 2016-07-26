@@ -50,9 +50,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(tag_a).to receive(:target).and_return(double_first)
-          allow(tag_b).to receive(:target).and_return(double_last)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
+          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_first)
+          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_last)
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
@@ -65,9 +64,8 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(tag_a).to receive(:target).and_return(double_last)
-          allow(tag_b).to receive(:target).and_return(double_first)
-          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
+          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_last)
+          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_first)
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
@@ -1163,6 +1161,17 @@ describe Repository, models: true do
     end
   end
 
+  describe '#local_branches' do
+    it 'returns the local branches' do
+      masterrev = repository.find_branch('master').target
+      create_remote_branch('joe', 'remote_branch', masterrev)
+      repository.add_branch(user, 'local_branch', masterrev)
+
+      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
+      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
+    end
+  end
+
   describe "#keep_around" do
     it "does not fail if we attempt to reference bad commit" do
       expect(repository.kept_around?('abc1234')).to be_falsey
@@ -1189,5 +1198,10 @@ describe Repository, models: true do
 
       File.delete(path)
     end
+  end
+
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = repository.rugged
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
 end

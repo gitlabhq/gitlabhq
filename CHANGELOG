@@ -1,14 +1,36 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
+  - Fix CI status icon link underline (ClemMakesApps)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Limit git rev-list output count to one in forced push check
+  - Add green outline to New Branch button. !5447 (winniehell)
   - Retrieve rendered HTML from cache in one request
-  - Load project invited groups and members eagerly in ProjectTeam#fetch_members
+  - Nokogiri's various parsing methods are now instrumented
+  - Make fork counter always clickable. !5463 (winniehell)
+  - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
+  - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Add the `sprockets-es6` gem
 
-v 8.10.1 (unreleased)
- - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
+v 8.10.2 (unreleased)
+  - User can now search branches by name. !5144
+  - Fix backup restore. !5459
+  - Disable MySQL foreign key checks before dropping all tables. !5472
+  - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
+  - Ensure relative paths for video are rewritten as we do for images. !5474
+  - Ensure current user can retry a build before showing the 'Retry' button. !5476
+
+v 8.10.1
+  - Refactor repository storages documentation. !5428
+  - Gracefully handle case when keep-around references are corrupted or exist already. !5430
+  - Add detailed info on storage path mountpoints. !5437
+  - Fix Error 500 when creating Wiki pages with hyphens or spaces. !5444
+  - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page. !5446
+  - Ignore invalid trusted proxies in X-Forwarded-For header. !5454
+  - Add links to the real markdown.md file for all GFM examples. !5458
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
@@ -87,7 +109,6 @@ v 8.10.0
   - API: Todos. !3188 (Robert Schilling)
   - API: Expose shared groups for projects and shared projects for groups. !5050 (Robert Schilling)
   - API: Expose `developers_can_push` and `developers_can_merge` for branches. !5208 (Robert Schilling)
-  - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Add "Enabled Git access protocols" to Application Settings
   - Diffs will create button/diff form on demand no on server side
   - Reduce size of HTML used by diff comment forms

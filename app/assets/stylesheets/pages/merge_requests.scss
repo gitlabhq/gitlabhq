@@ -216,6 +216,11 @@
           position: relative;
           top: 3px;
         }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
       }
     }
   }

@@ -40,7 +40,7 @@
   .block{ class: ("block-first" if !@build.coverage && !(can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?))) }
     .title
       Build details
-      - if @build.retryable?
+      - if can?(current_user, :update_build, @build) && @build.retryable?
         = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right', method: :post
     - if @build.merge_request
       %p.build-detail-row
