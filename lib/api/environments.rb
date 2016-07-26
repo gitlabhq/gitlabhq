@@ -30,9 +30,6 @@ module API
         required_attributes! [:name]
 
         attrs = attributes_for_keys [:name, :external_url]
-        environment = user_project.environments.find_by(name: attrs[:name])
-
-        conflict!('Environment already exists') if environment
 
         environment = user_project.environments.create(attrs)
 
@@ -52,7 +49,7 @@ module API
       # Example Request:
       #   DELETE /projects/:id/environments/:environment_id
       delete ':id/environments/:environment_id' do
-        authorize! :admin_environment, user_project
+        authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
 

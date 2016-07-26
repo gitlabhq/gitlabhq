@@ -11,12 +11,10 @@ describe Projects::EnvironmentsController do
     sign_in(user)
   end
 
-  render_views
-
   describe 'GET show' do
     context 'with valid id' do
       it 'responds with a status code 200' do
-        get :show, namespace_id: project.namespace, project_id: project, id: environment.id
+        get :show, environment_params
 
         expect(response).to be_ok
       end
@@ -24,16 +22,18 @@ describe Projects::EnvironmentsController do
 
     context 'with invalid id' do
       it 'responds with a status code 404' do
-        get :show, namespace_id: project.namespace, project_id: project, id: 12345
+        params = environment_params
+        params[:id] = 12345
+        get :show, params
 
-        expect(response).to be_not_found
+        expect(response).to have_http_status(404)
       end
     end
   end
 
   describe 'GET edit' do
     it 'responds with a status code 200' do
-      get :edit, namespace_id: project.namespace, project_id: project, id: environment.id
+      get :edit, environment_params
 
       expect(response).to be_ok
     end
@@ -41,10 +41,18 @@ describe Projects::EnvironmentsController do
 
   describe 'PATCH #update' do
     it 'responds with a 302' do
-      patch :update, namespace_id: project.namespace, project_id:
-                      project, id: environment.id, environment: { external_url: 'https://git.gitlab.com' }
+      patch_params = environment_params.merge(environment: { external_url: 'https://git.gitlab.com' })
+      patch :update, patch_params
 
       expect(response).to have_http_status(302)
     end
+  end
+
+  def environment_params
+    {
+      namespace_id: project.namespace,
+      project_id: project,
+      id: environment.id
+    }
   end
 end

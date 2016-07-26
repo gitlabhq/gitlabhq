@@ -21,4 +21,12 @@ describe Environment, models: true do
 
     is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id)
   end
+
+  describe '#nullify_external_url' do
+    it 'replaces a blank url with nil' do
+      env = build(:environment, external_url: "")
+
+      expect(env.save).to be true
+    end
+  end
 end

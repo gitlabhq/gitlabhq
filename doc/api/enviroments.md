@@ -32,8 +32,7 @@ Example response:
 
 Creates a new environment with the given name and external_url.
 
-It returns 200 if the environment was successfully created, 400 for wrong parameters
-and 409 if the environment already exists.
+It returns 200 if the environment was successfully created, 400 for wrong parameters.
 
 ```
 POST /projects/:id/environment
@@ -43,7 +42,7 @@ POST /projects/:id/environment
 | ------------- | ------- | -------- | ---------------------------- |
 | `id`          | integer | yes      | The ID of the project        |
 | `name`        | string  | yes      | The name of the environment  |
-| `external_url` | string  | yes     | Place to link to for this environment |
+| `external_url` | string  | no     | Place to link to for this environment |
 
 ```bash
 curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments"
@@ -88,7 +87,7 @@ Example response:
 
 ## Edit an existing environment
 
-Updates an existing environments name and/or external_url.
+Updates an existing environment's name and/or external_url.
 
 It returns 200 if the label was successfully updated, In case of an error, an additional error message is returned.
 

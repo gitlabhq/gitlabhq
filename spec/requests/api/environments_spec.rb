@@ -5,7 +5,7 @@ describe API::API, api: true  do
 
   let(:user)          { create(:user) }
   let(:non_member)    { create(:user) }
-  let(:project)       { create(:project, :private, creator_id: user.id, namespace: user.namespace) }
+  let(:project)       { create(:project, :private, namespace: user.namespace) }
   let!(:environment)  { create(:environment, project: project) }
 
   before do
@@ -14,7 +14,7 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
-      it 'should return project labels' do
+      it 'should return project environments' do
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_http_status(200)
@@ -34,7 +34,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'POST /projects/:id/labels' do
+  describe 'POST /projects/:id/environments' do
     context 'as a member' do
       it 'creates a environment with valid params' do
         post api("/projects/#{project.id}/environments", user), name: "mepmep"
@@ -50,11 +50,10 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'should return 409 if environment already exists' do
+      it 'should return 400 if environment already exists' do
         post api("/projects/#{project.id}/environments", user), name: environment.name
 
-        expect(response).to have_http_status(409)
-        expect(json_response['message']).to eq('Environment already exists')
+        expect(response).to have_http_status(400)
       end
     end
 
@@ -87,11 +86,11 @@ describe API::API, api: true  do
   describe 'PUT /projects/:id/environments/:environment_id' do
     it 'should return 200 if name and external_url are changed' do
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          name: 'Mepmep', external_url: 'mepmep.whatever.ninja'
+          name: 'Mepmep', external_url: 'https://mepmep.whatever.ninja'
 
       expect(response).to have_http_status(200)
       expect(json_response['name']).to eq('Mepmep')
-      expect(json_response['external_url']).to eq('mepmep.whatever.ninja')
+      expect(json_response['external_url']).to eq('https://mepmep.whatever.ninja')
     end
 
     it 'should return 404 if the environment does not exist' do
