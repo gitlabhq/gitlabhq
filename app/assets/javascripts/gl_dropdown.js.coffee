@@ -218,12 +218,15 @@ class GitLabDropdown
             if @dropdown.find('.dropdown-toggle-page').length
               selector = ".dropdown-page-one #{selector}"
 
-            $(selector, @dropdown)
-              .first()
-              .find('a')
-              .addClass('is-focused')
+            if not $(@el).is('input')
+              $(selector, @dropdown)
+                .first()
+                .find('a')
+                .addClass('is-focused')
 
-            currentIndex = 0
+              currentIndex = 0
+            else
+              currentIndex = -1
 
 
     # Event listeners
@@ -559,10 +562,11 @@ class GitLabDropdown
     # simulate a click on the first link
     $el = $(selector, @dropdown)
 
-    if $el.length
+    if $el.length and currentIndex > -1
       e.preventDefault()
       e.stopImmediatePropagation()
       $el.first().trigger('click')
+      $el.first().get(0).click?()
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
