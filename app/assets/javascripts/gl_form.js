@@ -56,4 +56,25 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:milestones:edit',
+    'projects:milestones:new'
+  ], () => new GLForm($('.milestone-form')));
+
+  window.gl.Dispatcher.register([
+    'projects:issues:new',
+    'projects:issues:edit'
+  ], () => new GLForm($('.issue-form')));
+
+  window.gl.Dispatcher.register([
+    'projects:merge_requests:new',
+    'projects:merge_requests:edit'
+  ], () => new GLForm($('.merge-request-form')));
+
+  window.gl.Dispatcher.register('projects:tags:new', () => new GLForm($('.tag-form')));
+
+  window.gl.Dispatcher.register('projects:releases:edit', () => new GLForm($('.release-form')));
+
+  window.gl.Dispatcher.register('projects:wikis:*', () => new GLForm($('.wiki-form')));
+
 }).call(this);

@@ -104,4 +104,9 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:milestones:new',
+    'projects:milestones:edit'
+  ], this.DueDateSelect);
+
 }).call(this);

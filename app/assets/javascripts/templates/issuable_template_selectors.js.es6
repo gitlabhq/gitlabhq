@@ -25,5 +25,11 @@
     }
   }
 
-  global.IssuableTemplateSelectors = IssuableTemplateSelectors;
-})(window);
+  global.Dispatcher.register([
+    'projects:issues:new',
+    'projects:issues:edit',
+    'projects:merge_requests:new',
+    'projects:merge_requests:edit'
+  ], IssuableTemplateSelectors);
+
+})(window.gl || (window.gl = {}));

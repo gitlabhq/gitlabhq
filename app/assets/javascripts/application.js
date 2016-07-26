@@ -33,6 +33,7 @@
 /*= require bootstrap/popover */
 /*= require select2 */
 /*= require underscore */
+/*= require dispatcher */
 /*= require dropzone */
 /*= require mousetrap */
 /*= require mousetrap/pause */

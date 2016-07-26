@@ -42,4 +42,11 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:merge_requests:show',
+    'projects:merge_requests:commits',
+    'projects:merge_requests:builds',
+    'projects:merge_requests:diffs'
+  ], this.MergedButtons);
+
 }).call(this);

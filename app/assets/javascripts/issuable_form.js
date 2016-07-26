@@ -147,4 +147,14 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:issues:new',
+    'projects:issues:edit'
+  ], () => new this.IssuableForm($('.issue-form')));
+
+  window.gl.Dispatcher.register([
+    'projects:merge_requests:new',
+    'projects:merge_requests:edit'
+  ], () => new this.IssuableForm($('.merge-request-form')));
+
 }).call(this);

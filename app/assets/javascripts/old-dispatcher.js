@@ -20,78 +20,6 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
-        case 'projects:boards:show':
-          shortcut_handler = new ShortcutsNavigation();
-          break;
-        case 'projects:merge_requests:index':
-        case 'projects:issues:index':
-          Issuable.init();
-          new IssuableBulkActions();
-          shortcut_handler = new ShortcutsNavigation();
-          break;
-        case 'projects:issues:show':
-          new Issue();
-          shortcut_handler = new ShortcutsIssuable();
-          new ZenMode();
-          break;
-        case 'projects:milestones:show':
-        case 'groups:milestones:show':
-        case 'dashboard:milestones:show':
-          new Milestone();
-          break;
-        case 'dashboard:todos:index':
-          new Todos();
-          break;
-        case 'projects:milestones:new':
-        case 'projects:milestones:edit':
-          new ZenMode();
-          new DueDateSelect();
-          new GLForm($('.milestone-form'));
-          break;
-        case 'groups:milestones:new':
-          new ZenMode();
-          break;
-        case 'projects:compare:show':
-          new Diff();
-          break;
-        case 'projects:issues:new':
-        case 'projects:issues:edit':
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.issue-form'));
-          new IssuableForm($('.issue-form'));
-          new IssuableTemplateSelectors();
-          break;
-        case 'projects:merge_requests:new':
-        case 'projects:merge_requests:edit':
-          new Diff();
-          shortcut_handler = new ShortcutsNavigation();
-          new GLForm($('.merge-request-form'));
-          new IssuableForm($('.merge-request-form'));
-          new IssuableTemplateSelectors();
-          break;
-        case 'projects:tags:new':
-          new ZenMode();
-          new GLForm($('.tag-form'));
-          break;
-        case 'projects:releases:edit':
-          new ZenMode();
-          new GLForm($('.release-form'));
-          break;
-        case 'projects:merge_requests:show':
-          new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
-          new ZenMode();
-          new MergedButtons();
-          break;
-        case 'projects:merge_requests:commits':
-        case 'projects:merge_requests:builds':
-          new MergedButtons();
-          break;
-        case "projects:merge_requests:diffs":
-          new Diff();
-          new ZenMode();
-          new MergedButtons();
-          break;
         case "projects:merge_requests:conflicts":
           window.mcui = new MergeConflictResolver()
         case 'dashboard:activity':
@@ -102,16 +30,11 @@
           break;
         case 'projects:commit:show':
           new Commit();
-          new Diff();
-          new ZenMode();
-          shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commits:show':
         case 'projects:activity':
-          shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:show':
-          shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           if ($('#tree-slider').length) {
             new TreeView();
@@ -121,7 +44,6 @@
           new Activities();
           break;
         case 'groups:show':
-          shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
           break;
@@ -142,7 +64,6 @@
           new GroupAvatar();
           break;
         case 'projects:tree:show':
-          shortcut_handler = new ShortcutsNavigation();
           new TreeView();
           break;
         case 'projects:find_file:show':
@@ -151,7 +72,6 @@
         case 'projects:blob:show':
         case 'projects:blame:show':
           new LineHighlighter();
-          shortcut_handler = new ShortcutsNavigation();
           new ShortcutsBlob(true);
           break;
         case 'projects:labels:new':
@@ -223,7 +143,6 @@
               new CompareAutocomplete();
               break;
             case 'edit':
-              shortcut_handler = new ShortcutsNavigation();
               new ProjectNew();
               break;
             case 'new':
@@ -237,29 +156,7 @@
               break;
             case 'wikis':
               new Wikis();
-              shortcut_handler = new ShortcutsNavigation();
-              new ZenMode();
-              new GLForm($('.wiki-form'));
               break;
-            case 'snippets':
-              shortcut_handler = new ShortcutsNavigation();
-              if (path[2] === 'show') {
-                new ZenMode();
-              }
-              break;
-            case 'labels':
-            case 'graphs':
-            case 'compare':
-            case 'pipelines':
-            case 'forks':
-            case 'milestones':
-            case 'project_members':
-            case 'deploy_keys':
-            case 'builds':
-            case 'hooks':
-            case 'services':
-            case 'protected_branches':
-              shortcut_handler = new ShortcutsNavigation();
           }
       }
       // If we haven't installed a custom shortcut handler, install the default one

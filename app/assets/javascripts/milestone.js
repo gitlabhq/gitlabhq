@@ -193,4 +193,10 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:milestones:show',
+    'groups:milestones:show',
+    'dashboard:milestones:show'
+  ], this.Milestone);
+
 }).call(this);

@@ -64,4 +64,33 @@
 
   })(Shortcuts);
 
+  window.gl.Dispatcher.register([
+    'projects:boards:show',
+    'projects:issues:index',
+    'projects:issues:edit',
+    'projects:merge_requests:edit',
+    'projects:merge_requests:index',
+    'projects:commit:show',
+    'projects:activity',
+    'projects:show',
+    'groups:show',
+    'projects:tree:show',
+    'projects:blame:show',
+    'projects:edit:*',
+    'projects:wikis:*',
+    'projects:snippets:*',
+    'projects:labels:*',
+    'projects:graphs:*',
+    'projects:compare:*',
+    'projects:pipelines:*',
+    'projects:forks:*',
+    'projects:milestones:*',
+    'projects:project_members:*',
+    'projects:deploy_keys:*',
+    'projects:builds:*',
+    'projects:hooks:*',
+    'projects:services:*',
+    'projects:protected_branches:*'
+  ], this.ShortcutsNavigation);
+
 }).call(this);

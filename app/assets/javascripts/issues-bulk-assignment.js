@@ -164,4 +164,9 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:issues:index',
+    'projects:merge_requests:index'
+  ], this.IssuableBulkActions);
+
 }).call(this);

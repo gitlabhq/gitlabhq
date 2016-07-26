@@ -173,4 +173,6 @@
 
   })();
 
+  window.gl.Dispatcher.register('dashboard:todos:index', this.Todos);
+
 }).call(this);

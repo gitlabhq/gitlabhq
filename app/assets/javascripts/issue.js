@@ -151,4 +151,6 @@
 
   })();
 
+  window.gl.Dispatcher.register('projects:issues:show', this.Issue);
+
 }).call(this);

@@ -74,4 +74,7 @@
 
   })(ShortcutsNavigation);
 
+  window.gl.Dispatcher.register('projects:issues:show', this.ShortcutsIssuable);
+  window.gl.Dispatcher.register('projects:merge_requests:show', () => new this.ShortcutsIssuable(true));
+
 }).call(this);

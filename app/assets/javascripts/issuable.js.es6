@@ -100,4 +100,9 @@
     }
   };
 
+  window.gl.Dispatcher.register([
+    'projects:issues:index',
+    'projects:merge_requests:index'
+  ], this.Issuable.init);
+
 }).call(this);

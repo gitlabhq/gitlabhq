@@ -66,4 +66,12 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:merge_requests:edit',
+    'projects:merge_requests:show',
+    'projects:merge_requests:diffs',
+    'projects:commit:show',
+    'projects:compare:show'
+  ], this.Diff);
+
 }).call(this);

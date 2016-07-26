@@ -92,4 +92,18 @@
 
   })();
 
+  window.gl.Dispatcher.register([
+    'projects:issues:show',
+    'projects:milestones:edit',
+    'projects:milestones:new',
+    'groups:milestones:new',
+    'projects:tags:new',
+    'projects:releases:edit',
+    'projects:merge_requests:show',
+    'projects:merge_requests:diffs',
+    'projects:commit:show',
+    'projects:wikis:*',
+    'projects:snippets:show'
+  ], this.ZenMode);
+
 }).call(this);
