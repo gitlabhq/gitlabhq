@@ -2,4 +2,6 @@
   .notes{ data: { discussion_id: discussion.id } }
     %ul.notes.timeline
       = render partial: "projects/notes/note", collection: discussion.notes, as: :note
-  = link_to_reply_discussion(discussion)
+
+  .discussion-reply-holder
+    = link_to_reply_discussion(discussion)
