@@ -12,6 +12,11 @@
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       %span
         Activity
+  - if koding_enabled?
+    = nav_link(controller: :koding) do
+      = link_to koding_path, title: 'Koding' do
+        %span
+          Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, title: 'Groups' do
       %span
