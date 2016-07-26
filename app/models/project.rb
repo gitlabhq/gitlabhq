@@ -240,8 +240,7 @@ class Project < ActiveRecord::Base
       end
 
       if current_application_settings.elasticsearch_indexing?
-        project.repository.index_blobs
-        project.repository.index_commits
+        ElasticCommitIndexerWorker.perform_async(project.id)
       end
     end
 
