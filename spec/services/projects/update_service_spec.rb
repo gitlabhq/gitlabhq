@@ -139,6 +139,27 @@ describe Projects::UpdateService, services: true do
     end
   end
 
+  context 'for invalid project path/name' do
+    let(:user) { create(:user, admin: true) }
+    let(:project) { create(:empty_project, path: 'gitlab', name: 'sample') }
+    let(:params) { { path: 'foo&bar', name: 'foo&bar' } }
+
+    it 'resets to previous values to keep project in a valid state' do
+      update_project(project, user, params)
+
+      expect(project.path).to eq 'gitlab'
+      expect(project.name).to eq 'sample'
+    end
+
+    it 'keeps error messages' do
+      update_project(project, user, params)
+
+      expect(project.errors).not_to be_blank
+      expect(project.errors[:name]).to include("can contain only letters, digits, '_', '.', dash and space. It must start with letter, digit or '_'.")
+      expect(project.errors[:path]).to include("can contain only letters, digits, '_', '-' and '.'. Cannot start with '-', end in '.git' or end in '.atom'")
+    end
+  end
+
   def update_project(project, user, opts)
     Projects::UpdateService.new(project, user, opts).execute
   end

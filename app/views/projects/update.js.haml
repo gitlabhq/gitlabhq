@@ -1,4 +1,4 @@
-- if @project.valid?
+- if @project.errors.blank?
   :plain
     location.href = "#{edit_namespace_project_path(@project.namespace, @project)}";
 - else
@@ -6,4 +6,4 @@
     $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
     $('.save-project-loader').hide();
     $('.project-edit-container').show();
-    $('.project-edit-content .btn-save').enable();
+    $('.edit-project .btn-save').enable();
