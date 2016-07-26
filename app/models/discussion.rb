@@ -64,7 +64,7 @@ class Discussion
   end
 
   def resolved?
-    notes.none?(&:to_be_resolved?)
+    resolvable? && notes.none?(&:to_be_resolved?)
   end
 
   def to_be_resolved?
