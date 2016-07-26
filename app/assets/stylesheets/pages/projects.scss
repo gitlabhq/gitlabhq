@@ -469,6 +469,25 @@ a.deploy-project-label {
       background-color: $gray-normal;
     }
   }
+
+  li.koding {
+    border-radius: $border-radius-default;
+    background: #61C17F;
+    padding: 0 10px;
+
+    a, a:visited {
+      color: white;
+    }
+
+    &:hover {
+      background-color: #519667;
+      a {
+        color: white;
+      }
+    }
+
+  }
+
 }
 
 pre.light-well {

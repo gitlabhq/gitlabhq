@@ -64,6 +64,11 @@
         %li.missing
           = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
             Set Up CI
+      - if Gitlab.config.koding.enabled
+        - if @repository.koding_yml
+          %li.koding
+            = link_to get_koding_link(@project), target: '_blank' do
+              Run On Koding
     %li.project-repo-buttons-right
       .project-repo-buttons.project-right-buttons
         - if current_user
