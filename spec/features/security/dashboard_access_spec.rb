@@ -43,6 +43,14 @@ describe "Dashboard access", feature: true  do
     it { is_expected.to be_allowed_for :visitor }
   end
 
+  describe "GET /koding" do
+    subject { koding_path }
+
+    it { is_expected.to be_allowed_for :admin }
+    it { is_expected.to be_allowed_for :user }
+    it { is_expected.to be_denied_for :visitor }
+  end
+
   describe "GET /projects/new" do
     it { expect(new_project_path).to be_allowed_for :admin }
     it { expect(new_project_path).to be_allowed_for :user }
