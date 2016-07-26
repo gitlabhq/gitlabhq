@@ -19,7 +19,7 @@
           private_token: gon.api_token
         }
       }).done((group) => {
-          return callback(group);
+        return callback(group);
       });
     },
 
@@ -105,15 +105,15 @@
     },
 
     gitignoreText: function gitignoreText(key, callback) {
-      return $.get(Api.buildUrl(Api.gitignorePath).replace(':key', key),
-      (gitignore) => {
+      let url = Api.buildUrl(Api.gitignorePath).replace(':key', key);
+      return $.get(url, (gitignore) => {
         return callback(gitignore);
       });
     },
 
     gitlabCiYml: function gitlabCiYml(key, callback) {
-      return $.get(Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key),
-      (file) => {
+      let url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key);
+      return $.get(url, (file) => {
         return callback(file);
       });
     },
