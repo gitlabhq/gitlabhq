@@ -25,6 +25,11 @@
 
     .issues-holder
       = render "issues"
+      - if new_issue_email
+        .issues-footer.text-center
+          %button.issue-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issue-email-modal" } }
+            Email a new issue to this project
+        = render "issue_by_email", email: new_issue_email
   - else
     .blank-state.blank-state-welcome
       %h2.blank-state-title.blank-state-welcome-title
@@ -41,13 +46,8 @@
       - if can? current_user, :create_issue, @project
         = link_to new_namespace_project_issue_path(@project.namespace, @project), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
           New Issue
-
-  = render 'shared/issuable/filter', type: :issues
-
-  .issues-holder
-    = render "issues"
-  - if new_issue_email
-    .issues-footer.text-center
-      %button.issue-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issue-email-modal" } }
-        Email a new issue to this project
-    = render "issue_by_email", email: new_issue_email
+        - if new_issue_email
+          .issues-footer.text-center
+            %button.issue-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issue-email-modal" } }
+              Email a new issue to this project
+          = render "issue_by_email", email: new_issue_email
