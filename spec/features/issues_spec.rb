@@ -524,6 +524,25 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'new issue by email' do
+    context 'find the modal for new issue by email', js: true do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+
+        visit namespace_project_issues_path(project.namespace, project)
+        click_button('Email a new issue')
+      end
+
+      it 'has a button to show the email address' do
+        page.within '#issue-email-modal' do
+          email = project.new_issue_address(@user)
+
+          expect(page).to have_selector("input[value='#{email}']")
+        end
+      end
+    end
+  end
+
   describe 'due date' do
     context 'update due on issue#show', js: true do
       let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
