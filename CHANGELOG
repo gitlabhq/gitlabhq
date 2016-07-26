@@ -9,6 +9,7 @@ v 8.10.2 (unreleased)
   - Add iid to MR API response. !5468
   - Disable MySQL foreign key checks before dropping all tables. !5472
   - Ensure relative paths for video are rewritten as we do for images. !5474
+  - Ensure current user can retry a build before showing the 'Retry' button. !5476
   - Don't show comment button in gutter of diffs on MR discussion tab
 
 v 8.10.1
