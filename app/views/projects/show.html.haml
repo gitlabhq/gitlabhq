@@ -69,6 +69,11 @@
           %li.koding
             = link_to get_koding_link(@project), target: '_blank' do
               Run On Koding
+        - else
+          %li.missing
+            = link_to add_koding_stack(@project) do
+              Set Up Koding Stack
+
     %li.project-repo-buttons-right
       .project-repo-buttons.project-right-buttons
         - if current_user
