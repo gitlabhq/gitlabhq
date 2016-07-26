@@ -68,6 +68,25 @@
     :why: https://opensource.org/licenses/BSD-2-Clause
     :versions: []
     :when: 2016-05-02 05:55:09.796363000 Z
+- - :whitelist
+  - LGPLv2+
+  - :who: Stan Hu
+    :why: Equivalent to LGPLv2
+    :versions: []
+    :when: 2016-06-07 17:14:10.907682000 Z
+- - :whitelist
+  - Artistic 2.0
+  - :who: Josh Frye
+    :why: Disk/mount information display on Admin pages
+    :versions: []
+    :when: 2016-06-29 16:32:45.432113000 Z
+- - :whitelist
+  - Simplified BSD
+  - :who: Douwe Maan
+    :why: https://opensource.org/licenses/BSD-2-Clause
+    :versions: []
+    :when: 2016-07-26 21:24:07.248480000 Z
+
 
 # LICENSE BLACKLIST
 - - :blacklist
@@ -175,15 +194,3 @@
     :why: https://github.com/jmcnevin/rubypants/blob/master/LICENSE.rdoc
     :versions: []
     :when: 2016-05-02 05:56:50.696858000 Z
-- - :whitelist
-  - LGPLv2+
-  - :who: Stan Hu
-    :why: Equivalent to LGPLv2
-    :versions: []
-    :when: 2016-06-07 17:14:10.907682000 Z
-- - :whitelist
-  - Artistic 2.0
-  - :who: Josh Frye
-    :why: Disk/mount information display on Admin pages
-    :versions: []
-    :when: 2016-06-29 16:32:45.432113000 Z
