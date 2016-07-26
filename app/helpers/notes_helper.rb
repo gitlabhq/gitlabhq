@@ -57,7 +57,7 @@ module NotesHelper
 
       data.merge!(
         note_type: LegacyDiffNote.name,
-        discussion_id: discussion_id
+        discussion_id: Digest::SHA1.hexdigest(discussion_id)
       )
     else
       discussion_id = DiffNote.build_discussion_id(
@@ -69,7 +69,7 @@ module NotesHelper
       data.merge!(
         position: position.to_json,
         note_type: DiffNote.name,
-        discussion_id: discussion_id
+        discussion_id: Digest::SHA1.hexdigest(discussion_id)
       )
     end
 

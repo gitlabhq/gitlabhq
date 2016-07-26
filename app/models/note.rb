@@ -145,9 +145,9 @@ class Note < ActiveRecord::Base
   def discussion_id
     @discussion_id ||=
       if for_merge_request?
-        [:discussion, :note, id].join("-")
+        Digest::SHA1.hexdigest([:discussion, :note, id].join("-"))
       else
-        self.class.build_discussion_id(noteable_type, noteable_id || commit_id)
+        Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id))
       end
   end
 

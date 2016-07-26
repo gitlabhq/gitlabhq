@@ -34,11 +34,11 @@ class DiffNote < Note
   end
 
   def discussion_id
-    @discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, position)
+    @discussion_id ||= Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id, position))
   end
 
   def original_discussion_id
-    @original_discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, original_position)
+    @original_discussion_id ||= Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id, original_position))
   end
 
   def position=(new_position)
