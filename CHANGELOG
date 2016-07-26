@@ -14,6 +14,7 @@ v 8.11.0 (unreleased)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Add the `sprockets-es6` gem
+  - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
