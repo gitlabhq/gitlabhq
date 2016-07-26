@@ -170,6 +170,35 @@ describe Projects::MergeRequestsController do
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
       end
+
+      it 'allow to edit closed MR' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              title: 'New title'
+            }
+
+        expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
+        expect(merge_request.reload.title).to eq 'New title'
+      end
+
+      it 'does not allow to update target branch closed MR' do
+        merge_request.close!
+
+        put :update,
+            namespace_id: project.namespace.path,
+            project_id: project.path,
+            id: merge_request.iid,
+            merge_request: {
+              target_branch: 'new_branch'
+            }
+
+        expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
+      end
     end
   end
 

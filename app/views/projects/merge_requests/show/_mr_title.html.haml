@@ -1,3 +1,7 @@
+- if @merge_request.closed_without_fork?
+  .alert.alert-danger
+    %p Source project is not a fork of the target project
+
 .clearfix.detail-page-header
   .issuable-header
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }

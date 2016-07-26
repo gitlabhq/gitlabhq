@@ -962,4 +962,68 @@ describe MergeRequest, models: true do
       expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
     end
   end
+
+  describe "#fork_missing?" do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:user)         { create(:user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+
+    context "when fork exists" do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it { expect(merge_request.fork_missing?).to be_falsey }
+    end
+
+    context "when source project is the target project" do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { expect(merge_request.fork_missing?).to be_falsey }
+    end
+
+    context "when fork does not exist" do
+      let(:merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it do
+        unlink_project.execute
+        merge_request.reload
+
+        expect(merge_request.fork_missing?).to be_truthy
+      end
+    end
+  end
+
+  describe "#closed_without_fork?" do
+    let(:project)      { create(:project) }
+    let(:fork_project) { create(:project, forked_from_project: project) }
+    let(:user)         { create(:user) }
+    let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
+
+    context "closed MR" do
+      let(:closed_merge_request) do
+        create(:closed_merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "has a fork" do
+        expect(closed_merge_request.closed_without_fork?).to be_falsey
+      end
+
+      it "does not have a fork" do
+        unlink_project.execute
+        closed_merge_request.reload
+
+        expect(closed_merge_request.closed_without_fork?).to be_truthy
+      end
+    end
+  end
 end
