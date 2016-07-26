@@ -16,7 +16,7 @@ class @FilesCommentButton
 
     debounce = _.debounce @render, DEBOUNCE_TIMEOUT_DURATION
 
-    $(document)
+    $(@filesContainerElement)
       .off 'mouseover', LINE_COLUMN_CLASSES
       .off 'mouseleave', LINE_COLUMN_CLASSES
       .on 'mouseover', LINE_COLUMN_CLASSES, debounce
