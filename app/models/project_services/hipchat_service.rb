@@ -67,7 +67,7 @@ class HipchatService < Service
     @gate ||= HipChat::Client.new(token, options)
   end
 
-  def message_options(data)
+  def message_options(data = nil)
     { notify: notify.present? && notify == '1', color: build_status_color(data) || color || 'yellow' }
   end
 
@@ -241,11 +241,14 @@ class HipchatService < Service
   end
 
   def build_status_color(data)
-    if data[:commit][:status] == 'success'
+    return unless data && data[:object_kind] == 'build'
+
+    case data[:commit][:status]
+    when 'success'
       'green'
     else
       'red'
-    end if data[:object_kind] == 'build'
+    end
   end
 
   def project_name
