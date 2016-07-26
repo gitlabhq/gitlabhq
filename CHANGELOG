@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
+  - Add two-factor recovery endpoint to internal API !5510
   - Change merge_error column from string to text type
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
