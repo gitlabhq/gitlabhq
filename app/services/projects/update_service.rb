@@ -23,17 +23,7 @@ module Projects
         if project.previous_changes.include?('path')
           project.rename_repo
         end
-      else
-        restore_attributes
-        false
       end
-    end
-
-    private
-
-    def restore_attributes
-      project.path = project.path_was if project.errors.include?(:path)
-      project.name = project.name_was if project.errors.include?(:name)
     end
   end
 end
