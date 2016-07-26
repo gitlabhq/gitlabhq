@@ -1,4 +1,8 @@
-%resolve-all{ ":namespace" => "'#{discussion.project.namespace.path}/#{discussion.project.path}'", ":discussion-id" => "'#{discussion.id}'", "inline-template" => true, "v-cloak" => true }
-  %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
-    = icon("spinner spin", "v-show" => "loading")
-    {{ buttonText }}
+- if discussion.can_resolve?(current_user)
+  %resolve-all{ ":namespace" => "'#{discussion.project.namespace.path}/#{discussion.project.path}'",
+      ":discussion-id" => "'#{discussion.id}'",
+      "inline-template" => true,
+      "v-cloak" => true }
+    %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
+      = icon("spinner spin", "v-show" => "loading")
+      {{ buttonText }}
