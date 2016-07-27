@@ -31,7 +31,6 @@ v 8.10.1
   - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page. !5446
   - Ignore invalid trusted proxies in X-Forwarded-For header. !5454
   - Add links to the real markdown.md file for all GFM examples. !5458
-  - Use project ID in repository cache to prevent stale data from persisting across projects
 
 v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
