@@ -134,7 +134,7 @@ class ProjectTeam
 
   # Determine the maximum access level for a group of users in bulk.
   #
-  # Returns a Hash mapping user ID -> maxmum access level.
+  # Returns a Hash mapping user ID -> maximum access level.
   def max_member_access_for_user_ids(user_ids)
     user_ids = user_ids.uniq
     key = "max_member_access:#{project.id}"
