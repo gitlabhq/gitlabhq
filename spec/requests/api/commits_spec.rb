@@ -73,9 +73,13 @@ describe API::API, api: true  do
     context "authorized user" do
       it "should return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(project.repository.commit.id)
         expect(json_response['title']).to eq(project.repository.commit.title)
+        expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
+        expect(json_response['stats']['deletions']).to eq(project.repository.commit.stats.deletions)
+        expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
       end
 
       it "should return a 404 error if not found" do
