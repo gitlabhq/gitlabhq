@@ -38,21 +38,7 @@
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
 
-          -# TODO: Live update!
-          - if discussion.resolved?
-            .discussion-headline-light
-              Resolved
-              - if discussion.resolved_by
-                by
-                = link_to_member(@project, discussion.resolved_by, avatar: false)
-              = time_ago_with_tooltip(discussion.resolved_at, placement: "bottom")
-          - elsif discussion.last_updated_at != discussion.created_at
-            .discussion-headline-light
-              Last updated
-              - if discussion.last_updated_by
-                by
-                = link_to_member(@project, discussion.last_updated_by, avatar: false)
-              = time_ago_with_tooltip(discussion.last_updated_at, placement: "bottom")
+          = render "discussions/headline", discussion: discussion
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           - if discussion.diff_discussion? && discussion.diff_file

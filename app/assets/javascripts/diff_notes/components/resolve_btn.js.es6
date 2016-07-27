@@ -56,6 +56,8 @@
 
           if (response.status === 200) {
             CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, user);
+
+            ResolveService.updateUpdatedHtml(this.discussionId, data);
           }
 
           this.$nextTick(this.updateTooltip);

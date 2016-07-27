@@ -58,6 +58,8 @@
         CommentsStore.loading[discussionId] = false;
 
         CommentsStore.updateCommentsForDiscussion(discussionId, true, user);
+
+        this.updateUpdatedHtml(discussionId, data);
       });
     }
 
@@ -71,10 +73,27 @@
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
+        const data = response.data;
         CommentsStore.loading[discussionId] = false;
 
         CommentsStore.updateCommentsForDiscussion(discussionId, false);
+
+        this.updateUpdatedHtml(discussionId, data);
       });
+    }
+
+    updateUpdatedHtml(discussionId, data) {
+      const $discussionHeadline = $(`.${discussionId} .js-discussion-headline`);
+
+      if (data.updated_html) {
+        if ($discussionHeadline.length) {
+          $discussionHeadline.replaceWith(data.updated_html);
+        } else {
+          $(`.${discussionId} .discussion-header`).append(data.updated_html);
+        }
+      } else {
+         $discussionHeadline.remove();
+      }
     }
   }
 

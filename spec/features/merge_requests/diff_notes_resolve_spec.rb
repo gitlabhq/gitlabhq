@@ -119,7 +119,7 @@ feature 'Diff notes resolve', feature: true, js: true do
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be 495
+        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
       end
 
       it 'hides jump to next button when all resolved' do
@@ -128,6 +128,44 @@ feature 'Diff notes resolve', feature: true, js: true do
         end
 
         expect(page).to have_selector('.discussion-next-btn', visible: false)
+      end
+
+      it 'updates updated text after resolving note' do
+        page.within '.diff-content .note' do
+          find('.line-resolve-btn').click
+        end
+
+        expect(page).to have_content("Resolved by #{user.name}")
+      end
+    end
+
+    context 'multiple notes' do
+      before do
+        create(:diff_note_on_merge_request, project: project, noteable: merge_request)
+      end
+
+      it 'does not mark discussion as resolved when resolving single note' do
+        page.within '.diff-content .note' do
+          first('.line-resolve-btn').click
+        end
+
+        expect(page).to have_content('Last updated')
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('0/1 discussion resolved')
+        end
+      end
+
+      it 'resolves discussion' do
+        page.all('.note').each do |note|
+          note.find('.line-resolve-btn').click
+        end
+
+        expect(page).to have_content('Resolved by')
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('1/1 discussion resolved')
+        end
       end
     end
 
@@ -184,7 +222,15 @@ feature 'Diff notes resolve', feature: true, js: true do
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be 495
+        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
+      end
+
+      it 'updates updated text after resolving note' do
+        page.within first('.diff-content .note') do
+          find('.line-resolve-btn').click
+        end
+
+        expect(page).to have_content("Resolved by #{user.name}")
       end
     end
 

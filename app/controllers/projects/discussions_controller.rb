@@ -10,7 +10,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
     discussion.resolve!(current_user)
 
     render json: {
-      resolved_by: discussion.resolved_by.try(:name)
+      resolved_by: discussion.resolved_by.try(:name),
+      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
     }
   end
 
@@ -19,7 +20,9 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
     discussion.unresolve!
 
-    head :ok
+    render json: {
+      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+    }
   end
 
   private

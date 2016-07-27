@@ -72,8 +72,11 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
+    discussion = note.noteable.discussions.find { |d| d.id == note.discussion_id } || render_404
+
     render json: {
-      resolved_by: note.resolved_by.try(:name)
+      resolved_by: note.resolved_by.try(:name),
+      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
     }
   end
 
@@ -82,7 +85,11 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.unresolve!
 
-    head :ok
+    discussion = note.noteable.discussions.find { |d| d.id == note.discussion_id } || render_404
+
+    render json: {
+      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+    }
   end
 
   private
