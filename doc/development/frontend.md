@@ -47,7 +47,7 @@ data is used for users with capped data plans.
 General tips:
 
 - Don't add unnecessary fonts.
-- Prefer font formats with better compression, e.g. WOFF2 is better than WOFF is better than TFF.
+- Prefer font formats with better compression, e.g. WOFF2 is better than WOFF, which is better than TTF.
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets does this for us).
 - If a piece of functionality can be reasonably done without adding extra libraries, prefer not to use extra libraries.
 - Use page-specific JavaScripts as described above to dynamically load libraries that are only needed on certain pages.
@@ -145,6 +145,12 @@ readability.
 See the relevant style guides for details and information on linting:
 
 - [SCSS][scss-style-guide]
+
+## Testing
+
+Feature tests should be written for all new features as well as any regressions to prevent them from occuring again.
+
+See [the Testing Standards and Style Guidelines](testing.md) for more information.
 
 [d3]: https://d3js.org/
 [chartjs]: http://www.chartjs.org/
