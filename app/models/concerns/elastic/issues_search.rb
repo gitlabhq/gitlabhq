@@ -22,8 +22,6 @@ module Elastic
         indexes :assignee_id, type: :integer
 
         indexes :confidential, type: :boolean
-
-        indexes :updated_at_sort, type: :date,   index: :not_analyzed
       end
 
       def as_indexed_json(options = {})
@@ -35,9 +33,6 @@ module Elastic
           data[attr.to_s] = self.send(attr)
         end
 
-        data['project'] = { 'id' => project_id }
-        data['author'] = { 'id' => author_id }
-        data['updated_at_sort'] = updated_at
         data
       end
 

@@ -919,11 +919,11 @@ describe Repository, models: true do
   describe "Elastic search", elastic: true do
     before do
       stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-      Repository.__elasticsearch__.create_index!
+      Gitlab::Elastic::Helper.create_empty_index
     end
 
     after do
-      Repository.__elasticsearch__.delete_index!
+      Gitlab::Elastic::Helper.delete_index
       stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
@@ -933,7 +933,7 @@ describe Repository, models: true do
 
         project.repository.index_commits
 
-        Repository.__elasticsearch__.refresh_index!
+        Gitlab::Elastic::Helper.refresh_index
 
         expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
         expect(project.repository.find_commits_by_message_with_elastic('initial').count).to eq(1)
@@ -946,7 +946,7 @@ describe Repository, models: true do
 
         project.repository.index_blobs
 
-        Repository.__elasticsearch__.refresh_index!
+        Gitlab::Elastic::Helper.refresh_index
 
         result = project.repository.search(
           'def popen',

@@ -3,11 +3,11 @@ require 'spec_helper'
 describe MergeRequest, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -21,7 +21,7 @@ describe MergeRequest, elastic: true do
     # The merge request you have no access to
     create :merge_request, title: 'also with term'
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     options = { project_ids: [project.id] }
 
@@ -46,8 +46,6 @@ describe MergeRequest, elastic: true do
       'target_project_id',
       'author_id'
     )
-
-    expected_hash['updated_at_sort'] = merge_request.updated_at
 
     expect(merge_request.as_indexed_json).to eq(expected_hash)
   end

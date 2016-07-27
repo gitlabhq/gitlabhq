@@ -3,11 +3,11 @@ require 'spec_helper'
 describe ProjectWiki, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -18,7 +18,7 @@ describe ProjectWiki, elastic: true do
 
     project.wiki.index_blobs
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     expect(project.wiki.search('bla', type: :blob)[:blobs][:total_count]).to eq(1)
   end

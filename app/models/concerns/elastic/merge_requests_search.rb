@@ -25,8 +25,6 @@ module Elastic
         indexes :source_project_id, type: :integer
         indexes :target_project_id, type: :integer
         indexes :author_id,         type: :integer
-
-        indexes :updated_at_sort, type: :string, index: 'not_analyzed'
       end
 
       def as_indexed_json(options = {})
@@ -51,8 +49,7 @@ module Elastic
         ].each do |attr|
           data[attr.to_s] = self.send(attr)
         end
-
-        data['updated_at_sort'] = updated_at
+        
         data
       end
 

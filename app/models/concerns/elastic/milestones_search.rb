@@ -13,14 +13,13 @@ module Elastic
                               index_options: 'offsets'
         indexes :project_id,  type: :integer
         indexes :created_at,  type: :date
-
-        indexes :updated_at_sort, type: :string, index: 'not_analyzed'
+        indexes :updated_at,  type: :date
       end
 
       def as_indexed_json(options = {})
         as_json(
-          only: [:id, :title, :description, :project_id, :created_at]
-        ).merge({ updated_at_sort: updated_at })
+          only: [:id, :title, :description, :project_id, :created_at, :updated_at]
+        )
       end
 
       def self.elastic_search(query, options: {})

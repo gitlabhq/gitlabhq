@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Milestone, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -21,7 +21,7 @@ describe Milestone, elastic: true do
     # The milestone you have no access to
     create :milestone, title: 'bla-bla term'
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     options = { project_ids: [project.id] }
 
@@ -36,10 +36,9 @@ describe Milestone, elastic: true do
       'title',
       'description',
       'project_id',
-      'created_at'
+      'created_at',
+      'updated_at'
     )
-
-    expected_hash[:updated_at_sort] = milestone.updated_at
 
     expect(milestone.as_indexed_json).to eq(expected_hash)
   end

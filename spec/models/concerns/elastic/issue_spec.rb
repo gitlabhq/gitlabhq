@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Issue, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -21,7 +21,7 @@ describe Issue, elastic: true do
     # The issue I have no access to
     create :issue, title: 'bla-bla term'
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     options = { project_ids: [project.id] }
 
@@ -35,10 +35,6 @@ describe Issue, elastic: true do
     expected_hash = issue.attributes.extract!('id', 'iid', 'title', 'description', 'created_at',
                                                 'updated_at', 'state', 'project_id', 'author_id',
                                                 'assignee_id', 'confidential')
-
-    expected_hash['project'] = { "id" => project.id }
-    expected_hash['author'] = { "id" => issue.author_id }
-    expected_hash['updated_at_sort'] = issue.updated_at
 
     expect(issue.as_indexed_json).to eq(expected_hash)
   end
