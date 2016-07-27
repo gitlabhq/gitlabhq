@@ -45,14 +45,16 @@
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
     - if current_user
-      #resolve-count-app{ "v-cloak" => true }
+      #resolve-count-app.line-resolve-all-container{ "v-cloak" => true }
         %resolve-count{ "inline-template" => true }
-          .line-resolve-all{ "v-show" => "discussionCount > 0" }
+          .line-resolve-all{ "v-show" => "discussionCount > 0",
+            ":class" => "{ 'has-next-btn': resolved !== discussionCount }" }
+            %span.line-resolve-btn.is-disabled{ type: "button",
+                ":class" => "{ 'is-active': resolved === discussionCount }" }
+              = icon("check")
             %span.line-resolve-text
               {{ resolved }}/{{ discussionCount }} discussions resolved
-          %jump-to-discussion{ "inline-template" => true }
-            %button.btn.btn-default.has-tooltip{ "@click" => "jumpToNextUnresolvedDiscussion", title: "Jump to next unresolved discussion", data: { container: "body" } }
-              = icon("caret-down")
+          = render "discussions/jump_to_next"
 
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom

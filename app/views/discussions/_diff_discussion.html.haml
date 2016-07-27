@@ -6,7 +6,8 @@
 
     .discussion-reply-holder
       .discussion-with-resolve-btn{ role: "group" }
-        .btn-group
+        .btn-group{ role: "group" }
           = link_to_reply_discussion(discussion)
-        .btn-group
+        .btn-group{ role: "group" }
           = render "discussions/resolve_all", discussion: discussion
+        = render "discussions/jump_to_next", discussion: discussion

@@ -11,6 +11,7 @@
             = link_to_reply_discussion(discussion_left, 'old')
           .btn-group{ role: "group" }
             = render "discussions/resolve_all", discussion: discussion_left
+          = render "discussions/jump_to_next", discussion: discussion
   - else
     %td.notes_line.old= ""
     %td.notes_content.parallel.old= ""
@@ -27,6 +28,7 @@
             = link_to_reply_discussion(discussion_right, 'new')
           .btn-group{ role: "group" }
             = render "discussions/resolve_all", discussion: discussion_right
+          = render "discussions/jump_to_next", discussion: discussion
   - else
     %td.notes_line.new= ""
     %td.notes_content.parallel.new= ""

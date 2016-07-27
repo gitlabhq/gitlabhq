@@ -384,14 +384,38 @@ ul.notes {
   }
 }
 
+.line-resolve-all-container {
+  .btn-group {
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+
+  .discussion-next-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
 .line-resolve-all {
+  display: inline-block;
   margin-top: 10px;
-  padding: 10px;
+  padding: 5px 10px;
+  background-color: $background-color;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
-  .btn {
-    margin-right: 10px;
+  &.has-next-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .line-resolve-btn {
+    top: 1px;
+    margin-right: 5px;
+
+    .fa {
+      left: 2px;
+    }
   }
 }
 
@@ -400,6 +424,7 @@ ul.notes {
 }
 
 .line-resolve-btn {
+  display: inline-block;
   position: relative;
   top: -1px;
   width: 14px;
@@ -417,18 +442,25 @@ ul.notes {
 
   &:not(.is-disabled):hover,
   &.is-active {
-    color: #fff;
-    background-color: $gl-text-green;
+    color: $gl-text-green;
     border-color: $gl-text-green;
 
     .fa {
-      color: #fff;
+      color: $gl-text-green;
     }
   }
 
   .fa {
+    position: relative;
     top: 2px;
     font-size: 8px;
+    color: #c3c3c3;
     vertical-align: top;
+  }
+}
+
+.discussion-next-btn {
+  path {
+    fill: #7E7E7E;
   }
 }
