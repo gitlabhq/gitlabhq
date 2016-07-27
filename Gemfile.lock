@@ -952,7 +952,7 @@ DEPENDENCIES
   shoulda-matchers (~> 2.8.0)
   sidekiq (~> 4.0)
   sidekiq-cron (~> 0.4.0)
-  simplecov (~> 0.12.0)
+  simplecov (= 0.12.0)
   sinatra (~> 1.4.4)
   six (~> 0.2.0)
   slack-notifier (~> 1.2.0)
