@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
+  - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Limit git rev-list output count to one in forced push check

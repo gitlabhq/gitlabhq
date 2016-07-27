@@ -178,7 +178,14 @@ class Commit
   end
 
   def author
-    @author ||= User.find_by_any_email(author_email.downcase)
+    key = "commit_author:#{author_email}"
+
+    # nil is a valid value since no author may exist in the system
+    unless RequestStore.store.has_key?(key)
+      RequestStore.store[key] = User.find_by_any_email(author_email.downcase)
+    end
+
+    @author ||= RequestStore.store[key]
   end
 
   def committer
