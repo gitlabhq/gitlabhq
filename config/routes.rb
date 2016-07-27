@@ -294,7 +294,7 @@ Rails.application.routes.draw do
           post :repository_check
         end
 
-        resources :runner_projects, only: [:index, :create, :destroy]
+        resources :runner_projects, only: [:create, :destroy]
       end
     end
 
