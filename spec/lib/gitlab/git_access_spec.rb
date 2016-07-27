@@ -363,14 +363,14 @@ describe Gitlab::GitAccess, lib: true do
           describe 'git annex enabled' do
             before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(true) }
 
-            it { expect(access.check('git-annex-shell', []).allowed?).to be_truthy }
+            it { expect(access.check('git-annex-shell', git_annex_changes).allowed?).to be_truthy }
             it { expect(access.push_access_check(git_annex_changes)).to be_allowed }
           end
 
           describe 'git annex disabled' do
             before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
 
-            it { expect(access.check('git-annex-shell', []).allowed?).to be_falsey }
+            it { expect(access.check('git-annex-shell', git_annex_changes).allowed?).to be_falsey }
             it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
           end
         end
