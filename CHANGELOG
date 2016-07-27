@@ -20,19 +20,28 @@ v 8.11.0 (unreleased)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
 
-v 8.10.2 (unreleased)
+v 8.10.3 (unreleased)
+
+v 8.10.2
   - User can now search branches by name. !5144
-  - Add ENV variable to skip repository storages validations
+  - Page is now properlty rendered after commiting the first file and creating the first branch. !5399
+  - Add branch or tag icon to ref in builds page. !5434
   - Fix backup restore. !5459
-  - Rescue Rugged::OSError (lock exists) when creating references. !5497
-  - Disable MySQL foreign key checks before dropping all tables. !5472
-  - Page is now properlty rendered after commiting the first file and creating the first branch
-  - Fix a bug where forking a project from a repository storage to another would fail
-  - Show release notes in tags list
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
+  - Fix issue with autocomplete search not working with enter key. !5466
+  - Add iid to MR API response. !5468
+  - Disable MySQL foreign key checks before dropping all tables. !5472
   - Ensure relative paths for video are rewritten as we do for images. !5474
   - Ensure current user can retry a build before showing the 'Retry' button. !5476
-  - Fix expand all diffs button in compare view
+  - Add ENV variable to skip repository storages validations. !5478
+  - Added `*.js.es6 gitlab-language=javascript` to `.gitattributes`. !5486
+  - Don't show comment button in gutter of diffs on MR discussion tab. !5493
+  - Rescue Rugged::OSError (lock exists) when creating references. !5497
+  - Fix expand all diffs button in compare view. !5500
+  - Show release notes in tags list. !5503
+  - Fix a bug where forking a project from a repository storage to another would fail. !5509
+  - Fix missing schema update for `20160722221922`. !5512
+  - Update `gitlab-shell` version to 3.2.1 in the 8.9->8.10 update guide. !5516
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
