@@ -82,7 +82,9 @@ end
 CONFLICT
       end
 
-      let(:lines) { parser.parse(text, 'files/ruby/regex.rb', 'files/ruby/regex.rb') }
+      let(:lines) do
+        parser.parse(text, our_path: 'files/ruby/regex.rb', their_path: 'files/ruby/regex.rb')
+      end
 
       it 'sets our lines as new lines' do
         expect(lines[8..13]).to all(have_attributes(type: 'new'))
@@ -117,7 +119,7 @@ CONFLICT
       let(:path) { 'README.md' }
 
       def parse_text(text)
-        parser.parse(text, path, path)
+        parser.parse(text, our_path: path, their_path: path)
       end
 
       it 'raises UnexpectedDelimiter when there is a non-start delimiter first' do
@@ -171,8 +173,8 @@ CONFLICT
     end
 
     context 'when lines is blank' do
-      it { expect(parser.parse('', 'README.md', 'README.md')).to eq([]) }
-      it { expect(parser.parse(nil, 'README.md', 'README.md')).to eq([]) }
+      it { expect(parser.parse('', our_path: 'README.md', their_path: 'README.md')).to eq([]) }
+      it { expect(parser.parse(nil, our_path: 'README.md', their_path: 'README.md')).to eq([]) }
     end
   end
 end

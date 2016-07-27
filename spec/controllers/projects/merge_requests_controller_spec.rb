@@ -523,4 +523,69 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  describe 'GET conflicts' do
+    let(:merge_request_with_conflicts) do
+      create(:merge_request, source_branch: 'conflict-a', target_branch: 'conflict-b', source_project: project) do |mr|
+        mr.mark_as_unmergeable
+      end
+    end
+
+    context 'as JSON' do
+      before do
+        get :conflicts,
+            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+            project_id: merge_request_with_conflicts.project.to_param,
+            id: merge_request_with_conflicts.iid,
+            format: 'json'
+      end
+
+      let(:json_response) { JSON.parse(response.body) }
+
+      it 'includes meta info about the MR' do
+        expect(json_response['commit_message']).to include('Merge branch')
+        expect(json_response['commit_sha']).to match(/\h{40}/)
+        expect(json_response['source_branch']).to eq(merge_request_with_conflicts.source_branch)
+        expect(json_response['target_branch']).to eq(merge_request_with_conflicts.target_branch)
+      end
+
+      it 'includes each file that has conflicts' do
+        filenames = json_response['files'].map { |file| file['new_path'] }
+
+        expect(filenames).to contain_exactly('files/ruby/popen.rb', 'files/ruby/regex.rb')
+      end
+
+      it 'splits files into sections with lines' do
+        json_response['files'].each do |file|
+          file['sections'].each do |section|
+            expect(section).to include('conflict', 'lines')
+
+            section['lines'].each do |line|
+              if section['conflict']
+                expect(line['type']).to be_in(['old', 'new'])
+                expect(line.values_at('old_line', 'new_line')).to contain_exactly(nil, a_kind_of(Integer))
+              else
+                if line['type'].nil?
+                  expect(line['old_line']).not_to eq(nil)
+                  expect(line['new_line']).not_to eq(nil)
+                else
+                  expect(line['type']).to eq('match')
+                  expect(line['old_line']).to eq(nil)
+                  expect(line['new_line']).to eq(nil)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      it 'has unique section IDs across files' do
+        section_ids = json_response['files'].flat_map do |file|
+          file['sections'].map { |section| section['id'] }.compact
+        end
+
+        expect(section_ids.uniq).to eq(section_ids)
+      end
+    end
+  end
 end

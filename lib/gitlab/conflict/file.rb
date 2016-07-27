@@ -3,20 +3,22 @@ module Gitlab
     class File
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file, :their_path, :their_ref, :our_path, :our_ref, :repository
+      attr_reader :merge_file_result, :their_path, :their_ref, :our_path, :our_ref, :repository
 
-      def initialize(merge_file, conflict, their_ref, our_ref, repository)
-        @merge_file = merge_file
+      def initialize(merge_file_result, conflict, diff_refs:, repository:)
+        @merge_file_result = merge_file_result
         @their_path = conflict[:theirs][:path]
         @our_path = conflict[:ours][:path]
-        @their_ref = their_ref
-        @our_ref = our_ref
+        @their_ref = diff_refs.start_sha
+        @our_ref = diff_refs.head_sha
         @repository = repository
       end
 
       # Array of Gitlab::Diff::Line objects
       def lines
-        @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file[:data], their_path, our_path)
+        @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file_result[:data],
+                                                      our_path: our_path,
+                                                      their_path: their_path)
       end
 
       def highlighted_lines
@@ -28,9 +30,9 @@ module Gitlab
         @highlighted_lines = lines.map do |line|
           line = line.dup
           if line.type == 'old'
-            line.rich_text = their_highlight[line.old_line - 1].delete("\n")
+            line.rich_text = their_highlight[line.old_line - 1]
           else
-            line.rich_text = our_highlight[line.new_line - 1].delete("\n")
+            line.rich_text = our_highlight[line.new_line - 1]
           end
           line
         end

@@ -7,7 +7,7 @@ module Gitlab
       class MissingEndDelimiter < StandardError
       end
 
-      def parse(text, their_path, our_path)
+      def parse(text, our_path:, their_path:)
         return [] if text.blank?
 
         line_obj_index = 0
@@ -46,13 +46,9 @@ module Gitlab
           end
         end
 
-        raise MissingEndDelimiter unless type == nil
+        raise MissingEndDelimiter unless type.nil?
 
         lines
-      end
-
-      def empty?
-        @lines.empty?
       end
     end
   end

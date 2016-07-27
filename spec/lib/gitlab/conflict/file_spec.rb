@@ -4,24 +4,21 @@ describe Gitlab::Conflict::File, lib: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
-  let(:their_ref) { their_commit.oid }
   let(:their_commit) { rugged.branches['conflict-a'].target }
-  let(:our_ref) { our_commit.oid }
+  let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: their_commit.oid, head_sha: our_commit.oid) }
   let(:our_commit) { rugged.branches['conflict-b'].target }
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
-  let(:merge_file) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file, conflict, their_ref, our_ref, repository) }
+  let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
+  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, diff_refs: diff_refs, repository: repository) }
 
   describe '#highlighted_lines' do
     def html_to_text(html)
-      CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html))
+      CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html)).delete("\n")
     end
 
     it 'returns lines with rich_text' do
-      conflict_file.highlighted_lines.each do |line|
-        expect(line).to have_attributes(rich_text: an_instance_of(String))
-      end
+      expect(conflict_file.highlighted_lines).to all(have_attributes(rich_text: a_kind_of(String)))
     end
 
     it 'returns lines with rich_text matching the text content of the line' do
