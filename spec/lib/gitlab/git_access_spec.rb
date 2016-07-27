@@ -263,7 +263,7 @@ describe Gitlab::GitAccess, lib: true do
           context "when the merge request is in progress" do
             before do
               create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature',
-                     state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
+                                     state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             end
 
             run_permission_checks(permissions_matrix.deep_merge(developer: { merge_into_protected_branch: true }))
