@@ -3,6 +3,8 @@ module ProtectedBranches
     attr_reader :protected_branch
 
     def execute
+      raise Gitlab::Access::AccessDeniedError unless current_user.can?(:admin_project, project)
+
       ProtectedBranch.transaction do
         @protected_branch = project.protected_branches.new(name: params[:name])
         @protected_branch.save!

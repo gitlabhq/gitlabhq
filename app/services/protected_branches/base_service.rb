@@ -1,7 +1,5 @@
 module ProtectedBranches
   class BaseService < ::BaseService
-    include API::Helpers
-
     def initialize(project, current_user, params = {})
       super(project, current_user, params)
       @allowed_to_push = params[:allowed_to_push]
@@ -14,7 +12,7 @@ module ProtectedBranches
       set_push_access_levels!
     end
 
-    protected
+    private
 
     def set_merge_access_levels!
       case @allowed_to_merge
@@ -55,6 +53,15 @@ module ProtectedBranches
         when false
           'masters'
         end
+    end
+
+    protected
+
+    def to_boolean(value)
+      return true if value =~ /^(true|t|yes|y|1|on)$/i
+      return false if value =~ /^(false|f|no|n|0|off)$/i
+
+      nil
     end
   end
 end
