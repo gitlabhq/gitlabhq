@@ -8,6 +8,7 @@
     beforeEach(function() {
       fixture.load('behaviors/quick_submit.html');
       $('form').submit(function(e) {
+        // Prevent a form submit from moving us off the testing page
         return e.preventDefault();
       });
       return this.spies = {
@@ -38,6 +39,8 @@
       expect($('input[type=submit]')).toBeDisabled();
       return expect($('button[type=submit]')).toBeDisabled();
     });
+    // We cannot stub `navigator.userAgent` for CI's `rake teaspoon` task, so we'll
+    // only run the tests that apply to the current platform
     if (navigator.userAgent.match(/Macintosh/)) {
       it('responds to Meta+Enter', function() {
         $('input.quick-submit-input').trigger(keydownEvent());

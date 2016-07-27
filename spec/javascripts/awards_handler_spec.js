@@ -1,13 +1,7 @@
 
 /*= require awards_handler */
-
-
 /*= require jquery */
-
-
 /*= require jquery.cookie */
-
-
 /*= require ./fixtures/emoji_menu */
 
 (function() {
@@ -33,6 +27,7 @@
     return setTimeout(function() {
       assertFn();
       return done();
+    // Maybe jasmine.clock here?
     }, 333);
   };
 

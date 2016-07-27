@@ -1,7 +1,5 @@
 
 /*= require jquery.ba-resize */
-
-
 /*= require autosize */
 
 (function() {

@@ -1,6 +1,49 @@
-
+// MergeRequestTabs
+//
+// Handles persisting and restoring the current tab selection and lazily-loading
+// content on the MergeRequests#show page.
+//
 /*= require jquery.cookie */
 
+//
+// ### Example Markup
+//
+//   <ul class="nav-links merge-request-tabs">
+//     <li class="notes-tab active">
+//       <a data-action="notes" data-target="#notes" data-toggle="tab" href="/foo/bar/merge_requests/1">
+//         Discussion
+//       </a>
+//     </li>
+//     <li class="commits-tab">
+//       <a data-action="commits" data-target="#commits" data-toggle="tab" href="/foo/bar/merge_requests/1/commits">
+//         Commits
+//       </a>
+//     </li>
+//     <li class="diffs-tab">
+//       <a data-action="diffs" data-target="#diffs" data-toggle="tab" href="/foo/bar/merge_requests/1/diffs">
+//         Diffs
+//       </a>
+//     </li>
+//   </ul>
+//
+//   <div class="tab-content">
+//     <div class="notes tab-pane active" id="notes">
+//       Notes Content
+//     </div>
+//     <div class="commits tab-pane" id="commits">
+//       Commits Content
+//     </div>
+//     <div class="diffs tab-pane" id="diffs">
+//       Diffs Content
+//     </div>
+//   </div>
+//
+//   <div class="mr-loading-status">
+//     <div class="loading">
+//       Loading Animation
+//     </div>
+//   </div>
+//
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
@@ -19,6 +62,7 @@
       this.setCurrentAction = bind(this.setCurrentAction, this);
       this.tabShown = bind(this.tabShown, this);
       this.showTab = bind(this.showTab, this);
+      // Store the `location` object, allowing for easier stubbing in tests
       this._location = location;
       this.bindEvents();
       this.activateTab(this.opts.action);
@@ -77,6 +121,7 @@
       }
     };
 
+    // Activate a tab based on the current action
     MergeRequestTabs.prototype.activateTab = function(action) {
       if (action === 'show') {
         action = 'notes';
@@ -84,20 +129,48 @@
       return $(".merge-request-tabs a[data-action='" + action + "']").tab('show');
     };
 
+    // Replaces the current Merge Request-specific action in the URL with a new one
+    //
+    // If the action is "notes", the URL is reset to the standard
+    // `MergeRequests#show` route.
+    //
+    // Examples:
+    //
+    //   location.pathname # => "/namespace/project/merge_requests/1"
+    //   setCurrentAction('diffs')
+    //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+    //
+    //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+    //   setCurrentAction('notes')
+    //   location.pathname # => "/namespace/project/merge_requests/1"
+    //
+    //   location.pathname # => "/namespace/project/merge_requests/1/diffs"
+    //   setCurrentAction('commits')
+    //   location.pathname # => "/namespace/project/merge_requests/1/commits"
+    //
+    // Returns the new URL String
     MergeRequestTabs.prototype.setCurrentAction = function(action) {
       var new_state;
+      // Normalize action, just to be safe
       if (action === 'show') {
         action = 'notes';
       }
       this.currentAction = action;
+      // Remove a trailing '/commits' or '/diffs'
       new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
+      // Append the new action if we're on a tab other than 'notes'
       if (action !== 'notes') {
         new_state += "/" + action;
       }
+      // Ensure parameters and hash come along for the ride
       new_state += this._location.search + this._location.hash;
       history.replaceState({
         turbolinks: true,
         url: new_state
+      // Replace the current history state with the new one without breaking
+      // Turbolinks' history.
+      //
+      // See https://github.com/rails/turbolinks/issues/363
       }, document.title, new_state);
       return new_state;
     };
@@ -191,6 +264,7 @@
       });
     };
 
+<<<<<<< a79ff9346b73079148cc4ecc81da82804bb51f3c
     MergeRequestTabs.prototype.loadPipelines = function(source) {
       if (this.pipelinesLoaded) {
         return;
@@ -206,6 +280,11 @@
       });
     };
 
+=======
+    // Show or hide the loading spinner
+    //
+    // status - Boolean, true to show, false to hide
+>>>>>>> Restore comments lost when converting CoffeeScript to JavaScript
     MergeRequestTabs.prototype.toggleLoading = function(status) {
       return $('.mr-loading-status .loading').toggle(status);
     };
@@ -232,6 +311,7 @@
 
     MergeRequestTabs.prototype.diffViewType = function() {
       return $('.inline-parallel-buttons a.active').data('view-type');
+    // Returns diff view type
     };
 
     MergeRequestTabs.prototype.expandViewContainer = function() {
@@ -245,6 +325,8 @@
         if ($gutterIcon.is('.fa-angle-double-right')) {
           return $gutterIcon.closest('a').trigger('click', [true]);
         }
+      // Wait until listeners are set
+      // Only when sidebar is expanded
       }, 0);
     };
 
@@ -259,6 +341,9 @@
           return $gutterIcon.closest('a').trigger('click', [true]);
         }
       }, 0);
+    // Expand the issuable sidebar unless the user explicitly collapsed it
+    // Wait until listeners are set
+    // Only when sidebar is collapsed
     };
 
     return MergeRequestTabs;

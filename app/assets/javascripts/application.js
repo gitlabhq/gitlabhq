@@ -1,3 +1,9 @@
+// This is a manifest file that'll be compiled into including all the files listed below.
+// Add new JavaScript/Coffee code in separate files in this directory and they'll automatically
+// be included in the compiled file accessible from http://example.com/assets/application.js
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// the compiled file.
+//
 /*= require jquery2 */
 /*= require jquery-ui/autocomplete */
 /*= require jquery-ui/datepicker */
@@ -76,6 +82,7 @@
     }
   };
 
+  // Disable button if text field is empty
   window.disableButtonIfEmptyField = function(field_selector, button_selector) {
     var closest_submit, field;
     field = $(field_selector);
@@ -92,6 +99,7 @@
     });
   };
 
+  // Disable button if any input field with given selector is empty
   window.disableButtonIfAnyEmptyField = function(form, form_selector, button_selector) {
     var closest_submit, updateButtons;
     closest_submit = form.find(button_selector);
@@ -128,6 +136,8 @@
   window.addEventListener("hashchange", shiftWindow);
 
   window.onload = function() {
+    // Scroll the window to avoid the topnav bar
+    // https://github.com/twitter/bootstrap/issues/1768
     if (location.hash) {
       return setTimeout(shiftWindow, 100);
     }
@@ -149,6 +159,8 @@
       return $(this).select().one('mouseup', function(e) {
         return e.preventDefault();
       });
+    // Click a .js-select-on-focus field, select the contents
+    // Prevent a mouseup event from deselecting the input
     });
     $('.remove-row').bind('ajax:success', function() {
       $(this).tooltip('destroy')
@@ -163,6 +175,7 @@
     });
     $('select.select2').select2({
       width: 'resolve',
+      // Initialize select2 selects
       dropdownAutoWidth: true
     });
     $('.js-select2').bind('select2-close', function() {
@@ -170,7 +183,9 @@
         $('.select2-container-active').removeClass('select2-container-active');
         return $(':focus').blur();
       }), 1);
+    // Close select2 on escape
     });
+    // Initialize tooltips
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
       placement: function(_, el) {
@@ -179,14 +194,17 @@
     });
     $('.trigger-submit').on('change', function() {
       return $(this).parents('form').submit();
+    // Form submitter
     });
     gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
+    // Flash
     if ((flash = $(".flash-container")).length > 0) {
       flash.click(function() {
         return $(this).fadeOut();
       });
       flash.show();
     }
+    // Disable form buttons while a form is submitting
     $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function(e) {
       var buttons;
       buttons = $('[type="submit"]', this);
@@ -207,6 +225,7 @@
       }
     });
     $('.account-box').hover(function() {
+      // Show/Hide the profile menu when hovering the account box
       return $(this).toggleClass('hover');
     });
     $document.on('click', '.diff-content .js-show-suppressed-diff', function() {
@@ -214,6 +233,7 @@
       $container = $(this).parent();
       $container.next('table').show();
       return $container.remove();
+    // Commit show suppressed diff
     });
     $('.navbar-toggle').on('click', function() {
       $('.header-content .title').toggle();
@@ -221,6 +241,7 @@
       $('.header-content .navbar-collapse').toggle();
       return $('.navbar-toggle').toggleClass('active');
     });
+    // Show/hide comments on diff
     $body.on("click", ".js-toggle-diff-comments", function(e) {
       var $this = $(this);
       $this.toggleClass('active');
