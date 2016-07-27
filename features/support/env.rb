@@ -1,6 +1,5 @@
-if ENV['SIMPLECOV']
-  require 'simplecov'
-end
+require './spec/simplecov_env'
+SimpleCovEnv.start!
 
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
