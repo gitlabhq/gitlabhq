@@ -340,18 +340,36 @@ describe HipchatService, models: true do
     end
 
     context "#message_options" do
-      it "should be set to the defaults" do
-        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'yellow' })
+      it "is set to the defaults" do
+        expect(hipchat.__send__(:message_options)).to eq({ notify: false, color: 'yellow' })
       end
 
-      it "should set notfiy to true" do
+      it "sets notify to true" do
         allow(hipchat).to receive(:notify).and_return('1')
-        expect(hipchat.send(:message_options)).to eq({ notify: true, color: 'yellow' })
+
+        expect(hipchat.__send__(:message_options)).to eq({ notify: true, color: 'yellow' })
       end
 
-      it "should set the color" do
+      it "sets the color" do
         allow(hipchat).to receive(:color).and_return('red')
-        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'red' })
+
+        expect(hipchat.__send__(:message_options)).to eq({ notify: false, color: 'red' })
+      end
+
+      context 'with a successful build' do
+        it 'uses the green color' do
+          build_data = { object_kind: 'build', commit: { status: 'success' } }
+
+          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'green' })
+        end
+      end
+
+      context 'with a failed build' do
+        it 'uses the red color' do
+          build_data = { object_kind: 'build', commit: { status: 'failed' } }
+
+          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'red' })
+        end
       end
     end
   end
