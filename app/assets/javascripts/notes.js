@@ -403,7 +403,7 @@
             projectPath = $form.attr('data-project-path')
             discussionId = $form.attr('data-discussion-id'),
             mergeRequestId = $('input[name="noteable_iid"]', $form).val(),
-            namespace = `${namespacePath}/${projectPath}`;
+            namespace = namespacePath + '/' + projectPath;
 
         if (ResolveService != null) {
           ResolveService.toggleResolveForDiscussion(namespace, mergeRequestId, discussionId);
@@ -606,7 +606,7 @@
       } else if (DiffNotesApp) {
         var $commentBtn = form.find('resolve-comment-btn');
         $commentBtn
-          .attr(':discussion-id', `'${dataHolder.data("discussionId")}'`);
+          .attr(':discussion-id', dataHolder.data('discussionId'));
         DiffNotesApp.$compile($commentBtn.get(0));
       }
 
