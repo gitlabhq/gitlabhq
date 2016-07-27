@@ -178,14 +178,18 @@ class Commit
   end
 
   def author
-    key = "commit_author:#{author_email}"
-
-    # nil is a valid value since no author may exist in the system
-    unless RequestStore.store.has_key?(key)
-      RequestStore.store[key] = User.find_by_any_email(author_email.downcase)
+    if RequestStore.active?
+      key = "commit_author:#{author_email.downcase}"
+      # nil is a valid value since no author may exist in the system
+      if RequestStore.store.has_key?(key)
+        @author = RequestStore.store[key]
+      else
+        @author = find_author_by_any_email
+        RequestStore.store[key] = @author
+      end
+    else
+      @author ||= find_author_by_any_email
     end
-
-    @author ||= RequestStore.store[key]
   end
 
   def committer
@@ -312,6 +316,10 @@ class Commit
   end
 
   private
+
+  def find_author_by_any_email
+    User.find_by_any_email(author_email.downcase)
+  end
 
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
