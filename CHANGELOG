@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Nokogiri's various parsing methods are now instrumented
   - Make fork counter always clickable !5463 (winniehell)
   - Load project invited groups and members eagerly in ProjectTeam#fetch_members
+  - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Add ES6 gem
 
