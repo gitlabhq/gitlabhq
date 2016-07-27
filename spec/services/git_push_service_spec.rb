@@ -7,6 +7,7 @@ describe GitPushService, services: true do
   let(:project)       { create :project }
 
   before do
+    project.team << [user, :master]
     @blankrev = Gitlab::Git::BLANK_SHA
     @oldrev = sample_commit.parent_id
     @newrev = sample_commit.id
@@ -188,7 +189,7 @@ describe GitPushService, services: true do
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
-      @event = Event.last
+      @event = Event.find_by_action(Event::PUSHED)
       @push_data = service.push_data
     end
 
