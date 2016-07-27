@@ -509,7 +509,7 @@ GEM
     rack-cors (0.4.0)
     rack-mount (0.8.3)
       rack (>= 1.0.0)
-    rack-oauth2 (1.2.1)
+    rack-oauth2 (1.2.3)
       activesupport (>= 2.3)
       attr_required (>= 0.0.5)
       httpclient (>= 2.4)
