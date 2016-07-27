@@ -375,5 +375,9 @@
 .mr-version-switch {
   background: $background-color;
   padding: $gl-btn-padding;
-  border-bottom: 1px solid $border-color;
+  color: $gl-placeholder-color;
+
+  a.btn-link {
+    color: $gl-dark-link-color;
+  }
 }
