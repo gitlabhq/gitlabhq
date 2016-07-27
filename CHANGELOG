@@ -19,6 +19,7 @@ v 8.11.0 (unreleased)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
+  - Change requests_profiles resource constraint to catch virtually any file
 
 v 8.10.3 (unreleased)
 
