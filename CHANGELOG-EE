@@ -3,8 +3,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
 
 v 8.10.2 (unreleased)
-  - Dicouple an ES index update from RepositoryUpdateMirrorWorker
-  - Fix pagination on search result page when ES search is enabled 
+  - Decouple an ES index update from RepositoryUpdateMirrorWorker
+  - Fix broken user_allowed check in Git Annex push
+  - Fix pagination on search result page when ES search is enabled
 
 v 8.10.1
   - No EE-specific changes
