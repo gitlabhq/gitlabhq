@@ -253,7 +253,7 @@ module Gitlab
     end
 
     def git_annex_access_check(project, changes)
-      unless user && user_allowed?
+      unless user && user_access.allowed?
         return build_status_object(false, "You don't have access")
       end
 
@@ -265,7 +265,7 @@ module Gitlab
         return build_status_object(false, "You can't use git-annex with a secondary GitLab Geo node.")
       end
 
-      if user.can?(:push_code, project)
+      if user.can?(:push_code, project) && git_annex_branch_sync?(changes)
         build_status_object(true)
       else
         build_status_object(false, "You don't have permission")
