@@ -600,6 +600,7 @@
       form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
+      form.find('.js-note-target-close').remove();
 
       if (canResolve === 'false') {
         form.find('resolve-comment-btn').remove();

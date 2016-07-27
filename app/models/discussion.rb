@@ -76,7 +76,7 @@ class Discussion
     return false unless resolvable?
 
     current_user == self.noteable.author ||
-      can?(current_user, :push_code, self.project)
+      current_user.can?(:push_code, self.project)
   end
 
   def resolve!(current_user)
