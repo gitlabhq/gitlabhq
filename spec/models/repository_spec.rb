@@ -446,6 +446,43 @@ describe Repository, models: true do
         end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
+
+    context 'when target branch is different from source branch' do
+      before do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+      end
+
+      it 'expires branch cache' do
+        expect(repository).not_to receive(:expire_exists_cache)
+        expect(repository).not_to receive(:expire_root_ref_cache)
+        expect(repository).not_to receive(:expire_emptiness_caches)
+        expect(repository).to     receive(:expire_branches_cache)
+        expect(repository).to     receive(:expire_has_visible_content_cache)
+        expect(repository).to     receive(:expire_branch_count_cache)
+
+        repository.commit_with_hooks(user, 'new-feature') { sample_commit.id }
+      end
+    end
+
+    context 'when repository is empty' do
+      before do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+      end
+
+      it 'expires creation and branch cache' do
+        empty_repository = create(:empty_project, :empty_repo).repository
+
+        expect(empty_repository).to receive(:expire_exists_cache)
+        expect(empty_repository).to receive(:expire_root_ref_cache)
+        expect(empty_repository).to receive(:expire_emptiness_caches)
+        expect(empty_repository).to receive(:expire_branches_cache)
+        expect(empty_repository).to receive(:expire_has_visible_content_cache)
+        expect(empty_repository).to receive(:expire_branch_count_cache)
+
+        empty_repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                                     'Updates file content', 'master', false)
+      end
+    end
   end
 
   describe '#exists?' do

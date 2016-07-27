@@ -1000,6 +1000,10 @@ class Repository
         if was_empty || !target_branch
           # Create branch
           rugged.references.create(ref, newrev)
+
+          # If repo was empty expire cache
+          after_create if was_empty
+          after_create_branch
         else
           # Update head
           current_head = find_branch(branch).target
