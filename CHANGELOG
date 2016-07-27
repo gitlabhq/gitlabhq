@@ -17,6 +17,7 @@ v 8.12.0 (unreleased)
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Fix markdown help references (ClemMakesApps)
+  - Add last commit time to repo view (ClemMakesApps)
   - Added tests for diff notes
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix badge count alignment (ClemMakesApps)
