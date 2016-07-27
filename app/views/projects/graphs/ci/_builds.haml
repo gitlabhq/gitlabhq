@@ -48,4 +48,9 @@
       ]
     }
     var ctx = $("##{scope}Chart").get(0).getContext("2d");
-    new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
+    var options = { scaleOverlay: true, responsive: true, maintainAspectRatio: false };
+    if (window.innerWidth < 768) {
+      // Scale fonts if window width lower than 768px (iPad portrait)
+      options.scaleFontSize = 8
+    }
+    new Chart(ctx).Line(data, options);

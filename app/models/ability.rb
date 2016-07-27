@@ -388,6 +388,18 @@ class Ability
       GroupProjectsFinder.new(group).execute(user).any?
     end
 
+    def can_edit_note?(user, note)
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
+
+      if note.project
+        max_access_level = note.project.team.max_member_access(user.id)
+        max_access_level >= Gitlab::Access::MASTER
+      else
+        false
+      end
+    end
+
     def namespace_abilities(user, namespace)
       rules = []
 

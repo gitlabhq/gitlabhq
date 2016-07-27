@@ -79,6 +79,18 @@ describe Member, models: true do
       @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
     end
 
+    describe '.access_for_user_ids' do
+      it 'returns the right access levels' do
+        users = [@owner_user.id, @master_user.id]
+        expected = {
+          @owner_user.id => Gitlab::Access::OWNER,
+          @master_user.id => Gitlab::Access::MASTER
+        }
+
+        expect(described_class.access_for_user_ids(users)).to eq(expected)
+      end
+    end
+
     describe '.invite' do
       it { expect(described_class.invite).not_to include @master }
       it { expect(described_class.invite).to include @invited_member }

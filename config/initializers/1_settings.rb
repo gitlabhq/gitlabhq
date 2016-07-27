@@ -290,6 +290,9 @@ Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'Repository
 Settings.cron_jobs['gitlab_remove_project_export_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_remove_project_export_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'GitlabRemoveProjectExportWorker'
+Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
 
 #
 # GitLab Shell

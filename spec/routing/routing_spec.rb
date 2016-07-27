@@ -176,16 +176,8 @@ describe Profiles::KeysController, "routing" do
     expect(post("/profile/keys")).to route_to('profiles/keys#create')
   end
 
-  it "to #edit" do
-    expect(get("/profile/keys/1/edit")).to route_to('profiles/keys#edit', id: '1')
-  end
-
   it "to #show" do
     expect(get("/profile/keys/1")).to route_to('profiles/keys#show', id: '1')
-  end
-
-  it "to #update" do
-    expect(put("/profile/keys/1")).to route_to('profiles/keys#update', id: '1')
   end
 
   it "to #destroy" do

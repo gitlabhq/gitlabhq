@@ -51,5 +51,4 @@
               Import
               = icon("spinner spin", class: "loading-icon")
 
-:javascript
-  new ImporterStatus("#{jobs_import_gitlab_path}", "#{import_gitlab_path}");
+.js-importer-status{ data: { jobs_import_path: "#{jobs_import_gitlab_path}", import_path: "#{import_gitlab_path}" } }
