@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
   - Retrieve rendered HTML from cache in one request
+  - Fix renaming repository when name contains invalid chararacters under project settings
   - Nokogiri's various parsing methods are now instrumented
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
