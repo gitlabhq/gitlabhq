@@ -429,7 +429,7 @@
       $html.find('.js-task-list-container').taskList('enable');
       $note_li = $('.note-row-' + note.id);
 
-      if (DiffNotesApp != null) {
+      if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
         ref = DiffNotesApp.$refs['' + note.id + ''];
 
         if (ref) {
@@ -525,7 +525,7 @@
           note = $(el);
           notes = note.closest(".notes");
 
-          if (DiffNotesApp != null) {
+          if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
             ref = DiffNotesApp.$refs['' + noteId + ''];
 
             if (ref) {
@@ -604,10 +604,10 @@
 
       if (canResolve === 'false') {
         form.find('resolve-comment-btn').remove();
-      } else if (DiffNotesApp) {
+      } else if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
         var $commentBtn = form.find('resolve-comment-btn');
         $commentBtn
-          .attr(':discussion-id', dataHolder.data('discussionId'));
+          .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
         DiffNotesApp.$compile($commentBtn.get(0));
       }
 

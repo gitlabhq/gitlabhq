@@ -24,12 +24,6 @@
         }
 
         return allResolved;
-      },
-      isLast: function () {
-        const discussionKeys = Object.keys(this.discussions),
-              indexOfDiscussion = discussionKeys.indexOf(this.discussionId);
-
-        return discussionKeys.length - 1 === indexOfDiscussion;
       }
     },
     methods: {

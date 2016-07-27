@@ -120,8 +120,8 @@
           return function(data) {
             $('#diffs').html(data.html);
 
-            if ($('resolve-btn, resolve-all-btn').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
-              $('resolve-btn, resolve-all-btn').each(function () {
+            if ($('resolve-btn, resolve-all-btn, jump-to-discussion').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
+              $('resolve-btn, resolve-all-btn, jump-to-discussion').each(function () {
                 DiffNotesApp.$compile($(this).get(0))
               });
             }

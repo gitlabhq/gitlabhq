@@ -28,7 +28,8 @@
     updateCommentsForDiscussion: function (discussionId, resolve, user) {
       const noteIds = CommentsStore.resolvedNotesForDiscussion(discussionId, resolve);
 
-      for (const noteId of noteIds) {
+      for (let i = 0; i < noteIds.length; i++) {
+        const noteId = noteIds[i];
         CommentsStore.update(discussionId, noteId, resolve, user);
       }
     },

@@ -27,7 +27,8 @@
       const noteIds = CommentsStore.notesForDiscussion(discussionId);
       let isResolved = true;
 
-      for (const noteId of noteIds) {
+      for (let i = 0; i < noteIds.length; i++) {
+        const noteId = noteIds[i];
         const resolved = CommentsStore.state[discussionId][noteId].resolved;
 
         if (!resolved) {

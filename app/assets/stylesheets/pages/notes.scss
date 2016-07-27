@@ -454,13 +454,13 @@ ul.notes {
     position: relative;
     top: 2px;
     font-size: 8px;
-    color: #c3c3c3;
+    color: $notes-action-color;
     vertical-align: top;
   }
 }
 
 .discussion-next-btn {
   path {
-    fill: #7E7E7E;
+    fill: $gray-darkest;
   }
 }

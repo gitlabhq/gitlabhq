@@ -9,7 +9,8 @@
               discussion = CommentsStore.state[this.discussionId];
         let allResolved = true;
 
-        for (const noteId of notes) {
+        for (let i = 0; i < notes.length; i++) {
+          const noteId = notes[i];
           const note = discussion[noteId];
 
           if (!note.resolved) {
