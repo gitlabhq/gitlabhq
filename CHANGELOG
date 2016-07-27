@@ -14,6 +14,7 @@ v 8.11.0 (unreleased)
   - Nokogiri's various parsing methods are now instrumented
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Make branches sortable without push permission !5462 (winniehell)
