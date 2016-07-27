@@ -1,6 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.10.2 (unreleased)
+v 8.10.3 (unreleased)
+
+v 8.10.2
   - User can now search branches by name. !5144
   - Page is now properlty rendered after commiting the first file and creating the first branch. !5399
   - Add branch or tag icon to ref in builds page. !5434
