@@ -66,7 +66,10 @@
         },
         data: this.getData.bind(this),
         selectable: true,
-        clicked: this.onClick.bind(this)
+        clicked: this.onClick.bind(this),
+        id: function (data) {
+          return _.escape(data.text);
+        }
       });
     };
 
