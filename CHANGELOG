@@ -13,7 +13,7 @@ v 8.10.2 (unreleased)
   - Ensure current user can retry a build before showing the 'Retry' button. !5476
   - Add ENV variable to skip repository storages validations. !5478
   - Added `*.js.es6 gitlab-language=javascript` to `.gitattributes`. !5486
-  - Don't show comment button in gutter of diffs on MR discussion tab
+  - Don't show comment button in gutter of diffs on MR discussion tab. !5493
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
