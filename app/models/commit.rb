@@ -317,7 +317,7 @@ class Commit
     nil
   end
 
-  def diff_file_collection(diff_options)
+  def diff_file_collection(diff_options = nil)
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 

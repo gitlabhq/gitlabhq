@@ -16,9 +16,12 @@ describe Gitlab::Email::Message::RepositoryPush do
       { author_id: author.id, ref: 'master', action: :push, compare: compare,
         send_from_committer_email: true }
     end
-    let(:compare) do
+    let(:raw_compare) do
       Gitlab::Git::Compare.new(project.repository.raw_repository,
-                               sample_image_commit.id, sample_commit.id)
+        sample_image_commit.id, sample_commit.id)
+    end
+    let(:compare) do
+      Compare.decorate(raw_compare, project)
     end
 
     describe '#project' do
@@ -62,7 +65,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#diffs_count' do
       subject { message.diffs_count }
-      it { is_expected.to eq compare.diffs.size }
+      it { is_expected.to eq raw_compare.diffs.size }
     end
 
     describe '#compare' do
@@ -72,7 +75,7 @@ describe Gitlab::Email::Message::RepositoryPush do
 
     describe '#compare_timeout' do
       subject { message.compare_timeout }
-      it { is_expected.to eq compare.diffs.overflow? }
+      it { is_expected.to eq raw_compare.diffs.overflow? }
     end
 
     describe '#reverse_compare?' do

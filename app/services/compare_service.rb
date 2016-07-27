@@ -20,10 +20,13 @@ class CompareService
       )
     end
 
-    Gitlab::Git::Compare.new(
+    raw_compare = Gitlab::Git::Compare.new(
       target_project.repository.raw_repository,
       target_branch,
-      source_sha,
+      source_sha
     )
+
+    # REVIEW be sure if it's target_project or source_project
+    Compare.new(raw_compare, target_project)
   end
 end

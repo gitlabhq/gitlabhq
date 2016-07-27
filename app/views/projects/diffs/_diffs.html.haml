@@ -1,4 +1,5 @@
 - show_whitespace_toggle = local_assigns.fetch(:show_whitespace_toggle, true)
+- diff_files = diffs.diff_files
 - if diff_view == 'parallel'
   - fluid_layout true
 
@@ -26,7 +27,7 @@
     - diff_commit = commit_for_diff(diff_file)
     - blob = diff_file.blob(diff_commit)
     - next unless blob
-    - blob.load_all_data!(project.repository) unless blob.only_display_raw?
+    - blob.load_all_data!(@project.repository) unless blob.only_display_raw?
 
-    = render 'projects/diffs/file', i: index, project: project,
-      diff_file: diff_file, diff_commit: diff_commit, blob: blob, diff_refs: diff_refs
+    = render 'projects/diffs/file', i: index, project: @project,
+      diff_file: diff_file, diff_commit: diff_commit, blob: blob, diff_refs: diffs.diff_refs

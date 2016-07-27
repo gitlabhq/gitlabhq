@@ -4,6 +4,8 @@ module Gitlab
       class MergeRequest < Base
         def initialize(merge_request, diff_options:)
           @merge_request = merge_request
+          # Not merge just set defaults
+          diff_options = diff_options || Gitlab::Diff::FileCollection.default_options
 
           super(merge_request.diffs(diff_options),
             project: merge_request.project,
@@ -27,13 +29,8 @@ module Gitlab
           if cacheable?
             cache_highlight!(diff_file)
           else
-            highlight_diff_file!(diff_file)
+            diff_file # Don't need to eager load highlighted diff lines
           end
-        end
-
-        def highlight_diff_file!(diff_file)
-          diff_file.highlighted_diff_lines = Gitlab::Diff::Highlight.new(diff_file, repository: diff_file.repository).highlight
-          diff_file
         end
 
         def highlight_diff_file_from_cache!(diff_file, cache_diff_lines)
@@ -56,7 +53,6 @@ module Gitlab
           if highlight_cache[file_path]
             highlight_diff_file_from_cache!(diff_file, highlight_cache[file_path])
           else
-            highlight_diff_file!(diff_file)
             highlight_cache[file_path] = diff_file.highlighted_diff_lines.map(&:to_hash)
           end
 

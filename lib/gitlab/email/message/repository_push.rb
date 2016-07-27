@@ -35,13 +35,13 @@ module Gitlab
         def commits
           return unless compare
 
-          @commits ||= Commit.decorate(compare.commits, project)
+          @commits ||= compare.commits
         end
 
         def diffs
           return unless compare
 
-          @diffs ||= compare.diff_file_collection(diff_options: { max_files: 30 }, diff_refs: diff_refs).diff_files
+          @diffs ||= compare.diff_file_collection(diff_options: { max_files: 30 }).diff_files
         end
 
         def diffs_count
@@ -49,9 +49,7 @@ module Gitlab
         end
 
         def compare
-          if @opts[:compare]
-            Compare.decorate(@opts[:compare], project)
-          end
+          @opts[:compare] if @opts[:compare]
         end
 
         def diff_refs
@@ -99,16 +97,18 @@ module Gitlab
             if commits.length > 1
               namespace_project_compare_url(project_namespace,
                                             project,
-                                            from: Commit.new(compare.base, project),
-                                            to:   Commit.new(compare.head, project))
+                                            from: compare.start_commit,
+                                            to:   compare.head_commit)
             else
               namespace_project_commit_url(project_namespace,
-                                           project, commits.first)
+                                           project,
+                                           commits.first)
             end
           else
             unless @action == :delete
               namespace_project_tree_url(project_namespace,
-                                         project, ref_name)
+                                         project,
+                                         ref_name)
             end
           end
         end

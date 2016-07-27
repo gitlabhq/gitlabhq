@@ -7,7 +7,7 @@ module Gitlab
 
         delegate :count, :size, :real_size, to: :diff_files
 
-        def initialize(diffs, project:, diff_options:, diff_refs: nil)
+        def initialize(diffs, project:, diff_options: nil, diff_refs: nil)
           @diffs        = diffs
           @project      = project
           @diff_options = diff_options
