@@ -525,7 +525,7 @@ describe 'Issues', feature: true do
   end
 
   describe 'new issue by email' do
-    context 'click the button to show modal for new issue email', js: true do
+    shared_examples 'show the email in the modal' do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
 
@@ -533,13 +533,23 @@ describe 'Issues', feature: true do
         click_button('Email a new issue')
       end
 
-      it 'shows the email in the modal' do
+      it 'click the button to show modal for the new email' do
         page.within '#issue-email-modal' do
           email = project.new_issue_address(@user)
 
           expect(page).to have_selector("input[value='#{email}']")
         end
       end
+    end
+
+    context 'with existing issues' do
+      let!(:issue) { create(:issue, project: project, author: @user) }
+
+      it_behaves_like 'show the email in the modal'
+    end
+
+    context 'without existing issues' do
+      it_behaves_like 'show the email in the modal'
     end
   end
 
