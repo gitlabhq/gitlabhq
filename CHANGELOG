@@ -19,6 +19,7 @@ v 8.10.2 (unreleased)
   - Show release notes in tags list. !5503
   - Fix a bug where forking a project from a repository storage to another would fail. !5509
   - Fix missing schema update for `20160722221922`. !5512
+  - Update `gitlab-shell` version to 3.2.1 in the 8.9->8.10 update guide. !5516
 
 v 8.10.1
   - Refactor repository storages documentation. !5428
