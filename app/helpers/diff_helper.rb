@@ -23,10 +23,7 @@ module DiffHelper
   end
 
   def diff_options
-    options = Gitlab::Diff::FileCollection.default_options.merge(
-      ignore_whitespace_change: hide_whitespace?,
-      no_collapse: expand_all_diffs?
-    )
+    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
 
     if action_name == 'diff_for_path'
       options[:no_collapse] = true

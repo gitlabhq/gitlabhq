@@ -4,10 +4,8 @@ module Gitlab
       class MergeRequest < Base
         def initialize(merge_request, diff_options:)
           @merge_request = merge_request
-          # Not merge just set defaults
-          diff_options = diff_options || Gitlab::Diff::FileCollection.default_options
 
-          super(merge_request.diffs(diff_options),
+          super(merge_request,
             project: merge_request.project,
             diff_options: diff_options,
             diff_refs: merge_request.diff_refs)
@@ -19,18 +17,11 @@ module Gitlab
 
         private
 
-        # Extracted method to highlight in the same iteration to the diff_collection. Iteration in the DiffCollections
-        # seems particularly slow on big diffs (event when already populated).
+        # Extracted method to highlight in the same iteration to the diff_collection.
         def decorate_diff!(diff)
-          highlight! super
-        end
-
-        def highlight!(diff_file)
-          if cacheable?
-            cache_highlight!(diff_file)
-          else
-            diff_file # Don't need to eager load highlighted diff lines
-          end
+          diff_file = super
+          cache_highlight!(diff_file) if cacheable?
+          diff_file
         end
 
         def highlight_diff_file_from_cache!(diff_file, cache_diff_lines)
@@ -55,15 +46,13 @@ module Gitlab
           else
             highlight_cache[file_path] = diff_file.highlighted_diff_lines.map(&:to_hash)
           end
-
-          diff_file
         end
 
         def highlight_cache
           return @highlight_cache if defined?(@highlight_cache)
 
           @highlight_cache = Rails.cache.read(cache_key) || {}
-          @highlight_cache_was_empty = highlight_cache.empty?
+          @highlight_cache_was_empty = @highlight_cache.empty?
           @highlight_cache
         end
 

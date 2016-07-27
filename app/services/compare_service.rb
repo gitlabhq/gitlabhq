@@ -26,7 +26,6 @@ class CompareService
       source_sha
     )
 
-    # REVIEW be sure if it's target_project or source_project
     Compare.new(raw_compare, target_project)
   end
 end

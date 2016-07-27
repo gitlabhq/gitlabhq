@@ -164,13 +164,13 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.diffs(*args) : compare.raw_diffs(*args)
   end
 
-  def diff_file_collection(diff_options = nil)
+  def diffs(diff_options = nil)
     if self.compare
-      self.compare.diff_file_collection(diff_options: diff_options, diff_refs: diff_refs)
+      self.compare.diffs(diff_options: diff_options)
     else
       Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
     end

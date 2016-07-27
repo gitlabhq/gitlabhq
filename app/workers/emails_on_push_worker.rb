@@ -33,18 +33,13 @@ class EmailsOnPushWorker
     reverse_compare = false
 
     if action == :push
-      base_commit = project.merge_base_commit(before_sha, after_sha)
-      compare = Gitlab::Git::Compare.new(project.repository.raw_repository, before_sha, after_sha)
-      compare = Compare.decorate(compare, project)
-      compare.base_commit = base_commit
+      compare = CompareService.new.execute(project, before_sha, project, after_sha)
       diff_refs = compare.diff_refs
 
       return false if compare.same
 
       if compare.commits.empty?
-        compare = Gitlab::Git::Compare.new(project.repository.raw_repository, after_sha, before_sha)
-        compare = Compare.decorate(compare, project)
-        compare.base_commit = base_commit
+        compare = CompareService.new.execute(project, after_sha, project, before_sha)
         diff_refs = compare.diff_refs
 
         reverse_compare = true

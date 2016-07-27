@@ -21,7 +21,7 @@ class Projects::CompareController < Projects::ApplicationController
   def diff_for_path
     return render_404 unless @compare
 
-    render_diff_for_path(@compare.diff_file_collection(diff_options: diff_options))
+    render_diff_for_path(@compare.diffs(diff_options: diff_options))
   end
 
   def create
@@ -45,7 +45,7 @@ class Projects::CompareController < Projects::ApplicationController
       @commit = @compare.commit
       @base_commit = @compare.base_commit
 
-      @diffs = @compare.diff_file_collection(diff_options: diff_options)
+      @diffs = @compare.diffs(diff_options: diff_options)
 
       @diff_notes_disabled = true
       @grouped_diff_discussions = {}
