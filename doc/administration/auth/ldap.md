@@ -275,3 +275,37 @@ If you are getting 'Connection Refused' errors when trying to connect to the
 LDAP server please double-check the LDAP `port` and `method` settings used by
 GitLab. Common combinations are `method: 'plain'` and `port: 389`, OR
 `method: 'ssl'` and `port: 636`.
+
+### Cannot Unblock LDAP blocked users error 
+
+If users appear as blocked on GitLab while they are not blocked on the LDAP server, you can manually activate them by following the steps below:
+
+1. Run a rails console:
+
+    ```sh
+    sudo gitlab-rails console production
+    ```
+
+    or for source installs:
+
+    ```sh
+    bundle exec rails console production
+    ```
+
+2. Create an array of all the blocked users by substituting the example email addresses below with the blocked users you wish to unblock
+
+    ```ruby
+    irb(main):001:0> blocked_users = %w(me@example.com her@example.com him@example.com)
+    ```
+
+3. Iterate over the blocked users as you unblock them
+
+    ```ruby
+    irb(main):002:0> blocked_users.each{ |blocked_user| User.find_by(email: blocked_user).update!(state: "active") }
+    ```
+
+4. Exit the console
+    
+    ```ruby
+    irb(main):003:0> exit
+    ```
