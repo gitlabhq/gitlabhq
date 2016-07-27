@@ -183,7 +183,10 @@
               new NamespaceSelects();
               break;
             case 'labels':
-              new Labels();
+              switch (path[2]) {
+                case 'edit':
+                  new Labels();
+              }
           }
           break;
         case 'dashboard':
