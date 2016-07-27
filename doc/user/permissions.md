@@ -66,6 +66,8 @@ The following table depicts the various user permission levels in a project.
 [^1]: If **Allow guest to access builds** is enabled in CI settings
 [^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 
+**A user with master permission can only add new members to a group project not the group itself**
+
 ## Group
 
 Any user can remove themselves from a group, unless they are the last Owner of
