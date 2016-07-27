@@ -26,6 +26,7 @@ v 8.10.2 (unreleased)
   - Fix backup restore. !5459
   - Rescue Rugged::OSError (lock exists) when creating references. !5497
   - Disable MySQL foreign key checks before dropping all tables. !5472
+  - Page is now properlty rendered after commiting the first file and creating the first branch
   - Fix a bug where forking a project from a repository storage to another would fail
   - Show release notes in tags list
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
