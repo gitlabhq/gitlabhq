@@ -3,7 +3,7 @@ require 'capybara/rspec'
 require 'capybara/poltergeist'
 
 # Give CI some extra time
-timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 90 : 10
+timeout = (ENV['CI'] || ENV['CI_SERVER']) ? 120 : 40
 
 Capybara.javascript_driver = :poltergeist
 Capybara.register_driver :poltergeist do |app|
