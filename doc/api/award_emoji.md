@@ -1,12 +1,13 @@
 # Award Emoji
 
-> [Introduced][ce-4575] in GitLab 8.9.
+> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.11
+
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge
-requests and notes/comments. Issues, merge requests and notes are further called
+requests, snippets, and notes/comments. Issues, merge requests, snippets, and notes are further called
 `awardables`.
 
-## Issues and merge requests
+## Issues, merge requests, and snippets
 
 ### List an awardable's award emoji
 
@@ -15,6 +16,7 @@ Gets a list of all award emoji
 ```
 GET /projects/:id/issues/:issue_id/award_emoji
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji
+GET /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:
@@ -69,11 +71,12 @@ Example Response:
 
 ### Get single award emoji
 
-Gets a single award emoji from an issue or merge request.
+Gets a single award emoji from an issue, snippet, or merge request.
 
 ```
 GET /projects/:id/issues/:issue_id/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+GET /projects/:id/snippets/:snippets_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -116,6 +119,7 @@ This end point creates an award emoji on the specified resource
 ```
 POST /projects/:id/issues/:issue_id/award_emoji
 POST /projects/:id/merge_requests/:merge_request_id/award_emoji
+POST /projects/:id/snippets/:snippets_id/award_emoji
 ```
 
 Parameters:
@@ -159,6 +163,7 @@ admins or the author of the award. Status code 200 on success, 401 if unauthoriz
 ```
 DELETE /projects/:id/issues/:issue_id/award_emoji/:award_id
 DELETE /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
+DELETE /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -197,7 +202,7 @@ Example Response:
 ## Award Emoji on Notes
 
 The endpoints documented above are available for Notes as well. Notes
-are a sub-resource of Issues and Merge Requests. The examples below
+are a sub-resource of Issues, Merge Requests, or Snippets. The examples below
 describe working with Award Emoji on notes for an Issue, but can be
 easily adapted for notes on a Merge Request.
 
