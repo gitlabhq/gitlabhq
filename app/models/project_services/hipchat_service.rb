@@ -68,7 +68,7 @@ class HipchatService < Service
   end
 
   def message_options(data = nil)
-    { notify: notify.present? && notify == '1', color: build_status_color(data) || color || 'yellow' }
+    { notify: notify.present? && notify == '1', color: message_color(data) }
   end
 
   def create_message(data)
@@ -238,6 +238,10 @@ class HipchatService < Service
     commit_link = "<a href=\"#{project_url}/commit/#{CGI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
 
     "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
+  end
+
+  def message_color(data)
+    build_status_color(data) || color || 'yellow'
   end
 
   def build_status_color(data)
