@@ -64,6 +64,7 @@
       margin-right: 4px;
       position: relative;
       top: 1px;
+      overflow: visible;
     }
 
     &.ci-success {
@@ -214,6 +215,11 @@
           width: 16px;
           position: relative;
           top: 3px;
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
         }
       }
     }

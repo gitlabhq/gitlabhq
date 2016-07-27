@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require 'spec_helper'
 
 describe Banzai::Filter::UploadLinkFilter, lib: true do

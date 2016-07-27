@@ -80,7 +80,7 @@ module API
       #   ref_name (required) - The ref from repository
       #   job (required) - The name for the build
       # Example Request:
-      #   GET /projects/:id/artifacts/:ref_name/download?job=name
+      #   GET /projects/:id/builds/artifacts/:ref_name/download?job=name
       get ':id/builds/artifacts/:ref_name/download',
         requirements: { ref_name: /.+/ } do
         authorize_read_builds!

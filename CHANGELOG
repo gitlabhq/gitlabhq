@@ -1,10 +1,37 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Remove magic comments (`# encoding: UTF-8`) from Ruby files !5456 (winniehell)
+  - Fix CI status icon link underline (ClemMakesApps)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Limit git rev-list output count to one in forced push check
+  - Add green outline to New Branch button !5447 (winniehell)
+  - Retrieve rendered HTML from cache in one request
+  - Nokogiri's various parsing methods are now instrumented
+  - Make fork counter always clickable !5463 (winniehell)
+  - Load project invited groups and members eagerly in ProjectTeam#fetch_members
+  - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Add ES6 gem
 
-v 8.10.0 (unreleased)
+v 8.10.2 (unreleased)
+  - User can now search branches by name. !5144
+  - Fix backup restore. !5459
+  - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
+
+v 8.10.1
+  - Refactor repository storages documentation. !5428
+  - Gracefully handle case when keep-around references are corrupted or exist already. !5430
+  - Add detailed info on storage path mountpoints. !5437
+  - Fix Error 500 when creating Wiki pages with hyphens or spaces. !5444
+  - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page. !5446
+  - Ignore invalid trusted proxies in X-Forwarded-For header. !5454
+  - Add links to the real markdown.md file for all GFM examples. !5458
+  - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view' !5368 (Scott Le)
+
+v 8.10.1 (unreleased)
+ - Fix bug where replies to commit notes displayed in the MR discussion tab wouldn't show up on the commit page
+
+v 8.10.0
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)
@@ -21,6 +48,7 @@ v 8.10.0 (unreleased)
   - Delete award emoji when deleting a user
   - Remove pinTo from Flash and make inline flash messages look nicer. !4854 (winniehell)
   - Add an API for downloading latest successful build from a particular branch or tag. !5347
+  - Avoid data-integrity issue when cleaning up repository archive cache.
   - Add link to profile to commit avatar. !5163 (winniehell)
   - Wrap code blocks on Activies and Todos page. !4783 (winniehell)
   - Align flash messages with left side of page content. !4959 (winniehell)

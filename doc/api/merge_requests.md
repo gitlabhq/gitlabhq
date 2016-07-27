@@ -289,6 +289,7 @@ order for it to take effect:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -364,6 +365,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "project_id": 3,
   "title": "test1",
@@ -464,6 +466,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -635,6 +638,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
