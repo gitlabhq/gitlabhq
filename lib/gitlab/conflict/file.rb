@@ -1,6 +1,9 @@
 module Gitlab
   module Conflict
     class File
+      class MissingResolution < StandardError
+      end
+
       CONTEXT_LINES = 3
 
       attr_reader :merge_file_result, :their_path, :their_ref, :our_path, :our_ref, :repository
@@ -19,6 +22,39 @@ module Gitlab
         @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file_result[:data],
                                                       our_path: our_path,
                                                       their_path: their_path)
+      end
+
+      def resolve!(resolution, index:, rugged:)
+        new_file = resolve_lines(resolution).map(&:text).join("\n")
+
+        oid = rugged.write(new_file, :blob)
+        our_mode = index.conflict_get(our_path)[:ours][:mode]
+        index.add(path: our_path, oid: oid, mode: our_mode)
+        index.conflict_remove(our_path)
+      end
+
+      def resolve_lines(resolution)
+        current_section = nil
+
+        lines.map do |line|
+          unless line.type
+            current_section = nil
+            next line
+          end
+
+          current_section ||= resolution[line_code(line)]
+
+          case current_section
+          when 'ours'
+            next unless line.type == 'new'
+          when 'theirs'
+            next unless line.type == 'old'
+          else
+            raise MissingResolution
+          end
+
+          line
+        end.compact
       end
 
       def highlighted_lines
@@ -77,8 +113,14 @@ module Gitlab
             match_line.text = "@@ -#{match_line.old_pos},#{lines.last.old_pos} +#{match_line.new_pos},#{lines.last.new_pos} @@"
           end
 
-          section || { conflict: !no_conflict, lines: lines }
+          section ||= { conflict: !no_conflict, lines: lines }
+          section[:id] = line_code(lines.first) unless no_conflict
+          section
         end
+      end
+
+      def line_code(line)
+        Gitlab::Diff::LineCode.generate(our_path, line.new_pos, line.old_pos)
       end
 
       def as_json(opts = nil)

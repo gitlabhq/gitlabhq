@@ -4,6 +4,11 @@ describe Projects::MergeRequestsController do
   let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
+  let(:merge_request_with_conflicts) do
+    create(:merge_request, source_branch: 'conflict-a', target_branch: 'conflict-b', source_project: project) do |mr|
+      mr.mark_as_unmergeable
+    end
+  end
 
   before do
     sign_in(user)
@@ -525,12 +530,6 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET conflicts' do
-    let(:merge_request_with_conflicts) do
-      create(:merge_request, source_branch: 'conflict-a', target_branch: 'conflict-b', source_project: project) do |mr|
-        mr.mark_as_unmergeable
-      end
-    end
-
     context 'as JSON' do
       before do
         get :conflicts,
@@ -585,6 +584,34 @@ describe Projects::MergeRequestsController do
         end
 
         expect(section_ids.uniq).to eq(section_ids)
+      end
+    end
+  end
+
+  context 'POST resolve_conflicts' do
+    def resolve_conflicts(params)
+      post :resolve_conflicts,
+           namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+           project_id: merge_request_with_conflicts.project.to_param,
+           id: merge_request_with_conflicts.iid,
+           format: 'json',
+           merge_request: params
+    end
+
+    context 'with valid params' do
+      before do
+        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'ours',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'ours',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'theirs',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'theirs')
+      end
+
+      it 'creates a new commit on the branch' do
+        expect(merge_request_with_conflicts.source_branch_head.message).to include('Merge branch')
+      end
+
+      it 'redirects to the MR show page' do
+        expect(response).to redirect_to([merge_request_with_conflicts.target_project.namespace.becomes(Namespace), merge_request_with_conflicts.target_project, merge_request_with_conflicts])
       end
     end
   end

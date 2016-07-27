@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds]
@@ -137,6 +137,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { render 'show' }
       format.json { render json: Gitlab::Conflict::FileCollection.new(@merge_request) }
     end
+  end
+
+  def resolve_conflicts
+    Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params[:merge_request], nil, user: current_user)
+
+    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+      notice: 'Merge conflicts resolved. The merge request can now be merged.'
   end
 
   def builds

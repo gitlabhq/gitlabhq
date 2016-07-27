@@ -728,6 +728,7 @@ Rails.application.routes.draw do
             post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
+            post :resolve_conflicts
           end
 
           collection do

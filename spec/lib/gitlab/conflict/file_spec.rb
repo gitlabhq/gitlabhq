@@ -12,6 +12,57 @@ describe Gitlab::Conflict::File, lib: true do
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
   let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, diff_refs: diff_refs, repository: repository) }
 
+  describe '#resolve_lines' do
+    let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
+
+    context 'when resolving everything to the same side' do
+      let(:resolution_hash) { section_keys.map { |key| [key, 'ours'] }.to_h }
+      let(:resolved_lines) { conflict_file.resolve_lines(resolution_hash) }
+      let(:expected_lines) { conflict_file.lines.reject { |line| line.type == 'old' } }
+
+      it 'has the correct number of lines' do
+        expect(resolved_lines.length).to eq(expected_lines.length)
+      end
+
+      it 'has content matching the chosen lines' do
+        expect(resolved_lines.map(&:text)).to eq(expected_lines.map(&:text))
+      end
+    end
+
+    context 'with mixed resolutions' do
+      let(:resolution_hash) do
+        section_keys.map.with_index { |key, i| [key, i.even? ? 'ours' : 'theirs'] }.to_h
+      end
+
+      let(:resolved_lines) { conflict_file.resolve_lines(resolution_hash) }
+
+      it 'has the correct number of lines' do
+        file_lines = conflict_file.lines.reject { |line| line.type == 'new' }
+
+        expect(resolved_lines.length).to eq(file_lines.length)
+      end
+
+      it 'returns a file containing only the chosen parts of the resolved sections' do
+        expect(resolved_lines.chunk { |line| line.type || 'both' }.map(&:first)).
+          to eq(['both', 'new', 'both', 'old', 'both', 'new', 'both'])
+      end
+    end
+
+    it 'raises MissingResolution when passed a hash without resolutions for all sections' do
+      empty_hash = section_keys.map { |key| [key, nil] }.to_h
+      invalid_hash = section_keys.map { |key| [key, 'invalid'] }.to_h
+
+      expect { conflict_file.resolve_lines({}) }.
+        to raise_error(Gitlab::Conflict::File::MissingResolution)
+
+      expect { conflict_file.resolve_lines(empty_hash) }.
+        to raise_error(Gitlab::Conflict::File::MissingResolution)
+
+      expect { conflict_file.resolve_lines(invalid_hash) }.
+        to raise_error(Gitlab::Conflict::File::MissingResolution)
+    end
+  end
+
   describe '#highlighted_lines' do
     def html_to_text(html)
       CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html)).delete("\n")
@@ -68,6 +119,21 @@ describe Gitlab::Conflict::File, lib: true do
           expect(line.type).to be_in(['new', 'old'])
         end
       end
+    end
+
+    it 'adds unique IDs to conflict sections, and not to other sections' do
+      section_ids = []
+
+      conflict_file.sections.each do |section|
+        if section[:conflict]
+          expect(section).to have_key(:id)
+          section_ids << section[:id]
+        else
+          expect(section).not_to have_key(:id)
+        end
+      end
+
+      expect(section_ids.uniq).to eq(section_ids)
     end
   end
 end
