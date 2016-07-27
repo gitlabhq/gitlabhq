@@ -3,7 +3,27 @@
 This document describes various guidelines to ensure consistency and quality
 across GitLab's frontend.
 
+## Overview
+
+GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] (with
+[Hamlit][hamlit] for performance reasons, be wary of [the limitations this comes
+with][hamlit-limits]), [SCSS][scss], and plain JavaScript with
+[ES6 by way of Babel][es6].
+
+The asset pipeline is [Sprockets][sprockets], which handles the concatenation,
+minification, and compression of our assets.
+
+[jQuery][jquery] is used throughout the application's JavaScript, with
+[Vue.js][vue] for particularly advanced, dynamic elements.
+
 ## Performance
+
+### Resources
+
+- [WebPage Test][web-page-test] for testing site loading time and size.
+- [Google PageSpeed Insights][pagespeed-insights] grades web pages and provides feedback to improve the page.
+- [Profiling with Chrome DevTools][google-devtools-profiling]
+- [Browser Diet][browser-diet] is a community-built guide that catalogues practical tips for improving web page performance.
 
 ### Page-specific JavaScript
 
@@ -54,6 +74,8 @@ General tips:
 
 ## Accessibility
 
+### Resources
+
 The [Chrome Accessibility Developer Tools][chrome-accessibility-developer-tools]
 are useful for testing for potential accessibility problems in GitLab.
 
@@ -61,6 +83,8 @@ Accessibility best-practices and more in-depth information is available on
 [the Audit Rules page][audit-rules] for the Chrome Accessibility Developer Tools.
 
 ## Security
+
+### Resources
 
 [Mozilla’s HTTP Observatory CLI][observatory-cli] and the
 [Qualys SSL Labs Server Test][qualys-ssl] are good resources for finding
@@ -142,16 +166,31 @@ readability.
 
 ## Style guides and linting
 
-See the relevant style guides for details and information on linting:
+See the relevant style guides for our guidelines and for information on linting:
 
 - [SCSS][scss-style-guide]
 
 ## Testing
 
-Feature tests should be written for all new features as well as any regressions to prevent them from occuring again.
+Feature tests should be written for all new features as well as any regressions
+to prevent them from occurring again.
 
-See [the Testing Standards and Style Guidelines](testing.md) for more information.
+See [the Testing Standards and Style Guidelines](testing.md) for more
+information.
 
+[rails]: http://rubyonrails.org/
+[haml]: http://haml.info/
+[hamlit]: https://github.com/k0kubun/hamlit
+[hamlit-limits]: https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations
+[scss]: http://sass-lang.com/
+[es6]: https://babeljs.io/
+[sprockets]: https://github.com/rails/sprockets
+[jquery]: https://jquery.com/
+[vue]: http://vuejs.org/
+[web-page-test]: http://www.webpagetest.org/
+[pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
+[google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
+[browser-diet]: https://browserdiet.com/
 [d3]: https://d3js.org/
 [chartjs]: http://www.chartjs.org/
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
