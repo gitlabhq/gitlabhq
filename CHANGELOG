@@ -20,6 +20,7 @@ v 8.11.0 (unreleased)
 
 v 8.10.2 (unreleased)
   - User can now search branches by name. !5144
+  - Add ENV variable to skip repository storages validations
   - Fix backup restore. !5459
   - Rescue Rugged::OSError (lock exists) when creating references. !5497
   - Disable MySQL foreign key checks before dropping all tables. !5472
