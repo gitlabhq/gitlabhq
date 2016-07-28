@@ -11,8 +11,6 @@ v 8.11.0 (unreleased)
   - Add green outline to New Branch button. !5447 (winniehell)
   - Retrieve rendered HTML from cache in one request
   - Nokogiri's various parsing methods are now instrumented
-  - Make fork counter always clickable !5463 (winniehell)
-  - Load project invited groups and members eagerly in ProjectTeam#fetch_members
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Make fork counter always clickable. !5463 (winniehell)
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
