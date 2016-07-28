@@ -21,6 +21,10 @@ module Gitlab
         Build::Metadata.new(@project, @ref)
       end
 
+      def template
+        Build::Template.new(status)
+      end
+
       def type
         'image/svg+xml'
       end
