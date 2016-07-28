@@ -17,6 +17,10 @@ module Gitlab
         execute(%W(#{git_bin_path} clone --bare #{bundle_path} #{repo_path}))
       end
 
+      def git_restore_hooks
+        execute(%W(#{Gitlab.config.gitlab_shell.path}/bin/create-hooks) + repository_storage_paths_args)
+      end
+
       private
 
       def tar_with_options(archive:, dir:, options:)
@@ -44,6 +48,10 @@ module Gitlab
         FileUtils.mkdir_p(destination_folder)
         FileUtils.copy_entry(source, destination)
         true
+      end
+
+      def repository_storage_paths_args
+        Gitlab.config.repositories.storages.values
       end
     end
   end
