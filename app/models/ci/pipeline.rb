@@ -213,12 +213,6 @@ module Ci
       ]
     end
 
-    def execute_hooks
-      pipeline_data = Gitlab::DataBuilder::PipelineDataBuilder.build(self)
-      project.execute_hooks(pipeline_data, :pipeline_hooks)
-      project.execute_services(pipeline_data.dup, :pipeline_hooks)
-    end
-
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
@@ -244,6 +238,13 @@ module Ci
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
+      execute_hooks
+    end
+
+    def execute_hooks
+      pipeline_data = Gitlab::DataBuilder::PipelineDataBuilder.build(self)
+      project.execute_hooks(pipeline_data, :pipeline_hooks)
+      project.execute_services(pipeline_data.dup, :pipeline_hooks)
     end
 
     def keep_around_commits
