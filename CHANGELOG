@@ -22,6 +22,7 @@ v 8.11.0 (unreleased)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
+  - Add commit stats in commit api. !5517 (dixpac)
   - Make error pages responsive (Takuya Noguchi)
   - Change requests_profiles resource constraint to catch virtually any file
 
