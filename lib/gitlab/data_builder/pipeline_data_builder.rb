@@ -6,9 +6,9 @@ module Gitlab
       def build(pipeline)
         {
           object_kind: 'pipeline',
-          user: pipeline.user.hook_attrs,
+          user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
-          commit: pipeline.commit.hook_attrs,
+          commit: pipeline.commit.try(:hook_attrs),
           object_attributes: hook_attrs(pipeline),
           builds: pipeline.builds.map(&method(:build_hook_attrs))
         }
@@ -43,8 +43,8 @@ module Gitlab
           finished_at: build.finished_at,
           when: build.when,
           manual: build.manual?,
-          user: build.user.hook_attrs,
-          runner: runner_hook_attrs(build.runner),
+          user: build.user.try(:hook_attrs),
+          runner: build.runner && runner_hook_attrs(build.runner),
           artifacts_file: {
             filename: build.artifacts_file.filename,
             size: build.artifacts_size
