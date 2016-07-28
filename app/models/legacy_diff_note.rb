@@ -25,6 +25,14 @@ class LegacyDiffNote < Note
     @discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
+  def project_repository
+    if RequestStore.active?
+      RequestStore.fetch("project:#{project_id}:repository") { self.project.repository }
+    else
+      self.project.repository
+    end
+  end
+
   def diff_file_hash
     line_code.split('_')[0] if line_code
   end
@@ -34,7 +42,7 @@ class LegacyDiffNote < Note
   end
 
   def diff_file
-    @diff_file ||= Gitlab::Diff::File.new(diff, repository: self.project.repository) if diff
+    @diff_file ||= Gitlab::Diff::File.new(diff, repository: project_repository) if diff
   end
 
   def diff_line
