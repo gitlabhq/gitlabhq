@@ -113,9 +113,11 @@ feature 'Projected Branches', feature: true, js: true do
 
         expect(ProtectedBranch.count).to eq(1)
 
-        within(".protected-branches-list") do
-          find(".js-allowed-to-push").click
-          within('.js-allowed-to-push-container') { click_on access_type_name }
+        within(".protected-branches-list") { click_on "Settings" }
+
+        within(".allowed-to-push-container") do
+          find(".allowed-to-push").click
+          click_on access_type_name
         end
 
         wait_for_ajax
@@ -148,13 +150,73 @@ feature 'Projected Branches', feature: true, js: true do
 
         expect(ProtectedBranch.count).to eq(1)
 
-        within(".protected-branches-list") do
-          find(".js-allowed-to-merge").click
-          within('.js-allowed-to-merge-container') { click_on access_type_name }
+        within(".protected-branches-list") { click_on "Settings" }
+
+        within(".allowed-to-merge-container") do
+          find(".allowed-to-merge").click
+          click_on access_type_name
         end
 
         wait_for_ajax
         expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to include(access_type_id)
+      end
+    end
+
+    context "while restricting access to a specific user" do
+      let(:authorized_user) { create(:user) }
+
+      before { project.team << [authorized_user, :developer] }
+
+      ['push', 'merge'].each do |git_operation_type|
+        it "allows creating protected branches that a specific user can #{git_operation_type} to" do
+          visit namespace_project_protected_branches_path(project.namespace, project)
+          set_protected_branch_name('master')
+          within('.new_protected_branch') do
+            find(".allowed-to-#{git_operation_type}").click
+            click_on authorized_user.name
+          end
+          perform_enqueued_jobs { click_on "Protect" }
+
+          within(".protected-branches-list") { click_on "Settings" }
+
+          within(".protected-branch-#{git_operation_type}-access-list") do
+            expect(page).to have_content(authorized_user.name)
+          end
+        end
+
+        it "allows updating a protected branch so that a specific user can #{git_operation_type} to it" do
+          visit namespace_project_protected_branches_path(project.namespace, project)
+          set_protected_branch_name('master')
+          click_on "Protect"
+
+          within(".protected-branches-list") { click_on "Settings" }
+
+          within(".allowed-to-#{git_operation_type}-container") do
+            find(".allowed-to-#{git_operation_type}").click
+            perform_enqueued_jobs { click_on authorized_user.name }
+          end
+
+          within(".protected-branch-#{git_operation_type}-access-list") do
+            expect(page).to have_content(authorized_user.name)
+          end
+        end
+
+        it "allows deleting a user-specific access level" do
+          visit namespace_project_protected_branches_path(project.namespace, project)
+          set_protected_branch_name('master')
+          within('.new_protected_branch') do
+            find(".allowed-to-#{git_operation_type}").click
+            click_on authorized_user.name
+          end
+          click_on "Protect"
+
+          within(".protected-branches-list") { click_on "Settings" }
+          within(".protected-branch-#{git_operation_type}-access-list") do
+            perform_enqueued_jobs { click_link "Delete" }
+          end
+
+          expect(page).to have_content("Successfully deleted.")
+        end
       end
     end
   end
