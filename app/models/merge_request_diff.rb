@@ -34,7 +34,9 @@ class MergeRequestDiff < ActiveRecord::Base
     if persisted?
       # Workaround for old MergeRequestDiff object
       # that does not have head_commit_sha in the database
-      self.head_commit_sha ||= last_commit.sha
+      self.start_commit_sha ||= merge_request.target_branch_sha
+      self.head_commit_sha  ||= last_commit.sha
+      self.base_commit_sha  ||= find_base_sha
     else
       self.start_commit_sha ||= merge_request.target_branch_sha
       self.head_commit_sha  ||= merge_request.source_branch_sha

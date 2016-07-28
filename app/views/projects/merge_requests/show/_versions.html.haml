@@ -20,8 +20,9 @@
                 #{merge_request_diff.head_commit.short_id}
               %br
               %small
+                #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
                 = time_ago_with_tooltip(merge_request_diff.created_at)
 
     .pull-right
       %span.monospace
-        git diff #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
+        #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
