@@ -15,6 +15,7 @@ module Issues
         notification_service.new_issue(issue, current_user)
         todo_service.new_issue(issue, current_user)
         event_service.open_issue(issue, current_user)
+        user_agent_detail_service(issue, request).create
         issue.create_cross_references!(current_user)
         execute_hooks(issue, 'open')
       end
@@ -26,6 +27,10 @@ module Issues
 
     def spam_check_service
       SpamCheckService.new(project, current_user, params)
+    end
+
+    def user_agent_detail_service(issue, request)
+      UserAgentDetailService.new(issue, request)
     end
   end
 end

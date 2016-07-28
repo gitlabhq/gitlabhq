@@ -300,6 +300,26 @@ describe Projects::IssuesController do
         expect(spam_logs[0].title).to eq('Spam Title')
       end
     end
+
+    context 'user agent details are saved' do
+      before do
+        request.env['action_dispatch.remote_ip'] = '127.0.0.1'
+      end
+
+      def post_new_issue
+        sign_in(user)
+        project = create(:empty_project, :public)
+        post :create, {
+          namespace_id: project.namespace.to_param,
+          project_id: project.to_param,
+          issue: { title: 'Title', description: 'Description' }
+        }
+      end
+
+      it 'creates a user agent detail' do
+        expect{ post_new_issue }.to change(UserAgentDetail, :count)
+      end
+    end
   end
 
   describe "DELETE #destroy" do

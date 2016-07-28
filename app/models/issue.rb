@@ -8,6 +8,7 @@ class Issue < ActiveRecord::Base
   include Taskable
   include Spammable
   include FasterCacheKeys
+  include AkismetSubmittable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
