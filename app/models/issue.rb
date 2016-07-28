@@ -6,6 +6,7 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Spammable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze

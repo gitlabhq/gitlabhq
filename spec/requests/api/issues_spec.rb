@@ -531,10 +531,8 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
-      Grape::Endpoint.before_each do |endpoint|
-        allow(endpoint).to receive(:check_for_spam?).and_return(true)
-        allow(endpoint).to receive(:is_spam?).and_return(true)
-      end
+      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
+      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
     end
 
     let(:params) do

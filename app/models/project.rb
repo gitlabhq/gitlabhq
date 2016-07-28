@@ -586,7 +586,11 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    path
+    if persisted? && errors.include?(:path)
+      path_was
+    else
+      path
+    end
   end
 
   def to_reference(_from_project = nil)

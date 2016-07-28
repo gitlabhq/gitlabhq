@@ -3,7 +3,7 @@ module Projects
     def execute
       # check that user is allowed to set specified visibility_level
       new_visibility = params[:visibility_level]
-      
+
       if new_visibility && new_visibility.to_i != project.visibility_level
         unless can?(current_user, :change_visibility_level, project) &&
           Gitlab::VisibilityLevel.allowed_for?(current_user, new_visibility)
