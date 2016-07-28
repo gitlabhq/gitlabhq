@@ -246,7 +246,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    merge_request_diff.diff_refs
+    if merge_request_diff
+      merge_request_diff.diff_refs
+    end
   end
 
   def validate_branches

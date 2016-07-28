@@ -35,7 +35,7 @@ class MergeRequestDiff < ActiveRecord::Base
   # have those variables in the database so we try to initialize it
   def initialize_commits_sha
     self.start_commit_sha ||= merge_request.target_branch_sha
-    self.head_commit_sha  ||= last_commit.try(:sha) || merge_request.source_branch_sha
+    self.head_commit_sha  ||= persisted? ? last_commit.sha : merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
   end
 
@@ -191,9 +191,7 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     new_attributes[:st_diffs] = new_diffs
-
     update_columns_serialized(new_attributes)
-
     keep_around_commits
   end
 
