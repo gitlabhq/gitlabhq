@@ -22,28 +22,31 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  validates :head_commit_sha,  presence: true
   validates :start_commit_sha, presence: true
+  validates :head_commit_sha,  presence: true
   validates :base_commit_sha,  presence: true
 
-  after_initialize :ensure_head_commit_sha, if: :persisted?
-  before_create :set_diff_range,   unless: :importing?
-  after_create :reload_content,    unless: :importing?
-  after_save :keep_around_commits, unless: :importing?
-
-  def ensure_head_commit_sha
-    self.head_commit_sha ||= last_commit.sha
-  end
+  after_initialize :set_diff_range, unless: :importing?
+  after_create :save_git_content,   unless: :importing?
+  after_save :keep_around_commits,  unless: :importing?
 
   def set_diff_range
-    self.start_commit_sha ||= merge_request.target_branch_sha
-    self.head_commit_sha  ||= merge_request.source_branch_sha
-    self.base_commit_sha  ||= find_base_sha
+    if persisted?
+      # Workaround for old MergeRequestDiff object
+      # that does not have head_commit_sha in the database
+      self.head_commit_sha ||= last_commit.sha
+    else
+      self.start_commit_sha ||= merge_request.target_branch_sha
+      self.head_commit_sha  ||= merge_request.source_branch_sha
+      self.base_commit_sha  ||= find_base_sha
+    end
   end
 
-  def reload_content
-    reload_commits
-    reload_diffs
+  # Collect information about commits and diff from repository
+  # and save it to the database as serialized data
+  def save_git_content
+    save_commits
+    save_diffs
   end
 
   def size
@@ -130,9 +133,9 @@ class MergeRequestDiff < ActiveRecord::Base
     array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash), merge_request.source_project) }
   end
 
-  # Reload all commits related to current merge request from repo
+  # Load all commits related to current merge request diff from repo
   # and save it as array of hashes in st_commits db field
-  def reload_commits
+  def save_commits
     new_attributes = {}
 
     commits = compare.commits
@@ -165,9 +168,9 @@ class MergeRequestDiff < ActiveRecord::Base
     end
   end
 
-  # Reload diffs between branches related to current merge request from repo
+  # Load diffs between branches related to current merge request diff from repo
   # and save it as array of hashes in st_diffs db field
-  def reload_diffs
+  def save_diffs
     new_attributes = {}
     new_diffs = []
 

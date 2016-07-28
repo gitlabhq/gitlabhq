@@ -15,7 +15,7 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff, unless: :importing?
+  before_validation :ensure_merge_request_diff, on: :create, unless: :importing?
   after_update :update_merge_request_diff
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
@@ -95,6 +95,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
+  validates_associated :merge_request_diff, on: :create, unless: [:allow_broken, :importing?]
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -284,6 +285,10 @@ class MergeRequest < ActiveRecord::Base
                    'Source project is not a fork of target project'
       end
     end
+  end
+
+  def ensure_merge_request_diff
+    merge_request_diff || merge_request_diffs.build
   end
 
   def create_merge_request_diff
