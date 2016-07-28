@@ -566,7 +566,7 @@ class GitLabDropdown
       e.preventDefault()
       e.stopImmediatePropagation()
 
-      if $el.first().get(0).click?
+      if $el.first().get(0).click
         $el.first().get(0).click()
       else
         $el.first().trigger('click')
