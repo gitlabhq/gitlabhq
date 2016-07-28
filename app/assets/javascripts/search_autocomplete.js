@@ -228,7 +228,7 @@
         case KEYCODE.ENTER:
     	    this.disableAutocomplete();
           break;
-    	  case KEYCODE.UP,
+    	  case KEYCODE.UP:
         case KEYCODE.DOWN:
     	   return;
         default:

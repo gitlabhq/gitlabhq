@@ -690,8 +690,8 @@
       if (!index) {
         $dropdownContent.scrollTop(0)
 	    } else if (index === ($listItems.length - 1)) {
-  	    $dropdownContent.scrollTop $dropdownContent.prop('scrollHeight');
-      } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop))
+  	    $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));
+      } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop)) {
         $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom + CURSOR_SELECT_SCROLL_PADDING);
       } else if (listItemTop < (dropdownContentTop + dropdownScrollTop)) {
         return $dropdownContent.scrollTop(listItemTop - dropdownContentTop - CURSOR_SELECT_SCROLL_PADDING);

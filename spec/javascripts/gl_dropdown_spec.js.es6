@@ -16,12 +16,13 @@
     ESC: 27
   };
 
-  var navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
+  let navigateWithKeys = function navigateWithKeys(direction, steps, cb, i) {
     i = i || 0;
+    if (!i) direction = direction.toUpperCase();
     $('body').trigger({
       type: 'keydown',
-      which: ARROW_KEYS[direction.toUpperCase()],
-      keyCode: ARROW_KEYS[direction.toUpperCase()]
+      which: ARROW_KEYS[direction],
+      keyCode: ARROW_KEYS[direction]
     });
     i++;
     if (i <= steps) {
@@ -31,35 +32,31 @@
     }
   };
 
-  var initDropdown = function initDropdown() {
-    this.dropdownContainerElement = $('.dropdown.inline');
-    this.dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
-    this.projectsData = fixture.load('projects.json')[0];
-    this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
-      selectable: true,
-      data: this.projectsData,
-      text: (project) => {
-        (project.name_with_namespace || project.name)
-      },
-      id: (project) => {
-        project.id
-      }
-    });
-  };
-
   describe('Dropdown', function describeDropdown() {
     fixture.preload('gl_dropdown.html');
     fixture.preload('projects.json');
 
-    function beforeEach() {
+    beforeEach(() => {
       fixture.load('gl_dropdown.html');
-      initDropdown.call(this);
-    }
+      this.dropdownContainerElement = $('.dropdown.inline');
+      this.dropdownMenuElement = $('.dropdown-menu', this.dropdownContainerElement);
+      this.projectsData = fixture.load('projects.json')[0];
+      this.dropdownButtonElement = $('#js-project-dropdown', this.dropdownContainerElement).glDropdown({
+        selectable: true,
+        data: this.projectsData,
+        text: (project) => {
+          (project.name_with_namespace || project.name)
+        },
+        id: (project) => {
+          project.id
+        }
+      });
+    });
 
-    function afterEach() {
+    afterEach(() => {
       $('body').unbind('keydown');
       this.dropdownContainerElement.unbind('keyup');
-    }
+    });
 
     it('should open on click', () => {
       expect(this.dropdownContainerElement).not.toHaveClass('open');
@@ -67,10 +64,10 @@
       expect(this.dropdownContainerElement).toHaveClass('open');
     });
 
-    describe('that is open', function describeThatIsOpen() {
-      function beforeEach() {
+    describe('that is open', () => {
+      beforeEach(() => {
         this.dropdownButtonElement.click();
-      }
+      });
 
       it('should select a following item on DOWN keypress', () => {
         expect($(FOCUSED_ITEM_SELECTOR, this.dropdownMenuElement).length).toBe(0);
@@ -119,4 +116,4 @@
       });
     });
   });
-})(window);
+})();
