@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
   - Performance improvement of push rules
+  - Change LdapGroupSyncWorker to use new LDAP group sync classes
 
 v 8.10.3 (unreleased)
   - Fix regression in Git Annex permission check
