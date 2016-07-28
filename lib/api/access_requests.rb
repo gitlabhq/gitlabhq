@@ -33,7 +33,7 @@ module API
         #  POST /projects/:id/access_requests
         post ":id/access_requests" do
           source = find_source(source_type, params[:id])
-          access_requester = source.request_access(current_user)
+          access_requester = ::Members::RequestAccessService.new(source, current_user).execute
 
           if access_requester.persisted?
             present access_requester.user, with: Entities::AccessRequester, access_requester: access_requester

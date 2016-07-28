@@ -3,7 +3,6 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
-  include AccessRequestable
   include Referable
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source, class_name: 'GroupMember'
@@ -100,6 +99,10 @@ class Group < Namespace
     return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
 
     self[:lfs_enabled]
+  end
+
+  def request_access(user)
+    Members::RequestAccessService.new(self, user).execute
   end
 
   def add_users(user_ids, access_level, current_user: nil, expires_at: nil)

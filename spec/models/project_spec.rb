@@ -942,6 +942,14 @@ describe Project, models: true do
     end
   end
 
+  describe '#request_access' do
+    let(:project) { create(:empty_project, :public) }
+    let(:user) { create(:user) }
+
+    it { expect(project.request_access(user)).to be_a(ProjectMember) }
+    it { expect(project.request_access(user).user).to eq(user) }
+  end
+
   describe '.search' do
     let(:project) { create(:project, description: 'kitten mittens') }
 
