@@ -112,6 +112,9 @@ v 8.10.3
   - Fix importer for GitHub Pull Requests when a branch was removed. !5573
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
   - Trim extra displayed carriage returns in diffs and files with CRLFs. !5588
+  - Fix label already exist error message in the right sidebar.
+
+v 8.10.3 (unreleased)
 
 v 8.10.2
   - User can now search branches by name. !5144
