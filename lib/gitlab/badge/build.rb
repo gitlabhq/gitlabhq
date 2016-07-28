@@ -5,8 +5,16 @@ module Gitlab
     #
     class Build
       def initialize(project, ref)
-        @project, @ref = project, ref
-        @image = ::Ci::ImageForBuildService.new.execute(project, ref: ref)
+        @project = project
+        @ref = ref
+      end
+
+      def status
+        sha = @project.commit(@ref).try(:sha)
+
+        @project.pipelines
+          .where(sha: sha, ref: @ref)
+          .status || 'unknown'
       end
 
       def metadata
@@ -18,11 +26,9 @@ module Gitlab
       end
 
       def data
-        File.read(@image[:path])
-      end
-
-      def to_s
-        @image[:name].sub(/\.svg$/, '')
+        File.read(
+          Rails.root.join('public/ci', 'build-' + status + '.svg')
+        )
       end
     end
   end

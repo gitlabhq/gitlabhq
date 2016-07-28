@@ -24,9 +24,10 @@ describe Gitlab::Badge::Build do
     context 'build success' do
       before { build.success! }
 
-      describe '#to_s' do
-        subject { badge.to_s }
-        it { is_expected.to eq 'build-success' }
+      describe '#status' do
+        it 'is successful' do
+          expect(badge.status).to eq 'success'
+        end
       end
 
       describe '#data' do
@@ -41,9 +42,10 @@ describe Gitlab::Badge::Build do
     context 'build failed' do
       before { build.drop! }
 
-      describe '#to_s' do
-        subject { badge.to_s }
-        it { is_expected.to eq 'build-failed' }
+      describe '#status' do
+        it 'failed' do
+          expect(badge.status).to eq 'failed'
+        end
       end
 
       describe '#data' do
@@ -57,9 +59,10 @@ describe Gitlab::Badge::Build do
   end
 
   context 'build does not exist' do
-    describe '#to_s' do
-      subject { badge.to_s }
-      it { is_expected.to eq 'build-unknown' }
+    describe '#status' do
+      it 'is unknown' do
+        expect(badge.status).to eq 'unknown'
+      end
     end
 
     describe '#data' do
@@ -81,7 +84,7 @@ describe Gitlab::Badge::Build do
     end
 
     it 'does not take outdated pipeline into account' do
-      expect(badge.to_s).to eq 'build-success'
+      expect(badge.status).to eq 'success'
     end
   end
 
