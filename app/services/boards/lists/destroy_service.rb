@@ -7,6 +7,8 @@ module Boards
       end
 
       def execute
+        return false unless list.label?
+
         list.with_lock do
           reorder_higher_lists
           remove_list
