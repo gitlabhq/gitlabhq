@@ -107,16 +107,18 @@ module Gitlab
     end
 
     # Fork repository to new namespace
-    # storage - project's storage path
+    # forked_from_storage - forked-from project's storage path
     # path - project path with namespace
+    # forked_to_storage - forked-to project's storage path
     # fork_namespace - namespace for forked project
     #
     # Ex.
-    #  fork_repository("/path/to/storage", "gitlab/gitlab-ci", "randx")
+    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "randx")
     #
-    def fork_repository(storage, path, fork_namespace)
+    def fork_repository(forked_from_storage, path, forked_to_storage, fork_namespace)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'fork-project',
-                                   storage, "#{path}.git", fork_namespace])
+                                   forked_from_storage, "#{path}.git", forked_to_storage,
+                                   fork_namespace])
     end
 
     # Remove repository from file system

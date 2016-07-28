@@ -382,6 +382,24 @@ describe Project, models: true do
 
       it { expect(@project.to_param).to eq('gitlabhq') }
     end
+
+    context 'with invalid path' do
+      it 'returns previous path to keep project suitable for use in URLs when persisted' do
+        project = create(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'gitlab'
+      end
+
+      it 'returns current path when new record' do
+        project = build(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'foo&bar'
+      end
+    end
   end
 
   describe '#repository' do
@@ -1379,6 +1397,32 @@ describe Project, models: true do
 
         expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
+      end
+    end
+  end
+
+  describe '#add_import_job' do
+    context 'forked' do
+      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_from_project) { forked_project_link.forked_from_project }
+      let(:project) { forked_project_link.forked_to_project }
+
+      it 'schedules a RepositoryForkWorker job' do
+        expect(RepositoryForkWorker).to receive(:perform_async).
+          with(project.id, forked_from_project.repository_storage_path,
+              forked_from_project.path_with_namespace, project.namespace.path)
+
+        project.add_import_job
+      end
+    end
+
+    context 'not forked' do
+      let(:project) { create(:project) }
+
+      it 'schedules a RepositoryImportWorker job' do
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
+
+        project.add_import_job
       end
     end
   end

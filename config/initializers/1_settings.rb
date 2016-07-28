@@ -380,6 +380,9 @@ Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'Gitlab
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
+Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
 
 #
 # GitLab Shell
