@@ -39,7 +39,6 @@ module Gitlab
     end
 
     def deserialize_changes(changes)
-      changes = Base64.decode64(changes) unless changes.include?(' ')
       changes = utf8_encode_changes(changes)
       changes.lines
     end
