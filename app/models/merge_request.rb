@@ -246,13 +246,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    return unless diff_start_commit || diff_base_commit
-
-    Gitlab::Diff::DiffRefs.new(
-      base_sha:  diff_base_sha,
-      start_sha: diff_start_sha,
-      head_sha:  diff_head_sha
-    )
+    merge_request_diff.diff_refs
   end
 
   def validate_branches
@@ -306,6 +300,7 @@ class MergeRequest < ActiveRecord::Base
 
     old_diff_refs = self.diff_refs
     create_merge_request_diff
+    merge_request_diffs.reload
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(

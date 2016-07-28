@@ -291,7 +291,7 @@ describe MergeRequest, models: true do
     end
 
     it "can be removed if the last commit is the head of the source branch" do
-      allow(subject.source_project).to receive(:commit).and_return(subject.diff_head_commit)
+      allow(subject).to receive(:source_branch_head).and_return(subject.diff_head_commit)
 
       expect(subject.can_remove_source_branch?(user)).to be_truthy
     end
@@ -655,7 +655,7 @@ describe MergeRequest, models: true do
     let(:commit) { subject.project.commit(sample_commit.id) }
 
     it "does not change existing merge request diff" do
-      expect(subject.merge_request_diff).not_to receive(:reload_content)
+      expect(subject.merge_request_diff).not_to receive(:save_git_content)
       subject.reload_diff
     end
 
@@ -669,7 +669,6 @@ describe MergeRequest, models: true do
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
       allow(subject).to receive(:create_merge_request_diff) do
         subject.merge_request_diffs.create(
-          importing: true,
           base_commit_sha: commit.parent_id,
           start_commit_sha: commit.parent_id,
           head_commit_sha: commit.sha
