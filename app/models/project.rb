@@ -1144,7 +1144,10 @@ class Project < ActiveRecord::Base
 
   def schedule_delete!(user_id, params)
     # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
+    run_after_commit do
+      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
+      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
+    end
 
     update_attribute(:pending_delete, true)
   end
