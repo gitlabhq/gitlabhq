@@ -253,7 +253,7 @@ module Gitlab
     end
 
     def git_annex_access_check(project, changes)
-      return false unless Gitlab.config.gitlab_shell.git_annex_enabled
+      return build_status_object(false, "git-annex is disabled") unless Gitlab.config.gitlab_shell.git_annex_enabled
 
       unless user && user_access.allowed?
         return build_status_object(false, "You don't have access")
