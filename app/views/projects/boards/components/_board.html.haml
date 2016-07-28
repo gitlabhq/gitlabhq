@@ -1,4 +1,4 @@
-%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in state.boards | orderBy 'index'", ":board" => "board" }
+%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in state.lists | orderBy 'index'", ":board" => "board" }
   .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.backgroundColor }" }
@@ -7,16 +7,12 @@
           %span.pull-right
             {{ board.issues.length }}
           %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", data: { placement: "bottom" }, "@click" => "deleteBoard" }
-              %span.sr-only
-                Delete board
+            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", "aria-label" => "Delete board", data: { placement: "bottom" }, "@click" => "deleteBoard" }
               = icon("trash")
       .board-inner-container.board-search-container{ "v-if" => "board.search" }
         %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query" }
         = icon("search", class: "board-search-icon", "v-show" => "!query")
-        %button.board-search-clear-btn{ type: "button", role: "button", "@click" => "clearSearch", "v-show" => "query" }
-          %span.sr-only
-            Clear search
+        %button.board-search-clear-btn{ type: "button", role: "button", "aria-label" => "Clear search", "@click" => "clearSearch", "v-show" => "query" }
           = icon("times", class: "board-search-clear")
       %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters" }
         %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId" }

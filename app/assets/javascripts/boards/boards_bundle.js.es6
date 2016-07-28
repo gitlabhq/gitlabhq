@@ -17,7 +17,7 @@ $(function () {
       service.all()
         .then((resp) => {
           resp.data.forEach((board) => {
-            BoardsStore.state.boards.push(board);
+            BoardsStore.state.lists.push(board);
           });
         });
     }

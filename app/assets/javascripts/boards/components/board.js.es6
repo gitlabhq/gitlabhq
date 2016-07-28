@@ -15,7 +15,7 @@
     },
     computed: {
       isPreset: function () {
-        typeof this.board.id !== 'number';
+        return typeof this.board.id !== 'number';
       }
     },
     ready: function () {

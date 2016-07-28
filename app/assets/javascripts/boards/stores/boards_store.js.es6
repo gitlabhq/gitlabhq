@@ -1,7 +1,7 @@
 ((w) => {
   w.BoardsStore = {
     state: {
-      boards: [],
+      lists: [],
       done: {},
       filters: {
         author: {},
@@ -10,18 +10,18 @@
       }
     },
     removeBoard: (id) => {
-      BoardsStore.state.boards = _.reject(BoardsStore.state.boards, (board) => {
+      BoardsStore.state.lists = _.reject(BoardsStore.state.lists, (board) => {
         return board.id === id;
       });
     },
     moveBoard: (oldIndex, newIndex) => {
-      const boardFrom = _.find(BoardsStore.state.boards, (board) => {
+      const boardFrom = _.find(BoardsStore.state.lists, (board) => {
         return board.index === oldIndex;
       });
 
       service.updateBoard(boardFrom.id, newIndex);
 
-      const boardTo = _.find(BoardsStore.state.boards, (board) => {
+      const boardTo = _.find(BoardsStore.state.lists, (board) => {
         return board.index === newIndex;
       });
 
@@ -33,10 +33,10 @@
       }
     },
     moveCardToBoard: (boardFromId, boardToId, issueId, toIndex) => {
-      const boardFrom = _.find(BoardsStore.state.boards, (board) => {
+      const boardFrom = _.find(BoardsStore.state.lists, (board) => {
         return board.id === boardFromId;
       });
-      const boardTo = _.find(BoardsStore.state.boards, (board) => {
+      const boardTo = _.find(BoardsStore.state.lists, (board) => {
         return board.id === boardToId;
       });
       let issue = _.find(boardFrom.issues, (issue) => {
@@ -53,7 +53,7 @@
       });
 
       // Add to new boards issues if it doesn't already exist
-      if (issueTo !== null) {
+      if (issueTo) {
         issue = issueTo;
       } else {
         boardTo.issues.splice(toIndex, 0, issue);
@@ -71,7 +71,7 @@
             return label.title === boardTo.title;
           });
 
-          if (foundLabel === null) {
+          if (!foundLabel) {
             issue.labels.push(boardTo.label);
           }
         }
@@ -79,7 +79,7 @@
     },
     removeIssueFromBoards: (issue, boards) => {
       const boardLabels = _.map(boards, (board) => {
-        return board.label.title;
+        return board.title;
       });
 
       boards.issues = _.each(boards, (board) => {
@@ -98,11 +98,11 @@
       });
     },
     getBoardsForIssue: (issue) => {
-      _.filter(BoardsStore.state.boards, (board) => {
+      return _.filter(BoardsStore.state.lists, (board) => {
         const foundIssue = _.find(board.issues, (boardIssue) => {
           return issue.id === boardIssue.id;
         });
-        return foundIssue !== null;
+        return foundIssue;
       });
     },
     clearDone: () => {
