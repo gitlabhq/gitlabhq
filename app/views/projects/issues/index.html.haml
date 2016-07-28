@@ -1,5 +1,6 @@
 - @no_container = true
 - page_title "Issues"
+- new_issue_email = @project.new_issue_address(current_user)
 = render "projects/issues/head"
 
 = content_for :meta_tags do
@@ -23,7 +24,9 @@
     = render 'shared/issuable/filter', type: :issues
 
     .issues-holder
-      = render "issues"
+      = render 'issues'
+      - if new_issue_email
+        = render 'issue_by_email', email: new_issue_email
   - else
     .blank-state.blank-state-welcome
       %h2.blank-state-title.blank-state-welcome-title
@@ -40,3 +43,5 @@
       - if can? current_user, :create_issue, @project
         = link_to new_namespace_project_issue_path(@project.namespace, @project), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
           New Issue
+        - if new_issue_email
+          = render 'issue_by_email', email: new_issue_email

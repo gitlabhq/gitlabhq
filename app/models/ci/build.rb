@@ -331,7 +331,7 @@ module Ci
     end
 
     def valid_token?(token)
-      project.valid_runners_token? token
+      project.valid_runners_token?(token)
     end
 
     def has_tags?
