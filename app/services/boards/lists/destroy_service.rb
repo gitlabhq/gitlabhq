@@ -10,7 +10,7 @@ module Boards
         return false unless list.label?
 
         list.with_lock do
-          reorder_higher_lists
+          decrement_higher_lists
           remove_list
         end
       end
@@ -23,9 +23,9 @@ module Boards
         @list ||= board.lists.find(params[:list_id])
       end
 
-      def reorder_higher_lists
-        board.lists.where('position > ?',  list.position)
-             .update_all('position = position - 1')
+      def decrement_higher_lists
+        board.lists.label.where('position > ?',  list.position)
+                   .update_all('position = position - 1')
       end
 
       def remove_list

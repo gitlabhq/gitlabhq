@@ -14,18 +14,18 @@ describe Boards::Lists::DestroyService, services: true do
       end
 
       it 'decrements position of higher lists' do
-        list1 = create(:backlog_list, board: board, position: 1)
-        list2 = create(:label_list, board: board, position: 2)
-        list3 = create(:label_list, board: board, position: 3)
-        list4 = create(:label_list, board: board, position: 4)
-        list5 = create(:done_list, board: board, position: 5)
+        backlog     = create(:backlog_list, board: board)
+        development = create(:label_list, board: board, position: 1)
+        review      = create(:label_list, board: board, position: 2)
+        staging     = create(:label_list, board: board, position: 3)
+        done        = create(:done_list, board: board)
 
-        described_class.new(project, list_id: list2.id).execute
+        described_class.new(project, list_id: development.id).execute
 
-        expect(list1.reload.position).to eq 1
-        expect(list3.reload.position).to eq 2
-        expect(list4.reload.position).to eq 3
-        expect(list5.reload.position).to eq 4
+        expect(backlog.reload.position).to be_nil
+        expect(review.reload.position).to eq 1
+        expect(staging.reload.position).to eq 2
+        expect(done.reload.position).to be_nil
       end
     end
 

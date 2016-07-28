@@ -544,8 +544,8 @@ ActiveRecord::Schema.define(version: 20160810142633) do
   create_table "lists", force: :cascade do |t|
     t.integer  "board_id",               null: false
     t.integer  "label_id"
-    t.integer  "list_type",  default: 0, null: false
-    t.integer  "position",               null: false
+    t.integer  "list_type",  default: 1, null: false
+    t.integer  "position"
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end

@@ -13,16 +13,18 @@ describe List do
     it { is_expected.to validate_presence_of(:position) }
     it { is_expected.to validate_numericality_of(:position).only_integer.is_greater_than_or_equal_to(0) }
 
-    it 'does not require label to be set when list_type is set to backlog' do
-      subject.list_type = :backlog
+    context 'when list_type is set to backlog' do
+      subject { described_class.new(list_type: :backlog) }
 
-      expect(subject).not_to validate_presence_of(:label)
+      it { is_expected.not_to validate_presence_of(:label) }
+      it { is_expected.not_to validate_presence_of(:position) }
     end
 
-    it 'does not require label to be set when list_type is set to done' do
-      subject.list_type = :done
+    context 'when list_type is set to done' do
+      subject { described_class.new(list_type: :done) }
 
-      expect(subject).not_to validate_presence_of(:label)
+      it { is_expected.not_to validate_presence_of(:label) }
+      it { is_expected.not_to validate_presence_of(:position) }
     end
   end
 end

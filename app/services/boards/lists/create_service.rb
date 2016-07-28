@@ -19,10 +19,7 @@ module Boards
       attr_reader :board, :params
 
       def find_next_position
-        return 0 unless board.lists.any?
-
-        records = board.lists.where.not(list_type: List.list_types[:done])
-        records.maximum(:position).to_i + 1
+        board.lists.label.maximum(:position).to_i + 1
       end
 
       def create_list_at(position)
@@ -30,8 +27,8 @@ module Boards
       end
 
       def increment_higher_lists(position)
-        board.lists.where('position >= ?', position)
-             .update_all('position = position + 1')
+        board.lists.label.where('position >= ?', position)
+                         .update_all('position = position + 1')
       end
     end
   end

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Board do
   describe 'relationships' do
     it { is_expected.to belong_to(:project) }
-    it { is_expected.to have_many(:lists).dependent(:destroy) }
+    it { is_expected.to have_many(:lists).order(list_type: :asc, position: :asc).dependent(:destroy) }
   end
 
   describe 'validations' do

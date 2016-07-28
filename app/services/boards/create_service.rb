@@ -15,8 +15,8 @@ module Boards
 
     def create_board!
       project.create_board
-      project.board.lists.create(list_type: :backlog, position: 0)
-      project.board.lists.create(list_type: :done, position: 1)
+      project.board.lists.create(list_type: :backlog)
+      project.board.lists.create(list_type: :done)
     end
   end
 end
