@@ -25,22 +25,18 @@ class MergeRequestDiff < ActiveRecord::Base
   validates :start_commit_sha, presence: true, unless: :importing?
   validates :head_commit_sha,  presence: true, unless: :importing?
 
-  after_initialize :set_diff_range, unless: :importing?
-  after_create :save_git_content,   unless: :importing?
-  after_save :keep_around_commits,  unless: :importing?
+  after_initialize :initialize_commits_sha, unless: :importing?
+  after_create :save_git_content, unless: :importing?
+  after_save :keep_around_commits, unless: :importing?
 
-  def set_diff_range
-    if persisted?
-      # Workaround for old MergeRequestDiff object
-      # that does not have head_commit_sha in the database
-      self.start_commit_sha ||= merge_request.target_branch_sha
-      self.head_commit_sha  ||= last_commit.sha
-      self.base_commit_sha  ||= find_base_sha
-    else
-      self.start_commit_sha ||= merge_request.target_branch_sha
-      self.head_commit_sha  ||= merge_request.source_branch_sha
-      self.base_commit_sha  ||= find_base_sha
-    end
+  # Those variables are used for collecting commits and diff from git repository.
+  # After object is created those sha are stored in the database.
+  # However some old MergeRequestDiff records don't
+  # have those variables in the database so we try to initialize it
+  def initialize_commits_sha
+    self.start_commit_sha ||= merge_request.target_branch_sha
+    self.head_commit_sha  ||= last_commit.try(:sha) || merge_request.source_branch_sha
+    self.base_commit_sha  ||= find_base_sha
   end
 
   # Collect information about commits and diff from repository

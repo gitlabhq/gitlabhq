@@ -22,7 +22,6 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-switch' do
         find('.btn-link').click
-        #find('a', text: '6f6d7e7e').click
         click_link '6f6d7e7e'
       end
     end
