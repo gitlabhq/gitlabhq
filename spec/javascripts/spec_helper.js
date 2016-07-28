@@ -1,8 +1,3 @@
-(function() {
-
-
-}).call(this);
-
 // PhantomJS (Teaspoons default driver) doesn't have support for
 // Function.prototype.bind, which has caused confusion.  Use this polyfill to
 // avoid the confusion.
@@ -40,3 +35,8 @@
 // instance) you can disable the suite matcher in the configuration and use this
 // file as a manifest.
 // For more information: http://github.com/modeset/teaspoon
+
+(function() {
+
+
+}).call(this);

@@ -264,7 +264,6 @@
       });
     };
 
-<<<<<<< a79ff9346b73079148cc4ecc81da82804bb51f3c
     MergeRequestTabs.prototype.loadPipelines = function(source) {
       if (this.pipelinesLoaded) {
         return;
@@ -280,11 +279,9 @@
       });
     };
 
-=======
     // Show or hide the loading spinner
     //
     // status - Boolean, true to show, false to hide
->>>>>>> Restore comments lost when converting CoffeeScript to JavaScript
     MergeRequestTabs.prototype.toggleLoading = function(status) {
       return $('.mr-loading-status .loading').toggle(status);
     };
