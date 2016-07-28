@@ -195,7 +195,7 @@ describe API::AccessRequests, api: true  do
       end
 
       context 'when authenticated as the access requester' do
-        it 'returns 200' do
+        it 'deletes the access requester' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", access_requester)
 
@@ -205,12 +205,22 @@ describe API::AccessRequests, api: true  do
       end
 
       context 'when authenticated as a master/owner' do
-        it 'returns 200' do
+        it 'deletes the access requester' do
           expect do
             delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{access_requester.id}", master)
 
             expect(response).to have_http_status(200)
           end.to change { source.requesters.count }.by(-1)
+        end
+
+        context 'user_id matches a member' do
+          it 'returns 404' do
+            expect do
+              delete api("/#{source_type.pluralize}/#{source.id}/access_requests/#{developer.id}", master)
+
+              expect(response).to have_http_status(404)
+            end.not_to change { source.requesters.count }
+          end
         end
 
         context 'user_id does not match an existing access requester' do
