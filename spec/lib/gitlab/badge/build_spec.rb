@@ -11,34 +11,11 @@ describe Gitlab::Badge::Build do
     it { is_expected.to eq 'image/svg+xml' }
   end
 
-  describe '#to_html' do
-    let(:html) { Nokogiri::HTML.parse(badge.to_html) }
-    let(:a_href) { html.at('a') }
-
-    it 'points to link' do
-      expect(a_href[:href]).to eq badge.link_url
+  describe '#metadata' do
+    it 'returns badge metadata' do
+      expect(badge.metadata.image_url)
+        .to include 'badges/master/build.svg'
     end
-
-    it 'contains clickable image' do
-      expect(a_href.children.first.name).to eq 'img'
-    end
-  end
-
-  describe '#to_markdown' do
-    subject { badge.to_markdown }
-
-    it { is_expected.to include badge.image_url }
-    it { is_expected.to include badge.link_url }
-  end
-
-  describe '#image_url' do
-    subject { badge.image_url }
-    it { is_expected.to include "badges/#{branch}/build.svg" }
-  end
-
-  describe '#link_url' do
-    subject { badge.link_url }
-    it { is_expected.to include "commits/#{branch}" }
   end
 
   context 'build exists' do
