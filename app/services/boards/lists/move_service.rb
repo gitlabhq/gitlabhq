@@ -8,10 +8,7 @@ module Boards
 
       def execute
         return false unless list.label?
-        return false if new_position.blank?
-        return false if new_position == old_position
-        return false if new_position == first_position
-        return false if new_position == last_position
+        return false if invalid_position?
 
         list.with_lock do
           reorder_intermediate_lists
@@ -25,6 +22,12 @@ module Boards
 
       def list
         @list ||= board.lists.find(params[:list_id])
+      end
+
+      def invalid_position?
+        return true if new_position.blank?
+
+        [old_position, first_position, last_position].include?(new_position)
       end
 
       def first_position
