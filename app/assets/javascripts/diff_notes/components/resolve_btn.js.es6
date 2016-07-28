@@ -76,4 +76,4 @@
       CommentsStore.create(this.discussionId, this.noteId, this.resolved, this.resolvedBy);
     }
   });
-}(window));
+})(window);

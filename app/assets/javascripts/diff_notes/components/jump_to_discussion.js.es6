@@ -65,4 +65,4 @@
   });
 
   Vue.component('jump-to-discussion', JumpToDiscussion);
-}());
+})();

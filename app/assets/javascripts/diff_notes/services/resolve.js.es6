@@ -98,4 +98,4 @@
   }
 
   w.ResolveService = new ResolveServiceClass();
-}(window));
+})(window);
