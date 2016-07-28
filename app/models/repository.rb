@@ -211,6 +211,9 @@ class Repository
       rugged.references.create(keep_around_ref_name(sha), sha, force: true)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    rescue Rugged::OSError => ex
+      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     end
   end
 
@@ -612,11 +615,11 @@ class Repository
     case value
     when 'name'
       branches.sort_by(&:name)
-    when 'recently_updated'
+    when 'updated_desc'
       branches.sort do |a, b|
         commit(b.target).committed_date <=> commit(a.target).committed_date
       end
-    when 'last_updated'
+    when 'updated_asc'
       branches.sort do |a, b|
         commit(a.target).committed_date <=> commit(b.target).committed_date
       end
@@ -985,6 +988,10 @@ class Repository
       if was_empty || !target_branch
         # Create branch
         rugged.references.create(ref, newrev)
+
+        # If repo was empty expire cache
+        after_create if was_empty
+        after_create_branch
       else
         # Update head
         current_head = find_branch(branch).target

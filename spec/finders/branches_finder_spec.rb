@@ -16,7 +16,7 @@ describe BranchesFinder do
       end
 
       it 'sorts by recently_updated' do
-        branches_finder = described_class.new(repository, { sort: 'recently_updated' })
+        branches_finder = described_class.new(repository, { sort: 'updated_desc' })
 
         result = branches_finder.execute
 
@@ -24,7 +24,7 @@ describe BranchesFinder do
       end
 
       it 'sorts by last_updated' do
-        branches_finder = described_class.new(repository, { sort: 'last_updated' })
+        branches_finder = described_class.new(repository, { sort: 'updated_asc' })
 
         result = branches_finder.execute
 
@@ -53,7 +53,7 @@ describe BranchesFinder do
 
     context 'filter and sort' do
       it 'filters branches by name and sorts by recently_updated' do
-        params = { sort: 'recently_updated', search: 'feature' }
+        params = { sort: 'updated_desc', search: 'feature' }
         branches_finder = described_class.new(repository, params)
 
         result = branches_finder.execute
@@ -63,7 +63,7 @@ describe BranchesFinder do
       end
 
       it 'filters branches by name and sorts by last_updated' do
-        params = { sort: 'last_updated', search: 'feature' }
+        params = { sort: 'updated_asc', search: 'feature' }
         branches_finder = described_class.new(repository, params)
 
         result = branches_finder.execute

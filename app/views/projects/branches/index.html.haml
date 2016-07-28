@@ -7,28 +7,28 @@
     .nav-text
       Protected branches can be managed in project settings
 
-    - if can? current_user, :push_code, @project
-      .nav-controls
-        = form_tag(filter_branches_path, method: :get) do
-          = search_field_tag :search, params[:search], { placeholder: 'Filter by branch name', id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
-        .dropdown.inline
-          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
-            %span.light
-            - if params[:sort].present?
-              = params[:sort].humanize
-            - else
-              Name
-            %b.caret
-          %ul.dropdown-menu.dropdown-menu-align-right
-            %li
-              = link_to filter_branches_path(sort: nil) do
-                = sort_title_name
-              = link_to filter_branches_path(sort: 'recently_updated') do
-                = sort_title_recently_updated
-              = link_to filter_branches_path(sort: 'last_updated') do
-                = sort_title_oldest_updated
+    .nav-controls
+      = form_tag(filter_branches_path, method: :get) do
+        = search_field_tag :search, params[:search], { placeholder: 'Filter by branch name', id: 'branch-search', class: 'form-control search-text-input input-short', spellcheck: false }
+
+      .dropdown.inline
+        %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+          %span.light
+            = projects_sort_options_hash[@sort]
+          %b.caret
+        %ul.dropdown-menu.dropdown-menu-align-right
+          %li
+            = link_to filter_branches_path(sort: sort_value_name) do
+              = sort_title_name
+            = link_to filter_branches_path(sort: sort_value_recently_updated) do
+              = sort_title_recently_updated
+            = link_to filter_branches_path(sort: sort_value_oldest_updated) do
+              = sort_title_oldest_updated
+
+      - if can? current_user, :push_code, @project
         = link_to new_namespace_project_branch_path(@project.namespace, @project), class: 'btn btn-create' do
           New branch
+
   - if @branches.any?
     %ul.content-list.all-branches
       - @branches.each do |branch|

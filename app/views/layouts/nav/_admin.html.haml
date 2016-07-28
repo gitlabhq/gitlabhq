@@ -9,7 +9,7 @@
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
         %span
           Overview
-    = nav_link(controller: %w(system_info background_jobs logs health_check)) do
+    = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
       = link_to admin_system_info_path, title: 'Monitoring' do
         %span
           Monitoring

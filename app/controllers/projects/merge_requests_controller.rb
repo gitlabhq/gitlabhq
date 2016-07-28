@@ -3,6 +3,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include IssuableActions
+  include NotesHelper
   include ToggleAwardEmoji
 
   before_action :module_enabled
@@ -382,6 +383,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @project_wiki,
       @ref
     )
+
+    preload_max_access_for_authors(@notes, @project)
   end
 
   def define_widget_vars
@@ -401,7 +404,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_discussions = @merge_request.notes.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
       @grouped_diff_discussions.values.flat_map(&:notes),

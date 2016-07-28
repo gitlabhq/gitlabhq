@@ -135,10 +135,6 @@ describe Projects::RepositoriesController, 'routing' do
   it 'to #archive format:tar.bz2' do
     expect(get('/gitlab/gitlabhq/repository/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2')
   end
-
-  it 'to #show' do
-    expect(get('/gitlab/gitlabhq/repository')).to route_to('projects/repositories#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
-  end
 end
 
 describe Projects::BranchesController, 'routing' do

@@ -1,27 +1,57 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
+  - Optimize maximum user access level lookup in loading of notes
   - Limit git rev-list output count to one in forced push check
+  - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
   - Retrieve rendered HTML from cache in one request
+  - Fix renaming repository when name contains invalid chararacters under project settings
   - Nokogiri's various parsing methods are now instrumented
+  - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
+  - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
+  - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
+  - Make branches sortable without push permission !5462 (winniehell)
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Add the `sprockets-es6` gem
+  - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
+  - Profile requests when a header is passed
+  - Add commit stats in commit api. !5517 (dixpac)
+  - Make error pages responsive (Takuya Noguchi)
+  - Change requests_profiles resource constraint to catch virtually any file
+  - Reduce number of queries made for merge_requests/:id/diffs
 
-v 8.10.2 (unreleased)
+v 8.10.3 (unreleased)
+
+v 8.10.2
   - User can now search branches by name. !5144
+  - Page is now properly rendered after committing the first file and creating the first branch. !5399
+  - Add branch or tag icon to ref in builds page. !5434
   - Fix backup restore. !5459
-  - Disable MySQL foreign key checks before dropping all tables. !5472
   - Use project ID in repository cache to prevent stale data from persisting across projects. !5460
+  - Fix issue with autocomplete search not working with enter key. !5466
+  - Add iid to MR API response. !5468
+  - Disable MySQL foreign key checks before dropping all tables. !5472
   - Ensure relative paths for video are rewritten as we do for images. !5474
   - Ensure current user can retry a build before showing the 'Retry' button. !5476
+  - Add ENV variable to skip repository storages validations. !5478
+  - Added `*.js.es6 gitlab-language=javascript` to `.gitattributes`. !5486
+  - Don't show comment button in gutter of diffs on MR discussion tab. !5493
+  - Rescue Rugged::OSError (lock exists) when creating references. !5497
+  - Fix expand all diffs button in compare view. !5500
+  - Show release notes in tags list. !5503
+  - Fix a bug where forking a project from a repository storage to another would fail. !5509
+  - Fix missing schema update for `20160722221922`. !5512
+  - Update `gitlab-shell` version to 3.2.1 in the 8.9->8.10 update guide. !5516
 
 v 8.10.1
   - Refactor repository storages documentation. !5428

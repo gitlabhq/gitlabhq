@@ -189,6 +189,7 @@
           _this.groupId = $(select).data('group-id');
           _this.showCurrentUser = $(select).data('current-user');
           _this.authorId = $(select).data('author-id');
+          _this.skipUsers = $(select).data('skip-users');
           showNullUser = $(select).data('null-user');
           showAnyUser = $(select).data('any-user');
           showEmailUser = $(select).data('email-user');
@@ -320,7 +321,8 @@
           project_id: this.projectId,
           group_id: this.groupId,
           current_user: this.showCurrentUser,
-          author_id: this.authorId
+          author_id: this.authorId,
+          skip_users: this.skipUsers
         },
         dataType: "json"
       }).done(function(users) {

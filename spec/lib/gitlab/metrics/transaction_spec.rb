@@ -46,19 +46,11 @@ describe Gitlab::Metrics::Transaction do
     end
   end
 
-  describe '#measure_method' do
-    it 'adds a new method if it does not exist already' do
-      transaction.measure_method('Foo#bar') { 'foo' }
+  describe '#method_call_for' do
+    it 'returns a MethodCall' do
+      method = transaction.method_call_for('Foo#bar')
 
-      expect(transaction.methods['Foo#bar']).
-        to be_an_instance_of(Gitlab::Metrics::MethodCall)
-    end
-
-    it 'adds timings to an existing method call' do
-      transaction.measure_method('Foo#bar') { 'foo' }
-      transaction.measure_method('Foo#bar') { 'foo' }
-
-      expect(transaction.methods['Foo#bar'].call_count).to eq(2)
+      expect(method).to be_an_instance_of(Gitlab::Metrics::MethodCall)
     end
   end
 

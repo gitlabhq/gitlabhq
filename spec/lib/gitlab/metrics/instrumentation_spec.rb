@@ -39,6 +39,12 @@ describe Gitlab::Metrics::Instrumentation do
     allow(@dummy).to receive(:name).and_return('Dummy')
   end
 
+  describe '.series' do
+    it 'returns a String' do
+      expect(described_class.series).to be_an_instance_of(String)
+    end
+  end
+
   describe '.configure' do
     it 'yields self' do
       described_class.configure do |c|
@@ -78,8 +84,7 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:measure_method).
-          with('Dummy.foo')
+        expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
 
         @dummy.foo
       end
@@ -157,8 +162,7 @@ describe Gitlab::Metrics::Instrumentation do
         allow(described_class).to receive(:transaction).
           and_return(transaction)
 
-        expect(transaction).to receive(:measure_method).
-          with('Dummy#bar')
+        expect_any_instance_of(Gitlab::Metrics::MethodCall).to receive(:measure)
 
         @dummy.new.bar
       end

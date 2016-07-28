@@ -243,6 +243,37 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'POST #create' do
+    context 'Akismet is enabled' do
+      before do
+        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
+        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
+      end
+
+      def post_spam_issue
+        sign_in(user)
+        spam_project = create(:empty_project, :public)
+        post :create, {
+          namespace_id: spam_project.namespace.to_param,
+          project_id: spam_project.to_param,
+          issue: { title: 'Spam Title', description: 'Spam lives here' }
+        }
+      end
+
+      it 'rejects an issue recognized as spam' do
+        expect{ post_spam_issue }.not_to change(Issue, :count)
+        expect(response).to render_template(:new)
+      end
+
+      it 'creates a spam log' do
+        post_spam_issue
+        spam_logs = SpamLog.all
+        expect(spam_logs.count).to eq(1)
+        expect(spam_logs[0].title).to eq('Spam Title')
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     context "when the user is a developer" do
       before { sign_in(user) }

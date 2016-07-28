@@ -26,4 +26,4 @@ def validate_storages
   end
 end
 
-validate_storages unless Rails.env.test?
+validate_storages unless Rails.env.test? || ENV['SKIP_STORAGE_VALIDATION'] == 'true'

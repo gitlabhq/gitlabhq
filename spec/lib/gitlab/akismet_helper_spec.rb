@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::AkismetHelper, type: :helper do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
   before do
@@ -11,13 +11,13 @@ describe Gitlab::AkismetHelper, type: :helper do
   end
 
   describe '#check_for_spam?' do
-    it 'returns true for non-member' do
-      expect(helper.check_for_spam?(project, user)).to eq(true)
+    it 'returns true for public project' do
+      expect(helper.check_for_spam?(project)).to eq(true)
     end
 
-    it 'returns false for member' do
-      project.team << [user, :guest]
-      expect(helper.check_for_spam?(project, user)).to eq(false)
+    it 'returns false for private project' do
+      project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      expect(helper.check_for_spam?(project)).to eq(false)
     end
   end
 

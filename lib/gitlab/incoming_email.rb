@@ -1,7 +1,7 @@
 module Gitlab
   module IncomingEmail
     class << self
-      FALLBACK_REPLY_MESSAGE_ID_REGEX = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\Z/.freeze
+      FALLBACK_MESSAGE_ID_REGEX = /\Areply\-(.+)@#{Gitlab.config.gitlab.host}\Z/.freeze
 
       def enabled?
         config.enabled && config.address
@@ -21,8 +21,8 @@ module Gitlab
         match[1]
       end
 
-      def key_from_fallback_reply_message_id(message_id)
-        match = message_id.match(FALLBACK_REPLY_MESSAGE_ID_REGEX)
+      def key_from_fallback_message_id(mail_id)
+        match = mail_id.match(FALLBACK_MESSAGE_ID_REGEX)
         return unless match
 
         match[1]
