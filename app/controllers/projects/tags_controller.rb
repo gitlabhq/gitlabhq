@@ -10,11 +10,12 @@ class Projects::TagsController < Projects::ApplicationController
     @tags = @repository.tags_sorted_by(@sort)
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
-    @releases = project.releases.where(tag: @tags)
+    @releases = project.releases.where(tag: @tags.map(&:name))
   end
 
   def show
     @tag = @repository.find_tag(params[:id])
+
     @release = @project.releases.find_or_initialize_by(tag: @tag.name)
     @commit = @repository.commit(@tag.target)
   end

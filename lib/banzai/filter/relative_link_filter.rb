@@ -20,7 +20,7 @@ module Banzai
           process_link_attr el.attribute('href')
         end
 
-        doc.search('img').each do |el|
+        doc.css('img, video').each do |el|
           process_link_attr el.attribute('src')
         end
 

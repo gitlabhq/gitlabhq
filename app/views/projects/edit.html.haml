@@ -4,6 +4,7 @@
       %h4.prepend-top-0
         Project settings
     .col-lg-9
+      .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset.append-bottom-0
           .form-group
@@ -191,6 +192,7 @@
       %h4.prepend-top-0.warning-title
         Rename repository
     .col-lg-9
+      = render 'projects/errors'
       = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
         .form-group.project_name_holder
           = f.label :name, class: 'label-light' do

@@ -77,5 +77,4 @@
     = link_to "import flow", new_import_google_code_path
     again.
 
-:javascript
-  new ImporterStatus("#{jobs_import_google_code_path}", "#{import_google_code_path}");
+.js-importer-status{ data: { jobs_import_path: "#{jobs_import_google_code_path}", import_path: "#{import_google_code_path}" } }

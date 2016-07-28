@@ -1,7 +1,5 @@
-if ENV['SIMPLECOV']
-  require 'simplecov'
-  SimpleCov.start :rails
-end
+require './spec/simplecov_env'
+SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 

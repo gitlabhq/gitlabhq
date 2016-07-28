@@ -6,6 +6,7 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Spammable
   include Elastic::IssuesSearch
 
   WEIGHT_RANGE = 1..9
