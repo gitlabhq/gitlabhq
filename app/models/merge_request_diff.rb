@@ -22,9 +22,8 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  validates :start_commit_sha, presence: true
-  validates :head_commit_sha,  presence: true
-  validates :base_commit_sha,  presence: true
+  validates :start_commit_sha, presence: true, unless: :importing?
+  validates :head_commit_sha,  presence: true, unless: :importing?
 
   after_initialize :set_diff_range, unless: :importing?
   after_create :save_git_content,   unless: :importing?
