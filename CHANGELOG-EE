@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
   - Performance improvement of push rules
 
 v 8.10.3 (unreleased)
+  - Fix regression in Git Annex permission check
 
 v 8.10.2
   - Fix pagination on search result page when ES search is enabled. !592
