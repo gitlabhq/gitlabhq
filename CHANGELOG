@@ -25,6 +25,7 @@ v 8.11.0 (unreleased)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Bump gitlab_git to speedup DiffCollection iterations
   - Make branches sortable without push permission !5462 (winniehell)
+  - Check for Ci::Build artifacts at database level on pipeline partial
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
