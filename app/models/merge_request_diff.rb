@@ -8,9 +8,6 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  delegate :source_branch_sha, :target_branch_sha,
-    :target_branch, :source_branch, to: :merge_request, prefix: nil
-
   state_machine :state, initial: :empty do
     state :collected
     state :overflow
@@ -25,14 +22,23 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  after_initialize :set_diff_range
-  after_create :reload_content, unless: :importing?
+  validates :head_commit_sha,  presence: true
+  validates :start_commit_sha, presence: true
+  validates :base_commit_sha,  presence: true
+
+  after_initialize :ensure_head_commit_sha, if: :persisted?
+  before_create :set_diff_range,   unless: :importing?
+  after_create :reload_content,    unless: :importing?
   after_save :keep_around_commits, unless: :importing?
 
+  def ensure_head_commit_sha
+    self.head_commit_sha ||= last_commit.sha
+  end
+
   def set_diff_range
-    self.start_commit_sha ||= target_branch_sha
-    self.head_commit_sha  ||= source_branch_sha
-    self.base_commit_sha  ||= branch_base_sha
+    self.start_commit_sha ||= merge_request.target_branch_sha
+    self.head_commit_sha  ||= merge_request.source_branch_sha
+    self.base_commit_sha  ||= find_base_sha
   end
 
   def reload_content
@@ -199,14 +205,10 @@ class MergeRequestDiff < ActiveRecord::Base
     project.repository
   end
 
-  def branch_base_commit
-    return unless source_branch_sha && target_branch_sha
+  def find_base_sha
+    return unless head_commit_sha && start_commit_sha
 
-    project.merge_base_commit(source_branch_sha, target_branch_sha)
-  end
-
-  def branch_base_sha
-    branch_base_commit.try(:sha)
+    project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
   end
 
   def utf8_st_diffs
