@@ -5,15 +5,18 @@ module Boards
     end
 
     def execute
-      if project.board.present?
-        project.board
-      else
-        project.create_board
-      end
+      create_board! unless project.board.present?
+      project.board
     end
 
     private
 
     attr_reader :project
+
+    def create_board!
+      project.create_board
+      project.board.lists.create(list_type: :backlog, position: 0)
+      project.board.lists.create(list_type: :done, position: 1)
+    end
   end
 end
