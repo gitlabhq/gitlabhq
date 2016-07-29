@@ -65,8 +65,11 @@
           return label.title === boardFrom.title;
         });
       } else {
-        if (boardTo.label !== null) {
-          BoardsStore.removeIssueFromBoard(issue, boardFrom);
+        if (boardTo.label) {
+          if (boardFrom.id !== 'backlog') {
+            BoardsStore.removeIssueFromBoard(issue, boardFrom);
+          }
+          
           foundLabel = _.find(issue.labels, (label) => {
             return label.title === boardTo.title;
           });

@@ -2,6 +2,19 @@
   display: none;
 }
 
+.dropdown-menu-issues-board-new {
+  width: 320px;
+}
+
+.issue-board-dropdown-content {
+  padding: 0px 8px;
+
+  > p {
+    margin: 0;
+    color: #9c9c9c;
+  }
+}
+
 .issue-boards-page {
   .page-with-sidebar {
     display: flex;

@@ -1,9 +1,11 @@
 - title = local_assigns.fetch(:title, 'Assign labels')
 - show_create = local_assigns.fetch(:show_create, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
+- show_title = local_assigns.fetch(:show_title, true)
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search labels')
 .dropdown-page-one
-  = dropdown_title(title)
+  - if show_title
+    = dropdown_title(title)
   = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if @project && show_footer
