@@ -37,6 +37,8 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
+  attr_spammable :title, :description
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed

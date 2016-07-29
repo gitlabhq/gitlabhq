@@ -8,7 +8,7 @@ module Issues
       issue = project.issues.new(params)
       issue.author = params[:author] || current_user
 
-      issue.spam = spam_check_service.execute(request, api)
+      issue.spam = spam_check_service.execute(request, api, issue)
 
       if issue.save
         issue.update_attributes(label_ids: label_params)

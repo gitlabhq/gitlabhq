@@ -43,5 +43,39 @@ module Gitlab
         false
       end
     end
+
+    def ham!(details, text, user)
+      client = akismet_client
+
+      params = {
+        type: 'comment',
+        text: text,
+        author: user.name,
+        author_email: user.email
+      }
+
+      begin
+        client.submit_ham(details.ip_address, details.user_agent, params)
+      rescue => e
+        Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+      end
+    end
+
+    def spam!(details, text, user)
+      client = akismet_client
+
+      params = {
+        type: 'comment',
+        text: text,
+        author: user.name,
+        author_email: user.email
+      }
+
+      begin
+        client.submit_spam(details.ip_address, details.user_agent, params)
+      rescue => e
+        Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+      end
+    end
   end
 end
