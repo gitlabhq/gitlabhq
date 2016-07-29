@@ -7,6 +7,10 @@ module API
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
     end
 
+    rescue_from Grape::Exceptions::ValidationErrors do |e|
+      error!({ messages: e.full_messages }, 400)
+    end
+
     rescue_from :all do |exception|
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
       # why is this not wrapped in something reusable?

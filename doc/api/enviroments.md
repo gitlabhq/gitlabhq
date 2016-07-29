@@ -32,7 +32,7 @@ Example response:
 
 Creates a new environment with the given name and external_url.
 
-It returns 200 if the environment was successfully created, 400 for wrong parameters.
+It returns 201 if the environment was successfully created, 400 for wrong parameters.
 
 ```
 POST /projects/:id/environment
@@ -55,6 +55,37 @@ Example response:
   "id": 1,
   "name": "deploy",
   "external_url": "https://deploy.example.gitlab.com"
+}
+```
+
+## Edit an existing environment
+
+Updates an existing environment's name and/or external_url.
+
+It returns 200 if the environment was successfully updated. In case of an error, a status code 400 is returned.
+
+```
+PUT /projects/:id/environments/:environments_id
+```
+
+| Attribute       | Type    | Required                          | Description                      |
+| --------------- | ------- | --------------------------------- | -------------------------------  |
+| `id`            | integer | yes                               | The ID of the project            |
+| `environment_id` | integer | yes | The ID of the environment  | The ID of the environment        |
+| `name`          | string  | no                                | The new name of the environment  |
+| `external_url`  | string  | no                                | The new external_url             |
+
+```bash
+curl -X PUT --data "name=staging&external_url=https://staging.example.gitlab.com" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "staging",
+  "external_url": "https://staging.example.gitlab.com"
 }
 ```
 
@@ -82,36 +113,5 @@ Example response:
   "id": 1,
   "name": "deploy",
   "external_url": "https://deploy.example.gitlab.com"
-}
-```
-
-## Edit an existing environment
-
-Updates an existing environment's name and/or external_url.
-
-It returns 200 if the label was successfully updated, In case of an error, an additional error message is returned.
-
-```
-PUT /projects/:id/environments/:environments_id
-```
-
-| Attribute       | Type    | Required                          | Description                      |
-| --------------- | ------- | --------------------------------- | -------------------------------  |
-| `id`            | integer | yes                               | The ID of the project            |
-| `environment_id` | integer | yes | The ID of the environment  | The ID of the environment        |
-| `name`          | string  | no                                | The new name of the environment  |
-| `external_url`  | string  | no                                | The new external_url             |
-
-```bash
-curl -X PUT --data "name=staging&external_url=https://staging.example.gitlab.com" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
-```
-
-Example response:
-
-```json
-{
-  "id": 1,
-  "name": "staging",
-  "external_url": "https://staging.example.gitlab.com"
 }
 ```

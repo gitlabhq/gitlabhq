@@ -27,6 +27,7 @@ describe Environment, models: true do
       env = build(:environment, external_url: "")
 
       expect(env.save).to be true
+      expect(env.external_url).to be_nil
     end
   end
 end

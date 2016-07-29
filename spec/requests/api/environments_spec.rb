@@ -14,7 +14,7 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
-      it 'should return project environments' do
+      it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
 
         expect(response).to have_http_status(200)
@@ -26,7 +26,7 @@ describe API::API, api: true  do
     end
 
     context 'as non member' do
-      it 'should return a 404 status code' do
+      it 'returns a 404 status code' do
         get api("/projects/#{project.id}/environments", non_member)
 
         expect(response).to have_http_status(404)
@@ -50,7 +50,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'should return 400 if environment already exists' do
+      it 'returns a 400 if environment already exists' do
         post api("/projects/#{project.id}/environments", user), name: environment.name
 
         expect(response).to have_http_status(400)
@@ -61,42 +61,53 @@ describe API::API, api: true  do
       it 'rejects the request' do
         post api("/projects/#{project.id}/environments", non_member)
 
-        expect(response).to have_http_status(404)
-      end
-    end
-  end
-
-  describe 'DELETE /projects/:id/environments/:environment_id' do
-    context 'as a master' do
-      it 'should return 200 for an existing environment' do
-        delete api("/projects/#{project.id}/environments/#{environment.id}", user)
-
-        expect(response).to have_http_status(200)
-      end
-
-      it 'should return 404 for non existing id' do
-        delete api("/projects/#{project.id}/environments/12345", user)
-
-        expect(response).to have_http_status(404)
-        expect(json_response['message']).to eq('404 Not found')
+        expect(response).to have_http_status(400)
       end
     end
   end
 
   describe 'PUT /projects/:id/environments/:environment_id' do
-    it 'should return 200 if name and external_url are changed' do
+    it 'returns a 200 if name and external_url are changed' do
+      url = 'https://mepmep.whatever.ninja'
       put api("/projects/#{project.id}/environments/#{environment.id}", user),
-          name: 'Mepmep', external_url: 'https://mepmep.whatever.ninja'
+          name: 'Mepmep', external_url: url
 
       expect(response).to have_http_status(200)
       expect(json_response['name']).to eq('Mepmep')
-      expect(json_response['external_url']).to eq('https://mepmep.whatever.ninja')
+      expect(json_response['external_url']).to eq(url)
     end
 
-    it 'should return 404 if the environment does not exist' do
+    it "won't update the external_url if only the name is passed" do
+      url = environment.external_url
+      put api("/projects/#{project.id}/environments/#{environment.id}", user),
+          name: 'Mepmep'
+
+      expect(response).to have_http_status(200)
+      expect(json_response['name']).to eq('Mepmep')
+      expect(json_response['external_url']).to eq(url)
+    end
+
+    it 'returns a 404 if the environment does not exist' do
       put api("/projects/#{project.id}/environments/12345", user)
 
       expect(response).to have_http_status(404)
+    end
+  end
+
+  describe 'DELETE /projects/:id/environments/:environment_id' do
+    context 'as a master' do
+      it 'returns a 200 for an existing environment' do
+        delete api("/projects/#{project.id}/environments/#{environment.id}", user)
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns a 404 for non existing id' do
+        delete api("/projects/#{project.id}/environments/12345", user)
+
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Not found')
+      end
     end
   end
 end
