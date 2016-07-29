@@ -37,6 +37,7 @@ v 8.11.0 (unreleased)
   - Reduce number of queries made for merge_requests/:id/diffs
 
 v 8.10.3 (unreleased)
+  - Fix hooks missing on imported GitLab projects
 
 v 8.10.2
   - User can now search branches by name. !5144
