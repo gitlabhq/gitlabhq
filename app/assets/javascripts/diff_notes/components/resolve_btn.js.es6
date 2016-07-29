@@ -71,6 +71,8 @@
             CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, user);
 
             ResolveService.updateUpdatedHtml(this.discussionId, data);
+          } else {
+            new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
           }
 
           this.$nextTick(this.updateTooltip);

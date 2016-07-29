@@ -17,7 +17,7 @@
         return Object.keys(this.discussions).length;
       },
       showButton: function () {
-        return this.discussionsCount > 1 || !this.discussionId;
+        return this.discussionsCount > 0 && (this.discussionsCount > 1 || !this.discussionId);
       }
     },
     methods: {

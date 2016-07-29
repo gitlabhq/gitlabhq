@@ -16,6 +16,20 @@ feature 'Diff notes resolve', feature: true, js: true do
     )
   end
 
+  context 'no discussions' do
+    before do
+      project.team << [user, :master]
+      login_as user
+      note.destroy
+      visit_merge_request
+    end
+
+    it 'displays no discussion resolved data' do
+      expect(page).not_to have_content('discussion resolved')
+      expect(page).not_to have_selector('.discussion-next-btn')
+    end
+  end
+
   context 'as authorized user' do
     before do
       project.team << [user, :master]

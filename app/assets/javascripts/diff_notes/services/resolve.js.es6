@@ -45,12 +45,16 @@
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
-        const data = response.data;
-        const user = data ? data.resolved_by : null;
-        discussion.resolveAllNotes(user);
-        discussion.loading = false;
+        if (response.status === 200) {
+          const data = response.data;
+          const user = data ? data.resolved_by : null;
+          discussion.resolveAllNotes(user);
+          discussion.loading = false;
 
-        this.updateUpdatedHtml(discussionId, data);
+          this.updateUpdatedHtml(discussionId, data);
+        } else {
+          new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
+        }
       });
     }
 
@@ -66,11 +70,15 @@
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
-        const data = response.data;
-        discussion.unResolveAllNotes();
-        discussion.loading = false;
+        if (response.status === 200) {
+          const data = response.data;
+          discussion.unResolveAllNotes();
+          discussion.loading = false;
 
-        this.updateUpdatedHtml(discussionId, data);
+          this.updateUpdatedHtml(discussionId, data);
+        } else {
+          new Flash('An error occurred when trying to unresolve a discussion. Please try again.', 'alert');
+        }
       });
     }
 
