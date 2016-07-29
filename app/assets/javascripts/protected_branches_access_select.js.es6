@@ -1,27 +1,35 @@
 class ProtectedBranchesAccessSelect {
-  constructor(container, saveOnSelect) {
+  constructor(container, saveOnSelect, selectDefault) {
     this.container = container;
     this.saveOnSelect = saveOnSelect;
 
     this.container.find(".allowed-to-merge").each((i, element) => {
       var fieldName = $(element).data('field-name');
-      return $(element).glDropdown({
+      var dropdown = $(element).glDropdown({
         data: gon.merge_access_levels,
         selectable: true,
         fieldName: fieldName,
         clicked: _.chain(this.onSelect).partial(element).bind(this).value()
       });
+
+      if (selectDefault) {
+        dropdown.data('glDropdown').selectRowAtIndex(document.createEvent("Event"), 0);
+      }
     });
 
 
     this.container.find(".allowed-to-push").each((i, element) => {
       var fieldName = $(element).data('field-name');
-      return $(element).glDropdown({
+      var dropdown = $(element).glDropdown({
         data: gon.push_access_levels,
         selectable: true,
         fieldName: fieldName,
         clicked: _.chain(this.onSelect).partial(element).bind(this).value()
       });
+
+      if (selectDefault) {
+        dropdown.data('glDropdown').selectRowAtIndex(document.createEvent("Event"), 0);
+      }
     });
   }
 
@@ -36,7 +44,9 @@ class ProtectedBranchesAccessSelect {
           _method: 'PATCH',
           id: $(dropdown).data('id'),
           protected_branch: {
-            ["" + ($(dropdown).data('type'))]: selected.id
+            ["" + ($(dropdown).data('type')) + "_attributes"]: {
+              "access_level": selected.id
+            }
           }
         },
         success: function() {

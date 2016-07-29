@@ -227,8 +227,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.allowed_to_push).to eq('masters')
-        expect(project.protected_branches.first.allowed_to_merge).to eq('masters')
+        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -249,8 +249,8 @@ describe GitPushService, services: true do
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
 
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.last.allowed_to_push).to eq('developers')
-        expect(project.protected_branches.last.allowed_to_merge).to eq('masters')
+        expect(project.protected_branches.last.push_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
+        expect(project.protected_branches.last.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
@@ -260,8 +260,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.allowed_to_push).to eq('masters')
-        expect(project.protected_branches.first.allowed_to_merge).to eq('developers')
+        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
       end
 
       it "when pushing new commits to existing branch" do

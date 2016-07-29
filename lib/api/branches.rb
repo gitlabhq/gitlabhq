@@ -53,19 +53,37 @@ module API
         @branch = user_project.repository.find_branch(params[:branch])
         not_found!('Branch') unless @branch
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
+
+        developers_can_merge = to_boolean(params[:developers_can_merge])
+        developers_can_push = to_boolean(params[:developers_can_push])
+
         protected_branch_params = {
-          name: @branch.name,
-          developers_can_push: params[:developers_can_push],
-          developers_can_merge: params[:developers_can_merge]
+          name: @branch.name
         }
 
-        service = if protected_branch
-                    ProtectedBranches::UpdateService.new(user_project, current_user, protected_branch.id, protected_branch_params)
-                  else
-                    ProtectedBranches::CreateService.new(user_project, current_user, protected_branch_params)
-                  end
+        unless developers_can_merge.nil?
+          protected_branch_params.merge!({
+            merge_access_level_attributes: {
+              access_level: developers_can_merge ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+            }
+          })
+        end
 
-        service.execute
+        unless developers_can_push.nil?
+          protected_branch_params.merge!({
+            push_access_level_attributes: {
+              access_level: developers_can_push ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+            }
+          })
+        end
+
+        if protected_branch
+          service = ProtectedBranches::UpdateService.new(user_project, current_user, protected_branch_params)
+          service.execute(protected_branch)
+        else
+          service = ProtectedBranches::CreateService.new(user_project, current_user, protected_branch_params)
+          service.execute
+        end
 
         present @branch, with: Entities::RepoBranch, project: user_project
       end

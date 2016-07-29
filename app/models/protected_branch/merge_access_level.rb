@@ -2,25 +2,19 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
   belongs_to :protected_branch
   delegate :project, to: :protected_branch
 
-  enum access_level: [:masters, :developers]
+  validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
+                                                             Gitlab::Access::DEVELOPER] }
 
   def self.human_access_levels
     {
-      "masters" => "Masters",
-      "developers" => "Developers + Masters"
+      Gitlab::Access::MASTER => "Masters",
+      Gitlab::Access::DEVELOPER => "Developers + Masters"
     }.with_indifferent_access
   end
 
   def check_access(user)
     return true if user.is_admin?
-
-    min_member_access = if masters?
-                          Gitlab::Access::MASTER
-                        elsif developers?
-                          Gitlab::Access::DEVELOPER
-                        end
-
-    project.team.max_member_access(user.id) >= min_member_access
+    project.team.max_member_access(user.id) >= access_level
   end
 
   def humanize

@@ -868,19 +868,19 @@ ActiveRecord::Schema.define(version: 20160722221922) do
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
-    t.integer  "protected_branch_id",             null: false
-    t.integer  "access_level",        default: 0, null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   add_index "protected_branch_merge_access_levels", ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
 
   create_table "protected_branch_push_access_levels", force: :cascade do |t|
-    t.integer  "protected_branch_id",             null: false
-    t.integer  "access_level",        default: 0, null: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
   add_index "protected_branch_push_access_levels", ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
