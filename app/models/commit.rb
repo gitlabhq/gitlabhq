@@ -334,7 +334,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    raw_diffs.each do |diff|
+    raw_diffs(deltas_only: true).each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file
