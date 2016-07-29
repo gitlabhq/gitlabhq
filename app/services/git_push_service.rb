@@ -94,10 +94,17 @@ class GitPushService < BaseService
 
     # Set protection on the default branch if configured
     if current_application_settings.default_branch_protection != PROTECTION_NONE
-      allowed_to_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? 'developers' : 'masters'
-      allowed_to_merge = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? 'developers' : 'masters'
 
-      params = { name: @project.default_branch, allowed_to_push: allowed_to_push, allowed_to_merge: allowed_to_merge }
+      params = {
+        name: @project.default_branch,
+        push_access_level_attributes: {
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        },
+        merge_access_level_attributes: {
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }
+      }
+
       ProtectedBranches::CreateService.new(@project, current_user, params).execute
     end
   end

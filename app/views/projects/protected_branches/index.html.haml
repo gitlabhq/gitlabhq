@@ -32,20 +32,20 @@
             are supported.
 
         .form-group
-          = f.hidden_field :allowed_to_merge
-          = f.label :allowed_to_merge, "Allowed to merge: ", class: "label-light append-bottom-0"
+          = hidden_field_tag 'protected_branch[merge_access_level_attributes][access_level]'
+          = label_tag "Allowed to merge: ", nil, class: "label-light append-bottom-0"
           = dropdown_tag("<Make a selection>",
                          options: { title: "Allowed to merge", toggle_class: 'allowed-to-merge',
                                     dropdown_class: 'dropdown-menu-selectable',
-                                    data: { field_name: "protected_branch[allowed_to_merge]" }})
+                                    data: { field_name: "protected_branch[merge_access_level_attributes][access_level]" }})
 
         .form-group
-          = f.hidden_field :allowed_to_push
-          = f.label :allowed_to_push, "Allowed to push: ", class: "label-light append-bottom-0"
+          = hidden_field_tag 'protected_branch[push_access_level_attributes][access_level]'
+          = label_tag "Allowed to push: ", nil, class: "label-light append-bottom-0"
           = dropdown_tag("<Make a selection>",
                          options: { title: "Allowed to push", toggle_class: 'allowed-to-push',
                                     dropdown_class: 'dropdown-menu-selectable',
-                                    data: { field_name: "protected_branch[allowed_to_push]" }})
+                                    data: { field_name: "protected_branch[push_access_level_attributes][access_level]" }})
 
 
         = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
@@ -54,4 +54,4 @@
     = render "branches_list"
 
 :javascript
-  new ProtectedBranchesAccessSelect($(".new_protected_branch"), false);
+  new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);

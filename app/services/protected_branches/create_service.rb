@@ -1,23 +1,27 @@
 module ProtectedBranches
-  class CreateService < ProtectedBranches::BaseService
+  class CreateService < BaseService
     attr_reader :protected_branch
 
     def execute
       raise Gitlab::Access::AccessDeniedError unless current_user.can?(:admin_project, project)
 
+      protected_branch = project.protected_branches.new(params)
+
       ProtectedBranch.transaction do
-        @protected_branch = project.protected_branches.new(name: params[:name])
-        @protected_branch.save!
+        protected_branch.save!
 
-        @protected_branch.create_push_access_level!
-        @protected_branch.create_merge_access_level!
+        if protected_branch.push_access_level.blank?
+          protected_branch.create_push_access_level!(access_level: Gitlab::Access::MASTER)
+        end
 
-        set_access_levels!
+        if protected_branch.merge_access_level.blank?
+          protected_branch.create_merge_access_level!(access_level: Gitlab::Access::MASTER)
+        end
       end
 
-      true
+      protected_branch
     rescue ActiveRecord::RecordInvalid
-      false
+      protected_branch
     end
   end
 end

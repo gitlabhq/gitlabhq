@@ -2,27 +2,22 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
   belongs_to :protected_branch
   delegate :project, to: :protected_branch
 
-  enum access_level: [:masters, :developers, :no_one]
+  validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
+                                                             Gitlab::Access::DEVELOPER,
+                                                             Gitlab::Access::NO_ACCESS] }
 
   def self.human_access_levels
     {
-      "masters" => "Masters",
-      "developers" => "Developers + Masters",
-      "no_one" => "No one"
+      Gitlab::Access::MASTER => "Masters",
+      Gitlab::Access::DEVELOPER => "Developers + Masters",
+      Gitlab::Access::NO_ACCESS => "No one"
     }.with_indifferent_access
   end
 
   def check_access(user)
-    return false if no_one?
+    return false if access_level == Gitlab::Access::NO_ACCESS
     return true if user.is_admin?
-
-    min_member_access = if masters?
-                          Gitlab::Access::MASTER
-                        elsif developers?
-                          Gitlab::Access::DEVELOPER
-                        end
-
-    project.team.max_member_access(user.id) >= min_member_access
+    project.team.max_member_access(user.id) >= access_level
   end
 
   def humanize

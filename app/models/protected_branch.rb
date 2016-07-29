@@ -8,16 +8,11 @@ class ProtectedBranch < ActiveRecord::Base
   has_one :merge_access_level, dependent: :destroy
   has_one :push_access_level, dependent: :destroy
 
+  accepts_nested_attributes_for :push_access_level
+  accepts_nested_attributes_for :merge_access_level
+
   def commit
     project.commit(self.name)
-  end
-
-  def allowed_to_push
-    self.push_access_level && self.push_access_level.access_level
-  end
-
-  def allowed_to_merge
-    self.merge_access_level && self.merge_access_level.access_level
   end
 
   # Returns all protected branches that match the given branch name.

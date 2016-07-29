@@ -91,12 +91,12 @@ feature 'Projected Branches', feature: true, js: true do
         set_protected_branch_name('master')
         within('.new_protected_branch') do
           find(".allowed-to-push").click
-          click_on access_type_name
+          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
       end
 
       it "allows updating protected branches so that #{access_type_name} can push to them" do
@@ -112,7 +112,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.allowed_to_push).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
       end
     end
 
@@ -122,12 +122,12 @@ feature 'Projected Branches', feature: true, js: true do
         set_protected_branch_name('master')
         within('.new_protected_branch') do
           find(".allowed-to-merge").click
-          click_on access_type_name
+          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
       end
 
       it "allows updating protected branches so that #{access_type_name} can merge to them" do
@@ -143,7 +143,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.allowed_to_merge).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
       end
     end
   end
