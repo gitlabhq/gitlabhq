@@ -120,10 +120,10 @@ class window.MergeConflictResolver extends Vue
 
           if conflict
             if line.type is 'old'
-              line = { lineType: 'conflict', lineNumber: line.old_line, richText: line.rich_text, section: 'origin', id, isSelected: no, isUnselected: no, isOrigin: yes }
+              line = { lineType: 'conflict', lineNumber: line.old_line, richText: line.rich_text, section: 'head', id, isSelected: no, isUnselected: no, isHead: yes }
               file.parallelLines.left.push  line
             else if line.type is 'new'
-              line = { lineType: 'conflict', lineNumber: line.new_line, richText: line.rich_text, section: 'head', id, isSelected: no, isUnselected: no, isHead: yes }
+              line = { lineType: 'conflict', lineNumber: line.new_line, richText: line.rich_text, section: 'origin', id, isSelected: no, isUnselected: no, isOrigin: yes }
               file.parallelLines.right.push line
             else
               console.log 'unhandled line type...', line
@@ -155,7 +155,7 @@ class window.MergeConflictResolver extends Vue
 
     for file in data.files
       for section in file.sections when section.conflict
-        @$set "resolutionData.#{section.id}", no
+        @$set "resolutionData['#{section.id}']", no
 
 
   getInitialData: ->
