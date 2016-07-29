@@ -12,6 +12,12 @@
       allResolved: function () {
         const discussion = this.discussions[discussionId];
         return discussion.isResolved();
+      },
+      discussionsCount: function () {
+        return Object.keys(this.discussions).length;
+      },
+      showButton: function () {
+        return this.discussionsCount > 1 || !this.discussionId;
       }
     },
     methods: {
@@ -67,6 +73,7 @@
         if (nextUnresolvedDiscussionId) {
           $('#notes').addClass('active');
           $('#commits, #builds, #diffs').removeClass('active');
+          mrTabs.setCurrentAction('notes');
 
           $.scrollTo(`.discussion[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
             offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())

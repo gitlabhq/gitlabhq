@@ -168,6 +168,12 @@ feature 'Diff notes resolve', feature: true, js: true do
 
         expect(page).to have_content("Resolved by #{user.name}")
       end
+
+      it 'hides jump to next discussion button' do
+        page.within '.discussion-reply-holder' do
+          expect(page).not_to have_selector('.discussion-next-btn')
+        end
+      end
     end
 
     context 'multiple notes' do
@@ -264,6 +270,12 @@ feature 'Diff notes resolve', feature: true, js: true do
         end
 
         expect(page).to have_content("Resolved by #{user.name}")
+      end
+
+      it 'shows jump to next discussion button' do
+        page.all('.discussion-reply-holder').each do |holder|
+          expect(holder).to have_selector('.discussion-next-btn')
+        end
       end
     end
 
