@@ -134,7 +134,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @merge_request.cannot_be_merged?
 
     respond_to do |format|
-      format.html { render 'show' }
+      format.html do
+        define_discussion_vars
+        render 'show'
+      end
+
       format.json { render json: Gitlab::Conflict::FileCollection.new(@merge_request) }
     end
   end
