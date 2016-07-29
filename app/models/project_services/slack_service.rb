@@ -64,23 +64,7 @@ class SlackService < Service
     # 'close' action. Ignore update events for now to prevent duplicate
     # messages from arriving.
 
-    message = \
-      case object_kind
-      when "push", "tag_push"
-        PushMessage.new(data)
-      when "issue"
-        IssueMessage.new(data) unless is_update?(data)
-      when "merge_request"
-        MergeMessage.new(data) unless is_update?(data)
-      when "note"
-        NoteMessage.new(data)
-      when "build"
-        BuildMessage.new(data) if should_build_be_notified?(data)
-      when "pipeline"
-        PipelineMessage.new(data) if should_pipeline_be_notified?(data)
-      when "wiki_page"
-        WikiPageMessage.new(data)
-      end
+    message = get_message(object_kind, data)
 
     opt = {}
 
@@ -108,6 +92,25 @@ class SlackService < Service
   end
 
   private
+
+  def get_message(object_kind, data)
+    case object_kind
+    when "push", "tag_push"
+      PushMessage.new(data)
+    when "issue"
+      IssueMessage.new(data) unless is_update?(data)
+    when "merge_request"
+      MergeMessage.new(data) unless is_update?(data)
+    when "note"
+      NoteMessage.new(data)
+    when "build"
+      BuildMessage.new(data) if should_build_be_notified?(data)
+    when "pipeline"
+      PipelineMessage.new(data) if should_pipeline_be_notified?(data)
+    when "wiki_page"
+      WikiPageMessage.new(data)
+    end
+  end
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
