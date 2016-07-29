@@ -38,6 +38,7 @@ v 8.11.0 (unreleased)
   - Reduce number of queries made for merge_requests/:id/diffs
 
 v 8.10.3 (unreleased)
+  - Fix importer for GitHub Pull Requests when a branch was removed
   - Fix hooks missing on imported GitLab projects
   - Properly abort a merge when merge conflicts occur
 
