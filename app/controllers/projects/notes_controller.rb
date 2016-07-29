@@ -72,11 +72,11 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
-    discussion = note.noteable.discussions.find { |d| d.id == note.discussion_id } || render_404
+    discussion = note.discussion
 
     render json: {
       resolved_by: note.resolved_by.try(:name),
-      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
     }
   end
 
@@ -85,10 +85,10 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.unresolve!
 
-    discussion = note.noteable.discussions.find { |d| d.id == note.discussion_id } || render_404
+    discussion = note.discussion
 
     render json: {
-      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
     }
   end
 
@@ -164,7 +164,7 @@ class Projects::NotesController < Projects::ApplicationController
       }
 
       if note.diff_note?
-        discussion = Discussion.new([note])
+        discussion = note.as_discussion
 
         attrs.merge!(
           diff_discussion_html: diff_discussion_html(discussion),

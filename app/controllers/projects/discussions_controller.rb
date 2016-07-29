@@ -11,7 +11,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
     render json: {
       resolved_by: discussion.resolved_by.try(:name),
-      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+      discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
     }
   end
 
@@ -21,7 +21,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
     discussion.unresolve!
 
     render json: {
-      updated_html: view_to_html_string('discussions/_headline', discussion: discussion)
+      discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)
     }
   end
 

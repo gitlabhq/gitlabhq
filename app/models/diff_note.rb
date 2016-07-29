@@ -76,7 +76,7 @@ class DiffNote < Note
   end
 
   def resolvable?
-    !system? && !for_commit?
+    !system? && for_merge_request?
   end
 
   def resolved?
@@ -103,10 +103,21 @@ class DiffNote < Note
     save!
   end
 
+  def discussion
+    return unless resolvable?
+
+    discussion_notes = self.noteable.notes.fresh.select { |n| n.discussion_id == self.discussion_id }
+    Discussion.new(discussion_notes)
+  end
+
+  def as_discussion
+    Discussion.new([self])
+  end
+
   private
 
   def supported?
-    !self.for_merge_request? || self.noteable.support_new_diff_notes?
+    for_commit? || self.noteable.support_new_diff_notes?
   end
 
   def set_original_position
