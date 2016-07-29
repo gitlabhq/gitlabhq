@@ -75,10 +75,16 @@ module Gitlab
         return @sections if @sections
 
         chunked_lines = lines.chunk { |line| line.type.nil? }
+        last_candidate_match_header = nil
+        match_line_header = nil
         match_line = nil
 
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|
           section = nil
+
+          lines.each do |line|
+            last_candidate_match_header = " #{line.text}" if line.text.match(/\A[A-Za-z$_]/)
+          end
 
           if no_conflict
             conflict_before = i > 0
@@ -88,6 +94,7 @@ module Gitlab
               if lines.length > CONTEXT_LINES * 2
                 tail_lines = lines.last(CONTEXT_LINES)
                 first_tail_line = tail_lines.first
+                match_line_header = last_candidate_match_header
                 match_line = Gitlab::Diff::Line.new('',
                                                     'match',
                                                     first_tail_line.index,
@@ -107,7 +114,7 @@ module Gitlab
           end
 
           if match_line && !section
-            match_line.text = "@@ -#{match_line.old_pos},#{lines.last.old_pos} +#{match_line.new_pos},#{lines.last.new_pos} @@"
+            match_line.text = "@@ -#{match_line.old_pos},#{lines.last.old_pos} +#{match_line.new_pos},#{lines.last.new_pos} @@#{match_line_header}"
           end
 
           section ||= { conflict: !no_conflict, lines: lines }
