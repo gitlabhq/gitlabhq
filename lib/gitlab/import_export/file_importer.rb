@@ -33,7 +33,7 @@ module Gitlab
           if File.exist?(@archive_file)
             yield
 
-            break
+            return true
           else
             sleep(2**retry_number)
           end
