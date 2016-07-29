@@ -27,21 +27,21 @@
         - else
           = f.button class: "btn btn-create btn-grouped js-merge-button accept_merge_request #{status_class}" do
             Accept Merge Request
-      - if @merge_request.remove_source_branch?
-        .accept-control
+      .accept-control
+        - if @merge_request.remove_source_branch?
           The source branch will be removed.
-      - elsif @merge_request.can_remove_source_branch?(current_user)
-        .accept-control.checkbox
-          = f.label :remove_source_branch, class: "remove_source_checkbox" do
-            = f.check_box :remove_source_branch
-            Remove source branch
+        - elsif @merge_request.can_remove_source_branch?(current_user)
+          .checkbox
+            = f.label :remove_source_branch, class: "remove_source_checkbox" do
+              = f.check_box :remove_source_branch
+              Remove source branch
       .accept-control.right
         = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
           = icon('edit')
           Modify commit message
     .js-toggle-content.hide.prepend-top-default
       = render 'shared/commit_message_container', params: params,
-          text: @merge_request.merge_commit_message,
+          text: @merge_request.commit_message || @merge_request.merge_commit_message,
           rows: 14, hint: true
 
     = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"

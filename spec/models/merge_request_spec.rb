@@ -317,6 +317,7 @@ describe MergeRequest, models: true do
 
     it "can be removed if the last commit is the head of the source branch" do
       allow(subject.source_project).to receive(:commit).and_return(subject.diff_head_commit)
+      allow(subject).to receive(:same_source_branch_merge_requests?).and_return(false)
 
       expect(subject.can_remove_source_branch?(user)).to be_truthy
     end
@@ -331,7 +332,7 @@ describe MergeRequest, models: true do
   describe "#reset_merge_when_build_succeeds" do
     let(:merge_if_green) do
       create :merge_request, merge_when_build_succeeds: true, merge_user: create(:user),
-                             remove_source_branch: true, merge_params: { "commit_message" => "msg" }
+                             remove_source_branch: true, commit_message: 'msg'
     end
 
     it "sets the item to false" do
@@ -339,7 +340,7 @@ describe MergeRequest, models: true do
       merge_if_green.reload
 
       expect(merge_if_green.merge_when_build_succeeds).to be_falsey
-      expect(merge_if_green.commit_message).to be_nil
+      expect(merge_if_green.commit_message).to eq 'msg'
     end
   end
 

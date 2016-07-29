@@ -14,8 +14,6 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
-  serialize :merge_params, Hash
-
   after_create :create_merge_request_diff, unless: :importing?
   after_update :update_merge_request_diff
 
@@ -521,7 +519,6 @@ class MergeRequest < ActiveRecord::Base
 
     self.merge_when_build_succeeds  = false
     self.merge_user                 = nil
-    self.commit_message             = nil
     self.save
   end
 

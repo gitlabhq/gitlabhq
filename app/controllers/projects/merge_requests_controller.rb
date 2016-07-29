@@ -239,7 +239,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     TodoService.new.merge_merge_request(merge_request, current_user)
 
-    @merge_request.update(merge_request_params.merge(merge_error: nil))
+    @merge_request.update(merge_params.merge(merge_error: nil))
 
     if params[:merge_when_build_succeeds].present?
       unless @merge_request.pipeline
@@ -248,19 +248,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
 
       if @merge_request.pipeline.active?
-        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user, merge_params)
+        MergeRequests::MergeWhenBuildSucceedsService.new(@project, current_user)
                                                         .execute(@merge_request)
         @status = :merge_when_build_succeeds
       elsif @merge_request.pipeline.success?
         # This can be triggered when a user clicks the auto merge button while
         # the tests finish at about the same time
-        MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+        MergeWorker.perform_async(@merge_request.id, current_user.id)
         @status = :success
       else
         @status = :failed
       end
     else
-      MergeWorker.perform_async(@merge_request.id, current_user.id, params)
+      MergeWorker.perform_async(@merge_request.id, current_user.id)
       @status = :success
     end
   end
@@ -434,8 +434,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :task_num, :remove_source_branch,
-      label_ids: [], :commit_message)
+      :state_event, :description, :task_num, label_ids: [])
+  end
+
+  def merge_params
+    params.permit(:remove_source_branch, :commit_message)
   end
 
   # Make sure merge requests created before 8.0

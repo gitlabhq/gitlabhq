@@ -29,7 +29,7 @@ module MergeRequests
       committer = repository.user_to_committer(current_user)
 
       options = {
-        message: params[:commit_message] || merge_request.merge_commit_message,
+        message: merge_request.commit_message || merge_request.merge_commit_message,
         author: committer,
         committer: committer
       }

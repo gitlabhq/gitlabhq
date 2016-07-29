@@ -11,7 +11,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
   end
 
   let(:pipeline) { create(:ci_pipeline_with_one_job, ref: mr_merge_if_green_enabled.source_branch, project: project) }
-  let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, commit_message: 'Awesome message') }
+  let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user) }
 
   describe "#execute" do
     let(:merge_request) do
@@ -25,10 +25,9 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         service.execute(merge_request)
       end
 
-      it 'sets the params, merge_user, and flag' do
+      it 'sets merge_user and flag' do
         expect(merge_request).to be_valid
         expect(merge_request.merge_when_build_succeeds).to be_truthy
-        expect(merge_request.merge_params).to eq commit_message: 'Awesome message'
         expect(merge_request.merge_user).to be user
       end
 
@@ -39,7 +38,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
     end
 
     context 'already approved' do
-      let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user, new_key: true) }
+      let(:service) { MergeRequests::MergeWhenBuildSucceedsService.new(project, user) }
       let(:build)   { create(:ci_build, ref: mr_merge_if_green_enabled.source_branch) }
 
       before do
@@ -52,7 +51,6 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
         expect(SystemNoteService).not_to receive(:merge_when_build_succeeds)
 
         service.execute(mr_merge_if_green_enabled)
-        expect(mr_merge_if_green_enabled.merge_params).to have_key(:new_key)
       end
     end
   end
@@ -146,7 +144,6 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     it "resets all the merge_when_build_succeeds params" do
       expect(mr_merge_if_green_enabled.merge_when_build_succeeds).to be_falsey
-      expect(mr_merge_if_green_enabled.merge_params).to eq({})
       expect(mr_merge_if_green_enabled.merge_user).to be nil
     end
 

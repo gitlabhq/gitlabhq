@@ -226,18 +226,15 @@ module API
           end
         end
 
-        # Merge MR
-        #
-        # Parameters:
-        #   id (required)                           - The ID of a project
-        #   merge_request_id (required)             - ID of MR
-        #   merge_commit_message (optional)         - Custom merge commit message
-        #   remove_source_branch (optional)         - When true, the source branch will be deleted if possible
-        #   merge_when_build_succeeds (optional)    - When true, this MR will be merged when the build succeeds
-        #   sha (optional)                          - When present, must have the HEAD SHA of the source branch
-        # Example:
-        #   PUT /projects/:id/merge_requests/:merge_request_id/merge
-        #
+        desc 'Merge a merge request' do
+          success Entities::MergeRequest
+        end
+        params do
+          optional :commit_message,             type: String,   desc: 'The commit message for the merge commit'
+          optional :remove_source_branch,       type: Boolean,  desc: 'After the merge, should the branch be removed?'
+          optional :merge_when_build_succeeds,  type: Boolean,  desc: 'When true, this MR will be merged when the build succeeds'
+          optional :sha,                        type: String,   desc: 'When present, must have the HEAD SHA of the source branch'
+        end
         put "#{path}/merge" do
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
@@ -253,15 +250,19 @@ module API
             render_api_error!("SHA does not match HEAD of source branch: #{merge_request.diff_head_sha}", 409)
           end
 
-          merge_params = { commit_message: params[:merge_commit_message] }
+          # There used to be a `force_remove_source_branch`, `should_remove_source_branch` which got combined into one.
+          # To support this untill 9.0 we'll have to update the property like this
           remove_source_branch(merge_request)
 
-          if to_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
-            ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
+          # To still support both `merge_commit_message` and `commit_message` until 9.0 we can't just use `update_attributes`
+          # Support for `merge_commit_message` should be dropped on 9.0
+          merge_request.commit_message = params[:commit_message] || params[:merge_commit_message] || merge_request.commit_message
+
+          if params[:merge_when_build_succeeds] && merge_request.pipeline && merge_request.pipeline.active?
+            ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user).
               execute(merge_request)
           else
-            ::MergeRequests::MergeService.new(merge_request.target_project, current_user, merge_params).
-              execute(merge_request)
+            ::MergeRequests::MergeService.new(merge_request.target_project, current_user).execute(merge_request)
           end
 
           present merge_request, with: Entities::MergeRequest, current_user: current_user

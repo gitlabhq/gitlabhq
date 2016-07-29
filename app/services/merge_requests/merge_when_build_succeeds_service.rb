@@ -23,7 +23,7 @@ module MergeRequests
         next unless merge_request.mergeable?
         next unless pipeline.success?
 
-        MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id, merge_request.merge_params)
+        MergeWorker.perform_async(merge_request.id, merge_request.merge_user_id)
       end
     end
 
