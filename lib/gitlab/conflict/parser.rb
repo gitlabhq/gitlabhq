@@ -7,7 +7,7 @@ module Gitlab
       class MissingEndDelimiter < StandardError
       end
 
-      def parse(text, our_path:, their_path:)
+      def parse(text, our_path:, their_path:, parent: nil)
         return [] if text.blank?
 
         line_obj_index = 0
@@ -36,9 +36,9 @@ module Gitlab
             type = nil
           elsif line[0] == '\\'
             type = 'nonewline'
-            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
+            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent: parent)
           else
-            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
+            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent: parent)
             line_old += 1 if type != 'new'
             line_new += 1 if type != 'old'
 

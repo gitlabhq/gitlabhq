@@ -63,17 +63,23 @@ describe Gitlab::Conflict::File, lib: true do
     end
   end
 
-  describe '#highlighted_lines' do
+  describe '#highlight_lines!' do
     def html_to_text(html)
       CGI.unescapeHTML(ActionView::Base.full_sanitizer.sanitize(html)).delete("\n")
     end
 
-    it 'returns lines with rich_text' do
-      expect(conflict_file.highlighted_lines).to all(have_attributes(rich_text: a_kind_of(String)))
+    it 'modifies the existing lines' do
+      expect { conflict_file.highlight_lines! }.to change { conflict_file.lines.map(&:instance_variables) }
     end
 
-    it 'returns lines with rich_text matching the text content of the line' do
-      conflict_file.highlighted_lines.each do |line|
+    it 'is called implicitly when rich_text is accessed on a line' do
+      expect(conflict_file).to receive(:highlight_lines!).once.and_call_original
+
+      conflict_file.lines.each(&:rich_text)
+    end
+
+    it 'sets the rich_text of the lines matching the text content' do
+      conflict_file.lines.each do |line|
         expect(line.text).to eq(html_to_text(line.rich_text))
       end
     end

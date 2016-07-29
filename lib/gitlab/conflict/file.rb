@@ -21,7 +21,8 @@ module Gitlab
       def lines
         @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file_result[:data],
                                                       our_path: our_path,
-                                                      their_path: their_path)
+                                                      their_path: their_path,
+                                                      parent: self)
       end
 
       def resolve!(resolution, index:, rugged:)
@@ -57,27 +58,23 @@ module Gitlab
         end.compact
       end
 
-      def highlighted_lines
-        return @highlighted_lines if @highlighted_lines
-
+      def highlight_lines!
         their_highlight = Gitlab::Highlight.highlight_lines(repository, their_ref, their_path)
         our_highlight = Gitlab::Highlight.highlight_lines(repository, our_ref, our_path)
 
-        @highlighted_lines = lines.map do |line|
-          line = line.dup
+        lines.each do |line|
           if line.type == 'old'
             line.rich_text = their_highlight[line.old_line - 1]
           else
             line.rich_text = our_highlight[line.new_line - 1]
           end
-          line
         end
       end
 
       def sections
         return @sections if @sections
 
-        chunked_lines = highlighted_lines.chunk { |line| line.type.nil? }
+        chunked_lines = lines.chunk { |line| line.type.nil? }
         match_line = nil
 
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|

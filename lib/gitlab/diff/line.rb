@@ -2,12 +2,13 @@ module Gitlab
   module Diff
     class Line
       attr_reader :type, :index, :old_pos, :new_pos
+      attr_writer :rich_text
       attr_accessor :text
-      attr_accessor :rich_text
 
-      def initialize(text, type, index, old_pos, new_pos)
+      def initialize(text, type, index, old_pos, new_pos, parent: nil)
         @text, @type, @index = text, type, index
         @old_pos, @new_pos = old_pos, new_pos
+        @parent = parent
       end
 
       def self.init_from_hash(hash)
@@ -42,6 +43,12 @@ module Gitlab
 
       def removed?
         type == 'old'
+      end
+
+      def rich_text
+        @parent.highlight_lines! if @parent && !@rich_text
+
+        @rich_text
       end
 
       def meta?
