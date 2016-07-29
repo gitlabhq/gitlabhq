@@ -1,12 +1,12 @@
 class DiscussionModel {
   constructor (discussionId) {
-    this.discussionId = discussionId;
+    this.id = discussionId;
     this.notes = {};
     this.loading = false;
   }
 
   createNote (noteId, resolved, user) {
-    Vue.set(this.notes, noteId, new NoteModel(this.discussionId, noteId, resolved, user));
+    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, resolved, user));
   }
 
   deleteNote (noteId) {

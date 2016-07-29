@@ -1,5 +1,5 @@
 ((w) => {
-  w.ResolveCommentBtn = Vue.extend({
+  w.CommentAndResolveBtn = Vue.extend({
     props: {
       discussionId: String
     },

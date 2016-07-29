@@ -12,7 +12,7 @@ $(() => {
     components: {
       'resolve-btn': ResolveBtn,
       'resolve-discussion-btn': ResolveDiscussionBtn,
-      'resolve-comment-btn': ResolveCommentBtn
+      'comment-and-resolve-btn': CommentAndResolveBtn
     }
   });
 

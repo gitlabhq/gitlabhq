@@ -35,6 +35,7 @@ feature 'Diff notes resolve', feature: true, js: true do
           find('.line-resolve-btn').click
 
           expect(page).to have_selector('.line-resolve-btn.is-active')
+          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.diff-content' do
@@ -54,6 +55,8 @@ feature 'Diff notes resolve', feature: true, js: true do
 
         page.within '.diff-content .note' do
           expect(page).to have_selector('.line-resolve-btn.is-active')
+
+          expect(find('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         page.within '.line-resolve-all-container' do
@@ -147,6 +150,8 @@ feature 'Diff notes resolve', feature: true, js: true do
       it 'does not mark discussion as resolved when resolving single note' do
         page.within '.diff-content .note' do
           first('.line-resolve-btn').click
+          sleep 1
+          expect(first('.line-resolve-btn')['data-original-title']).to eq("Resolved by #{user.name}")
         end
 
         expect(page).to have_content('Last updated')

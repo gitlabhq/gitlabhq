@@ -37,9 +37,20 @@
             i++;
           }
         } else {
+          let nextDiscussionId;
           const discussionKeys = Object.keys(this.discussions),
-                indexOfDiscussion = discussionKeys.indexOf(this.discussionId),
-                nextDiscussionId = discussionKeys[indexOfDiscussion + 1];
+                indexOfDiscussion = discussionKeys.indexOf(this.discussionId);
+                nextDiscussionIds = discussionKeys.splice(indexOfDiscussion);
+
+          nextDiscussionIds.forEach((discussionId) => {
+            if (discussionId !== this.discussionId) {
+              const discussion = this.discussions[discussionId];
+
+              if (!discussion.isResolved()) {
+                nextDiscussionId = discussion.id;
+              }
+            }
+          });
 
           if (nextDiscussionId) {
             nextUnresolvedDiscussionId = nextDiscussionId;
@@ -54,6 +65,9 @@
         }
 
         if (nextUnresolvedDiscussionId) {
+          $('#notes').addClass('active');
+          $('#commits, #builds, #diffs').removeClass('active');
+
           $.scrollTo(`.discussion[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
             offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
           });
