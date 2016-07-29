@@ -237,8 +237,9 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      save
-      execute_hooks
+      saved = save
+      execute_hooks if saved && !skip_ci?
+      saved
     end
 
     def execute_hooks
