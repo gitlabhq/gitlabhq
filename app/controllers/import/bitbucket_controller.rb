@@ -82,8 +82,6 @@ class Import::BitbucketController < Import::BaseController
     go_to_bitbucket_for_permissions
   end
 
-  private
-
   def access_params
     {
       bitbucket_access_token: session[:bitbucket_access_token],

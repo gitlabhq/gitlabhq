@@ -40,7 +40,7 @@ module Gitlab
               Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
             end
 
-            private
+            private # rubocop:disable Lint/UselessAccessModifier
 
             def node(key, node, metadata)
               factory = Node::Factory.new(node)

@@ -141,10 +141,10 @@ module Gitlab
       end
     end
 
-    private
-
     def self.current_transaction
       Transaction.current
     end
+
+    private_class_method :current_transaction
   end
 end
