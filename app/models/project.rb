@@ -874,14 +874,6 @@ class Project < ActiveRecord::Base
     ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
-  def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_push)
-  end
-
-  def developers_can_merge_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_merge)
-  end
-
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end

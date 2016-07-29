@@ -171,6 +171,11 @@
           break;
         case 'search:show':
           new Search();
+          break;
+        case 'projects:protected_branches:index':
+          new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);
+          new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);
+          break;
       }
       switch (path.first()) {
         case 'admin':
