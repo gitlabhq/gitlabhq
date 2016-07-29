@@ -8,7 +8,7 @@ describe Gitlab::Ci::Config::Node::Artifacts do
       let(:config) { { paths: %w[public/] } }
 
       describe '#value' do
-        it 'returns image string' do
+        it 'returns artifacs configuration' do
           expect(entry.value).to eq config
         end
       end

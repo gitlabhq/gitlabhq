@@ -66,10 +66,10 @@ module Gitlab
           node :services, Services,
             description: 'Services that will be used to execute this job.'
 
-          node :only, While,
+          node :only, Trigger,
             description: 'Refs policy this job will be executed for.'
 
-          node :except, While,
+          node :except, Trigger,
             description: 'Refs policy this job will be executed for.'
 
           node :variables, Variables,

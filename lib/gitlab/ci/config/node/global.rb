@@ -42,7 +42,7 @@ module Gitlab
             super
 
             compose_jobs!
-            compose_stages!
+            compose_deprecated_entries!
           end
 
           def compose_jobs!
@@ -54,7 +54,7 @@ module Gitlab
             @entries[:jobs] = factory.create!
           end
 
-          def compose_stages!
+          def compose_deprecated_entries!
             ##
             # Deprecated `:types` key workaround - if types are defined and
             # stages are not defined we use types definition as stages.

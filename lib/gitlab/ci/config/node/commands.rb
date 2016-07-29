@@ -11,22 +11,20 @@ module Gitlab
           validations do
             include LegacyValidationHelpers
 
-            validate :string_or_array_of_strings
-
-            def string_or_array_of_strings
-              unless config_valid?
+            validate do
+              unless string_or_array_of_strings?(config)
                 errors.add(:config,
                            'should be a string or an array of strings')
               end
             end
 
-            def config_valid?
-              validate_string(config) || validate_array_of_strings(config)
+            def string_or_array_of_strings?(field)
+              validate_string(field) || validate_array_of_strings(field)
             end
           end
 
           def value
-            [@config].flatten
+            Array(@config)
           end
         end
       end

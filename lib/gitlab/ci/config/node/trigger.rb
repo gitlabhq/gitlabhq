@@ -3,9 +3,9 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents a ref and trigger policy for the job.
+        # Entry that represents a trigger policy for the job.
         #
-        class While < Entry
+        class Trigger < Entry
           include Validatable
 
           validations do

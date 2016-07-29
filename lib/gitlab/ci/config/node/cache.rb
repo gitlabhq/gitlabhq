@@ -8,8 +8,10 @@ module Gitlab
         class Cache < Entry
           include Configurable
 
+          ALLOWED_KEYS = %i[key untracked paths]
+
           validations do
-            validates :config, allowed_keys: %i[key untracked paths]
+            validates :config, allowed_keys: ALLOWED_KEYS
           end
 
           node :key, Node::Key,

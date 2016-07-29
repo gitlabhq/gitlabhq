@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::While do
+describe Gitlab::Ci::Config::Node::Trigger do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
@@ -48,7 +48,7 @@ describe Gitlab::Ci::Config::Node::While do
       describe '#errors' do
         it 'saves errors' do
           expect(entry.errors)
-            .to include 'while config should be an array of strings or regexps'
+            .to include 'trigger config should be an array of strings or regexps'
         end
       end
     end

@@ -3,7 +3,7 @@ module Gitlab
     class Config
       module Node
         ##
-        # This class represents an undefined and unspecified node.
+        # This class represents an undefined node.
         #
         # Implements the Null Object pattern.
         #
