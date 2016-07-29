@@ -21,7 +21,8 @@ class Discussion
   delegate  :resolved_at,
             :resolved_by,
 
-            to: :last_note
+            to: :last_resolved_note,
+            allow_nil: true
 
   delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
 
@@ -37,6 +38,12 @@ class Discussion
     @first_note = notes.first
     @last_note = notes.last
     @notes = notes
+  end
+
+  def last_resolved_note
+    return unless resolved?
+
+    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last
   end
 
   def last_updated_at
@@ -65,6 +72,10 @@ class Discussion
 
   def resolved?
     resolvable? && notes.none?(&:to_be_resolved?)
+  end
+
+  def resolved_notes
+    notes.select(&:resolved?)
   end
 
   def to_be_resolved?

@@ -395,15 +395,18 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def discussions
-    self.mr_and_commit_notes.
+    @discussions ||= self.mr_and_commit_notes.
       inc_author_project_award_emoji.
       fresh.
       discussions
   end
 
+  def discussions_resolvable?
+    discussions.any?(&:resolvable?)
+  end
+
   def discussions_resolved?
-    all_discussions = discussions
-    all_discussions.any?(&:resolvable?) && all_discussions.none?(&:to_be_resolved?)
+    discussions_resolvable? && discussions.none?(&:to_be_resolved?)
   end
 
   def hook_attrs
