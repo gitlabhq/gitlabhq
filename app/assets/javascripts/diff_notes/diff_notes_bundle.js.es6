@@ -1,5 +1,6 @@
 //= require vue
 //= require vue-resource
+//= require_directory ./models
 //= require_directory ./stores
 //= require_directory ./services
 //= require_directory ./mixins
@@ -10,8 +11,8 @@ $(() => {
     el: '#diff-notes-app',
     components: {
       'resolve-btn': ResolveBtn,
-      'resolve-all-btn': ResolveAllBtn,
-      'resolve-comment-btn': ResolveCommentBtn,
+      'resolve-discussion-btn': ResolveDiscussionBtn,
+      'resolve-comment-btn': ResolveCommentBtn
     }
   });
 
@@ -21,4 +22,13 @@ $(() => {
       'resolve-count': ResolveCount
     }
   });
+
+  window.compileVueComponentsForDiffNotes = function () {
+    const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion');
+    if ($components.length) {
+      $components.each(function () {
+        DiffNotesApp.$compile($(this).get(0))
+      });
+    }
+  }
 });

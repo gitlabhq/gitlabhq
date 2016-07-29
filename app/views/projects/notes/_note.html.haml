@@ -22,7 +22,7 @@
             - if access
               %span.note-role.hidden-xs= access
 
-            - if note.resolvable?
+            - if (note.resolvable? && can?(current_user, :resolve_note, note)) || (note.resolved? && !can?(current_user, :resolve_note, note))
               %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
                   ":project-path" => "'#{note.project.path}'",
                   ":discussion-id" => "'#{note.discussion_id}'",
@@ -36,7 +36,7 @@
                 .note-action-button
                   = icon("spin spinner", "v-show" => "loading")
                   %button.line-resolve-btn{ type: "button",
-                      class: ("is-disabled" if !can?(current_user, :resolve_note, note)),
+                      class: ("is-disabled" unless can?(current_user, :resolve_note, note)),
                       ":class" => "{ 'is-active': isResolved }",
                       ":aria-label" => "buttonText",
                       "@click" => "resolve",

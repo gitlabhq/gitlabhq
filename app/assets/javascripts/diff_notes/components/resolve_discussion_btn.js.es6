@@ -1,5 +1,5 @@
 ((w) => {
-  w.ResolveAllBtn = Vue.extend({
+  w.ResolveDiscussionBtn = Vue.extend({
     mixins: [
       ButtonMixins
     ],
@@ -17,15 +17,7 @@
     },
     computed: {
       allResolved: function () {
-        let isResolved = true;
-        for (const noteId in this.discussions[this.discussionId]) {
-          const resolved = this.discussions[this.discussionId][noteId].resolved;
-
-          if (!resolved) {
-            isResolved = false;
-          }
-        }
-        return isResolved;
+        return this.discussions[this.discussionId].isResolved();
       },
       buttonText: function () {
         if (this.allResolved) {

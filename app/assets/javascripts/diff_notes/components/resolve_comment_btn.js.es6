@@ -5,20 +5,10 @@
     },
     computed: {
       isDiscussionResolved: function () {
-        const notes = CommentsStore.notesForDiscussion(this.discussionId),
-              discussion = CommentsStore.state[this.discussionId];
-        let allResolved = true;
+        const discussion = CommentsStore.state[this.discussionId],
+              notes = CommentsStore.notesForDiscussion(this.discussionId);
 
-        for (let i = 0; i < notes.length; i++) {
-          const noteId = notes[i];
-          const note = discussion[noteId];
-
-          if (!note.resolved) {
-            allResolved = false;
-          }
-        }
-
-        return allResolved;
+        return discussion.isResolved();
       },
       buttonText: function () {
         if (this.isDiscussionResolved) {

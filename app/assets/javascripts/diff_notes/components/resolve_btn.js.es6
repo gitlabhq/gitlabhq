@@ -18,7 +18,16 @@
         loading: false
       };
     },
+    watch: {
+      'discussions': {
+        handler: 'updateTooltip',
+        deep: true
+      }
+    },
     computed: {
+      note: function () {
+        return CommentsStore.get(this.discussionId, this.noteId);
+      },
       buttonText: function () {
         if (this.isResolved) {
           return `Resolved by ${this.resolvedByName}`;
@@ -26,8 +35,12 @@
           return 'Mark as resolved';
         }
       },
-      isResolved: function () { return CommentsStore.get(this.discussionId, this.noteId).resolved; },
-      resolvedByName: function () { return CommentsStore.get(this.discussionId, this.noteId).user; },
+      isResolved: function () {
+        return this.note.resolved;
+      },
+      resolvedByName: function () {
+        return this.note.user;
+      },
     },
     methods: {
       updateTooltip: function () {

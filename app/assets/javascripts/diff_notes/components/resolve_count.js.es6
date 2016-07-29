@@ -11,18 +11,9 @@
         let resolvedCount = 0;
 
         for (const discussionId in this.discussions) {
-          const comments = this.discussions[discussionId];
-          let resolved = true;
+          const discussion = this.discussions[discussionId];
 
-          for (const noteId in comments) {
-            const commentResolved = comments[noteId].resolved;
-
-            if (!commentResolved) {
-              resolved = false;
-            }
-          }
-
-          if (resolved) {
+          if (discussion.isResolved()) {
             resolvedCount++;
           }
         }

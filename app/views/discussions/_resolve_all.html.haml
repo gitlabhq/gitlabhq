@@ -1,5 +1,5 @@
 - if discussion.can_resolve?(current_user)
-  %resolve-all-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
+  %resolve-discussion-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
       ":project-path" => "'#{discussion.project.path}'",
       ":discussion-id" => "'#{discussion.id}'",
       ":merge-request-id" => "#{discussion.noteable.iid}",

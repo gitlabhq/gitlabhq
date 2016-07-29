@@ -1,11 +1,10 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form" }, authenticity_token: true do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = note_target_fields(@note)
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
   = f.hidden_field :noteable_id
-  = hidden_field_tag :noteable_iid, @note.noteable.try(:iid)
   = f.hidden_field :noteable_type
   = f.hidden_field :type
   = f.hidden_field :position

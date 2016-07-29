@@ -300,10 +300,8 @@
         discussionContainer.append(note_html);
       }
 
-      if ($('resolve-btn, resolve-all-btn, jump-to-discussion').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
-        $('resolve-btn, resolve-all-btn, jump-to-discussion').each(function () {
-          DiffNotesApp.$compile($(this).get(0))
-        });
+      if (compileVueComponentsForDiffNotes) {
+        compileVueComponentsForDiffNotes();
       }
 
       gl.utils.localTimeAgo($('.js-timeago', note_html), false);
@@ -402,7 +400,7 @@
         var namespacePath = $form.attr('data-namespace-path'),
             projectPath = $form.attr('data-project-path')
             discussionId = $form.attr('data-discussion-id'),
-            mergeRequestId = $('input[name="noteable_iid"]', $form).val(),
+            mergeRequestId = $form.attr('data-noteable-iid'),
             namespace = namespacePath + '/' + projectPath;
 
         if (ResolveService != null) {
@@ -429,20 +427,10 @@
       $html.find('.js-task-list-container').taskList('enable');
       $note_li = $('.note-row-' + note.id);
 
-      if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
-        ref = DiffNotesApp.$refs['' + note.id + ''];
-
-        if (ref) {
-          ref.$destroy(true);
-        }
-      }
-
       $note_li.replaceWith($html);
 
-      if ($('resolve-btn, resolve-all-btn, jump-to-discussion').length && (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null)) {
-        $('resolve-btn, resolve-all-btn, jump-to-discussion').each(function () {
-          DiffNotesApp.$compile($(this).get(0))
-        });
+      if (compileVueComponentsForDiffNotes) {
+        compileVueComponentsForDiffNotes();
       }
     };
 
@@ -589,7 +577,7 @@
      */
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
-      var canResolve = dataHolder.attr('data-resolvable');
+      var canResolve = dataHolder.attr('data-can-resolve');
       form.attr('id', "new-discussion-note-form-" + (dataHolder.data("discussionId")));
       form.attr("data-line-code", dataHolder.data("lineCode"));
       form.find("#note_type").val(dataHolder.data("noteType"));
@@ -604,7 +592,7 @@
 
       if (canResolve === 'false') {
         form.find('resolve-comment-btn').remove();
-      } else if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
+      } else if (DiffNotesApp) {
         var $commentBtn = form.find('resolve-comment-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");

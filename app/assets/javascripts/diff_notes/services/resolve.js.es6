@@ -24,17 +24,7 @@
     }
 
     toggleResolveForDiscussion(namespace, mergeRequestId, discussionId) {
-      const noteIds = CommentsStore.notesForDiscussion(discussionId);
-      let isResolved = true;
-
-      for (let i = 0; i < noteIds.length; i++) {
-        const noteId = noteIds[i];
-        const resolved = CommentsStore.state[discussionId][noteId].resolved;
-
-        if (!resolved) {
-          isResolved = false;
-        }
-      }
+      const isResolved = CommentsStore.state[discussionId].isResolved();
 
       if (isResolved) {
         return this.unResolveAll(namespace, mergeRequestId, discussionId);
@@ -55,9 +45,11 @@
       }, {}).then((response) => {
         const data = response.data;
         const user = data ? data.resolved_by : null;
+        const discussion = CommentsStore.state[discussionId];
+        discussion.resolveAllNotes(user);
+
         CommentsStore.loading[discussionId] = false;
 
-        CommentsStore.updateCommentsForDiscussion(discussionId, true, user);
 
         this.updateUpdatedHtml(discussionId, data);
       });
@@ -74,9 +66,10 @@
         discussionId
       }, {}).then((response) => {
         const data = response.data;
-        CommentsStore.loading[discussionId] = false;
+        const discussion = CommentsStore.state[discussionId];
+        discussion.unResolveAllNotes();
 
-        CommentsStore.updateCommentsForDiscussion(discussionId, false);
+        CommentsStore.loading[discussionId] = false;
 
         this.updateUpdatedHtml(discussionId, data);
       });

@@ -10,40 +10,31 @@
     },
     computed: {
       allResolved: function () {
-        let allResolved = true;
-        for (const discussionId in this.discussions) {
-          const discussion = this.discussions[discussionId];
-
-          for (const noteId in discussion) {
-            const note = discussion[noteId];
-
-            if (!note.resolved) {
-              allResolved = false;
-            }
-          }
-        }
-
-        return allResolved;
+        const discussion = this.discussions[discussionId];
+        return discussion.isResolved();
       }
     },
     methods: {
       jumpToNextUnresolvedDiscussion: function () {
-        let nextUnresolvedDiscussionId;
+        let nextUnresolvedDiscussionId,
+            firstUnresolvedDiscussionId;
 
         if (!this.discussionId) {
+          let i = 0;
           for (const discussionId in this.discussions) {
             const discussion = this.discussions[discussionId];
+            const isResolved = discussion.isResolved();
 
-            for (const noteId in discussion) {
-              const note = discussion[noteId];
-
-              if (!note.resolved) {
-                nextUnresolvedDiscussionId = discussionId;
-                break;
-              }
+            if (!firstUnresolvedDiscussionId && !isResolved) {
+              firstUnresolvedDiscussionId = discussionId;
             }
 
-            if (nextUnresolvedDiscussionId) break;
+            if (!isResolved) {
+              nextUnresolvedDiscussionId = discussionId;
+              break;
+            }
+
+            i++;
           }
         } else {
           const discussionKeys = Object.keys(this.discussions),
@@ -52,7 +43,14 @@
 
           if (nextDiscussionId) {
             nextUnresolvedDiscussionId = nextDiscussionId;
+          } else {
+            firstUnresolvedDiscussionId = discussionKeys[0];
           }
+        }
+
+        if (firstUnresolvedDiscussionId) {
+          // Jump to first unresolved discussion
+          nextUnresolvedDiscussionId = firstUnresolvedDiscussionId;
         }
 
         if (nextUnresolvedDiscussionId) {
