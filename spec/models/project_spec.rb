@@ -1173,46 +1173,6 @@ describe Project, models: true do
     end
   end
 
-  describe "#developers_can_push_to_protected_branch?" do
-    let(:project) { create(:empty_project) }
-
-    context "when the branch matches a protected branch via direct match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be false
-      end
-    end
-
-    context "when the branch matches a protected branch via wilcard match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be false
-      end
-    end
-
-    context "when the branch does not match a protected branch" do
-      it "returns false" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('staging/some-branch')).to be false
-      end
-    end
-  end
-
   describe '#container_registry_path_with_namespace' do
     let(:project) { create(:empty_project, path: 'PROJECT') }
 
