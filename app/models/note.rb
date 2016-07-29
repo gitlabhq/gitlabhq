@@ -88,7 +88,6 @@ class Note < ActiveRecord::Base
     def grouped_diff_discussions
       active_notes = diff_notes.fresh.select(&:active?)
       Discussion.for_diff_notes(active_notes).
-        reject(&:resolved?).
         map { |d| [d.line_code, d] }.to_h
     end
 

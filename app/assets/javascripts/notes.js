@@ -637,16 +637,19 @@
       nextRow = row.next();
       hasNotes = nextRow.is(".notes_holder");
       addForm = false;
-      targetContent = ".notes_content";
-      rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"></td></tr>";
+      notesContentSelector = ".notes_content";
+      rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"><div class=\"content\"></div></td></tr>";
       if (this.isParallelView()) {
         lineType = $link.data("lineType");
-        targetContent += "." + lineType;
-        rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\"></td><td class=\"notes_content parallel old\"></td><td class=\"notes_line\"></td><td class=\"notes_content parallel new\"></td></tr>";
+        notesContentSelector += "." + lineType;
+        rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line old\"></td><td class=\"notes_content parallel old\"><div class=\"content\"></div></td><td class=\"notes_line new\"></td><td class=\"notes_content parallel new\"><div class=\"content\"></div></td></tr>";
       }
+      notesContentSelector += " .content";
       if (hasNotes) {
-        notesContent = nextRow.find(targetContent);
+        nextRow.show();
+        notesContent = nextRow.find(notesContentSelector);
         if (notesContent.length) {
+          notesContent.show();
           replyButton = notesContent.find(".js-discussion-reply-button:visible");
           if (replyButton.length) {
             e.target = replyButton[0];
@@ -660,11 +663,13 @@
         }
       } else {
         row.after(rowCssToAdd);
+        nextRow = row.next();
+        notesContent = nextRow.find(notesContentSelector);
         addForm = true;
       }
       if (addForm) {
         newForm = this.formClone.clone();
-        newForm.appendTo(row.next().find(targetContent));
+        newForm.appendTo(notesContent);
         return this.setupDiscussionNoteForm($link, newForm);
       }
     };

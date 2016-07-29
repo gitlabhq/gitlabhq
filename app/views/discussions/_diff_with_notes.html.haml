@@ -11,4 +11,4 @@
         = render "projects/diffs/line", line: line, diff_file: diff_file, plain: true
 
         - if discussion.for_line?(line)
-          = render "discussions/diff_discussion", discussion: discussion
+          = render "discussions/diff_discussion", discussion: discussion, expanded: true

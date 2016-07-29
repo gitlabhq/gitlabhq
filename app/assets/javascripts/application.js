@@ -224,7 +224,12 @@
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
       $(this).toggleClass('active');
-      $(this).closest(".diff-file").find(".notes_holder").toggle();
+      var notesHolders = $(this).closest(".diff-file").find(".notes_holder");
+      if ($(this).hasClass('active')) {
+        notesHolders.show();
+      } else {
+        notesHolders.hide();
+      }
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');
