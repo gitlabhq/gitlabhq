@@ -4,6 +4,10 @@ describe Gitlab::Conflict::Parser, lib: true do
   let(:parser) { Gitlab::Conflict::Parser.new }
 
   describe '#parse' do
+    def parse_text(text)
+      parser.parse(text, our_path: 'README.md', their_path: 'README.md')
+    end
+
     context 'when the file has valid conflicts' do
       let(:text) do
         <<CONFLICT
@@ -116,12 +120,6 @@ CONFLICT
     end
 
     context 'when the file contents include conflict delimiters' do
-      let(:path) { 'README.md' }
-
-      def parse_text(text)
-        parser.parse(text, our_path: path, their_path: path)
-      end
-
       it 'raises UnexpectedDelimiter when there is a non-start delimiter first' do
         expect { parse_text('=======') }.
           to raise_error(Gitlab::Conflict::Parser::UnexpectedDelimiter)
@@ -172,9 +170,19 @@ CONFLICT
       end
     end
 
-    context 'when lines is blank' do
-      it { expect(parser.parse('', our_path: 'README.md', their_path: 'README.md')).to eq([]) }
-      it { expect(parser.parse(nil, our_path: 'README.md', their_path: 'README.md')).to eq([]) }
+    context 'other file types' do
+      it 'raises UnmergeableFile when lines is blank, indicating a binary file' do
+        expect { parse_text('') }.
+          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+
+        expect { parse_text(nil) }.
+          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+      end
+
+      it 'raises UnmergeableFile when the file is over 100 KB' do
+        expect { parse_text('a' * 102401) }.
+          to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
+      end
     end
   end
 end

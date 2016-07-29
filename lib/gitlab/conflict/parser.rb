@@ -10,8 +10,12 @@ module Gitlab
       class MissingEndDelimiter < ParserError
       end
 
+      class UnmergeableFile < ParserError
+      end
+
       def parse(text, our_path:, their_path:, parent: nil)
-        return [] if text.blank?
+        raise UnmergeableFile if text.blank? # Typically a binary file
+        raise UnmergeableFile if text.length > 102400
 
         line_obj_index = 0
         line_old = 1
