@@ -83,13 +83,13 @@
     }
 
     updateUpdatedHtml(discussionId, data) {
-      const $discussionHeadline = $(`.${discussionId} .js-discussion-headline`);
+      const $discussionHeadline = $(`.discussion[data-discussion-id="${discussionId}"] .js-discussion-headline`);
 
-      if (data.updated_html) {
+      if (data.discussion_headline_html) {
         if ($discussionHeadline.length) {
-          $discussionHeadline.replaceWith(data.updated_html);
+          $discussionHeadline.replaceWith(data.discussion_headline_html);
         } else {
-          $(`.${discussionId} .discussion-header`).append(data.updated_html);
+          $(`.discussion[data-discussion-id="${discussionId}"] .discussion-header`).append(data.discussion_headline_html);
         }
       } else {
          $discussionHeadline.remove();

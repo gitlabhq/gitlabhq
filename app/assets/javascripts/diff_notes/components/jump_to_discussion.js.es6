@@ -56,7 +56,7 @@
         }
 
         if (nextUnresolvedDiscussionId) {
-          $.scrollTo(`.${nextUnresolvedDiscussionId}`, {
+          $.scrollTo(`.discussion[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
             offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
           });
         }
