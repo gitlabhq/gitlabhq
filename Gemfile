@@ -9,6 +9,7 @@ gem 'responders', '~> 2.0'
 # Specify a sprockets version due to increased performance
 # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
 gem 'sprockets', '~> 3.6.0'
+gem 'sprockets-es6'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
@@ -34,6 +35,7 @@ gem 'omniauth-saml',          '~> 1.6.0'
 gem 'omniauth-shibboleth',    '~> 1.2.0'
 gem 'omniauth-twitter',       '~> 1.2.0'
 gem 'omniauth_crowd',         '~> 2.2.0'
+gem 'gssapi', group: :kerberos
 gem 'rack-oauth2',            '~> 1.2.1'
 gem 'jwt'
 
@@ -47,6 +49,9 @@ gem 'rqrcode-rails3', '~> 0.1.7'
 gem 'attr_encrypted', '~> 3.0.0'
 gem 'u2f', '~> 0.2.1'
 
+# GitLab Pages
+gem 'validates_hostname', '~> 1.0.0'
+
 # Browser detection
 gem 'browser', '~> 2.2'
 
@@ -58,6 +63,7 @@ gem 'gitlab_git', '~> 10.3.2'
 # GitLab fork with several improvements to original library. For full list of changes
 # see https://github.com/intridea/omniauth-ldap/compare/master...gitlabhq:master
 gem 'gitlab_omniauth-ldap', '~> 1.2.1', require: 'omniauth-ldap'
+gem 'net-ldap'
 
 # Git Wiki
 # Required manually in config/initializers/gollum.rb to control load order
@@ -101,6 +107,11 @@ gem 'six', '~> 0.2.0'
 
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
+
+# Search
+gem 'elasticsearch-model'
+gem 'elasticsearch-rails'
+gem 'gitlab-elasticsearch-git', '~> 0.0.15', require: "elasticsearch/git"
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -224,7 +235,7 @@ gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.6.1'
 gem 'gemojione',          '~> 3.0'
-gem 'gon',                '~> 6.0.1'
+gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
@@ -233,6 +244,7 @@ gem 'select2-rails',      '~> 3.5.9'
 gem 'virtus',             '~> 1.0.1'
 gem 'net-ssh',            '~> 3.0.1'
 gem 'base32',             '~> 0.3.0'
+gem "gitlab-license", "~> 1.0"
 
 # Sentry integration
 gem 'sentry-raven', '~> 1.1.0'
@@ -252,7 +264,7 @@ group :development do
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rerun', '~> 0.11.0'
-  gem 'bullet', '~> 5.0.0', require: false
+  gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
 
@@ -274,7 +286,7 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner',   '~> 1.4.0'
+  gem 'database_cleaner',   '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.5.0'
   gem 'rspec-retry',        '~> 0.4.5'
@@ -302,7 +314,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.41.2', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'simplecov', '~> 0.11.0', require: false
+  gem 'simplecov', '0.12.0', require: false
   gem 'flog', '~> 4.3.2', require: false
   gem 'flay', '~> 2.6.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -333,6 +345,8 @@ gem 'mail_room', '~> 0.8'
 
 gem 'email_reply_parser', '~> 0.5.8'
 
+gem 'ruby-prof', '~> 0.15.9'
+
 ## CI
 gem 'activerecord-session_store', '~> 1.0.0'
 gem 'nested_form', '~> 0.3.2'
@@ -347,8 +361,5 @@ gem 'paranoia', '~> 2.0'
 gem 'health_check', '~> 2.1.0'
 
 # System information
-gem 'vmstat', '~> 2.1.0'
+gem 'vmstat', '~> 2.1.1'
 gem 'sys-filesystem', '~> 1.1.6'
-
-# Secure headers for Content Security Policy
-gem 'secure_headers', '~> 3.3'

@@ -1,0 +1,23 @@
+- if defined?(events)
+  %table.table#audits
+    %thead
+      %tr
+        %th Author
+        %th Action
+        %th Target
+        %th At
+
+    %tbody
+      - events.each do |event|
+        %tr
+          %td
+            - if event.author_name
+              #{event.author_name}
+            - else
+              (removed)
+          %td
+            %span
+              #{raw human_text(event.details)}
+          %td #{event.details[:target_details]}
+          %td #{event.created_at}
+  = paginate events, theme: "gitlab"

@@ -21,7 +21,15 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    access_level = params[:access_level]
+    user_ids = params[:user_ids].split(',')
+
+    @group.add_users(user_ids, access_level, current_user)
+    group_members = @group.group_members.where(user_id: user_ids)
+
+    group_members.each do |group_member|
+      log_audit_event(group_member, action: :create)
+    end
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
@@ -31,7 +39,11 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
-    @group_member.update_attributes(member_params)
+    old_access_level = @group_member.human_access
+
+    if @group_member.update_attributes(member_params)
+      log_audit_event(@group_member, action: :update, old_access_level: old_access_level)
+    end
   end
 
   def destroy
@@ -39,6 +51,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       @group.requesters.find_by(id: params[:id])
 
     Members::DestroyService.new(@group_member, current_user).execute
+    log_audit_event(@group_member, action: :destroy)
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }

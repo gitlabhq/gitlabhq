@@ -9,14 +9,16 @@
       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
         %span
           Overview
-    = nav_link(controller: %w(system_info background_jobs logs health_check)) do
+    = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
       = link_to admin_system_info_path, title: 'Monitoring' do
         %span
           Monitoring
+
     = nav_link(controller: :broadcast_messages) do
       = link_to admin_broadcast_messages_path, title: 'Messages' do
         %span
           Messages
+
     = nav_link(controller: :hooks) do
       = link_to admin_hooks_path, title: 'Hooks' do
         %span
@@ -33,8 +35,23 @@
           Abuse Reports
           %span.badge.count= number_with_delimiter(AbuseReport.count(:all))
 
+    = nav_link(controller: :licenses) do
+      = link_to admin_license_path, title: 'License' do
+        %span
+          License
+
     - if askimet_enabled?
       = nav_link(controller: :spam_logs) do
         = link_to admin_spam_logs_path, title: "Spam Logs" do
           %span
             Spam Logs
+
+    = nav_link(controller: :push_rules) do
+      = link_to admin_push_rules_path, title: 'Push Rules' do
+        %span
+          Push Rules
+
+    = nav_link(controller: :geo_nodes) do
+      = link_to admin_geo_nodes_path, title: 'Geo Nodes' do
+        %span
+          Geo Nodes

@@ -1,0 +1,78 @@
+- page_title "Mirror Repository"
+
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Pull from a remote repository
+    %p.light
+      Set up your project to automatically have its branches, tags, and commits updated from an upstream repository every hour.
+  .col-lg-9
+    %h5.prepend-top-0
+      Set up mirror repository
+    = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project) do |f|
+      = form_errors(@project)
+      = render "shared/mirror_update_button"
+      - if @project.mirror_last_update_failed?
+        .panel.panel-danger
+          .panel-heading
+            The repository failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+            - if @project.mirror_ever_updated_successfully?
+              Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+          .panel-body
+            %pre
+              :preserve
+                #{@project.import_error.try(:strip)}
+      .form-group
+        = f.check_box :mirror, class: "pull-left"
+        .prepend-left-20
+          = f.label :mirror, "Mirror repository", class: "label-light append-bottom-0"
+          %p.light.append-bottom-0
+            Automatically update this project's branches, tags, and commits from the upstream repository every hour.
+      .form-group
+        = f.label :import_url, "Git repository URL", class: "label-light"
+        = f.text_field :import_url, class: 'form-control', placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+        = render "instructions"
+      .form-group
+        = f.label :mirror_user_id, "Mirror user", class: "label-light"
+        = users_select_tag("project[mirror_user_id]", class: 'input-large', selected: @project.mirror_user_id || current_user.id,
+          first_user: true, current_user: true, push_code_to_protected_branches: true)
+        .help-block
+          This user will be the author of all events in the activity feed that are the result of an update,
+          like new branches being created or new commits being pushed to existing branches.
+          They need to have at least master access to this project.
+      - if @project.builds_enabled?
+        = render "shared/mirror_trigger_builds_setting", f: f
+      = f.submit "Update", class: "btn btn-save"
+  .col-sm-12
+    %hr
+  .col-lg-3
+    %h4.prepend-top-0
+      Push to a remote repository
+    %p.light
+      Set up the remote repository that you want to update with the content of the current repository every hour.
+  .col-lg-9
+    = form_for @project, url: namespace_project_mirror_path(@project.namespace, @project) do |f|
+      = form_errors(@project)
+      = render "shared/remote_mirror_update_button", remote_mirror: @remote_mirror
+      - if @remote_mirror.last_error.present?
+        .panel.panel-danger
+          .panel-heading
+            The remote repository failed to update #{time_ago_with_tooltip(@remote_mirror.last_update_at)}.
+            - if @remote_mirror.last_successful_update_at
+              Last successful update #{time_ago_with_tooltip(@remote_mirror.last_successful_update_at)}.
+          .panel-body
+            %pre
+              :preserve
+                #{@remote_mirror.last_error.strip}
+      = f.fields_for :remote_mirrors, @remote_mirror do |rm_form|
+        .form-group
+          = rm_form.check_box :enabled, class: "pull-left"
+          .prepend-left-20
+            = rm_form.label :enabled, "Remote mirror repository", class: "label-light append-bottom-0"
+            %p.light.append-bottom-0
+              Automatically update the remote mirror's branches, tags, and commits from this repository every hour.
+        .form-group.has-feedback
+          = rm_form.label :url, "Git repository URL", class: "label-light"
+          = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'
+          = render "instructions"
+      = f.submit "Update", class: "btn btn-create"

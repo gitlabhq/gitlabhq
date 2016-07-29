@@ -28,7 +28,7 @@ class Profiles::KeysController < Profiles::ApplicationController
 
   def destroy
     @key = current_user.keys.find(params[:id])
-    @key.destroy
+    @key.destroy unless @key.is_a? LDAPKey
 
     respond_to do |format|
       format.html { redirect_to profile_keys_url }

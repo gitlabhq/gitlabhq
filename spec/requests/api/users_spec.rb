@@ -69,6 +69,18 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'confirmed_at'
       end
     end
+
+    context "when authenticated and ldap is enabled" do
+      it "should return non-ldap user" do
+        User.delete_all
+        create :omniauth_user, provider: "ldapserver1"
+        get api("/users", user), skip_ldap: "true"
+        expect(response.status).to eq 200
+        expect(json_response).to be_an Array
+        username = user.username
+        expect(json_response.first["username"]).to eq username
+      end
+    end
   end
 
   describe "GET /users/:id" do

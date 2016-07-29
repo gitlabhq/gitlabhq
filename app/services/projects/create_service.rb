@@ -94,6 +94,13 @@ module Projects
       unless @project.group || @project.gitlab_project_import?
         @project.team << [current_user, :master, current_user]
       end
+
+      predefined_push_rule = PushRule.find_by(is_sample: true)
+
+      if predefined_push_rule
+        push_rule = predefined_push_rule.dup.tap{ |gh| gh.is_sample = false }
+        project.push_rule = push_rule
+      end
     end
 
     def save_project_and_import_data(import_data)

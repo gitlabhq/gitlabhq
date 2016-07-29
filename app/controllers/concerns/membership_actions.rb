@@ -16,6 +16,8 @@ module MembershipActions
 
     @member.accept_request
 
+    log_audit_event(@member, action: :create)
+
     redirect_to polymorphic_url([membershipable, :members])
   end
 
@@ -31,6 +33,9 @@ module MembershipActions
       else
         "You left the \"#{@member.source.human_name}\" #{source_type}."
       end
+    
+    log_audit_event(@member, action: :destroy) unless @member.request?
+    
     redirect_path = @member.request? ? @member.source : [:dashboard, @member.real_source_type.tableize]
 
     redirect_to redirect_path, notice: notice
@@ -40,5 +45,10 @@ module MembershipActions
 
   def membershipable
     raise NotImplementedError
+  end
+
+  def log_audit_event(member, options = {})
+    AuditEventService.new(current_user, membershipable, options).
+      for_member(member).security_event
   end
 end

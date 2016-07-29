@@ -29,5 +29,11 @@ describe MergeRequestsFinder do
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(1)
     end
+
+    it 'should ignore sorting by weight' do
+      params = { project_id: project1.id, scope: 'authored', state: 'opened', weight: Issue::WEIGHT_ANY }
+      merge_requests = MergeRequestsFinder.new(user, params).execute
+      expect(merge_requests.size).to eq(1)
+    end
   end
 end

@@ -850,7 +850,6 @@ Parameters:
 {
   "alt": "dk",
   "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
-  "is_image": true,
   "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
 }
 ```
@@ -1209,3 +1208,72 @@ Parameters:
 - `page` (optional) - the page to retrieve
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order
+
+## Push Rules (EE only)
+
+### Show project push rules
+
+Get a project push rule.
+
+```
+GET /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_message_regex": "Fixes \d +\",
+  "deny_delete_tag": false,
+  "created_at": "2012-10-12T17:04:47Z"
+}
+```
+
+### Add project push rule
+
+Adds a push rule to a specified project.
+
+```
+POST /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `deny_delete_tag` - Do not allow users to remove git tags with git push
+- `commit_message_regex` - Commit message regex
+
+### Edit project push rule
+
+Edits a push rule for a specified project.
+
+```
+PUT /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `deny_delete_tag` - Do not allow users to remove git tags with git push
+- `commit_message_regex` - Commit message regex
+
+### Delete project push rule
+
+Removes a push rule from a project. This is an idempotent method and can be called multiple times.
+Either the push rule is available or not.
+
+```
+DELETE /projects/:id/push_rule
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+Note the JSON response differs if the push rule is available or not. If the project push rule
+is available before it is returned in the JSON response or an empty response is returned.

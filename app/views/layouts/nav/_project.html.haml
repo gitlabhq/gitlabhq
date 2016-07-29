@@ -41,7 +41,7 @@
           Activity
 
     - if project_nav_tab? :files
-      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare repositories tags branches releases network)) do
+      = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file commit commits compare repositories tags branches releases network path_locks)) do
         = link_to project_files_path(@project), title: 'Repository',  class: 'shortcuts-tree' do
           %span
             Repository

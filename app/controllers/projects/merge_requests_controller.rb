@@ -3,12 +3,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include DiffForPath
   include DiffHelper
   include IssuableActions
+  include NotesHelper
   include ToggleAwardEmoji
 
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip,
+    :approve, :rebase
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
@@ -59,7 +61,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_discussion_vars }
 
       format.json do
-        render json: @merge_request
+        render json: @merge_request, methods: :rebase_in_progress?
       end
 
       format.patch  do
@@ -97,7 +99,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       build_merge_request
       @diff_notes_disabled = true
-      @grouped_diff_notes = {}
+      @grouped_diff_discussions = {}
     end
 
     define_commit_vars
@@ -159,17 +161,23 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
+
+    set_suggested_approvers
   end
 
   def create
     @target_branches ||= []
-    @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
+    create_params = clamp_approvals_before_merge(merge_request_params)
+
+    @merge_request = MergeRequests::CreateService.new(project, current_user, create_params).execute
 
     if @merge_request.valid?
       redirect_to(merge_request_path(@merge_request))
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
+      set_suggested_approvers
+
       render action: "new"
     end
   end
@@ -178,10 +186,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+
+    set_suggested_approvers
   end
 
   def update
-    @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
+    update_params = clamp_approvals_before_merge(merge_request_params)
+
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, update_params).execute(@merge_request)
 
     if @merge_request.valid?
       respond_to do |format|
@@ -194,6 +206,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         end
       end
     else
+      set_suggested_approvers
+
       render "edit"
     end
   end
@@ -219,11 +233,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
 
     # Disable the CI check if merge_when_build_succeeds is enabled since we have
     # to wait until CI completes to know
     unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)
       @status = :failed
+      return
+    end
+
+    merge_request_service = MergeRequests::MergeService.new(@project, current_user, merge_params)
+
+    unless merge_request_service.hooks_validation_pass?(@merge_request)
+      @status = :hook_validation_error
       return
     end
 
@@ -260,6 +282,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def rebase
+    return access_denied! unless @merge_request.can_be_merged_by?(current_user)
+    return render_404 unless @merge_request.approved?
+
+    RebaseWorker.perform_async(@merge_request.id, current_user.id)
+  end
+
   def branch_from
     # This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
@@ -286,6 +315,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       status = pipeline.status
       coverage = pipeline.try(:coverage)
 
+      status = "success_with_warnings" if pipeline.success? && pipeline.has_warnings?
+
       status ||= "preparing"
     else
       ci_service = @merge_request.source_project.ci_service
@@ -304,6 +335,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     render json: response
+  end
+
+  def approve
+    unless @merge_request.can_approve?(current_user)
+      return render_404
+    end
+
+    MergeRequests::ApprovalService.
+      new(project, current_user).
+      execute(@merge_request)
+
+    redirect_to merge_request_path(@merge_request)
   end
 
   protected
@@ -376,13 +419,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     # This is not executed lazily
     @notes = Banzai::NoteRenderer.render(
-      @discussions.flatten,
+      @discussions.flat_map(&:notes),
       @project,
       current_user,
       @path,
       @project_wiki,
       @ref
     )
+
+    preload_max_access_for_authors(@notes, @project)
   end
 
   def define_widget_vars
@@ -402,10 +447,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_notes = @merge_request.notes.grouped_diff_notes
+    @grouped_diff_discussions = @merge_request.notes.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
-      @grouped_diff_notes.values.flatten,
+      @grouped_diff_discussions.values.flat_map(&:notes),
       @project,
       current_user,
       @path,
@@ -419,13 +464,32 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     render 'invalid'
   end
 
+  def set_suggested_approvers
+    if @merge_request.requires_approve?
+      @suggested_approvers = Gitlab::AuthorityAnalyzer.new(
+        @merge_request
+      ).calculate(@merge_request.approvals_required)
+    end
+  end
+
   def merge_request_params
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
-      :target_project_id, :target_branch, :milestone_id,
+      :target_project_id, :target_branch, :milestone_id, :approver_ids,
       :state_event, :description, :task_num, :force_remove_source_branch,
-      label_ids: []
+      :approvals_before_merge, label_ids: []
     )
+  end
+
+  def clamp_approvals_before_merge(mr_params)
+    target_project = @project.forked_from_project if @project.id.to_s != mr_params[:target_project_id]
+    target_project ||= @project
+
+    if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge
+      mr_params.delete(:approvals_before_merge)
+    end
+
+    mr_params
   end
 
   def merge_params

@@ -1,0 +1,141 @@
+- page_title "Contribution Analytics"
+- header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
+
+.gray-content-block
+  .pull-right
+    .dropdown.inline
+      %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+        = icon('calendar-o')
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to group_analytics_path(@group, start_date: Date.today - 1.week) do
+            Last week
+        %li
+          = link_to group_analytics_path(@group, start_date: Date.today - 1.month) do
+            Last month
+        %li
+          = link_to group_analytics_path(@group, start_date: Date.today - 3.months) do
+            Last 3 months
+  .oneline
+    Contribution analytics for issues, merge requests and push events since #{@start_date}
+
+%h3 Push
+
+.row
+  .col-md-4
+    %ul
+      %li
+        = @events.code_push.count
+        times
+      %li
+        more than
+        = @events.code_push.map(&:commits_count).sum
+        commits
+      %li
+        by
+        = pluralize @events.code_push.pluck(:author_id).uniq.count, 'person'
+
+  .col-md-8
+    %div
+      %p.light Push events per group member
+      %canvas#push{height: 250}
+
+%h3 Merge Requests
+
+.row
+  .col-md-4
+    %ul
+      %li
+        = @events.merge_requests.created.count
+        created
+      %li
+        = @events.merge_requests.merged.count
+        accepted
+
+  .col-md-8
+    %div
+      %p.light Merge requests created per group member
+      %canvas#merge_requests{height: 250}
+
+%h3 Issues
+
+.row
+  .col-md-4
+    %ul
+      %li
+        = @events.issues.created.count
+        created
+      %li
+        = @events.issues.closed.pluck(:target_id).uniq.count
+        closed
+
+  .col-md-8
+    %div
+      %p.light Issues closed per group member
+      %canvas#issues{height: 250}
+
+.gray-content-block
+  .oneline
+    Contributions per group member
+
+.table-holder
+  %table.table.sortable-table#event-stats
+    %thead
+      %tr
+        %th.sortable
+          Name
+          = icon('sort')
+        %th.sortable
+          Pushed
+          = icon('sort')
+        %th.sortable
+          Opened issues
+          = icon('sort')
+        %th.sortable
+          Closed issues
+          = icon('sort')
+        %th.sortable
+          Opened MR
+          = icon('sort')
+        %th.sortable
+          Accepted MR
+          = icon('sort')
+        %th.sortable
+          Total Contributions
+          = icon('sort')
+    %tbody
+      - @users.each do |user|
+        %tr
+          %td
+            %strong
+              = link_to user.name, user
+          %td= @events.code_push.where(author_id: user).count
+          %td= @events.issues.created.where(author_id: user).count
+          %td= @events.issues.closed.where(author_id: user).count
+          %td= @events.merge_requests.created.where(author_id: user).count
+          %td= @events.merge_requests.merged.where(author_id: user).count
+          %td= @events.where(author_id: user).count
+
+
+
+- [:push, :issues, :merge_requests].each do |scope|
+  :javascript
+    var data = {
+      labels : #{@users.map(&:name).to_json},
+      datasets : [
+        {
+          fillColor : "rgba(220,220,220,0.5)",
+          strokeColor : "rgba(220,220,220,1)",
+          barStrokeWidth: 1,
+          barValueSpacing: 1,
+          barDatasetSpacing: 1,
+          data : #{@stats[scope].to_json}
+        }
+      ]
+    }
+    var ctx = $("##{scope}").get(0).getContext("2d");
+    new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
+
+:javascript
+  $("#event-stats").tablesorter();

@@ -291,6 +291,10 @@ Style/MultilineMethodDefinitionBraceLayout:
 Style/MultilineOperationIndentation:
   Enabled: false
 
+# Avoid multi-line `? :` (the ternary operator), use if/unless instead.
+Style/MultilineTernaryOperator:
+  Enabled: true
+
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
   Enabled: true
@@ -464,7 +468,7 @@ Style/WordArray:
 # branches, and conditions.
 Metrics/AbcSize:
   Enabled: true
-  Max: 60
+  Max: 64
 
 # Avoid excessive block nesting.
 Metrics/BlockNesting:
@@ -479,7 +483,7 @@ Metrics/ClassLength:
 # of test cases needed to validate a method.
 Metrics/CyclomaticComplexity:
   Enabled: true
-  Max: 17
+  Max: 18
 
 # Limit lines to 80 characters.
 Metrics/LineLength:
@@ -707,6 +711,9 @@ Performance/TimesMap:
 # Enables Rails cops.
 Rails:
   Enabled: true
+
+Rails/UniqBeforePluck:
+  Enabled: false
 
 # Enforces consistent use of action filter methods.
 Rails/ActionFilter:

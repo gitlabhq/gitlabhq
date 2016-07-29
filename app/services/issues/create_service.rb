@@ -2,9 +2,13 @@ module Issues
   class CreateService < Issues::BaseService
     def execute
       filter_params
-      label_params = params[:label_ids]
-      issue = project.issues.new(params.except(:label_ids))
+      label_params = params.delete(:label_ids)
+      request = params.delete(:request)
+      api = params.delete(:api)
+      issue = project.issues.new(params)
       issue.author = params[:author] || current_user
+
+      issue.spam = spam_check_service.execute(request, api)
 
       if issue.save
         issue.update_attributes(label_ids: label_params)
@@ -16,6 +20,12 @@ module Issues
       end
 
       issue
+    end
+
+    private
+
+    def spam_check_service
+      SpamCheckService.new(project, current_user, params)
     end
   end
 end

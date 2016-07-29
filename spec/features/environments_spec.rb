@@ -13,6 +13,7 @@ feature 'Environments', feature: true do
   describe 'when showing environments' do
     given!(:environment) { }
     given!(:deployment) { }
+    given!(:manual) { }
 
     before do
       visit namespace_project_environments_path(project.namespace, project)
@@ -43,6 +44,24 @@ feature 'Environments', feature: true do
         scenario 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
         end
+
+        context 'with build and manual actions' do
+          given(:pipeline) { create(:ci_pipeline, project: project) }
+          given(:build) { create(:ci_build, pipeline: pipeline) }
+          given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+          given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
+
+          scenario 'does show a play button' do
+            expect(page).to have_link(manual.name.humanize)
+          end
+
+          scenario 'does allow to play manual action' do
+            expect(manual).to be_skipped
+            expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
+            expect(page).to have_content(manual.name)
+            expect(manual.reload).to be_pending
+          end
+        end
       end
     end
 
@@ -54,6 +73,7 @@ feature 'Environments', feature: true do
   describe 'when showing the environment' do
     given(:environment) { create(:environment, project: project) }
     given!(:deployment) { }
+    given!(:manual) { }
 
     before do
       visit namespace_project_environment_path(project.namespace, project, environment)
@@ -72,20 +92,36 @@ feature 'Environments', feature: true do
         expect(page).to have_link(deployment.short_sha)
       end
 
-      scenario 'does not show a retry button for deployment without build' do
-        expect(page).not_to have_link('Retry')
+      scenario 'does not show a re-deploy button for deployment without build' do
+        expect(page).not_to have_link('Re-deploy')
       end
 
       context 'with build' do
-        given(:build) { create(:ci_build, project: project) }
+        given(:pipeline) { create(:ci_pipeline, project: project) }
+        given(:build) { create(:ci_build, pipeline: pipeline) }
         given(:deployment) { create(:deployment, environment: environment, deployable: build) }
 
         scenario 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
         end
 
-        scenario 'does show retry button' do
-          expect(page).to have_link('Retry')
+        scenario 'does show re-deploy button' do
+          expect(page).to have_link('Re-deploy')
+        end
+
+        context 'with manual action' do
+          given(:manual) { create(:ci_build, :manual, pipeline: pipeline, name: 'deploy to production') }
+
+          scenario 'does show a play button' do
+            expect(page).to have_link(manual.name.humanize)
+          end
+
+          scenario 'does allow to play manual action' do
+            expect(manual).to be_skipped
+            expect{ click_link(manual.name.humanize) }.not_to change { Ci::Pipeline.count }
+            expect(page).to have_content(manual.name)
+            expect(manual.reload).to be_pending
+          end
         end
       end
     end

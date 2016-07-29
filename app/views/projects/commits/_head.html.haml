@@ -28,3 +28,9 @@
       = nav_link(controller: [:tags, :releases]) do
         = link_to namespace_project_tags_path(@project.namespace, @project) do
           Tags
+      - if license_allows_file_locks?
+        = nav_link(controller: [:path_locks]) do
+          = link_to namespace_project_path_locks_path(@project.namespace, @project) do
+            Locked Files
+
+      .fade-right

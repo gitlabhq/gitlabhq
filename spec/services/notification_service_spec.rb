@@ -733,6 +733,41 @@ describe NotificationService, services: true do
         should_email(subscriber)
       end
 
+      context 'when the target project has approvers set' do
+        let(:project_approvers) { create_list(:user, 3) }
+
+        before do
+          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+          project_approvers.each { |approver| create(:approver, user: approver, target: merge_request.target_project) }
+        end
+
+        it 'emails the approvers' do
+          notification.new_merge_request(merge_request, @u_disabled)
+
+          project_approvers.each { |approver| should_email(approver) }
+        end
+
+        context 'when the merge request has approvers set' do
+          let(:mr_approvers) { create_list(:user, 3) }
+
+          before do
+            mr_approvers.each { |approver| create(:approver, user: approver, target: merge_request) }
+          end
+
+          it 'emails the MR approvers' do
+            notification.new_merge_request(merge_request, @u_disabled)
+
+            mr_approvers.each { |approver| should_email(approver) }
+          end
+
+          it 'does not email approvers set on the project who are not approvers of this MR' do
+            notification.new_merge_request(merge_request, @u_disabled)
+
+            project_approvers.each { |approver| should_not_email(approver) }
+          end
+        end
+      end
+
       context 'participating' do
         context 'by assignee' do
           before do

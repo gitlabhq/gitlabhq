@@ -30,6 +30,7 @@ namespace :gitlab do
       check_ruby_version
       check_git_version
       check_active_users
+      check_elasticsearch if ApplicationSetting.current.elasticsearch_indexing?
 
       finished_checking "GitLab"
     end
@@ -784,7 +785,7 @@ namespace :gitlab do
       servers.each do |server|
         puts "Server: #{server}"
         Gitlab::LDAP::Adapter.open(server) do |adapter|
-          users = adapter.users(adapter.config.uid, '*', 100)
+          users = adapter.users(adapter.config.uid, '*', limit)
           users.each do |user|
             puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
           end
@@ -978,6 +979,29 @@ namespace :gitlab do
       end
     else
       puts "No ref lock files exist".color(:green)
+    end
+  end
+
+  def check_elasticsearch
+    client = Elasticsearch::Client.new(host: ApplicationSetting.current.elasticsearch_host,
+                                       port: ApplicationSetting.current.elasticsearch_port)
+
+    print "Elasticsearch version >= 2.0? ... "
+
+    version = client.info["version"]["number"]
+
+    if version.starts_with?("2")
+      puts "yes (#{version})".color(:green)
+    else
+      puts "no".color(:red)
+    end
+
+    print "Elasticsearch has plugin delete-by-query installed? ... "
+
+    if client.cat.plugins.include?("delete-by-query")
+      puts "yes".color(:green)
+    else
+      puts "no".color(:red)
     end
   end
 end

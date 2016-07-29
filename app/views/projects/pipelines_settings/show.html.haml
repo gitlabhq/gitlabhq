@@ -1,0 +1,106 @@
+- page_title "CI/CD Pipelines"
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+  .col-lg-9
+    %h5.prepend-top-0
+      Pipelines
+    = form_for @project, url: namespace_project_pipelines_settings_path(@project.namespace.becomes(Namespace), @project), remote: true, authenticity_token: true do |f|
+      %fieldset.builds-feature
+        - unless @repository.gitlab_ci_yml
+          .form-group
+            %p Pipelines need to be configured before you can begin using Continuous Integration.
+            = link_to 'Get started with CI/CD Pipelines', help_page_path('ci/quick_start/README'), class: 'btn btn-info'
+        .form-group
+          %p Get recent application code using the following command:
+          .radio
+            = f.label :build_allow_git_fetch_false do
+              = f.radio_button :build_allow_git_fetch, 'false'
+              %strong git clone
+              %br
+              %span.descr Slower but makes sure you have a clean dir before every build
+          .radio
+            = f.label :build_allow_git_fetch_true do
+              = f.radio_button :build_allow_git_fetch, 'true'
+              %strong git fetch
+              %br
+              %span.descr Faster
+
+        .form-group
+          = f.label :build_timeout_in_minutes, 'Timeout', class: 'label-light'
+          = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
+          %p.help-block per build in minutes
+        .form-group
+          = f.label :build_coverage_regex, "Test coverage parsing", class: 'label-light'
+          .input-group
+            %span.input-group-addon /
+            = f.text_field :build_coverage_regex, class: 'form-control', placeholder: '\(\d+.\d+\%\) covered'
+            %span.input-group-addon /
+          %p.help-block
+            We will use this regular expression to find test coverage output in build trace.
+            Leave blank if you want to disable this feature
+          .bs-callout.bs-callout-info
+            %p Below are examples of regex for existing tools:
+            %ul
+              %li
+                Simplecov (Ruby) -
+                %code \(\d+.\d+\%\) covered
+              %li
+                pytest-cov (Python) -
+                %code \d+\%\s*$
+              %li
+                phpunit --coverage-text --colors=never (PHP) -
+                %code ^\s*Lines:\s*\d+.\d+\%
+              %li
+                gcovr (C/C++) -
+                %code ^TOTAL.*\s+(\d+\%)$
+              %li
+                tap --coverage-report=text-summary (Node.js) -
+                %code ^Statements\s*:\s*([^%]+)
+
+        .form-group
+          .checkbox
+            = f.label :public_builds do
+              = f.check_box :public_builds
+              %strong Public pipelines
+            .help-block Allow everyone to access pipelines for Public and Internal projects
+
+        - if @project.mirror?
+          = render 'shared/mirror_trigger_builds_setting', f: f
+
+        .form-group.append-bottom-default
+          = f.label :runners_token, "Runners token", class: 'label-light'
+          = f.text_field :runners_token, class: "form-control", placeholder: 'xEeFCaDAB89'
+          %p.help-block The secure token used to checkout project.
+
+        = f.submit 'Save changes', class: "btn btn-save"
+
+%hr
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      Builds Badge
+  .col-lg-9
+    .prepend-top-10
+      .panel.panel-default
+        .panel-heading
+          %b Builds badge &middot;
+          = @build_badge.to_html
+          .pull-right
+            = render 'shared/ref_switcher', destination: 'badges', align_right: true
+        .panel-body
+          .row
+            .col-md-2.text-center
+              Markdown
+            .col-md-10.code.js-syntax-highlight
+              = highlight('.md', @build_badge.to_markdown)
+          .row
+            %hr
+          .row
+            .col-md-2.text-center
+              HTML
+            .col-md-10.code.js-syntax-highlight
+              = highlight('.html', @build_badge.to_html)

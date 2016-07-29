@@ -14,3 +14,15 @@
           The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
         %li
           To migrate an SVN repository, check out #{link_to "this document", "http://doc.gitlab.com/ce/workflow/importing/migrating_from_svn.html"}.
+
+.form-group
+  .col-sm-offset-2.col-sm-10
+    .checkbox
+      = f.label :mirror do
+        = f.check_box :mirror
+        %strong
+          Mirror repository
+      .help-block
+        Automatically update this project's branches and tags from the upstream repository every hour.
+
+= f.hidden_field :mirror_user_id, value: current_user.id

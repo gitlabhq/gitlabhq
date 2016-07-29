@@ -1,0 +1,15 @@
+%li
+  .row
+    .col-md-8.col-lg-7
+      %strong.light-header= hook.url
+      %div
+        - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events wiki_page_events).each do |trigger|
+          - if hook.send(trigger)
+            %span.label.label-gray.deploy-project-label= trigger.titleize
+    .col-md-4.col-lg-5.text-right-lg.prepend-top-5
+      %span.append-right-10.inline
+        SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
+      = link_to "Test", test_group_hook_path(@group, hook), class: "btn btn-sm"
+      = link_to group_hook_path(@group, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-transparent" do
+        %span.sr-only Remove
+        = icon('trash')

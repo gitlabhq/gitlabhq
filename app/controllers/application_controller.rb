@@ -115,7 +115,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_out_path_for(resource)
-    current_application_settings.after_sign_out_path.presence || new_user_session_path
+    if Gitlab::Geo.secondary?
+      Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
+    else
+      current_application_settings.after_sign_out_path.presence || new_user_session_path
+    end
   end
 
   def abilities
@@ -240,6 +244,12 @@ class ApplicationController < ActionController::Base
   def require_email
     if current_user && current_user.temp_oauth_email?
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
+    end
+  end
+
+  def require_ldap_enabled
+    unless Gitlab.config.ldap.enabled
+      render_404 and return
     end
   end
 

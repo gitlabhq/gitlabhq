@@ -55,4 +55,19 @@ module ButtonHelper
         title: 'Add an SSH key to your profile<br>to pull or push via SSH.'
       }
   end
+
+  def kerberos_clone_button(project)
+    klass = 'kerberos-selector'
+    klass << ' has-tooltip'
+
+    content_tag :a, 'KRB5',
+      class: klass,
+      href: project.kerberos_url_to_repo,
+      data: {
+        html: 'true',
+        placement: 'right',
+        container: 'body',
+        title: 'Get a Kerberos token for your<br>account with kinit.'
+      }
+  end
 end

@@ -1,9 +1,13 @@
 module AuthHelper
   PROVIDERS_WITH_ICONS = %w(twitter github gitlab bitbucket google_oauth2 facebook azure_oauth2).freeze
-  FORM_BASED_PROVIDERS = [/\Aldap/, 'crowd'].freeze
+  FORM_BASED_PROVIDERS = [/\Aldap/, 'kerberos', 'crowd'].freeze
 
   def ldap_enabled?
     Gitlab.config.ldap.enabled
+  end
+
+  def kerberos_enabled?
+    auth_providers.include?(:kerberos)
   end
 
   def omniauth_enabled?

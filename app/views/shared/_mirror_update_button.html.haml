@@ -1,0 +1,13 @@
+- if @project.mirror? && can?(current_user, :push_code, @project)
+  .append-bottom-default
+    - if @project.updating_mirror?
+      %span.btn.disabled
+        = icon("refresh spin")
+        Updating&hellip;
+    - else
+      = link_to update_now_namespace_project_mirror_path(@project.namespace, @project), method: :post, class: "btn" do
+        = icon("refresh")
+        Update Now
+    - if @project.mirror_last_update_success?
+      %p.inline.prepend-left-10
+        Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.

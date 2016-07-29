@@ -6,23 +6,37 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
-      case subject
-      when CommitStatus then commit_status_abilities(user, subject)
-      when Project then project_abilities(user, subject)
-      when Issue then issue_abilities(user, subject)
-      when Note then note_abilities(user, subject)
-      when ProjectSnippet then project_snippet_abilities(user, subject)
-      when PersonalSnippet then personal_snippet_abilities(user, subject)
-      when MergeRequest then merge_request_abilities(user, subject)
-      when Group then group_abilities(user, subject)
-      when Namespace then namespace_abilities(user, subject)
-      when GroupMember then group_member_abilities(user, subject)
-      when ProjectMember then project_member_abilities(user, subject)
-      when User then user_abilities
-      when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
-      when Ci::Runner then runner_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
+      abilities =
+        case subject
+        when CommitStatus then commit_status_abilities(user, subject)
+        when Project then project_abilities(user, subject)
+        when Issue then issue_abilities(user, subject)
+        when Note then note_abilities(user, subject)
+        when ProjectSnippet then project_snippet_abilities(user, subject)
+        when PersonalSnippet then personal_snippet_abilities(user, subject)
+        when MergeRequest then merge_request_abilities(user, subject)
+        when Group then group_abilities(user, subject)
+        when Namespace then namespace_abilities(user, subject)
+        when GroupMember then group_member_abilities(user, subject)
+        when ProjectMember then project_member_abilities(user, subject)
+        when User then user_abilities
+        when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
+        when Ci::Runner then runner_abilities(user, subject)
+        else []
+        end.concat(global_abilities(user))
+
+      abilities -= license_blocked_abilities if License.block_changes?
+
+      abilities
+    end
+
+    def license_blocked_abilities
+      [
+        :create_issue,
+        :create_merge_request,
+        :push_code,
+        :push_code_to_protected_branches
+      ]
     end
 
     # Given a list of users and a project this method returns the users that can
@@ -172,7 +186,7 @@ class Ability
           rules << :read_build if project.public_builds?
 
           unless owner || project.team.member?(user) || project_group_member?(project, user)
-            rules << :request_access
+            rules << :request_access if project.request_access_enabled
           end
         end
 
@@ -276,8 +290,10 @@ class Ability
 
     def project_master_rules
       @project_master_rules ||= project_dev_rules + [
+        :read_pages,
         :push_code_to_protected_branches,
         :update_project_snippet,
+        :update_pages,
         :update_environment,
         :update_deployment,
         :admin_milestone,
@@ -290,9 +306,11 @@ class Ability
         :admin_commit_status,
         :admin_build,
         :admin_container_image,
+        :admin_pages,
         :admin_pipeline,
         :admin_environment,
-        :admin_deployment
+        :admin_deployment,
+        :admin_path_locks
       ]
     end
 
@@ -302,6 +320,7 @@ class Ability
         :change_visibility_level,
         :rename_project,
         :remove_project,
+        :remove_pages,
         :archive_project,
         :remove_fork_project,
         :destroy_merge_request,
@@ -370,10 +389,14 @@ class Ability
           :admin_group_member,
           :change_visibility_level
         ]
+
+        if group.ldap_synced?
+          rules.delete(:admin_group_member)
+        end
       end
 
       if group.public? || (group.internal? && !user.external?)
-        rules << :request_access unless group.users.include?(user)
+        rules << :request_access if group.request_access_enabled && group.users.exclude?(user)
       end
 
       rules.flatten
@@ -386,6 +409,18 @@ class Ability
       return true if group.users.include?(user)
 
       GroupProjectsFinder.new(group).execute(user).any?
+    end
+
+    def can_edit_note?(user, note)
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
+
+      if note.project
+        max_access_level = note.project.team.max_member_access(user.id)
+        max_access_level >= Gitlab::Access::MASTER
+      else
+        false
+      end
     end
 
     def namespace_abilities(user, namespace)
@@ -545,10 +580,10 @@ class Ability
 
     def abilities
       @abilities ||= begin
-        abilities = Six.new
-        abilities << self
-        abilities
-      end
+                       abilities = Six.new
+                       abilities << self
+                       abilities
+                     end
     end
 
     private

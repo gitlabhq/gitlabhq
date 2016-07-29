@@ -11,7 +11,12 @@ class GitTagPushService < BaseService
     SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
-    CreateCommitBuildsService.new.execute(project, current_user, @push_data)
+    CreateCommitBuildsService.new.execute(
+      project,
+      current_user,
+      @push_data,
+      mirror_update: params[:mirror_update]
+    )
     ProjectCacheWorker.perform_async(project.id)
 
     true

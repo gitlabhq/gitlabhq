@@ -1,7 +1,9 @@
 .mr-state-widget
   = render 'projects/merge_requests/widget/heading'
   .mr-widget-body
-    - if @project.archived?
+    - if Gitlab::Geo.secondary?
+      = render 'projects/merge_requests/widget/open/geo'
+    - elsif @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
     - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'
@@ -13,13 +15,17 @@
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'
+    - elsif @merge_request.requires_approve? && !@merge_request.approved?
+      = render 'projects/merge_requests/widget/open/approve'
     - elsif @merge_request.merge_when_build_succeeds?
       = render 'projects/merge_requests/widget/open/merge_when_build_succeeds'
     - elsif !@merge_request.can_be_merged_by?(current_user)
       = render 'projects/merge_requests/widget/open/not_allowed'
     - elsif !@merge_request.mergeable_ci_state? && @pipeline && @pipeline.failed?
       = render 'projects/merge_requests/widget/open/build_failed'
-    - elsif @merge_request.can_be_merged?
+    - elsif @merge_request.should_be_rebased?
+      = render 'projects/merge_requests/widget/open/rebase'
+    - else
       = render 'projects/merge_requests/widget/open/accept'
 
   - if mr_closes_issues.present?
@@ -29,3 +35,9 @@
         Accepting this merge request will close #{"issue".pluralize(mr_closes_issues.size)}
         = succeed '.' do
           != markdown issues_sentence(mr_closes_issues), pipeline: :gfm, author: @merge_request.author
+
+  - if @merge_request.approvals.any?
+    .mr-widget-footer.approved-by-users
+      Approved by
+      - @merge_request.approved_by_users.each do |user|
+        = link_to_member(@project, user, name: false, size: 24)

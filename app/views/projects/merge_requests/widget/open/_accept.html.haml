@@ -35,14 +35,20 @@
           = label_tag :should_remove_source_branch, class: "remove_source_checkbox" do
             = check_box_tag :should_remove_source_branch
             Remove source branch
+
       .accept-control.right
-        = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
-          = icon('edit')
-          Modify commit message
-    .js-toggle-content.hide.prepend-top-default
-      = render 'shared/commit_message_container', params: params,
-          text: @merge_request.merge_commit_message,
-          rows: 14, hint: true
+        - if @project.merge_requests_ff_only_enabled
+          Fast-forward merge without a merge commit
+        - else
+          = link_to "#", class: "modify-merge-commit-link js-toggle-button" do
+            = icon('edit')
+            Modify commit message
+
+    - unless @project.merge_requests_ff_only_enabled
+      .js-toggle-content.hide.prepend-top-default
+        = render 'shared/commit_message_container', params: params,
+            text: @merge_request.merge_commit_message,
+            rows: 14, hint: true
 
     = hidden_field_tag :merge_when_build_succeeds, "", autocomplete: "off"
 

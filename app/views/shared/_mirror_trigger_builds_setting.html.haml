@@ -1,0 +1,8 @@
+.form-group
+  = f.check_box :mirror_trigger_builds, class: "pull-left"
+  .prepend-left-20
+    = f.label :mirror_trigger_builds, "Trigger builds for mirror updates", class: "label-light"
+    %p.light.append-bottom-0
+      Trigger builds when branches or tags are updated from the upstream repository.
+      Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners.
+      Only enable this if you know they can handle the load.

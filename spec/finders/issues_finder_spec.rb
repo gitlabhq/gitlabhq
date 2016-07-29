@@ -34,6 +34,22 @@ describe IssuesFinder do
         expect(issues).to contain_exactly(issue1, issue2, issue3)
       end
 
+      context 'sort by issues with no weight' do
+        let(:params) { { weight: Issue::WEIGHT_NONE } }
+
+        it 'returns all issues' do
+          expect(issues).to contain_exactly(issue1, issue2, issue3)
+        end
+      end
+
+      context 'sort by issues with any weight' do
+        let(:params) { { weight: Issue::WEIGHT_ANY } }
+
+        it 'returns all issues' do
+          expect(issues).to be_empty
+        end
+      end
+
       context 'filtering by assignee ID' do
         let(:params) { { assignee_id: user.id } }
 

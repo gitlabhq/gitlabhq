@@ -24,6 +24,8 @@
             = link_to namespace_project_tags_path(sort: sort_value_oldest_updated) do
               = sort_title_oldest_updated
 
+  = render 'projects/commits/mirror_status'
+
   .tags
     - if @tags.any?
       %ul.content-list

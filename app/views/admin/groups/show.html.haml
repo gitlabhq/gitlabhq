@@ -38,6 +38,17 @@
             = @group.created_at.to_s(:medium)
 
     .panel.panel-default
+      .panel-heading Linked LDAP groups
+      %ul.well-list
+        - if @group.ldap_group_links.any?
+          - @group.ldap_group_links.each do |ldap_group_link|
+            %li
+              cn:
+              %strong= ldap_group_link.cn
+              as
+              %strong= ldap_group_link.human_access
+
+    .panel.panel-default
       .panel-heading
         %h3.panel-title
           Projects
@@ -83,7 +94,7 @@
 
           = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div
-              = users_select_tag(:user_ids, multiple: true, email_user: true, scope: :all)
+              = users_select_tag(:user_ids, multiple: true, email_user: true, skip_ldap: @group.ldap_synced?, scope: :all)
             %div.prepend-top-10
               = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
             %hr

@@ -118,6 +118,9 @@ module ApplicationHelper
     # Skip if user removed branch right after that
     return false unless project.repository.branch_exists?(event.branch_name)
 
+    # Skip if this was a mirror update
+    return false if project.mirror? && project.repository.up_to_date_with_upstream?(event.branch_name)
+
     true
   end
 

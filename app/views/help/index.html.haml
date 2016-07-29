@@ -1,23 +1,30 @@
 %div
   %h1
     GitLab
-    Community Edition
+    Enterprise Edition
     - if user_signed_in?
       %span= Gitlab::VERSION
       %small= Gitlab::REVISION
-      = version_status_badge
-  %p.slead
-    GitLab is open source software to collaborate on code.
-    %br
-    Manage git repositories with fine-grained access controls that keep your code secure.
-    %br
-    Perform code reviews and enhance collaboration with merge requests.
-    %br
-    Each project can also have an issue tracker and a wiki.
-    %br
-    Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
-    %br
+      - if current_application_settings.version_check_enabled
+        = version_status_badge
+  %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
+  - if help_text.present?
+    %hr
+    %p.slead
+      = markdown(help_text)
+  - else
+    %p.slead
+      GitLab is open source software to collaborate on code.
+      %br
+      Manage git repositories with fine grained access controls that keep your code secure.
+      %br
+      Perform code reviews and enhance collaboration with merge requests.
+      %br
+      Each project can also have an issue tracker and a wiki.
+      %br
+      Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+
     - if current_application_settings.help_page_text.present?
       %hr
       = markdown(current_application_settings.help_page_text)

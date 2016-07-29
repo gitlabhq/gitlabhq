@@ -8,8 +8,21 @@ module Gitlab
         @auth_hash = auth_hash
       end
 
+      def kerberos_default_realm
+        Gitlab::Kerberos::Authentication.kerberos_default_realm
+      end
+
+      def normalized_uid
+        return auth_hash.uid.to_s unless provider == 'kerberos'
+        # For Kerberos, usernames `principal` and `principal@DEFAULT.REALM` are equivalent and
+        # may be used indifferently, but omniauth_kerberos does not normalize them as of version 0.3.0.
+        # Normalize here the uid to always have the canonical Kerberos principal name with realm.
+        return auth_hash.uid if auth_hash.uid.include?("@")
+        auth_hash.uid + "@" + kerberos_default_realm
+      end
+
       def uid
-        @uid ||= Gitlab::Utils.force_utf8(auth_hash.uid.to_s)
+        @uid ||= Gitlab::Utils.force_utf8(normalized_uid)
       end
 
       def provider

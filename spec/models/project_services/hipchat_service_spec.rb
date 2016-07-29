@@ -153,6 +153,7 @@ describe HipchatService, models: true do
       let(:merge_request) { create(:merge_request, description: 'please fix', title: 'Awesome merge request', target_project: project, source_project: project) }
       let(:merge_service) { MergeRequests::CreateService.new(project, user) }
       let(:merge_sample_data) { merge_service.hook_data(merge_request, 'open') }
+      let(:approved_merge_sample_data) { merge_service.hook_data(merge_request, 'approved') }
 
       it "should call Hipchat API for merge requests events" do
         hipchat.execute(merge_sample_data)
@@ -160,16 +161,28 @@ describe HipchatService, models: true do
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create a merge request message" do
-        message = hipchat.send(:create_merge_request_message,
-                               merge_sample_data)
+      context 'merge request message' do
+        it 'creates a message for opened merge requests' do
+          message = hipchat.send(:create_merge_request_message, merge_sample_data)
 
-        obj_attr = merge_sample_data[:object_attributes]
-        expect(message).to eq("#{user.name} opened " \
-            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr["iid"]}</a> in " \
+          obj_attr = merge_sample_data[:object_attributes]
+          expect(message).to eq("#{user.name} opened " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
             "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
-            "<b>Awesome merge request</b>" \
-            "<pre>please fix</pre>")
+            '<b>Awesome merge request</b>' \
+            '<pre>please fix</pre>')
+        end
+
+        it 'creates a message for approved merge requests' do
+          message = hipchat.send(:create_merge_request_message, approved_merge_sample_data)
+
+          obj_attr = approved_merge_sample_data[:object_attributes]
+          expect(message).to eq("#{user.name} approved " \
+            "<a href=\"#{obj_attr[:url]}\">merge request !#{obj_attr['iid']}</a> in " \
+            "<a href=\"#{project.web_url}\">#{project_name}</a>: " \
+            '<b>Awesome merge request</b>' \
+            '<pre>please fix</pre>')
+        end
       end
     end
 
@@ -340,18 +353,36 @@ describe HipchatService, models: true do
     end
 
     context "#message_options" do
-      it "should be set to the defaults" do
-        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'yellow' })
+      it "is set to the defaults" do
+        expect(hipchat.__send__(:message_options)).to eq({ notify: false, color: 'yellow' })
       end
 
-      it "should set notfiy to true" do
+      it "sets notify to true" do
         allow(hipchat).to receive(:notify).and_return('1')
-        expect(hipchat.send(:message_options)).to eq({ notify: true, color: 'yellow' })
+
+        expect(hipchat.__send__(:message_options)).to eq({ notify: true, color: 'yellow' })
       end
 
-      it "should set the color" do
+      it "sets the color" do
         allow(hipchat).to receive(:color).and_return('red')
-        expect(hipchat.send(:message_options)).to eq({ notify: false, color: 'red' })
+
+        expect(hipchat.__send__(:message_options)).to eq({ notify: false, color: 'red' })
+      end
+
+      context 'with a successful build' do
+        it 'uses the green color' do
+          build_data = { object_kind: 'build', commit: { status: 'success' } }
+
+          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'green' })
+        end
+      end
+
+      context 'with a failed build' do
+        it 'uses the red color' do
+          build_data = { object_kind: 'build', commit: { status: 'failed' } }
+
+          expect(hipchat.__send__(:message_options, build_data)).to eq({ notify: false, color: 'red' })
+        end
       end
     end
   end

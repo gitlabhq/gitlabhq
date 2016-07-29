@@ -7,6 +7,7 @@ describe GitPushService, services: true do
   let(:project)       { create :project }
 
   before do
+    project.team << [user, :master]
     @blankrev = Gitlab::Git::BLANK_SHA
     @oldrev = sample_commit.parent_id
     @newrev = sample_commit.id
@@ -169,10 +170,26 @@ describe GitPushService, services: true do
     end
   end
 
+  describe "ES indexing" do
+    before do
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    end
+
+    after do
+      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    end
+
+    it "triggers indexer" do
+      expect_any_instance_of(Gitlab::Elastic::Indexer).to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, @ref )
+    end
+  end
+
   describe "Push Event" do
     before do
       service = execute_service(project, user, @oldrev, @newrev, @ref )
-      @event = Event.last
+      @event = Event.find_by_action(Event::PUSHED)
       @push_data = service.push_data
     end
 
@@ -224,8 +241,10 @@ describe GitPushService, services: true do
       it "when pushing a branch for the first time" do
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: false })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -233,8 +252,8 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).not_to receive(:create)
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).to be_empty
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can push'" do
@@ -242,9 +261,12 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: true, developers_can_merge: false })
 
-        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master')
+        execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.last.push_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
+        expect(project.protected_branches.last.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
@@ -252,8 +274,10 @@ describe GitPushService, services: true do
 
         expect(project).to receive(:execute_hooks)
         expect(project.default_branch).to eq("master")
-        expect(project.protected_branches).to receive(:create).with({ name: "master", developers_can_push: false, developers_can_merge: true })
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
+        expect(project.protected_branches).not_to be_empty
+        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
       end
 
       it "when pushing new commits to existing branch" do
@@ -396,11 +420,11 @@ describe GitPushService, services: true do
         WebMock.stub_request(:get, jira_api_test_url)
 
         allow(closing_commit).to receive_messages({
-                                                    issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
-                                                    safe_message: message,
-                                                    author_name: commit_author.name,
-                                                    author_email: commit_author.email
-                                                  })
+          issue_closing_regex: Regexp.new(Gitlab.config.gitlab.issue_closing_pattern),
+          safe_message: message,
+          author_name: commit_author.name,
+          author_email: commit_author.email
+        })
 
         allow(project.repository).to receive_messages(commits_between: [closing_commit])
       end

@@ -10,6 +10,7 @@ class Milestone < ActiveRecord::Base
   include Sortable
   include Referable
   include StripAttribute
+  include Elastic::MilestonesSearch
   include Milestoneish
 
   belongs_to :project

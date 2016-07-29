@@ -83,6 +83,7 @@ Feature: Search
     And I logout directly
     And I visit dashboard search page
     And project has issues
+    And I visit dashboard search page
     When I search for "Foo"
     And I click "Issues" link
     Then I should see "Foo" link in the search results

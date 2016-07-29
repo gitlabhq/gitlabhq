@@ -10,69 +10,28 @@
   .col-sm-10
     = form.check_box :active
 
-- if @service.supported_events.length > 1
-  .form-group
-    = form.label :url, "Trigger", class: 'control-label'
-    .col-sm-10
-      - if @service.supported_events.include?("push")
-        %div
-          = form.check_box :push_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :push_events, class: 'list-label' do
-              %strong Push events
-            %p.light
-              This url will be triggered by a push to the repository
-      - if @service.supported_events.include?("tag_push")
-        %div
-          = form.check_box :tag_push_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :tag_push_events, class: 'list-label' do
-              %strong Tag push events
-            %p.light
-              This url will be triggered when a new tag is pushed to the repository
-      - if @service.supported_events.include?("note")
-        %div
-          = form.check_box :note_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :note_events, class: 'list-label' do
-              %strong Comments
-            %p.light
-              This url will be triggered when someone adds a comment
-      - if @service.supported_events.include?("issue")
-        %div
-          = form.check_box :issues_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :issues_events, class: 'list-label' do
-              %strong Issues events
-            %p.light
-              This url will be triggered when an issue is created/updated/merged
-      - if @service.supported_events.include?("merge_request")
-        %div
-          = form.check_box :merge_requests_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :merge_requests_events, class: 'list-label' do
-              %strong Merge Request events
-            %p.light
-              This url will be triggered when a merge request is created/updated/merged
-      - if @service.supported_events.include?("build")
-        %div
-          = form.check_box :build_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :build_events, class: 'list-label' do
-              %strong Build events
-            %p.light
-              This url will be triggered when a build status changes
-      - if @service.supported_events.include?("wiki_page")
-        %div
-          = form.check_box :wiki_page_events, class: 'pull-left'
-          .prepend-left-20
-            = form.label :wiki_page_events, class: 'list-label' do
-              %strong Wiki Page events
-            %p.light
-              This url will be triggered when a wiki page is created/updated
+.form-group
+  = form.label :url, "Trigger", class: 'control-label'
 
+  .col-sm-10
+    - @service.supported_events.each do |event|
+      %div
+        = form.check_box service_event_field_name(event), class: 'pull-left'
+        .prepend-left-20
+          = form.label service_event_field_name(event), class: 'list-label' do
+            %strong
+              = event.humanize
 
-- @service.fields.each do |field|
+      - field = @service.event_field(event)
+
+      - if field
+        %p
+          = form.text_field field[:name], class: "form-control", placeholder: field[:placeholder]
+
+      %p.light
+        = service_event_description(event)
+
+- @service.global_fields.each do |field|
   - type = field[:type]
 
   - if type == 'fieldset'

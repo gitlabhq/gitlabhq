@@ -9,6 +9,11 @@ module MergeRequests
     attr_reader :merge_request
 
     def execute(merge_request)
+      if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
+        FfMergeService.new(project, current_user, params).execute(merge_request)
+        return
+      end
+
       @merge_request = merge_request
 
       return error('Merge request is not mergeable') unless @merge_request.mergeable?
@@ -21,6 +26,25 @@ module MergeRequests
           error('Can not merge changes')
         end
       end
+    end
+
+    def hooks_validation_pass?(merge_request)
+      return true if project.merge_requests_ff_only_enabled
+
+      push_rule = merge_request.project.push_rule
+      return true unless push_rule
+
+      unless push_rule.commit_message_allowed?(params[:commit_message])
+        merge_request.update(merge_error: "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
+        return false
+      end
+
+      unless push_rule.author_email_allowed?(current_user.email)
+        merge_request.update(merge_error: "Commit author's email '#{current_user.email}' does not follow the pattern '#{push_rule.author_email_regex}'")
+        return false
+      end
+
+      true
     end
 
     private

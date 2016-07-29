@@ -446,7 +446,14 @@ describe SystemNoteService, services: true do
 
     context 'commit with cross-reference from fork' do
       let(:author2) { create(:user) }
-      let(:forked_project) { Projects::ForkService.new(project, author2).execute }
+      let(:forked_project) do
+        fp = Projects::ForkService.new(project, author2).execute
+        # The call to project.repository.after_import in RepositoryForkWorker does
+        # not reset the @exists variable of @fork_project.repository so we have to
+        # explicitely call this method to clear the @exists variable.
+        fp.repository.after_import
+        fp
+      end
       let(:commit2) { forked_project.commit }
 
       before do
@@ -579,6 +586,19 @@ describe SystemNoteService, services: true do
         subject { described_class.cross_reference(jira_issue, issue, author) }
 
         it { is_expected.to eq(jira_status_message) }
+      end
+    end
+  end
+
+  describe '.approve_mr' do
+    let(:noteable)    { create(:merge_request, source_project: project) }
+    subject { described_class.approve_mr(noteable, author) }
+
+    it_behaves_like 'a system note'
+
+    context 'when merge request approved' do
+      it 'sets the note text' do
+        expect(subject.note).to eq "Approved this merge request"
       end
     end
   end

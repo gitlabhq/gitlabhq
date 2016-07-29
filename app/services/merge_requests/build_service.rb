@@ -79,6 +79,11 @@ module MergeRequests
         merge_request.title = merge_request.source_branch.titleize.humanize
       end
 
+      # Set MR description based on project template
+      if merge_request.target_project.merge_requests_template.present?
+        merge_request.description = merge_request.target_project.merge_requests_template
+      end
+
       if iid
         closes_issue = "Closes ##{iid}"
 

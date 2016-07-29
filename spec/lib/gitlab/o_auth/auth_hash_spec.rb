@@ -54,6 +54,29 @@ describe Gitlab::OAuth::AuthHash, lib: true do
     it { expect(auth_hash.password).not_to be_empty }
   end
 
+  context 'with kerberos provider' do
+    let(:provider_ascii) { 'kerberos'.force_encoding(Encoding::ASCII_8BIT) }
+
+    context "and uid contains a kerberos realm" do
+      let(:uid_ascii) { 'mylogin@BAR.COM'.force_encoding(Encoding::ASCII_8BIT) }
+
+      it "preserves the canonical uid" do
+        expect(auth_hash.uid).to eq('mylogin@BAR.COM')
+      end
+    end
+
+    context "and uid does not contain a kerberos realm" do
+      let(:uid_ascii) { 'mylogin'.force_encoding(Encoding::ASCII_8BIT) }
+      before do
+        allow(Gitlab::Kerberos::Authentication).to receive(:kerberos_default_realm).and_return("FOO.COM")
+      end
+
+      it "canonicalizes uid with kerberos realm" do
+        expect(auth_hash.uid).to eq('mylogin@FOO.COM')
+      end
+    end
+  end
+
   context 'email not provided' do
     before { info_hash.delete(:email) }
 

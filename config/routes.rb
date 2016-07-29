@@ -42,10 +42,9 @@ Rails.application.routes.draw do
 
     resource :lint, only: [:show, :create]
 
-    resources :projects do
+    resources :projects, only: [:index, :show] do
       member do
         get :status, to: 'projects#badge'
-        get :integration
       end
     end
 
@@ -56,6 +55,14 @@ Rails.application.routes.draw do
     controllers applications: 'oauth/applications',
                 authorized_applications: 'oauth/authorized_applications',
                 authorizations: 'oauth/authorizations'
+  end
+
+  namespace :oauth do
+    scope path: 'geo', controller: :geo_auth, as: :geo do
+      get 'auth'
+      get 'callback'
+      get 'logout'
+    end
   end
 
   # Autocomplete
@@ -89,11 +96,10 @@ Rails.application.routes.draw do
   mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
 
   # Help
-  
-  get 'help'                  => 'help#index'
-  get 'help/*path'            => 'help#show', as: :help_page
-  get 'help/shortcuts'
-  get 'help/ui' => 'help#ui'
+  get 'help'           => 'help#index'
+  get 'help/shortcuts' => 'help#shortcuts'
+  get 'help/ui'        => 'help#ui'
+  get 'help/*path'     => 'help#show', as: :help_page
 
   #
   # Global snippets
@@ -145,13 +151,13 @@ Rails.application.routes.draw do
       get :jobs
     end
 
-    resource :gitlab, only: [:create, :new], controller: :gitlab do
+    resource :gitlab, only: [:create], controller: :gitlab do
       get :status
       get :callback
       get :jobs
     end
 
-    resource :bitbucket, only: [:create, :new], controller: :bitbucket do
+    resource :bitbucket, only: [:create], controller: :bitbucket do
       get :status
       get :callback
       get :jobs
@@ -244,7 +250,6 @@ Rails.application.routes.draw do
         get :projects
         get :keys
         get :groups
-        put :team_update
         put :block
         put :unblock
         put :unlock
@@ -254,6 +259,8 @@ Rails.application.routes.draw do
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resources :push_rules, only: [:index, :update]
 
     resource :impersonation, only: :destroy
 
@@ -281,7 +288,9 @@ Rails.application.routes.draw do
     resource :logs, only: [:show]
     resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
+    resource :email, only: [:show, :create]
     resource :system_info, controller: 'system_info', only: [:show]
+    resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
       root to: 'projects#index', as: :projects
@@ -301,7 +310,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resource :appearances, path: 'appearance' do
+    resource :appearances, only: [:show, :create, :update], path: 'appearance' do
       member do
         get :preview
         delete :logo
@@ -310,10 +319,20 @@ Rails.application.routes.draw do
     end
 
     resource :application_settings, only: [:show, :update] do
-      resources :services
+      resources :services, only: [:index, :edit, :update]
       put :reset_runners_token
       put :reset_health_check_token
       put :clear_repository_check_states
+    end
+
+    resource :license, only: [:show, :new, :create, :destroy] do
+      get :download, on: :member
+    end
+
+    resources :geo_nodes, only: [:index, :create, :destroy] do
+      member do
+        post :repair
+      end
     end
 
     resources :labels
@@ -347,7 +366,7 @@ Rails.application.routes.draw do
     end
 
     scope module: :profiles do
-      resource :account, only: [:show, :update] do
+      resource :account, only: [:show] do
         member do
           delete :unlink
         end
@@ -359,7 +378,7 @@ Rails.application.routes.draw do
         end
       end
       resource :preferences, only: [:show, :update]
-      resources :keys
+      resources :keys, only: [:index, :show, :new, :create, :destroy]
       resources :emails, only: [:index, :create, :destroy]
       resource :avatar, only: [:destroy]
 
@@ -434,7 +453,19 @@ Rails.application.routes.draw do
       get :activity
     end
 
+    collection do
+      get :autocomplete
+    end
+
     scope module: :groups do
+      resource :analytics, only: [:show]
+      resource :ldap, only: [] do
+        member do
+          put :reset_access
+        end
+      end
+
+      resources :ldap_group_links, only: [:index, :create, :destroy]
       resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
@@ -442,9 +473,19 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+      resource :notification_setting, only: [:update]
+      resources :audit_events, only: [:index]
+    end
+
+    resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ }, module: :groups do
+      member do
+        get :test
+      end
     end
   end
 
+  get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
+  post 'unsubscribes/:email', to: 'unsubscribes#create'
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks,
@@ -456,6 +497,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/users/auth/:provider/omniauth_error' => 'omniauth_callbacks#omniauth_error', as: :omniauth_error
     get '/users/almost_there' => 'confirmations#almost_there'
+    get '/users/auth/kerberos_spnego/negotiate' => 'omniauth_kerberos_spnego#negotiate'
   end
 
   root to: "root#index"
@@ -620,6 +662,10 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :pages, only: [:show, :destroy] do
+          resources :domains, only: [:show, :new, :create, :destroy], controller: 'pages_domains'
+        end
+
         resources :compare, only: [:index, :create] do
           collection do
             get :diff_for_path
@@ -661,7 +707,7 @@ Rails.application.routes.draw do
           post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
         end
 
-        resource :repository, only: [:show, :create] do
+        resource :repository, only: [:create] do
           member do
             get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
           end
@@ -710,6 +756,8 @@ Rails.application.routes.draw do
             post :cancel_merge_when_build_succeeds
             get :ci_status
             post :toggle_subscription
+            post :approve
+            post :rebase
             post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
@@ -721,18 +769,34 @@ Rails.application.routes.draw do
             get :update_branches
             get :diff_for_path
           end
+          resources :approvers, only: :destroy
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :tags, only: [:index, :show, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
           resource :release, only: [:edit, :update]
         end
+        resources :path_locks, only: [:index, :destroy] do
+          collection do
+            post :toggle
+          end
+        end
 
         resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
         resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
+        resource :mirror, only: [:show, :update] do
+          member do
+            post :update_now
+          end
+        end
+        resources :push_rules, constraints: { id: /\d+/ }
 
         resources :pipelines, only: [:index, :new, :create, :show] do
+          collection do
+            resource :pipelines_settings, path: 'settings', only: [:show, :update]
+          end
+
           member do
             post :cancel
             post :retry
@@ -750,6 +814,7 @@ Rails.application.routes.draw do
             get :status
             post :cancel
             post :retry
+            post :play
             post :erase
             get :trace
             get :raw
@@ -778,7 +843,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :labels, constraints: { id: /\d+/ } do
+        resources :labels, except: [:show], constraints: { id: /\d+/ } do
           collection do
             post :generate
             post :set_priorities
@@ -803,7 +868,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
+        resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
             delete :leave
 
@@ -846,6 +911,7 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :approvers, only: :destroy
         resources :runner_projects, only: [:create, :destroy]
         resources :badges, only: [:index] do
           collection do
@@ -854,6 +920,7 @@ Rails.application.routes.draw do
             end
           end
         end
+        resources :audit_events, only: [:index]
       end
     end
   end

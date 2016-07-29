@@ -112,7 +112,7 @@ describe API::API, api: true  do
 
       before do
         project.repository.add_branch(user, protected_branch, 'master')
-        create(:protected_branch, project: project, name: protected_branch, developers_can_push: true, developers_can_merge: true)
+        create(:protected_branch, :developers_can_push, :developers_can_merge, project: project, name: protected_branch)
       end
 
       it 'updates that a developer can push' do

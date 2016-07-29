@@ -73,6 +73,17 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
+  Then 'I should be redirected to group page' do
+    expect(current_path).to eq group_path(Group.last)
+  end
+
+  And 'I change group name' do
+    page.within '#tab-edit' do
+      fill_in 'group_name', with: 'new-name'
+      click_button "Save group"
+    end
+  end
+
   step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
     fill_in 'group_path', with: 'new-name'
@@ -126,6 +137,28 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see "archived" label' do
     expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+  end
+
+  step 'LDAP enabled' do
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(true)
+  end
+
+  step 'LDAP disabled' do
+    allow(Gitlab.config.ldap).to receive(:enabled).and_return(false)
+  end
+
+  step 'I add a new LDAP synchronization' do
+    page.within('form#new_ldap_group_link') do
+      find('#ldap_group_link_cn', visible: false).set('my-group-cn')
+      # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
+      select 'Developer', from: "ldap_group_link_group_access"
+      click_button 'Add synchronization'
+    end
+  end
+
+  step 'I see a new LDAP synchronization listed' do
+    expect(page).not_to have_content('No synchronizations yet')
+    expect(page).to have_content('As Developer on ldap server')
   end
 
   step 'I visit group "NonExistentGroup" page' do

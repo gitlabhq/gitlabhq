@@ -1,7 +1,14 @@
+# coding: utf-8
 require 'securerandom'
+require 'forwardable'
 
 class Repository
+  include Elastic::RepositoriesSearch
+
   class CommitError < StandardError; end
+
+  MIRROR_REMOTE = "upstream"
+  MIRROR_GEO = "geo"
 
   # Files to use as a project avatar in case no avatar was uploaded via the web
   # UI.
@@ -10,16 +17,6 @@ class Repository
   include Gitlab::ShellAdapter
 
   attr_accessor :path_with_namespace, :project
-
-  def self.clean_old_archives
-    Gitlab::Metrics.measure(:clean_old_archives) do
-      repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
-
-      return unless File.directory?(repository_downloads_path)
-
-      Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
-    end
-  end
 
   def initialize(path_with_namespace, project)
     @path_with_namespace = path_with_namespace
@@ -36,10 +33,14 @@ class Repository
     raw_repository.autocrlf = :input if raw_repository.autocrlf != :input
   end
 
+  def storage_path
+    @project.repository_storage_path
+  end
+
   # Return absolute path to repository
   def path_to_repo
     @path_to_repo ||= File.expand_path(
-      File.join(@project.repository_storage_path, path_with_namespace + ".git")
+      File.join(storage_path, path_with_namespace + ".git")
     )
   end
 
@@ -125,6 +126,12 @@ class Repository
     commits
   end
 
+  def find_commits_by_message_with_elastic(query)
+    project.repository.search(query, type: :commit)[:commits][:results].map do |result|
+      commit result["_source"]["commit"]["sha"]
+    end
+  end
+
   def find_branch(name)
     raw_repository.branches.find { |branch| branch.name == name }
   end
@@ -146,6 +153,10 @@ class Repository
 
     after_create_branch
     find_branch(branch_name)
+  end
+
+  def push_remote_branches(remote, branches)
+    gitlab_shell.push_remote_branches(storage_path, path_with_namespace, remote, branches)
   end
 
   def add_tag(user, tag_name, target, message = nil)
@@ -180,6 +191,10 @@ class Repository
     true
   end
 
+  def delete_remote_branches(remote, branches)
+    gitlab_shell.delete_remote_branches(storage_path, path_with_namespace, remote, branches)
+  end
+
   def rm_tag(tag_name)
     before_remove_tag
 
@@ -189,6 +204,44 @@ class Repository
     rescue Rugged::ReferenceError
       false
     end
+  end
+
+  def config
+    raw_repository.rugged.config
+  end
+
+  def add_remote(name, url)
+    raw_repository.remote_add(name, url)
+  rescue Rugged::ConfigError
+    raw_repository.remote_update(name, url: url)
+  end
+
+  def remove_remote(name)
+    raw_repository.remote_delete(name)
+    true
+  rescue Rugged::ConfigError
+    false
+  end
+
+  def set_remote_as_mirror(name)
+    # This is used by Gitlab Geo to define repository as equivalent as "git clone --mirror"
+    config["remote.#{name}.fetch"] = 'refs/*:refs/*'
+    config["remote.#{name}.mirror"] = true
+    config["remote.#{name}.prune"] = true
+  end
+
+  def fetch_remote(remote, forced: false, no_tags: false)
+    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: forced, no_tags: no_tags)
+  end
+
+  def remote_tags(remote)
+    gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
+      Gitlab::Git::Tag.new(name, target)
+    end
+  end
+
+  def fetch_remote_forced!(remote)
+    gitlab_shell.fetch_remote(storage_path, path_with_namespace, remote, forced: true)
   end
 
   def ref_names
@@ -216,11 +269,23 @@ class Repository
 
     return if kept_around?(sha)
 
-    rugged.references.create(keep_around_ref_name(sha), sha)
+    # This will still fail if the file is corrupted (e.g. 0 bytes)
+    begin
+      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+    rescue Rugged::ReferenceError => ex
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    rescue Rugged::OSError => ex
+      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+      Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    end
   end
 
   def kept_around?(sha)
-    ref_exists?(keep_around_ref_name(sha))
+    begin
+      ref_exists?(keep_around_ref_name(sha))
+    rescue Rugged::ReferenceError
+      false
+    end
   end
 
   def tag_names
@@ -392,6 +457,11 @@ class Repository
 
     expire_cache if exists?
 
+    # expire cache that don't depend on repository data (when expiring)
+    expire_tags_cache
+    expire_tag_count_cache
+    expire_branches_cache
+    expire_branch_count_cache
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
@@ -606,6 +676,8 @@ class Repository
   # Remove archives older than 2 hours
   def branches_sorted_by(value)
     case value
+    when 'name'
+      branches.sort_by(&:name)
     when 'recently_updated'
       branches.sort do |a, b|
         commit(b.target).committed_date <=> commit(a.target).committed_date
@@ -686,6 +758,22 @@ class Repository
 
   alias_method :branches, :local_branches
 
+  def remote_branches(remote_name)
+    branches = []
+
+    rugged.references.each("refs/remotes/#{remote_name}/*").map do |ref|
+      name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
+
+      begin
+        branches << Gitlab::Git::Branch.new(name, ref.target)
+      rescue Rugged::ReferenceError
+        # Omit invalid branch
+      end
+    end
+
+    branches
+  end
+
   def tags
     @tags ||= raw_repository.tags
   end
@@ -733,6 +821,33 @@ class Repository
     end
   end
 
+  def update_file(user, path, content, branch:, previous_path:, message:)
+    commit_with_hooks(user, branch) do |ref|
+      committer = user_to_committer(user)
+      options = {}
+      options[:committer] = committer
+      options[:author] = committer
+      options[:commit] = {
+        message: message,
+        branch: ref,
+        update_ref: false
+      }
+
+      options[:file] = {
+        content: content,
+        path: path,
+        update: true
+      }
+
+      if previous_path
+        options[:file][:previous_path] = previous_path
+        Gitlab::Git::Blob.rename(raw_repository, options)
+      else
+        Gitlab::Git::Blob.commit(raw_repository, options)
+      end
+    end
+  end
+
   def remove_file(user, path, message, branch)
     commit_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
@@ -769,6 +884,18 @@ class Repository
       !rugged.merge_commits(our_commit, their_commit).conflicts?
     else
       false
+    end
+  end
+
+  def ff_merge(user, source_sha, target_branch, options = {})
+    our_commit = rugged.branches[target_branch].target
+    their_commit = rugged.lookup(source_sha)
+
+    raise "Invalid merge target" if our_commit.nil?
+    raise "Invalid merge source" if their_commit.nil?
+
+    commit_with_hooks(user, target_branch) do
+      source_sha
     end
   end
 
@@ -875,6 +1002,54 @@ class Repository
     end
   end
 
+  def fetch_upstream(url)
+    add_remote(Repository::MIRROR_REMOTE, url)
+    fetch_remote(Repository::MIRROR_REMOTE)
+  end
+
+  def fetch_geo_mirror(url)
+    add_remote(Repository::MIRROR_GEO, url)
+    set_remote_as_mirror(Repository::MIRROR_GEO)
+    fetch_remote_forced!(Repository::MIRROR_GEO)
+  end
+
+  def upstream_branches
+    @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
+  end
+
+  def diverged_from_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
+  def upstream_has_diverged?(branch_name, remote_ref)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
+
+    if upstream_commit
+      !is_ancestor?(upstream_commit.id, branch_commit.id)
+    else
+      false
+    end
+  end
+
+  def up_to_date_with_upstream?(branch_name)
+    branch_commit = commit(branch_name)
+    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
+
+    if upstream_commit
+      is_ancestor?(branch_commit.id, upstream_commit.id)
+    else
+      false
+    end
+  end
+
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
     second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
@@ -894,6 +1069,57 @@ class Repository
   end
 
   def parse_search_result(result)
+    if result.is_a?(String)
+      parse_search_result_from_grep(result)
+    else
+      parse_search_result_from_elastic(result)
+    end
+  end
+
+  def parse_search_result_from_elastic(result)
+    ref = result["_source"]["blob"]["commit_sha"]
+    filename = result["_source"]["blob"]["path"]
+    extname = File.extname(filename)
+    basename = filename.sub(/#{extname}$/, '')
+    content = result["_source"]["blob"]["content"]
+    total_lines = content.lines.size
+
+    highlighted_content = result["highlight"]["blob.content"]
+    term = highlighted_content && highlighted_content[0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
+
+    found_line_number = 0
+
+    content.each_line.each_with_index do |line, index|
+      if term && line.include?(term)
+        found_line_number = index
+        break
+      end
+    end
+
+    from = if found_line_number >= 2
+             found_line_number - 2
+           else
+             found_line_number
+           end
+
+    to = if (total_lines - found_line_number) > 3
+           found_line_number + 2
+         else
+           found_line_number
+         end
+
+    data = content.lines[from..to]
+
+    OpenStruct.new(
+      filename: filename,
+      basename: basename,
+      ref: ref,
+      startline: from + 1,
+      data: data.join
+    )
+  end
+
+  def parse_search_result_from_grep(result)
     ref = nil
     filename = nil
     basename = nil
@@ -952,6 +1178,10 @@ class Repository
       if was_empty || !target_branch
         # Create branch
         rugged.references.create(ref, newrev)
+
+        # If repo was empty expire cache
+        after_create if was_empty
+        after_create_branch
       else
         # Update head
         current_head = find_branch(branch).target
@@ -987,6 +1217,12 @@ class Repository
     end
   end
 
+  def main_language
+    return unless head_exists?
+
+    Linguist::Repository.new(rugged, rugged.head.target_id).language
+  end
+
   def avatar
     return nil unless exists?
 
@@ -1000,7 +1236,7 @@ class Repository
   private
 
   def cache
-    @cache ||= RepositoryCache.new(path_with_namespace)
+    @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
   end
 
   def head_exists?

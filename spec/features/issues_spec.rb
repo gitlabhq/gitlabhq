@@ -435,6 +435,27 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'update weight from issue#show', js: true do
+    let!(:issue) { create(:issue, project: project) }
+
+    before do
+      visit namespace_project_issue_path(project.namespace, project, issue)
+    end
+
+    it 'should allow user to update to a weight' do
+      page.within('.weight') do
+        expect(page).to have_content "None"
+        click_link 'Edit'
+
+        find('.dropdown-content a', text: '1').click
+
+        page.within('.value') do
+          expect(page).to have_content "1"
+        end
+      end
+    end
+  end
+
   describe 'update milestone from issue#show' do
     let!(:issue) { create(:issue, project: project, author: @user) }
     let!(:milestone) { create(:milestone, project: project) }

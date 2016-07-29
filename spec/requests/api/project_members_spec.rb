@@ -89,6 +89,18 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: 1234
       expect(response).to have_http_status(422)
     end
+
+    context 'project in a group' do
+      before do
+        project2 = create(:project, group: create(:group, membership_lock: true))
+        project2.group.add_owner(user)
+        post api("/projects/#{project2.id}/members", user), user_id: user2.id, access_level: ProjectMember::MASTER
+      end
+
+      it 'should return a 405 method not allowed error when group membership lock is enabled' do
+        expect(response.status).to eq 405
+      end
+    end
   end
 
   describe "PUT /projects/:id/members/:user_id" do

@@ -18,6 +18,11 @@ class Group < Namespace
 
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
+  has_many :hooks, dependent: :destroy, class_name: 'GroupHook'
+  # We cannot simply set `has_many :audit_events, as: :entity, dependent: :destroy`
+  # here since Group inherits from Namespace, the entity_type would be set to `Namespace`.
+  has_many :audit_events, -> { where(entity_type: Group) }, dependent: :destroy, foreign_key: 'entity_id'
   has_many :notification_settings, dependent: :destroy, as: :source
 
   validate :avatar_type, if: ->(user) { user.avatar.present? && user.avatar_changed? }
@@ -29,6 +34,10 @@ class Group < Namespace
 
   after_create :post_create_hook
   after_destroy :post_destroy_hook
+
+  scope :where_group_links_with_provider, ->(provider) do
+    joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
+  end
 
   class << self
     # Searches for groups matching the given query.
@@ -95,14 +104,18 @@ class Group < Namespace
     end
   end
 
-  def add_users(user_ids, access_level, current_user = nil)
+  def add_users(user_ids, access_level, current_user = nil, skip_notification: false)
     user_ids.each do |user_id|
-      Member.add_user(self.group_members, user_id, access_level, current_user)
+      Member.add_user(self.group_members, user_id, access_level, current_user, skip_notification: skip_notification)
     end
   end
 
-  def add_user(user, access_level, current_user = nil)
-    add_users([user], access_level, current_user)
+  def add_user(user, access_level, current_user = nil, skip_notification: false)
+    add_users([user], access_level, current_user, skip_notification: skip_notification)
+  end
+
+  def add_owner(user, current_user = nil, skip_notification: false)
+    self.add_user(user, Gitlab::Access::OWNER, current_user, skip_notification: skip_notification)
   end
 
   def add_guest(user, current_user = nil)
@@ -119,10 +132,6 @@ class Group < Namespace
 
   def add_master(user, current_user = nil)
     add_user(user, Gitlab::Access::MASTER, current_user)
-  end
-
-  def add_owner(user, current_user = nil)
-    add_user(user, Gitlab::Access::OWNER, current_user)
   end
 
   def has_owner?(user)
@@ -143,6 +152,23 @@ class Group < Namespace
     end
   end
 
+  def human_ldap_access
+    Gitlab::Access.options_with_owner.key ldap_access
+  end
+
+  # NOTE: Backwards compatibility with old ldap situation
+  def ldap_cn
+    ldap_group_links.first.try(:cn)
+  end
+
+  def ldap_access
+    ldap_group_links.first.try(:group_access)
+  end
+
+  def ldap_synced?
+    Gitlab.config.ldap.enabled && ldap_cn.present?
+  end
+
   def post_create_hook
     Gitlab::AppLogger.info("Group \"#{name}\" was created")
 
@@ -157,5 +183,9 @@ class Group < Namespace
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def first_non_empty_project
+    projects.detect{ |project| !project.empty_repo? }
   end
 end

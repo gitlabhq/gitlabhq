@@ -46,6 +46,53 @@ module Gitlab
       true
     end
 
+    def list_remote_tags(storage, name, remote)
+      output, status = Popen::popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
+      tags_with_targets = []
+
+      raise Error, output unless status.zero?
+
+      # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
+      # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
+      output.lines.each do |line|
+        target, path = line.strip!.split("\t")
+
+        # When the remote repo does not have tags.
+        if target.nil? || path.nil?
+          Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
+          break
+        end
+
+        name = path.split('/', 3).last
+        # We're only interested in tag references
+        # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
+        next if name =~ /\^\{\}\Z/
+
+        tags_with_targets.concat([name, target])
+      end
+
+      Hash[*tags_with_targets]
+    end
+
+    # Fetch remote for repository
+    #
+    # name - project path with namespace
+    # remote - remote name
+    # forced - should we use --force flag?
+    #
+    # Ex.
+    #   fetch_remote("gitlab/gitlab-ci", "upstream")
+    #
+    def fetch_remote(storage, name, remote, forced: false, no_tags: false)
+      args = [gitlab_shell_projects_path, 'fetch-remote', storage, "#{name}.git", remote, '600']
+      args << '--force' if forced
+      args << '--no-tags' if no_tags
+
+      output, status = Popen::popen(args)
+      raise Error, output unless status.zero?
+      true
+    end
+
     # Move repository
     # storage - project's storage path
     # path - project path with namespace
@@ -60,16 +107,18 @@ module Gitlab
     end
 
     # Fork repository to new namespace
-    # storage - project's storage path
+    # forked_from_storage - forked-from project's storage path
     # path - project path with namespace
+    # forked_to_storage - forked-to project's storage path
     # fork_namespace - namespace for forked project
     #
     # Ex.
-    #  fork_repository("/path/to/storage", "gitlab/gitlab-ci", "randx")
+    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "randx")
     #
-    def fork_repository(storage, path, fork_namespace)
+    def fork_repository(forked_from_storage, path, forked_to_storage, fork_namespace)
       Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'fork-project',
-                                   storage, "#{path}.git", fork_namespace])
+                                   forked_from_storage, "#{path}.git", forked_to_storage,
+                                   fork_namespace])
     end
 
     # Remove repository from file system
@@ -203,6 +252,38 @@ module Gitlab
       if File.exist?(gitlab_shell_path) && !File.exist?(link_path)
         FileUtils.symlink(secret_file, link_path)
       end
+    end
+
+    # Push branch to remote repository
+    #
+    # project_name - project's name with namespace
+    # remote_name - remote name
+    # branch_name - remote branch name
+    #
+    # Ex.
+    #   push_remote_branches('upstream', 'feature')
+    #
+    def push_remote_branches(storage, project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, *branch_names]
+      output, status = Popen::popen(args)
+      raise Error, output unless status.zero?
+      true
+    end
+
+    # Delete branch from remote repository
+    #
+    # project_name - project's name with namespace
+    # remote_name - remote name
+    # branch_name - remote branch name
+    #
+    # Ex.
+    #   delete_remote_branches('upstream', 'feature')
+    #
+    def delete_remote_branches(storage, project_name, remote_name, branch_names)
+      args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
+      output, status = Popen::popen(args)
+      raise Error, output unless status.zero?
+      true
     end
 
     protected

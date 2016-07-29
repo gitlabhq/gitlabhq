@@ -3,7 +3,7 @@ module AppearancesHelper
     if brand_item && brand_item.title
       brand_item.title
     else
-      'GitLab Community Edition'
+      'GitLab Enterprise Edition'
     end
   end
 

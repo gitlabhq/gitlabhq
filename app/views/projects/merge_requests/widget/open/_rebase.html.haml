@@ -1,0 +1,37 @@
+- if @merge_request.rebase_in_progress? || (defined?(rebase_in_progress) && rebase_in_progress)
+  %h4
+    = icon("spinner spin")
+    Rebase in progress&hellip;
+  %p
+    This merge request is in the process of being rebased.
+
+  :javascript
+    $(function() {
+      merge_request_widget.rebaseInProgress()
+    });
+- elsif !can_push_branch?(@merge_request.source_project, @merge_request.source_branch)
+  %h4
+    = icon("exclamation-triangle")
+    Fast-forward merge is not possible
+  %p
+    Rebase the source branch onto
+    %span.label-branch= @merge_request.target_branch
+    to allow this merge request to be merged.
+- else
+  = form_for [:rebase, @project.namespace.becomes(Namespace), @project, @merge_request], remote: true, method: :post, html: { class: 'rebase-mr-form js-requires-input' } do |f|
+    = hidden_field_tag :authenticity_token, form_authenticity_token
+    .accept-merge-holder.clearfix.js-toggle-container
+      .accept-action
+        = f.button class: "btn btn-reopen js-rebase-button" do
+          Rebase onto #{@merge_request.target_branch}
+      .accept-control
+        Fast-forward merge is not possible. Rebase the source branch onto the target branch or merge target branch into source branch to allow this merge request to be merged.
+
+  :javascript
+    $('.rebase-mr-form').on('ajax:send', function() {
+      $('.rebase-mr-form :input').disable();
+    });
+
+    $('.js-rebase-button').on('click', function() {
+      $('.js-rebase-button').html("<i class='fa fa-spinner fa-spin'></i> Rebase in progress");
+    });

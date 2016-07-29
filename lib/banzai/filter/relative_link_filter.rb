@@ -20,7 +20,7 @@ module Banzai
           process_link_attr el.attribute('href')
         end
 
-        doc.search('img').each do |el|
+        doc.css('img, video').each do |el|
           process_link_attr el.attribute('src')
         end
 
@@ -112,8 +112,7 @@ module Banzai
       end
 
       def current_commit
-        @current_commit ||= context[:commit] ||
-          ref ? repository.commit(ref) : repository.head_commit
+        @current_commit ||= context[:commit] || ref ? repository.commit(ref) : repository.head_commit
       end
 
       def relative_url_root

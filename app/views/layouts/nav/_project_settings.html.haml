@@ -39,7 +39,23 @@
       = link_to namespace_project_triggers_path(@project.namespace, @project), title: 'Triggers' do
         %span
           Triggers
-    = nav_link(controller: :badges) do
-      = link_to namespace_project_badges_path(@project.namespace, @project), title: 'Badges' do
+    = nav_link(controller: :pipelines_settings) do
+      = link_to namespace_project_pipelines_settings_path(@project.namespace, @project), title: 'CI/CD Pipelines' do
         %span
-          Badges
+          CI/CD Pipelines
+  = nav_link(controller: :push_rules) do
+    = link_to namespace_project_push_rules_path(@project.namespace, @project), title: "Push Rules" do
+      %span
+        Push Rules
+  = nav_link(controller: :mirrors) do
+    = link_to namespace_project_mirror_path(@project.namespace, @project), title: 'Mirror Repository', data: {placement: 'right'} do
+      %span
+        Mirror Repository
+  = nav_link(controller: :pages) do
+    = link_to namespace_project_pages_path(@project.namespace, @project), title: 'Pages', data: {placement: 'right'} do
+      %span
+        Pages
+  = nav_link(controller: :audit_events) do
+    = link_to namespace_project_audit_events_path(@project.namespace, @project), title: "Audit Events" do
+      %span
+        Audit Events

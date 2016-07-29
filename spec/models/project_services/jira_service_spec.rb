@@ -107,13 +107,13 @@ describe JiraService, models: true do
           }
         )
       end
-
+  
       it "reset password if url changed" do
         @jira_service.api_url = 'http://jira_edited.example.com/rest/api/2'
         @jira_service.save
         expect(@jira_service.password).to be_nil
       end
-
+  
       it "does not reset password if username changed" do
         @jira_service.username = "some_name"
         @jira_service.save
@@ -135,7 +135,7 @@ describe JiraService, models: true do
         expect(@jira_service.password).to be_nil
       end
     end
-
+    
     context "when no password was previously set" do
       before do
         @jira_service = JiraService.create(
@@ -209,12 +209,11 @@ describe JiraService, models: true do
 
     context 'when gitlab.yml was initialized' do
       before do
-        settings = {
-          "jira" => {
-            "title" => "Jira",
-            "project_url" => "http://jira.sample/projects/project_a",
-            "issues_url" => "http://jira.sample/issues/:id",
-            "new_issue_url" => "http://jira.sample/projects/project_a/issues/new"
+        settings = { "jira" => {
+          "title" => "Jira",
+          "project_url" => "http://jira.sample/projects/project_a",
+          "issues_url" => "http://jira.sample/issues/:id",
+          "new_issue_url" => "http://jira.sample/projects/project_a/issues/new"
           }
         }
         allow(Gitlab.config).to receive(:issues_tracker).and_return(settings)

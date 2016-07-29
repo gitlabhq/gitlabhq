@@ -53,6 +53,9 @@ If necessary, you can increase the access level of an individual user for a spec
 
 ## Requesting access to a group
 
+As a group owner you can enable or disable non members to request access to
+your group. Go to the group settings and click on **Allow users to request access**.
+
 As a user, you can request to be a member of a group. Go to the group you'd
 like to be a member of, and click the **Request Access** button on the right
 side of your screen.
@@ -91,3 +94,29 @@ gitlab_rails['gitlab_default_can_create_group'] = false
 # For installations from source, uncomment the 'default_can_create_group'
 # line in /home/git/gitlab/config/gitlab.yml
 ```
+
+## Lock project membership to members of this group
+
+In GitLab Enterprise Edition it is possible to lock membership in project to the
+level of members in group.
+
+This allows group owner to lock down any new project membership to any of the
+projects within the group allowing tighter control over project membership.
+
+To enable this feature, navigate to group settings page, select `Member lock`
+and `Save group`.
+
+![Checkbox for membership lock](groups/membership_lock.png)
+
+This will disable the option for all users who previously had permissions to
+operate project memberships so no new users can be added. Furthermore, any
+request to add new user to project through API will not be possible.
+
+## Prevent projects in this group from sharing a project with another group
+
+In GitLab Enterprise it is possible to prevent projects in a group from sharing
+a project with another group. This allows for tighter control over project
+access.
+
+To enable this feature, navigate to the group settings page. Select `Share with
+group lock` and save the group.

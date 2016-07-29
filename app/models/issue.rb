@@ -6,6 +6,13 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Spammable
+  include Elastic::IssuesSearch
+
+  WEIGHT_RANGE = 1..9
+  WEIGHT_ALL = 'Everything'
+  WEIGHT_ANY = 'Any Weight'
+  WEIGHT_NONE = 'No Weight'
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -33,6 +40,8 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+  scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
+  scope :order_weight_asc, -> { reorder('weight ASC') }
 
   state_machine :state, initial: :opened do
     event :close do
@@ -52,9 +61,49 @@ class Issue < ActiveRecord::Base
     attributes
   end
 
+  class << self
+    private
+
+    # Returns the project that the current scope belongs to if any, nil otherwise.
+    #
+    # Examples:
+    # - my_project.issues.without_due_date.owner_project => my_project
+    # - Issue.all.owner_project => nil
+    def owner_project
+      # No owner if we're not being called from an association
+      return unless all.respond_to?(:proxy_association)
+
+      owner = all.proxy_association.owner
+
+      # Check if the association is or belongs to a project
+      if owner.is_a?(Project)
+        owner
+      else
+        begin
+          owner.association(:project).target
+        rescue ActiveRecord::AssociationNotFoundError
+          nil
+        end
+      end
+    end
+  end
+
   def self.visible_to_user(user)
     return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
     return all if user.admin?
+
+    # Check if we are scoped to a specific project's issues
+    if owner_project
+      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
+        # If the project is authorized for the user, they can see all issues in the project
+        return all
+      else
+        # else only non confidential and authored/assigned to them
+        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
+          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
+          user_id: user.id)
+      end
+    end
 
     where('
       issues.confidential IS NULL
@@ -93,6 +142,8 @@ class Issue < ActiveRecord::Base
     case method.to_s
     when 'due_date_asc' then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
+    when 'weight_desc' then order_weight_desc
+    when 'weight_asc' then order_weight_asc
     else
       super
     end
@@ -159,6 +210,10 @@ class Issue < ActiveRecord::Base
     end
 
     ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+  end
+
+  def self.weight_options
+    [WEIGHT_ALL, WEIGHT_ANY, WEIGHT_NONE] + WEIGHT_RANGE.to_a
   end
 
   def moved?

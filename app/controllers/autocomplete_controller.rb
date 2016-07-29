@@ -3,11 +3,20 @@ class AutocompleteController < ApplicationController
   before_action :find_users, only: [:users]
 
   def users
-    @users ||= User.none
+    @users = @users.non_ldap if params[:skip_ldap] == 'true'
     @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
-    @users = @users.page(params[:page])
+
+    if params[:push_code_to_protected_branches].present? && params[:project_id].present?
+      project = Project.find_by(id: params[:project_id])
+      @users = @users.to_a.
+        select { |user| user.can?(:push_code_to_protected_branches, project) }.
+        take(Kaminari.config.default_per_page)
+    else
+      @users = @users.page(params[:page])
+    end
 
     if params[:search].blank?
       # Include current user if available to filter by "Me"

@@ -5,10 +5,6 @@ module API
     SUDO_HEADER = "HTTP_SUDO"
     SUDO_PARAM = :sudo
 
-    def parse_boolean(value)
-      [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
-    end
-
     def to_boolean(value)
       return true if value =~ /^(true|t|yes|y|1|on)$/i
       return false if value =~ /^(false|f|no|n|0|off)$/i
@@ -130,6 +126,13 @@ module API
     def authenticate_by_gitlab_shell_token!
       input = params['secret_token'].try(:chomp)
       unless Devise.secure_compare(secret_token, input)
+        unauthorized!
+      end
+    end
+
+    def authenticate_by_gitlab_geo_token!
+      token = headers['X-Gitlab-Token'].try(:chomp)
+      unless token && Devise.secure_compare(geo_token, token)
         unauthorized!
       end
     end
@@ -297,7 +300,7 @@ module API
     def filter_projects(projects)
       # If the archived parameter is passed, limit results accordingly
       if params[:archived].present?
-        projects = projects.where(archived: parse_boolean(params[:archived]))
+        projects = projects.where(archived: to_boolean(params[:archived]))
       end
 
       if params[:search].present?
@@ -413,6 +416,10 @@ module API
 
     def secret_token
       File.read(Gitlab.config.gitlab_shell.secret_file).chomp
+    end
+
+    def geo_token
+      Gitlab::Geo.current_node.system_hook.token
     end
 
     def handle_member_errors(errors)

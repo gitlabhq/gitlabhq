@@ -4,6 +4,7 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Elastic::MergeRequestsSearch
   include Importable
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
@@ -11,6 +12,8 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_one :merge_request_diff, dependent: :destroy
+  has_many :approvals, dependent: :destroy
+  has_many :approvers, as: :target, dependent: :destroy
 
   has_many :events, as: :target, dependent: :destroy
 
@@ -96,6 +99,7 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
+  validate :validate_approvals_before_merge
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -104,9 +108,10 @@ class MergeRequest < ActiveRecord::Base
   scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
-
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
+
+  participant :approvers_left
 
   after_save :keep_around_commit
 
@@ -287,6 +292,22 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def validate_approvals_before_merge
+    return true unless approvals_before_merge
+    return true unless target_project
+
+    # Approvals disabled
+    if target_project.approvals_before_merge == 0
+      errors.add :validate_approvals_before_merge,
+                 'Approvals disabled for target project'
+    elsif approvals_before_merge > target_project.approvals_before_merge
+      true
+    else
+      errors.add :validate_approvals_before_merge,
+                 'Number of approvals must be greater than those on target project'
+    end
+  end
+
   def update_merge_request_diff
     if source_branch_changed? || target_branch_changed?
       reload_diff
@@ -309,7 +330,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    return unless unchecked?
+    return unless unchecked? && !Gitlab::Geo.secondary?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -344,7 +365,7 @@ class MergeRequest < ActiveRecord::Base
 
     check_if_can_be_merged
 
-    can_be_merged?
+    can_be_merged? && !should_be_rebased?
   end
 
   def mergeable_state?(skip_ci_check: false)
@@ -539,6 +560,96 @@ class MergeRequest < ActiveRecord::Base
     locked_at.nil? || locked_at < (Time.now - 1.day)
   end
 
+  def requires_approve?
+    approvals_required.nonzero?
+  end
+
+  def approved?
+    approvals_left < 1
+  end
+
+  # Number of approvals remaining (excluding existing approvals) before the MR is
+  # considered approved. If there are fewer potential approvers than approvals left,
+  # choose the lower so the MR doesn't get 'stuck' in a state where it can't be approved.
+  #
+  def approvals_left
+    [approvals_required - approvals.count, number_of_potential_approvers].min
+  end
+
+  def approvals_required
+    approvals_before_merge || target_project.approvals_before_merge
+  end
+
+  # An MR can potentially be approved by:
+  # - anyone in the approvers list
+  # - any other project member with developer access or higher (if there are no approvers
+  #   left)
+  #
+  # It cannot be approved by:
+  # - a user who has already approved the MR
+  # - the MR author
+  #
+  def number_of_potential_approvers
+    has_access = ['access_level > ?', Member::REPORTER]
+    wheres = [
+      "id IN (#{overall_approvers.select(:user_id).to_sql})",
+      "id IN (#{project.members.where(has_access).select(:user_id).to_sql})"
+    ]
+
+    if project.group
+      wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
+    end
+
+    User.where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}").count
+  end
+
+  # Users in the list of approvers who have not already approved this MR.
+  #
+  def approvers_left
+    User.where(id: overall_approvers.select(:user_id)).where.not(id: approvals.select(:user_id))
+  end
+
+  # The list of approvers from either this MR (if they've been set on the MR) or the
+  # target project. Excludes the author by default.
+  #
+  # Before a merge request has been created, author will be nil, so pass the current user
+  # on the MR create page.
+  #
+  def overall_approvers(exclude_user: nil)
+    exclude_user ||= author
+    approvers_relation = approvers.any? ? approvers : target_project.approvers
+
+    exclude_user ? approvers_relation.where.not(user_id: exclude_user.id) : approvers_relation
+  end
+
+  def can_approve?(user)
+    return false unless user
+    return true if approvers_left.include?(user)
+    return false if user == author
+    return false unless user.can?(:update_merge_request, self)
+
+    any_approver_allowed? && approvals.where(user: user).empty?
+  end
+
+  # Once there are fewer approvers left in the list than approvals required, allow other
+  # project members to approve the MR.
+  #
+  def any_approver_allowed?
+    approvals_left > approvers_left.count
+  end
+
+  def approved_by_users
+    approvals.map(&:user)
+  end
+
+  def approver_ids=(value)
+    value.split(",").map(&:strip).each do |user_id|
+      next if author && user_id == author.id
+
+      approvers.find_or_initialize_by(user_id: user_id, target_id: id)
+    end
+  end
+
   def has_ci?
     source_project.ci_service && commits.any?
   end
@@ -614,6 +725,22 @@ class MergeRequest < ActiveRecord::Base
     ensure
       unlock_mr if locked?
     end
+  end
+
+  def ff_merge_possible?
+    project.repository.is_ancestor?(target_branch_sha, diff_head_sha)
+  end
+
+  def should_be_rebased?
+    self.project.ff_merge_must_be_possible? && !ff_merge_possible?
+  end
+
+  def rebase_dir_path
+    File.join(Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
+  end
+
+  def rebase_in_progress?
+    File.exist?(rebase_dir_path)
   end
 
   def diverged_commits_count

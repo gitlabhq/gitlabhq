@@ -1,6 +1,7 @@
 class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
   include TreeHelper
+  include PathLocksHelper
 
   before_action :require_non_empty_project
   before_action :validate_ref_id
@@ -25,7 +26,7 @@ class Projects::RefsController < Projects::ApplicationController
           when "graphs_commits"
             commits_namespace_project_graph_path(@project.namespace, @project, @id)
           when "badges"
-            namespace_project_badges_path(@project.namespace, @project, ref: @id)
+            namespace_project_pipelines_settings_path(@project.namespace, @project, ref: @id)
           else
             namespace_project_commits_path(@project.namespace, @project, @id)
           end
@@ -57,16 +58,22 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
+    show_path_locks = license_allows_file_locks? && @project.path_locks.any?
+
     @logs = contents[@offset, @limit].to_a.map do |content|
       file = @path ? File.join(@path, content.name) : content.name
       last_commit = @repo.last_commit_for_path(@commit.id, file)
+      path_lock = show_path_locks && @project.find_path_lock(file)
+
       {
         file_name: content.name,
-        commit: last_commit
+        commit: last_commit,
+        lock_label: path_lock && text_label_for_lock(path_lock, file)
       }
     end
 
-    offset = (@offset + @limit)
+    offset = @offset + @limit
+
     if contents.size > offset
       @more_log_url = logs_file_namespace_project_ref_path(@project.namespace, @project, @ref, @path || '', offset: offset)
     end

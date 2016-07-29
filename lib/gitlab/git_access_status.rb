@@ -8,8 +8,8 @@ module Gitlab
       @message = message
     end
 
-    def to_json
-      { status: @status, message: @message }.to_json
+    def to_json(opts = nil)
+      { status: @status, message: @message }.to_json(opts)
     end
   end
 end

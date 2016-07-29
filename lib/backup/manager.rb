@@ -1,6 +1,6 @@
 module Backup
   class Manager
-    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts lfs registry]
+    ARCHIVES_TO_BACKUP = %w[uploads builds artifacts pages lfs registry]
     FOLDERS_TO_BACKUP = %w[repositories db]
 
     def pack

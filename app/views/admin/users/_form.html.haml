@@ -83,6 +83,12 @@
         = f.label :website_url, 'Website', class: 'control-label'
         .col-sm-10= f.text_field :website_url, class: 'form-control'
 
+    %fieldset
+      %legend Admin notes
+      .form-group
+        = f.label :note, 'Note', class: 'control-label'
+        .col-sm-10= f.text_area :note, class: 'form-control'
+
     .form-actions
       - if @user.new_record?
         = f.submit 'Create user', class: "btn btn-create"

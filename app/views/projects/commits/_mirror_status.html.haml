@@ -1,0 +1,14 @@
+- if @project.mirror?
+  .prepend-top-default.gray-content-block.second-block.clearfix
+    - import_url = @project.safe_import_url
+    .oneline.project-mirror-text
+      This project is mirrored from #{link_to import_url, import_url}.
+
+      = render "shared/mirror_status"
+
+      - if @ref.present? && @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(@ref)
+        %span.has-tooltip{data: { html: "true", title: branch_diverged_tooltip_message }}
+          = icon('exclamation-triangle')
+          This branch has diverged from upstream.
+    .project-mirror-button
+      = render "shared/mirror_update_button"

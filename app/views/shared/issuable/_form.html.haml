@@ -84,6 +84,14 @@
           - if can? current_user, :admin_label, issuable.project
             %div
               = link_to 'Create new label', new_namespace_project_label_path(issuable.project.namespace, issuable.project), target: :blank, class: "prepend-top-5 inline"
+
+      - if issuable.respond_to?(:weight)
+        .form-group
+          = f.label :label_ids, class: "control-label #{"col-lg-4" if has_due_date}" do
+            Weight
+          .col-sm-10{ class: ("col-lg-8" if has_due_date) }
+            = f.select :weight, issues_weight_options(issuable.weight, edit: true), { include_blank: true },
+              { class: 'select2 js-select2', data: { placeholder: "Select weight" }}
     - if has_due_date
       .col-lg-6
         .form-group
@@ -105,6 +113,53 @@
         = icon('question-circle')
 
 - if issuable.is_a?(MergeRequest)
+  - if @merge_request.requires_approve?
+    - approvals = issuable.target_project.approvals_before_merge
+    .form-group
+      = f.label :approvals_before_merge, class: 'control-label' do
+        Approvals required
+      .col-sm-10
+        = f.number_field :approvals_before_merge, class: 'form-control', value: approvals
+        .help-block
+          Number of users who need to approve this merge request before it can be accepted.
+          If this isn't greater than the project default (#{pluralize(approvals, 'user')}),
+          then it will be ignored and the project default will be used.
+    .form-group
+      = f.label :approver_ids, class: 'control-label' do
+        Approvers
+      .col-sm-10
+        - author = @merge_request.author || current_user
+        - skip_users = @merge_request.overall_approvers.map(&:user) + [author]
+        = users_select_tag("merge_request[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true, skip_users: skip_users)
+        .help-block
+          This merge request must be approved by these users.
+          You can override the project settings by setting your own list of approvers.
+
+        .panel.panel-default.prepend-top-10
+          .panel-heading
+            Approvers
+          %ul.well-list.approver-list
+            - using_project_approvers = @merge_request.approvers.empty?
+            - item_class = 'project-approvers' if using_project_approvers
+            - @merge_request.overall_approvers(exclude_user: author).each do |approver|
+              %li{id: dom_id(approver.user), class: item_class}
+                = link_to approver.user.name, approver.user
+                .pull-right
+                  - if using_project_approvers
+                    = link_to "#", data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                      = icon("sign-out")
+                      Remove
+                  - else
+                    = link_to namespace_project_merge_request_approver_path(@project.namespace, @project, @merge_request, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                      = icon("sign-out")
+                      Remove
+            - if @merge_request.overall_approvers.empty?
+              %li.no-approvers There are no approvers
+        .help-block.suggested-approvers
+          - if @suggested_approvers.any?
+            Suggested approvers:
+            = raw @suggested_approvers.map{|approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")
+
   %hr
   - if @merge_request.new_record?
     .form-group
@@ -149,3 +204,10 @@
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+
+%li.project-approvers.hide.approver-template{id: "user_{user_id}"}
+  = link_to "{approver_name}", "#"
+  .pull-right
+    = link_to "#", data: { confirm: "Are you sure you want to remove approver {approver_name}"}, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+      = icon("sign-out")
+      Remove

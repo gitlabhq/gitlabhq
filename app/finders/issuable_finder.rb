@@ -39,6 +39,7 @@ class IssuableFinder
     items = by_assignee(items)
     items = by_author(items)
     items = by_label(items)
+    items = by_weight(items)
     items = by_due_date(items)
     sort(items)
   end
@@ -279,6 +280,31 @@ class IssuableFinder
     end
 
     items
+  end
+
+  def by_weight(items)
+    return items unless weights?
+
+    if filter_by_no_weight?
+      items.where(weight: [-1, nil])
+    elsif filter_by_any_weight?
+      items.where.not(weight: [-1, nil])
+    else
+      items.where(weight: params[:weight])
+    end
+  end
+
+  def weights?
+    params[:weight].present? && params[:weight] != Issue::WEIGHT_ALL &&
+      klass.column_names.include?('weight')
+  end
+
+  def filter_by_no_weight?
+    params[:weight] == Issue::WEIGHT_NONE
+  end
+
+  def filter_by_any_weight?
+    params[:weight] == Issue::WEIGHT_ANY
   end
 
   def by_due_date(items)

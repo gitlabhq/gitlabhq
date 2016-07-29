@@ -363,6 +363,34 @@ describe "Private Project Access", feature: true  do
     it { is_expected.to be_denied_for :visitor }
   end
 
+  context "when license blocks changes" do
+    before do
+      allow(License).to receive(:block_changes?).and_return(true)
+    end
+
+    describe "GET /:project_path/issues/new" do
+      subject { new_namespace_project_issue_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for master }
+      it { is_expected.to be_denied_for reporter }
+      it { is_expected.to be_denied_for :admin }
+      it { is_expected.to be_denied_for guest }
+      it { is_expected.to be_denied_for :user }
+      it { is_expected.to be_denied_for :visitor }
+    end
+
+    describe "GET /:project_path/merge_requests/new" do
+      subject { new_namespace_project_merge_request_path(project.namespace, project) }
+
+      it { is_expected.to be_denied_for master }
+      it { is_expected.to be_denied_for reporter }
+      it { is_expected.to be_denied_for :admin }
+      it { is_expected.to be_denied_for guest }
+      it { is_expected.to be_denied_for :user }
+      it { is_expected.to be_denied_for :visitor }
+    end
+  end
+
   describe "GET /:project_path/container_registry" do
     before do
       stub_container_registry_tags('latest')

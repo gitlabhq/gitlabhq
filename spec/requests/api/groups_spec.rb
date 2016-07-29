@@ -17,6 +17,7 @@ describe API::API, api: true  do
   before do
     group1.add_owner(user1)
     group2.add_owner(user2)
+    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER, provider: 'ldap'
   end
 
   describe "GET /groups" do
@@ -30,10 +31,19 @@ describe API::API, api: true  do
     context "when authenticated as user" do
       it "normal user: should return an array of groups of user1" do
         get api("/groups", user1)
+
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['name']).to eq(group1.name)
+
+        expect(json_response.first['ldap_cn']).to eq(group1.ldap_cn)
+        expect(json_response.first['ldap_access']).to eq(group1.ldap_access)
+
+        ldap_group_link = json_response.first['ldap_group_links'].first
+        expect(ldap_group_link['cn']).to eq(group1.ldap_cn)
+        expect(ldap_group_link['group_access']).to eq(group1.ldap_access)
+        expect(ldap_group_link['provider']).to eq('ldap')
       end
     end
 
@@ -256,6 +266,29 @@ describe API::API, api: true  do
       it "should return 400 bad request error if path not given" do
         post api("/groups", user3), { name: 'test' }
         expect(response).to have_http_status(400)
+      end
+
+      it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
+        group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
+        expect { post api("/groups", admin), group_attributes }.to change{ LdapGroupLink.count }.by(1)
+      end
+    end
+  end
+
+  describe "PUT /groups" do
+    context "when authenticated as user without group permissions" do
+      it "should not create group" do
+        put api("/groups/#{group2.id}", user1), attributes_for(:group)
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context "when authenticated as user with group permissions" do
+      it "should update group" do
+        group2.update(owner: user2)
+        put api("/groups/#{group2.id}", user2), { name: 'Renamed' }
+        expect(response.status).to eq(200)
+        expect(group2.reload.name).to eq('Renamed')
       end
     end
   end

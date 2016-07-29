@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-# team_update_admin_user PUT    /admin/users/:id/team_update(.:format) admin/users#team_update
 #       block_admin_user PUT    /admin/users/:id/block(.:format)       admin/users#block
 #     unblock_admin_user PUT    /admin/users/:id/unblock(.:format)     admin/users#unblock
 #            admin_users GET    /admin/users(.:format)                 admin/users#index
@@ -11,10 +10,6 @@ require 'spec_helper'
 #                        PUT    /admin/users/:id(.:format)             admin/users#update
 #                        DELETE /admin/users/:id(.:format)             admin/users#destroy
 describe Admin::UsersController, "routing" do
-  it "to #team_update" do
-    expect(put("/admin/users/1/team_update")).to route_to('admin/users#team_update', id: '1')
-  end
-
   it "to #block" do
     expect(put("/admin/users/1/block")).to route_to('admin/users#block', id: '1')
   end
@@ -115,6 +110,16 @@ end
 describe Admin::DashboardController, "routing" do
   it "to #index" do
     expect(get("/admin")).to route_to('admin/dashboard#index')
+  end
+end
+
+describe Admin::EmailsController, "routing" do
+  it "to #show" do
+    expect(get("/admin/email")).to route_to('admin/emails#show')
+  end
+
+  it "to #create" do
+    expect(post("/admin/email")).to route_to('admin/emails#create')
   end
 end
 

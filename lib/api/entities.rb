@@ -52,6 +52,11 @@ module API
       expose :enable_ssl_verification
     end
 
+    class ProjectPushRule < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class BasicProjectDetails < Grape::Entity
       expose :id
       expose :http_url_to_repo, :web_url
@@ -97,8 +102,18 @@ module API
       end
     end
 
+    class LdapGroupLink < Grape::Entity
+      expose :cn, :group_access, :provider
+    end
+
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility_level
+
+      expose :ldap_cn, :ldap_access
+      expose :ldap_group_links,
+        using: Entities::LdapGroupLink,
+        if: lambda { |group, options| group.ldap_group_links.any? }
+
       expose :avatar_url
       expose :web_url
     end
@@ -114,33 +129,25 @@ module API
       end
     end
 
-    class RepoObject < Grape::Entity
+    class RepoBranch < Grape::Entity
       expose :name
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
+      expose :commit do |repo_branch, options|
+        options[:project].repository.commit(repo_branch.target)
       end
 
-      expose :protected do |repo_obj, options|
-        if options[:project]
-          options[:project].protected_branch? repo_obj.name
-        end
+      expose :protected do |repo_branch, options|
+        options[:project].protected_branch? repo_branch.name
       end
 
-      expose :developers_can_push do |repo_obj, options|
-        if options[:project]
-          options[:project].developers_can_push_to_protected_branch? repo_obj.name
-        end
+      expose :developers_can_push do |repo_branch, options|
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
       end
 
-      expose :developers_can_merge do |repo_obj, options|
-        if options[:project]
-          options[:project].developers_can_merge_to_protected_branch? repo_obj.name
-        end
+      expose :developers_can_merge do |repo_branch, options|
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -221,6 +228,7 @@ module API
         merge_request.subscribed?(options[:current_user])
       end
       expose :user_notes_count
+      expose :approvals_before_merge
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
     end
@@ -229,6 +237,17 @@ module API
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
         compare.diffs(all_diffs: true).to_a
       end
+    end
+
+    class Approvals < Grape::Entity
+      expose :user, using: Entities::UserBasic
+    end
+
+    class MergeRequestApprovals < ProjectEntity
+      expose :merge_status
+      expose :approvals_required
+      expose :approvals_left
+      expose :approvals, as: :approved_by, using: Entities::Approvals
     end
 
     class SSHKey < Grape::Entity
@@ -293,6 +312,10 @@ module API
           event.author.username
         end
       end
+    end
+
+    class LdapGroup < Grape::Entity
+      expose :cn
     end
 
     class ProjectGroupLink < Grape::Entity
@@ -424,7 +447,9 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
-      expose :restricted_signup_domains
+      expose :domain_whitelist
+      expose :domain_blacklist_enabled
+      expose :domain_blacklist
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
@@ -437,27 +462,26 @@ module API
     end
 
     class RepoTag < Grape::Entity
-      expose :name
-      expose :message do |repo_obj, _options|
-        if repo_obj.respond_to?(:message)
-          repo_obj.message
-        else
-          nil
-        end
+      expose :name, :message
+
+      expose :commit do |repo_tag, options|
+        options[:project].repository.commit(repo_tag.target)
       end
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
+      expose :release, using: Entities::Release do |repo_tag, options|
+        options[:project].releases.find_by(tag: repo_tag.name)
+      end
+    end
+
+    class License < Grape::Entity
+      expose :starts_at, :expires_at, :licensee
+
+      expose :user_limit do |license, options|
+        license.restricted?(:active_user_count) ? license.restrictions[:active_user_count] : 0
       end
 
-      expose :release, using: Entities::Release do |repo_obj, options|
-        if options[:project]
-          options[:project].releases.find_by(tag: repo_obj.name)
-        end
+      expose :active_users do |license, options|
+        ::User.active.count
       end
     end
 

@@ -13,6 +13,19 @@
           = link_to 'Projects', projects_group_path(@group), title: 'Projects'
         %li.divider
         - if can_edit
+          - if ldap_enabled?
+            = nav_link(controller: :ldap_group_links) do
+              = link_to group_ldap_group_links_path(@group), title: "LDAP Groups" do
+                %span
+                  LDAP Groups
+          = nav_link(controller: :hooks) do
+            = link_to group_hooks_path(@group), title: "Webhooks" do
+              %span
+                Webhooks
+          = nav_link(controller: :audit_events) do
+            = link_to group_audit_events_path(@group), title: "Audit Events" do
+              %span
+                Audit Events
           %li
             = link_to 'Edit Group', edit_group_path(@group)
         - if can_leave

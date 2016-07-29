@@ -1,7 +1,5 @@
-if ENV['SIMPLECOV']
-  require 'simplecov'
-  SimpleCov.start :rails
-end
+require './spec/simplecov_env'
+SimpleCovEnv.start!
 
 ENV["RAILS_ENV"] ||= 'test'
 
@@ -31,18 +29,25 @@ RSpec.configure do |config|
   config.include Devise::TestHelpers, type: :controller
   config.include LoginHelpers,        type: :feature
   config.include LoginHelpers,        type: :request
+  config.include SearchHelpers,       type: :feature
   config.include StubConfiguration
   config.include EmailHelpers
   config.include TestEnv
   config.include ActiveJob::TestHelper
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include Rails.application.routes.url_helpers, type: :routing
 
   config.infer_spec_type_from_file_location!
   config.raise_errors_for_deprecations!
 
   config.before(:suite) do
     TestEnv.init
+  end
+
+  config.before(:all) do
+    License.destroy_all
+    TestLicense.init
   end
 end
 

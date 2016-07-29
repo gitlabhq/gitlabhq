@@ -21,8 +21,15 @@
       %strong== #{milestone.percent_complete(current_user)}%
       complete
 
-    %span.milestone-stat
-      %span.remaining-days= milestone_remaining_days(milestone)
+    - remaining_days = milestone_remaining_days(milestone)
+    - if remaining_days
+      %span.milestone-stat
+        %span.remaining-days= remaining_days
+    - total_weight = milestone.issues_visible_to_user(current_user).sum(:weight)
+    - unless total_weight.zero?
+      %span.milestone-stat
+        Total weight:
+        %strong= total_weight
     %span.pull-right.tab-issues-buttons
       - if project && can?(current_user, :create_issue, project)
         = link_to new_namespace_project_issue_path(project.namespace, project, issue: { milestone_id: milestone.id }), class: "btn  btn-grouped", title: "New Issue" do

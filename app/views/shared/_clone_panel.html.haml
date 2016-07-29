@@ -16,6 +16,9 @@
           = ssh_clone_button(project)
         %li
           = http_clone_button(project)
+        - if alternative_kerberos_url?
+          %li
+            = kerberos_clone_button(project)
 
   = text_field_tag :project_clone, default_url_to_repo(project), class: "js-select-on-focus form-control", readonly: true
   .input-group-btn

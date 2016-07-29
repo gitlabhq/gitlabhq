@@ -112,5 +112,10 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   def forked_project
     @forked_project ||= Projects::ForkService.new(public_project, current_user).execute
+    # The call to project.repository.after_import in RepositoryForkWorker does
+    # not reset the @exists variable of @fork_project.repository so we have to
+    # explicitely call this method to clear the @exists variable.
+    @forked_project.repository.after_import
+    @forked_project
   end
 end

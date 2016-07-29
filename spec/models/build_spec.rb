@@ -5,7 +5,9 @@ describe Ci::Build, models: true do
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
+                         sha: project.commit.id,
+                         ref: project.default_branch,
+                         status: 'success')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -191,76 +193,184 @@ describe Ci::Build, models: true do
   end
 
   describe '#variables' do
-    context 'returns variables' do
-      subject { build.variables }
+    let(:container_registry_enabled) { false }
+    let(:predefined_variables) do
+      [
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_BUILD_ID', value: build.id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: build.token, public: false },
+        { key: 'CI_BUILD_REF', value: build.sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: build.before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: 'master', public: true },
+        { key: 'CI_BUILD_NAME', value: 'test', public: true },
+        { key: 'CI_BUILD_STAGE', value: 'test', public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true },
+        { key: 'CI_PROJECT_ID', value: project.id.to_s, public: true },
+        { key: 'CI_PROJECT_NAME', value: project.path, public: true },
+        { key: 'CI_PROJECT_PATH', value: project.path_with_namespace, public: true },
+        { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.path, public: true },
+        { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
+        { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true }
+      ]
+    end
 
-      let(:predefined_variables) do
-        [
-          { key: :CI_BUILD_NAME, value: 'test', public: true },
-          { key: :CI_BUILD_STAGE, value: 'stage', public: true },
-        ]
+    before do
+      stub_container_registry_config(enabled: container_registry_enabled, host_port: 'registry.example.com')
+    end
+
+    subject { build.variables }
+
+    context 'returns variables' do
+      before do
+        build.yaml_variables = []
       end
 
-      let(:yaml_variables) do
-        [
-          { key: :DB_NAME, value: 'postgres', public: true }
-        ]
+      it { is_expected.to eq(predefined_variables) }
+    end
+
+    context 'when build is for tag' do
+      let(:tag_variable) do
+        { key: 'CI_BUILD_TAG', value: 'master', public: true }
       end
 
       before do
-        build.update_attributes(stage: 'stage', yaml_variables: yaml_variables)
+        build.update_attributes(tag: true)
       end
 
-      it { is_expected.to eq(predefined_variables + yaml_variables) }
+      it { is_expected.to include(tag_variable) }
+    end
 
-      context 'for tag' do
-        let(:tag_variable) do
-          [
-            { key: :CI_BUILD_TAG, value: 'master', public: true }
-          ]
-        end
+    context 'when secure variable is defined' do
+      let(:secure_variable) do
+        { key: 'SECRET_KEY', value: 'secret_value', public: false }
+      end
 
+      before do
+        build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+      end
+
+      it { is_expected.to include(secure_variable) }
+    end
+
+    context 'when build is for triggers' do
+      let(:trigger) { create(:ci_trigger, project: project) }
+      let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
+      let(:user_trigger_variable) do
+        { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
+      end
+      let(:predefined_trigger_variable) do
+        { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
+      end
+
+      before do
+        build.trigger_request = trigger_request
+      end
+
+      it { is_expected.to include(user_trigger_variable) }
+      it { is_expected.to include(predefined_trigger_variable) }
+    end
+
+    context 'when yaml_variables are undefined' do
+      before do
+        build.yaml_variables = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
         before do
-          build.update_attributes(tag: true)
+          stub_ci_pipeline_yaml_file(config)
         end
 
-        it { is_expected.to eq(tag_variable + predefined_variables + yaml_variables) }
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+              test_other: {
+                script: 'Hello World'
+              }
+            })
+          end
+
+          it { is_expected.to eq(predefined_variables) }
+        end
+
+        context 'if config has variables' do
+          let(:config) do
+            YAML.dump({
+              test: {
+                script: 'Hello World',
+                variables: {
+                  KEY: 'value'
+                }
+              }
+            })
+          end
+          let(:variables) do
+            [{ key: :KEY, value: 'value', public: true }]
+          end
+
+          it { is_expected.to eq(predefined_variables + variables) }
+        end
+      end
+    end
+
+    context 'when container registry is enabled' do
+      let(:container_registry_enabled) { true }
+      let(:ci_registry) do
+        { key: 'CI_REGISTRY',  value: 'registry.example.com',  public: true }
+      end
+      let(:ci_registry_image) do
+        { key: 'CI_REGISTRY_IMAGE',  value: project.container_registry_repository_url, public: true }
       end
 
-      context 'and secure variables' do
-        let(:secure_variables) do
-          [
-            { key: 'SECRET_KEY', value: 'secret_value', public: false }
-          ]
-        end
-
+      context 'and is disabled for project' do
         before do
-          build.project.variables << Ci::Variable.new(key: 'SECRET_KEY', value: 'secret_value')
+          project.update(container_registry_enabled: false)
         end
 
-        it { is_expected.to eq(predefined_variables + yaml_variables + secure_variables) }
-
-        context 'and trigger variables' do
-          let(:trigger) { create(:ci_trigger, project: project) }
-          let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
-          let(:trigger_variables) do
-            [
-              { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
-            ]
-          end
-          let(:predefined_trigger_variable) do
-            [
-              { key: :CI_BUILD_TRIGGERED, value: 'true', public: true }
-            ]
-          end
-
-          before do
-            build.trigger_request = trigger_request
-          end
-
-          it { is_expected.to eq(predefined_variables + predefined_trigger_variable + yaml_variables + secure_variables + trigger_variables) }
-        end
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.not_to include(ci_registry_image) }
       end
+
+      context 'and is enabled for project' do
+        before do
+          project.update(container_registry_enabled: true)
+        end
+
+        it { is_expected.to include(ci_registry) }
+        it { is_expected.to include(ci_registry_image) }
+      end
+    end
+
+    context 'when runner is assigned to build' do
+      let(:runner) { create(:ci_runner, description: 'description', tag_list: ['docker', 'linux']) }
+
+      before do
+        build.update(runner: runner)
+      end
+
+      it { is_expected.to include({ key: 'CI_RUNNER_ID', value: runner.id.to_s, public: true }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_DESCRIPTION', value: 'description', public: true }) }
+      it { is_expected.to include({ key: 'CI_RUNNER_TAGS', value: 'docker, linux', public: true }) }
+    end
+
+    context 'returns variables in valid order' do
+      before do
+        allow(build).to receive(:predefined_variables) { ['predefined'] }
+        allow(project).to receive(:predefined_variables) { ['project'] }
+        allow(pipeline).to receive(:predefined_variables) { ['pipeline'] }
+        allow(build).to receive(:yaml_variables) { ['yaml'] }
+        allow(project).to receive(:secret_variables) { ['secret'] }
+      end
+
+      it { is_expected.to eq(%w[predefined project pipeline yaml secret]) }
     end
   end
 
@@ -612,7 +722,7 @@ describe Ci::Build, models: true do
 
       describe '#erasable?' do
         subject { build.erasable? }
-        it { is_expected.to eq true }
+        it { is_expected.to be_truthy }
       end
 
       describe '#erased?' do
@@ -620,7 +730,7 @@ describe Ci::Build, models: true do
         subject { build.erased? }
 
         context 'build has not been erased' do
-          it { is_expected.to be false }
+          it { is_expected.to be_falsey }
         end
 
         context 'build has been erased' do
@@ -628,12 +738,13 @@ describe Ci::Build, models: true do
             build.erase
           end
 
-          it { is_expected.to be true }
+          it { is_expected.to be_truthy }
         end
       end
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
+
         before do
           build.remove_artifacts_metadata!
         end
@@ -650,6 +761,138 @@ describe Ci::Build, models: true do
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
       expect(build.commit).to eq project.commit
+    end
+  end
+
+  describe '#retryable?' do
+    context 'when build is running' do
+      before do
+        build.run!
+      end
+
+      it { expect(build).not_to be_retryable }
+    end
+
+    context 'when build is finished' do
+      before do
+        build.success!
+      end
+
+      it { expect(build).to be_retryable }
+    end
+  end
+
+  describe '#manual?' do
+    before do
+      build.update(when: value)
+    end
+
+    subject { build.manual? }
+
+    context 'when is set to manual' do
+      let(:value) { 'manual' }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when set to something else' do
+      let(:value) { 'something else' }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#other_actions' do
+    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+    let!(:other_build) { create(:ci_build, :manual, pipeline: pipeline, name: 'other action') }
+
+    subject { build.other_actions }
+
+    it 'returns other actions' do
+      is_expected.to contain_exactly(other_build)
+    end
+
+    context 'when build is retried' do
+      let!(:new_build) { Ci::Build.retry(build) }
+
+      it 'does not return any of them' do
+        is_expected.not_to include(build, new_build)
+      end
+    end
+
+    context 'when other build is retried' do
+      let!(:retried_build) { Ci::Build.retry(other_build) }
+
+      it 'returns a retried build' do
+        is_expected.to contain_exactly(retried_build)
+      end
+    end
+  end
+
+  describe '#play' do
+    let(:build) { create(:ci_build, :manual, pipeline: pipeline) }
+
+    subject { build.play }
+
+    it 'enques a build' do
+      is_expected.to be_pending
+      is_expected.to eq(build)
+    end
+
+    context 'for success build' do
+      before { build.queue }
+
+      it 'creates a new build' do
+        is_expected.to be_pending
+        is_expected.not_to eq(build)
+      end
+    end
+  end
+
+  describe '#when' do
+    subject { build.when }
+
+    context 'if is undefined' do
+      before do
+        build.when = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config has when' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('always') }
+        end
+      end
     end
   end
 

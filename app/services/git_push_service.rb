@@ -64,13 +64,19 @@ class GitPushService < BaseService
 
   def update_merge_requests
     @project.update_merge_requests(params[:oldrev], params[:newrev], params[:ref], current_user)
+    mirror_update = @project.mirror? && @project.repository.up_to_date_with_upstream?(branch_name)
 
     EventCreateService.new.push(@project, current_user, build_push_data)
     SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+
+    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data, mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
+
+    if current_application_settings.elasticsearch_indexing?
+      ElasticCommitIndexerWorker.perform_async(@project.id, params[:oldrev], params[:newrev])
+    end
   end
 
   def perform_housekeeping
@@ -88,9 +94,18 @@ class GitPushService < BaseService
 
     # Set protection on the default branch if configured
     if current_application_settings.default_branch_protection != PROTECTION_NONE
-      developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
-      developers_can_merge = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? true : false
-      @project.protected_branches.create({ name: @project.default_branch, developers_can_push: developers_can_push, developers_can_merge: developers_can_merge })
+
+      params = {
+        name: @project.default_branch,
+        push_access_level_attributes: {
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        },
+        merge_access_level_attributes: {
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }
+      }
+
+      ProtectedBranches::CreateService.new(@project, current_user, params).execute
     end
   end
 

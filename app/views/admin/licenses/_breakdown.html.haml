@@ -1,0 +1,49 @@
+- if license.restricted?(:active_user_count)
+  - restricted = license.restrictions[:active_user_count]
+  - licensed_users = number_with_delimiter(restricted)
+- else
+  - licensed_users = 'Unlimited'
+
+- historical = max_historical_user_count
+- if historical && restricted && historical > restricted
+  - users_over_license = historical - restricted
+- else
+  - users_over_license = 0
+
+.license-panel.prepend-top-default
+  .row
+    .col-sm-4
+      .light-well
+        %h4 Users in License
+        .data
+          %h1.center= licensed_users
+        %hr
+        - if @license.will_expire?
+          Your license is valid from
+          %strong
+            #{@license.starts_at} to
+          %strong<>
+            #{@license.expires_at}
+          \.
+        The
+        %a{href: 'https://about.gitlab.com/license-faq/'}true-up model
+        allows having more users, and additional users will incur a retroactive charge on renewal.
+    .col-sm-4
+      .light-well
+        %h4 Maximum Users
+        .data
+          %h1.center= number_with_delimiter historical
+        %hr
+          This is the highest peak of users on your installation since the license started, and this is the minimum
+          number you need to purchase when you renew your license.
+    .col-sm-4
+      .light-well
+        %h4 Users over License
+        .data
+          %h1.center= number_with_delimiter users_over_license
+        %hr
+          The
+          %a{href: 'https://about.gitlab.com/license-faq/'}true-up model
+          has a retroactive charge for these users at the next renewal. If you want to update your
+          license sooner to prevent this, please contact
+          #{mail_to 'sales@gitlab.com'}.

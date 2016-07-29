@@ -320,6 +320,36 @@ describe TodoService, services: true do
         should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
       end
+
+      context 'when the merge request has approvers' do
+        let(:approver_1) { create(:user) }
+        let(:approver_2) { create(:user) }
+        let(:approver_3) { create(:user) }
+        let(:approver_mentions) { [john_doe, approver_1].map(&:to_reference).join(' ') }
+        let(:mr_approvers) { create(:merge_request, source_project: project, author: author, description: approver_mentions) }
+
+        before do
+          project.team << [approver_1, :developer]
+          project.team << [approver_2, :developer]
+          project.team << [approver_3, :developer]
+
+          create(:approver, user: approver_1, target: mr_approvers)
+          create(:approver, user: approver_2, target: mr_approvers)
+
+          service.new_merge_request(mr_approvers, author)
+        end
+
+        it 'creates a todo for each approver' do
+          should_create_todo(user: approver_1, target: mr_approvers, action: Todo::APPROVAL_REQUIRED)
+          should_create_todo(user: approver_2, target: mr_approvers, action: Todo::APPROVAL_REQUIRED)
+          should_not_create_todo(user: approver_3, target: mr_approvers, action: Todo::APPROVAL_REQUIRED)
+        end
+
+        it 'creates a todo for each valid mentioned user' do
+          should_create_todo(user: john_doe, target: mr_approvers, action: Todo::MENTIONED)
+          should_not_create_todo(user: approver_1, target: mr_approvers, action: Todo::MENTIONED)
+        end
+      end
     end
 
     describe '#update_merge_request' do

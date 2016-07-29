@@ -1,0 +1,99 @@
+- page_title "License"
+%h3.page-title
+  Your License
+  = link_to 'Upload New License', new_admin_license_path, class: "btn btn-new pull-right"
+
+%hr
+
+.row
+  .col-md-6
+    .panel.panel-default
+      .panel-heading
+        Licensed to
+      %ul.well-list
+        - @license.licensee.each do |label, value|
+          %li
+            %span.light #{label}:
+            %strong= value
+
+    .panel.panel-default
+      .panel-heading
+        Details
+      %ul.well-list
+        %li
+          %span.light Uploaded:
+          %strong= time_ago_with_tooltip @license.created_at
+        %li
+          %span.light Started:
+          %strong= time_ago_with_tooltip @license.starts_at
+        %li
+          %span.light
+            - if @license.expired?
+              Expired:
+            - else
+              Expires:
+          %strong
+            - if @license.will_expire?
+              = time_ago_with_tooltip @license.expires_at
+            - else
+              Never
+
+          - if @license.expired?
+            %span.label.label-danger.pull-right
+              %strong Expired
+
+  .col-md-6
+    .panel.panel-info
+      .panel-heading
+        Download license
+      .panel-body
+        %p Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.
+        %p Still, we recommend keeping a backup saved somewhere. Otherwise, if you ever need it and have lost it, you will need to request GitLab Inc. to send it to you again.
+        %br
+        = link_to 'Download license', download_admin_license_path, class: "btn btn-info"
+
+
+    .panel.panel-danger
+      .panel-heading
+        Remove license
+      .panel-body
+        %p If you remove this license, GitLab will fall back on the previous license, if any.
+        %p If there is no previous license or if the previous license has expired, some GitLab functionality will be blocked until a new, valid license is uploaded.
+        %br
+        = link_to 'Remove license', admin_license_path, data: { confirm: "Are you sure you want to remove the license?" }, method: :delete, class: "btn btn-remove"
+
+= render "breakdown", license: @license
+
+- if @previous_licenses.any?
+  %h4 License History
+
+  .panel.panel-default#license_history
+    %table.table
+      %thead.panel-heading
+        %tr
+          - @license.licensee.keys.each do |label|
+            %th= label
+          %th Uploaded at
+          %th Started at
+          %th Expired at
+          %th Active users
+      %tbody
+        - @previous_licenses.each do |license|
+          %tr
+            - @license.licensee.keys.each do |label|
+              %td= license.licensee[label]
+            %td
+              %span
+                = license.created_at
+            %td
+              %span
+                = license.starts_at
+            %td
+              %span
+                = license.expires_at || "Never"
+            %td
+              %span
+                - if license.restricted?(:active_user_count)
+                  #{license.restrictions[:active_user_count]} users
+                - else
+                  Unlimited

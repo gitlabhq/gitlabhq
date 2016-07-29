@@ -184,7 +184,7 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
-    context 'when the issue is relabeled' do
+    context 'when the merge request is relabeled' do
       let!(:non_subscriber) { create(:user) }
       let!(:subscriber) { create(:user).tap { |u| label.toggle_subscription(u) } }
 
@@ -199,7 +199,7 @@ describe MergeRequests::UpdateService, services: true do
         should_not_email(non_subscriber)
       end
 
-      context 'when issue has the `label` label' do
+      context 'when the merge request has the `label` label' do
         before { merge_request.labels << label }
 
         it 'does not send notifications for existing labels' do
@@ -222,6 +222,58 @@ describe MergeRequests::UpdateService, services: true do
 
           should_not_email(subscriber)
           should_not_email(non_subscriber)
+        end
+      end
+    end
+
+    context 'when the approvers change' do
+      let(:existing_approver) { create(:user) }
+      let(:removed_approver) { create(:user) }
+      let(:new_approver) { create(:user) }
+
+      before do
+        perform_enqueued_jobs do
+          update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+        end
+
+        Todo.where(action: Todo::APPROVAL_REQUIRED).destroy_all
+        ActionMailer::Base.deliveries.clear
+      end
+
+      context 'when an approver is added and an approver is removed' do
+        before do
+          perform_enqueued_jobs do
+            update_merge_request(approver_ids: [new_approver, existing_approver].map(&:id).join(','))
+          end
+        end
+
+        it 'adds todos for and sends emails to the new approvers' do
+          expect(Todo.where(user: new_approver, action: Todo::APPROVAL_REQUIRED)).not_to be_empty
+          should_email(new_approver)
+        end
+
+        it 'does not add todos for or send emails to the existing approvers' do
+          expect(Todo.where(user: existing_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+          should_not_email(existing_approver)
+        end
+
+        it 'does not add todos for or send emails to the removed approvers' do
+          expect(Todo.where(user: removed_approver, action: Todo::APPROVAL_REQUIRED)).to be_empty
+          should_not_email(removed_approver)
+        end
+      end
+
+      context 'when the approvers are set to the same values' do
+        it 'does not create any todos' do
+          expect do
+            update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+          end.not_to change { Todo.count }
+        end
+
+        it 'does not send any emails' do
+          expect do
+            update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
+          end.not_to change { ActionMailer::Base.deliveries.count }
         end
       end
     end

@@ -21,7 +21,6 @@ GET /groups
 
 You can search for groups by name or path, see below.
 
-
 ## List a group's projects
 
 Get a list of projects in this group.
@@ -287,6 +286,24 @@ Parameters:
 - `name` (required) - The name of the group
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
+- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
+- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
+
+## Update group
+
+Updates a project group. Available only for users who can manage this group.
+
+```
+PUT /groups/:id
+```
+
+Parameters:
+
+- `name` (required) - The name of the group
+- `path` (required) - The path of the group
+- `description` (optional) - The group's description
+- `membership_lock` (optional, boolean) - Prevent adding new members to project membership within this group
+- `share_with_group_lock` (optional, boolean) - Prevent sharing a project with another group within this group
 - `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
 
 ## Transfer project to group
@@ -498,6 +515,46 @@ Parameters:
 
 - `id` (required) - The ID or path of a user group
 - `user_id` (required) - The ID of a group member
+
+### Add LDAP group link
+
+Adds LDAP group link
+
+```
+POST /groups/:id/ldap_group_links
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `group_access` (required) - Minimum access level for members of the LDAP group
+- `provider` (required) - LDAP provider for the LDAP group (when using several providers) 
+
+### Delete LDAP group link
+
+Deletes a LDAP group link
+
+```
+DELETE /groups/:id/ldap_group_links/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+
+Deletes a LDAP group link for a specific LDAP provider
+
+```
+DELETE /groups/:id/ldap_group_links/:provider/:cn
+```
+
+Parameters:
+
+- `id` (required) - The ID of a group
+- `cn` (required) - The CN of a LDAP group
+- `provider` (required) - Name of a LDAP provider
 
 ## Namespaces in groups
 

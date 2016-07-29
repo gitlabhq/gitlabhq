@@ -25,6 +25,10 @@ module SharedGroup
     is_member_of("Mary Jane", "Guest", Gitlab::Access::GUEST)
   end
 
+  step '"Pete Peters" is owner of group "Sourcing"' do
+    is_member_of("Pete Peters", "Sourcing", Gitlab::Access::OWNER)
+  end
+
   step 'I should see group "TestGroup"' do
     expect(page).to have_content "TestGroup"
   end

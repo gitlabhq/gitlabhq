@@ -4,6 +4,7 @@ class Member < ActiveRecord::Base
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
+  attr_accessor :skip_notification
 
   belongs_to :created_by, class_name: "User"
   belongs_to :user
@@ -53,6 +54,10 @@ class Member < ActiveRecord::Base
   default_value_for :notification_level, NotificationSetting.levels[:global]
 
   class << self
+    def access_for_user_ids(user_ids)
+      where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+    end
+
     def find_by_invite_token(invite_token)
       invite_token = Devise.token_generator.digest(self, :invite_token, invite_token)
       find_by(invite_token: invite_token)
@@ -69,7 +74,7 @@ class Member < ActiveRecord::Base
       user
     end
 
-    def add_user(members, user_id, access_level, current_user = nil)
+    def add_user(members, user_id, access_level, current_user = nil, skip_notification: false)
       user = user_for_id(user_id)
 
       # `user` can be either a User object or an email to be invited
@@ -83,6 +88,8 @@ class Member < ActiveRecord::Base
       if can_update_member?(current_user, member) || project_creator?(member, access_level)
         member.created_by ||= current_user
         member.access_level = access_level
+
+        member.skip_notification = skip_notification
 
         member.save
       end

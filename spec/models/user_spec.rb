@@ -31,6 +31,7 @@ describe User, models: true do
     it { is_expected.to have_many(:spam_logs).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
     it { is_expected.to have_many(:award_emoji).dependent(:destroy) }
+    it { is_expected.to have_many(:path_locks).dependent(:destroy) }
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
 
@@ -89,9 +90,9 @@ describe User, models: true do
     end
 
     describe 'email' do
-      context 'when no signup domains listed' do
+      context 'when no signup domains whitelisted' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return([])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return([])
         end
 
         it 'accepts any email' do
@@ -100,9 +101,9 @@ describe User, models: true do
         end
       end
 
-      context 'when a signup domain is listed and subdomains are allowed' do
+      context 'when a signup domain is whitelisted and subdomains are allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com', '*.example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com', '*.example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -121,9 +122,9 @@ describe User, models: true do
         end
       end
 
-      context 'when a signup domain is listed and subdomains are not allowed' do
+      context 'when a signup domain is whitelisted and subdomains are not allowed' do
         before do
-          allow_any_instance_of(ApplicationSetting).to receive(:restricted_signup_domains).and_return(['example.com'])
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['example.com'])
         end
 
         it 'accepts info@example.com' do
@@ -142,12 +143,72 @@ describe User, models: true do
         end
       end
 
+      context 'domain blacklist' do
+        before do
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist_enabled?).and_return(true)
+          allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['example.com'])
+        end
+
+        context 'when a signup domain is blacklisted' do
+          it 'accepts info@test.com' do
+            user = build(:user, email: 'info@test.com')
+            expect(user).to be_valid
+          end
+
+          it 'rejects info@example.com' do
+            user = build(:user, email: 'info@example.com')
+            expect(user).not_to be_valid
+          end
+        end
+
+        context 'when a signup domain is blacklisted but a wildcard subdomain is allowed' do
+          before do
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_blacklist).and_return(['test.example.com'])
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['*.example.com'])
+          end
+
+          it 'should give priority to whitelist and allow info@test.example.com' do
+            user = build(:user, email: 'info@test.example.com')
+            expect(user).to be_valid
+          end
+        end
+
+        context 'with both lists containing a domain' do
+          before do
+            allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['test.com'])
+          end
+
+          it 'accepts info@test.com' do
+            user = build(:user, email: 'info@test.com')
+            expect(user).to be_valid
+          end
+
+          it 'rejects info@example.com' do
+            user = build(:user, email: 'info@example.com')
+            expect(user).not_to be_valid
+          end
+        end
+      end
+
       context 'owns_notification_email' do
         it 'accepts temp_oauth_email emails' do
           user = build(:user, email: "temp-email-for-oauth@example.com")
           expect(user).to be_valid
         end
       end
+    end
+  end
+
+  describe "non_ldap" do
+    it "retuns non-ldap user" do
+      User.delete_all
+      create :user
+      ldap_user = create :omniauth_user, provider: "ldapmain"
+      create :omniauth_user, provider: "gitlub"
+
+      users = User.non_ldap
+      expect(users.count).to eq 2
+      expect(users.detect { |user| user.username == ldap_user.username }).to be_nil
     end
   end
 
@@ -772,6 +833,27 @@ describe User, models: true do
     end
   end
 
+  describe "#existing_member?" do
+    it "returns true for exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
+    end
+
+    it "returns false for unknown exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("rendom@example.com")).to be_falsey
+    end
+
+    it "returns true if additional email exists" do
+      user = create :user
+      user.emails.create(email: "bruno@example.com")
+
+      expect(User.existing_member?("bruno@example.com")).to be_truthy
+    end
+  end
+
   describe "#sort" do
     before do
       User.delete_all
@@ -887,16 +969,25 @@ describe User, models: true do
   end
 
   describe '#authorized_projects' do
-    let!(:user) { create(:user) }
-    let!(:private_project) { create(:project, :private) }
+    context 'with a minimum access level' do
+      it 'includes projects for which the user is an owner' do
+        user = create(:user)
+        project = create(:empty_project, :private, namespace: user.namespace)
 
-    before do
-      private_project.team << [user, Gitlab::Access::MASTER]
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
+      end
+
+      it 'includes projects for which the user is a master' do
+        user = create(:user)
+        project = create(:empty_project, :private)
+
+        project.team << [user, Gitlab::Access::MASTER]
+
+        expect(user.authorized_projects(Gitlab::Access::REPORTER))
+          .to contain_exactly(project)
+      end
     end
-
-    subject { user.authorized_projects }
-
-    it { is_expected.to eq([private_project]) }
   end
 
   describe '#ci_authorized_runners' do

@@ -13,6 +13,7 @@ namespace :gitlab do
       Rake::Task["gitlab:backup:uploads:create"].invoke
       Rake::Task["gitlab:backup:builds:create"].invoke
       Rake::Task["gitlab:backup:artifacts:create"].invoke
+      Rake::Task["gitlab:backup:pages:create"].invoke
       Rake::Task["gitlab:backup:lfs:create"].invoke
       Rake::Task["gitlab:backup:registry:create"].invoke
 
@@ -55,6 +56,7 @@ namespace :gitlab do
       Rake::Task['gitlab:backup:uploads:restore'].invoke unless backup.skipped?('uploads')
       Rake::Task['gitlab:backup:builds:restore'].invoke unless backup.skipped?('builds')
       Rake::Task['gitlab:backup:artifacts:restore'].invoke unless backup.skipped?('artifacts')
+      Rake::Task['gitlab:backup:pages:restore'].invoke unless backup.skipped?('pages')
       Rake::Task['gitlab:backup:lfs:restore'].invoke unless backup.skipped?('lfs')
       Rake::Task['gitlab:backup:registry:restore'].invoke unless backup.skipped?('registry')
       Rake::Task['gitlab:shell:setup'].invoke
@@ -153,6 +155,25 @@ namespace :gitlab do
       task restore: :environment do
         $progress.puts "Restoring artifacts ... ".color(:blue)
         Backup::Artifacts.new.restore
+        $progress.puts "done".color(:green)
+      end
+    end
+
+    namespace :pages do
+      task create: :environment do
+        $progress.puts "Dumping pages ... ".color(:blue)
+
+        if ENV["SKIP"] && ENV["SKIP"].include?("pages")
+          $progress.puts "[SKIPPED]".color(:cyan)
+        else
+          Backup::Pages.new.dump
+          $progress.puts "done".color(:green)
+        end
+      end
+
+      task restore: :environment do
+        $progress.puts "Restoring pages ... ".color(:blue)
+        Backup::Pages.new.restore
         $progress.puts "done".color(:green)
       end
     end

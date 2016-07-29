@@ -9,7 +9,8 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :authenticate_with_two_factor,
     if: :two_factor_enabled?, only: [:create]
   prepend_before_action :store_redirect_path, only: [:new]
-
+  before_action :gitlab_geo_login, only: [:new]
+  before_action :gitlab_geo_logout, only: [:destroy]
   before_action :auto_sign_in_with_provider, only: [:new]
   before_action :load_recaptcha
 
@@ -66,27 +67,49 @@ class SessionsController < Devise::SessionsController
   end
 
   def store_redirect_path
-    redirect_path =
+    redirect_uri =
       if request.referer.present? && (params['redirect_to_referer'] == 'yes')
-        referer_uri = URI(request.referer)
-        if referer_uri.host == Gitlab.config.gitlab.host
-          referer_uri.path
-        else
-          request.fullpath
-        end
+        URI(request.referer)
       else
-        request.fullpath
+        URI(request.url)
       end
 
     # Prevent a 'you are already signed in' message directly after signing:
     # we should never redirect to '/users/sign_in' after signing in successfully.
-    unless redirect_path == new_user_session_path
-      store_location_for(:redirect, redirect_path)
+    if redirect_uri.path == new_user_session_path
+      return true
+    elsif redirect_uri.host == Gitlab.config.gitlab.host && redirect_uri.port == Gitlab.config.gitlab.port
+      redirect_to = redirect_uri.to_s
+    elsif Gitlab::Geo.geo_node?(host: redirect_uri.host, port: redirect_uri.port)
+      redirect_to = redirect_uri.to_s
     end
+
+    @redirect_to = redirect_to
+    store_location_for(:redirect, redirect_to)
   end
 
   def two_factor_enabled?
     find_user.try(:two_factor_enabled?)
+  end
+
+  def gitlab_geo_login
+    return unless Gitlab::Geo.secondary?
+    return if signed_in?
+
+    oauth = Gitlab::Geo::OauthSession.new
+
+    # share full url with primary node by oauth state
+    user_return_to = URI.join(root_url, session[:user_return_to].to_s).to_s
+    oauth.return_to = @redirect_to || user_return_to
+
+    redirect_to oauth_geo_auth_url(state: oauth.generate_oauth_state)
+  end
+
+  def gitlab_geo_logout
+    return unless Gitlab::Geo.secondary?
+
+    oauth = Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
+    @geo_logout_state = oauth.generate_logout_state
   end
 
   def auto_sign_in_with_provider

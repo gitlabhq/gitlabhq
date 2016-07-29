@@ -44,6 +44,10 @@ module API
         authorize! :admin_project, user_project
         required_attributes! [:user_id, :access_level]
 
+        if user_project.group && user_project.group.membership_lock
+          not_allowed!
+        end
+
         # either the user is already a team member or a new one
         project_member = user_project.project_member(params[:user_id])
         if project_member.nil?

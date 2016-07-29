@@ -12,8 +12,18 @@ module MergeRequests
       params.except!(:source_branch)
 
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
+      old_approvers = merge_request.overall_approvers.to_a
 
       update(merge_request)
+
+      new_approvers = merge_request.overall_approvers.to_a - old_approvers
+
+      if new_approvers.any?
+        todo_service.add_merge_request_approvers(merge_request, new_approvers)
+        notification_service.add_merge_request_approvers(merge_request, new_approvers, current_user)
+      end
+
+      merge_request
     end
 
     def handle_changes(merge_request, old_labels: [])

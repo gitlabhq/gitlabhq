@@ -75,6 +75,13 @@ Feature: User
     And I should not see project "Internal"
     And I should not see project "Community"
 
+  Scenario: I unsubscribe from admin notifications
+    Given I sign in as "John Doe"
+    When I visit unsubscribe link
+    Then I should see unsubscribe text and button
+    And I press the unsubscribe button
+    Then I should be unsubscribed
+
   @javascript
   Scenario: "John Doe" contribution profile
     Given I sign in as a user

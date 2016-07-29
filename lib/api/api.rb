@@ -35,16 +35,22 @@ module API
     mount ::API::Files
     mount ::API::GroupMembers
     mount ::API::Groups
+    mount ::API::Geo
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::Keys
     mount ::API::Labels
+    mount ::API::License
     mount ::API::LicenseTemplates
+    mount ::API::Ldap
+    mount ::API::LdapGroupLinks
     mount ::API::MergeRequests
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::ProjectHooks
+    mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
+    mount ::API::ProjectPushRule
     mount ::API::ProjectMembers
     mount ::API::ProjectSnippets
     mount ::API::Projects

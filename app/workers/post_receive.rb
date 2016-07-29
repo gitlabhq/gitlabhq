@@ -1,5 +1,6 @@
 class PostReceive
   include Sidekiq::Worker
+  extend Gitlab::CurrentSettings
 
   sidekiq_options queue: :post_receive
 
@@ -18,7 +19,10 @@ class PostReceive
     end
 
     if post_received.wiki?
-      # Nothing defined here yet.
+      update_wiki_es_indexes(post_received)
+
+      # Triggers repository update on secondary nodes when Geo is enabled
+      Gitlab::Geo.notify_wiki_update(post_received.project) if Gitlab::Geo.enabled?
     elsif post_received.regular_project?
       process_project_changes(post_received)
     else
@@ -44,6 +48,12 @@ class PostReceive
         GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
       end
     end
+  end
+
+  def update_wiki_es_indexes(post_received)
+    return unless current_application_settings.elasticsearch_indexing?
+
+    post_received.project.wiki.index_blobs
   end
 
   private

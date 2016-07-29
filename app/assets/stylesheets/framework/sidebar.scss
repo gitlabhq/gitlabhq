@@ -198,6 +198,10 @@ header.header-pinned-nav {
 
   .sidebar-collapsed-icon {
     cursor: pointer;
+
+    .btn {
+      background-color: $gray-light;
+    }
   }
 }
 

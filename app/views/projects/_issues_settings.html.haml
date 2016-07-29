@@ -1,0 +1,7 @@
+%fieldset.features.append-bottom-0.issues-feature
+  %h5.prepend-top-0
+    Issues
+  .form-group
+    = f.label :issues_template, class: 'label-light' do
+      Description template
+    = f.text_area :issues_template, class: "form-control", rows: 3

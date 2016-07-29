@@ -69,8 +69,8 @@ class User < ActiveRecord::Base
   has_many :project_members, -> { where(requested_at: nil) }, dependent: :destroy, class_name: 'ProjectMember'
   has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
-  has_many :users_star_projects, dependent: :destroy
-  has_many :starred_projects, through: :users_star_projects, source: :project
+  has_many :users_star_projects,      dependent: :destroy
+  has_many :starred_projects,         through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
@@ -81,7 +81,9 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
-  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :oauth_applications,       class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
+  has_many :approvals,                dependent: :destroy
+  has_many :approvers,                dependent: :destroy
   has_one  :abuse_report,             dependent: :destroy
   has_many :spam_logs,                dependent: :destroy
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build'
@@ -89,6 +91,7 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+  has_many :path_locks,               dependent: :destroy
 
   #
   # Validations
@@ -111,7 +114,7 @@ class User < ActiveRecord::Base
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
-  before_validation :restricted_signup_domains, on: :create
+  before_validation :signup_domain_valid?, on: :create
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: ->(user) { user.email_changed? }
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
@@ -171,6 +174,11 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
+  scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
+  scope :with_provider, ->(provider) do
+    joins(:identities).where(identities: { provider: provider })
+  end
 
   def self.with_two_factor
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id").
@@ -217,6 +225,10 @@ class User < ActiveRecord::Base
       LIMIT 1;'
 
       User.find_by_sql([sql, { email: email }]).first
+    end
+
+    def existing_member?(email)
+      User.where(email: email).any? || Email.where(email: email).any?
     end
 
     def filter(filter_name)
@@ -281,6 +293,27 @@ class User < ActiveRecord::Base
 
     def build_user(attrs = {})
       User.new(attrs)
+    end
+
+    def non_ldap
+      joins('LEFT JOIN identities ON identities.user_id = users.id').
+        where('identities.provider IS NULL OR identities.provider NOT LIKE ?', 'ldap%')
+    end
+
+    def clean_username(username)
+      username.gsub!(/@.*\z/,             "")
+      username.gsub!(/\.git\z/,           "")
+      username.gsub!(/\A-/,               "")
+      username.gsub!(/[^a-zA-Z0-9_\-\.]/, "")
+
+      counter = 0
+      base = username
+      while User.by_login(username).present? || Namespace.by_path(username).present?
+        counter += 1
+        username = "#{base}#{counter}"
+      end
+
+      username
     end
 
     def reference_prefix
@@ -412,6 +445,8 @@ class User < ActiveRecord::Base
   end
 
   # Returns projects user is authorized to access.
+  #
+  # If you change the logic of this method, please also update `Project#authorized_for_user`
   def authorized_projects(min_access_level = nil)
     Project.where("projects.id IN (#{projects_union(min_access_level).to_sql})")
   end
@@ -589,7 +624,7 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + Gitlab.config.ldap['sync_time']) < Time.now
     else
       false
     end
@@ -708,6 +743,10 @@ class User < ActiveRecord::Base
     SystemHooksService.new
   end
 
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.now
+  end
+
   def starred?(project)
     starred_projects.exists?(project.id)
   end
@@ -758,29 +797,6 @@ class User < ActiveRecord::Base
       reorder(nil)
 
     Project.where(id: events)
-  end
-
-  def restricted_signup_domains
-    email_domains = current_application_settings.restricted_signup_domains
-
-    unless email_domains.blank?
-      match_found = email_domains.any? do |domain|
-        escaped = Regexp.escape(domain).gsub('\*', '.*?')
-        regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
-        email_domain = Mail::Address.new(self.email).domain
-        email_domain =~ regexp
-      end
-
-      unless match_found
-        self.errors.add :email,
-                        'is not whitelisted. ' +
-                        'Email domains valid for registration are: ' +
-                        email_domains.join(', ')
-        return false
-      end
-    end
-
-    true
   end
 
   def can_be_removed?
@@ -854,7 +870,7 @@ class User < ActiveRecord::Base
                  groups.joins(:shared_projects).select(:project_id)]
 
     if min_access_level
-      scope = { access_level: Gitlab::Access.values.select { |access| access >= min_access_level } }
+      scope = { access_level: Gitlab::Access.all_values.select { |access| access >= min_access_level } }
       relations = [relations.shift] + relations.map { |relation| relation.where(members: scope) }
     end
 
@@ -880,5 +896,41 @@ class User < ActiveRecord::Base
 
     self.can_create_group   = false
     self.projects_limit     = 0
+  end
+
+  def signup_domain_valid?
+    valid = true
+    error = nil
+
+    if current_application_settings.domain_blacklist_enabled?
+      blocked_domains = current_application_settings.domain_blacklist
+      if domain_matches?(blocked_domains, self.email)
+        error = 'is not from an allowed domain.'
+        valid = false
+      end
+    end
+
+    allowed_domains = current_application_settings.domain_whitelist
+    unless allowed_domains.blank?
+      if domain_matches?(allowed_domains, self.email)
+        valid = true
+      else
+        error = "is not whitelisted. Email domains valid for registration are: #{allowed_domains.join(', ')}"
+        valid = false
+      end
+    end
+
+    self.errors.add(:email, error) unless valid
+
+    valid
+  end
+
+  def domain_matches?(email_domains, email)
+    signup_domain = Mail::Address.new(email).domain
+    email_domains.any? do |domain|
+      escaped = Regexp.escape(domain).gsub('\*', '.*?')
+      regexp = Regexp.new "^#{escaped}$", Regexp::IGNORECASE
+      signup_domain =~ regexp
+    end
   end
 end

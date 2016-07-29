@@ -1,0 +1,55 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'json'
+require 'elasticsearch/git'
+require 'active_support'
+require 'active_support/core_ext'
+
+PROJECT_ID = ARGV.shift
+REPO_PATH = ARGV.shift
+FROM_SHA = ENV['FROM_SHA']
+TO_SHA = ENV['TO_SHA']
+RAILS_ENV = ENV['RAILS_ENV']
+
+elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
+ELASTIC_HOST = elastic_connection_info['host']
+ELASTIC_PORT = elastic_connection_info['port']
+
+class Repository
+  include Elasticsearch::Git::Repository
+
+  index_name ['repository', 'index', RAILS_ENV].compact.join('-')
+
+  self.__elasticsearch__.client = Elasticsearch::Client.new(
+    host: ELASTIC_HOST,
+    port: ELASTIC_PORT
+  )
+
+  def client_for_indexing
+    self.__elasticsearch__.client
+  end
+
+  def repository_id
+    PROJECT_ID
+  end
+
+  def path_to_repo
+    REPO_PATH
+  end
+end
+
+Repository.__elasticsearch__.create_index!
+
+repo = Repository.new
+
+params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
+
+print "Indexing commits..."
+repo.index_commits(params)
+puts "Done"
+
+print "Indexing blobs..."
+repo.index_blobs(params)
+puts "Done"

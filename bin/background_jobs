@@ -37,7 +37,7 @@ start_no_deamonize()
 
 start_sidekiq()
 {
-  exec bundle exec sidekiq -q post_receive -q mailers -q archive_repo -q system_hook -q project_web_hook -q gitlab_shell -q incoming_email -q runner -q common -q default -e $RAILS_ENV -P $sidekiq_pidfile "$@"
+  exec bundle exec sidekiq -q post_receive -q mailers -q archive_repo -q system_hook -q project_web_hook -q gitlab_shell -q incoming_email -q runner -q common -q pages -q default -q elasticsearch -e $RAILS_ENV -P $sidekiq_pidfile "$@"
 }
 
 load_ok()

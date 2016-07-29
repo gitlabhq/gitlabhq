@@ -29,6 +29,10 @@
                 = icon('bell fw')
                 %span.badge.todos-pending-count{ class: ("hidden" if todos_pending_count == 0) }
                   = todos_pending_count
+            - if Gitlab::Geo.secondary?
+              %li
+                = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+                  = icon('globe fw')
             - if current_user.can_create_project?
               %li
                 = link_to new_project_path, title: 'New project', aria: { label: "New project" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do

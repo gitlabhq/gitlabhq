@@ -15,5 +15,22 @@ FactoryGirl.define do
     trait :private do
       visibility_level Gitlab::VisibilityLevel::PRIVATE
     end
+
+    factory :group_with_ldap_group_link do
+      transient do
+        cn 'group1'
+        group_access Gitlab::Access::GUEST
+        provider 'ldapmain'
+      end
+
+      after(:create) do |group, evaluator|
+        group.ldap_group_links << create(
+          :ldap_group_link,
+          cn: evaluator.cn,
+          group_access: evaluator.group_access,
+          provider: evaluator.provider
+        )
+      end
+    end
   end
 end

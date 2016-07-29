@@ -65,7 +65,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I should see code results for project "Shop"' do
     page.within('.results') do
-      page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+      expect(page).to have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
     end
   end
 
@@ -91,7 +91,7 @@ class Spinach::Features::Search < Spinach::FeatureSteps
 
   step 'I should see "Foo" link in the search results' do
     page.within('.results') do
-      find(:css, '.search-results').should have_link 'Foo'
+      expect(find(:css, '.search-results')).to have_link 'Foo'
     end
   end
 

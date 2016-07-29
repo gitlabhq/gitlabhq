@@ -37,6 +37,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def create
     @project.team.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    members = @project.project_members.where(user_id: params[:user_ids].split(','))
+
+    members.each do |member|
+      log_audit_event(member, action: :create)
+    end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
@@ -46,7 +51,11 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
-    @project_member.update_attributes(member_params)
+    old_access_level = @project_member.human_access
+
+    if @project_member.update_attributes(member_params)
+      log_audit_event(@project_member, action: :update, old_access_level: old_access_level)
+    end
   end
 
   def destroy
@@ -54,6 +63,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @project.requesters.find_by(id: params[:id])
 
     Members::DestroyService.new(@project_member, current_user).execute
+
+    log_audit_event(@project_member, action: :destroy)
 
     respond_to do |format|
       format.html do

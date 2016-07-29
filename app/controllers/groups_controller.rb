@@ -6,7 +6,7 @@ class GroupsController < Groups::ApplicationController
   respond_to :html
 
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :group, except: [:index, :new, :create]
+  before_action :group, except: [:index, :new, :create, :autocomplete]
 
   # Authorize
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
@@ -92,6 +92,12 @@ class GroupsController < Groups::ApplicationController
     redirect_to root_path, alert: "Group '#{@group.name}' was successfully deleted."
   end
 
+  def autocomplete
+    groups = Group.search(params[:search]).limit(params[:per_page])
+
+    render json: groups.to_json
+  end
+
   protected
 
   def setup_projects
@@ -121,7 +127,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level, :share_with_group_lock)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level, :share_with_group_lock, :membership_lock, :request_access_enabled)
   end
 
   def load_events

@@ -11,9 +11,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    @project.import_url = params[:project][:import_url]
-
-    if @project.save
+    if @project.update_attributes(import_params)
       @project.reload
 
       if @project.import_failed?
@@ -71,5 +69,9 @@ class Projects::ImportsController < Projects::ApplicationController
     if @project.repository_exists? && @project.no_import?
       redirect_to namespace_project_path(@project.namespace, @project)
     end
+  end
+
+  def import_params
+    params.require(:project).permit(:import_url, :mirror, :mirror_user_id)
   end
 end

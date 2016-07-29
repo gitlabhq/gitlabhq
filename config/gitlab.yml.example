@@ -106,8 +106,8 @@ production: &base
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
-    # The default is 'tmp/repositories' relative to the root of the Rails app.
-    # repository_downloads_path: tmp/repositories
+    # The default is 'shared/cache/archive/' relative to the root of the Rails app.
+    # repository_downloads_path: shared/cache/archive/
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.
@@ -150,6 +150,21 @@ production: &base
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
 
+  ## GitLab Pages
+  pages:
+    enabled: false
+    # The location where pages are stored (default: shared/pages).
+    # path: shared/pages
+
+    # The domain under which the pages are served:
+    # http://group.example.com/project
+    # or project path can be a group page: group.example.com
+    host: example.com
+    port: 80 # Set to 443 if you serve the pages with HTTPS
+    https: false # Set to true if you serve the pages with HTTPS
+    # external_http: "1.1.1.1:80" # If defined, enables custom domain support in GitLab Pages
+    # external_https: "1.1.1.1:443" # If defined, enables custom domain and certificate support in GitLab Pages
+
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
@@ -158,7 +173,7 @@ production: &base
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   ## Auxiliary jobs
-  # Periodically executed jobs, to self-heal Gitlab, do external synchronizations, etc.
+  # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
   # Please read here for more information: https://github.com/ondrejbartas/sidekiq-cron#adding-cron-job
   cron_jobs:
     # Flag stuck CI builds as failed
@@ -178,6 +193,32 @@ production: &base
     # Remove outdated repository archives
     repository_archive_cache_worker:
       cron: "0 * * * *"
+
+    ##
+    # GitLab EE only jobs:
+
+    # Snapshot active users statistics
+    historical_data_worker:
+      cron: "0 12 * * *"
+
+    # Update mirrored repositories
+    update_all_mirrors_worker:
+      cron: "0 * * * *"
+
+    # Update remote mirrors
+    update_all_remote_mirrors_worker:
+      cron: "30 * * * *"
+
+    # In addition to refreshing users when they log in,
+    # periodically refresh LDAP users membership.
+    # NOTE: This will only take effect if LDAP is enabled
+    ldap_sync_worker:
+      cron: "30 1 * * *"
+
+    # Gitlab Geo nodes notification worker
+    # NOTE: This will only take effect if Geo is enabled
+    geo_bulk_notify_worker:
+      cron: "*/10 * * * * *"
 
   registry:
     # enabled: true
@@ -213,6 +254,19 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+
+    # This setting controls the number of seconds between LDAP permission checks
+    # for each user. After this time has expired for a given user, their next
+    # interaction with GitLab (a click in the web UI, a git pull, etc.) will be
+    # slower because the LDAP permission check is being performed. How much
+    # slower depends on your LDAP setup, but it is not uncommon for this check
+    # to add seconds of waiting time. The default value is to have a "slow
+    # click" once every 3600 seconds (i.e., once per hour).
+    #
+    # Warning: if you set this value too low, every click in GitLab will be a
+    # "slow click" for all of your LDAP users.
+    # sync_time: 3600
+
     servers:
       ##########################################################################
       #
@@ -280,6 +334,31 @@ production: &base
         #
         user_filter: ''
 
+        # Base where we can search for groups
+        #
+        #   Ex. ou=Groups,dc=gitlab,dc=example
+        #
+        group_base: ''
+
+        # LDAP group of users who should be admins in GitLab
+        #
+        #   Ex. GLAdmins
+        #
+        admin_group: ''
+
+        # LDAP group of users who should be marked as external users in GitLab
+        #
+        #   Ex. ['Contractors', 'Interns']
+        #
+        external_groups: []
+
+        # Name of attribute which holds a ssh public key of the user object.
+        # If false or nil, SSH key syncronisation will be disabled.
+        #
+        #   Ex. sshpublickey
+        #
+        sync_ssh_keys: false
+
         # LDAP attributes that GitLab will use to create an account for the LDAP user.
         # The specified attribute can either be the attribute name as a string (e.g. 'mail'),
         # or an array of attribute names to try in order (e.g. ['mail', 'email']).
@@ -308,6 +387,27 @@ production: &base
       #   host:
       #   ....
 
+  ## Kerberos settings
+  kerberos:
+    # Allow the HTTP Negotiate authentication method for Git clients
+    enabled: false
+
+    # Kerberos 5 keytab file. The keytab file must be readable by the GitLab user,
+    # and should be different from other keytabs in the system.
+    # (default: use default keytab from Krb5 config)
+    # keytab: /etc/http.keytab
+
+    # The Kerberos service name to be used by GitLab.
+    # (default: accept any service name in keytab file)
+    # service_principal_name: HTTP/gitlab.example.com@EXAMPLE.COM
+
+    # Dedicated port: Git before 2.4 does not fall back to Basic authentication if Negotiate fails.
+    # To support both Basic and Negotiate methods with older versions of Git, configure
+    # nginx to proxy GitLab on an extra port (e.g. 8443) and uncomment the following lines
+    # to dedicate this port to Kerberos authentication. (default: false)
+    # use_dedicated_port: true
+    # port: 8443
+    # https: true
 
   ## OmniAuth settings
   omniauth:
@@ -471,6 +571,11 @@ production: &base
 
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
+
+    # git-annex support (EE only)
+    # If this setting is set to true, the same setting in config.yml of
+    # gitlab-shell needs to be set to true
+    # git_annex_enabled: false
 
   ## Git settings
   # CAUTION!

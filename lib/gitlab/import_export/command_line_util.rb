@@ -36,6 +36,15 @@ module Gitlab
       def git_bin_path
         Gitlab.config.git.bin_path
       end
+
+      def copy_files(source, destination)
+        # if we are copying files, create the destination folder
+        destination_folder = File.file?(source) ? File.dirname(destination) : destination
+
+        FileUtils.mkdir_p(destination_folder)
+        FileUtils.copy_entry(source, destination)
+        true
+      end
     end
   end
 end

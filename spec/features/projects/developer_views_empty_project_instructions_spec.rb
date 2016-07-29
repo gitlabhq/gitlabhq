@@ -46,6 +46,18 @@ feature 'Developer views empty project instructions', feature: true do
     end
   end
 
+  context 'with Kerberos enabled' do
+    background do
+      allow(Gitlab.config.kerberos).to receive(:enabled).and_return(true)
+    end
+
+    scenario 'defaults to KRB5' do
+      visit_project
+
+      expect_instructions_for('kerberos')
+    end
+  end
+
   def visit_project
     visit namespace_project_path(project.namespace, project)
   end

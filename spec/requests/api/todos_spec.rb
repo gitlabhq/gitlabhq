@@ -134,8 +134,7 @@ describe API::Todos, api: true do
         delete api('/todos', john_doe)
 
         expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(response.body).to eq('3')
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done

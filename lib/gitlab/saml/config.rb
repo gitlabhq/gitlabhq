@@ -13,6 +13,10 @@ module Gitlab
         def external_groups
           options[:external_groups]
         end
+
+        def admin_groups
+          options[:admin_groups]
+        end
       end
     end
   end

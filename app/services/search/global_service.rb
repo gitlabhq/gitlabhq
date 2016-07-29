@@ -1,5 +1,7 @@
 module Search
   class GlobalService
+    include Gitlab::CurrentSettings
+
     attr_accessor :current_user, :params
 
     def initialize(user, params)
@@ -11,7 +13,11 @@ module Search
       projects = ProjectsFinder.new.execute(current_user)
       projects = projects.in_namespace(group.id) if group
 
-      Gitlab::SearchResults.new(current_user, projects, params[:search])
+      if current_application_settings.elasticsearch_search?
+        Gitlab::Elastic::SearchResults.new(current_user, projects.pluck(:id), params[:search])
+      else
+        Gitlab::SearchResults.new(current_user, projects, params[:search])
+      end
     end
   end
 end

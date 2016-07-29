@@ -42,6 +42,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
 
   def application_setting_params
     restricted_levels = params[:application_setting][:restricted_visibility_levels]
+
     if restricted_levels.nil?
       params[:application_setting][:restricted_visibility_levels] = []
     else
@@ -51,6 +52,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     end
 
     import_sources = params[:application_setting][:import_sources]
+
     if import_sources.nil?
       params[:application_setting][:import_sources] = []
     else
@@ -64,6 +66,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
     params[:application_setting][:disabled_oauth_sign_in_sources] =
       AuthHelper.button_based_providers.map(&:to_s) -
       Array(enabled_oauth_sign_in_sources)
+    params.delete(:domain_blacklist_raw) if params[:domain_blacklist_file]
 
     params.require(:application_setting).permit(
       :default_projects_limit,
@@ -77,13 +80,17 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :after_sign_up_text,
       :help_page_text,
       :home_page_url,
+      :help_text,
       :after_sign_out_path,
       :max_attachment_size,
       :session_expire_delay,
       :default_project_visibility,
       :default_snippet_visibility,
       :default_group_visibility,
-      :restricted_signup_domains_raw,
+      :domain_whitelist_raw,
+      :domain_blacklist_enabled,
+      :domain_blacklist_raw,
+      :domain_blacklist_file,
       :version_check_enabled,
       :admin_notification_email,
       :user_oauth_applications,
@@ -91,6 +98,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :shared_runners_enabled,
       :shared_runners_text,
       :max_artifacts_size,
+      :max_pages_size,
       :metrics_enabled,
       :metrics_host,
       :metrics_port,
@@ -110,6 +118,11 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :metrics_packet_size,
       :send_user_confirmation_email,
       :container_registry_token_expire_delay,
+      :elasticsearch_indexing,
+      :elasticsearch_search,
+      :elasticsearch_host,
+      :elasticsearch_port,
+      :usage_ping_enabled,
       :repository_storage,
       :enabled_git_access_protocol,
       restricted_visibility_levels: [],

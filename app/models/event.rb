@@ -38,6 +38,11 @@ class Event < ActiveRecord::Base
 
   scope :with_associations, -> { includes(project: :namespace) }
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
+  scope :issues, -> { where(target_type: 'Issue') }
+  scope :merge_requests, -> { where(target_type: 'MergeRequest') }
+  scope :created, -> { where(action: CREATED) }
+  scope :closed, -> { where(action: CLOSED) }
+  scope :merged, -> { where(action: MERGED) }
 
   class << self
     def reset_event_cache_for(target)

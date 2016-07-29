@@ -1,0 +1,8 @@
+%div
+  %h4
+    = render_require_section(@merge_request)
+    
+  - if @merge_request.can_approve?(current_user)
+    .append-bottom-10
+      = form_for [:approve, @project.namespace.becomes(Namespace), @project, @merge_request], method: :post do |f|
+        = f.submit "Approve Merge Request", class: "btn btn-primary approve-btn"

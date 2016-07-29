@@ -19,11 +19,13 @@ following locations:
 - [Issues](issues.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
+- [License](license.md)
 - [Merge Requests](merge_requests.md)
 - [Milestones](milestones.md)
 - [Open source license templates](licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Open source license templates](licenses.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Snippets](project_snippets.md)
 - [Repositories](repositories.md)
@@ -44,6 +46,7 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 - [Builds](ci/builds.md)
 - [Runners](ci/runners.md)
+>>>>>>> ce/master
 
 ## Authentication
 

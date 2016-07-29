@@ -22,6 +22,11 @@
   }
 }
 
+.content-list .group-name {
+  font-weight: 600;
+  color: #4c4e54;
+}
+
 .group-row {
   &.no-description {
     .group-name {
@@ -59,5 +64,11 @@
       padding: 3px 10px;
       background-color: $background-color;
     }
+  }
+}
+
+.ldap-group-links {
+  .form-actions {
+    margin-bottom: $gl-padding;
   }
 }

@@ -14,6 +14,6 @@ class AuditEvent < ActiveRecord::Base
   end
 
   def author_name
-    self.user.name
+    self.user.try(:name) || details[:author_name]
   end
 end

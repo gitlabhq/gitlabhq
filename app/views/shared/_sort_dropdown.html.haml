@@ -18,6 +18,11 @@
         = sort_title_recently_updated
       = link_to page_filter_path(sort: sort_value_oldest_updated) do
         = sort_title_oldest_updated
+      - if local_assigns[:type] == :issues
+        = link_to page_filter_path(sort: sort_value_more_weight) do
+          = sort_title_more_weight
+        = link_to page_filter_path(sort: sort_value_less_weight) do
+          = sort_title_less_weight
       = link_to page_filter_path(sort: sort_value_milestone_soon) do
         = sort_title_milestone_soon
       = link_to page_filter_path(sort: sort_value_milestone_later) do

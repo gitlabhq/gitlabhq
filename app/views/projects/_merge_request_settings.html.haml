@@ -1,6 +1,83 @@
-%fieldset.builds-feature
+%fieldset.merge-request-feature.append-bottom-default
   %h5.prepend-top-0
-    Merge Requests
+    Merge requests
+
+  .form-group
+    = label_tag :merge_method_merge, class: 'label-light' do
+      Merge method
+    .radio
+      = label_tag :project_merge_method_merge do
+        = f.radio_button :merge_method, :merge, class: "js-merge-method-radio"
+        %strong Merge commit
+        %br
+        %span.descr
+          A merge commit is created for every merge, and merging is allowed as long as there are no conflicts.
+
+    .radio
+      = label_tag :project_merge_method_rebase_merge do
+        = f.radio_button :merge_method, :rebase_merge, class: "js-merge-method-radio"
+        %strong Merge commit with semi-linear history
+        %br
+        %span.descr
+          A merge commit is created for every merge, but merging is only allowed if fast-forward merge is possible.
+          This way you could make sure that if this merge request would build, after merging to target branch it would also build.
+        %br
+        %span.descr
+          When fast-forward merge is not possible, the user is given the option to rebase.
+
+    .radio
+      = label_tag :project_merge_method_ff do
+        = f.radio_button :merge_method, :ff, class: "js-merge-method-radio"
+        %strong Fast-forward merge
+        %br
+        %span.descr
+          No merge commits are created and all merges are fast-forwarded, which means that merging is only allowed if the branch could be fast-forwarded.
+        %br
+        %span.descr
+          When fast-forward merge is not possible, the user is given the option to rebase.
+
+  .form-group
+    = f.label :merge_requests_template, class: 'label-light' do
+      Description template
+    = f.text_area :merge_requests_template, class: "form-control", rows: 3
+
+  .form-group
+    = f.label :approvals_before_merge, class: 'label-light' do
+      Approvals required
+    = f.number_field :approvals_before_merge, class: "form-control", min: 0
+    .help-block
+      Number of users to approve a merge request before it can be accepted. 0 - approving is disabled
+
+  .form-group.reset-approvals-on-push
+    .checkbox
+      = f.label :reset_approvals_on_push do
+        = f.check_box :reset_approvals_on_push
+        %span.descr Reset approvals on push
+        .help-block Approvals are reset when new data is pushed to the merge request
+
+  .form-group
+    = f.label :approver_ids, class: 'label-light' do
+      Approvers
+    = users_select_tag("project[approver_ids]", multiple: true, class: 'input-large', scope: :all, email_user: true)
+    .help-block
+      Add an approver suggestion for each merge request
+
+    .panel.panel-default.prepend-top-10
+      .panel-heading
+        Approvers
+        %small
+          (#{@project.approvers.count(:all)})
+      %ul.well-list
+        - @project.approvers.each do |approver|
+          %li
+            = link_to approver.user.name, approver.user
+            .pull-right
+              = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+                = icon("sign-out")
+                Remove
+        - if @project.approvers.empty?
+          %li There are no approvers
+
   .form-group
     .checkbox
       = f.label :only_allow_merge_if_build_succeeds do
@@ -9,3 +86,6 @@
       .help-block
         Builds need to be configured to enable this feature.
         = link_to icon('question-circle'), help_page_path('workflow/merge_requests', anchor: 'only-allow-merge-requests-to-be-merged-if-the-build-succeeds')
+
+:javascript
+  new UsersSelect();

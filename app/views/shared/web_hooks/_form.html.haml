@@ -7,7 +7,7 @@
       = page_title
     %p
       #{link_to "Webhooks", help_page_path("web_hooks/web_hooks")} can be
-      used for binding events when something is happening within the project.
+      used for binding events when something is happening within the #{context_title}.
   .col-lg-9.append-bottom-default
     = form_for hook, as: :hook, url: polymorphic_path(url_components + [:hooks]) do |f|
       = form_errors(hook)

@@ -7,6 +7,7 @@ module Banzai
           Filter::SanitizationFilter,
 
           Filter::UploadLinkFilter,
+          Filter::VideoLinkFilter,
           Filter::ImageLinkFilter,
           Filter::EmojiFilter,
           Filter::TableOfContentsFilter,

@@ -51,6 +51,12 @@ The importer will create any new namespaces if they don't exist or in the
 case the namespace is taken, the project will be imported on the user's
 namespace.
 
+### Note
+
+When you import your projects from GitHub, it is not possible to keep your
+labels, milestones, and cross-repository pull requests. We are working on
+improving this in the near future.
+
 [gh-import]: ../../integration/github.md "GitHub integration"
 [ee-gh]: http://docs.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
 [new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"

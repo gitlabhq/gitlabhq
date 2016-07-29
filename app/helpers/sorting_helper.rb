@@ -15,6 +15,8 @@ module SortingHelper
       sort_value_oldest_signin => sort_title_oldest_signin,
       sort_value_downvotes => sort_title_downvotes,
       sort_value_upvotes => sort_title_upvotes,
+      sort_value_more_weight => sort_title_more_weight,
+      sort_value_less_weight => sort_title_less_weight,
       sort_value_priority => sort_title_priority
     }
   end
@@ -89,6 +91,14 @@ module SortingHelper
     'Most popular'
   end
 
+  def sort_title_more_weight
+    'More weight'
+  end
+
+  def sort_title_less_weight
+    'Less weight'
+  end
+
   def sort_value_priority
     'priority'
   end
@@ -147,5 +157,13 @@ module SortingHelper
 
   def sort_value_upvotes
     'upvotes_desc'
+  end
+
+  def sort_value_more_weight
+    'weight_desc'
+  end
+
+  def sort_value_less_weight
+    'weight_asc'
   end
 end

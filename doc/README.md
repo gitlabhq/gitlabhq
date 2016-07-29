@@ -15,19 +15,28 @@
 - [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
+- [Analytics](analytics/README.md)
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
+- [GitLab Pages](pages/README.md) Using GitLab Pages.
+- [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
 
 ## Administrator documentation
 
-- [Access restrictions](administration/access_restrictions.md) Define which Git access protocols can be used to talk to GitLab
+- [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
+- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-- [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
+- [Changing the appearance of the login page](customization/branded_login_page.md) Make the login page branded for your GitLab instance.
+- [Custom git hooks](administration/custom_hooks.md) Custom git hooks (on the filesystem) for when webhooks aren't enough.
+- [Email](tools/email.md) Email GitLab users from GitLab
+- [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
+- [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
+- [Installing your license](license/README.md)
+- [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
-- [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
@@ -42,14 +51,20 @@
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Reply by email](incoming_email/README.md) Allow users to comment on issues and merge requests by replying to notification emails.
 - [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md) Follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
+- [Downgrade back to CE](downgrade_ee_to_ce/README.md) Follow this guide if you need to downgrade from EE to CE.
+- [git-annex configuration](workflow/git_annex.md#configuration)
 - [Git LFS configuration](workflow/lfs/lfs_administration.md)
 - [Housekeeping](administration/housekeeping.md) Keep your Git repository tidy and fast.
+- [GitLab Pages configuration](pages/administration.md) Configure GitLab Pages.
+- [Elasticsearch](integration/elasticsearch.md) Enable Elasticsearch.
+- [GitLab GEO](gitlab-geo/README.md) Configure GitLab GEO, a secondary read-only GitLab instance.
 - [GitLab Performance Monitoring](monitoring/performance/introduction.md) Configure GitLab and InfluxDB for measuring performance metrics.
 - [Monitoring uptime](monitoring/health_check.md) Check the server status using the health check endpoint.
 - [Debugging Tips](administration/troubleshooting/debug.md) Tips to debug problems when things go wrong
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
+- [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
 
 ## Contributor documentation
 

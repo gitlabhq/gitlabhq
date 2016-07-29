@@ -1,0 +1,59 @@
+- page_title 'Geo nodes'
+%h3.page-title
+  Geo Nodes
+
+%p.light
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo', 'README'), class: 'vlink'} you can install a special
+  read-only and replicated instance anywhere.
+
+%hr
+
+
+= form_for @node, as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal' } do |f|
+  -if @node.errors.any?
+    .alert.alert-danger
+      - @node.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    .col-sm-offset-2.col-sm-10
+      .checkbox
+        = f.label :primary do
+          = f.check_box :primary
+          %strong This is a primary node
+  .form-group
+    = f.label :url, 'URL', class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: 'form-control'
+  = f.fields_for :geo_node_key, @node.geo_node_key do |fg|
+    .form-group
+      = fg.label :key, 'Public Key', class: 'control-label'
+      .col-sm-10
+        = fg.text_area :key, class: 'form-control thin_area', rows: 5
+        %p.help-block
+          Paste a machine public key here for the GitLab user this node runs on. Read more about how to generate it
+          = link_to "here", help_page_path("ssh", "README")
+
+  .form-actions
+    = f.submit 'Add Node', class: 'btn btn-create'
+%hr
+
+-if @nodes.any?
+  .panel.panel-default
+    .panel-heading
+      Geo nodes (#{@nodes.count})
+    %ul.well-list
+      - @nodes.each do |node|
+        %li
+          .list-item-name
+            %span
+              = node.primary ? icon('star fw') : icon('globe fw')
+            %strong= node.url
+            %p
+              %span.help-block #{node.primary ? 'Primary node' : 'Secondary node'}
+
+          .pull-right
+            - if node.missing_oauth_application?
+              = link_to repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default, btn-sm' do
+                = icon('exclamation-triangle fw')
+                Repair authentication
+            = link_to 'Remove', admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'

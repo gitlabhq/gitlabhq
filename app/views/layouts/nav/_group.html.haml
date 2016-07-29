@@ -33,3 +33,7 @@
       = link_to group_group_members_path(@group), title: 'Members' do
         %span
           Members
+    = nav_link(controller: [:stats]) do
+      = link_to group_analytics_path(@group), title: 'Contribution Analytics', data: {placement: 'right'} do
+        %span
+          Contribution Analytics

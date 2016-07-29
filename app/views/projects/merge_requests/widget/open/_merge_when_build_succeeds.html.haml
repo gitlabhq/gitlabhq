@@ -4,7 +4,10 @@
 %div
   %p
     = succeed '.' do
-      The changes will be merged into
+      - if @project.merge_requests_ff_only_enabled
+        The changes will be fast-forward merged into
+      - else
+        The changes will be merged into
       %span.label-branch= @merge_request.target_branch
     - if @merge_request.remove_source_branch?
       The source branch will be removed.

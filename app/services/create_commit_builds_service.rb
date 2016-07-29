@@ -1,8 +1,11 @@
 class CreateCommitBuildsService
-  def execute(project, user, params)
+  def execute(project, user, params, mirror_update: false)
     return unless project.builds_enabled?
 
+    return false if !project.mirror_trigger_builds? && mirror_update
+
     before_sha = params[:checkout_sha] || params[:before]
+
     sha = params[:checkout_sha] || params[:after]
     origin_ref = params[:ref]
 

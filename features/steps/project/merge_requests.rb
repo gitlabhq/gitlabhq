@@ -465,6 +465,26 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I select "fix" as source' do
+    find('.js-source-branch').click
+
+    find('.dropdown-source-branch .dropdown-content a', text: 'fix').click
+
+    click_button "Compare branches"
+  end
+
+  step 'I select "feature_conflict" as source' do
+    find('.js-source-branch').click
+
+    find('.dropdown-source-branch .dropdown-content a', text: 'feature_conflict').click
+
+    click_button "Compare branches"
+  end
+
+  step 'I should see description field pre-filled' do
+    expect(find_field('merge_request_description').value).to eq 'This merge request should contain the following.'
+  end
+
   step 'I unfold diff' do
     expect(page).to have_css('.js-unfold')
 
@@ -490,6 +510,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click the "Target branch" dropdown' do
+    sleep 0.5
     first('.target_branch').click
   end
 
@@ -503,6 +524,111 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(page).to have_content 'Target branch changed from master to feature'
   end
 
+  step 'project settings contain list of approvers' do
+    project.update(approvals_before_merge: 1)
+    project.approvers.create(user_id: current_user.id)
+  end
+
+  step 'there is one auto-suggested approver' do
+    @user = create :user
+    allow_any_instance_of(Gitlab::AuthorityAnalyzer).to receive(:calculate).and_return([@user])
+  end
+
+  step 'I see suggested approver' do
+    page.within 'ul .project-approvers' do
+      expect(page).to have_content(current_user.name)
+    end
+  end
+
+  step 'I see auto-suggested approver' do
+    page.within '.suggested-approvers' do
+      expect(page).to have_content(@user.name)
+    end
+  end
+
+  step 'I can add it to approver list' do
+    click_link @user.name
+
+    page.within 'ul.approver-list' do
+      expect(page).to have_content(@user.name)
+    end
+
+    click_button "Submit merge request"
+
+    page.within '.issuable-actions' do
+      first(:link, 'Edit', visible: true).click
+    end
+
+    page.within 'ul.approver-list' do
+      expect(page).to have_content(@user.name)
+    end
+  end
+
+  step 'merge request \'Bug NS-04\' must be approved' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    project.save!
+  end
+
+  step 'merge request \'Bug NS-04\' must be approved by current user' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    merge_request.approvers.create(user_id: current_user.id)
+    project.save!
+  end
+
+  step 'merge request \'Bug NS-04\' must be approved by some user' do
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
+    project = merge_request.target_project
+    project.approvals_before_merge = 1
+    merge_request.approvers.create(user_id: create(:user).id)
+    project.save!
+  end
+
+  step 'I click link "Approve"' do
+    page.within '.mr-state-widget' do
+      click_button 'Approve Merge Request'
+    end
+  end
+
+  step 'I should not see merge button' do
+    page.within '.mr-state-widget' do
+      expect(page).not_to have_button("Accept Merge Request")
+    end
+  end
+
+  step 'I should not see Approve button' do
+    page.within '.mr-state-widget' do
+      expect(page).not_to have_button("Approve")
+    end
+  end
+
+  step 'I should see approved merge request "Bug NS-04"' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_button("Accept Merge Request")
+    end
+  end
+
+  step 'I should see message that merge request can be merged' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Ready to be merged automatically")
+    end
+  end
+
+  step 'I should see message that MR require an approval from me' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Requires one more approval (from #{current_user.name})")
+    end
+  end
+
+  step 'I should see message that MR require an approval' do
+    page.within '.mr-state-widget' do
+      expect(page).to have_content("Requires one more approval")
+    end
+  end
+
   step 'I click on "Email Patches"' do
     click_link "Email Patches"
   end
@@ -513,6 +639,15 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a patch diff' do
     expect(page).to have_content('diff --git')
+  end
+
+  step 'I am a "Shop" developer' do
+    user = create(:user, name: "Mike")
+    project = Project.find_by(name: "Shop")
+    project.team << [user, :developer]
+
+    logout
+    login_with user
   end
 
   step '"Bug NS-05" has CI status' do

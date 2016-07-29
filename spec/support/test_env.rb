@@ -11,6 +11,7 @@ module TestEnv
     'feature_conflict'      => 'bb5206f',
     'fix'                   => '48f0be4',
     'improve/awesome'       => '5937ac0',
+    'merged-target'         => '21751bf',
     'markdown'              => '0ed8c6c',
     'lfs'                   => 'be93687',
     'master'                => '5937ac0',
@@ -20,7 +21,8 @@ module TestEnv
     'gitattributes'         => '5a62481',
     'expand-collapse-diffs' => '4842455',
     'expand-collapse-files' => '025db92',
-    'expand-collapse-lines' => '238e82d'
+    'expand-collapse-lines' => '238e82d',
+    'video'                 => '8879059'
   }
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

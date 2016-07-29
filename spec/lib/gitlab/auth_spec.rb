@@ -73,6 +73,19 @@ describe Gitlab::Auth, lib: true do
       expect( gl_auth.find_with_user_password(username, password) ).not_to eql user
     end
 
+    context "with kerberos" do
+      before do
+        allow(Devise).to receive_messages(omniauth_providers: [:kerberos])
+      end
+
+      it "finds user" do
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(valid?: true)
+        allow(Gitlab::Kerberos::Authentication).to receive_messages(email: user.email)
+
+        expect( gl_auth.find_with_user_password(username, password) ).to eql user
+      end
+    end
+
     context "with ldap enabled" do
       before do
         allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)

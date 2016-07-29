@@ -17,6 +17,19 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  step 'I set the help text' do
+    fill_in 'Help text', with: help_text
+    click_button 'Save'
+  end
+
+  step 'I should see the help text' do
+    expect(page).to have_content help_text
+  end
+
+  step 'I go to help page' do
+    visit '/help'
+  end
+
   step 'I click on "Service Templates"' do
     click_link 'Service Templates'
   end
@@ -27,19 +40,19 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
 
   step 'I check all events and submit form' do
     page.check('Active')
-    page.check('Push events')
-    page.check('Tag push events')
-    page.check('Comments')
-    page.check('Issues events')
-    page.check('Merge Request events')
-    page.check('Build events')
+    page.check('Push')
+    page.check('Tag push')
+    page.check('Note')
+    page.check('Issue')
+    page.check('Merge request')
+    page.check('Build')
     click_on 'Save'
   end
 
   step 'I fill out Slack settings' do
     fill_in 'Webhook', with: 'http://localhost'
     fill_in 'Username', with: 'test_user'
-    fill_in 'Channel', with: '#test_channel'
+    fill_in 'service_push_channel', with: '#test_channel'
     page.check('Notify only broken builds')
   end
 
@@ -56,6 +69,10 @@ class Spinach::Features::AdminSettings < Spinach::FeatureSteps
   step 'I should see Slack settings saved' do
     expect(find_field('Webhook').value).to eq 'http://localhost'
     expect(find_field('Username').value).to eq 'test_user'
-    expect(find_field('Channel').value).to eq '#test_channel'
+    expect(find('#service_push_channel').value).to eq '#test_channel'
+  end
+
+  def help_text
+    'For help related to GitLab contact Marc Smith at marc@smith.example or find him in office 42.'
   end
 end

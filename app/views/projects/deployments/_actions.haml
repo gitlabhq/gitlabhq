@@ -1,0 +1,22 @@
+- if can?(current_user, :create_deployment, deployment) && deployment.deployable
+  .pull-right
+    - actions = deployment.manual_actions
+    - if actions.present?
+      .btn-group.inline
+        .btn-group
+          %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+            = icon("play")
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right
+            - actions.each do |action|
+              %li
+                = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
+                  = icon("play")
+                  %span= action.name.humanize
+
+    - if local_assigns.fetch(:allow_rollback, false)
+      = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
+        - if deployment.last?
+          Re-deploy
+        - else
+          Rollback

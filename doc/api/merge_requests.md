@@ -69,6 +69,7 @@ Parameters:
     "merge_status": "can_be_merged",
     "subscribed" : false,
     "user_notes_count": 1,
+    "approvals_before_merge": null
     "should_remove_source_branch": true,
     "force_remove_source_branch": false
   }
@@ -135,6 +136,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false
 }
@@ -237,6 +239,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "changes": [
@@ -263,19 +266,30 @@ POST /projects/:id/merge_requests
 
 Parameters:
 
-- `id` (required)                - The ID of a project
-- `source_branch` (required)     - The source branch
-- `target_branch` (required)     - The target branch
-- `assignee_id` (optional)       - Assignee user ID
-- `title` (required)             - Title of MR
-- `description` (optional)       - Description of MR
-- `target_project_id` (optional) - The target project (numeric id)
-- `labels` (optional)            - Labels for MR as a comma-separated list
-- `milestone_id` (optional)      - Milestone ID
+- `id` (required)                      - The ID of a project
+- `source_branch` (required)           - The source branch
+- `target_branch` (required)           - The target branch
+- `assignee_id` (optional)             - Assignee user ID
+- `title` (required)                   - Title of MR
+- `description` (optional)             - Description of MR
+- `target_project_id` (optional)       - The target project (numeric id)
+- `labels` (optional)                  - Labels for MR as a comma-separated list
+- `milestone_id` (optional)            - Milestone ID
+- `approvals_before_merge` (optional)  - Number of approvals required before this can be merged (see below)
+
+If `approvals_before_merge` is not provided, it inherits the value from the
+target project. If it is provided, then the following conditions must hold in
+order for it to take effect:
+
+1. The target project's `approvals_before_merge` must be greater than zero. (A
+   value of zero disables approvals for that project.)
+2. The provided value of `approvals_before_merge` must be greater than the
+   target project's `approvals_before_merge`.
 
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -319,6 +333,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 0,
+  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false
 }
@@ -350,6 +365,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "project_id": 3,
   "title": "test1",
@@ -392,6 +408,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false
 }
@@ -449,6 +466,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -492,8 +510,111 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false
+}
+```
+
+## Merge Request Approvals
+
+>**Note:** This API endpoint is only available on 8.9 EE and above.
+
+You can request information about a merge request's approval status using the
+following endpoint:
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/approvals
+```
+
+**Parameters:**
+
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
+
+```json
+{
+  "id": 5,
+  "iid": 5,
+  "project_id": 1,
+  "title": "Approvals API",
+  "description": "Test",
+  "state": "opened",
+  "created_at": "2016-06-08T00:19:52.638Z",
+  "updated_at": "2016-06-08T21:20:42.470Z",
+  "merge_status": "can_be_merged",
+  "approvals_required": 2,
+  "approvals_missing": 1,
+  "approved_by": [
+    {
+      "user": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/root"
+      }
+    }
+  ]
+}
+```
+
+## Approve Merge Request
+
+>**Note:** This API endpoint is only available on 8.9 EE and above.
+
+If you are allowed to, you can approve a merge request using the following
+endpoint:
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/approvals
+```
+
+**Parameters:**
+
+| Attribute          | Type    | Required | Description         |
+|--------------------|---------|----------|---------------------|
+| `id`               | integer | yes      | The ID of a project |
+| `merge_request_id` | integer | yes      | The ID of MR        |
+
+```json
+{
+  "id": 5,
+  "iid": 5,
+  "project_id": 1,
+  "title": "Approvals API",
+  "description": "Test",
+  "state": "opened",
+  "created_at": "2016-06-08T00:19:52.638Z",
+  "updated_at": "2016-06-09T21:32:14.105Z",
+  "merge_status": "can_be_merged",
+  "approvals_required": 2,
+  "approvals_missing": 0,
+  "approved_by": [
+    {
+      "user": {
+        "name": "Administrator",
+        "username": "root",
+        "id": 1,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/root"
+      }
+    },
+    {
+      "user": {
+        "name": "Nico Cartwright",
+        "username": "ryley",
+        "id": 2,
+        "state": "active",
+        "avatar_url": "http://www.gravatar.com/avatar/cf7ad14b34162a76d593e3affca2adca?s=80\u0026d=identicon",
+        "web_url": "http://localhost:3000/u/ryley"
+      }
+    }
+  ]
 }
 ```
 
@@ -517,6 +638,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -560,6 +682,7 @@ Parameters:
   "merge_status": "can_be_merged",
   "subscribed" : true,
   "user_notes_count": 1,
+  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false
 }
@@ -627,7 +750,8 @@ Example response when the GitLab issue tracker is used:
       "created_at" : "2016-01-04T15:31:51.081Z",
       "iid" : 6,
       "labels" : [],
-      "user_notes_count": 1
+      "user_notes_count": 1,
+      "approvals_before_merge": null
    },
 ]
 ```

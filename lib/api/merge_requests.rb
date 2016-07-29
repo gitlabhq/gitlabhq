@@ -63,15 +63,16 @@ module API
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project - this will be the source of the merge request
-      #   source_branch (required) - The source branch
-      #   target_branch (required) - The target branch
-      #   target_project_id        - The target project of the merge request defaults to the :id of the project
-      #   assignee_id              - Assignee user ID
-      #   title (required)         - Title of MR
-      #   description              - Description of MR
-      #   labels (optional)        - Labels for MR as a comma-separated list
-      #   milestone_id (optional)   - Milestone ID
+      #   id (required)                      - The ID of a project - this will be the source of the merge request
+      #   source_branch (required)           - The source branch
+      #   target_branch (required)           - The target branch
+      #   target_project_id (optional)       - The target project of the merge request defaults to the :id of the project
+      #   assignee_id (optional)             - Assignee user ID
+      #   title (required)                   - Title of MR
+      #   description (optional)             - Description of MR
+      #   labels (optional)                  - Labels for MR as a comma-separated list
+      #   milestone_id (optional)            - Milestone ID
+      #   approvals_before_merge (optional)  - Number of approvals required before this can be merged
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -79,7 +80,7 @@ module API
       post ":id/merge_requests" do
         authorize! :create_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description, :milestone_id, :approvals_before_merge]
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
@@ -242,7 +243,7 @@ module API
             should_remove_source_branch: params[:should_remove_source_branch]
           }
 
-          if parse_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
+          if to_boolean(params[:merge_when_build_succeeds]) && merge_request.pipeline && merge_request.pipeline.active?
             ::MergeRequests::MergeWhenBuildSucceedsService.new(merge_request.target_project, current_user, merge_params).
               execute(merge_request)
           else
@@ -330,6 +331,41 @@ module API
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
           issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
           present paginate(issues), with: issue_entity(user_project), current_user: current_user
+        end
+
+        # Get the status of the merge request's approvals
+        #
+        # Parameters:
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
+        # Examples:
+        #   GET /projects/:id/merge_requests/:merge_request_id/approvals
+        #
+        get "#{path}/approvals" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+          authorize! :read_merge_request, merge_request
+          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
+        end
+
+        # Approve a merge request
+        #
+        # Parameters:
+        #   id (required)                 - The ID of a project
+        #   merge_request_id (required)   - ID of MR
+        # Examples:
+        #   POST /projects/:id/merge_requests/:merge_request_id/approvals
+        #
+        post "#{path}/approve" do
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+          unauthorized! unless merge_request.can_approve?(current_user)
+
+          ::MergeRequests::ApprovalService
+            .new(user_project, current_user)
+            .execute(merge_request)
+
+          present merge_request, with: Entities::MergeRequestApprovals, current_user: current_user
         end
       end
     end

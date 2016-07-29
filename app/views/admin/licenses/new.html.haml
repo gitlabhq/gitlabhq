@@ -1,0 +1,58 @@
+- page_title "Upload License"
+%h3.page-title Upload License
+
+%p.light
+  To #{License.current ? "continue" : "start"} using GitLab Enterprise Edition, upload the <code>.gitlab-license</code> file or enter the license key you have received from GitLab Inc.
+
+%hr
+= form_for @license, url: admin_license_path, html: { multipart: true, class: 'form-horizontal fieldset-form' } do |f|
+  - if @license.errors.any?
+    #error_explanation
+      .alert.alert-danger
+        - @license.errors.full_messages.each do |msg|
+          %p= msg
+
+  .form-group
+    .col-sm-2
+    .col-sm-10
+      .radio
+        = label_tag :license_type_file do
+          = radio_button_tag :license_type, :file, @license.data.blank?
+          .option-title
+            Upload <code>.gitlab-license</code> file
+      .radio
+        = label_tag :license_type_key do
+          = radio_button_tag :license_type, :key, @license.data.present?
+          .option-title
+            Enter license key
+
+  .form-group.license-file
+    = f.label :data_file, "License file", class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.file_field :data_file, accept: ".gitlab-license,.gitlab_license,.txt", class: "form-control"
+
+  .form-group.license-key
+    = f.label :data, "License key", class: 'control-label col-sm-2'
+    .col-sm-10
+      = f.text_area :data, class: "form-control license-key-field", rows: 20
+
+  .form-actions
+    = f.submit 'Upload license', class: 'btn btn-primary'
+
+:javascript
+  function showLicenseType() {
+    if ($("input[name='license_type']:checked").val() == "file")
+    {
+      $(".license-file").show();
+      $(".license-key").hide();
+    }
+    else
+    {
+      $(".license-file").hide();
+      $(".license-key").show();
+    }
+  }
+
+  $("input[name='license_type']").click(showLicenseType);
+
+  showLicenseType();

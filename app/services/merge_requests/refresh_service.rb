@@ -21,6 +21,7 @@ module MergeRequests
 
       comment_mr_with_commits
       execute_mr_web_hooks
+      reset_approvals_for_merge_requests
 
       true
     end
@@ -69,6 +70,20 @@ module MergeRequests
         end
 
         merge_request.mark_as_unchecked
+      end
+    end
+
+    # Reset approvals for merge request
+    def reset_approvals_for_merge_requests
+      merge_requests_for_source_branch.each do |merge_request|
+        target_project = merge_request.target_project
+
+        if target_project.approvals_before_merge.nonzero? &&
+           target_project.reset_approvals_on_push &&
+           merge_request.rebase_commit_sha != @newrev
+
+          merge_request.approvals.destroy_all
+        end
       end
     end
 

@@ -183,6 +183,20 @@ module IssuesHelper
     options_from_collection_for_select(options, 'name', 'title', params[:due_date])
   end
 
+  def issues_weight_options(selected = nil, edit: false)
+    weights = edit ? edit_weights : issue_weights
+
+    options_for_select(weights, selected || params[:weight])
+  end
+
+  def issue_weights(weight_array = Issue.weight_options)
+    weight_array.zip(weight_array)
+  end
+
+  def edit_weights
+    issue_weights([Issue::WEIGHT_NONE] + Issue::WEIGHT_RANGE.to_a)
+  end
+
   # Required for Banzai::Filter::IssueReferenceFilter
   module_function :url_for_issue
 end

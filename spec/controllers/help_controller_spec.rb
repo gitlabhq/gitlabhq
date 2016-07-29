@@ -36,7 +36,7 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              path: 'workflow/protected_branches/protected_branches1',
+              path: 'user/project/img/labels_filter',
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
@@ -60,6 +60,15 @@ describe HelpController do
             path: 'ssh/README',
             format: :foo
         expect(response).to be_not_found
+      end
+    end
+  end
+
+  describe 'GET #ui' do
+    context 'for UI Development Kit' do
+      it 'renders found' do
+        get :ui
+        expect(response).to have_http_status(200)
       end
     end
   end

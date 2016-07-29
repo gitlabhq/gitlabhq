@@ -7,6 +7,10 @@ class IssueTrackerService < Service
     default
   end
 
+  def create_cross_reference_note
+    # implement inside child
+  end
+
   def issue_url(iid)
     self.issues_url.gsub(':id', iid.to_s)
   end

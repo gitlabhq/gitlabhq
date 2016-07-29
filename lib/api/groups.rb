@@ -23,20 +23,31 @@ module API
       # Create group. Available only for users who can create groups.
       #
       # Parameters:
-      #   name (required)             - The name of the group
-      #   path (required)             - The path of the group
-      #   description (optional)      - The description of the group
-      #   visibility_level (optional) - The visibility level of the group
+      #   name (required)                           - The name of the group
+      #   path (required)                           - The path of the group
+      #   description (optional)                    - The description of the group
+      #   visibility_level (optional)               - The visibility level of the group
+      #   membership_lock       (optional, boolean) - Prevent adding new members to project membership within this group
+      #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
       # Example Request:
       #   POST /groups
       post do
         authorize! :create_group, current_user
         required_attributes! [:name, :path]
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
         @group = Group.new(attrs)
 
         if @group.save
+          # NOTE: add backwards compatibility for single ldap link
+          ldap_attrs = attributes_for_keys [:ldap_cn, :ldap_access]
+          if ldap_attrs.present?
+            @group.ldap_group_links.create({
+              cn: ldap_attrs[:ldap_cn],
+              group_access: ldap_attrs[:ldap_access]
+            })
+          end
+
           @group.add_owner(current_user)
           present @group, with: Entities::Group
         else
@@ -44,20 +55,23 @@ module API
         end
       end
 
-      # Update group. Available only for users who can administrate groups.
+      # Update group. Available only for users who can manage this group.
       #
       # Parameters:
-      #   id (required)               - The ID of a group
-      #   path (optional)             - The path of the group
-      #   description (optional)      - The description of the group
-      #   visibility_level (optional) - The visibility level of the group
+      #   id (required)                             - The ID of a group
+      #   name (required)                           - The name of the group
+      #   path (required)                           - The path of the group
+      #   description (optional)                    - The details of the group
+      #   visibility_level (optional)               - The visibility level of the group
+      #   membership_lock (optional, boolean)       - Prevent adding new members to project membership within this group
+      #   share_with_group_lock (optional, boolean) - Prevent sharing a project with another group within this group
       # Example Request:
       #   PUT /groups/:id
       put ':id' do
         group = find_group(params[:id])
         authorize! :admin_group, group
 
-        attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
+        attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
 
         if ::Groups::UpdateService.new(group, current_user, attrs).execute
           present group, with: Entities::GroupDetail

@@ -4,6 +4,7 @@ class StuckCiBuildsWorker
   BUILD_STUCK_TIMEOUT = 1.day
 
   def perform
+    return if Gitlab::Geo.secondary?
     Rails.logger.info 'Cleaning stuck builds'
 
     builds = Ci::Build.joins(:project).running_or_pending.where('ci_builds.updated_at < ?', BUILD_STUCK_TIMEOUT.ago)

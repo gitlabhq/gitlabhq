@@ -46,7 +46,7 @@ class HipchatService < Service
     return unless supported_events.include?(data[:object_kind])
     message = create_message(data)
     return unless message.present?
-    gate[room].send('GitLab', message, message_options)
+    gate[room].send('GitLab', message, message_options(data))
   end
 
   def test(data)
@@ -67,8 +67,8 @@ class HipchatService < Service
     @gate ||= HipChat::Client.new(token, options)
   end
 
-  def message_options
-    { notify: notify.present? && notify == '1', color: color || 'yellow' }
+  def message_options(data = nil)
+    { notify: notify.present? && notify == '1', color: message_color(data) }
   end
 
   def create_message(data)
@@ -156,14 +156,17 @@ class HipchatService < Service
 
     obj_attr = data[:object_attributes]
     obj_attr = HashWithIndifferentAccess.new(obj_attr)
-    merge_request_id = obj_attr[:iid]
+    merge_request_iid = obj_attr[:iid]
     state = obj_attr[:state]
     description = obj_attr[:description]
     title = obj_attr[:title]
+    action = obj_attr[:action]
 
-    merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
-    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
-    message = "#{user_name} #{state} #{merge_request_link} in " \
+    state_or_action_text = (action == 'approved') ? action : state
+
+    merge_request_url = "#{project_url}/merge_requests/#{merge_request_iid}"
+    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_iid}</a>"
+    message = "#{user_name} #{state_or_action_text} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"
 
     if description
@@ -238,6 +241,21 @@ class HipchatService < Service
     commit_link = "<a href=\"#{project_url}/commit/#{CGI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
 
     "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
+  end
+
+  def message_color(data)
+    build_status_color(data) || color || 'yellow'
+  end
+
+  def build_status_color(data)
+    return unless data && data[:object_kind] == 'build'
+
+    case data[:commit][:status]
+    when 'success'
+      'green'
+    else
+      'red'
+    end
   end
 
   def project_name

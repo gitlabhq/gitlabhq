@@ -56,12 +56,15 @@ The following table depicts the various user permission levels in a project.
 | Manage runners                        |         |            |             | ✓        | ✓      |
 | Manage build triggers                 |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
+| Manage pages                          |         |            |             | ✓        | ✓      |
+| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
 | Delete environments                   |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Force push to protected branches [^2] |         |            |             |          |        |
 | Remove protected branches [^2]        |         |            |             |          |        |
+| Remove pages                          |         |            |             |          | ✓      |
 
 [^1]: If **Allow guest to access builds** is enabled in CI settings
 [^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner

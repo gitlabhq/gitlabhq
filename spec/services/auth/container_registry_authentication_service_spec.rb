@@ -14,6 +14,11 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
     allow_any_instance_of(JSONWebToken::RSAToken).to receive(:key).and_return(rsa_key)
   end
 
+  shared_examples 'an authenticated' do
+    it { is_expected.to include(:token) }
+    it { expect(payload).to include('access') }
+  end
+
   shared_examples 'a valid token' do
     it { is_expected.to include(:token) }
     it { expect(payload).to include('access') }
@@ -73,6 +78,17 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
   shared_examples 'a forbidden' do
     it { is_expected.to include(http_status: 403) }
     it { is_expected.not_to include(:token) }
+  end
+
+  describe '#full_access_token' do
+    let(:project) { create(:empty_project) }
+    let(:token) { described_class.full_access_token(project.path_with_namespace) }
+
+    subject { { token: token } }
+
+    it_behaves_like 'a accessible' do
+      let(:actions) { ['*'] }
+    end
   end
 
   describe '#full_access_token' do
@@ -191,6 +207,14 @@ describe Auth::ContainerRegistryAuthenticationService, services: true do
 
   context 'project authorization' do
     let(:current_project) { create(:empty_project) }
+
+    context 'allow to use offline_token' do
+      let(:current_params) do
+        { offline_token: true }
+      end
+
+      it_behaves_like 'an authenticated'
+    end
 
     context 'allow to use scope-less authentication' do
       it_behaves_like 'a valid token'

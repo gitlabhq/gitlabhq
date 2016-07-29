@@ -2,7 +2,7 @@
   .form-group
     = f.label :user_ids, "People", class: 'control-label'
     .col-sm-10
-      = users_select_tag(:user_ids, multiple: true, class: 'input-large', scope: :all, email_user: true)
+      = users_select_tag(:user_ids, multiple: true, class: 'input-large', scope: :all, email_user: true, skip_ldap: @group.ldap_synced?)
       .help-block
         Search for users by name, username, or email, or invite new ones using their email address.
 

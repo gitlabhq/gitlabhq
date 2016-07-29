@@ -205,7 +205,7 @@ feature 'Issue filtering by Labels', feature: true do
       page.within '.labels-filter' do
         click_button 'Label'
         wait_for_ajax
-        fill_in 'label-name', with: 'bug'
+        find('.dropdown-input input').set 'bug'
 
         page.within '.dropdown-content' do
           expect(page).not_to have_content 'enhancement'

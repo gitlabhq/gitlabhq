@@ -55,6 +55,11 @@
       &nbsp;
       %span.task-status
         = issue.task_status
+    - if issue.weight
+      &nbsp;
+      %span
+        = icon('balance-scale')
+        = issue.weight
 
     .pull-right.issue-updated-at
       %span updated #{time_ago_with_tooltip(issue.updated_at, placement: 'bottom', html_class: 'issue_update_ago')}

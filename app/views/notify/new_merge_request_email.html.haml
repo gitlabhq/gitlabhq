@@ -8,5 +8,9 @@
   %p
     Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
 
+- if @merge_request.approvers.any?
+  %p
+    Approvers: #{render_items_list(@merge_request.approvers_left.map(&:name))}
+
 -if @merge_request.description
   = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author)

@@ -1,0 +1,52 @@
+.form-group
+  = f.check_box :deny_delete_tag, class: "pull-left"
+  .prepend-left-20
+    = f.label :deny_delete_tag, class: "label-light append-bottom-0" do
+      Do not allow users to remove git tags with
+      %code git push
+    %p.light.append-bottom-0
+      Tags can still be deleted through the web UI.
+
+.form-group
+  = f.check_box :member_check, class: "pull-left"
+  .prepend-left-20
+    = f.label :member_check, "Check whether author is a GitLab user", class: "label-light append-bottom-0"
+    %p.light.append-bottom-0
+      Restrict commits by author (email) to existing GitLab users
+
+.form-group
+  = f.label :commit_message_regex, "Commit message", class: 'label-light'
+  = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
+  .help-block
+    All commit messages must match this
+    = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+    to be pushed.
+    If this field is empty it allows any commit message.
+    For example you can require that an issue number is always mentioned in the commit message.
+
+.form-group
+  = f.label :author_email_regex, "Commit author's email", class: 'label-light'
+  = f.text_field :author_email_regex, class: "form-control", placeholder: 'Example: @my-company.com$'
+  .help-block
+    All commit author's email must match this
+    = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+    to be pushed.
+    If this field is empty it allows any email.
+
+.form-group
+  = f.label :file_name_regex, "Prohibited file names", class: 'label-light'
+  = f.text_field :file_name_regex, class: "form-control", placeholder: 'Example: (jar|exe)$'
+  .help-block
+    All commited filenames must not match this
+    = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+    to be pushed.
+    If this field is empty it allows any filenames.
+
+.form-group
+  = f.label :max_file_size, "Maximum file size (MB)", class: 'label-light'
+  = f.number_field :max_file_size, class: "form-control", min: 0
+  .help-block
+    Pushes that contain added or updated files that exceed this file size are rejected.
+    Set to 0 to allow files of any size.
+
+= f.submit "Save Push Rules", class: "btn btn-create"

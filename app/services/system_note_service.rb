@@ -395,6 +395,22 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  # Called when the merge request is approved by user
+  #
+  # noteable - Noteable object
+  # user     - User performing approve
+  #
+  # Example Note text:
+  #
+  #   "Approved this merge request"
+  #
+  # Returns the created Note object
+  def approve_mr(noteable, user)
+    body = "Approved this merge request"
+
+    create_note(noteable: noteable, project: noteable.project, author: user, note: body)
+  end
+
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)

@@ -13,34 +13,36 @@ If you want a quick introduction to GitLab CI, follow our
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [.gitlab-ci.yml](#gitlab-ci-yml)
-  - [image and services](#image-and-services)
-  - [before_script](#before_script)
-  - [after_script](#after_script)
-  - [stages](#stages)
-  - [types](#types)
-  - [variables](#variables)
-  - [cache](#cache)
-    - [cache:key](#cache-key)
+    - [image and services](#image-and-services)
+    - [before_script](#before_script)
+    - [after_script](#after_script)
+    - [stages](#stages)
+    - [types](#types)
+    - [variables](#variables)
+    - [cache](#cache)
+        - [cache:key](#cache-key)
 - [Jobs](#jobs)
-  - [script](#script)
-  - [stage](#stage)
-  - [only and except](#only-and-except)
-  - [job variables](#job-variables)
-  - [tags](#tags)
-  - [when](#when)
-  - [environment](#environment)
-  - [artifacts](#artifacts)
-    - [artifacts:name](#artifactsname)
-    - [artifacts:when](#artifactswhen)
-    - [artifacts:expire_in](#artifactsexpire_in)
-  - [dependencies](#dependencies)
-  - [before_script and after_script](#before_script-and-after_script)
+    - [script](#script)
+    - [stage](#stage)
+    - [only and except](#only-and-except)
+    - [job variables](#job-variables)
+    - [tags](#tags)
+    - [allow_failure](#allow_failure)
+    - [when](#when)
+        - [Manual actions](#manual-actions)
+    - [environment](#environment)
+    - [artifacts](#artifacts)
+        - [artifacts:name](#artifacts-name)
+        - [artifacts:when](#artifacts-when)
+        - [artifacts:expire_in](#artifacts-expire_in)
+    - [dependencies](#dependencies)
+    - [before_script and after_script](#before_script-and-after_script)
 - [Git Strategy](#git-strategy)
 - [Shallow cloning](#shallow-cloning)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
-  - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ciyml)
+    - [Anchors](#anchors)
+- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
 - [Skipping builds](#skipping-builds)
 - [Examples](#examples)
 
@@ -473,6 +475,39 @@ job:
 The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
 
+### allow_failure
+
+`allow_failure` is used when you want to allow a build to fail without impacting
+the rest of the CI suite. Failed builds don't contribute to the commit status.
+
+When enabled and the build fails, the pipeline will be successful/green for all
+intents and purposes, but a "CI build passed with warnings" message  will be
+displayed on the merge request or commit or build page. This is to be used by
+builds that are allowed to fail, but where failure indicates some other (manual)
+steps should be taken elsewhere.
+
+In the example below, `job1` and `job2` will run in parallel, but if `job1`
+fails, it will not stop the next stage from running, since it's marked with
+`allow_failure: true`:
+
+```yaml
+job1:
+  stage: test
+  script:
+  - execute_script_that_will_fail
+  allow_failure: true
+
+job2:
+  stage: test
+  script:
+  - execute_script_that_will_succeed
+
+job3:
+  stage: deploy
+  script:
+  - deploy_to_staging
+```
+
 ### when
 
 `when` is used to implement jobs that are run in case of failure or despite the
@@ -485,6 +520,8 @@ failure.
 1. `on_failure` - execute build only when at least one build from prior stages
     fails.
 1. `always` - execute build regardless of the status of builds from prior stages.
+1. `manual` - execute build manually (added in GitLab 8.10). Read about
+    [manual actions](#manual-actions) below.
 
 For example:
 
@@ -516,6 +553,7 @@ deploy_job:
   stage: deploy
   script:
   - make deploy
+  when: manual
 
 cleanup_job:
   stage: cleanup
@@ -526,8 +564,22 @@ cleanup_job:
 
 The above script will:
 
-1. Execute `cleanup_build_job` only when `build_job` fails
-2. Always execute `cleanup_job` as the last step in pipeline.
+1. Execute `cleanup_build_job` only when `build_job` fails.
+2. Always execute `cleanup_job` as the last step in pipeline regardless of
+   success or failure.
+3. Allow you to manually execute `deploy_job` from GitLab's UI.
+
+#### Manual actions
+
+>**Note:**
+Introduced in GitLab 8.10.
+
+Manual actions are a special type of job that are not executed automatically;
+they need to be explicitly started by a user. Manual actions can be started
+from pipeline, build, environment, and deployment views. You can execute the
+same manual action multiple times.
+
+An example usage of manual actions is deployment to production.
 
 ### environment
 
@@ -630,9 +682,10 @@ be available for download in the GitLab UI.
 Introduced in GitLab 8.6 and GitLab Runner v1.1.0.
 
 The `name` directive allows you to define the name of the created artifacts
-archive. That way, you can have a unique name of every archive which could be
+archive. That way, you can have a unique name for every archive which could be
 useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
+The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
 ---
 

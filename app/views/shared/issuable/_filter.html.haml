@@ -26,8 +26,20 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
+        - if local_assigns[:type] == :issues
+          .filter-item.inline.weight-filter
+            - if params[:weight]
+              = hidden_field_tag(:weight, params[:weight])
+            = dropdown_tag("Weight", options: { title: "Filter by weight", toggle_class: 'js-weight-select js-filter-submit', dropdown_class: "dropdown-menu-selectable",
+              placeholder: "Search weight", data: { field_name: "weight" } }) do
+              %ul
+                - Issue.weight_options.each do |weight|
+                  %li
+                    %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
+                      = weight
+
         .pull-right
-          = render 'shared/sort_dropdown'
+          = render 'shared/sort_dropdown', type: local_assigns[:type]
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide
@@ -69,6 +81,7 @@
   new LabelsSelect();
   new MilestoneSelect();
   new IssueStatusSelect();
+  new WeightSelect();
   new SubscriptionSelect();
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();

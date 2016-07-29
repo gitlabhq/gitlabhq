@@ -169,7 +169,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :hide_no_password,
-      :projects_limit, :can_create_group, :admin, :key_id, :external
+      :projects_limit, :can_create_group, :admin, :key_id, :note, :external
     )
   end
 

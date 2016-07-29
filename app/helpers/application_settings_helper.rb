@@ -15,6 +15,10 @@ module ApplicationSettingsHelper
     current_application_settings.sign_in_text
   end
 
+  def help_text
+    current_application_settings.help_text
+  end
+  
   def after_sign_up_text
     current_application_settings.after_sign_up_text
   end

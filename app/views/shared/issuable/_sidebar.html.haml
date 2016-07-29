@@ -137,6 +137,34 @@
                 - if can? current_user, :admin_label, @project and @project
                   = render partial: "shared/issuable/label_page_create"
 
+      - if issuable.respond_to?(:weight)
+        .block.weight
+          .sidebar-collapsed-icon
+            = icon('balance-scale')
+            %span
+              - if issuable.weight
+                = issuable.weight
+              - else
+                No
+          .title.hide-collapsed
+            Weight
+            = icon('spinner spin', class: 'block-loading')
+            - if can?(current_user, :"admin_#{issuable.to_ability_name}", @project)
+              = link_to 'Edit', '#', class: 'edit-link pull-right'
+          .value.bold.hide-collapsed
+            - if issuable.weight
+              = issuable.weight
+            - else
+              .light None
+          .selectbox.hide-collapsed
+            = dropdown_tag("Weight", options: { title: "Change weight", toggle_class: 'js-weight-select', dropdown_class: "dropdown-menu-selectable",
+              placeholder: "Search weight", data: { field_name: "weight", issue_update: "#{issuable_json_path(issuable)}", ability_name: "#{issuable.to_ability_name}" } }) do
+              %ul
+                - Issue.weight_options.select{|weight| weight != "Everything" && weight != "Any Weight"}.each do |weight|
+                  %li
+                    %a{href: "#", data: { id: weight, none: ("true" if weight == Issue::WEIGHT_NONE) }, class: ("is-active" if params[:weight] == weight.to_s)}
+                      = weight
+
       = render "shared/issuable/participants", participants: issuable.participants(current_user)
       - if current_user
         - subscribed = issuable.subscribed?(current_user)
@@ -156,7 +184,7 @@
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.dont-change-state
           = clipboard_button(clipboard_text: project_ref)
         .cross-project-reference.hide-collapsed
           %span
@@ -168,6 +196,7 @@
     :javascript
       new MilestoneSelect('{"namespace":"#{@project.namespace.path}","path":"#{@project.path}"}');
       new LabelsSelect();
+      new WeightSelect();
       new IssuableContext('#{escape_javascript(current_user.to_json(only: [:username, :id, :name]))}');
       new Subscription('.subscription')
       new DueDateSelect();

@@ -1,5 +1,7 @@
 class ProjectWiki
   include Gitlab::ShellAdapter
+  include Elastic::WikiRepositoriesSearch
+  include Gitlab::CurrentSettings
 
   MARKUPS = {
     'Markdown' => :markdown,
@@ -56,6 +58,10 @@ class ProjectWiki
     end
   end
 
+  def repository_exists?
+    !!repository.exists?
+  end
+
   def empty?
     pages.empty?
   end
@@ -96,6 +102,8 @@ class ProjectWiki
 
     wiki.write_page(title, format.to_sym, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
@@ -107,11 +115,15 @@ class ProjectWiki
 
     wiki.update_page(page, page.name, format.to_sym, content, commit)
 
+    update_elastic_index
+
     update_project_activity
   end
 
   def delete_page(page, message = nil)
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
+
+    update_elastic_index
 
     update_project_activity
   end
@@ -178,5 +190,9 @@ class ProjectWiki
 
   def update_project_activity
     @project.touch(:last_activity_at)
+  end
+
+  def update_elastic_index
+    index_blobs if current_application_settings.elasticsearch_indexing?
   end
 end

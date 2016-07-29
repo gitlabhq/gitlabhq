@@ -1,17 +1,20 @@
 # Webhooks
 
-_**Note:**
-Starting from GitLab 8.5:_
-
-- _the `repository` key is deprecated in favor of the `project` key_
-- _the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key_
-- _the `project.http_url` key is deprecated in favor of the `project.git_http_url` key_
+> **Note:** As of GitLab 8.5:
+>
+> - the `repository` key is deprecated in favor of the `project` key
+> - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
+> - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
 Project webhooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
 You can configure webhooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the webhook URL.
 
 Webhooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+
+In GitLab Enterprise Edition you can configure web hooks globally for the whole
+group. You can add the group level web hooks on the group settings page
+**Settings > Webhooks**.
 
 ## Webhook endpoint tips
 
@@ -605,7 +608,11 @@ X-Gitlab-Event: Note Hook
 
 ## Merge request events
 
-Triggered when a new merge request is created, an existing merge request was updated/merged/closed or a commit is added in the source branch.
+Triggered when a new merge request is created, an existing merge request was
+updated/merged/closed/approved, or a commit is added in the source branch.
+
+> **Note:** A webhook for the `approved` action is only fired once the total
+> number of required approvals is met, _not_ after each individual approval.
 
 **Request header**:
 
