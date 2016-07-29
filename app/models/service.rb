@@ -87,6 +87,10 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def event_names
+    supported_events.map { |event| "#{event}_events" }
+  end
+
   def event_field(event)
     nil
   end

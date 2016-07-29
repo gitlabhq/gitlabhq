@@ -1,6 +1,6 @@
 class SlackService < Service
   prop_accessor :webhook, :username, :channel
-  boolean_accessor :notify_only_broken_builds
+  boolean_accessor :notify_only_broken_builds, :notify_only_broken_pipelines
   validates :webhook, presence: true, url: true, if: :activated?
 
   def initialize_properties
@@ -10,6 +10,7 @@ class SlackService < Service
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_builds = true
+      self.notify_only_broken_pipelines = true
     end
   end
 
@@ -38,13 +39,14 @@ class SlackService < Service
         { type: 'text', name: 'username', placeholder: 'username' },
         { type: 'text', name: 'channel', placeholder: "#general" },
         { type: 'checkbox', name: 'notify_only_broken_builds' },
+        { type: 'checkbox', name: 'notify_only_broken_pipelines' },
       ]
 
     default_fields + build_event_channels
   end
 
   def supported_events
-    %w(push issue merge_request note tag_push build wiki_page)
+    %w(push issue merge_request note tag_push build pipeline wiki_page)
   end
 
   def execute(data)
@@ -74,6 +76,8 @@ class SlackService < Service
         NoteMessage.new(data)
       when "build"
         BuildMessage.new(data) if should_build_be_notified?(data)
+      when "pipeline"
+        PipelineMessage.new(data) if should_pipeline_be_notified?(data)
       when "wiki_page"
         WikiPageMessage.new(data)
       end
@@ -142,6 +146,17 @@ class SlackService < Service
       false
     end
   end
+
+  def should_pipeline_be_notified?(data)
+    case data[:object_attributes][:status]
+    when 'success'
+      !notify_only_broken_builds?
+    when 'failed'
+      true
+    else
+      false
+    end
+  end
 end
 
 require "slack_service/issue_message"
@@ -149,4 +164,5 @@ require "slack_service/push_message"
 require "slack_service/merge_message"
 require "slack_service/note_message"
 require "slack_service/build_message"
+require "slack_service/pipeline_message"
 require "slack_service/wiki_page_message"

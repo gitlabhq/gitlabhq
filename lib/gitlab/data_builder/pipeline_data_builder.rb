@@ -28,7 +28,8 @@ module Gitlab
           stage: first_pending_build.try(:stage),
           stages: config_processor.try(:stages),
           created_at: pipeline.created_at,
-          finished_at: pipeline.finished_at
+          finished_at: pipeline.finished_at,
+          duration: pipeline.duration
         }
       end
 

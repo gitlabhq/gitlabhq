@@ -7,11 +7,12 @@ module ServiceParams
                     :build_key, :server, :teamcity_url, :drone_url, :build_type,
                     :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
                     :colorize_messages, :channels,
-                    :push_events, :issues_events, :merge_requests_events, :tag_push_events,
-                    :note_events, :build_events, :wiki_page_events,
-                    :notify_only_broken_builds, :add_pusher,
-                    :send_from_committer_email, :disable_diffs, :external_wiki_url,
-                    :notify, :color,
+                    # See app/helpers/services_helper.rb
+                    # for why we need issues_events and merge_requests_events.
+                    :issues_events, :merge_requests_events,
+                    :notify_only_broken_builds, :notify_only_broken_pipelines,
+                    :add_pusher, :send_from_committer_email, :disable_diffs,
+                    :external_wiki_url, :notify, :color,
                     :server_host, :server_port, :default_irc_uri, :enable_ssl_verification,
                     :jira_issue_transition_id]
 
@@ -19,9 +20,7 @@ module ServiceParams
   FILTER_BLANK_PARAMS = [:password]
 
   def service_params
-    dynamic_params = []
-    dynamic_params.concat(@service.event_channel_names)
-
+    dynamic_params = @service.event_channel_names + @service.event_names
     service_params = params.permit(:id, service: ALLOWED_PARAMS + dynamic_params)
 
     if service_params[:service].is_a?(Hash)
