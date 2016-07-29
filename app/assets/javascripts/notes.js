@@ -350,7 +350,7 @@
       form.find("#note_line_code").remove();
       form.find("#note_position").remove();
       form.find("#note_type").remove();
-      form.find('.js-comment-resolve-button').closest('resolve-comment-btn').remove();
+      form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
       return this.parentTimeline = form.parents('.timeline');
     };
 
@@ -589,17 +589,17 @@
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
       form.find('.js-note-target-close').remove();
+      this.setupNoteForm(form);
 
       if (canResolve === 'false') {
-        form.find('resolve-comment-btn').remove();
+        form.find('comment-and-resolve-btn').remove();
       } else if (DiffNotesApp) {
-        var $commentBtn = form.find('resolve-comment-btn');
+        var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
         DiffNotesApp.$compile($commentBtn.get(0));
       }
 
-      this.setupNoteForm(form);
       form.find(".js-note-text").focus();
       form
         .find('.js-comment-resolve-button')

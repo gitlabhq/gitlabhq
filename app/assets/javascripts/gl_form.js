@@ -21,7 +21,6 @@
         this.form.find('.div-dropzone').remove();
         this.form.addClass('gfm-form');
         disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button'));
-        disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-resolve-button'));
         GitLab.GfmAutoComplete.setup();
         new DropzoneInput(this.form);
         autosize(this.textarea);

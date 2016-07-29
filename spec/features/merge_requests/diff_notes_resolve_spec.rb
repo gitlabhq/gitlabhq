@@ -86,6 +86,34 @@ feature 'Diff notes resolve', feature: true, js: true do
         expect(page).to have_selector('.discussion-body', visible: false)
       end
 
+      it 'allows user to resolve from reply form without a comment' do
+        page.within '.diff-content' do
+          click_button 'Reply...'
+
+          click_button 'Resolve discussion'
+        end
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('1/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-active')
+        end
+      end
+
+      it 'allows user to unresolve from reply form without a comment' do
+        page.within '.diff-content' do
+          click_button 'Resolve discussion'
+
+          click_button 'Reply...'
+
+          click_button 'Resolve discussion'
+        end
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('0/1 discussion resolved')
+          expect(page).to have_selector('.line-resolve-btn.is-active')
+        end
+      end
+
       it 'allows user to comment & resolve discussion' do
         page.within '.diff-content' do
           click_button 'Reply...'
