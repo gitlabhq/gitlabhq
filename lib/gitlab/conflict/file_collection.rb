@@ -5,7 +5,7 @@ module Gitlab
 
       def initialize(merge_request)
         @merge_request = merge_request
-        @our_commit = merge_request.diff_head_commit.raw.raw_commit
+        @our_commit = merge_request.source_branch_head.raw.raw_commit
         @their_commit = merge_request.target_branch_head.raw.raw_commit
       end
 

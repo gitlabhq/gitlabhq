@@ -204,7 +204,7 @@ class MergeRequest < ActiveRecord::Base
 
   def diff_start_commit
     if persisted?
-      merge_request_diff.start_commit
+      merge_request_diff.start_commit || target_branch_head
     else
       target_branch_head
     end
@@ -212,7 +212,7 @@ class MergeRequest < ActiveRecord::Base
 
   def diff_head_commit
     if persisted?
-      merge_request_diff.head_commit
+      merge_request_diff.head_commit || source_branch_head
     else
       source_branch_head
     end
