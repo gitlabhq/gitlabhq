@@ -510,6 +510,15 @@ Metrics/PerceivedComplexity:
 
 #################### Lint ################################
 
+# Checks for useless access modifiers.
+Lint/UselessAccessModifier:
+  Enabled: true
+
+# Checks for attempts to use `private` or `protected` to set the visibility
+# of a class method, which does not work.
+Lint/IneffectiveAccessModifier:
+  Enabled: false
+
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.
 Lint/AmbiguousOperator:

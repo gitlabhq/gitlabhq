@@ -211,8 +211,6 @@ module Gitlab
       project.repository.tag_exists?(tag_name)
     end
 
-    private
-
     def deploy_key
       actor if actor.is_a?(DeployKey)
     end
