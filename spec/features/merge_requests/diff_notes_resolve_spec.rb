@@ -433,17 +433,40 @@ feature 'Diff notes resolve', feature: true, js: true do
   end
 
   context 'unauthorized user' do
-    before do
-      visit_merge_request
-    end
-
-    it 'does not allow user to mark note as resolved' do
-      page.within '.diff-content .note' do
-        expect(page).not_to have_selector('.line-resolve-btn')
+    context 'no resolved comments' do
+      before do
+        visit_merge_request
       end
 
-      page.within '.line-resolve-all-container' do
-        expect(page).to have_content('0/1 discussion resolved')
+      it 'does not allow user to mark note as resolved' do
+        page.within '.diff-content .note' do
+          expect(page).not_to have_selector('.line-resolve-btn')
+        end
+
+        page.within '.line-resolve-all-container' do
+          expect(page).to have_content('0/1 discussion resolved')
+        end
+      end
+    end
+
+    context 'resolved comment' do
+      before do
+        note.resolve!(user)
+        visit_merge_request
+      end
+
+      it 'shows resolved icon' do
+        expect(page).to have_content '1/1 discussion resolved'
+
+        click_link 'Toggle discussion'
+        expect(page).to have_selector('.line-resolve-btn.is-active')
+      end
+
+      it 'does not allow user to click resolve button' do
+        expect(page).to have_selector('.line-resolve-btn.is-disabled')
+        click_link 'Toggle discussion'
+
+        expect(page).to have_selector('.line-resolve-btn.is-disabled')
       end
     end
   end
