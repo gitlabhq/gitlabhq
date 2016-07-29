@@ -227,7 +227,7 @@ module Banzai
       end
 
       def collection_cache
-        RequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
+        RequestStore.store[:banzai_collection_cache] ||= Hash.new do |hash, key|
           hash[key] = {}
         end
       end

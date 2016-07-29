@@ -30,6 +30,7 @@ v 8.11.0 (unreleased)
   - Change requests_profiles resource constraint to catch virtually any file
 
 v 8.10.3 (unreleased)
+  - Fix memory leak with use of RequestStore
 
 v 8.10.2
   - User can now search branches by name. !5144

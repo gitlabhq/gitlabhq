@@ -93,7 +93,7 @@ module Banzai
       private
 
       def default_issues_tracker_cache
-        RequestStore[:banzai_default_issues_tracker_cache] ||= {}
+        RequestStore.store[:banzai_default_issues_tracker_cache] ||= {}
       end
     end
   end

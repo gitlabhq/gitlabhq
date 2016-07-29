@@ -263,17 +263,17 @@ module Banzai
       private
 
       def project_refs_cache
-        RequestStore[:banzai_project_refs] ||= {}
+        RequestStore.store[:banzai_project_refs] ||= {}
       end
 
       def find_objects_cache
-        RequestStore[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
+        RequestStore.store[:banzai_find_objects_cache] ||= Hash.new do |hash, key|
           hash[key] = Hash.new { |h, k| h[k] = {} }
         end
       end
 
       def url_for_object_cache
-        RequestStore[:banzai_url_for_object] ||= Hash.new do |hash, key|
+        RequestStore.store[:banzai_url_for_object] ||= Hash.new do |hash, key|
           hash[key] = Hash.new { |h, k| h[k] = {} }
         end
       end
