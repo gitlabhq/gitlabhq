@@ -27,7 +27,7 @@ $(() => {
     const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion');
     if ($components.length) {
       $components.each(function () {
-        DiffNotesApp.$compile($(this).get(0))
+        DiffNotesApp.$compile($(this).get(0));
       });
     }
   }

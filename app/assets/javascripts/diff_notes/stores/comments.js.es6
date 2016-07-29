@@ -1,7 +1,6 @@
 ((w) => {
   w.CommentsStore = {
     state: {},
-    loading: {},
     get: function (discussionId, noteId) {
       return this.state[discussionId].getNote(noteId);
     },
@@ -10,7 +9,6 @@
       if (!this.state[discussionId]) {
         discussion = new DiscussionModel(discussionId);
         Vue.set(this.state, discussionId, discussion);
-        Vue.set(this.loading, discussionId, false);
       }
 
       discussion.createNote(noteId, resolved, user);
@@ -27,7 +25,6 @@
 
       if (Object.keys(discussion.notes).length === 0) {
         Vue.delete(this.state, discussionId);
-        Vue.delete(this.loading, discussionId);
       }
     }
   };

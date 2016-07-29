@@ -11,8 +11,7 @@
     },
     data: function() {
       return {
-        discussions: CommentsStore.state,
-        loadingObject: CommentsStore.loading,
+        discussions: CommentsStore.state
       };
     },
     computed: {
@@ -27,7 +26,7 @@
         }
       },
       loading: function () {
-        return this.loadingObject[this.discussionId];
+        return this.discussions[this.discussionId].loading;
       }
     },
     methods: {

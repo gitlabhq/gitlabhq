@@ -5,8 +5,7 @@
     },
     computed: {
       isDiscussionResolved: function () {
-        const discussion = CommentsStore.state[this.discussionId],
-              notes = CommentsStore.notesForDiscussion(this.discussionId);
+        const discussion = CommentsStore.state[this.discussionId];
 
         return discussion.isResolved();
       },

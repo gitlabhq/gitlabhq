@@ -34,10 +34,12 @@
     }
 
     resolveAll(namespace, mergeRequestId, discussionId) {
+      const discussion = CommentsStore.state[discussionId];
+
       this.setCSRF();
       Vue.http.options.root = `/${namespace}`;
 
-      CommentsStore.loading[discussionId] = true;
+      discussion.loading = true;
 
       return this.discussionResource.save({
         mergeRequestId,
@@ -45,31 +47,28 @@
       }, {}).then((response) => {
         const data = response.data;
         const user = data ? data.resolved_by : null;
-        const discussion = CommentsStore.state[discussionId];
         discussion.resolveAllNotes(user);
-
-        CommentsStore.loading[discussionId] = false;
-
+        discussion.loading = false;
 
         this.updateUpdatedHtml(discussionId, data);
       });
     }
 
     unResolveAll(namespace, mergeRequestId, discussionId) {
+      const discussion = CommentsStore.state[discussionId];
+
       this.setCSRF();
       Vue.http.options.root = `/${namespace}`;
 
-      CommentsStore.loading[discussionId] = true;
+      discussion.loading = true;
 
       return this.discussionResource.delete({
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
         const data = response.data;
-        const discussion = CommentsStore.state[discussionId];
         discussion.unResolveAllNotes();
-
-        CommentsStore.loading[discussionId] = false;
+        discussion.loading = false;
 
         this.updateUpdatedHtml(discussionId, data);
       });

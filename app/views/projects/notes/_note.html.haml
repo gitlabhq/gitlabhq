@@ -22,7 +22,7 @@
             - if access
               %span.note-role.hidden-xs= access
 
-            - if (note.resolvable? && can?(current_user, :resolve_note, note)) || (note.resolved? && !can?(current_user, :resolve_note, note))
+            - if note.resolvable?
               %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
                   ":project-path" => "'#{note.project.path}'",
                   ":discussion-id" => "'#{note.discussion_id}'",
@@ -30,6 +30,7 @@
                   ":resolved" => note.resolved?,
                   ":can-resolve" => can?(current_user, :resolve_note, note),
                   ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
+                  "v-show" => "#{(note.resolvable? && can?(current_user, :resolve_note, note)) || (note.resolved? && !can?(current_user, :resolve_note, note))}",
                   "inline-template" => true,
                   "v-ref:note_#{note.id}" => true }
 

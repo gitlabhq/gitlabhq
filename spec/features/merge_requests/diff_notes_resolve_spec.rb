@@ -332,11 +332,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
       it 'does not allow user to mark note as resolved' do
         page.within '.diff-content .note' do
-          expect(page).to have_selector('.line-resolve-btn.is-disabled')
-
-          find('.line-resolve-btn').click
-
-          expect(page).to have_selector('.line-resolve-btn.is-disabled')
+          expect(page).not_to have_selector('.line-resolve-btn')
         end
 
         page.within '.line-resolve-all-container' do
@@ -384,11 +380,7 @@ feature 'Diff notes resolve', feature: true, js: true do
 
     it 'does not allow user to mark note as resolved' do
       page.within '.diff-content .note' do
-        expect(page).to have_selector('.line-resolve-btn.is-disabled')
-
-        find('.line-resolve-btn').click
-
-        expect(page).to have_selector('.line-resolve-btn.is-disabled')
+        expect(page).not_to have_selector('.line-resolve-btn')
       end
 
       page.within '.line-resolve-all-container' do

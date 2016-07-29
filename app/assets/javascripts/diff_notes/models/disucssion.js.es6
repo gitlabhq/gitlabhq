@@ -2,6 +2,7 @@ class DiscussionModel {
   constructor (discussionId) {
     this.discussionId = discussionId;
     this.notes = {};
+    this.loading = false;
   }
 
   createNote (noteId, resolved, user) {
