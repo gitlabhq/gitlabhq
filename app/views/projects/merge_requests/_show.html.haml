@@ -44,7 +44,7 @@
         = succeed '.' do
           = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
-    #resolve-count-app.line-resolve-all-container.prepend-top-default.append-bottom-default{ "v-cloak" => true }
+    #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
       %resolve-count{ "inline-template" => true }
         .line-resolve-all{ "v-show" => "discussionCount > 0",
           ":class" => "{ 'has-next-btn': resolved !== discussionCount }" }
