@@ -238,10 +238,14 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_branch_sha
+    return @target_branch_sha if defined?(@target_branch_sha)
+
     target_branch_head.try(:sha)
   end
 
   def source_branch_sha
+    return @source_branch_sha if defined?(@source_branch_sha)
+
     source_branch_head.try(:sha)
   end
 
