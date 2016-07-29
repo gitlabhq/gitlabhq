@@ -9,6 +9,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
     discussion.resolve!(current_user)
 
+    MergeRequests::AllDiscussionsResolvedService.new(project, current_user).execute(merge_request)
+
     render json: {
       resolved_by: discussion.resolved_by.try(:name),
       discussion_headline_html: view_to_html_string('discussions/_headline', discussion: discussion)

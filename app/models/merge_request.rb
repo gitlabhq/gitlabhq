@@ -401,6 +401,11 @@ class MergeRequest < ActiveRecord::Base
       discussions
   end
 
+  def discussions_resolved?
+    all_discussions = discussions
+    all_discussions.any?(&:resolvable?) && all_discussions.none?(&:to_be_resolved?)
+  end
+
   def hook_attrs
     attrs = {
       source: source_project.try(:hook_attrs),

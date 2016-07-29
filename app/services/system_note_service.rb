@@ -156,6 +156,12 @@ class SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
+  def self.resolve_all_discussions(merge_request, project, author)
+    body = "Resolved all discussions"
+
+    create_note(noteable: merge_request, project: project, author: author, note: body)
+  end
+
   # Called when the title of a Noteable is changed
   #
   # noteable  - Noteable object that responds to `title`
