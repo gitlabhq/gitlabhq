@@ -33,7 +33,7 @@ module Gitlab
                               committer: committer,
                               tree: new_tree,
                               message: commit_message,
-                              parents: [our_commit, their_commit],
+                              parents: [our_commit, their_commit].map(&:oid),
                               update_ref: Gitlab::Git::BRANCH_REF_PREFIX + merge_request.source_branch)
       end
 
