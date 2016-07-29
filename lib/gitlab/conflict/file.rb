@@ -35,23 +35,23 @@ module Gitlab
       end
 
       def resolve_lines(resolution)
-        current_section = nil
+        section_id = nil
 
         lines.map do |line|
           unless line.type
-            current_section = nil
+            section_id = nil
             next line
           end
 
-          current_section ||= resolution[line_code(line)]
+          section_id ||= line_code(line)
 
-          case current_section
+          case resolution[section_id]
           when 'ours'
             next unless line.type == 'new'
           when 'theirs'
             next unless line.type == 'old'
           else
-            raise MissingResolution
+            raise MissingResolution, "Missing resolution for section ID: #{section_id}"
           end
 
           line

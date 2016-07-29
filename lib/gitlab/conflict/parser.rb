@@ -1,10 +1,13 @@
 module Gitlab
   module Conflict
     class Parser
-      class UnexpectedDelimiter < StandardError
+      class ParserError < StandardError
       end
 
-      class MissingEndDelimiter < StandardError
+      class UnexpectedDelimiter < ParserError
+      end
+
+      class MissingEndDelimiter < ParserError
       end
 
       def parse(text, our_path:, their_path:, parent: nil)

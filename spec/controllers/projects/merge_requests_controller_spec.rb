@@ -530,8 +530,13 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'GET conflicts' do
-    context 'as JSON' do
+    let(:json_response) { JSON.parse(response.body) }
+
+    context 'when the conflicts cannot be resolved in the UI' do
       before do
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
             project_id: merge_request_with_conflicts.project.to_param,
@@ -539,7 +544,23 @@ describe Projects::MergeRequestsController do
             format: 'json'
       end
 
-      let(:json_response) { JSON.parse(response.body) }
+      it 'returns a 200 status code' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns JSON with a message' do
+        expect(json_response.keys).to contain_exactly('message')
+      end
+    end
+
+    context 'with valid conflicts' do
+      before do
+        get :conflicts,
+            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+            project_id: merge_request_with_conflicts.project.to_param,
+            id: merge_request_with_conflicts.iid,
+            format: 'json'
+      end
 
       it 'includes meta info about the MR' do
         expect(json_response['commit_message']).to include('Merge branch')
@@ -589,6 +610,9 @@ describe Projects::MergeRequestsController do
   end
 
   context 'POST resolve_conflicts' do
+    let(:json_response) { JSON.parse(response.body) }
+    let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
+
     def resolve_conflicts(params)
       post :resolve_conflicts,
            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -607,11 +631,30 @@ describe Projects::MergeRequestsController do
       end
 
       it 'creates a new commit on the branch' do
+        expect(original_head_sha).not_to eq(merge_request_with_conflicts.source_branch_head.sha)
         expect(merge_request_with_conflicts.source_branch_head.message).to include('Merge branch')
       end
 
       it 'redirects to the MR show page' do
         expect(response).to redirect_to([merge_request_with_conflicts.target_project.namespace.becomes(Namespace), merge_request_with_conflicts.target_project, merge_request_with_conflicts])
+      end
+    end
+
+    context 'when sections are missing' do
+      before do
+        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'ours')
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the name of the first missing section' do
+        expect(json_response['message']).to include('6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
       end
     end
   end

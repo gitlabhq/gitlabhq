@@ -139,15 +139,25 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         render 'show'
       end
 
-      format.json { render json: Gitlab::Conflict::FileCollection.new(@merge_request) }
+      format.json do
+        begin
+          render json: Gitlab::Conflict::FileCollection.new(@merge_request)
+        rescue Gitlab::Conflict::Parser::ParserError => e
+          render json: { message: 'Unable to resolve conflicts in the web interface for this merge request' }
+        end
+      end
     end
   end
 
   def resolve_conflicts
-    Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params[:merge_request], nil, user: current_user)
+    begin
+      Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params[:merge_request], nil, user: current_user)
 
-    redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-      notice: 'Merge conflicts resolved. The merge request can now be merged.'
+      redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
+                  notice: 'Merge conflicts resolved. The merge request can now be merged.'
+    rescue Gitlab::Conflict::File::MissingResolution => e
+      render status: :bad_request, json: { message: e.message }
+    end
   end
 
   def builds
