@@ -24,6 +24,3 @@
       = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
 
   = paginate @protected_branches, theme: 'gitlab'
-
-:javascript
-  new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);

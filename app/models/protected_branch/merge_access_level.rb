@@ -14,6 +14,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
 
   def check_access(user)
     return true if user.is_admin?
+
     project.team.max_member_access(user.id) >= access_level
   end
 
