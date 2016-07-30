@@ -5,6 +5,7 @@ v 8.10.3 (unreleased)
   - Fix timing problems running imports on production. !5523
   - Add a log message when a project is scheduled for destruction for debugging. !5540
   - Fix hooks missing on imported GitLab projects. !5549
+  - Properly abort a merge when merge conflicts occur. !5569
 
 v 8.10.2
   - User can now search branches by name. !5144
