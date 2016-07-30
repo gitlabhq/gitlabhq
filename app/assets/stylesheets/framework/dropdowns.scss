@@ -271,11 +271,14 @@
   }
 }
 
+.dropdown-menu-item-with-description,
 .dropdown-menu-user-link {
   padding-top: 10px;
   padding-bottom: 7px;
 }
 
+
+.dropdown-menu-item-header,
 .dropdown-menu-user-full-name {
   display: block;
   font-weight: 500;
@@ -283,8 +286,14 @@
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
+
+  &.dropdown-menu-note-template-header {
+    font-weight: 600;
+    padding-bottom: 4px;
+  }
 }
 
+.dropdown-menu-item-body,
 .dropdown-menu-user-username {
   display: block;
   line-height: 16px;

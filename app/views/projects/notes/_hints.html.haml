@@ -10,6 +10,7 @@
     - else
       is
     supported
-  %button.toolbar-button.markdown-selector{ type: 'button', tabindex: '-1' }
-    = icon('file-image-o', class: 'toolbar-button-icon')
-    Attach a file
+  - unless defined?(no_attachments)
+    %button.toolbar-button.markdown-selector{ type: 'button', tabindex: '-1' }
+      = icon('file-image-o', class: 'toolbar-button-icon')
+      Attach a file

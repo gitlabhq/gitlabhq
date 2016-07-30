@@ -1,5 +1,17 @@
 .md-area
   .md-header
+    - unless defined?(disable_note_templates)
+      .js-note-template-dropdown.dropdown
+        .dropdown-menu.dropdown-menu-large.dropdown-menu-align-right
+          = dropdown_title "Select note template"
+          = dropdown_filter "Search your note templates"
+          = dropdown_content
+          = dropdown_footer do
+            %ul.dropdown-footer-list
+              %li
+                = link_to "Create new note template", profile_note_templates_path
+          = dropdown_loading
+
     %ul.nav-links.clearfix
       %li.active
         %a.js-md-write-button{ href: "#md-write-holder", tabindex: -1 }
@@ -22,8 +34,12 @@
           = markdown_toolbar_button({ icon: "list-ul fw", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
           = markdown_toolbar_button({ icon: "list-ol fw", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
           = markdown_toolbar_button({ icon: "check-square-o fw", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
+          - unless defined?(disable_note_templates)
+            %button.toolbar-btn.js-note-template-btn.has-tooltip.hidden-xs{ type: "button", tabindex: -1, title: "Add a note template", data: { note_templates_url: profile_note_templates_path, target: '.js-note-template-dropdown', toggle: 'dropdown' } }
+              = icon("sticky-note fw")
+
         .toolbar-group
-          %button.toolbar-btn.js-zen-enter.has-tooltip.hidden-xs{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
+          %button.toolbar-btn.js-zen-enter.has-tooltip.hidden-xs{ type: "button", tabindex: -1, title: "Go full screen", data: { container: "body" } }
             = icon("arrows-alt fw")
 
   .md-write-holder

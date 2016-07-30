@@ -6,6 +6,7 @@ resource :profile, only: [:show, :update] do
     put :reset_private_token
     put :reset_incoming_email_token
     put :update_username
+    post :preview_markdown
   end
 
   scope module: :profiles do
@@ -15,6 +16,7 @@ resource :profile, only: [:show, :update] do
       end
     end
     resource :notifications, only: [:show, :update]
+    resources :note_templates, only: [:index, :edit, :update, :create, :destroy]
     resource :password, only: [:new, :create, :edit, :update] do
       member do
         put :reset

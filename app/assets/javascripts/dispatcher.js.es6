@@ -275,6 +275,10 @@
         case 'ci:lints:show':
           new gl.CILintEditor();
           break;
+        case 'profiles:note_templates:index':
+        case 'profiles:note_templates:edit':
+          new GLForm($('.js-note-template-form'));
+          break;
       }
       switch (path.first()) {
         case 'admin':
@@ -308,6 +312,7 @@
         case 'projects':
           new Project();
           new ProjectAvatar();
+          new gl.NoteTemplateDropdownsCreate();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

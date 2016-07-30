@@ -225,6 +225,12 @@ describe Profiles::AvatarsController, "routing" do
   end
 end
 
+describe Profiles::NoteTemplatesController, "routing" do
+  it "to #index" do
+    expect(get("/profile/note_templates")).to route_to('profiles/note_templates#index')
+  end
+end
+
 #                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests

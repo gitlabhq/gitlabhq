@@ -93,6 +93,7 @@ class User < ActiveRecord::Base
   has_many :todos,                    dependent: :destroy
   has_many :notification_settings,    dependent: :destroy
   has_many :award_emoji,              dependent: :destroy
+  has_many :note_templates,           dependent: :destroy
 
   #
   # Validations

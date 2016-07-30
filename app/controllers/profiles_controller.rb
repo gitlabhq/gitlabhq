@@ -54,6 +54,20 @@ class ProfilesController < Profiles::ApplicationController
     end
   end
 
+  def preview_markdown
+    text = params[:text]
+
+    ext = Gitlab::ReferenceExtractor.new(@project, current_user)
+    ext.analyze(text, author: current_user)
+
+    render json: {
+      body:       view_context.markdown(text),
+      references: {
+        users: ext.users.map(&:username)
+      }
+    }
+  end
+
   private
 
   def user

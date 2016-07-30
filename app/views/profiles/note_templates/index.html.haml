@@ -1,0 +1,29 @@
+- page_title "Note Templates"
+
+.row.prepend-top-default
+  .col-lg-3.profile-settings-sidebar
+    %h4.prepend-top-0
+      = page_title
+    %p Note templates can be used in issues, merge requests, and comments across GitLab.
+    %p They allow you to respond more quickly to common issues and questions.
+  .col-lg-9
+    %h5.prepend-top-0
+      Add a Note Template
+    = render "form", inline: true
+    %hr
+    %h5
+      Note Templates (#{@note_templates.size})
+    - if @note_templates.any?
+      %ul.content-list
+        - @note_templates.each do |note_template|
+          %li
+            .controls
+              = link_to 'Edit', edit_profile_note_template_path(note_template), class: "btn"
+              = link_to 'Delete', profile_note_template_path(note_template), data: { confirm: "Are you sure?"}, method: :delete, class: "btn btn-remove"
+            .title
+              = link_to note_template.title, edit_profile_note_template_path(note_template)
+            .description
+              %p= note_template.note
+    - else
+      %p.settings-message.text-center
+        You haven't created any note templates yet.

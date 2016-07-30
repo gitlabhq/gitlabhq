@@ -1,0 +1,45 @@
+- form_class = inline ? '' : 'form-horizontal' 
+- label_class = inline ? 'label-light' : 'control-label'
+- note_template_form_url = inline ? profile_note_templates_path : profile_note_template_path(@note_template)
+
+= form_for @note_template, url: note_template_form_url, html: { class: "#{form_class} common-note-form js-quick-submit js-requires-input js-note-template-form" } do |f|
+  .form-group
+    = f.label :title, 'Title', class: "#{label_class}"
+    - if inline
+      = f.text_field :title, class: "form-control", tabindex: 2, autofocus: true, required: true
+    - else
+      .col-sm-10
+        = f.text_field :title, class: "form-control", tabindex: 2, autofocus: true, required: true
+
+  .form-group.detail-page-description
+    = f.label :note, 'Note', class: "#{label_class}"
+    - if inline
+      = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true, disable_note_templates: true } do
+        = render 'projects/zen', f: f, attr: :note,
+                                 classes: 'note-textarea',
+                                 placeholder: "Write a note template",
+                                 no_attachments: true
+        = render 'projects/notes/hints', no_attachments: true
+        .clearfix
+        .error-alert
+    - else
+      .col-sm-10
+        = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true, disable_note_templates: true } do
+          = render 'projects/zen', f: f, attr: :note,
+                                   classes: 'note-textarea',
+                                   placeholder: "Write a note template",
+                                   no_attachments: true
+          = render 'projects/notes/hints', no_attachments: true
+          .clearfix
+          .error-alert
+
+  - if inline
+    .prepend-top-default
+      = f.submit 'Create note template', class: "btn btn-create", tabindex: 4
+  - else
+    .form-actions
+      = f.submit 'Save note template', class: "btn btn-create", tabindex: 4
+      = link_to 'Cancel', profile_note_templates_path, class: 'btn btn-cancel'
+
+:javascript
+  window.preview_markdown_path = "#{preview_markdown_profile_path}";

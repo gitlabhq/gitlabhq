@@ -19,7 +19,7 @@
       btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>";
       project_uploads_path = window.project_uploads_path || null;
       max_file_size = gon.max_file_size || 10;
-      form_textarea = $(form).find(".js-gfm-input");
+      form_textarea = $(form).find(".js-gfm-input:not(.js-gfm-input-no-attachments)");
       form_textarea.wrap("<div class=\"div-dropzone\"></div>");
       form_textarea.on('paste', (function(_this) {
         return function(event) {
