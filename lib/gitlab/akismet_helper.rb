@@ -17,10 +17,6 @@ module Gitlab
       env['HTTP_USER_AGENT']
     end
 
-    def check_for_spam?(project)
-      akismet_enabled? && project.public?
-    end
-
     def is_spam?(environment, user, text)
       client = akismet_client
       ip_address = client_ip(environment)
@@ -44,7 +40,7 @@ module Gitlab
       end
     end
 
-    def ham!(details, text, user)
+    def ham!(ip_address, user_agent, text, user)
       client = akismet_client
 
       params = {
@@ -55,7 +51,7 @@ module Gitlab
       }
 
       begin
-        client.submit_ham(details.ip_address, details.user_agent, params)
+        client.submit_ham(ip_address, user_agent, params)
       rescue => e
         Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
       end

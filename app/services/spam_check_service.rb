@@ -1,32 +1,33 @@
-class SpamCheckService < BaseService
-  attr_accessor :request, :api, :subject
+class SpamCheckService
+  attr_accessor :request, :api, :spammable
 
-  def execute(request, api, subject)
-    @request, @api, @subject = request, api, subject
-    return false unless request || subject.check_for_spam?(project)
-    return false unless subject.spam?(request.env, current_user)
+  def initialize(request, api, spammable)
+    @request, @api, @spammable = request, api, spammable
+  end
 
-    create_spam_log
-
-    true
+  def execute
+    if request && spammable.check_for_spam?
+      if spammable.spam_detected?(request.env)
+        create_spam_log
+      end
+    end
   end
 
   private
   
   def spam_log_attrs
     {
-      user_id: current_user.id,
-      project_id: project.id,
-      title: params[:title],
-      description: params[:description],
-      source_ip: subject.client_ip(request.env),
-      user_agent: subject.user_agent(request.env),
-      noteable_type: subject.class.to_s,
+      user_id: spammable.owner_id,
+      title: spammable.spam_title,
+      description: spammable.spam_description,
+      source_ip: spammable.client_ip(request.env),
+      user_agent: spammable.user_agent(request.env),
+      noteable_type: spammable.class.to_s,
       via_api: api
     }
   end
 
   def create_spam_log
-    CreateSpamLogService.new(project, current_user, spam_log_attrs).execute
+    SpamLog.create(spam_log_attrs)
   end
 end

@@ -14,4 +14,10 @@ class Admin::SpamLogsController < Admin::ApplicationController
       head :ok
     end
   end
+
+  def ham
+    spam_log = SpamLog.find(params[:id])
+
+    Gitlab::AkismetHelper.ham!(spam_log.source_ip, spam_log.user_agent, spam_log.description, spam_log.user)
+  end
 end

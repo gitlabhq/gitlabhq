@@ -265,4 +265,17 @@ class Issue < ActiveRecord::Base
   def overdue?
     due_date.try(:past?) || false
   end
+
+  # To allow polymorphism with Spammable
+  def check_for_spam?
+    super && project.public?
+  end
+
+  def spam_title
+    title
+  end
+
+  def spam_description
+    description
+  end
 end

@@ -274,7 +274,7 @@ describe Projects::IssuesController do
   describe 'POST #create' do
     context 'Akismet is enabled' do
       before do
-        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
+        allow_any_instance_of(Spammable).to receive(:check_for_spam?).and_return(true)
         allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
       end
 

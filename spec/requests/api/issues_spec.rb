@@ -531,7 +531,7 @@ describe API::API, api: true  do
 
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
+      allow_any_instance_of(Spammable).to receive(:check_for_spam?).and_return(true)
       allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
     end
 
@@ -554,7 +554,6 @@ describe API::API, api: true  do
       expect(spam_logs[0].description).to eq('content here')
       expect(spam_logs[0].user).to eq(user)
       expect(spam_logs[0].noteable_type).to eq('Issue')
-      expect(spam_logs[0].project_id).to eq(project.id)
     end
   end
 

@@ -160,7 +160,7 @@ module API
 
         issue = ::Issues::CreateService.new(project, current_user, attrs.merge(request: request, api: true)).execute
 
-        if issue.spam_detected?
+        if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
 

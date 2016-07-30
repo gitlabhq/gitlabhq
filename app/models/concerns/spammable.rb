@@ -28,26 +28,42 @@ module Spammable
     end
   end
 
-  def submit_ham
-    return unless akismet_enabled? && can_be_submitted?
-    ham!(user_agent_detail, spammable_text, creator)
-  end
-
   def submit_spam
     return unless akismet_enabled? && can_be_submitted?
-    spam!(user_agent_detail, spammable_text, creator)
+    spam!(user_agent_detail, spammable_text, owner)
   end
 
-  def spam?(env, user)
-    is_spam?(env, user, spammable_text)
+  def spam_detected?(env)
+    @spam = is_spam?(env, owner, spammable_text)
   end
 
-  def spam_detected?
+  def spam?
     @spam
   end
 
   def check_for_spam
-    self.errors.add(:base, "Your #{self.class.name.underscore} has been recognized as spam and has been discarded.") if spam_detected?
+    self.errors.add(:base, "Your #{self.class.name.underscore} has been recognized as spam and has been discarded.") if spam?
+  end
+
+  def owner_id
+    if self.respond_to?(:author_id)
+      self.author_id
+    elsif self.respond_to?(:creator_id)
+      self.creator_id
+    end
+  end
+
+  # Override this method if an additional check is needed before calling Akismet
+  def check_for_spam?
+    akismet_enabled?
+  end
+
+  def spam_title
+    raise 'Implement in included model!'
+  end
+
+  def spam_description
+    raise 'Implement in included model!'
   end
 
   private
@@ -60,11 +76,7 @@ module Spammable
     result.reject(&:blank?).join("\n")
   end
 
-  def creator
-    if self.author_id
-      User.find(self.author_id)
-    elsif self.creator_id
-      User.find(self.creator_id)
-    end
+  def owner
+    User.find(owner_id)
   end
 end

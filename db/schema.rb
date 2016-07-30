@@ -926,7 +926,6 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.string   "source_ip"
     t.string   "user_agent"
     t.boolean  "via_api"
-    t.integer  "project_id"
     t.string   "noteable_type"
     t.string   "title"
     t.text     "description"

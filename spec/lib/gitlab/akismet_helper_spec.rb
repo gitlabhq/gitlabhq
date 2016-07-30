@@ -10,17 +10,6 @@ describe Gitlab::AkismetHelper, type: :helper do
     allow_any_instance_of(ApplicationSetting).to receive(:akismet_api_key).and_return('12345')
   end
 
-  describe '#check_for_spam?' do
-    it 'returns true for public project' do
-      expect(helper.check_for_spam?(project)).to eq(true)
-    end
-
-    it 'returns false for private project' do
-      project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
-      expect(helper.check_for_spam?(project)).to eq(false)
-    end
-  end
-
   describe '#is_spam?' do
     it 'returns true for spam' do
       environment = {
