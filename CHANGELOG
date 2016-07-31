@@ -29,6 +29,7 @@ v 8.11.0 (unreleased)
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Bump gitlab_git to speedup DiffCollection iterations
+  - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
