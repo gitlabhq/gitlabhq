@@ -67,8 +67,10 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
             }
           }
           else {
-            file.parallelLines.left.push({ lineType: 'context', lineNumber: line.old_line, richText: line.rich_text });
-            file.parallelLines.right.push({ lineType: 'context', lineNumber: line.new_line, richText: line.rich_text });
+            const lineType = line.type || 'context';
+            const hasMatch = line.type === 'match';
+            file.parallelLines.left.push({ lineType, hasMatch, lineNumber: line.old_line, richText: line.rich_text });
+            file.parallelLines.right.push({ lineType, hasMatch, lineNumber: line.new_line, richText: line.rich_text });
           }
         });
       });
