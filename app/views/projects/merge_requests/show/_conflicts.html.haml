@@ -28,7 +28,7 @@
       .file-title
         %span {{file.new_path}}
         .file-actions
-          %a.btn.btn-sm View file @{{conflictsData.shortCommitShab}}
+          %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
 
       .diff-content.diff-wrap-lines
         .diff-wrap-lines.code.file-content.js-syntax-highlight.white
@@ -37,6 +37,7 @@
               ":class" => "{ |
                 'head': line.isHead, |
                 'origin': line.isOrigin, |
+                'match': line.hasMatch, |
                 'selected': line.isSelected, |
                 'unselected': line.isUnselected }"}
 
@@ -66,16 +67,17 @@
               ":class" => "{ |
                 'head': line.isHead, |
                 'origin': line.isOrigin, |
+                'match': line.hasMatch, |
                 'selected': line.isSelected, |
                 'unselected': line.isUnselected }"}
 
               %template{"v-if" => "!line.isHeader"}
-                %td.diff-line-num.old_line
-                  %a {{line.old_line}}
                 %td.diff-line-num.new_line
                   %a {{line.new_line}}
+                %td.diff-line-num.old_line
+                  %a {{line.old_line}}
                 %td.line_content
-                  {{{line.rich_text}}}
+                  {{{line.richText}}}
 
               %template{"v-if" => "line.isHeader"}
                 %td.diff-line-num.header
