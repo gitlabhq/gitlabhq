@@ -32,7 +32,7 @@
 :javascript
   $.ajax({
     type: "GET",
-    url: "#{namespace_project_graph_path(@project.namespace, @project, current_ref, :json)}",
+    url: "#{namespace_project_graph_path(@project.namespace, @project, current_ref, format: :json)}",
     dataType: "json",
     success: function (data) {
       var graph = new ContributorsStatGraph();

@@ -34,6 +34,7 @@ v 8.11.0 (unreleased)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
