@@ -56,21 +56,19 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
         lines.forEach( (line) => {
           const { type } = line;
+
           if (conflict) {
             if (type === 'old') {
-              line = { lineType: 'conflict', hasConflict: true, lineNumber: line.old_line, richText: line.rich_text, section: 'head', id, isSelected: false, isUnselected: false, isOrigin: true }
-              file.parallelLines.left.push(line);
+              file.parallelLines.left.push(this.getLineForParallelView(line, id, 'conflict'));
             }
             else if (type === 'new') {
-              line = { lineType: 'conflict', hasConflict: true, lineNumber: line.new_line, richText: line.rich_text, section: 'origin', id, isSelected: false, isUnselected: false, isHead: true }
-              file.parallelLines.right.push(line);
+              file.parallelLines.right.push(this.getLineForParallelView(line, id, 'conflict', true));
             }
           }
           else {
-            const lineType = line.type || 'context';
-            const hasMatch = line.type === 'match';
-            file.parallelLines.left.push({ lineType, hasMatch, lineNumber: line.old_line, richText: line.rich_text });
-            file.parallelLines.right.push({ lineType, hasMatch, lineNumber: line.new_line, richText: line.rich_text });
+            const lineType = type || 'context';
+            file.parallelLines.left.push (this.getLineForParallelView(line, id, lineType));
+            file.parallelLines.right.push(this.getLineForParallelView(line, id, lineType));
           }
         });
       });
@@ -200,6 +198,25 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     line.richText     = line.rich_text;
     line.isSelected   = false;
     line.isUnselected = false;
+  }
+
+  getLineForParallelView(line, id, lineType, isHead) {
+    const { old_line, new_line, rich_text } = line;
+    const hasConflict = lineType === 'conflict';
+
+    return {
+      id,
+      lineType,
+      hasConflict,
+      isHead: hasConflict && isHead,
+      isOrigin: hasConflict && !isHead,
+      hasMatch: lineType === 'match',
+      lineNumber: isHead ? new_line : old_line,
+      section: isHead ? 'head' : 'origin',
+      richText: rich_text,
+      isSelected: false,
+      isUnselected: false
+    }
   }
 
 
