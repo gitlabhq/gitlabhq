@@ -6,6 +6,10 @@ describe List do
     it { is_expected.to belong_to(:label) }
   end
 
+  describe 'delegate methods' do
+    it { is_expected.to delegate_method(:name).to(:label).with_prefix }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:board) }
     it { is_expected.to validate_presence_of(:label) }
@@ -25,6 +29,26 @@ describe List do
 
       it { is_expected.not_to validate_presence_of(:label) }
       it { is_expected.not_to validate_presence_of(:position) }
+    end
+  end
+  describe '#title' do
+    it 'returns label name when list_type is set to label' do
+      subject.list_type = :label
+      subject.label = Label.new(name: 'Development')
+
+      expect(subject.title).to eq 'Development'
+    end
+
+    it 'returns Backlog when list_type is set to backlog' do
+      subject.list_type = :backlog
+
+      expect(subject.title).to eq 'Backlog'
+    end
+
+    it 'returns Done when list_type is set to done' do
+      subject.list_type = :done
+
+      expect(subject.title).to eq 'Done'
     end
   end
 end
