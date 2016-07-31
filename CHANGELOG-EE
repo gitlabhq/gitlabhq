@@ -5,6 +5,10 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
+v 8.10.4 (unreleased)
+  - Fix available users in userselect dropdown when there is more than one userselect on the page (Rik de Groot). !604
+  - Fix updating skipped approvers in search list on removal (Rik de Groot). !604
+
 v 8.10.3
   - Fix regression in Git Annex permission check. !599
   - [Elastic] Fix commit search for some URLs. !605
