@@ -31,6 +31,27 @@ describe List do
       it { is_expected.not_to validate_presence_of(:position) }
     end
   end
+
+  describe '#destroy' do
+    it 'can be destroyed when when list_type is set to label' do
+      subject = create(:label_list)
+
+      expect(subject.destroy).to be_truthy
+    end
+
+    it 'can not be destroyed when list_type is set to backlog' do
+      subject = create(:backlog_list)
+
+      expect(subject.destroy).to be_falsey
+    end
+
+    it 'can not be destroyed when when list_type is set to done' do
+      subject = create(:done_list)
+
+      expect(subject.destroy).to be_falsey
+    end
+  end
+
   describe '#title' do
     it 'returns label name when list_type is set to label' do
       subject.list_type = :label

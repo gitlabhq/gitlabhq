@@ -10,7 +10,15 @@ class List < ActiveRecord::Base
 
   delegate :name, to: :label, allow_nil: true, prefix: true
 
+  before_destroy :can_be_destroyed, unless: :label?
+
   def title
     label? ? label_name : list_type.humanize
+  end
+
+  private
+
+  def can_be_destroyed
+    false
   end
 end
