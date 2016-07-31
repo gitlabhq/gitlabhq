@@ -47,6 +47,12 @@ describe 'trusted_proxies', lib: true do
       expect(request.remote_ip).to eq('1.1.1.1')
       expect(request.ip).to eq('1.1.1.1')
     end
+
+    it 'handles invalid ip addresses' do
+      request = stub_request('HTTP_X_FORWARDED_FOR' => '(null), 1.1.1.1:12345, 1.1.1.1')
+      expect(request.remote_ip).to eq('1.1.1.1')
+      expect(request.ip).to eq('1.1.1.1')
+    end
   end
 
   def stub_request(headers = {})
