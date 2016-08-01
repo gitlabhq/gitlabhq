@@ -46,6 +46,7 @@ v 8.10.3 (unreleased)
   - Properly abort a merge when merge conflicts occur
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured.
   - Fix Import/Export issue importing milestones and labels not associated properly
+  - Trim extra displayed carriage returns in diffs and files with CRLFs
 
 v 8.10.2
   - User can now search branches by name. !5144
