@@ -97,5 +97,39 @@ describe Projects::BoardListsController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'with valid list id' do
+      let!(:planning) { create(:list, board: project.board, position: 1) }
+
+      it 'returns a successful 200 response' do
+        delete :destroy, namespace_id: project.namespace.to_param,
+                         project_id: project.to_param,
+                         id: planning.to_param,
+                         format: :json
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'removes list from board' do
+        expect do
+          delete :destroy, namespace_id: project.namespace.to_param,
+                           project_id: project.to_param,
+                           id: planning.to_param,
+                           format: :json
+        end.to change(project.board.lists, :size).by(-1)
+      end
+    end
+
+    context 'with invalid list id' do
+      it 'returns a not found 404 response' do
+        delete :destroy, namespace_id: project.namespace.to_param,
+                         project_id: project.to_param,
+                         id: 999,
+                         format: :json
+
+        expect(response).to have_http_status(404)
+      end
+    end
   end
 end

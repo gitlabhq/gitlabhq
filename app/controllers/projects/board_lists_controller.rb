@@ -25,6 +25,18 @@ class Projects::BoardListsController < Projects::ApplicationController
     end
   end
 
+  def destroy
+    service = Boards::Lists::DestroyService.new(project, params)
+
+    respond_to do |format|
+      if service.execute
+        format.json { head :ok }
+      else
+        format.json { head :unprocessable_entity }
+      end
+    end
+  end
+
   private
 
   def record_not_found(exception)
