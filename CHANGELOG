@@ -13,6 +13,7 @@ v 8.11.0 (unreleased)
   - Environments have an url to link to
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
+  - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Retrieve rendered HTML from cache in one request
