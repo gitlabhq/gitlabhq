@@ -28,13 +28,34 @@
     }
 
     toggleResolveForDiscussion(namespace, mergeRequestId, discussionId) {
-      const isResolved = CommentsStore.state[discussionId].isResolved();
+      const discussion = CommentsStore.state[discussionId],
+            isResolved = discussion.isResolved();
+      let promise;
 
       if (isResolved) {
-        return this.unResolveAll(namespace, mergeRequestId, discussionId);
+        promise = this.unResolveAll(namespace, mergeRequestId, discussionId);
       } else {
-        return this.resolveAll(namespace, mergeRequestId, discussionId);
+        promise = this.resolveAll(namespace, mergeRequestId, discussionId);
       }
+
+      promise.then((response) => {
+        discussion.loading = false;
+
+        if (response.status === 200) {
+          const data = response.json();
+          const resolved_by = data ? data.resolved_by : null;
+
+          if (isResolved) {
+            discussion.unResolveAllNotes();
+          } else {
+            discussion.resolveAllNotes(resolved_by);
+          }
+
+          discussion.updateHeadline(data);
+        } else {
+          new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
+        }
+      })
     }
 
     resolveAll(namespace, mergeRequestId, discussionId) {
@@ -51,18 +72,7 @@
       return this.discussionResource.save({
         mergeRequestId,
         discussionId
-      }, {}).then((response) => {
-        if (response.status === 200) {
-          const data = response.json();
-          const resolved_by = data ? data.resolved_by : null;
-          discussion.resolveAllNotes(resolved_by);
-          discussion.loading = false;
-
-          this.updateDiscussionHeadline(discussionId, data);
-        } else {
-          new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
-        }
-      });
+      }, {});
     }
 
     unResolveAll(namespace, mergeRequestId, discussionId) {
@@ -76,31 +86,7 @@
       return this.discussionResource.delete({
         mergeRequestId,
         discussionId
-      }, {}).then((response) => {
-        if (response.status === 200) {
-          const data = response.json();
-          discussion.unResolveAllNotes();
-          discussion.loading = false;
-
-          this.updateDiscussionHeadline(discussionId, data);
-        } else {
-          new Flash('An error occurred when trying to unresolve a discussion. Please try again.', 'alert');
-        }
-      });
-    }
-
-    updateDiscussionHeadline(discussionId, data) {
-      const $discussionHeadline = $(`.discussion[data-discussion-id="${discussionId}"] .js-discussion-headline`);
-
-      if (data.discussion_headline_html) {
-        if ($discussionHeadline.length) {
-          $discussionHeadline.replaceWith(data.discussion_headline_html);
-        } else {
-          $(`.discussion[data-discussion-id="${discussionId}"] .discussion-header`).append(data.discussion_headline_html);
-        }
-      } else {
-         $discussionHeadline.remove();
-      }
+      }, {});
     }
   }
 

@@ -53,4 +53,18 @@ class DiscussionModel {
       }
     }
   }
+
+  updateHeadline (data) {
+    const $discussionHeadline = $(`.discussion[data-discussion-id="${this.id}"] .js-discussion-headline`);
+
+    if (data.discussion_headline_html) {
+      if ($discussionHeadline.length) {
+        $discussionHeadline.replaceWith(data.discussion_headline_html);
+      } else {
+        $(`.discussion[data-discussion-id="${this.id}"] .discussion-header`).append(data.discussion_headline_html);
+      }
+    } else {
+       $discussionHeadline.remove();
+    }
+  }
 }

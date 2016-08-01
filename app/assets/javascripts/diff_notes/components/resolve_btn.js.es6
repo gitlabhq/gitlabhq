@@ -25,6 +25,9 @@
       }
     },
     computed: {
+      discussion: function () {
+        return this.discussions[this.discussionId];
+      },
       note: function () {
         return CommentsStore.get(this.discussionId, this.noteId);
       },
@@ -63,14 +66,14 @@
         }
 
         promise.then((response) => {
-          const data = response.json();
           this.loading = false;
 
           if (response.status === 200) {
+            const data = response.json();
             const resolved_by = data ? data.resolved_by : null;
 
             CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
-            ResolveService.updateDiscussionHeadline(this.discussionId, data);
+            this.discussion.updateHeadline(data);
           } else {
             new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
           }
