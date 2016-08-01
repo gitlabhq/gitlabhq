@@ -21,7 +21,7 @@ module Boards
       attr_reader :board, :params
 
       def list
-        @list ||= board.lists.find(params[:list_id])
+        @list ||= board.lists.find(params[:id])
       end
 
       def valid_move?

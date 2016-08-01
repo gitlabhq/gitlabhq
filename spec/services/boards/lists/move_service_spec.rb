@@ -14,7 +14,7 @@ describe Boards::Lists::MoveService, services: true do
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do
-        service = described_class.new(project, { list_id: planning.id, position: nil })
+        service = described_class.new(project, { id: planning.id, position: nil })
 
         service.execute
 
@@ -22,7 +22,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'keeps position of lists when new positon is equal to old position' do
-        service = described_class.new(project, { list_id: planning.id, position: 1 })
+        service = described_class.new(project, { id: planning.id, position: 1 })
 
         service.execute
 
@@ -30,7 +30,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'keeps position of lists when new positon is negative' do
-        service = described_class.new(project, { list_id: planning.id, position: -1 })
+        service = described_class.new(project, { id: planning.id, position: -1 })
 
         service.execute
 
@@ -38,7 +38,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'keeps position of lists when new positon is greater than number of labels lists' do
-        service = described_class.new(project, { list_id: planning.id, position: 6 })
+        service = described_class.new(project, { id: planning.id, position: 6 })
 
         service.execute
 
@@ -46,7 +46,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'increments position of intermediate lists when new positon is equal to first position' do
-        service = described_class.new(project, { list_id: staging.id, position: 1 })
+        service = described_class.new(project, { id: staging.id, position: 1 })
 
         service.execute
 
@@ -54,7 +54,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'decrements position of intermediate lists when new positon is equal to last position' do
-        service = described_class.new(project, { list_id: planning.id, position: 4 })
+        service = described_class.new(project, { id: planning.id, position: 4 })
 
         service.execute
 
@@ -62,7 +62,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'decrements position of intermediate lists when new position is greater than old position' do
-        service = described_class.new(project, { list_id: planning.id, position: 3 })
+        service = described_class.new(project, { id: planning.id, position: 3 })
 
         service.execute
 
@@ -70,7 +70,7 @@ describe Boards::Lists::MoveService, services: true do
       end
 
       it 'increments position of intermediate lists when new position is lower than old position' do
-        service = described_class.new(project, { list_id: staging.id, position: 2 })
+        service = described_class.new(project, { id: staging.id, position: 2 })
 
         service.execute
 
@@ -79,7 +79,7 @@ describe Boards::Lists::MoveService, services: true do
     end
 
     it 'keeps position of lists when list type is backlog' do
-      service = described_class.new(project, { list_id: backlog.id, position: 2 })
+      service = described_class.new(project, { id: backlog.id, position: 2 })
 
       service.execute
 
@@ -87,7 +87,7 @@ describe Boards::Lists::MoveService, services: true do
     end
 
     it 'keeps position of lists when list type is done' do
-      service = described_class.new(project, { list_id: done.id, position: 2 })
+      service = described_class.new(project, { id: done.id, position: 2 })
 
       service.execute
 
