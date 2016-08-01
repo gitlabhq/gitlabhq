@@ -67,12 +67,35 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
           }
           else {
             const lineType = type || 'context';
+
             file.parallelLines.left.push (this.getLineForParallelView(line, id, lineType));
-            file.parallelLines.right.push(this.getLineForParallelView(line, id, lineType));
+            file.parallelLines.right.push(this.getLineForParallelView(line, id, lineType, true));
           }
         });
+
+        this.checkLineLengths(file);
       });
     });
+  }
+
+
+  checkLineLengths(file) {
+    let { left, right } = file.parallelLines;
+
+    if (left.length !== right.length) {
+      if (left.length > right.length) {
+        const diff = left.length - right.length;
+        for (let i = 0; i < diff; i++) {
+          file.parallelLines.right.push({ lineType: 'emptyLine', richText: '' });
+        }
+      }
+      else {
+        const diff = right.length - left.length;
+        for (let i = 0; i < diff; i++) {
+          file.parallelLines.left.push({ lineType: 'emptyLine', richText: '' });
+        }
+      }
+    }
   }
 
 
@@ -208,14 +231,14 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
       id,
       lineType,
       hasConflict,
-      isHead: hasConflict && isHead,
-      isOrigin: hasConflict && !isHead,
-      hasMatch: lineType === 'match',
-      lineNumber: isHead ? new_line : old_line,
-      section: isHead ? 'head' : 'origin',
-      richText: rich_text,
-      isSelected: false,
-      isUnselected: false
+      isHead       : hasConflict && isHead,
+      isOrigin     : hasConflict && !isHead,
+      hasMatch     : lineType === 'match',
+      lineNumber   : isHead ? new_line : old_line,
+      section      : isHead ? 'head' : 'origin',
+      richText     : rich_text,
+      isSelected   : false,
+      isUnselected : false
     }
   }
 

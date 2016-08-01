@@ -1,10 +1,12 @@
 //= require lib/vue
 
 window.MergeConflictResolver = class MergeConflictResolver {
+
   constructor() {
     this.dataProvider = new MergeConflictDataProvider()
     this.initVue()
   }
+
 
   initVue() {
     const that = this;
