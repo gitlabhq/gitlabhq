@@ -46,4 +46,56 @@ describe Projects::BoardListsController do
       end
     end
   end
+
+  describe 'PATCH #update' do
+    let!(:planning)    { create(:list, board: project.board, position: 1) }
+    let!(:development) { create(:list, board: project.board, position: 2) }
+
+    context 'with valid position' do
+      it 'returns a successful 200 response' do
+        patch :update, namespace_id: project.namespace.to_param,
+                       project_id: project.to_param,
+                       id: planning.to_param,
+                       list: { position: 2 },
+                       format: :json
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'moves the list to the desired position' do
+        patch :update, namespace_id: project.namespace.to_param,
+                       project_id: project.to_param,
+                       id: planning.to_param,
+                       list: { position: 2 },
+                       format: :json
+
+        expect(planning.reload.position).to eq 2
+      end
+    end
+
+    context 'with invalid position' do
+      it 'returns a unprocessable entity 422 response' do
+        patch :update, namespace_id: project.namespace.to_param,
+                       project_id: project.to_param,
+                       id: planning.to_param,
+                       list: { position: 6 },
+                       format: :json
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    context 'with invalid list id' do
+      it 'returns a not found 404 response' do
+        patch :update, namespace_id: project.namespace.to_param,
+                       project_id: project.to_param,
+                       id: 999,
+                       list: { position: 2 },
+                       format: :json
+
+        expect(response).to have_http_status(404)
+      end
+    end
+  end
+  end
 end
