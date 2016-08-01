@@ -23,6 +23,10 @@ $(() => {
 
         return $li.append($a.prepend($labelColor));
       },
+			search: {
+				fields: ['title']
+			},
+			filterable: true,
       selectable: true,
       clicked: (label, $el, e) => {
         e.preventDefault();

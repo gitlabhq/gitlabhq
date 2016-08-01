@@ -1,11 +1,14 @@
 - title = local_assigns.fetch(:title, 'Assign labels')
 - show_create = local_assigns.fetch(:show_create, true)
 - show_footer = local_assigns.fetch(:show_footer, true)
-- show_title = local_assigns.fetch(:show_title, true)
 - filter_placeholder = local_assigns.fetch(:filter_placeholder, 'Search labels')
+- show_boards_content = local_assigns.fetch(:show_boards_content, false)
 .dropdown-page-one
-  - if show_title
-    = dropdown_title(title)
+  = dropdown_title(title)
+  - if show_boards_content
+    .issue-board-dropdown-content
+      %p
+        Add a list to issue boards by selecting a label below. The list will automatically be populated with issues that have that label. To create a list for a label that doesn't exist yet, simply create the label below.
   = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if @project && show_footer

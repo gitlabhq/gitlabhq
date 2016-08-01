@@ -34,11 +34,7 @@
               %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path } }
                 Create new list
               .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new
-                = dropdown_title("Create a new list")
-                .issue-board-dropdown-content
-                  %p
-                    Add a list to issue boards by selecting a label below. The list will automatically be populated with issues that have that label. To create a list for a label that doesn't exist yet, simply create the label below.
-                = render partial: "shared/issuable/label_page_default", locals: { show_title: false, show_footer: true, show_create: true }
+                = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
                 - if can?(current_user, :admin_label, @project)
                   = render partial: "shared/issuable/label_page_create"
                 = dropdown_loading
