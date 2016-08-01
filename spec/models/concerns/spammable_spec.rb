@@ -45,10 +45,11 @@ describe Issue, 'Spammable' do
 
   describe 'AkismetMethods' do
     before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive_messages(is_spam?: true, spam!: nil)
+      allow_any_instance_of(Gitlab::AkismetHelper).to receive_messages(is_spam?: true, spam!: true, akismet_enabled?: true)
+      allow_any_instance_of(Spammable).to receive(:can_be_submitted?).and_return(true)
     end
 
     it { expect(issue.spam_detected?(:mock_env)).to be_truthy }
-    it { expect(issue.submit_spam).to be_nil }
+    it { expect(issue.submit_spam).to be_truthy }
   end
 end

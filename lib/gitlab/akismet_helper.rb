@@ -52,8 +52,10 @@ module Gitlab
 
       begin
         client.submit_ham(ip_address, user_agent, params)
+        true
       rescue => e
         Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+        false
       end
     end
 
@@ -69,8 +71,10 @@ module Gitlab
 
       begin
         client.submit_spam(details.ip_address, details.user_agent, params)
+        true
       rescue => e
         Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
+        false
       end
     end
   end

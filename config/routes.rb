@@ -252,7 +252,11 @@ Rails.application.routes.draw do
     resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
-    resources :spam_logs, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy] do
+      member do
+        post :mark_as_ham
+      end
+    end
 
     resources :applications
 

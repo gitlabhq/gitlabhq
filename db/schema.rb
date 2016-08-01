@@ -931,6 +931,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.text     "description"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.boolean  "submitted_as_ham", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|

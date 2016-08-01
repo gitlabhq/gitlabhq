@@ -1,4 +1,6 @@
 class Admin::SpamLogsController < Admin::ApplicationController
+  include Gitlab::AkismetHelper
+
   def index
     @spam_logs = SpamLog.order(id: :desc).page(params[:page])
   end
@@ -15,9 +17,14 @@ class Admin::SpamLogsController < Admin::ApplicationController
     end
   end
 
-  def ham
+  def mark_as_ham
     spam_log = SpamLog.find(params[:id])
 
-    Gitlab::AkismetHelper.ham!(spam_log.source_ip, spam_log.user_agent, spam_log.description, spam_log.user)
+    if ham!(spam_log.source_ip, spam_log.user_agent, spam_log.text, spam_log.user)
+      spam_log.update_attribute(:submitted_as_ham, true)
+      redirect_to admin_spam_logs_path, notice: 'Spam log successfully submitted as ham.'
+    else
+      redirect_to admin_spam_logs_path, notice: 'Error with Akismet. Please check the logs for more info.'
+    end
   end
 end
