@@ -1253,6 +1253,16 @@ class Project < ActiveRecord::Base
       authorized_for_user_by_shared_projects?(user, min_access_level)
   end
 
+  def append_or_update_attribute(name, value)
+    old_values = public_send(name.to_s)
+
+    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
+      update_attribute(name, old_values + value)
+    else
+      update_attribute(name, value)
+    end
+  end
+
   private
 
   def authorized_for_user_by_group?(user, min_access_level)

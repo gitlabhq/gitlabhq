@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     extend self
 
-    VERSION = '0.1.2'
+    VERSION = '0.1.3'
     FILENAME_LIMIT = 50
 
     def export_path(relative_path:)
