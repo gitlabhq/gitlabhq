@@ -12,23 +12,19 @@
       - statuses.each do |build_status|
         - builds.select{|build| build.status == build_status}.each do |build|
           %li{class: ('active' if build == @build) }
-            = link_to namespace_project_build_path(@project.namespace, @project, build) do
+            = link_to namespace_project_build_path(@project.namespace, @project, build), class: 'build-job' do
               = ci_icon_for_status(build.status)
               %span
                 - if build.name
                   = build.name
                 - else
                   = build.id
-
-      - builds.select{|build| build.status == "success"}.each do |build|
-        %li{class: ('active' if build == @build) }
-          = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = ci_icon_for_status(build.status)
-            %span
-              - if build.name
-                = build.name
-              - else
-                = build.id
+    .dropdown
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span Test Name
+        = icon('chevron-down')
+      %ul.dropdown-menu.overflow-jobs
+        %li
 
       - if @build.retried?
         %li.active

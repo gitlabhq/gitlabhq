@@ -20,6 +20,7 @@
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       this.updateArtifactRemoveDate();
+      this.displayTestStatuses();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
         this.initScrollButtonAffix();
@@ -130,6 +131,16 @@
         date = $date.text();
         return $date.text($.timefor(new Date(date.replace(/-/g, '/')), ' '));
       }
+    };
+
+    Build.prototype.displayTestStatuses = function() {
+      $jobTopPosition = $('.build-job').first().offset().top;
+
+      $('.build-job').each(function() {
+        if ($(this).offset().top > $jobTopPosition) {
+          $('.overflow-jobs > li').append($(this));
+        }
+      })
     };
 
     return Build;
