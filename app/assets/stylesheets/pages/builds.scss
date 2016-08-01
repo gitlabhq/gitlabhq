@@ -60,6 +60,18 @@
       top: 2px;
       margin-right: 3px;
     }
+
+    .build-job {
+      a {
+        color: $gl-text-color;
+      }
+
+      &.active {
+        a {
+          font-weight: bold;
+        }
+      }
+    }
   }
 
   .overflow-jobs-dropdown {
@@ -69,6 +81,12 @@
     .dropdown-menu-toggle {
       width: auto;
       border: none;
+    }
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
     }
   }
 }
