@@ -59,8 +59,11 @@ module Gitlab
       end
 
       def highlight_lines!
-        their_highlight = Gitlab::Highlight.highlight_lines(repository, their_ref, their_path)
-        our_highlight = Gitlab::Highlight.highlight_lines(repository, our_ref, our_path)
+        their_file = lines.reject { |line| line.type == 'new' }.map(&:text).join("\n")
+        our_file = lines.reject { |line| line.type == 'old' }.map(&:text).join("\n")
+
+        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, repository: repository).lines.map(&:html_safe)
+        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines.map(&:html_safe)
 
         lines.each do |line|
           if line.type == 'old'
