@@ -20,6 +20,7 @@ v 8.11.0 (unreleased)
   - Optimize checking if a user has read access to a list of issues !5370
   - Nokogiri's various parsing methods are now instrumented
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
+  - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
