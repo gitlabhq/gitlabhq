@@ -73,13 +73,13 @@ describe Key, models: true do
   end
 
   context 'callbacks' do
-    it 'should add new key to authorized_file' do
+    it 'adds new key to authorized_file' do
       @key = build(:personal_key, id: 7)
       expect(GitlabShellWorker).to receive(:perform_async).with(:add_key, @key.shell_id, @key.key)
       @key.save
     end
 
-    it 'should remove key from authorized_file' do
+    it 'removes key from authorized_file' do
       @key = create(:personal_key)
       expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, @key.shell_id, @key.key)
       @key.destroy

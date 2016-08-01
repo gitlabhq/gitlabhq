@@ -46,13 +46,13 @@ describe DiffHelper do
       expect(diff_options).to include(no_collapse: true)
     end
 
-    it 'should return paths if action name diff_for_path and param old path' do
+    it 'returns paths if action name diff_for_path and param old path' do
       allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')
     end
 
-    it 'should return paths if action name diff_for_path and param new path' do
+    it 'returns paths if action name diff_for_path and param new path' do
       allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')

@@ -188,12 +188,12 @@ describe MergeRequest, models: true do
       create(:note, noteable: merge_request, project: merge_request.project)
     end
 
-    it "should include notes for commits" do
+    it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
 
-    it "should include notes for commits from target project as well" do
+    it "includes notes for commits from target project as well" do
       create(:note_on_commit, commit_id: merge_request.commits.first.id,
                               project: merge_request.target_project)
 
@@ -304,7 +304,7 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
-    it "cant remove a root ref" do
+    it "can't remove a root ref" do
       subject.source_branch = "master"
       subject.target_branch = "feature"
 

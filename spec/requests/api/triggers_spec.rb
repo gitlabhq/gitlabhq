@@ -27,17 +27,17 @@ describe API::API do
     end
 
     context 'Handles errors' do
-      it 'should return bad request if token is missing' do
+      it 'returns bad request if token is missing' do
         post api("/projects/#{project.id}/trigger/builds"), ref: 'master'
         expect(response).to have_http_status(400)
       end
 
-      it 'should return not found if project is not found' do
+      it 'returns not found if project is not found' do
         post api('/projects/0/trigger/builds'), options.merge(ref: 'master')
         expect(response).to have_http_status(404)
       end
 
-      it 'should return unauthorized if token is for different project' do
+      it 'returns unauthorized if token is for different project' do
         post api("/projects/#{project2.id}/trigger/builds"), options.merge(ref: 'master')
         expect(response).to have_http_status(401)
       end
@@ -46,14 +46,14 @@ describe API::API do
     context 'Have a commit' do
       let(:pipeline) { project.pipelines.last }
 
-      it 'should create builds' do
+      it 'creates builds' do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'master')
         expect(response).to have_http_status(201)
         pipeline.builds.reload
         expect(pipeline.builds.size).to eq(2)
       end
 
-      it 'should return bad request with no builds created if there\'s no commit for that ref' do
+      it 'returns bad request with no builds created if there\'s no commit for that ref' do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'other-branch')
         expect(response).to have_http_status(400)
         expect(json_response['message']).to eq('No builds created')
@@ -64,19 +64,19 @@ describe API::API do
           { 'TRIGGER_KEY' => 'TRIGGER_VALUE' }
         end
 
-        it 'should validate variables to be a hash' do
+        it 'validates variables to be a hash' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: 'value', ref: 'master')
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a hash')
         end
 
-        it 'should validate variables needs to be a map of key-valued strings' do
+        it 'validates variables needs to be a map of key-valued strings' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w(1 2) }, ref: 'master')
           expect(response).to have_http_status(400)
           expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
         end
 
-        it 'create trigger request with variables' do
+        it 'creates trigger request with variables' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: variables, ref: 'master')
           expect(response).to have_http_status(201)
           pipeline.builds.reload
@@ -88,7 +88,7 @@ describe API::API do
 
   describe 'GET /projects/:id/triggers' do
     context 'authenticated user with valid permissions' do
-      it 'should return list of triggers' do
+      it 'returns list of triggers' do
         get api("/projects/#{project.id}/triggers", user)
 
         expect(response).to have_http_status(200)
@@ -98,7 +98,7 @@ describe API::API do
     end
 
     context 'authenticated user with invalid permissions' do
-      it 'should not return triggers list' do
+      it 'does not return triggers list' do
         get api("/projects/#{project.id}/triggers", user2)
 
         expect(response).to have_http_status(403)
@@ -106,7 +106,7 @@ describe API::API do
     end
 
     context 'unauthenticated user' do
-      it 'should not return triggers list' do
+      it 'does not return triggers list' do
         get api("/projects/#{project.id}/triggers")
 
         expect(response).to have_http_status(401)
@@ -116,14 +116,14 @@ describe API::API do
 
   describe 'GET /projects/:id/triggers/:token' do
     context 'authenticated user with valid permissions' do
-      it 'should return trigger details' do
+      it 'returns trigger details' do
         get api("/projects/#{project.id}/triggers/#{trigger.token}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response).to be_a(Hash)
       end
 
-      it 'should respond with 404 Not Found if requesting non-existing trigger' do
+      it 'responds with 404 Not Found if requesting non-existing trigger' do
         get api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response).to have_http_status(404)
@@ -131,7 +131,7 @@ describe API::API do
     end
 
     context 'authenticated user with invalid permissions' do
-      it 'should not return triggers list' do
+      it 'does not return triggers list' do
         get api("/projects/#{project.id}/triggers/#{trigger.token}", user2)
 
         expect(response).to have_http_status(403)
@@ -139,7 +139,7 @@ describe API::API do
     end
 
     context 'unauthenticated user' do
-      it 'should not return triggers list' do
+      it 'does not return triggers list' do
         get api("/projects/#{project.id}/triggers/#{trigger.token}")
 
         expect(response).to have_http_status(401)
@@ -149,7 +149,7 @@ describe API::API do
 
   describe 'POST /projects/:id/triggers' do
     context 'authenticated user with valid permissions' do
-      it 'should create trigger' do
+      it 'creates trigger' do
         expect do
           post api("/projects/#{project.id}/triggers", user)
         end.to change{project.triggers.count}.by(1)
@@ -160,7 +160,7 @@ describe API::API do
     end
 
     context 'authenticated user with invalid permissions' do
-      it 'should not create trigger' do
+      it 'does not create trigger' do
         post api("/projects/#{project.id}/triggers", user2)
 
         expect(response).to have_http_status(403)
@@ -168,7 +168,7 @@ describe API::API do
     end
 
     context 'unauthenticated user' do
-      it 'should not create trigger' do
+      it 'does not create trigger' do
         post api("/projects/#{project.id}/triggers")
 
         expect(response).to have_http_status(401)
@@ -178,14 +178,14 @@ describe API::API do
 
   describe 'DELETE /projects/:id/triggers/:token' do
     context 'authenticated user with valid permissions' do
-      it 'should delete trigger' do
+      it 'deletes trigger' do
         expect do
           delete api("/projects/#{project.id}/triggers/#{trigger.token}", user)
         end.to change{project.triggers.count}.by(-1)
         expect(response).to have_http_status(200)
       end
 
-      it 'should respond with 404 Not Found if requesting non-existing trigger' do
+      it 'responds with 404 Not Found if requesting non-existing trigger' do
         delete api("/projects/#{project.id}/triggers/abcdef012345", user)
 
         expect(response).to have_http_status(404)
@@ -193,7 +193,7 @@ describe API::API do
     end
 
     context 'authenticated user with invalid permissions' do
-      it 'should not delete trigger' do
+      it 'does not delete trigger' do
         delete api("/projects/#{project.id}/triggers/#{trigger.token}", user2)
 
         expect(response).to have_http_status(403)
@@ -201,7 +201,7 @@ describe API::API do
     end
 
     context 'unauthenticated user' do
-      it 'should not delete trigger' do
+      it 'does not delete trigger' do
         delete api("/projects/#{project.id}/triggers/#{trigger.token}")
 
         expect(response).to have_http_status(401)
