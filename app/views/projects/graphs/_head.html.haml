@@ -12,7 +12,7 @@
         = link_to 'Commits', commits_namespace_project_graph_path
       = nav_link(action: :languages) do
         = link_to 'Languages', languages_namespace_project_graph_path
-      - if @project.builds_enabled?
+      - if @project.feature_available?(:builds, current_user)
         = nav_link(action: :ci) do
           = link_to ci_namespace_project_graph_path do
             Continuous Integration

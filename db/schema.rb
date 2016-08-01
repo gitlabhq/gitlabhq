@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160830232601) do
+ActiveRecord::Schema.define(version: 20160831223750) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -766,6 +766,19 @@ ActiveRecord::Schema.define(version: 20160830232601) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
+  create_table "project_features", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "merge_requests_access_level"
+    t.integer  "issues_access_level"
+    t.integer  "wiki_access_level"
+    t.integer  "snippets_access_level"
+    t.integer  "builds_access_level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
+
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
@@ -790,11 +803,7 @@ ActiveRecord::Schema.define(version: 20160830232601) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,      null: false
-    t.boolean  "merge_requests_enabled",             default: true,      null: false
-    t.boolean  "wiki_enabled",                       default: true,      null: false
     t.integer  "namespace_id"
-    t.boolean  "snippets_enabled",                   default: true,      null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
     t.integer  "visibility_level",                   default: 0,         null: false
@@ -808,7 +817,6 @@ ActiveRecord::Schema.define(version: 20160830232601) do
     t.integer  "commit_count",                       default: 0
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,      null: false
     t.boolean  "shared_runners_enabled",             default: true,      null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
