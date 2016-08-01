@@ -33,12 +33,13 @@ class ProjectTeam
     member
   end
 
-  def add_users(users, access, current_user = nil)
+  def add_users(users, access, current_user = nil, expires_at = nil)
     ProjectMember.add_users_into_projects(
       [project.id],
       users,
       access,
-      current_user
+      current_user,
+      expires_at
     )
   end
 

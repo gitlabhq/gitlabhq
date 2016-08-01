@@ -31,6 +31,7 @@ class Member < ActiveRecord::Base
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
   scope :has_access, -> { where('access_level > 0') }
+  scope :still_active, -> { where('expires_at IS NULL OR expires_at > ?', Time.current) }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
@@ -54,7 +55,7 @@ class Member < ActiveRecord::Base
 
   class << self
     def access_for_user_ids(user_ids)
-      where(user_id: user_ids).has_access.pluck(:user_id, :access_level).to_h
+      where(user_id: user_ids).has_access.still_active.pluck(:user_id, :access_level).to_h
     end
 
     def find_by_invite_token(invite_token)
@@ -73,7 +74,7 @@ class Member < ActiveRecord::Base
       user
     end
 
-    def add_user(members, user_id, access_level, current_user = nil)
+    def add_user(members, user_id, access_level, current_user = nil, expires_at = nil)
       user = user_for_id(user_id)
 
       # `user` can be either a User object or an email to be invited
@@ -87,6 +88,7 @@ class Member < ActiveRecord::Base
       if can_update_member?(current_user, member) || project_creator?(member, access_level)
         member.created_by ||= current_user
         member.access_level = access_level
+        member.expires_at = expires_at
 
         member.save
       end
