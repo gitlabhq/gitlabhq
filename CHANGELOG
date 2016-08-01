@@ -15,6 +15,7 @@ v 8.11.0 (unreleased)
   - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
+  - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
   - Optimize checking if a user has read access to a list of issues !5370
