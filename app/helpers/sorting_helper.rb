@@ -102,11 +102,11 @@ module SortingHelper
   end
 
   def sort_value_oldest_created
-    'id_asc'
+    'created_asc'
   end
 
   def sort_value_recently_created
-    'id_desc'
+    'created_desc'
   end
 
   def sort_value_milestone_soon

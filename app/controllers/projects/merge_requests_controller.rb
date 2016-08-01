@@ -5,6 +5,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include IssuableActions
   include NotesHelper
   include ToggleAwardEmoji
+  include IssuableCollections
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -29,7 +30,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    @merge_requests = get_merge_requests_collection
+    @merge_requests = merge_requests_collection
 
     if terms.present?
       if terms =~ /\A[#!](\d+)\z/
