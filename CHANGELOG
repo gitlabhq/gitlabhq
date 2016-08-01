@@ -44,6 +44,7 @@ v 8.11.0 (unreleased)
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
+  - Catch what warden might throw when profiling requests to re-throw it
 
 v 8.10.3 (unreleased)
   - Fix importer for GitHub Pull Requests when a branch was removed
