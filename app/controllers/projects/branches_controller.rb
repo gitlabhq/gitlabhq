@@ -15,6 +15,13 @@ class Projects::BranchesController < Projects::ApplicationController
       diverging_commit_counts = repository.diverging_commit_counts(branch)
       [memo, diverging_commit_counts[:behind], diverging_commit_counts[:ahead]].max
     end
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @repository.branch_names.to_json
+      end
+    end
   end
 
   def recent

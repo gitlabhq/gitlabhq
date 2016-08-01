@@ -17,7 +17,14 @@
           .form-group.branch
             = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10
-              = select_tag "target_branch", project_branches, class: "select2 select2-sm js-target-branch"
+              .dropdown
+                = dropdown_toggle @project.default_branch, { toggle: "dropdown", selected: @project.default_branch, ref: @ref, refs_url: branches_namespace_project_path(@project.namespace, @project) }, { toggle_class: "js-project-refs-dropdown js-target-branch" }
+                .dropdown-menu.dropdown-menu-selectable
+                  = dropdown_title "Switch branch"
+                  = dropdown_filter "Search branches"
+                  = dropdown_content
+                  = dropdown_loading
+
               - if can?(current_user, :push_code, @project)
                 .js-create-merge-request-container
                   .checkbox
