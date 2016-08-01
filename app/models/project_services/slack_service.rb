@@ -66,16 +66,20 @@ class SlackService < Service
 
     message = get_message(object_kind, data)
 
-    opt = {}
-
-    event_channel = get_channel_field(object_kind) || channel
-
-    opt[:channel] = event_channel if event_channel
-    opt[:username] = username if username
-
     if message
+      opt = {}
+
+      event_channel = get_channel_field(object_kind) || channel
+
+      opt[:channel] = event_channel if event_channel
+      opt[:username] = username if username
+
       notifier = Slack::Notifier.new(webhook, opt)
       notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
+
+      true
+    else
+      false
     end
   end
 
@@ -153,7 +157,7 @@ class SlackService < Service
   def should_pipeline_be_notified?(data)
     case data[:object_attributes][:status]
     when 'success'
-      !notify_only_broken_builds?
+      !notify_only_broken_pipelines?
     when 'failed'
       true
     else

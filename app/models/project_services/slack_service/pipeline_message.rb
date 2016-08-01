@@ -4,15 +4,17 @@ class SlackService
                 :user_name, :duration, :pipeline_id
 
     def initialize(data)
-      @sha = data[:sha]
-      @ref_type = data[:tag] ? 'tag' : 'branch'
-      @ref = data[:ref]
-      @status = data[:status]
+      pipeline_attributes = data[:object_attributes]
+      @sha = pipeline_attributes[:sha]
+      @ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
+      @ref = pipeline_attributes[:ref]
+      @status = pipeline_attributes[:status]
+      @duration = pipeline_attributes[:duration]
+      @pipeline_id = pipeline_attributes[:id]
+
       @project_name = data[:project][:path_with_namespace]
       @project_url = data[:project][:web_url]
       @user_name = data[:commit] && data[:commit][:author_name]
-      @duration = data[:object_attributes][:duration]
-      @pipeline_id = data[:object_attributes][:id]
     end
 
     def pretext
