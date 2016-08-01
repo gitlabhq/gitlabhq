@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.0 (unreleased)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Improve diff performance by eliminating redundant checks for text blobs
+  - Convert switch icon into icon font (ClemMakesApps)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
