@@ -15,7 +15,6 @@ class MergeRequest < ActiveRecord::Base
 
   serialize :merge_params, Hash
 
-  before_validation :ensure_merge_request_diff, on: :create, unless: :importing?
   after_update :update_merge_request_diff
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
@@ -281,10 +280,6 @@ class MergeRequest < ActiveRecord::Base
                    'Source project is not a fork of target project'
       end
     end
-  end
-
-  def ensure_merge_request_diff
-    merge_request_diff || merge_request_diffs.build
   end
 
   def create_merge_request_diff

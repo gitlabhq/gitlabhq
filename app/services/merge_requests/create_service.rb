@@ -16,6 +16,7 @@ module MergeRequests
       merge_request.target_project ||= source_project
       merge_request.author = current_user
       merge_request.merge_params['force_remove_source_branch'] = force_remove_source_branch
+      merge_request.merge_request_diffs.build
 
       if merge_request.save
         merge_request.update_attributes(label_ids: label_params)

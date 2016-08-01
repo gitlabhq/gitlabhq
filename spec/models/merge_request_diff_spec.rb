@@ -11,9 +11,10 @@ describe MergeRequestDiff, models: true do
   end
 
   describe 'create new record' do
-    subject { create(:merge_request) }
+    subject { create(:merge_request).merge_request_diff }
 
     it { expect(subject).to be_valid }
+    it { expect(subject).to be_persisted }
     it { expect(subject.commits.count).to eq(5) }
     it { expect(subject.diffs.count).to eq(8) }
   end

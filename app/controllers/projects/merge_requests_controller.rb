@@ -88,7 +88,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @merge_request.merge_request_diff
       end
 
-
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
