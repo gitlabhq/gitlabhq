@@ -1126,69 +1126,42 @@ describe Project, models: true do
     end
   end
 
-  describe "#developers_can_push_to_protected_branch?" do
+  describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
+    let(:user)    { create(:user) }
 
-    context "when the branch matches a protected branch via direct match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: true)
+    it 'returns false when default_branch_protection is in full protection and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
-        expect(project.developers_can_push_to_protected_branch?('production')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
-    context "when project is new" do
-      it "returns true if project is unprotected" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
-        expect(project.developers_can_push_to_protected_branch?('master')).to be true
-      end
-
-      it "returns true if project allows developers to push to protected branch" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
-
-        expect(project.developers_can_push_to_protected_branch?('master')).to be true
-      end
-
-      it "returns false if project does not let developer push to protected branch but let them merge branches" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
-
-        expect(project.developers_can_push_to_protected_branch?('master')).to be false
-      end
-
-      it "returns false if project is on full protection mode" do
-        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
-
-        expect(project.developers_can_push_to_protected_branch?('master')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
-    context "when the branch matches a protected branch via wilcard match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+    it 'returns true when default_branch_protection lets devs push and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
-    context "when the branch does not match a protected branch" do
-      it "returns false" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+    it 'returns true when default_branch_protection is unprotected and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
-        expect(project.developers_can_push_to_protected_branch?('staging/some-branch')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
+    end
+
+    it 'returns true when user is master' do
+      project.team << [user, :master]
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
   end
 

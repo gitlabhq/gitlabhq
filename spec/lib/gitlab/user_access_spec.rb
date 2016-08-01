@@ -9,16 +9,19 @@ describe Gitlab::UserAccess, lib: true do
     describe 'push to none protected branch' do
       it 'returns true if user is a master' do
         project.team << [user, :master]
+
         expect(access.can_push_to_branch?('random_branch')).to be_truthy
       end
 
       it 'returns true if user is a developer' do
         project.team << [user, :developer]
+
         expect(access.can_push_to_branch?('random_branch')).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
         project.team << [user, :reporter]
+
         expect(access.can_push_to_branch?('random_branch')).to be_falsey
       end
     end
@@ -67,16 +70,19 @@ describe Gitlab::UserAccess, lib: true do
 
       it 'returns true if user is a master' do
         project.team << [user, :master]
+
         expect(access.can_push_to_branch?(branch.name)).to be_truthy
       end
 
       it 'returns false if user is a developer' do
         project.team << [user, :developer]
+
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
 
       it 'returns false if user is a reporter' do
         project.team << [user, :reporter]
+
         expect(access.can_push_to_branch?(branch.name)).to be_falsey
       end
     end
@@ -88,16 +94,19 @@ describe Gitlab::UserAccess, lib: true do
 
       it 'returns true if user is a master' do
         project.team << [user, :master]
+
         expect(access.can_push_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns true if user is a developer' do
         project.team << [user, :developer]
+
         expect(access.can_push_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
         project.team << [user, :reporter]
+
         expect(access.can_push_to_branch?(@branch.name)).to be_falsey
       end
     end
@@ -109,19 +118,21 @@ describe Gitlab::UserAccess, lib: true do
 
       it 'returns true if user is a master' do
         project.team << [user, :master]
+
         expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns true if user is a developer' do
         project.team << [user, :developer]
+
         expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
       end
 
       it 'returns false if user is a reporter' do
         project.team << [user, :reporter]
+
         expect(access.can_merge_to_branch?(@branch.name)).to be_falsey
       end
     end
-
   end
 end
