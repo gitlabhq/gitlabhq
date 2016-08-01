@@ -43,6 +43,7 @@ v 8.11.0 (unreleased)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
 
 v 8.10.3 (unreleased)
+  - Fix importer for GitHub Pull Requests when a branch was removed
   - Fix hooks missing on imported GitLab projects
   - Properly abort a merge when merge conflicts occur
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured.
