@@ -179,10 +179,16 @@ describe GitPushService, services: true do
       stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
-    it "triggers indexer" do
+    it "does not trigger indexer when push to non-default branch" do
+      expect_any_instance_of(Gitlab::Elastic::Indexer).not_to receive(:run)
+
+      execute_service(project, user, @oldrev, @newrev, 'refs/heads/other')
+    end
+
+    it "triggers indexer when push to default branch" do
       expect_any_instance_of(Gitlab::Elastic::Indexer).to receive(:run)
 
-      execute_service(project, user, @oldrev, @newrev, @ref )
+      execute_service(project, user, @oldrev, @newrev, 'refs/heads/master')
     end
   end
 
