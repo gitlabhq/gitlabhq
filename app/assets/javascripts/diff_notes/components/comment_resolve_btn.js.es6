@@ -32,12 +32,12 @@
       const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
       this.textareaVal = $textarea.val();
 
-      $textarea.on('input', () => {
+      $textarea.on('input.comment-and-resolve-btn', () => {
         this.textareaVal = $textarea.val();
       });
     },
     destroyed: function () {
-      $(`#new-discussion-note-form-${this.discussionId} .note-textarea`).off('input');
+      $(`#new-discussion-note-form-${this.discussionId} .note-textarea`).off('input.comment-and-resolve-btn');
     }
   });
 })(window);

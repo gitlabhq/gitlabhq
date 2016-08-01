@@ -14,66 +14,77 @@
         return discussion.isResolved();
       },
       discussionsCount: function () {
-        return Object.keys(this.discussions).length;
+        return CommentsStore.discussionCount();
+      },
+      unresolvedDiscussionCount: function () {
+        let unresolvedCount = 0;
+        for (const discussionId in this.discussions) {
+          const discussion = this.discussions[discussionId];
+
+          if (!discussion.isResolved()) {
+            unresolvedCount++;
+          }
+        }
+
+        return unresolvedCount;
       },
       showButton: function () {
-        return this.discussionsCount > 0 && (this.discussionsCount > 1 || !this.discussionId);
+        if (this.discussionId) {
+          if (this.unresolvedDiscussionCount > 1) {
+            return true;
+          } else {
+            return this.discussionId !== this.lastResolvedId();
+          }
+        } else {
+          return this.unresolvedDiscussionCount >= 1;
+        }
       }
     },
     methods: {
+      lastResolvedId: function () {
+        let lastId;
+        for (const discussionId in this.discussions) {
+          const discussion = this.discussions[discussionId];
+
+          if (!discussion.isResolved()) {
+            lastId = discussion.id;
+          }
+        }
+        return lastId;
+      },
       jumpToNextUnresolvedDiscussion: function () {
         let nextUnresolvedDiscussionId,
-            firstUnresolvedDiscussionId;
+            firstUnresolvedDiscussionId,
+            useNextDiscussionId = false,
+            i = 0;
 
-        if (!this.discussionId) {
-          let i = 0;
-          for (const discussionId in this.discussions) {
-            const discussion = this.discussions[discussionId];
-            const isResolved = discussion.isResolved();
+        for (const discussionId in this.discussions) {
+          const discussion = this.discussions[discussionId];
 
-            if (!firstUnresolvedDiscussionId && !isResolved) {
-              firstUnresolvedDiscussionId = discussionId;
+          if (!discussion.isResolved()) {
+            if (i === 0) {
+              firstUnresolvedDiscussionId = discussion.id;
             }
 
-            if (!isResolved) {
-              nextUnresolvedDiscussionId = discussionId;
+            if (useNextDiscussionId) {
+              nextUnresolvedDiscussionId = discussion.id;
               break;
+            }
+
+            if (this.discussionId && discussion.id === this.discussionId) {
+              useNextDiscussionId = true;
             }
 
             i++;
           }
-        } else {
-          let nextDiscussionId;
-          const discussionKeys = Object.keys(this.discussions),
-                indexOfDiscussion = discussionKeys.indexOf(this.discussionId);
-                nextDiscussionIds = discussionKeys.splice(indexOfDiscussion);
-
-          nextDiscussionIds.forEach((discussionId) => {
-            if (discussionId !== this.discussionId) {
-              const discussion = this.discussions[discussionId];
-
-              if (!discussion.isResolved()) {
-                nextDiscussionId = discussion.id;
-              }
-            }
-          });
-
-          if (nextDiscussionId) {
-            nextUnresolvedDiscussionId = nextDiscussionId;
-          } else {
-            firstUnresolvedDiscussionId = discussionKeys[0];
-          }
         }
 
-        if (firstUnresolvedDiscussionId) {
-          // Jump to first unresolved discussion
+        if (!nextUnresolvedDiscussionId && firstUnresolvedDiscussionId) {
           nextUnresolvedDiscussionId = firstUnresolvedDiscussionId;
         }
 
         if (nextUnresolvedDiscussionId) {
-          $('#notes').addClass('active');
-          $('#commits, #builds, #diffs').removeClass('active');
-          mrTabs.setCurrentAction('notes');
+          mrTabs.activateTab('notes');
 
           $.scrollTo(`.discussion[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
             offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())

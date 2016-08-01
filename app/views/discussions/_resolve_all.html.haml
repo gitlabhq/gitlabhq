@@ -1,10 +1,11 @@
 - if discussion.can_resolve?(current_user)
-  %resolve-discussion-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
-      ":project-path" => "'#{discussion.project.path}'",
-      ":discussion-id" => "'#{discussion.id}'",
-      ":merge-request-id" => "#{discussion.noteable.iid}",
-      "inline-template" => true,
-      "v-cloak" => true }
-    %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
-      = icon("spinner spin", "v-show" => "loading")
-      {{ buttonText }}
+  .btn-group{ role: "group" }
+    %resolve-discussion-btn{ ":namespace-path" => "'#{discussion.project.namespace.path}'",
+        ":project-path" => "'#{discussion.project.path}'",
+        ":discussion-id" => "'#{discussion.id}'",
+        ":merge-request-id" => "#{discussion.noteable.iid}",
+        "inline-template" => true,
+        "v-cloak" => true }
+      %button.btn.btn-default{ type: "button", "@click" => "resolve", ":disabled" => "loading" }
+        = icon("spinner spin", "v-show" => "loading")
+        {{ buttonText }}

@@ -1,5 +1,8 @@
 ((w) => {
   w.ResolveCount = Vue.extend({
+    props: {
+      loggedOut: Boolean
+    },
     data: function () {
       return {
         discussions: CommentsStore.state,

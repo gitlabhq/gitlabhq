@@ -15,8 +15,11 @@
       };
     },
     computed: {
+      discussion: function () {
+        return this.discussions[this.discussionId];
+      },
       allResolved: function () {
-        return this.discussions[this.discussionId].isResolved();
+        return this.discussion.isResolved();
       },
       buttonText: function () {
         if (this.allResolved) {
@@ -26,7 +29,7 @@
         }
       },
       loading: function () {
-        return this.discussions[this.discussionId].loading;
+        return this.discussion.loading;
       }
     },
     methods: {

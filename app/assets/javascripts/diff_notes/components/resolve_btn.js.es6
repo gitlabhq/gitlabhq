@@ -39,7 +39,7 @@
         return this.note.resolved;
       },
       resolvedByName: function () {
-        return this.note.user;
+        return this.note.resolved_by;
       },
     },
     methods: {
@@ -63,13 +63,13 @@
         }
 
         promise.then((response) => {
-          const data = response.data;
-          const user = data ? data.resolved_by : null;
+          const data = response.json();
           this.loading = false;
 
           if (response.status === 200) {
-            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, user);
+            const resolved_by = data ? data.resolved_by : null;
 
+            CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
             ResolveService.updateUpdatedHtml(this.discussionId, data);
           } else {
             new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');

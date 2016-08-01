@@ -1,5 +1,6 @@
 - return unless note.author
 - return if note.cross_reference_not_visible_for?(current_user)
+- can_resolve = can?(current_user, :resolve_note, note)
 
 - note_editable = note_editable?(note)
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
@@ -28,16 +29,16 @@
                   ":discussion-id" => "'#{note.discussion_id}'",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
-                  ":can-resolve" => can?(current_user, :resolve_note, note),
+                  ":can-resolve" => can_resolve,
                   ":resolved-by" => "'#{note.resolved_by.try(:name)}'",
-                  "v-show" => "#{(note.resolvable? && can?(current_user, :resolve_note, note)) || (note.resolved? && !can?(current_user, :resolve_note, note))}",
+                  "v-show" => "#{can_resolve || note.resolved?}",
                   "inline-template" => true,
                   "v-ref:note_#{note.id}" => true }
 
                 .note-action-button
                   = icon("spin spinner", "v-show" => "loading")
                   %button.line-resolve-btn{ type: "button",
-                      class: ("is-disabled" unless can?(current_user, :resolve_note, note)),
+                      class: ("is-disabled" unless can_resolve),
                       ":class" => "{ 'is-active': isResolved }",
                       ":aria-label" => "buttonText",
                       "@click" => "resolve",

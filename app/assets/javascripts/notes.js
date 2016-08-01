@@ -514,7 +514,7 @@
           notes = note.closest(".notes");
 
           if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
-            ref = DiffNotesApp.$refs['' + noteId + ''];
+            ref = DiffNotesApp.$refs[noteId];
 
             if (ref) {
               ref.$destroy(true);
@@ -591,7 +591,7 @@
       form.find('.js-note-target-close').remove();
       this.setupNoteForm(form);
 
-      if (canResolve === 'false') {
+      if (canResolve === 'false' || !form.closest('.notes_content').find('.note:not(.system-note)').length) {
         form.find('comment-and-resolve-btn').remove();
       } else if (DiffNotesApp) {
         var $commentBtn = form.find('comment-and-resolve-btn');

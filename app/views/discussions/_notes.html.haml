@@ -1,15 +1,15 @@
 %ul.notes{ data: { discussion_id: discussion.id } }
   = render partial: "projects/notes/note", collection: discussion.notes, as: :note
 
-.discussion-reply-holder
-  - if discussion.diff_discussion?
-    - line_type = local_assigns.fetch(:line_type, nil)
+- if current_user
+  .discussion-reply-holder
+    - if discussion.diff_discussion?
+      - line_type = local_assigns.fetch(:line_type, nil)
 
-    .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
-      .btn-group{ role: "group" }
-        = link_to_reply_discussion(discussion, line_type)
-      .btn-group{ role: "group" }
+      .btn-group-justified.discussion-with-resolve-btn{ role: "group" }
+        .btn-group{ role: "group" }
+          = link_to_reply_discussion(discussion, line_type)
         = render "discussions/resolve_all", discussion: discussion
-      = render "discussions/jump_to_next", discussion: discussion
-  - else
-    = link_to_reply_discussion(discussion)
+        = render "discussions/jump_to_next", discussion: discussion
+    - else
+      = link_to_reply_discussion(discussion)

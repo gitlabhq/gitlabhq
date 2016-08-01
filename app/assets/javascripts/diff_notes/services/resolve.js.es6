@@ -11,14 +11,18 @@
 
     resolve(namespace, noteId) {
       this.setCSRF();
-      Vue.http.options.root = `/${namespace}`;
+      if (Vue.http.options.root !== `/${namespace}`) {
+        Vue.http.options.root = `/${namespace}`;
+      }
 
       return this.noteResource.save({ noteId }, {});
     }
 
     unresolve(namespace, noteId) {
       this.setCSRF();
-      Vue.http.options.root = `/${namespace}`;
+      if (Vue.http.options.root !== `/${namespace}`) {
+        Vue.http.options.root = `/${namespace}`;
+      }
 
       return this.noteResource.delete({ noteId }, {});
     }
@@ -37,18 +41,22 @@
       const discussion = CommentsStore.state[discussionId];
 
       this.setCSRF();
-      Vue.http.options.root = `/${namespace}`;
+
+      if (Vue.http.options.root !== `/${namespace}`) {
+        Vue.http.options.root = `/${namespace}`;
+      }
 
       discussion.loading = true;
+      console.log(discussion.loading);
 
       return this.discussionResource.save({
         mergeRequestId,
         discussionId
       }, {}).then((response) => {
         if (response.status === 200) {
-          const data = response.data;
-          const user = data ? data.resolved_by : null;
-          discussion.resolveAllNotes(user);
+          const data = response.json();
+          const resolved_by = data ? data.resolved_by : null;
+          discussion.resolveAllNotes(resolved_by);
           discussion.loading = false;
 
           this.updateUpdatedHtml(discussionId, data);
@@ -71,7 +79,7 @@
         discussionId
       }, {}).then((response) => {
         if (response.status === 200) {
-          const data = response.data;
+          const data = response.json();
           discussion.unResolveAllNotes();
           discussion.loading = false;
 

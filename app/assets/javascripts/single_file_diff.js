@@ -35,10 +35,12 @@
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
-        return this.collapsedContent.show();
+        this.collapsedContent.show();
+        compileVueComponentsForDiffNotes();
       } else if (this.content) {
         this.collapsedContent.hide();
-        return this.content.show();
+        this.content.show();
+        compileVueComponentsForDiffNotes();
       } else {
         return this.getContentHTML();
       }
@@ -53,6 +55,7 @@
           if (data.html) {
             _this.content = $(data.html);
             _this.content.syntaxHighlight();
+            compileVueComponentsForDiffNotes();
           } else {
             _this.hasError = true;
             _this.content = $(ERROR_HTML);

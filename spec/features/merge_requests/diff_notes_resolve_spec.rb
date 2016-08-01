@@ -116,15 +116,16 @@ feature 'Diff notes resolve', feature: true, js: true do
       it 'allows user to unresolve from reply form without a comment' do
         page.within '.diff-content' do
           click_button 'Resolve discussion'
+          sleep 1
 
           click_button 'Reply...'
 
-          click_button 'Resolve discussion'
+          click_button 'Unresolve discussion'
         end
 
         page.within '.line-resolve-all-container' do
           expect(page).to have_content('0/1 discussion resolved')
-          expect(page).to have_selector('.line-resolve-btn.is-active')
+          expect(page).not_to have_selector('.line-resolve-btn.is-active')
         end
       end
 

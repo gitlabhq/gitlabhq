@@ -5,8 +5,8 @@ class DiscussionModel {
     this.loading = false;
   }
 
-  createNote (noteId, resolved, user) {
-    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, resolved, user));
+  createNote (noteId, resolved, resolved_by) {
+    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, resolved, resolved_by));
   }
 
   deleteNote (noteId) {
@@ -15,6 +15,10 @@ class DiscussionModel {
 
   getNote (noteId) {
     return this.notes[noteId];
+  }
+
+  notesCount() {
+    return Object.keys(this.notes).length;
   }
 
   isResolved () {
@@ -28,24 +32,24 @@ class DiscussionModel {
     return true;
   }
 
-  resolveAllNotes (user) {
+  resolveAllNotes (resolved_by) {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
       if (!note.resolved) {
         note.resolved = true;
-        note.user = user;
+        note.resolved_by = resolved_by;
       }
     }
   }
 
-  unResolveAllNotes (user) {
+  unResolveAllNotes () {
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
       if (note.resolved) {
         note.resolved = false;
-        note.user = null;
+        note.resolved_by = null;
       }
     }
   }

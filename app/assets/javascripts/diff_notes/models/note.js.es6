@@ -1,8 +1,8 @@
 class NoteModel {
-  constructor (discussionId, noteId, resolved, user) {
+  constructor (discussionId, noteId, resolved, resolved_by) {
     this.discussionId = discussionId;
     this.id = noteId;
     this.resolved = resolved;
-    this.user = user;
+    this.resolved_by = resolved_by;
   }
 }
