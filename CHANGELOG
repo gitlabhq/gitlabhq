@@ -7,6 +7,7 @@ v 8.10.3 (unreleased)
   - Fix hooks missing on imported GitLab projects. !5549
   - Properly abort a merge when merge conflicts occur. !5569
   - Fix importer for GitHub Pull Requests when a branch was removed. !5573
+  - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
 
 v 8.10.2
   - User can now search branches by name. !5144
