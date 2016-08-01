@@ -300,7 +300,7 @@
         discussionContainer.append(note_html);
       }
 
-      if (DiffNotesApp) {
+      if (typeof DiffNotesApp !== 'undefined') {
         DiffNotesApp.compileComponents();
       }
 
@@ -429,7 +429,7 @@
 
       $note_li.replaceWith($html);
 
-      if (DiffNotesApp) {
+      if (typeof DiffNotesApp !== 'undefined') {
         DiffNotesApp.compileComponents();
       }
     };
@@ -593,7 +593,7 @@
 
       if (canResolve === 'false' || !form.closest('.notes_content').find('.note:not(.system-note)').length) {
         form.find('comment-and-resolve-btn').remove();
-      } else if (DiffNotesApp) {
+      } else if (typeof DiffNotesApp !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");

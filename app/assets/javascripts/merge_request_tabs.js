@@ -120,7 +120,7 @@
           return function(data) {
             $('#diffs').html(data.html);
 
-            if (DiffNotesApp) {
+            if (typeof DiffNotesApp !== 'undefined') {
               DiffNotesApp.compileComponents();
             }
 

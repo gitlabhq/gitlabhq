@@ -36,13 +36,13 @@
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
         this.collapsedContent.show();
-        if (DiffNotesApp) {
+        if (typeof DiffNotesApp !== 'undefined') {
           DiffNotesApp.compileComponents();
         }
       } else if (this.content) {
         this.collapsedContent.hide();
         this.content.show();
-        if (DiffNotesApp) {
+        if (typeof DiffNotesApp !== 'undefined') {
           DiffNotesApp.compileComponents();
         }
       } else {
@@ -59,7 +59,7 @@
           if (data.html) {
             _this.content = $(data.html);
             _this.content.syntaxHighlight();
-            if (DiffNotesApp) {
+            if (typeof DiffNotesApp !== 'undefined') {
               DiffNotesApp.compileComponents();
             }
           } else {
