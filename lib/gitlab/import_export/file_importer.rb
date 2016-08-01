@@ -30,14 +30,12 @@ module Gitlab
       # Exponentially sleep until I/O finishes copying the file
       def wait_for_archived_file
         MAX_RETRIES.times do |retry_number|
-          if File.exist?(@archive_file)
-            yield
+          break if File.exist?(@archive_file)
 
-            return true
-          else
-            sleep(2**retry_number)
-          end
+          sleep(2**retry_number)
         end
+
+        yield
       end
 
       def decompress_archive
