@@ -10,13 +10,27 @@
       }
     },
     new: function (board) {
+      // Move the done list index
+      const doneList = this.getDoneList();
+
+      if (doneList) {
+        doneList.index = board.index + 1;
+      }
+
       const list = new List(board);
       this.state.lists.push(list);
+    },
+    getDoneList: function () {
+      return _.find(this.state.lists, (list) => {
+        return list.id === 'done';
+      });
     },
     removeList: function (id) {
       this.state.lists = _.reject(this.state.lists, (list) => {
         return list.id === id;
       });
+
+      this.getDoneList().index = this.state.lists.length - 1;
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = _.find(this.state.lists, (list) => {
@@ -48,7 +62,7 @@
       const issueLists = this.getListsForIssue(issue);
       listFrom.removeIssue(issue);
 
-      // Add to new boards issues if it doesn't already exist
+      // Add to new lists issues if it doesn't already exist
       if (issueTo) {
         issue = issueTo;
         issue.removeLabel(listFrom.label);
