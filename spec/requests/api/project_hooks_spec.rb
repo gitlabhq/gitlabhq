@@ -8,8 +8,9 @@ describe API::API, 'ProjectHooks', api: true do
   let!(:hook) do
     create(:project_hook,
            project: project, url: "http://example.com",
-           push_events: true, merge_requests_events: true, tag_push_events: true,
-           issues_events: true, note_events: true, build_events: true,
+           push_events: true, merge_requests_events: true,
+           tag_push_events: true, issues_events: true, note_events: true,
+           build_events: true, pipeline_events: true,
            enable_ssl_verification: true)
   end
 
@@ -33,6 +34,7 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response.first['tag_push_events']).to eq(true)
         expect(json_response.first['note_events']).to eq(true)
         expect(json_response.first['build_events']).to eq(true)
+        expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
       end
     end
@@ -91,6 +93,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
       expect(json_response['build_events']).to eq(false)
+      expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['enable_ssl_verification']).to eq(true)
     end
 
