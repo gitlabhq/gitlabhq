@@ -29,6 +29,7 @@ v 8.11.0 (unreleased)
   - Bump gitlab_git to speedup DiffCollection iterations
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
+  - Convert image diff background image to CSS (ClemMakesApps)
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
