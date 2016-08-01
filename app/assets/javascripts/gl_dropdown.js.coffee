@@ -565,11 +565,13 @@ class GitLabDropdown
     if $el.length and currentIndex > -1
       e.preventDefault()
       e.stopImmediatePropagation()
+      $first = $el.first()
+      $firstEl = $first.get(0)
 
-      if $el.first().get(0).click
-        $el.first().get(0).click()
+      if $firstEl.click
+        $firstEl.click()
       else
-        $el.first().trigger('click')
+        $first.trigger('click')
 
   addArrowKeyEvent: ->
     ARROW_KEY_CODES = [38, 40]
