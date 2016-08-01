@@ -856,7 +856,9 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :board, only: [:show]
+        resource :board, only: [:show] do
+          resources :lists, only: [:create], controller: :board_lists
+        end
 
         resources :todos, only: [:create]
 
