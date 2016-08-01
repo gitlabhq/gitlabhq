@@ -40,6 +40,7 @@ v 8.11.0 (unreleased)
 v 8.10.3 (unreleased)
   - Fix hooks missing on imported GitLab projects
   - Properly abort a merge when merge conflicts occur
+  - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured.
 
 v 8.10.2
   - User can now search branches by name. !5144
