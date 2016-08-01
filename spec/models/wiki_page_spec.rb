@@ -147,12 +147,12 @@ describe WikiPage, models: true do
       @page = wiki.find_page("Delete Page")
     end
 
-    it "should delete the page" do
+    it "deletes the page" do
       @page.delete
       expect(wiki.pages).to be_empty
     end
 
-    it "should return true" do
+    it "returns true" do
       expect(@page.delete).to eq(true)
     end
   end
@@ -183,7 +183,7 @@ describe WikiPage, models: true do
       destroy_page("Title")
     end
 
-    it "should be replace a hyphen to a space" do
+    it "replaces a hyphen to a space" do
       @page.title = "Import-existing-repositories-into-GitLab"
       expect(@page.title).to eq("Import existing repositories into GitLab")
     end

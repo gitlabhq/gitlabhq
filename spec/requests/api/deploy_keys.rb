@@ -12,21 +12,21 @@ describe API::API, api: true  do
     before { admin }
 
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         get api('/deploy_keys')
         expect(response.status).to eq(401)
       end
     end
 
     context 'when authenticated as non-admin user' do
-      it 'should return a 403 error' do
+      it 'returns a 403 error' do
         get api('/deploy_keys', user)
         expect(response.status).to eq(403)
       end
     end
 
     context 'when authenticated as admin' do
-      it 'should return all deploy keys' do
+      it 'returns all deploy keys' do
         get api('/deploy_keys', admin)
         expect(response.status).to eq(200)
 

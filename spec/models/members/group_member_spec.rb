@@ -22,7 +22,7 @@ require 'spec_helper'
 describe GroupMember, models: true do
   describe 'notifications' do
     describe "#after_create" do
-      it "should send email to user" do
+      it "sends email to user" do
         membership = build(:group_member)
 
         allow(membership).to receive(:notification_service).
@@ -40,7 +40,7 @@ describe GroupMember, models: true do
           and_return(double('NotificationService').as_null_object)
       end
 
-      it "should send email to user" do
+      it "sends email to user" do
         expect(@group_member).to receive(:notification_service)
         @group_member.update_attribute(:access_level, GroupMember::MASTER)
       end

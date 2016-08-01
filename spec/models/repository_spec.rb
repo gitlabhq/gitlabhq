@@ -340,14 +340,14 @@ describe Repository, models: true do
 
   describe '#add_branch' do
     context 'when pre hooks were successful' do
-      it 'should run without errors' do
+      it 'runs without errors' do
         hook = double(trigger: [true, nil])
         expect(Gitlab::Git::Hook).to receive(:new).exactly(3).times.and_return(hook)
 
         expect { repository.add_branch(user, 'new_feature', 'master') }.not_to raise_error
       end
 
-      it 'should create the branch' do
+      it 'creates the branch' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
 
         branch = repository.add_branch(user, 'new_feature', 'master')
@@ -363,7 +363,7 @@ describe Repository, models: true do
     end
 
     context 'when pre hooks failed' do
-      it 'should get an error' do
+      it 'gets an error' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
@@ -371,7 +371,7 @@ describe Repository, models: true do
         end.to raise_error(GitHooksService::PreReceiveError)
       end
 
-      it 'should not create the branch' do
+      it 'does not create the branch' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
@@ -387,14 +387,14 @@ describe Repository, models: true do
     let(:blank_sha) { '0000000000000000000000000000000000000000' }
 
     context 'when pre hooks were successful' do
-      it 'should run without errors' do
+      it 'runs without errors' do
         expect_any_instance_of(GitHooksService).to receive(:execute).
           with(user, project.repository.path_to_repo, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
 
-      it 'should delete the branch' do
+      it 'deletes the branch' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
@@ -404,7 +404,7 @@ describe Repository, models: true do
     end
 
     context 'when pre hooks failed' do
-      it 'should get an error' do
+      it 'gets an error' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
@@ -412,7 +412,7 @@ describe Repository, models: true do
         end.to raise_error(GitHooksService::PreReceiveError)
       end
 
-      it 'should not delete the branch' do
+      it 'does not delete the branch' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
@@ -433,13 +433,13 @@ describe Repository, models: true do
           and_yield.and_return(true)
       end
 
-      it 'should run without errors' do
+      it 'runs without errors' do
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.not_to raise_error
       end
 
-      it 'should ensure the autocrlf Git option is set to :input' do
+      it 'ensures the autocrlf Git option is set to :input' do
         expect(repository).to receive(:update_autocrlf_option)
 
         repository.commit_with_hooks(user, 'feature') { sample_commit.id }
@@ -455,7 +455,7 @@ describe Repository, models: true do
     end
 
     context 'when pre hooks failed' do
-      it 'should get an error' do
+      it 'gets an error' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
@@ -715,7 +715,7 @@ describe Repository, models: true do
   end
 
   describe '#merge' do
-    it 'should merge the code and return the commit id' do
+    it 'merges the code and return the commit id' do
       expect(merge_commit).to be_present
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
@@ -726,13 +726,13 @@ describe Repository, models: true do
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
 
     context 'when there is a conflict' do
-      it 'should abort the operation' do
+      it 'aborts the operation' do
         expect(repository.revert(user, new_image_commit, 'master')).to eq(false)
       end
     end
 
     context 'when commit was already reverted' do
-      it 'should abort the operation' do
+      it 'aborts the operation' do
         repository.revert(user, update_image_commit, 'master')
 
         expect(repository.revert(user, update_image_commit, 'master')).to eq(false)
@@ -740,13 +740,13 @@ describe Repository, models: true do
     end
 
     context 'when commit can be reverted' do
-      it 'should revert the changes' do
+      it 'reverts the changes' do
         expect(repository.revert(user, update_image_commit, 'master')).to be_truthy
       end
     end
 
     context 'reverting a merge commit' do
-      it 'should revert the changes' do
+      it 'reverts the changes' do
         merge_commit
         expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
 
@@ -762,13 +762,13 @@ describe Repository, models: true do
     let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
 
     context 'when there is a conflict' do
-      it 'should abort the operation' do
+      it 'aborts the operation' do
         expect(repository.cherry_pick(user, conflict_commit, 'master')).to eq(false)
       end
     end
 
     context 'when commit was already cherry-picked' do
-      it 'should abort the operation' do
+      it 'aborts the operation' do
         repository.cherry_pick(user, pickable_commit, 'master')
 
         expect(repository.cherry_pick(user, pickable_commit, 'master')).to eq(false)
@@ -776,13 +776,13 @@ describe Repository, models: true do
     end
 
     context 'when commit can be cherry-picked' do
-      it 'should cherry-pick the changes' do
+      it 'cherry-picks the changes' do
         expect(repository.cherry_pick(user, pickable_commit, 'master')).to be_truthy
       end
     end
 
     context 'cherry-picking a merge commit' do
-      it 'should cherry-pick the changes' do
+      it 'cherry-picks the changes' do
         expect(repository.blob_at_branch('master', 'foo/bar/.gitkeep')).to be_nil
 
         repository.cherry_pick(user, pickable_merge, 'master')

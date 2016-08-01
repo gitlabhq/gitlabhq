@@ -65,7 +65,7 @@ describe AsanaService, models: true do
       )
     end
 
-    it 'should call Asana service to create a story' do
+    it 'calls Asana service to create a story' do
       data = create_data_for_commits('Message from commit. related to #123456')
       expected_message = "#{data[:user_name]} pushed to branch #{data[:ref]} of #{project.name_with_namespace} ( #{data[:commits][0][:url]} ): #{data[:commits][0][:message]}"
 
@@ -76,7 +76,7 @@ describe AsanaService, models: true do
       @asana.execute(data)
     end
 
-    it 'should call Asana service to create a story and close a task' do
+    it 'calls Asana service to create a story and close a task' do
       data = create_data_for_commits('fix #456789')
       d1 = double('Asana::Task')
       expect(d1).to receive(:add_comment)
@@ -86,7 +86,7 @@ describe AsanaService, models: true do
       @asana.execute(data)
     end
 
-    it 'should be able to close via url' do
+    it 'is able to close via url' do
       data = create_data_for_commits('closes https://app.asana.com/19292/956299/42')
       d1 = double('Asana::Task')
       expect(d1).to receive(:add_comment)
@@ -96,7 +96,7 @@ describe AsanaService, models: true do
       @asana.execute(data)
     end
 
-    it 'should allow multiple matches per line' do
+    it 'allows multiple matches per line' do
       message = <<-EOF
       minor bigfix, refactoring, fixed #123 and Closes #456 work on #789
       ref https://app.asana.com/19292/956299/42 and closing https://app.asana.com/19292/956299/12
