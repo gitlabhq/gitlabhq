@@ -4,7 +4,7 @@ class BaseService
   attr_accessor :project, :current_user, :params
 
   def initialize(project, user, params = {})
-    @project, @current_user, @params = project, user, params.dup
+    @project, @current_user, @params = project, user, params.with_indifferent_access
   end
 
   def abilities
