@@ -13,6 +13,16 @@ $(() => {
       'resolve-btn': ResolveBtn,
       'resolve-discussion-btn': ResolveDiscussionBtn,
       'comment-and-resolve-btn': CommentAndResolveBtn
+    },
+    methods: {
+      compileComponents: function () {
+        const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion');
+        if ($components.length) {
+          $components.each(function () {
+            DiffNotesApp.$compile($(this).get(0));
+          });
+        }
+      }
     }
   });
 
@@ -22,13 +32,4 @@ $(() => {
       'resolve-count': ResolveCount
     }
   });
-
-  window.compileVueComponentsForDiffNotes = function () {
-    const $components = $('resolve-btn, resolve-discussion-btn, jump-to-discussion');
-    if ($components.length) {
-      $components.each(function () {
-        DiffNotesApp.$compile($(this).get(0));
-      });
-    }
-  }
 });

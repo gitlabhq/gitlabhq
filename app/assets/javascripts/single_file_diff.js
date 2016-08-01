@@ -36,11 +36,15 @@
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
         this.collapsedContent.show();
-        compileVueComponentsForDiffNotes();
+        if (DiffNotesApp) {
+          DiffNotesApp.compileComponents();
+        }
       } else if (this.content) {
         this.collapsedContent.hide();
         this.content.show();
-        compileVueComponentsForDiffNotes();
+        if (DiffNotesApp) {
+          DiffNotesApp.compileComponents();
+        }
       } else {
         return this.getContentHTML();
       }
@@ -55,7 +59,9 @@
           if (data.html) {
             _this.content = $(data.html);
             _this.content.syntaxHighlight();
-            compileVueComponentsForDiffNotes();
+            if (DiffNotesApp) {
+              DiffNotesApp.compileComponents();
+            }
           } else {
             _this.hasError = true;
             _this.content = $(ERROR_HTML);

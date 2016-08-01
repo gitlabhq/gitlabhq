@@ -120,8 +120,8 @@
           return function(data) {
             $('#diffs').html(data.html);
 
-            if (compileVueComponentsForDiffNotes) {
-              compileVueComponentsForDiffNotes();
+            if (DiffNotesApp) {
+              DiffNotesApp.compileComponents();
             }
 
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));

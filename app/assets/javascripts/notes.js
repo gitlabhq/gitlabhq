@@ -300,8 +300,8 @@
         discussionContainer.append(note_html);
       }
 
-      if (compileVueComponentsForDiffNotes) {
-        compileVueComponentsForDiffNotes();
+      if (DiffNotesApp) {
+        DiffNotesApp.compileComponents();
       }
 
       gl.utils.localTimeAgo($('.js-timeago', note_html), false);
@@ -429,8 +429,8 @@
 
       $note_li.replaceWith($html);
 
-      if (compileVueComponentsForDiffNotes) {
-        compileVueComponentsForDiffNotes();
+      if (DiffNotesApp) {
+        DiffNotesApp.compileComponents();
       }
     };
 
