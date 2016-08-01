@@ -119,7 +119,7 @@ describe DiffNote, models: true do
 
       context "when the merge request's diff refs don't match that of the diff note" do
         before do
-          allow(subject.noteable).to receive(:diff_refs).and_return(commit.diff_refs)
+          allow(subject.noteable).to receive(:diff_sha_refs).and_return(commit.diff_refs)
         end
 
         it "returns false" do
@@ -168,7 +168,7 @@ describe DiffNote, models: true do
 
         context "when the note is outdated" do
           before do
-            allow(merge_request).to receive(:diff_refs).and_return(commit.diff_refs)
+            allow(merge_request).to receive(:diff_sha_refs).and_return(commit.diff_refs)
           end
 
           it "uses the DiffPositionUpdateService" do

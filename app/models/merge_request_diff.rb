@@ -82,6 +82,10 @@ class MergeRequestDiff < ActiveRecord::Base
     project.commit(self.head_commit_sha)
   end
 
+  def diff_refs_by_sha?
+    base_commit_sha? && head_commit_sha? && start_commit_sha?
+  end
+
   def compare
     @compare ||=
       begin
