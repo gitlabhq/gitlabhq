@@ -135,12 +135,20 @@
 
     Build.prototype.displayTestStatuses = function() {
       $jobTopPosition = $('.build-job').first().offset().top;
+      $dropdownCounter = [];
 
-      $('.build-job').each(function() {
+      $('.build-job a').each(function() {
         if ($(this).offset().top > $jobTopPosition) {
+          $dropdownCounter.push($(this));
           $('.overflow-jobs > li').append($(this));
         }
       })
+
+      $('.more-tests').text('More (' + $dropdownCounter.length + ')');
+
+      if ($('.overflow-jobs > li > a').length == 0) {
+        $('.overflow-jobs-dropdown').hide();
+      }
     };
 
     return Build;

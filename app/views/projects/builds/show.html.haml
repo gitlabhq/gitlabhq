@@ -7,24 +7,24 @@
 
   - builds = @build.pipeline.builds.latest.to_a
   - if builds.size > 1
+    .dropdown.overflow-jobs-dropdown
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.more-tests More
+        = icon('caret-down')
+      %ul.dropdown-menu.dropdown-menu-align-right.overflow-jobs
+        %li
     %ul.nav-links.no-top.no-bottom
       - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
       - statuses.each do |build_status|
         - builds.select{|build| build.status == build_status}.each do |build|
-          %li{class: ('active' if build == @build) }
-            = link_to namespace_project_build_path(@project.namespace, @project, build), class: 'build-job' do
+          %li.build-job{class: ('active' if build == @build) }
+            = link_to namespace_project_build_path(@project.namespace, @project, build) do
               = ci_icon_for_status(build.status)
               %span
                 - if build.name
                   = build.name
                 - else
                   = build.id
-    .dropdown
-      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-        %span Test Name
-        = icon('chevron-down')
-      %ul.dropdown-menu.overflow-jobs
-        %li
 
       - if @build.retried?
         %li.active

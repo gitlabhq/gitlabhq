@@ -61,6 +61,16 @@
       margin-right: 3px;
     }
   }
+
+  .overflow-jobs-dropdown {
+    float: right;
+    padding: 7px 0 7px 5px;
+
+    .dropdown-menu-toggle {
+      width: auto;
+      border: none;
+    }
+  }
 }
 
 .build-header {
