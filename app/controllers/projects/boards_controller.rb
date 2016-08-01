@@ -1,9 +1,10 @@
 class Projects::BoardsController < Projects::ApplicationController
   def show
-    Boards::CreateService.new(project).execute
+    board = Boards::CreateService.new(project).execute
 
     respond_to do |format|
       format.html
+      format.json { render json: board.lists.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color] } }) }
     end
   end
 end

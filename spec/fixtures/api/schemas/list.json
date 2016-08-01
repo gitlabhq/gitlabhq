@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "list_type",
+    "title",
+    "position"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "list_type": {
+      "type": "string",
+      "enum": ["backlog", "label", "done"]
+    },
+    "label": {
+      "type": ["object"],
+      "required": [
+        "id",
+        "color",
+        "title"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+        },
+        "title": { "type": "string" }
+      }
+    },
+    "title": { "type": "string" },
+    "position": { "type": ["integer", "null"] }
+  },
+  "additionalProperties": false
+}
