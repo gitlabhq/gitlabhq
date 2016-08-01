@@ -77,6 +77,10 @@ module Gitlab
       def sections
         return @sections if @sections
 
+        candidate_match_headers = lines.map do |line|
+          " #{line.text}" if line.text.match(/\A[A-Za-z$_]/) && line.type.nil?
+        end
+
         chunked_lines = lines.chunk { |line| line.type.nil? }
         last_candidate_match_header = nil
         match_line_header = nil
@@ -85,40 +89,41 @@ module Gitlab
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|
           section = nil
 
-          lines.each do |line|
-            last_candidate_match_header = " #{line.text}" if line.text.match(/\A[A-Za-z$_]/)
-          end
-
           if no_conflict
             conflict_before = i > 0
             conflict_after = chunked_lines.peek
 
             if conflict_before && conflict_after
               if lines.length > CONTEXT_LINES * 2
+                head_lines = lines.first(CONTEXT_LINES)
                 tail_lines = lines.last(CONTEXT_LINES)
-                first_tail_line = tail_lines.first
-                match_line_header = last_candidate_match_header
-                match_line = Gitlab::Diff::Line.new('',
-                                                    'match',
-                                                    first_tail_line.index,
-                                                    first_tail_line.old_pos,
-                                                    first_tail_line.new_pos)
+
+                update_match_line_text(match_line, head_lines.last, candidate_match_headers)
+
+                match_line = create_match_line(tail_lines.first)
+                update_match_line_text(match_line, tail_lines.last, candidate_match_headers)
 
                 section = [
-                  { conflict: false, lines: lines.first(CONTEXT_LINES) },
+                  { conflict: false, lines: head_lines },
                   { conflict: false, lines: tail_lines.unshift(match_line) }
                 ]
               end
             elsif conflict_after
-              lines = lines.last(CONTEXT_LINES)
+              tail_lines = lines.last(CONTEXT_LINES)
+
+              if lines.length > CONTEXT_LINES
+                match_line = create_match_line(tail_lines.first)
+
+                tail_lines.unshift(match_line)
+              end
+
+              lines = tail_lines
             elsif conflict_before
               lines = lines.first(CONTEXT_LINES)
             end
           end
 
-          if match_line && !section
-            match_line.text = "@@ -#{match_line.old_pos},#{lines.last.old_pos} +#{match_line.new_pos},#{lines.last.new_pos} @@#{match_line_header}"
-          end
+          update_match_line_text(match_line, lines.last, candidate_match_headers) unless section
 
           section ||= { conflict: !no_conflict, lines: lines }
           section[:id] = line_code(lines.first) unless no_conflict
@@ -128,6 +133,18 @@ module Gitlab
 
       def line_code(line)
         Gitlab::Diff::LineCode.generate(our_path, line.new_pos, line.old_pos)
+      end
+
+      def create_match_line(line)
+        Gitlab::Diff::Line.new('', 'match', line.index, line.old_pos, line.new_pos)
+      end
+
+      def update_match_line_text(match_line, line, headers)
+        return unless match_line
+
+        header = headers.first(line.index).compact.last
+
+        match_line.text = "@@ -#{match_line.old_pos},#{line.old_pos} +#{match_line.new_pos},#{line.new_pos} @@#{header}"
       end
 
       def as_json(opts = nil)
