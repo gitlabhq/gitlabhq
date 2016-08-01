@@ -8,7 +8,7 @@
         $(this.$el).tooltip('destroy');
 
         if (confirm('Are you sure you want to delete this list?')) {
-          BoardsStore.removeBoard(this.boardId);
+          BoardsStore.removeList(this.boardId);
         }
       }
     }

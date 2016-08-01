@@ -9,103 +9,63 @@
         milestone: {},
       }
     },
-    removeBoard: (id) => {
-      BoardsStore.state.lists = _.reject(BoardsStore.state.lists, (board) => {
-        return board.id === id;
+    new: function (board) {
+      const list = new List(board);
+      this.state.lists.push(list);
+    },
+    removeList: function (id) {
+      this.state.lists = _.reject(this.state.lists, (list) => {
+        return list.id === id;
       });
     },
-    moveBoard: (oldIndex, newIndex) => {
-      const boardFrom = _.find(BoardsStore.state.lists, (board) => {
-        return board.index === oldIndex;
+    moveList: function (oldIndex, newIndex) {
+      const listFrom = _.find(this.state.lists, (list) => {
+        return list.index === oldIndex;
       });
 
-      service.updateBoard(boardFrom.id, newIndex);
+      service.updateBoard(listFrom.id, newIndex);
 
-      const boardTo = _.find(BoardsStore.state.lists, (board) => {
-        return board.index === newIndex;
+      const listTo = _.find(this.state.lists, (list) => {
+        return list.index === newIndex;
       });
 
-      boardFrom.index = newIndex;
-      if (newIndex > boardTo.index) {
-        boardTo.index--;
+      listFrom.index = newIndex;
+      if (newIndex > listTo.index) {
+        listTo.index--;
       } else {
-        boardTo.index++;
+        listTo.index++;
       }
     },
-    moveCardToBoard: (boardFromId, boardToId, issueId, toIndex) => {
-      const boardFrom = _.find(BoardsStore.state.lists, (board) => {
-        return board.id === boardFromId;
+    moveCardToList: function (listFromId, listToId, issueId, toIndex) {
+      const listFrom = _.find(this.state.lists, (list) => {
+        return list.id === listFromId;
       });
-      const boardTo = _.find(BoardsStore.state.lists, (board) => {
-        return board.id === boardToId;
+      const listTo = _.find(this.state.lists, (list) => {
+        return list.id === listToId;
       });
-      let issue = _.find(boardFrom.issues, (issue) => {
-        return issue.id === issueId;
-      });
-      const issueTo = _.find(boardTo.issues, (issue) => {
-        return issue.id === issueId;
-      });
-      const issueBoards = BoardsStore.getBoardsForIssue(issue);
-
-      // Remove the issue from old board
-      boardFrom.issues = _.reject(boardFrom.issues, (issue) => {
-        return issue.id === issueId;
-      });
+      const issueTo = listTo.findIssue(issueId);
+      let issue = listFrom.findIssue(issueId);
+      const issueLists = this.getListsForIssue(issue);
+      listFrom.removeIssue(issue);
 
       // Add to new boards issues if it doesn't already exist
       if (issueTo) {
         issue = issueTo;
+        issue.removeLabel(listFrom.label);
       } else {
-        boardTo.issues.splice(toIndex, 0, issue);
+        listTo.addIssue(issue, toIndex);
       }
 
-      if (boardTo.id === 'done' && boardFrom.id !== 'backlog') {
-        BoardsStore.removeIssueFromBoards(issue, issueBoards);
-        issue.labels = _.reject(issue.labels, (label) => {
-          return label.title === boardFrom.title;
+      if (listTo.id === 'done' && listFrom.id !== 'backlog') {
+        issueLists.forEach((list) => {
+          issue.removeLabel(list.label);
+          list.removeIssue(issue);
         });
-      } else {
-        if (boardTo.label) {
-          if (boardFrom.id !== 'backlog') {
-            BoardsStore.removeIssueFromBoard(issue, boardFrom);
-          }
-          
-          foundLabel = _.find(issue.labels, (label) => {
-            return label.title === boardTo.title;
-          });
-
-          if (!foundLabel) {
-            issue.labels.push(boardTo.label);
-          }
-        }
       }
     },
-    removeIssueFromBoards: (issue, boards) => {
-      const boardLabels = _.map(boards, (board) => {
-        return board.title;
-      });
-
-      boards.issues = _.each(boards, (board) => {
-        board.issues = _.reject(board.issues, (boardIssue) => {
-          return issue.id === boardIssue.id;
-        });
-      });
-
-      issue.labels = _.reject(issue.labels, (label) => {
-        return boardLabels.indexOf(label.title) !== -1;
-      });
-    },
-    removeIssueFromBoard: (issue, board) => {
-      issue.labels = _.reject(issue.labels, (label) => {
-        return label.title === board.title;
-      });
-    },
-    getBoardsForIssue: (issue) => {
-      return _.filter(BoardsStore.state.lists, (board) => {
-        const foundIssue = _.find(board.issues, (boardIssue) => {
-          return issue.id === boardIssue.id;
-        });
-        return foundIssue;
+    getListsForIssue: function (issue) {
+      return _.filter(this.state.lists, (list) => {
+        return list.findIssue(issue.id);
       });
     },
     clearDone: () => {

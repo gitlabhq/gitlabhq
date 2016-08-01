@@ -31,7 +31,7 @@
             = render 'shared/sort_dropdown'
           - else
             .dropdown
-              %button.btn.btn-create{ type: "button", data: { toggle: "dropdown" } }
+              %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path } }
                 Create new list
               .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new
                 = dropdown_title("Create a new list")

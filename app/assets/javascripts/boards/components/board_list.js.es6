@@ -62,13 +62,13 @@
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
         onAdd: (e) => {
-          let fromBoardId = e.from.getAttribute('data-board');
-          fromBoardId = parseInt(fromBoardId) || fromBoardId;
-          let toBoardId = e.to.getAttribute('data-board');
-          toBoardId = parseInt(toBoardId) || toBoardId;
+          let fromListId = e.from.getAttribute('data-board');
+          fromListId = parseInt(fromListId) || fromListId;
+          let toListId = e.to.getAttribute('data-board');
+          toListId = parseInt(toListId) || toListId;
           const issueId = parseInt(e.item.getAttribute('data-issue'));
 
-          BoardsStore.moveCardToBoard(fromBoardId, toBoardId, issueId, e.newIndex);
+          BoardsStore.moveCardToList(fromListId, toListId, issueId, e.newIndex);
         },
         onUpdate: (e) => {
           console.log(e.newIndex, e.oldIndex);

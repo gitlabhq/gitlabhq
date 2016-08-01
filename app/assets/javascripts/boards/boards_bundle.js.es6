@@ -1,6 +1,7 @@
 //= require vue
 //= require vue-resource
 //= require Sortable
+//= require_tree ./models
 //= require_tree ./stores
 //= require_tree ./services
 //= require_tree ./components
@@ -16,8 +17,8 @@ $(function () {
     ready: function () {
       service.all()
         .then((resp) => {
-          resp.data.forEach((board) => {
-            BoardsStore.state.lists.push(board);
+          resp.json().forEach((board) => {
+            BoardsStore.new(board);
           });
         });
     }

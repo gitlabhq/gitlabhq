@@ -27,7 +27,7 @@
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
         onUpdate: function (e) {
-          BoardsStore.moveBoard(e.oldIndex + 1, e.newIndex + 1);
+          BoardsStore.moveList(e.oldIndex + 1, e.newIndex + 1);
         }
       });
     },
