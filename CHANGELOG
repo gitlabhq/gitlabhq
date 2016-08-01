@@ -40,6 +40,7 @@ v 8.11.0 (unreleased)
   - Change requests_profiles resource constraint to catch virtually any file
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
+  - Fix RequestProfiler::Middleware error when code is reloaded in development
 
 v 8.10.3 (unreleased)
   - Fix hooks missing on imported GitLab projects
