@@ -6,10 +6,10 @@ module Gitlab
       def build(pipeline)
         {
           object_kind: 'pipeline',
+          object_attributes: hook_attrs(pipeline),
           user: pipeline.user.try(:hook_attrs),
           project: pipeline.project.hook_attrs(backward: false),
           commit: pipeline.commit.try(:hook_attrs),
-          object_attributes: hook_attrs(pipeline),
           builds: pipeline.builds.map(&method(:build_hook_attrs))
         }
       end
