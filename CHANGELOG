@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
+  - Environments have an url to link to
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
