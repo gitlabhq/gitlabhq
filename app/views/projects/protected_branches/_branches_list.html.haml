@@ -1,26 +1,25 @@
-%h5.prepend-top-0
-  Already Protected (#{@protected_branches.size})
-- if @protected_branches.empty?
-  %p.settings-message.text-center
-    No branches are protected, protect a branch with the form above.
-- else
-  - can_admin_project = can?(current_user, :admin_project, @project)
+.panel.panel-default
+  - if @protected_branches.empty?
+    %p.settings-message.text-center
+      No branches are protected, protect a branch with the form above.
+  - else
+    - can_admin_project = can?(current_user, :admin_project, @project)
 
-  %table.table.protected-branches-list
-    %colgroup
-      %col{ width: "20%" }
-      %col{ width: "30%" }
-      %col{ width: "25%" }
-      %col{ width: "25%" }
-    %thead
-      %tr
-        %th Branch
-        %th Last commit
-        %th Allowed to merge
-        %th Allowed to push
-        - if can_admin_project
-          %th
-    %tbody
-      = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
+    %table.table.protected-branches-list.table-bordered
+      %colgroup
+        %col{ width: "20%" }
+        %col{ width: "30%" }
+        %col{ width: "25%" }
+        %col{ width: "25%" }
+      %thead
+        %tr
+          %th Protected branch (#{@protected_branches.size})
+          %th Last commit
+          %th Allowed to merge
+          %th Allowed to push
+          - if can_admin_project
+            %th
+      %tbody
+        = render partial: @protected_branches, locals: { can_admin_project: can_admin_project }
 
-  = paginate @protected_branches, theme: 'gitlab'
+    = paginate @protected_branches, theme: 'gitlab'

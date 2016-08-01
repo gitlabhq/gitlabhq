@@ -90,7 +90,7 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".allowed-to-push").click
+          find(".js-allowed-to-push").click
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
@@ -107,7 +107,7 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.count).to eq(1)
 
         within(".protected-branches-list") do
-          find(".allowed-to-push").click
+          find(".js-allowed-to-push").click
           within('.dropdown-menu.push') { click_on access_type_name }
         end
 
@@ -121,7 +121,7 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".allowed-to-merge").click
+          find(".js-allowed-to-merge").click
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
@@ -138,7 +138,7 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.count).to eq(1)
 
         within(".protected-branches-list") do
-          find(".allowed-to-merge").click
+          find(".js-allowed-to-merge").click
           within('.dropdown-menu.merge') { click_on access_type_name }
         end
 

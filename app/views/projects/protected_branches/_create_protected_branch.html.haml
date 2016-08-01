@@ -1,0 +1,34 @@
+= form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
+  .panel.panel-default
+    .panel-heading
+      %b Protect a branch
+    .panel-body
+      .form-horizontal
+        .form-group
+          %label.col-md-2.text-right
+            Branch:
+          .col-md-10
+            = render partial: "dropdown", locals: { f: f }
+            .help-block
+              Wildcards such as
+              %code *-stable
+              or
+              %code production/*
+              are supported
+        .form-group
+          %label.col-md-2.text-right
+            Allowed to merge:
+          .col-md-10
+            = dropdown_tag('Select',
+                           options: { toggle_class: 'js-allowed-to-merge wide',
+                           data: { field_name: 'protected_branch[merge_access_level_attributes][access_level]' }})
+        .form-group
+          %label.col-md-2.text-right
+            Allowed to push:
+          .col-md-10
+            = dropdown_tag('Select',
+                           options: { toggle_class: 'js-allowed-to-push wide',
+                           data: { field_name: 'protected_branch[push_access_level_attributes][access_level]' }})
+
+    .panel-footer
+      = f.submit 'Protect', class: 'btn-create btn', disabled: true
