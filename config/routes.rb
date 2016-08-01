@@ -856,6 +856,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :board, only: [:show]
+
         resources :todos, only: [:create]
 
         resources :uploads, only: [:create] do

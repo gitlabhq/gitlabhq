@@ -1,0 +1,8 @@
+- @no_container = true
+- @content_class = 'issues-board-content'
+- page_title 'Board'
+
+= render 'projects/issues/head'
+= render 'shared/issuable/filter', type: :boards
+
+.board-lists
