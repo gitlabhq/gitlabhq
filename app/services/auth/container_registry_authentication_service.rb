@@ -103,6 +103,8 @@ module Auth
         build_can_pull?(requested_project) || user_can_pull?(requested_project)
       when 'push'
         build_can_push?(requested_project) || user_can_push?(requested_project)
+      when '*'
+        requested_project == project || can?(current_user, :create_container_image, requested_project)
       else
         false
       end
