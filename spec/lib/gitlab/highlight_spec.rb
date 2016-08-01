@@ -22,7 +22,7 @@ describe Gitlab::Highlight, lib: true do
       let(:branch) { 'crlf-diff' }
       let(:blob) { repository.blob_at_branch(branch, path) }
       let(:lines) do
-        Gitlab::Highlight.highlight_lines(project.repository, 'crlf-diff-test', 'files/whitespace')
+        Gitlab::Highlight.highlight_lines(project.repository, 'crlf-diff', 'files/whitespace')
       end
 
       it 'strips extra LFs' do

@@ -20,7 +20,7 @@ describe BranchesFinder do
 
         result = branches_finder.execute
 
-        expect(result.first.name).to eq('video')
+        expect(result.first.name).to eq('crlf-diff')
       end
 
       it 'sorts by last_updated' do
