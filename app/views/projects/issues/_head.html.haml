@@ -6,6 +6,11 @@
           %span
             Issues
 
+    = nav_link(controller: :board) do
+      = link_to 'https://www.justinmind.com/usernote/tests/20932568/20938547/20951683/index.html#/screens/d12245cc-1680-458d-89dd-4f0d7fb22724', title: 'Board' do
+        %span
+          Board
+
     - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
       = nav_link(controller: :merge_requests) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests' do
