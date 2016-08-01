@@ -14,6 +14,10 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/environments' do
     context 'as member of the project' do
+      it_behaves_like 'a paginated resources' do
+        let(:request) { get api("/projects/#{project.id}/environments", user) }
+      end
+
       it 'returns project environments' do
         get api("/projects/#{project.id}/environments", user)
 
@@ -59,9 +63,13 @@ describe API::API, api: true  do
 
     context 'a non member' do
       it 'rejects the request' do
-        post api("/projects/#{project.id}/environments", non_member)
+        post api("/projects/#{project.id}/environments", non_member), name: 'gitlab.com'
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(404)
+      end
+
+      it 'returns a 400 when the required params are missing' do
+        post api("/projects/12345/environments", non_member), external_url: 'http://env.git.com'
       end
     end
   end
@@ -107,6 +115,14 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Not found')
+      end
+    end
+
+    context 'a non member' do
+      it 'rejects the request' do
+        delete api("/projects/#{project.id}/environments/#{environment.id}", non_member)
+
+        expect(response).to have_http_status(404)
       end
     end
   end

@@ -11,6 +11,10 @@ module API
         detail 'This feature was introduced in GitLab 8.11.'
         success Entities::Environment
       end
+      params do
+        optional :page,     type: Integer, desc: 'Page number of the current request'
+        optional :per_page, type: Integer, desc: 'Number of items per page'
+      end
       get ':id/environments' do
         authorize! :read_environment, user_project
 
@@ -51,7 +55,7 @@ module API
         authorize! :update_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
-
+        
         update_params = declared(params, include_missing: false).extract!(:name, :external_url).to_h
         if environment.update(update_params)
           present environment, with: Entities::Environment
