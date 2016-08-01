@@ -10,8 +10,11 @@
     },
     computed: {
       allResolved: function () {
-        const discussion = this.discussions[discussionId];
-        return discussion.isResolved();
+        const discussion = this.discussions[this.discussionId];
+
+        if (discussion) {
+          return discussion.isResolved();
+        }
       },
       discussionsCount: function () {
         return CommentsStore.discussionCount();
