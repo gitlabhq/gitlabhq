@@ -1,6 +1,9 @@
 module Gitlab
   module Conflict
     class FileCollection
+      class ConflictSideMissing < StandardError
+      end
+
       attr_reader :merge_request, :our_commit, :their_commit
 
       def initialize(merge_request)
@@ -39,10 +42,9 @@ module Gitlab
 
       def files
         @files ||= merge_index.conflicts.map do |conflict|
-          their_path = conflict[:theirs][:path]
-          our_path = conflict[:ours][:path]
+          raise ConflictSideMissing unless conflict[:theirs] && conflict[:ours]
 
-          Gitlab::Conflict::File.new(merge_index.merge_file(our_path),
+          Gitlab::Conflict::File.new(merge_index.merge_file(conflict[:ours][:path]),
                                      conflict,
                                      diff_refs: merge_request.diff_refs,
                                      repository: repository)
