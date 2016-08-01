@@ -34,7 +34,7 @@ describe List do
 
   describe '#destroy' do
     it 'can be destroyed when when list_type is set to label' do
-      subject = create(:label_list)
+      subject = create(:list)
 
       expect(subject.destroy).to be_truthy
     end

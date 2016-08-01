@@ -7,7 +7,7 @@ describe Boards::Lists::DestroyService, services: true do
 
     context 'when list type is label' do
       it 'removes list from board' do
-        list = create(:label_list, board: board)
+        list = create(:list, board: board)
         service = described_class.new(project, list_id: list.id)
 
         expect { service.execute }.to change(board.lists, :count).by(-1)
@@ -15,9 +15,9 @@ describe Boards::Lists::DestroyService, services: true do
 
       it 'decrements position of higher lists' do
         backlog     = create(:backlog_list, board: board)
-        development = create(:label_list, board: board, position: 1)
-        review      = create(:label_list, board: board, position: 2)
-        staging     = create(:label_list, board: board, position: 3)
+        development = create(:list, board: board, position: 1)
+        review      = create(:list, board: board, position: 2)
+        staging     = create(:list, board: board, position: 3)
         done        = create(:done_list, board: board)
 
         described_class.new(project, list_id: development.id).execute

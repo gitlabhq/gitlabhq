@@ -28,8 +28,8 @@ describe Boards::Lists::CreateService, services: true do
 
     context 'when board lists has only labels lists' do
       it 'creates a new list at end of the lists' do
-        create(:label_list, board: board, position: 1)
-        create(:label_list, board: board, position: 2)
+        create(:list, board: board, position: 1)
+        create(:list, board: board, position: 2)
 
         list = described_class.new(project, label_id: label.id).execute
 
@@ -41,7 +41,7 @@ describe Boards::Lists::CreateService, services: true do
       it 'creates a new list at end of the label lists' do
         create(:backlog_list, board: board)
         create(:done_list, board: board)
-        list1 = create(:label_list, board: board, position: 1)
+        list1 = create(:list, board: board, position: 1)
 
         list2 = described_class.new(project, label_id: label.id).execute
 
