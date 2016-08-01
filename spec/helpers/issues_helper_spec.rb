@@ -5,52 +5,6 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe "url_for_project_issues" do
-    let(:project_url) { ext_project.external_issue_tracker.project_url }
-    let(:ext_expected) { project_url.gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { polymorphic_path([@project.namespace, project]) }
-
-    it "should return internal path if used internal tracker" do
-      @project = project
-      expect(url_for_project_issues).to match(int_expected)
-    end
-
-    it "should return path to external tracker" do
-      @project = ext_project
-
-      expect(url_for_project_issues).to match(ext_expected)
-    end
-
-    it "should return empty string if project nil" do
-      @project = nil
-
-      expect(url_for_project_issues).to eq ""
-    end
-
-    it 'returns an empty string if project_url is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.project_url') { 'javascript:alert("foo");' }
-
-      expect(url_for_project_issues(project)).to eq ''
-    end
-
-    it 'returns an empty string if project_path is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.project_path') { 'javascript:alert("foo");' }
-
-      expect(url_for_project_issues(project, only_path: true)).to eq ''
-    end
-
-    describe "when external tracker was enabled and then config removed" do
-      before do
-        @project = ext_project
-        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
-      end
-
-      it "should return path to external tracker" do
-        expect(url_for_project_issues).to match(ext_expected)
-      end
-    end
-  end
-
   describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
