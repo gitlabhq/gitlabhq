@@ -5,15 +5,17 @@ describe SlackService::PipelineMessage do
 
   let(:args) do
     {
-      sha: '97de212e80737a608d939f648d959671fb0a0142',
-      tag: false,
-      ref: 'develop',
-      status: status,
+      object_attributes: {
+        id: 123,
+        sha: '97de212e80737a608d939f648d959671fb0a0142',
+        tag: false,
+        ref: 'develop',
+        status: status,
+        duration: duration
+      },
       project: { path_with_namespace: 'project_name',
                  web_url: 'somewhere.com' },
-      commit: { author_name: 'hacker' },
-      object_attributes: { duration: duration,
-                           id: 123 }
+      commit: { author_name: 'hacker' }
     }
   end
 
