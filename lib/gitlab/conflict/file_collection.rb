@@ -42,9 +42,6 @@ module Gitlab
           their_path = conflict[:theirs][:path]
           our_path = conflict[:ours][:path]
 
-          # TODO remove this
-          raise 'path mismatch!' unless their_path == our_path
-
           Gitlab::Conflict::File.new(merge_index.merge_file(our_path),
                                      conflict,
                                      diff_refs: merge_request.diff_refs,
