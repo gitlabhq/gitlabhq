@@ -70,7 +70,7 @@
             const resolved_by = data ? data.resolved_by : null;
 
             CommentsStore.update(this.discussionId, this.noteId, !this.isResolved, resolved_by);
-            ResolveService.updateUpdatedHtml(this.discussionId, data);
+            ResolveService.updateDiscussionHeadline(this.discussionId, data);
           } else {
             new Flash('An error occurred when trying to resolve a comment. Please try again.', 'alert');
           }

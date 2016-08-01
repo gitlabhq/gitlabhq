@@ -47,7 +47,6 @@
       }
 
       discussion.loading = true;
-      console.log(discussion.loading);
 
       return this.discussionResource.save({
         mergeRequestId,
@@ -59,7 +58,7 @@
           discussion.resolveAllNotes(resolved_by);
           discussion.loading = false;
 
-          this.updateUpdatedHtml(discussionId, data);
+          this.updateDiscussionHeadline(discussionId, data);
         } else {
           new Flash('An error occurred when trying to resolve a discussion. Please try again.', 'alert');
         }
@@ -83,14 +82,14 @@
           discussion.unResolveAllNotes();
           discussion.loading = false;
 
-          this.updateUpdatedHtml(discussionId, data);
+          this.updateDiscussionHeadline(discussionId, data);
         } else {
           new Flash('An error occurred when trying to unresolve a discussion. Please try again.', 'alert');
         }
       });
     }
 
-    updateUpdatedHtml(discussionId, data) {
+    updateDiscussionHeadline(discussionId, data) {
       const $discussionHeadline = $(`.discussion[data-discussion-id="${discussionId}"] .js-discussion-headline`);
 
       if (data.discussion_headline_html) {
