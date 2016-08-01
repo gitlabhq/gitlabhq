@@ -5,8 +5,9 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
-v 8.10.3 (unreleased)
-  - Fix regression in Git Annex permission check
+v 8.10.3
+  - Fix regression in Git Annex permission check. !599
+  - [Elastic] Fix commit search for some URLs. !605
 
 v 8.10.2
   - Fix pagination on search result page when ES search is enabled. !592
