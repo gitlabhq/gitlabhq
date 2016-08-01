@@ -61,10 +61,6 @@
           = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
             Changes
             %span.badge= @merge_request.diff_size
-        %li.conflicts-tab
-          = link_to conflicts_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#conflicts', action: 'conflicts', toggle: 'tab'} do
-            Conflicts
-            %span.badge 3
 
       .tab-content
         #notes.notes.tab-pane.voting_notes
@@ -82,9 +78,6 @@
           - # This tab is always loaded via AJAX
         #diffs.diffs.tab-pane
           - # This tab is always loaded via AJAX
-        #conflicts.conflicts.tab-pane
-          - # This tab is always loaded via AJAX
-          = render 'projects/merge_requests/show/conflicts'
 
       .mr-loading-status
         = spinner

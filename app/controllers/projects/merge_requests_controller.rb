@@ -135,10 +135,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless @merge_request.cannot_be_merged?
 
     respond_to do |format|
-      format.html do
-        define_discussion_vars
-        render 'show'
-      end
+      format.html { define_discussion_vars }
 
       format.json do
         begin

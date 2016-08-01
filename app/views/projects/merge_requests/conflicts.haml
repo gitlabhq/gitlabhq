@@ -1,0 +1,111 @@
+- page_title "Merge Conflicts", "#{@merge_request.title} (#{@merge_request.to_reference}", "Merge Requests"
+
+= render "projects/merge_requests/show/mr_title"
+
+.merge-request-details.issuable-details{data: {id: @merge_request.project.id}}
+  = render "projects/merge_requests/show/mr_box"
+
+#conflicts
+  .loading{ "v-if" => "isLoading" }
+    %i.fa.fa-spinner.fa-spin
+
+  .content-block.oneline-block.files-changed{ "v-if" => "!isLoading" }
+    .inline-parallel-buttons
+      .btn-group
+        %a.btn{ |
+          ":class" => "{'active': !isParallel}", |
+          "@click" => "handleViewTypeChange('inline')"}
+          Inline
+        %a.btn{ |
+          ":class" => "{'active': isParallel}", |
+          "@click" => "handleViewTypeChange('parallel')"}
+          Side-by-side
+
+    .js-toggle-container
+      .commit-stat-summary
+        Showing
+        %strong.cred {{conflictsCount}} conflicts
+        for
+        %strong {{conflictsData.source_branch}}
+        into
+        %strong {{conflictsData.target_branch}}
+
+  .files-wrapper{ "v-if" => "!isLoading" }
+    .files{"v-if" => "isParallel"}
+      .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
+        .file-title
+          %span {{file.new_path}}
+          .file-actions
+            %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
+
+        .diff-content.diff-wrap-lines
+          .diff-wrap-lines.code.file-content.js-syntax-highlight.white
+            %table{"v-for" => "(key, group) in file.parallelLines"}
+              %tr.line_holder.parallel{"v-for" => "line in group", |
+                ":class" => "{ |
+                  'head': line.isHead, |
+                  'origin': line.isOrigin, |
+                  'match': line.hasMatch, |
+                  'selected': line.isSelected, |
+                  'unselected': line.isUnselected }"}
+
+                %template{"v-if" => "line.isHeader"}
+                  %td.diff-line-num.header
+                  %td.line_content.header
+                    %strong {{line.richText}}
+                    %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
+
+                %template{"v-if" => "!line.isHeader"}
+                  %td.diff-line-num.old_line
+                    {{line.lineNumber}}
+                  %td.line_content
+                    {{{line.richText}}}
+
+    .files{"v-if" => "!isParallel"}
+      .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
+        .file-title
+          %span {{file.new_path}}
+          .file-actions
+            %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
+
+        .diff-content.diff-wrap-lines
+          .diff-wrap-lines.code.file-content.js-syntax-highlight.white
+            %table
+              %tr.line_holder{"v-for" => "line in file.inlineLines", |
+                ":class" => "{ |
+                  'head': line.isHead, |
+                  'origin': line.isOrigin, |
+                  'match': line.hasMatch, |
+                  'selected': line.isSelected, |
+                  'unselected': line.isUnselected }"}
+
+                %template{"v-if" => "!line.isHeader"}
+                  %td.diff-line-num.new_line
+                    %a {{line.new_line}}
+                  %td.diff-line-num.old_line
+                    %a {{line.old_line}}
+                  %td.line_content
+                    {{{line.richText}}}
+
+                %template{"v-if" => "line.isHeader"}
+                  %td.diff-line-num.header
+                  %td.diff-line-num.header
+                  %td.line_content.header
+                    %strong {{{line.richText}}}
+                    %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
+
+    .content-block.oneline-block.files-changed
+      %strong.resolved-count {{resolvedCount}}
+      of
+      %strong.total-count {{conflictsCount}}
+      conflicts have been resolved
+
+      .commit-message-container.form-group
+        .max-width-marker
+        %textarea.form-control.js-commit-message{":disabled" => "!allResolved"} {{{conflictsData.commitMessage}}}
+
+      %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved"}
+        Commit conflict resolution
+
+      %button{type: 'button', class: 'btn btn-cancel'}
+        Cancel
