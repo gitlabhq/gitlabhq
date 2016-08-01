@@ -51,7 +51,7 @@ module Banzai
           relative_url_root,
           context[:project].path_with_namespace,
           uri_type(file_path),
-          ref || context[:project].default_branch,  # if no ref exists, point to the default branch
+          ref,
           file_path
         ].compact.join('/').squeeze('/').chomp('/')
 
@@ -115,7 +115,7 @@ module Banzai
       end
 
       def current_commit
-        @current_commit ||= context[:commit] || ref ? repository.commit(ref) : repository.head_commit
+        @current_commit ||= context[:commit] || repository.commit(ref)
       end
 
       def relative_url_root
@@ -123,7 +123,7 @@ module Banzai
       end
 
       def ref
-        context[:ref]
+        context[:ref] || context[:project].default_branch
       end
 
       def repository
