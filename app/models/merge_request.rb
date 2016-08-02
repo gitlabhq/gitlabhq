@@ -590,6 +590,12 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
+  def environments
+    target_project.environments.select do |environment|
+      environment.deployed_to?(ref_path)
+    end
+  end
+
   def state_human_name
     if merged?
       "Merged"

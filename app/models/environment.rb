@@ -25,4 +25,10 @@ class Environment < ActiveRecord::Base
   def nullify_external_url
     self.external_url = nil if self.external_url.blank?
   end
+
+  def deployed_to?(ref)
+    return unless last_deployment
+
+    last_deployment.deployed_to(ref)
+  end
 end
