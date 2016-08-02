@@ -11,11 +11,13 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
+  has_one :merge_request_diff
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
 
-  after_update :update_merge_request_diff
+  after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :reload_diff_if_branch_changed
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
 
@@ -94,7 +96,6 @@ class MergeRequest < ActiveRecord::Base
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
   validate :validate_branches, unless: [:allow_broken, :importing?]
   validate :validate_fork
-  validates_associated :merge_request_diff, on: :create, unless: [:allow_broken, :importing?]
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -282,11 +283,11 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def create_merge_request_diff
-    merge_request_diffs.create
+  def ensure_merge_request_diff
+    merge_request_diff || create_merge_request_diff
   end
 
-  def update_merge_request_diff
+  def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
@@ -688,9 +689,5 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
-  end
-
-  def merge_request_diff
-    merge_request_diffs.first
   end
 end

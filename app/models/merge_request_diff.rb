@@ -22,28 +22,28 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  validates :start_commit_sha, presence: true, unless: :importing?
-  validates :head_commit_sha,  presence: true, unless: :importing?
+  # For compatibility with old MergeRequestDiff which
+  # does not store those variables in database
+  after_initialize :ensure_commits_sha, if: :persisted?
 
-  after_initialize :initialize_commits_sha, unless: :importing?
+  # All diff information is collected from repository after object is created.
+  # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
-  after_save :keep_around_commits, unless: :importing?
-
-  # Those variables are used for collecting commits and diff from git repository.
-  # After object is created those sha are stored in the database.
-  # However some old MergeRequestDiff records don't
-  # have those variables in the database so we try to initialize it
-  def initialize_commits_sha
-    self.start_commit_sha ||= merge_request.target_branch_sha
-    self.head_commit_sha  ||= persisted? ? last_commit.sha : merge_request.source_branch_sha
-    self.base_commit_sha  ||= find_base_sha
-  end
 
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
+    ensure_commits_sha
     save_commits
+    reload_commits
     save_diffs
+    keep_around_commits
+  end
+
+  def ensure_commits_sha
+    self.start_commit_sha ||= merge_request.target_branch_sha
+    self.head_commit_sha  ||= last_commit.try(:sha) || merge_request.source_branch_sha
+    self.base_commit_sha  ||= find_base_sha
   end
 
   def size
@@ -52,14 +52,15 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def diffs(options={})
     if options[:ignore_whitespace_change]
-      @diffs_no_whitespace ||= begin
-        compare = Gitlab::Git::Compare.new(
-          repository.raw_repository,
-          start_commit_sha,
-          head_commit_sha
-        )
-        compare.diffs(options)
-      end
+      @diffs_no_whitespace ||=
+        begin
+          compare = Gitlab::Git::Compare.new(
+            repository.raw_repository,
+            start_commit_sha,
+            head_commit_sha
+          )
+          compare.diffs(options)
+        end
     else
       @diffs ||= {}
       @diffs[options] ||= load_diffs(st_diffs, options)
@@ -68,6 +69,11 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def commits
     @commits ||= load_commits(st_commits || [])
+  end
+
+  def reload_commits
+    @commits = nil
+    commits
   end
 
   def last_commit
@@ -192,7 +198,6 @@ class MergeRequestDiff < ActiveRecord::Base
 
     new_attributes[:st_diffs] = new_diffs
     update_columns_serialized(new_attributes)
-    keep_around_commits
   end
 
   def project
@@ -207,6 +212,9 @@ class MergeRequestDiff < ActiveRecord::Base
     return unless head_commit_sha && start_commit_sha
 
     project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
+  rescue Rugged::OdbError
+    # In case head or start commit does not exist in the repository any more
+    nil
   end
 
   def utf8_st_diffs

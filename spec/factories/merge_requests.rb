@@ -68,11 +68,5 @@ FactoryGirl.define do
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
-
-    after :create do |merge_request|
-      unless merge_request.merge_request_diff
-        merge_request.create_merge_request_diff
-      end
-    end
   end
 end
