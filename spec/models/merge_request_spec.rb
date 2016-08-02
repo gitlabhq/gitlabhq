@@ -673,6 +673,8 @@ describe MergeRequest, models: true do
           start_commit_sha: commit.parent_id,
           head_commit_sha: commit.sha
         )
+
+        subject.merge_request_diff(true)
       end
 
       expect(Notes::DiffPositionUpdateService).to receive(:new).with(
