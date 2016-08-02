@@ -686,4 +686,28 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
   end
+
+  describe "#diff_sha_refs" do
+    context "with diffs" do
+      subject { create(:merge_request, :with_diffs) }
+
+      it "does not touch the repository" do
+        subject # Instantiate the object
+
+        expect_any_instance_of(Repository).not_to receive(:commit)
+
+        subject.diff_sha_refs
+      end
+
+      it "returns expected diff_refs" do
+        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+
+        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+      end
+    end
+  end
 end

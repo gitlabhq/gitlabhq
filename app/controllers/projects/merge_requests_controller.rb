@@ -378,6 +378,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       fresh.
       discussions
 
+    preload_noteable_for_regular_notes(@discussions.flat_map(&:notes))
+
     # This is not executed lazily
     @notes = Banzai::NoteRenderer.render(
       @discussions.flat_map(&:notes),
