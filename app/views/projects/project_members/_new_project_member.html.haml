@@ -15,9 +15,16 @@
         %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
   .form-group
-    = f.label :expires_at, "Membership expires at", class: 'control-label'
+    = f.label :expires_at, "Access expiration date", class: 'control-label'
     .col-sm-10
-      = text_field_tag :expires_at, nil, class: "datepicker form-control", placeholder: "Select expires at"
+      = text_field_tag :expires_at, nil, class: "datepicker form-control", placeholder: "Select access expiration date"
+      .help-block
+        Leave it empty if you do not want this user's access to expire.
 
   .form-actions
     = f.submit 'Add users to project', class: "btn btn-create"
+
+:javascript
+  $(".datepicker").datepicker({
+    dateFormat: "yy-mm-dd"
+  });
