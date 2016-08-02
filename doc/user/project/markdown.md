@@ -331,11 +331,11 @@ The valid video extensions are `.mp4`, `.m4v`, `.mov`, `.webm`, and `.ogv`.
 
     Here's a sample video:
 
-    ![Sample Video](img/video.mp4)
+    ![Sample Video](img/markdown_video.mp4)
 
 Here's a sample video:
 
-![Sample Video](img/video.mp4)
+![Sample Video](img/markdown_video.mp4)
 
 # Standard Markdown
 
@@ -533,24 +533,24 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
     Here's our logo (hover to see the title text):
 
     Inline-style:
-    ![alt text](img/logo.png)
+    ![alt text](img/markdown_logo.png)
 
     Reference-style:
     ![alt text1][logo]
 
-    [logo]: img/logo.png
+    [logo]: img/markdown_logo.png
 
 Here's our logo:
 
 Inline-style:
 
-![alt text](img/logo.png)
+![alt text](img/markdown_logo.png)
 
 Reference-style:
 
 ![alt text][logo]
 
-[logo]: img/logo.png
+[logo]: img/markdown_logo.png
 
 ## Blockquotes
 
