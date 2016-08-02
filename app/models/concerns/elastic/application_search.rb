@@ -6,7 +6,7 @@ module Elastic
     included do
       include Elasticsearch::Model
 
-      index_name [Rails.application.class.parent_name.downcase, self.name.downcase, Rails.env].join('-')
+      index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
 
       settings \
         index: {
@@ -92,7 +92,7 @@ module Elastic
                      end
 
         query_hash[:sort] = [
-          { updated_at_sort: { order: :desc, mode: :min } },
+          { updated_at: { order: :desc } },
           :_score
         ]
 

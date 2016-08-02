@@ -11,14 +11,13 @@ module Elastic
                               index_options: 'offsets'
         indexes :project_id,  type: :integer
         indexes :created_at,  type: :date
+        indexes :updated_at,  type: :date
 
         indexes :issue do
           indexes :assignee_id, type: :integer
           indexes :author_id, type: :integer
           indexes :confidential, type: :boolean
         end
-
-        indexes :updated_at_sort, type: :string, index: 'not_analyzed'
       end
 
       def as_indexed_json(options = {})
@@ -26,7 +25,7 @@ module Elastic
 
         # We don't use as_json(only: ...) because it calls all virtual and serialized attributtes
         # https://gitlab.com/gitlab-org/gitlab-ee/issues/349
-        [:id, :note, :project_id, :created_at].each do |attr|
+        [:id, :note, :project_id, :created_at, :updated_at].each do |attr|
           data[attr.to_s] = self.send(attr)
         end
 
@@ -38,7 +37,6 @@ module Elastic
           }
         end
 
-        data['updated_at_sort'] = updated_at
         data
       end
 
@@ -62,7 +60,7 @@ module Elastic
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
         query_hash[:sort] = [
-          { updated_at_sort: { order: :desc, mode: :min } },
+          { updated_at: { order: :desc } },
           :_score
         ]
 

@@ -6,23 +6,23 @@ class Spinach::Features::SnippetsSearch < Spinach::FeatureSteps
   include StubConfiguration
 
   before do
-    Snippet.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    Snippet.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
 
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
   step 'there is a snippet "index" with "php rocks" string' do
     create :personal_snippet, :public, content: "php rocks", title: "index"
-    Snippet.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
   end
 
   step 'there is a snippet "php" with "benefits" string' do
     create :personal_snippet, :public, content: "benefits", title: "php"
-    Snippet.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
   end
 
   step 'I search "php"' do

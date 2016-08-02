@@ -20,7 +20,7 @@ ELASTIC_PORT = elastic_connection_info['port']
 class Repository
   include Elasticsearch::Git::Repository
 
-  index_name ['repository', 'index', RAILS_ENV].compact.join('-')
+  index_name ['gitlab', RAILS_ENV].compact.join('-')
 
   self.__elasticsearch__.client = Elasticsearch::Client.new(
     host: ELASTIC_HOST,
@@ -39,8 +39,6 @@ class Repository
     REPO_PATH
   end
 end
-
-Repository.__elasticsearch__.create_index!
 
 repo = Repository.new
 

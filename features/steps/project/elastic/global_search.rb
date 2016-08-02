@@ -8,15 +8,11 @@ class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
   include StubConfiguration
 
   before do
-    [::Project, Issue, MergeRequest, Milestone].each do |model|
-      model.__elasticsearch__.create_index!
-    end
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    [::Project, Issue, MergeRequest, Milestone].each do |model|
-      model.__elasticsearch__.delete_index!
-    end
+    Gitlab::Elastic::Helper.delete_index
 
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end

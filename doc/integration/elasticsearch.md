@@ -64,10 +64,10 @@ Configure Elasticsearch's host and port in **Admin > Settings**. Then create emp
 
     ```
     # Omnibus installations
-    sudo gitlab-rake gitlab:elastic:create_empty_indexes
+    sudo gitlab-rake gitlab:elastic:create_empty_index
 
     # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_indexes
+    bundle exec rake gitlab:elastic:create_empty_index
     ```
 
 
@@ -216,10 +216,10 @@ To minimize downtime of the search feature we recommend the following:
 
     ```
     # Omnibus installations
-    sudo gitlab-rake gitlab:elastic:create_empty_indexes
+    sudo gitlab-rake gitlab:elastic:create_empty_index
 
     # Installations from source
-    bundle exec rake gitlab:elastic:create_empty_indexes
+    bundle exec rake gitlab:elastic:create_empty_index
     ```
 
 1. Index all repositories using the `gitlab:elastic:index_repositories` Rake
@@ -227,8 +227,8 @@ To minimize downtime of the search feature we recommend the following:
 
 1. Enable Elasticsearch indexing.
 
-1. Run indexers for database (with the `UPDATE_INDEX=1` parameter), wikis, and
-   repositories. By running  the repository indexer twice you will be sure that
+1. Run indexers for database, wikis, and
+   repositories (with the `UPDATE_INDEX=1` parameter). By running the repository indexer twice you will be sure that
    everything is indexed because some commits could be pushed while you
    performed the initial indexing. The repository indexer will skip
    repositories and commits that are already indexed, so it will be much
