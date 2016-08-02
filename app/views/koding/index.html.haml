@@ -15,13 +15,13 @@
 
 // Temporarily show the video of integration, we eventually will update
 // this page for the integration details ~GG
-- videoBaseURL = "http://www.koding.com/hubfs/koding-gitlab/media/GitLab-Koding"
+- video_base_url = "http://www.koding.com/hubfs/koding-gitlab/media/GitLab-Koding"
 %div{ class: container_class }
   .koding-video
     %video{ preload: "auto", autoplay: 'true', width: 689, height: 465 }
-      %source{ type: 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"', src: "#{videoBaseURL}.mp4" }
-      %source{ type: 'video/webm;codecs="vp8, vorbis"', src: "#{videoBaseURL}.webm" }
-      %source{ type: 'video/ogg;codecs="theora, vorbis"', src: "#{videoBaseURL}.ogg" }
+      %source{ type: 'video/mp4;codecs="avc1.42E01E, mp4a.40.2"', src: "#{video_base_url}.mp4" }
+      %source{ type: 'video/webm;codecs="vp8, vorbis"', src: "#{video_base_url}.webm" }
+      %source{ type: 'video/ogg;codecs="theora, vorbis"', src: "#{video_base_url}.ogg" }
       I'm sorry; your browser doesn't support HTML5 video in WebM with VP8 or MP4 with H.264.
   .koding-video-title
     Koding integration sneak preview
