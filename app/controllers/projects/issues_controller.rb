@@ -3,6 +3,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
+  include IssuableCollections
 
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
@@ -24,7 +25,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    @issues = get_issues_collection
+    @issues = issues_collection
 
     if terms.present?
       if terms =~ /\A#(\d+)\z/

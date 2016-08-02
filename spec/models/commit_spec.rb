@@ -13,6 +13,26 @@ describe Commit, models: true do
     it { is_expected.to include_module(StaticModel) }
   end
 
+  describe '#author' do
+    it 'looks up the author in a case-insensitive way' do
+      user = create(:user, email: commit.author_email.upcase)
+      expect(commit.author).to eq(user)
+    end
+
+    it 'caches the author' do
+      user = create(:user, email: commit.author_email)
+      expect(RequestStore).to receive(:active?).twice.and_return(true)
+      expect_any_instance_of(Commit).to receive(:find_author_by_any_email).and_call_original
+
+      expect(commit.author).to eq(user)
+      key = "commit_author:#{commit.author_email}"
+      expect(RequestStore.store[key]).to eq(user)
+
+      expect(commit.author).to eq(user)
+      RequestStore.store.clear
+    end
+  end
+
   describe '#to_reference' do
     it 'returns a String reference to the object' do
       expect(commit.to_reference).to eq commit.id

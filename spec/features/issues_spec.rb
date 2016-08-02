@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include IssueHelpers
   include SortingHelper
 
   let(:project) { create(:project) }
@@ -186,15 +187,15 @@ describe 'Issues', feature: true do
     it 'sorts by newest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_recently_created)
 
-      expect(first_issue).to include('baz')
-      expect(last_issue).to include('foo')
+      expect(first_issue).to include('foo')
+      expect(last_issue).to include('baz')
     end
 
     it 'sorts by oldest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_oldest_created)
 
-      expect(first_issue).to include('foo')
-      expect(last_issue).to include('baz')
+      expect(first_issue).to include('baz')
+      expect(last_issue).to include('foo')
     end
 
     it 'sorts by most recently updated' do
@@ -350,8 +351,8 @@ describe 'Issues', feature: true do
                                             sort: sort_value_oldest_created,
                                             assignee_id: user2.id)
 
-        expect(first_issue).to include('foo')
-        expect(last_issue).to include('bar')
+        expect(first_issue).to include('bar')
+        expect(last_issue).to include('foo')
         expect(page).not_to have_content 'baz'
       end
     end
@@ -545,6 +546,35 @@ describe 'Issues', feature: true do
     end
   end
 
+  describe 'new issue by email' do
+    shared_examples 'show the email in the modal' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+
+        visit namespace_project_issues_path(project.namespace, project)
+        click_button('Email a new issue')
+      end
+
+      it 'click the button to show modal for the new email' do
+        page.within '#issue-email-modal' do
+          email = project.new_issue_address(@user)
+
+          expect(page).to have_selector("input[value='#{email}']")
+        end
+      end
+    end
+
+    context 'with existing issues' do
+      let!(:issue) { create(:issue, project: project, author: @user) }
+
+      it_behaves_like 'show the email in the modal'
+    end
+
+    context 'without existing issues' do
+      it_behaves_like 'show the email in the modal'
+    end
+  end
+
   describe 'due date' do
     context 'update due on issue#show', js: true do
       let(:issue) { create(:issue, project: project, author: @user, assignee: @user) }
@@ -580,14 +610,6 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def first_issue
-    page.all('ul.issues-list > li').first.text
-  end
-
-  def last_issue
-    page.all('ul.issues-list > li').last.text
   end
 
   def drop_in_dropzone(file_path)

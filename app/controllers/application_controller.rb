@@ -373,24 +373,4 @@ class ApplicationController < ActionController::Base
   def u2f_app_id
     request.base_url
   end
-
-  private
-
-  def set_default_sort
-    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
-            'issuable_sort'
-          end
-
-    cookies[key]  = params[:sort] if key && params[:sort].present?
-    params[:sort] = cookies[key] if key
-    params[:sort] ||= 'id_desc'
-  end
-
-  def is_a_listing_page_for?(page_type)
-    controller_name, action_name = params.values_at(:controller, :action)
-
-    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
-    (controller_name == 'groups' && action_name == page_type) ||
-    (controller_name == 'dashboard' && action_name == page_type)
-  end
 end

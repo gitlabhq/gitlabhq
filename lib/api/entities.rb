@@ -166,8 +166,13 @@ module API
       expose :safe_message, as: :message
     end
 
+    class RepoCommitStats < Grape::Entity
+      expose :additions, :deletions, :total
+    end
+
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :stats, using: Entities::RepoCommitStats
       expose :status
     end
 
@@ -532,6 +537,10 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+    end
+
+    class Environment < Grape::Entity
+      expose :id, :name, :external_url
     end
 
     class RepoLicense < Grape::Entity

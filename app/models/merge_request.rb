@@ -243,11 +243,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_branch_sha
-    target_branch_head.try(:sha)
+    @target_branch_sha || target_branch_head.try(:sha)
   end
 
   def source_branch_sha
-    source_branch_head.try(:sha)
+    @source_branch_sha || source_branch_head.try(:sha)
   end
 
   def diff_refs

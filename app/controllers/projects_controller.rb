@@ -98,7 +98,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project queued for delete."
+      flash[:alert] = "Project #{@project.name} queued for deletion."
     end
 
     respond_to do |format|

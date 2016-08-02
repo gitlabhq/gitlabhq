@@ -1,12 +1,6 @@
 - page_title 'New Environment'
 
-.row.prepend-top-default.append-bottom-default
-  .col-lg-3
-    %h4.prepend-top-0
-      New Environment
-    %p
-      Environments allow you to track deployments of your application
-      = succeed "." do
-        = link_to "Read more about environments", help_page_path("ci/environments")
-
-  = render 'form'
+%h3.page-title
+  New environment
+%hr
+= render 'form'

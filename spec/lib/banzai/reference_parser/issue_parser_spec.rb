@@ -16,17 +16,17 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
       end
 
       it 'returns the nodes when the user can read the issue' do
-        expect(Ability.abilities).to receive(:allowed?).
-          with(user, :read_issue, issue).
-          and_return(true)
+        expect(Ability).to receive(:issues_readable_by_user).
+          with([issue], user).
+          and_return([issue])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([link])
       end
 
       it 'returns an empty Array when the user can not read the issue' do
-        expect(Ability.abilities).to receive(:allowed?).
-          with(user, :read_issue, issue).
-          and_return(false)
+        expect(Ability).to receive(:issues_readable_by_user).
+          with([issue], user).
+          and_return([])
 
         expect(subject.nodes_visible_to_user(user, [link])).to eq([])
       end

@@ -52,23 +52,16 @@ module Gitlab
       end
 
       def add_metric(series, values, tags = {})
-        @metrics << Metric.new("#{series_prefix}#{series}", values, tags)
+        @metrics << Metric.new("#{Metrics.series_prefix}#{series}", values, tags)
       end
 
-      # Measures the time it takes to execute a method.
-      #
-      # Multiple calls to the same method add up to the total runtime of the
-      # method.
-      #
-      # name - The full name of the method to measure (e.g. `User#sign_in`).
-      def measure_method(name, &block)
-        unless @methods[name]
-          series = "#{series_prefix}#{Instrumentation::SERIES}"
-
-          @methods[name] = MethodCall.new(name, series)
+      # Returns a MethodCall object for the given name.
+      def method_call_for(name)
+        unless method = @methods[name]
+          @methods[name] = method = MethodCall.new(name, Instrumentation.series)
         end
 
-        @methods[name].measure(&block)
+        method
       end
 
       def increment(name, value)
@@ -114,14 +107,6 @@ module Gitlab
         end
 
         Metrics.submit_metrics(submit_hashes)
-      end
-
-      def sidekiq?
-        Sidekiq.server?
-      end
-
-      def series_prefix
-        sidekiq? ? 'sidekiq_' : 'rails_'
       end
     end
   end

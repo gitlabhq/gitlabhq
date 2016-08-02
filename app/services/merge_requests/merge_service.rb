@@ -59,7 +59,13 @@ module MergeRequests
       }
 
       commit_id = repository.merge(current_user, merge_request, options)
-      merge_request.update(merge_commit_sha: commit_id)
+
+      if commit_id
+        merge_request.update(merge_commit_sha: commit_id)
+      else
+        merge_request.update(merge_error: 'Conflicts detected during merge')
+        false
+      end
     rescue GitHooksService::PreReceiveError => e
       merge_request.update(merge_error: e.message)
       false

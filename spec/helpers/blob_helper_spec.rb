@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe BlobHelper do
+  include TreeHelper
+
   let(:blob_name) { 'test.lisp' }
   let(:no_context_content) { ":type \"assem\"))" }
   let(:blob_content) { "(make-pathname :defaults name\n#{no_context_content}" }
@@ -63,6 +65,22 @@ describe BlobHelper do
     it 'should retain essential elements' do
       blob = OpenStruct.new(data: data)
       expect(sanitize_svg(blob).data).to eq(expected)
+    end
+  end
+
+  describe "#edit_blob_link" do
+    let(:project) { create(:project) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(double)
+    end
+
+    it 'verifies blob is text' do
+      expect(self).not_to receive(:blob_text_viewable?)
+
+      button = edit_blob_link(project, 'refs/heads/master', 'README.md')
+
+      expect(button).to start_with('<button')
     end
   end
 end

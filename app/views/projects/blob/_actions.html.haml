@@ -17,7 +17,8 @@
 - if current_user
   .btn-group{ role: "group" }
     = lock_file_link(html_options: {class: 'btn btn-sm path-lock'})
-    = edit_blob_link
+    - if blob_text_viewable?(@blob)
+      = edit_blob_link
     = replace_blob_link
     = delete_blob_link
 

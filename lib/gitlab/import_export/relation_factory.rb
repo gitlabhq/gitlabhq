@@ -13,6 +13,10 @@ module Gitlab
 
       BUILD_MODELS = %w[Ci::Build commit_status].freeze
 
+      IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
+
+      EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
+
       def self.create(*args)
         new(*args).create
       end
@@ -22,23 +26,34 @@ module Gitlab
         @relation_hash = relation_hash.except('id', 'noteable_id')
         @members_mapper = members_mapper
         @user = user
+        @imported_object_retries = 0
       end
 
       # Creates an object from an actual model with name "relation_sym" with params from
       # the relation_hash, updating references with new object IDs, mapping users using
       # the "members_mapper" object, also updating notes if required.
       def create
-        set_note_author if @relation_name == :notes
-        update_user_references
-        update_project_references
-        reset_ci_tokens if @relation_name == 'Ci::Trigger'
-        @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
-        set_st_diffs if @relation_name == :merge_request_diff
+        setup_models
 
         generate_imported_object
       end
 
       private
+
+      def setup_models
+        if @relation_name == :notes
+          set_note_author
+
+          # TODO: note attatchments not supported yet
+          @relation_hash['attachment'] = nil
+        end
+
+        update_user_references
+        update_project_references
+        reset_ci_tokens if @relation_name == 'Ci::Trigger'
+        @relation_hash['data'].deep_symbolize_keys! if @relation_name == :events && @relation_hash['data']
+        set_st_diffs if @relation_name == :merge_request_diff
+      end
 
       def update_user_references
         USER_REFERENCES.each do |reference|
@@ -112,10 +127,14 @@ module Gitlab
       end
 
       def imported_object
-        imported_object = relation_class.new(parsed_relation_hash)
-        yield(imported_object) if block_given?
-        imported_object.importing = true if imported_object.respond_to?(:importing)
-        imported_object
+        yield(existing_or_new_object) if block_given?
+        existing_or_new_object.importing = true if existing_or_new_object.respond_to?(:importing)
+        existing_or_new_object
+      rescue ActiveRecord::RecordNotUnique
+        # as the operation is not atomic, retry in the unlikely scenario an INSERT is
+        # performed on the same object between the SELECT and the INSERT
+        @imported_object_retries += 1
+        retry if @imported_object_retries < IMPORTED_OBJECT_MAX_RETRIES
       end
 
       def update_note_for_missing_author(author_name)
@@ -133,6 +152,20 @@ module Gitlab
 
       def set_st_diffs
         @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
+      end
+
+      def existing_or_new_object
+        # Only find existing records to avoid mapping tables such as milestones
+        # Otherwise always create the record, skipping the extra SELECT clause.
+        @existing_or_new_object ||= begin
+          if EXISTING_OBJECT_CHECK.include?(@relation_name)
+            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id'))
+            existing_object.assign_attributes(parsed_relation_hash)
+            existing_object
+          else
+            relation_class.new(parsed_relation_hash)
+          end
+        end
       end
     end
   end

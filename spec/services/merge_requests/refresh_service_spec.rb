@@ -65,7 +65,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'should execute hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks).
-          with(@merge_request, 'update')
+          with(@merge_request, 'update', @oldrev)
       end
 
       it { expect(@merge_request.notes).not_to be_empty }
@@ -125,7 +125,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'should execute hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks).
-          with(@fork_merge_request, 'update')
+          with(@fork_merge_request, 'update', @oldrev)
       end
 
       it { expect(@merge_request.notes).to be_empty }
@@ -233,7 +233,7 @@ describe MergeRequests::RefreshService, services: true do
 
       it 'refreshes the merge request' do
         expect(refresh_service).to receive(:execute_hooks).
-                                       with(@fork_merge_request, 'update')
+                                       with(@fork_merge_request, 'update', Gitlab::Git::BLANK_SHA)
         allow_any_instance_of(Repository).to receive(:merge_base).and_return(@oldrev)
 
         refresh_service.execute(Gitlab::Git::BLANK_SHA, @newrev, 'refs/heads/master')

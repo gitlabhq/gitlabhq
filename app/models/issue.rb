@@ -244,6 +244,34 @@ class Issue < ActiveRecord::Base
       self.closed_by_merge_requests(current_user).empty?
   end
 
+  # Returns `true` if the current issue can be viewed by either a logged in User
+  # or an anonymous user.
+  def visible_to_user?(user = nil)
+    user ? readable_by?(user) : publicly_visible?
+  end
+
+  # Returns `true` if the given User can read the current Issue.
+  def readable_by?(user)
+    if user.admin?
+      true
+    elsif project.owner == user
+      true
+    elsif confidential?
+      author == user ||
+        assignee == user ||
+        project.team.member?(user, Gitlab::Access::REPORTER)
+    else
+      project.public? ||
+        project.internal? && !user.external? ||
+        project.team.member?(user)
+    end
+  end
+
+  # Returns `true` if this Issue is visible to everybody.
+  def publicly_visible?
+    project.public? && !confidential?
+  end
+
   def overdue?
     due_date.try(:past?) || false
   end

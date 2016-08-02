@@ -5,6 +5,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include IssuableActions
   include NotesHelper
   include ToggleAwardEmoji
+  include IssuableCollections
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -30,7 +31,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    @merge_requests = get_merge_requests_collection
+    @merge_requests = merge_requests_collection
 
     if terms.present?
       if terms =~ /\A[#!](\d+)\z/
@@ -447,7 +448,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_discussions = @merge_request.notes.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
       @grouped_diff_discussions.values.flat_map(&:notes),

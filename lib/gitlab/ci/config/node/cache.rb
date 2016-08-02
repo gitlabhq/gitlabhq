@@ -8,6 +8,12 @@ module Gitlab
         class Cache < Entry
           include Configurable
 
+          ALLOWED_KEYS = %i[key untracked paths]
+
+          validations do
+            validates :config, allowed_keys: ALLOWED_KEYS
+          end
+
           node :key, Node::Key,
             description: 'Cache key used to define a cache affinity.'
 
@@ -16,10 +22,6 @@ module Gitlab
 
           node :paths, Node::Paths,
             description: 'Specify which paths should be cached across builds.'
-
-          validations do
-            validates :config, allowed_keys: true
-          end
         end
       end
     end
