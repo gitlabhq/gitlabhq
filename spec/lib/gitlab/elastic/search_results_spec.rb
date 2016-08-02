@@ -3,9 +3,11 @@ require 'spec_helper'
 describe Gitlab::Elastic::SearchResults, lib: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -16,8 +18,6 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
   describe 'issues' do
     before do
-      Issue.__elasticsearch__.create_index!
-
       @issue_1 = create(
         :issue,
         project: project_1,
@@ -38,11 +38,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         iid: 2
       )
 
-      Issue.__elasticsearch__.refresh_index!
-    end
-
-    after do
-      Issue.__elasticsearch__.delete_index!
+      Gitlab::Elastic::Helper.refresh_index
     end
 
     it 'should list issues that title or description contain the query' do
@@ -91,8 +87,6 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     let(:admin) { create(:admin) }
 
     before do
-      Issue.__elasticsearch__.create_index!
-
       @issue = create(:issue, project: project_1, title: 'Issue 1', iid: 1)
       @security_issue_1 = create(:issue, :confidential, project: project_1, title: 'Security issue 1', author: author, iid: 2)
       @security_issue_2 = create(:issue, :confidential, title: 'Security issue 2', project: project_1, assignee: assignee, iid: 3)
@@ -100,7 +94,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       @security_issue_4 = create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee, iid: 1)
       @security_issue_5 = create(:issue, :confidential, project: project_4, title: 'Security issue 5', iid: 1)
 
-      Issue.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
     end
 
     context 'search by term' do
@@ -276,8 +270,6 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
   describe 'merge requests' do
     before do
-      MergeRequest.__elasticsearch__.create_index!
-
       @merge_request_1 = create(
         :merge_request,
         source_project: project_1,
@@ -302,11 +294,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         iid: 2
       )
 
-      MergeRequest.__elasticsearch__.refresh_index!
-    end
-
-    after do
-      MergeRequest.__elasticsearch__.delete_index!
+      Gitlab::Elastic::Helper.refresh_index
     end
 
     it 'should list merge requests that title or description contain the query' do
@@ -345,18 +333,6 @@ describe Gitlab::Elastic::SearchResults, lib: true do
   end
 
   describe 'project scoping' do
-    before do
-      [Project, MergeRequest, Issue, Milestone].each do |model|
-        model.__elasticsearch__.create_index!
-      end
-    end
-
-    after do
-      [Project, MergeRequest, Issue, Milestone].each do |model|
-        model.__elasticsearch__.delete_index!
-      end
-    end
-
     it "returns items for project" do
       project = create :project, name: "term"
 
@@ -380,9 +356,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       # The Milestone you have no access to
       create :milestone, title: 'bla-bla term'
 
-      [Project, MergeRequest, Issue, Milestone].each do |model|
-        model.__elasticsearch__.refresh_index!
-      end
+      Gitlab::Elastic::Helper.refresh_index
 
       result = Gitlab::Elastic::SearchResults.new(user, [project.id], 'term')
 

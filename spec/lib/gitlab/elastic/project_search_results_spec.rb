@@ -7,14 +7,12 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    Project.__elasticsearch__.create_index!
-    Issue.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
-    Project.__elasticsearch__.delete_index!
-    Issue.__elasticsearch__.delete_index!
   end
 
   describe 'initialize with empty ref' do
@@ -53,7 +51,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       project1.wiki.create_page("index_page", " term")
       project1.wiki.index_blobs
 
-      Project.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
 
       result = Gitlab::Elastic::ProjectSearchResults.new(user, project.id, "term")
       expect(result.notes_count).to eq(1)
@@ -77,7 +75,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
     let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
 
     before do
-      Issue.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
     end
 
     it 'should not list project confidential issues for non project members' do

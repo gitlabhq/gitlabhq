@@ -5,6 +5,8 @@ module Elastic
     included do
       include Elasticsearch::Git::Repository
 
+      index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
+
       def repository_id
         "wiki_#{project.id}"
       end
@@ -18,8 +20,6 @@ module Elastic
       end
 
       def self.import
-        ProjectWiki.__elasticsearch__.create_index!
-
         Project.where(wiki_enabled: true).find_each do |project|
           unless project.wiki.empty?
             project.wiki.index_blobs

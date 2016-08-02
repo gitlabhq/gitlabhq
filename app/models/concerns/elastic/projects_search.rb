@@ -22,6 +22,7 @@ module Elastic
         indexes :namespace_id,        type: :integer
 
         indexes :created_at,          type: :date
+        indexes :updated_at,          type: :date
         indexes :archived,            type: :boolean
         indexes :visibility_level,    type: :integer
         indexes :last_activity_at,    type: :date
@@ -40,6 +41,7 @@ module Elastic
           :description,
           :namespace_id,
           :created_at,
+          :updated_at,
           :archived,
           :visibility_level,
           :last_activity_at,

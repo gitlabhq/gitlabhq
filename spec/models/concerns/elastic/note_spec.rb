@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Note, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -20,7 +20,7 @@ describe Note, elastic: true do
     # The note in the project you have no access to
     create :note, note: 'bla-bla term'
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     options = { project_ids: [issue.project.id] }
 
@@ -35,8 +35,9 @@ describe Note, elastic: true do
       'note',
       'project_id',
       'created_at',
-      'issue',
-      'updated_at_sort'
+      'updated_at',
+      'issue'
+
     ]
 
     expect(note.as_indexed_json.keys).to eq(expected_hash_keys)
@@ -58,7 +59,7 @@ describe Note, elastic: true do
       create :note, note: 'bla-bla term', project: issue.project, noteable: issue
       create :note, project: issue.project, noteable: issue
 
-      Note.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
 
       options = { project_ids: [issue.project.id] }
 
@@ -72,7 +73,7 @@ describe Note, elastic: true do
       create :note, note: 'bla-bla term', project: issue.project, noteable: issue
       create :note, project: issue.project, noteable: issue
 
-      Note.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
 
       options = { project_ids: [issue.project.id], current_user: user }
 
@@ -89,7 +90,7 @@ describe Note, elastic: true do
       create :note, note: 'bla-bla term', project: issue.project, noteable: issue
       create :note, project: issue.project, noteable: issue
 
-      Note.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
 
       options = { project_ids: [issue.project.id], current_user: member }
 
@@ -106,7 +107,7 @@ describe Note, elastic: true do
       create :note, note: 'bla-bla term', project: issue.project, noteable: issue
       create :note, project: issue.project, noteable: issue
 
-      Note.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
 
       options = { project_ids: [issue.project.id], current_user: member }
 

@@ -1,16 +1,16 @@
 namespace :gitlab do
   namespace :elastic do
-    desc "GitLab | Update Elasticsearch indexes"
+    desc "GitLab | Elasticsearch | Index eveything at once"
     task :index do
+      Rake::Task["gitlab:elastic:create_empty_index"].invoke
+      Rake::Task["gitlab:elastic:clear_index_status"].invoke
       Rake::Task["gitlab:elastic:index_repositories"].invoke
       Rake::Task["gitlab:elastic:index_wikis"].invoke
       Rake::Task["gitlab:elastic:index_database"].invoke
     end
 
-    desc "GitLab | Update Elasticsearch indexes for project repositories"
+    desc "GitLab | Elasticsearch | Index project repositories"
     task index_repositories: :environment  do
-      Repository.__elasticsearch__.create_index!
-
       projects = if ENV['UPDATE_INDEX']
                    Project
                  else
@@ -56,10 +56,8 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Update Elasticsearch indexes for wiki repositories"
+    desc "GitLab | Elasticsearch | Index wiki repositories"
     task index_wikis: :environment  do
-      ProjectWiki.__elasticsearch__.create_index!
-
       projects = apply_project_filters(Project.where(wiki_enabled: true))
 
       projects.find_each do |project|
@@ -75,11 +73,9 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Update Elasticsearch indexes for all database objects"
+    desc "GitLab | Elasticsearch | Index all database objects"
     task index_database: :environment do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
-        klass.__elasticsearch__.create_index!
-
         print "Indexing #{klass} records... "
 
         if klass == Note
@@ -92,72 +88,28 @@ namespace :gitlab do
       end
     end
 
-    desc "GitLab | Recreate Elasticsearch indexes for particular model"
-    task reindex_model: :environment do
-      model_name = ENV['MODEL']
-
-      unless %w(Project Issue MergeRequest Snippet Note Milestone).include?(model_name)
-        raise "Please pass MODEL variable"
-      end
-
-      klass = model_name.constantize
-      klass.__elasticsearch__.create_index! force: true
-
-      print "Reindexing #{klass} records... "
-
-      if klass == Note
-        Note.searchable.import
-      else
-        klass.import
-      end
-
-      puts "done".color(:green)
+    desc "GitLab | Elasticsearch | Create empty index"
+    task create_empty_index: :environment do
+      Gitlab::Elastic::Helper.create_empty_index
+      puts "Index created".color(:green)
     end
 
-    desc "GitLab | Create empty Elasticsearch indexes"
-    task create_empty_indexes: :environment do
-      [
-        Project,
-        Issue,
-        MergeRequest,
-        Snippet,
-        Note,
-        Milestone,
-        ProjectWiki,
-        Repository
-      ].each do |klass|
-        print "Creating index for #{klass}... "
-
-        klass.__elasticsearch__.create_index!
-
-        puts "done".color(:green)
-      end
-    end
-
-    desc "GitLab | Clear Elasticsearch indexing status"
+    desc "GitLab | Elasticsearch | Clear indexing status"
     task clear_index_status: :environment do
       IndexStatus.destroy_all
-      puts "Done".color(:green)
+      puts "Index status has been reset".color(:green)
     end
 
-    desc "GitLab | Delete Elasticsearch indexes"
-    task delete_indexes: :environment do
-      [
-        Project,
-        Issue,
-        MergeRequest,
-        Snippet,
-        Note,
-        Milestone,
-        ProjectWiki,
-        Repository
-      ].each do |klass|
-        print "Delete index for #{klass}... "
+    desc "GitLab | Elasticsearch | Delete index"
+    task delete_index: :environment do
+      Gitlab::Elastic::Helper.delete_index
+      puts "Index deleted".color(:green)
+    end
 
-        klass.__elasticsearch__.delete_index!
-
-        puts "done".color(:green)
-      end
+    desc "GitLab | Elasticsearch | Recreate index"
+    task recreate_index: :environment do
+      Gitlab::Elastic::Helper.create_empty_index
+      puts "Index recreated".color(:green)
     end
 
     def apply_project_filters(projects)

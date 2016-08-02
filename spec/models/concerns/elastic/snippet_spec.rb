@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Snippet, elastic: true do
   before do
     stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
-    described_class.__elasticsearch__.create_index!
+    Gitlab::Elastic::Helper.create_empty_index
   end
 
   after do
-    described_class.__elasticsearch__.delete_index!
+    Gitlab::Elastic::Helper.delete_index
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
@@ -24,7 +24,7 @@ describe Snippet, elastic: true do
     let!(:project_private_snippet)  { create(:snippet, :private, project: project, content: 'password: XXX') }
 
     before do
-      described_class.__elasticsearch__.refresh_index!
+      Gitlab::Elastic::Helper.refresh_index
     end
 
     it 'returns only public snippets when user is blank' do
@@ -78,7 +78,7 @@ describe Snippet, elastic: true do
     create(:snippet, :public, file_name: 'index.php')
     create(:snippet)
 
-    described_class.__elasticsearch__.refresh_index!
+    Gitlab::Elastic::Helper.refresh_index
 
     options = { user: user }
 

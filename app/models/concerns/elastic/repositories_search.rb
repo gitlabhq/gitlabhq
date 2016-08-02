@@ -5,6 +5,8 @@ module Elastic
     included do
       include Elasticsearch::Git::Repository
 
+      index_name [Rails.application.class.parent_name.downcase, Rails.env].join('-')
+
       def repository_id
         project.id
       end
@@ -18,8 +20,6 @@ module Elastic
       end
 
       def self.import
-        Repository.__elasticsearch__.create_index!
-
         Project.find_each do |project|
           if project.repository.exists? && !project.repository.empty?
             project.repository.index_commits

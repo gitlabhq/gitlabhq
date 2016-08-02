@@ -21,8 +21,6 @@ module Elastic
         indexes :project_id,       type: :integer
         indexes :author_id,        type: :integer
         indexes :visibility_level, type: :integer
-
-        indexes :updated_at_sort,  type: :date,   index: :not_analyzed
       end
 
       def as_indexed_json(options = {})
@@ -62,7 +60,7 @@ module Elastic
         query_hash = filter(query_hash, options[:user])
 
         query_hash[:sort] = [
-          { updated_at_sort: { order: :desc, mode: :min } },
+          { updated_at: { order: :desc } },
           :_score
         ]
 
