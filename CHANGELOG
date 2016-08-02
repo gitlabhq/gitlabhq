@@ -39,6 +39,7 @@ v 8.11.0 (unreleased)
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
   - Convert image diff background image to CSS (ClemMakesApps)
+  - Remove unnecessary index_projects_on_builds_enabled index from the projects table
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
