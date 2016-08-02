@@ -64,6 +64,7 @@ v 8.11.0 (unreleased)
   - Make error pages responsive (Takuya Noguchi)
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
+  - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
