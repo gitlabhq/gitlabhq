@@ -22,7 +22,7 @@ describe Key, models: true do
 
     describe "#publishable_keys" do
       it 'replaces SSH key comment with simple identifier of username + hostname' do
-        expect(build(:key, user: user).publishable_key).to match(/#{Regexp.escape(user.name)} \(localhost\)/)
+        expect(build(:key, user: user).publishable_key).to include("#{user.name} (localhost)")
       end
     end
   end
