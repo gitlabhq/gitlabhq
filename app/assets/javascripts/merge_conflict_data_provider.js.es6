@@ -52,6 +52,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   setParallelLines(data) {
     data.files.forEach( (file) => {
+      file.filePath = this.getFilePath(file);
       file.parallelLines = { left: [], right: [] };
 
       file.sections.forEach( (section) => {
@@ -110,6 +111,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
   setInlineLines(data) {
     data.files.forEach( (file) => {
       file.inlineLines = []
+      file.filePath = this.getFilePath(file);
 
       file.sections.forEach( (section) => {
         let currentLineType = 'new';
@@ -290,6 +292,12 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
       commit_message: this.vueInstance.conflictsData.commitMessage,
       sections: this.vueInstance.resolutionData
     }
+  }
+
+
+  getFilePath(file) {
+    const { old_path, new_path } = file;
+    return old_path === new_path ? new_path : `${old_path} &rarr; ${new_path}`;
   }
 
 }

@@ -39,7 +39,7 @@
     .files{"v-if" => "isParallel"}
       .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
         .file-title
-          %span {{file.new_path}}
+          %span {{{file.filePath}}}
           .file-actions
             %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
 
@@ -66,10 +66,11 @@
                   %td.line_content
                     {{{line.richText}}}
 
+
     .files{"v-if" => "!isParallel"}
       .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
         .file-title
-          %span {{file.new_path}}
+          %span {{{file.filePath}}}
           .file-actions
             %a.btn.btn-sm View file @{{conflictsData.shortCommitSha}}
 
