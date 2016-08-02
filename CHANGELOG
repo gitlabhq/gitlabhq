@@ -57,6 +57,7 @@ v 8.11.0 (unreleased)
   - Trigram indexes for the "ci_runners" table have been removed to speed up UPDATE queries
   - Fix devise deprecation warnings.
   - Update version_sorter and use new interface for faster tag sorting
+  - Load branches asynchronously in Cherry Pick and Revert dialogs.
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Nokogiri's various parsing methods are now instrumented
