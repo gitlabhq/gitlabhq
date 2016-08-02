@@ -177,6 +177,10 @@ module API
 
       # TODO (rspeicher): Deprecated; remove in 9.0
       expose(:expires_at) { |snippet| nil }
+
+      expose :web_url do |snippet, options|
+        Gitlab::UrlBuilder.build(snippet)
+      end
     end
 
     class ProjectEntity < Grape::Entity
@@ -206,6 +210,10 @@ module API
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
+
+      expose :web_url do |issue, options|
+        Gitlab::UrlBuilder.build(issue)
+      end
     end
 
     class ExternalIssue < Grape::Entity
@@ -229,6 +237,10 @@ module API
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+
+      expose :web_url do |merge_request, options|
+        Gitlab::UrlBuilder.build(merge_request)
+      end
     end
 
     class MergeRequestChanges < MergeRequest

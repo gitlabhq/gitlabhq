@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
   - Change merge_error column from string to text type
+  - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Added tests for diff notes
 

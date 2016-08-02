@@ -61,6 +61,7 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(issue.title)
+        expect(json_response.last).to have_key('web_url')
       end
 
       it "adds pagination headers and keep query params" do
