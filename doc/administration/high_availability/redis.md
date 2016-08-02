@@ -57,7 +57,7 @@ Redis.
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
-## Experimental Redis sentinel support
+## Experimental Redis Sentinel support
 
 > [Introduced][ce-1877] in GitLab 8.10.
 
@@ -81,7 +81,7 @@ The configuration consists of three parts:
 
 Read carefully how to configure those components below.
 
-### Sentinel - Redis setup
+### Redis setup
 
 You must have at least 2 Redis servers: 1 Master, 1 or more Slaves.
 They should be configured the same way and with similar server specs, as
@@ -124,29 +124,31 @@ the master, and `masterauth` in slaves.
 
 **Using Redis via Omnibus**
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` of a master Redis machine (usualy a single machine):
 
     ```ruby
-    # IP and port of the master Redis server
-    gitlab['redis']['master_ip'] = '10.10.10.10'
-    gitlab['redis']['master_port'] = 6379
+    ## Redis TCP support (will disable UNIX socket transport)
+    redis['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
+    redis['port'] = 6379
+
+    ## Master redis instance
+    redis['password'] = '<huge password string here>'
     ```
 
-1. Optionally, set up password authentication for increased security.
-   Add the following to master's `/etc/gitlab/gitlab.rb`:
+1. Edit `/etc/gitlab/gitlab.rb` of a slave Redis machine (should be one or more machines):
 
-    ```conf
-    # Optional password authentication for increased security
-    gitlab['redis']['password'] = '<password>'
+    ```ruby
+    ## Redis TCP support (will disable UNIX socket transport)
+    redis['bind'] = '0.0.0.0' # or specify an IP to bind to a single one
+    redis['port'] = 6379
+
+    ## Slave redis instance
+    redis['master_ip'] = '10.10.10.10' # IP of master Redis server
+    redis['master_port'] = 6379 # Port of master Redis server
+    redis['master_password'] = "<huge password string here>"
     ```
 
-1. Then add this line to all the slave servers' `redis.conf`:
-
-    ```conf
-    gitlab['redis']['master_password'] = '<password>'
-    ```
-
-1. Reconfigure the GitLab for the changes to take effect.
+1. Reconfigure the GitLab for the changes to take effect: `sudo gitlab-ctl reconfigure`
 
 ---
 
@@ -154,6 +156,10 @@ Now that the Redis servers are all set up, let's configure the Sentinel
 servers.
 
 ### Sentinel setup
+
+We don't provide yet an automated way to setup and run the Sentinel daemon
+from Omnibus installation method. You must follow the instructions below and
+run it by yourself.
 
 The support for Sentinel in Ruby has some [caveats](https://github.com/redis/redis-rb/issues/531).
 While you can give any name for the `master-group-name` part of the
@@ -183,13 +189,13 @@ sentinel leader-epoch master-redis.example.com 0
 The final part is to inform the main GitLab application server of the Redis
 master and the new sentinels servers.
 
-### Sentinel - GitLab setup
+### GitLab setup
 
 You can enable or disable sentinel support at any time in new or existing
 installations. From the GitLab application perspective, all it requires is
-the correct credentials for the Master redis and for a few Sentinels nodes.
+the correct credentials for the master Redis and for a few Sentinel nodes.
 
-It doesn't require a list of all sentinel nodes, as in case of a failure,
+It doesn't require a list of all Sentinel nodes, as in case of a failure,
 the application will need to query only one of them.
 
 >**Note:**
@@ -198,7 +204,7 @@ The following steps should be performed in the [GitLab application server](gitla
 **For source based installations**
 
 1. Edit `/home/git/gitlab/config/resque.yml` following the example in
-   `/home/git/gitlab/config/resque.yml.example`i, and uncomment the sentinels
+   `/home/git/gitlab/config/resque.yml.example`, and uncomment the sentinels
    line, changing to the correct server credentials.
 1. Restart GitLab for the changes to take effect.
 
@@ -209,8 +215,7 @@ The following steps should be performed in the [GitLab application server](gitla
     ```ruby
     gitlab-rails['redis_host'] = "master-redis.example.com"
     gitlab-rails['redis_port'] = 6379
-    gitlab-rails['redis_password'] = "redis-secure-password-here"
-    gitlab-rails['redis_socket'] = nil
+    gitlab-rails['redis_password'] = '<huge password string here>'
     gitlab-rails['redis_sentinels'] = [
       {'host' => '10.10.10.1', 'port' => 26379},
       {'host' => '10.10.10.2', 'port' => 26379},
