@@ -29,10 +29,18 @@ window.MergeConflictResolver = class MergeConflictResolver {
 
 
   fetchData() {
-    $.get('./conflicts.json').done( (data) => {
-      this.dataProvider.decorateData(this.vue, data);
-      this.vue.isLoading = false;
-    })
+    const dp = this.dataProvider;
+
+    $.get('./conflicts.json')
+      .done( (data) => {
+        dp.decorateData(this.vue, data);
+      })
+      .error( (data) => {
+        dp.handleFailedRequest(this.vue, data);
+      })
+      .always( () => {
+        this.vue.isLoading = false;
+      })
   }
 
 

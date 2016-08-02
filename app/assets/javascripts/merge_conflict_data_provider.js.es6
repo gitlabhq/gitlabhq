@@ -8,6 +8,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
     return {
       isLoading      : true,
+      hasError       : false,
       isParallel     : diffViewType === 'parallel',
       diffViewType   : diffViewType,
       conflictsData  : {},
@@ -18,12 +19,19 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   decorateData(vueInstance, data) {
     this.vueInstance    = vueInstance;
-    data.shortCommitSha = data.commit_sha.slice(0, 7);
-    data.commitMesage   = data.commit_message;
 
-    this.setParallelLines(data);
-    this.setInlineLines(data);
-    this.updateResolutionsData(data);
+    if (data.type === 'error') {
+      vueInstance.hasError = true;
+      data.errorMessage = data.message;
+    }
+    else {
+      data.shortCommitSha = data.commit_sha.slice(0, 7);
+      data.commitMesage   = data.commit_message;
+
+      this.setParallelLines(data);
+      this.setInlineLines(data);
+      this.updateResolutionsData(data);
+    }
 
     vueInstance.conflictsData = data;
   }
@@ -166,7 +174,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     vi.diffView   = newType;
     vi.isParallel = newType === 'parallel';
     $.cookie('diff_view', newType); // TODO: Make sure that cookie path added.
-    $('.container-fluid').toggleClass('container-limited');
+    $('.content-wrapper .container-fluid').toggleClass('container-limited');
   }
 
 
@@ -268,6 +276,12 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
       isSelected  : false,
       isUnselected: false
     }
+  }
+
+
+  handleFailedRequest(vueInstance, data) {
+    vueInstance.hasError = true;
+    vueInstance.conflictsData.errorMessage = 'Something went wrong!';
   }
 
 }

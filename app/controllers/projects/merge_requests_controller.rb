@@ -141,7 +141,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         begin
           render json: Gitlab::Conflict::FileCollection.new(@merge_request)
         rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing => e
-          render json: { message: 'Unable to resolve conflicts in the web interface for this merge request' }
+          render json: {
+            message: 'Unable to resolve conflicts in the web interface for this merge request',
+            type: 'error'
+          }
         end
       end
     end
