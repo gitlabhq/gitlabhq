@@ -41,6 +41,7 @@ v 8.11.0 (unreleased)
   - Profile requests when a header is passed
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
   - Add commit stats in commit api. !5517 (dixpac)
+  - Add CI configuration button on project page
   - Make error pages responsive (Takuya Noguchi)
   - Change requests_profiles resource constraint to catch virtually any file
   - Reduce number of queries made for merge_requests/:id/diffs
