@@ -137,6 +137,30 @@
   }
 }
 
+.board-blank-state {
+  height: 100%;
+  padding: $gl-padding;
+  background-color: #fff;
+}
+
+.board-blank-state-list {
+  list-style: none;
+
+  > li:not(:last-child) {
+    margin-bottom: 8px;
+  }
+
+  .label-color {
+    position: relative;
+    top: 2px;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
+    border-radius: $border-radius-default;
+  }
+}
+
 .board-list {
   flex: 1;
   margin: 0;

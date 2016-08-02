@@ -37,4 +37,4 @@
   });
 
   Vue.component('board', Board)
-}());
+})();

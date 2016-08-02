@@ -14,6 +14,7 @@
         = icon("search", class: "board-search-icon", "v-show" => "!query")
         %button.board-search-clear-btn{ type: "button", role: "button", "aria-label" => "Clear search", "@click" => "clearSearch", "v-show" => "query" }
           = icon("times", class: "board-search-clear")
-      %board-list{ "inline-template" => true, ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters" }
+      %board-list{ "inline-template" => true, "v-if" => "board.id != 'blank'", ":board-id" => "board.id", ":issues" => "board.issues", ":disabled" => "#{current_user.nil?}", ":query" => "query", ":filters" => "filters" }
         %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId" }
           = render "projects/boards/components/card"
+      = render "projects/boards/components/blank_state"

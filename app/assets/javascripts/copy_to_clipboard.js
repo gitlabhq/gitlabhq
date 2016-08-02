@@ -34,9 +34,12 @@
 
   $(function() {
     var clipboard;
-    clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
-    clipboard.on('success', genericSuccess);
-    return clipboard.on('error', genericError);
+
+    if ($('body').attr('data-page') !== 'projects:boards:index') {
+      clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
+      clipboard.on('success', genericSuccess);
+      return clipboard.on('error', genericError);
+    }
   });
 
 }).call(this);

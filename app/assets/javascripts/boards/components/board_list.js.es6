@@ -88,4 +88,4 @@
   });
 
   Vue.component('board-list', BoardList);
-}());
+})();

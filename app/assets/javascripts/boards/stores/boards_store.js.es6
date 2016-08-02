@@ -30,7 +30,9 @@
         return list.id === id;
       });
 
-      this.getDoneList().index = this.state.lists.length - 1;
+      if (id !== 'blank') {
+        this.getDoneList().index = this.state.lists.length - 1;
+      }
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = _.find(this.state.lists, (list) => {

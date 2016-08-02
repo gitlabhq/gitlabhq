@@ -15,4 +15,4 @@
   });
 
   Vue.component('board-delete', BoardDelete);
-}());
+})();

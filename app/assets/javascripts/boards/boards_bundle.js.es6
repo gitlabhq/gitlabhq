@@ -17,7 +17,18 @@ $(function () {
     ready: function () {
       service.all()
         .then((resp) => {
-          resp.json().forEach((board) => {
+          const boards = resp.json();
+
+          // Add blank state board
+          if (boards.length === 2) {
+            boards.splice(1, 0, {
+              id: 'blank',
+              title: 'Welcome to your Issue Board!',
+              index: 1
+            });
+          }
+
+          boards.forEach((board) => {
             BoardsStore.new(board);
           });
         });
