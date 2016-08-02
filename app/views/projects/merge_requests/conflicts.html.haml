@@ -107,10 +107,11 @@
 
       .commit-message-container.form-group
         .max-width-marker
-        %textarea.form-control.js-commit-message{":disabled" => "!allResolved"} {{{conflictsData.commitMessage}}}
+        %textarea.form-control.js-commit-message{":disabled" => "!allResolved", "v-model" => "conflictsData.commitMessage"}
+          {{{conflictsData.commitMessage}}}
 
-      %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved"}
+      %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved", "@click" => "commit()"}
         Commit conflict resolution
 
-      %button{type: 'button', class: 'btn btn-cancel'}
-        Cancel
+      / %button{type: 'button', class: 'btn btn-cancel'}
+      /   Cancel

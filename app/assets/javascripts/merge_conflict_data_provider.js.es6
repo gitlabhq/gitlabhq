@@ -26,7 +26,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     }
     else {
       data.shortCommitSha = data.commit_sha.slice(0, 7);
-      data.commitMesage   = data.commit_message;
+      data.commitMessage  = data.commit_message;
 
       this.setParallelLines(data);
       this.setInlineLines(data);
@@ -282,6 +282,14 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
   handleFailedRequest(vueInstance, data) {
     vueInstance.hasError = true;
     vueInstance.conflictsData.errorMessage = 'Something went wrong!';
+  }
+
+
+  getCommitData() {
+    return {
+      commitMessage: this.vueInstance.conflictsData.commitMessage,
+      sections: this.vueInstance.resolutionData
+    }
   }
 
 }

@@ -81,7 +81,7 @@
       if (action === 'show') {
         action = 'notes';
       }
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|conflicts)(\.html)?\/?$/, '');
+      new_state = this._location.pathname.replace(/\/(commits|diffs|builds)(\.html)?\/?$/, '');
       if (action !== 'notes') {
         new_state += "/" + action;
       }

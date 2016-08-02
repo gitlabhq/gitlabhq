@@ -22,6 +22,9 @@ window.MergeConflictResolver = class MergeConflictResolver {
         },
         handleViewTypeChange(newType) {
           that.dataProvider.updateViewType(newType);
+        },
+        commit() {
+          that.commit();
         }
       }
     })
@@ -52,6 +55,13 @@ window.MergeConflictResolver = class MergeConflictResolver {
       resolvedCount()  { return dp.getResolvedCount() },
       allResolved()    { return dp.isAllResolved() }
     }
+  }
+
+  commit() {
+    $.post('./resolve_conflicts', this.dataProvider.getCommitData())
+      .always( (data) => {
+        console.log(data)
+      })
   }
 
 }
