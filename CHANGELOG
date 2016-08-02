@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
+  - The Repository class is now instrumented
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
