@@ -47,6 +47,9 @@ v 8.11.0 (unreleased)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
 
+v 8.10.4 (unreleased)
+  - Fix Import/Export project import not working in HA mode
+
 v 8.10.3
   - Fix Import/Export issue importing milestones and labels not associated properly. !5426
   - Fix timing problems running imports on production. !5523
