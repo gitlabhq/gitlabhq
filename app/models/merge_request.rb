@@ -11,7 +11,9 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs, dependent: :destroy
-  has_one :merge_request_diff
+  has_one :merge_request_diff,
+    -> { order('merge_request_diffs.id DESC') }
+
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
@@ -287,6 +289,15 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff || create_merge_request_diff
   end
 
+  def create_merge_request_diff
+    merge_request_diffs.create
+    reload_merge_request_diff
+  end
+
+  def reload_merge_request_diff
+    merge_request_diff(true)
+  end
+
   def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
@@ -298,7 +309,6 @@ class MergeRequest < ActiveRecord::Base
 
     old_diff_refs = self.diff_refs
     create_merge_request_diff
-    merge_request_diffs.reload
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
