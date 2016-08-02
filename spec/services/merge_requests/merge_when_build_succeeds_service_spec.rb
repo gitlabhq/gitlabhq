@@ -28,7 +28,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
       it 'sets the params, merge_user, and flag' do
         expect(merge_request).to be_valid
         expect(merge_request.merge_when_build_succeeds).to be_truthy
-        expect(merge_request.merge_params).to eq commit_message: 'Awesome message'
+        expect(merge_request.merge_params).to eq({ 'commit_message' => 'Awesome message' })
         expect(merge_request.merge_user).to be user
       end
 
