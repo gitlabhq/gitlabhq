@@ -23,6 +23,7 @@ v 8.11.0 (unreleased)
   - Fix renaming repository when name contains invalid chararacters under project settings
   - Optimize checking if a user has read access to a list of issues !5370
   - Nokogiri's various parsing methods are now instrumented
+  - Add simple identifier to public SSH keys (muteor)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
