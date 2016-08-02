@@ -12,6 +12,10 @@ describe Projects::UpdateRemoteMirrorService do
     before do
       create_branch(repository, 'existing-branch')
       allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
+
+      gitlab_shell = Gitlab::Shell.new
+      allow(repository).to receive(:gitlab_shell).and_return(gitlab_shell)
+      allow(gitlab_shell).to receive(:push_remote_branches).and_return(true)
     end
 
     it "fetches the remote repository" do
@@ -123,7 +127,7 @@ describe Projects::UpdateRemoteMirrorService do
 
   def create_branch(repository, branch_name)
     rugged = repository.rugged
-    masterrev = repository.find_branch('master').target
+    masterrev = repository.find_branch('master').target.id
     parentrev = repository.commit(masterrev).parent_id
 
     rugged.references.create("refs/heads/#{branch_name}", parentrev)
@@ -136,13 +140,13 @@ describe Projects::UpdateRemoteMirrorService do
 
     local_branch_names.each do |branch|
       target = repository.find_branch(branch).try(:target)
-      rugged.references.create("refs/remotes/#{remote_name}/#{branch}", target) if target
+      rugged.references.create("refs/remotes/#{remote_name}/#{branch}", target.id) if target
     end
   end
 
   def update_branch(repository, branch)
     rugged = repository.rugged
-    masterrev = repository.find_branch('master').target
+    masterrev = repository.find_branch('master').target.id
 
     # Updated existing branch
     rugged.references.create("refs/heads/#{branch}", masterrev, force: true)
@@ -158,8 +162,8 @@ describe Projects::UpdateRemoteMirrorService do
 
   def generate_tags(repository, *tag_names)
     tag_names.each_with_object([]) do |name, tags|
-      tag_rev = repository.find_tag(name).try(:target)
-      tags << Gitlab::Git::Tag.new(name, tag_rev)
+      target_commit = repository.find_tag(name).try(:target).try(:raw_commit)
+      tags << Gitlab::Git::Tag.new(repository.raw_repository, target_commit, name, target_commit)
     end
   end
 
