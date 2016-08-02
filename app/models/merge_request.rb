@@ -250,6 +250,12 @@ class MergeRequest < ActiveRecord::Base
   def diff_refs
     if merge_request_diff
       merge_request_diff.diff_refs
+    elsif diff_start_commit || diff_base_commit
+      Gitlab::Diff::DiffRefs.new(
+        base_sha:  diff_base_sha,
+        start_sha: diff_start_sha,
+        head_sha:  diff_head_sha
+      )
     end
   end
 
