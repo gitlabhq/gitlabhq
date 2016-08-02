@@ -13,7 +13,7 @@ module Gitlab
       class UnmergeableFile < ParserError
       end
 
-      def parse(text, our_path:, their_path:, parent: nil)
+      def parse(text, our_path:, their_path:, parent_file: nil)
         raise UnmergeableFile if text.blank? # Typically a binary file
         raise UnmergeableFile if text.length > 102400
 
@@ -43,9 +43,9 @@ module Gitlab
             type = nil
           elsif line[0] == '\\'
             type = 'nonewline'
-            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent: parent)
+            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent_file: parent_file)
           else
-            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent: parent)
+            lines << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, parent_file: parent_file)
             line_old += 1 if type != 'new'
             line_new += 1 if type != 'old'
 

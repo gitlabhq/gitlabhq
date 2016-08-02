@@ -46,7 +46,6 @@ module Gitlab
 
           Gitlab::Conflict::File.new(merge_index.merge_file(conflict[:ours][:path]),
                                      conflict,
-                                     diff_refs: merge_request.diff_refs,
                                      repository: repository)
         end
       end

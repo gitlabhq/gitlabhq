@@ -5,12 +5,11 @@ describe Gitlab::Conflict::File, lib: true do
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
   let(:their_commit) { rugged.branches['conflict-a'].target }
-  let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: their_commit.oid, head_sha: our_commit.oid) }
   let(:our_commit) { rugged.branches['conflict-b'].target }
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, diff_refs: diff_refs, repository: repository) }
+  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, repository: repository) }
 
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
@@ -92,7 +91,7 @@ describe Gitlab::Conflict::File, lib: true do
 
       expect(section[:conflict]).to be_falsey
       expect(match_line.type).to eq('match')
-      expect(match_line.text).to eq('@@ -46,53 +46,53 @@')
+      expect(match_line.text).to eq('@@ -46,53 +46,53 @@ module Gitlab')
     end
 
     it 'does not return match lines when there is no gap between sections' do

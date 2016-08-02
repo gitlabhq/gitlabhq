@@ -6,14 +6,12 @@ module Gitlab
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :their_ref, :our_path, :our_ref, :repository
+      attr_reader :merge_file_result, :their_path, :our_path, :repository
 
-      def initialize(merge_file_result, conflict, diff_refs:, repository:)
+      def initialize(merge_file_result, conflict, repository:)
         @merge_file_result = merge_file_result
         @their_path = conflict[:theirs][:path]
         @our_path = conflict[:ours][:path]
-        @their_ref = diff_refs.start_sha
-        @our_ref = diff_refs.head_sha
         @repository = repository
       end
 
@@ -22,7 +20,7 @@ module Gitlab
         @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file_result[:data],
                                                       our_path: our_path,
                                                       their_path: their_path,
-                                                      parent: self)
+                                                      parent_file: self)
       end
 
       def resolve!(resolution, index:, rugged:)
@@ -62,14 +60,14 @@ module Gitlab
         their_file = lines.reject { |line| line.type == 'new' }.map(&:text).join("\n")
         our_file = lines.reject { |line| line.type == 'old' }.map(&:text).join("\n")
 
-        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, repository: repository).lines.map(&:html_safe)
-        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines.map(&:html_safe)
+        their_highlight = Gitlab::Highlight.highlight(their_path, their_file, repository: repository).lines
+        our_highlight = Gitlab::Highlight.highlight(our_path, our_file, repository: repository).lines
 
         lines.each do |line|
           if line.type == 'old'
-            line.rich_text = their_highlight[line.old_line - 1]
+            line.rich_text = their_highlight[line.old_line - 1].html_safe
           else
-            line.rich_text = our_highlight[line.new_line - 1]
+            line.rich_text = our_highlight[line.new_line - 1].html_safe
           end
         end
       end
@@ -82,8 +80,6 @@ module Gitlab
         end
 
         chunked_lines = lines.chunk { |line| line.type.nil? }
-        last_candidate_match_header = nil
-        match_line_header = nil
         match_line = nil
 
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|

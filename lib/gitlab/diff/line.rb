@@ -5,10 +5,10 @@ module Gitlab
       attr_writer :rich_text
       attr_accessor :text
 
-      def initialize(text, type, index, old_pos, new_pos, parent: nil)
+      def initialize(text, type, index, old_pos, new_pos, parent_file: nil)
         @text, @type, @index = text, type, index
         @old_pos, @new_pos = old_pos, new_pos
-        @parent = parent
+        @parent_file = parent_file
       end
 
       def self.init_from_hash(hash)
@@ -46,7 +46,7 @@ module Gitlab
       end
 
       def rich_text
-        @parent.highlight_lines! if @parent && !@rich_text
+        @parent_file.highlight_lines! if @parent_file && !@rich_text
 
         @rich_text
       end
