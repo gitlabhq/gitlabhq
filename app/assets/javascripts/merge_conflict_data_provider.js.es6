@@ -287,7 +287,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   getCommitData() {
     return {
-      commitMessage: this.vueInstance.conflictsData.commitMessage,
+      commit_message: this.vueInstance.conflictsData.commitMessage,
       sections: this.vueInstance.resolutionData
     }
   }

@@ -15,7 +15,7 @@ describe Gitlab::Conflict::File, lib: true do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
 
     context 'when resolving everything to the same side' do
-      let(:resolution_hash) { section_keys.map { |key| [key, 'ours'] }.to_h }
+      let(:resolution_hash) { section_keys.map { |key| [key, 'head'] }.to_h }
       let(:resolved_lines) { conflict_file.resolve_lines(resolution_hash) }
       let(:expected_lines) { conflict_file.lines.reject { |line| line.type == 'old' } }
 
@@ -30,7 +30,7 @@ describe Gitlab::Conflict::File, lib: true do
 
     context 'with mixed resolutions' do
       let(:resolution_hash) do
-        section_keys.map.with_index { |key, i| [key, i.even? ? 'ours' : 'theirs'] }.to_h
+        section_keys.map.with_index { |key, i| [key, i.even? ? 'head' : 'origin'] }.to_h
       end
 
       let(:resolved_lines) { conflict_file.resolve_lines(resolution_hash) }

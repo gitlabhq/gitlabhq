@@ -44,9 +44,9 @@ module Gitlab
           section_id ||= line_code(line)
 
           case resolution[section_id]
-          when 'ours'
+          when 'head'
             next unless line.type == 'new'
-          when 'theirs'
+          when 'origin'
             next unless line.type == 'old'
           else
             raise MissingResolution, "Missing resolution for section ID: #{section_id}"

@@ -20,10 +20,11 @@ module Gitlab
         @merge_index ||= repository.rugged.merge_commits(our_commit, their_commit)
       end
 
-      def resolve_conflicts!(resolutions, commit_message, user:)
+      def resolve_conflicts!(params, user:)
+        resolutions = params[:sections]
+        commit_message = params[:commit_message] || default_commit_message
         rugged = repository.rugged
         committer = repository.user_to_committer(user)
-        commit_message ||= default_commit_message
 
         files.each do |file|
           file.resolve!(resolutions, index: merge_index, rugged: rugged)

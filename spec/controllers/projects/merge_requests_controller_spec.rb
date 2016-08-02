@@ -549,7 +549,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns JSON with a message' do
-        expect(json_response.keys).to contain_exactly('message')
+        expect(json_response.keys).to contain_exactly('message', 'type')
       end
     end
 
@@ -613,30 +613,31 @@ describe Projects::MergeRequestsController do
     let(:json_response) { JSON.parse(response.body) }
     let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
 
-    def resolve_conflicts(params)
+    def resolve_conflicts(sections)
       post :resolve_conflicts,
            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
            project_id: merge_request_with_conflicts.project.to_param,
            id: merge_request_with_conflicts.iid,
            format: 'json',
-           merge_request: params
+           sections: sections,
+           commit_message: 'Commit message'
     end
 
     context 'with valid params' do
       before do
-        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'ours',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'ours',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'theirs',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'theirs')
+        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'head',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin')
       end
 
       it 'creates a new commit on the branch' do
         expect(original_head_sha).not_to eq(merge_request_with_conflicts.source_branch_head.sha)
-        expect(merge_request_with_conflicts.source_branch_head.message).to include('Merge branch')
+        expect(merge_request_with_conflicts.source_branch_head.message).to include('Commit message')
       end
 
-      it 'redirects to the MR show page' do
-        expect(response).to redirect_to([merge_request_with_conflicts.target_project.namespace.becomes(Namespace), merge_request_with_conflicts.target_project, merge_request_with_conflicts])
+      it 'returns an OK resposne' do
+        expect(response).to have_http_status(:ok)
       end
 
       context 'undoing the resolution' do
@@ -655,7 +656,7 @@ describe Projects::MergeRequestsController do
 
     context 'when sections are missing' do
       before do
-        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'ours')
+        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_4_4' => 'head')
       end
 
       it 'returns a 400 error' do
