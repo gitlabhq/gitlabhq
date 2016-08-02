@@ -19,7 +19,7 @@ class Projects::BranchesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: @repository.branch_names.to_json
+        render json: @repository.branch_names
       end
     end
   end
