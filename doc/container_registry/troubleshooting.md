@@ -43,10 +43,10 @@ a08f14ef632e: Pushing [==================================================>] 2.04
 error parsing HTTP 403 response body: unexpected end of JSON input: ""
 ```
 
-This error is ambiguous, as it's not clear whether the 403 is coming from the GitLab Rails
-application, the Docker registry, or something else. In this case, we know that since
-the login succeeded, we probably need to look at the communication between the client
-and the registry.
+This error is ambiguous, as it's not clear whether the 403 is coming from the
+GitLab Rails application, the Docker registry, or something else. In this
+case, since we know that since the login succeeded, we probably need to look
+at the communication between the client and the registry.
 
 The REST API between the Docker client and registry is [described
 here](https://docs.docker.com/registry/spec/api/). Normally, one would just
