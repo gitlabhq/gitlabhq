@@ -28,6 +28,7 @@ v 8.11.0 (unreleased)
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
+  - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial

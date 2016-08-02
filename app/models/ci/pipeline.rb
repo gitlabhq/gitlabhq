@@ -237,7 +237,15 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      save
+      saved = save
+      execute_hooks if saved && !skip_ci?
+      saved
+    end
+
+    def execute_hooks
+      pipeline_data = Gitlab::DataBuilder::PipelineDataBuilder.build(self)
+      project.execute_hooks(pipeline_data, :pipeline_hooks)
+      project.execute_services(pipeline_data.dup, :pipeline_hooks)
     end
 
     def keep_around_commits

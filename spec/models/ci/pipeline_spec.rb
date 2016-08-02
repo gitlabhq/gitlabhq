@@ -513,7 +513,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns true' do
         is_expected.to be_truthy
       end
@@ -524,7 +524,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns false' do
         is_expected.to be_falsey
       end
@@ -539,6 +539,35 @@ describe Ci::Pipeline, models: true do
 
       it 'returns false' do
         is_expected.to be_falsey
+      end
+    end
+  end
+
+  describe '#execute_hooks' do
+    let!(:hook) do
+      create(:project_hook, project: project, pipeline_events: enabled)
+    end
+    let(:enabled) { raise NotImplementedError }
+
+    before do
+      WebMock.stub_request(:post, hook.url)
+      pipeline.touch
+      ProjectWebHookWorker.drain
+    end
+
+    context 'with pipeline hooks enabled' do
+      let(:enabled) { true }
+
+      it 'executes pipeline_hook after touched' do
+        expect(WebMock).to have_requested(:post, hook.url).once
+      end
+    end
+
+    context 'with pipeline hooks disabled' do
+      let(:enabled) { false }
+
+      it 'did not execute pipeline_hook after touched' do
+        expect(WebMock).not_to have_requested(:post, hook.url)
       end
     end
   end

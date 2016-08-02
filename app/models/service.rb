@@ -36,6 +36,7 @@ class Service < ActiveRecord::Base
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
+  scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
 
@@ -84,6 +85,10 @@ class Service < ActiveRecord::Base
 
   def event_channel_names
     []
+  end
+
+  def event_names
+    supported_events.map { |event| "#{event}_events" }
   end
 
   def event_field(event)
