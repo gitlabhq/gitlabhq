@@ -5,19 +5,19 @@
 .dropdown-menu-issues-board-new {
   width: 320px;
 
-	.dropdown-content {
+  .dropdown-content {
 		max-height: 150px;
 	}
 }
 
 .issue-board-dropdown-content {
-	margin: 0 8px 10px 8px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid $dropdown-divider-color;
+  margin: 0 8px 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid $dropdown-divider-color;
 
   > p {
     margin: 0;
-		font-size: 14px;
+    font-size: 14px;
     color: #9c9c9c;
   }
 }
