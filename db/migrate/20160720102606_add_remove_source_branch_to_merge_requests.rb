@@ -8,6 +8,8 @@ class AddRemoveSourceBranchToMergeRequests < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  DOWNTIME = false
+
   def up
     add_column_with_default(:merge_requests, :remove_source_branch, :boolean, default: true)
 

@@ -56,7 +56,7 @@ module MergeRequests
     def after_merge
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
 
-      if merge_request.can_remove_source_branch?(branch_deletion_user)
+      if merge_request.remove_source_branch? && merge_request.can_remove_source_branch?(branch_deletion_user)
         DeleteBranchService.new(@merge_request.source_project, branch_deletion_user).
           execute(merge_request.source_branch)
       end

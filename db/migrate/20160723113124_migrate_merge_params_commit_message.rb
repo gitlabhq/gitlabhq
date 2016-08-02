@@ -4,7 +4,7 @@
 class MigrateMergeParamsCommitMessage < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
-  DOWNTIME = false
+  DOWNTIME = true
 
   def up
     require 'yaml'
