@@ -55,12 +55,17 @@ wrong.  However, since all communication between Docker clients and servers
 are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
+One way would be to disable HTTPS by setting up an [insecure
+registry](https://docs.docker.com/registry/insecure/). This could introduce a
+security hole and is only recommended for local testing. If you have a
+production system and can't or don't want to do this, there is another way:
+use mitmproxy, which stands for Man-in-the-Middle Proxy.
+
 ## mitmproxy
 
-Enter [mitmproxy](https://mitmproxy.org/). This tool allows you to place a
-proxy between your client and server to inspect all traffic. One wrinkle is
-that your system needs to trust the mitmproxy SSL certificates for this
-to work.
+[mitmproxy](https://mitmproxy.org/) allows you to place a proxy between your
+client and server to inspect all traffic. One wrinkle is that your system
+needs to trust the mitmproxy SSL certificates for this to work.
 
 The following installation instructions assume you are running Ubuntu:
 
