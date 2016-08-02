@@ -13,22 +13,6 @@ module IssuesHelper
     OpenStruct.new(id: 0, title: 'None (backlog)', name: 'Unassigned')
   end
 
-  def url_for_new_issue(project = @project, options = {})
-    return '' if project.nil?
-
-    url =
-      if options[:only_path]
-        project.issues_tracker.new_issue_path
-      else
-        project.issues_tracker.new_issue_url
-      end
-
-    # Ensure we return a valid URL to prevent possible XSS.
-    URI.parse(url).to_s
-  rescue URI::InvalidURIError
-    ''
-  end
-
   def url_for_issue(issue_iid, project = @project, options = {})
     return '' if project.nil?
 

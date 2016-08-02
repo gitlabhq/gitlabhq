@@ -5,7 +5,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include ToggleAwardEmoji
   include IssuableCollections
 
-  before_action :redirect_to_external_issue_tracker, only: [:index]
+  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
                                :related_branches, :can_create_branch]
@@ -203,9 +203,15 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def redirect_to_external_issue_tracker
-    return unless @project.external_issue_tracker
+    external = @project.external_issue_tracker
 
-    redirect_to @project.external_issue_tracker.issues_url
+    return unless external
+
+    if action_name == 'new'
+      redirect_to external.new_issue_path
+    else
+      redirect_to external.issues_url
+    end
   end
 
   # Since iids are implemented only in 6.1

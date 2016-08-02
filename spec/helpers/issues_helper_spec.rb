@@ -51,52 +51,6 @@ describe IssuesHelper do
     end
   end
 
-  describe 'url_for_new_issue' do
-    let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
-    let(:ext_expected) { issues_url.gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { new_namespace_project_issue_path(project.namespace, project) }
-
-    it "should return internal path if used internal tracker" do
-      @project = project
-      expect(url_for_new_issue).to match(int_expected)
-    end
-
-    it "should return path to external tracker" do
-      @project = ext_project
-
-      expect(url_for_new_issue).to match(ext_expected)
-    end
-
-    it "should return empty string if project nil" do
-      @project = nil
-
-      expect(url_for_new_issue).to eq ""
-    end
-
-    it 'returns an empty string if issue_url is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.new_issue_url') { 'javascript:alert("foo");' }
-
-      expect(url_for_new_issue(project)).to eq ''
-    end
-
-    it 'returns an empty string if issue_path is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.new_issue_path') { 'javascript:alert("foo");' }
-
-      expect(url_for_new_issue(project, only_path: true)).to eq ''
-    end
-
-    describe "when external tracker was enabled and then config removed" do
-      before do
-        @project = ext_project
-        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
-      end
-
-      it "should return internal path" do
-        expect(url_for_new_issue).to match(ext_expected)
-      end
-    end
-  end
-
   describe "merge_requests_sentence" do
     subject { merge_requests_sentence(merge_requests)}
     let(:merge_requests) do

@@ -54,6 +54,20 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'GET #new' do
+    context 'external issue tracker' do
+      it 'redirects to the external issue tracker' do
+        external = double(new_issue_path: 'https://example.com/issues/new')
+        allow(project).to receive(:external_issue_tracker).and_return(external)
+        controller.instance_variable_set(:@project, project)
+
+        get :new, namespace_id: project.namespace.path, project_id: project
+
+        expect(response).to redirect_to('https://example.com/issues/new')
+      end
+    end
+  end
+
   describe 'PUT #update' do
     context 'when moving issue to another private project' do
       let(:another_project) { create(:project, :private) }
