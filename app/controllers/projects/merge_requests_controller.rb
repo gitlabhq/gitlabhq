@@ -152,10 +152,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def resolve_conflicts
     begin
-      Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params[:merge_request], nil, user: current_user)
+      Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params, user: current_user)
 
-      redirect_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-                  notice: 'Merge conflicts resolved. The merge request can now be merged.'
+      head :ok
     rescue Gitlab::Conflict::File::MissingResolution => e
       render status: :bad_request, json: { message: e.message }
     end
