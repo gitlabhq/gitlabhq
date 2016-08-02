@@ -1,12 +1,14 @@
 module IssuesAction
   extend ActiveSupport::Concern
+  include IssuableCollections
 
   def issues
-    @issues = get_issues_collection.non_archived
-    @issues = @issues.page(params[:page])
-    @issues = @issues.preload(:author, :project)
+    @label = issues_finder.labels.first
 
-    @label = @issuable_finder.labels.first
+    @issues = issues_collection
+              .non_archived
+              .preload(:author, :project)
+              .page(params[:page])
 
     respond_to do |format|
       format.html

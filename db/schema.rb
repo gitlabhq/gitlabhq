@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160722221922) do
+ActiveRecord::Schema.define(version: 20160726093600) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -427,9 +427,10 @@ ActiveRecord::Schema.define(version: 20160722221922) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",       null: false
+    t.string   "name",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "external_url"
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
@@ -867,13 +868,29 @@ ActiveRecord::Schema.define(version: 20160722221922) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+  create_table "protected_branch_merge_access_levels", force: :cascade do |t|
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "protected_branch_merge_access_levels", ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
+
+  create_table "protected_branch_push_access_levels", force: :cascade do |t|
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "protected_branch_push_access_levels", ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
+
   create_table "protected_branches", force: :cascade do |t|
-    t.integer  "project_id",                           null: false
-    t.string   "name",                                 null: false
+    t.integer  "project_id", null: false
+    t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "developers_can_push",  default: false, null: false
-    t.boolean  "developers_can_merge", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
@@ -1136,5 +1153,7 @@ ActiveRecord::Schema.define(version: 20160722221922) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
+  add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "u2f_registrations", "users"
 end

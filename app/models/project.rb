@@ -874,14 +874,6 @@ class Project < ActiveRecord::Base
     ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
-  def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_push)
-  end
-
-  def developers_can_merge_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_merge)
-  end
-
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
@@ -1259,6 +1251,16 @@ class Project < ActiveRecord::Base
     authorized_for_user_by_group?(user, min_access_level) ||
       authorized_for_user_by_members?(user, min_access_level) ||
       authorized_for_user_by_shared_projects?(user, min_access_level)
+  end
+
+  def append_or_update_attribute(name, value)
+    old_values = public_send(name.to_s)
+
+    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
+      update_attribute(name, old_values + value)
+    else
+      update_attribute(name, value)
+    end
   end
 
   private

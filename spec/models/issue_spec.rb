@@ -306,4 +306,257 @@ describe Issue, models: true do
       expect(user2.assigned_open_issues_count).to eq(1)
     end
   end
+
+  describe '#visible_to_user?' do
+    context 'with a user' do
+      let(:user) { build(:user) }
+      let(:issue) { build(:issue) }
+
+      it 'returns true when the issue is readable' do
+        expect(issue).to receive(:readable_by?).with(user).and_return(true)
+
+        expect(issue.visible_to_user?(user)).to eq(true)
+      end
+
+      it 'returns false when the issue is not readable' do
+        expect(issue).to receive(:readable_by?).with(user).and_return(false)
+
+        expect(issue.visible_to_user?(user)).to eq(false)
+      end
+    end
+
+    context 'without a user' do
+      let(:issue) { build(:issue) }
+
+      it 'returns true when the issue is publicly visible' do
+        expect(issue).to receive(:publicly_visible?).and_return(true)
+
+        expect(issue.visible_to_user?).to eq(true)
+      end
+
+      it 'returns false when the issue is not publicly visible' do
+        expect(issue).to receive(:publicly_visible?).and_return(false)
+
+        expect(issue.visible_to_user?).to eq(false)
+      end
+    end
+  end
+
+  describe '#readable_by?' do
+    describe 'with a regular user that is not a team member' do
+      let(:user) { create(:user) }
+
+      context 'using a public project' do
+        let(:project) { create(:empty_project, :public) }
+
+        it 'returns true for a regular issue' do
+          issue = build(:issue, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+
+        it 'returns false for a confidential issue' do
+          issue = build(:issue, project: project, confidential: true)
+
+          expect(issue).not_to be_readable_by(user)
+        end
+      end
+
+      context 'using an internal project' do
+        let(:project) { create(:empty_project, :internal) }
+
+        context 'using an internal user' do
+          it 'returns true for a regular issue' do
+            issue = build(:issue, project: project)
+
+            expect(issue).to be_readable_by(user)
+          end
+
+          it 'returns false for a confidential issue' do
+            issue = build(:issue, :confidential, project: project)
+
+            expect(issue).not_to be_readable_by(user)
+          end
+        end
+
+        context 'using an external user' do
+          before do
+            allow(user).to receive(:external?).and_return(true)
+          end
+
+          it 'returns false for a regular issue' do
+            issue = build(:issue, project: project)
+
+            expect(issue).not_to be_readable_by(user)
+          end
+
+          it 'returns false for a confidential issue' do
+            issue = build(:issue, :confidential, project: project)
+
+            expect(issue).not_to be_readable_by(user)
+          end
+        end
+      end
+
+      context 'using a private project' do
+        let(:project) { create(:empty_project, :private) }
+
+        it 'returns false for a regular issue' do
+          issue = build(:issue, project: project)
+
+          expect(issue).not_to be_readable_by(user)
+        end
+
+        it 'returns false for a confidential issue' do
+          issue = build(:issue, :confidential, project: project)
+
+          expect(issue).not_to be_readable_by(user)
+        end
+
+        context 'when the user is the project owner' do
+          it 'returns true for a regular issue' do
+            issue = build(:issue, project: project)
+
+            expect(issue).not_to be_readable_by(user)
+          end
+
+          it 'returns true for a confidential issue' do
+            issue = build(:issue, :confidential, project: project)
+
+            expect(issue).not_to be_readable_by(user)
+          end
+        end
+      end
+    end
+
+    context 'with a regular user that is a team member' do
+      let(:user) { create(:user) }
+      let(:project) { create(:empty_project, :public) }
+
+      context 'using a public project' do
+        before do
+          project.team << [user, Gitlab::Access::DEVELOPER]
+        end
+
+        it 'returns true for a regular issue' do
+          issue = build(:issue, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+
+        it 'returns true for a confidential issue' do
+          issue = build(:issue, :confidential, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+      end
+
+      context 'using an internal project' do
+        let(:project) { create(:empty_project, :internal) }
+
+        before do
+          project.team << [user, Gitlab::Access::DEVELOPER]
+        end
+
+        it 'returns true for a regular issue' do
+          issue = build(:issue, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+
+        it 'returns true for a confidential issue' do
+          issue = build(:issue, :confidential, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+      end
+
+      context 'using a private project' do
+        let(:project) { create(:empty_project, :private) }
+
+        before do
+          project.team << [user, Gitlab::Access::DEVELOPER]
+        end
+
+        it 'returns true for a regular issue' do
+          issue = build(:issue, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+
+        it 'returns true for a confidential issue' do
+          issue = build(:issue, :confidential, project: project)
+
+          expect(issue).to be_readable_by(user)
+        end
+      end
+    end
+
+    context 'with an admin user' do
+      let(:project) { create(:empty_project) }
+      let(:user) { create(:user, admin: true) }
+
+      it 'returns true for a regular issue' do
+        issue = build(:issue, project: project)
+
+        expect(issue).to be_readable_by(user)
+      end
+
+      it 'returns true for a confidential issue' do
+        issue = build(:issue, :confidential, project: project)
+
+        expect(issue).to be_readable_by(user)
+      end
+    end
+  end
+
+  describe '#publicly_visible?' do
+    context 'using a public project' do
+      let(:project) { create(:empty_project, :public) }
+
+      it 'returns true for a regular issue' do
+        issue = build(:issue, project: project)
+
+        expect(issue).to be_publicly_visible
+      end
+
+      it 'returns false for a confidential issue' do
+        issue = build(:issue, :confidential, project: project)
+
+        expect(issue).not_to be_publicly_visible
+      end
+    end
+
+    context 'using an internal project' do
+      let(:project) { create(:empty_project, :internal) }
+
+      it 'returns false for a regular issue' do
+        issue = build(:issue, project: project)
+
+        expect(issue).not_to be_publicly_visible
+      end
+
+      it 'returns false for a confidential issue' do
+        issue = build(:issue, :confidential, project: project)
+
+        expect(issue).not_to be_publicly_visible
+      end
+    end
+
+    context 'using a private project' do
+      let(:project) { create(:empty_project, :private) }
+
+      it 'returns false for a regular issue' do
+        issue = build(:issue, project: project)
+
+        expect(issue).not_to be_publicly_visible
+      end
+
+      it 'returns false for a confidential issue' do
+        issue = build(:issue, :confidential, project: project)
+
+        expect(issue).not_to be_publicly_visible
+      end
+    end
+  end
 end

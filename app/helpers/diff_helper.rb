@@ -144,8 +144,6 @@ module DiffHelper
     toggle_whitespace_link(url, options)
   end
 
-  private
-
   def hide_whitespace?
     params[:w] == '1'
   end

@@ -11,16 +11,18 @@
       - else
         %span.build-link ##{build.id}
 
-      - if build.stuck?
-        %i.fa.fa-warning.text-warning
-
       - if build.ref
+        .icon-container
+          = build.tag? ? icon('tag') : icon('code-fork')
         = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
       - else
         .light none
-      = custom_icon("icon_commit")
+      .icon-container
+        = custom_icon("icon_commit")
 
       = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "monospace commit-id"
+      - if build.stuck?
+        %i.fa.fa-warning.text-warning
 
       .label-container
         - if build.tags.any?

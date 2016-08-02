@@ -141,8 +141,7 @@ module Gitlab
       end
     end
 
-    private
-
+    # Allow access from other metrics related middlewares
     def self.current_transaction
       Transaction.current
     end

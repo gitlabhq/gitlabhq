@@ -293,7 +293,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     first('.js-project-refs-dropdown').click
 
     page.within '.project-refs-form' do
-      click_link 'test'
+      click_link "'test'"
     end
   end
 
