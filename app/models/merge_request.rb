@@ -14,7 +14,7 @@ class MergeRequest < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
-  serialize :merge_params, Hash
+  serialize :merge_params, HashWithIndifferentAccess
 
   after_create :create_merge_request_diff, unless: :importing?
   after_update :update_merge_request_diff
