@@ -277,7 +277,7 @@ class Repository
   def cache_keys
     %i(size commit_count
        readme version contribution_guide changelog
-       license_blob license_key gitignore)
+       license_blob license_key gitignore koding_yml)
   end
 
   # Keys for data on branch/tag operations.
@@ -538,10 +538,10 @@ class Repository
   end
 
   def koding_yml
-    return nil if !exists? || empty?
+    return nil unless head_exists?
 
-    @koding_yml ||= tree(:head).blobs.find do |file|
-      file.name == Gitlab.config.koding.file
+    cache.fetch(:koding_yml) do
+      file_on_head(/\A#{Regexp.escape(Gitlab.config.koding.file)}/)
     end
   end
 
