@@ -274,8 +274,7 @@ resource:
 
   end
 
-  def get_koding_link(project = nil, branch = nil)
-
+  def koding_project_url(project = nil, branch = nil)
     if project
       route = "/Home/Stacks/run/#{project.path_with_namespace}"
       if branch

@@ -15,7 +15,7 @@
         .pull-right
           - if @merge_request.source_branch_exists?
             - if Gitlab.config.koding.enabled && @repository.koding_yml
-              = link_to get_koding_link(@project, @merge_request.source_branch), class: "btn inline btn-grouped btn-sm btn-create", target: '_blank' do
+              = link_to koding_project_url(@project, @merge_request.source_branch), class: "btn inline btn-grouped btn-sm btn-create", target: '_blank' do
                 Try on Koding
             = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
               Check out branch

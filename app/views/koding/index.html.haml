@@ -6,7 +6,7 @@
     %p
       = icon('circle', class: 'cgreen')
       Integration is active for
-      = link_to get_koding_link(), target: '_blank' do
+      = link_to koding_project_url, target: '_blank' do
         #{Gitlab.config.koding.url}
   - else
     %p

@@ -67,7 +67,7 @@
       - if Gitlab.config.koding.enabled
         - if @repository.koding_yml
           %li.koding
-            = link_to get_koding_link(@project), target: '_blank' do
+            = link_to koding_project_url(@project), target: '_blank' do
               Run On Koding
         - else
           %li.missing
