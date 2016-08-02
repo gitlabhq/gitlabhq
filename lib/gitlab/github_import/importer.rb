@@ -71,11 +71,12 @@ module Gitlab
         pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100)
         pull_requests = pull_requests.map { |raw| PullRequestFormatter.new(project, raw) }.select(&:valid?)
 
-        source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch_name, pr.source_branch_sha] }
+        source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch_name, pr.number] }
         target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch_name, pr.target_branch_sha] }
         branches_removed = source_branches_removed | target_branches_removed
 
-        restore_branches(branches_removed)
+        restore_source_branches(source_branches_removed)
+        restore_target_branches(target_branches_removed)
 
         pull_requests.each do |pull_request|
           merge_request = pull_request.create!
@@ -120,17 +121,20 @@ module Gitlab
           end
       end
 
-      def restore_branches(branches)
-        branches.each do |name, sha|
-          client.create_ref(repo, "refs/heads/#{name}", sha)
+      def restore_source_branches(branches)
+        branches.each do |name, number|
+          project.repository.fetch_ref(repo_url, "pull/#{number}/head", name)
         end
+      end
 
-        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
+      def restore_target_branches(branches)
+        branches.each do |name, sha|
+          project.repository.create_branch(name, sha)
+        end
       end
 
       def clean_up_restored_branches(branches)
         branches.each do |name, _|
-          client.delete_ref(repo, "heads/#{name}")
           project.repository.delete_branch(name) rescue Rugged::ReferenceError
         end
 
