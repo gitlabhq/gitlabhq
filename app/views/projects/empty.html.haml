@@ -20,12 +20,8 @@
       a
       = succeed ',' do
         = link_to "LICENSE", add_special_file_path(@project, file_name: 'LICENSE'), class: 'underlined-link'
-      a
+      or a
       = link_to '.gitignore', add_special_file_path(@project, file_name: '.gitignore'), class: 'underlined-link'
-      - if Gitlab.config.koding.enabled
-        or a
-        = succeed ',' do
-          = link_to Gitlab.config.koding.file, add_koding_stack(@project), class: 'underlined-link'
       to this project.
 
 - if can?(current_user, :push_code, @project)
