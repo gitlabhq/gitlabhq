@@ -74,7 +74,7 @@ class Member < ActiveRecord::Base
       user
     end
 
-    def add_user(members, user_id, access_level, current_user = nil, expires_at = nil)
+    def add_user(members, user_id, access_level, current_user: nil, expires_at: nil)
       user = user_for_id(user_id)
 
       # `user` can be either a User object or an email to be invited

@@ -36,7 +36,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
-    @project.team.add_users(params[:user_ids].split(','), params[:access_level], current_user, params[:expires_at])
+    @project.team.add_users(
+      params[:user_ids].split(','),
+      params[:access_level],
+      expires_at: params[:expires_at],
+      current_user: current_user
+    )
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end

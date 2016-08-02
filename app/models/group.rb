@@ -97,7 +97,7 @@ class Group < Namespace
 
   def add_users(user_ids, access_level, current_user = nil)
     user_ids.each do |user_id|
-      Member.add_user(self.group_members, user_id, access_level, current_user)
+      Member.add_user(self.group_members, user_id, access_level, current_user: current_user)
     end
   end
 
