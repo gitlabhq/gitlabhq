@@ -16,12 +16,13 @@ describe Key, models: true do
   end
 
   describe "Methods" do
+    let(:user) { create(:user) }
     it { is_expected.to respond_to :projects }
     it { is_expected.to respond_to :publishable_key }
 
     describe "#publishable_keys" do
-      it 'strips all personal information' do
-        expect(build(:key).publishable_key).not_to match(/dummy@gitlab/)
+      it 'replaces SSH key comment with simple identifier of username + hostname' do
+        expect(build(:key, user: user).publishable_key).to match(/#{Regexp.escape(user.name)} \(localhost\)/)
       end
     end
   end
