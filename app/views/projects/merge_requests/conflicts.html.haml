@@ -7,7 +7,7 @@
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
 
-#conflicts
+#conflicts{"v-cloak" => "true"}
   .loading{"v-if" => "isLoading"}
     %i.fa.fa-spinner.fa-spin
 
