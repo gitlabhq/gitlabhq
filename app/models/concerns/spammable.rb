@@ -22,7 +22,7 @@ module Spammable
 
   def can_be_submitted?
     if user_agent_detail
-      user_agent_detail.submittable?
+      user_agent_detail.submittable? && akismet_enabled?
     else
       false
     end
@@ -41,6 +41,14 @@ module Spammable
     @spam
   end
 
+  def submitted?
+    if user_agent_detail
+      user_agent_detail.submitted
+    else
+      false
+    end
+  end
+
   def check_for_spam
     self.errors.add(:base, "Your #{self.class.name.underscore} has been recognized as spam and has been discarded.") if spam?
   end
@@ -53,17 +61,21 @@ module Spammable
     end
   end
 
+  def to_ability_name
+    self.class.to_s.underscore
+  end
+
   # Override this method if an additional check is needed before calling Akismet
   def check_for_spam?
     akismet_enabled?
   end
 
   def spam_title
-    raise 'Implement in included model!'
+    raise NotImplementedError
   end
 
   def spam_description
-    raise 'Implement in included model!'
+    raise NotImplementedError
   end
 
   private

@@ -322,6 +322,35 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'POST #mark_as_spam' do
+    context 'properly submits to Akismet' do
+      before do
+        allow_any_instance_of(Spammable).to receive_messages(can_be_submitted?: true, submit_spam: true)
+      end
+
+      def post_spam
+        admin = create(:admin)
+        create(:user_agent_detail, subject: issue)
+        project.team << [admin, :master]
+        sign_in(admin)
+        post :mark_as_spam, {
+          namespace_id: project.namespace.path,
+          project_id: project.path,
+          id: issue.iid
+        }
+      end
+
+      it 'creates a system note' do
+        expect{ post_spam }.to change(Note, :count)
+      end
+
+      it 'updates issue' do
+        post_spam
+        expect(issue.submitted?).to be_truthy
+      end
+    end
+  end
+
   describe "DELETE #destroy" do
     context "when the user is a developer" do
       before { sign_in(user) }

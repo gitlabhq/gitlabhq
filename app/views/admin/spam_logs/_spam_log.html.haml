@@ -26,7 +26,7 @@
   %td
     - if spam_log.submitted_as_ham?
       .btn.btn-xs.disabled
-        Submitted as Ham
+        Submitted as ham
     - else
       = link_to 'Submit as ham', mark_as_ham_admin_spam_log_path(spam_log), method: :post, class: 'btn btn-xs btn-warning'
     - if user && !user.blocked?

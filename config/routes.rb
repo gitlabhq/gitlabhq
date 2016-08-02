@@ -817,6 +817,7 @@ Rails.application.routes.draw do
           member do
             post :toggle_subscription
             post :toggle_award_emoji
+            post :mark_as_spam
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch

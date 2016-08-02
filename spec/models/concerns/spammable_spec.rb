@@ -14,6 +14,10 @@ describe Issue, 'Spammable' do
   end
 
   describe 'InstanceMethods' do
+    before do
+      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:akismet_enabled?).and_return(true)
+    end
+
     it 'should return the correct creator' do
       expect(issue.send(:owner).id).to eq(issue.author_id)
     end
@@ -24,14 +28,11 @@ describe Issue, 'Spammable' do
     end
 
     it 'should be submittable' do
-      create(:user_agent_detail, subject_id: issue.id, subject_type: issue.class.to_s)
+      create(:user_agent_detail, subject: issue)
       expect(issue.can_be_submitted?).to be_truthy
     end
 
     describe '#check_for_spam?' do
-      before do
-        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:akismet_enabled?).and_return(true)
-      end
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
         expect(issue.check_for_spam?).to eq(true)
