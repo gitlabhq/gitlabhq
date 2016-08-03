@@ -104,7 +104,7 @@ class Commit
   end
 
   def diff_line_count
-    @diff_line_count ||= Commit::diff_line_count(self.diffs)
+    @diff_line_count ||= Commit::diff_line_count(raw_diffs)
     @diff_line_count
   end
 
@@ -123,15 +123,17 @@ class Commit
   # In case this first line is longer than 100 characters, it is cut off
   # after 80 characters and ellipses (`&hellp;`) are appended.
   def title
-    title = safe_message
+    full_title.length > 100 ? full_title[0..79] << "…" : full_title
+  end
 
-    return no_commit_message if title.blank?
+  # Returns the full commits title
+  def full_title
+    return @full_title if @full_title
 
-    title_end = title.index("\n")
-    if (!title_end && title.length > 100) || (title_end && title_end > 100)
-      title[0..79] << "…"
+    if safe_message.blank?
+      @full_title = no_commit_message
     else
-      title.split("\n", 2).first
+      @full_title = safe_message.split("\n", 2).first
     end
   end
 
@@ -315,6 +317,14 @@ class Commit
     nil
   end
 
+  def raw_diffs(*args)
+    raw.diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
+  end
+
   private
 
   def find_author_by_any_email
@@ -324,7 +334,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    diffs.each do |diff|
+    raw_diffs.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file

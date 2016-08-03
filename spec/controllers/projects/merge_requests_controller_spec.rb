@@ -523,9 +523,9 @@ describe Projects::MergeRequestsController do
             end
 
             it 'only renders the diffs for the path given' do
-              expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-                expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-                meth.call(diffs, diff_refs, project)
+              expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+                expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+                meth.call(diffs)
               end
 
               diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
@@ -586,9 +586,9 @@ describe Projects::MergeRequestsController do
         end
 
         it 'only renders the diffs for the path given' do
-          expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-            expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-            meth.call(diffs, diff_refs, project)
+          expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+            expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+            meth.call(diffs)
           end
 
           diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
@@ -608,9 +608,9 @@ describe Projects::MergeRequestsController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-              expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs, diff_refs, project)
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(diffs)
             end
 
             diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })

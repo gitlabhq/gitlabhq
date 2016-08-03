@@ -90,6 +90,10 @@ your `.gitlab-ci.yml`, you have to follow the
 [Using a private Docker Registry][private-docker]
 documentation. This workflow will be simplified in the future.
 
+## Troubleshooting
+
+See [the GitLab Docker registry troubleshooting guide](troubleshooting.md).
+
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
 [private-docker]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/configuration/advanced-configuration.md#using-a-private-docker-registry

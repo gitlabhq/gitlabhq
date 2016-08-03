@@ -173,10 +173,10 @@ describe API::API, api: true  do
       end
 
       it 'should return the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.diffs.first.new_path, line: 7, line_type: 'new'
+        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 7, line_type: 'new'
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
-        expect(json_response['path']).to eq(project.repository.commit.diffs.first.new_path)
+        expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
         expect(json_response['line']).to eq(7)
         expect(json_response['line_type']).to eq('new')
       end
