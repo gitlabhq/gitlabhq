@@ -59,6 +59,9 @@
           = time_ago_with_tooltip(member.requested_at)
         - else
           Joined #{time_ago_with_tooltip(member.created_at)}
+        - if member.expires_at.present?
+          %span.prepend-left-20
+            Access expires #{member.expires_at.to_s(:medium)}
 
     - else
       = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
