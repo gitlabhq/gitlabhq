@@ -228,6 +228,17 @@ module API
       end
     end
 
+    class MergeRequestDiff < Grape::Entity
+      expose :id, :head_commit_sha, :base_commit_sha, :start_commit_sha,
+        :created_at, :merge_request_id, :state, :real_size
+
+      expose :commits, using: Entities::RepoCommit
+
+      expose :diffs, using: Entities::RepoDiff do |compare, _|
+        compare.diffs(all_diffs: true).to_a
+      end
+    end
+
     class SSHKey < Grape::Entity
       expose :id, :title, :key, :created_at
     end
