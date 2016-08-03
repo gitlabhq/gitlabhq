@@ -148,5 +148,9 @@ describe Gitlab::Conflict::File, lib: true do
       expect(conflict_file.as_json[:blob_path]).
         to eq("/#{project.namespace.to_param}/#{merge_request.project.to_param}/blob/#{our_commit.oid}/files/ruby/regex.rb")
     end
+
+    it 'includes the blob icon for the file' do
+      expect(conflict_file.as_json[:blob_icon]).to eq('file-text-o')
+    end
   end
 end

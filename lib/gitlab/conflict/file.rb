@@ -2,18 +2,20 @@ module Gitlab
   module Conflict
     class File
       include Gitlab::Routing.url_helpers
+      include IconsHelper
 
       class MissingResolution < StandardError
       end
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :our_path, :merge_request, :repository
+      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository
 
       def initialize(merge_file_result, conflict, merge_request:)
         @merge_file_result = merge_file_result
         @their_path = conflict[:theirs][:path]
         @our_path = conflict[:ours][:path]
+        @our_mode = conflict[:ours][:mode]
         @merge_request = merge_request
         @repository = merge_request.project.repository
       end
@@ -30,7 +32,6 @@ module Gitlab
         new_file = resolve_lines(resolution).map(&:text).join("\n")
 
         oid = rugged.write(new_file, :blob)
-        our_mode = index.conflict_get(our_path)[:ours][:mode]
         index.add(path: our_path, oid: oid, mode: our_mode)
         index.conflict_remove(our_path)
       end
@@ -150,6 +151,7 @@ module Gitlab
         {
           old_path: their_path,
           new_path: our_path,
+          blob_icon: file_type_icon_class('file', our_mode, our_path),
           blob_path: namespace_project_blob_path(merge_request.project.namespace,
                                                  merge_request.project,
                                                  ::File.join(merge_request.diff_refs.head_sha, our_path)),
