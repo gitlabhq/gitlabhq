@@ -551,7 +551,7 @@ describe Ci::Pipeline, models: true do
 
     before do
       WebMock.stub_request(:post, hook.url)
-      pipeline.save
+      pipeline.touch
       ProjectWebHookWorker.drain
     end
 

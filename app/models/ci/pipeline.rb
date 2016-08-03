@@ -18,7 +18,6 @@ module Ci
 
     # Invalidate object and save if when touched
     after_touch :update_state
-    after_save :execute_hooks_if_status_changed
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -230,6 +229,7 @@ module Ci
 
     def update_state
       statuses.reload
+      last_status = status
       self.status = if yaml_errors.blank?
                       statuses.latest.status || 'skipped'
                     else
@@ -238,11 +238,9 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      save
-    end
-
-    def execute_hooks_if_status_changed
-      execute_hooks if status_changed? && !skip_ci?
+      saved = save
+      execute_hooks if last_status != status && saved && !skip_ci?
+      saved
     end
 
     def execute_hooks
