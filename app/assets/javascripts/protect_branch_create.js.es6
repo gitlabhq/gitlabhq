@@ -45,7 +45,7 @@ class AllowedToPushSelects {
   }
 }
 
-class CreateProtectedBranch {
+class ProtectedBranchCreate {
   constructor() {
     this.$wrap = this.$form = $('#new_protected_branch');
     this.buildDropdowns();
