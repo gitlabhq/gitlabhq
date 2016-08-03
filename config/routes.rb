@@ -857,7 +857,7 @@ Rails.application.routes.draw do
         end
 
         resource :board, only: [:show] do
-          resources :issues, only: [:index], controller: :board_issues
+          resources :issues, only: [:index, :update], controller: :board_issues
           resources :lists, only: [:create, :update, :destroy], controller: :board_lists
         end
 

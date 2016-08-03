@@ -3,6 +3,7 @@ module Boards
     class MoveService < Boards::BaseService
       def execute
         return false unless issue.present?
+        return false unless valid_move?
         return false unless user.can?(:update_issue, issue)
 
         update_service.execute(issue)
@@ -14,16 +15,20 @@ module Boards
 
       private
 
+      def valid_move?
+        moving_from.present? && moving_to.present?
+      end
+
       def issue
         @issue ||= project.issues.visible_to_user(user).find_by!(iid: params[:id])
       end
 
       def moving_from
-        @moving_from ||= board.lists.find(params[:from])
+        @moving_from ||= board.lists.find_by(id: params[:from])
       end
 
       def moving_to
-        @moving_to ||= board.lists.find(params[:to])
+        @moving_to ||= board.lists.find_by(id: params[:to])
       end
 
       def close_service

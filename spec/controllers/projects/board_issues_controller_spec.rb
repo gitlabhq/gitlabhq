@@ -4,6 +4,12 @@ describe Projects::BoardIssuesController do
   let(:project) { create(:project_with_board) }
   let(:user)    { create(:user) }
 
+  let(:planning)    { create(:label, project: project, name: 'Planning') }
+  let(:development) { create(:label, project: project, name: 'Development') }
+
+  let!(:list1) { create(:list, board: project.board, label: planning, position: 1) }
+  let!(:list2) { create(:list, board: project.board, label: development, position: 2) }
+
   before do
     project.team << [user, :master]
     sign_in(user)
@@ -12,19 +18,13 @@ describe Projects::BoardIssuesController do
   describe 'GET #index' do
     context 'with valid list id' do
       it 'returns issues that have the list label applied' do
-        label1 = create(:label, project: project, name: 'Planning')
-        label2 = create(:label, project: project, name: 'Development')
-
-        create(:labeled_issue, project: project, labels: [label1])
-        create(:labeled_issue, project: project, labels: [label2])
-        create(:labeled_issue, project: project, labels: [label2])
-
-        create(:list, board: project.board, label: label1, position: 1)
-        development = create(:list, board: project.board, label: label2, position: 2)
+        create(:labeled_issue, project: project, labels: [planning])
+        create(:labeled_issue, project: project, labels: [development])
+        create(:labeled_issue, project: project, labels: [development])
 
         get :index, namespace_id: project.namespace.to_param,
                     project_id: project.to_param,
-                    list_id: development.to_param
+                    list_id: list2.to_param
 
         parsed_response = JSON.parse(response.body)
 
@@ -41,6 +41,46 @@ describe Projects::BoardIssuesController do
 
         expect(response).to have_http_status(404)
       end
+    end
+  end
+
+  describe 'PATCH #update' do
+    let(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
+
+    context 'with valid params' do
+      it 'returns a successful 200 response' do
+        move issue: issue, from: list1.id, to: list2.id
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'moves issue to the desired list' do
+        move issue: issue, from: list1.id, to: list2.id
+
+        expect(issue.reload.labels).to contain_exactly(development)
+      end
+    end
+
+    context 'with invalid params' do
+      it 'returns a unprocessable entity 422 response for invalid lists' do
+        move issue: issue, from: nil, to: nil
+
+        expect(response).to have_http_status(422)
+      end
+
+      it 'returns a not found 404 response for invalid issue id' do
+        move issue: 999, from: list1.id, to: list2.id
+
+        expect(response).to have_http_status(404)
+      end
+    end
+
+    def move(issue:, from:, to:)
+      patch :update, namespace_id: project.namespace.to_param,
+                     project_id: project.to_param,
+                     id: issue.to_param,
+                     issue: { from: from, to: to },
+                     format: :json
     end
   end
 end
