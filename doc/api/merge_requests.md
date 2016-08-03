@@ -903,11 +903,16 @@ Get a list of merge request diff versions.
 GET /projects/:id/merge_requests/:merge_request_id/versions
 ```
 
-Parameters:
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | integer | yes      | The ID of the project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
 
-- `id` (required) - The ID of a project
-- `merge_request_id` (required) - The ID of MR
+```bash
+curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+```
 
+Example response:
 
 ```json
 [{
