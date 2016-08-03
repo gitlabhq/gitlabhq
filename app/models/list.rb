@@ -6,6 +6,7 @@ class List < ActiveRecord::Base
 
   validates :board, :list_type, presence: true
   validates :label, :position, presence: true, if: :label?
+  validates :label_id, uniqueness: { scope: :board_id }, if: :label?
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: :label?
 
   delegate :name, to: :label, allow_nil: true, prefix: true

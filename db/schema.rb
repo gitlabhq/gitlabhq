@@ -550,6 +550,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.datetime "updated_at",             null: false
   end
 
+  add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
   add_index "lists", ["board_id"], name: "index_lists_on_board_id", using: :btree
   add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
 
