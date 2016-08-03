@@ -11,8 +11,8 @@ module Search
     def execute
       if current_application_settings.elasticsearch_search?
         Gitlab::Elastic::ProjectSearchResults.new(current_user,
-                                                  project.id,
                                                   params[:search],
+                                                  project.id,
                                                   params[:repository_ref])
       else
         Gitlab::ProjectSearchResults.new(current_user,

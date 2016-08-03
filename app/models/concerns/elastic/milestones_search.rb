@@ -5,7 +5,7 @@ module Elastic
     included do
       include ApplicationSearch
 
-      mappings do
+      mappings _parent: { type: 'project' } do
         indexes :id,          type: :integer
         indexes :title,       type: :string,
                               index_options: 'offsets'
@@ -27,7 +27,7 @@ module Elastic
 
         query_hash = basic_query_hash(options[:in], query)
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
 
         self.__elasticsearch__.search(query_hash)
       end
