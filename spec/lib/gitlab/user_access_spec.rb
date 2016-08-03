@@ -83,6 +83,5 @@ describe Gitlab::UserAccess, lib: true do
         expect(access.can_merge_to_branch?(@branch.name)).to be_falsey
       end
     end
-
   end
 end

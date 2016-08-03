@@ -534,7 +534,6 @@ module Ci
         end
 
         context 'when also global variables are defined' do
-
         end
 
         context 'when syntax is correct' do
