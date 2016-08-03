@@ -53,14 +53,15 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
   setParallelLines(data) {
     data.files.forEach( (file) => {
       file.filePath = this.getFilePath(file);
-      file.parallelLines = { left: [], right: [] };
+      file.parallelLines = [];
+      const linesObj = { left: [], right: [] };
 
       file.sections.forEach( (section) => {
         const { conflict, lines, id } = section;
 
         if (conflict) {
-          file.parallelLines.left.push(this.getOriginHeaderLine(id));
-          file.parallelLines.right.push(this.getHeadHeaderLine(id));
+          linesObj.left.push(this.getOriginHeaderLine(id));
+          linesObj.right.push(this.getHeadHeaderLine(id));
         }
 
         lines.forEach( (line) => {
@@ -68,40 +69,49 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
           if (conflict) {
             if (type === 'old') {
-              file.parallelLines.left.push(this.getLineForParallelView(line, id, 'conflict'));
+              linesObj.left.push(this.getLineForParallelView(line, id, 'conflict'));
             }
             else if (type === 'new') {
-              file.parallelLines.right.push(this.getLineForParallelView(line, id, 'conflict', true));
+              linesObj.right.push(this.getLineForParallelView(line, id, 'conflict', true));
             }
           }
           else {
             const lineType = type || 'context';
 
-            file.parallelLines.left.push (this.getLineForParallelView(line, id, lineType));
-            file.parallelLines.right.push(this.getLineForParallelView(line, id, lineType, true));
+            linesObj.left.push (this.getLineForParallelView(line, id, lineType));
+            linesObj.right.push(this.getLineForParallelView(line, id, lineType, true));
           }
         });
 
-        this.checkLineLengths(file);
+        this.checkLineLengths(linesObj);
       });
+
+      for (let i = 0, len = linesObj.left.length; i < len; i++) {
+        file.parallelLines.push([
+          linesObj.left[i],
+          linesObj.right[i]
+        ]);
+      }
+
     });
+
   }
 
 
-  checkLineLengths(file) {
-    let { left, right } = file.parallelLines;
+  checkLineLengths(linesObj) {
+    let { left, right } = linesObj;
 
     if (left.length !== right.length) {
       if (left.length > right.length) {
         const diff = left.length - right.length;
         for (let i = 0; i < diff; i++) {
-          file.parallelLines.right.push({ lineType: 'emptyLine', richText: '' });
+          right.push({ lineType: 'emptyLine', richText: '' });
         }
       }
       else {
         const diff = right.length - left.length;
         for (let i = 0; i < diff; i++) {
-          file.parallelLines.left.push({ lineType: 'emptyLine', richText: '' });
+          left.push({ lineType: 'emptyLine', richText: '' });
         }
       }
     }
@@ -152,16 +162,18 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
         }
       });
 
+      file.parallelLines.forEach( (lines) => {
+        const left         = lines[0];
+        const right        = lines[1];
+        const hasSameId    = right.id === sectionId || left.id === sectionId;
+        const isLeftMatch  = left.hasConflict || left.isHeader;
+        const isRightMatch = right.hasConflict || right.isHeader;
 
-      for (section in file.parallelLines) {
-        const lines = file.parallelLines[section];
-
-        lines.forEach( (line) => {
-          if (line.id === sectionId && (line.hasConflict || line.isHeader )) {
-            this.markLine(line, selection);
-          }
-        })
-      }
+        if (hasSameId && (isLeftMatch || isRightMatch)) {
+          this.markLine(left, selection);
+          this.markLine(right, selection);
+        }
+      })
     });
   }
 

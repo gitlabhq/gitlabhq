@@ -43,30 +43,41 @@
           .file-actions
             %a.btn.view-file.btn-file-option{":href" => "file.blobLink"}
               View file @{{conflictsData.shortCommitSha}}
-
         .diff-content.diff-wrap-lines
           .diff-wrap-lines.code.file-content.js-syntax-highlight.white
-            %table{"v-for" => "(key, group) in file.parallelLines"}
-              %tr.line_holder.parallel{"v-for" => "line in group", |
-                ":class" => "{ |
-                  'head': line.isHead, |
-                  'origin': line.isOrigin, |
-                  'match': line.hasMatch, |
-                  'selected': line.isSelected, |
-                  'unselected': line.isUnselected }"}
+            %table
+              %tr.line_holder.parallel{"v-for" => "section in file.parallelLines"}
+                %template{"v-for" => "line in section"}
 
-                %template{"v-if" => "line.isHeader"}
-                  %td.diff-line-num.header
-                  %td.line_content.header
-                    %strong {{line.richText}}
-                    %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
+                  %template{"v-if" => "line.isHeader"}
+                    %td.diff-line-num.header{":class" => "{ |
+                      'head': line.isHead, |
+                      'origin': line.isOrigin, |
+                      'selected': line.isSelected, |
+                      'unselected': line.isUnselected}"}
+                    %td.line_content.header{":class" => "{ |
+                      'head': line.isHead, |
+                      'origin': line.isOrigin, |
+                      'selected': line.isSelected, |
+                      'unselected': line.isUnselected}"}
+                      %strong {{line.richText}}
+                      %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
 
-                %template{"v-if" => "!line.isHeader"}
-                  %td.diff-line-num.old_line
-                    {{line.lineNumber}}
-                  %td.line_content
-                    {{{line.richText}}}
-
+                  %template{"v-if" => "!line.isHeader"}
+                    %td.diff-line-num.old_line{":class" => "{ |
+                      'head': line.isHead, |
+                      'origin': line.isOrigin, |
+                      'match': line.hasMatch, |
+                      'selected': line.isSelected, |
+                      'unselected': line.isUnselected }"}
+                      {{line.lineNumber}}
+                    %td.line_content.parallel{":class" => "{ |
+                      'head': line.isHead, |
+                      'origin': line.isOrigin, |
+                      'match': line.hasMatch, |
+                      'selected': line.isSelected, |
+                      'unselected': line.isUnselected }"}
+                      {{{line.richText}}}
 
     .files{"v-if" => "!isParallel"}
       .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
