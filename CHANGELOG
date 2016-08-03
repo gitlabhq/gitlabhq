@@ -39,6 +39,7 @@ v 8.11.0 (unreleased)
   - Make fork counter always clickable. !5463 (winniehell)
   - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
+  - Allow users to import cross-repository pull requests from GitHub
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
