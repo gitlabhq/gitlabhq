@@ -1,18 +1,21 @@
 module Gitlab
   module Conflict
     class File
+      include Gitlab::Routing.url_helpers
+
       class MissingResolution < StandardError
       end
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :our_path, :repository
+      attr_reader :merge_file_result, :their_path, :our_path, :merge_request, :repository
 
-      def initialize(merge_file_result, conflict, repository:)
+      def initialize(merge_file_result, conflict, merge_request:)
         @merge_file_result = merge_file_result
         @their_path = conflict[:theirs][:path]
         @our_path = conflict[:ours][:path]
-        @repository = repository
+        @merge_request = merge_request
+        @repository = merge_request.project.repository
       end
 
       # Array of Gitlab::Diff::Line objects
@@ -147,6 +150,9 @@ module Gitlab
         {
           old_path: their_path,
           new_path: our_path,
+          blob_path: namespace_project_blob_path(merge_request.project.namespace,
+                                                 merge_request.project,
+                                                 ::File.join(merge_request.diff_refs.head_sha, our_path)),
           sections: sections
         }
       end

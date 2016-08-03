@@ -6,10 +6,11 @@ describe Gitlab::Conflict::File, lib: true do
   let(:rugged) { repository.rugged }
   let(:their_commit) { rugged.branches['conflict-a'].target }
   let(:our_commit) { rugged.branches['conflict-b'].target }
+  let(:merge_request) { create(:merge_request, source_branch: 'conflict-b', target_branch: 'conflict-a', source_project: project) }
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }
-  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, repository: repository) }
+  let(:conflict_file) { Gitlab::Conflict::File.new(merge_file_result, conflict, merge_request: merge_request) }
 
   describe '#resolve_lines' do
     let(:section_keys) { conflict_file.sections.map { |section| section[:id] }.compact }
@@ -139,6 +140,13 @@ describe Gitlab::Conflict::File, lib: true do
       end
 
       expect(section_ids.uniq).to eq(section_ids)
+    end
+  end
+
+  describe '#as_json' do
+    it 'includes the blob path for the file' do
+      expect(conflict_file.as_json[:blob_path]).
+        to eq("/#{project.namespace.to_param}/#{merge_request.project.to_param}/blob/#{our_commit.oid}/files/ruby/regex.rb")
     end
   end
 end
