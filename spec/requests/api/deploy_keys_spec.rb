@@ -27,7 +27,6 @@ describe API::API, api: true  do
     end
 
     context 'when authenticated as admin' do
-
       it 'should return all deploy keys' do
         get api('/deploy_keys', admin)
 

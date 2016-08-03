@@ -10,6 +10,9 @@ module API
       present keys, with: Entities::SSHKey
     end
 
+    params do
+      requires :id, type: String, desc: 'The ID of the project'
+    end
     resource :projects do
       before { authorize_admin_project }
 
@@ -17,52 +20,42 @@ module API
       # Use "projects/:id/deploy_keys/..." instead.
       #
       %w(keys deploy_keys).each do |path|
-        # Get a specific project's deploy keys
-        #
-        # Example Request:
-        #   GET /projects/:id/deploy_keys
+        desc "Get a specific project's deploy keys" do
+          success Entities::SSHKey
+        end
         get ":id/#{path}" do
           present user_project.deploy_keys, with: Entities::SSHKey
         end
 
-        # Get single deploy key owned by currently authenticated user
-        #
-        # Example Request:
-        #   GET /projects/:id/deploy_keys/:key_id
+        desc 'Get single deploy key' do
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
         get ":id/#{path}/:key_id" do
           key = user_project.deploy_keys.find params[:key_id]
           present key, with: Entities::SSHKey
         end
 
-        # Add new deploy key to currently authenticated user
-        # If deploy key already exists - it will be joined to project
-        # but only if original one was accessible by same user
-        #
-        # Parameters:
-        #   key (required) - New deploy Key
-        #   title (required) - New deploy Key's title
-        # Example Request:
-        #   POST /projects/:id/deploy_keys
+        desc 'Add new deploy key to currently authenticated user' do
+          success Entities::SSHKey
+        end
+        params do
+          requires :key, type: String, desc: "The new deploy key"
+          requires :title, type: String, desc: 'The title to identify the key from'
+        end
         post ":id/#{path}" do
-          attrs = attributes_for_keys [:title, :key]
+          attrs = declared(params, include_parent_namespaces: false).to_h
 
-          if attrs[:key].present?
-            attrs[:key].strip!
+          key = user_project.deploy_keys.find_by(key: attrs[:key])
+          present key, with: Entities::SSHKey if key
 
-            # check if key already exist in project
-            key = user_project.deploy_keys.find_by(key: attrs[:key])
-            if key
-              present key, with: Entities::SSHKey
-              next
-            end
-
-            # Check for available deploy keys in other projects
-            key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
-            if key
-              user_project.deploy_keys << key
-              present key, with: Entities::SSHKey
-              next
-            end
+          # Check for available deploy keys in other projects
+          key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
+          if key
+            user_project.deploy_keys << key
+            present key, with: Entities::SSHKey
           end
 
           key = DeployKey.new attrs
@@ -105,12 +98,14 @@ module API
           present key.deploy_key, with: Entities::SSHKey
         end
 
-        # Delete existing deploy key of currently authenticated user
-        #
-        # Example Request:
-        #   DELETE /projects/:id/deploy_keys/:key_id
+        desc 'Delete existing deploy key of currently authenticated user' do
+          success Key
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
         delete ":id/#{path}/:key_id" do
-          key = user_project.deploy_keys.find params[:key_id]
+          key = user_project.deploy_keys.find(params[:key_id])
           key.destroy
         end
       end
