@@ -33,7 +33,7 @@ module Gitlab
       end
 
       def valid?
-        source_branch.valid? && target_branch.valid? && !cross_project?
+        source_branch.valid? && target_branch.valid?
       end
 
       def source_branch
@@ -66,10 +66,6 @@ module Gitlab
 
       def body
         raw_data.body || ""
-      end
-
-      def cross_project?
-        source_branch_repo.id != target_branch_repo.id
       end
 
       def description

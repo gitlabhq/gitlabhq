@@ -178,8 +178,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:source_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
-      it 'returns false' do
-        expect(pull_request.valid?).to eq false
+      it 'returns true' do
+        expect(pull_request.valid?).to eq true
       end
     end
 
@@ -187,8 +187,8 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
       let(:target_repo) { double(id: 2) }
       let(:raw_data) { double(base_data) }
 
-      it 'returns false' do
-        expect(pull_request.valid?).to eq false
+      it 'returns true' do
+        expect(pull_request.valid?).to eq true
       end
     end
   end
