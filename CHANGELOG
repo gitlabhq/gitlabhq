@@ -57,6 +57,7 @@ v 8.11.0 (unreleased)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
+  - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
 
 v 8.10.3
   - Fix Import/Export issue importing milestones and labels not associated properly. !5426
