@@ -14,13 +14,15 @@
         This diff is collapsed.
         %a.click-to-expand
           Click to expand it.
-    - elsif diff_file.diff_lines.length > 0
+    - elsif diff_file.diff_lines.present?
       - if diff_view == :parallel
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob
       - else
         = render "projects/diffs/text_file", diff_file: diff_file
     - else
-      - if diff_file.mode_changed?
+      - if diff_file.new_file && diff_file.diff_lines.empty?
+        .nothing-here-block File is empty
+      - elsif diff_file.mode_changed?
         .nothing-here-block File mode changed
       - elsif diff_file.renamed_file
         .nothing-here-block File moved
