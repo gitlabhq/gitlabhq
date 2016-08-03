@@ -567,6 +567,12 @@ describe Ci::Pipeline, models: true do
           create(:ci_build, :pending, pipeline: pipeline, name: name)
         end
 
+        def requested status
+          have_requested(:post, hook.url).with do |req|
+            JSON.parse(req.body)['object_attributes']['status'] == status
+          end.once
+        end
+
         let(:build_a) { create_build('a') }
         let(:build_b) { create_build('b') }
 
@@ -578,7 +584,9 @@ describe Ci::Pipeline, models: true do
         end
 
         it 'fires 3 hooks' do
-          expect(WebMock).to have_requested(:post, hook.url).times(3)
+          %w(pending running success).each do |status|
+            expect(WebMock).to requested(status)
+          end
         end
       end
     end
