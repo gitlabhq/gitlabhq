@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required" : [
+    "id",
+    "title",
+    "confidential"
+  ],
+  "properties" : {
+    "id": { "type": "integer" },
+    "title": { "type": "string" },
+    "confidential": { "type": "boolean" },
+    "labels": {
+      "type": ["array"],
+      "required": [
+        "id",
+        "color",
+        "title"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+        },
+        "title": { "type": "string" }
+      }
+    }
+  },
+  "additionalProperties": false
+}
