@@ -53,17 +53,7 @@ class CreateCommitBuildsService
       return false
     end
 
-    save_pipeline!
-  end
-
-  private
-
-  ##
-  # Create a new pipeline and touch object to calculate status
-  #
-  def save_pipeline!
     @pipeline.save!
-    @pipeline.touch
     @pipeline
   end
 end
