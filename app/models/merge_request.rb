@@ -165,7 +165,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def raw_diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
   end
 
   def diffs(diff_options = nil)
