@@ -16,11 +16,11 @@
       clearInterval(Build.interval);
       this.bp = Breakpoints.get();
       this.hideSidebar();
+      this.displayTestStatuses();
       $('.js-build-sidebar').niceScroll();
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       this.updateArtifactRemoveDate();
-      this.displayTestStatuses();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
         this.initScrollButtonAffix();
@@ -134,21 +134,11 @@
     };
 
     Build.prototype.displayTestStatuses = function() {
-      $jobTopPosition = $('.build-job').first().offset().top;
-      $dropdownCounter = [];
-
-      $('.build-job a').each(function() {
-        if ($(this).offset().top > $jobTopPosition) {
-          $dropdownCounter.push($(this));
-          $('.overflow-jobs > li').append($(this));
-        }
-      })
-
-      $('.more-tests').text('More (' + $dropdownCounter.length + ')');
-
-      if ($('.overflow-jobs > li > a').length == 0) {
-        $('.overflow-jobs-dropdown').hide();
-      }
+      $jobs = $('.build-job');
+      jobjects = $jobs.map(function () {
+        return $(this).data();
+      });
+      console.log(jobjects);
     };
 
     return Build;

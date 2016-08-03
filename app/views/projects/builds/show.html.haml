@@ -7,24 +7,31 @@
 
   - builds = @build.pipeline.builds.latest.to_a
   - if builds.size > 1
-    .dropdown.overflow-jobs-dropdown
+    .dropdown.stage
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
         %span.more-tests More
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right.overflow-jobs
-        %li
-    %ul.nav-links.no-top.no-bottom
-      - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
-      - statuses.each do |build_status|
-        - builds.select{|build| build.status == build_status}.each do |build|
-          %li.build-job{class: ('active' if build == @build) }
-            = link_to namespace_project_build_path(@project.namespace, @project, build) do
-              = ci_icon_for_status(build.status)
-              %span
-                - if build.name
-                  = build.name
-                - else
-                  = build.id
+      %ul.dropdown-menu.overflow-jobs
+        - builds.each do |build|
+          %li
+            %a= build.stage
+
+    - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
+    .dropdown.jobs-dropdown
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.more-tests More
+        = icon('caret-down')
+      %ul.dropdown-menu.overflow-jobs
+        - statuses.each do |build_status|
+          - builds.select{|build| build.status == build_status}.each do |build|
+            %li.build-job{class: ('active' if build == @build), data: {id: build.id, name: build.name, status: build.status}}
+              = link_to namespace_project_build_path(@project.namespace, @project, build) do
+                = ci_icon_for_status(build.status)
+                %span
+                  - if build.name
+                    = build.name
+                  - else
+                    = build.id
 
       - if @build.retried?
         %li.active
