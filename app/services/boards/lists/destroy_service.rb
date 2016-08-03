@@ -1,11 +1,6 @@
 module Boards
   module Lists
-    class DestroyService
-      def initialize(project, params = {})
-        @board  = project.board
-        @params = params.dup
-      end
-
+    class DestroyService < Boards::BaseService
       def execute
         return false unless list.label?
 
@@ -16,8 +11,6 @@ module Boards
       end
 
       private
-
-      attr_reader :board, :params
 
       def list
         @list ||= board.lists.find(params[:id])

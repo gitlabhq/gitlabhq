@@ -1,11 +1,6 @@
 module Boards
   module Lists
-    class MoveService
-      def initialize(project, params = {})
-        @board  = project.board
-        @params = params.dup
-      end
-
+    class MoveService < Boards::BaseService
       def execute
         return false unless list.label?
         return false unless valid_move?
@@ -17,8 +12,6 @@ module Boards
       end
 
       private
-
-      attr_reader :board, :params
 
       def list
         @list ||= board.lists.find(params[:id])

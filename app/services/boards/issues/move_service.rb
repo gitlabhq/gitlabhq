@@ -1,12 +1,6 @@
 module Boards
   module Issues
-    class MoveService
-      def initialize(project, user, params = {})
-        @project = project
-        @user = user
-        @params = params.dup
-      end
-
+    class MoveService < Boards::BaseService
       def execute
         return false unless issue.present?
         return false unless user.can?(:update_issue, issue)
@@ -19,10 +13,6 @@ module Boards
       end
 
       private
-
-      attr_reader :project, :user, :params
-
-      delegate :board, to: :project
 
       def issue
         @issue ||= project.issues.visible_to_user(user).find_by!(iid: params[:id])

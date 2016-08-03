@@ -4,9 +4,10 @@ describe Boards::Lists::CreateService, services: true do
   describe '#execute' do
     let(:project) { create(:project_with_board) }
     let(:board)   { project.board }
+    let(:user)    { create(:user) }
     let(:label)   { create(:label, name: 'in-progress') }
 
-    subject(:service) { described_class.new(project, label_id: label.id) }
+    subject(:service) { described_class.new(project, user, label_id: label.id) }
 
     context 'when board lists is empty' do
       it 'creates a new list at beginning of the list' do
@@ -31,7 +32,7 @@ describe Boards::Lists::CreateService, services: true do
         create(:list, board: board, position: 1)
         create(:list, board: board, position: 2)
 
-        list = described_class.new(project, label_id: label.id).execute
+        list = service.execute
 
         expect(list.position).to eq 3
       end
@@ -43,7 +44,7 @@ describe Boards::Lists::CreateService, services: true do
         create(:done_list, board: board)
         list1 = create(:list, board: board, position: 1)
 
-        list2 = described_class.new(project, label_id: label.id).execute
+        list2 = service.execute
 
         expect(list1.reload.position).to eq 1
         expect(list2.reload.position).to eq 2

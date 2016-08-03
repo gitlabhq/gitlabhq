@@ -1,11 +1,6 @@
 module Boards
   module Lists
-    class CreateService
-      def initialize(project, params = {})
-        @board  = project.board
-        @params = params.dup
-      end
-
+    class CreateService < Boards::BaseService
       def execute
         List.transaction do
           position = find_next_position
@@ -15,8 +10,6 @@ module Boards
       end
 
       private
-
-      attr_reader :board, :params
 
       def find_next_position
         board.lists.label.maximum(:position).to_i + 1

@@ -1,12 +1,6 @@
 module Boards
   module Issues
-    class ListService
-      def initialize(project, user, params = {})
-        @project = project
-        @user = user
-        @params = params.dup
-      end
-
+    class ListService < Boards::BaseService
       def execute
         issues = IssuesFinder.new(user, filter_params).execute
         issues = without_board_labels(issues) if list.backlog?
@@ -14,10 +8,6 @@ module Boards
       end
 
       private
-
-      attr_reader :project, :user, :params
-
-      delegate :board, to: :project
 
       def list
         @list ||= board.lists.find(params[:list_id])

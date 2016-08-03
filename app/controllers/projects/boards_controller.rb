@@ -1,6 +1,6 @@
 class Projects::BoardsController < Projects::ApplicationController
   def show
-    board = Boards::CreateService.new(project).execute
+    board = Boards::CreateService.new(project, current_user).execute
 
     respond_to do |format|
       format.html

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Boards::CreateService, services: true do
   describe '#execute' do
-    subject(:service) { described_class.new(project) }
+    subject(:service) { described_class.new(project, double) }
 
     context 'when project does not have a board' do
       let(:project) { create(:empty_project, board: nil) }

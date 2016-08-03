@@ -4,11 +4,12 @@ describe Boards::Lists::DestroyService, services: true do
   describe '#execute' do
     let(:project) { create(:project_with_board) }
     let(:board)   { project.board }
+    let(:user)    { create(:user) }
 
     context 'when list type is label' do
       it 'removes list from board' do
         list = create(:list, board: board)
-        service = described_class.new(project, id: list.id)
+        service = described_class.new(project, user, id: list.id)
 
         expect { service.execute }.to change(board.lists, :count).by(-1)
       end
@@ -20,7 +21,7 @@ describe Boards::Lists::DestroyService, services: true do
         staging     = create(:list, board: board, position: 3)
         done        = create(:done_list, board: board)
 
-        described_class.new(project, id: development.id).execute
+        described_class.new(project, user, id: development.id).execute
 
         expect(backlog.reload.position).to be_nil
         expect(review.reload.position).to eq 1
@@ -31,14 +32,14 @@ describe Boards::Lists::DestroyService, services: true do
 
     it 'does not remove list from board when list type is backlog' do
       list = create(:backlog_list, board: board)
-      service = described_class.new(project, id: list.id)
+      service = described_class.new(project, user, id: list.id)
 
       expect { service.execute }.not_to change(board.lists, :count)
     end
 
     it 'does not remove list from board when list type is done' do
       list = create(:done_list, board: board)
-      service = described_class.new(project, id: list.id)
+      service = described_class.new(project, user, id: list.id)
 
       expect { service.execute }.not_to change(board.lists, :count)
     end

@@ -4,7 +4,7 @@ class Projects::BoardListsController < Projects::ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def create
-    list = Boards::Lists::CreateService.new(project, list_params).execute
+    list = Boards::Lists::CreateService.new(project, current_user, list_params).execute
 
     if list.valid?
       render json: list.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color] } })
@@ -14,7 +14,7 @@ class Projects::BoardListsController < Projects::ApplicationController
   end
 
   def update
-    service = Boards::Lists::MoveService.new(project, move_params)
+    service = Boards::Lists::MoveService.new(project, current_user, move_params)
 
     if service.execute
       head :ok
@@ -24,7 +24,7 @@ class Projects::BoardListsController < Projects::ApplicationController
   end
 
   def destroy
-    service = Boards::Lists::DestroyService.new(project, params)
+    service = Boards::Lists::DestroyService.new(project, current_user, params)
 
     if service.execute
       head :ok
