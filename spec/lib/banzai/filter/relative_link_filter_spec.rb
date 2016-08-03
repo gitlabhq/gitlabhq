@@ -78,8 +78,20 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   end
 
   context 'with a valid repository' do
+    it 'rebuilds absolute URL for a file in the repo' do
+      doc = filter(link('/doc/api/README.md'))
+      expect(doc.at_css('a')['href']).
+        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+    end
+
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
+      expect(doc.at_css('a')['href']).
+        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+    end
+
+    it 'rebuilds relative URL for a file in the repo with leading ./' do
+      doc = filter(link('./doc/api/README.md'))
       expect(doc.at_css('a')['href']).
         to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end

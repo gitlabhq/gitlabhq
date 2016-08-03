@@ -164,8 +164,16 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    if self.compare
+      self.compare.diffs(diff_options)
+    else
+      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+    end
   end
 
   def diff_size
@@ -238,11 +246,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_branch_sha
-    target_branch_head.try(:sha)
+    @target_branch_sha || target_branch_head.try(:sha)
   end
 
   def source_branch_sha
-    source_branch_head.try(:sha)
+    @source_branch_sha || source_branch_head.try(:sha)
   end
 
   def diff_refs
@@ -253,6 +261,19 @@ class MergeRequest < ActiveRecord::Base
       start_sha: diff_start_sha,
       head_sha:  diff_head_sha
     )
+  end
+
+  # Return diff_refs instance trying to not touch the git repository
+  def diff_sha_refs
+    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+      return Gitlab::Diff::DiffRefs.new(
+        base_sha:  merge_request_diff.base_commit_sha,
+        start_sha: merge_request_diff.start_commit_sha,
+        head_sha:  merge_request_diff.head_commit_sha
+      )
+    else
+      diff_refs
+    end
   end
 
   def validate_branches
@@ -299,6 +320,8 @@ class MergeRequest < ActiveRecord::Base
     old_diff_refs = self.diff_refs
 
     merge_request_diff.reload_content
+
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
 
     new_diff_refs = self.diff_refs
 
@@ -674,7 +697,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def support_new_diff_notes?
-    diff_refs && diff_refs.complete?
+    diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)

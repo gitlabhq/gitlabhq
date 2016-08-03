@@ -6,37 +6,65 @@ describe Projects::IssuesController do
   let(:issue)   { create(:issue, project: project) }
 
   describe "GET #index" do
-    before do
-      sign_in(user)
-      project.team << [user, :developer]
+    context 'external issue tracker' do
+      it 'redirects to the external issue tracker' do
+        external = double(issues_url: 'https://example.com/issues')
+        allow(project).to receive(:external_issue_tracker).and_return(external)
+        controller.instance_variable_set(:@project, project)
+
+        get :index, namespace_id: project.namespace.path, project_id: project
+
+        expect(response).to redirect_to('https://example.com/issues')
+      end
     end
 
-    it "returns index" do
-      get :index, namespace_id: project.namespace.path, project_id: project.path
+    context 'internal issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
 
-      expect(response).to have_http_status(200)
+      it "returns index" do
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+
+        expect(response).to have_http_status(200)
+      end
+
+      it "return 301 if request path doesn't match project path" do
+        get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+
+        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+      end
+
+      it "returns 404 when issues are disabled" do
+        project.issues_enabled = false
+        project.save
+
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+        expect(response).to have_http_status(404)
+      end
+
+      it "returns 404 when external issue tracker is enabled" do
+        controller.instance_variable_set(:@project, project)
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+        expect(response).to have_http_status(404)
+      end
     end
+  end
 
-    it "return 301 if request path doesn't match project path" do
-      get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+  describe 'GET #new' do
+    context 'external issue tracker' do
+      it 'redirects to the external issue tracker' do
+        external = double(new_issue_path: 'https://example.com/issues/new')
+        allow(project).to receive(:external_issue_tracker).and_return(external)
+        controller.instance_variable_set(:@project, project)
 
-      expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
-    end
+        get :new, namespace_id: project.namespace.path, project_id: project
 
-    it "returns 404 when issues are disabled" do
-      project.issues_enabled = false
-      project.save
-
-      get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response).to have_http_status(404)
-    end
-
-    it "returns 404 when external issue tracker is enabled" do
-      controller.instance_variable_set(:@project, project)
-      allow(project).to receive(:default_issues_tracker?).and_return(false)
-
-      get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response).to have_http_status(404)
+        expect(response).to redirect_to('https://example.com/issues/new')
+      end
     end
   end
 

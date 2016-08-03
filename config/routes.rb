@@ -626,13 +626,17 @@ Rails.application.routes.draw do
 
         get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
 
-        resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
+        # Don't use format parameter as file extension (old 3.0.x behavior)
+        # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
+        scope format: false do
+          resources :network, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex }
 
-        resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
-          member do
-            get :commits
-            get :ci
-            get :languages
+          resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
+            member do
+              get :commits
+              get :ci
+              get :languages
+            end
           end
         end
 
@@ -748,7 +752,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :environments, only: [:index, :show, :new, :create, :destroy]
+        resources :environments
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do

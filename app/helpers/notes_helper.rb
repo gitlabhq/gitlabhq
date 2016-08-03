@@ -90,6 +90,10 @@ module NotesHelper
     project.team.max_member_access_for_user_ids(user_ids)
   end
 
+  def preload_noteable_for_regular_notes(notes)
+    ActiveRecord::Associations::Preloader.new.preload(notes.select { |note| !note.for_commit? }, :noteable)
+  end
+
   def note_max_access_for_user(note)
     note.project.team.human_max_access(note.author_id)
   end

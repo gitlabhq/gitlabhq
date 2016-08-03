@@ -67,11 +67,15 @@ class Discussion
   end
 
   def resolvable?
-    diff_discussion? && notes.any?(&:resolvable?)
+    return @resolvable if defined?(@resolvable)
+
+    @resolvable = diff_discussion? && notes.any?(&:resolvable?)
   end
 
   def resolved?
-    resolvable? && notes.none?(&:to_be_resolved?)
+    return @resolved if defined?(@resolved)
+
+    @resolved = resolvable? && notes.none?(&:to_be_resolved?)
   end
 
   def resolved_notes
@@ -79,7 +83,9 @@ class Discussion
   end
 
   def to_be_resolved?
-    notes.any?(&:to_be_resolved?)
+    return @to_be_resolved if defined?(@to_be_resolved)
+
+    @to_be_resolved = notes.any?(&:to_be_resolved?)
   end
 
   def can_resolve?(current_user)
@@ -104,6 +110,12 @@ class Discussion
 
   def for_target?(target)
     self.noteable == target && !diff_discussion?
+  end
+
+  def active?
+    return @active if defined?(@active)
+
+    @active = first_note.active?
   end
 
   def collapsed?

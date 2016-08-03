@@ -61,8 +61,6 @@ class Import::GitlabController < Import::BaseController
     go_to_gitlab_for_permissions
   end
 
-  private
-
   def access_params
     { gitlab_access_token: session[:gitlab_access_token] }
   end

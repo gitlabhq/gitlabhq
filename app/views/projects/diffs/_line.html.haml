@@ -1,8 +1,7 @@
 - plain = local_assigns.fetch(:plain, false)
-- line_code = diff_file.line_code(line)
-- position = diff_file.position(line)
 - type = line.type
-%tr.line_holder{ id: line_code, class: type }
+- line_code = diff_file.line_code(line) unless plain
+%tr.line_holder{ plain ? { class: type} : { class: type, id: line_code } }
   - case type
   - when 'match'
     = render "projects/diffs/match_line", { line: line.text,
@@ -24,4 +23,4 @@
         = link_text
       - else
         %a{href: "##{line_code}", data: { linenumber: link_text }}
-    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, position, type) unless plain) }= diff_line_content(line.text, type)
+    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }= diff_line_content(line.text, type)

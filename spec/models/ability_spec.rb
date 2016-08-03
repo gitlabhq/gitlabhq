@@ -170,4 +170,52 @@ describe Ability, lib: true do
       end
     end
   end
+
+  describe '.issues_readable_by_user' do
+    context 'with an admin user' do
+      it 'returns all given issues' do
+        user = build(:user, admin: true)
+        issue = build(:issue)
+
+        expect(described_class.issues_readable_by_user([issue], user)).
+          to eq([issue])
+      end
+    end
+
+    context 'with a regular user' do
+      it 'returns the issues readable by the user' do
+        user = build(:user)
+        issue = build(:issue)
+
+        expect(issue).to receive(:readable_by?).with(user).and_return(true)
+
+        expect(described_class.issues_readable_by_user([issue], user)).
+          to eq([issue])
+      end
+
+      it 'returns an empty Array when no issues are readable' do
+        user = build(:user)
+        issue = build(:issue)
+
+        expect(issue).to receive(:readable_by?).with(user).and_return(false)
+
+        expect(described_class.issues_readable_by_user([issue], user)).to eq([])
+      end
+    end
+
+    context 'without a regular user' do
+      it 'returns issues that are publicly visible' do
+        hidden_issue = build(:issue)
+        visible_issue = build(:issue)
+
+        expect(hidden_issue).to receive(:publicly_visible?).and_return(false)
+        expect(visible_issue).to receive(:publicly_visible?).and_return(true)
+
+        issues = described_class.
+          issues_readable_by_user([hidden_issue, visible_issue])
+
+        expect(issues).to eq([visible_issue])
+      end
+    end
+  end
 end

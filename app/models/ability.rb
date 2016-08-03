@@ -47,6 +47,16 @@ class Ability
       end
     end
 
+    # Returns an Array of Issues that can be read by the given user.
+    #
+    # issues - The issues to reduce down to those readable by the user.
+    # user - The User for which to check the issues
+    def issues_readable_by_user(issues, user = nil)
+      return issues if user && user.admin?
+
+      issues.select { |issue| issue.visible_to_user?(user) }
+    end
+
     # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
       if subject.is_a?(PersonalSnippet)

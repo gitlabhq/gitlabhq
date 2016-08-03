@@ -32,18 +32,22 @@
             are supported.
 
         .form-group
-          = f.check_box :developers_can_push, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to push to this branch
+          = hidden_field_tag 'protected_branch[merge_access_level_attributes][access_level]'
+          = label_tag "Allowed to merge: ", nil, class: "label-light append-bottom-0"
+          = dropdown_tag("<Make a selection>",
+                         options: { title: "Allowed to merge", toggle_class: 'allowed-to-merge',
+                                    dropdown_class: 'dropdown-menu-selectable',
+                                    data: { field_name: "protected_branch[merge_access_level_attributes][access_level]" }})
 
         .form-group
-          = f.check_box :developers_can_merge, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_merge, "Developers can merge", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to accept merge requests to this branch
+          = hidden_field_tag 'protected_branch[push_access_level_attributes][access_level]'
+          = label_tag "Allowed to push: ", nil, class: "label-light append-bottom-0"
+          = dropdown_tag("<Make a selection>",
+                         options: { title: "Allowed to push", toggle_class: 'allowed-to-push',
+                                    dropdown_class: 'dropdown-menu-selectable',
+                                    data: { field_name: "protected_branch[push_access_level_attributes][access_level]" }})
+
+
         = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
 
     %hr

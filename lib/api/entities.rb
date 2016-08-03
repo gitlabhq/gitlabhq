@@ -126,11 +126,13 @@ module API
       end
 
       expose :developers_can_push do |repo_branch, options|
-        options[:project].developers_can_push_to_protected_branch? repo_branch.name
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        options[:project].developers_can_merge_to_protected_branch? repo_branch.name
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -222,7 +224,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.diffs(all_diffs: true).to_a
+        compare.raw_diffs(all_diffs: true).to_a
       end
     end
 
@@ -492,6 +494,10 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+    end
+
+    class Environment < Grape::Entity
+      expose :id, :name, :external_url
     end
 
     class RepoLicense < Grape::Entity
