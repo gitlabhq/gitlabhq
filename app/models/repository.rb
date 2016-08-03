@@ -538,6 +538,7 @@ class Repository
   end
 
   def koding_yml
+    return true
     return nil unless head_exists?
 
     cache.fetch(:koding_yml) do
