@@ -37,7 +37,7 @@ describe Boards::Issues::ListService, services: true do
     end
 
     it 'delegates search to IssuesFinder' do
-      params = { list_id: list1.id }
+      params = { id: list1.id }
 
       expect_any_instance_of(IssuesFinder).to receive(:execute).once
 
@@ -46,7 +46,7 @@ describe Boards::Issues::ListService, services: true do
 
     context 'sets default order to priority' do
       it 'returns opened issues when listing issues from Backlog' do
-        params = { list_id: backlog.id }
+        params = { id: backlog.id }
 
         issues = described_class.new(project, user, params).execute
 
@@ -54,7 +54,7 @@ describe Boards::Issues::ListService, services: true do
       end
 
       it 'returns closed issues when listing issues from Done' do
-        params = { list_id: done.id }
+        params = { id: done.id }
 
         issues = described_class.new(project, user, params).execute
 
@@ -62,7 +62,7 @@ describe Boards::Issues::ListService, services: true do
       end
 
       it 'returns opened issues that have label list applied when listing issues from a label list' do
-        params = { list_id: list1.id }
+        params = { id: list1.id }
 
         issues = described_class.new(project, user, params).execute
 

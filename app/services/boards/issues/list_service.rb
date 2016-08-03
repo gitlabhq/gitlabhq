@@ -10,7 +10,7 @@ module Boards
       private
 
       def list
-        @list ||= board.lists.find(params[:list_id])
+        @list ||= board.lists.find(params[:id])
       end
 
       def filter_params
