@@ -37,6 +37,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fix: Backup restore doesn't clear cache
 - Optimize Event queries by removing default order
 - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
+- Add Rake task to create/repair GitLab Shell hooks symlinks !5634
 - Add job for removal of unreferenced LFS objects from both the database and the filesystem (Frank Groeneveld)
 - Replace jquery.cookie plugin with js.cookie !7085
 - Use MergeRequestsClosingIssues cache data on Issue#closed_by_merge_requests method
