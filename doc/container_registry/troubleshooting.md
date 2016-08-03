@@ -5,27 +5,27 @@
 1. Check to make sure that the system clock on your Docker client and GitLab server have
    been synchronized (e.g. via NTP).
 
-2. If you are using an S3-backed registry, double check that the IAM
+2. If you are using an S3-backed Registry, double check that the IAM
    permissions and the S3 credentials (including region) are correct. See [the
    sample IAM policy](https://docs.docker.com/registry/storage-drivers/s3/)
    for more details.
 
-3. Check the registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
+3. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
-# Advanced Troubleshooting
+## Advanced Troubleshooting
 
-NOTE: The following section is only recommended for experts.
+>**NOTE:** The following section is only recommended for experts.
 
 Sometimes it's not obvious what is wrong, and you may need to dive deeper into
-the communication between the Docker client and the registry to find out
+the communication between the Docker client and the Registry to find out
 what's wrong. We will use a concrete example in the past to illustrate how to
 diagnose a problem with the S3 setup.
 
-## Example: Unexpected 403 error during push
+### Unexpected 403 error during push
 
-A user attempted to enable an S3-backed registry. The `docker login` step went
+A user attempted to enable an S3-backed Registry. The `docker login` step went
 fine. However, when pushing an image, the output showed:
 
 ```
@@ -44,11 +44,11 @@ error parsing HTTP 403 response body: unexpected end of JSON input: ""
 ```
 
 This error is ambiguous, as it's not clear whether the 403 is coming from the
-GitLab Rails application, the Docker registry, or something else. In this
+GitLab Rails application, the Docker Registry, or something else. In this
 case, since we know that since the login succeeded, we probably need to look
-at the communication between the client and the registry.
+at the communication between the client and the Registry.
 
-The REST API between the Docker client and registry is [described
+The REST API between the Docker client and Registry is [described
 here](https://docs.docker.com/registry/spec/api/). Normally, one would just
 use Wireshark or tcpdump to capture the traffic and see where things went
 wrong.  However, since all communication between Docker clients and servers
@@ -56,12 +56,12 @@ are done over HTTPS, it's a bit difficult to decrypt the traffic quickly even
 if you know the private key. What can we do instead?
 
 One way would be to disable HTTPS by setting up an [insecure
-registry](https://docs.docker.com/registry/insecure/). This could introduce a
+Registry](https://docs.docker.com/registry/insecure/). This could introduce a
 security hole and is only recommended for local testing. If you have a
 production system and can't or don't want to do this, there is another way:
 use mitmproxy, which stands for Man-in-the-Middle Proxy.
 
-## mitmproxy
+### mitmproxy
 
 [mitmproxy](https://mitmproxy.org/) allows you to place a proxy between your
 client and server to inspect all traffic. One wrinkle is that your system
@@ -70,10 +70,9 @@ needs to trust the mitmproxy SSL certificates for this to work.
 The following installation instructions assume you are running Ubuntu:
 
 1. Install mitmproxy (see http://docs.mitmproxy.org/en/stable/install.html)
-
-2. Run `mitmproxy --port 9000` to generate its certificates. Enter CTRL-C to quit.
-
-3. Install the certificate from ~/.mitmproxy to your system:
+1. Run `mitmproxy --port 9000` to generate its certificates.
+   Enter <kbd>CTRL</kbd>-<kbd>C</kbd> to quit.
+1. Install the certificate from `~/.mitmproxy` to your system:
 
     ```sh
     sudo cp ~/.mitmproxy/mitmproxy-ca-cert.pem /usr/local/share/ca-certificates/mitmproxy-ca-cert.crt
@@ -87,24 +86,22 @@ Updating certificates in /etc/ssl/certs... 1 added, 0 removed; done.
 Running hooks in /etc/ca-certificates/update.d....done.
 ```
 
-## Verifying mitmproxy certifiactes
-
-To verify that the certificates are properly install, run:
+To verify that the certificates are properly installed, run:
 
 ```sh
 mitmproxy --port 9000
 ```
 
-This will run mitmproxy on port 9000. In another window, run:
+This will run mitmproxy on port `9000`. In another window, run:
 
 ```sh
 curl --proxy http://localhost:9000 https://httpbin.org/status/200
 ```
 
-If everything is setup correctly, then you will see information on the mitmproxy window and
+If everything is setup correctly, you will see information on the mitmproxy window and
 no errors from the curl commands.
 
-## Running the Docker daemon with a proxy
+### Running the Docker daemon with a proxy
 
 For Docker to connect through a proxy, you must start the Docker daemon with the
 proper environment variables. The easiest way is to shutdown Docker (e.g. `sudo initctl stop docker`)
@@ -118,10 +115,10 @@ docker daemon --debug
 
 This will launch the Docker daemon and proxy all connections through mitmproxy.
 
-## Running the Docker client
+### Running the Docker client
 
-Now that we have mitmproxy and Docker running, we can now attempt to login and push a container
-image. You may need to run as root to do this. For example:
+Now that we have mitmproxy and Docker running, we can attempt to login and push
+a container image. You may need to run as root to do this. For example:
 
 ```sh
 docker login s3-testing.myregistry.com:4567
@@ -141,4 +138,4 @@ The above image shows:
 What does this mean? This strongly suggests that the S3 user does not have the right
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
-Once the right permissions were set, the error went away.
+Once the right permissions were set, the error will go away.
