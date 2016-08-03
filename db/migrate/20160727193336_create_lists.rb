@@ -1,4 +1,8 @@
 class CreateLists < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
+
   def change
     create_table :lists do |t|
       t.references :board, index: true, foreign_key: true, null: false
