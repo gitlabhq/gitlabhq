@@ -23,7 +23,7 @@ class Projects::BoardIssuesController < Projects::ApplicationController
   private
 
   def filter_params
-    params.permit(:list_id)
+    params.merge(id: params[:list_id])
   end
 
   def move_params

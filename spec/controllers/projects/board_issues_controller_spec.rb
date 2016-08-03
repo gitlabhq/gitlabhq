@@ -22,9 +22,7 @@ describe Projects::BoardIssuesController do
         create(:labeled_issue, project: project, labels: [development])
         create(:labeled_issue, project: project, labels: [development])
 
-        get :index, namespace_id: project.namespace.to_param,
-                    project_id: project.to_param,
-                    list_id: list2.to_param
+        list_issues list_id: list2
 
         parsed_response = JSON.parse(response.body)
 
@@ -35,12 +33,16 @@ describe Projects::BoardIssuesController do
 
     context 'with invalid list id' do
       it 'returns a not found 404 response' do
-        get :index, namespace_id: project.namespace.to_param,
-                    project_id: project.to_param,
-                    id: 999
+        list_issues list_id: 999
 
         expect(response).to have_http_status(404)
       end
+    end
+
+    def list_issues(list_id:)
+      get :index, namespace_id: project.namespace.to_param,
+                  project_id: project.to_param,
+                  list_id: list_id.to_param
     end
   end
 
