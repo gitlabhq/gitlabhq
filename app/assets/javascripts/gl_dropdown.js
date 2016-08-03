@@ -60,8 +60,8 @@
               }
               return this.options.query(this.input.val(), function(data) {
                 return this.options.callback(data);
-              });
-            }, 250);
+              }.bind(this));
+            }.bind(this), 250);
           } else {
             return this.filter(this.input.val());
           }
