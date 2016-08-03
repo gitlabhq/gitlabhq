@@ -13,13 +13,14 @@
       this.state = state1;
       this.hideSidebar = bind(this.hideSidebar, this);
       this.toggleSidebar = bind(this.toggleSidebar, this);
+      this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
       this.bp = Breakpoints.get();
-      this.hideSidebar();
-      this.displayTestStatuses();
       $('.js-build-sidebar').niceScroll();
+      this.hideSidebar();
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
+      $(document).on('click', '.stage-item', this.updateDropdown);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
@@ -133,12 +134,16 @@
       }
     };
 
-    Build.prototype.displayTestStatuses = function() {
-      $jobs = $('.build-job');
-      jobjects = $jobs.map(function () {
-        return $(this).data();
-      });
-      console.log(jobjects);
+    Build.prototype.populateJobDropdown = function(stage) {
+      $('.build-job').hide();
+      $('.build-job[data-stage="' + stage + '"]').show();
+    };
+
+    Build.prototype.updateDropdown = function(e) {
+      e.preventDefault();
+      var stage = e.target.text;
+      $('.stage-selection').text(stage);
+      this.populateJobDropdown(stage);
     };
 
     return Build;

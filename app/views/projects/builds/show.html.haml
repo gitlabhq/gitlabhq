@@ -6,25 +6,25 @@
   = render "header"
 
   - builds = @build.pipeline.builds.latest.to_a
+  - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
   - if builds.size > 1
     .dropdown.stage
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.more-tests More
+        %span.stage-selection More
         = icon('caret-down')
       %ul.dropdown-menu.overflow-jobs
-        - builds.each do |build|
+        - builds.map(&:stage).uniq.each do |stage|
           %li
-            %a= build.stage
+            %a.stage-item= stage
 
-    - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
     .dropdown.jobs-dropdown
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.more-tests More
+        %span.build-selection More
         = icon('caret-down')
       %ul.dropdown-menu.overflow-jobs
         - statuses.each do |build_status|
           - builds.select{|build| build.status == build_status}.each do |build|
-            %li.build-job{class: ('active' if build == @build), data: {id: build.id, name: build.name, status: build.status}}
+            %li.build-job{class: ('active' if build == @build), data: {id: build.id, name: build.name, stage: build.stage}}
               = link_to namespace_project_build_path(@project.namespace, @project, build) do
                 = ci_icon_for_status(build.status)
                 %span
