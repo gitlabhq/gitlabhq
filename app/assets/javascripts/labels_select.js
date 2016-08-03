@@ -53,7 +53,7 @@
             dataType: 'JSON',
             data: data
           }).done(function(data) {
-            var labelCount, template, labelTooltipTitle;
+            var labelCount, template, labelTooltipTitle, labelTitles;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -69,20 +69,16 @@
             $sidebarCollapsedValue.text(labelCount);
 
             if (data.labels.length) {
-              labelTooltipTitle = _.chain(data.labels)
-                .map(function (label, i) {
-                  if (i < 5) {
-                    return label.title;
-                  }
-                })
-                .compact()
-                .values();
+              labelTitles = data.labels.map(function(label) {
+                return label.title;
+              });
 
-              if (data.labels.length > 5) {
-                labelTooltipTitle.push('and ' + (data.labels.length - 5) + ' more');
+              if (labelTitles.length > 5) {
+                labelTitles = labelTitles.slice(0, 5);
+                labelTitles.push('and ' + (data.labels.length - 5) + ' more');
               }
 
-              labelTooltipTitle = labelTooltipTitle.join(', ');
+              labelTooltipTitle = labelTitles.join(', ');
             } else {
               labelTooltipTitle = '';
               $sidebarLabelTooltip.tooltip('destroy');
