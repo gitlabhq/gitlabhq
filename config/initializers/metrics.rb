@@ -136,7 +136,15 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(Rouge::Plugins::Redcarpet)
     config.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
 
+    [:XML, :HTML].each do |namespace|
+      namespace_mod = Nokogiri.const_get(namespace)
+
+      config.instrument_methods(namespace_mod)
+      config.instrument_methods(namespace_mod::Document)
+    end
+
     config.instrument_methods(Rinku)
+    config.instrument_instance_methods(Repository)
   end
 
   GC::Profiler.enable

@@ -5,11 +5,11 @@
 %div{ class: container_class }
   .top-area
     .col-md-9
-      %h3.page-title= @environment.name.titleize
-
+      %h3.page-title= @environment.name.capitalize
     .col-md-3
       .nav-controls
         - if can?(current_user, :update_environment, @environment)
+          = link_to 'Edit', edit_namespace_project_environment_path(@project.namespace, @project, @environment), class: 'btn'
           = link_to 'Destroy', namespace_project_environment_path(@project.namespace, @project, @environment), data: { confirm: 'Are you sure you want to delete this environment?' }, class: 'btn btn-danger', method: :delete
 
   - if @deployments.blank?

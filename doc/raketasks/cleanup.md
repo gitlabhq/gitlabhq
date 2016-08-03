@@ -2,7 +2,7 @@
 
 ## Remove garbage from filesystem. Important! Data loss!
 
-Remove namespaces(dirs) from `/home/git/repositories` if they don't exist in GitLab database.
+Remove namespaces(dirs) from all repository storage paths if they don't exist in GitLab database.
 
 ```
 # omnibus-gitlab
@@ -12,7 +12,7 @@ sudo gitlab-rake gitlab:cleanup:dirs
 bundle exec rake gitlab:cleanup:dirs RAILS_ENV=production
 ```
 
-Rename repositories from `/home/git/repositories` if they don't exist in GitLab database.
+Rename repositories from all repository storage paths if they don't exist in GitLab database.
 The repositories get a `+orphaned+TIMESTAMP` suffix so that they cannot block new repositories from being created.
 
 ```

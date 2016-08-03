@@ -15,21 +15,19 @@ class CreateBranchService < BaseService
       return error('Branch already exists')
     end
 
-    new_branch = nil
+    new_branch = if source_project != @project
+                   repository.fetch_ref(
+                     source_project.repository.path_to_repo,
+                     "refs/heads/#{ref}",
+                     "refs/heads/#{branch_name}"
+                   )
 
-    if source_project != @project
-      repository.with_tmp_ref do |tmp_ref|
-        repository.fetch_ref(
-          source_project.repository.path_to_repo,
-          "refs/heads/#{ref}",
-          tmp_ref
-        )
+                   repository.after_create_branch
 
-        new_branch = repository.add_branch(current_user, branch_name, tmp_ref)
-      end
-    else
-      new_branch = repository.add_branch(current_user, branch_name, ref)
-    end
+                   repository.find_branch(branch_name)
+                 else
+                   repository.add_branch(current_user, branch_name, ref)
+                 end
 
     if new_branch
       success(new_branch)

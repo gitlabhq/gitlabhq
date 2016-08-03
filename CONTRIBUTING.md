@@ -41,6 +41,8 @@ abbreviation.
 If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
+- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+
 ## Contributor license agreement
 
 By submitting code as an individual you agree to the

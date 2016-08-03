@@ -164,7 +164,10 @@
       line-height: 0;
       img {
         border: 1px solid #fff;
-        background: image-url('trans_bg.gif');
+        background-image: linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%),
+        linear-gradient(45deg, #e5e5e5 25%, transparent 25%, transparent 75%, #e5e5e5 75%, #e5e5e5 100%);
+        background-size: 10px 10px;
+        background-position: 0 0, 5px 5px;
         max-width: 100%;
       }
       &.deleted {

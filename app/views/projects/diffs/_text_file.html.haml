@@ -11,9 +11,9 @@
 
     - unless @diff_notes_disabled
       - line_code = diff_file.line_code(line)
-      - diff_notes = @grouped_diff_notes[line_code] if line_code
-      - if diff_notes
-        = render "projects/notes/diff_notes_with_reply", notes: diff_notes
+      - discussion = @grouped_diff_discussions[line_code] if line_code
+      - if discussion
+        = render "discussions/diff_discussion", discussion: discussion
 
   - if last_line > 0
     = render "projects/diffs/match_line", { line: "",

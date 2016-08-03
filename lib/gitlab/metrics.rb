@@ -124,6 +124,11 @@ module Gitlab
       trans.action = action if trans
     end
 
+    # Returns the prefix to use for the name of a series.
+    def self.series_prefix
+      @series_prefix ||= Sidekiq.server? ? 'sidekiq_' : 'rails_'
+    end
+
     # When enabled this should be set before being used as the usual pattern
     # "@foo ||= bar" is _not_ thread-safe.
     if enabled?
@@ -136,8 +141,7 @@ module Gitlab
       end
     end
 
-    private
-
+    # Allow access from other metrics related middlewares
     def self.current_transaction
       Transaction.current
     end

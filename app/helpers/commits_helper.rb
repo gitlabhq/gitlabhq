@@ -1,4 +1,3 @@
-# encoding: utf-8
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -14,16 +13,6 @@ module CommitsHelper
   # Just like #author_link but for the committer.
   def commit_committer_link(commit, options = {})
     commit_person_link(commit, options.merge(source: :committer))
-  end
-
-  def commit_author_avatar(commit, options = {})
-    options = options.merge(source: :author)
-    user = commit.send(options[:source])
-
-    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
-    person_email = user.try(:email) || source_email
-
-    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
   end
 
   def image_diff_class(diff)

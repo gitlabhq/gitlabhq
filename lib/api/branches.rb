@@ -15,7 +15,8 @@ module API
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
         branches = user_project.repository.branches.sort_by(&:name)
-        present branches, with: Entities::RepoObject, project: user_project
+
+        present branches, with: Entities::RepoBranch, project: user_project
       end
 
       # Get a single branch
@@ -28,14 +29,21 @@ module API
       get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
         @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
         not_found!("Branch") unless @branch
-        present @branch, with: Entities::RepoObject, project: user_project
+
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Protect a single branch
       #
+      # Note: The internal data model moved from `developers_can_{merge,push}` to `allowed_to_{merge,push}`
+      # in `gitlab-org/gitlab-ce!5081`. The API interface has not been changed (to maintain compatibility),
+      # but it works with the changed data model to infer `developers_can_merge` and `developers_can_push`.
+      #
       # Parameters:
       #   id (required) - The ID of a project
       #   branch (required) - The name of the branch
+      #   developers_can_push (optional) - Flag if developers can push to that branch
+      #   developers_can_merge (optional) - Flag if developers can merge to that branch
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ':id/repository/branches/:branch/protect',
@@ -43,11 +51,41 @@ module API
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
-        not_found!("Branch") unless @branch
+        not_found!('Branch') unless @branch
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
-        user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
-        present @branch, with: Entities::RepoObject, project: user_project
+        developers_can_merge = to_boolean(params[:developers_can_merge])
+        developers_can_push = to_boolean(params[:developers_can_push])
+
+        protected_branch_params = {
+          name: @branch.name
+        }
+
+        unless developers_can_merge.nil?
+          protected_branch_params.merge!({
+            merge_access_level_attributes: {
+              access_level: developers_can_merge ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+            }
+          })
+        end
+
+        unless developers_can_push.nil?
+          protected_branch_params.merge!({
+            push_access_level_attributes: {
+              access_level: developers_can_push ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+            }
+          })
+        end
+
+        if protected_branch
+          service = ProtectedBranches::UpdateService.new(user_project, current_user, protected_branch_params)
+          service.execute(protected_branch)
+        else
+          service = ProtectedBranches::CreateService.new(user_project, current_user, protected_branch_params)
+          service.execute
+        end
+
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Unprotect a single branch
@@ -66,7 +104,7 @@ module API
         protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
-        present @branch, with: Entities::RepoObject, project: user_project
+        present @branch, with: Entities::RepoBranch, project: user_project
       end
 
       # Create branch
@@ -84,7 +122,7 @@ module API
 
         if result[:status] == :success
           present result[:branch],
-                  with: Entities::RepoObject,
+                  with: Entities::RepoBranch,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

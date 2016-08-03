@@ -35,8 +35,6 @@ describe Projects::DownloadService, services: true do
 
         it { expect(@link_to_file).to have_key(:alt) }
         it { expect(@link_to_file).to have_key(:url) }
-        it { expect(@link_to_file).to have_key(:is_image) }
-        it { expect(@link_to_file[:is_image]).to be true }
         it { expect(@link_to_file[:url]).to match('rails_sample.jpg') }
         it { expect(@link_to_file[:alt]).to eq('rails_sample') }
       end
@@ -49,8 +47,6 @@ describe Projects::DownloadService, services: true do
 
         it { expect(@link_to_file).to have_key(:alt) }
         it { expect(@link_to_file).to have_key(:url) }
-        it { expect(@link_to_file).to have_key(:is_image) }
-        it { expect(@link_to_file[:is_image]).to be false }
         it { expect(@link_to_file[:url]).to match('doc_sample.txt') }
         it { expect(@link_to_file[:alt]).to eq('doc_sample.txt') }
       end

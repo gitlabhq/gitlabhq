@@ -12,9 +12,11 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: nil) }
+    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
+    scope :manual_actions, ->() { where(when: :manual) }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -91,6 +93,29 @@ module Ci
       end
     end
 
+    def manual?
+      self.when == 'manual'
+    end
+
+    def other_actions
+      pipeline.manual_actions.where.not(name: name)
+    end
+
+    def playable?
+      project.builds_enabled? && commands.present? && manual?
+    end
+
+    def play(current_user = nil)
+      # Try to queue a current build
+      if self.queue
+        self.update(user: current_user)
+        self
+      else
+        # Otherwise we need to create a duplicate
+        Ci::Build.retry(self, current_user)
+      end
+    end
+
     def retryable?
       project.builds_enabled? && commands.present? && complete?
     end
@@ -121,11 +146,14 @@ module Ci
     end
 
     def variables
-      variables = []
-      variables += predefined_variables
-      variables += yaml_variables if yaml_variables
-      variables += project_variables
-      variables += trigger_variables
+      variables = predefined_variables
+      variables += project.predefined_variables
+      variables += pipeline.predefined_variables
+      variables += runner.predefined_variables if runner
+      variables += project.container_registry_variables
+      variables += yaml_variables
+      variables += project.secret_variables
+      variables += trigger_request.user_variables if trigger_request
       variables
     end
 
@@ -304,7 +332,7 @@ module Ci
     end
 
     def valid_token?(token)
-      project.valid_runners_token? token
+      project.valid_runners_token?(token)
     end
 
     def has_tags?
@@ -385,6 +413,14 @@ module Ci
       self.update(artifacts_expire_at: nil)
     end
 
+    def when
+      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+    end
+
+    def yaml_variables
+      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+    end
+
     private
 
     def update_artifacts_size
@@ -403,29 +439,30 @@ module Ci
       self.update(erased_by: user, erased_at: Time.now, artifacts_expire_at: nil)
     end
 
-    def project_variables
-      project.variables.map do |variable|
-        { key: variable.key, value: variable.value, public: false }
-      end
-    end
-
-    def trigger_variables
-      if trigger_request && trigger_request.variables
-        trigger_request.variables.map do |key, value|
-          { key: key, value: value, public: false }
-        end
-      else
-        []
-      end
-    end
-
     def predefined_variables
-      variables = []
-      variables << { key: :CI_BUILD_TAG, value: ref, public: true } if tag?
-      variables << { key: :CI_BUILD_NAME, value: name, public: true }
-      variables << { key: :CI_BUILD_STAGE, value: stage, public: true }
-      variables << { key: :CI_BUILD_TRIGGERED, value: 'true', public: true } if trigger_request
+      variables = [
+        { key: 'CI', value: 'true', public: true },
+        { key: 'GITLAB_CI', value: 'true', public: true },
+        { key: 'CI_BUILD_ID', value: id.to_s, public: true },
+        { key: 'CI_BUILD_TOKEN', value: token, public: false },
+        { key: 'CI_BUILD_REF', value: sha, public: true },
+        { key: 'CI_BUILD_BEFORE_SHA', value: before_sha, public: true },
+        { key: 'CI_BUILD_REF_NAME', value: ref, public: true },
+        { key: 'CI_BUILD_NAME', value: name, public: true },
+        { key: 'CI_BUILD_STAGE', value: stage, public: true },
+        { key: 'CI_SERVER_NAME', value: 'GitLab', public: true },
+        { key: 'CI_SERVER_VERSION', value: Gitlab::VERSION, public: true },
+        { key: 'CI_SERVER_REVISION', value: Gitlab::REVISION, public: true }
+      ]
+      variables << { key: 'CI_BUILD_TAG', value: ref, public: true } if tag?
+      variables << { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true } if trigger_request
       variables
+    end
+
+    def build_attributes_from_config
+      return {} unless pipeline.config_processor
+      
+      pipeline.config_processor.build_attributes(name)
     end
   end
 end

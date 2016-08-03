@@ -47,7 +47,7 @@ module Gitlab
 
           relation_key = relation.is_a?(Hash) ? relation.keys.first : relation
           relation_hash = create_relation(relation_key, @tree_hash[relation_key.to_s])
-          saved << restored_project.update_attribute(relation_key, relation_hash)
+          saved << restored_project.append_or_update_attribute(relation_key, relation_hash)
         end
         saved.all?
       end
@@ -78,7 +78,7 @@ module Gitlab
         relation_key = relation.keys.first.to_s
         return if tree_hash[relation_key].blank?
 
-        tree_hash[relation_key].each do |relation_item|
+        [tree_hash[relation_key]].flatten.each do |relation_item|
           relation.values.flatten.each do |sub_relation|
             # We just use author to get the user ID, do not attempt to create an instance.
             next if sub_relation == :author

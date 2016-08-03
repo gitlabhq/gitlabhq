@@ -49,6 +49,17 @@
     border-color: $border-dark;
     color: $color;
   }
+
+  svg {
+
+    path {
+      fill: $color;
+    }
+
+    use {
+      stroke: $color;
+    }
+  }
 }
 
 @mixin btn-green {
@@ -124,6 +135,15 @@
     @include btn-green;
   }
 
+  &.btn-inverted {
+    &.btn-success,
+    &.btn-new,
+    &.btn-create,
+    &.btn-save {
+      @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
+    }
+  }
+
   &.btn-gray {
     @include btn-gray;
   }
@@ -172,6 +192,13 @@
 
   .caret {
     margin-left: 5px;
+  }
+
+  svg {
+    height: 15px;
+    width: auto;
+    position: relative;
+    top: 2px;
   }
 }
 

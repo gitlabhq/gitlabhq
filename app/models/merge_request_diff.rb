@@ -1,6 +1,7 @@
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
+  include EncodingHelper
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
@@ -79,6 +80,10 @@ class MergeRequestDiff < ActiveRecord::Base
     return last_commit unless self.head_commit_sha
 
     project.commit(self.head_commit_sha)
+  end
+
+  def diff_refs_by_sha?
+    base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
   def compare
@@ -209,6 +214,14 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def branch_base_sha
     branch_base_commit.try(:sha)
+  end
+
+  def utf8_st_diffs
+    st_diffs.map do |diff|
+      diff.each do |k, v|
+        diff[k] = encode_utf8(v) if v.respond_to?(:encoding)
+      end
+    end
   end
 
   #

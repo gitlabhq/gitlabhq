@@ -114,21 +114,25 @@ module API
       end
     end
 
-    class RepoObject < Grape::Entity
+    class RepoBranch < Grape::Entity
       expose :name
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
+      expose :commit do |repo_branch, options|
+        options[:project].repository.commit(repo_branch.target)
       end
 
-      expose :protected do |repo, options|
-        if options[:project]
-          options[:project].protected_branch? repo.name
-        end
+      expose :protected do |repo_branch, options|
+        options[:project].protected_branch? repo_branch.name
+      end
+
+      expose :developers_can_push do |repo_branch, options|
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
+      end
+
+      expose :developers_can_merge do |repo_branch, options|
+        project = options[:project]
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -147,8 +151,13 @@ module API
       expose :safe_message, as: :message
     end
 
+    class RepoCommitStats < Grape::Entity
+      expose :additions, :deletions, :total
+    end
+
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :stats, using: Entities::RepoCommitStats
       expose :status
     end
 
@@ -412,7 +421,9 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
-      expose :restricted_signup_domains
+      expose :domain_whitelist
+      expose :domain_blacklist_enabled
+      expose :domain_blacklist
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
@@ -425,27 +436,14 @@ module API
     end
 
     class RepoTag < Grape::Entity
-      expose :name
-      expose :message do |repo_obj, _options|
-        if repo_obj.respond_to?(:message)
-          repo_obj.message
-        else
-          nil
-        end
+      expose :name, :message
+
+      expose :commit do |repo_tag, options|
+        options[:project].repository.commit(repo_tag.target)
       end
 
-      expose :commit do |repo_obj, options|
-        if repo_obj.respond_to?(:commit)
-          repo_obj.commit
-        elsif options[:project]
-          options[:project].repository.commit(repo_obj.target)
-        end
-      end
-
-      expose :release, using: Entities::Release do |repo_obj, options|
-        if options[:project]
-          options[:project].releases.find_by(tag: repo_obj.name)
-        end
+      expose :release, using: Entities::Release do |repo_tag, options|
+        options[:project].releases.find_by(tag: repo_tag.name)
       end
     end
 
@@ -496,6 +494,10 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+    end
+
+    class Environment < Grape::Entity
+      expose :id, :name, :external_url
     end
 
     class RepoLicense < Grape::Entity

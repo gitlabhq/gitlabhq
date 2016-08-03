@@ -43,9 +43,9 @@ describe Gitlab::IncomingEmail, lib: true do
     end
   end
 
-  context 'self.key_from_fallback_reply_message_id' do
+  context 'self.key_from_fallback_message_id' do
     it 'returns reply key' do
-      expect(described_class.key_from_fallback_reply_message_id('reply-key@localhost')).to eq('key')
+      expect(described_class.key_from_fallback_message_id('reply-key@localhost')).to eq('key')
     end
   end
 end

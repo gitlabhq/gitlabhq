@@ -199,9 +199,13 @@ describe "Builds" do
         click_link 'Retry'
       end
 
-      it { expect(page.status_code).to eq(200) }
-      it { expect(page).to have_content 'pending' }
-      it { expect(page).to have_content 'Cancel' }
+      it 'shows the right status and buttons' do
+        expect(page).to have_http_status(200)
+        expect(page).to have_content 'pending'
+        page.within('aside.right-sidebar') do
+          expect(page).to have_content 'Cancel'
+        end
+      end
     end
 
     context "Build from other project" do
@@ -212,7 +216,25 @@ describe "Builds" do
         page.driver.post(retry_namespace_project_build_path(@project.namespace, @project, @build2))
       end
 
-      it { expect(page.status_code).to eq(404) }
+      it { expect(page).to have_http_status(404) }
+    end
+
+    context "Build that current user is not allowed to retry" do
+      before do
+        @build.run!
+        @build.cancel!
+        @project.update(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
+        logout_direct
+        login_with(create(:user))
+        visit namespace_project_build_path(@project.namespace, @project, @build)
+      end
+
+      it 'does not show the Retry button' do
+        page.within('aside.right-sidebar') do
+          expect(page).not_to have_content 'Retry'
+        end
+      end
     end
   end
 

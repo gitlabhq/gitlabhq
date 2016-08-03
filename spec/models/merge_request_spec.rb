@@ -65,11 +65,11 @@ describe MergeRequest, models: true do
   end
 
   describe '#target_branch_sha' do
-    context 'when the target branch does not exist anymore' do
-      let(:project) { create(:project) }
+    let(:project) { create(:project) }
 
-      subject { create(:merge_request, source_project: project, target_project: project) }
+    subject { create(:merge_request, source_project: project, target_project: project) }
 
+    context 'when the target branch does not exist' do
       before do
         project.repository.raw_repository.delete_branch(subject.target_branch)
       end
@@ -77,6 +77,12 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.target_branch_sha).to be_nil
       end
+    end
+
+    it 'returns memoized value' do
+      subject.target_branch_sha = '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+
+      expect(subject.target_branch_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
     end
   end
 
@@ -102,6 +108,12 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.source_branch_sha).to be_nil
       end
+    end
+
+    it 'returns memoized value' do
+      subject.source_branch_sha = '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+
+      expect(subject.source_branch_sha).to eq '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
     end
   end
 
@@ -672,6 +684,30 @@ describe MergeRequest, models: true do
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff
+    end
+  end
+
+  describe "#diff_sha_refs" do
+    context "with diffs" do
+      subject { create(:merge_request, :with_diffs) }
+
+      it "does not touch the repository" do
+        subject # Instantiate the object
+
+        expect_any_instance_of(Repository).not_to receive(:commit)
+
+        subject.diff_sha_refs
+      end
+
+      it "returns expected diff_refs" do
+        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+
+        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+      end
     end
   end
 end

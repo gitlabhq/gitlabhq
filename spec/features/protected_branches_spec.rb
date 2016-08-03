@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Projected Branches', feature: true, js: true do
+  include WaitForAjax
+
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project) }
 
@@ -78,6 +80,70 @@ feature 'Projected Branches', feature: true, js: true do
         expect(page).to have_content("production-stable")
         expect(page).to have_content("staging-stable")
         expect(page).not_to have_content("development")
+      end
+    end
+  end
+
+  describe "access control" do
+    ProtectedBranch::PushAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
+      it "allows creating protected branches that #{access_type_name} can push to" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        within('.new_protected_branch') do
+          find(".allowed-to-push").click
+          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+        end
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
+      end
+
+      it "allows updating protected branches so that #{access_type_name} can push to them" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+
+        within(".protected-branches-list") do
+          find(".allowed-to-push").click
+          within('.dropdown-menu.push') { click_on access_type_name }
+        end
+
+        wait_for_ajax
+        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
+      end
+    end
+
+    ProtectedBranch::MergeAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
+      it "allows creating protected branches that #{access_type_name} can merge to" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        within('.new_protected_branch') do
+          find(".allowed-to-merge").click
+          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+        end
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
+      end
+
+      it "allows updating protected branches so that #{access_type_name} can merge to them" do
+        visit namespace_project_protected_branches_path(project.namespace, project)
+        set_protected_branch_name('master')
+        click_on "Protect"
+
+        expect(ProtectedBranch.count).to eq(1)
+
+        within(".protected-branches-list") do
+          find(".allowed-to-merge").click
+          within('.dropdown-menu.merge') { click_on access_type_name }
+        end
+
+        wait_for_ajax
+        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
       end
     end
   end

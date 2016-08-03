@@ -112,7 +112,8 @@ module SearchHelper
       search: params[:search],
       project_id: params[:project_id],
       group_id: params[:group_id],
-      scope: params[:scope]
+      scope: params[:scope],
+      repository_ref: params[:repository_ref]
     }
 
     options = exist_opts.merge(options)

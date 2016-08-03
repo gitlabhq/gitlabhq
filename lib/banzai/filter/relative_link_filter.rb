@@ -20,7 +20,7 @@ module Banzai
           process_link_attr el.attribute('href')
         end
 
-        doc.search('img').each do |el|
+        doc.css('img, video').each do |el|
           process_link_attr el.attribute('src')
         end
 
@@ -87,9 +87,12 @@ module Banzai
       def build_relative_path(path, request_path)
         return request_path if path.empty?
         return path unless request_path
+        return path[1..-1] if path.start_with?('/')
 
         parts = request_path.split('/')
         parts.pop if uri_type(request_path) != :tree
+
+        path.sub!(%r{^\./}, '')
 
         while path.start_with?('../')
           parts.pop
@@ -112,8 +115,7 @@ module Banzai
       end
 
       def current_commit
-        @current_commit ||= context[:commit] ||
-          ref ? repository.commit(ref) : repository.head_commit
+        @current_commit ||= context[:commit] || ref ? repository.commit(ref) : repository.head_commit
       end
 
       def relative_url_root

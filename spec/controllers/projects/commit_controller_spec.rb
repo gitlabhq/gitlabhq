@@ -24,15 +24,6 @@ describe Projects::CommitController do
       get :show, params.merge(extra_params)
     end
 
-    let(:project) { create(:project) }
-
-    before do
-      user = create(:user)
-      project.team << [user, :master]
-
-      sign_in(user)
-    end
-
     context 'with valid id' do
       it 'responds with 200' do
         go(id: commit.id)
