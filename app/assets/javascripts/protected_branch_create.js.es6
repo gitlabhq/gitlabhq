@@ -1,50 +1,3 @@
-class ProtectedBranchesAccessDropdown {
-  constructor(options) {
-    const { $dropdown, data, onSelect } = options;
-
-    $dropdown.glDropdown({
-      data: data,
-      selectable: true,
-      fieldName: $dropdown.data('field-name'),
-      toggleLabel(item) {
-        return item.text;
-      },
-      clicked(item, $el, e) {
-        e.preventDefault();
-        onSelect();
-      }
-    });
-  }
-}
-
-class AllowedToMergeDropdowns {
-  constructor (options) {
-    const { $dropdowns, onSelect } = options;
-
-    $dropdowns.each((i, el) => {
-      new ProtectedBranchesAccessDropdown({
-        $dropdown: $(el),
-        data: gon.merge_access_levels,
-        onSelect: onSelect
-      });
-    });
-  }
-}
-
-class AllowedToPushSelects {
-  constructor (options) {
-    const { $dropdowns, onSelect } = options;
-
-    $dropdowns.each((i, el) => {
-      new ProtectedBranchesAccessDropdown({
-        $dropdown: $(el),
-        data: gon.push_access_levels,
-        onSelect: onSelect
-      });
-    });
-  }
-}
-
 class ProtectedBranchCreate {
   constructor() {
     this.$wrap = this.$form = $('#new_protected_branch');
@@ -59,12 +12,12 @@ class ProtectedBranchCreate {
     });
 
     // Allowed to Push dropdowns
-    new AllowedToPushSelects({
+    new AllowedToPushDropdowns({
       $dropdowns: this.$wrap.find('.js-allowed-to-push'),
       onSelect: this.onSelect.bind(this)
     });
 
-    new ProtectedBranchSelects({
+    new ProtectedBranchDropdowns({
       $dropdowns: this.$wrap.find('.js-protected-branch-select'),
       onSelect: this.onSelect.bind(this)
     });

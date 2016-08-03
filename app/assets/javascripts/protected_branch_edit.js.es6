@@ -10,14 +10,14 @@ class ProtectedBranchEdit {
   buildDropdowns() {
 
     // Allowed to merge dropdown
-    new ProtectedBranchesAccessDropdown({
+    new ProtectedBranchAccessDropdown({
       $dropdown: this.$allowedToMergeDropdown,
       data: gon.merge_access_levels,
       onSelect: this.onSelect.bind(this)
     });
 
     // Allowed to push dropdown
-    new ProtectedBranchesAccessDropdown({
+    new ProtectedBranchAccessDropdown({
       $dropdown: this.$allowedToPushDropdown,
       data: gon.push_access_levels,
       onSelect: this.onSelect.bind(this)
@@ -47,23 +47,10 @@ class ProtectedBranchEdit {
       success: () => {
         this.$wrap.effect('highlight');
       },
-      error: function() {
+      error() {
         $.scrollTo(0);
         new Flash('Failed to update branch!');
       }
-    });
-  }
-}
-
-class ProtectedBranchEditList {
-  constructor() {
-    this.$wrap = $('.protected-branches-list');
-
-    // Build edit forms
-    this.$wrap.find('.js-protected-branch-edit-form').each((i, el) => {
-      new ProtectedBranchEdit({
-        $wrap: $(el)
-      });
     });
   }
 }

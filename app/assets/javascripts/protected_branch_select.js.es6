@@ -1,4 +1,4 @@
-class ProtectedBranchSelect {
+class ProtectedBranchDropdown {
   constructor(options) {
     this.onSelect = options.onSelect;
     this.$dropdown = options.$dropdown;
@@ -74,12 +74,12 @@ class ProtectedBranchSelect {
   }
 }
 
-class ProtectedBranchSelects {
+class ProtectedBranchDropdowns {
   constructor(options) {
     const { $dropdowns, onSelect } = options;
 
     $dropdowns.each((i, el) => {
-      new ProtectedBranchSelect({
+      new ProtectedBranchDropdown({
         $dropdown: $(el),
         onSelect: onSelect
       });

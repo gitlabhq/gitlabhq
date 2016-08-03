@@ -675,7 +675,14 @@ pre.light-well {
     }
   }
 
-  &.table-bordered {
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
     border-radius: 1px;
 
     th:not(:last-child), td:not(:last-child) {

@@ -1,16 +1,18 @@
-.panel.panel-default
+.panel.panel-default.protected-branches-list
   - if @protected_branches.empty?
+    .panel-heading
+      %b Protected branch (#{@protected_branches.size})
     %p.settings-message.text-center
-      No branches are protected, protect a branch with the form above.
+      There are currently no protected braches, protect a branch with the form above.
   - else
     - can_admin_project = can?(current_user, :admin_project, @project)
 
-    %table.table.protected-branches-list.table-bordered
+    %table.table.table-bordered
       %colgroup
-        %col{ width: "20%" }
+        %col{ width: "25%" }
         %col{ width: "30%" }
         %col{ width: "25%" }
-        %col{ width: "25%" }
+        %col{ width: "20%" }
       %thead
         %tr
           %th Protected branch (#{@protected_branches.size})
