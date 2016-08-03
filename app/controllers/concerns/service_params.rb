@@ -7,8 +7,12 @@ module ServiceParams
                     :build_key, :server, :teamcity_url, :drone_url, :build_type,
                     :description, :issues_url, :new_issue_url, :restrict_to_branch, :channel,
                     :colorize_messages, :channels,
-                    # See app/helpers/services_helper.rb
-                    # for why we need issues_events and merge_requests_events.
+                    # We're using `issues_events` and `merge_requests_events`
+                    # in the view so we still need to explicitly state them
+                    # here. `Service#event_names` would only give
+                    # `issue_events` and `merge_request_events` (singular!)
+                    # See app/helpers/services_helper.rb for how we
+                    # make those event names plural as special case.
                     :issues_events, :merge_requests_events,
                     :notify_only_broken_builds, :notify_only_broken_pipelines,
                     :add_pusher, :send_from_committer_email, :disable_diffs,
