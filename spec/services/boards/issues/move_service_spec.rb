@@ -11,8 +11,8 @@ describe Boards::Issues::MoveService, services: true do
     let(:testing)  { create(:label, project: project, name: 'Testing') }
 
     let(:backlog) { create(:backlog_list, board: board) }
-    let(:list1)   { create(:list, board: board, label: development) }
-    let(:list2)   { create(:list, board: board, label: testing) }
+    let(:list1)   { create(:list, board: board, label: development, position: 0) }
+    let(:list2)   { create(:list, board: board, label: testing, position: 1) }
     let(:done)    { create(:done_list, board: board) }
 
     before do

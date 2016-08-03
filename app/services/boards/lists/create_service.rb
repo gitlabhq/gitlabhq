@@ -12,7 +12,8 @@ module Boards
       private
 
       def find_next_position
-        board.lists.label.maximum(:position).to_i + 1
+        max_position = board.lists.label.maximum(:position)
+        max_position.nil? ? 0 : max_position.succ
       end
 
       def create_list_at(position)

@@ -47,20 +47,20 @@ describe Projects::BoardListsController do
   end
 
   describe 'PATCH #update' do
-    let!(:planning)    { create(:list, board: board, position: 1) }
-    let!(:development) { create(:list, board: board, position: 2) }
+    let!(:planning)    { create(:list, board: board, position: 0) }
+    let!(:development) { create(:list, board: board, position: 1) }
 
     context 'with valid position' do
       it 'returns a successful 200 response' do
-        move list: planning, position: 2
+        move list: planning, position: 1
 
         expect(response).to have_http_status(200)
       end
 
       it 'moves the list to the desired position' do
-        move list: planning, position: 2
+        move list: planning, position: 1
 
-        expect(planning.reload.position).to eq 2
+        expect(planning.reload.position).to eq 1
       end
     end
 
@@ -74,7 +74,7 @@ describe Projects::BoardListsController do
 
     context 'with invalid list id' do
       it 'returns a not found 404 response' do
-        move list: 999, position: 2
+        move list: 999, position: 1
 
         expect(response).to have_http_status(404)
       end
@@ -91,7 +91,7 @@ describe Projects::BoardListsController do
 
   describe 'DELETE #destroy' do
     context 'with valid list id' do
-      let!(:planning) { create(:list, board: board, position: 1) }
+      let!(:planning) { create(:list, board: board, position: 0) }
 
       it 'returns a successful 200 response' do
         remove_board_list list: planning
@@ -112,7 +112,7 @@ describe Projects::BoardListsController do
       end
     end
 
-    def remove_board_list(list)
+    def remove_board_list(list:)
       delete :destroy, namespace_id: project.namespace.to_param,
                        project_id: project.to_param,
                        id: list.to_param,

@@ -13,7 +13,7 @@ describe Boards::Lists::CreateService, services: true do
       it 'creates a new list at beginning of the list' do
         list = service.execute
 
-        expect(list.position).to eq 1
+        expect(list.position).to eq 0
       end
     end
 
@@ -23,18 +23,18 @@ describe Boards::Lists::CreateService, services: true do
 
         list = service.execute
 
-        expect(list.position).to eq 1
+        expect(list.position).to eq 0
       end
     end
 
     context 'when board lists has only labels lists' do
       it 'creates a new list at end of the lists' do
+        create(:list, board: board, position: 0)
         create(:list, board: board, position: 1)
-        create(:list, board: board, position: 2)
 
         list = service.execute
 
-        expect(list.position).to eq 3
+        expect(list.position).to eq 2
       end
     end
 
@@ -42,12 +42,12 @@ describe Boards::Lists::CreateService, services: true do
       it 'creates a new list at end of the label lists' do
         create(:backlog_list, board: board)
         create(:done_list, board: board)
-        list1 = create(:list, board: board, position: 1)
+        list1 = create(:list, board: board, position: 0)
 
         list2 = service.execute
 
-        expect(list1.reload.position).to eq 1
-        expect(list2.reload.position).to eq 2
+        expect(list1.reload.position).to eq 0
+        expect(list2.reload.position).to eq 1
       end
     end
   end

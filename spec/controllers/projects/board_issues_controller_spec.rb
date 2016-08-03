@@ -7,8 +7,8 @@ describe Projects::BoardIssuesController do
   let(:planning)    { create(:label, project: project, name: 'Planning') }
   let(:development) { create(:label, project: project, name: 'Development') }
 
-  let!(:list1) { create(:list, board: project.board, label: planning, position: 1) }
-  let!(:list2) { create(:list, board: project.board, label: development, position: 2) }
+  let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
+  let!(:list2) { create(:list, board: project.board, label: development, position: 1) }
 
   before do
     project.team << [user, :master]

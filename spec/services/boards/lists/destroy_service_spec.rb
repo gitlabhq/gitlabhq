@@ -16,16 +16,16 @@ describe Boards::Lists::DestroyService, services: true do
 
       it 'decrements position of higher lists' do
         backlog     = create(:backlog_list, board: board)
-        development = create(:list, board: board, position: 1)
-        review      = create(:list, board: board, position: 2)
-        staging     = create(:list, board: board, position: 3)
+        development = create(:list, board: board, position: 0)
+        review      = create(:list, board: board, position: 1)
+        staging     = create(:list, board: board, position: 2)
         done        = create(:done_list, board: board)
 
         described_class.new(project, user, id: development.id).execute
 
         expect(backlog.reload.position).to be_nil
-        expect(review.reload.position).to eq 1
-        expect(staging.reload.position).to eq 2
+        expect(review.reload.position).to eq 0
+        expect(staging.reload.position).to eq 1
         expect(done.reload.position).to be_nil
       end
     end

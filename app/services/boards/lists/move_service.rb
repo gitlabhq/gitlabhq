@@ -19,7 +19,7 @@ module Boards
 
       def valid_move?
         new_position.present? && new_position != old_position &&
-          new_position >= 0 && new_position <= board.lists.label.size
+          new_position >= 0 && new_position < board.lists.label.size
       end
 
       def old_position
