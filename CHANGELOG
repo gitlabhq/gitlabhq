@@ -140,6 +140,7 @@ v 8.12.0
   - Fix issue with slash commands not loading on new issue page
   - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Remove prefixes from transition CSS property (ClemMakesApps)
+  - Use custom Ruby images to test builds (registry.gitlab.com/gitlab-org/gitlab-build-images:*)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
   - Use 'git update-ref' for safer web commits !6130
@@ -882,7 +883,6 @@ v 8.9.0
   - Add API endpoint for Sidekiq Metrics !4653
   - Refactoring Award Emoji with API support for Issues and MergeRequests
   - Use Knapsack to evenly distribute tests across multiple nodes
-  - Use custom Ruby images to test builds (registry.gitlab.com/gitlab-org/gitlab-build-images:*)
   - Add `sha` parameter to MR merge API, to ensure only reviewed changes are merged
   - Don't allow MRs to be merged when commits were added since the last review / page load
   - Add DB index on users.state
