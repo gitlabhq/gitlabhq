@@ -23,18 +23,33 @@
 }
 
 .issue-boards-page {
+  .content-wrapper {
+    display: -webkit-flex;
+    display: flex;
+  }
+
+  .sub-nav,
+  .issues-filters {
+    -webkit-flex: none;
+    flex: none;
+  }
+
   .page-with-sidebar {
+    display: -webkit-flex;
     display: flex;
     min-height: 100vh;
     max-height: 100vh;
   }
 
   .issue-boards-content {
+    display: -webkit-flex;
     display: flex;
-    height: 100%;
+    width: 100%;
 
     .content {
+      display: -webkit-flex;
       display: flex;
+      -webkit-flex-direction: column;
       flex-direction: column;
       width: 100%;
     }
@@ -42,8 +57,10 @@
 }
 
 .boards-list {
+  display: -webkit-flex;
   display: flex;
-  height: 100%;
+  -webkit-flex: 1;
+  flex: 1;
   min-height: 455px;
   padding-top: 25px;
   padding-right: ($gl-padding / 2);
@@ -52,17 +69,19 @@
 }
 
 .board {
+  display: -webkit-flex;
+  display: flex;
   min-width: 400px;
   max-width: 400px;
-  height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
 }
 
 .board-inner {
+  display: -webkit-flex;
   display: flex;
+  -webkit-flex-direction: column;
   flex-direction: column;
-  height: 100%;
   width: 100%;
   font-size: $issue-boards-font-size;
   background: $background-color;
@@ -162,6 +181,7 @@
 }
 
 .board-list {
+  -webkit-flex: 1;
   flex: 1;
   margin: 0;
   padding: 5px;

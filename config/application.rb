@@ -86,6 +86,7 @@ module Gitlab
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
     config.assets.precompile << "boards/boards_bundle.js"
+    config.assets.precompile << "boards/test_utils/simulate_drag.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"
