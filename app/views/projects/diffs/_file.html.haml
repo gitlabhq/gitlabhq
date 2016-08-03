@@ -15,6 +15,6 @@
                 from_merge_request_id: @merge_request.id,
                 skip_visible_check: true)
 
-        = view_file_btn(diff_commit.id, diff_file, project)
+        = view_file_btn(diff_commit.id, diff_file.new_path, project)
 
-  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, diff_refs: diff_refs, blob: blob, project: project
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

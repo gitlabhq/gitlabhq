@@ -104,7 +104,7 @@ class Commit
   end
 
   def diff_line_count
-    @diff_line_count ||= Commit::diff_line_count(self.diffs)
+    @diff_line_count ||= Commit::diff_line_count(raw_diffs)
     @diff_line_count
   end
 
@@ -317,6 +317,14 @@ class Commit
     nil
   end
 
+  def raw_diffs(*args)
+    raw.diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
+  end
+
   private
 
   def find_author_by_any_email
@@ -326,7 +334,7 @@ class Commit
   def repo_changes
     changes = { added: [], modified: [], removed: [] }
 
-    diffs.each do |diff|
+    raw_diffs.each do |diff|
       if diff.deleted_file
         changes[:removed] << diff.old_path
       elsif diff.renamed_file || diff.new_file

@@ -164,8 +164,16 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.diffs(*args) : compare.raw_diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    if self.compare
+      self.compare.diffs(diff_options)
+    else
+      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+    end
   end
 
   def diff_size
@@ -312,6 +320,8 @@ class MergeRequest < ActiveRecord::Base
     old_diff_refs = self.diff_refs
 
     merge_request_diff.reload_content
+
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
 
     new_diff_refs = self.diff_refs
 

@@ -128,7 +128,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe '#diffs' do
+  describe '#raw_diffs' do
     let(:merge_request) { build(:merge_request) }
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
 
@@ -137,6 +137,31 @@ describe MergeRequest, models: true do
         merge_request.merge_request_diff = MergeRequestDiff.new
 
         expect(merge_request.merge_request_diff).to receive(:diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+  end
+
+  describe '#diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.merge_request_diff = MergeRequestDiff.new
+
+        expect(merge_request.merge_request_diff).to receive(:diffs).with(hash_including(options))
 
         merge_request.diffs(options)
       end
@@ -656,6 +681,12 @@ describe MergeRequest, models: true do
 
     it "reloads the diff content" do
       expect(subject.merge_request_diff).to receive(:reload_content)
+
+      subject.reload_diff
+    end
+
+    it "executs diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
 
       subject.reload_diff
     end
