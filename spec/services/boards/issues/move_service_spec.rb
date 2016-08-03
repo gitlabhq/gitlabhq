@@ -10,10 +10,10 @@ describe Boards::Issues::MoveService, services: true do
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)  { create(:label, project: project, name: 'Testing') }
 
-    let(:backlog) { create(:backlog_list, board: board) }
-    let(:list1)   { create(:list, board: board, label: development, position: 0) }
-    let(:list2)   { create(:list, board: board, label: testing, position: 1) }
-    let(:done)    { create(:done_list, board: board) }
+    let!(:backlog) { create(:backlog_list, board: board) }
+    let!(:list1)   { create(:list, board: board, label: development, position: 0) }
+    let!(:list2)   { create(:list, board: board, label: testing, position: 1) }
+    let!(:done)    { create(:done_list, board: board) }
 
     before do
       project.team << [user, :developer]
@@ -31,8 +31,8 @@ describe Boards::Issues::MoveService, services: true do
     end
 
     context 'when moving to backlog' do
-      it 'remove the label of the list it came from' do
-        issue = create(:labeled_issue, project: project, labels: [bug, development])
+      it 'removes all list-labels' do
+        issue = create(:labeled_issue, project: project, labels: [bug, development, testing])
         params = { id: issue.iid, from: list1.id, to: backlog.id }
 
         described_class.new(project, user, params).execute
@@ -64,7 +64,7 @@ describe Boards::Issues::MoveService, services: true do
         described_class.new(project, user, params).execute
       end
 
-      it 'removes the label from the list it came from and adds the label of the list it goes to' do
+      it 'removess the label from the list it came from and adds the label of the list it goes to' do
         described_class.new(project, user, params).execute
 
         expect(issue.reload.labels).to contain_exactly(bug, testing)
@@ -72,7 +72,7 @@ describe Boards::Issues::MoveService, services: true do
     end
 
     context 'when moving to done' do
-      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, testing]) }
+      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing]) }
       let(:params) { { id: issue.iid, from: list2.id, to: done.id } }
 
       it 'delegates the close proceedings to Issues::CloseService' do
@@ -81,7 +81,7 @@ describe Boards::Issues::MoveService, services: true do
         described_class.new(project, user, params).execute
       end
 
-      it 'remove the label of the list it came from and close the issue' do
+      it 'removes all list-labels and close the issue' do
         described_class.new(project, user, params).execute
         issue.reload
 

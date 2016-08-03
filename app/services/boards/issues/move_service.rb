@@ -45,9 +45,24 @@ module Boards
 
       def issue_params
         {
-          add_label_ids: [moving_to.label_id].compact,
-          remove_label_ids: [moving_from.label_id].compact
+          add_label_ids: add_label_ids,
+          remove_label_ids: remove_label_ids
         }
+      end
+
+      def add_label_ids
+        [moving_to.label_id].compact
+      end
+
+      def remove_label_ids
+        label_ids =
+          if moving_to.label?
+            moving_from.label_id
+          else
+            board.lists.label.pluck(:label_id)
+          end
+
+        Array(label_ids).compact
       end
     end
   end
