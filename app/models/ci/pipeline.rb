@@ -228,8 +228,18 @@ module Ci
     end
 
     def update_state
-      statuses.reload
       last_status = status
+
+      if update_state_from_commit_statuses
+        execute_hooks if last_status != status && !skip_ci?
+        true
+      else
+        false
+      end
+    end
+
+    def update_state_from_commit_statuses
+      statuses.reload
       self.status = if yaml_errors.blank?
                       statuses.latest.status || 'skipped'
                     else
@@ -238,9 +248,7 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      saved = save
-      execute_hooks if last_status != status && saved && !skip_ci?
-      saved
+      save
     end
 
     def execute_hooks
