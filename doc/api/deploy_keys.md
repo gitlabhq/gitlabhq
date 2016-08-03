@@ -159,3 +159,52 @@ Example response:
    "id" : 13
 }
 ```
+
+## Enable a deploy key
+
+Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
+
+```
+curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/enable
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+| `key_id`  | integer | yes | The ID of the deploy key |
+
+Example response:
+
+```json
+```json
+{
+   "key" : "ssh-rsa AAAA...",
+   "id" : 12,
+   "title" : "My deploy key",
+   "created_at" : "2015-08-29T12:44:31.550Z"
+}
+```
+
+## Disable a deploy key
+
+Disable a deploy key for a project. Returns the disabled key.
+
+```
+curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/disable
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+| `key_id`  | integer | yes | The ID of the deploy key |
+
+Example response:
+
+```json
+{
+   "key" : "ssh-rsa AAAA...",
+   "id" : 12,
+   "title" : "My deploy key",
+   "created_at" : "2015-08-29T12:44:31.550Z"
+}
+```

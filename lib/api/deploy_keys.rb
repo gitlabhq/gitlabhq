@@ -74,6 +74,37 @@ module API
           end
         end
 
+        desc 'Enable a deploy key for a project' do
+          detail 'This feature was added in GitLab 8.11'
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
+        post ":id/#{path}/:key_id/enable" do
+          key = DeployKey.find(params[:key_id])
+
+          if user_project.deploy_keys << key
+            present key, with: Entities::SSHKey
+          else
+            render_validation_error!(key)
+          end
+        end
+
+        desc 'Disable a deploy key for a project' do
+          detail 'This feature was added in GitLab 8.11'
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
+        delete ":id/#{path}/:key_id/disable" do
+          key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+          key.destroy
+
+          present key.deploy_key, with: Entities::SSHKey
+        end
+
         # Delete existing deploy key of currently authenticated user
         #
         # Example Request:
