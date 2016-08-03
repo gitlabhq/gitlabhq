@@ -853,7 +853,7 @@ describe Ci::Build, models: true do
   describe '#when' do
     subject { build.when }
 
-    context 'if is undefined' do
+    context 'when `when` is undefined' do
       before do
         build.update(when: nil)
         build.reload # reload pipeline so that it resets config_processor
@@ -864,13 +864,13 @@ describe Ci::Build, models: true do
           stub_ci_pipeline_yaml_file(config)
         end
 
-        context 'if config is not found' do
+        context 'when config is not found' do
           let(:config) { nil }
 
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config does not have a questioned job' do
+        context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
                         test_other: {
@@ -882,7 +882,7 @@ describe Ci::Build, models: true do
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config has when' do
+        context 'when config has when' do
           let(:config) do
             YAML.dump({
                         test: {
