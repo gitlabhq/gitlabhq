@@ -6,7 +6,7 @@
 
     Build.state = null;
 
-    function Build(page_url, build_url, build_status, state1) {
+    function Build(page_url, build_url, build_status, build_stage, build_name, state1) {
       this.page_url = page_url;
       this.build_url = build_url;
       this.build_status = build_status;
@@ -17,7 +17,12 @@
       clearInterval(Build.interval);
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
+
+      this.populateJobDropdown(build_stage);
+      this.updateStageDropdownText(build_stage);
+      this.updateJobDropdownText(build_name);
       this.hideSidebar();
+
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       $(document).on('click', '.stage-item', this.updateDropdown);
@@ -139,10 +144,19 @@
       $('.build-job[data-stage="' + stage + '"]').show();
     };
 
+    Build.prototype.updateStageDropdownText = function(stage) {
+      $('.stage-selection').text(stage);
+      this.updateJobDropdownText('-');
+    };
+
+    Build.prototype.updateJobDropdownText = function(name) {
+      $('.build-selection').text(name);
+    };
+
     Build.prototype.updateDropdown = function(e) {
       e.preventDefault();
       var stage = e.target.text;
-      $('.stage-selection').text(stage);
+      this.updateStageDropdownText(stage);
       this.populateJobDropdown(stage);
     };
 
