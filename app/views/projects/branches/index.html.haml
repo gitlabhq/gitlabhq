@@ -14,18 +14,15 @@
       .dropdown.inline
         %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
           %span.light
-          - if params[:sort].present?
-            = params[:sort].humanize
-          - else
-            Name
+            = projects_sort_options_hash[@sort]
           %b.caret
         %ul.dropdown-menu.dropdown-menu-align-right
           %li
-            = link_to filter_branches_path(sort: nil) do
+            = link_to filter_branches_path(sort: sort_value_name) do
               = sort_title_name
-            = link_to filter_branches_path(sort: 'recently_updated') do
+            = link_to filter_branches_path(sort: sort_value_recently_updated) do
               = sort_title_recently_updated
-            = link_to filter_branches_path(sort: 'last_updated') do
+            = link_to filter_branches_path(sort: sort_value_oldest_updated) do
               = sort_title_oldest_updated
 
       - if can? current_user, :push_code, @project

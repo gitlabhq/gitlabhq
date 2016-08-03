@@ -18,6 +18,10 @@
   .btn {
     margin: 4px;
   }
+
+  .table.builds {
+    min-width: 1200px;
+  }
 }
 
 .content-list {
@@ -35,7 +39,7 @@
 }
 
 .table.builds {
-  min-width: 1200px;
+  min-width: 900px;
 
   &.pipeline {
     min-width: 650px;
@@ -128,7 +132,7 @@
   .icon-container {
     display: inline-block;
     text-align: right;
-    width: 20px;
+    width: 15px;
 
     .fa {
       position: relative;

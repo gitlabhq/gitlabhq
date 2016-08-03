@@ -57,7 +57,7 @@
 
   %td.pipeline-actions
     .controls.hidden-xs.pull-right
-      - artifacts = pipeline.builds.latest.select { |b| b.artifacts? }
+      - artifacts = pipeline.builds.latest.with_artifacts_not_expired
       - actions = pipeline.manual_actions
       - if artifacts.present? || actions.any?
         .btn-group.inline

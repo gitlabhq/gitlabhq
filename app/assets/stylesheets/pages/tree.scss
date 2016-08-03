@@ -58,6 +58,10 @@
 
     .tree_commit {
       max-width: 320px;
+
+      .str-truncated {
+        max-width: 100%;
+      }
     }
 
     .tree_time_ago {

@@ -6,7 +6,7 @@ describe DiffHelper do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diffs) { commit.diffs }
+  let(:diffs) { commit.raw_diffs }
   let(:diff) { diffs.first }
   let(:diff_refs) { [commit.parent, commit] }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
@@ -32,16 +32,6 @@ describe DiffHelper do
   end
   
   describe 'diff_options' do
-    it 'should return hard limit for a diff if force diff is true' do
-      allow(controller).to receive(:params) { { force_show_diff: true } }
-      expect(diff_options).to include(Commit.max_diff_options)
-    end
-
-    it 'should return hard limit for a diff if expand_all_diffs is true' do
-      allow(controller).to receive(:params) { { expand_all_diffs: true } }
-      expect(diff_options).to include(Commit.max_diff_options)
-    end
-
     it 'should return no collapse false' do
       expect(diff_options).to include(no_collapse: false)
     end
@@ -54,6 +44,18 @@ describe DiffHelper do
     it 'should return no collapse true if action name diff_for_path' do
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options).to include(no_collapse: true)
+    end
+
+    it 'should return paths if action name diff_for_path and param old path' do
+      allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
+      allow(controller).to receive(:action_name) { 'diff_for_path' }
+      expect(diff_options[:paths]).to include('lib/wadus.rb')
+    end
+
+    it 'should return paths if action name diff_for_path and param new path' do
+      allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
+      allow(controller).to receive(:action_name) { 'diff_for_path' }
+      expect(diff_options[:paths]).to include('lib/wadus.rb')
     end
   end
 

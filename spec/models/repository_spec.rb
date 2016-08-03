@@ -50,8 +50,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_first)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_last)
+          allow(tag_a).to receive(:target).and_return(double_first)
+          allow(tag_b).to receive(:target).and_return(double_last)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
@@ -64,8 +65,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_last)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_first)
+          allow(tag_a).to receive(:target).and_return(double_last)
+          allow(tag_b).to receive(:target).and_return(double_first)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
@@ -381,9 +383,13 @@ describe Repository, models: true do
   end
 
   describe '#rm_branch' do
+    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+    let(:blank_sha) { '0000000000000000000000000000000000000000' }
+
     context 'when pre hooks were successful' do
       it 'should run without errors' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+        expect_any_instance_of(GitHooksService).to receive(:execute).
+          with(user, project.repository.path_to_repo, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -418,10 +424,13 @@ describe Repository, models: true do
   end
 
   describe '#commit_with_hooks' do
+    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+
     context 'when pre hooks were successful' do
       before do
         expect_any_instance_of(GitHooksService).to receive(:execute).
-          and_return(true)
+          with(user, repository.path_to_repo, old_rev, sample_commit.id, 'refs/heads/feature').
+          and_yield.and_return(true)
       end
 
       it 'should run without errors' do
@@ -434,6 +443,14 @@ describe Repository, models: true do
         expect(repository).to receive(:update_autocrlf_option)
 
         repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+      end
+
+      context "when the branch wasn't empty" do
+        it 'updates the head' do
+          expect(repository.find_branch('feature').target.id).to eq(old_rev)
+          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+          expect(repository.find_branch('feature').target.id).to eq(sample_commit.id)
+        end
       end
     end
 
@@ -1185,7 +1202,7 @@ describe Repository, models: true do
       it 'does not flush the cache if the commit does not change any logos' do
         diff = double(:diff, new_path: 'test.txt')
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).not_to receive(:expire)
 
         repository.expire_avatar_cache(repository.root_ref, '123')
@@ -1194,7 +1211,7 @@ describe Repository, models: true do
       it 'flushes the cache if the commit changes any of the logos' do
         diff = double(:diff, new_path: Repository::AVATAR_FILES[0])
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).to receive(:expire).with(:avatar)
 
         repository.expire_avatar_cache(repository.root_ref, '123')
@@ -1274,7 +1291,7 @@ describe Repository, models: true do
 
   describe '#remote_tags' do
     it 'gets the remote tags' do
-      masterrev = repository.find_branch('master').target
+      masterrev = repository.find_branch('master').target.id
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
         with(repository.storage_path, repository.path_with_namespace, 'upstream').
@@ -1284,7 +1301,7 @@ describe Repository, models: true do
 
       expect(tags.first).to be_an_instance_of(Gitlab::Git::Tag)
       expect(tags.first.name).to eq('v0.0.1')
-      expect(tags.first.target).to eq(masterrev)
+      expect(tags.first.target.id).to eq(masterrev)
     end
   end
 
@@ -1351,7 +1368,7 @@ describe Repository, models: true do
 
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
 end

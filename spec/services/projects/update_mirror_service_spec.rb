@@ -93,7 +93,7 @@ describe Projects::UpdateMirrorService do
 
   def fetch_mirror(repository)
     rugged = repository.rugged
-    masterrev = repository.find_branch('master').target
+    masterrev = repository.find_branch('master').target.id
 
     parentrev = repository.commit(masterrev).parent_id
     rugged.references.create('refs/heads/existing-branch', parentrev)

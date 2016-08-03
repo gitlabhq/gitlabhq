@@ -152,7 +152,7 @@ module MergeRequests
     # Call merge request webhook with update branches
     def execute_mr_web_hooks
       merge_requests_for_source_branch.each do |merge_request|
-        execute_hooks(merge_request, 'update')
+        execute_hooks(merge_request, 'update', @oldrev)
       end
     end
 

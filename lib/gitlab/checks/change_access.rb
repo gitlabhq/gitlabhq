@@ -143,7 +143,7 @@ module Gitlab
         commits(@oldrev).each do |commit|
           next if commit_from_annex_sync?(commit.safe_message)
 
-          commit.diffs.each do |diff|
+          commit.raw_diffs.each do |diff|
             path = diff.new_path || diff.old_path
 
             lock_info = project.find_path_lock(path)
@@ -195,7 +195,7 @@ module Gitlab
 
       def check_commit_diff(commit, push_rule)
         if push_rule.file_name_regex.present?
-          commit.diffs.each do |diff|
+          commit.raw_diffs.each do |diff|
             if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(push_rule.file_name_regex)
               return "File name #{diff.new_path.inspect} is prohibited by the pattern '#{push_rule.file_name_regex}'"
             end
@@ -203,7 +203,7 @@ module Gitlab
         end
 
         if push_rule.max_file_size > 0
-          commit.diffs.each do |diff|
+          commit.raw_diffs.each do |diff|
             next if diff.deleted_file
 
             blob = project.repository.blob_at(commit.id, diff.new_path)

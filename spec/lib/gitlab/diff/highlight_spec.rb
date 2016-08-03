@@ -5,7 +5,7 @@ describe Gitlab::Diff::Highlight, lib: true do
 
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diff) { commit.diffs.first }
+  let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
   describe '#highlight' do

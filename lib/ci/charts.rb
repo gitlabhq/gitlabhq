@@ -1,5 +1,37 @@
 module Ci
   module Charts
+    module DailyInterval
+      def grouped_count(query)
+        query.
+          group("DATE(#{Ci::Build.table_name}.created_at)").
+          count(:created_at).
+          transform_keys { |date| date.strftime(@format) }
+      end
+
+      def interval_step
+        @interval_step ||= 1.day
+      end
+    end
+
+    module MonthlyInterval
+      def grouped_count(query)
+        if Gitlab::Database.postgresql?
+          query.
+            group("to_char(#{Ci::Build.table_name}.created_at, '01 Month YYYY')").
+            count(:created_at).
+            transform_keys(&:squish)
+        else
+          query.
+            group("DATE_FORMAT(#{Ci::Build.table_name}.created_at, '01 %M %Y')").
+            count(:created_at)
+        end
+      end
+
+      def interval_step
+        @interval_step ||= 1.month
+      end
+    end
+
     class Chart
       attr_reader :labels, :total, :success, :project, :build_times
 
@@ -13,47 +45,59 @@ module Ci
         collect
       end
 
-      def push(from, to, format)
-        @labels << from.strftime(format)
-        @total << project.builds.
-          where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
-          count(:all)
-        @success << project.builds.
-          where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", to, from).
-          success.count(:all)
+      def collect
+        query = project.builds.
+          where("? > #{Ci::Build.table_name}.created_at AND #{Ci::Build.table_name}.created_at > ?", @to, @from)
+
+        totals_count  = grouped_count(query)
+        success_count = grouped_count(query.success)
+
+        current = @from
+        while current < @to
+          label = current.strftime(@format)
+
+          @labels  << label
+          @total   << (totals_count[label] || 0)
+          @success << (success_count[label] || 0)
+
+          current += interval_step
+        end
       end
     end
 
     class YearChart < Chart
-      def collect
-        13.times do |i|
-          start_month = (Date.today.years_ago(1) + i.month).beginning_of_month
-          end_month = start_month.end_of_month
+      include MonthlyInterval
 
-          push(start_month, end_month, "%d %B %Y")
-        end
+      def initialize(*)
+        @to     = Date.today.end_of_month
+        @from   = @to.years_ago(1).beginning_of_month
+        @format = '%d %B %Y'
+
+        super
       end
     end
 
     class MonthChart < Chart
-      def collect
-        30.times do |i|
-          start_day = Date.today - 30.days + i.days
-          end_day = Date.today - 30.days + i.day + 1.day
+      include DailyInterval
 
-          push(start_day, end_day, "%d %B")
-        end
+      def initialize(*)
+        @to     = Date.today
+        @from   = @to - 30.days
+        @format = '%d %B'
+
+        super
       end
     end
 
     class WeekChart < Chart
-      def collect
-        7.times do |i|
-          start_day = Date.today - 7.days + i.days
-          end_day = Date.today - 7.days + i.day + 1.day
+      include DailyInterval
 
-          push(start_day, end_day, "%d %B")
-        end
+      def initialize(*)
+        @to     = Date.today
+        @from   = @to - 7.days
+        @format = '%d %B'
+
+        super
       end
     end
 

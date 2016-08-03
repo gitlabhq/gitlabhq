@@ -75,6 +75,17 @@ describe MergeRequests::MergeService, services: true do
 
         expect(merge_request.merge_error).to eq("error")
       end
+
+      it 'aborts if there is a merge conflict' do
+        allow_any_instance_of(Repository).to receive(:merge).and_return(false)
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.open?).to be_truthy
+        expect(merge_request.merge_commit_sha).to be_nil
+        expect(merge_request.merge_error).to eq("Conflicts detected during merge")
+      end
     end
   end
 

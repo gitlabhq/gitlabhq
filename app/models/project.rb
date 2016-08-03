@@ -697,6 +697,13 @@ class Project < ActiveRecord::Base
     web_url.split('://')[1]
   end
 
+  def new_issue_address(author)
+    if Gitlab::IncomingEmail.enabled? && author
+      Gitlab::IncomingEmail.reply_address(
+        "#{path_with_namespace}+#{author.authentication_token}")
+    end
+  end
+
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: 'Commit')
   end
@@ -1283,7 +1290,10 @@ class Project < ActiveRecord::Base
 
   def schedule_delete!(user_id, params)
     # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
+    run_after_commit do
+      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
+      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
+    end
 
     update_attribute(:pending_delete, true)
   end
@@ -1468,6 +1478,16 @@ class Project < ActiveRecord::Base
     authorized_for_user_by_group?(user, min_access_level) ||
       authorized_for_user_by_members?(user, min_access_level) ||
       authorized_for_user_by_shared_projects?(user, min_access_level)
+  end
+
+  def append_or_update_attribute(name, value)
+    old_values = public_send(name.to_s)
+
+    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
+      update_attribute(name, old_values + value)
+    else
+      update_attribute(name, value)
+    end
   end
 
   private

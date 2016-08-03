@@ -28,7 +28,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def diff_for_path
-    render_diff_for_path(@diffs, @commit.diff_refs, @project)
+    render_diff_for_path(@commit.diffs(diff_options))
   end
 
   def builds
