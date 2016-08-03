@@ -37,10 +37,10 @@ class Deployment < ActiveRecord::Base
     deployable.try(:other_actions)
   end
 
-  def deployed_to(ref)
+  def deployed_to?(ref)
     commit = project.commit(ref)
     return false unless commit
 
-    project.repository.merge_base(commit.id, sha) == commit.id
+    project.repository.is_ancestor?(commit.id, sha)
   end
 end

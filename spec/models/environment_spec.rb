@@ -30,4 +30,14 @@ describe Environment, models: true do
       expect(env.external_url).to be_nil
     end
   end
+
+  describe '#deployed_from?' do
+    let(:environment) { create(:environment) }
+
+    context 'without a last deployment' do
+      it "returns false" do
+        expect(environment.deployed_from?('HEAD')).to be false
+      end
+    end
+  end
 end

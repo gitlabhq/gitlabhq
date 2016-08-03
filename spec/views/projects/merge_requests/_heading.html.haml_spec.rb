@@ -7,8 +7,10 @@ describe 'projects/merge_requests/widget/_heading' do
     let(:project)       { merge_request.target_project }
     let(:merge_request) { create(:merge_request, :merged) }
     let(:environment)   { create(:environment, project: project) }
-    let!(:deployment)   { create(:deployment, environment: environment,
-                                    sha: 'a5391128b0ef5d21df5dd23d98557f4ef12fae20') }
+    let!(:deployment)   do
+      create(:deployment, environment: environment,
+                          sha: 'a5391128b0ef5d21df5dd23d98557f4ef12fae20')
+    end
 
     before do
       assign(:merge_request, merge_request)

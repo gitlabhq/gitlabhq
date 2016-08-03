@@ -26,9 +26,9 @@ class Environment < ActiveRecord::Base
     self.external_url = nil if self.external_url.blank?
   end
 
-  def deployed_to?(ref)
-    return unless last_deployment
+  def deployed_from?(ref)
+    return false unless last_deployment
 
-    last_deployment.deployed_to(ref)
+    last_deployment.deployed_to?(ref)
   end
 end

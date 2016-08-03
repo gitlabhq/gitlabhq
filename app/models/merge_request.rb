@@ -592,7 +592,7 @@ class MergeRequest < ActiveRecord::Base
 
   def environments
     target_project.environments.select do |environment|
-      environment.deployed_to?(ref_path)
+      environment.deployed_from?(ref_path)
     end
   end
 

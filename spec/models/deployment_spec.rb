@@ -15,4 +15,24 @@ describe Deployment, models: true do
 
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
+
+  describe '#deployed_to?' do
+    let(:project)     { create(:project) }
+    let(:environment) { create(:environment, project: project) }
+    let(:deployment) do
+      create(:deployment, environment: environment, sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
+    end
+
+    context 'when there is no project commit' do
+      it 'returns false' do
+        expect(deployment.deployed_to?('random-branch')).to be false
+      end
+    end
+
+    context 'when they share the same tree branch' do
+      it 'returns true' do
+        expect(deployment.deployed_to?('HEAD')).to be true
+      end
+    end
+  end
 end
