@@ -39,9 +39,10 @@
     .files{"v-if" => "isParallel"}
       .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
         .file-title
-          %span {{{file.filePath}}}
+          %i.fa.fa-fw.fa{":class" => "file.iconClass"}
+          %strong {{file.filePath}}
           .file-actions
-            %a.btn.view-file.btn-file-option{":href" => "file.blobLink"}
+            %a.btn.view-file.btn-file-option{":href" => "file.blobPath"}
               View file @{{conflictsData.shortCommitSha}}
         .diff-content.diff-wrap-lines
           .diff-wrap-lines.code.file-content.js-syntax-highlight.white
@@ -82,9 +83,10 @@
     .files{"v-if" => "!isParallel"}
       .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
         .file-title
-          %span {{{file.filePath}}}
+          %i.fa.fa-fw{":class" => "file.iconClass"}
+          %strong {{file.filePath}}
           .file-actions
-            %a.btn.view-file.btn-file-option{":href" => "file.blobLink"}
+            %a.btn.view-file.btn-file-option{":href" => "file.blobPath"}
               View file @{{conflictsData.shortCommitSha}}
 
         .diff-content.diff-wrap-lines

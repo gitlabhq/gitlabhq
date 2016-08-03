@@ -52,7 +52,9 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   setParallelLines(data) {
     data.files.forEach( (file) => {
-      file.filePath = this.getFilePath(file);
+      file.filePath  = this.getFilePath(file);
+      file.iconClass = `fa-${file.blob_icon}`;
+      file.blobPath  = file.blob_path;
       file.parallelLines = [];
       const linesObj = { left: [], right: [] };
 
@@ -120,8 +122,10 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   setInlineLines(data) {
     data.files.forEach( (file) => {
+      file.iconClass   = `fa-${file.blob_icon}`;
+      file.blobPath    = file.blob_path;
+      file.filePath    = this.getFilePath(file);
       file.inlineLines = []
-      file.filePath = this.getFilePath(file);
 
       file.sections.forEach( (section) => {
         let currentLineType = 'new';
@@ -309,7 +313,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
   getFilePath(file) {
     const { old_path, new_path } = file;
-    return old_path === new_path ? new_path : `${old_path} &rarr; ${new_path}`;
+    return old_path === new_path ? new_path : `${old_path} → ${new_path}`;
   }
 
 }
