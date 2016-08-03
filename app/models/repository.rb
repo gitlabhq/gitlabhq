@@ -241,7 +241,9 @@ class Repository
 
   def remote_tags(remote)
     gitlab_shell.list_remote_tags(storage_path, path_with_namespace, remote).map do |name, target|
-      Gitlab::Git::Tag.new(name, target)
+      # Is the tag annotated or lightweight?
+      object = target.is_a?(Rugged::Tag::Annotation) ? target : nil
+      Gitlab::Git::Tag.new(raw_repository, object, name, target)
     end
   end
 
@@ -768,7 +770,7 @@ class Repository
       name = ref.name.sub(/\Arefs\/remotes\/#{remote_name}\//, '')
 
       begin
-        branches << Gitlab::Git::Branch.new(name, ref.target)
+        branches << Gitlab::Git::Branch.new(raw_repository, name, ref.target)
       rescue Rugged::ReferenceError
         # Omit invalid branch
       end
@@ -890,16 +892,19 @@ class Repository
     end
   end
 
-  def ff_merge(user, source_sha, target_branch, options = {})
+  def ff_merge(user, source, target_branch, options = {})
     our_commit = rugged.branches[target_branch].target
-    their_commit = rugged.lookup(source_sha)
+    their_commit =
+      if source.is_a?(Gitlab::Git::Commit)
+        source.raw_commit
+      else
+        rugged.lookup(source)
+      end
 
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
 
-    commit_with_hooks(user, target_branch) do
-      source_sha
-    end
+    commit_with_hooks(user, target_branch) { their_commit.oid }
   end
 
   def merge(user, merge_request, options = {})

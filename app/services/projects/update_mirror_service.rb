@@ -36,7 +36,7 @@ module Projects
         local_branch = local_branches[name]
 
         if local_branch.nil?
-          result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.target)
+          result = CreateBranchService.new(project, current_user).execute(name, upstream_branch.target.sha)
           if result[:status] == :error
             errors << result[:message]
           end
@@ -73,16 +73,17 @@ module Projects
 
       tags.each do |tag|
         old_tag = old_tags[tag.name]
-        old_tag_target = old_tag ? old_tag.target : Gitlab::Git::BLANK_SHA
+        tag_target = tag.target.sha
+        old_tag_target = old_tag ? old_tag.target.sha : Gitlab::Git::BLANK_SHA
 
-        next if old_tag_target == tag.target
+        next if old_tag_target == tag_target
 
         GitTagPushService.new(
           project,
           current_user,
           {
             oldrev: old_tag_target,
-            newrev: tag.target,
+            newrev: tag_target,
             ref: "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}",
             mirror_update: true
           }

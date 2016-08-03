@@ -1291,7 +1291,7 @@ describe Repository, models: true do
 
   describe '#remote_tags' do
     it 'gets the remote tags' do
-      masterrev = repository.find_branch('master').target
+      masterrev = repository.find_branch('master').target.id
 
       expect_any_instance_of(Gitlab::Shell).to receive(:list_remote_tags).
         with(repository.storage_path, repository.path_with_namespace, 'upstream').
@@ -1301,7 +1301,7 @@ describe Repository, models: true do
 
       expect(tags.first).to be_an_instance_of(Gitlab::Git::Tag)
       expect(tags.first.name).to eq('v0.0.1')
-      expect(tags.first.target).to eq(masterrev)
+      expect(tags.first.target.id).to eq(masterrev)
     end
   end
 
@@ -1368,7 +1368,7 @@ describe Repository, models: true do
 
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 
 end
