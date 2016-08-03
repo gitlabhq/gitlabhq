@@ -567,7 +567,7 @@ describe Ci::Pipeline, models: true do
           create(:ci_build, :pending, pipeline: pipeline, name: name)
         end
 
-        def requested status
+        def requested(status)
           have_requested(:post, hook.url).with do |req|
             JSON.parse(req.body)['object_attributes']['status'] == status
           end.once
