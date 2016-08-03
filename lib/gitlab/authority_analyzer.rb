@@ -32,7 +32,7 @@ module Gitlab
       diffable = [@merge_request.compare, @merge_request.merge_request_diff].compact
       return [] if diffable.empty?
 
-      compare_diffs = diffable.first.diffs
+      compare_diffs = diffable.first.raw_diffs
 
       return [] unless compare_diffs.present?
 
