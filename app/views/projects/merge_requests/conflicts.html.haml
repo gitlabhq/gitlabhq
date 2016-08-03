@@ -36,7 +36,7 @@
         %strong {{conflictsData.target_branch}}
 
   .files-wrapper{"v-if" => "!isLoading && !hasError"}
-    .files{"v-if" => "isParallel"}
+    .files{"v-show" => "isParallel"}
       .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
         .file-title
           %i.fa.fa-fw.fa{":class" => "file.iconClass"}
@@ -80,7 +80,7 @@
                       'unselected': line.isUnselected }"}
                       {{{line.richText}}}
 
-    .files{"v-if" => "!isParallel"}
+    .files{"v-show" => "!isParallel"}
       .diff-file.file-holder.conflict.inline-view{"v-for" => "file in conflictsData.files"}
         .file-title
           %i.fa.fa-fw{":class" => "file.iconClass"}
