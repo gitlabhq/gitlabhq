@@ -171,7 +171,7 @@ describe MergeRequest, models: true do
       it 'delegates to the compare object' do
         merge_request.compare = double(:compare)
 
-        expect(merge_request.compare).to receive(:diffs).with(diff_options: options)
+        expect(merge_request.compare).to receive(:diffs).with(options)
 
         merge_request.diffs(options)
       end

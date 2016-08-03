@@ -49,7 +49,7 @@ class Compare
     @compare.diffs(*args)
   end
 
-  def diffs(diff_options:)
+  def diffs(diff_options = nil)
     Gitlab::Diff::FileCollection::Compare.new(self,
       project: project,
       diff_options: diff_options,
