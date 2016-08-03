@@ -551,7 +551,7 @@ describe Ci::Pipeline, models: true do
 
     before do
       WebMock.stub_request(:post, hook.url)
-      pipeline.touch
+      pipeline.save
       ProjectWebHookWorker.drain
     end
 
@@ -560,6 +560,26 @@ describe Ci::Pipeline, models: true do
 
       it 'executes pipeline_hook after touched' do
         expect(WebMock).to have_requested(:post, hook.url).once
+      end
+
+      context 'with multiple builds' do
+        def create_build(name)
+          create(:ci_build, :pending, pipeline: pipeline, name: name)
+        end
+
+        let(:build_a) { create_build('a') }
+        let(:build_b) { create_build('b') }
+
+        before do
+          build_a.run
+          build_b.run
+          build_a.success
+          build_b.success
+        end
+
+        it 'fires 3 hooks' do
+          expect(WebMock).to have_requested(:post, hook.url).times(3)
+        end
       end
     end
 
