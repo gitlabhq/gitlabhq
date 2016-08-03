@@ -905,7 +905,7 @@ GET /projects/:id/merge_requests/:merge_request_id/versions
 
 | Attribute | Type    | Required | Description           |
 | --------- | ------- | -------- | --------------------- |
-| `id`      | integer | yes      | The ID of the project |
+| `id`      | String  | yes      | The ID of the project |
 | `merge_request_id` | integer | yes | The ID of the merge request |
 
 ```bash

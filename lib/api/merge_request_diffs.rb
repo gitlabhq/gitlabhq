@@ -10,8 +10,8 @@ module API
       end
 
       params do
-        requires :id, type: Integer, desc: 'The ID of a project'
-        requests :merge_request_id, type: Integer, desc: 'The ID of a merge request'
+        requires :id, type: String, desc: 'The ID of a project'
+        requires :merge_request_id, type: Integer, desc: 'The ID of a merge request'
       end
 
       get ":id/merge_requests/:merge_request_id/versions" do
