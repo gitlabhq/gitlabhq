@@ -18,6 +18,7 @@ module Ci
 
     # Invalidate object and save if when touched
     after_touch :update_state
+    after_touch :execute_hooks_unless_ci_skipped
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -237,9 +238,11 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      saved = save
-      execute_hooks if saved && !skip_ci?
-      saved
+      save
+    end
+
+    def execute_hooks_unless_ci_skipped
+      execute_hooks unless skip_ci?
     end
 
     def execute_hooks
