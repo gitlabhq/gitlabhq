@@ -136,7 +136,7 @@ describe MergeRequest, models: true do
       it 'delegates to the MR diffs' do
         merge_request.merge_request_diff = MergeRequestDiff.new
 
-        expect(merge_request.merge_request_diff).to receive(:diffs).with(options)
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
 
         merge_request.raw_diffs(options)
       end
@@ -161,7 +161,7 @@ describe MergeRequest, models: true do
       it 'delegates to the MR diffs' do
         merge_request.merge_request_diff = MergeRequestDiff.new
 
-        expect(merge_request.merge_request_diff).to receive(:diffs).with(hash_including(options))
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
 
         merge_request.diffs(options)
       end

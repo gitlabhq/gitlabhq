@@ -22,7 +22,7 @@ describe Gitlab::AuthorityAnalyzer, lib: true do
     let(:approvers) { Gitlab::AuthorityAnalyzer.new(merge_request).calculate(number_of_approvers) }
 
     before do
-      merge_request.compare = double(:compare, diffs: files)
+      merge_request.compare = double(:compare, raw_diffs: files)
       allow(merge_request.target_project.repository).to receive(:commits).and_return(commits)
     end
 
