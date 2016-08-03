@@ -68,7 +68,7 @@
         - if @repository.koding_yml
           %li.koding
             = link_to koding_project_url(@project), target: '_blank' do
-              Run On Koding
+              Run in IDE (Koding)
         - else
           %li.missing
             = link_to add_koding_stack(@project) do
