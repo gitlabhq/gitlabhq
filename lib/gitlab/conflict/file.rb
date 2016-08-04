@@ -79,6 +79,9 @@ module Gitlab
       def sections
         return @sections if @sections
 
+        # Any line beginning with a letter, an underscore, or a dollar can be used in a
+        # match line header. Only context sections can contain match lines, as match lines
+        # have to exist in both versions of the file.
         candidate_match_headers = lines.map do |line|
           " #{line.text}" if line.text.match(/\A[A-Za-z$_]/) && line.type.nil?
         end
@@ -89,19 +92,24 @@ module Gitlab
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|
           section = nil
 
+          # We need to reduce context sections to CONTEXT_LINES. Conflict sections are
+          # always shown in full.
           if no_conflict
             conflict_before = i > 0
             conflict_after = chunked_lines.peek
 
             if conflict_before && conflict_after
+              # Create a gap in a long context section.
               if lines.length > CONTEXT_LINES * 2
                 head_lines = lines.first(CONTEXT_LINES)
                 tail_lines = lines.last(CONTEXT_LINES)
 
+                # Ensure any existing match line has text for all lines up to the last
+                # line of its context.
                 update_match_line_text(match_line, head_lines.last, candidate_match_headers)
 
+                # Insert a new match line after the created gap.
                 match_line = create_match_line(tail_lines.first)
-                update_match_line_text(match_line, tail_lines.last, candidate_match_headers)
 
                 section = [
                   { conflict: false, lines: head_lines },
@@ -111,7 +119,8 @@ module Gitlab
             elsif conflict_after
               tail_lines = lines.last(CONTEXT_LINES)
 
-              if lines.length > CONTEXT_LINES
+              # Create a gap and insert a match line at the start.
+              if lines.length > tail_lines.length
                 match_line = create_match_line(tail_lines.first)
 
                 tail_lines.unshift(match_line)
@@ -119,10 +128,14 @@ module Gitlab
 
               lines = tail_lines
             elsif conflict_before
+              # We're at the end of the file (no conflicts after), so just remove extra
+              # trailing lines.
               lines = lines.first(CONTEXT_LINES)
             end
           end
 
+          # We want to update the match line's text every time unless we've already
+          # created a gap and its corresponding match line.
           update_match_line_text(match_line, lines.last, candidate_match_headers) unless section
 
           section ||= { conflict: !no_conflict, lines: lines }
@@ -139,10 +152,13 @@ module Gitlab
         Gitlab::Diff::Line.new('', 'match', line.index, line.old_pos, line.new_pos)
       end
 
+      # Set the match line's text for the current line. A match line takes its start
+      # position and context header (where present) from itself, and its end position from
+      # the line passed in.
       def update_match_line_text(match_line, line, headers)
         return unless match_line
 
-        header = headers.first(line.index).compact.last
+        header = headers.first(match_line.index).compact.last
 
         match_line.text = "@@ -#{match_line.old_pos},#{line.old_pos} +#{match_line.new_pos},#{line.new_pos} @@#{header}"
       end

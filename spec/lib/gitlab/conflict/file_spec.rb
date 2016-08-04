@@ -86,19 +86,20 @@ describe Gitlab::Conflict::File, lib: true do
   end
 
   describe '#sections' do
-    it 'returns match lines when there is a gap between sections' do
-      section = conflict_file.sections[5]
-      match_line = section[:lines][0]
-
-      expect(section[:conflict]).to be_falsey
-      expect(match_line.type).to eq('match')
-      expect(match_line.text).to eq('@@ -46,53 +46,53 @@ module Gitlab')
-    end
-
-    it 'does not return match lines when there is no gap between sections' do
+    it 'only inserts match lines when there is a gap between sections' do
       conflict_file.sections.each_with_index do |section, i|
-        unless i == 5
-          expect(section[:lines][0].type).not_to eq(5)
+        previous_line_number = 0
+        current_line_number = section[:lines].map(&:old_line).compact.min
+
+        if i > 0
+          previous_line_number = conflict_file.sections[i - 1][:lines].map(&:old_line).compact.last
+        end
+
+        if current_line_number == previous_line_number + 1
+          expect(section[:lines].first.type).not_to eq('match')
+        else
+          expect(section[:lines].first.type).to eq('match')
+          expect(section[:lines].first.text).to match(/\A@@ -#{current_line_number},\d+ \+\d+,\d+ @@ module Gitlab\Z/)
         end
       end
     end
