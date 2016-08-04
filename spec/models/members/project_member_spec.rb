@@ -101,7 +101,7 @@ describe ProjectMember, models: true do
     end
   end
 
-  describe '.add_users_into_projects' do
+  describe '.add_users_to_projects' do
     before do
       @project_1 = create :project
       @project_2 = create :project
@@ -109,7 +109,7 @@ describe ProjectMember, models: true do
       @user_1 = create :user
       @user_2 = create :user
 
-      ProjectMember.add_users_into_projects(
+      ProjectMember.add_users_to_projects(
         [@project_1.id, @project_2.id],
         [@user_1.id, @user_2.id],
         ProjectMember::MASTER
