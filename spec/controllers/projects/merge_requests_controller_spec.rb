@@ -639,19 +639,6 @@ describe Projects::MergeRequestsController do
       it 'returns an OK resposne' do
         expect(response).to have_http_status(:ok)
       end
-
-      context 'undoing the resolution' do
-        before do
-          post :undo_last_resolution,
-               namespace_id: merge_request_with_conflicts.project.namespace.to_param,
-               project_id: merge_request_with_conflicts.project.to_param,
-               id: merge_request_with_conflicts.iid
-        end
-
-        it 'undoes the commit' do
-          expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
-        end
-      end
     end
 
     context 'when sections are missing' do

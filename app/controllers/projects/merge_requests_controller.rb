@@ -10,8 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts,
-    :undo_last_resolution
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds]
@@ -156,16 +155,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     rescue Gitlab::Conflict::File::MissingResolution => e
       render status: :bad_request, json: { message: e.message }
     end
-  end
-
-  def undo_last_resolution
-    rugged = @merge_request.project.repository.rugged
-    ref = Gitlab::Git::BRANCH_REF_PREFIX + @merge_request.source_branch
-    prev = rugged.ref(ref).target
-
-    rugged.references.update(ref, prev.parents.first.oid) if prev.parents.length == 2
-
-    head :ok
   end
 
   def builds
