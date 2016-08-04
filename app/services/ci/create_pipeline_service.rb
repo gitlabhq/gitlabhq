@@ -27,13 +27,13 @@ module Ci
       end
 
       pipeline.save!
-      pipeline.touch
 
       unless pipeline.create_builds(current_user)
         pipeline.errors.add(:base, 'No builds for this pipeline.')
       end
 
       pipeline.save
+      pipeline.touch
       pipeline
     end
 
