@@ -52,6 +52,7 @@ v 8.11.0 (unreleased)
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
   - Make error pages responsive (Takuya Noguchi)
+  - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
