@@ -4,6 +4,7 @@ class BoardService {
 
     this.lists = Vue.resource(`${root}{/id}.json`, {});
     this.list = Vue.resource(`${root}/lists{/id}.json`, {});
+    this.issue = Vue.resource(`${root}/issues{/id}.json`, {});
     this.issues = Vue.resource(`${root}/lists{/id}/issues.json`, {});
   }
 
@@ -46,5 +47,14 @@ class BoardService {
     this.setCSRF();
 
     return this.issues.get({ id });
+  }
+
+  moveIssue (id, from, to) {
+    return this.issue.update({ id }, {
+      issue: {
+        from,
+        to
+      }
+    });
   }
 };

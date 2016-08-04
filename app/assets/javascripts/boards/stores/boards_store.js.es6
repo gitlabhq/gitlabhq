@@ -118,6 +118,8 @@
           list.removeIssue(issue);
         });
       }
+
+      service.moveIssue(issue.id, listFrom.id, listTo.id);
     },
     getListsForIssue: function (issue) {
       return _.filter(this.state.lists, (list) => {

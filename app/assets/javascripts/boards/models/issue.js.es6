@@ -1,6 +1,6 @@
 class Issue {
   constructor (obj) {
-    this.id = obj.id;
+    this.id = obj.iid;
     this.title = obj.title;
     this.labels = [];
 

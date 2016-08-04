@@ -5,7 +5,8 @@
       boardId: [Number, String],
       filters: Object,
       issues: Array,
-      query: String
+      query: String,
+      loading: Boolean
     },
     data: () => {
       return {

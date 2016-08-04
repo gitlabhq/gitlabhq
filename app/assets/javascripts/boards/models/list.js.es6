@@ -11,9 +11,11 @@ class List {
     }
 
     if (this.type !== 'blank') {
+      this.loading = true;
       service.getIssuesForList(this.id)
         .then((resp) => {
           const data = resp.json();
+          this.loading = false;
 
           data.forEach((issue) => {
             this.issues.push(new Issue(issue));
