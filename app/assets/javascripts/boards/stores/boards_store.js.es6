@@ -2,7 +2,6 @@
   w.BoardsStore = {
     state: {
       lists: [],
-      done: {},
       filters: {
         author: {},
         assignee: {},
@@ -10,47 +9,88 @@
       }
     },
     new: function (board) {
-      // Move the done list index
+      const doneList = this.getDoneList(),
+            list = new List(board);
+      this.state.lists.push(list);
+
+      if (list.type !== 'blank') {
+        service.createList(list.label.id)
+          .then(function (resp) {
+            const data = resp.json();
+
+            list.id = data.id;
+            list.type = data.list_type;
+            list.position = data.position;
+          });
+
+        this.removeBlankState();
+        this.addBlankState();
+      }
+    },
+    addBlankState: function () {
       const doneList = this.getDoneList();
 
-      if (doneList) {
-        doneList.index = board.index + 1;
-      }
+      // Decide whether to add the blank state
+      let addBlankState = true;
 
-      const list = new List(board);
-      this.state.lists.push(list);
+      this.state.lists.forEach(function (list) {
+        if (list.type !== 'backlog' && list.type !== 'done') {
+          addBlankState = false;
+          return;
+        }
+      });
+
+      if (addBlankState) {
+        this.new({
+          id: 'blank',
+          list_type: 'blank',
+          title: 'Welcome to your Issue Board!',
+          position: 0
+        });
+      }
+    },
+    removeBlankState: function () {
+      this.removeList('blank');
     },
     getDoneList: function () {
       return _.find(this.state.lists, (list) => {
-        return list.id === 'done';
+        return list.type === 'done';
       });
     },
     removeList: function (id) {
+      const list = _.find(this.state.lists, (list) => {
+        return list.id === id;
+      });
+
+      if (id !== 'blank') {
+        list.destroy();
+      }
+
       this.state.lists = _.reject(this.state.lists, (list) => {
         return list.id === id;
       });
 
       if (id !== 'blank') {
-        this.getDoneList().index = this.state.lists.length - 1;
+        this.addBlankState();
       }
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = _.find(this.state.lists, (list) => {
-        return list.index === oldIndex;
+        return list.position === oldIndex;
       });
-
-      service.updateBoard(listFrom.id, newIndex);
 
       const listTo = _.find(this.state.lists, (list) => {
-        return list.index === newIndex;
+        return list.position === newIndex;
       });
 
-      listFrom.index = newIndex;
-      if (newIndex > listTo.index) {
-        listTo.index--;
+      listFrom.position = newIndex;
+      if (newIndex > listTo.position) {
+        listTo.position--;
       } else {
-        listTo.index++;
+        listTo.position++;
       }
+
+      listFrom.update();
     },
     moveCardToList: function (listFromId, listToId, issueId, toIndex) {
       const listFrom = _.find(this.state.lists, (list) => {
@@ -84,7 +124,7 @@
         return list.findIssue(issue.id);
       });
     },
-    clearDone: () => {
+    clearDone: function () {
       Vue.set(BoardsStore.state, 'done', {});
     }
   };

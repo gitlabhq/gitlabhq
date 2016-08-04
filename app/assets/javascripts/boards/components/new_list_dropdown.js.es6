@@ -31,13 +31,12 @@ $(() => {
       clicked: (label, $el, e) => {
         e.preventDefault();
         BoardsStore.new({
-          id: BoardsStore.state.lists.length - 1,
           title: label.title,
-          index: BoardsStore.state.lists.length - 1,
+          position: BoardsStore.state.lists.length - 1,
           label: {
+            id: label.id,
             title: label.title,
-            backgroundColor: label.color,
-            color: '#fff'
+            color: label.color
           },
           issues: []
         });

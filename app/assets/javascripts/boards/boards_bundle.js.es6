@@ -19,18 +19,17 @@ $(function () {
         .then((resp) => {
           const boards = resp.json();
 
-          // Add blank state board
-          if (boards.length === 2) {
-            boards.splice(1, 0, {
-              id: 'blank',
-              title: 'Welcome to your Issue Board!',
-              index: 1
-            });
-          }
-
           boards.forEach((board) => {
-            BoardsStore.new(board);
+            const list = new List(board);
+
+            if (list.type === 'done') {
+              list.position = 9999999;
+            }
+
+            BoardsStore.state.lists.push(list);
           });
+
+          BoardsStore.addBlankState();
         });
     }
   });

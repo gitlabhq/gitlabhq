@@ -2,12 +2,8 @@ class BoardService {
   constructor (root) {
     Vue.http.options.root = root;
 
-    this.resource = Vue.resource(`${root}{/id}`, {}, {
-      all: {
-        method: 'GET',
-        url: 'all'
-      }
-    });
+    this.lists = Vue.resource(`${root}{/id}.json`, {});
+    this.list = Vue.resource(`${root}/lists{/id}.json`, {});
   }
 
   setCSRF () {
@@ -16,11 +12,32 @@ class BoardService {
 
   all () {
     this.setCSRF();
-    return this.resource.all();
+    return this.lists.get();
   }
 
-  updateBoard (id, index) {
+  createList (labelId) {
     this.setCSRF();
-    return this.resource.update({ id: id }, { index: index });
+
+    return this.list.save({}, {
+      list: {
+        label_id: labelId
+      }
+    });
+  }
+
+  updateList (list) {
+    this.setCSRF();
+
+    return this.list.update({ id: list.id }, {
+      list: {
+        position: list.position
+      }
+    });
+  }
+
+  destroyList (id) {
+    this.setCSRF();
+
+    return this.list.delete({ id });
   }
 };

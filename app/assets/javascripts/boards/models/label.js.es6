@@ -1,7 +1,7 @@
 class Label {
   constructor (obj) {
+    this.id = obj.id;
     this.title = obj.title;
-    this.backgroundColor = obj.backgroundColor;
-    this.textColor = obj.textColor;
+    this.color = obj.color;
   }
 }

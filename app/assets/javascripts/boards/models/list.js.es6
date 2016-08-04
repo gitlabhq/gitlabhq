@@ -1,9 +1,9 @@
 class List {
   constructor (obj) {
     this.id = obj.id;
-    this.index = obj.index;
-    this.search = obj.search || false;
+    this.position = obj.position;
     this.title = obj.title;
+    this.type = obj.list_type;
 
     if (obj.label) {
       this.label = new Label(obj.label);
@@ -15,6 +15,18 @@ class List {
         this.issues.push(new Issue(issue));
       });
     }
+  }
+
+  destroy () {
+    service.destroyList(this.id);
+  }
+
+  update () {
+    service.updateList(this);
+  }
+
+  canSearch () {
+    return this.type === 'backlog';
   }
 
   addIssue (issue, index) {

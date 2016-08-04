@@ -832,17 +832,7 @@ Rails.application.routes.draw do
           end
         end
 
-<<<<<<< 9d83a366e263d015894908f72576972f87848399
         resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
-=======
-        resources :boards do
-          collection do
-            get :all
-          end
-        end
-
-        resources :project_members, except: [:new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
->>>>>>> Added vue-resource to get & save data
           collection do
             delete :leave
 

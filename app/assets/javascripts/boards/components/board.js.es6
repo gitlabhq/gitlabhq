@@ -15,7 +15,7 @@
     },
     computed: {
       isPreset: function () {
-        return typeof this.board.id !== 'number';
+        return this.board.type === 'backlog' || this.board.type === 'done' || this.board.type === 'blank';
       }
     },
     ready: function () {
@@ -27,7 +27,7 @@
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
         onUpdate: function (e) {
-          BoardsStore.moveList(e.oldIndex + 1, e.newIndex + 1);
+          BoardsStore.moveList(e.oldIndex, e.newIndex);
         }
       });
     },
