@@ -20,7 +20,8 @@ describe Deployment, models: true do
     let(:project)     { create(:project) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) do
-      create(:deployment, environment: environment, sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
+      create(:deployment, environment: environment,
+                          sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
     end
 
     context 'when there is no project commit' do

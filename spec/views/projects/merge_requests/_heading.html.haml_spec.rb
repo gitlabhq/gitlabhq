@@ -19,7 +19,7 @@ describe 'projects/merge_requests/widget/_heading' do
     end
 
     it 'displays that the environment is deployed' do
-      expect(rendered).to match('Released to')
+      expect(rendered).to match("Released to #{environment.name}")
     end
   end
 end

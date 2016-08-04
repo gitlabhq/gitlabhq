@@ -1,18 +1,17 @@
 - if @pipeline
   .mr-widget-heading
-    - @merge_request.environments.each do |environments|
-      - %w[success success_with_warnings skipped canceled failed running pending].each do |status|
-        .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @pipeline.status == status) }
-          = ci_icon_for_status(status)
-          %span
-            CI build
-            = ci_label_for_status(status)
-          for
-          - commit = @merge_request.diff_head_commit
-          = succeed "." do
-            = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
-          %span.ci-coverage
-          = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
+    - %w[success success_with_warnings skipped canceled failed running pending].each do |status|
+      .ci_widget{ class: "ci-#{status}", style: ("display:none" unless @pipeline.status == status) }
+        = ci_icon_for_status(status)
+        %span
+          CI build
+          = ci_label_for_status(status)
+        for
+        - commit = @merge_request.diff_head_commit
+        = succeed "." do
+          = link_to @pipeline.short_sha, namespace_project_commit_path(@merge_request.source_project.namespace, @merge_request.source_project, @pipeline.sha), class: "monospace"
+        %span.ci-coverage
+        = link_to "View details", builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: "js-show-tab", data: {action: 'builds'}
 
 - elsif @merge_request.has_ci?
   - # Compatibility with old CI integrations (ex jenkins) when you request status from CI server via AJAX
@@ -48,9 +47,8 @@
   .mr-widget-heading
     .ci_widget{ class: "ci-success" }
       = ci_icon_for_status("success")
-      %span
-        Released to #{environment.name}
-        = succeed '.' do
-          = time_ago_with_tooltip(environment.created_at, placement: 'bottom')
-        - if environment.external_url
-          = link_to icon('external-link'), environment.external_url
+      %span.hidden-sm
+        Released to #{environment.name}.
+        - external_url = environment.external_url
+        - if external_url
+          = link_to icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}"), external_url

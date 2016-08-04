@@ -677,7 +677,10 @@ describe MergeRequest, models: true do
   describe "#environments" do
     let(:project)       { create(:project) }
 
-    let!(:deployment)   { create(:deployment, environment: environment, sha: '5f923865dde3436854e9ceb9cdb7815618d4e849') }
+    let!(:deployment) do
+      create(:deployment, environment: environment,
+                          sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
+    end
 
     let!(:environment)  { create(:environment, project: project) }
     let!(:environment1) { create(:environment, project: project) }
