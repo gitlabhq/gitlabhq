@@ -26,6 +26,19 @@
       if (discussion.notesCount() === 0) {
         Vue.delete(this.state, discussionId);
       }
+    },
+    unresolvedDiscussionIds: function () {
+      let ids = [];
+
+      for (const discussionId in this.state) {
+        const discussion = this.state[discussionId];
+
+        if (!discussion.isResolved()) {
+          ids.push(discussion.id);
+        }
+      }
+
+      return ids;
     }
   };
 })(window);

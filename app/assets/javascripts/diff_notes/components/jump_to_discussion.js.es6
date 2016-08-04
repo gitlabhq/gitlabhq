@@ -43,38 +43,34 @@
     },
     methods: {
       jumpToNextUnresolvedDiscussion: function () {
-        let nextUnresolvedDiscussionId,
-            firstUnresolvedDiscussionId,
-            useNextDiscussionId = false,
-            i = 0;
+        let unresolvedIds = CommentsStore.unresolvedDiscussionIds(),
+            nextUnresolvedDiscussionId;
+        const activePage = $('.merge-request-tabs .active a').attr('data-action'),
+              $diffDiscussions = $('.discussion').filter(function () {
+                return unresolvedIds.indexOf($(this).attr('data-discussion-id')) !== -1;
+              });
 
-        for (const discussionId in this.discussions) {
-          const discussion = this.discussions[discussionId];
+        unresolvedIds = unresolvedIds.sort(function (a, b) {
+          return $diffDiscussions.index(`[data-discussion-id="${b}"]`) > $diffDiscussions.index(`[data-discussion-id="${a}"]`);
+        });
 
-          if (!discussion.isResolved()) {
-            if (i === 0) {
-              firstUnresolvedDiscussionId = discussion.id;
-            }
-
-            if (useNextDiscussionId) {
-              nextUnresolvedDiscussionId = discussion.id;
-              break;
-            }
-
-            if (this.discussionId && discussion.id === this.discussionId) {
-              useNextDiscussionId = true;
-            }
-
-            i++;
+        unresolvedIds.forEach(function (discussionId, i) {
+          if (this.discussionId && discussionId === this.discussionId) {
+            nextUnresolvedDiscussionId = unresolvedIds[i + 1];
+            return;
           }
-        }
+        }.bind(this));
 
-        nextUnresolvedDiscussionId = nextUnresolvedDiscussionId || firstUnresolvedDiscussionId
+        nextUnresolvedDiscussionId = nextUnresolvedDiscussionId || unresolvedIds[0];
 
         if (nextUnresolvedDiscussionId) {
-          mrTabs.activateTab('notes');
+          let selector = '.discussion';
 
-          $.scrollTo(`.discussion[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
+          if (activePage === 'diffs' && $(`${selector}[data-discussion-id="${nextUnresolvedDiscussionId}"]`).length) {
+            selector = '.diffs .notes';
+          }
+
+          $.scrollTo(`${selector}[data-discussion-id="${nextUnresolvedDiscussionId}"]`, {
             offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
           });
         }
