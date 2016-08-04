@@ -16,7 +16,7 @@ class ProtectedBranchCreate {
     });
 
     // Select default
-    $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(document.createEvent('Event'), 0);
+    $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
 
     // Allowed to Push dropdowns
     new ProtectedBranchAccessDropdown({
@@ -26,7 +26,7 @@ class ProtectedBranchCreate {
     });
 
     // Select default
-    $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(document.createEvent('Event'), 0);
+    $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
 
     new ProtectedBranchDropdowns({
       $dropdowns: this.$wrap.find('.js-protected-branch-select'),

@@ -44,9 +44,9 @@ class ProtectedBranchDropdown {
     this.$protectedBranch.on('click', this.onClickCreateWildcard.bind(this));
   }
 
-  onClickCreateWildcard(e) {
+  onClickCreateWildcard() {
     this.$dropdown.data('glDropdown').remote.execute();
-    this.$dropdown.data('glDropdown').selectRowAtIndex(e, 0);
+    this.$dropdown.data('glDropdown').selectRowAtIndex(0);
   }
 
   getProtectedBranches(term, callback) {
