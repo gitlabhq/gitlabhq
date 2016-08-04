@@ -2,25 +2,31 @@
   w.CommentAndResolveBtn = Vue.extend({
     props: {
       discussionId: String,
-      textareaVal: String
+      textareaIsEmpty: Boolean
     },
     computed: {
+      discussion: function () {
+        return CommentsStore.state[this.discussionId];
+      },
+      showButton: function () {
+        if (!this.discussion) {
+          return false;
+        } else {
+          return this.discussion.canResolve();
+        }
+      },
       isDiscussionResolved: function () {
-        const discussion = CommentsStore.state[this.discussionId];
-
-        return discussion.isResolved();
+        return this.discussion.isResolved();
       },
       buttonText: function () {
-        const textVal = this.textareaVal;
-
         if (this.isDiscussionResolved) {
-          if (textVal === '') {
+          if (this.textareaIsEmpty) {
             return "Unresolve discussion";
           } else {
             return "Comment & unresolve discussion";
           }
         } else {
-          if (textVal === '') {
+          if (this.textareaIsEmpty) {
             return "Resolve discussion";
           } else {
             return "Comment & resolve discussion";
@@ -30,10 +36,10 @@
     },
     ready: function () {
       const $textarea = $(`#new-discussion-note-form-${this.discussionId} .note-textarea`);
-      this.textareaVal = $textarea.val();
+      this.textareaIsEmpty = $textarea.val() === '';
 
       $textarea.on('input.comment-and-resolve-btn', () => {
-        this.textareaVal = $textarea.val();
+        this.textareaIsEmpty = $textarea.val() === '';
       });
     },
     destroyed: function () {

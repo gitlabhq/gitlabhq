@@ -29,7 +29,9 @@
         return this.discussions[this.discussionId];
       },
       note: function () {
-        return CommentsStore.get(this.discussionId, this.noteId);
+        if (this.discussion) {
+          return this.discussion.getNote(this.noteId);
+        }
       },
       buttonText: function () {
         if (this.isResolved) {
@@ -39,7 +41,9 @@
         }
       },
       isResolved: function () {
-        return this.note.resolved;
+        if (this.note) {
+          return this.note.resolved;
+        }
       },
       resolvedByName: function () {
         return this.note.resolved_by;
@@ -87,11 +91,11 @@
         container: 'body'
       });
     },
-    destroyed: function () {
+    beforeDestroy: function () {
       CommentsStore.delete(this.discussionId, this.noteId);
     },
     created: function () {
-      CommentsStore.create(this.discussionId, this.noteId, this.resolved, this.resolvedBy);
+      CommentsStore.create(this.discussionId, this.noteId, this.canResolve, this.resolved, this.resolvedBy);
     }
   });
 })(window);

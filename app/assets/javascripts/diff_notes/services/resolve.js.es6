@@ -9,20 +9,21 @@
       Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
     }
 
-    resolve(namespace, noteId) {
+    prepareRequest(namespace) {
       this.setCSRF();
       if (Vue.http.options.root !== `/${namespace}`) {
         Vue.http.options.root = `/${namespace}`;
       }
+    }
+
+    resolve(namespace, noteId) {
+      this.prepareRequest(namespace);
 
       return this.noteResource.save({ noteId }, {});
     }
 
     unresolve(namespace, noteId) {
-      this.setCSRF();
-      if (Vue.http.options.root !== `/${namespace}`) {
-        Vue.http.options.root = `/${namespace}`;
-      }
+      this.prepareRequest(namespace);
 
       return this.noteResource.delete({ noteId }, {});
     }
@@ -61,11 +62,7 @@
     resolveAll(namespace, mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
 
-      this.setCSRF();
-
-      if (Vue.http.options.root !== `/${namespace}`) {
-        Vue.http.options.root = `/${namespace}`;
-      }
+      this.prepareRequest(namespace);
 
       discussion.loading = true;
 
@@ -78,8 +75,7 @@
     unResolveAll(namespace, mergeRequestId, discussionId) {
       const discussion = CommentsStore.state[discussionId];
 
-      this.setCSRF();
-      Vue.http.options.root = `/${namespace}`;
+      this.prepareRequest(namespace);
 
       discussion.loading = true;
 

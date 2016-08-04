@@ -5,8 +5,8 @@ class DiscussionModel {
     this.loading = false;
   }
 
-  createNote (noteId, resolved, resolved_by) {
-    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, resolved, resolved_by));
+  createNote (noteId, canResolve, resolved, resolved_by) {
+    Vue.set(this.notes, noteId, new NoteModel(this.id, noteId, canResolve, resolved, resolved_by));
   }
 
   deleteNote (noteId) {
@@ -66,5 +66,17 @@ class DiscussionModel {
     } else {
        $discussionHeadline.remove();
     }
+  }
+
+  canResolve () {
+    for (const noteId in this.notes) {
+      const note = this.notes[noteId];
+
+      if (note.canResolve) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }

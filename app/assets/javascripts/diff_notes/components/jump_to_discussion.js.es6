@@ -1,5 +1,6 @@
 (() => {
   JumpToDiscussion = Vue.extend({
+    mixins: [DiscussionMixins],
     props: {
       discussionId: String
     },
@@ -9,41 +10,25 @@
       };
     },
     computed: {
+      discussion: function () {
+        return this.discussions[this.discussionId];
+      },
       allResolved: function () {
-        const discussion = this.discussions[this.discussionId];
-
-        if (discussion) {
-          return discussion.isResolved();
+        if (this.discussion) {
+          return this.unresolvedDiscussionCount === 0;
         }
-      },
-      discussionsCount: function () {
-        return CommentsStore.discussionCount();
-      },
-      unresolvedDiscussionCount: function () {
-        let unresolvedCount = 0;
-        for (const discussionId in this.discussions) {
-          const discussion = this.discussions[discussionId];
-
-          if (!discussion.isResolved()) {
-            unresolvedCount++;
-          }
-        }
-
-        return unresolvedCount;
       },
       showButton: function () {
         if (this.discussionId) {
           if (this.unresolvedDiscussionCount > 1) {
             return true;
           } else {
-            return this.discussionId !== this.lastResolvedId();
+            return this.discussionId !== this.lastResolvedId;
           }
         } else {
           return this.unresolvedDiscussionCount >= 1;
         }
-      }
-    },
-    methods: {
+      },
       lastResolvedId: function () {
         let lastId;
         for (const discussionId in this.discussions) {
@@ -54,7 +39,9 @@
           }
         }
         return lastId;
-      },
+      }
+    },
+    methods: {
       jumpToNextUnresolvedDiscussion: function () {
         let nextUnresolvedDiscussionId,
             firstUnresolvedDiscussionId,
@@ -82,9 +69,7 @@
           }
         }
 
-        if (!nextUnresolvedDiscussionId && firstUnresolvedDiscussionId) {
-          nextUnresolvedDiscussionId = firstUnresolvedDiscussionId;
-        }
+        nextUnresolvedDiscussionId = nextUnresolvedDiscussionId || firstUnresolvedDiscussionId
 
         if (nextUnresolvedDiscussionId) {
           mrTabs.activateTab('notes');

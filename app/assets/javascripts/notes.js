@@ -577,7 +577,6 @@
      */
 
     Notes.prototype.setupDiscussionNoteForm = function(dataHolder, form) {
-      var canResolve = dataHolder.attr('data-can-resolve');
       form.attr('id', "new-discussion-note-form-" + (dataHolder.data("discussionId")));
       form.attr("data-line-code", dataHolder.data("lineCode"));
       form.find("#note_type").val(dataHolder.data("noteType"));
@@ -591,9 +590,7 @@
       form.find('.js-note-target-close').remove();
       this.setupNoteForm(form);
 
-      if (canResolve === 'false' || !form.closest('.notes_content').find('.note:not(.system-note)').length) {
-        form.find('comment-and-resolve-btn').remove();
-      } else if (typeof DiffNotesApp !== 'undefined') {
+      if (typeof DiffNotesApp !== 'undefined') {
         var $commentBtn = form.find('comment-and-resolve-btn');
         $commentBtn
           .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
