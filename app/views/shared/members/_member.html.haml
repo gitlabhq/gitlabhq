@@ -59,7 +59,7 @@
           = time_ago_with_tooltip(member.requested_at)
         - else
           Joined #{time_ago_with_tooltip(member.created_at)}
-        - if member.expires_at.present?
+        - if member.expires?
           %span.prepend-left-20
             Access expires #{member.expires_at.to_s(:medium)}
 

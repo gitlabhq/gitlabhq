@@ -125,6 +125,10 @@ class Member < ActiveRecord::Base
     invite? || request?
   end
 
+  def expires?
+    expires_at.present?
+  end
+
   def accept_request
     return false unless request?
 
