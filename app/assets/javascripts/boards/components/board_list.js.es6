@@ -6,7 +6,8 @@
       filters: Object,
       issues: Array,
       query: String,
-      loading: Boolean
+      loading: Boolean,
+      issueLinkBase: String
     },
     data: () => {
       return {

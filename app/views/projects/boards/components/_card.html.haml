@@ -1,6 +1,6 @@
 %li.card{ ":data-issue" => "issue.id", "v-for" => "issue in issues | filterBy query in 'title' | filterBy customFilter", "track-by" => "id" }
   %h4.card-title
-    %a{ href: "#", ":title" => "issue.title" }
+    %a{ ":href" => "issueLinkBase + '/' + issue.id", ":title" => "issue.title" }
       {{ issue.title }}
   .card-footer
     %span.card-number
