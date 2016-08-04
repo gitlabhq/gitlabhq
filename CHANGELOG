@@ -63,6 +63,9 @@ v 8.11.0 (unreleased)
   - Catch what warden might throw when profiling requests to re-throw it
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
 
+v 8.10.4 (unreleased)
+  - Fix Import/Export error checking versions
+
 v 8.10.3
   - Fix Import/Export issue importing milestones and labels not associated properly. !5426
   - Fix timing problems running imports on production. !5523
