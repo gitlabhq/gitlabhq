@@ -6,6 +6,10 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
+      abilities_by_subject_class(user: user, subject: subject)
+    end
+
+    def abilities_by_subject_class(user:, subject:)
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
