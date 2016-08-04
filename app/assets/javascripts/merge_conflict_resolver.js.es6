@@ -59,8 +59,8 @@ window.MergeConflictResolver = class MergeConflictResolver {
 
   commit() {
     $.post('./resolve_conflicts', this.dataProvider.getCommitData())
-      .always( (data) => {
-        console.log(data)
+      .then( (data) => {
+        window.location.href = data.redirect_to
       })
   }
 
