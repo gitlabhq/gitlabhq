@@ -7,7 +7,7 @@ class Projects::BoardIssuesController < Projects::ApplicationController
     issues = Boards::Issues::ListService.new(project, current_user, filter_params).execute
     issues = issues.page(params[:page])
 
-    render json: issues.as_json(only: [:id, :title, :confidential], include: { labels: { only: [:id, :title, :color] } })
+    render json: issues.as_json(only: [:iid, :title, :confidential], include: { labels: { only: [:id, :title, :color] } })
   end
 
   def update
