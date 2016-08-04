@@ -53,9 +53,8 @@
           if (this.options.remote) {
             clearTimeout(timeout);
             return timeout = setTimeout(function() {
-              var blur_field;
-              blur_field = this.shouldBlur(keyCode);
-              if (blur_field && this.filterInputBlur) {
+              var blurField = this.shouldBlur(keyCode);
+              if (blurField && this.filterInputBlur) {
                 this.input.blur();
               }
               return this.options.query(this.input.val(), function(data) {
