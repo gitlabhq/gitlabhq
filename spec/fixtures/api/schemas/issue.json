@@ -24,6 +24,12 @@
         },
         "title": { "type": "string" }
       }
+    },
+    "assignee": {
+      "id": { "type": "integet" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "avatar_url": { "type": "uri" }
     }
   },
   "additionalProperties": false
