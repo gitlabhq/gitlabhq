@@ -547,7 +547,6 @@ describe Ci::Pipeline, models: true do
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
     end
-    let(:enabled) { raise NotImplementedError }
 
     before do
       WebMock.stub_request(:post, hook.url)
