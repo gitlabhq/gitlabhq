@@ -10,7 +10,8 @@
           .col-md-10
             = render partial: "dropdown", locals: { f: f }
             .help-block
-              Wildcards such as
+              = link_to 'Wildcards', help_page_path('user/project/protected_branches', anchor: 'wildcard-protected-branches')
+              such as
               %code *-stable
               or
               %code production/*
