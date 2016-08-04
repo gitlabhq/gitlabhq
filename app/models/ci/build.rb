@@ -349,7 +349,7 @@ module Ci
 
     def execute_hooks
       return unless project
-      build_data = Gitlab::BuildDataBuilder.build(self)
+      build_data = Gitlab::DataBuilder::BuildDataBuilder.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
       project.running_or_pending_build_count(force: true)
@@ -461,7 +461,7 @@ module Ci
 
     def build_attributes_from_config
       return {} unless pipeline.config_processor
-      
+
       pipeline.config_processor.build_attributes(name)
     end
   end

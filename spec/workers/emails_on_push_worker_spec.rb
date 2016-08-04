@@ -5,7 +5,9 @@ describe EmailsOnPushWorker do
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+  let(:data) do
+    Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+  end
   let(:recipients) { user.email }
   let(:perform) { subject.perform(project.id, recipients, data.stringify_keys) }
 

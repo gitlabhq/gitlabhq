@@ -1,6 +1,8 @@
 module Gitlab
-  class PushDataBuilder
-    class << self
+  module DataBuilder
+    module PushDataBuilder
+      module_function
+
       # Produce a hash of post-receive data
       #
       # data = {

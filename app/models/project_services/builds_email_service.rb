@@ -52,7 +52,7 @@ class BuildsEmailService < Service
 
   def test_data(project = nil, user = nil)
     build = project.builds.last
-    Gitlab::BuildDataBuilder.build(build)
+    Gitlab::DataBuilder::BuildDataBuilder.build(build)
   end
 
   def fields

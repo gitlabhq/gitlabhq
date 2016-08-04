@@ -45,7 +45,9 @@ describe SlackService, models: true do
     let(:slack)   { SlackService.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
-    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:push_sample_data) do
+      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+    end
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
     let(:username) { 'slack_username' }
     let(:channel) { 'slack_channel' }

@@ -48,7 +48,9 @@ describe PushoverService, models: true do
     let(:pushover) { PushoverService.new }
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:sample_data) do
+      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+    end
 
     let(:api_key) { 'verySecret' }
     let(:user_key) { 'verySecret' }

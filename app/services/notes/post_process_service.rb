@@ -16,7 +16,7 @@ module Notes
     end
 
     def hook_data
-      Gitlab::NoteDataBuilder.build(@note, @note.author)
+      Gitlab::DataBuilder::NoteDataBuilder.build(@note, @note.author)
     end
 
     def execute_note_hooks

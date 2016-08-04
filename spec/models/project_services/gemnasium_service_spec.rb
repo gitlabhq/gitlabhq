@@ -55,7 +55,8 @@ describe GemnasiumService, models: true do
         token: 'verySecret',
         api_key: 'GemnasiumUserApiKey'
       )
-      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      @sample_data = Gitlab::DataBuilder::PushDataBuilder.
+        build_sample(project, user)
     end
     it "should call Gemnasium service" do
       expect(Gemnasium::GitlabService).to receive(:execute).with(an_instance_of(Hash)).once

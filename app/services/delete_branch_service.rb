@@ -39,7 +39,7 @@ class DeleteBranchService < BaseService
   end
 
   def build_push_data(branch)
-    Gitlab::PushDataBuilder
+    Gitlab::DataBuilder::PushDataBuilder
       .build(project, current_user, branch.target.sha, Gitlab::Git::BLANK_SHA, "#{Gitlab::Git::BRANCH_REF_PREFIX}#{branch.name}", [])
   end
 end

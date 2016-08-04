@@ -138,12 +138,12 @@ class GitPushService < BaseService
   end
 
   def build_push_data
-    @push_data ||= Gitlab::PushDataBuilder.
+    @push_data ||= Gitlab::DataBuilder::PushDataBuilder.
       build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
   end
 
   def build_push_data_system_hook
-    @push_data_system ||= Gitlab::PushDataBuilder.
+    @push_data_system ||= Gitlab::DataBuilder::PushDataBuilder.
       build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
   end
 

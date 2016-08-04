@@ -80,7 +80,7 @@ class Service < ActiveRecord::Base
   end
 
   def test_data(project, user)
-    Gitlab::PushDataBuilder.build_sample(project, user)
+    Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
   end
 
   def event_channel_names

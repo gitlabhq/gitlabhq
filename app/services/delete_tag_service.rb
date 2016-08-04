@@ -33,7 +33,7 @@ class DeleteTagService < BaseService
   end
 
   def build_push_data(tag)
-    Gitlab::PushDataBuilder
+    Gitlab::DataBuilder::PushDataBuilder
       .build(project, current_user, tag.target.sha, Gitlab::Git::BLANK_SHA, "#{Gitlab::Git::TAG_REF_PREFIX}#{tag.name}", [])
   end
 end
