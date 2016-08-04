@@ -27,6 +27,7 @@ v 8.11.0 (unreleased)
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
+  - Fix devise deprecation warnings.
   - Optimize checking if a user has read access to a list of issues !5370
   - Nokogiri's various parsing methods are now instrumented
   - Add simple identifier to public SSH keys (muteor)
