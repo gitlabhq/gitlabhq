@@ -1,7 +1,18 @@
 (function() {
   $(function() {
     $(".approver-list").on("click", ".project-approvers .btn-remove", function() {
-      $(this).closest("li").remove();
+      var removeElement = $(this).closest("li");
+      var approverId = parseInt(removeElement.attr("id").replace("user_",""));
+      var approverIds = $("input#merge_request_approver_ids");
+      var skipUsers = approverIds.data("skip-users") || [];
+      var approverIndex = skipUsers.indexOf(approverId);
+
+      removeElement.remove();
+
+      if(approverIndex > -1) {
+        approverIds.data("skip-users", skipUsers.splice(approverIndex, 1));
+      }
+
       return false;
     });
     $("form.merge-request-form").submit(function() {
