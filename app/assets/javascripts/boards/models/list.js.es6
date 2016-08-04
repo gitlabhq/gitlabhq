@@ -4,16 +4,21 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
+    this.issues = [];
 
     if (obj.label) {
       this.label = new Label(obj.label);
     }
 
-    if (obj.issues) {
-      this.issues = [];
-      obj.issues.forEach((issue) => {
-        this.issues.push(new Issue(issue));
-      });
+    if (this.type !== 'blank') {
+      service.getIssuesForList(this.id)
+        .then((resp) => {
+          const data = resp.json();
+
+          data.forEach((issue) => {
+            this.issues.push(new Issue(issue));
+          });
+        });
     }
   }
 

@@ -6,5 +6,5 @@
     %span.card-number
       = precede '#' do
         {{ issue.id }}
-    %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.backgroundColor, color: label.textColor }" }
+    %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
       {{ label.title }}

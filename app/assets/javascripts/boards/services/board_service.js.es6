@@ -4,6 +4,7 @@ class BoardService {
 
     this.lists = Vue.resource(`${root}{/id}.json`, {});
     this.list = Vue.resource(`${root}/lists{/id}.json`, {});
+    this.issues = Vue.resource(`${root}/lists{/id}/issues.json`, {});
   }
 
   setCSRF () {
@@ -39,5 +40,11 @@ class BoardService {
     this.setCSRF();
 
     return this.list.delete({ id });
+  }
+
+  getIssuesForList (id) {
+    this.setCSRF();
+
+    return this.issues.get({ id });
   }
 };
