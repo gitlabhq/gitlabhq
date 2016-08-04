@@ -38,15 +38,16 @@ module API
           present key, with: Entities::SSHKey
         end
 
+        # TODO: for 9.0 we should check if params are there with the params block
+        # grape provides, at this point we'd change behaviour so we can't
+        # Behaviour now if you don't provide all required params: it renders a
+        # validation error or two.
         desc 'Add new deploy key to currently authenticated user' do
           success Entities::SSHKey
         end
-        params do
-          requires :key, type: String, desc: "The new deploy key"
-          requires :title, type: String, desc: 'The title to identify the key from'
-        end
         post ":id/#{path}" do
-          attrs = declared(params, include_parent_namespaces: false).to_h
+          attrs = attributes_for_keys [:title, :key]
+          attrs[:key].strip! if attrs[:key]
 
           key = user_project.deploy_keys.find_by(key: attrs[:key])
           present key, with: Entities::SSHKey if key
