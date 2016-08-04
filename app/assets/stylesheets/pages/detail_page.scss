@@ -34,19 +34,4 @@
       }
     }
   }
-
-  .wiki {
-    // Single lines of code should wrap
-    code {
-      white-space: pre-wrap;
-      word-break: keep-all;
-    }
-
-    // Code blocks should scroll horizontally
-    pre {
-      code {
-        white-space: pre;
-      }
-    }
-  }
 }
