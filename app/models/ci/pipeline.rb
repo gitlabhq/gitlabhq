@@ -252,9 +252,12 @@ module Ci
     end
 
     def execute_hooks
-      pipeline_data = Gitlab::DataBuilder::PipelineDataBuilder.build(self)
       project.execute_hooks(pipeline_data, :pipeline_hooks)
-      project.execute_services(pipeline_data.dup, :pipeline_hooks)
+      project.execute_services(pipeline_data, :pipeline_hooks)
+    end
+
+    def pipeline_data
+      Gitlab::DataBuilder::PipelineDataBuilder.build(self)
     end
 
     def keep_around_commits
