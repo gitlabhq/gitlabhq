@@ -72,6 +72,8 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
+    MergeRequests::AllDiscussionsResolvedService.new(project, current_user).execute(note.noteable)
+
     discussion = note.discussion
 
     render json: {
