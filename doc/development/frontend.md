@@ -16,6 +16,14 @@ minification, and compression of our assets.
 [jQuery][jquery] is used throughout the application's JavaScript, with
 [Vue.js][vue] for particularly advanced, dynamic elements.
 
+### Vue
+
+For more complex frontend features, we recommend using Vue.js. It shares
+some ideas with React.js while being smaller and – arguably – easier to get
+into.
+
+To get started with Vue, read through [their documentation][vue-docs].
+
 ## Performance
 
 ### Resources
@@ -178,6 +186,10 @@ to prevent them from occurring again.
 See [the Testing Standards and Style Guidelines](testing.md) for more
 information.
 
+## Supported browsers
+
+For our currently-supported browsers, see our [requirements][requirements].
+
 [rails]: http://rubyonrails.org/
 [haml]: http://haml.info/
 [hamlit]: https://github.com/k0kubun/hamlit
@@ -187,6 +199,7 @@ information.
 [sprockets]: https://github.com/rails/sprockets
 [jquery]: https://jquery.com/
 [vue]: http://vuejs.org/
+[vue-docs]: http://vuejs.org/guide/index.html
 [web-page-test]: http://www.webpagetest.org/
 [pagespeed-insights]: https://developers.google.com/speed/pagespeed/insights/
 [google-devtools-profiling]: https://developers.google.com/web/tools/chrome-devtools/profile/?hl=en
@@ -209,3 +222,4 @@ information.
 [sprockets-sri]: https://github.com/rails/sprockets-rails#sri-support
 [xss]: https://en.wikipedia.org/wiki/Cross-site_scripting
 [scss-style-guide]: scss_styleguide.md
+[requirements]: ../install/requirements.md#supported-web-browsers
