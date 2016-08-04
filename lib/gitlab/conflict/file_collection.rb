@@ -20,27 +20,6 @@ module Gitlab
         @merge_index ||= repository.rugged.merge_commits(our_commit, their_commit)
       end
 
-      def resolve_conflicts!(params, user:)
-        resolutions = params[:sections]
-        commit_message = params[:commit_message] || default_commit_message
-        rugged = repository.rugged
-        committer = repository.user_to_committer(user)
-
-        files.each do |file|
-          file.resolve!(resolutions, index: merge_index, rugged: rugged)
-        end
-
-        new_tree = merge_index.write_tree(rugged)
-
-        Rugged::Commit.create(rugged,
-                              author: committer,
-                              committer: committer,
-                              tree: new_tree,
-                              message: commit_message,
-                              parents: [our_commit, their_commit].map(&:oid),
-                              update_ref: Gitlab::Git::BRANCH_REF_PREFIX + merge_request.source_branch)
-      end
-
       def files
         @files ||= merge_index.conflicts.map do |conflict|
           raise ConflictSideMissing unless conflict[:theirs] && conflict[:ours]

@@ -28,14 +28,6 @@ module Gitlab
                                                       parent_file: self)
       end
 
-      def resolve!(resolution, index:, rugged:)
-        new_file = resolve_lines(resolution).map(&:text).join("\n")
-
-        oid = rugged.write(new_file, :blob)
-        index.add(path: our_path, oid: oid, mode: our_mode)
-        index.conflict_remove(our_path)
-      end
-
       def resolve_lines(resolution)
         section_id = nil
 

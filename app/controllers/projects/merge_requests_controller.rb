@@ -150,7 +150,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def resolve_conflicts
     begin
-      Gitlab::Conflict::FileCollection.new(@merge_request).resolve_conflicts!(params, user: current_user)
+      MergeRequests::ResolveService.new(project, current_user, params).execute(@merge_request)
 
       head :ok
     rescue Gitlab::Conflict::File::MissingResolution => e
