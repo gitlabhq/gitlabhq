@@ -41,10 +41,10 @@ Rubocop](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-4-stable/.rubocop.yml#L9
 
 [Exception]: http://stackoverflow.com/q/10048173/223897
 
-## Don't use inline CoffeeScript/Javascript in views
+## Don't use inline CoffeeScript/JavaScript in views
 
 Using the inline `:coffee` or `:coffeescript` Haml filters comes with a
-performance overhead. Using inline Javascript is not a good way to structure your code and should be avoided. 
+performance overhead. Using inline JavaScript is not a good way to structure your code and should be avoided.
 
 _**Note:** We've [removed these two filters](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/hamlit.rb)
 in an initializer._
