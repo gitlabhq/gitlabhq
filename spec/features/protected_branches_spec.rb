@@ -11,7 +11,7 @@ feature 'Projected Branches', feature: true, js: true do
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
-    click_on "Create Protected Branch: #{branch_name}"
+    click_on "Create wildcard #{branch_name}"
   end
 
   describe "explicit protected branches" do
@@ -108,7 +108,7 @@ feature 'Projected Branches', feature: true, js: true do
 
         within(".protected-branches-list") do
           find(".js-allowed-to-push").click
-          within('.dropdown-menu.push') { click_on access_type_name }
+          within('.js-allowed-to-push-container') { click_on access_type_name }
         end
 
         wait_for_ajax
@@ -139,7 +139,7 @@ feature 'Projected Branches', feature: true, js: true do
 
         within(".protected-branches-list") do
           find(".js-allowed-to-merge").click
-          within('.dropdown-menu.merge') { click_on access_type_name }
+          within('.js-allowed-to-merge-container') { click_on access_type_name }
         end
 
         wait_for_ajax
