@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def name
-        @name ||= exists? ? ref : "#{ref}-#{short_id}"
+        ref
       end
 
       def valid?
