@@ -6,28 +6,31 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
-      abilities =
-        case subject
-        when CommitStatus then commit_status_abilities(user, subject)
-        when Project then project_abilities(user, subject)
-        when Issue then issue_abilities(user, subject)
-        when Note then note_abilities(user, subject)
-        when ProjectSnippet then project_snippet_abilities(user, subject)
-        when PersonalSnippet then personal_snippet_abilities(user, subject)
-        when MergeRequest then merge_request_abilities(user, subject)
-        when Group then group_abilities(user, subject)
-        when Namespace then namespace_abilities(user, subject)
-        when GroupMember then group_member_abilities(user, subject)
-        when ProjectMember then project_member_abilities(user, subject)
-        when User then user_abilities
-        when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
-        when Ci::Runner then runner_abilities(user, subject)
-        else []
-        end.concat(global_abilities(user))
+      abilities = abilities_by_subject_class(user: user, subject: subject)
 
       abilities -= license_blocked_abilities if License.block_changes?
 
       abilities
+    end
+
+    def abilities_by_subject_class(user:, subject:)
+      case subject
+      when CommitStatus then commit_status_abilities(user, subject)
+      when Project then project_abilities(user, subject)
+      when Issue then issue_abilities(user, subject)
+      when Note then note_abilities(user, subject)
+      when ProjectSnippet then project_snippet_abilities(user, subject)
+      when PersonalSnippet then personal_snippet_abilities(user, subject)
+      when MergeRequest then merge_request_abilities(user, subject)
+      when Group then group_abilities(user, subject)
+      when Namespace then namespace_abilities(user, subject)
+      when GroupMember then group_member_abilities(user, subject)
+      when ProjectMember then project_member_abilities(user, subject)
+      when User then user_abilities
+      when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
+      when Ci::Runner then runner_abilities(user, subject)
+      else []
+      end.concat(global_abilities(user))
     end
 
     def license_blocked_abilities
