@@ -4,6 +4,7 @@ v 8.10.4 (unreleased)
   - Don't close referenced upstream issues from a forked project.
   - Fixes issue with dropdowns `enter` key not working correctly. !5544
   - Fix Import/Export project import not working in HA mode. !5618
+  - Fix Import/Export error checking versions. !5638
 
 v 8.10.3
   - Fix Import/Export issue importing milestones and labels not associated properly. !5426
