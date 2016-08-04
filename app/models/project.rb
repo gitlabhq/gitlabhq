@@ -378,11 +378,6 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
-
-    # Deletes gitlab project export files older than 24 hours
-    def remove_gitlab_exports!
-      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
-    end
   end
 
   def repository_storage_path
