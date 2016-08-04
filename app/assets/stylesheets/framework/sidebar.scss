@@ -226,3 +226,16 @@ header.header-pinned-nav {
 .right-sidebar {
   border-left: 1px solid $border-color;
 }
+
+.js-build-variable {
+  color: #c7254e;
+  font-size: 100%;
+  border-radius: 5px;
+}
+
+.js-build-value {
+  padding: 2px 4px;
+  font-size: 100%;
+  color: #000;
+  background-color: #fff;
+}

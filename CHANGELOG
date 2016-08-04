@@ -130,6 +130,9 @@ v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
   - Use gitlab-workhorse 0.7.11 !5983
   - Does not halt the GitHub import process when an error occurs. !5763
+  - Show value variables onclick (Katarzyna Kobierska Ula Budziszewska)
+
+v 8.11.1 (unreleased)
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
 
@@ -535,10 +538,6 @@ v 8.9.7 (unreleased)
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects
-  - Added setting to set new users by default as external !4545 (Dravere)
-  - Add min value for project limit field on user's form !3622 (jastkand)
-  - Add reminder to not paste private SSH keys !4399 (Ingo Blechschmidt)
-  - Render only commit message title in builds
 
 v 8.9.5
   - Add more debug info to import/export and memory killer. !5108
