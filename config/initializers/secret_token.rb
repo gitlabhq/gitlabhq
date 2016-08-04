@@ -75,7 +75,7 @@ Rails.application.secrets.#{key} was blank, but the literal value in config/secr
 This probably isn't the expected value for this secret. To keep using a literal Erb string in config/secrets.yml, replace `<%` with `<%%`.
 EOM
 
-      exit 1
+      exit 1 # rubocop:disable Rails/Exit
     end
 
     new
