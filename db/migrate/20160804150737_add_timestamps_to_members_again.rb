@@ -7,6 +7,7 @@
 # Why this happened is lost in the mists of time, so repeat the SQL query
 # without speculation, just in case more than one person was affected.
 class AddTimestampsToMembersAgain < ActiveRecord::Migration
+  DOWNTIME = false
 
   def up
     execute "UPDATE members SET created_at = NOW() WHERE created_at IS NULL"
