@@ -132,15 +132,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def conflicts
-    return render_404 unless @merge_request.cannot_be_merged?
-
     respond_to do |format|
       format.html { define_discussion_vars }
 
       format.json do
-        begin
-          render json: Gitlab::Conflict::FileCollection.new(@merge_request)
-        rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+        if @merge_request.can_resolve_conflicts_in_ui?
+          render json: @merge_request.conflicts
+        else
           render json: {
             message: 'Unable to resolve conflicts in the web interface for this merge request',
             type: 'error'
@@ -452,7 +450,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       noteable_id: @merge_request.id
     }
 
-    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
+    @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
     @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(

@@ -204,7 +204,7 @@ class MergeRequest < ActiveRecord::Base
 
   def diff_start_commit
     if persisted?
-      merge_request_diff.start_commit || target_branch_head
+      merge_request_diff.start_commit
     else
       target_branch_head
     end
@@ -212,7 +212,7 @@ class MergeRequest < ActiveRecord::Base
 
   def diff_head_commit
     if persisted?
-      merge_request_diff.head_commit || source_branch_head
+      merge_request_diff.head_commit
     else
       source_branch_head
     end
@@ -682,12 +682,12 @@ class MergeRequest < ActiveRecord::Base
     merge_commit
   end
 
-  def support_new_diff_notes?
+  def has_complete_diff_refs?
     diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
-    return unless support_new_diff_notes?
+    return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
     active_diff_notes = self.notes.diff_notes.select do |note|
@@ -714,5 +714,20 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
+  end
+
+  def conflicts
+    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
+  end
+
+  def can_resolve_conflicts_in_ui?
+    return false unless cannot_be_merged?
+    return false unless has_complete_diff_refs?
+
+    begin
+      conflicts.files.each(&:lines)
+    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      false
+    end
   end
 end
