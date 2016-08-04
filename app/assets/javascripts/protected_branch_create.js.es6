@@ -5,7 +5,7 @@ class ProtectedBranchCreate {
   }
 
   buildDropdowns() {
-    // Allowed to Merge dropdowns
+    // Allowed to Merge dropdown
     const $allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
     const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
 
@@ -18,7 +18,7 @@ class ProtectedBranchCreate {
     // Select default
     $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
 
-    // Allowed to Push dropdowns
+    // Allowed to Push dropdown
     new ProtectedBranchAccessDropdown({
       $dropdown: $allowedToPushDropdown,
       data: gon.push_access_levels,
@@ -28,8 +28,9 @@ class ProtectedBranchCreate {
     // Select default
     $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
 
-    new ProtectedBranchDropdowns({
-      $dropdowns: this.$wrap.find('.js-protected-branch-select'),
+    // Protected branch dropdown
+    new ProtectedBranchDropdown({
+      $dropdown: this.$wrap.find('.js-protected-branch-select'),
       onSelect: this.onSelect.bind(this)
     });
   }
