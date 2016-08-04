@@ -54,32 +54,19 @@
     }
   }
 
-  .nav-links {
-    svg {
-      position: relative;
-      top: 2px;
-      margin-right: 3px;
-    }
-
-    .build-job {
-      a {
-        color: $gl-text-color;
-      }
-
-      &.active {
-        a {
-          font-weight: bold;
-        }
-      }
-    }
-  }
-
-  .jobs-dropdown {
+  .build-dropdown {
+    display: inline-block;
+    margin-top: 16px;
 
     svg {
       position: relative;
       top: 2px;
       margin-right: 3px;
+      height: 13px;
+    }
+
+    .stage-item {
+      cursor: pointer;
     }
   }
 }

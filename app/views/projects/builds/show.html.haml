@@ -8,20 +8,20 @@
   - builds = @build.pipeline.builds.latest.to_a
   - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
   - if builds.size > 1
-    .dropdown.stage
+    .dropdown.build-dropdown
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
         %span.stage-selection More
         = icon('caret-down')
-      %ul.dropdown-menu.overflow-jobs
+      %ul.dropdown-menu
         - builds.map(&:stage).uniq.each do |stage|
           %li
             %a.stage-item= stage
 
-    .dropdown.jobs-dropdown
+    .dropdown.build-dropdown
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
         %span.build-selection More
         = icon('caret-down')
-      %ul.dropdown-menu.overflow-jobs
+      %ul.dropdown-menu
         - statuses.each do |build_status|
           - builds.select{|build| build.status == build_status}.each do |build|
             %li.build-job{class: ('active' if build == @build), data: {id: build.id, name: build.name, stage: build.stage}}
