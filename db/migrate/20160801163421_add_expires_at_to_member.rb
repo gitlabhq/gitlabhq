@@ -24,6 +24,6 @@ class AddExpiresAtToMember < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    add_column :members, :expires_at, :datetime
+    add_column :members, :expires_at, :date
   end
 end

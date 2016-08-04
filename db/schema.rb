@@ -581,7 +581,7 @@ ActiveRecord::Schema.define(version: 20160801163421) do
     t.string   "invite_token"
     t.datetime "invite_accepted_at"
     t.datetime "requested_at"
-    t.datetime "expires_at"
+    t.date     "expires_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
