@@ -14,6 +14,7 @@ class ProjectMember < Member
   scope :in_project, ->(project) { where(source_id: project.id) }
 
   before_destroy :delete_member_todos
+  before_destroy :delete_member_branch_protection
 
   class << self
     # Add users to project teams with passed access option
@@ -103,6 +104,21 @@ class ProjectMember < Member
 
   def delete_member_todos
     user.todos.where(project_id: source_id).destroy_all if user
+  end
+
+  def delete_member_branch_protection
+    if user.present? && project.present?
+      push_access_levels = ProtectedBranch::PushAccessLevel.joins(:protected_branch).
+                           where('protected_branches.project_id' => self.project.id,
+                                 'protected_branch_push_access_levels.user_id' => self.user.id)
+
+      merge_access_levels = ProtectedBranch::MergeAccessLevel.joins(:protected_branch).
+                            where('protected_branches.project_id' => self.project.id,
+                                  'protected_branch_merge_access_levels.user_id' => self.user.id)
+
+      push_access_levels.destroy_all
+      merge_access_levels.destroy_all
+    end
   end
 
   def send_invite
