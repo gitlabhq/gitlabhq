@@ -231,7 +231,7 @@ module Ci
       last_status = status
 
       if update_state_from_commit_statuses
-        execute_hooks if last_status != status && !skip_ci?
+        execute_hooks if last_status != status
         true
       else
         false
