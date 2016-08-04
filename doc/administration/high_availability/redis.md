@@ -59,9 +59,9 @@ Redis.
 
 ## Experimental Redis Sentinel support
 
-> [Introduced][ce-1877] in GitLab 8.10.
+> [Introduced][ce-1877] in GitLab 8.11.
 
-Since GitLab 8.10, you can configure a list of Redis Sentinel servers that
+Since GitLab 8.11, you can configure a list of Redis Sentinel servers that
 will monitor a group of Redis servers to provide you with a standard failover
 support.
 

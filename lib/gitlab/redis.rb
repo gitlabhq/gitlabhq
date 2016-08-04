@@ -37,7 +37,7 @@ module Gitlab
       end
     end
 
-    def initialize(rails_env=nil)
+    def initialize(rails_env = nil)
       @rails_env = rails_env || ::Rails.env
     end
 

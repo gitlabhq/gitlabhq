@@ -7,7 +7,7 @@ describe 'mail_room.yml' do
   context 'when incoming email is disabled' do
     before do
       ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_disabled.yml').to_s
-      Gitlab::MailRoom.reload_config!
+      Gitlab::MailRoom.reset_config!
     end
 
     after do
@@ -22,7 +22,7 @@ describe 'mail_room.yml' do
   context 'when incoming email is enabled' do
     before do
       ENV['MAIL_ROOM_GITLAB_CONFIG_FILE'] = Rails.root.join('spec/fixtures/mail_room_enabled.yml').to_s
-      Gitlab::MailRoom.reload_config!
+      Gitlab::MailRoom.reset_config!
     end
 
     after do

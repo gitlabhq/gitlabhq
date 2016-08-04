@@ -13,8 +13,8 @@ module Gitlab
         @config ||= fetch_config
       end
 
-      def reload_config!
-        @config = fetch_config
+      def reset_config!
+        @config = nil
       end
 
       private
