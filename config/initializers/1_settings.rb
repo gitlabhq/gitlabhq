@@ -293,6 +293,9 @@ Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'Gitlab
 Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
+Settings.cron_jobs['remove_expired_members_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['remove_expired_members_worker']['cron'] ||= '10 0 * * *'
+Settings.cron_jobs['remove_expired_members_worker']['job_class'] = 'RemoveExpiredMembersWorker'
 
 #
 # GitLab Shell
