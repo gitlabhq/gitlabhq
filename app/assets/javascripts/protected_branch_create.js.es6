@@ -6,18 +6,27 @@ class ProtectedBranchCreate {
 
   buildDropdowns() {
     // Allowed to Merge dropdowns
+    const $allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
+    const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+
     new ProtectedBranchAccessDropdown({
-      $dropdown: this.$wrap.find('.js-allowed-to-merge'),
+      $dropdown: $allowedToMergeDropdown,
       data: gon.merge_access_levels,
       onSelect: this.onSelect.bind(this)
     });
 
+    // Select default
+    $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(document.createEvent('Event'), 0);
+
     // Allowed to Push dropdowns
     new ProtectedBranchAccessDropdown({
-      $dropdown: this.$wrap.find('.js-allowed-to-push'),
+      $dropdown: $allowedToPushDropdown,
       data: gon.push_access_levels,
       onSelect: this.onSelect.bind(this)
     });
+
+    // Select default
+    $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(document.createEvent('Event'), 0);
 
     new ProtectedBranchDropdowns({
       $dropdowns: this.$wrap.find('.js-protected-branch-select'),
