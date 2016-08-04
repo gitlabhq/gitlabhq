@@ -59,14 +59,15 @@
           if (data.html) {
             _this.content = $(data.html);
             _this.content.syntaxHighlight();
-            if (typeof DiffNotesApp !== 'undefined') {
-              DiffNotesApp.compileComponents();
-            }
           } else {
             _this.hasError = true;
             _this.content = $(ERROR_HTML);
           }
-          return _this.collapsedContent.after(_this.content);
+          _this.collapsedContent.after(_this.content);
+
+          if (typeof DiffNotesApp !== 'undefined') {
+            DiffNotesApp.compileComponents();
+          }
         };
       })(this));
     };

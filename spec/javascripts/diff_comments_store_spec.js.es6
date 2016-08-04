@@ -4,7 +4,7 @@
 //= require diff_notes/stores/comments
 (() => {
   function createDiscussion(noteId = 1, resolved = true) {
-    CommentsStore.create('a', noteId, resolved, 'test');
+    CommentsStore.create('a', noteId, true, resolved, 'test');
   };
 
   beforeEach(() => {
@@ -91,6 +91,7 @@
     it('is unresolved with 2 notes', () => {
       const discussion = CommentsStore.state['a'];
       createDiscussion(2, false);
+      console.log(discussion.isResolved());
 
       expect(discussion.isResolved()).toBe(false);
     });
