@@ -73,6 +73,7 @@ v 8.11.0 (unreleased)
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
   - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
+  - Adds support for pending invitation project members importing projects
 
 v 8.10.5 (unreleased)
 
