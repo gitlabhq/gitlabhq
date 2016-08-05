@@ -1,7 +1,8 @@
 .panel.panel-default.protected-branches-list
   - if @protected_branches.empty?
     .panel-heading
-      %b Protected branch (#{@protected_branches.size})
+      %h3.panel-title
+        Protected branch (#{@protected_branches.size})
     %p.settings-message.text-center
       There are currently no protected branches, protect a branch with the form above.
   - else
