@@ -8,7 +8,7 @@ describe 'Issue Boards', feature: true, js: true do
     project.team << [user, :master]
     login_as(user)
 
-    visit namespace_project_boards_path(project.namespace, project)
+    visit namespace_project_board_path(project.namespace, project)
   end
 
   it 'shows default lists' do

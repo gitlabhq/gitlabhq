@@ -272,6 +272,9 @@
             isMRIndex = page === 'projects:merge_requests:index';
             $selectbox.hide();
             $value.removeAttr('style');
+            if (page === 'projects:boards:show') {
+              return;
+            }
             if ($dropdown.hasClass('js-multiselect')) {
               if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedLabels = $dropdown.closest('form').find("input:hidden[name='" + ($dropdown.data('fieldName')) + "']");
@@ -291,7 +294,7 @@
             }
           },
           multiSelect: $dropdown.hasClass('js-multiselect'),
-          clicked: function(label) {
+          clicked: function(label, $el, e) {
             var isIssueIndex, isMRIndex, page;
             _this.enableBulkLabelDropdown();
             if ($dropdown.hasClass('js-filter-bulk-update')) {
@@ -301,7 +304,9 @@
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             if (page === 'projects:boards:show') {
-              BoardsStore.state.filters['label_name'] = label.title;
+              BoardsStore.state.filters['label_name'].push(label.title);
+              BoardsStore.updateFiltersUrl();
+              e.preventDefault();
               return;
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (!$dropdown.hasClass('js-multiselect')) {

@@ -4,7 +4,7 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.filters = {};
+    this.filters = BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;
     this.issues = [];

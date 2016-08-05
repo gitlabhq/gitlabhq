@@ -3,10 +3,10 @@
     state: {
       lists: [],
       filters: {
-        author_id: null,
-        assignee_id: null,
-        milestone_title: null,
-        label_name: []
+        author_id: gl.utils.getParameterValues('author_id')[0],
+        assignee_id: gl.utils.getParameterValues('assignee_id')[0],
+        milestone_title: gl.utils.getParameterValues('milestone_title')[0],
+        label_name: gl.utils.getParameterValues('label_name[]')
       }
     },
     reset: function () {
@@ -118,6 +118,9 @@
       return _.find(this.state.lists, (list) => {
         return list[key] === val;
       });
+    },
+    updateFiltersUrl: function () {
+      history.pushState(null, null, `?${$.param(this.state.filters)}`);
     }
   };
 }(window));

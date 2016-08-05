@@ -94,7 +94,7 @@
             $selectbox.hide();
             return $value.css('display', '');
           },
-          clicked: function(selected) {
+          clicked: function(selected, $el, e) {
             var data, isIssueIndex, isMRIndex, page;
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
@@ -104,6 +104,8 @@
             }
             if (page === 'projects:boards:show') {
               BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
+              BoardsStore.updateFiltersUrl();
+              e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {
                 selectedMilestone = selected.name;
