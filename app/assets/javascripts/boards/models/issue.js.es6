@@ -2,6 +2,11 @@ class Issue {
   constructor (obj) {
     this.id = obj.iid;
     this.title = obj.title;
+
+    if (obj.assignee) {
+      this.assignee = new User(obj.assignee);
+    }
+    
     this.labels = [];
 
     obj.labels.forEach((label) => {
