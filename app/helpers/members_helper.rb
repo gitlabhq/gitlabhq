@@ -42,4 +42,8 @@ module MembersHelper
     "Are you sure you want to leave the " \
     "\"#{member_source.human_name}\" #{member_source.class.to_s.humanize(capitalize: false)}?"
   end
+
+  def member_expires_soon?(member)
+    member.expires_at < 7.days.from_now
+  end
 end
