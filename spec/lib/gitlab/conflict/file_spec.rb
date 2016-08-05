@@ -4,9 +4,9 @@ describe Gitlab::Conflict::File, lib: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:rugged) { repository.rugged }
-  let(:their_commit) { rugged.branches['conflict-a'].target }
-  let(:our_commit) { rugged.branches['conflict-b'].target }
-  let(:merge_request) { create(:merge_request, source_branch: 'conflict-b', target_branch: 'conflict-a', source_project: project) }
+  let(:their_commit) { rugged.branches['conflict-start'].target }
+  let(:our_commit) { rugged.branches['conflict-resolvable'].target }
+  let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) }
   let(:index) { rugged.merge_commits(our_commit, their_commit) }
   let(:conflict) { index.conflicts.last }
   let(:merge_file_result) { index.merge_file('files/ruby/regex.rb') }

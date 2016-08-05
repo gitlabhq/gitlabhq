@@ -46,7 +46,7 @@ module Gitlab
         end
 
         <<EOM.chomp
-Merge branch '#{merge_request.source_branch}' into '#{merge_request.target_branch}'
+Merge branch '#{merge_request.target_branch}' into '#{merge_request.source_branch}'
 
 # Conflicts:
 #{conflict_filenames.join("\n")}

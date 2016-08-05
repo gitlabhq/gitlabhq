@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Conflict::FileCollection, lib: true do
-  let(:merge_request) { create(:merge_request, source_branch: 'conflict-a', target_branch: 'conflict-b') }
+  let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start') }
   let(:file_collection) { Gitlab::Conflict::FileCollection.new(merge_request) }
 
   describe '#files' do
@@ -13,7 +13,7 @@ describe Gitlab::Conflict::FileCollection, lib: true do
   describe '#default_commit_message' do
     it 'matches the format of the git CLI commit message' do
       expect(file_collection.default_commit_message).to eq(<<EOM.chomp)
-Merge branch 'conflict-a' into 'conflict-b'
+Merge branch 'conflict-start' into 'conflict-resolvable'
 
 # Conflicts:
 #   files/ruby/popen.rb

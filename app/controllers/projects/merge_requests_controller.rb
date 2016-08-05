@@ -139,7 +139,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           render json: @merge_request.conflicts
         else
           render json: {
-            message: 'Unable to resolve conflicts in the web interface for this merge request',
+            message: 'Unable to resolve conflicts in the web interface for this merge request.',
             type: 'error'
           }
         end
