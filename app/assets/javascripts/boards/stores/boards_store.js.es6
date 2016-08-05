@@ -105,7 +105,7 @@
         listTo.addIssue(issue, listFrom);
       }
 
-      if (listTo.id === 'done' && listFrom.id !== 'backlog') {
+      if (listTo.type === 'done' && listFrom.type !== 'backlog') {
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });
