@@ -19,4 +19,17 @@
       color: $table-text-gray;
     }
   }
+
+  .branch-name {
+    color: $gl-dark-link-color;
+  }
+}
+
+.table.builds.environments {
+  min-width: 500px;
+
+  .icon-container {
+    width: 20px;
+    text-align: center;
+  }
 }
