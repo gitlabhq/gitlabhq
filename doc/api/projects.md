@@ -604,6 +604,7 @@ Parameters:
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
 
 ### Create project for user
 
@@ -636,6 +637,7 @@ Parameters:
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
 
 ### Edit project
 
@@ -667,6 +669,7 @@ Parameters:
 | `only_allow_merge_if_build_succeeds` | boolean | no | Set whether merge requests can only be merged with successful builds |
 | `lfs_enabled` | boolean | no | Enable LFS |
 | `request_access_enabled` | boolean | no | Allow users to request member access |
+| `ci_config_file` | boolean | no | The relative path to the CI config file (E.g. my/path or my/path/.gitlab-ci.yml or my/path/my-config.yml) |
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.

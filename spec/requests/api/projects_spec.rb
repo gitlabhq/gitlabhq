@@ -256,7 +256,8 @@ describe API::API, api: true  do
         merge_requests_enabled: false,
         wiki_enabled: false,
         only_allow_merge_if_build_succeeds: false,
-        request_access_enabled: true
+        request_access_enabled: true,
+        ci_config_file: 'a/custom/path'
       })
 
       post api('/projects', user), project
@@ -503,6 +504,7 @@ describe API::API, api: true  do
       expect(json_response['star_count']).to be_present
       expect(json_response['forks_count']).to be_present
       expect(json_response['public_builds']).to be_present
+      expect(json_response['ci_config_file']).to be_nil
       expect(json_response['shared_with_groups']).to be_an Array
       expect(json_response['shared_with_groups'].length).to eq(1)
       expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)

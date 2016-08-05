@@ -33,6 +33,13 @@
           = f.number_field :build_timeout_in_minutes, class: 'form-control', min: '0'
           %p.help-block per build in minutes
         .form-group
+          = f.label :ci_config_file, 'Custom CI Config File', class: 'label-light'
+          = f.text_field :ci_config_file, class: 'form-control', placeholder: '.gitlab-ci.yml'
+          %p.help-block
+            Optionally specify the location of your CI config file E.g. my/path or my/path/.my-config.yml.
+            Default is to use '.gitlab-ci.yml' in the repository root.
+
+        .form-group
           = f.label :build_coverage_regex, "Test coverage parsing", class: 'label-light'
           .input-group
             %span.input-group-addon /

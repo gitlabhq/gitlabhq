@@ -154,6 +154,11 @@ class Project < ActiveRecord::Base
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
+  validates :ci_config_file,
+    format: { without: Gitlab::Regex.directory_traversal_regex,
+              message: Gitlab::Regex.directory_traversal_regex_message },
+    length: { maximum: 255 },
+    allow_blank: true
   validates :name,
     presence: true,
     length: { within: 0..255 },
@@ -182,6 +187,7 @@ class Project < ActiveRecord::Base
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
+  before_validation :clean_ci_config_file
 
   mount_uploader :avatar, AvatarUploader
 
@@ -986,6 +992,7 @@ class Project < ActiveRecord::Base
       visibility_level: visibility_level,
       path_with_namespace: path_with_namespace,
       default_branch: default_branch,
+      ci_config_file: ci_config_file
     }
 
     # Backward compatibility
@@ -1348,5 +1355,11 @@ class Project < ActiveRecord::Base
     end
 
     shared_projects.any?
+  end
+
+  def clean_ci_config_file
+    return unless self.ci_config_file
+    # Cleanup path removing leading/trailing slashes
+    self.ci_config_file = ci_config_file.gsub(/^\/+|\/+$/, '')
   end
 end

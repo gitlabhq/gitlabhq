@@ -118,12 +118,14 @@ module API
       #   public_builds (optional)
       #   lfs_enabled (optional)
       #   request_access_enabled (optional) - Allow users to request member access
+      #   ci_config_file (optional)
       # Example Request
       #   POST /projects
       post do
         required_attributes! [:name]
         attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
+                                     :ci_config_file,
                                      :description,
                                      :import_url,
                                      :issues_enabled,
@@ -173,12 +175,14 @@ module API
       #   public_builds (optional)
       #   lfs_enabled (optional)
       #   request_access_enabled (optional) - Allow users to request member access
+      #   ci_config_file (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
         authenticated_as_admin!
         user = User.find(params[:user_id])
         attrs = attributes_for_keys [:builds_enabled,
+                                     :ci_config_file,
                                      :default_branch,
                                      :description,
                                      :import_url,
@@ -256,11 +260,13 @@ module API
       #   visibility_level (optional) - visibility level of a project
       #   public_builds (optional)
       #   lfs_enabled (optional)
+      #   ci_config_file (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
         attrs = attributes_for_keys [:builds_enabled,
                                      :container_registry_enabled,
+                                     :ci_config_file,
                                      :default_branch,
                                      :description,
                                      :issues_enabled,

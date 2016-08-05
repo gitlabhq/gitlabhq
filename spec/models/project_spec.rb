@@ -118,6 +118,7 @@ describe Project, models: true do
     it { is_expected.to validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:path).is_within(0..255) }
     it { is_expected.to validate_length_of(:description).is_within(0..2000) }
+    it { is_expected.to validate_length_of(:ci_config_file).is_within(0..255) }
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }

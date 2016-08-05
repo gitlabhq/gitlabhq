@@ -889,6 +889,7 @@ ActiveRecord::Schema.define(version: 20160926145521) do
     t.boolean  "has_external_wiki"
     t.boolean  "lfs_enabled"
     t.text     "description_html"
+    t.string   "ci_config_file"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

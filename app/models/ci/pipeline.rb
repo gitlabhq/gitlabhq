@@ -218,12 +218,20 @@ module Ci
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
       @ci_yaml_file ||= begin
-        blob = project.repository.blob_at(sha, '.gitlab-ci.yml')
+        blob = project.repository.blob_at(sha, ci_yaml_file_path)
         blob.load_all_data!(project.repository)
         blob.data
       rescue
+        self.yaml_errors = 'Failed to load CI config file'
         nil
       end
+    end
+
+    def ci_yaml_file_path
+      return '.gitlab-ci.yml' if project.ci_config_file.blank?
+      return project.ci_config_file if File.extname(project.ci_config_file.to_s) == '.yml'
+
+      File.join(project.ci_config_file || '', '.gitlab-ci.yml')
     end
 
     def environments

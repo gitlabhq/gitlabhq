@@ -403,6 +403,36 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  describe 'yaml config file resolution' do
+    let(:project) { FactoryGirl.build(:project) }
+
+    let(:pipeline) { create(:ci_empty_pipeline, project: project) }
+    it 'uses custom ci config file path when present' do
+      allow(project).to receive(:ci_config_file) { 'custom/path' }
+      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.gitlab-ci.yml')
+    end
+    it 'uses root when custom path is nil' do
+      allow(project).to receive(:ci_config_file) { nil }
+      expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
+    end
+    it 'uses root when custom path is empty' do
+      allow(project).to receive(:ci_config_file) { '' }
+      expect(pipeline.ci_yaml_file_path).to eq('.gitlab-ci.yml')
+    end
+    it 'allows custom filename' do
+      allow(project).to receive(:ci_config_file) { 'custom/path/.my-config.yml' }
+      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.my-config.yml')
+    end
+    it 'custom filename must be yml' do
+      allow(project).to receive(:ci_config_file) { 'custom/path/.my-config.cnf' }
+      expect(pipeline.ci_yaml_file_path).to eq('custom/path/.my-config.cnf/.gitlab-ci.yml')
+    end
+    it 'reports error if the file is not found' do
+      pipeline.ci_yaml_file
+      expect(pipeline.yaml_errors).to eq('Failed to load CI config file')
+    end 
+  end
+
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
     let!(:build_b) { create_build('b', 1) }
