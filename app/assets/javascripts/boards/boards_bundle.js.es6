@@ -15,13 +15,15 @@ $(function () {
 
   if (gl.IssueBoardsApp) {
     gl.IssueBoardsApp.$destroy(true);
-    BoardsStore.reset();
   }
 
   gl.IssueBoardsApp = new Vue({
     el: '#board-app',
     data: {
       state: BoardsStore.state
+    },
+    init: function () {
+      BoardsStore.create();
     },
     ready: function () {
       gl.boardService.all()

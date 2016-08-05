@@ -1,21 +1,13 @@
 ((w) => {
   w.BoardsStore = {
-    state: {
-      lists: [],
-      filters: {
+    state: {},
+    create: function () {
+      this.state.lists = [];
+      this.state.filters = {
         author_id: gl.utils.getParameterValues('author_id')[0],
         assignee_id: gl.utils.getParameterValues('assignee_id')[0],
         milestone_title: gl.utils.getParameterValues('milestone_title')[0],
         label_name: gl.utils.getParameterValues('label_name[]')
-      }
-    },
-    reset: function () {
-      this.state.lists = [];
-      this.state.filters = {
-        author: {},
-        assignee: {},
-        milestone: {},
-        label: []
       };
     },
     new: function (board, persist = true) {
@@ -26,7 +18,6 @@
       if (persist) {
         list.save();
         this.removeBlankState();
-        this.addBlankState();
       }
 
       return list;
@@ -44,10 +35,9 @@
       return addBlankState;
     },
     addBlankState: function () {
-      if ($.cookie('issue_board_welcome_hidden') === 'true') return;
+      const addBlankState = this.shouldAddBlankState();
 
-      const doneList = this.getDoneList(),
-            addBlankState = this.shouldAddBlankState();
+      if (this.welcomeIsHidden()) return;
 
       if (addBlankState) {
         this.new({
@@ -59,12 +49,16 @@
       }
     },
     removeBlankState: function () {
-      if ($.cookie('issue_board_welcome_hidden') === 'true') return;
+      if (this.welcomeIsHidden()) return;
+
       this.removeList('blank');
 
       $.cookie('issue_board_welcome_hidden', 'true', {
         expires: 365 * 10
       });
+    },
+    welcomeIsHidden: function () {
+      return $.cookie('issue_board_welcome_hidden') === 'true';
     },
     getDoneList: function () {
       return this.findList('type', 'done');
@@ -99,15 +93,14 @@
             issueTo = listTo.findIssue(issueId);
       let issue = listFrom.findIssue(issueId);
       const issueLists = issue.getLists(),
-            issueLabels = issueLists.map(function (issue) {
+            listLabels = issueLists.map(function (issue) {
               return issue.label;
             });
+
       listFrom.removeIssue(issue);
 
       // Add to new lists issues if it doesn't already exist
-      if (issueTo) {
-        listTo.removeIssue(issueTo);
-      } else {
+      if (!issueTo) {
         listTo.addIssue(issue, listFrom);
       }
 
@@ -115,7 +108,7 @@
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });
-        issue.removeLabels(issueLabels);
+        issue.removeLabels(listLabels);
       }
     },
     findList: function (key, val) {
