@@ -107,16 +107,6 @@ Feature: Project Merge Requests
     Then The list should be sorted by "Least popular"
 
   @javascript
-  Scenario: I comment on a merge request diff
-    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
-    And I visit merge request page "Bug NS-05"
-    And I click on the Changes tab
-    And I leave a comment like "Line is wrong" on diff
-    And I switch to the merge request's comments tab
-    Then I should see a discussion has started on diff
-    And I should see a badge of "1" next to the discussion link
-
-  @javascript
   Scenario: I see a new comment on merge request diff from another user in the discussion tab
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
