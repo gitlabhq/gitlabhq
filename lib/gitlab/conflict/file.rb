@@ -18,6 +18,7 @@ module Gitlab
         @our_mode = conflict[:ours][:mode]
         @merge_request = merge_request
         @repository = merge_request.project.repository
+        @match_line_headers = {}
       end
 
       # Array of Gitlab::Diff::Line objects
@@ -71,13 +72,6 @@ module Gitlab
       def sections
         return @sections if @sections
 
-        # Any line beginning with a letter, an underscore, or a dollar can be used in a
-        # match line header. Only context sections can contain match lines, as match lines
-        # have to exist in both versions of the file.
-        candidate_match_headers = lines.map do |line|
-          " #{line.text}" if line.text.match(/\A[A-Za-z$_]/) && line.type.nil?
-        end
-
         chunked_lines = lines.chunk { |line| line.type.nil? }
         match_line = nil
 
@@ -98,7 +92,7 @@ module Gitlab
 
                 # Ensure any existing match line has text for all lines up to the last
                 # line of its context.
-                update_match_line_text(match_line, head_lines.last, candidate_match_headers)
+                update_match_line_text(match_line, head_lines.last)
 
                 # Insert a new match line after the created gap.
                 match_line = create_match_line(tail_lines.first)
@@ -128,7 +122,7 @@ module Gitlab
 
           # We want to update the match line's text every time unless we've already
           # created a gap and its corresponding match line.
-          update_match_line_text(match_line, lines.last, candidate_match_headers) unless section
+          update_match_line_text(match_line, lines.last) unless section
 
           section ||= { conflict: !no_conflict, lines: lines }
           section[:id] = line_code(lines.first) unless no_conflict
@@ -144,13 +138,32 @@ module Gitlab
         Gitlab::Diff::Line.new('', 'match', line.index, line.old_pos, line.new_pos)
       end
 
+      # Any line beginning with a letter, an underscore, or a dollar can be used in a
+      # match line header. Only context sections can contain match lines, as match lines
+      # have to exist in both versions of the file.
+      def find_match_line_header(index)
+        return @match_line_headers[index] if @match_line_headers.key?(index)
+
+        @match_line_headers[index] = begin
+          if index >= 0
+            line = lines[index]
+
+            if line.type.nil? && line.text.match(/\A[A-Za-z$_]/)
+              " #{line.text}"
+            else
+              find_match_line_header(index - 1)
+            end
+          end
+        end
+      end
+
       # Set the match line's text for the current line. A match line takes its start
       # position and context header (where present) from itself, and its end position from
       # the line passed in.
-      def update_match_line_text(match_line, line, headers)
+      def update_match_line_text(match_line, line)
         return unless match_line
 
-        header = headers.first(match_line.index).compact.last
+        header = find_match_line_header(match_line.index - 1)
 
         match_line.text = "@@ -#{match_line.old_pos},#{line.old_pos} +#{match_line.new_pos},#{line.new_pos} @@#{header}"
       end

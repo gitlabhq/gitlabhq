@@ -142,6 +142,110 @@ describe Gitlab::Conflict::File, lib: true do
 
       expect(section_ids.uniq).to eq(section_ids)
     end
+
+    context 'with an example file' do
+      let(:file) do
+        <<FILE
+  # Ensure there is no match line header here
+  def username_regexp
+    default_regexp
+  end
+
+<<<<<<< files/ruby/regex.rb
+def project_name_regexp
+  /\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z/
+end
+
+def name_regexp
+  /\A[a-zA-Z0-9_\-\. ]*\z/
+=======
+def project_name_regex
+  %r{\A[a-zA-Z0-9][a-zA-Z0-9_\-\. ]*\z}
+end
+
+def name_regex
+  %r{\A[a-zA-Z0-9_\-\. ]*\z}
+>>>>>>> files/ruby/regex.rb
+end
+
+# Some extra lines
+# To force a match line
+# To be created
+
+def path_regexp
+  default_regexp
+end
+
+<<<<<<< files/ruby/regex.rb
+def archive_formats_regexp
+  /(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
+=======
+def archive_formats_regex
+  %r{(zip|tar|7z|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)}
+>>>>>>> files/ruby/regex.rb
+end
+
+def git_reference_regexp
+  # Valid git ref regexp, see:
+  # https://www.kernel.org/pub/software/scm/git/docs/git-check-ref-format.html
+  %r{
+    (?!
+       (?# doesn't begins with)
+       \/|                    (?# rule #6)
+       (?# doesn't contain)
+       .*(?:
+          [\/.]\.|            (?# rule #1,3)
+          \/\/|               (?# rule #6)
+          @\{|                (?# rule #8)
+          \\                  (?# rule #9)
+       )
+    )
+    [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+    (?# doesn't end with)
+    (?<!\.lock)               (?# rule #1)
+    (?<![\/.])                (?# rule #6-7)
+  }x
+end
+
+protected
+
+<<<<<<< files/ruby/regex.rb
+def default_regexp
+  /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+=======
+def default_regex
+  %r{\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z}
+>>>>>>> files/ruby/regex.rb
+end
+FILE
+      end
+
+      let(:conflict_file) { Gitlab::Conflict::File.new({ data: file }, conflict, merge_request: merge_request) }
+      let(:sections) { conflict_file.sections }
+
+      it 'sets the correct match line headers' do
+        expect(sections[0][:lines].first).to have_attributes(type: 'match', text: '@@ -3,14 +3,14 @@')
+        expect(sections[3][:lines].first).to have_attributes(type: 'match', text: '@@ -19,26 +19,26 @@ def path_regexp')
+        expect(sections[6][:lines].first).to have_attributes(type: 'match', text: '@@ -47,52 +47,52 @@ end')
+      end
+
+      it 'does not add match lines where they are not needed' do
+        expect(sections[1][:lines].first.type).not_to eq('match')
+        expect(sections[2][:lines].first.type).not_to eq('match')
+        expect(sections[4][:lines].first.type).not_to eq('match')
+        expect(sections[5][:lines].first.type).not_to eq('match')
+        expect(sections[7][:lines].first.type).not_to eq('match')
+      end
+
+      it 'creates context sections of the correct length' do
+        expect(sections[0][:lines].reject(&:type).length).to eq(3)
+        expect(sections[2][:lines].reject(&:type).length).to eq(3)
+        expect(sections[3][:lines].reject(&:type).length).to eq(3)
+        expect(sections[5][:lines].reject(&:type).length).to eq(3)
+        expect(sections[6][:lines].reject(&:type).length).to eq(3)
+        expect(sections[8][:lines].reject(&:type).length).to eq(1)
+      end
+    end
   end
 
   describe '#as_json' do
