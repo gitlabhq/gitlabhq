@@ -28,8 +28,8 @@
     }
 
     onSelect() {
-      const $allowedToMergeInput = $(`input[name="${this.$allowedToMergeDropdown.data('fieldName')}"]`);
-      const $allowedToPushInput = $(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
+      const $allowedToMergeInput = this.$wrap.find(`input[name="${this.$allowedToMergeDropdown.data('fieldName')}"]`);
+      const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
 
       $.ajax({
         type: 'POST',
