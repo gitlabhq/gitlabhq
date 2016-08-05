@@ -43,10 +43,11 @@ class BoardService {
     return this.list.delete({ id });
   }
 
-  getIssuesForList (id) {
+  getIssuesForList (id, filter = {}) {
+    const data = _.extend({ id }, filter)
     this.setCSRF();
 
-    return this.issues.get({ id });
+    return this.issues.get(data);
   }
 
   moveIssue (id, from, to) {

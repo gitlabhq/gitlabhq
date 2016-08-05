@@ -11,16 +11,7 @@ class List {
     }
 
     if (this.type !== 'blank') {
-      this.loading = true;
-      gl.boardService.getIssuesForList(this.id)
-        .then((resp) => {
-          const data = resp.json();
-          this.loading = false;
-
-          data.forEach((issue) => {
-            this.issues.push(new Issue(issue));
-          });
-        });
+      this.getIssues();
     }
   }
 
@@ -47,6 +38,25 @@ class List {
 
   canSearch () {
     return this.type === 'backlog';
+  }
+
+  getIssues (filter = {}) {
+    this.loading = true;
+    
+    gl.boardService.getIssuesForList(this.id, filter)
+      .then((resp) => {
+        const data = resp.json();
+        this.loading = false;
+
+        this.issues = [];
+        this.createIssues(data);
+      });
+  }
+
+  createIssues (data) {
+    data.forEach((issue) => {
+      this.issues.push(new Issue(issue));
+    });
   }
 
   addIssue (issue, listFrom) {

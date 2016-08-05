@@ -3,10 +3,18 @@
     props: {
       board: Object
     },
-    data: () => {
+    data: function () {
       return {
         filters: BoardsStore.state.filters
       };
+    },
+    watch: {
+      'query': function () {
+        if (this.board.canSearch()) {
+          const data = _.extend(this.filters, { search: this.query });
+          this.board.getIssues(data);
+        }
+      }
     },
     methods: {
       clearSearch: function () {
