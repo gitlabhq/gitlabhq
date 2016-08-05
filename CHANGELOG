@@ -39,6 +39,7 @@ v 8.11.0 (unreleased)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - Document that webhook secret token is sent in X-Gitlab-Token HTTP header !5664 (lycoperdon)
   - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - The overhead of instrumented method calls has been reduced
@@ -72,7 +73,6 @@ v 8.11.0 (unreleased)
   - Catch what warden might throw when profiling requests to re-throw it
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
-  - Document that webhook secret token is sent in X-Gitlab-Token HTTP header
   - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
 
 v 8.10.5 (unreleased)
