@@ -30,7 +30,7 @@
       getFilterData: function () {
         const queryData = this.board.canSearch() ? { search: this.query } : {};
 
-        return _.extend(this.filters, queryData);
+        return _.extend(queryData, this.filters);
       }
     },
     computed: {
@@ -39,27 +39,17 @@
       }
     },
     ready: function () {
-      Sortable.create(this.$el.parentNode, {
+      const options = _.extend({
         group: 'boards',
-        animation: 150,
         draggable: '.is-draggable',
         handle: '.js-board-handle',
         filter: '.board-delete',
-        forceFallback: true,
-        fallbackClass: 'is-dragging',
-        ghostClass: 'is-ghost',
-        scrollSensitivity: 150,
-        scrollSpeed: 50,
         onUpdate: function (e) {
           BoardsStore.moveList(e.oldIndex, e.newIndex);
-        },
-        onStart: function () {
-          document.body.classList.add('is-dragging');
-        },
-        onEnd: function () {
-          document.body.classList.remove('is-dragging');
         }
-      });
+      }, gl.boardSortableDefaultOptions);
+
+      Sortable.create(this.$el.parentNode, options);
     }
   });
 

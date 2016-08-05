@@ -35,29 +35,20 @@
       },
     },
     ready: function () {
-      Sortable.create(this.$els.list, {
+      const options = _.extend({
         sort: false,
         group: 'issues',
         disabled: this.disabled,
-        scrollSensitivity: 150,
-        scrollSpeed: 50,
-        forceFallback: true,
-        fallbackClass: 'is-dragging',
-        ghostClass: 'is-ghost',
         onAdd: function (e) {
           const fromListId = parseInt(e.from.getAttribute('data-board')),
                 toListId = parseInt(e.to.getAttribute('data-board')),
                 issueId = parseInt(e.item.getAttribute('data-issue'));
 
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
-        },
-        onStart: function () {
-          document.body.classList.add('is-dragging');
-        },
-        onEnd: function () {
-          document.body.classList.remove('is-dragging');
         }
-      });
+      }, gl.boardSortableDefaultOptions);
+
+      Sortable.create(this.$els.list, options);
 
       // Scroll event on list to load more
       this.$els.list.onscroll = () => {
