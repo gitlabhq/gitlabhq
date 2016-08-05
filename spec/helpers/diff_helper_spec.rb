@@ -15,22 +15,22 @@ describe DiffHelper do
     it 'returns a valid value when cookie is set' do
       helper.request.cookies[:diff_view] = 'parallel'
 
-      expect(helper.diff_view).to eq 'parallel'
+      expect(helper.diff_view).to eq :parallel
     end
 
     it 'returns a default value when cookie is invalid' do
       helper.request.cookies[:diff_view] = 'invalid'
 
-      expect(helper.diff_view).to eq 'inline'
+      expect(helper.diff_view).to eq :inline
     end
 
     it 'returns a default value when cookie is nil' do
       expect(helper.request.cookies).to be_empty
 
-      expect(helper.diff_view).to eq 'inline'
+      expect(helper.diff_view).to eq :inline
     end
   end
-  
+
   describe 'diff_options' do
     it 'should return no collapse false' do
       expect(diff_options).to include(no_collapse: false)
@@ -59,26 +59,6 @@ describe DiffHelper do
     end
   end
 
-  describe 'unfold_bottom_class' do
-    it 'should return empty string when bottom line shouldnt be unfolded' do
-      expect(unfold_bottom_class(false)).to eq('')
-    end
-
-    it 'should return js class when bottom lines should be unfolded' do
-      expect(unfold_bottom_class(true)).to include('js-unfold-bottom')
-    end
-  end
-
-  describe 'unfold_class' do
-    it 'returns empty on false' do
-      expect(unfold_class(false)).to eq('')
-    end
-
-    it 'returns a class on true' do
-      expect(unfold_class(true)).to eq('unfold js-unfold')
-    end
-  end
-
   describe '#diff_line_content' do
     it 'should return non breaking space when line is empty' do
       expect(diff_line_content(nil)).to eq(' &nbsp;')
@@ -103,6 +83,58 @@ describe DiffHelper do
       expect(marked_old_line).to be_html_safe
       expect(marked_new_line).to eq("abc <span class='idiff left right addition'>&quot;def&quot;</span>")
       expect(marked_new_line).to be_html_safe
+    end
+  end
+
+  describe "#diff_match_line" do
+    let(:old_pos) { 40 }
+    let(:new_pos) { 50 }
+    let(:text) { 'some_text' }
+
+    it "should generate foldable top match line for inline view with empty text by default" do
+      output = diff_match_line old_pos, new_pos
+
+      expect(output).to be_html_safe
+      expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.old_line[data-linenumber='#{old_pos}']", text: '...'
+      expect(output).to have_css "td:nth-child(2):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.new_line[data-linenumber='#{new_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(3):not(.parallel).line_content.match', text: ''
+    end
+
+    it "should allow to define text and bottom option" do
+      output = diff_match_line old_pos, new_pos, text: text, bottom: true
+
+      expect(output).to be_html_safe
+      expect(output).to have_css "td:nth-child(1).diff-line-num.unfold.js-unfold.js-unfold-bottom.old_line[data-linenumber='#{old_pos}']", text: '...'
+      expect(output).to have_css "td:nth-child(2).diff-line-num.unfold.js-unfold.js-unfold-bottom.new_line[data-linenumber='#{new_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(3):not(.parallel).line_content.match', text: text
+    end
+
+    it "should generate match line for parallel view" do
+      output = diff_match_line old_pos, new_pos, text: text, view: :parallel
+
+      expect(output).to be_html_safe
+      expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.old_line[data-linenumber='#{old_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(2).line_content.match.parallel', text: text
+      expect(output).to have_css "td:nth-child(3):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.new_line[data-linenumber='#{new_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(4).line_content.match.parallel', text: text
+    end
+
+    it "should allow to generate only left match line for parallel view" do
+      output = diff_match_line old_pos, nil, text: text, view: :parallel
+
+      expect(output).to be_html_safe
+      expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.old_line[data-linenumber='#{old_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(2).line_content.match.parallel', text: text
+      expect(output).not_to have_css 'td:nth-child(3)'
+    end
+
+    it "should allow to generate only right match line for parallel view" do
+      output = diff_match_line nil, new_pos, text: text, view: :parallel
+
+      expect(output).to be_html_safe
+      expect(output).to have_css "td:nth-child(1):not(.js-unfold-bottom).diff-line-num.unfold.js-unfold.new_line[data-linenumber='#{new_pos}']", text: '...'
+      expect(output).to have_css 'td:nth-child(2).line_content.match.parallel', text: text
+      expect(output).not_to have_css 'td:nth-child(3)'
     end
   end
 end
