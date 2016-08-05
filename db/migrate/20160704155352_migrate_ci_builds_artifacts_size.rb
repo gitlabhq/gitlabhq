@@ -4,26 +4,75 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   BATCH = 1000
+  THREADS = 8
 
-  def up
-    cleanup_ci_builds_artifacts_file
+  Task = Struct.new(:dry, :limit, :offset, :index)
 
-    loop_through_builds_with_artifacts do |id, store_path, artifacts_size|
+  def up(dry = false)
+    cleanup_ci_builds_artifacts_file unless dry
+
+    total = select_all(
+      builds_sql_without_limit(select: 'COUNT(b.id)')).first['count'].to_i
+
+    per_thread = total / THREADS
+    left = total % THREADS
+
+    works = THREADS.times.map do |index|
+      dispatch(index, per_thread, left)
+    end
+
+    say(
+      "Total #{total} rows, using #{THREADS} threads, splitting as #{works}")
+    say("Dry run = #{dry}")
+
+    works.map.with_index do |(limit, offset), index|
+      Thread.new(Task.new(dry, limit, offset, index), &method(:worker_work))
+    end.each(&:join)
+  end
+
+  def dispatch(index, per_thread, left)
+    one_more_work = index < left
+    limit = per_thread + if one_more_work
+                           1
+                         else
+                           0
+                         end
+    offset = index * limit + if one_more_work
+                               0 # limit = per_thread + 1
+                             else
+                               left # limit = per_thread
+                             end
+    [limit, offset]
+  end
+
+  def worker_work(task)
+    loop_through_builds(task) do |id, store_path, artifacts_size|
       if artifacts_size
-        execute(update_build_sql(id, artifacts_size))
+        execute(update_build_sql(id, artifacts_size)) unless task.dry
       else
         say("File is unexpectedly missing for #{id} at #{store_path}")
       end
     end
   end
 
-  def loop_through_builds_with_artifacts(&block)
+  def loop_through_builds(task, &block)
     n = 0
 
-    loop do
-      say("Fetching and updating first #{n + BATCH} ci_builds...")
+    if task.limit.zero?
+      say("##{task.index} Nothing to do, leaving")
+      return
+    end
 
-      result = select_all(builds_sql(BATCH, n))
+    start_id = select_all(builds_sql(1, task.offset)).first['id']
+    stop_id = select_all(builds_sql(1, task.offset + task.limit)).first['id']
+
+    say("##{task.index} Working from #{start_id} <= id < #{stop_id}...")
+
+    loop do
+      say("##{task.index} Fetching and updating #{n + BATCH} ci_builds...")
+
+      where = worker_where_sql(start_id, stop_id)
+      result = select_all(builds_sql(BATCH, n, where: where))
 
       if result.empty?
         break
@@ -93,21 +142,37 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
     SQL
   end
 
-  def builds_sql(limit, offset)
+  def builds_sql(limit, offset, **args)
+    sql = builds_sql_without_limit(**args)
+
+    "#{sql} ORDER BY b.id LIMIT #{limit} OFFSET #{offset}"
+  end
+
+  def builds_sql_without_limit(
+    select: 'b.id, b.artifacts_file, b.created_at, b.gl_project_id, p.ci_id',
+    where: '')
     normalize_sql(<<-SQL)
-      SELECT b.id, b.artifacts_file, b.created_at, b.gl_project_id, p.ci_id
+      SELECT #{select}
         FROM ci_builds b
         INNER JOIN projects p ON p.id = b.gl_project_id
         WHERE b.artifacts_size IS NULL
           AND b.artifacts_file IS NOT NULL
           AND b.artifacts_file <> ''
-        ORDER BY b.id
-        LIMIT #{limit}
-        OFFSET #{offset}
+          #{where}
     SQL
+  end
+
+  def worker_where_sql(start_id, stop_id)
+    "AND #{start_id} <= b.id AND b.id < #{stop_id}"
   end
 
   def normalize_sql(sql)
     sql.tr("\n", ' ').squeeze(' ').strip
+  end
+
+  def say(*)
+    (@mutex ||= Mutex.new).synchronize do
+      super
+    end
   end
 end
