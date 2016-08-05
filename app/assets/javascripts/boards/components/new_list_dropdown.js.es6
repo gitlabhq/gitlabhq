@@ -11,8 +11,10 @@ $(() => {
         });
       },
       renderRow: (label) => {
-        if (BoardsStore.findList('title', label.title)) return;
-        const $li = $('<li />'),
+        const isHidden = BoardsStore.findList('title', label.title),
+              $li = $('<li />', {
+                class: (isHidden ? 'hidden' : '')
+              }),
               $a = $('<a />', {
                 text: label.title,
                 href: '#'

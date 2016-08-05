@@ -149,7 +149,9 @@
               if ($dropdown.hasClass('js-filter-bulk-update')) {
                 return;
               }
-              if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+              if (page === 'projects:boards:show') {
+                BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
+              } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {

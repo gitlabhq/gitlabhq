@@ -3,9 +3,9 @@
     state: {
       lists: [],
       filters: {
-        author: {},
-        assignee: {},
-        milestone: {},
+        author_id: null,
+        assignee_id: null,
+        milestone_id: null,
         label: []
       }
     },

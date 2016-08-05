@@ -14,6 +14,13 @@
           this.board.filters = this.getFilterData();
           this.board.getIssues(true);
         }
+      },
+      'filters': {
+        handler: function () {
+          this.board.filters = this.getFilterData();
+          this.board.getIssues(true);
+        },
+        deep: true
       }
     },
     methods: {
