@@ -8,6 +8,13 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
 
   Task = Struct.new(:dry, :limit, :offset, :index)
 
+  attr_reader :mutex
+
+  def initialize(*)
+    super
+    @mutex = Mutex.new
+  end
+
   def up(dry = false)
     cleanup_ci_builds_artifacts_file unless dry
 
@@ -171,7 +178,7 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   end
 
   def say(*)
-    (@mutex ||= Mutex.new).synchronize do
+    mutex.synchronize do
       super
     end
   end
