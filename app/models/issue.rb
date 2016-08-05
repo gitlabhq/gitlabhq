@@ -37,7 +37,8 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
-  attr_spammable :title, :description
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
 
   state_machine :state, initial: :opened do
     event :close do
@@ -266,16 +267,8 @@ class Issue < ActiveRecord::Base
     due_date.try(:past?) || false
   end
 
-  # To allow polymorphism with Spammable
+  # Only issues on public projects should be checked for spam
   def check_for_spam?
     super && project.public?
-  end
-
-  def spam_title
-    title
-  end
-
-  def spam_description
-    description
   end
 end

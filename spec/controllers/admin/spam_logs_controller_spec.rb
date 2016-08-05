@@ -37,7 +37,7 @@ describe Admin::SpamLogsController do
 
   describe '#mark_as_ham' do
     before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:ham!).and_return(true)
+      allow_any_instance_of(AkismetService).to receive(:ham!).and_return(true)
     end
     it 'submits the log as ham' do
       post :mark_as_ham, id: first_spam.id

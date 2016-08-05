@@ -14,25 +14,24 @@ describe Issue, 'Spammable' do
   end
 
   describe 'InstanceMethods' do
-    before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:akismet_enabled?).and_return(true)
-    end
-
     it 'should return the correct creator' do
-      expect(issue.send(:owner).id).to eq(issue.author_id)
+      expect(issue.owner_id).to eq(issue.author_id)
     end
 
     it 'should be invalid if spam' do
-      issue.spam = true
-      expect(issue.valid?).to be_truthy
+      issue = build(:issue, spam: true)
+      expect(issue.valid?).to be_falsey
     end
 
-    it 'should be submittable' do
+    it 'should not be submitted' do
       create(:user_agent_detail, subject: issue)
-      expect(issue.can_be_submitted?).to be_truthy
+      expect(issue.submitted?).to be_falsey
     end
 
     describe '#check_for_spam?' do
+      before do
+        allow_any_instance_of(ApplicationSetting).to receive(:akismet_enabled).and_return(true)
+      end
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
         expect(issue.check_for_spam?).to eq(true)
@@ -42,15 +41,5 @@ describe Issue, 'Spammable' do
         expect(issue.check_for_spam?).to eq(false)
       end
     end
-  end
-
-  describe 'AkismetMethods' do
-    before do
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive_messages(is_spam?: true, spam!: true, akismet_enabled?: true)
-      allow_any_instance_of(Spammable).to receive(:can_be_submitted?).and_return(true)
-    end
-
-    it { expect(issue.spam_detected?(:mock_env)).to be_truthy }
-    it { expect(issue.submit_spam).to be_truthy }
   end
 end

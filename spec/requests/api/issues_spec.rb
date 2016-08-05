@@ -532,7 +532,7 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/issues with spam filtering' do
     before do
       allow_any_instance_of(Spammable).to receive(:check_for_spam?).and_return(true)
-      allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
+      allow_any_instance_of(AkismetService).to receive_messages(is_spam?: true)
     end
 
     let(:params) do

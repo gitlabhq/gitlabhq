@@ -275,7 +275,7 @@ describe Projects::IssuesController do
     context 'Akismet is enabled' do
       before do
         allow_any_instance_of(Spammable).to receive(:check_for_spam?).and_return(true)
-        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
+        allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
       end
 
       def post_spam_issue
@@ -325,7 +325,9 @@ describe Projects::IssuesController do
   describe 'POST #mark_as_spam' do
     context 'properly submits to Akismet' do
       before do
-        allow_any_instance_of(Spammable).to receive_messages(can_be_submitted?: true, submit_spam: true)
+        allow_any_instance_of(AkismetService).to receive_messages(spam!: true)
+        allow_any_instance_of(ApplicationSetting).to receive_messages(akismet_enabled: true)
+        allow_any_instance_of(SpamService).to receive_messages(can_be_submitted?: true)
       end
 
       def post_spam

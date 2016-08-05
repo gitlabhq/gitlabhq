@@ -395,7 +395,7 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
-  # Called when the status of a Issuable is submitted as spam
+  # Called when Issuable is submitted as spam
   #
   # noteable - Noteable object
   # project  - Project owning noteable
@@ -407,7 +407,7 @@ module SystemNoteService
   #
   # Returns the created Note object
   def submit_spam(noteable, project, author)
-    body = "Submitted #{noteable.class.to_s.downcase} as spam"
+    body = "Submitted this #{noteable.class.to_s.downcase} as spam"
 
     create_note(noteable: noteable, project: project, author: author, note: body)
   end

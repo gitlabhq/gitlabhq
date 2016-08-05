@@ -6,13 +6,7 @@ module SpammableActions
   end
 
   def mark_as_spam
-    if spammable.submit_spam
-      spammable.user_agent_detail.update_attribute(:submitted, true)
-
-      if spammable.is_a?(Issuable)
-        SystemNoteService.submit_spam(spammable, spammable.project, current_user)
-      end
-
+    if SpamService.new(spammable).mark_as_spam!(current_user)
       redirect_to spammable, notice: 'Issue was submitted to Akismet successfully.'
     else
       flash[:error] = 'Error with Akismet. Please check the logs for more info.'
