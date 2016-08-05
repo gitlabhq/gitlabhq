@@ -65,7 +65,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: 'Dmitriy')
     project_member = project.project_members.find_by(user_id: user.id)
     page.within "#project_member_#{project_member.id}" do
-      click_button "Edit access level"
+      click_button 'Edit'
       select "Reporter", from: "project_member_access_level"
       click_button "Save"
     end

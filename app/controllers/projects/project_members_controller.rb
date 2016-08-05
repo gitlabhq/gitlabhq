@@ -99,7 +99,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   protected
 
   def member_params
-    params.require(:project_member).permit(:user_id, :access_level)
+    params.require(:project_member).permit(:user_id, :access_level, :expires_at)
   end
 
   # MembershipActions concern

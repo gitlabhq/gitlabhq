@@ -16,7 +16,7 @@
           = button_tag icon('pencil'),
                        type: 'button',
                        class: 'btn inline js-toggle-button',
-                       title: 'Edit access level'
+                       title: 'Edit'
 
           - if member.request?
             = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
@@ -80,5 +80,7 @@
       = form_for member, remote: true do |f|
         .prepend-top-10
           = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
+        .prepend-top-10
+          = f.text_field :expires_at, class: 'form-control', placeholder: 'Access expiration date'
         .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'
