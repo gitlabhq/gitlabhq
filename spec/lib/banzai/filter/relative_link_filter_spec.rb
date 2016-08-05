@@ -84,6 +84,11 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
         to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
 
+    it 'ignores absolute URLs with two leading slashes' do
+      doc = filter(link('//doc/api/README.md'))
+      expect(doc.at_css('a')['href']).to eq '//doc/api/README.md'
+    end
+
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
       expect(doc.at_css('a')['href']).
