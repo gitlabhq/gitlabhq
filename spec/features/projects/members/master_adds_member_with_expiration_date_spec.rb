@@ -16,12 +16,12 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
   scenario 'expiration date is displayed in the members list' do
     page.within ".users-project-form" do
       select2(new_member.id, from: "#user_ids", multiple: true)
-      fill_in "Access expiration date", with: "2016-08-02"
+      fill_in "Access expiration date", with: 4.days.from_now
       click_on "Add users to project"
     end
 
     page.within ".project_member:first-child" do
-      expect(page).to have_content("Access expires Aug 2, 2016")
+      expect(page).to have_content("Expires in 4 days")
     end
   end
 end
