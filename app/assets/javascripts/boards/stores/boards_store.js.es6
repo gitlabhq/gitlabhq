@@ -5,8 +5,8 @@
       filters: {
         author_id: null,
         assignee_id: null,
-        milestone_id: null,
-        label: []
+        milestone_title: null,
+        label_name: []
       }
     },
     reset: function () {

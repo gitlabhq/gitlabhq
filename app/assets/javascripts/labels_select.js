@@ -300,7 +300,10 @@
             page = $('body').data('page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
-            if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+            if (page === 'projects:boards:show') {
+              BoardsStore.state.filters['label_name'] = label.title;
+              return;
+            } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (!$dropdown.hasClass('js-multiselect')) {
                 selectedLabel = label.title;
                 return Issuable.filterResults($dropdown.closest('form'));

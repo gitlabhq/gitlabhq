@@ -102,7 +102,9 @@
             if ($dropdown.hasClass('js-filter-bulk-update')) {
               return;
             }
-            if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+            if (page === 'projects:boards:show') {
+              BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
+            } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {
                 selectedMilestone = selected.name;
               } else {

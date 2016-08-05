@@ -39,6 +39,7 @@
     display: flex;
     min-height: 100vh;
     max-height: 100vh;
+    padding-bottom: 0;
   }
 
   .issue-boards-content {
@@ -73,6 +74,7 @@
   display: flex;
   min-width: 400px;
   max-width: 400px;
+  margin-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
 }
@@ -183,9 +185,10 @@
 .board-list {
   -webkit-flex: 1;
   flex: 1;
-  margin: 0;
+  margin-bottom: 0;
   padding: 5px;
-  overflow: scroll;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 .board-list-loading {
