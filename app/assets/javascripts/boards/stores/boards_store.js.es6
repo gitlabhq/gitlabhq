@@ -79,7 +79,7 @@
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = this.findList('position', oldIndex),
-            istTo = this.findList('position', newIndex);
+            listTo = this.findList('position', newIndex);
 
       listFrom.position = newIndex;
       if (newIndex > listTo.position) {
