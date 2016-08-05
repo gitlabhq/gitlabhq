@@ -43,6 +43,8 @@
         group: 'boards',
         animation: 150,
         draggable: '.is-draggable',
+        handle: '.js-board-handle',
+        filter: '.board-delete',
         forceFallback: true,
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
