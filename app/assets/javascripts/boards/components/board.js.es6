@@ -48,8 +48,16 @@
         forceFallback: true,
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
+        scrollSensitivity: 150,
+        scrollSpeed: 50,
         onUpdate: function (e) {
           BoardsStore.moveList(e.oldIndex, e.newIndex);
+        },
+        onStart: function () {
+          document.body.classList.add('is-dragging');
+        },
+        onEnd: function () {
+          document.body.classList.remove('is-dragging');
         }
       });
     }

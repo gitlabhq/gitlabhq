@@ -44,14 +44,18 @@
         forceFallback: true,
         fallbackClass: 'is-dragging',
         ghostClass: 'is-ghost',
-        onAdd: (e) => {
-          let fromListId = e.from.getAttribute('data-board');
-          fromListId = parseInt(fromListId) || fromListId;
-          let toListId = e.to.getAttribute('data-board');
-          toListId = parseInt(toListId) || toListId;
-          const issueId = parseInt(e.item.getAttribute('data-issue'));
+        onAdd: function (e) {
+          const fromListId = parseInt(e.from.getAttribute('data-board')),
+                toListId = parseInt(e.to.getAttribute('data-board')),
+                issueId = parseInt(e.item.getAttribute('data-issue'));
 
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
+        },
+        onStart: function () {
+          document.body.classList.add('is-dragging');
+        },
+        onEnd: function () {
+          document.body.classList.remove('is-dragging');
         }
       });
 
