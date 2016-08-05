@@ -71,6 +71,9 @@
     },
     removeList: function (id) {
       const list = this.findList('id', id);
+
+      if (!list) return;
+
       list.destroy();
 
       this.state.lists = _.reject(this.state.lists, (list) => {
