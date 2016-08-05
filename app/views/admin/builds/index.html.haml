@@ -4,26 +4,9 @@
 %div{ class: container_class }
 
   .top-area
-    %ul.nav-links
-      %li{class: ('active' if @scope.nil?)}
-        = link_to admin_builds_path do
-          All
-          %span.badge.js-totalbuilds-count= @all_builds.count(:id)
-
-      %li{class: ('active' if @scope == 'pending')}
-        = link_to admin_builds_path(scope: :pending) do
-          Pending
-          %span.badge= number_with_delimiter(@all_builds.pending.count(:id))
-
-      %li{class: ('active' if @scope == 'running')}
-        = link_to admin_builds_path(scope: :running) do
-          Running
-          %span.badge= number_with_delimiter(@all_builds.running.count(:id))
-
-      %li{class: ('active' if @scope == 'finished')}
-        = link_to admin_builds_path(scope: :finished) do
-          Finished
-          %span.badge= number_with_delimiter(@all_builds.finished.count(:id))
+    - scopes = [:all, :pending, :running, :finished]
+    - paths = scopes.zip(scopes.map { |scope| admin_builds_path(scope: scope) }).to_h
+    = render "projects/builds/builds", paths: paths
 
     .nav-controls
       - if @all_builds.running_or_pending.any?
