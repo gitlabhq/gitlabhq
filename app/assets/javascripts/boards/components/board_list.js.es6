@@ -2,16 +2,15 @@
   const BoardList = Vue.extend({
     props: {
       disabled: Boolean,
-      boardId: [Number, String],
-      filters: Object,
+      list: Object,
       issues: Array,
       loading: Boolean,
       issueLinkBase: String
     },
     data: function () {
       return {
-        scrollOffset: 20,
-        loadMore: false
+        scrollOffset: 250,
+        loadingMore: false
       };
     },
     methods: {
@@ -24,8 +23,15 @@
       scrollTop: function () {
         return this.$els.list.scrollTop + this.listHeight();
       },
-      loadFromLastId: function () {
+      loadNextPage: function () {
+        this.loadingMore = true;
+        const getIssues = this.list.nextPage();
 
+        if (getIssues) {
+          getIssues.then(() => {
+            this.loadingMore = false;
+          });
+        }
       },
     },
     ready: function () {
@@ -51,8 +57,8 @@
 
       // Scroll event on list to load more
       this.$els.list.onscroll = () => {
-        if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.loadMore) {
-          this.loadFromLastId();
+        if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.loadingMore) {
+          this.loadNextPage();
         }
       };
     }

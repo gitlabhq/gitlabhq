@@ -11,14 +11,19 @@
     watch: {
       'query': function () {
         if (this.board.canSearch()) {
-          const data = _.extend(this.filters, { search: this.query });
-          this.board.getIssues(data);
+          this.board.filters = this.getFilterData();
+          this.board.getIssues(true);
         }
       }
     },
     methods: {
       clearSearch: function () {
         this.query = '';
+      },
+      getFilterData: function () {
+        const queryData = this.board.canSearch() ? { search: this.query } : {};
+
+        return _.extend(this.filters, queryData);
       }
     },
     computed: {

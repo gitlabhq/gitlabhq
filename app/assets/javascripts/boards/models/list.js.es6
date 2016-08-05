@@ -4,6 +4,8 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
+    this.filters = {};
+    this.page = 1;
     this.loading = true;
     this.issues = [];
 
@@ -39,19 +41,34 @@ class List {
     gl.boardService.updateList(this);
   }
 
+  nextPage () {
+    if (this.issues.length / 20 === this.page) {
+      this.page++;
+
+      return this.getIssues(false);
+    }
+  }
+
   canSearch () {
     return this.type === 'backlog';
   }
 
-  getIssues (filter = {}) {
-    this.loading = true;
+  getIssues (emptyIssues = true) {
+    const data = _.extend({ page: this.page }, this.filters);
 
-    gl.boardService.getIssuesForList(this.id, filter)
+    if (emptyIssues) {
+      this.loading = true;
+    }
+
+    return gl.boardService.getIssuesForList(this.id, data)
       .then((resp) => {
         const data = resp.json();
         this.loading = false;
 
-        this.issues = [];
+        if (emptyIssues) {
+          this.issues = [];
+        }
+
         this.createIssues(data);
       });
   }
