@@ -1,9 +1,9 @@
-class GitlabRemoveProjectExportWorker
+class ImportExportProjectCleanupWorker
   include Sidekiq::Worker
 
   sidekiq_options queue: :default
 
   def perform
-    Project.remove_gitlab_exports!
+    ImportExportCleanUpService.new.execute
   end
 end

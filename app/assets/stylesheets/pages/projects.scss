@@ -512,18 +512,12 @@ pre.light-well {
   .project-row {
     border-color: $table-border-color;
 
-    &.no-description {
-      .project {
-        line-height: 40px;
-      }
-    }
-
     .project-full-name {
       @include str-truncated;
     }
 
     .controls {
-      line-height: 40px;
+      line-height: $list-text-height;
 
       a:hover {
         text-decoration: none;

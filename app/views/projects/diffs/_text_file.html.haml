@@ -15,6 +15,5 @@
       - if discussion
         = render "discussions/diff_discussion", discussion: discussion
 
-  - if last_line > 0
-    = render "projects/diffs/match_line", { line: "",
-      line_old: last_line, line_new: last_line, bottom: true, new_file: diff_file.new_file }
+  - if !diff_file.new_file && last_line > 0
+    = diff_match_line last_line, last_line, bottom: true
