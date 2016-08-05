@@ -56,6 +56,7 @@
     },
     ready: function () {
       this.sortable = Sortable.create(this.$els.list, {
+        sort: false,
         group: 'issues',
         disabled: this.disabled,
         scrollSensitivity: 150,
@@ -71,9 +72,6 @@
           const issueId = parseInt(e.item.getAttribute('data-issue'));
 
           BoardsStore.moveCardToList(fromListId, toListId, issueId, e.newIndex);
-        },
-        onUpdate: (e) => {
-          console.log(e.newIndex, e.oldIndex);
         }
       });
 
