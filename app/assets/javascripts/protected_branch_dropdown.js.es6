@@ -66,8 +66,8 @@ class ProtectedBranchDropdown {
 
     if (branchName) {
       this.$dropdownContainer
-        .find('.create-new-protected-branch')
-        .html(`Create wildcard <code>${branchName}</code>`);
+        .find('.create-new-protected-branch code')
+        .text(branchName);
     }
 
     this.$dropdownFooter.toggleClass('hidden', !branchName);
