@@ -26,11 +26,11 @@ class ProtectedBranchDropdown {
         return (selected && 'id' in selected) ? selected.title : 'Protected Branch';
       },
       fieldName: 'protected_branch[name]',
-      text(protected_branch) {
-        return _.escape(protected_branch.title);
+      text(protectedBranch) {
+        return _.escape(protectedBranch.title);
       },
-      id(protected_branch) {
-        return _.escape(protected_branch.id);
+      id(protectedBranch) {
+        return _.escape(protectedBranch.id);
       },
       onFilter: this.toggleCreateNewButton.bind(this),
       clicked: (item, $el, e) => {
