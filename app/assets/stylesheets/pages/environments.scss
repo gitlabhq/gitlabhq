@@ -1,5 +1,22 @@
 .environments {
+
   .commit-title {
     margin: 0;
+  }
+
+  .fa-play {
+    font-size: 14px;
+  }
+
+  .dropdown-new {
+    color: $table-text-gray;
+  }
+
+  .dropdown-menu {
+
+    .fa {
+      margin-right: 6px;
+      color: $table-text-gray;
+    }
   }
 }
