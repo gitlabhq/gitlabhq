@@ -4,13 +4,13 @@
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: board.label.color }" }
         %h3.board-title
           {{ board.title }}
-          %span.pull-right
+          %span.pull-right{ "v-if" => "board.type !== 'blank'" }
             {{ board.issues.length }}
           %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
             %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", "aria-label" => "Delete board", data: { placement: "bottom" }, "@click" => "deleteBoard" }
               = icon("trash")
       .board-inner-container.board-search-container{ "v-if" => "board.canSearch()" }
-        %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query" }
+        %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
         = icon("search", class: "board-search-icon", "v-show" => "!query")
         %button.board-search-clear-btn{ type: "button", role: "button", "aria-label" => "Clear search", "@click" => "clearSearch", "v-show" => "query" }
           = icon("times", class: "board-search-clear")
@@ -29,4 +29,5 @@
           "v-show" => "!loading",
           ":data-board" => "boardId" }
           = render "projects/boards/components/card"
-      = render "projects/boards/components/blank_state"
+      - if current_user
+        = render "projects/boards/components/blank_state"

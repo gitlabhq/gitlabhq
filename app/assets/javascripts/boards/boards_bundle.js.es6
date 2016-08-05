@@ -7,15 +7,23 @@
 //= require_tree ./components
 
 $(function () {
-  window.service = new BoardService($('#board-app').data('endpoint'));
+  if (!window.gl) {
+    window.gl = {};
+  }
+  gl.boardService = new BoardService($('#board-app').data('endpoint'));
 
-  new Vue({
+  if (gl.IssueBoardsApp) {
+    gl.IssueBoardsApp.$destroy(true);
+    BoardsStore.reset();
+  }
+
+  gl.IssueBoardsApp = new Vue({
     el: '#board-app',
     data: {
       state: BoardsStore.state
     },
     ready: function () {
-      service.all()
+      gl.boardService.all()
         .then((resp) => {
           const boards = resp.json();
 

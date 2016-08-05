@@ -2,10 +2,10 @@
   const BoardBlankState = Vue.extend({
     methods: {
       addDefaultLists: function () {
-        
+
       },
       clearBlankState: function () {
-        BoardsStore.removeList('blank');
+        BoardsStore.removeBlankState();
       }
     }
   });

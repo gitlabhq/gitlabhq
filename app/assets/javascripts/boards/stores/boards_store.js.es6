@@ -9,6 +9,15 @@
         label: []
       }
     },
+    reset: function () {
+      this.state.lists = [];
+      this.state.filters = {
+        author: {},
+        assignee: {},
+        milestone: {},
+        label: []
+      };
+    },
     new: function (board, persist = true) {
       const doneList = this.getDoneList(),
             list = new List(board);
@@ -35,6 +44,8 @@
       return addBlankState;
     },
     addBlankState: function () {
+      if ($.cookie('issue_board_welcome_hidden') === 'true') return;
+
       const doneList = this.getDoneList(),
             addBlankState = this.shouldAddBlankState();
 
@@ -49,24 +60,22 @@
     },
     removeBlankState: function () {
       this.removeList('blank');
+
+      $.cookie('issue_board_welcome_hidden', 'true', {
+        path: '/',
+        expires: 365 * 10
+      });
     },
     getDoneList: function () {
       return this.findList('type', 'done');
     },
     removeList: function (id) {
       const list = this.findList('id', id);
-
-      if (id !== 'blank') {
-        list.destroy();
-      }
+      list.destroy();
 
       this.state.lists = _.reject(this.state.lists, (list) => {
         return list.id === id;
       });
-
-      if (id !== 'blank') {
-        this.addBlankState();
-      }
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = this.findList('position', oldIndex),

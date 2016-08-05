@@ -12,7 +12,7 @@ class List {
 
     if (this.type !== 'blank') {
       this.loading = true;
-      service.getIssuesForList(this.id)
+      gl.boardService.getIssuesForList(this.id)
         .then((resp) => {
           const data = resp.json();
           this.loading = false;
@@ -25,7 +25,7 @@ class List {
   }
 
   save () {
-    service.createList(this.label.id)
+    gl.boardService.createList(this.label.id)
       .then((resp) => {
         const data = resp.json();
 
@@ -36,11 +36,13 @@ class List {
   }
 
   destroy () {
-    service.destroyList(this.id);
+    if (this.type !== 'blank') {
+      gl.boardService.destroyList(this.id);
+    }
   }
 
   update () {
-    service.updateList(this);
+    gl.boardService.updateList(this);
   }
 
   canSearch () {
@@ -52,7 +54,7 @@ class List {
 
     issue.addLabel(this.label);
 
-    service.moveIssue(issue.id, listFrom.id, this.id);
+    gl.boardService.moveIssue(issue.id, listFrom.id, this.id);
   }
 
   findIssue (id) {
