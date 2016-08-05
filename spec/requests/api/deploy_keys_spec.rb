@@ -3,11 +3,14 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
 
-  let(:user)    { create(:user) }
-  let(:admin)   { create(:admin) }
-  let(:project) { create(:project, creator_id: user.id) }
-  let!(:deploy_keys_project) { create(:deploy_keys_project, project: project) }
-  let(:deploy_key)  { deploy_keys_project.deploy_key }
+  let(:user)        { create(:user) }
+  let(:admin)       { create(:admin) }
+  let(:project)     { create(:project, creator_id: user.id) }
+  let(:deploy_key)  { create(:deploy_key, public: true) }
+
+  let!(:deploy_keys_project) do
+    create(:deploy_keys_project, project: project, deploy_key: deploy_key)
+  end
 
   describe 'GET /deploy_keys' do
     context 'when unauthenticated' do

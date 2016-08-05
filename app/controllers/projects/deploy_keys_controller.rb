@@ -12,8 +12,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def new
-    redirect_to namespace_project_deploy_keys_path(@project.namespace,
-                                                   @project)
+    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
   def create
@@ -21,19 +20,16 @@ class Projects::DeployKeysController < Projects::ApplicationController
     set_index_vars
 
     if @key.valid? && @project.deploy_keys << @key
-      redirect_to namespace_project_deploy_keys_path(@project.namespace,
-                                                     @project)
+      redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
     else
       render "index"
     end
   end
 
   def enable
-    @key = accessible_keys.find(params[:id])
-    @project.deploy_keys << @key
+    EnableDeployKeyService.new(@project, current_user, params).execute
 
-    redirect_to namespace_project_deploy_keys_path(@project.namespace,
-                                                   @project)
+    redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
   def disable
@@ -45,19 +41,15 @@ class Projects::DeployKeysController < Projects::ApplicationController
   protected
 
   def set_index_vars
-    @enabled_keys ||= @project.deploy_keys
+    @enabled_keys           ||= @project.deploy_keys
 
-    @available_keys         ||= accessible_keys - @enabled_keys
+    @available_keys         ||= current_user.accessible_deploy_keys - @enabled_keys
     @available_project_keys ||= current_user.project_deploy_keys - @enabled_keys
     @available_public_keys  ||= DeployKey.are_public - @enabled_keys
 
     # Public keys that are already used by another accessible project are already
     # in @available_project_keys.
     @available_public_keys -= @available_project_keys
-  end
-
-  def accessible_keys
-    @accessible_keys ||= current_user.accessible_deploy_keys
   end
 
   def deploy_key_params
