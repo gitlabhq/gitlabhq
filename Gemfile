@@ -53,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.4.3'
+gem 'gitlab_git', '~> 10.4.5'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
