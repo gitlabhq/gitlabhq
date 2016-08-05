@@ -11,6 +11,7 @@ $(() => {
         });
       },
       renderRow: (label) => {
+        if (BoardsStore.findList('title', label.title)) return;
         const $li = $('<li />'),
               $a = $('<a />', {
                 text: label.title,
