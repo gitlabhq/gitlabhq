@@ -38,6 +38,12 @@ class Issue {
     }
   }
 
+  removeLabels (labels) {
+    labels.forEach((label) => {
+      this.removeLabel(label);
+    });
+  }
+
   getLists () {
     return _.filter(BoardsStore.state.lists, (list) => {
       return list.findIssue(this.id);

@@ -54,7 +54,13 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    const data = _.extend({ page: this.page }, this.filters);
+    let data = _.extend({ page: this.page }, this.filters);
+
+    if (this.label) {
+      data.label_name = _.reject(data.label_name, (label) => {
+        return label === this.label.title;
+      });
+    }
 
     if (emptyIssues) {
       this.loading = true;
@@ -93,18 +99,12 @@ class List {
     });
   }
 
-  removeIssue (removeIssue, listLabels) {
+  removeIssue (removeIssue) {
     this.issues = _.reject(this.issues, (issue) => {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {
-        if (typeof listLabels !== 'undefined') {
-          listLabels.forEach((listLabel) => {
-            issue.removeLabel(listLabel);
-          });
-        } else {
-          issue.removeLabel(this.label);
-        }
+        issue.removeLabel(this.label);
       }
 
       return matchesRemove;

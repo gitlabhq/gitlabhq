@@ -304,7 +304,13 @@
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             if (page === 'projects:boards:show') {
-              BoardsStore.state.filters['label_name'].push(label.title);
+              if (label.title) {
+                BoardsStore.state.filters['label_name'].push(label.title);
+              } else {
+                var labelIndex = BoardsStore.state.filters['label_name'].indexOf(label.text());
+                BoardsStore.state.filters['label_name'].splice(labelIndex, 1);
+              }
+
               BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;

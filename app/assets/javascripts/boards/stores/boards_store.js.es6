@@ -98,7 +98,10 @@
             listTo = this.findList('id', listToId),
             issueTo = listTo.findIssue(issueId);
       let issue = listFrom.findIssue(issueId);
-      const issueLists = issue.getLists();
+      const issueLists = issue.getLists(),
+            issueLabels = issueLists.map(function (issue) {
+              return issue.label;
+            });
       listFrom.removeIssue(issue);
 
       // Add to new lists issues if it doesn't already exist
@@ -112,6 +115,7 @@
         issueLists.forEach((list) => {
           list.removeIssue(issue);
         });
+        issue.removeLabels(issueLabels);
       }
     },
     findList: function (key, val) {
