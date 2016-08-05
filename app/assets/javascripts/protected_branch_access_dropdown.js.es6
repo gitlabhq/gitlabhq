@@ -8,6 +8,7 @@
       $dropdown.glDropdown({
         data: data,
         selectable: true,
+        inputId: $dropdown.data('input-id'),
         fieldName: $dropdown.data('field-name'),
         toggleLabel(item) {
           return item.text;
