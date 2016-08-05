@@ -44,6 +44,7 @@ v 8.11.0 (unreleased)
   - Add hover state to todos !5361 (winniehell)
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
+  - Fix branch title trailing space on hover (ClemMakesApps)
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
