@@ -48,7 +48,7 @@
       const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_level_attributes][access_level]"]');
 
       if ($branchInput.val() && $allowedToMergeInput.val() && $allowedToPushInput.val()){
-        this.$form.find('[type="submit"]').removeAttr('disabled');
+        this.$form.find('input[type="submit"]').removeAttr('disabled');
       }
     }
   }
