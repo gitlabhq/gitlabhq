@@ -707,7 +707,7 @@ Performance/StringReplacement:
 
 # Checks for `.times.map` calls.
 Performance/TimesMap:
-  Enabled: true
+  Enabled: false
 
 
 ##################### Rails ##################################
