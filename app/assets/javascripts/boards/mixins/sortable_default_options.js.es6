@@ -4,12 +4,12 @@
   }
 
   gl.boardSortableDefaultOptions = {
-    animation: 150,
     forceFallback: true,
     fallbackClass: 'is-dragging',
+    fallbackOnBody: true,
     ghostClass: 'is-ghost',
-    scrollSensitivity: 150,
-    scrollSpeed: 50,
+    scrollSensitivity: 50,
+    scrollSpeed: 10,
     onStart: function () {
       document.body.classList.add('is-dragging');
     },

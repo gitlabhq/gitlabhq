@@ -69,21 +69,30 @@
   display: flex;
   -webkit-flex: 1;
   flex: 1;
-  min-height: 455px;
+  min-height: calc(100vh - 152px);
   padding-top: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   overflow-x: scroll;
+
+  @media (min-width: $screen-sm-min) {
+    min-height: 455px;
+  }
 }
 
 .board {
   display: -webkit-flex;
   display: flex;
-  min-width: 400px;
-  max-width: 400px;
+  min-width: calc(100vw - 15px);
+  max-width: calc(100vw - 15px);
   margin-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
+
+  @media (min-width: $screen-sm-min) {
+    min-width: 400px;
+    max-width: 400px;
+  }
 }
 
 .board-inner {

@@ -33,6 +33,8 @@ $(function () {
 
             if (list.type === 'done') {
               list.position = 9999999;
+            } else if (list.type === 'backlog') {
+              list.position = -1;
             }
           });
 
