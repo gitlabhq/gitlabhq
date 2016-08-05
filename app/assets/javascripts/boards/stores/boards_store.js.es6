@@ -63,7 +63,6 @@
       this.removeList('blank');
 
       $.cookie('issue_board_welcome_hidden', 'true', {
-        path: '/',
         expires: 365 * 10
       });
     },

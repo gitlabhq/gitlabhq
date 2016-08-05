@@ -29,7 +29,7 @@
       },
     },
     ready: function () {
-      this.sortable = Sortable.create(this.$els.list, {
+      Sortable.create(this.$els.list, {
         sort: false,
         group: 'issues',
         disabled: this.disabled,
@@ -55,9 +55,6 @@
           this.loadFromLastId();
         }
       };
-    },
-    beforeDestroy: function () {
-      this.sortable.destroy();
     }
   });
 

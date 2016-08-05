@@ -27,7 +27,7 @@
       }
     },
     ready: function () {
-      this.sortable = Sortable.create(this.$el.parentNode, {
+      Sortable.create(this.$el.parentNode, {
         group: 'boards',
         animation: 150,
         draggable: '.is-draggable',
@@ -38,9 +38,6 @@
           BoardsStore.moveList(e.oldIndex, e.newIndex);
         }
       });
-    },
-    beforeDestroy: function () {
-      this.sortable.destroy();
     }
   });
 
