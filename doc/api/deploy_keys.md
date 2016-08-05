@@ -164,7 +164,7 @@ Example response:
 
 Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
 
-```
+```bash
 curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/enable
 ```
 
@@ -175,7 +175,6 @@ curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com
 
 Example response:
 
-```json
 ```json
 {
    "key" : "ssh-rsa AAAA...",
@@ -189,7 +188,7 @@ Example response:
 
 Disable a deploy key for a project. Returns the disabled key.
 
-```
+```bash
 curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/disable
 ```
 
