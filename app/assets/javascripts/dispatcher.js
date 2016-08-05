@@ -173,8 +173,8 @@
           new Search();
           break;
         case 'projects:protected_branches:index':
-          new ProtectedBranchCreate();
-          new ProtectedBranchEditList();
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
           break;
       }
       switch (path.first()) {

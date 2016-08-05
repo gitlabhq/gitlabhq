@@ -1,49 +1,54 @@
-class ProtectedBranchCreate {
-  constructor() {
-    this.$wrap = this.$form = $('#new_protected_branch');
-    this.buildDropdowns();
-  }
+(global => {
+  global.gl = global.gl || {};
 
-  buildDropdowns() {
-    // Allowed to Merge dropdown
-    const $allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
-    const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
+  gl.ProtectedBranchCreate = class {
+    constructor() {
+      this.$wrap = this.$form = $('#new_protected_branch');
+      this.buildDropdowns();
+    }
 
-    new ProtectedBranchAccessDropdown({
-      $dropdown: $allowedToMergeDropdown,
-      data: gon.merge_access_levels,
-      onSelect: this.onSelect.bind(this)
-    });
+    buildDropdowns() {
+      // Allowed to Merge dropdown
+      const $allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
+      const $allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
 
-    // Select default
-    $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
+      new gl.ProtectedBranchAccessDropdown({
+        $dropdown: $allowedToMergeDropdown,
+        data: gon.merge_access_levels,
+        onSelect: this.onSelect.bind(this)
+      });
 
-    // Allowed to Push dropdown
-    new ProtectedBranchAccessDropdown({
-      $dropdown: $allowedToPushDropdown,
-      data: gon.push_access_levels,
-      onSelect: this.onSelect.bind(this)
-    });
+      // Select default
+      $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
 
-    // Select default
-    $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
+      // Allowed to Push dropdown
+      new gl.ProtectedBranchAccessDropdown({
+        $dropdown: $allowedToPushDropdown,
+        data: gon.push_access_levels,
+        onSelect: this.onSelect.bind(this)
+      });
 
-    // Protected branch dropdown
-    new ProtectedBranchDropdown({
-      $dropdown: this.$wrap.find('.js-protected-branch-select'),
-      onSelect: this.onSelect.bind(this)
-    });
-  }
+      // Select default
+      $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
 
-  // This will run after clicked callback
-  onSelect() {
-    // Enable submit button
-    const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
-    const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_level_attributes][access_level]"]');
-    const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_level_attributes][access_level]"]');
+      // Protected branch dropdown
+      new ProtectedBranchDropdown({
+        $dropdown: this.$wrap.find('.js-protected-branch-select'),
+        onSelect: this.onSelect.bind(this)
+      });
+    }
 
-    if ($branchInput.val() && $allowedToMergeInput.val() && $allowedToPushInput.val()){
-      this.$form.find('[type="submit"]').removeAttr('disabled');
+    // This will run after clicked callback
+    onSelect() {
+      // Enable submit button
+      const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
+      const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_level_attributes][access_level]"]');
+      const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_level_attributes][access_level]"]');
+
+      if ($branchInput.val() && $allowedToMergeInput.val() && $allowedToPushInput.val()){
+        this.$form.find('[type="submit"]').removeAttr('disabled');
+      }
     }
   }
-}
+
+})(window);
