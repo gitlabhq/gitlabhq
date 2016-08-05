@@ -71,7 +71,7 @@
           toListId = parseInt(toListId) || toListId;
           const issueId = parseInt(e.item.getAttribute('data-issue'));
 
-          BoardsStore.moveCardToList(fromListId, toListId, issueId, e.newIndex);
+          BoardsStore.moveCardToList(fromListId, toListId, issueId);
         }
       });
 

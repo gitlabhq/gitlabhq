@@ -20,13 +20,11 @@ $(function () {
           const boards = resp.json();
 
           boards.forEach((board) => {
-            const list = new List(board);
+            const list = BoardsStore.new(board, false);
 
             if (list.type === 'done') {
               list.position = 9999999;
             }
-
-            BoardsStore.state.lists.push(list);
           });
 
           BoardsStore.addBlankState();

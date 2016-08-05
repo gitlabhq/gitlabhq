@@ -6,30 +6,23 @@
         author: {},
         assignee: {},
         milestone: {},
+        label: []
       }
     },
-    new: function (board) {
+    new: function (board, persist = true) {
       const doneList = this.getDoneList(),
             list = new List(board);
       this.state.lists.push(list);
 
-      if (list.type !== 'blank') {
-        service.createList(list.label.id)
-          .then(function (resp) {
-            const data = resp.json();
-
-            list.id = data.id;
-            list.type = data.list_type;
-            list.position = data.position;
-          });
-
+      if (persist) {
+        list.save();
         this.removeBlankState();
         this.addBlankState();
       }
-    },
-    addBlankState: function () {
-      const doneList = this.getDoneList();
 
+      return list;
+    },
+    shouldAddBlankState: function () {
       // Decide whether to add the blank state
       let addBlankState = true;
 
@@ -39,6 +32,11 @@
           return;
         }
       });
+      return addBlankState;
+    },
+    addBlankState: function () {
+      const doneList = this.getDoneList(),
+            addBlankState = this.shouldAddBlankState();
 
       if (addBlankState) {
         this.new({
@@ -46,21 +44,17 @@
           list_type: 'blank',
           title: 'Welcome to your Issue Board!',
           position: 0
-        });
+        }, false);
       }
     },
     removeBlankState: function () {
       this.removeList('blank');
     },
     getDoneList: function () {
-      return _.find(this.state.lists, (list) => {
-        return list.type === 'done';
-      });
+      return this.findList('type', 'done');
     },
     removeList: function (id) {
-      const list = _.find(this.state.lists, (list) => {
-        return list.id === id;
-      });
+      const list = this.findList('id', id);
 
       if (id !== 'blank') {
         list.destroy();
@@ -75,13 +69,8 @@
       }
     },
     moveList: function (oldIndex, newIndex) {
-      const listFrom = _.find(this.state.lists, (list) => {
-        return list.position === oldIndex;
-      });
-
-      const listTo = _.find(this.state.lists, (list) => {
-        return list.position === newIndex;
-      });
+      const listFrom = this.findList('position', oldIndex),
+            istTo = this.findList('position', newIndex);
 
       listFrom.position = newIndex;
       if (newIndex > listTo.position) {
@@ -92,42 +81,31 @@
 
       listFrom.update();
     },
-    moveCardToList: function (listFromId, listToId, issueId, toIndex) {
-      const listFrom = _.find(this.state.lists, (list) => {
-        return list.id === listFromId;
-      });
-      const listTo = _.find(this.state.lists, (list) => {
-        return list.id === listToId;
-      });
-      const issueTo = listTo.findIssue(issueId);
+    moveCardToList: function (listFromId, listToId, issueId) {
+      const listFrom = this.findList('id', listFromId),
+            listTo = this.findList('id', listToId),
+            issueTo = listTo.findIssue(issueId);
       let issue = listFrom.findIssue(issueId);
-      const issueLists = this.getListsForIssue(issue);
+      const issueLists = issue.getLists();
       listFrom.removeIssue(issue);
 
       // Add to new lists issues if it doesn't already exist
       if (issueTo) {
-        issue = issueTo;
-        issue.removeLabel(listFrom.label);
+        listTo.removeIssue(issueTo);
       } else {
-        listTo.addIssue(issue, toIndex);
+        listTo.addIssue(issue, listFrom);
       }
 
       if (listTo.id === 'done' && listFrom.id !== 'backlog') {
         issueLists.forEach((list) => {
-          issue.removeLabel(list.label);
           list.removeIssue(issue);
         });
       }
-
-      service.moveIssue(issue.id, listFrom.id, listTo.id);
     },
-    getListsForIssue: function (issue) {
-      return _.filter(this.state.lists, (list) => {
-        return list.findIssue(issue.id);
+    findList: function (key, val) {
+      return _.find(this.state.lists, (list) => {
+        return list[key] === val;
       });
-    },
-    clearDone: function () {
-      Vue.set(BoardsStore.state, 'done', {});
     }
   };
 }(window));

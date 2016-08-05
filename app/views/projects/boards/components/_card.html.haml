@@ -9,4 +9,4 @@
     %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
       {{ label.title }}
     %a{ ":href" => "'/u/' + issue.assignee.username", ":title" => "issue.assignee.name", "v-if" => "issue.assignee" }
-      %img.card-avatar{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }
+      %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }

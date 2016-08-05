@@ -24,6 +24,17 @@ class List {
     }
   }
 
+  save () {
+    service.createList(this.label.id)
+      .then((resp) => {
+        const data = resp.json();
+
+        this.id = data.id;
+        this.type = data.list_type;
+        this.position = data.position;
+      });
+  }
+
   destroy () {
     service.destroyList(this.id);
   }
@@ -36,10 +47,12 @@ class List {
     return this.type === 'backlog';
   }
 
-  addIssue (issue, index) {
-    this.issues.splice(index, 0, issue);
+  addIssue (issue, listFrom) {
+    this.issues.push(issue);
 
     issue.addLabel(this.label);
+
+    service.moveIssue(issue.id, listFrom.id, this.id);
   }
 
   findIssue (id) {

@@ -6,7 +6,7 @@ class Issue {
     if (obj.assignee) {
       this.assignee = new User(obj.assignee);
     }
-    
+
     this.labels = [];
 
     obj.labels.forEach((label) => {
@@ -36,5 +36,11 @@ class Issue {
         return removeLabel.title === label.title;
       });
     }
+  }
+
+  getLists () {
+    return _.filter(BoardsStore.state.lists, (list) => {
+      return list.findIssue(this.id);
+    });
   }
 }

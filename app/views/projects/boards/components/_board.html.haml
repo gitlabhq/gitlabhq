@@ -25,6 +25,8 @@
         ":issue-link-base" => "'#{namespace_project_issues_path(@project.namespace, @project)}'" }
         .board-list-loading.text-center{ "v-if" => "loading" }
           = icon("spinner spin")
-        %ul.board-list{ "v-el:list" => true, ":data-board" => "boardId" }
+        %ul.board-list{ "v-el:list" => true,
+          "v-show" => "!loading",
+          ":data-board" => "boardId" }
           = render "projects/boards/components/card"
       = render "projects/boards/components/blank_state"
