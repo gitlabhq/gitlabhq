@@ -59,6 +59,7 @@
       }
     },
     removeBlankState: function () {
+      if ($.cookie('issue_board_welcome_hidden') === 'true') return;
       this.removeList('blank');
 
       $.cookie('issue_board_welcome_hidden', 'true', {

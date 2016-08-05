@@ -4,13 +4,14 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
+    this.loading = true;
     this.issues = [];
 
     if (obj.label) {
       this.label = new Label(obj.label);
     }
 
-    if (this.type !== 'blank') {
+    if (this.type !== 'blank' && this.id) {
       this.getIssues();
     }
   }
@@ -23,6 +24,8 @@ class List {
         this.id = data.id;
         this.type = data.list_type;
         this.position = data.position;
+
+        this.getIssues();
       });
   }
 
@@ -42,7 +45,7 @@ class List {
 
   getIssues (filter = {}) {
     this.loading = true;
-    
+
     gl.boardService.getIssuesForList(this.id, filter)
       .then((resp) => {
         const data = resp.json();
