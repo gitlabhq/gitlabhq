@@ -1,78 +1,67 @@
 # Inspired in great part by Discourse's Email::Receiver
+# https://github.com/discourse/discourse/blob/e92f5e4fbf04a88d37dc5069917090abf6c07dec/lib/email/receiver.rb
 module Gitlab
   module Email
     class ReplyParser
-      attr_accessor :message
+      attr_accessor :mail
 
-      def initialize(message)
-        @message = message
+      def initialize(mail)
+        @mail = mail
       end
 
       def execute
-        body = select_body(message)
+        text = nil
+        html = nil
 
-        encoding = body.encoding
+        if mail.multipart?
+          text = fix_charset(mail.text_part)
+          html = fix_charset(mail.html_part)
+        elsif mail.content_type.to_s['text/html']
+          html = fix_charset(mail)
+        else
+          text = fix_charset(mail)
+        end
 
-        body = discourse_email_trimmer(body)
-
-        body = EmailReplyParser.parse_reply(body)
-
-        body.force_encoding(encoding).encode("UTF-8")
+        if html.present?
+          cleaned_html = Email::HtmlCleaner.new(html).output_html
+          EmailReplyTrimmer.trim(cleaned_html)
+        elsif text.present?
+          EmailReplyTrimmer.trim(text)
+        else
+          ''
+        end
       end
 
       private
 
-      def select_body(message)
-        text    = message.text_part if message.multipart?
-        text  ||= message           if message.content_type !~ /text\/html/
+      # copied from https://github.com/discourse/discourse/blob/e92f5e4fbf04a88d37dc5069917090abf6c07dec/lib/email/receiver.rb
+      def fix_charset(mail_part)
+        return nil if mail_part.blank? || mail_part.body.blank?
 
-        return "" unless text
+        string = mail_part.body.decoded rescue nil
 
-        text = fix_charset(text)
+        return nil if string.blank?
 
-        # Certain trigger phrases that means we didn't parse correctly
-        if text =~ /(Content\-Type\:|multipart\/alternative|text\/plain)/
-          return ""
+        # common encodings
+        encodings = ["UTF-8", "ISO-8859-1"]
+        encodings.unshift(mail_part.charset) if mail_part.charset.present?
+
+        encodings.uniq.each do |encoding|
+          fixed = try_to_encode(string, encoding)
+          return fixed if fixed.present?
         end
 
-        text
-      end
-
-      # Force encoding to UTF-8 on a Mail::Message or Mail::Part
-      def fix_charset(object)
-        return nil if object.nil?
-
-        if object.charset
-          object.body.decoded.force_encoding(object.charset.gsub(/utf8/i, "UTF-8")).encode("UTF-8").to_s
-        else
-          object.body.to_s
-        end
-      rescue
         nil
       end
 
-      REPLYING_HEADER_LABELS = %w(From Sent To Subject Reply To Cc Bcc Date)
-      REPLYING_HEADER_REGEX = Regexp.union(REPLYING_HEADER_LABELS.map { |label| "#{label}:" })
-
-      def discourse_email_trimmer(body)
-        lines = body.scrub.lines.to_a
-        range_end = 0
-
-        lines.each_with_index do |l, idx|
-          # This one might be controversial but so many reply lines have years, times and end with a colon.
-          # Let's try it and see how well it works.
-          break if (l =~ /\d{4}/ && l =~ /\d:\d\d/ && l =~ /\:$/) ||
-                   (l =~ /On \w+ \d+,? \d+,?.*wrote:/)
-
-          # Headers on subsequent lines
-          break if (0..2).all? { |off| lines[idx + off] =~ REPLYING_HEADER_REGEX }
-          # Headers on the same line
-          break if REPLYING_HEADER_LABELS.count { |label| l.include?(label) } >= 3
-
-          range_end = idx
-        end
-
-        lines[0..range_end].join.strip
+      # copied from https://github.com/discourse/discourse/blob/e92f5e4fbf04a88d37dc5069917090abf6c07dec/lib/email/receiver.rb
+      def try_to_encode(string, encoding)
+        encoded = string.encode("UTF-8", encoding)
+        encoded.present? && encoded.valid_encoding? ? encoded : nil
+      rescue Encoding::InvalidByteSequenceError,
+             Encoding::UndefinedConversionError,
+             Encoding::ConverterNotFoundError
+        nil
       end
     end
   end
