@@ -11,9 +11,7 @@
 
     prepareRequest(namespace) {
       this.setCSRF();
-      if (Vue.http.options.root !== `/${namespace}`) {
-        Vue.http.options.root = `/${namespace}`;
-      }
+      Vue.http.options.root = `/${namespace}`;
     }
 
     resolve(namespace, noteId) {

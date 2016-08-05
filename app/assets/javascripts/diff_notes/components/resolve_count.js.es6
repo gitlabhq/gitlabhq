@@ -11,7 +11,7 @@
     },
     computed: {
       allResolved: function () {
-        return this.resolved === this.discussionCount;
+        return this.resolvedDiscussionCount === this.discussionCount;
       }
     }
   });

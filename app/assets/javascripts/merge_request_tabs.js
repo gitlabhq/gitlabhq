@@ -81,6 +81,7 @@
       if (action === 'show') {
         action = 'notes';
       }
+      this.currentAction = action;
       new_state = this._location.pathname.replace(/\/(commits|diffs|builds)(\.html)?\/?$/, '');
       if (action !== 'notes') {
         new_state += "/" + action;

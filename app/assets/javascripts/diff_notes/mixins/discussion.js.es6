@@ -4,7 +4,7 @@
       discussionCount: function () {
         return Object.keys(this.discussions).length;
       },
-      resolved: function () {
+      resolvedDiscussionCount: function () {
         let resolvedCount = 0;
 
         for (const discussionId in this.discussions) {
@@ -19,6 +19,7 @@
       },
       unresolvedDiscussionCount: function () {
         let unresolvedCount = 0;
+
         for (const discussionId in this.discussions) {
           const discussion = this.discussions[discussionId];
 
