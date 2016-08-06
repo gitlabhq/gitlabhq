@@ -531,6 +531,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def already_owns?(project)
+    !self.owned_projects.where(name: project.name).any?
+  end
+
   def ldap_user?
     identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
   end

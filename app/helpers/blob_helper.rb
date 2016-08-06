@@ -27,7 +27,7 @@ module BlobHelper
       button_tag "Edit", class: "btn disabled has-tooltip btn-file-option", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     elsif can_edit_blob?(blob, project, ref)
       link_to "Edit", edit_path, class: 'btn btn-sm'
-    elsif can?(current_user, :fork_project, project)
+    elsif can?(current_user, :fork_project, project) && !current_user.already_owns?(project)
       continue_params = {
         to:     edit_path,
         notice: edit_in_new_fork_notice,
