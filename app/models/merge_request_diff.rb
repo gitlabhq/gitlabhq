@@ -36,7 +36,7 @@ class MergeRequestDiff < ActiveRecord::Base
     real_size.presence || raw_diffs.size
   end
 
-  def raw_diffs(options={})
+  def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
       @raw_diffs_no_whitespace ||= begin
         compare = Gitlab::Git::Compare.new(
