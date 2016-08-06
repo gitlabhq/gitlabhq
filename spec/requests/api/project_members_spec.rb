@@ -54,12 +54,16 @@ describe API::API, api: true  do
   describe "POST /projects/:id/members" do
     it "should add user to project team" do
       expect do
-        post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
+        post api("/projects/#{project.id}/members", user),
+          user_id: user2.id,
+          access_level: ProjectMember::DEVELOPER,
+          expires_at: '2016-08-05'
       end.to change { ProjectMember.count }.by(1)
 
       expect(response).to have_http_status(201)
       expect(json_response['username']).to eq(user2.username)
       expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
+      expect(json_response['expires_at']).to eq('2016-08-05')
     end
 
     it "should return a 201 status if user is already project member" do
@@ -95,10 +99,13 @@ describe API::API, api: true  do
     before { project_member2 }
 
     it "should update project team member" do
-      put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: ProjectMember::MASTER
+      put api("/projects/#{project.id}/members/#{user3.id}", user),
+        access_level: ProjectMember::MASTER,
+        expires_at: '2016-08-05'
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user3.username)
       expect(json_response['access_level']).to eq(ProjectMember::MASTER)
+      expect(json_response['expires_at']).to eq('2016-08-05')
     end
 
     it "should return a 404 error if user_id is not found" do

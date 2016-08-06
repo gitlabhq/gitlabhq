@@ -95,6 +95,9 @@ module API
       expose :access_level do |user, options|
         options[:project].project_members.find_by(user_id: user.id).access_level
       end
+      expose :expires_at do |user, options|
+        options[:project].project_members.find_by(user_id: user.id).expires_at
+      end
     end
 
     class Group < Grape::Entity

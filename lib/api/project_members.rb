@@ -38,6 +38,7 @@ module API
       #   id (required) - The ID of a project
       #   user_id (required) - The ID of a user
       #   access_level (required) - Project access level
+      #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
       # Example Request:
       #   POST /projects/:id/members
       post ":id/members" do
@@ -49,7 +50,8 @@ module API
         if project_member.nil?
           project_member = user_project.project_members.new(
             user_id: params[:user_id],
-            access_level: params[:access_level]
+            access_level: params[:access_level],
+            expires_at: params[:expires_at]
           )
         end
 
@@ -67,16 +69,17 @@ module API
       #   id (required) - The ID of a project
       #   user_id (required) - The ID of a team member
       #   access_level (required) - Project access level
+      #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
       # Example Request:
       #   PUT /projects/:id/members/:user_id
       put ":id/members/:user_id" do
         authorize! :admin_project, user_project
         required_attributes! [:access_level]
-
+        attrs = attributes_for_keys [:access_level, :expires_at]
         project_member = user_project.project_members.find_by(user_id: params[:user_id])
         not_found!("User can not be found") if project_member.nil?
 
-        if project_member.update_attributes(access_level: params[:access_level])
+        if project_member.update_attributes(attrs)
           @member = project_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
