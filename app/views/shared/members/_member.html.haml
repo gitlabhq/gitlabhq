@@ -80,7 +80,8 @@
       = form_for member, remote: true do |f|
         .prepend-top-10
           = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
-        .prepend-top-10
-          = f.text_field :expires_at, class: 'form-control', placeholder: 'Access expiration date'
+        - if member.type == 'ProjectMember'
+          .prepend-top-10
+            = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Access expiration date', id: "member_expires_at_#{member.id}"
         .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'
