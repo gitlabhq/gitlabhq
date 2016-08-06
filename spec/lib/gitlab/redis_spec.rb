@@ -3,6 +3,9 @@ require 'spec_helper'
 describe Gitlab::Redis do
   let(:redis_config) { Rails.root.join('config', 'resque.yml').to_s }
 
+  before(:each) { described_class.reset_params! }
+  after(:each) { described_class.reset_params! }
+
   describe '.params' do
     subject { described_class.params }
 
@@ -14,7 +17,7 @@ describe Gitlab::Redis do
         it 'returns path key instead' do
           expect_any_instance_of(described_class).to receive(:config_file) { config_old }
 
-          is_expected.to include(path: '/path/to/redis.sock')
+          is_expected.to include(path: '/path/to/old/redis.sock')
           is_expected.not_to have_key(:url)
         end
       end
@@ -46,7 +49,7 @@ describe Gitlab::Redis do
         it 'returns hash with host, port, db, and password' do
           expect_any_instance_of(described_class).to receive(:config_file) { config_new }
 
-          is_expected.to include(host: 'localhost', password: 'mypassword', port: 6379, db: 99)
+          is_expected.to include(host: 'localhost', password: 'mynewpassword', port: 6379, db: 99)
           is_expected.not_to have_key(:url)
         end
       end

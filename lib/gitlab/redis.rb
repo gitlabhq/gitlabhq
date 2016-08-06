@@ -19,7 +19,7 @@ module Gitlab
 
     class << self
       def params
-        PARAMS_MUTEX.synchronize { new.params }
+        @params || PARAMS_MUTEX.synchronize { @params = new.params }
       end
 
       # @deprecated Use .params instead to get sentinel support
@@ -34,6 +34,10 @@ module Gitlab
           end
         end
         @pool.with { |redis| yield redis }
+      end
+
+      def reset_params!
+        @params = nil
       end
     end
 
