@@ -1161,16 +1161,6 @@ class Project < ActiveRecord::Base
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
-  def schedule_delete!(user_id, params)
-    # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit do
-      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
-      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
-    end
-
-    update_attribute(:pending_delete, true)
-  end
-
   def running_or_pending_build_count(force: false)
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
