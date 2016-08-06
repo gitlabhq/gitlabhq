@@ -107,7 +107,7 @@ module Gitlab
               after_script: after_script }
           end
 
-          def compose!
+          def compose!(_deps)
             super
 
             if type_defined? && !stage_defined?

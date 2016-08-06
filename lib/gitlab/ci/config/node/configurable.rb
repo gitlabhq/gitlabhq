@@ -25,7 +25,7 @@ module Gitlab
 
           private
 
-          def compose!
+          def compose!(_deps)
             self.class.nodes.each do |key, factory|
               factory
                 .value(@config[key])

@@ -28,7 +28,7 @@ module Gitlab
 
           private
 
-          def compose!
+          def compose!(_deps)
             @config.each do |name, config|
               node = hidden?(name) ? Node::HiddenJob : Node::Job
 

@@ -20,11 +20,14 @@ module Gitlab
             @validator.validate(:new)
           end
 
-          def process!
+          def process!(deps = nil)
             return unless valid?
 
-            compose!
-            descendants.each(&:process!)
+            compose!(deps)
+
+            descendants.each do |entry|
+              entry.process!(deps)
+            end
           end
 
           def leaf?
@@ -76,7 +79,7 @@ module Gitlab
 
           private
 
-          def compose!
+          def compose!(_deps)
           end
         end
       end

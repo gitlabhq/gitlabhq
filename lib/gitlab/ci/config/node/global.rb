@@ -36,9 +36,13 @@ module Gitlab
           helpers :before_script, :image, :services, :after_script,
                   :variables, :stages, :types, :cache, :jobs
 
+          def process!(_deps = nil)
+            super(self)
+          end
+
           private
 
-          def compose!
+          def compose!(_deps)
             super
 
             compose_jobs!
