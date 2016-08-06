@@ -4,7 +4,6 @@ module Banzai
     # a `src` attribute ending with a video extension, add a new video node and
     # a "Download" link in the case the video cannot be played.
     class VideoLinkFilter < HTML::Pipeline::Filter
-
       def call
         doc.xpath(query).each do |el|
           el.replace(video_node(doc, el))
