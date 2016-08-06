@@ -1,6 +1,5 @@
 module Banzai
   module Filter
-
     # Find every image that isn't already wrapped in an `a` tag, and that has
     # a `src` attribute ending with a video extension, add a new video node and
     # a "Download" link in the case the video cannot be played.
@@ -54,6 +53,5 @@ module Banzai
         container
       end
     end
-
   end
 end
