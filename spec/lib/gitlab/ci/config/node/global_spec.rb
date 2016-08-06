@@ -156,9 +156,9 @@ describe Gitlab::Ci::Config::Node::Global do
           expect(global.descendants.count).to eq 8
         end
 
-        it 'contains undefined nodes' do
+        it 'contains unspecified nodes' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::Ci::Config::Node::Undefined
+            .to be_an_instance_of Gitlab::Ci::Config::Node::Unspecified
         end
       end
 
