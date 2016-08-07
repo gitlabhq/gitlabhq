@@ -894,9 +894,12 @@ Parameters:
   "name": "John Smith",
   "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
-  "access_level": 40
+  "access_level": 40,
+  "expires_at": null
 }
 ```
+
+>**Note:** The expiration date feature is not released yet.
 
 ### Add project team member
 
@@ -913,6 +916,9 @@ Parameters:
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `user_id` (required) - The ID of a user to add
 - `access_level` (required) - Project access level
+- `expires_at` (optional) - Date string in the format YEAR-MONTH-DAY
+
+>**Note:** Setting the expiration date is not released yet.
 
 ### Edit project team member
 
@@ -927,6 +933,9 @@ Parameters:
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `user_id` (required) - The ID of a team member
 - `access_level` (required) - Project access level
+- `expires_at` (optional) - Date string in the format YEAR-MONTH-DAY
+
+>**Note:** Setting the expiration date is not released yet.
 
 ### Remove project team member
 
