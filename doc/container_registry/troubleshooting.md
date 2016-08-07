@@ -14,6 +14,10 @@
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
+### Docker for Mac and VPNs
+- [Networking](https://docs.docker.com/docker-for-mac/networking/) 
+- [Docker Issue](https://forums.docker.com/t/docker-for-mac-host-vpn-dns-dont-cooperate/8149/5)
+
 ## Advanced Troubleshooting
 
 >**NOTE:** The following section is only recommended for experts.
@@ -147,10 +151,6 @@ Once the right permissions were set, the error will go away.
 1. Registry needs authorization, redirects to git.mydomain.net/jwt/auth
 
 - [Native Basic Auth](https://docs.docker.com/registry/deploying/#/restricting-access)
-
-#### Docker for Mac and VPNs
-- [Networking](https://docs.docker.com/docker-for-mac/networking/) 
-- [Docker Issue](https://forums.docker.com/t/docker-for-mac-host-vpn-dns-dont-cooperate/8149/5)
 
 #### Registry Login Timeout
 
