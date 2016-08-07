@@ -139,3 +139,66 @@ What does this mean? This strongly suggests that the S3 user does not have the r
 [permissions to perform a HEAD request](http://docs.aws.amazon.com/AmazonS3/latest/API/RESTObjectHEAD.html).
 The solution: check the [IAM permissions again](https://docs.docker.com/registry/storage-drivers/s3/).
 Once the right permissions were set, the error will go away.
+
+### Troubleshooting Login Issues
+
+#### Docker authorization flow
+1. User typesdocker login containers.mydomain.net
+1. Registry needs authorization, redirects to git.mydomain.net/jwt/auth
+
+- [Native Basic Auth](https://docs.docker.com/registry/deploying/#/restricting-access)
+
+#### Docker for Mac and VPNs
+- [Networking](https://docs.docker.com/docker-for-mac/networking/) 
+- [Docker Issue](https://forums.docker.com/t/docker-for-mac-host-vpn-dns-dont-cooperate/8149/5)
+
+#### Registry Login Timeout
+
+This is a DNS issue related to Cisco VPN and Docker for Mac. Attempting a login 
+results in the following error:
+
+```
+$ docker login registry.internal.company.com<https://registry.internal.company.com>
+Username: myusername
+Password: 
+Error response from daemon: Get https://registry.internal.company.com/v2/: Get 
+https://git.company.com/jwt/auth?account=myusername&client_id=docker&offline_token=true&service=container_registry: 
+net/http: request canceled while waiting for connection 
+(Client.Timeout exceeded while awaiting headers) 
+(Client.Timeout exceeded while awaiting headers) 
+``` 
+
+The error happens because the external and internal DNS have different results:
+
+1. External DNS: git.mydomain.net - resolved to 70.166.x.x (External IP)
+1. Internal DNS: git.mydomain.net - resolved to 10.101.x.x (Internal IP)
+
+To verify the issue run the Docker container in interactiv emode and ping the 
+GitLab server:  
+
+```
+$ docker run -it -v /:/root alpine:latest sh
+$ ping git.mydomain.net
+PING git.mydomain.net (70.166.x.x): 56 data bytes
+Request timeout for icmp_seq 0
+Request timeout for icmp_seq 1
+```
+
+Now compare the address with the result from pinging the same server from the 
+host's terminal:  
+
+```
+$ ping git.mydomain.net
+PING git.mydomain.net (10.101.x.x): 56 data bytes
+``` 
+
+A workaround this issue is to hard code the IP address to the Docker for Mac 
+configuration:  
+
+```
+docker run -v /:/root alpine:latest sh -c 'echo [IP ADDRESS] >> /root/etc/hosts'
+``` 
+
+> **Note:** This changes the host /etc/hosts file. In Docker for Mac, this 
+changes the Docker VM in which it runs, but this does not affect the MacOS host 
+itself.
