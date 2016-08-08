@@ -79,7 +79,9 @@
             listTo = this.findList('position', newIndex);
 
       listFrom.position = newIndex;
-      if (newIndex > listTo.position) {
+      if (newIndex === listTo.position) {
+        listTo.position = oldIndex;
+      } else if (newIndex > listTo.position) {
         listTo.position--;
       } else {
         listTo.position++;
@@ -97,8 +99,6 @@
               return issue.label;
             });
 
-      listFrom.removeIssue(issue);
-
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {
         listTo.addIssue(issue, listFrom);
@@ -109,6 +109,8 @@
           list.removeIssue(issue);
         });
         issue.removeLabels(listLabels);
+      } else {
+        listFrom.removeIssue(issue);
       }
     },
     findList: function (key, val) {

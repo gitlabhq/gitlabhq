@@ -36,7 +36,6 @@
     },
     ready: function () {
       const options = _.extend({
-        // sort: false,
         group: 'issues',
         disabled: this.disabled,
         onAdd: function (e) {
