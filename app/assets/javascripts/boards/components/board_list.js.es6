@@ -44,6 +44,9 @@
                 toListId = parseInt(e.to.getAttribute('data-board')),
                 issueId = parseInt(e.item.getAttribute('data-issue'));
 
+          // Remove the new dom element & let vue add the element
+          e.item.parentNode.removeChild(e.item);
+          
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
         }
       }, gl.boardSortableDefaultOptions);
