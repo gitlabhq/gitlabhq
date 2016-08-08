@@ -7,7 +7,7 @@
           %span.pull-right{ "v-if" => "board.type !== 'blank'" }
             {{ board.issues.length }}
           %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete board", "aria-label" => "Delete board", data: { placement: "bottom" }, "@click" => "deleteBoard" }
+            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click" => "deleteBoard" }
               = icon("trash")
       .board-inner-container.board-search-container{ "v-if" => "board.canSearch()" }
         %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
