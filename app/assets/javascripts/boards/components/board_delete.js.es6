@@ -1,14 +1,14 @@
 (() => {
   const BoardDelete = Vue.extend({
     props: {
-      boardId: Number
+      list: Object
     },
     methods: {
       deleteBoard: function () {
         $(this.$el).tooltip('destroy');
 
         if (confirm('Are you sure you want to delete this list?')) {
-          BoardsStore.removeList(this.boardId);
+          this.list.destroy();
         }
       }
     }

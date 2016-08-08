@@ -11,53 +11,51 @@
         label_name: gl.utils.getParameterValues('label_name[]')
       };
     },
-    new: function (board, persist = true) {
-      const doneList = this.findList('type', 'done'),
-            backlogList = this.findList('type', 'backlog'),
-            list = new List(board);
+    addList: function (listObj) {
+      const list = new List(listObj);
       this.state.lists.push(list);
-
-      if (persist) {
-        list
-          .save()
-          .then(function () {
-            // Remove any new issues from the backlog
-            // as they will be visible in the new list
-            _.each(list.issues, backlogList.removeIssue.bind(backlogList));
-          });
-        this.removeBlankState();
-      }
 
       return list;
     },
+    new: function (listObj) {
+      const list = this.addList(listObj),
+            backlogList = this.findList('type', 'backlog');
+
+      list
+        .save()
+        .then(function () {
+          // Remove any new issues from the backlog
+          // as they will be visible in the new list
+          _.each(list.issues, backlogList.removeIssue.bind(backlogList));
+        });
+      this.removeBlankState();
+    },
     updateNewListDropdown: function () {
       const data = $('.js-new-board-list').data('glDropdown').renderedData;
-      $('.js-new-board-list').data('glDropdown').renderData(data);
+
+      if (data) {
+        $('.js-new-board-list').data('glDropdown').renderData(data);
+      }
     },
     shouldAddBlankState: function () {
       // Decide whether to add the blank state
-      let addBlankState = _.find(this.state.lists, function (list) {
+      return !_.find(this.state.lists, function (list) {
         return list.type === 'backlog' || list.type === 'done';
       });
-      return !addBlankState;
     },
     addBlankState: function () {
-      const addBlankState = this.shouldAddBlankState();
-
       if (this.welcomeIsHidden() || this.disabled) return;
 
-      if (addBlankState) {
-        this.new({
+      if (this.shouldAddBlankState()) {
+        this.addList({
           id: 'blank',
           list_type: 'blank',
           title: 'Welcome to your Issue Board!',
           position: 0
-        }, false);
+        });
       }
     },
     removeBlankState: function () {
-      if (this.welcomeIsHidden()) return;
-
       this.removeList('blank');
 
       $.cookie('issue_board_welcome_hidden', 'true', {
@@ -72,13 +70,9 @@
 
       if (!list) return;
 
-      list.destroy();
-
-      this.state.lists = _.reject(this.state.lists, function (list) {
+      this.state.lists = _.reject(this.state.lists, (list) => {
         return list.id === id;
       });
-
-      this.updateNewListDropdown();
     },
     moveList: function (oldIndex, newIndex) {
       if (oldIndex === newIndex) return;

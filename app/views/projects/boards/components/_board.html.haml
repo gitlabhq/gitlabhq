@@ -6,12 +6,14 @@
   .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
-        %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': !disabled }" }
+        %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !isPreset) }" }
           {{ list.title }}
           %span.pull-right{ "v-if" => "list.type !== 'blank'" }
             {{ list.issues.length }}
           - if current_user
-            %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "list.id" }
+            %board-delete{ "inline-template" => true,
+              "v-if" => "!isPreset",
+              ":list" => "list" }
               %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click" => "deleteBoard" }
                 = icon("trash")
       .board-inner-container.board-search-container{ "v-if" => "list.canSearch()" }

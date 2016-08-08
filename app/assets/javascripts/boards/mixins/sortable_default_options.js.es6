@@ -8,6 +8,7 @@
     fallbackClass: 'is-dragging',
     fallbackOnBody: true,
     ghostClass: 'is-ghost',
+    filter: '.has-tooltip',
     scrollSensitivity: 50,
     scrollSpeed: 10,
     onStart: function () {

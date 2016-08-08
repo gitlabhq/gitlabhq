@@ -33,6 +33,11 @@ class List {
 
   destroy () {
     if (this.type !== 'blank') {
+      BoardsStore.state.lists = _.reject(BoardsStore.state.lists, (list) => {
+        return list.id === this.id;
+      });
+      BoardsStore.updateNewListDropdown();
+
       gl.boardService.destroyList(this.id);
     }
   }

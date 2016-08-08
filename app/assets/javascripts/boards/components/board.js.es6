@@ -45,7 +45,6 @@
         group: 'boards',
         draggable: '.is-draggable',
         handle: '.js-board-handle',
-        filter: '.board-delete',
         onUpdate: function (e) {
           BoardsStore.moveList(e.oldIndex, e.newIndex);
         }

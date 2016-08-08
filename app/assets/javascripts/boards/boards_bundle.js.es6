@@ -35,7 +35,7 @@ $(function () {
           const boards = resp.json();
 
           boards.forEach((board) => {
-            const list = BoardsStore.new(board, false);
+            const list = BoardsStore.addList(board);
 
             if (list.type === 'done') {
               list.position = 9999999;
