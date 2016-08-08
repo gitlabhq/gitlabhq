@@ -13,14 +13,15 @@
       }
       $('.js-user-search').each((function(_this) {
         return function(i, dropdown) {
+          var options = {};
           var $block, $collapsedSidebar, $dropdown, $loading, $selectbox, $value, abilityName, assignTo, assigneeTemplate, collapsedAssigneeTemplate, defaultLabel, firstUser, issueURL, selectedId, showAnyUser, showNullUser;
           $dropdown = $(dropdown);
-          _this.projectId = $dropdown.data('project-id');
-          _this.showCurrentUser = $dropdown.data('current-user');
+          options.projectId = $dropdown.data('project-id');
+          options.showCurrentUser = $dropdown.data('current-user');
           showNullUser = $dropdown.data('null-user');
           showAnyUser = $dropdown.data('any-user');
           firstUser = $dropdown.data('first-user');
-          _this.authorId = $dropdown.data('author-id');
+          options.authorId = $dropdown.data('author-id');
           selectedId = $dropdown.data('selected');
           defaultLabel = $dropdown.data('default-label');
           issueURL = $dropdown.data('issueUpdate');
@@ -75,7 +76,7 @@
             data: function(term, callback) {
               var isAuthorFilter;
               isAuthorFilter = $('.js-author-search');
-              return _this.users(term, function(users) {
+              return _this.users(term, options, function(users) {
                 var anyUser, index, j, len, name, obj, showDivider;
                 if (term.length === 0) {
                   showDivider = 0;
@@ -185,11 +186,14 @@
       $('.ajax-users-select').each((function(_this) {
         return function(i, select) {
           var firstUser, showAnyUser, showEmailUser, showNullUser;
-          _this.projectId = $(select).data('project-id');
-          _this.groupId = $(select).data('group-id');
-          _this.showCurrentUser = $(select).data('current-user');
-          _this.authorId = $(select).data('author-id');
-          _this.skipUsers = $(select).data('skip-users');
+          var options = {};
+          options.skipLdap = $(select).hasClass('skip_ldap');
+          options.projectId = $(select).data('project-id');
+          options.groupId = $(select).data('group-id');
+          options.showCurrentUser = $(select).data('current-user');
+          options.pushCodeToProtectedBranches = $(select).data('push-code-to-protected-branches');
+          options.authorId = $(select).data('author-id');
+          options.skipUsers = $(select).data('skip-users');
           showNullUser = $(select).data('null-user');
           showAnyUser = $(select).data('any-user');
           showEmailUser = $(select).data('email-user');
@@ -199,7 +203,7 @@
             multiple: $(select).hasClass('multiselect'),
             minimumInputLength: 0,
             query: function(query) {
-              return _this.users(query.term, function(users) {
+              return _this.users(query.term, options, function(users) {
                 var anyUser, data, emailUser, index, j, len, name, nullUser, obj, ref;
                 data = {
                   results: users
@@ -309,7 +313,7 @@
       });
     };
 
-    UsersSelect.prototype.users = function(query, callback) {
+    UsersSelect.prototype.users = function(query, options, callback) {
       var url;
       url = this.buildUrl(this.usersPath);
       return $.ajax({
@@ -318,11 +322,13 @@
           search: query,
           per_page: 20,
           active: true,
-          project_id: this.projectId,
-          group_id: this.groupId,
-          current_user: this.showCurrentUser,
-          author_id: this.authorId,
-          skip_users: this.skipUsers
+          project_id: options.projectId || null,
+          group_id: options.groupId || null,
+          skip_ldap: options.skipLdap || null,
+          current_user: options.showCurrentUser || null,
+          push_code_to_protected_branches: options.pushCodeToProtectedBranches || null,
+          author_id: options.authorId || null,
+          skip_users: options.skipUsers || null
         },
         dataType: "json"
       }).done(function(users) {

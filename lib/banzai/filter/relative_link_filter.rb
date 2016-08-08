@@ -35,6 +35,7 @@ module Banzai
 
       def process_link_attr(html_attr)
         return if html_attr.blank?
+        return if html_attr.value.start_with?('//')
 
         uri = URI(html_attr.value)
         if uri.relative? && uri.path.present?
@@ -92,7 +93,7 @@ module Banzai
         parts = request_path.split('/')
         parts.pop if uri_type(request_path) != :tree
 
-        path.sub!(%r{^\./}, '')
+        path.sub!(%r{\A\./}, '')
 
         while path.start_with?('../')
           parts.pop

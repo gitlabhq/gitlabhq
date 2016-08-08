@@ -11,7 +11,7 @@ feature 'Projected Branches', feature: true, js: true do
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
-    click_on "Create Protected Branch: #{branch_name}"
+    click_on("Create wildcard #{branch_name}")
   end
 
   describe "explicit protected branches" do
@@ -90,7 +90,7 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".allowed-to-push").click
+          find(".js-allowed-to-push").click
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
@@ -107,8 +107,8 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.count).to eq(1)
 
         within(".protected-branches-list") do
-          find(".allowed-to-push").click
-          within('.dropdown-menu.push') { click_on access_type_name }
+          find(".js-allowed-to-push").click
+          within('.js-allowed-to-push-container') { click_on access_type_name }
         end
 
         wait_for_ajax
@@ -121,7 +121,7 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".allowed-to-merge").click
+          find(".js-allowed-to-merge").click
           within(".dropdown.open .dropdown-menu") { click_on access_type_name }
         end
         click_on "Protect"
@@ -138,8 +138,8 @@ feature 'Projected Branches', feature: true, js: true do
         expect(ProtectedBranch.count).to eq(1)
 
         within(".protected-branches-list") do
-          find(".allowed-to-merge").click
-          within('.dropdown-menu.merge') { click_on access_type_name }
+          find(".js-allowed-to-merge").click
+          within('.js-allowed-to-merge-container') { click_on access_type_name }
         end
 
         wait_for_ajax

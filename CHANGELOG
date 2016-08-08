@@ -8,6 +8,7 @@ v 8.11.0 (unreleased)
   - Convert switch icon into icon font (ClemMakesApps)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
+  - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
@@ -19,6 +20,7 @@ v 8.11.0 (unreleased)
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
   - Environments have an url to link to
+  - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
@@ -38,6 +40,7 @@ v 8.11.0 (unreleased)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - Document that webhook secret token is sent in X-Gitlab-Token HTTP header !5664 (lycoperdon)
   - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - The overhead of instrumented method calls has been reduced
@@ -64,11 +67,14 @@ v 8.11.0 (unreleased)
   - Make error pages responsive (Takuya Noguchi)
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
+  - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
+  - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
+  - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
 
 v 8.10.5 (unreleased)
 
@@ -165,6 +171,9 @@ v 8.10.0
   - Fix check for New Branch button on Issue page. !4630 (winniehell)
   - Fix GFM autocomplete not working on wiki pages
   - Fixed enter key not triggering click on first row when searching in a dropdown
+  - Updated dropdowns in issuable form to use new GitLab dropdown style
+  - Make images fit to the size of the viewport !4810
+  - Fix check for New Branch button on Issue page !4630 (winniehell)
   - Fix MR-auto-close text added to description. !4836
   - Support U2F devices in Firefox. !5177
   - Fix issue, preventing users w/o push access to sort tags. !5105 (redetection)

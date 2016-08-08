@@ -1,6 +1,6 @@
 # Award Emoji
 
- >**Note:** This feature was introduced in GitLab 8.9
+> [Introduced][ce-4575] in GitLab 8.9.
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge
 requests and notes/comments. Issues, merge requests and notes are further called
@@ -365,3 +365,5 @@ Example Response:
   "awardable_type": "Note"
 }
 ```
+
+[ce-4575]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4575
