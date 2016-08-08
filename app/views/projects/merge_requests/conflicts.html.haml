@@ -62,7 +62,8 @@
                       'selected': line.isSelected, |
                       'unselected': line.isUnselected}"}
                       %strong {{line.richText}}
-                      %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
+                      %button.btn{"@click" => "handleSelected(line.id, line.section)"}
+                        {{line.buttonTitle}}
 
                   %template{"v-if" => "!line.isHeader"}
                     %td.diff-line-num.old_line{":class" => "{ |
@@ -113,7 +114,8 @@
                   %td.diff-line-num.header
                   %td.line_content.header
                     %strong {{{line.richText}}}
-                    %button.btn{"@click" => "handleSelected(line.id, line.section)"} Use this
+                    %button.btn{"@click" => "handleSelected(line.id, line.section)"}
+                      {{line.buttonTitle}}
 
     .content-block.oneline-block.files-changed
       %strong.resolved-count {{resolvedCount}}

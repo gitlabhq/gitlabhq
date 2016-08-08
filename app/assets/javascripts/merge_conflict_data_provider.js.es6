@@ -1,5 +1,8 @@
-const HEAD_HEADER_TEXT   = 'HEAD//our changes';
-const ORIGIN_HEADER_TEXT = 'origin//their changes';
+const HEAD_HEADER_TEXT    = 'HEAD//our changes';
+const ORIGIN_HEADER_TEXT  = 'origin//their changes';
+
+const HEAD_BUTTON_TITLE   = 'Use ours';
+const ORIGIN_BUTTON_TITLE = 'Use theirs';
 
 window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
@@ -275,6 +278,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     return {
       id          : id,
       richText    : HEAD_HEADER_TEXT,
+      buttonTitle : HEAD_BUTTON_TITLE,
       type        : 'new',
       section     : 'head',
       isHeader    : true,
@@ -289,6 +293,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     return {
       id          : id,
       richText    : ORIGIN_HEADER_TEXT,
+      buttonTitle : ORIGIN_BUTTON_TITLE,
       type        : 'old',
       section     : 'origin',
       isHeader    : true,
