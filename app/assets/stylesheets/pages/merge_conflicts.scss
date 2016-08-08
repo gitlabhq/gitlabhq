@@ -19,7 +19,6 @@ $unselected_line:         #f8f8f8;
     min-height: 19px;
   }
 
-
   .header.line_content, .diff-line-num {
     &.origin {
       background-color: $origin_gutter;
@@ -62,65 +61,6 @@ $unselected_line:         #f8f8f8;
     }
   }
 
-
-  .head {
-    .header, .diff-line-num {
-      background-color: $head_gutter;
-    }
-
-    td {
-      background-color: $head_line;
-    }
-
-    &.selected {
-      .header, .diff-line-num {
-        background-color: $selected_head_gutter;
-      }
-
-      td {
-        background-color: $selected_head_line;
-      }
-    }
-  }
-
-  .origin {
-    .header, .diff-line-num {
-      background-color: $origin_gutter;
-    }
-
-    td {
-      background-color: $origin_line;
-    }
-
-    &.selected {
-      .header, .diff-line-num {
-        background-color: $selected_origin_gutter;
-      }
-
-      td {
-        background-color: $selected_origin_line;
-      }
-    }
-  }
-
-  .origin, .head {
-    &.unselected {
-      .header, .diff-line-num {
-        background-color: $unselected_gutter;
-      }
-
-      td {
-        background-color: $unselected_line;
-      }
-    }
-  }
-
-  .parallel .header {
-    button {
-      right: 10px;
-    }
-  }
-
   .line_content.header {
     position: relative;
 
@@ -130,7 +70,7 @@ $unselected_line:         #f8f8f8;
       background: #fff;
       font-size: 10px;
       position: absolute;
-      right: 20px;
+      right: 10px;
       height: 17px;
       line-height: 4px; // FIXME: 4px?
       top: 1px;
