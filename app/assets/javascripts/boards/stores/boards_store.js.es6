@@ -12,12 +12,19 @@
       };
     },
     new: function (board, persist = true) {
-      const doneList = this.getDoneList(),
+      const doneList = this.findList('type', 'done'),
+            backlogList = this.findList('type', 'backlog'),
             list = new List(board);
       this.state.lists.push(list);
 
       if (persist) {
-        list.save();
+        list
+          .save()
+          .then(function () {
+            // Remove any new issues from the backlog
+            // as they will be visible in the new list
+            _.each(list.issues, backlogList.removeIssue.bind(backlogList));
+          });
         this.removeBlankState();
       }
 
@@ -29,15 +36,10 @@
     },
     shouldAddBlankState: function () {
       // Decide whether to add the blank state
-      let addBlankState = true;
-
-      this.state.lists.forEach(function (list) {
-        if (list.type !== 'backlog' && list.type !== 'done') {
-          addBlankState = false;
-          return;
-        }
+      let addBlankState = _.find(this.state.lists, function (list) {
+        return list.type === 'backlog' || list.type === 'done';
       });
-      return addBlankState;
+      return !addBlankState;
     },
     addBlankState: function () {
       const addBlankState = this.shouldAddBlankState();
@@ -65,9 +67,6 @@
     welcomeIsHidden: function () {
       return $.cookie('issue_board_welcome_hidden') === 'true';
     },
-    getDoneList: function () {
-      return this.findList('type', 'done');
-    },
     removeList: function (id) {
       const list = this.findList('id', id);
 
@@ -75,7 +74,7 @@
 
       list.destroy();
 
-      this.state.lists = _.reject(this.state.lists, (list) => {
+      this.state.lists = _.reject(this.state.lists, function (list) {
         return list.id === id;
       });
 
@@ -83,7 +82,7 @@
     },
     moveList: function (oldIndex, newIndex) {
       if (oldIndex === newIndex) return;
-      
+
       const listFrom = this.findList('position', oldIndex),
             listTo = this.findList('position', newIndex);
 
@@ -101,9 +100,9 @@
     moveCardToList: function (listFromId, listToId, issueId) {
       const listFrom = this.findList('id', listFromId),
             listTo = this.findList('id', listToId),
-            issueTo = listTo.findIssue(issueId);
-      let issue = listFrom.findIssue(issueId);
-      const issueLists = issue.getLists(),
+            issueTo = listTo.findIssue(issueId),
+            issue = listFrom.findIssue(issueId),
+            issueLists = issue.getLists(),
             listLabels = issueLists.map(function (issue) {
               return issue.label;
             });
@@ -114,9 +113,7 @@
       }
 
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {
-        issueLists.forEach((list) => {
-          list.removeIssue(issue);
-        });
+        _.each(issueLists, list.removeIssue.bind(list));
         issue.removeLabels(listLabels);
       } else {
         listFrom.removeIssue(issue);

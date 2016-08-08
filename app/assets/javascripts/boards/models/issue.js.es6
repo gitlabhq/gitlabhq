@@ -39,9 +39,7 @@ class Issue {
   }
 
   removeLabels (labels) {
-    labels.forEach((label) => {
-      this.removeLabel(label);
-    });
+    _.each(labels, this.removeLabel.bind(this));
   }
 
   getLists () {

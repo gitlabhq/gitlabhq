@@ -19,7 +19,7 @@ class List {
   }
 
   save () {
-    gl.boardService.createList(this.label.id)
+    return gl.boardService.createList(this.label.id)
       .then((resp) => {
         const data = resp.json();
 
@@ -27,7 +27,7 @@ class List {
         this.type = data.list_type;
         this.position = data.position;
 
-        this.getIssues();
+        return this.getIssues();
       });
   }
 
@@ -80,7 +80,7 @@ class List {
   }
 
   createIssues (data) {
-    data.forEach((issue) => {
+    _.each(data, (issue) => {
       this.issues.push(new Issue(issue));
     });
   }
