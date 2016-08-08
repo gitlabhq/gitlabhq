@@ -11,6 +11,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
       hasError       : false,
       isParallel     : diffViewType === 'parallel',
       diffViewType   : diffViewType,
+      isSubmitting   : false,
       conflictsData  : {},
       resolutionData : {}
     }
@@ -18,7 +19,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
 
   decorateData(vueInstance, data) {
-    this.vueInstance    = vueInstance;
+    this.vueInstance = vueInstance;
 
     if (data.type === 'error') {
       vueInstance.hasError = true;
@@ -34,6 +35,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
     }
 
     vueInstance.conflictsData = data;
+    vueInstance.isSubmitting = false;
   }
 
 
@@ -233,7 +235,7 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
 
   isAllResolved() {
-    return this.getConflictsCount() === this.getResolvedCount();
+    return !this.vueInstance.isSubmitting && this.getConflictsCount() === this.getResolvedCount();
   }
 
 

@@ -31,6 +31,17 @@ window.MergeConflictResolver = class MergeConflictResolver {
   }
 
 
+  setComputedProperties() {
+    const dp = this.dataProvider;
+
+    return {
+      conflictsCount() { return dp.getConflictsCount() },
+      resolvedCount()  { return dp.getResolvedCount() },
+      allResolved()    { return dp.isAllResolved() }
+    }
+  }
+
+
   fetchData() {
     const dp = this.dataProvider;
 
@@ -47,21 +58,19 @@ window.MergeConflictResolver = class MergeConflictResolver {
   }
 
 
-  setComputedProperties() {
-    const dp = this.dataProvider;
-
-    return {
-      conflictsCount() { return dp.getConflictsCount() },
-      resolvedCount()  { return dp.getResolvedCount() },
-      allResolved()    { return dp.isAllResolved() }
-    }
-  }
-
   commit() {
+    this.vue.isSubmitting = true;
+
     $.post('./resolve_conflicts', this.dataProvider.getCommitData())
-      .then( (data) => {
-        window.location.href = data.redirect_to
+      .done( (data) => {
+        window.location.href = data.redirect_to;
       })
+      .error(() => {
+        new Flash('Something went wrong!');
+      })
+      .always(() => {
+        this.vue.isSubmitting = false;
+      });
   }
 
 }

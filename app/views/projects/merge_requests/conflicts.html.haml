@@ -126,8 +126,10 @@
         %textarea.form-control.js-commit-message{":disabled" => "!allResolved", "v-model" => "conflictsData.commitMessage"}
           {{{conflictsData.commitMessage}}}
 
-      %button{type: 'button', class: 'btn btn-success js-submit-button', ":disabled" => "!allResolved", "@click" => "commit()"}
-        Commit conflict resolution
+      %button{type: "button", class: "btn btn-success js-submit-button", ":disabled" => "!allResolved", "@click" => "commit()"}
+        %span Commit conflict resolution
+        %a.fa.fa-spin.fa-spinner{":class" => "{'hidden': !isSubmitting}"}
 
-      / %button{type: 'button', class: 'btn btn-cancel'}
-      /   Cancel
+      / FIXME: Hardcoded path
+      %a.btn.btn-cancel{"href" => "diffs"}
+        Cancel
