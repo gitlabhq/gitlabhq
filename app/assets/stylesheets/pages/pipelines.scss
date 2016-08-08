@@ -229,3 +229,9 @@
     box-shadow: none;
   }
 }
+
+// Pipeline visualization
+.stage-column {
+  display: inline-block;
+  vertical-align: top;
+}
