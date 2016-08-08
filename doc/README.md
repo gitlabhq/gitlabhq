@@ -68,7 +68,5 @@
 
 ## Contributor documentation
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
-  contributing to documentation.
-- [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
+- [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Legal](legal/README.md) Contributor license agreements.

@@ -14,7 +14,7 @@ class MoveFromDevelopersCanMergeToProtectedBranchesMergeAccess < ActiveRecord::M
   def up
     execute <<-HEREDOC
       INSERT into protected_branch_merge_access_levels (protected_branch_id, access_level, created_at, updated_at)
-        SELECT id, (CASE WHEN developers_can_merge THEN 1 ELSE 0 END), now(), now()
+        SELECT id, (CASE WHEN developers_can_merge THEN 30 ELSE 40 END), now(), now()
           FROM protected_branches
     HEREDOC
   end
@@ -23,7 +23,7 @@ class MoveFromDevelopersCanMergeToProtectedBranchesMergeAccess < ActiveRecord::M
     execute <<-HEREDOC
       UPDATE protected_branches SET developers_can_merge = TRUE
         WHERE id IN (SELECT protected_branch_id FROM protected_branch_merge_access_levels
-                       WHERE access_level = 1);
+                       WHERE access_level = 30);
     HEREDOC
   end
 end

@@ -37,7 +37,7 @@ module Gitlab
       redis_config_hash
     end
 
-    def initialize(rails_env=nil)
+    def initialize(rails_env = nil)
       rails_env ||= Rails.env
       config_file = File.expand_path('../../../config/resque.yml', __FILE__)
 

@@ -128,7 +128,7 @@ feature 'Login', feature: true do
         end
         allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: saml_config)
         allow(Gitlab.config.omniauth).to receive_messages(messages)
-        allow_any_instance_of(Object).to receive(:user_omniauth_authorize_path).with('saml').and_return('/users/auth/saml')
+        expect_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
       end
 
       it 'should show 2FA prompt after OAuth login' do

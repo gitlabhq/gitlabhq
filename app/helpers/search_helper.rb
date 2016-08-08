@@ -107,7 +107,7 @@ module SearchHelper
     Sanitize.clean(str)
   end
 
-  def search_filter_path(options={})
+  def search_filter_path(options = {})
     exist_opts = {
       search: params[:search],
       project_id: params[:project_id],

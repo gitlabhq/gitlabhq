@@ -408,11 +408,6 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
-
-    # Deletes gitlab project export files older than 24 hours
-    def remove_gitlab_exports!
-      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
-    end
   end
 
   def repository_storage_path
@@ -976,8 +971,14 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
+    return true if empty_repo? && default_branch_protected?
+
     @protected_branches ||= self.protected_branches.to_a
     ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
+  end
+
+  def user_can_push_to_empty_repo?(user)
+    !default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
   def forked?
@@ -1491,6 +1492,11 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  def default_branch_protected?
+    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
+      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+  end
 
   def authorized_for_user_by_group?(user, min_access_level)
     member = user.group_members.find_by(source_id: group)

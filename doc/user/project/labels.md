@@ -46,10 +46,11 @@ When you are ready press the **Create label** button to create the new label.
 ## Prioritize labels
 
 >**Notes:**
- - This feature was introduced in GitLab 8.9.
- - Priority sorting is based on the highest priority label only. This might
-   change in the future, follow the discussion in
-   https://gitlab.com/gitlab-org/gitlab-ce/issues/18554.
+>
+> - Introduced in GitLab 8.9.
+> - Priority sorting is based on the highest priority label only. This might
+>   change in the future, follow the discussion in
+>   https://gitlab.com/gitlab-org/gitlab-ce/issues/18554.
 
 Prioritized labels are like any other label, but sorted by priority. This allows
 you to sort issues and merge requests by priority.
@@ -87,8 +88,7 @@ important.
 
 ## Create a new label right from the issue tracker
 
->**Note:**
-This feature was introduced in GitLab 8.6.
+> Introduced in GitLab 8.6.
 
 There are times when you are already in the issue tracker searching for a
 label, only to realize it doesn't exist. Instead of going to the **Labels**

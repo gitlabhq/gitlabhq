@@ -8,6 +8,7 @@ class Issue < ActiveRecord::Base
   include Taskable
   include Spammable
   include Elastic::IssuesSearch
+  include FasterCacheKeys
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'
