@@ -14,20 +14,20 @@
           $btn = $(e.currentTarget);
           $tr = $btn.closest('tr');
           $target_field = $tr.find('.import-target');
-          $namespace_input = $target_field.find('input');
+          $namespace_input = $target_field.find('.js-select-namespace option:selected');
           id = $tr.attr('id').replace('repo_', '');
           target_namespace = null;
-
+          new_name = null;
           if ($namespace_input.length > 0) {
-            target_namespace = $namespace_input.prop('value');
-            $target_field.empty().append(target_namespace + "/" + ($target_field.data('project_name')));
+            target_namespace = $namespace_input[0].innerHTML;
+            new_name = $target_field.find('#path').prop('value');
+            $target_field.empty().append(target_namespace + "/" + new_name);
           }
-
           $btn.disable().addClass('is-loading');
-
           return $.post(_this.import_url, {
             repo_id: id,
-            target_namespace: target_namespace
+            target_namespace: target_namespace,
+            new_name: new_name
           }, {
             dataType: 'script'
           });
