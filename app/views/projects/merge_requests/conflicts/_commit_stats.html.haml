@@ -1,0 +1,20 @@
+.content-block.oneline-block.files-changed{"v-if" => "!isLoading && !hasError"}
+  .inline-parallel-buttons
+    .btn-group
+      %a.btn{ |
+        ":class" => "{'active': !isParallel}", |
+        "@click" => "handleViewTypeChange('inline')"}
+        Inline
+      %a.btn{ |
+        ":class" => "{'active': isParallel}", |
+        "@click" => "handleViewTypeChange('parallel')"}
+        Side-by-side
+
+  .js-toggle-container
+    .commit-stat-summary
+      Showing
+      %strong.cred {{conflictsCount}} conflicts
+      for
+      %strong {{conflictsData.source_branch}}
+      into
+      %strong {{conflictsData.target_branch}}

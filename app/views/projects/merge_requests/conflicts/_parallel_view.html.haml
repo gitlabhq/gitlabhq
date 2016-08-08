@@ -1,0 +1,26 @@
+.files{"v-show" => "isParallel"}
+  .diff-file.file-holder.conflict.parallel-view{"v-for" => "file in conflictsData.files"}
+    .file-title
+      %i.fa.fa-fw.fa{":class" => "file.iconClass"}
+      %strong {{file.filePath}}
+      .file-actions
+        %a.btn.view-file.btn-file-option{":href" => "file.blobPath"}
+          View file @{{conflictsData.shortCommitSha}}
+    .diff-content.diff-wrap-lines
+      .diff-wrap-lines.code.file-content.js-syntax-highlight
+        %table
+          %tr.line_holder.parallel{"v-for" => "section in file.parallelLines"}
+            %template{"v-for" => "line in section"}
+
+              %template{"v-if" => "line.isHeader"}
+                %td.diff-line-num.header{":class" => "#{class_bindings}"}
+                %td.line_content.header{":class" => "#{class_bindings}"}
+                  %strong {{line.richText}}
+                  %button.btn{"@click" => "handleSelected(line.id, line.section)"}
+                    {{line.buttonTitle}}
+
+              %template{"v-if" => "!line.isHeader"}
+                %td.diff-line-num.old_line{":class" => "#{class_bindings}"}
+                  {{line.lineNumber}}
+                %td.line_content.parallel{":class" => "#{class_bindings}"}
+                  {{{line.richText}}}

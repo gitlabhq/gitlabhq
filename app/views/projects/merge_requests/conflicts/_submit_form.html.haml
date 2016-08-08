@@ -1,0 +1,18 @@
+.content-block.oneline-block.files-changed
+  %strong.resolved-count {{resolvedCount}}
+  of
+  %strong.total-count {{conflictsCount}}
+  conflicts have been resolved
+
+  .commit-message-container.form-group
+    .max-width-marker
+    %textarea.form-control.js-commit-message{":disabled" => "!allResolved", "v-model" => "conflictsData.commitMessage"}
+      {{{conflictsData.commitMessage}}}
+
+  %button{type: "button", class: "btn btn-success js-submit-button", ":disabled" => "!allResolved", "@click" => "commit()"}
+    %span Commit conflict resolution
+    %a.fa.fa-spin.fa-spinner{":class" => "{'hidden': !isSubmitting}"}
+
+  / FIXME: Hardcoded path
+  %a.btn.btn-cancel{"href" => "diffs"}
+    Cancel
