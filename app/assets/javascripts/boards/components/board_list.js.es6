@@ -10,8 +10,18 @@
     data: function () {
       return {
         scrollOffset: 250,
-        loadingMore: false
+        loadingMore: false,
+        filters: BoardsStore.state.filters
       };
+    },
+    watch: {
+      'filters': {
+        handler: function () {
+          this.loadingMore = false;
+          this.$els.list.scrollTop = 0;
+        },
+        deep: true
+      }
     },
     methods: {
       listHeight: function () {
@@ -46,7 +56,7 @@
 
           // Remove the new dom element & let vue add the element
           e.item.parentNode.removeChild(e.item);
-          
+
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
         }
       }, gl.boardSortableDefaultOptions);

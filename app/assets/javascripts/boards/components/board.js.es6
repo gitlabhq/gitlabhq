@@ -19,6 +19,7 @@
       },
       'filters': {
         handler: function () {
+          this.list.page = 1;
           this.list.getIssues(true);
         },
         deep: true
