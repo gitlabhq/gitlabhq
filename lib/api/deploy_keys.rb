@@ -76,7 +76,8 @@ module API
           requires :key_id, type: Integer, desc: 'The ID of the deploy key'
         end
         post ":id/#{path}/:key_id/enable" do
-          key = EnableDeployKeyService.new(user_project, current_user, declared(params)).execute
+          key = ::Projects::EnableDeployKeyService.new(user_project,
+                                                        current_user, declared(params)).execute
 
           if key
             present key, with: Entities::SSHKey

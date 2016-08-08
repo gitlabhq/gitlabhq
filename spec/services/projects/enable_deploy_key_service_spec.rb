@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EnableDeployKeyService, services: true do
+describe Projects::EnableDeployKeyService, services: true do
   let(:deploy_key)  { create(:deploy_key, public: true) }
   let(:project)     { create(:empty_project) }
   let(:user)        { project.creator}
@@ -22,6 +22,6 @@ describe EnableDeployKeyService, services: true do
   end
 
   def service
-    EnableDeployKeyService.new(project, user, params)
+    Projects::EnableDeployKeyService.new(project, user, params)
   end
 end

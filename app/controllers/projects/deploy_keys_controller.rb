@@ -27,7 +27,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    EnableDeployKeyService.new(@project, current_user, params).execute
+    Projects::EnableDeployKeyService.new(@project, current_user, params).execute
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
   end
