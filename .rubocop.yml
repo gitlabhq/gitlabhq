@@ -153,11 +153,11 @@ Style/EmptyLinesAroundBlockBody:
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around module bodies.
 Style/EmptyLinesAroundModuleBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
