@@ -46,7 +46,6 @@ module API
     mount ::API::Boards
     mount ::API::Keys
     mount ::API::Labels
-    mount ::API::LicenseTemplates
     mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequests
