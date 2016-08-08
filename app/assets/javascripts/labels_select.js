@@ -304,7 +304,9 @@
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             if (page === 'projects:boards:show') {
-              if (label.title) {
+              if (label.isAny) {
+                BoardsStore.state.filters['label_name'] = [];
+              } else if (label.title) {
                 BoardsStore.state.filters['label_name'].push(label.title);
               } else {
                 var labelIndex = BoardsStore.state.filters['label_name'].indexOf(label.text());

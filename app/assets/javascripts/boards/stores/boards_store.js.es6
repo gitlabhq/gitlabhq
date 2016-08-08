@@ -18,7 +18,6 @@
       if (persist) {
         list.save();
         this.removeBlankState();
-        this.updateNewListDropdown();
       }
 
       return list;
