@@ -97,7 +97,8 @@
     }
 
     updateBadges(data) {
-      $('.todos-pending .badge, .todos-pending-count').text(data.count);
+      $(document).trigger('todo:toggle', data.count);
+      $('.todos-pending .badge').text(data.count);
       return $('.todos-done .badge').text(data.done_count);
     }
 

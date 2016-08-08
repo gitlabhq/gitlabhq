@@ -7,6 +7,9 @@
     if ((base = w.gl).text == null) {
       base.text = {};
     }
+    gl.text.addDelimiter = function(text) {
+      return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
+    }
     gl.text.randomString = function() {
       return Math.random().toString(36).substring(7);
     };

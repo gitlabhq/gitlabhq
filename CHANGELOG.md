@@ -77,6 +77,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Add more tests for calendar contribution (ClemMakesApps)
   - Update Gitlab Shell to fix some problems with moving projects between storages
   - Cache rendered markdown in the database, rather than Redis
+  - Add todo toggle event (ClemMakesApps)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
   - API: Ability to retrieve version information (Robert Schilling)
