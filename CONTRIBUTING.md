@@ -336,6 +336,10 @@ request is as follows:
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
 1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
+1. If your merge request adds one or more migrations, make sure to execute all
+   migrations on a fresh database before the MR is reviewed. If the review leads
+   to large changes in the MR, do this again once the review is complete.
+1. For more complex migrations, write tests.
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
