@@ -181,17 +181,8 @@ class Ability
     end
 
     def project_abilities(user, project)
-      key = "/user/#{user.id}/project/#{project.id}"
-
-      if RequestStore.active?
-        RequestStore.store[key] ||= uncached_project_abilities(user, project)
-      else
-        uncached_project_abilities(user, project)
-      end
-    end
-
-    def uncached_project_abilities(user, project)
       rules = []
+
       # Push abilities on the users team role
       rules.push(*project_team_rules(project.team, user))
 
@@ -218,7 +209,7 @@ class Ability
         rules -= project_archived_rules
       end
 
-      (rules - project_disabled_features_rules(project)).uniq
+      rules - project_disabled_features_rules(project)
     end
 
     def project_team_rules(team, user)
