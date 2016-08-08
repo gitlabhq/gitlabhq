@@ -277,6 +277,7 @@ resources :namespaces, path: '/', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only:
           post :remove_wip
           get :diff_for_path
           post :resolve_conflicts
+          post :assign_related_issues
         end
 
         collection do

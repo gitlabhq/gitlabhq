@@ -708,4 +708,35 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  describe 'POST assign_related_issues' do
+    let(:issue1) { create(:issue, project: project) }
+    let(:issue2) { create(:issue, project: project) }
+
+    def post_assign_issues
+      merge_request.update!(description: "Closes #{issue1.to_reference} and #{issue2.to_reference}",
+                            author: user,
+                            source_branch: 'feature',
+                            target_branch: 'master')
+
+      post :assign_related_issues,
+           namespace_id: project.namespace.to_param,
+           project_id: project.to_param,
+           id: merge_request.iid
+    end
+
+    it 'shows a flash message on success' do
+      post_assign_issues
+
+      expect(flash[:notice]).to eq '2 issues have been assigned to you'
+    end
+
+    it 'correctly pluralizes flash message on success' do
+      issue2.update!(assignee: user)
+
+      post_assign_issues
+
+      expect(flash[:notice]).to eq '1 issue has been assigned to you'
+    end
+  end
 end

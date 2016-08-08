@@ -10,7 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts, :assign_related_issues
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds, :pipelines]
@@ -353,6 +353,25 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_branches = @target_project.repository.branch_names
 
     render layout: false
+  end
+
+  def assign_related_issues
+    result = MergeRequests::AssignIssuesService.new(project, current_user, merge_request: @merge_request).execute
+
+    respond_to do |format|
+      format.html do
+        case result[:count]
+        when 0
+          flash[:error] = "Failed to assign you issues related to the merge request"
+        when 1
+          flash[:notice] = "1 issue has been assigned to you"
+        else
+          flash[:notice] = "#{result[:count]} issues have been assigned to you"
+        end
+
+        redirect_to(merge_request_path(@merge_request))
+      end
+    end
   end
 
   def ci_status
