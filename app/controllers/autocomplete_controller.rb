@@ -9,15 +9,7 @@ class AutocompleteController < ApplicationController
     @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
-
-    if params[:push_code_to_protected_branches].present? && params[:project_id].present?
-      project = Project.find_by(id: params[:project_id])
-      @users = @users.to_a.
-        select { |user| user.can?(:push_code_to_protected_branches, project) }.
-        take(Kaminari.config.default_per_page)
-    else
-      @users = @users.page(params[:page])
-    end
+    @users = load_users_by_ability || @users.page(params[:page])
 
     if params[:search].blank?
       # Include current user if available to filter by "Me"
@@ -55,6 +47,19 @@ class AutocompleteController < ApplicationController
   end
 
   private
+
+  def load_users_by_ability
+    ability = :push_code_to_protected_branches if params[:push_code_to_protected_branches].present?
+    ability = :push_code if params[:push_code].present?
+
+    return if params[:project_id].blank?
+    return if ability.blank?
+
+    project = Project.find_by(id: params[:project_id])
+    @users.to_a.
+      select { |user| user.can?(ability, project) }.
+      take(Kaminari.config.default_per_page)
+  end
 
   def find_users
     @users =
