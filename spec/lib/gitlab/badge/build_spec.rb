@@ -6,15 +6,16 @@ describe Gitlab::Badge::Build do
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
 
-  describe '#type' do
-    subject { badge.type }
-    it { is_expected.to eq 'image/svg+xml' }
-  end
-
   describe '#metadata' do
     it 'returns badge metadata' do
       expect(badge.metadata.image_url)
         .to include 'badges/master/build.svg'
+    end
+  end
+
+  describe '#key_text' do
+    it 'always says build' do
+      expect(badge.key_text).to eq 'build'
     end
   end
 
@@ -30,11 +31,9 @@ describe Gitlab::Badge::Build do
         end
       end
 
-      describe '#data' do
-        let(:data) { badge.data }
-
-        it 'contains information about success' do
-          expect(status_node(data, 'success')).to be_truthy
+      describe '#value_text' do
+        it 'returns correct value text' do
+          expect(badge.value_text).to eq 'success'
         end
       end
     end
@@ -48,11 +47,9 @@ describe Gitlab::Badge::Build do
         end
       end
 
-      describe '#data' do
-        let(:data) { badge.data }
-
-        it 'contains information about failure' do
-          expect(status_node(data, 'failed')).to be_truthy
+      describe '#value_text' do
+        it 'has correct value text' do
+          expect(badge.value_text).to eq 'failed'
         end
       end
     end
@@ -65,11 +62,9 @@ describe Gitlab::Badge::Build do
       end
     end
 
-    describe '#data' do
-      let(:data) { badge.data }
-
-      it 'contains infromation about unknown build' do
-        expect(status_node(data, 'unknown')).to be_truthy
+    describe '#value_text' do
+      it 'has correct value text' do
+        expect(badge.value_text).to eq 'unknown'
       end
     end
   end
@@ -94,10 +89,5 @@ describe Gitlab::Badge::Build do
                                     ref: branch)
 
     create(:ci_build, pipeline: pipeline, stage: 'notify')
-  end
-
-  def status_node(data, status)
-    xml = Nokogiri::XML.parse(data)
-    xml.at(%Q{text:contains("#{status}")})
   end
 end

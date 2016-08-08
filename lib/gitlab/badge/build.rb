@@ -4,35 +4,26 @@ module Gitlab
     # Build badge
     #
     class Build
+      delegate :key_text, :value_text, to: :template
+
       def initialize(project, ref)
         @project = project
         @ref = ref
+        @sha = @project.commit(@ref).try(:sha)
       end
 
       def status
-        sha = @project.commit(@ref).try(:sha)
-
         @project.pipelines
-          .where(sha: sha, ref: @ref)
+          .where(sha: @sha, ref: @ref)
           .status || 'unknown'
       end
 
       def metadata
-        Build::Metadata.new(@project, @ref)
+        @metadata ||= Build::Metadata.new(@project, @ref)
       end
 
       def template
-        Build::Template.new(status)
-      end
-
-      def type
-        'image/svg+xml'
-      end
-
-      def data
-        File.read(
-          Rails.root.join('public/ci', 'build-' + status + '.svg')
-        )
+        @template ||= Build::Template.new(status)
       end
     end
   end
