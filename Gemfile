@@ -154,7 +154,7 @@ gem 'settingslogic', '~> 2.0.9'
 
 # Misc
 
-gem 'version_sorter', '~> 2.0.0'
+gem 'version_sorter', '~> 2.1.0'
 
 # Cache
 gem 'redis-rails', '~> 4.0.0'
