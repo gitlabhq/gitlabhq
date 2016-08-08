@@ -7,6 +7,7 @@ module Gitlab
   module Access
     class AccessDeniedError < StandardError; end
 
+    NO_ACCESS = 0
     GUEST     = 10
     REPORTER  = 20
     DEVELOPER = 30

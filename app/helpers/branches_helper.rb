@@ -9,6 +9,17 @@ module BranchesHelper
     end
   end
 
+  def filter_branches_path(options = {})
+    exist_opts = {
+      search: params[:search],
+      sort: params[:sort]
+    }
+
+    options = exist_opts.merge(options)
+
+    namespace_project_branches_path(@project.namespace, @project, @id, options)
+  end
+
   def can_push_branch?(project, branch_name)
     return false unless project.repository.branch_exists?(branch_name)
 

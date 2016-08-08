@@ -233,7 +233,7 @@ Awesome! You started using CI in GitLab!
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
 
-[runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#installation
+[runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#install-gitlab-runner
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/
 [examples]: ../examples/README.md
 [ci]: https://about.gitlab.com/gitlab-ci/

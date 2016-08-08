@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe API::API, api: true  do
+describe API::API, api: true do
   include ApiHelpers
 
   let(:user) { create(:user) }
   let(:api_user) { user }
-  let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
-  let!(:reporter) { create(:project_member, :reporter, user: user2, project: project) }
-  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id) }
+  let(:reporter) { create(:project_member, :reporter, project: project) }
+  let(:guest) { create(:project_member, :guest, project: project) }
+  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
@@ -172,10 +172,104 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
+    let(:api_user) { reporter.user }
+    let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+
+    def path_for_ref(ref = pipeline.ref, job = build.name)
+      api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
+    end
+
+    context 'when not logged in' do
+      let(:api_user) { nil }
+
+      before do
+        get path_for_ref
+      end
+
+      it 'gives 401' do
+        expect(response).to have_http_status(401)
+      end
+    end
+
+    context 'when logging as guest' do
+      let(:api_user) { guest.user }
+
+      before do
+        get path_for_ref
+      end
+
+      it 'gives 403' do
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    context 'non-existing build' do
+      shared_examples 'not found' do
+        it { expect(response).to have_http_status(:not_found) }
+      end
+
+      context 'has no such ref' do
+        before do
+          get path_for_ref('TAIL', build.name)
+        end
+
+        it_behaves_like 'not found'
+      end
+
+      context 'has no such build' do
+        before do
+          get path_for_ref(pipeline.ref, 'NOBUILD')
+        end
+
+        it_behaves_like 'not found'
+      end
+    end
+
+    context 'find proper build' do
+      shared_examples 'a valid file' do
+        let(:download_headers) do
+          { 'Content-Transfer-Encoding' => 'binary',
+            'Content-Disposition' =>
+              "attachment; filename=#{build.artifacts_file.filename}" }
+        end
+
+        it { expect(response).to have_http_status(200) }
+        it { expect(response.headers).to include(download_headers) }
+      end
+
+      context 'with regular branch' do
+        before do
+          pipeline.update(ref: 'master',
+                          sha: project.commit('master').sha)
+
+          get path_for_ref('master')
+        end
+
+        it_behaves_like 'a valid file'
+      end
+
+      context 'with branch name containing slash' do
+        before do
+          pipeline.update(ref: 'improve/awesome',
+                          sha: project.commit('improve/awesome').sha)
+        end
+
+        before do
+          get path_for_ref('improve/awesome')
+        end
+
+        it_behaves_like 'a valid file'
+      end
+    end
+  end
+
   describe 'GET /projects/:id/builds/:build_id/trace' do
     let(:build) { create(:ci_build, :trace, pipeline: pipeline) }
 
-    before { get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds/#{build.id}/trace", api_user)
+    end
 
     context 'authorized user' do
       it 'should return specific build trace' do
@@ -205,7 +299,7 @@ describe API::API, api: true  do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { user2 }
+        let(:api_user) { reporter.user }
 
         it 'should not cancel build' do
           expect(response).to have_http_status(403)
@@ -237,7 +331,7 @@ describe API::API, api: true  do
       end
 
       context 'user without :update_build permission' do
-        let(:api_user) { user2 }
+        let(:api_user) { reporter.user }
 
         it 'should not retry build' do
           expect(response).to have_http_status(403)

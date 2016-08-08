@@ -21,6 +21,11 @@ module Ci
     after_touch :update_state
     after_save :keep_around_commits
 
+    # ref can't be HEAD or SHA, can only be branch/tag name
+    scope :latest_successful_for, ->(ref = default_branch) do
+      where(ref: ref).success.order(id: :desc).limit(1)
+    end
+
     def self.truncate_sha(sha)
       sha[0...8]
     end
@@ -124,6 +129,10 @@ module Ci
         sort_by { |build| build[:stage_idx] }
     end
 
+    def has_warnings?
+      builds.latest.ignored.any?
+    end
+
     def config_processor
       return nil unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
@@ -176,6 +185,12 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
+    def predefined_variables
+      [
+        { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
+      ]
+    end
+
     private
 
     def update_state
@@ -193,7 +208,7 @@ module Ci
 
     def keep_around_commits
       return unless project
-      
+
       project.repository.keep_around(self.sha)
       project.repository.keep_around(self.before_sha)
     end

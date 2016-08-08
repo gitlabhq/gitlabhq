@@ -232,7 +232,9 @@
 .nav-block {
   .controls {
     float: right;
-    margin-top: 11px;
+    margin-top: 8px;
+    padding-bottom: 7px;
+    border-bottom: 1px solid $border-color;
   }
 }
 

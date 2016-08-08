@@ -1,6 +1,8 @@
 module Gitlab
   module ImportExport
     class UploadsSaver
+      include Gitlab::ImportExport::CommandLineUtil
+
       def initialize(project:, shared:)
         @project = project
         @shared = shared
@@ -16,12 +18,6 @@ module Gitlab
       end
 
       private
-
-      def copy_files(source, destination)
-        FileUtils.mkdir_p(destination)
-        FileUtils.copy_entry(source, destination)
-        true
-      end
 
       def uploads_export_path
         File.join(@shared.export_path, 'uploads')

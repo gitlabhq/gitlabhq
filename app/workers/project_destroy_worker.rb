@@ -12,6 +12,6 @@ class ProjectDestroyWorker
 
     user = User.find(user_id)
 
-    ::Projects::DestroyService.new(project, user, params).execute
+    ::Projects::DestroyService.new(project, user, params.symbolize_keys).execute
   end
 end

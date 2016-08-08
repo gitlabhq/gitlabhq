@@ -30,7 +30,7 @@
             = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
               = icon('trash-o')
       .note-body{class: note_editable ? 'js-task-list-container' : ''}
-        .note-text
+        .note-text.md
           = preserve do
             = note.note_html
           = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago', include_author: true)

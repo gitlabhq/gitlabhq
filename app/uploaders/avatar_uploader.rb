@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 class AvatarUploader < CarrierWave::Uploader::Base
   include UploaderHelper
 
@@ -13,5 +11,9 @@ class AvatarUploader < CarrierWave::Uploader::Base
 
   def reset_events_cache(file)
     model.reset_events_cache if model.is_a?(User)
+  end
+
+  def exists?
+    model.avatar.file && model.avatar.file.exists?
   end
 end

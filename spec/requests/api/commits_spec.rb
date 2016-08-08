@@ -73,9 +73,13 @@ describe API::API, api: true  do
     context "authorized user" do
       it "return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+
         expect(response).to have_http_status(200)
         expect(json_response['id']).to eq(project.repository.commit.id)
         expect(json_response['title']).to eq(project.repository.commit.title)
+        expect(json_response['stats']['additions']).to eq(project.repository.commit.stats.additions)
+        expect(json_response['stats']['deletions']).to eq(project.repository.commit.stats.deletions)
+        expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
       end
 
       it "return a 404 error if not found" do
@@ -177,10 +181,10 @@ describe API::API, api: true  do
       end
 
       it 'should return the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.diffs.first.new_path, line: 7, line_type: 'new'
+        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 7, line_type: 'new'
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
-        expect(json_response['path']).to eq(project.repository.commit.diffs.first.new_path)
+        expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
         expect(json_response['line']).to eq(7)
         expect(json_response['line_type']).to eq('new')
       end

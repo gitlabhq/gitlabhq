@@ -18,6 +18,10 @@
   .btn {
     margin: 4px;
   }
+
+  .table.builds {
+    min-width: 1200px;
+  }
 }
 
 .content-list {
@@ -29,8 +33,17 @@
   }
 }
 
+.pipeline-holder {
+  width: 100%;
+  overflow: auto;
+}
+
 .table.builds {
-  min-width: 1200px;
+  min-width: 900px;
+
+  &.pipeline {
+    min-width: 650px;
+  }
 
   tr {
     th {
@@ -48,6 +61,14 @@
   }
 
   .commit-link {
+
+    .ci-status {
+
+      svg {
+        top: 1px;
+        margin-right: 0;
+      }
+    }
 
     a:hover {
       text-decoration: none;
@@ -68,7 +89,7 @@
 
     svg {
       height: 14px;
-      width: auto;
+      width: 14px;
       vertical-align: middle;
       fill: $table-text-gray;
     }
@@ -85,7 +106,7 @@
 
     .commit-title {
       margin-top: 4px;
-      max-width: 320px;
+      max-width: 300px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -111,7 +132,7 @@
   .icon-container {
     display: inline-block;
     text-align: right;
-    width: 20px;
+    width: 15px;
 
     .fa {
       position: relative;
@@ -121,6 +142,20 @@
     svg {
       position: relative;
       right: 1px;
+    }
+  }
+
+  .stage-cell {
+
+    svg {
+      height: 18px;
+      width: 18px;
+      vertical-align: middle;
+      overflow: visible;
+    }
+
+    .light {
+      width: 3px;
     }
   }
 
@@ -136,7 +171,7 @@
 
     svg {
       width: 12px;
-      height: auto;
+      height: 12px;
       vertical-align: middle;
       margin-right: 4px;
     }

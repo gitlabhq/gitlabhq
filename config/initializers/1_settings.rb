@@ -211,8 +211,7 @@ Settings.gitlab.default_projects_features['snippets']           = false if Setti
 Settings.gitlab.default_projects_features['builds']             = true if Settings.gitlab.default_projects_features['builds'].nil?
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
-Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive') if Settings.gitlab['repository_downloads_path'].nil?
-Settings.gitlab['restricted_signup_domains'] ||= []
+Settings.gitlab['domain_whitelist'] ||= []
 Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project]
 Settings.gitlab['trusted_proxies'] ||= []
 
@@ -288,9 +287,12 @@ Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
 Settings.cron_jobs['repository_archive_cache_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_archive_cache_worker']['cron'] ||= '0 * * * *'
 Settings.cron_jobs['repository_archive_cache_worker']['job_class'] = 'RepositoryArchiveCacheWorker'
-Settings.cron_jobs['gitlab_remove_project_export_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_remove_project_export_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'GitlabRemoveProjectExportWorker'
+Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
+Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
+Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'
 
 #
 # GitLab Shell
@@ -314,6 +316,21 @@ Settings['repositories'] ||= Settingslogic.new({})
 Settings.repositories['storages'] ||= {}
 # Setting gitlab_shell.repos_path is DEPRECATED and WILL BE REMOVED in version 9.0
 Settings.repositories.storages['default'] ||= Settings.gitlab_shell['repos_path'] || Settings.gitlab['user_home'] + '/repositories/'
+
+#
+# The repository_downloads_path is used to remove outdated repository
+# archives, if someone has it configured incorrectly, and it points
+# to the path where repositories are stored this can cause some
+# data-integrity issue. In this case, we sets it to the default
+# repository_downloads_path value.
+#
+repositories_storages_path     = Settings.repositories.storages.values
+repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(/\/$/, '')
+repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
+
+if repository_downloads_path.blank? || repositories_storages_path.any? { |path| [repository_downloads_path, repository_downloads_full_path].include?(path.gsub(/\/$/, '')) }
+  Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
+end
 
 #
 # Backup

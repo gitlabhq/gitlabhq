@@ -11,5 +11,5 @@
           = link_to "Email patch", merge_request_path(@merge_request, format: :patch), class: "btn btn-sm"
   %p
     To preserve performance only
-    %strong #{diff_files.count} of #{diff_files.real_size}
+    %strong #{diff_files.size} of #{diff_files.real_size}
     files are displayed.

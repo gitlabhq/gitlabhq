@@ -38,7 +38,7 @@ GitLab Runner then executes build scripts as the `gitlab-runner` user.
     $ sudo gitlab-ci-multi-runner register -n \
       --url https://gitlab.com/ci \
       --registration-token REGISTRATION_TOKEN \
-      --executor shell
+      --executor shell \
       --description "My Runner"
     ```
 

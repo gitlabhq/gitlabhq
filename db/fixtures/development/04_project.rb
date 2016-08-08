@@ -20,7 +20,6 @@ Sidekiq::Testing.inline! do
       'https://github.com/airbnb/javascript.git',
       'https://github.com/tessalt/echo-chamber-js.git',
       'https://github.com/atom/atom.git',
-      'https://github.com/ipselon/react-ui-builder.git',
       'https://github.com/mattermost/platform.git',
       'https://github.com/purifycss/purifycss.git',
       'https://github.com/facebook/nuclide.git',

@@ -9,7 +9,7 @@
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
+- [Markdown](user/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
@@ -21,7 +21,7 @@
 
 ## Administrator documentation
 
-- [Access restrictions](administration/access_restrictions.md) Define which Git access protocols can be used to talk to GitLab
+- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
@@ -50,10 +50,9 @@
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
+- [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
 
 ## Contributor documentation
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
-  contributing to documentation.
-- [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
+- [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Legal](legal/README.md) Contributor license agreements.

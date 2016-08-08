@@ -106,8 +106,8 @@ production: &base
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
-    # The default is 'tmp/repositories' relative to the root of the Rails app.
-    # repository_downloads_path: tmp/repositories
+    # The default is 'shared/cache/archive/' relative to the root of the Rails app.
+    # repository_downloads_path: shared/cache/archive/
 
   ## Reply by email
   # Allow users to comment on issues and merge requests by replying to notification emails.

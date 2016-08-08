@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  skip_before_action :authenticate_user!, :reject_blocked
+  skip_before_action :authenticate_user!, :reject_blocked!
 
   include SearchHelper
 

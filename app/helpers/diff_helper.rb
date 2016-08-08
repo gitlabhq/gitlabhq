@@ -30,11 +30,7 @@ module DiffHelper
       options[:paths] = params.values_at(:old_path, :new_path)
     end
 
-    Commit.max_diff_options.merge(options)
-  end
-
-  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
+    options
   end
 
   def unfold_bottom_class(bottom)
@@ -54,18 +50,20 @@ module DiffHelper
     end
   end
 
-  def organize_comments(left, right)
-    notes_left = notes_right = nil
+  def parallel_diff_discussions(left, right, diff_file)
+    discussion_left = discussion_right = nil
 
-    unless left[:type].nil? && right[:type] == 'new'
-      notes_left = @grouped_diff_notes[left[:line_code]]
+    if left && (left.unchanged? || left.removed?)
+      line_code = diff_file.line_code(left)
+      discussion_left = @grouped_diff_discussions[line_code]
     end
 
-    unless left[:type].nil? && right[:type].nil?
-      notes_right = @grouped_diff_notes[right[:line_code]]
+    if right && right.added?
+      line_code = diff_file.line_code(right)
+      discussion_right = @grouped_diff_discussions[line_code]
     end
 
-    [notes_left, notes_right]
+    [discussion_left, discussion_right]
   end
 
   def inline_diff_btn
@@ -141,8 +139,6 @@ module DiffHelper
     url = namespace_project_compare_path(project.namespace, project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
-
-  private
 
   def hide_whitespace?
     params[:w] == '1'

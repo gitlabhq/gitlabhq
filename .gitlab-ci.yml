@@ -1,9 +1,5 @@
 image: "ruby:2.1"
 
-services:
-  - mysql:latest
-  - redis:alpine
-
 cache:
   key: "ruby21"
   paths:
@@ -32,9 +28,9 @@ stages:
 - prepare
 - test
 - post-test
+- pages
 
 # Prepare and merge knapsack tests
-
 .knapsack-state: &knapsack-state
   services: []
   variables:
@@ -45,6 +41,7 @@ stages:
     paths:
     - knapsack/
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
 
@@ -68,8 +65,14 @@ update-knapsack:
 
 # Execute all testing suites
 
+.use-db: &use-db
+  services:
+    - mysql:latest
+    - redis:alpine
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -80,11 +83,14 @@ update-knapsack:
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack rspec
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
+    - coverage/
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -95,8 +101,10 @@ update-knapsack:
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
+    - coverage/
 
 rspec 0 20: *rspec-knapsack
 rspec 1 20: *rspec-knapsack
@@ -133,6 +141,7 @@ spinach 9 10: *spinach-knapsack
 # Execute all testing suites against Ruby 2.3
 .ruby-23: &ruby-23
   image: "ruby:2.3"
+  <<: *use-db
   only:
     - master
   cache:
@@ -148,7 +157,7 @@ spinach 9 10: *spinach-knapsack
 .spinach-knapsack-ruby23: &spinach-knapsack-ruby23
   <<: *spinach-knapsack
   <<: *ruby-23
-  
+
 rspec 0 20 ruby23: *rspec-knapsack-ruby23
 rspec 1 20 ruby23: *rspec-knapsack-ruby23
 rspec 2 20 ruby23: *rspec-knapsack-ruby23
@@ -183,31 +192,69 @@ spinach 9 10 ruby23: *spinach-knapsack-ruby23
 
 # Other generic tests
 
+.ruby-static-analysis: &ruby-static-analysis
+  variables:
+    SIMPLECOV: "false"
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+
 .exec: &exec
+  <<: *ruby-static-analysis
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
 
-teaspoon: *exec
 rubocop: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
 rake flog: *exec
 rake flay: *exec
-rake db:migrate:reset: *exec
 license_finder: *exec
+rake downtime_check: *exec
+
+rake db:migrate:reset:
+  stage: test
+  <<: *use-db
+  script:
+    - rake db:migrate:reset
+
+teaspoon:
+  stage: test
+  <<: *use-db
+  script:
+    - teaspoon
 
 bundler:audit:
   stage: test
+  <<: *ruby-static-analysis
   only:
     - master
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+coverage:
+  stage: post-test
+  services: []
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+  script:
+    - bundle exec scripts/merge-simplecov
+  artifacts:
+    name: coverage
+    expire_in: 31d
+    paths:
+    - coverage/index.html
+    - coverage/assets/
+
+
 # Notify slack in the end
 
 notify:slack:
   stage: post-test
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure
@@ -216,3 +263,18 @@ notify:slack:
     - tags@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
     - tags@gitlab-org/gitlab-ee
+
+pages:
+  before_script: []
+  stage: pages
+  dependencies:
+    - coverage
+  script:
+    - mv public/ .public/
+    - mkdir public/
+    - mv coverage public/coverage-ruby
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
