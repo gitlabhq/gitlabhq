@@ -224,6 +224,13 @@ teaspoon:
   script:
     - teaspoon
 
+lint-doc:
+  stage: test
+  image: "phusion/baseimage:latest"
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
+
 bundler:audit:
   stage: test
   <<: *ruby-static-analysis
