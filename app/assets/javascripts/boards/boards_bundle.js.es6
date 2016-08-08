@@ -11,7 +11,6 @@ $(function () {
   if (!window.gl) {
     window.gl = {};
   }
-  gl.boardService = new BoardService($('#board-app').data('endpoint'));
 
   if (gl.IssueBoardsApp) {
     gl.IssueBoardsApp.$destroy(true);
@@ -20,13 +19,19 @@ $(function () {
   gl.IssueBoardsApp = new Vue({
     el: '#board-app',
     props: {
-      disabled: Boolean
+      disabled: Boolean,
+      endpoint: String
     },
     data: {
-      state: BoardsStore.state
+      state: BoardsStore.state,
+      loading: true
     },
     init: function () {
       BoardsStore.create();
+    },
+    created: function () {
+      this.loading = true;
+      gl.boardService = new BoardService(this.endpoint);
     },
     ready: function () {
       BoardsStore.disabled = this.disabled;
@@ -45,6 +50,7 @@ $(function () {
           });
 
           BoardsStore.addBlankState();
+          this.loading = false;
         });
     }
   });
