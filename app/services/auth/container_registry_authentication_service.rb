@@ -4,7 +4,9 @@ module Auth
 
     AUDIENCE = 'container_registry'
 
-    def execute
+    def execute(access_type: access_type)
+      @access_type = access_type
+
       return error('not found', 404) unless registry.enabled
 
       unless current_user || project
@@ -74,9 +76,9 @@ module Auth
 
       case requested_action
       when 'pull'
-        requested_project == project || can?(current_user, :read_container_image, requested_project)
+        restricted_user_can_pull?(requested_project) || privileged_user_can_pull?(requested_project)
       when 'push'
-        requested_project == project || can?(current_user, :create_container_image, requested_project)
+        restricted_user_can_push?(requested_project) || privileged_user_can_push?(requested_project)
       else
         false
       end
@@ -84,6 +86,38 @@ module Auth
 
     def registry
       Gitlab.config.registry
+    end
+
+    private
+
+    def restricted_user_can_pull?(requested_project)
+      return false unless restricted?
+
+      # Restricted can:
+      # 1. pull from it's own project (for ex. a build)
+      # 2. read images from dependent projects if he is a team member
+      requested_project == project || can?(current_user, :restricted_read_container_image, requested_project)
+    end
+
+    def privileged_user_can_pull?(requested_project)
+      full? && can?(current_user, :read_container_image, requested_project)
+    end
+
+    def restricted_user_can_push?(requested_project)
+      # Restricted can push only to project to from which he originates
+      restricted? && requested_project == project
+    end
+
+    def privileged_user_can_push?(requested_project)
+      full? && can?(current_user, :create_container_image, requested_project)
+    end
+
+    def full?
+      @access_type == :full
+    end
+
+    def restricted?
+      @access_type == :restricted
     end
   end
 end

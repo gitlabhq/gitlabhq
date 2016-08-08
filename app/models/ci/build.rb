@@ -1,5 +1,7 @@
 module Ci
   class Build < CommitStatus
+    include TokenAuthenticatable
+
     belongs_to :runner, class_name: 'Ci::Runner'
     belongs_to :trigger_request, class_name: 'Ci::TriggerRequest'
     belongs_to :erased_by, class_name: 'User'
@@ -23,7 +25,10 @@ module Ci
 
     acts_as_taggable
 
+    add_authentication_token_field :token
+
     before_save :update_artifacts_size, if: :artifacts_file_changed?
+    before_save :ensure_token
     before_destroy { project }
 
     after_create :execute_hooks
@@ -172,7 +177,7 @@ module Ci
     end
 
     def repo_url
-      auth = "gitlab-ci-token:#{token}@"
+      auth = "gitlab-ci-token:#{ensure_token}@"
       project.http_url_to_repo.sub(/^https?:\/\//) do |prefix|
         prefix + auth
       end
@@ -340,12 +345,8 @@ module Ci
       )
     end
 
-    def token
-      project.runners_token
-    end
-
     def valid_token?(token)
-      project.valid_runners_token?(token)
+      self.token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.token)
     end
 
     def has_tags?

@@ -4,7 +4,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  attr_reader :user
+  attr_reader :user, :access_type
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
@@ -33,6 +33,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
       else
         @user = auth_result.user
       end
+
+      @access_type = auth_result.access_type
 
       if ci? || user
         return # Allow access
@@ -116,6 +118,14 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def ci?
     @ci.present?
+  end
+
+  def full?
+    @access_type == :full
+  end
+
+  def restricted?
+    @access_type == :restricted
   end
 
   def verify_workhorse_api!

@@ -64,6 +64,12 @@ class ProjectPolicy < BasePolicy
     can! :read_deployment
   end
 
+  # Permissions given when an user is direct member of a group
+  def restricted_reporter_access!
+    can! :restricted_download_code
+    can! :restricted_read_container_image
+  end
+
   def developer_access!
     can! :admin_merge_request
     can! :update_merge_request
@@ -130,10 +136,11 @@ class ProjectPolicy < BasePolicy
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    guest_access!     if access >= Gitlab::Access::GUEST
-    reporter_access!  if access >= Gitlab::Access::REPORTER
-    developer_access! if access >= Gitlab::Access::DEVELOPER
-    master_access!    if access >= Gitlab::Access::MASTER
+    guest_access!               if access >= Gitlab::Access::GUEST
+    reporter_access!            if access >= Gitlab::Access::REPORTER
+    restricted_reporter_access! if access >= Gitlab::Access::REPORTER
+    developer_access!           if access >= Gitlab::Access::DEVELOPER
+    master_access!              if access >= Gitlab::Access::MASTER
   end
 
   def archived_access!
