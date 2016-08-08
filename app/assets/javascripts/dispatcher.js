@@ -193,7 +193,7 @@
                   new Labels();
               }
             case 'abuse_reports':
-              new AbuseReports();
+              new gl.AbuseReports();
               break;
           }
           break;

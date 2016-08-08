@@ -3,9 +3,15 @@
 %hr
 .abuse-reports
   - if @abuse_reports.present?
-    .panel-group#accordion{ role: 'tablist', aria: { multiselectable: 'true' } }
-      = render @abuse_reports
-    = paginate @abuse_reports
+    .table-holder
+      %table.table
+        %thead.hidden-sm.hidden-xs
+          %tr
+            %th User
+            %th Reported by
+            %th.wide Message
+            %th Action
+        = render @abuse_reports
   - else
     .no-reports
       %span.pull-left

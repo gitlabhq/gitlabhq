@@ -99,29 +99,25 @@
 }
 
 .abuse-reports {
-  .btn-group {
-    margin-top: 4px;
+  table-layout: fixed;
+  .action-buttons a {
+    white-space: normal;
   }
-  .panel-body {
-    max-height: 300px;
-    overflow-y: scroll;
+  th {
+    width: 15%;
+    &.wide {
+      width: 55%;
+    }
   }
-  .panel-heading {
-    position: relative;
+  @media (max-width: $screen-sm-max) {
+    th {
+      width: 100%;
+    }
+    td {
+      width: 100%;
+      float: left;
+    }
   }
-  .clickable-entity {
-    display: inline;
-    position: relative;
-    z-index: 2;
-  }
-  .clickable-title {
-    bottom: 0;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-  }
-
   .no-reports {
     .emoji-icon {
       margin-left: $btn-side-margin;
