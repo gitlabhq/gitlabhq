@@ -5,7 +5,7 @@
   ":disabled" => "#{current_user.nil?}" }
   .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
-      %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: (board.label ? board.label.color : null) }" }
+      %header.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: (board.label ? board.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': !disabled }" }
           {{ board.title }}
           %span.pull-right{ "v-if" => "board.type !== 'blank'" }

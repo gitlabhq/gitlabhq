@@ -38,6 +38,8 @@
   .content-wrapper {
     display: -webkit-flex;
     display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
   }
 
   .sub-nav,
@@ -75,13 +77,15 @@
   -webkit-flex: 1;
   flex: 1;
   min-height: calc(100vh - 152px);
+  max-height: calc(100vh - 152px);
   padding-top: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   overflow-x: scroll;
 
   @media (min-width: $screen-sm-min) {
-    min-height: 455px;
+    min-height: 470px;
+    max-height: 470px;
   }
 }
 
@@ -117,8 +121,11 @@
   border-top-right-radius: $border-radius-default;
 
   &.has-border {
-    padding-top: ($gl-padding - 3px);
     border-top: 3px solid;
+
+    .board-title {
+      padding-top: ($gl-padding - 3px);
+    }
   }
 }
 
@@ -129,7 +136,9 @@
 
 .board-title {
   margin: 0;
+  padding: $gl-padding;
   font-size: 1em;
+  border-bottom: 1px solid $border-color;
 }
 
 .board-search-container {

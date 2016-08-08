@@ -82,6 +82,8 @@
       this.updateNewListDropdown();
     },
     moveList: function (oldIndex, newIndex) {
+      if (oldIndex === newIndex) return;
+      
       const listFrom = this.findList('position', oldIndex),
             listTo = this.findList('position', newIndex);
 
