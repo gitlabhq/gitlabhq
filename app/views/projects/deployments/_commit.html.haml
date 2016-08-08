@@ -10,7 +10,7 @@
   %p.commit-title
     %span
       - if commit_title = deployment.commit_title
-        = user_avatar(user: deployment.user, size: 20)
+        = author_avatar(deployment.commit, size: 20)
         = link_to_gfm commit_title, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-row-message"
       - else
         Cant find HEAD commit for this branch

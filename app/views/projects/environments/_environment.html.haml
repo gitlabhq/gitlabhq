@@ -6,6 +6,11 @@
 
   %td
     - if last_deployment
+      = user_avatar(user: last_deployment.user, size: 20)
+      %span ##{last_deployment.id}
+
+  %td
+    - if last_deployment
       = render 'projects/deployments/commit', deployment: last_deployment
     - else
       %p.commit-title
@@ -13,9 +18,7 @@
 
   %td
     - if last_deployment
-      %p.finished-at
-        = icon("calendar")
-        #{time_ago_with_tooltip(last_deployment.created_at, short_format: true, skip_js: true)}
+      #{time_ago_with_tooltip(last_deployment.created_at)}
 
   %td
     = render 'projects/deployments/actions', deployment: last_deployment
