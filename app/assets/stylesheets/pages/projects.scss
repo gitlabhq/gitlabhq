@@ -81,11 +81,15 @@
       font-size: 24px;
       font-weight: normal;
       margin: 0;
+      word-wrap: break-word;
+      word-break: normal;
     }
 
     .project-home-desc {
       p {
         margin: 0;
+        word-wrap: break-word;
+        word-break: normal;
       }
     }
   }
