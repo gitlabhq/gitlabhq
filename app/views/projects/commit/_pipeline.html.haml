@@ -1,4 +1,16 @@
 .row-content-block.build-content.middle-block
+  .pipeline-visualization
+    - pipeline.statuses.stages.each do |stage|
+      - statuses = pipeline.statuses.where(stage: stage)
+      .stage-column
+        %strong
+          %a{name: stage}
+          - if stage
+            = stage.titleize
+        - statuses.each do |status|
+          %div= status.name
+
+
   .pull-right
     - if can?(current_user, :update_pipeline, pipeline.project)
       - if pipeline.builds.latest.failed.any?(&:retryable?)
