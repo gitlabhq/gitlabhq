@@ -45,7 +45,7 @@
             %a.btn.view-file.btn-file-option{":href" => "file.blobPath"}
               View file @{{conflictsData.shortCommitSha}}
         .diff-content.diff-wrap-lines
-          .diff-wrap-lines.code.file-content.js-syntax-highlight.white
+          .diff-wrap-lines.code.file-content.js-syntax-highlight
             %table
               %tr.line_holder.parallel{"v-for" => "section in file.parallelLines"}
                 %template{"v-for" => "line in section"}

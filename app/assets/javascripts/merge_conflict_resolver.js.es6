@@ -46,14 +46,19 @@ window.MergeConflictResolver = class MergeConflictResolver {
     const dp = this.dataProvider;
 
     $.get('./conflicts.json')
-      .done( (data) => {
+      .done((data) => {
         dp.decorateData(this.vue, data);
       })
-      .error( (data) => {
+      .error((data) => {
         dp.handleFailedRequest(this.vue, data);
       })
-      .always( () => {
+      .always(() => {
         this.vue.isLoading = false;
+
+        this.vue.$nextTick(() => {
+          $('#conflicts .js-syntax-highlight').syntaxHighlight();
+        });
+
         if (this.vue.diffViewType === 'parallel') {
           $('.content-wrapper .container-fluid').removeClass('container-limited');
         }
@@ -65,7 +70,7 @@ window.MergeConflictResolver = class MergeConflictResolver {
     this.vue.isSubmitting = true;
 
     $.post('./resolve_conflicts', this.dataProvider.getCommitData())
-      .done( (data) => {
+      .done((data) => {
         window.location.href = data.redirect_to;
       })
       .error(() => {
