@@ -14,7 +14,7 @@ module Gitlab
         end
       end
 
-      def self.allowed?(user, options={})
+      def self.allowed?(user, options = {})
         self.open(user) do |access|
           # Whether user is allowed, or not, we should update
           # permissions to keep things clean

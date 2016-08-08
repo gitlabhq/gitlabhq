@@ -123,6 +123,5 @@ module Projects
         tags << name if local_tags[name].nil?
       end
     end
-
   end
 end

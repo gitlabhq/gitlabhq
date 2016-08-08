@@ -2,7 +2,7 @@ module Oauth2
   class LogoutTokenValidationService < ::BaseService
     attr_reader :status
 
-    def initialize(user, params={})
+    def initialize(user, params = {})
       @params = params
       @current_user = user
     end
