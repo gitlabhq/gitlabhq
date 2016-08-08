@@ -54,6 +54,9 @@ window.MergeConflictResolver = class MergeConflictResolver {
       })
       .always( () => {
         this.vue.isLoading = false;
+        if (this.vue.diffViewType === 'parallel') {
+          $('.content-wrapper .container-fluid').removeClass('container-limited');
+        }
       })
   }
 
