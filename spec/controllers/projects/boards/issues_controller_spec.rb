@@ -41,8 +41,8 @@ describe Projects::Boards::IssuesController do
 
     context 'with unauthorized user' do
       before do
-        allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability.abilities).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
+        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
       end
 
       it 'returns a successful 403 response' do
