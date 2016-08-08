@@ -231,7 +231,57 @@
 }
 
 // Pipeline visualization
+
+.pipeline-visualization {
+  position: relative;
+}
+
 .stage-column {
   display: inline-block;
   vertical-align: top;
+  margin-right: 40px;
+
+  .stage-name {
+    margin-bottom: 15px;
+    font-weight: bold;
+  }
+
+  .builds-container {
+
+  }
+
+  .build {
+    border: 1px solid $border-color;
+    position: relative;
+    padding: 6px 10px;
+    border-radius: 30px;
+    width: 150px;
+    // TODO truncate text within .build div; not on build div itself
+    // white-space: nowrap;
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+    margin-bottom: 10px;
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 5px;
+    }
+
+    &:first-child {
+      &::after, &::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        right: -44px;
+        border-top: 1px solid $border-color;
+        width: 44px;
+        height: 1px;
+      }
+    }
+    &:first-child::before, &:last-child::after{
+      border: 0 none;
+    }
+
+  }
 }

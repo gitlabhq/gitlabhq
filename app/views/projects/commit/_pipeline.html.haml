@@ -1,16 +1,22 @@
-.row-content-block.build-content.middle-block
+.row-content-block.white
+
   .pipeline-visualization
     - pipeline.statuses.stages.each do |stage|
       - statuses = pipeline.statuses.where(stage: stage)
+      - status = statuses.latest.status
       .stage-column
-        %strong
+        .stage-name
           %a{name: stage}
           - if stage
             = stage.titleize
-        - statuses.each do |status|
-          %div= status.name
+        .builds-container
+          - statuses.each do |build|
+            .build
+              %span{class: "ci-status-link ci-status-icon-#{status}"}
+                = ci_icon_for_status(status)
+              = build.name
 
-
+.row-content-block.build-content.middle-block
   .pull-right
     - if can?(current_user, :update_pipeline, pipeline.project)
       - if pipeline.builds.latest.failed.any?(&:retryable?)
