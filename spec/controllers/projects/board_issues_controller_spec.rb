@@ -12,7 +12,6 @@ describe Projects::BoardIssuesController do
 
   before do
     project.team << [user, :master]
-    sign_in(user)
   end
 
   describe 'GET #index' do
@@ -23,7 +22,7 @@ describe Projects::BoardIssuesController do
         create(:labeled_issue, project: project, labels: [development])
         create(:labeled_issue, project: project, labels: [development], assignee: johndoe)
 
-        list_issues list_id: list2
+        list_issues user: user, list_id: list2
 
         parsed_response = JSON.parse(response.body)
 
@@ -34,13 +33,26 @@ describe Projects::BoardIssuesController do
 
     context 'with invalid list id' do
       it 'returns a not found 404 response' do
-        list_issues list_id: 999
+        list_issues user: user, list_id: 999
 
         expect(response).to have_http_status(404)
       end
     end
 
-    def list_issues(list_id:)
+    context 'with unauthorized user' do
+      it 'returns a successful 403 response' do
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_issue, project).and_return(false)
+
+        list_issues user: user, list_id: list2
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    def list_issues(user:, list_id:)
+      sign_in(user)
+
       get :index, namespace_id: project.namespace.to_param,
                   project_id: project.to_param,
                   list_id: list_id.to_param
@@ -52,13 +64,13 @@ describe Projects::BoardIssuesController do
 
     context 'with valid params' do
       it 'returns a successful 200 response' do
-        move issue: issue, from: list1.id, to: list2.id
+        move user: user, issue: issue, from: list1.id, to: list2.id
 
         expect(response).to have_http_status(200)
       end
 
       it 'moves issue to the desired list' do
-        move issue: issue, from: list1.id, to: list2.id
+        move user: user, issue: issue, from: list1.id, to: list2.id
 
         expect(issue.reload.labels).to contain_exactly(development)
       end
@@ -66,19 +78,35 @@ describe Projects::BoardIssuesController do
 
     context 'with invalid params' do
       it 'returns a unprocessable entity 422 response for invalid lists' do
-        move issue: issue, from: nil, to: nil
+        move user: user, issue: issue, from: nil, to: nil
 
         expect(response).to have_http_status(422)
       end
 
       it 'returns a not found 404 response for invalid issue id' do
-        move issue: 999, from: list1.id, to: list2.id
+        move user: user, issue: 999, from: list1.id, to: list2.id
 
         expect(response).to have_http_status(404)
       end
     end
 
-    def move(issue:, from:, to:)
+    context 'with unauthorized user' do
+      let(:guest) { create(:user) }
+
+      before do
+        project.team << [guest, :guest]
+      end
+
+      it 'returns a successful 403 response' do
+        move user: guest, issue: issue, from: list1.id, to: list2.id
+
+        expect(response).to have_http_status(403)
+      end
+    end
+
+    def move(user:, issue:, from:, to:)
+      sign_in(user)
+
       patch :update, namespace_id: project.namespace.to_param,
                      project_id: project.to_param,
                      id: issue.to_param,

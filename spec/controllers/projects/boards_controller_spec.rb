@@ -12,22 +12,33 @@ describe Projects::BoardsController do
   describe 'GET #show' do
     context 'when project does not have a board' do
       it 'creates a new board' do
-        expect { get :show, namespace_id: project.namespace.to_param, project_id: project.to_param }.to change(Board, :count).by(1)
+        expect { read_board }.to change(Board, :count).by(1)
       end
     end
 
     context 'when format is HTML' do
       it 'renders HTML template' do
-        get :show, namespace_id: project.namespace.to_param, project_id: project.to_param
+        read_board
 
         expect(response).to render_template :show
         expect(response.content_type).to eq 'text/html'
+      end
+
+      context 'with unauthorized user' do
+        it 'returns a successful 404 response' do
+          allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+
+          read_board
+
+          expect(response).to have_http_status(404)
+        end
       end
     end
 
     context 'when format is JSON' do
       it 'returns a successful 200 response' do
-        get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, format: :json
+        read_board format: :json
 
         expect(response).to have_http_status(200)
         expect(response.content_type).to eq 'application/json'
@@ -39,13 +50,30 @@ describe Projects::BoardsController do
         create(:list, board: board)
         create(:done_list, board: board)
 
-        get :show, namespace_id: project.namespace.to_param, project_id: project.to_param, format: :json
+        read_board format: :json
 
         parsed_response = JSON.parse(response.body)
 
         expect(response).to match_response_schema('list', array: true)
         expect(parsed_response.length).to eq 3
       end
+
+      context 'with unauthorized user' do
+        it 'returns a successful 403 response' do
+          allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+          allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+
+          read_board format: :json
+
+          expect(response).to have_http_status(403)
+        end
+      end
+    end
+
+    def read_board(format: :html)
+      get :show, namespace_id: project.namespace.to_param,
+                 project_id: project.to_param,
+                 format: format
     end
   end
 end

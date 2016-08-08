@@ -4,7 +4,6 @@ module Boards
       def execute
         return false unless issue.present?
         return false unless valid_move?
-        return false unless user.can?(:update_issue, issue)
 
         update_service.execute(issue)
         reopen_service.execute(issue) if moving_from.done?

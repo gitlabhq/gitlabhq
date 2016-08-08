@@ -1,6 +1,8 @@
 class Projects::BoardListsController < Projects::ApplicationController
   respond_to :json
 
+  before_action :authorize_admin_list!
+
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def create
@@ -44,6 +46,10 @@ class Projects::BoardListsController < Projects::ApplicationController
   end
 
   private
+
+  def authorize_admin_list!
+    return render_403 unless can?(current_user, :admin_list, project)
+  end
 
   def list_params
     params.require(:list).permit(:label_id)
