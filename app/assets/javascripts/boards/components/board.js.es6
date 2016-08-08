@@ -1,23 +1,25 @@
 (() => {
   const Board = Vue.extend({
     props: {
-      board: Object,
+      list: Object,
       disabled: Boolean
     },
     data: function () {
       return {
+        query: '',
         filters: BoardsStore.state.filters
       };
     },
     watch: {
       'query': function () {
-        if (this.board.canSearch()) {
-          this.board.getIssues(true);
+        if (this.list.canSearch()) {
+          this.list.filters = this.getFilterData();
+          this.list.getIssues(true);
         }
       },
       'filters': {
         handler: function () {
-          this.board.getIssues(true);
+          this.list.getIssues(true);
         },
         deep: true
       }
@@ -27,14 +29,14 @@
         this.query = '';
       },
       getFilterData: function () {
-        const queryData = this.board.canSearch() ? { search: this.query } : {};
+        const queryData = this.list.canSearch() ? { search: this.query } : {};
 
         return _.extend(queryData, this.filters);
       }
     },
     computed: {
       isPreset: function () {
-        return this.board.type === 'backlog' || this.board.type === 'done' || this.board.type === 'blank';
+        return this.list.type === 'backlog' || this.list.type === 'done' || this.list.type === 'blank';
       }
     },
     ready: function () {

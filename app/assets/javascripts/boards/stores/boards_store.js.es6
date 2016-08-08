@@ -113,7 +113,9 @@
       }
 
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {
-        _.each(issueLists, list.removeIssue.bind(list));
+        _.each(issueLists, function (list) {
+          list.removeIssue(issue);
+        });
         issue.removeLabels(listLabels);
       } else {
         listFrom.removeIssue(issue);
