@@ -2,7 +2,7 @@ module Gitlab
   module Badge
     class Build
       ##
-      # Abstract class for build badge template.
+      # Class that represents a build badge template.
       #
       # Template object will be passed to badge.svg.erb template.
       #
