@@ -10,6 +10,9 @@ services:
   - redis:latest
   - postgres:latest
 
+variables:
+  POSTGRES_DB: database_name
+
 # Cache gems in between builds
 cache:
   paths:
@@ -34,6 +37,9 @@ rspec:
   - rspec spec
 
 rails:
+  variables:
+    DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/$POSTGRES_DB"
   script:
   - bundle exec rake db:migrate
+  - bundle exec rake db:seed
   - bundle exec rake test
