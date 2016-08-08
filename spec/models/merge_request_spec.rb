@@ -691,4 +691,21 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
   end
+
+  describe '#branch_merge_base_commit' do
+    context 'source and target branch exist' do
+      it { expect(subject.branch_merge_base_commit.sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+      it { expect(subject.branch_merge_base_commit).to be_a(Commit) }
+    end
+
+    context 'when the target branch does not exist' do
+      before do
+        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+      end
+
+      it 'returns nil' do
+        expect(subject.branch_merge_base_commit).to be_nil
+      end
+    end
+  end
 end

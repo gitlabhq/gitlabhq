@@ -177,8 +177,8 @@ class MergeRequest < ActiveRecord::Base
   def diff_base_commit
     if persisted?
       merge_request_diff.base_commit
-    elsif diff_start_commit && diff_head_commit
-      self.target_project.merge_base_commit(diff_start_sha, diff_head_sha)
+    else
+      branch_merge_base_commit
     end
   end
 
@@ -239,6 +239,15 @@ class MergeRequest < ActiveRecord::Base
     target_project.repository.commit(target_branch) if target_branch_ref
   end
 
+  def branch_merge_base_commit
+    start_sha = target_branch_sha
+    head_sha  = source_branch_sha
+
+    if start_sha && head_sha
+      target_project.merge_base_commit(start_sha, head_sha)
+    end
+  end
+
   def target_branch_sha
     @target_branch_sha || target_branch_head.try(:sha)
   end
@@ -247,15 +256,25 @@ class MergeRequest < ActiveRecord::Base
     @source_branch_sha || source_branch_head.try(:sha)
   end
 
+  def branch_merge_base_sha
+    branch_merge_base_commit.try(:sha)
+  end
+
   def diff_refs
     if merge_request_diff
       merge_request_diff.diff_refs
-    elsif diff_start_commit || diff_base_commit
-      Gitlab::Diff::DiffRefs.new(
-        base_sha:  diff_base_sha,
-        start_sha: diff_start_sha,
-        head_sha:  diff_head_sha
-      )
+    else
+      start_sha = target_branch_sha
+      head_sha = source_branch_sha
+      base_sha = branch_merge_base_sha
+
+      if start_sha || base_sha
+        Gitlab::Diff::DiffRefs.new(
+          base_sha:  base_sha,
+          start_sha: start_sha,
+          head_sha:  head_sha
+        )
+      end
     end
   end
 
