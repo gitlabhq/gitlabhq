@@ -656,13 +656,9 @@ pre.light-well {
 }
 
 .new_protected_branch {
-  .dropdown {
-    display: inline;
-    margin-left: 15px;
-  }
-
   label {
-    min-width: 120px;
+    margin-top: 6px;
+    font-weight: normal;
   }
 }
 
@@ -676,6 +672,21 @@ pre.light-well {
 
     &.is-active {
       font-weight: 600;
+    }
+  }
+
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
+    border-radius: 1px;
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: solid 1px transparent;
     }
   }
 }
