@@ -860,6 +860,10 @@ Rails.application.routes.draw do
           resources :issues, only: [:update], controller: :board_issues
 
           resources :lists, only: [:create, :update, :destroy], controller: :board_lists do
+            collection do
+              post :generate
+            end
+
             resources :issues, only: [:index], controller: :board_issues
           end
         end

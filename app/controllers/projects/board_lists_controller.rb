@@ -33,6 +33,16 @@ class Projects::BoardListsController < Projects::ApplicationController
     end
   end
 
+  def generate
+    service = Boards::Lists::GenerateService.new(project, current_user)
+
+    if service.execute
+      render json: project.board.lists.label.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color] } })
+    else
+      head :unprocessable_entity
+    end
+  end
+
   private
 
   def list_params

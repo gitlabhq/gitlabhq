@@ -119,4 +119,36 @@ describe Projects::BoardListsController do
                        format: :json
     end
   end
+
+  describe 'POST #generate' do
+    context 'when board lists is empty' do
+      it 'returns a successful 200 response' do
+        generate_default_board_lists
+
+        expect(response).to have_http_status(200)
+      end
+
+      it 'returns the defaults lists' do
+        generate_default_board_lists
+
+        expect(response).to match_response_schema('list', array: true)
+      end
+    end
+
+    context 'when board lists is not empty' do
+      it 'returns a unprocessable entity 422 response' do
+        create(:list, board: board)
+
+        generate_default_board_lists
+
+        expect(response).to have_http_status(422)
+      end
+    end
+
+    def generate_default_board_lists
+      post :generate, namespace_id: project.namespace.to_param,
+                      project_id: project.to_param,
+                      format: :json
+    end
+  end
 end
