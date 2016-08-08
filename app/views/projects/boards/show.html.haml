@@ -10,5 +10,6 @@
 
 = render 'shared/issuable/filter', type: :boards
 
-.boards-list#board-app{ "data-endpoint" => "#{namespace_project_board_path(@project.namespace, @project)}" }
+.boards-list#board-app{ "data-endpoint" => "#{namespace_project_board_path(@project.namespace, @project)}",
+  ":disabled" => "#{current_user.nil?}" }
   = render "projects/boards/components/board"

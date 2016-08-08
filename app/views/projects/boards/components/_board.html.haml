@@ -1,14 +1,19 @@
-%board{ "inline-template" => true, "v-cloak" => true, "v-for" => "board in state.lists | orderBy 'position'", ":board" => "board" }
+%board{ "inline-template" => true,
+  "v-cloak" => true,
+  "v-for" => "board in state.lists | orderBy 'position'",
+  ":board" => "board",
+  ":disabled" => "#{current_user.nil?}" }
   .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-inner-container.board-header{ ":class" => "{ 'has-border': board.label }", ":style" => "{ borderTopColor: (board.label ? board.label.color : null) }" }
-        %h3.board-title.js-board-handle
+        %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': !disabled }" }
           {{ board.title }}
           %span.pull-right{ "v-if" => "board.type !== 'blank'" }
             {{ board.issues.length }}
-          %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
-            %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click" => "deleteBoard" }
-              = icon("trash")
+          - if current_user
+            %board-delete{ "inline-template" => true, "v-if" => "!isPreset", ":board-id" => "board.id" }
+              %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click" => "deleteBoard" }
+                = icon("trash")
       .board-inner-container.board-search-container{ "v-if" => "board.canSearch()" }
         %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
         = icon("search", class: "board-search-icon", "v-show" => "!query")
@@ -18,8 +23,8 @@
         "v-if" => "board.type !== 'blank'",
         ":list" => "board",
         ":issues" => "board.issues",
-        ":disabled" => "#{current_user.nil?}",
         ":loading" => "board.loading",
+        ":disabled" => "disabled",
         ":issue-link-base" => "'#{namespace_project_issues_path(@project.namespace, @project)}'" }
         .board-list-loading.text-center{ "v-if" => "loading" }
           = icon("spinner spin")

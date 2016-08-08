@@ -1,12 +1,19 @@
-%li.card{ ":data-issue" => "issue.id", "v-for" => "issue in issues | orderBy 'id' -1", "track-by" => "id" }
+%li.card{ ":data-issue" => "issue.id",
+  "v-for" => "issue in issues | orderBy 'id' -1",
+  "track-by" => "id",
+  ":class" => "{ 'user-can-drag': !disabled }" }
   %h4.card-title
-    %a{ ":href" => "issueLinkBase + '/' + issue.id", ":title" => "issue.title" }
+    %a{ ":href" => "issueLinkBase + '/' + issue.id",
+      ":title" => "issue.title" }
       {{ issue.title }}
   .card-footer
     %span.card-number
       = precede '#' do
         {{ issue.id }}
-    %span.label.color-label{ "v-for" => "label in issue.labels", ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+    %span.label.color-label{ "v-for" => "label in issue.labels",
+      ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
       {{ label.title }}
-    %a.has-tooltip{ ":href" => "'/u/' + issue.assignee.username", ":title" => "'Assigned to ' + issue.assignee.name", "v-if" => "issue.assignee" }
+    %a.has-tooltip{ ":href" => "'/u/' + issue.assignee.username",
+      ":title" => "'Assigned to ' + issue.assignee.name",
+      "v-if" => "issue.assignee" }
       %img.avatar.avatar-inline.s20{ ":src" => "issue.assignee.avatar", width: 20, height: 20 }

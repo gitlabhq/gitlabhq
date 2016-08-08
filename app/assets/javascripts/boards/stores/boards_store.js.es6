@@ -1,5 +1,6 @@
 ((w) => {
   w.BoardsStore = {
+    disabled: false,
     state: {},
     create: function () {
       this.state.lists = [];
@@ -41,7 +42,7 @@
     addBlankState: function () {
       const addBlankState = this.shouldAddBlankState();
 
-      if (this.welcomeIsHidden()) return;
+      if (this.welcomeIsHidden() || this.disabled) return;
 
       if (addBlankState) {
         this.new({

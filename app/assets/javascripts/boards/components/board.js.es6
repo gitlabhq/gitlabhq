@@ -1,7 +1,8 @@
 (() => {
   const Board = Vue.extend({
     props: {
-      board: Object
+      board: Object,
+      disabled: Boolean
     },
     data: function () {
       return {
@@ -38,6 +39,7 @@
     },
     ready: function () {
       const options = _.extend({
+        disabled: this.disabled,
         group: 'boards',
         draggable: '.is-draggable',
         handle: '.js-board-handle',

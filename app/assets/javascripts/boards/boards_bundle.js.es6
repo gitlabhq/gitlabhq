@@ -19,6 +19,9 @@ $(function () {
 
   gl.IssueBoardsApp = new Vue({
     el: '#board-app',
+    props: {
+      disabled: Boolean
+    },
     data: {
       state: BoardsStore.state
     },
@@ -26,6 +29,7 @@ $(function () {
       BoardsStore.create();
     },
     ready: function () {
+      BoardsStore.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
           const boards = resp.json();

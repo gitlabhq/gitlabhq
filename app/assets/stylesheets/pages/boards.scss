@@ -2,6 +2,11 @@
   display: none;
 }
 
+.user-can-drag {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
 .is-dragging {
   * {
     cursor: -webkit-grabbing;
@@ -110,8 +115,6 @@
 .board-header {
   border-top-left-radius: $border-radius-default;
   border-top-right-radius: $border-radius-default;
-  cursor: -webkit-grab;
-  cursor: grab;
 
   &.has-border {
     padding-top: ($gl-padding - 3px);
@@ -230,8 +233,6 @@
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
   list-style: none;
-  cursor: -webkit-grab;
-  cursor: grab;
 
   &:not(:last-child) {
     margin-bottom: 5px;
