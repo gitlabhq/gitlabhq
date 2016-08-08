@@ -1,5 +1,15 @@
 class Ability
   class << self
+    def cached_allowed(user, subject)
+      user_key = user ? user.id : 'anonymous'
+      key = "/ability/#{user_key}/#{subject.object_id}"
+      RequestStore[key] ||= Set.new(allowed(user, subject))
+    end
+
+    def allowed?(user, action, subject)
+      cached_allowed(user, subject).include?(action)
+    end
+
     # rubocop: disable Metrics/CyclomaticComplexity
     def allowed(user, subject)
       return anonymous_abilities(user, subject) if user.nil?
@@ -570,11 +580,8 @@ class Ability
     end
 
     def abilities
-      @abilities ||= begin
-        abilities = Six.new
-        abilities << self
-        abilities
-      end
+      warn 'Ability.abilities is deprecated, use Ability.allowed?(user, action, subject) instead'
+      self
     end
 
     private

@@ -10,8 +10,7 @@ describe Project, models: true do
       @u3 = create(:user)
       @u4 = @p1.owner
 
-      @abilities = Six.new
-      @abilities << Ability
+      @abilities = Ability
     end
 
     let(:guest_actions) { Ability.project_guest_rules }

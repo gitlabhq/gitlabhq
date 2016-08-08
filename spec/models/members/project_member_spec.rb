@@ -70,8 +70,7 @@ describe ProjectMember, models: true do
 
   describe :import_team do
     before do
-      @abilities = Six.new
-      @abilities << Ability
+      @abilities = Ability
 
       @project_1 = create :project
       @project_2 = create :project

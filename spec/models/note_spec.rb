@@ -83,8 +83,7 @@ describe Note, models: true do
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
-      @abilities = Six.new
-      @abilities << Ability
+      @abilities = Ability
     end
 
     describe 'read' do
