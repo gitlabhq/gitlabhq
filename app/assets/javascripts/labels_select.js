@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $newLabelCreateButton, $newLabelError, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, newColorField, newLabelField, projectId, resetForm, saveLabel, saveLabelData, selectedLabel, showAny, showNo;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
@@ -13,8 +13,6 @@
         if ((selectedLabel != null) && !$dropdown.hasClass('js-multiselect')) {
           selectedLabel = selectedLabel.split(',');
         }
-        newLabelField = $('#new_label_name');
-        newColorField = $('#new_label_color');
         showNo = $dropdown.data('show-no');
         showAny = $dropdown.data('show-any');
         defaultLabel = $dropdown.data('default-label');
@@ -24,10 +22,6 @@
         $form = $dropdown.closest('form');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
         $value = $block.find('.value');
-        $newLabelError = $('.js-label-error');
-        $colorPreview = $('.js-dropdown-label-color-preview');
-        $newLabelCreateButton = $('.js-new-label-btn');
-        $newLabelError.hide();
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL != null) {
           issueURLSplit = issueUpdateURL.split('/');
@@ -36,62 +30,9 @@
           labelHTMLTemplate = _.template('<% _.each(labels, function(label){ %> <a href="<%- ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%- encodeURIComponent(label.title) %>"> <span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;"> <%- label.title %> </span> </a> <% }); %>');
           labelNoneHTMLTemplate = '<span class="no-value">None</span>';
         }
-        if (newLabelField.length) {
-          $('.suggest-colors-dropdown a').on("click", function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            newColorField.val($(this).data('color')).trigger('change');
-            return $colorPreview.css('background-color', $(this).data('color')).parent().addClass('is-active');
-          });
-          resetForm = function() {
-            newLabelField.val('').trigger('change');
-            newColorField.val('').trigger('change');
-            return $colorPreview.css('background-color', '').parent().removeClass('is-active');
-          };
-          $('.dropdown-menu-back').on('click', function() {
-            return resetForm();
-          });
-          $('.js-cancel-label-btn').on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            resetForm();
-            return $('.dropdown-menu-back', $dropdown.parent()).trigger('click');
-          });
-          enableLabelCreateButton = function() {
-            if (newLabelField.val() !== '' && newColorField.val() !== '') {
-              $newLabelError.hide();
-              return $newLabelCreateButton.enable();
-            } else {
-              return $newLabelCreateButton.disable();
-            }
-          };
-          saveLabel = function() {
-            return Api.newLabel(projectId, {
-              name: newLabelField.val(),
-              color: newColorField.val()
-            }, function(label) {
-              $newLabelCreateButton.enable();
-              if (label.message != null) {
-                var errorText = label.message;
-                if (_.isObject(label.message)) {
-                  errorText = _.map(label.message, function(value, key) {
-                    return key + " " + value[0];
-                  }).join('<br/>');
-                }
-                return $newLabelError.html(errorText).show();
-              } else {
-                return $('.dropdown-menu-back', $dropdown.parent()).trigger('click');
-              }
-            });
-          };
-          newLabelField.on('keyup change', enableLabelCreateButton);
-          newColorField.on('keyup change', enableLabelCreateButton);
-          $newLabelCreateButton.disable().on('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            return saveLabel();
-          });
-        }
+
+        new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+
         saveLabelData = function() {
           var data, selected;
           selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").map(function() {

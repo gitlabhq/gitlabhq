@@ -1,6 +1,8 @@
-$(() => {
+$(function () {
   $('.js-new-board-list').each(function () {
     const $this = $(this);
+
+    new gl.CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('project-id'));
 
     $this.glDropdown({
       data: function(term, callback) {
