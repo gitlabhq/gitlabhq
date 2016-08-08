@@ -9,3 +9,5 @@ Assignee:  <%= @merge_request.assignee_name %>
 Approvers: <%= render_items_list(@merge_request.approvers_left.map(&:name)) %>
 <% end %>
 
+<%= @merge_request.description %>
+

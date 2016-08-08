@@ -76,6 +76,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def diff
+    apply_diff_view_cookie!
+
     @form  = UnfoldForm.new(params)
     @lines = Gitlab::Highlight.highlight_lines(repository, @ref, @path)
     @lines = @lines[@form.since - 1..@form.to - 1]

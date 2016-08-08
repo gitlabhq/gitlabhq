@@ -11,6 +11,10 @@ class PostReceive
       log("Check gitlab.yml config for correct repositories.storages values. No repository storage path matches \"#{repo_path}\"")
     end
 
+    changes = Base64.decode64(changes) unless changes.include?(' ')
+    # Use Sidekiq.logger so arguments can be correlated with execution
+    # time and thread ID's.
+    Sidekiq.logger.info "changes: #{changes.inspect}" if ENV['SIDEKIQ_LOG_ARGUMENTS']
     post_received = Gitlab::GitPostReceive.new(repo_path, identifier, changes)
 
     if post_received.project.nil?

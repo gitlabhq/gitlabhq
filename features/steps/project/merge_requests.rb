@@ -497,6 +497,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click Side-by-side Diff tab' do
     find('a', text: 'Side-by-side').trigger('click')
+
+    # Waits for load
+    expect(page).to have_css('.parallel')
   end
 
   step 'I should see comments on the side-by-side diff page' do

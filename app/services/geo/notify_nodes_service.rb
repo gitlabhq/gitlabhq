@@ -1,6 +1,5 @@
 module Geo
   class NotifyNodesService < BaseNotify
-
     def initialize
       @wiki_queue = Gitlab::Geo::UpdateQueue.new('updated_wikis')
     end

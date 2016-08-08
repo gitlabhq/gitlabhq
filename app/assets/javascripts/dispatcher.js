@@ -180,8 +180,8 @@
           new AdminEmailSelect();
           break;
         case 'projects:protected_branches:index':
-          new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);
-          new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
           break;
       }
       switch (path.first()) {

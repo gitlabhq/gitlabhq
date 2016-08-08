@@ -153,11 +153,11 @@ Style/EmptyLinesAroundBlockBody:
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around module bodies.
 Style/EmptyLinesAroundModuleBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
@@ -371,6 +371,10 @@ Style/SpaceAfterNot:
 
 # Use spaces after semicolons.
 Style/SpaceAfterSemicolon:
+  Enabled: true
+
+# Use space around equals in parameter default
+Style/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
 # Use a space around keywords if appropriate.

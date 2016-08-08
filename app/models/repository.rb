@@ -666,7 +666,7 @@ class Repository
     commit(sha)
   end
 
-  def next_branch(name, opts={})
+  def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
       result = n.match(/\A#{name}-([0-9]+)\z/)

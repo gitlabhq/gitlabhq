@@ -14,11 +14,33 @@ Note: `db:setup` calls `db:seed` but this does nothing.
 
 ## Run tests
 
-This runs all test suites present in GitLab.
+In order to run the test you can use the following commands:
+- `rake spinach` to run the spinach suite
+- `rake spec` to run the rspec suite
+- `rake teaspoon` to run the teaspoon test suite
+- `rake gitlab:test` to run all the tests
 
-```
-bundle exec rake test
-```
+Note: Both `rake spinach` and `rake spec` takes significant time to pass. 
+Instead of running full test suite locally you can save a lot of time by running
+a single test or directory related to your changes. After you submit merge request 
+CI will run full test suite for you. Green CI status in the merge request means 
+full test suite is passed.  
+
+Note: You can't run `rspec .` since this will try to run all the `_spec.rb`
+files it can find, also the ones in `/tmp`
+
+To run a single test file you can use:
+
+- `bundle exec rspec spec/controllers/commit_controller_spec.rb` for a rspec test
+- `bundle exec spinach features/project/issues/milestones.feature` for a spinach test
+
+To run several tests inside one directory:
+
+- `bundle exec rspec spec/requests/api/` for the rspec tests if you want to test API only
+- `bundle exec spinach features/profile/` for the spinach tests if you want to test only profile pages
+
+If you want to use [Spring](https://github.com/rails/spring) set
+`ENABLE_SPRING=1` in your environment.
 
 ## Generate searchable docs for source code
 

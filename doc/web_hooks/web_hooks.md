@@ -29,6 +29,10 @@ GitLab webhooks keep in mind the following things:
     you are writing a low-level hook this is important to remember.
 -   GitLab ignores the HTTP status code returned by your endpoint.
 
+## Secret Token
+
+If you specify a secret token, it will be sent with the hook request in the `X-Gitlab-Token` HTTP header. Your webhook endpoint can check that to verify that the request is legitimate.
+
 ## SSL Verification
 
 By default, the SSL certificate of the webhook endpoint is verified based on

@@ -22,5 +22,4 @@ module GeoDynamicBackoff
     count = count - 30 # we must start counting after 30
     (count**4) + 15 + (rand(30) * (count + 1))
   end
-
 end

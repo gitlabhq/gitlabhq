@@ -1,7 +1,6 @@
 # GitLab Container Registry Administration
 
-> **Note:**
-This feature was [introduced][ce-4040] in GitLab 8.8.
+> [Introduced][ce-4040] in GitLab 8.8.
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.

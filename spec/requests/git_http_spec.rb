@@ -437,19 +437,19 @@ describe 'Git HTTP requests', lib: true do
     end
   end
 
-  def clone_get(project, options={})
+  def clone_get(project, options = {})
     get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def clone_post(project, options={})
+  def clone_post(project, options = {})
     post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_get(project, options={})
+  def push_get(project, options = {})
     get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_post(project, options={})
+  def push_post(project, options = {})
     post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 

@@ -3,12 +3,64 @@
 This styleguide recommends best practices to improve documentation and to keep
 it organized and easy to find.
 
-## Naming
+## Location and naming of documents
 
-- When creating a new document and it has more than one word in its name,
-  make sure to use underscores instead of spaces or dashes (`-`). For example,
-  a proper naming would be `import_projects_from_github.md`. The same rule
-  applies to images.
+>**Note:**
+These guidelines derive from the discussion taken place in issue [#3349](ce-3349).
+
+The documentation hierarchy can be vastly improved by providing a better layout
+and organization of directories.
+
+Having a structured document layout, we will be able to have meaningful URLs
+like `docs.gitlab.com/user/project/merge_requests.html`. With this pattern,
+you can immediately tell that you are navigating a user related documentation
+and is about the project and its merge requests.
+
+The table below shows what kind of documentation goes where.
+
+| Directory | What belongs here |
+| --------- | -------------- |
+| `doc/user/` | User related documentation. Anything that can be done within the GitLab UI goes here including `/admin`. |
+| `doc/administration/`  | Documentation that requires the user to have access to the server where GitLab is installed. The admin settings that can be accessed via GitLab's interface go under `doc/user/admin_area/`. |
+| `doc/api/` | API related documentation. |
+| `doc/development/` | Documentation related to the development of GitLab. Any styleguides should go here. |
+| `doc/legal/` | Legal documents about contributing to GitLab. |
+| `doc/install/`| Probably the most visited directory, since `installation.md` is there. Ideally this should go under `doc/administration/`, but it's best to leave it as-is in order to avoid confusion (still debated though). |
+| `doc/update/` | Same with `doc/install/`. Should be under `administration/`, but this is a well known location, better leave as-is, at least for now. |
+
+---
+
+**General rules:**
+
+1. The correct naming and location of a new document, is a combination
+   of the relative URL of the document in question and the GitLab Map design
+   that is used for UX purposes ([source][graffle], [image][gitlab-map]).
+1. When creating a new document and it has more than one word in its name,
+   make sure to use underscores instead of spaces or dashes (`-`). For example,
+   a proper naming would be `import_projects_from_github.md`. The same rule
+   applies to images.
+1. There are four main directories, `user`, `administration`, `api` and `development`.
+1. The `doc/user/` directory has five main subdirectories: `project/`, `group/`,
+   `profile/`, `dashboard/` and `admin_area/`.
+   1. `doc/user/project/` should contain all project related documentation.
+   1. `doc/user/group/` should contain all group related documentation.
+   1. `doc/user/profile/` should contain all profile related documentation.
+      Every page you would navigate under `/profile` should have its own document,
+      i.e. `account.md`, `applications.md`, `emails.md`, etc.
+   1. `doc/user/dashboard/` should contain all dashboard related documentation.
+   1. `doc/user/admin_area/` should contain all admin related documentation
+      describing what can be achieved by accessing GitLab's admin interface
+      (_not to be confused with `doc/administration` where server access is
+      required_).
+      1. Every category under `/admin/application_settings` should have its
+         own document located at `doc/user/admin_area/settings/`. For example,
+         the **Visibility and Access Controls** category should have a document
+         located at `doc/user/admin_area/settings/visibility_and_access_controls.md`.
+
+---
+
+If you are unsure where a document should live, you can ping `@axil` in your
+merge request.
 
 ## Text
 
@@ -103,15 +155,15 @@ Inside the document:
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note: `>**Note:** This feature was introduced in GitLab 8.3`
+  note: `> Introduced in GitLab 8.3.`.
 - If possible every feature should have a link to the MR that introduced it.
   The above note would be then transformed to:
-  `>**Note:** This feature was [introduced][ce-1242] in GitLab 8.3`, where
+  `> [Introduced][ce-1242] in GitLab 8.3.`, where
   the [link identifier](#links) is named after the repository (CE) and the MR
-  number
+  number.
 - If the feature is only in GitLab EE, don't forget to mention it, like:
-  `>**Note:** This feature was introduced in GitLab EE 8.3`. Otherwise, leave
-  this mention out
+  `> Introduced in GitLab EE 8.3.`. Otherwise, leave
+  this mention out.
 
 ## References
 
@@ -372,3 +424,6 @@ curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -d "domain_whitelist[]=*.ex
 [single spaces]: http://www.slate.com/articles/technology/technology/2011/01/space_invaders.html
 [gfm]: http://docs.gitlab.com/ce/markdown/markdown.html#newlines "GitLab flavored markdown documentation"
 [doc-restart]: ../administration/restart_gitlab.md "GitLab restart documentation"
+[ce-3349]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3349 "Documentation restructure"
+[graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/d8d39f4a87b90fb9ae89ca12dc565347b4900d5e/production/resources/gitlab-map.graffle
+[gitlab-map]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
