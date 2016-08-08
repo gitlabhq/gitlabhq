@@ -13,7 +13,7 @@ GET /projects/:id/environments
 | `id`      | integer | yes      | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/environments
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/environments
 ```
 
 Example response:
@@ -45,7 +45,7 @@ POST /projects/:id/environment
 | `external_url` | string  | no     | Place to link to for this environment |
 
 ```bash
-curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments"
+curl --data "name=deploy&external_url=https://deploy.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environments"
 ```
 
 Example response:
@@ -76,7 +76,7 @@ PUT /projects/:id/environments/:environments_id
 | `external_url`  | string  | no                                | The new external_url             |
 
 ```bash
-curl -X PUT --data "name=staging&external_url=https://staging.example.gitlab.com" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request PUT --data "name=staging&external_url=https://staging.example.gitlab.com" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
 ```
 
 Example response:
@@ -103,7 +103,7 @@ DELETE /projects/:id/environments/:environment_id
 | `environment_id` | integer | yes | The ID of the environment |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/environment/1"
 ```
 
 Example response:
