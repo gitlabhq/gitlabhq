@@ -28,6 +28,7 @@ v 8.10.0
   - Rename Git Hooks to Push Rules
   - Fix EE keys fingerprint add index migration if came from CE
   - Add todos for MR approvers !547
+  - Replace LDAP group sync exclusive lease with state machine
   - Prevent the author of an MR from being on the approvers list
   - Isolate EE LDAP library code in EE module (Part 1) !511
   - Make Elasticsearch indexer run as an async task

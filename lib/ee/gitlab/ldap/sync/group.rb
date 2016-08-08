@@ -16,11 +16,13 @@ module EE
           end
 
           def update_permissions
-            lease = ::Gitlab::ExclusiveLease.new(
-              "ldap_group_sync:#{provider}:#{group.id}",
-              timeout: 3600
-            )
-            return unless lease.try_obtain
+            fail_stuck_group(group)
+
+            if group.ldap_sync_started?
+              logger.debug { "Group '#{group.name}' is not ready for LDAP sync. Skipping" }
+              return
+            end
+            group.start_ldap_sync
 
             logger.debug { "Syncing '#{group.name}' group" }
 
@@ -38,7 +40,7 @@ module EE
             update_existing_group_membership(group, access_levels)
             add_new_members(group, access_levels)
 
-            group.update(last_ldap_sync_at: Time.now)
+            group.finish_ldap_sync
 
             logger.debug { "Finished syncing '#{group.name}' group" }
           end
@@ -141,6 +143,14 @@ module EE
           def select_and_preload_group_members(group)
             group.members.select_access_level_and_user
               .with_identity_provider(provider).preload(:user)
+          end
+
+          def fail_stuck_group(group)
+            return false unless group.ldap_sync_started?
+
+            if group.ldap_sync_last_sync_at < 1.hour.ago
+              group.mark_ldap_sync_as_failed('The sync took too long to complete.')
+            end
           end
 
           def logger

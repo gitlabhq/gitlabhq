@@ -757,12 +757,17 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.boolean  "membership_lock",       default: false
     t.boolean  "share_with_group_lock", default: false
     t.integer  "visibility_level",      default: 20,    null: false
-    t.datetime "last_ldap_sync_at"
     t.boolean  "request_access_enabled", default: true,  null: false
+    t.string   "ldap_sync_status",                    default: "ready", null: false
+    t.string   "ldap_sync_error"
+    t.datetime "ldap_sync_last_update_at"
+    t.datetime "ldap_sync_last_successful_update_at"
+    t.datetime "ldap_sync_last_sync_at"
   end
 
   add_index "namespaces", ["created_at", "id"], name: "index_namespaces_on_created_at_and_id", using: :btree
-  add_index "namespaces", ["last_ldap_sync_at"], name: "index_namespaces_on_last_ldap_sync_at", using: :btree
+  add_index "namespaces", ["ldap_sync_last_successful_update_at"], name: "index_namespaces_on_ldap_sync_last_successful_update_at", using: :btree
+  add_index "namespaces", ["ldap_sync_last_update_at"], name: "index_namespaces_on_ldap_sync_last_update_at", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
