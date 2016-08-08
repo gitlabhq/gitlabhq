@@ -1,3 +1,4 @@
+window.gl = window.gl || {};
 ((global) => {
   const MAX_MESSAGE_LENGTH = 500;
   const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';
@@ -16,7 +17,7 @@
       if (reportMessage.length > MAX_MESSAGE_LENGTH) {
         $messageCellElement.data('original-message', reportMessage);
         $messageCellElement.data('message-truncated', 'true');
-        $messageCellElement.text(`${reportMessage.substr(0, MAX_MESSAGE_LENGTH)}...`);
+        $messageCellElement.text(`${reportMessage.substr(0, (MAX_MESSAGE_LENGTH - 3))}...`);
       }
     }
 
@@ -29,7 +30,7 @@
         $messageCellElement.text(originalMessage);
       } else {
         $messageCellElement.data('message-truncated', 'true');
-        $messageCellElement.text(`${originalMessage.substr(0, MAX_MESSAGE_LENGTH)}...`);
+        $messageCellElement.text(`${originalMessage.substr(0, (MAX_MESSAGE_LENGTH - 3))}...`);
       }
     }
   }

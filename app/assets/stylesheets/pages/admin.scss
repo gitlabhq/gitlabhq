@@ -99,10 +99,16 @@
 }
 
 .abuse-reports {
-  table-layout: fixed;
-  .action-buttons a {
-    white-space: normal;
+  .table {
+    table-layout: fixed;
   }
+  .subheading {
+    padding-bottom: $gl-padding;
+  }
+  .message {
+    word-wrap: break-word;
+  }
+
   th {
     width: 15%;
     &.wide {
@@ -118,6 +124,7 @@
       float: left;
     }
   }
+
   .no-reports {
     .emoji-icon {
       margin-left: $btn-side-margin;
