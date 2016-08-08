@@ -373,6 +373,10 @@ Style/SpaceAfterNot:
 Style/SpaceAfterSemicolon:
   Enabled: true
 
+# Use space around equals in parameter default
+Style/SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
 # Use a space around keywords if appropriate.
 Style/SpaceAroundKeyword:
   Enabled: true
