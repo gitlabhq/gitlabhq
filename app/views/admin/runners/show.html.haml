@@ -67,7 +67,7 @@
               = form_for [:admin, project.namespace.becomes(Namespace), project, project.runner_projects.new] do |f|
                 = f.hidden_field :runner_id, value: @runner.id
                 = f.submit 'Enable', class: 'btn btn-xs'
-    = paginate @projects
+    = paginate @projects, theme: "gitlab"
 
   .col-md-6
     %h4 Recent builds served by this runner
