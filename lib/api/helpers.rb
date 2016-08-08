@@ -409,11 +409,7 @@ module API
     end
 
     def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
+      Ability
     end
 
     def secret_token

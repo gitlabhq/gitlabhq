@@ -1,7 +1,23 @@
 class Ability
   class << self
+
+    end
+
+    def allowed?(user, action, subject)
+      allowed(user, subject).include?(action)
+    end
+
     def allowed(user, subject)
-      return anonymous_abilities(user, subject) if user.nil?
+      return uncached_allowed(user, subject) unless RequestStore.active?
+
+      user_key = user ? user.id : 'anonymous'
+      subject_key = subject ? "#{subject.class.name}/#{subject.id}" : 'global'
+      key = "/ability/#{user_key}/#{subject_key}"
+      RequestStore[key] ||= Set.new(uncached_allowed(user, subject)).freeze
+    end
+
+    def uncached_allowed(user, subject)
+      return anonymous_abilities(subject) if user.nil?
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
@@ -586,11 +602,8 @@ class Ability
     end
 
     def abilities
-      @abilities ||= begin
-        abilities = Six.new
-        abilities << self
-        abilities
-      end
+      warn 'Ability.abilities is deprecated, use Ability.allowed?(user, action, subject) instead'
+      self
     end
 
     private
