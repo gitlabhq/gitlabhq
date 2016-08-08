@@ -11,11 +11,10 @@ $(() => {
         });
       },
       renderRow: (label) => {
-        const isHidden = BoardsStore.findList('title', label.title),
-              $li = $('<li />', {
-                class: (isHidden ? 'hidden' : '')
-              }),
+        const active = BoardsStore.findList('title', label.title),
+              $li = $('<li />',),
               $a = $('<a />', {
+                class: (active ? 'is-active' : ''),
                 text: label.title,
                 href: '#'
               }),
@@ -33,16 +32,18 @@ $(() => {
       selectable: true,
       clicked: (label, $el, e) => {
         e.preventDefault();
-        BoardsStore.new({
-          title: label.title,
-          position: BoardsStore.state.lists.length - 1,
-          label: {
-            id: label.id,
+
+        if (!BoardsStore.findList('title', label.title)) {
+          BoardsStore.new({
             title: label.title,
-            color: label.color
-          },
-          issues: []
-        });
+            position: BoardsStore.state.lists.length - 1,
+            label: {
+              id: label.id,
+              title: label.title,
+              color: label.color
+            }
+          });
+        }
       }
     });
   });

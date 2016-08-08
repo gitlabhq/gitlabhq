@@ -18,9 +18,14 @@
       if (persist) {
         list.save();
         this.removeBlankState();
+        this.updateNewListDropdown();
       }
 
       return list;
+    },
+    updateNewListDropdown: function () {
+      const data = $('.js-new-board-list').data('glDropdown').renderedData;
+      $('.js-new-board-list').data('glDropdown').renderData(data);
     },
     shouldAddBlankState: function () {
       // Decide whether to add the blank state
@@ -73,6 +78,8 @@
       this.state.lists = _.reject(this.state.lists, (list) => {
         return list.id === id;
       });
+
+      this.updateNewListDropdown();
     },
     moveList: function (oldIndex, newIndex) {
       const listFrom = this.findList('position', oldIndex),
