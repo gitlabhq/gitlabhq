@@ -1,6 +1,6 @@
 # Todos
 
-**Note:** This feature was [introduced][ce-3188] in GitLab 8.10
+> [Introduced][ce-3188] in GitLab 8.10.
 
 ## Get a list of todos
 
