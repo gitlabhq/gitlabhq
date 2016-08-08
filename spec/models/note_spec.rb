@@ -85,7 +85,6 @@ describe Note, models: true do
       @u1 = create(:user)
       @u2 = create(:user)
       @u3 = create(:user)
-      @abilities = Ability
     end
 
     describe 'read' do
@@ -94,9 +93,9 @@ describe Note, models: true do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::GUEST)
       end
 
-      it { expect(@abilities.allowed?(@u1, :read_note, @p1)).to be_falsey }
-      it { expect(@abilities.allowed?(@u2, :read_note, @p1)).to be_truthy }
-      it { expect(@abilities.allowed?(@u3, :read_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u1, :read_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u2, :read_note, @p1)).to be_truthy }
+      it { expect(Ability.allowed?(@u3, :read_note, @p1)).to be_falsey }
     end
 
     describe 'write' do
@@ -105,9 +104,9 @@ describe Note, models: true do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::DEVELOPER)
       end
 
-      it { expect(@abilities.allowed?(@u1, :create_note, @p1)).to be_falsey }
-      it { expect(@abilities.allowed?(@u2, :create_note, @p1)).to be_truthy }
-      it { expect(@abilities.allowed?(@u3, :create_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u1, :create_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u2, :create_note, @p1)).to be_truthy }
+      it { expect(Ability.allowed?(@u3, :create_note, @p1)).to be_falsey }
     end
 
     describe 'admin' do
@@ -117,9 +116,9 @@ describe Note, models: true do
         @p2.project_members.create(user: @u3, access_level: ProjectMember::MASTER)
       end
 
-      it { expect(@abilities.allowed?(@u1, :admin_note, @p1)).to be_falsey }
-      it { expect(@abilities.allowed?(@u2, :admin_note, @p1)).to be_truthy }
-      it { expect(@abilities.allowed?(@u3, :admin_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u1, :admin_note, @p1)).to be_falsey }
+      it { expect(Ability.allowed?(@u2, :admin_note, @p1)).to be_truthy }
+      it { expect(Ability.allowed?(@u3, :admin_note, @p1)).to be_falsey }
     end
   end
 

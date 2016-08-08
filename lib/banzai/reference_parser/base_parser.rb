@@ -211,7 +211,7 @@ module Banzai
       end
 
       def can?(user, permission, subject)
-        Ability.abilities.allowed?(user, permission, subject)
+        Ability.allowed?(user, permission, subject)
       end
 
       def find_projects_for_hash_keys(hash)

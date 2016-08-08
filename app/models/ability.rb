@@ -592,11 +592,6 @@ class Ability
       [:read_user]
     end
 
-    def abilities
-      warn 'Ability.abilities is deprecated, use Ability.allowed?(user, action, subject) instead'
-      self
-    end
-
     def restricted_public_level?
       current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
     end

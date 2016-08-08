@@ -148,7 +148,7 @@ module API
     end
 
     def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
+      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -388,10 +388,6 @@ module API
       links << %(<#{request_url}?#{request_params.to_query}>; rel="last")
 
       links.join(', ')
-    end
-
-    def abilities
-      Ability
     end
 
     def secret_token
