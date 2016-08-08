@@ -453,16 +453,12 @@ class User < ActiveRecord::Base
     can?(:create_group, nil)
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can_select_namespace?
     several_namespaces? || admin
   end
 
   def can?(action, subject)
-    abilities.allowed?(self, action, subject)
+    Ability.allowed?(self, action, subject)
   end
 
   def first_name

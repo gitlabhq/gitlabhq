@@ -9,8 +9,6 @@ describe Project, models: true do
       @u2 = create(:user)
       @u3 = create(:user)
       @u4 = @p1.owner
-
-      @abilities = Ability
     end
 
     let(:guest_actions) { Ability.project_guest_rules }
@@ -22,7 +20,7 @@ describe Project, models: true do
     describe "Non member rules" do
       it "should deny for non-project users any actions" do
         owner_actions.each do |action|
-          expect(@abilities.allowed?(@u1, action, @p1)).to be_falsey
+          expect(Ability.allowed?(@u1, action, @p1)).to be_falsey
         end
       end
     end
@@ -34,7 +32,7 @@ describe Project, models: true do
 
       it "should allow for project user any guest actions" do
         guest_actions.each do |action|
-          expect(@abilities.allowed?(@u2, action, @p1)).to be_truthy
+          expect(Ability.allowed?(@u2, action, @p1)).to be_truthy
         end
       end
     end
@@ -46,7 +44,7 @@ describe Project, models: true do
 
       it "should allow for project user any report actions" do
         report_actions.each do |action|
-          expect(@abilities.allowed?(@u2, action, @p1)).to be_truthy
+          expect(Ability.allowed?(@u2, action, @p1)).to be_truthy
         end
       end
     end
@@ -59,13 +57,13 @@ describe Project, models: true do
 
       it "should deny for developer master-specific actions" do
         [dev_actions - report_actions].each do |action|
-          expect(@abilities.allowed?(@u2, action, @p1)).to be_falsey
+          expect(Ability.allowed?(@u2, action, @p1)).to be_falsey
         end
       end
 
       it "should allow for project user any dev actions" do
         dev_actions.each do |action|
-          expect(@abilities.allowed?(@u3, action, @p1)).to be_truthy
+          expect(Ability.allowed?(@u3, action, @p1)).to be_truthy
         end
       end
     end
@@ -78,13 +76,13 @@ describe Project, models: true do
 
       it "should deny for developer master-specific actions" do
         [master_actions - dev_actions].each do |action|
-          expect(@abilities.allowed?(@u2, action, @p1)).to be_falsey
+          expect(Ability.allowed?(@u2, action, @p1)).to be_falsey
         end
       end
 
       it "should allow for project user any master actions" do
         master_actions.each do |action|
-          expect(@abilities.allowed?(@u3, action, @p1)).to be_truthy
+          expect(Ability.allowed?(@u3, action, @p1)).to be_truthy
         end
       end
     end
@@ -97,13 +95,13 @@ describe Project, models: true do
 
       it "should deny for masters admin-specific actions" do
         [owner_actions - master_actions].each do |action|
-          expect(@abilities.allowed?(@u2, action, @p1)).to be_falsey
+          expect(Ability.allowed?(@u2, action, @p1)).to be_falsey
         end
       end
 
       it "should allow for project owner any admin actions" do
         owner_actions.each do |action|
-          expect(@abilities.allowed?(@u4, action, @p1)).to be_truthy
+          expect(Ability.allowed?(@u4, action, @p1)).to be_truthy
         end
       end
     end

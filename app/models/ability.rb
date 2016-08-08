@@ -579,11 +579,6 @@ class Ability
       [:read_user]
     end
 
-    def abilities
-      warn 'Ability.abilities is deprecated, use Ability.allowed?(user, action, subject) instead'
-      self
-    end
-
     private
 
     def restricted_public_level?
