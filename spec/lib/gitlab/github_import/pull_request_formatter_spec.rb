@@ -9,6 +9,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
   let(:source_branch) { double(ref: 'feature', repo: source_repo, sha: source_sha) }
   let(:target_repo) { repository }
   let(:target_branch) { double(ref: 'master', repo: target_repo, sha: target_sha) }
+  let(:removed_branch) { double(ref: 'removed-branch', repo: source_repo, sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b') }
   let(:octocat) { double(id: 123456, login: 'octocat') }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
@@ -162,6 +163,42 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
 
     it 'returns pull request number' do
       expect(pull_request.number).to eq 1347
+    end
+  end
+
+  describe '#source_branch_name' do
+    context 'when source branch exists' do
+      let(:raw_data) { double(base_data) }
+
+      it 'returns branch ref' do
+        expect(pull_request.source_branch_name).to eq 'feature'
+      end
+    end
+
+    context 'when source branch does not exist' do
+      let(:raw_data) { double(base_data.merge(head: removed_branch)) }
+
+      it 'prefixes branch name with pull request number' do
+        expect(pull_request.source_branch_name).to eq 'pull/1347/removed-branch'
+      end
+    end
+  end
+
+  describe '#target_branch_name' do
+    context 'when source branch exists' do
+      let(:raw_data) { double(base_data) }
+
+      it 'returns branch ref' do
+        expect(pull_request.target_branch_name).to eq 'master'
+      end
+    end
+
+    context 'when target branch does not exist' do
+      let(:raw_data) { double(base_data.merge(base: removed_branch)) }
+
+      it 'prefixes branch name with pull request number' do
+        expect(pull_request.target_branch_name).to eq 'pull/1347/removed-branch'
+      end
     end
   end
 

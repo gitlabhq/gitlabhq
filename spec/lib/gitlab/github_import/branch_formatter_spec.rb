@@ -32,14 +32,6 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
     end
   end
 
-  describe '#name' do
-    it 'returns raw ref' do
-      branch = described_class.new(project, double(raw))
-
-      expect(branch.name).to eq 'feature'
-    end
-  end
-
   describe '#repo' do
     it 'returns raw repo' do
       branch = described_class.new(project, double(raw))
