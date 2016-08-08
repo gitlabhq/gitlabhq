@@ -245,6 +245,34 @@ describe Project, models: true do
     end
   end
 
+  describe "#new_issue_address" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:user) { create(:user) }
+
+    context 'incoming email enabled' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+      end
+
+      it 'returns the address to create a new issue' do
+        token = user.authentication_token
+        address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+
+        expect(project.new_issue_address(user)).to eq(address)
+      end
+    end
+
+    context 'incoming email disabled' do
+      before do
+        stub_incoming_email_setting(enabled: false)
+      end
+
+      it 'returns nil' do
+        expect(project.new_issue_address(user)).to be_nil
+      end
+    end
+  end
+
   describe 'last_activity methods' do
     let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
@@ -371,6 +399,24 @@ describe Project, models: true do
       end
 
       it { expect(@project.to_param).to eq('gitlabhq') }
+    end
+
+    context 'with invalid path' do
+      it 'returns previous path to keep project suitable for use in URLs when persisted' do
+        project = create(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'gitlab'
+      end
+
+      it 'returns current path when new record' do
+        project = build(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'foo&bar'
+      end
     end
   end
 
@@ -1046,46 +1092,6 @@ describe Project, models: true do
       project.protected_branches.create!(name: 'production/*')
 
       expect(project.protected_branch?('staging/some-branch')).to eq(false)
-    end
-  end
-
-  describe "#developers_can_push_to_protected_branch?" do
-    let(:project) { create(:empty_project) }
-
-    context "when the branch matches a protected branch via direct match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be false
-      end
-    end
-
-    context "when the branch matches a protected branch via wilcard match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be false
-      end
-    end
-
-    context "when the branch does not match a protected branch" do
-      it "returns false" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
-
-        expect(project.developers_can_push_to_protected_branch?('staging/some-branch')).to be false
-      end
     end
   end
 

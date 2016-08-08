@@ -5,6 +5,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   include IssuableActions
   include NotesHelper
   include ToggleAwardEmoji
+  include IssuableCollections
 
   before_action :module_enabled
   before_action :merge_request, only: [
@@ -29,7 +30,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    @merge_requests = get_merge_requests_collection
+    @merge_requests = merge_requests_collection
 
     if terms.present?
       if terms =~ /\A[#!](\d+)\z/
@@ -84,7 +85,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { define_discussion_vars }
-      format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
+      format.json do
+        @diffs = @merge_request.diffs(diff_options)
+
+        render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
+      end
     end
   end
 
@@ -102,9 +107,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     define_commit_vars
-    diffs = @merge_request.diffs(diff_options)
 
-    render_diff_for_path(diffs, @merge_request.diff_refs, @merge_request.project)
+    render_diff_for_path(@merge_request.diffs(diff_options))
   end
 
   def commits
@@ -152,7 +156,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
-    @diffs = @merge_request.compare.diffs(diff_options) if @merge_request.compare
+    @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
 
     @pipeline = @merge_request.pipeline
@@ -377,6 +381,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       fresh.
       discussions
 
+    preload_noteable_for_regular_notes(@discussions.flat_map(&:notes))
+
     # This is not executed lazily
     @notes = Banzai::NoteRenderer.render(
       @discussions.flat_map(&:notes),
@@ -407,7 +413,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
-    @grouped_diff_discussions = @merge_request.notes.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
       @grouped_diff_discussions.values.flat_map(&:notes),

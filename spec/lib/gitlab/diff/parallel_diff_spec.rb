@@ -6,7 +6,7 @@ describe Gitlab::Diff::ParallelDiff, lib: true do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diffs) { commit.diffs }
+  let(:diffs) { commit.raw_diffs }
   let(:diff) { diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: repository) }
   subject { described_class.new(diff_file) }

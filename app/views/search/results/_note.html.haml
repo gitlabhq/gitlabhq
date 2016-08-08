@@ -1,6 +1,7 @@
 - project = note.project
 - note_url = Gitlab::UrlBuilder.build(note)
-- noteable_identifier = note.noteable.try(:iid) || note.noteable.id
+- noteable_identifier = note.noteable.try(:iid) || note.noteable.try(:id)
+
 .search-result-row
   %h5.note-search-caption.str-truncated
     %i.fa.fa-comment
@@ -10,7 +11,10 @@
     &middot;
 
     - if note.for_commit?
-      = link_to "Commit #{truncate_sha(note.commit_id)}", note_url
+      = link_to_if(noteable_identifier, "Commit #{truncate_sha(note.commit_id)}", note_url) do
+        = truncate_sha(note.commit_id)
+        %span.light Commit deleted
+
     - else
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;

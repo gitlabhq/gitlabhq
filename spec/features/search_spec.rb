@@ -28,6 +28,26 @@ describe "Search", feature: true  do
   end
 
   context 'search for comments' do
+    context 'when comment belongs to a invalid commit' do
+      let(:note) { create(:note_on_commit, author: user, project: project, commit_id: project.repository.commit.id, note: 'Bug here') }
+
+      before { note.update_attributes(commit_id: 12345678) }
+
+      it 'finds comment' do
+        visit namespace_project_path(project.namespace, project)
+
+        page.within '.search' do
+          fill_in 'search', with: note.note
+          click_button 'Go'
+        end
+
+        click_link 'Comments'
+
+        expect(page).to have_text("Commit deleted")
+        expect(page).to have_text("12345678")
+      end
+    end
+
     it 'finds a snippet' do
       snippet = create(:project_snippet, :private, project: project, author: user, title: 'Some title')
       note = create(:note,

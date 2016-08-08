@@ -1,4 +1,5 @@
 require 'ruby-prof'
+require 'gitlab/request_profiler'
 
 module Gitlab
   module RequestProfiler
@@ -28,7 +29,9 @@ module Gitlab
       def call_with_profiling(env)
         ret = nil
         result = RubyProf::Profile.profile do
-          ret = @app.call(env)
+          ret = catch(:warden) do
+            @app.call(env)
+          end
         end
 
         printer   = RubyProf::CallStackPrinter.new(result)
@@ -40,7 +43,11 @@ module Gitlab
           printer.print(file)
         end
 
-        ret
+        if ret.is_a?(Array)
+          ret
+        else
+          throw(:warden, ret)
+        end
       end
     end
   end

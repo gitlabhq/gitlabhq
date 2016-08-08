@@ -81,6 +81,11 @@ Example response:
   "parent_ids": [
     "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
   ],
+  "stats": {
+    "additions": 15,
+    "deletions": 10,
+    "total": 25
+  },
   "status": "running"
 }
 ```

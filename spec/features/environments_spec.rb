@@ -140,7 +140,7 @@ feature 'Environments', feature: true do
       context 'for valid name' do
         before do
           fill_in('Name', with: 'production')
-          click_on 'Create environment'
+          click_on 'Save'
         end
 
         scenario 'does create a new pipeline' do
@@ -151,7 +151,7 @@ feature 'Environments', feature: true do
       context 'for invalid name' do
         before do
           fill_in('Name', with: 'name with spaces')
-          click_on 'Create environment'
+          click_on 'Save'
         end
 
         scenario 'does show errors' do

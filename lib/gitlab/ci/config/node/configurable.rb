@@ -25,10 +25,14 @@ module Gitlab
 
           private
 
-          def create_node(key, factory)
-            factory.with(value: @config[key], key: key, parent: self)
+          def compose!
+            self.class.nodes.each do |key, factory|
+              factory
+                .value(@config[key])
+                .with(key: key, parent: self)
 
-            factory.create!
+              @entries[key] = factory.create!
+            end
           end
 
           class_methods do
@@ -36,24 +40,25 @@ module Gitlab
               Hash[(@nodes || {}).map { |key, factory| [key, factory.dup] }]
             end
 
-            private
+            private # rubocop:disable Lint/UselessAccessModifier
 
-            def node(symbol, entry_class, metadata)
-              factory = Node::Factory.new(entry_class)
+            def node(key, node, metadata)
+              factory = Node::Factory.new(node)
                 .with(description: metadata[:description])
 
-              (@nodes ||= {}).merge!(symbol.to_sym => factory)
+              (@nodes ||= {}).merge!(key.to_sym => factory)
             end
 
             def helpers(*nodes)
               nodes.each do |symbol|
                 define_method("#{symbol}_defined?") do
-                  @nodes[symbol].try(:defined?)
+                  @entries[symbol].specified? if @entries[symbol]
                 end
 
                 define_method("#{symbol}_value") do
-                  raise Entry::InvalidError unless valid?
-                  @nodes[symbol].try(:value)
+                  return unless @entries[symbol] && @entries[symbol].valid?
+
+                  @entries[symbol].value
                 end
 
                 alias_method symbol.to_sym, "#{symbol}_value".to_sym

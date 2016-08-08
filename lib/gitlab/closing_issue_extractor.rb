@@ -22,7 +22,9 @@ module Gitlab
 
       @extractor.analyze(closing_statements.join(" "))
 
-      @extractor.issues
+      @extractor.issues.reject do |issue|
+        @extractor.project.forked_from?(issue.project) # Don't extract issues on original project
+      end
     end
   end
 end

@@ -279,7 +279,7 @@ Rails.application.routes.draw do
     resource :health_check, controller: 'health_check', only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
     resource :system_info, controller: 'system_info', only: [:show]
-    resources :requests_profiles, only: [:index, :show], param: :name
+    resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
     resources :namespaces, path: '/projects', constraints: { id: /[a-zA-Z.0-9_\-]+/ }, only: [] do
       root to: 'projects#index', as: :projects
@@ -626,13 +626,17 @@ Rails.application.routes.draw do
 
         get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
 
-        resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
+        # Don't use format parameter as file extension (old 3.0.x behavior)
+        # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
+        scope format: false do
+          resources :network, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex }
 
-        resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
-          member do
-            get :commits
-            get :ci
-            get :languages
+          resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
+            member do
+              get :commits
+              get :ci
+              get :languages
+            end
           end
         end
 
@@ -741,7 +745,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :environments, only: [:index, :show, :new, :create, :destroy]
+        resources :environments
 
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do

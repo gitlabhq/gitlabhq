@@ -50,8 +50,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now)
           double_last = double(committed_date: Time.now - 1.second)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_first)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_last)
+          allow(tag_a).to receive(:target).and_return(double_first)
+          allow(tag_b).to receive(:target).and_return(double_last)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
@@ -64,8 +65,9 @@ describe Repository, models: true do
           double_first = double(committed_date: Time.now - 1.second)
           double_last = double(committed_date: Time.now)
 
-          allow(repository).to receive(:commit).with(tag_a.target).and_return(double_last)
-          allow(repository).to receive(:commit).with(tag_b.target).and_return(double_first)
+          allow(tag_a).to receive(:target).and_return(double_last)
+          allow(tag_b).to receive(:target).and_return(double_first)
+          allow(repository).to receive(:tags).and_return([tag_a, tag_b])
         end
 
         it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
@@ -381,9 +383,13 @@ describe Repository, models: true do
   end
 
   describe '#rm_branch' do
+    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+    let(:blank_sha) { '0000000000000000000000000000000000000000' }
+
     context 'when pre hooks were successful' do
       it 'should run without errors' do
-        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
+        expect_any_instance_of(GitHooksService).to receive(:execute).
+          with(user, project.repository.path_to_repo, old_rev, blank_sha, 'refs/heads/feature')
 
         expect { repository.rm_branch(user, 'feature') }.not_to raise_error
       end
@@ -418,10 +424,13 @@ describe Repository, models: true do
   end
 
   describe '#commit_with_hooks' do
+    let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+
     context 'when pre hooks were successful' do
       before do
         expect_any_instance_of(GitHooksService).to receive(:execute).
-          and_return(true)
+          with(user, repository.path_to_repo, old_rev, sample_commit.id, 'refs/heads/feature').
+          and_yield.and_return(true)
       end
 
       it 'should run without errors' do
@@ -435,6 +444,14 @@ describe Repository, models: true do
 
         repository.commit_with_hooks(user, 'feature') { sample_commit.id }
       end
+
+      context "when the branch wasn't empty" do
+        it 'updates the head' do
+          expect(repository.find_branch('feature').target.id).to eq(old_rev)
+          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+          expect(repository.find_branch('feature').target.id).to eq(sample_commit.id)
+        end
+      end
     end
 
     context 'when pre hooks failed' do
@@ -444,6 +461,43 @@ describe Repository, models: true do
         expect do
           repository.commit_with_hooks(user, 'feature') { sample_commit.id }
         end.to raise_error(GitHooksService::PreReceiveError)
+      end
+    end
+
+    context 'when target branch is different from source branch' do
+      before do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+      end
+
+      it 'expires branch cache' do
+        expect(repository).not_to receive(:expire_exists_cache)
+        expect(repository).not_to receive(:expire_root_ref_cache)
+        expect(repository).not_to receive(:expire_emptiness_caches)
+        expect(repository).to     receive(:expire_branches_cache)
+        expect(repository).to     receive(:expire_has_visible_content_cache)
+        expect(repository).to     receive(:expire_branch_count_cache)
+
+        repository.commit_with_hooks(user, 'new-feature') { sample_commit.id }
+      end
+    end
+
+    context 'when repository is empty' do
+      before do
+        allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+      end
+
+      it 'expires creation and branch cache' do
+        empty_repository = create(:empty_project, :empty_repo).repository
+
+        expect(empty_repository).to receive(:expire_exists_cache)
+        expect(empty_repository).to receive(:expire_root_ref_cache)
+        expect(empty_repository).to receive(:expire_emptiness_caches)
+        expect(empty_repository).to receive(:expire_branches_cache)
+        expect(empty_repository).to receive(:expire_has_visible_content_cache)
+        expect(empty_repository).to receive(:expire_branch_count_cache)
+
+        empty_repository.commit_file(user, 'CHANGELOG', 'Changelog!',
+                                     'Updates file content', 'master', false)
       end
     end
   end
@@ -1100,7 +1154,7 @@ describe Repository, models: true do
       it 'does not flush the cache if the commit does not change any logos' do
         diff = double(:diff, new_path: 'test.txt')
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).not_to receive(:expire)
 
         repository.expire_avatar_cache(repository.root_ref, '123')
@@ -1109,7 +1163,7 @@ describe Repository, models: true do
       it 'flushes the cache if the commit changes any of the logos' do
         diff = double(:diff, new_path: Repository::AVATAR_FILES[0])
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).to receive(:expire).with(:avatar)
 
         repository.expire_avatar_cache(repository.root_ref, '123')
@@ -1161,17 +1215,6 @@ describe Repository, models: true do
     end
   end
 
-  describe '#local_branches' do
-    it 'returns the local branches' do
-      masterrev = repository.find_branch('master').target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev)
-
-      expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
-      expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
-    end
-  end
-
   describe "#keep_around" do
     it "does not fail if we attempt to reference bad commit" do
       expect(repository.kept_around?('abc1234')).to be_falsey
@@ -1198,10 +1241,5 @@ describe Repository, models: true do
 
       File.delete(path)
     end
-  end
-
-  def create_remote_branch(remote_name, branch_name, target)
-    rugged = repository.rugged
-    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target)
   end
 end

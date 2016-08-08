@@ -6,6 +6,10 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
+      abilities_by_subject_class(user: user, subject: subject)
+    end
+
+    def abilities_by_subject_class(user:, subject:)
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
@@ -45,6 +49,16 @@ class Ability
           end
         end
       end
+    end
+
+    # Returns an Array of Issues that can be read by the given user.
+    #
+    # issues - The issues to reduce down to those readable by the user.
+    # user - The User for which to check the issues
+    def issues_readable_by_user(issues, user = nil)
+      return issues if user && user.admin?
+
+      issues.select { |issue| issue.visible_to_user?(user) }
     end
 
     # List of possible abilities for anonymous user
