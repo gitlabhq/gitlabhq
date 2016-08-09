@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
+
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
@@ -476,6 +477,18 @@ describe API::API, api: true  do
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(['label', 'label2'])
+    end
+
+    it "emails label subscribers" do
+      clear_enqueued_jobs
+      label = project.labels.first
+      label.toggle_subscription(user2)
+
+      expect do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: label.title
+      end.to change{enqueued_jobs.size}.by(1)
+      expect(response.status).to eq(201)
     end
 
     it "returns a 400 bad request if title not given" do
