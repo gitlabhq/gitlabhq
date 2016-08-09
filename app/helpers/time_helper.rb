@@ -17,6 +17,11 @@ module TimeHelper
 
   def duration_in_numbers(finished_at, started_at)
     interval = interval_in_seconds(started_at, finished_at)
+
+    duration_in_numbers_from_interval(interval)
+  end
+
+  def duration_in_numbers_from_interval(interval)
     time_format = interval < 1.hour ? "%M:%S" : "%H:%M:%S"
 
     Time.at(interval).utc.strftime(time_format)

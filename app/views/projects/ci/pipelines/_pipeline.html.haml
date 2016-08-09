@@ -46,10 +46,10 @@
             \-
 
   %td
-    - if pipeline.started_at && pipeline.finished_at
+    - if pipeline.wall_clock_duration
       %p.duration
         = custom_icon("icon_timer")
-        = duration_in_numbers(pipeline.finished_at, pipeline.started_at)
+        = duration_in_numbers_from_interval(pipeline.wall_clock_duration)
     - if pipeline.finished_at
       %p.finished-at
         = icon("calendar")

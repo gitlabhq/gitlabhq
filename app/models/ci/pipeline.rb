@@ -213,6 +213,10 @@ module Ci
       ]
     end
 
+    def wall_clock_duration
+      finished_at.to_i - started_at.to_i if finished_at && started_at
+    end
+
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
