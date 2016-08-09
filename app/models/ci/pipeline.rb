@@ -181,9 +181,8 @@ module Ci
     end
 
     def process!
-      if Ci::ProcessPipelineService.new(project, user).execute(self)
-        reload_status!
-      end
+      Ci::ProcessPipelineService.new(project, user).execute(self)
+      reload_status!
     end
 
     def predefined_variables
