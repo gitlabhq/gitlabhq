@@ -6,18 +6,17 @@ module SpammableActions
   end
 
   def mark_as_spam
-    if SpamService.new(spammable).mark_as_spam!(current_user)
-      redirect_to spammable, notice: 'Issue was submitted to Akismet successfully.'
+    if SpamService.new(spammable).mark_as_spam!
+      redirect_to spammable, notice: "#{spammable.class.to_s} was submitted to Akismet successfully."
     else
-      flash[:error] = 'Error with Akismet. Please check the logs for more info.'
-      redirect_to spammable
+      redirect_to spammable, alert: 'Error with Akismet. Please check the logs for more info.'
     end
   end
 
   private
 
   def spammable
-    raise NotImplementedError
+    raise NotImplementedError, "#{self.class} does not implement #{__method__}"
   end
 
   def authorize_submit_spammable!

@@ -9,29 +9,17 @@ describe Issue, 'Spammable' do
 
   describe 'ClassMethods' do
     it 'should return correct attr_spammable' do
-      expect(issue.send(:spammable_text)).to eq("#{issue.title}\n#{issue.description}")
+      expect(issue.spammable_text).to eq("#{issue.title}\n#{issue.description}")
     end
   end
 
   describe 'InstanceMethods' do
-    it 'should return the correct creator' do
-      expect(issue.owner_id).to eq(issue.author_id)
-    end
-
     it 'should be invalid if spam' do
       issue = build(:issue, spam: true)
       expect(issue.valid?).to be_falsey
     end
 
-    it 'should not be submitted' do
-      create(:user_agent_detail, subject: issue)
-      expect(issue.submitted?).to be_falsey
-    end
-
     describe '#check_for_spam?' do
-      before do
-        allow_any_instance_of(ApplicationSetting).to receive(:akismet_enabled).and_return(true)
-      end
       it 'returns true for public project' do
         issue.project.update_attribute(:visibility_level, Gitlab::VisibilityLevel::PUBLIC)
         expect(issue.check_for_spam?).to eq(true)

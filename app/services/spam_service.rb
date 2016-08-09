@@ -1,38 +1,35 @@
 class SpamService
-  attr_accessor :spammable
+  attr_accessor :spammable, :request, :options
 
-  def initialize(spammable)
+  def initialize(spammable, request = nil)
     @spammable = spammable
-  end
+    @request = request
+    @options = {}
 
-  def check(api, request)
-    return false unless request && spammable.check_for_spam?
-    return false unless akismet.is_spam?(request.env)
-
-    create_spam_log(api, request)
-    true
-  end
-
-  def mark_as_spam!(current_user)
-    return false unless akismet_enabled? && spammable.can_be_submitted?
-    if akismet.spam!
-      spammable.user_agent_detail.update_attribute(:submitted, true)
-
-      if spammable.is_a?(Issuable)
-        SystemNoteService.submit_spam(spammable, spammable.project, current_user)
-      end
-      true
+    if @request
+      @options[:ip_address] = @request.env['action_dispatch.remote_ip'].to_s
+      @options[:user_agent] = @request.env['HTTP_USER_AGENT']
+      @options[:referrer] = @request.env['HTTP_REFERRER']
     else
-      false
+      @options[:ip_address] = @spammable.ip_address
+      @options[:user_agent] = @spammable.user_agent
     end
   end
 
-  def mark_as_ham!
-    return false unless spammable.is_a?(SpamLog)
+  def check(api = false)
+    return false unless request && check_for_spam?
 
-    if akismet.ham!
-      spammable.update_attribute(:submitted_as_ham, true)
-      true
+    return false unless akismet.is_spam?
+
+    create_spam_log(api)
+    true
+  end
+
+  def mark_as_spam!
+    return false unless spammable.submittable_as_spam?
+
+    if akismet.submit_spam
+      spammable.user_agent_detail.update_attribute(:submitted, true)
     else
       false
     end
@@ -41,21 +38,38 @@ class SpamService
   private
 
   def akismet
-    @akismet ||= AkismetService.new(spammable)
+    @akismet ||= AkismetService.new(
+      spammable_owner,
+      spammable.spammable_text,
+      options
+    )
   end
 
-  def akismet_enabled?
-    current_application_settings.akismet_enabled
+  def spammable_owner
+    @user ||= User.find(spammable_owner_id)
   end
 
-  def create_spam_log(api, request)
+  def spammable_owner_id
+    @owner_id ||=
+      if spammable.respond_to?(:author_id)
+        spammable.author_id
+      elsif spammable.respond_to?(:creator_id)
+        spammable.creator_id
+      end
+  end
+
+  def check_for_spam?
+    spammable.check_for_spam?
+  end
+
+  def create_spam_log(api)
     SpamLog.create(
       {
-        user_id: spammable.owner_id,
+        user_id: spammable_owner_id,
         title: spammable.spam_title,
         description: spammable.spam_description,
-        source_ip: akismet.client_ip(request.env),
-        user_agent: akismet.user_agent(request.env),
+        source_ip: options[:ip_address],
+        user_agent: options[:user_agent],
         noteable_type: spammable.class.to_s,
         via_api: api
       }

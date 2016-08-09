@@ -1,33 +1,26 @@
 class AkismetService
-  attr_accessor :spammable
+  attr_accessor :owner, :text, :options
 
-  def initialize(spammable)
-    @spammable = spammable
+  def initialize(owner, text, options = {})
+    @owner = owner
+    @text = text
+    @options = options
   end
 
-  def client_ip(env)
-    env['action_dispatch.remote_ip'].to_s
-  end
-
-  def user_agent(env)
-    env['HTTP_USER_AGENT']
-  end
-
-  def is_spam?(environment)
-    ip_address = client_ip(environment)
-    user_agent = user_agent(environment)
+  def is_spam?
+    return false unless akismet_enabled?
 
     params = {
       type: 'comment',
-      text: spammable.spammable_text,
+      text: text,
       created_at: DateTime.now,
-      author: spammable.owner.name,
-      author_email: spammable.owner.email,
-      referrer: environment['HTTP_REFERER'],
+      author: owner.name,
+      author_email: owner.email,
+      referrer: options[:referrer],
     }
 
     begin
-      is_spam, is_blatant = akismet_client.check(ip_address, user_agent, params)
+      is_spam, is_blatant = akismet_client.check(options[:ip_address], options[:user_agent], params)
       is_spam || is_blatant
     rescue => e
       Rails.logger.error("Unable to connect to Akismet: #{e}, skipping check")
@@ -35,16 +28,18 @@ class AkismetService
     end
   end
 
-  def ham!
+  def submit_ham
+    return false unless akismet_enabled?
+
     params = {
       type: 'comment',
-      text: spammable.text,
-      author: spammable.user.name,
-      author_email: spammable.user.email
+      text: text,
+      author: owner.name,
+      author_email: owner.email
     }
 
     begin
-      akismet_client.submit_ham(spammable.source_ip, spammable.user_agent, params)
+      akismet_client.submit_ham(options[:ip_address], options[:user_agent], params)
       true
     rescue => e
       Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
@@ -52,16 +47,18 @@ class AkismetService
     end
   end
 
-  def spam!
+  def submit_spam
+    return false unless akismet_enabled?
+
     params = {
       type: 'comment',
-      text: spammable.spammable_text,
-      author: spammable.owner.name,
-      author_email: spammable.owner.email
+      text: text,
+      author: owner.name,
+      author_email: owner.email
     }
 
     begin
-      akismet_client.submit_spam(spammable.user_agent_detail.ip_address, spammable.user_agent_detail.user_agent, params)
+      akismet_client.submit_spam(options[:ip_address], options[:user_agent], params)
       true
     rescue => e
       Rails.logger.error("Unable to connect to Akismet: #{e}, skipping!")
@@ -74,5 +71,9 @@ class AkismetService
   def akismet_client
     @akismet_client ||= ::Akismet::Client.new(current_application_settings.akismet_api_key,
                                               Gitlab.config.gitlab.url)
+  end
+
+  def akismet_enabled?
+    current_application_settings.akismet_enabled
   end
 end

@@ -1004,7 +1004,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.string   "ip_address",   null: false
     t.integer  "subject_id",   null: false
     t.string   "subject_type", null: false
-    t.boolean  "submitted",    default: false
+    t.boolean  "submitted",    default: false, null: false
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
   end

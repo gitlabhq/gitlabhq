@@ -8,7 +8,7 @@ module Issues
       @issue = project.issues.new(params)
       @issue.author = params[:author] || current_user
 
-      @issue.spam = spam_service.check(@api, @request)
+      @issue.spam = spam_service.check(@api)
 
       if @issue.save
         @issue.update_attributes(label_ids: label_params)
@@ -26,7 +26,7 @@ module Issues
     private
 
     def spam_service
-      SpamService.new(@issue)
+      SpamService.new(@issue, @request)
     end
 
     def user_agent_detail_service

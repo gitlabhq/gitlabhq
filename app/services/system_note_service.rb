@@ -395,23 +395,6 @@ module SystemNoteService
     create_note(noteable: noteable, project: project, author: author, note: body)
   end
 
-  # Called when Issuable is submitted as spam
-  #
-  # noteable - Noteable object
-  # project  - Project owning noteable
-  # author   - User performing the change
-  #
-  # Example Note text:
-  #
-  #   "Issue submitted as spam."
-  #
-  # Returns the created Note object
-  def submit_spam(noteable, project, author)
-    body = "Submitted this #{noteable.class.to_s.downcase} as spam"
-
-    create_note(noteable: noteable, project: project, author: author, note: body)
-  end
-
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)

@@ -274,7 +274,7 @@ describe Projects::IssuesController do
   describe 'POST #create' do
     context 'Akismet is enabled' do
       before do
-        allow_any_instance_of(Spammable).to receive(:check_for_spam?).and_return(true)
+        allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
         allow_any_instance_of(AkismetService).to receive(:is_spam?).and_return(true)
       end
 
@@ -317,7 +317,7 @@ describe Projects::IssuesController do
       end
 
       it 'creates a user agent detail' do
-        expect{ post_new_issue }.to change(UserAgentDetail, :count)
+        expect{ post_new_issue }.to change(UserAgentDetail, :count).by(1)
       end
     end
   end
@@ -325,9 +325,8 @@ describe Projects::IssuesController do
   describe 'POST #mark_as_spam' do
     context 'properly submits to Akismet' do
       before do
-        allow_any_instance_of(AkismetService).to receive_messages(spam!: true)
+        allow_any_instance_of(AkismetService).to receive_messages(submit_spam: true)
         allow_any_instance_of(ApplicationSetting).to receive_messages(akismet_enabled: true)
-        allow_any_instance_of(SpamService).to receive_messages(can_be_submitted?: true)
       end
 
       def post_spam
@@ -342,13 +341,9 @@ describe Projects::IssuesController do
         }
       end
 
-      it 'creates a system note' do
-        expect{ post_spam }.to change(Note, :count)
-      end
-
       it 'updates issue' do
         post_spam
-        expect(issue.submitted?).to be_truthy
+        expect(issue.submittable_as_spam?).to be_falsey
       end
     end
   end

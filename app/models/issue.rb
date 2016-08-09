@@ -8,7 +8,6 @@ class Issue < ActiveRecord::Base
   include Taskable
   include Spammable
   include FasterCacheKeys
-  include AkismetSubmittable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -269,6 +268,6 @@ class Issue < ActiveRecord::Base
 
   # Only issues on public projects should be checked for spam
   def check_for_spam?
-    super && project.public?
+    project.public?
   end
 end

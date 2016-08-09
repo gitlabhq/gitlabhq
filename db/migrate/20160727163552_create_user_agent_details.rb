@@ -10,7 +10,7 @@ class CreateUserAgentDetails < ActiveRecord::Migration
       t.string :ip_address, null: false
       t.integer :subject_id, null: false
       t.string :subject_type, null: false
-      t.boolean :submitted, default: false
+      t.boolean :submitted, default: false, null: false
 
       t.timestamps null: false
     end

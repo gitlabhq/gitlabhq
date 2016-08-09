@@ -9,16 +9,19 @@ module Spammable
 
   included do
     has_one :user_agent_detail, as: :subject, dependent: :destroy
+
     attr_accessor :spam
-    after_validation :spam_detected?, on: :create
+
+    after_validation :check_for_spam, on: :create
 
     cattr_accessor :spammable_attrs, instance_accessor: false do
       []
     end
-    delegate :submitted?, to: :user_agent_detail, allow_nil: true
+
+    delegate :ip_address, :user_agent, to: :user_agent_detail, allow_nil: true
   end
 
-  def can_be_submitted?
+  def submittable_as_spam?
     if user_agent_detail
       user_agent_detail.submittable?
     else
@@ -30,46 +33,29 @@ module Spammable
     @spam
   end
 
-  def spam_detected?
+  def check_for_spam
     self.errors.add(:base, "Your #{self.class.name.underscore} has been recognized as spam and has been discarded.") if spam?
   end
 
-  def owner_id
-    if self.respond_to?(:author_id)
-      self.author_id
-    elsif self.respond_to?(:creator_id)
-      self.creator_id
-    end
-  end
-
-  def owner
-    User.find(owner_id)
-  end
-
   def spam_title
-    attr = self.class.spammable_attrs.select do |_, options|
+    attr = self.class.spammable_attrs.find do |_, options|
       options.fetch(:spam_title, false)
     end
 
-    attr = attr[0].first
-
-    public_send(attr) if respond_to?(attr.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
   end
 
   def spam_description
-    attr = self.class.spammable_attrs.select do |_, options|
+    attr = self.class.spammable_attrs.find do |_, options|
       options.fetch(:spam_description, false)
     end
 
-    attr = attr[0].first
-
-    public_send(attr) if respond_to?(attr.to_sym)
+    public_send(attr.first) if attr && respond_to?(attr.first.to_sym)
   end
 
   def spammable_text
-    result = []
-    self.class.spammable_attrs.map do |attr|
-      result << public_send(attr.first)
+    result = self.class.spammable_attrs.map do |attr|
+      public_send(attr.first)
     end
 
     result.reject(&:blank?).join("\n")
@@ -77,6 +63,6 @@ module Spammable
 
   # Override in Spammable if further checks are necessary
   def check_for_spam?
-    current_application_settings.akismet_enabled
+    true
   end
 end

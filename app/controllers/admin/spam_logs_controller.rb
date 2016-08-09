@@ -1,5 +1,4 @@
 class Admin::SpamLogsController < Admin::ApplicationController
-
   def index
     @spam_logs = SpamLog.order(id: :desc).page(params[:page])
   end
@@ -19,10 +18,10 @@ class Admin::SpamLogsController < Admin::ApplicationController
   def mark_as_ham
     spam_log = SpamLog.find(params[:id])
 
-    if SpamService.new(spam_log).mark_as_ham!
+    if HamService.new(spam_log).mark_as_ham!
       redirect_to admin_spam_logs_path, notice: 'Spam log successfully submitted as ham.'
     else
-      redirect_to admin_spam_logs_path, notice: 'Error with Akismet. Please check the logs for more info.'
+      redirect_to admin_spam_logs_path, alert: 'Error with Akismet. Please check the logs for more info.'
     end
   end
 end
