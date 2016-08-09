@@ -234,6 +234,10 @@
 
 .pipeline-visualization {
   position: relative;
+
+  ul {
+    padding: 0;
+  }
 }
 
 .stage-column {
@@ -241,13 +245,13 @@
   vertical-align: top;
   margin-right: 40px;
 
+  li {
+    list-style: none;
+  }
+
   .stage-name {
     margin-bottom: 15px;
     font-weight: bold;
-  }
-
-  .builds-container {
-
   }
 
   .build {
@@ -268,20 +272,81 @@
       margin-right: 5px;
     }
 
+    // Connect first build in each stage with right horizontal line
     &:first-child {
-      &::after, &::before {
+      &::after {
         content: '';
         position: absolute;
         top: 50%;
         right: -44px;
-        border-top: 1px solid $border-color;
+        border-top: 2px solid $border-color;
         width: 44px;
         height: 1px;
       }
     }
-    &:first-child::before, &:last-child::after{
-      border: 0 none;
+
+    // Connect each build (except for first) with curved lines
+    &:not(:first-child) {
+      &::after, &::before {
+        content: '';
+        top: -47px;
+        position: absolute;
+        border-bottom: 2px solid $border-color;
+        width: 20px;
+        height: 65px;
+      }
+
+      // Right connecting curves
+      &::after {
+        right: -21px;
+        border-right: 2px solid $border-color;
+        border-radius: 0 0 50px 0;
+        -webkit-border-radius: 0 0 50px 0;
+      }
+
+      // Left connecting curves
+      &::before {
+        left: -21px;
+        border-left: 2px solid $border-color;
+        border-radius: 0 0 0 50px;
+        -webkit-border-radius: 0 0 0 50px;
+      }
     }
 
+    // Connect second build to first build with smaller curved line
+    &:nth-child(2) {
+      &::after, &::before {
+        height: 40px;
+        top: -26px;
+      }
+    }
+  }
+
+  &:last-child {
+    .build {
+      // Remove right connecting horizontal line from first build in last stage
+      &:first-child {
+        &::after, &::before {
+          border: none;
+        }
+      }
+      // Remove right curved connectors from all builds in last stage
+      &:not(:first-child) {
+        &::after {
+          border: none;
+        }
+      }
+    }
+  }
+
+  &:first-child {
+    .build {
+      // Remove left curved connectors from all builds in first stage
+      &:not(:first-child) {
+        &::before {
+          border: none;
+        }
+      }
+    }
   }
 }
