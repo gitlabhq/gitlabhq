@@ -90,7 +90,7 @@ namespace :gitlab do
     task build_missing_projects: :environment do
       Project.find_each(batch_size: 1000) do |project|
         path_to_repo = project.repository.path_to_repo
-        if File.exists?(path_to_repo)
+        if File.exist?(path_to_repo)
           print '-'
         else
           if Gitlab::Shell.new.add_repository(project.repository_storage_path,

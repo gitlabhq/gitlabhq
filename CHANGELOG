@@ -95,6 +95,7 @@ v 8.11.0 (unreleased)
   - Avoid to show the original password field when password is automatically set. !5712 (duduribeiro)
   - Fix importing GitLab projects with an invalid MR source project
   - Sort folders with submodules in Files view !5521
+  - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
