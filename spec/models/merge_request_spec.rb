@@ -992,7 +992,7 @@ describe MergeRequest, models: true do
           target_project: project)
       end
 
-      it do
+      it "returns true" do
         unlink_project.execute
         merge_request.reload
 
@@ -1007,22 +1007,34 @@ describe MergeRequest, models: true do
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
-    context "closed MR" do
+    context "when merge request is closed" do
       let(:closed_merge_request) do
         create(:closed_merge_request,
           source_project: fork_project,
           target_project: project)
       end
 
-      it "has a fork" do
+      it "returns false if fork exist" do
         expect(closed_merge_request.closed_without_fork?).to be_falsey
       end
 
-      it "does not have a fork" do
+      it "returns true if fork doesn't exist" do
         unlink_project.execute
         closed_merge_request.reload
 
         expect(closed_merge_request.closed_without_fork?).to be_truthy
+      end
+    end
+
+    context "when merge request is open" do
+      let(:open_merge_request) do
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
+      end
+
+      it "returns false" do
+        expect(open_merge_request.closed_without_fork?).to be_falsey
       end
     end
   end

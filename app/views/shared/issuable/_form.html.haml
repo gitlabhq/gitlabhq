@@ -134,30 +134,29 @@
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
         = icon('question-circle')
 
-- if issuable.is_a?(MergeRequest)
-  - unless @merge_request.closed_without_fork?
-    %hr
-    - if @merge_request.new_record?
-      .form-group
-        = f.label :source_branch, class: 'control-label'
-        .col-sm-10
-          .issuable-form-select-holder
-            = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+- if issuable.is_a?(MergeRequest) && !@merge_request.closed_without_fork?
+  %hr
+  - if @merge_request.new_record?
     .form-group
-      = f.label :target_branch, class: 'control-label'
+      = f.label :source_branch, class: 'control-label'
       .col-sm-10
         .issuable-form-select-holder
-          = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
-        - if @merge_request.new_record?
-          &nbsp;
-          = link_to 'Change branches', mr_change_branches_path(@merge_request)
-    - if @merge_request.can_remove_source_branch?(current_user)
-      .form-group
-        .col-sm-10.col-sm-offset-2
-          .checkbox
-            = label_tag 'merge_request[force_remove_source_branch]' do
-              = check_box_tag 'merge_request[force_remove_source_branch]', '1', @merge_request.force_remove_source_branch?
-              Remove source branch when merge request is accepted.
+          = f.select(:source_branch, [@merge_request.source_branch], { }, { class: 'source_branch select2 span2', disabled: true })
+  .form-group
+    = f.label :target_branch, class: 'control-label'
+    .col-sm-10
+      .issuable-form-select-holder
+        = f.select(:target_branch, @merge_request.target_branches, { include_blank: true }, { class: 'target_branch select2 span2', disabled: @merge_request.new_record?, data: {placeholder: "Select branch"} })
+      - if @merge_request.new_record?
+        &nbsp;
+        = link_to 'Change branches', mr_change_branches_path(@merge_request)
+  - if @merge_request.can_remove_source_branch?(current_user)
+    .form-group
+      .col-sm-10.col-sm-offset-2
+        .checkbox
+          = label_tag 'merge_request[force_remove_source_branch]' do
+            = check_box_tag 'merge_request[force_remove_source_branch]', '1', @merge_request.force_remove_source_branch?
+            Remove source branch when merge request is accepted.
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{class: (is_footer ? "footer-block" : "middle-block")}
