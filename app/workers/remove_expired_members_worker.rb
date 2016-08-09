@@ -2,7 +2,7 @@ class RemoveExpiredMembersWorker
   include Sidekiq::Worker
 
   def perform
-    Member.where('expires_at <= ?', Time.current).find_each do |member|
+    Member.expired.find_each do |member|
       begin
         Members::AuthorizedDestroyService.new(member).execute
       rescue => ex
