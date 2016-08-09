@@ -33,7 +33,10 @@ describe "Pipelines" do
     context 'cancelable pipeline' do
       let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
 
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
+      before do
+        pipeline.reload_status!
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
 
       it { expect(page).to have_link('Cancel') }
       it { expect(page).to have_selector('.ci-running') }
@@ -49,7 +52,10 @@ describe "Pipelines" do
     context 'retryable pipelines' do
       let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
 
-      before { visit namespace_project_pipelines_path(project.namespace, project) }
+      before do
+        pipeline.reload_status!
+        visit namespace_project_pipelines_path(project.namespace, project)
+      end
 
       it { expect(page).to have_link('Retry') }
       it { expect(page).to have_selector('.ci-failed') }
@@ -80,7 +86,10 @@ describe "Pipelines" do
       context 'when running' do
         let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
 
-        before { visit namespace_project_pipelines_path(project.namespace, project) }
+        before do
+          pipeline.reload_status!
+          visit namespace_project_pipelines_path(project.namespace, project)
+        end
 
         it 'is not cancelable' do
           expect(page).not_to have_link('Cancel')
@@ -92,9 +101,12 @@ describe "Pipelines" do
       end
 
       context 'when failed' do
-        let!(:running) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
+        let!(:failed) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
 
-        before { visit namespace_project_pipelines_path(project.namespace, project) }
+        before do
+          pipeline.reload_status!
+          visit namespace_project_pipelines_path(project.namespace, project)
+        end
 
         it 'is not retryable' do
           expect(page).not_to have_link('Retry')

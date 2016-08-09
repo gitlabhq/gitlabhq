@@ -5,8 +5,8 @@ module Ci
     let(:service) { ImageForBuildService.new }
     let(:project) { FactoryGirl.create(:empty_project) }
     let(:commit_sha) { '01234567890123456789' }
-    let(:commit) { project.ensure_pipeline(commit_sha, 'master') }
-    let(:build) { FactoryGirl.create(:ci_build, pipeline: commit) }
+    let(:pipeline) { project.ensure_pipeline(commit_sha, 'master') }
+    let(:build) { FactoryGirl.create(:ci_build, pipeline: pipeline) }
 
     describe '#execute' do
       before { build }
@@ -14,6 +14,7 @@ module Ci
       context 'branch name' do
         before { allow(project).to receive(:commit).and_return(OpenStruct.new(sha: commit_sha)) }
         before { build.run! }
+        before { pipeline.reload_status! }
         let(:image) { service.execute(project, ref: 'master') }
 
         it { expect(image).to be_kind_of(OpenStruct) }
@@ -31,6 +32,7 @@ module Ci
 
       context 'commit sha' do
         before { build.run! }
+        before { pipeline.reload_status! }
         let(:image) { service.execute(project, sha: build.sha) }
 
         it { expect(image).to be_kind_of(OpenStruct) }

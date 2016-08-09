@@ -2,7 +2,7 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(skip_ci: true, save_on_errors: true, trigger_request: nil)
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil)
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,
@@ -36,7 +36,7 @@ module Ci
         return error(pipeline.yaml_errors, save: save_on_errors)
       end
 
-      if skip_ci && skip_ci?
+      if !ignore_skip_ci && skip_ci?
         return error('Creation of pipeline is skipped', save: save_on_errors)
       end
 
@@ -46,6 +46,7 @@ module Ci
 
       pipeline.save
       pipeline.process!
+      pipeline.reload_status!
       pipeline
     end
 
