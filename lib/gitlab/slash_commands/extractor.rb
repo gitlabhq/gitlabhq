@@ -34,9 +34,14 @@ module Gitlab
 
         commands = []
 
+        content.delete!("\r")
         content.gsub!(commands_regex) do
-          commands << [$1, $2].flatten.reject(&:blank?)
-          ''
+          if $~[:cmd]
+            commands << [$~[:cmd], $~[:args]].reject(&:blank?)
+            ''
+          else
+            $~[0]
+          end
         end
 
         commands
@@ -52,7 +57,47 @@ module Gitlab
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<args>[^\/\n]*)(?:\n|$)/
       def commands_regex
-        /^\/(?<cmd>#{command_names.join('|')})(?:( |$))(?<args>[^\/\n]*)(?:\n|$)/
+        @commands_regex ||= %r{
+            (?<code>
+              # Code blocks:
+              # ```
+              # Anything, including `/cmd args` which are ignored by this filter
+              # ```
+
+              ^```
+              .+?
+              \n```$
+            )
+          |
+            (?<html>
+              # HTML block:
+              # <tag>
+              # Anything, including `/cmd args` which are ignored by this filter
+              # </tag>
+
+              ^<[^>]+?>\n
+              .+?
+              \n<\/[^>]+?>$
+            )
+          |
+            (?<html>
+              # Quote block:
+              # >>>
+              # Anything, including `/cmd args` which are ignored by this filter
+              # >>>
+
+              ^>>>
+              .+?
+              \n>>>$
+            )
+          |
+            (?:
+              # Command not in a blockquote, blockcode, or HTML tag:
+              # /close
+
+              ^\/(?<cmd>#{command_names.join('|')})(?:(\ |$))(?<args>[^\/\n]*)(?:\n|$)
+            )
+        }mx
       end
     end
   end

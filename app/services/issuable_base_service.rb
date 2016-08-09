@@ -173,7 +173,7 @@ class IssuableBaseService < BaseService
 
   def change_todo(issuable)
     case params.delete(:todo_event)
-    when 'mark'
+    when 'add'
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)

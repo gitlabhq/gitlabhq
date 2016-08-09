@@ -40,7 +40,7 @@ module SlashCommands
       @updates[:title] = title_param
     end
 
-    desc 'Reassign'
+    desc 'Assign'
     params '@user'
     command :assign, :reassign do |assignee_param|
       user = extract_references(assignee_param, :user).first
@@ -54,7 +54,7 @@ module SlashCommands
       @updates[:assignee_id] = nil
     end
 
-    desc 'Change milestone'
+    desc 'Set milestone'
     params '%"milestone"'
     command :milestone do |milestone_param|
       milestone = extract_references(milestone_param, :milestone).first
@@ -93,7 +93,7 @@ module SlashCommands
 
     desc 'Add a todo'
     command :todo do
-      @updates[:todo_event] = 'mark'
+      @updates[:todo_event] = 'add'
     end
 
     desc 'Mark todo as done'
@@ -113,11 +113,15 @@ module SlashCommands
 
     desc 'Set a due date'
     params '<YYYY-MM-DD> | <N days>'
-    command :due_date do |due_date_param|
+    command :due_date, :due do |due_date_param|
       return unless noteable.respond_to?(:due_date)
 
       due_date = begin
-        Time.now + ChronicDuration.parse(due_date_param)
+        if due_date_param.downcase == 'tomorrow'
+          Date.tomorrow
+        else
+          Time.now + ChronicDuration.parse(due_date_param)
+        end
       rescue ChronicDuration::DurationParseError
         Date.parse(due_date_param) rescue nil
       end

@@ -14,9 +14,9 @@ do.
 | `/close`                   | None                | Close the issue or merge request |
 | `/open`                    | `/reopen`           | Reopen the issue or merge request |
 | `/title <New title>`       | None                | Change title |
-| `/assign @username`        | `/reassign`         | Reassign |
+| `/assign @username`        | `/reassign`         | Assign |
 | `/unassign`                | `/remove_assignee`  | Remove assignee |
-| `/milestone %milestone`    | None                | Change milestone |
+| `/milestone %milestone`    | None                | Set milestone |
 | `/clear_milestone`         | `/remove_milestone` | Remove milestone |
 | `/label ~foo ~"bar baz"`   | `/labels`           | Add label(s) |
 | `/unlabel ~foo ~"bar baz"` | `/remove_label`, `remove_labels` | Remove label(s) |
@@ -25,5 +25,5 @@ do.
 | `/done`                    | None                | Mark todo as done |
 | `/subscribe`               | None                | Subscribe |
 | `/unsubscribe`             | None                | Unsubscribe |
-| `/due_date <YYYY-MM-DD> | <N days>` | None       | Set a due date |
+| `/due_date <YYYY-MM-DD> | <N days>` | `/due`     | Set a due date |
 | `/clear_due_date`          | None                | Remove due date |

@@ -173,5 +173,32 @@ describe Gitlab::SlashCommands::Extractor do
       expect(commands).to be_empty
       expect(msg).to eq 'Fixes #123'
     end
+
+    it 'does not extract commands inside a blockcode' do
+      msg = msg = "Hello\r\n```\r\nThis is some text\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      commands = extractor.extract_commands!(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands inside a blockquote' do
+      msg = "Hello\r\n>>>\r\nThis is some text\r\n/close\r\n/assign @user\r\n>>>\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      commands = extractor.extract_commands!(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
+
+    it 'does not extract commands inside a HTML tag' do
+      msg = msg = "Hello\r\n<div>\r\nThis is some text\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
+      expected = msg.delete("\r")
+      commands = extractor.extract_commands!(msg)
+
+      expect(commands).to be_empty
+      expect(msg).to eq expected
+    end
   end
 end

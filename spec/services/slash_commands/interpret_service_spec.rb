@@ -27,7 +27,7 @@ describe SlashCommands::InterpretService, services: true do
         :done,
         :subscribe,
         :unsubscribe,
-        :due_date,
+        :due_date, :due,
         :clear_due_date
       ])
     end
@@ -119,10 +119,10 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'todo command' do
-      it 'populates todo_event: "mark" if content contains /todo' do
+      it 'populates todo_event: "add" if content contains /todo' do
         changes = service.execute(content, issuable)
 
-        expect(changes).to eq(todo_event: 'mark')
+        expect(changes).to eq(todo_event: 'add')
       end
     end
 
@@ -154,7 +154,7 @@ describe SlashCommands::InterpretService, services: true do
       it 'populates due_date: Date.new(2016, 8, 28) if content contains /due_date 2016-08-28' do
         changes = service.execute(content, issuable)
 
-        expect(changes).to eq(due_date: Date.new(2016, 8, 28))
+        expect(changes).to eq(due_date: defined?(expected_date) ? expected_date : Date.new(2016, 8, 28))
       end
     end
 
@@ -367,6 +367,12 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'due_date command' do
       let(:content) { '/due_date 2016-08-28' }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'due_date command' do
+      let(:content) { '/due tomorrow' }
+      let(:issuable) { issue }
+      let(:expected_date) { Date.tomorrow }
     end
 
     it_behaves_like 'empty command' do
