@@ -1,52 +1,79 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Improve diff performance by eliminating redundant checks for text blobs
+  - Convert switch icon into icon font (ClemMakesApps)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
+  - The Repository class is now instrumented
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
+  - Expand commit message width in repo view (ClemMakesApps)
+  - Cache highlighted diff lines for merge requests
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
+  - Improve performance of AutolinkFilter#text_parse by using XPath
   - Environments have an url to link to
+  - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
   - Add green outline to New Branch button. !5447 (winniehell)
+  - Improve performance of syntax highlighting Markdown code blocks
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
+  - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
+  - Fix devise deprecation warnings.
   - Optimize checking if a user has read access to a list of issues !5370
   - Nokogiri's various parsing methods are now instrumented
+  - Add simple identifier to public SSH keys (muteor)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
+  - Fix filter input alignment (ClemMakesApps)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
+  - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
   - Check for Ci::Build artifacts at database level on pipeline partial
+  - Convert image diff background image to CSS (ClemMakesApps)
+  - Remove unnecessary index_projects_on_builds_enabled index from the projects table
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
+  - Speedup DiffNote#active? on discussions, preloading noteables and avoid touching git repository to return diff_refs when possible
   - Add commit stats in commit api. !5517 (dixpac)
+  - Add CI configuration button on project page
   - Make error pages responsive (Takuya Noguchi)
+  - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
+  - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
+
+v 8.10.4 (unreleased)
+  - Fix Import/Export error checking versions
+
+v 8.10.4 (unreleased)
+  - Fix Import/Export project import not working in HA mode
 
 v 8.10.3
   - Fix Import/Export issue importing milestones and labels not associated properly. !5426

@@ -211,7 +211,7 @@ describe "Pipelines" do
 
     context 'for invalid commit' do
       before do
-        fill_in('Create for', with: 'invalid reference')
+        fill_in('Create for', with: 'invalid-reference')
         click_on 'Create pipeline'
       end
 

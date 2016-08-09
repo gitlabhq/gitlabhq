@@ -71,7 +71,7 @@ describe API::API, api: true  do
 
   describe "GET /projects:id/repository/commits/:sha" do
     context "authorized user" do
-      it "should return a commit by sha" do
+      it "return a commit by sha" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
@@ -82,22 +82,30 @@ describe API::API, api: true  do
         expect(json_response['stats']['total']).to eq(project.repository.commit.stats.total)
       end
 
-      it "should return a 404 error if not found" do
+      it "return a 404 error if not found" do
         get api("/projects/#{project.id}/repository/commits/invalid_sha", user)
         expect(response).to have_http_status(404)
       end
 
-      it "should return nil for commit without CI" do
+      it "returns nil for commit without CI" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
-      it "should return status for CI" do
+      it "returns status for CI when pipeline succeeded" do
         pipeline = project.ensure_pipeline(project.repository.commit.sha, 'master')
+        pipeline.update(status: 'success')
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq(pipeline.status)
+      end
+
+      it "returns status for CI when pipeline is created" do
+        project.ensure_pipeline(project.repository.commit.sha, 'master')
+        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_nil
       end
     end
 
@@ -173,10 +181,10 @@ describe API::API, api: true  do
       end
 
       it 'should return the inline comment' do
-        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.diffs.first.new_path, line: 7, line_type: 'new'
+        post api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}/comments", user), note: 'My comment', path: project.repository.commit.raw_diffs.first.new_path, line: 7, line_type: 'new'
         expect(response).to have_http_status(201)
         expect(json_response['note']).to eq('My comment')
-        expect(json_response['path']).to eq(project.repository.commit.diffs.first.new_path)
+        expect(json_response['path']).to eq(project.repository.commit.raw_diffs.first.new_path)
         expect(json_response['line']).to eq(7)
         expect(json_response['line_type']).to eq('new')
       end

@@ -1154,7 +1154,7 @@ describe Repository, models: true do
       it 'does not flush the cache if the commit does not change any logos' do
         diff = double(:diff, new_path: 'test.txt')
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).not_to receive(:expire)
 
         repository.expire_avatar_cache(repository.root_ref, '123')
@@ -1163,7 +1163,7 @@ describe Repository, models: true do
       it 'flushes the cache if the commit changes any of the logos' do
         diff = double(:diff, new_path: Repository::AVATAR_FILES[0])
 
-        expect(commit).to receive(:diffs).and_return([diff])
+        expect(commit).to receive(:raw_diffs).and_return([diff])
         expect(cache).to receive(:expire).with(:avatar)
 
         repository.expire_avatar_cache(repository.root_ref, '123')

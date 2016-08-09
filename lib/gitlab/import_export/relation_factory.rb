@@ -44,7 +44,7 @@ module Gitlab
         if @relation_name == :notes
           set_note_author
 
-          # TODO: note attatchments not supported yet
+          # attachment is deprecated and note uploads are handled by Markdown uploader
           @relation_hash['attachment'] = nil
         end
 

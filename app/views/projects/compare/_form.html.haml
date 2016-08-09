@@ -1,7 +1,7 @@
 = form_tag namespace_project_compare_index_path(@project.namespace, @project), method: :post, class: 'form-inline js-requires-input' do
   .clearfix
     - if params[:to] && params[:from]
-      = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has-tooltip', title: 'Switch base of comparison'}
+      = link_to icon('exchange'), {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has-tooltip', title: 'Switch base of comparison'}
     .form-group.dropdown.compare-form-group.js-compare-from-dropdown
       .input-group.inline-input-group
         %span.input-group-addon from

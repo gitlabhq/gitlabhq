@@ -30,11 +30,7 @@ module DiffHelper
       options[:paths] = params.values_at(:old_path, :new_path)
     end
 
-    Commit.max_diff_options.merge(options)
-  end
-
-  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
+    options
   end
 
   def unfold_bottom_class(bottom)

@@ -1,18 +1,19 @@
 module Statuseable
   extend ActiveSupport::Concern
 
-  AVAILABLE_STATUSES = %w(pending running success failed canceled skipped)
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
 
   class_methods do
     def status_sql
-      builds = all.select('count(*)').to_sql
-      success = all.success.select('count(*)').to_sql
-      ignored = all.ignored.select('count(*)').to_sql if all.respond_to?(:ignored)
+      scope = all.relevant
+      builds = scope.select('count(*)').to_sql
+      success = scope.success.select('count(*)').to_sql
+      ignored = scope.ignored.select('count(*)').to_sql if scope.respond_to?(:ignored)
       ignored ||= '0'
-      pending = all.pending.select('count(*)').to_sql
-      running = all.running.select('count(*)').to_sql
-      canceled = all.canceled.select('count(*)').to_sql
-      skipped = all.skipped.select('count(*)').to_sql
+      pending = scope.pending.select('count(*)').to_sql
+      running = scope.running.select('count(*)').to_sql
+      canceled = scope.canceled.select('count(*)').to_sql
+      skipped = scope.skipped.select('count(*)').to_sql
 
       deduce_status = "(CASE
         WHEN (#{builds})=0 THEN NULL
@@ -48,7 +49,8 @@ module Statuseable
   included do
     validates :status, inclusion: { in: AVAILABLE_STATUSES }
 
-    state_machine :status, initial: :pending do
+    state_machine :status, initial: :created do
+      state :created, value: 'created'
       state :pending, value: 'pending'
       state :running, value: 'running'
       state :failed, value: 'failed'
@@ -57,6 +59,8 @@ module Statuseable
       state :skipped, value: 'skipped'
     end
 
+    scope :created, -> { where(status: 'created') }
+    scope :relevant, -> { where.not(status: 'created') }
     scope :running, -> { where(status: 'running') }
     scope :pending, -> { where(status: 'pending') }
     scope :success, -> { where(status: 'success') }
@@ -68,7 +72,7 @@ module Statuseable
   end
 
   def started?
-    !pending? && !canceled? && started_at
+    !created? && !pending? && !canceled? && started_at
   end
 
   def active?

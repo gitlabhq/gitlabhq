@@ -25,28 +25,36 @@ class CommitStatus < ActiveRecord::Base
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
-  state_machine :status, initial: :pending do
+  state_machine :status do
     event :queue do
-      transition skipped: :pending
+      transition [:created, :skipped] => :pending
     end
 
     event :run do
       transition pending: :running
     end
 
+    event :skip do
+      transition [:created, :pending] => :skipped
+    end
+
     event :drop do
-      transition [:pending, :running] => :failed
+      transition [:created, :pending, :running] => :failed
     end
 
     event :success do
-      transition [:pending, :running] => :success
+      transition [:created, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:pending, :running] => :canceled
+      transition [:created, :pending, :running] => :canceled
     end
 
-    after_transition pending: :running do |commit_status|
+    after_transition created: [:pending, :running] do |commit_status|
+      commit_status.update_attributes queued_at: Time.now
+    end
+
+    after_transition [:created, :pending] => :running do |commit_status|
       commit_status.update_attributes started_at: Time.now
     end
 
@@ -54,7 +62,7 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition [:pending, :running] => :success do |commit_status|
+    after_transition [:created, :pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
 

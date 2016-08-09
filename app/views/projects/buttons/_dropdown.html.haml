@@ -9,7 +9,7 @@
 
       - if can_create_issue
         %li
-          = link_to url_for_new_issue(@project, only_path: true) do
+          = link_to new_namespace_project_issue_path(@project.namespace, @project) do
             = icon('exclamation-circle fw')
             New issue
 

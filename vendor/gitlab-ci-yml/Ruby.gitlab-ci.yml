@@ -19,6 +19,8 @@ cache:
 # services such as redis or postgres
 before_script:
   - ruby -v                                   # Print out ruby version for debugging
+  # Uncomment next line if your rails app needs a JS runtime:
+  # - apt-get update -q && apt-get install nodejs -yqq
   - gem install bundler  --no-ri --no-rdoc    # Bundler is not installed with the image
   - bundle install -j $(nproc) --path vendor  # Install dependencies into ./vendor/ruby
 

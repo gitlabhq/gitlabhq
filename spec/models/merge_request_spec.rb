@@ -128,6 +128,31 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#raw_diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.merge_request_diff = MergeRequestDiff.new
+
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+  end
+
   describe '#diffs' do
     let(:merge_request) { build(:merge_request) }
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
@@ -136,7 +161,7 @@ describe MergeRequest, models: true do
       it 'delegates to the MR diffs' do
         merge_request.merge_request_diff = MergeRequestDiff.new
 
-        expect(merge_request.merge_request_diff).to receive(:diffs).with(options)
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
 
         merge_request.diffs(options)
       end
@@ -660,6 +685,12 @@ describe MergeRequest, models: true do
       subject.reload_diff
     end
 
+    it "executs diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+
+      subject.reload_diff
+    end
+
     it "updates diff note positions" do
       old_diff_refs = subject.diff_refs
 
@@ -684,6 +715,30 @@ describe MergeRequest, models: true do
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff
+    end
+  end
+
+  describe "#diff_sha_refs" do
+    context "with diffs" do
+      subject { create(:merge_request, :with_diffs) }
+
+      it "does not touch the repository" do
+        subject # Instantiate the object
+
+        expect_any_instance_of(Repository).not_to receive(:commit)
+
+        subject.diff_sha_refs
+      end
+
+      it "returns expected diff_refs" do
+        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+
+        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+      end
     end
   end
 end

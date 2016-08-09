@@ -61,7 +61,7 @@ describe MergeRequests::BuildService, services: true do
     end
 
     context 'one commit in the diff' do
-      let(:commits) { [commit_1] }
+      let(:commits) { Commit.decorate([commit_1], project) }
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)
@@ -84,7 +84,7 @@ describe MergeRequests::BuildService, services: true do
       end
 
       context 'commit has no description' do
-        let(:commits) { [commit_2] }
+        let(:commits) { Commit.decorate([commit_2], project) }
 
         it 'uses the title of the commit as the title of the merge request' do
           expect(merge_request.title).to eq(commit_2.safe_message)
@@ -111,7 +111,7 @@ describe MergeRequests::BuildService, services: true do
         end
 
         context 'commit has no description' do
-          let(:commits) { [commit_2] }
+          let(:commits) { Commit.decorate([commit_2], project) }
 
           it 'sets the description to "Closes #$issue-iid"' do
             expect(merge_request.description).to eq("Closes ##{issue.iid}")
@@ -121,7 +121,7 @@ describe MergeRequests::BuildService, services: true do
     end
 
     context 'more than one commit in the diff' do
-      let(:commits) { [commit_1, commit_2] }
+      let(:commits) { Commit.decorate([commit_1, commit_2], project) }
 
       it 'allows the merge request to be created' do
         expect(merge_request.can_be_created).to eq(true)

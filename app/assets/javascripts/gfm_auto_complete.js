@@ -47,8 +47,8 @@
         }
       }
     },
-    setup: function(wrap) {
-      this.input = $('.js-gfm-input');
+    setup: function(input) {
+      this.input = input || $('.js-gfm-input');
       this.destroyAtWho();
       this.setupAtWho();
       if (this.dataSource) {

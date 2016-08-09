@@ -372,7 +372,7 @@ class Repository
     # We don't want to flush the cache if the commit didn't actually make any
     # changes to any of the possible avatar files.
     if revision && commit = self.commit(revision)
-      return unless commit.diffs.
+      return unless commit.raw_diffs(deltas_only: true).
         any? { |diff| AVATAR_FILES.include?(diff.new_path) }
     end
 

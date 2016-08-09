@@ -58,7 +58,7 @@ describe LegacyDiffNote, models: true do
 
         # Generate a real line_code value so we know it will match. We use a
         # random line from a random diff just for funsies.
-        diff = merge.diffs.to_a.sample
+        diff = merge.raw_diffs.to_a.sample
         line = Gitlab::Diff::Parser.new.parse(diff.diff.each_line).to_a.sample
         code = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
 
