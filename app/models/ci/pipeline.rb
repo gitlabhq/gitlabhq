@@ -181,9 +181,8 @@ module Ci
     end
 
     def process!
-      if Ci::ProcessPipelineService.new(project, user).execute(self)
-        reload_status!
-      end
+      Ci::ProcessPipelineService.new(project, user).execute(self)
+      reload_status!
     end
 
     def predefined_variables
@@ -202,8 +201,8 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
-      execute_hooks if status_changed?
       save
+      execute_hooks if status_changed?
     end
 
     private

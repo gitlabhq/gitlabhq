@@ -13,7 +13,7 @@ module Ci
       end
 
       new_builds =
-        stage_indexes_of_created_builds.select do |index|
+        stage_indexes_of_created_builds.map do |index|
           process_stage(index)
         end
 

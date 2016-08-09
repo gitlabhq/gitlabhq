@@ -16,7 +16,7 @@ module Gitlab
 
       def hook_attrs(pipeline)
         first_pending_build = pipeline.builds.first_pending
-        config_processor = pipeline.config_processor unless pipeline.skip_ci?
+        config_processor = pipeline.config_processor
 
         {
           id: pipeline.id,
