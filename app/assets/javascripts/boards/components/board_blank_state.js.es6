@@ -13,7 +13,7 @@
     methods: {
       addDefaultLists: function () {
         BoardsStore.removeBlankState();
-        
+
         _.each(this.predefinedLabels, (label, i) => {
           BoardsStore.addList({
             title: label.title,

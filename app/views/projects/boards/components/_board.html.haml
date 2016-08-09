@@ -11,7 +11,7 @@
           {{ list.title }}
           %span.pull-right{ "v-if" => "list.type !== 'blank'" }
             {{ list.issues.length }}
-          - if current_user
+          - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
               "v-if" => "!isPreset",
               ":list" => "list" }
@@ -35,5 +35,5 @@
           "v-show" => "!loading",
           ":data-board" => "list.id" }
           = render "projects/boards/components/card"
-      - if current_user
+      - if can?(current_user, :admin_list, @project)
         = render "projects/boards/components/blank_state"

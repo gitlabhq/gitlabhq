@@ -12,7 +12,7 @@
 
 .boards-list#board-app{ "v-cloak" => true,
   ":endpoint" => "'#{namespace_project_board_path(@project.namespace, @project)}'",
-  ":disabled" => "#{current_user.nil?}",
+  ":disabled" => "#{!can?(current_user, :admin_list, @project)}",
   ":issue-link-base" => "'#{namespace_project_issues_path(@project.namespace, @project)}'" }
   .boards-app-loading.text-center{ "v-if" => "loading" }
     = icon("spinner spin")
