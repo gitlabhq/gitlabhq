@@ -1,20 +1,23 @@
 .row-content-block.white
 
   .pipeline-visualization
-    - pipeline.statuses.stages.each do |stage|
-      - statuses = pipeline.statuses.where(stage: stage)
-      - status = statuses.latest.status
-      .stage-column
-        .stage-name
-          %a{name: stage}
-          - if stage
-            = stage.titleize
-        .builds-container
-          - statuses.each do |build|
-            .build
-              %span{class: "ci-status-link ci-status-icon-#{status}"}
-                = ci_icon_for_status(status)
-              = build.name
+    %ul.stage-column-list
+      - pipeline.statuses.stages.each do |stage|
+        - statuses = pipeline.statuses.where(stage: stage)
+        - status = statuses.latest.status
+        %li.stage-column
+          .stage-name
+            %a{name: stage}
+            - if stage
+              = stage.titleize
+          .builds-container
+            %ul
+              - statuses.each do |build|
+                %li.build
+                  .build-content
+                    %span{class: "ci-status-link ci-status-icon-#{status}"}
+                      = ci_icon_for_status(status)
+                    = build.name
 
 .row-content-block.build-content.middle-block
   .pull-right
