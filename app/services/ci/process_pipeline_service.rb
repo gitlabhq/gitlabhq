@@ -12,9 +12,13 @@ module Ci
         create_builds!
       end
 
-      stage_indexes_with_created_builds.any? do |index|
-        process_stage(index).any?
-      end
+      new_builds =
+        stage_indexes_with_created_builds.select do |index|
+          process_stage(index)
+        end
+
+      # Return a flag if a when builds got enqueued
+      new_builds.flatten.any?
     end
 
     private

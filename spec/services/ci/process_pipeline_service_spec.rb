@@ -246,6 +246,7 @@ describe Ci::ProcessPipelineService, services: true do
       #
 
       before do
+        stub_ci_pipeline_yaml_file(config)
         create(:ci_build, :created, pipeline: pipeline, name: 'linux', stage: 'build', stage_idx: 0)
         create(:ci_build, :created, pipeline: pipeline, name: 'mac', stage: 'build', stage_idx: 0)
       end
@@ -276,14 +277,11 @@ describe Ci::ProcessPipelineService, services: true do
         expect(builds.success.count).to eq(4)
         expect(all_builds.count).to eq(5)
 
-        # When we succeed last pending build, we will have a total of 5 succeeded builds
+        # When we succeed last pending build, we will have a total of 5 succeeded builds, no new builds will be created
         succeed_pending
-        expect(create_builds).to be_truthy
-        expect(builds.success.count).to eq(4)
-        expect(all_builds.count).to eq(5)
-
-        # No new builds will be processed
         expect(create_builds).to be_falsey
+        expect(builds.success.count).to eq(5)
+        expect(all_builds.count).to eq(5)
       end
     end
   end

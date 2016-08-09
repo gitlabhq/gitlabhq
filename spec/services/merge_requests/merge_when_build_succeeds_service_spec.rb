@@ -110,6 +110,7 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'properly handles multiple stages' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
+      let(:pipeline) { create(:ci_pipeline_without_jobs, ref: mr_merge_if_green_enabled.source_branch, project: project) }
       let!(:build) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
       let!(:test) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
 
