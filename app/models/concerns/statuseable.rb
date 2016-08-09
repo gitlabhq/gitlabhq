@@ -1,7 +1,7 @@
 module Statuseable
   extend ActiveSupport::Concern
 
-  AVAILABLE_STATUSES = %w(created pending running success failed canceled skipped)
+  AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]
 
   class_methods do
     def status_sql

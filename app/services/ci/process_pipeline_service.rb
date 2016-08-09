@@ -2,7 +2,7 @@ module Ci
   class ProcessPipelineService < BaseService
     attr_reader :pipeline
 
-    COMPLETED_STATUSES = %w(success failed canceled skipped)
+    COMPLETED_STATUSES = %w[success failed canceled skipped]
 
     def execute(pipeline)
       @pipeline = pipeline
@@ -13,7 +13,7 @@ module Ci
       end
 
       new_builds =
-        stage_indexes_with_created_builds.select do |index|
+        stage_indexes_of_created_builds.select do |index|
           process_stage(index)
         end
 
@@ -64,7 +64,7 @@ module Ci
       pipeline.builds.where('stage_idx < ?', index).latest.status || 'success'
     end
 
-    def stage_indexes_with_created_builds
+    def stage_indexes_of_created_builds
       created_builds.order(:stage_idx).pluck('distinct stage_idx')
     end
 
