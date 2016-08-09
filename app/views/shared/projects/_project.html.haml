@@ -18,11 +18,11 @@
       - if forks
         %span
           = icon('code-fork')
-          = project.forks_count
+          = number_with_delimiter(project.forks_count)
       - if stars
         %span
           = icon('star')
-          = project.star_count
+          = number_with_delimiter(project.star_count)
       %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
         = visibility_level_icon(project.visibility_level, fw: false)
 
