@@ -15,7 +15,7 @@ module Boards
 
       def create_list(params)
         label = find_or_create_label(params)
-        CreateService.new(project, user, label_id: label.id).execute
+        Lists::CreateService.new(project, user, label_id: label.id).execute
       end
 
       def find_or_create_label(params)
