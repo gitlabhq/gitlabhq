@@ -33,6 +33,7 @@ v 8.11.0 (unreleased)
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
+  - Upgrade Grape from 0.13.0 to 0.15.0. !4601
   - Fix devise deprecation warnings.
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
