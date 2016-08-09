@@ -22,7 +22,7 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     pushd vendor/apt
     PHANTOMJS_FILE="phantomjs-$PHANTOMJS_VERSION-linux-x86_64"
     if [ ! -d "$PHANTOMJS_FILE" ]; then
-        curl -q "https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOMJS_FILE.tar.bz2" | tar jx
+        curl -q -L "https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOMJS_FILE.tar.bz2" | tar jx
     fi
     cp "$PHANTOMJS_FILE/bin/phantomjs" "/usr/bin/"
     popd
