@@ -86,6 +86,7 @@ v 8.11.0 (unreleased)
   - Update devise initializer to turn on changed password notification emails. !5648 (tombell)
   - Avoid to show the original password field when password is automatically set. !5712 (duduribeiro)
   - Fix importing GitLab projects with an invalid MR source project
+  - Sort folders with submodules in Files view !5521
 
 v 8.10.5 (unreleased)
 
