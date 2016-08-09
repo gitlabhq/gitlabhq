@@ -6,7 +6,7 @@ class Projects::BoardsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html
-      format.json { render json: board.lists.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color, :priority] } }) }
+      format.json { render json: board.lists.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :description, :color, :priority] } }) }
     end
   end
 

@@ -17,6 +17,7 @@
       "required": [
         "id",
         "color",
+        "description",
         "title",
         "priority"
       ],
@@ -26,6 +27,7 @@
           "type": "string",
           "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
         },
+        "description": { "type": ["string", "null"] },
         "title": { "type": "string" },
         "priority": { "type": ["integer", "null"] }
       }
