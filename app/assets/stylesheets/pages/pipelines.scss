@@ -232,18 +232,19 @@
 
 // Pipeline visualization
 
-.pipeline-visualization {
-  position: relative;
+.pipeline-graph {
   width: 100%;
   overflow: auto;
+  white-space: nowrap;
+}
+
+.pipeline-visualization {
+  position: relative;
+  min-width: 1220px;
 
   ul {
     padding: 0;
   }
-}
-
-.stage-column-list {
-  min-width: 1220px;
 }
 
 .stage-column {
