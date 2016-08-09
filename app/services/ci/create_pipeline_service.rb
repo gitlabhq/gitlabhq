@@ -94,8 +94,7 @@ module Ci
     def error(message, save: false)
       pipeline.errors.add(:base, message)
       if save
-        pipeline.save
-        pipeline.touch
+        pipeline.reload_status!
       end
       pipeline
     end

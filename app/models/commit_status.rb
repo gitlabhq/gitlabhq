@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
   delegate :commit, to: :pipeline
@@ -68,6 +68,12 @@ class CommitStatus < ActiveRecord::Base
 
     after_transition any => :failed do |commit_status|
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
+    end
+
+    after_transition any => [:success, :failed, :canceled] do |commit_status|
+      if commit_status.pipeline
+        commit_status.pipeline.process!
+      end
     end
   end
 

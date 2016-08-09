@@ -18,7 +18,6 @@ module Ci
     validate :valid_commit_sha
 
     # Invalidate object and save if when touched
-    after_touch :update_state
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -182,7 +181,9 @@ module Ci
     end
 
     def process!
-      Ci::ProcessPipelineService.new(project, user).execute(self)
+      if Ci::ProcessPipelineService.new(project, user).execute(self)
+        reload_status!
+      end
     end
 
     def predefined_variables
@@ -191,9 +192,7 @@ module Ci
       ]
     end
 
-    private
-
-    def update_state
+    def reload_status!
       statuses.reload
       self.status = if yaml_errors.blank?
                       statuses.latest.status || 'skipped'
@@ -205,6 +204,8 @@ module Ci
       self.duration = statuses.latest.duration
       save
     end
+
+    private
 
     def keep_around_commits
       return unless project

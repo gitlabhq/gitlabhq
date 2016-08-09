@@ -70,7 +70,7 @@ describe Ci::Pipeline, models: true do
 
   describe "coverage" do
     let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
-    let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+    let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
 
     it "calculates average when there are two builds with coverage" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
