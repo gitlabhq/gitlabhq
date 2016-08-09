@@ -3,6 +3,7 @@
 
 	function simulateEvent(el, type, options) {
 		var event;
+		if (!el) return;
 		var ownerDocument = el.ownerDocument;
 
 		options = options || {};
