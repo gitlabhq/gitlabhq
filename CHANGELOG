@@ -20,6 +20,7 @@ v 8.11.0 (unreleased)
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
+  - Add experimental Redis Sentinel support !1877
   - Environments have an url to link to
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)

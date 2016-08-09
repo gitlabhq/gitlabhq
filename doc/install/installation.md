@@ -588,15 +588,17 @@ for the changes to take effect.
 
 ### Custom Redis Connection
 
-If you'd like Resque to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
+If you'd like to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
 
     # example
-    production: redis://redis.example.tld:6379
+    production: 
+      url: redis://redis.example.tld:6379
 
 If you want to connect the Redis server via socket, then use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
     # example
-    production: unix:/path/to/redis/socket
+    production: 
+      url: unix:/path/to/redis/socket
 
 ### Custom SSH Connection
 
