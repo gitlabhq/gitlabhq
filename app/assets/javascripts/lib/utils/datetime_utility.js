@@ -36,8 +36,10 @@
     };
 
     w.gl.utils.shortTimeAgo = function($el) {
-      var shortLocale, tmpLocale;
-      shortLocale = {
+      var tmpLocale = $.timeago.settings.strings;
+
+      // Set short locale for timeago
+      $.timeago.settings.strings = {
         prefixAgo: null,
         prefixFromNow: null,
         suffixAgo: 'ago',
@@ -56,14 +58,20 @@
         wordSeparator: ' ',
         numbers: []
       };
-      tmpLocale = $.timeago.settings.strings;
-      $el.each(function(el) {
-        var $el1;
-        $el1 = $(this);
-        return $el1.attr('title', gl.utils.formatDate($el.attr('datetime')));
+
+      $el.each(function() {
+        var $el = $(this);
+        var elementDatetime = $.trim($el.text());
+
+        // Set short date
+        $el.text($.timeago(new Date(elementDatetime)));
+
+        // Set tooltip
+        $el.attr('title', gl.utils.formatDate(elementDatetime)); // The tooltip should have the time based on user's timezone
+        $el.tooltip();
       });
-      $.timeago.settings.strings = shortLocale;
-      $el.timeago();
+
+      // Restore default locale for timeago
       $.timeago.settings.strings = tmpLocale;
     };
 
