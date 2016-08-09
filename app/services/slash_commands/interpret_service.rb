@@ -2,9 +2,12 @@ module SlashCommands
   class InterpretService < BaseService
     include Gitlab::SlashCommands::Dsl
 
+    attr_reader :noteable
+
     # Takes a text and interpret the commands that are extracted from it.
     # Returns a hash of changes to be applied to a record.
-    def execute(content)
+    def execute(content, noteable)
+      @noteable = noteable
       @updates = {}
 
       commands = extractor.extract_commands!(content)
@@ -105,6 +108,8 @@ module SlashCommands
     desc 'Set a due date'
     params '<YYYY-MM-DD> | <N days>'
     command :due_date do |due_date_param|
+      return unless noteable.respond_to?(:due_date)
+
       due_date = begin
         Time.now + ChronicDuration.parse(due_date_param)
       rescue ChronicDuration::DurationParseError
@@ -116,6 +121,8 @@ module SlashCommands
 
     desc 'Remove due date'
     command :clear_due_date do
+      return unless noteable.respond_to?(:due_date)
+
       @updates[:due_date] = nil
     end
 

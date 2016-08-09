@@ -9,25 +9,30 @@ describe Notes::CreateService, services: true do
   end
 
   describe '#execute' do
+    before do
+      project.team << [user, :master]
+    end
+
     context "valid params" do
       before do
-        project.team << [user, :master]
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
       it { expect(@note).to be_valid }
       it { expect(@note.note).to eq(opts[:note]) }
+    end
 
-      it_behaves_like 'note on noteable that supports slash commands' do
-        let(:noteable) { create(:issue, project: project) }
-      end
+    describe 'note with commands' do
+      describe '/close, /label, /assign & /milestone' do
+        let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
-      it_behaves_like 'note on noteable that supports slash commands' do
-        let(:noteable) { create(:merge_request, source_project: project) }
-      end
+        it 'saves the note and does not alter the note text' do
+          expect_any_instance_of(Issues::UpdateService).to receive(:execute).and_call_original
 
-      it_behaves_like 'note on noteable that does not support slash commands' do
-        let(:noteable) { create(:commit, project: project) }
+          note = described_class.new(project, user, opts.merge(note: note_text)).execute
+
+          expect(note.note).to eq "HELLO\nWORLD"
+        end
       end
     end
   end

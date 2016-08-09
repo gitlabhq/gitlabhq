@@ -81,21 +81,21 @@ class IssuableBaseService < BaseService
   end
 
   def process_label_ids(attributes, base_label_ids: [], merge_all: false)
-    label_ids = attributes.delete(:label_ids) { [] }
-    add_label_ids = attributes.delete(:add_label_ids) { [] }
-    remove_label_ids = attributes.delete(:remove_label_ids) { [] }
+    label_ids = attributes.delete(:label_ids)
+    add_label_ids = attributes.delete(:add_label_ids)
+    remove_label_ids = attributes.delete(:remove_label_ids)
 
     new_label_ids = base_label_ids
-    new_label_ids |= label_ids if merge_all || (add_label_ids.empty? && remove_label_ids.empty?)
-    new_label_ids |= add_label_ids
-    new_label_ids -= remove_label_ids
+    new_label_ids = label_ids if label_ids && (merge_all || (add_label_ids.empty? && remove_label_ids.empty?))
+    new_label_ids |= add_label_ids if add_label_ids
+    new_label_ids -= remove_label_ids if remove_label_ids
 
     new_label_ids
   end
 
-  def merge_slash_commands_into_params!
+  def merge_slash_commands_into_params!(issuable)
     command_params = SlashCommands::InterpretService.new(project, current_user).
-      execute(params[:description])
+      execute(params[:description], issuable)
 
     params.merge!(command_params)
   end
@@ -115,7 +115,7 @@ class IssuableBaseService < BaseService
   end
 
   def create(issuable)
-    merge_slash_commands_into_params!
+    merge_slash_commands_into_params!(issuable)
     filter_params
 
     if params.present? && create_issuable(issuable, params)

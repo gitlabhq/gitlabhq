@@ -118,7 +118,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/close'
-          expect(page).to have_content 'Your commands are being executed.'
+          expect(page).not_to have_content 'Your commands are being executed.'
 
           expect(issuable).to be_open
         end
@@ -159,7 +159,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/reopen'
-          expect(page).to have_content 'Your commands are being executed.'
+          expect(page).not_to have_content 'Your commands are being executed.'
 
           expect(issuable).to be_closed
         end
