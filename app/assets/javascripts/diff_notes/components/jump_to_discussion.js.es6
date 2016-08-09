@@ -174,6 +174,12 @@
         $.scrollTo($target, {
           offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
         });
+
+        // If the next discussion is closed, toggle it open.
+        if ($target.find(".js-toggle-content").attr('style') == "display: none;") {
+          $target.find('i').toggleClass('fa fa-chevron-down').toggleClass('fa fa-chevron-up');
+          $target.find(".js-toggle-content").toggle();
+        }
       }
     }
   });
