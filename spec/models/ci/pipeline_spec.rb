@@ -143,7 +143,7 @@ describe Ci::Pipeline, models: true do
     let(:pipeline) { create :ci_empty_pipeline, project: project }
 
     context 'dependent objects' do
-      let(:commit_status) { create :commit_status, pipeline: pipeline }
+      let(:commit_status) { create :commit_status, :pending, pipeline: pipeline }
 
       it 'executes reload_status! after succeeding dependent object' do
         expect(pipeline).to receive(:reload_status!).and_return(true)
@@ -151,16 +151,17 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    context 'reload state' do
+    context 'updates' do
       let(:current) { Time.now.change(usec: 0) }
       let(:build) { FactoryGirl.create :ci_build, pipeline: pipeline, started_at: current - 120, finished_at: current - 60 }
 
       before do
-        build.success
+        build
+        pipeline.reload_status!
       end
 
       [:status, :started_at, :finished_at, :duration].each do |param|
-        it "update #{param}" do
+        it "#{param}" do
           expect(pipeline.send(param)).to eq(build.send(param))
         end
       end

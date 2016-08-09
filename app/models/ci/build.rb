@@ -70,14 +70,6 @@ module Ci
         build.execute_hooks
       end
 
-      # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
-      around_transition any => [:success, :failed, :canceled] do |build, block|
-        block.call
-        if build.pipeline
-          build.pipeline.process!
-        end
-      end
-
       after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
         build.execute_hooks

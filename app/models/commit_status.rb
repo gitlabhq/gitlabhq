@@ -70,9 +70,12 @@ class CommitStatus < ActiveRecord::Base
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
 
-    after_transition any => [:success, :failed, :canceled] do |commit_status|
+    # We use around_transition to process pipeline on next stages as soon as possible, before the `after_*` is executed
+    around_transition any => [:success, :failed, :canceled] do |commit_status, block|
+      block.call
       if commit_status.pipeline
         commit_status.pipeline.process!
+        commit_status.pipeline.reload_status!
       end
     end
   end

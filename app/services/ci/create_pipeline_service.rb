@@ -46,6 +46,7 @@ module Ci
 
       pipeline.save
       pipeline.process!
+      pipeline.reload_status!
       pipeline
     end
 

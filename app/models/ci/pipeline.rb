@@ -90,12 +90,14 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
+      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
+      reload_status!
     end
 
     def latest?
@@ -182,7 +184,6 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
-      reload_status!
     end
 
     def predefined_variables
