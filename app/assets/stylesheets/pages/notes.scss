@@ -430,8 +430,7 @@ ul.notes {
   height: 14px;
   padding: 0;
   background-color: transparent;
-  border: 1px solid #c3c3c3;
-  border-radius: 50%;
+  border: none;
   outline: 0;
   vertical-align: middle;
 
@@ -442,17 +441,14 @@ ul.notes {
   &:not(.is-disabled):hover,
   &.is-active {
     color: $gl-text-green;
-    border-color: $gl-text-green;
 
-    .fa {
+    svg {
       color: $gl-text-green;
     }
   }
 
-  .fa {
+  svg {
     position: relative;
-    top: 2px;
-    font-size: 8px;
     color: $notes-action-color;
     vertical-align: top;
   }

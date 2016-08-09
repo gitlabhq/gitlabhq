@@ -46,7 +46,7 @@
                       "v-show" => "!loading",
                       "v-el:button" => true }
 
-                    = icon("check")
+                    = render "shared/icons/icon_status_success.svg"
 
             - if current_user
               - if note.emoji_awardable?
