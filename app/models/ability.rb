@@ -32,6 +32,19 @@ class Ability
       issues.select { |issue| issue.visible_to_user?(user) }
     end
 
+    # TODO: make this private and use the actual abilities stuff for this
+    def can_edit_note?(user, note)
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
+
+      if note.project
+        max_access_level = note.project.team.max_member_access(user.id)
+        max_access_level >= Gitlab::Access::MASTER
+      else
+        false
+      end
+    end
+
     def allowed?(user, action, subject)
       cached_allowed(user, subject).include?(action)
     end
@@ -408,18 +421,6 @@ class Ability
       return true if group.users.include?(user)
 
       GroupProjectsFinder.new(group).execute(user).any?
-    end
-
-    def can_edit_note?(user, note)
-      return false if !note.editable? || !user.present?
-      return true if note.author == user || user.admin?
-
-      if note.project
-        max_access_level = note.project.team.max_member_access(user.id)
-        max_access_level >= Gitlab::Access::MASTER
-      else
-        false
-      end
     end
 
     def namespace_abilities(user, namespace)
