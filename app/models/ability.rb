@@ -90,6 +90,7 @@ class Ability
       if project && project.public?
         rules = [
           :read_project,
+          :read_board,
           :read_wiki,
           :read_label,
           :read_milestone,
