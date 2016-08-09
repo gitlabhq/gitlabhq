@@ -1,5 +1,7 @@
 - page_title "Contribution Analytics"
 - header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/chart.js')
 
 .gray-content-block
   .pull-right
