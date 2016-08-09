@@ -1,20 +1,22 @@
 .row-content-block.white
 
   .pipeline-visualization
-    - pipeline.statuses.stages.each do |stage|
-      - statuses = pipeline.statuses.where(stage: stage)
-      - status = statuses.latest.status
-      .stage-column
-        .stage-name
-          %a{name: stage}
-          - if stage
-            = stage.titleize
-        .builds-container
-          - statuses.each do |build|
-            .build
-              %span{class: "ci-status-link ci-status-icon-#{status}"}
-                = ci_icon_for_status(status)
-              = build.name
+    %ul.stage-column-list
+      - pipeline.statuses.stages.each do |stage|
+        - statuses = pipeline.statuses.where(stage: stage)
+        - status = statuses.latest.status
+        %li.stage-column
+          .stage-name
+            %a{name: stage}
+            - if stage
+              = stage.titleize
+          .builds-container
+            %ul
+              - statuses.each do |build|
+                %li.build
+                  %span{class: "ci-status-link ci-status-icon-#{status}"}
+                    = ci_icon_for_status(status)
+                  = build.name
 
 .row-content-block.build-content.middle-block
   .pull-right
@@ -52,7 +54,7 @@
 - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
   .bs-callout.bs-callout-warning
     \.gitlab-ci.yml not found in this commit
--#
+
 -# .table-holder.pipeline-holder
 -#   %table.table.builds.pipeline
 -#     %thead
