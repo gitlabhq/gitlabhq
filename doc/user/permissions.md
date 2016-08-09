@@ -23,6 +23,7 @@ The following table depicts the various user permission levels in a project.
 | See a list of builds                  | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | See a build log                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse build artifacts   | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| View wiki pages                       | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
