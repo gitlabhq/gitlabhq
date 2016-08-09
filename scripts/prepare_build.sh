@@ -20,10 +20,11 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
 
     # Install phantomjs package
     pushd vendor/apt
-    if [ ! -e "$PHANTOMJS_DEB" ]; then
-        wget -q "http://ftp.us.debian.org/debian/pool/main/p/phantomjs/$PHANTOMJS_DEB"
+    PHANTOMJS_FILE="phantomjs-$PHANTOMJS_VERSION-linux-x86_64"
+    if [ ! -d "$PHANTOMJS_FILE" ]; then
+        curl -q "https://bitbucket.org/ariya/phantomjs/downloads/$PHANTOMJS_FILE.tar.bz2" | tar jx
     fi
-    dpkg -i "$PHANTOMJS_DEB"
+    cp "$PHANTOMJS_FILE/bin/phantomjs" "/usr/bin/"
     popd
 
     # Try to install packages
