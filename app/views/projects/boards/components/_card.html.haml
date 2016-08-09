@@ -19,7 +19,8 @@
         type: "button",
         "@click" => "filterByLabel(label, $event)",
         ":style" => "{ backgroundColor: label.color, color: label.textColor }",
-        ":title" => "label.description" }
+        ":title" => "label.description",
+        data: { container: 'body' } }
         {{ label.title }}
       %a.has-tooltip{ ":href" => "'/u/' + issue.assignee.username",
         ":title" => "'Assigned to ' + issue.assignee.name",
