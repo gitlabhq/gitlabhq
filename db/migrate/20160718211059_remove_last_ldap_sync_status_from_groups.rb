@@ -1,6 +1,5 @@
 # Migration type: online without errors (works on previous version and new one)
 class RemoveLastLdapSyncStatusFromGroups < ActiveRecord::Migration
-
   DOWNTIME = false
 
   def change
