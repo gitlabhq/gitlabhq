@@ -72,6 +72,14 @@
   &.large {
     width: 200px;
   }
+
+  &.wide {
+    width: 100%;
+
+    + .dropdown-select {
+      width: 100%;
+    }
+  }
 }
 
 .dropdown-menu,

@@ -1,8 +1,7 @@
 # GitLab Container Registry
 
-> **Note:**
-This feature was [introduced][ce-4040] in GitLab 8.8. Docker Registry manifest
-v1 support was added in GitLab 8.9 to support Docker versions earlier than 1.10.
+> [Introduced][ce-4040] in GitLab 8.8. Docker Registry manifest
+`v1` support was added in GitLab 8.9 to support Docker versions earlier than 1.10.
 
 > **Note:**
 This document is about the user guide. To learn how to enable GitLab Container

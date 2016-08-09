@@ -533,10 +533,6 @@ module Ci
           }
         end
 
-        context 'when also global variables are defined' do
-
-        end
-
         context 'when syntax is correct' do
           let(:variables) do
             { VAR1: 'value1', VAR2: 'value2' }

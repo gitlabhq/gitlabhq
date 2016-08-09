@@ -607,7 +607,7 @@
       return this.dropdown.before($input);
     };
 
-    GitLabDropdown.prototype.selectRowAtIndex = function(e, index) {
+    GitLabDropdown.prototype.selectRowAtIndex = function(index) {
       var $el, selector;
       selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(" + index + ") a";
       if (this.dropdown.find(".dropdown-toggle-page").length) {
@@ -615,8 +615,6 @@
       }
       $el = $(selector, this.dropdown);
       if ($el.length) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
         return $el.first().trigger('click');
       }
     };
@@ -653,7 +651,7 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
-            return _this.selectRowAtIndex(e, $('.is-focused', _this.dropdown).closest('li').index() - 1);
+            return _this.selectRowAtIndex($('.is-focused', _this.dropdown).closest('li').index() - 1);
           }
         };
       })(this));

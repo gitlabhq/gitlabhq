@@ -81,7 +81,7 @@ Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ### Personal Access Tokens
 
-> **Note:** This feature was [introduced][ce-3749] in GitLab 8.8
+> [Introduced][ce-3749] in GitLab 8.8.
 
 You can create as many personal access tokens as you like from your GitLab
 profile (`/profile/personal_access_tokens`); perhaps one for each application

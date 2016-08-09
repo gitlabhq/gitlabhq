@@ -44,8 +44,7 @@ as appropriate.
 
 ## Custom error messages
 
->**Note:**
-This feature was [introduced][5073] in GitLab 8.10.
+> [Introduced][5073] in GitLab 8.10.
 
 If the commit is declined or an error occurs during the Git hook check,
 the STDERR or STDOUT message of the hook will be present in GitLab's UI.

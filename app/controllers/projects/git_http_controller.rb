@@ -20,9 +20,9 @@ class Projects::GitHttpController < Projects::ApplicationController
     elsif receive_pack? && receive_pack_allowed?
       render_ok
     elsif http_blocked?
-      render_not_allowed
+      render_http_not_allowed
     else
-      render_not_found
+      render_denied
     end
   end
 
@@ -31,7 +31,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     if upload_pack? && upload_pack_allowed?
       render_ok
     else
-      render_not_found
+      render_denied
     end
   end
 
@@ -40,7 +40,7 @@ class Projects::GitHttpController < Projects::ApplicationController
     if receive_pack? && receive_pack_allowed?
       render_ok
     else
-      render_not_found
+      render_denied
     end
   end
 
@@ -156,8 +156,17 @@ class Projects::GitHttpController < Projects::ApplicationController
     render plain: 'Not Found', status: :not_found
   end
 
-  def render_not_allowed
-    render plain: download_access.message, status: :forbidden
+  def render_http_not_allowed
+    render plain: access_check.message, status: :forbidden
+  end
+
+  def render_denied
+    if user && user.can?(:read_project, project)
+      render plain: 'Access denied', status: :forbidden
+    else
+      # Do not leak information about project existence
+      render_not_found
+    end
   end
 
   def ci?
@@ -168,22 +177,20 @@ class Projects::GitHttpController < Projects::ApplicationController
     return false unless Gitlab.config.gitlab_shell.upload_pack
 
     if user
-      download_access.allowed?
+      access_check.allowed?
     else
       ci? || project.public?
     end
   end
 
   def access
-    return @access if defined?(@access)
-
-    @access = Gitlab::GitAccess.new(user, project, 'http')
+    @access ||= Gitlab::GitAccess.new(user, project, 'http')
   end
 
-  def download_access
-    return @download_access if defined?(@download_access)
-
-    @download_access = access.check('git-upload-pack')
+  def access_check
+    # Use the magic string '_any' to indicate we do not know what the
+    # changes are. This is also what gitlab-shell does.
+    @access_check ||= access.check(git_command, '_any')
   end
 
   def http_blocked?
@@ -193,8 +200,6 @@ class Projects::GitHttpController < Projects::ApplicationController
   def receive_pack_allowed?
     return false unless Gitlab.config.gitlab_shell.receive_pack
 
-    # Skip user authorization on upload request.
-    # It will be done by the pre-receive hook in the repository.
-    user.present?
+    access_check.allowed?
   end
 end

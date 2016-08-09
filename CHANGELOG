@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Improve diff performance by eliminating redundant checks for text blobs
   - Convert switch icon into icon font (ClemMakesApps)
+  - API: Endpoints for enabling and disabling deploy keys
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
@@ -24,21 +25,26 @@ v 8.11.0 (unreleased)
   - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
   - Clean up unused routes (Josef Strzibny)
+  - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
+  - Optimize generating of cache keys for issues and notes
   - Improve performance of syntax highlighting Markdown code blocks
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
   - Fix devise deprecation warnings.
+  - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Nokogiri's various parsing methods are now instrumented
   - Add simple identifier to public SSH keys (muteor)
+  - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Fix filter input alignment (ClemMakesApps)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
   - Make fork counter always clickable. !5463 (winniehell)
+  - Document that webhook secret token is sent in X-Gitlab-Token HTTP header !5664 (lycoperdon)
   - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
   - The overhead of instrumented method calls has been reduced
@@ -73,6 +79,9 @@ v 8.11.0 (unreleased)
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
   - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
+  - Adds support for pending invitation project members importing projects
+  - Update devise initializer to turn on changed password notification emails. !5648 (tombell)
+  - Avoid to show the original password field when password is automatically set. !5712 (duduribeiro)
 
 v 8.10.5 (unreleased)
 

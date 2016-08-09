@@ -1,7 +1,6 @@
 # Cherry-pick changes
 
->**Note:**
-This feature was [introduced][ce-3514] in GitLab 8.7.
+> [Introduced][ce-3514] in GitLab 8.7.
 
 ---
 
