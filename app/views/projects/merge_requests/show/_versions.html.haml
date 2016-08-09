@@ -1,7 +1,7 @@
-- diffs_count = @merge_request.merge_request_diffs.count
+- merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+- latest_diff = merge_request_diffs.first
 
-- if diffs_count > 1
-  - latest_diff = @merge_request.merge_request_diff
+- if merge_request_diffs.size > 1
   .mr-version-switch
     Version:&nbsp;
     %span.dropdown.inline
@@ -13,7 +13,7 @@
             #{@merge_request_diff.head_commit.short_id}
         %span.caret
       %ul.dropdown-menu.dropdown-menu-selectable
-        - @merge_request.merge_request_diffs.each do |merge_request_diff|
+        - merge_request_diffs.each do |merge_request_diff|
           %li
             = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, diff_id: merge_request_diff.id), class: ('is-active' if merge_request_diff == @merge_request_diff) do
               %strong.monospace

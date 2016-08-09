@@ -30,6 +30,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
 
+  def self.select_without_diff
+    select(column_names - ['st_diffs'])
+  end
+
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
