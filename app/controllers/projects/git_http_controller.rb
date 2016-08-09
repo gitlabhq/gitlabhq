@@ -59,10 +59,6 @@ class Projects::GitHttpController < Projects::GitHttpClientController
     render json: Gitlab::Workhorse.git_http_ok(repository, user)
   end
 
-  def render_not_found
-    render plain: 'Not Found', status: :not_found
-  end
-
   def render_http_not_allowed
     render plain: access_check.message, status: :forbidden
   end
