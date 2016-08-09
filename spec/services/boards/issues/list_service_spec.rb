@@ -39,7 +39,7 @@ describe Boards::Issues::ListService, services: true do
     it 'delegates search to IssuesFinder' do
       params = { id: list1.id }
 
-      expect_any_instance_of(IssuesFinder).to receive(:execute).once
+      expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
 
       described_class.new(project, user, params).execute
     end
