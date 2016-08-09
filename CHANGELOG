@@ -16,6 +16,7 @@ v 8.11.0 (unreleased)
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Show wall clock time when showing a pipeline. !5734
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
