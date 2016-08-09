@@ -234,16 +234,22 @@
 
 .pipeline-visualization {
   position: relative;
+  width: 100%;
+  overflow: auto;
 
   ul {
     padding: 0;
   }
 }
 
+.stage-column-list {
+  min-width: 1220px;
+}
+
 .stage-column {
   display: inline-block;
   vertical-align: top;
-  margin-right: 40px;
+  margin-right: 50px;
 
   li {
     list-style: none;
@@ -278,9 +284,9 @@
         content: '';
         position: absolute;
         top: 50%;
-        right: -44px;
+        right: -54px;
         border-top: 2px solid $border-color;
-        width: 44px;
+        width: 54px;
         height: 1px;
       }
     }
@@ -298,7 +304,7 @@
 
       // Right connecting curves
       &::after {
-        right: -21px;
+        right: -20px;
         border-right: 2px solid $border-color;
         border-radius: 0 0 50px 0;
         -webkit-border-radius: 0 0 50px 0;
@@ -306,7 +312,7 @@
 
       // Left connecting curves
       &::before {
-        left: -21px;
+        left: -20px;
         border-left: 2px solid $border-color;
         border-radius: 0 0 0 50px;
         -webkit-border-radius: 0 0 0 50px;
@@ -316,8 +322,13 @@
     // Connect second build to first build with smaller curved line
     &:nth-child(2) {
       &::after, &::before {
-        height: 40px;
+        height: 45px;
         top: -26px;
+      }
+      &::after {
+        // border-left: 2px solid $border-color;
+        border-top-right-radius: -50px;
+        -webkit-border-top-right-radius: -50px;
       }
     }
   }
