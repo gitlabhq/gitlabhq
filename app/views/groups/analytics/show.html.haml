@@ -1,13 +1,15 @@
 - page_title "Contribution Analytics"
 - header_title group_title(@group, "Contribution Analytics", group_analytics_path(@group))
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/chart.js')
 
-.gray-content-block
+.sub-header-block
   .pull-right
     .dropdown.inline
       %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
         = icon('calendar-o')
         %b.caret
-      %ul.dropdown-menu
+      %ul.dropdown-menu.dropdown-menu-align-right
         %li
           = link_to group_analytics_path(@group, start_date: Date.today - 1.week) do
             Last week
