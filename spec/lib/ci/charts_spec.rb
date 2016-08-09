@@ -7,12 +7,12 @@ describe Ci::Charts, lib: true do
       FactoryGirl.create(:ci_build, pipeline: @pipeline)
     end
 
-    it 'should return build times in minutes' do
+    it 'returns build times in minutes' do
       chart = Ci::Charts::BuildTime.new(@pipeline.project)
       expect(chart.build_times).to eq([2])
     end
 
-    it 'should handle nil build times' do
+    it 'handles nil build times' do
       create(:ci_pipeline, duration: nil, project: @pipeline.project)
 
       chart = Ci::Charts::BuildTime.new(@pipeline.project)

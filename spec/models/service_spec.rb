@@ -69,13 +69,13 @@ describe Service, models: true do
       end
       let(:project) { create(:project) }
 
-      describe 'should be prefilled for projects pushover service' do
+      describe 'is prefilled for projects pushover service' do
         before do
           service_template
           project.build_missing_services
         end
 
-        it "should have all fields prefilled" do
+        it "has all fields prefilled" do
           service = project.pushover_service
           expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')

@@ -17,7 +17,7 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:project_id/snippets/' do
-    it 'all snippets available to team member' do
+    it 'returns all snippets available to team member' do
       project = create(:project, :public)
       user = create(:user)
       project.team << [user, :developer]

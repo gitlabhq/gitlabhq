@@ -26,17 +26,17 @@ describe GitlabMarkdownHelper do
     describe "referencing multiple objects" do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
-      it "should link to the merge request" do
+      it "links to the merge request" do
         expected = namespace_project_merge_request_path(project.namespace, project, merge_request)
         expect(helper.markdown(actual)).to match(expected)
       end
 
-      it "should link to the commit" do
+      it "links to the commit" do
         expected = namespace_project_commit_path(project.namespace, project, commit)
         expect(helper.markdown(actual)).to match(expected)
       end
 
-      it "should link to the issue" do
+      it "links to the issue" do
         expected = namespace_project_issue_path(project.namespace, project, issue)
         expect(helper.markdown(actual)).to match(expected)
       end
@@ -47,7 +47,7 @@ describe GitlabMarkdownHelper do
       let(:second_project) { create(:project, :public) }
       let(:second_issue) { create(:issue, project: second_project) }
 
-      it 'should link to the issue' do
+      it 'links to the issue' do
         expected = namespace_project_issue_path(second_project.namespace, second_project, second_issue)
         expect(markdown(actual, project: second_project)).to match(expected)
       end
@@ -58,7 +58,7 @@ describe GitlabMarkdownHelper do
     let(:commit_path) { namespace_project_commit_path(project.namespace, project, commit) }
     let(:issues)      { create_list(:issue, 2, project: project) }
 
-    it 'should handle references nested in links with all the text' do
+    it 'handles references nested in links with all the text' do
       actual = helper.link_to_gfm("This should finally fix #{issues[0].to_reference} and #{issues[1].to_reference} for real", commit_path)
       doc = Nokogiri::HTML.parse(actual)
 
@@ -88,7 +88,7 @@ describe GitlabMarkdownHelper do
       expect(doc.css('a')[4].text).to eq ' for real'
     end
 
-    it 'should forward HTML options' do
+    it 'forwards HTML options' do
       actual = helper.link_to_gfm("Fixed in #{commit.id}", commit_path, class: 'foo')
       doc = Nokogiri::HTML.parse(actual)
 
@@ -110,7 +110,7 @@ describe GitlabMarkdownHelper do
       expect(act).to eq %Q(<a href="/foo">#{issues[0].to_reference}</a>)
     end
 
-    it 'should replace commit message with emoji to link' do
+    it 'replaces commit message with emoji to link' do
       actual = link_to_gfm(':book:Book', '/foo')
       expect(actual).
         to eq %Q(<img class="emoji" title=":book:" alt=":book:" src="http://localhost/assets/1F4D6.png" height="20" width="20" align="absmiddle"><a href="/foo">Book</a>)
@@ -125,7 +125,7 @@ describe GitlabMarkdownHelper do
       helper.instance_variable_set(:@project_wiki, @wiki)
     end
 
-    it "should use Wiki pipeline for markdown files" do
+    it "uses Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
       expect(helper).to receive(:markdown).with('wiki content', pipeline: :wiki, project_wiki: @wiki, page_slug: "nested/page")
@@ -133,7 +133,7 @@ describe GitlabMarkdownHelper do
       helper.render_wiki_content(@wiki)
     end
 
-    it "should use Asciidoctor for asciidoc files" do
+    it "uses Asciidoctor for asciidoc files" do
       allow(@wiki).to receive(:format).and_return(:asciidoc)
 
       expect(helper).to receive(:asciidoc).with('wiki content')
@@ -141,7 +141,7 @@ describe GitlabMarkdownHelper do
       helper.render_wiki_content(@wiki)
     end
 
-    it "should use the Gollum renderer for all other file types" do
+    it "uses the Gollum renderer for all other file types" do
       allow(@wiki).to receive(:format).and_return(:rdoc)
       formatted_content_stub = double('formatted_content')
       expect(formatted_content_stub).to receive(:html_safe)

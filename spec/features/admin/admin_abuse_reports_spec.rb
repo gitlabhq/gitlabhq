@@ -11,7 +11,7 @@ describe "Admin::AbuseReports", feature: true, js: true  do
       end
 
       describe 'in the abuse report view' do
-        it "should present a link to the user's profile" do
+        it "presents a link to the user's profile" do
           visit admin_abuse_reports_path
 
           expect(page).to have_link user.name, href: user_path(user)
@@ -19,7 +19,7 @@ describe "Admin::AbuseReports", feature: true, js: true  do
       end
 
       describe 'in the profile page of the user' do
-        it 'should show a link to the admin view of the user' do
+        it 'shows a link to the admin view of the user' do
           visit user_path(user)
 
           expect(page).to have_link '', href: admin_user_path(user)

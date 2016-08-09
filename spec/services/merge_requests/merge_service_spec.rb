@@ -26,13 +26,13 @@ describe MergeRequests::MergeService, services: true do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
-      it 'should send email to user2 about merge of new merge_request' do
+      it 'sends email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'should create system note about merge_request merge' do
+      it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
       end

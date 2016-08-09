@@ -14,7 +14,7 @@ feature 'Edit Merge Request', feature: true do
       visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    it 'form should have class js-quick-submit' do
+    it 'form has class js-quick-submit' do
       expect(page).to have_selector('.js-quick-submit')
     end
   end
