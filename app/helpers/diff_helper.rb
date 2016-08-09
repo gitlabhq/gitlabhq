@@ -13,12 +13,11 @@ module DiffHelper
   end
 
   def diff_view
-    diff_views = %w(inline parallel)
-
-    if diff_views.include?(cookies[:diff_view])
-      cookies[:diff_view]
-    else
-      diff_views.first
+    @diff_view ||= begin
+      diff_views = %w(inline parallel)
+      diff_view = cookies[:diff_view]
+      diff_view = diff_views.first unless diff_views.include?(diff_view)
+      diff_view.to_sym
     end
   end
 
@@ -33,12 +32,23 @@ module DiffHelper
     options
   end
 
-  def unfold_bottom_class(bottom)
-    bottom ? 'js-unfold js-unfold-bottom' : ''
-  end
+  def diff_match_line(old_pos, new_pos, text: '', view: :inline, bottom: false)
+    content = content_tag :td, text, class: "line_content match #{view == :inline ? '' : view}"
+    cls = ['diff-line-num', 'unfold', 'js-unfold']
+    cls << 'js-unfold-bottom' if bottom
 
-  def unfold_class(unfold)
-    unfold ? 'unfold js-unfold' : ''
+    html = ''
+    if old_pos
+      html << content_tag(:td, '...', class: cls + ['old_line'], data: { linenumber: old_pos })
+      html << content unless view == :inline
+    end
+
+    if new_pos
+      html << content_tag(:td, '...', class: cls + ['new_line'], data: { linenumber: new_pos })
+      html << content
+    end
+
+    html.html_safe
   end
 
   def diff_line_content(line, line_type = nil)
@@ -67,11 +77,11 @@ module DiffHelper
   end
 
   def inline_diff_btn
-    diff_btn('Inline', 'inline', diff_view == 'inline')
+    diff_btn('Inline', 'inline', diff_view == :inline)
   end
 
   def parallel_diff_btn
-    diff_btn('Side-by-side', 'parallel', diff_view == 'parallel')
+    diff_btn('Side-by-side', 'parallel', diff_view == :parallel)
   end
 
   def submodule_link(blob, ref, repository = @repository)
@@ -103,7 +113,8 @@ module DiffHelper
     commit = commit_for_diff(diff_file)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
-                                                       tree_join(commit.id, diff_file.file_path))
+                                                       tree_join(commit.id, diff_file.file_path)),
+      view: diff_view
     }
   end
 

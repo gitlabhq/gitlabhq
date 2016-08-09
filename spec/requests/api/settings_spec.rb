@@ -7,7 +7,7 @@ describe API::API, 'Settings', api: true  do
   let(:admin) { create(:admin) }
 
   describe "GET /application/settings" do
-    it "should return application settings" do
+    it "returns application settings" do
       get api("/application/settings", admin)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Hash
@@ -23,7 +23,7 @@ describe API::API, 'Settings', api: true  do
       allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
     end
 
-    it "should update application settings" do
+    it "updates application settings" do
       put api("/application/settings", admin),
         default_projects_limit: 3, signin_enabled: false, repository_storage: 'custom'
       expect(response).to have_http_status(200)

@@ -217,7 +217,7 @@ describe Issues::BulkUpdateService, services: true do
       let(:labels) { [merge_requests] }
       let(:remove_labels) { [regression] }
 
-      it 'remove the label IDs from all issues passed' do
+      it 'removes the label IDs from all issues passed' do
         expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(regression.id)
       end
 

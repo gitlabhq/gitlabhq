@@ -139,13 +139,13 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#update_state' do
+  describe '#reload_status!' do
     let(:pipeline) { create :ci_empty_pipeline, project: project }
 
     context 'dependent objects' do
       let(:commit_status) { create :commit_status, pipeline: pipeline }
 
-      it 'execute reload_status! after commit status succeeds' do
+      it 'executes reload_status! after succeeding dependent object' do
         expect(pipeline).to receive(:reload_status!).and_return(true)
         commit_status.success
       end
@@ -223,7 +223,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns true' do
         is_expected.to be_truthy
       end
@@ -234,7 +234,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns false' do
         is_expected.to be_falsey
       end

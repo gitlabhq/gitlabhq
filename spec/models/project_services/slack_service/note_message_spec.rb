@@ -60,6 +60,7 @@ describe SlackService::NoteMessage, models: true do
           title: "merge request title\ndetails\n"
       }
     end
+
     it 'returns a message regarding notes on a merge request' do
       message = SlackService::NoteMessage.new(@args)
       expect(message.pretext).to eq("Test User commented on " \

@@ -47,5 +47,4 @@ describe Banzai::Filter::VideoLinkFilter, lib: true do
       expect(element['src']).to eq '/path/my_image.jpg'
     end
   end
-
 end

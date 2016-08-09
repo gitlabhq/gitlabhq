@@ -82,11 +82,11 @@ describe "Pipelines" do
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-        it 'not be cancelable' do
+        it 'is not cancelable' do
           expect(page).not_to have_link('Cancel')
         end
 
-        it 'pipeline is running' do
+        it 'has pipeline running' do
           expect(page).to have_selector('.ci-running')
         end
       end
@@ -96,11 +96,11 @@ describe "Pipelines" do
 
         before { visit namespace_project_pipelines_path(project.namespace, project) }
 
-        it 'not be retryable' do
+        it 'is not retryable' do
           expect(page).not_to have_link('Retry')
         end
 
-        it 'pipeline is failed' do
+        it 'has failed pipeline' do
           expect(page).to have_selector('.ci-failed')
         end
       end
@@ -147,7 +147,7 @@ describe "Pipelines" do
 
     before { visit namespace_project_pipeline_path(project.namespace, project, pipeline) }
 
-    it 'showing a list of builds' do
+    it 'shows a list of builds' do
       expect(page).to have_content('Test')
       expect(page).to have_content(@success.id)
       expect(page).to have_content('Deploy')

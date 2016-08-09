@@ -14,7 +14,7 @@ feature 'Edit Merge Request', feature: true do
   end
 
   context 'editing a MR' do
-    it 'form should have class js-quick-submit' do
+    it 'has class js-quick-submit in form' do
       expect(page).to have_selector('.js-quick-submit')
     end
   end

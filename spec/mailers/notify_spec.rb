@@ -591,7 +591,7 @@ describe Notify do
           is_expected.to have_body_text /#{note.note}/
         end
 
-        it 'not contains note author' do
+        it 'does not contain note author' do
           is_expected.not_to have_body_text /wrote\:/
         end
 

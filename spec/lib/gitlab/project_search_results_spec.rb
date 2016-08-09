@@ -33,7 +33,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
     let!(:security_issue_1) { create(:issue, :confidential, project: project, title: 'Security issue 1', author: author) }
     let!(:security_issue_2) { create(:issue, :confidential, title: 'Security issue 2', project: project, assignee: assignee) }
 
-    it 'should not list project confidential issues for non project members' do
+    it 'does not list project confidential issues for non project members' do
       results = described_class.new(non_member, project, query)
       issues = results.objects('issues')
 
@@ -43,7 +43,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should not list project confidential issues for project members with guest role' do
+    it 'does not list project confidential issues for project members with guest role' do
       project.team << [member, :guest]
 
       results = described_class.new(member, project, query)
@@ -55,7 +55,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should list project confidential issues for author' do
+    it 'lists project confidential issues for author' do
       results = described_class.new(author, project, query)
       issues = results.objects('issues')
 
@@ -65,7 +65,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'should list project confidential issues for assignee' do
+    it 'lists project confidential issues for assignee' do
       results = described_class.new(assignee, project.id, query)
       issues = results.objects('issues')
 
@@ -75,7 +75,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'should list project confidential issues for project members' do
+    it 'lists project confidential issues for project members' do
       project.team << [member, :developer]
 
       results = described_class.new(member, project, query)
@@ -87,7 +87,7 @@ describe Gitlab::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 3
     end
 
-    it 'should list all project issues for admin' do
+    it 'lists all project issues for admin' do
       results = described_class.new(admin, project, query)
       issues = results.objects('issues')
 

@@ -601,7 +601,7 @@ class Repository
     commit(sha)
   end
 
-  def next_branch(name, opts={})
+  def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
       result = n.match(/\A#{name}-([0-9]+)\z/)
@@ -636,9 +636,7 @@ class Repository
   def tags_sorted_by(value)
     case value
     when 'name'
-      # Would be better to use `sort_by` but `version_sorter` only exposes
-      # `sort` and `rsort`
-      VersionSorter.rsort(tag_names).map { |tag_name| find_tag(tag_name) }
+      VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse
     when 'updated_asc'

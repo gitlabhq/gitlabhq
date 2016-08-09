@@ -55,7 +55,7 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it 'should execute hooks with update action' do
+      it 'executes hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks).
           with(@merge_request, 'update', @oldrev)
       end
@@ -111,7 +111,7 @@ describe MergeRequests::RefreshService, services: true do
         reload_mrs
       end
 
-      it 'should execute hooks with update action' do
+      it 'executes hooks with update action' do
         expect(refresh_service).to have_received(:execute_hooks).
           with(@fork_merge_request, 'update', @oldrev)
       end
