@@ -14,9 +14,10 @@
             %ul
               - statuses.each do |build|
                 %li.build
-                  %span{class: "ci-status-link ci-status-icon-#{status}"}
-                    = ci_icon_for_status(status)
-                  = build.name
+                  .build-content
+                    %span{class: "ci-status-link ci-status-icon-#{status}"}
+                      = ci_icon_for_status(status)
+                    = build.name
 
 .row-content-block.build-content.middle-block
   .pull-right
@@ -55,16 +56,16 @@
   .bs-callout.bs-callout-warning
     \.gitlab-ci.yml not found in this commit
 
--# .table-holder.pipeline-holder
--#   %table.table.builds.pipeline
--#     %thead
--#       %tr
--#         %th Status
--#         %th Build ID
--#         %th Name
--#         %th
--#         - if pipeline.project.build_coverage_enabled?
--#           %th Coverage
--#         %th
--#     - pipeline.statuses.stages.each do |stage|
--#       = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.where(stage: stage)
+.table-holder.pipeline-holder
+  %table.table.builds.pipeline
+    %thead
+      %tr
+        %th Status
+        %th Build ID
+        %th Name
+        %th
+        - if pipeline.project.build_coverage_enabled?
+          %th Coverage
+        %th
+    - pipeline.statuses.stages.each do |stage|
+      = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.where(stage: stage)

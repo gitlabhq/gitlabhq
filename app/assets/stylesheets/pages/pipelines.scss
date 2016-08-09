@@ -258,6 +258,10 @@
   .stage-name {
     margin-bottom: 15px;
     font-weight: bold;
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .build {
@@ -266,11 +270,14 @@
     padding: 6px 10px;
     border-radius: 30px;
     width: 150px;
-    // TODO truncate text within .build div; not on build div itself
-    // white-space: nowrap;
-    // overflow: hidden;
-    // text-overflow: ellipsis;
     margin-bottom: 10px;
+
+    .build-content {
+      width: 130px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
     svg {
       position: relative;
