@@ -2,8 +2,9 @@
 # It takes a `issuable_type`, and expect an `issuable`.
 
 shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
-  let(:user) { create(:user) }
+  let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }
+  let(:guest) { create(:user) }
   let(:project) { create(:project, :public) }
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
   let!(:label_bug) { create(:label, project: project, title: 'bug') }
@@ -11,9 +12,10 @@ shared_examples 'issuable record that supports slash commands in its description
   let(:new_url_opts) { {} }
 
   before do
-    project.team << [user, :master]
+    project.team << [master, :master]
     project.team << [assignee, :developer]
-    login_with(user)
+    project.team << [guest, :guest]
+    login_with(master)
   end
 
   describe "new #{issuable_type}" do
@@ -83,6 +85,87 @@ shared_examples 'issuable record that supports slash commands in its description
       end
     end
 
+    context "with a note closing the #{issuable_type}" do
+      before do
+        expect(issuable).to be_open
+      end
+
+      context "when current user can close #{issuable_type}" do
+        it "closes the #{issuable_type}" do
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/close"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/close'
+          expect(page).to have_content 'Your commands are being executed.'
+
+          expect(issuable.reload).to be_closed
+        end
+      end
+
+      context "when current user cannot close #{issuable_type}" do
+        before do
+          logout
+          login_with(guest)
+          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+        end
+
+        it "does not close the #{issuable_type}" do
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/close"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/close'
+          expect(page).to have_content 'Your commands are being executed.'
+
+          expect(issuable).to be_open
+        end
+      end
+    end
+
+    context "with a note reopening the #{issuable_type}" do
+      before do
+        issuable.close
+        expect(issuable).to be_closed
+      end
+
+      context "when current user can reopen #{issuable_type}" do
+        it "reopens the #{issuable_type}" do
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/reopen"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/reopen'
+          expect(page).to have_content 'Your commands are being executed.'
+
+          expect(issuable.reload).to be_open
+        end
+      end
+
+      context "when current user cannot reopen #{issuable_type}" do
+        before do
+          logout
+          login_with(guest)
+          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+        end
+
+        it "does not reopen the #{issuable_type}" do
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/reopen"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/reopen'
+          expect(page).to have_content 'Your commands are being executed.'
+
+          expect(issuable).to be_closed
+        end
+      end
+    end
+
     context "with a note marking the #{issuable_type} as todo" do
       it "creates a new todo for the #{issuable_type}" do
         page.within('.js-main-target-form') do
@@ -93,31 +176,31 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/todo'
         expect(page).to have_content 'Your commands are being executed.'
 
-        todos = TodosFinder.new(user).execute
+        todos = TodosFinder.new(master).execute
         todo = todos.first
 
         expect(todos.size).to eq 1
         expect(todo).to be_pending
         expect(todo.target).to eq issuable
-        expect(todo.author).to eq user
-        expect(todo.user).to eq user
+        expect(todo.author).to eq master
+        expect(todo.user).to eq master
       end
     end
 
     context "with a note marking the #{issuable_type} as done" do
       before do
-        TodoService.new.mark_todo(issuable, user)
+        TodoService.new.mark_todo(issuable, master)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        todos = TodosFinder.new(user).execute
+        todos = TodosFinder.new(master).execute
         todo = todos.first
 
         expect(todos.size).to eq 1
         expect(todos.first).to be_pending
         expect(todo.target).to eq issuable
-        expect(todo.author).to eq user
-        expect(todo.user).to eq user
+        expect(todo.author).to eq master
+        expect(todo.user).to eq master
 
         page.within('.js-main-target-form') do
           fill_in 'note[note]', with: "/done"
@@ -133,7 +216,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context "with a note subscribing to the #{issuable_type}" do
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(user)).to be_falsy
+        expect(issuable.subscribed?(master)).to be_falsy
 
         page.within('.js-main-target-form') do
           fill_in 'note[note]', with: "/subscribe"
@@ -143,17 +226,17 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/subscribe'
         expect(page).to have_content 'Your commands are being executed.'
 
-        expect(issuable.subscribed?(user)).to be_truthy
+        expect(issuable.subscribed?(master)).to be_truthy
       end
     end
 
     context "with a note unsubscribing to the #{issuable_type} as done" do
       before do
-        issuable.subscribe(user)
+        issuable.subscribe(master)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(user)).to be_truthy
+        expect(issuable.subscribed?(master)).to be_truthy
 
         page.within('.js-main-target-form') do
           fill_in 'note[note]', with: "/unsubscribe"
@@ -163,7 +246,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/unsubscribe'
         expect(page).to have_content 'Your commands are being executed.'
 
-        expect(issuable.subscribed?(user)).to be_falsy
+        expect(issuable.subscribed?(master)).to be_falsy
       end
     end
   end
