@@ -39,9 +39,9 @@
     },
     shouldAddBlankState: function () {
       // Decide whether to add the blank state
-      return !!_.find(this.state.lists, function (list) {
-        return list.type === 'backlog' || list.type === 'done';
-      });
+      return !(!!_.find(this.state.lists, function (list) {
+        return list.type !== 'backlog' && list.type !== 'done';
+      }));
     },
     addBlankState: function () {
       if (this.welcomeIsHidden() || this.disabled) return;
