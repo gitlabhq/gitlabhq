@@ -4,5 +4,6 @@ class Label {
     this.title = obj.title;
     this.color = obj.color;
     this.description = obj.description;
+    this.priority = (obj.priority !== null) ? obj.priority : Infinity;
   }
 }

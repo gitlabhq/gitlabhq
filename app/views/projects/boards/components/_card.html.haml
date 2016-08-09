@@ -1,5 +1,5 @@
 %board-card{ "inline-template" => true,
-  "v-for" => "issue in issues | orderBy 'id' -1",
+  "v-for" => "issue in issues | orderBy ['priority', 'id']",
   ":issue" => "issue",
   ":issue-link-base" => "issueLinkBase",
   ":disabled" => "disabled",

@@ -12,6 +12,10 @@ class Issue {
     obj.labels.forEach((label) => {
       this.labels.push(new Label(label));
     });
+
+    this.priority = this.labels.reduce((max, label) => {
+      return (label.priority < max) ? label.priority : max;
+    }, Infinity);
   }
 
   addLabel (label) {
