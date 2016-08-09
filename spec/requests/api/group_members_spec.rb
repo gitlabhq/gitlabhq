@@ -96,9 +96,9 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it "returns a 400 error when access level is not known" do
+      it "returns a 422 error when access level is not known" do
         post api("/groups/#{group_no_members.id}/members", owner), user_id: master.id, access_level: 1234
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(422)
       end
     end
   end
@@ -156,12 +156,12 @@ describe API::API, api: true  do
         expect(response).to have_http_status(400)
       end
 
-      it 'returns a 400 error when access level is not known' do
+      it 'returns a 422 error when access level is not known' do
         put(
           api("/groups/#{group_with_members.id}/members/#{master.id}", owner),
           access_level: 1234
         )
-        expect(response).to have_http_status(400)
+        expect(response).to have_http_status(422)
       end
     end
   end
@@ -182,7 +182,7 @@ describe API::API, api: true  do
           delete api("/groups/#{group_with_members.id}/members/#{guest.id}", owner)
         end.to change { group_with_members.members.count }.by(-1)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_http_status(200)
       end
 
       it "returns a 404 error when user id is not known" do

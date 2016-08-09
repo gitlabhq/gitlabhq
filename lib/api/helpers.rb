@@ -47,7 +47,6 @@ module API
       end
     end
 
-    # Deprecated
     def user_project
       @project ||= find_project(params[:id])
     end

@@ -65,14 +65,29 @@ module API
             ::Members::DestroyService.new(access_requester, access_requester.user).execute
           end
 
-          conflict!('Member already exists') if source.members.exists?(user_id: params[:user_id])
-
-          source.add_user(params[:user_id], params[:access_level], current_user)
           member = source.members.find_by(user_id: params[:user_id])
+
+          # This is to ensure back-compatibility but 409 behavior should be used
+          # for both project and group members in 9.0!
+          conflict!('Member already exists') if source_type == 'group' && member
+
+          unless member
+            source.add_user(params[:user_id], params[:access_level], current_user)
+            member = source.members.find_by(user_id: params[:user_id])
+          end
+
           if member
             present member.user, with: Entities::Member, member: member
           else
-            render_api_error!('400 Bad Request', 400)
+            # Since `source.add_user` doesn't return a member object, we have to
+            # build a new one and populate its errors in order to render them.
+            member = source.members.build(attributes_for_keys([:user_id, :access_level]))
+            member.valid? # populate the errors
+
+            # This is to ensure back-compatibility but 400 behavior should be used
+            # for all validation errors in 9.0!
+            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
+            render_validation_error!(member)
           end
         end
 
@@ -96,6 +111,9 @@ module API
           if member.update_attributes(access_level: params[:access_level])
             present member.user, with: Entities::Member, member: member
           else
+            # This is to ensure back-compatibility but 400 behavior should be used
+            # for all validation errors in 9.0!
+            render_api_error!('Access level is not known', 422) if member.errors.key?(:access_level)
             render_validation_error!(member)
           end
         end
@@ -113,10 +131,23 @@ module API
           source = find_source(source_type, params[:id])
           required_attributes! [:user_id]
 
-          member = source.members.find_by!(user_id: params[:user_id])
+          # This is to ensure back-compatibility but find_by! should be used
+          # in that casse in 9.0!
+          member = source.members.find_by(user_id: params[:user_id])
 
-          ::Members::DestroyService.new(member, current_user).execute
-          status :no_content
+          # This is to ensure back-compatibility but this should be removed in
+          # favor of find_by! in 9.0!
+          not_found!("Member: user_id:#{params[:user_id]}") if source_type == 'group' && member.nil?
+
+          # This is to ensure back-compatibility but 204 behavior should be used
+          # for all DELETE endpoints in 9.0!
+          if member.nil?
+            { message: "Access revoked", id: params[:user_id].to_i }
+          else
+            ::Members::DestroyService.new(member, current_user).execute
+
+            present member.user, with: Entities::Member, member: member
+          end
         end
       end
     end

@@ -62,7 +62,7 @@ describe API::API, api: true  do
       expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
-    it "returns a 409 status if user is already project member" do
+    it "returns a 201 status if user is already project member" do
       post api("/projects/#{project.id}/members", user),
            user_id: user2.id,
            access_level: ProjectMember::DEVELOPER
@@ -70,7 +70,9 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
       end.not_to change { ProjectMember.count }
 
-      expect(response).to have_http_status(409)
+      expect(response).to have_http_status(201)
+      expect(json_response['username']).to eq(user2.username)
+      expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
     it "returns a 400 error when user id is not given" do
@@ -83,9 +85,9 @@ describe API::API, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 error when access level is not known" do
+    it "returns a 422 error when access level is not known" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: 1234
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(422)
     end
   end
 
@@ -109,9 +111,9 @@ describe API::API, api: true  do
       expect(response).to have_http_status(400)
     end
 
-    it "returns a 400 error when access level is not known" do
+    it "returns a 422 error when access level is not known" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: 123
-      expect(response).to have_http_status(400)
+      expect(response).to have_http_status(422)
     end
   end
 
@@ -127,25 +129,27 @@ describe API::API, api: true  do
       end.to change { ProjectMember.count }.by(-1)
     end
 
-    it "returns 404 if team member is not part of a project" do
+    it "returns 200 if team member is not part of a project" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
       end.not_to change { ProjectMember.count }
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(200)
     end
 
-    it "returns 404 if team member already removed" do
+    it "returns 200 if team member already removed" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(200)
     end
 
-    it "returns 404 when the user was not member" do
+    it "returns 200 OK when the user was not member" do
       expect do
         delete api("/projects/#{project.id}/members/1000000", user)
       end.to change { ProjectMember.count }.by(0)
-      expect(response).to have_http_status(404)
+      expect(response).to have_http_status(200)
+      expect(json_response['id']).to eq(1000000)
+      expect(json_response['message']).to eq('Access revoked')
     end
 
     context 'when the user is not an admin or owner' do
@@ -154,7 +158,8 @@ describe API::API, api: true  do
           delete api("/projects/#{project.id}/members/#{user3.id}", user3)
         end.to change { ProjectMember.count }.by(-1)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_http_status(200)
+        expect(json_response['id']).to eq(user3.id)
       end
     end
   end
