@@ -166,6 +166,43 @@ shared_examples 'issuable record that supports slash commands in its description
       end
     end
 
+    context "with a note changing the #{issuable_type}'s title" do
+      context "when current user can change title of #{issuable_type}" do
+        it "reopens the #{issuable_type}" do
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/title Awesome new title"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/title'
+          expect(page).to have_content 'Your commands are being executed.'
+
+          expect(issuable.reload.title).to eq 'Awesome new title'
+        end
+      end
+
+      context "when current user cannot change title of #{issuable_type}" do
+        before do
+          logout
+          login_with(guest)
+          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+        end
+
+        it "does not reopen the #{issuable_type}" do
+          current_title = issuable.title
+          page.within('.js-main-target-form') do
+            fill_in 'note[note]', with: "/title Awesome new title"
+            click_button 'Comment'
+          end
+
+          expect(page).not_to have_content '/title'
+          expect(page).not_to have_content 'Your commands are being executed.'
+
+          expect(issuable.reload.title).not_to eq 'Awesome new title'
+        end
+      end
+    end
+
     context "with a note marking the #{issuable_type} as todo" do
       it "creates a new todo for the #{issuable_type}" do
         page.within('.js-main-target-form') do

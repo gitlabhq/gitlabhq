@@ -13,6 +13,7 @@ do.
 |:---------------------------|:--------------------|:-------------|
 | `/close`                   | None                | Close the issue or merge request |
 | `/open`                    | `/reopen`           | Reopen the issue or merge request |
+| `/title <New title>`       | None                | Change title |
 | `/assign @username`        | `/reassign`         | Reassign |
 | `/unassign`                | `/remove_assignee`  | Remove assignee |
 | `/milestone %milestone`    | None                | Change milestone |
@@ -24,5 +25,5 @@ do.
 | `/done`                    | None                | Mark todo as done |
 | `/subscribe`               | None                | Subscribe |
 | `/unsubscribe`             | None                | Unsubscribe |
-| `/due_date`                | None                | Set a due date |
+| `/due_date <YYYY-MM-DD> | <N days>` | None       | Set a due date |
 | `/clear_due_date`          | None                | Remove due date |

@@ -86,7 +86,7 @@ class IssuableBaseService < BaseService
     remove_label_ids = attributes.delete(:remove_label_ids)
 
     new_label_ids = base_label_ids
-    new_label_ids = label_ids if label_ids && (merge_all || (add_label_ids.empty? && remove_label_ids.empty?))
+    new_label_ids = label_ids if label_ids && (merge_all || (add_label_ids.blank? && remove_label_ids.blank?))
     new_label_ids |= add_label_ids if add_label_ids
     new_label_ids -= remove_label_ids if remove_label_ids
 

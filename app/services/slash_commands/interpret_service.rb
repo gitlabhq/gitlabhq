@@ -34,6 +34,12 @@ module SlashCommands
       @updates[:state_event] = 'reopen'
     end
 
+    desc 'Change title'
+    params '<New title>'
+    command :title do |title_param|
+      @updates[:title] = title_param
+    end
+
     desc 'Reassign'
     params '@user'
     command :assign, :reassign do |assignee_param|

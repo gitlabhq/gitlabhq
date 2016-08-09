@@ -15,6 +15,7 @@ describe SlashCommands::InterpretService, services: true do
       is_expected.to match_array([
         :open, :reopen,
         :close,
+        :title,
         :assign, :reassign,
         :unassign, :remove_assignee,
         :milestone,
@@ -50,6 +51,14 @@ describe SlashCommands::InterpretService, services: true do
         changes = service.execute(content, issuable)
 
         expect(changes).to eq(state_event: 'close')
+      end
+    end
+
+    shared_examples 'title command' do
+      it 'populates title: "A brand new title" if content contains /title A brand new title' do
+        changes = service.execute(content, issuable)
+
+        expect(changes).to eq(title: 'A brand new title')
       end
     end
 
@@ -190,6 +199,21 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
+    it_behaves_like 'title command' do
+      let(:content) { '/title A brand new title' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'title command' do
+      let(:content) { '/title A brand new title' }
+      let(:issuable) { merge_request }
+    end
+
+    it_behaves_like 'empty command' do
+      let(:content) { '/title' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'assign command' do
       let(:content) { "/assign @#{user.username}" }
       let(:issuable) { issue }
@@ -200,16 +224,14 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
-    it 'does not populate assignee_id if content contains /assign with an unknown user' do
-      changes = service.execute('/assign joe', issue)
-
-      expect(changes).to be_empty
+    it_behaves_like 'empty command' do
+      let(:content) { '/assign @abcd1234' }
+      let(:issuable) { issue }
     end
 
-    it 'does not populate assignee_id if content contains /assign without user' do
-      changes = service.execute('/assign', issue)
-
-      expect(changes).to be_empty
+    it_behaves_like 'empty command' do
+      let(:content) { '/assign' }
+      let(:issuable) { issue }
     end
 
     it_behaves_like 'unassign command' do

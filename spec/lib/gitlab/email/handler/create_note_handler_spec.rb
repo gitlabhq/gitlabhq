@@ -64,10 +64,21 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
     context 'because the note was commands only' do
       let!(:email_raw) { fixture_file("emails/commands_only_reply.eml") }
 
-      it 'raises a CommandsOnlyNoteError' do
-        expect { receiver.execute }.not_to raise_error
+      context 'and current user cannot update noteable' do
+        it 'raises a CommandsOnlyNoteError' do
+          expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidNoteError)
+        end
       end
 
+      context 'and current user can update noteable' do
+        before do
+          project.team << [user, :developer]
+        end
+
+        it 'raises a CommandsOnlyNoteError' do
+          expect { receiver.execute }.not_to raise_error
+        end
+      end
     end
   end
 
