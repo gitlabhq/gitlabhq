@@ -46,7 +46,7 @@
     },
     ready: function () {
       const list = this.list;
-      const options = _.extend({
+      let options = _.extend({
         group: 'issues',
         disabled: this.disabled,
         onAdd: (e) => {
@@ -61,6 +61,10 @@
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
         }
       }, gl.boardSortableDefaultOptions);
+
+      if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
+        options.handle = '.js-card-drag-handle';
+      }
 
       Sortable.create(this.$els.list, options);
 

@@ -8,6 +8,7 @@
     .board-inner
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !isPreset) }" }
+          = icon("align-justify", class: "board-mobile-handle js-board-drag-handle", "v-if" => "(!disabled && !isPreset)")
           {{ list.title }}
           %span.pull-right{ "v-if" => "list.type !== 'blank'" }
             {{ list.issues.length }}

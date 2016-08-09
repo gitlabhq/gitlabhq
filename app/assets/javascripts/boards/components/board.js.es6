@@ -42,7 +42,7 @@
       }
     },
     ready: function () {
-      const options = _.extend({
+      let options = _.extend({
         disabled: this.disabled,
         group: 'boards',
         draggable: '.is-draggable',
@@ -51,6 +51,10 @@
           BoardsStore.moveList(e.oldIndex, e.newIndex);
         }
       }, gl.boardSortableDefaultOptions);
+
+      if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
+        options.handle = '.js-board-drag-handle';
+      }
 
       Sortable.create(this.$el.parentNode, options);
     }

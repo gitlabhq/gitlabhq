@@ -6,6 +6,7 @@
   "track-by" => "id" }
   %li.card{ ":data-issue" => "issue.id",
     ":class" => "{ 'user-can-drag': !disabled }" }
+    = icon("align-justify", class: "board-mobile-handle js-card-drag-handle", "v-if" => "!disabled")
     %h4.card-title
       %a{ ":href" => "issueLinkBase + '/' + issue.id",
         ":title" => "issue.title" }

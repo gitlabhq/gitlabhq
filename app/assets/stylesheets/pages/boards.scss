@@ -140,10 +140,19 @@
 }
 
 .board-title {
+  position: relative;
   margin: 0;
   padding: $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+
+  .board-mobile-handle {
+    position: relative;
+    left: 0;
+    top: 1px;
+    margin-top: 0;
+    margin-right: 5px;
+  }
 }
 
 .board-search-container {
@@ -241,12 +250,21 @@
 }
 
 .card {
+  position: relative;
   width: 100%;
   padding: 10px $gl-padding;
   background: #fff;
   border-radius: $border-radius-default;
   box-shadow: 0 1px 2px rgba(186, 186, 186, 0.5);
   list-style: none;
+
+  &.user-can-drag {
+    padding-left: ($gl-padding * 2);
+
+    @media (min-width: $screen-sm-min) {
+      padding-left: $gl-padding;
+    }
+  }
 
   &:not(:last-child) {
     margin-bottom: 5px;
@@ -259,6 +277,17 @@
   .label {
     border: 0;
     outline: 0;
+  }
+}
+
+.board-mobile-handle {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  margin-top: (-15px / 2);
+
+  @media (min-width: $screen-sm-min) {
+    display: none;
   }
 }
 

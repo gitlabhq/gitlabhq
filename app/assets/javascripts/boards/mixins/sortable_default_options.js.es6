@@ -1,4 +1,4 @@
-(function (w) {
+((w) => {
   if (!window.gl) {
     window.gl = {};
   }
@@ -9,7 +9,7 @@
     fallbackOnBody: true,
     ghostClass: 'is-ghost',
     filter: '.has-tooltip',
-    scrollSensitivity: 50,
+    scrollSensitivity: 100,
     scrollSpeed: 10,
     onStart: function () {
       document.body.classList.add('is-dragging');
