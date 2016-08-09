@@ -102,17 +102,19 @@ module Gitlab
       def update_project_references
         project_id = @relation_hash.delete('project_id')
 
+        # If source and target are the same, populate them with the new project ID.
+        if @relation_hash['source_project_id']
+          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : -1
+        end
+
         # project_id may not be part of the export, but we always need to populate it if required.
         @relation_hash['project_id'] = project_id
         @relation_hash['gl_project_id'] = project_id if @relation_hash['gl_project_id']
         @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
-        @relation_hash['source_project_id'] = -1 if @relation_hash['source_project_id']
+      end
 
-        # If source and target are the same, populate them with the new project ID.
-        if @relation_hash['source_project_id'] && @relation_hash['target_project_id'] &&
-          @relation_hash['target_project_id'] == @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = project_id
-        end
+      def same_source_and_target?
+        @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
       def reset_ci_tokens
