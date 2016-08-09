@@ -1,14 +1,10 @@
 class Ability
   class << self
-    def cached_allowed(user, subject)
-      user_key = user ? user.id : 'anonymous'
-      key = "/ability/#{user_key}/#{subject.object_id}"
-      RequestStore[key] ||= Set.new(allowed(user, subject))
-    end
-
     def allowed?(user, action, subject)
       cached_allowed(user, subject).include?(action)
     end
+
+    private
 
     def allowed(user, subject)
       return anonymous_abilities(user, subject) if user.nil?
@@ -16,6 +12,12 @@ class Ability
       return [] if user.blocked?
 
       abilities_by_subject_class(user: user, subject: subject)
+    end
+
+    def cached_allowed(user, subject)
+      user_key = user ? user.id : 'anonymous'
+      key = "/ability/#{user_key}/#{subject.object_id}"
+      RequestStore[key] ||= Set.new(allowed(user, subject))
     end
 
     def abilities_by_subject_class(user:, subject:)
@@ -574,8 +576,6 @@ class Ability
     def user_abilities
       [:read_user]
     end
-
-    private
 
     def restricted_public_level?
       current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
