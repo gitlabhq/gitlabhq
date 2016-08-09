@@ -6,7 +6,7 @@
   = render "header"
 
   - builds = @build.pipeline.builds.latest.to_a
-  - statuses = ["failed", "pending", "running", "canceled", "skipped", "success"]
+  - statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
   - if builds.size > 1
     .dropdown.build-dropdown
       %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
