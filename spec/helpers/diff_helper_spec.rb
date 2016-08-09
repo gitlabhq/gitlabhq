@@ -32,27 +32,27 @@ describe DiffHelper do
   end
 
   describe 'diff_options' do
-    it 'should return no collapse false' do
+    it 'returns no collapse false' do
       expect(diff_options).to include(no_collapse: false)
     end
 
-    it 'should return no collapse true if expand_all_diffs' do
+    it 'returns no collapse true if expand_all_diffs' do
       allow(controller).to receive(:params) { { expand_all_diffs: true } }
       expect(diff_options).to include(no_collapse: true)
     end
 
-    it 'should return no collapse true if action name diff_for_path' do
+    it 'returns no collapse true if action name diff_for_path' do
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options).to include(no_collapse: true)
     end
 
-    it 'should return paths if action name diff_for_path and param old path' do
+    it 'returns paths if action name diff_for_path and param old path' do
       allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')
     end
 
-    it 'should return paths if action name diff_for_path and param new path' do
+    it 'returns paths if action name diff_for_path and param new path' do
       allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')
@@ -60,11 +60,11 @@ describe DiffHelper do
   end
 
   describe '#diff_line_content' do
-    it 'should return non breaking space when line is empty' do
+    it 'returns non breaking space when line is empty' do
       expect(diff_line_content(nil)).to eq(' &nbsp;')
     end
 
-    it 'should return the line itself' do
+    it 'returns the line itself' do
       expect(diff_line_content(diff_file.diff_lines.first.text)).
         to eq('@@ -6,12 +6,18 @@ module Popen')
       expect(diff_line_content(diff_file.diff_lines.first.type)).to eq('match')

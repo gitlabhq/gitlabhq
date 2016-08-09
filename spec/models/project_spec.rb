@@ -89,7 +89,7 @@ describe Project, models: true do
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }
 
-    it 'should not allow new projects beyond user limits' do
+    it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
@@ -98,7 +98,7 @@ describe Project, models: true do
 
     describe 'wiki path conflict' do
       context "when the new path has been used by the wiki of other Project" do
-        it 'should have an error on the name attribute' do
+        it 'has an error on the name attribute' do
           new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
 
           expect(new_project).not_to be_valid
@@ -107,7 +107,7 @@ describe Project, models: true do
       end
 
       context "when the new wiki path has been used by the path of other Project" do
-        it 'should have an error on the name attribute' do
+        it 'has an error on the name attribute' do
           project_with_wiki_suffix = create(:project, path: 'foo.wiki')
           new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
 
@@ -125,7 +125,7 @@ describe Project, models: true do
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
-      it "should not allow repository storages that don't match a label in the configuration" do
+      it "does not allow repository storages that don't match a label in the configuration" do
         expect(project2).not_to be_valid
         expect(project2.errors[:repository_storage].first).to match(/is not included in the list/)
       end
@@ -172,12 +172,12 @@ describe Project, models: true do
   end
 
   describe 'project token' do
-    it 'should set an random token if none provided' do
+    it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
-    it 'should not set an random toke if one provided' do
+    it 'does not set an random toke if one provided' do
       project = FactoryGirl.create :empty_project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
@@ -225,7 +225,7 @@ describe Project, models: true do
     end
   end
 
-  it 'should return valid url to repo' do
+  it 'returns valid url to repo' do
     project = Project.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
@@ -279,7 +279,7 @@ describe Project, models: true do
     let(:last_event) { double(created_at: Time.now) }
 
     describe 'last_activity' do
-      it 'should alias last_activity to last_event' do
+      it 'alias last_activity to last_event' do
         allow(project).to receive(:last_event).and_return(last_event)
         expect(project.last_activity).to eq(last_event)
       end
@@ -350,13 +350,13 @@ describe Project, models: true do
     let(:prev_commit_id) { merge_request.commits.last.id }
     let(:commit_id) { merge_request.commits.first.id }
 
-    it 'should close merge request if last commit from source branch was pushed to target branch' do
+    it 'closes merge request if last commit from source branch was pushed to target branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
       merge_request.reload
       expect(merge_request.merged?).to be_truthy
     end
 
-    it 'should update merge request commits with new one if pushed to source branch' do
+    it 'updates merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
       expect(merge_request.diff_head_sha).to eq(commit_id)
@@ -433,11 +433,11 @@ describe Project, models: true do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it "should be true if used internal tracker" do
+    it "is true if used internal tracker" do
       expect(project.default_issues_tracker?).to be_truthy
     end
 
-    it "should be false if used other tracker" do
+    it "is false if used other tracker" do
       expect(ext_project.default_issues_tracker?).to be_falsey
     end
   end
@@ -636,12 +636,12 @@ describe Project, models: true do
   describe '#avatar_type' do
     let(:project) { create(:project) }
 
-    it 'should be true if avatar is image' do
+    it 'is true if avatar is image' do
       project.update_attribute(:avatar, 'uploads/avatar.png')
       expect(project.avatar_type).to be_truthy
     end
 
-    it 'should be false if avatar is html page' do
+    it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
       expect(project.avatar_type).to eq(['only images allowed'])
     end
@@ -814,16 +814,16 @@ describe Project, models: true do
     context 'for shared runners disabled' do
       let(:shared_runners_enabled) { false }
 
-      it 'there are no runners available' do
+      it 'has no runners available' do
         expect(project.any_runners?).to be_falsey
       end
 
-      it 'there is a specific runner' do
+      it 'has a specific runner' do
         project.runners << specific_runner
         expect(project.any_runners?).to be_truthy
       end
 
-      it 'there is a shared runner, but they are prohibited to use' do
+      it 'has a shared runner, but they are prohibited to use' do
         shared_runner
         expect(project.any_runners?).to be_falsey
       end
@@ -837,7 +837,7 @@ describe Project, models: true do
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }
 
-      it 'there is a shared runner' do
+      it 'has a shared runner' do
         shared_runner
         expect(project.any_runners?).to be_truthy
       end

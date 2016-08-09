@@ -10,18 +10,19 @@ describe IssuesHelper do
     let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
     let(:int_expected) { polymorphic_path([@project.namespace, project, issue]) }
 
-    it "should return internal path if used internal tracker" do
+    it "returns internal path if used internal tracker" do
       @project = project
+
       expect(url_for_issue(issue.iid)).to match(int_expected)
     end
 
-    it "should return path to external tracker" do
+    it "returns path to external tracker" do
       @project = ext_project
 
       expect(url_for_issue(issue.iid)).to match(ext_expected)
     end
 
-    it "should return empty string if project nil" do
+    it "returns empty string if project nil" do
       @project = nil
 
       expect(url_for_issue(issue.iid)).to eq ""
@@ -45,7 +46,7 @@ describe IssuesHelper do
         allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
-      it "should return external path" do
+      it "returns external path" do
         expect(url_for_issue(issue.iid)).to match(ext_expected)
       end
     end

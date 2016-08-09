@@ -19,12 +19,12 @@ describe NotesFinder do
       note2
     end
 
-    it 'should find all notes' do
+    it 'finds all notes' do
       notes = NotesFinder.new.execute(project, user, params)
       expect(notes.size).to eq(2)
     end
 
-    it 'should raise an exception for an invalid target_type' do
+    it 'raises an exception for an invalid target_type' do
       params.merge!(target_type: 'invalid')
       expect { NotesFinder.new.execute(project, user, params) }.to raise_error('invalid target_type')
     end

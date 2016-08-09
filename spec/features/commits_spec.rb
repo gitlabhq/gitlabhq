@@ -52,7 +52,7 @@ describe 'Commits' do
             visit namespace_project_commits_path(project.namespace, project, :master)
           end
 
-          it 'should show build status' do
+          it 'shows build status' do
             page.within("//li[@id='commit-#{pipeline.short_sha}']") do
               expect(page).to have_css(".ci-status-link")
             end

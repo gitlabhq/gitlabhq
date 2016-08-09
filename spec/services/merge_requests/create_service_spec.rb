@@ -32,7 +32,7 @@ describe MergeRequests::CreateService, services: true do
       it { expect(@merge_request.assignee).to be_nil }
       it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
 
-      it 'should execute hooks with default action' do
+      it 'executes hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)
       end
 

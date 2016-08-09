@@ -42,7 +42,7 @@ describe Gitlab::OAuth::User, lib: true do
     describe 'signup' do
       shared_examples 'to verify compliance with allow_single_sign_on' do
         context 'provider is marked as external' do
-          it 'should mark user as external' do
+          it 'marks user as external' do
             stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['twitter'])
             oauth_user.save
             expect(gl_user).to be_valid
@@ -51,7 +51,7 @@ describe Gitlab::OAuth::User, lib: true do
         end
 
         context 'provider was external, now has been removed' do
-          it 'should not mark external user as internal' do
+          it 'does not mark external user as internal' do
             create(:omniauth_user, extern_uid: 'my-uid', provider: 'twitter', external: true)
             stub_omniauth_config(allow_single_sign_on: ['twitter'], external_providers: ['facebook'])
             oauth_user.save
@@ -62,7 +62,7 @@ describe Gitlab::OAuth::User, lib: true do
 
         context 'provider is not external' do
           context 'when adding a new OAuth identity' do
-            it 'should not promote an external user to internal' do
+            it 'does not promote an external user to internal' do
               user = create(:user, email: 'john@mail.com', external: true)
               user.identities.create(provider: provider, extern_uid: uid)
 
