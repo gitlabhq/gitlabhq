@@ -314,8 +314,8 @@
       &::after {
         right: -20px;
         border-right: 2px solid $border-color;
-        border-radius: 0 0 50px 0;
-        -webkit-border-radius: 0 0 50px 0;
+        border-radius: 0 0 50px;
+        -webkit-border-radius: 0 0 50px;
       }
 
       // Left connecting curves
