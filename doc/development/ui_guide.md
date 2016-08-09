@@ -56,8 +56,8 @@ When exporting SVGs, be sure to follow the following guidelines:
 3. SVGs that are limited to one color should be exported without a fill color so the color can be set using CSS.
 4. Ensure that exported SVGs have been run through an [SVG cleaner](https://github.com/RazrFalcon/SVGCleaner) to remove unused elements and attributes.
 
-You can open you svg in a text editor to ensure that it is clean. 
-Incorrect file will look like this:
+You can open your svg in a text editor to ensure that it is clean. 
+Incorrect files will look like this:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
