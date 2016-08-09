@@ -1,5 +1,4 @@
-.row-content-block.white
-
+.row-content-block.build-content.middle-block.pipeline-graph
   .pipeline-visualization
     %ul.stage-column-list
       - pipeline.statuses.stages.each do |stage|
@@ -19,7 +18,7 @@
                       = ci_icon_for_status(status)
                     = build.name
 
-.row-content-block.build-content.middle-block
+.row-content-block.build-content.middle-block.pipeline-graph
   .pull-right
     - if can?(current_user, :update_pipeline, pipeline.project)
       - if pipeline.builds.latest.failed.any?(&:retryable?)
