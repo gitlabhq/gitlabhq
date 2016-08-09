@@ -53,6 +53,32 @@ describe Gitlab::Badge::Build do
         end
       end
     end
+
+    context 'when outdated pipeline for given ref exists' do
+      before do
+        build.success!
+
+        old_build = create_build(project, '11eeffdd', branch)
+        old_build.drop!
+      end
+
+      it 'does not take outdated pipeline into account' do
+        expect(badge.status).to eq 'success'
+      end
+    end
+
+    context 'when multiple pipelines exist for given sha' do
+      before do
+        build.drop!
+
+        new_build = create_build(project, sha, branch)
+        new_build.success!
+      end
+
+      it 'reports the compound status' do
+        expect(badge.status).to eq 'failed'
+      end
+    end
   end
 
   context 'build does not exist' do
@@ -66,20 +92,6 @@ describe Gitlab::Badge::Build do
       it 'has correct value text' do
         expect(badge.value_text).to eq 'unknown'
       end
-    end
-  end
-
-  context 'when outdated pipeline for given ref exists' do
-    before do
-      build = create_build(project, sha, branch)
-      build.success!
-
-      old_build = create_build(project, '11eeffdd', branch)
-      old_build.drop!
-    end
-
-    it 'does not take outdated pipeline into account' do
-      expect(badge.status).to eq 'success'
     end
   end
 
