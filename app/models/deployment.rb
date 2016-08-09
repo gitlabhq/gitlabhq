@@ -37,8 +37,7 @@ class Deployment < ActiveRecord::Base
     deployable.try(:other_actions)
   end
 
-  def deployed_to?(ref)
-    commit = project.commit(ref)
+  def includes_commit?(commit)
     return false unless commit
 
     project.repository.is_ancestor?(commit.id, sha)

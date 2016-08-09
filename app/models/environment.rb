@@ -26,9 +26,9 @@ class Environment < ActiveRecord::Base
     self.external_url = nil if self.external_url.blank?
   end
 
-  def deployed_from?(ref)
+  def includes_commit?(commit)
     return false unless last_deployment
 
-    last_deployment.deployed_to?(ref)
+    last_deployment.includes_commit?(commit)
   end
 end

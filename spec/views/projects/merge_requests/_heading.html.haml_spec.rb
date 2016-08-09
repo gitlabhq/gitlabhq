@@ -8,18 +8,19 @@ describe 'projects/merge_requests/widget/_heading' do
     let(:merge_request) { create(:merge_request, :merged) }
     let(:environment)   { create(:environment, project: project) }
     let!(:deployment)   do
-      create(:deployment, environment: environment,
-                          sha: 'a5391128b0ef5d21df5dd23d98557f4ef12fae20')
+      create(:deployment, environment: environment, sha: project.commit('master').id)
     end
 
     before do
       assign(:merge_request, merge_request)
+      assign(:project, project)
 
       render
     end
 
     it 'displays that the environment is deployed' do
-      expect(rendered).to match("Released to #{environment.name}")
+      expect(rendered).to match("Deployed to")
+      expect(rendered).to match("#{environment.name}")
     end
   end
 end

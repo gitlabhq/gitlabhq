@@ -591,8 +591,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def environments
+    return unless diff_head_commit
+
     target_project.environments.select do |environment|
-      environment.deployed_from?(ref_path)
+      environment.includes_commit?(diff_head_commit)
     end
   end
 

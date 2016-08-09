@@ -16,23 +16,26 @@ describe Deployment, models: true do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
-  describe '#deployed_to?' do
+  describe '#includes_commit?' do
     let(:project)     { create(:project) }
     let(:environment) { create(:environment, project: project) }
     let(:deployment) do
-      create(:deployment, environment: environment,
-                          sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
+      create(:deployment, environment: environment, sha: project.commit.id)
     end
 
     context 'when there is no project commit' do
       it 'returns false' do
-        expect(deployment.deployed_to?('random-branch')).to be false
+        commit = project.commit('feature')
+
+        expect(deployment.includes_commit?(commit)).to be false
       end
     end
 
     context 'when they share the same tree branch' do
       it 'returns true' do
-        expect(deployment.deployed_to?('HEAD')).to be true
+        commit = project.commit
+
+        expect(deployment.includes_commit?(commit)).to be true
       end
     end
   end

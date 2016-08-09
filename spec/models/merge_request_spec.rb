@@ -676,18 +676,15 @@ describe MergeRequest, models: true do
 
   describe "#environments" do
     let(:project)       { create(:project) }
-
-    let!(:deployment) do
-      create(:deployment, environment: environment,
-                          sha: '5f923865dde3436854e9ceb9cdb7815618d4e849')
-    end
-
     let!(:environment)  { create(:environment, project: project) }
     let!(:environment1) { create(:environment, project: project) }
-
+    let!(:environment2) { create(:environment, project: project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'selects deployed environments' do
+      create(:deployment, environment: environment, sha: project.commit('master').id)
+      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+
       expect(merge_request.environments).to eq [environment]
     end
   end
