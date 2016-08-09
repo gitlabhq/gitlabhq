@@ -9,7 +9,7 @@ describe "Admin::Hooks", feature: true do
   end
 
   describe "GET /admin/hooks" do
-    it "should be ok" do
+    it "is ok" do
       visit admin_root_path
 
       page.within ".layout-nav" do
@@ -19,7 +19,7 @@ describe "Admin::Hooks", feature: true do
       expect(current_path).to eq(admin_hooks_path)
     end
 
-    it "should have hooks list" do
+    it "has hooks list" do
       visit admin_hooks_path
       expect(page).to have_content(@system_hook.url)
     end
@@ -33,7 +33,7 @@ describe "Admin::Hooks", feature: true do
       expect { click_button "Add System Hook" }.to change(SystemHook, :count).by(1)
     end
 
-    it "should open new hook popup" do
+    it "opens new hook popup" do
       expect(current_path).to eq(admin_hooks_path)
       expect(page).to have_content(@url)
     end

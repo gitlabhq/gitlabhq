@@ -216,6 +216,8 @@ module Ci
       Gitlab::DataBuilder::PipelineDataBuilder.build(self)
     end
 
+    private
+
     def keep_around_commits
       return unless project
 

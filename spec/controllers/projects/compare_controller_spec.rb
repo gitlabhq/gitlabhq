@@ -11,7 +11,7 @@ describe Projects::CompareController do
     project.team << [user, :master]
   end
 
-  it 'compare should show some diffs' do
+  it 'compare shows some diffs' do
     get(:show,
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
@@ -23,7 +23,7 @@ describe Projects::CompareController do
     expect(assigns(:commits).length).to be >= 1
   end
 
-  it 'compare should show some diffs with ignore whitespace change option' do
+  it 'compare shows some diffs with ignore whitespace change option' do
     get(:show,
         namespace_id: project.namespace.to_param,
         project_id: project.to_param,
@@ -41,7 +41,7 @@ describe Projects::CompareController do
   end
 
   describe 'non-existent refs' do
-    it 'invalid source ref' do
+    it 'uses invalid source ref' do
       get(:show,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,
@@ -53,7 +53,7 @@ describe Projects::CompareController do
       expect(assigns(:commits)).to eq([])
     end
 
-    it 'invalid target ref' do
+    it 'uses invalid target ref' do
       get(:show,
           namespace_id: project.namespace.to_param,
           project_id: project.to_param,

@@ -24,7 +24,7 @@ describe ProjectHook, models: true do
   end
 
   describe '.push_hooks' do
-    it 'should return hooks for push events only' do
+    it 'returns hooks for push events only' do
       hook = create(:project_hook, push_events: true)
       create(:project_hook, push_events: false)
       expect(ProjectHook.push_hooks).to eq([hook])
@@ -32,7 +32,7 @@ describe ProjectHook, models: true do
   end
 
   describe '.tag_push_hooks' do
-    it 'should return hooks for tag push events only' do
+    it 'returns hooks for tag push events only' do
       hook = create(:project_hook, tag_push_events: true)
       create(:project_hook, tag_push_events: false)
       expect(ProjectHook.tag_push_hooks).to eq([hook])

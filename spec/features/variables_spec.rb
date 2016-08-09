@@ -13,13 +13,13 @@ describe 'Project variables', js: true do
     visit namespace_project_variables_path(project.namespace, project)
   end
 
-  it 'should show list of variables' do
+  it 'shows list of variables' do
     page.within('.variables-table') do
       expect(page).to have_content(variable.key)
     end
   end
 
-  it 'should add new variable' do
+  it 'adds new variable' do
     fill_in('variable_key', with: 'key')
     fill_in('variable_value', with: 'key value')
     click_button('Add new variable')
@@ -29,7 +29,7 @@ describe 'Project variables', js: true do
     end
   end
 
-  it 'should delete variable' do
+  it 'deletes variable' do
     page.within('.variables-table') do
       find('.btn-variable-delete').click
     end
@@ -37,7 +37,7 @@ describe 'Project variables', js: true do
     expect(page).not_to have_selector('variables-table')
   end
 
-  it 'should edit variable' do
+  it 'edits variable' do
     page.within('.variables-table') do
       find('.btn-variable-edit').click
     end

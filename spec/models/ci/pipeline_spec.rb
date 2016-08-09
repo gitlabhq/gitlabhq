@@ -139,13 +139,13 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#update_state' do
+  describe '#reload_status!' do
     let(:pipeline) { create :ci_empty_pipeline, project: project }
 
     context 'dependent objects' do
       let(:commit_status) { create :commit_status, pipeline: pipeline }
 
-      it 'execute reload_status! after commit status succeeds' do
+      it 'executes reload_status! after succeeding dependent object' do
         expect(pipeline).to receive(:reload_status!).and_return(true)
         commit_status.success
       end

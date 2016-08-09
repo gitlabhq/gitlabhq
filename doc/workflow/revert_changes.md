@@ -1,6 +1,6 @@
 # Reverting changes
 
-_**Note:** This feature was [introduced][ce-1990] in GitLab 8.5._
+> [Introduced][ce-1990] in GitLab 8.5.
 
 ---
 

@@ -58,7 +58,7 @@ describe FlowdockService, models: true do
       WebMock.stub_request(:post, @api_url)
     end
 
-    it "should call FlowDock API" do
+    it "calls FlowDock API" do
       @flowdock_service.execute(@sample_data)
       @sample_data[:commits].each do |commit|
         # One request to Flowdock per new commit

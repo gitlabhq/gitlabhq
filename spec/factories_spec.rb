@@ -9,7 +9,7 @@ describe 'factories' do
         expect { entity }.not_to raise_error
       end
 
-      it 'should be valid', if: factory.build_class < ActiveRecord::Base do
+      it 'is valid', if: factory.build_class < ActiveRecord::Base do
         expect(entity).to be_valid
       end
     end

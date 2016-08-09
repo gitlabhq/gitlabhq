@@ -21,7 +21,7 @@ describe NotesHelper do
   end
 
   describe "#notes_max_access_for_users" do
-    it 'return human access levels' do
+    it 'returns human access levels' do
       expect(helper.note_max_access_for_user(owner_note)).to eq('Owner')
       expect(helper.note_max_access_for_user(master_note)).to eq('Master')
       expect(helper.note_max_access_for_user(reporter_note)).to eq('Reporter')

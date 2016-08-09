@@ -1,5 +1,4 @@
 module AvatarsHelper
-
   def author_avatar(commit_or_event, options = {})
     user_avatar(options.merge({
       user: commit_or_event.author,
@@ -26,5 +25,4 @@ module AvatarsHelper
       mail_to(options[:user_email], avatar)
     end
   end
-
 end

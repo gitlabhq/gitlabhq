@@ -45,7 +45,7 @@ describe AssemblaService, models: true do
       WebMock.stub_request(:post, @api_url)
     end
 
-    it "should call Assembla API" do
+    it "calls Assembla API" do
       @assembla_service.execute(@sample_data)
       expect(WebMock).to have_requested(:post, @api_url).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/

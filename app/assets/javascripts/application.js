@@ -287,7 +287,7 @@
       $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
       $('.navbar-fixed-top').removeClass('header-pinned-nav');
     }
-    return $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
+    $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
       var $page, $pinBtn, $tooltip, $topNav, doPinNav, tooltipText;
       e.preventDefault();
       $pinBtn = $(e.currentTarget);
@@ -315,6 +315,8 @@
       $tooltip.find('.tooltip-inner').text(tooltipText);
       return $pinBtn.attr('title', tooltipText).tooltip('fixTitle');
     });
-  });
 
+    // Custom time ago
+    gl.utils.shortTimeAgo($('.js-short-timeago'));
+  });
 }).call(this);

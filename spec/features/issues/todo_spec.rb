@@ -11,7 +11,7 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
     visit namespace_project_issue_path(project.namespace, project, issue)
   end
 
-  it 'should create todo when clicking button' do
+  it 'creates todo when clicking button' do
     page.within '.issuable-sidebar' do
       click_button 'Add Todo'
       expect(page).to have_content 'Mark Done'
@@ -28,7 +28,7 @@ feature 'Manually create a todo item from issue', feature: true, js: true do
     end
   end
 
-  it 'should mark a todo as done' do
+  it 'marks a todo as done' do
     page.within '.issuable-sidebar' do
       click_button 'Add Todo'
       click_button 'Mark Done'

@@ -5,7 +5,7 @@ describe "User Feed", feature: true  do
     let!(:user) { create(:user) }
 
     context 'user atom feed via private token' do
-      it "should render user atom feed" do
+      it "renders user atom feed" do
         visit user_path(user, :atom, private_token: user.private_token)
         expect(body).to have_selector('feed title')
       end
@@ -43,24 +43,24 @@ describe "User Feed", feature: true  do
         visit user_path(user, :atom, private_token: user.private_token)
       end
 
-      it 'should have issue opened event' do
+      it 'has issue opened event' do
         expect(body).to have_content("#{safe_name} opened issue ##{issue.iid}")
       end
 
-      it 'should have issue comment event' do
+      it 'has issue comment event' do
         expect(body).
           to have_content("#{safe_name} commented on issue ##{issue.iid}")
       end
 
-      it 'should have XHTML summaries in issue descriptions' do
+      it 'has XHTML summaries in issue descriptions' do
         expect(body).to match /we have a bug!<\/p>\n\n<hr ?\/>\n\n<p>I guess/
       end
 
-      it 'should have XHTML summaries in notes' do
+      it 'has XHTML summaries in notes' do
         expect(body).to match /Bug confirmed <img[^>]*\/>/
       end
 
-      it 'should have XHTML summaries in merge request descriptions' do
+      it 'has XHTML summaries in merge request descriptions' do
         expect(body).to match /Here is the fix: <\/p><div[^>]*><a[^>]*><img[^>]*\/><\/a><\/div>/
       end
     end
