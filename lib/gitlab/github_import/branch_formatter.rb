@@ -7,10 +7,6 @@ module Gitlab
         branch_exists? && commit_exists?
       end
 
-      def name
-        @name ||= exists? ? ref : "#{ref}-#{short_id}"
-      end
-
       def valid?
         repo.present?
       end

@@ -12,7 +12,6 @@ module Gitlab
 
         if credentials
           @client = Client.new(credentials[:user])
-          @formatter = Gitlab::ImportFormatter.new
         else
           raise Projects::ImportService::Error, "Unable to find project import data credentials for project ID: #{@project.id}"
         end
@@ -66,73 +65,45 @@ module Gitlab
       end
 
       def import_pull_requests
-        disable_webhooks
-
         pull_requests = client.pull_requests(repo, state: :all, sort: :created, direction: :asc, per_page: 100)
         pull_requests = pull_requests.map { |raw| PullRequestFormatter.new(project, raw) }.select(&:valid?)
 
-        source_branches_removed = pull_requests.reject(&:source_branch_exists?).map { |pr| [pr.source_branch_name, pr.source_branch_sha] }
-        target_branches_removed = pull_requests.reject(&:target_branch_exists?).map { |pr| [pr.target_branch_name, pr.target_branch_sha] }
-        branches_removed = source_branches_removed | target_branches_removed
-
-        restore_branches(branches_removed)
-
         pull_requests.each do |pull_request|
-          merge_request = pull_request.create!
-          apply_labels(merge_request)
-          import_comments(merge_request)
-          import_comments_on_diff(merge_request)
+          begin
+            restore_source_branch(pull_request) unless pull_request.source_branch_exists?
+            restore_target_branch(pull_request) unless pull_request.target_branch_exists?
+
+            merge_request = pull_request.create!
+            apply_labels(merge_request)
+            import_comments(merge_request)
+            import_comments_on_diff(merge_request)
+          rescue ActiveRecord::RecordInvalid => e
+            raise Projects::ImportService::Error, e.message
+          ensure
+            clean_up_restored_branches(pull_request)
+          end
         end
 
         true
-      rescue ActiveRecord::RecordInvalid => e
-        raise Projects::ImportService::Error, e.message
-      ensure
-        clean_up_restored_branches(branches_removed)
-        clean_up_disabled_webhooks
       end
 
-      def disable_webhooks
-        update_webhooks(hooks, active: false)
+      def restore_source_branch(pull_request)
+        project.repository.fetch_ref(repo_url, "pull/#{pull_request.number}/head", pull_request.source_branch_name)
       end
 
-      def clean_up_disabled_webhooks
-        update_webhooks(hooks, active: true)
+      def restore_target_branch(pull_request)
+        project.repository.create_branch(pull_request.target_branch_name, pull_request.target_branch_sha)
       end
 
-      def update_webhooks(hooks, options)
-        hooks.each do |hook|
-          client.edit_hook(repo, hook.id, hook.name, hook.config, options)
-        end
+      def remove_branch(name)
+        project.repository.delete_branch(name)
+      rescue Rugged::ReferenceError
+        nil
       end
 
-      def hooks
-        @hooks ||=
-          begin
-            client.hooks(repo).map { |raw| HookFormatter.new(raw) }.select(&:valid?)
-
-          # The GitHub Repository Webhooks API returns 404 for users
-          # without admin access to the repository when listing hooks.
-          # In this case we just want to return gracefully instead of
-          # spitting out an error and stop the import process.
-          rescue Octokit::NotFound
-            []
-          end
-      end
-
-      def restore_branches(branches)
-        branches.each do |name, sha|
-          client.create_ref(repo, "refs/heads/#{name}", sha)
-        end
-
-        project.repository.fetch_ref(repo_url, '+refs/heads/*', 'refs/heads/*')
-      end
-
-      def clean_up_restored_branches(branches)
-        branches.each do |name, _|
-          client.delete_ref(repo, "heads/#{name}")
-          project.repository.delete_branch(name) rescue Rugged::ReferenceError
-        end
+      def clean_up_restored_branches(pull_request)
+        remove_branch(pull_request.source_branch_name) unless pull_request.source_branch_exists?
+        remove_branch(pull_request.target_branch_name) unless pull_request.target_branch_exists?
 
         project.repository.after_remove_branch
       end
