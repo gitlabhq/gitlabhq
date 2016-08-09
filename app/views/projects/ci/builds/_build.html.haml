@@ -13,15 +13,10 @@
       - else
         %span ##{build.id}
 
-      - if build.stuck?
-        .icon-container
-          = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
-      - if defined?(retried) && retried
-        .icon-container
-          = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
-
       - if defined?(ref) && ref
         - if build.ref
+          .icon-container
+            = build.tag? ? icon('tag') : icon('code-fork')
           = link_to build.ref, namespace_project_commits_path(build.project.namespace, build.project, build.ref), class: "monospace branch-name"
         - else
           .light none
@@ -30,6 +25,11 @@
 
       - if defined?(commit_sha) && commit_sha
         = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
+
+      - if build.stuck?
+        = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
+      - if defined?(retried) && retried
+        = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
 
       .label-container
         - if build.tags.any?
@@ -44,7 +44,6 @@
           %span.label.label-warning retried
         - if build.manual?
           %span.label.label-info manual
-
 
   - if defined?(runner) && runner
     %td

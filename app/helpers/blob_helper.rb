@@ -13,7 +13,7 @@ module BlobHelper
 
     blob = project.repository.blob_at(ref, path) rescue nil
 
-    return unless blob && blob_text_viewable?(blob)
+    return unless blob
 
     from_mr = options[:from_merge_request_id]
     link_opts = {}

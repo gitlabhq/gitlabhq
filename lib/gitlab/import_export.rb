@@ -2,7 +2,7 @@ module Gitlab
   module ImportExport
     extend self
 
-    VERSION = '0.1.2'
+    VERSION = '0.1.3'
     FILENAME_LIMIT = 50
 
     def export_path(relative_path:)
@@ -11,6 +11,10 @@ module Gitlab
 
     def storage_path
       File.join(Settings.shared['path'], 'tmp/project_exports')
+    end
+
+    def import_upload_path(filename:)
+      File.join(storage_path, 'uploads', filename)
     end
 
     def project_filename

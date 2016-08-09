@@ -1,7 +1,7 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
   %div{ class: container_class }
-    = project_icon(@project, alt: @project.name, class: 'project-avatar avatar s70')
+    = project_icon(@project, alt: @project.name, class: 'project-avatar avatar s70 avatar-tile')
     %h1.project-title
       = @project.name
       %span.visibility-icon.has-tooltip{data: { container: 'body' }, title: visibility_icon_description(@project)}

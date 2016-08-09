@@ -1,7 +1,7 @@
 # Award emoji
 
 >**Note:**
-This feature was [introduced][1825] in GitLab 8.2.
+[Introduced][1825] in GitLab 8.2.
 
 When you're collaborating online, you get fewer opportunities for high-fives
 and thumbs-ups. Emoji can be awarded to issues and merge requests, making
@@ -16,7 +16,7 @@ award emoji.
 ## Sort issues and merge requests on vote count
 
 >**Note:**
-This feature was [introduced][2871] in GitLab 8.5.
+[Introduced][2871] in GitLab 8.5.
 
 You can quickly sort issues and merge requests by the number of votes they
 have received. The sort options can be found in the dropdown menu as "Most
@@ -45,7 +45,7 @@ downvotes.
 ## Award emoji for comments
 
 >**Note:**
-This feature was [introduced][4291] in GitLab 8.9.
+[Introduced][4291] in GitLab 8.9.
 
 Award emoji can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.

@@ -5,6 +5,7 @@ class AutocompleteController < ApplicationController
   def users
     @users ||= User.none
     @users = @users.search(params[:search]) if params[:search].present?
+    @users = @users.where.not(id: params[:skip_users]) if params[:skip_users].present?
     @users = @users.active
     @users = @users.reorder(:name)
     @users = @users.page(params[:page])

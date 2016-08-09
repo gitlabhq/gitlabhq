@@ -163,4 +163,17 @@ describe AutocompleteController do
       expect(body.collect { |u| u['id'] }).not_to include(99999)
     end
   end
+
+  context 'skip_users parameter included' do
+    before { sign_in(user) }
+
+    it 'skips the user IDs passed' do
+      get(:users, skip_users: [user, user2].map(&:id))
+
+      other_user_ids = [non_member, project.owner, project.creator].map(&:id)
+      response_user_ids = JSON.parse(response.body).map { |user| user['id'] }
+
+      expect(response_user_ids).to contain_exactly(*other_user_ids)
+    end
+  end
 end

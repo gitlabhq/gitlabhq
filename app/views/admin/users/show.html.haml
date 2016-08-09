@@ -140,12 +140,10 @@
           .panel-heading
             This user is blocked
           .panel-body
-            %p Blocking user has the following effects:
+            %p A blocked user cannot:
             %ul
-              %li User will not be able to login
-              %li User will not be able to access git repositories
-              %li Personal projects will be left
-              %li Owned groups will be left
+              %li Log in
+              %li Access Git repositories
             %br
             = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - else

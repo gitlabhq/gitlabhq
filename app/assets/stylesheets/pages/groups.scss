@@ -23,15 +23,9 @@
 }
 
 .group-row {
-  &.no-description {
-    .group-name {
-      line-height: 44px;
-    }
-  }
-
   .stats {
     float: right;
-    line-height: 44px;
+    line-height: $list-text-height;
     color: $gl-gray;
 
     span {

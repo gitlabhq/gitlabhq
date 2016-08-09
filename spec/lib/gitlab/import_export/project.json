@@ -18,7 +18,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Aliquam enim illo et possimus.",
-      "milestone_id": 18,
       "state": "opened",
       "iid": 10,
       "updated_by_id": null,
@@ -27,6 +26,52 @@
       "due_date": null,
       "moved_to_id": null,
       "test_ee_field": "test",
+      "milestone": {
+        "id": 1,
+        "title": "v0.0",
+        "project_id": 8,
+        "description": "test milestone",
+        "due_date": null,
+        "created_at": "2016-06-14T15:02:04.415Z",
+        "updated_at": "2016-06-14T15:02:04.415Z",
+        "state": "active",
+        "iid": 1,
+        "events": [
+          {
+            "id": 487,
+            "target_type": "Milestone",
+            "target_id": 1,
+            "title": null,
+            "data": null,
+            "project_id": 46,
+            "created_at": "2016-06-14T15:02:04.418Z",
+            "updated_at": "2016-06-14T15:02:04.418Z",
+            "action": 1,
+            "author_id": 18
+          }
+        ]
+      },
+      "label_links": [
+        {
+          "id": 2,
+          "label_id": 2,
+          "target_id": 3,
+          "target_type": "Issue",
+          "created_at": "2016-07-22T08:57:02.840Z",
+          "updated_at": "2016-07-22T08:57:02.840Z",
+          "label": {
+            "id": 2,
+            "title": "test2",
+            "color": "#428bca",
+            "project_id": 8,
+            "created_at": "2016-07-22T08:55:44.161Z",
+            "updated_at": "2016-07-22T08:55:44.161Z",
+            "template": false,
+            "description": "",
+            "priority": null
+          }
+        }
+      ],
       "notes": [
         {
           "id": 351,
@@ -233,7 +278,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Voluptate vel reprehenderit facilis omnis voluptas magnam tenetur.",
-      "milestone_id": 16,
       "state": "opened",
       "iid": 9,
       "updated_by_id": null,
@@ -447,7 +491,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Ea recusandae neque autem tempora.",
-      "milestone_id": 16,
       "state": "closed",
       "iid": 8,
       "updated_by_id": null,
@@ -661,7 +704,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Maiores architecto quos in dolorem.",
-      "milestone_id": 17,
       "state": "opened",
       "iid": 7,
       "updated_by_id": null,
@@ -875,7 +917,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Ut aut ut et tenetur velit aut id modi.",
-      "milestone_id": 16,
       "state": "opened",
       "iid": 6,
       "updated_by_id": null,
@@ -1089,7 +1130,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Dicta nisi nihil non ipsa velit.",
-      "milestone_id": 20,
       "state": "closed",
       "iid": 5,
       "updated_by_id": null,
@@ -1303,7 +1343,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Ut et explicabo vel voluptatem consequuntur ut sed.",
-      "milestone_id": 19,
       "state": "closed",
       "iid": 4,
       "updated_by_id": null,
@@ -1517,7 +1556,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Non asperiores velit accusantium voluptate.",
-      "milestone_id": 18,
       "state": "closed",
       "iid": 3,
       "updated_by_id": null,
@@ -1731,7 +1769,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Molestiae corporis magnam et fugit aliquid nulla quia.",
-      "milestone_id": 17,
       "state": "closed",
       "iid": 2,
       "updated_by_id": null,
@@ -1945,7 +1982,6 @@
       "position": 0,
       "branch_name": null,
       "description": "Quod ad architecto qui est sed quia.",
-      "milestone_id": 20,
       "state": "closed",
       "iid": 1,
       "updated_by_id": null,
@@ -2259,117 +2295,6 @@
           "author_id": 25
         }
       ]
-    },
-    {
-      "id": 18,
-      "title": "v2.0",
-      "project_id": 5,
-      "description": "Error dolorem rerum aut nulla.",
-      "due_date": null,
-      "created_at": "2016-06-14T15:02:04.576Z",
-      "updated_at": "2016-06-14T15:02:04.576Z",
-      "state": "active",
-      "iid": 3,
-      "events": [
-        {
-          "id": 242,
-          "target_type": "Milestone",
-          "target_id": 18,
-          "title": null,
-          "data": null,
-          "project_id": 36,
-          "created_at": "2016-06-14T15:02:04.579Z",
-          "updated_at": "2016-06-14T15:02:04.579Z",
-          "action": 1,
-          "author_id": 1
-        },
-        {
-          "id": 58,
-          "target_type": "Milestone",
-          "target_id": 18,
-          "title": null,
-          "data": null,
-          "project_id": 5,
-          "created_at": "2016-06-14T15:02:04.579Z",
-          "updated_at": "2016-06-14T15:02:04.579Z",
-          "action": 1,
-          "author_id": 22
-        }
-      ]
-    },
-    {
-      "id": 17,
-      "title": "v1.0",
-      "project_id": 5,
-      "description": "Molestiae perspiciatis voluptates doloremque commodi veniam consequatur.",
-      "due_date": null,
-      "created_at": "2016-06-14T15:02:04.569Z",
-      "updated_at": "2016-06-14T15:02:04.569Z",
-      "state": "active",
-      "iid": 2,
-      "events": [
-        {
-          "id": 243,
-          "target_type": "Milestone",
-          "target_id": 17,
-          "title": null,
-          "data": null,
-          "project_id": 36,
-          "created_at": "2016-06-14T15:02:04.570Z",
-          "updated_at": "2016-06-14T15:02:04.570Z",
-          "action": 1,
-          "author_id": 1
-        },
-        {
-          "id": 57,
-          "target_type": "Milestone",
-          "target_id": 17,
-          "title": null,
-          "data": null,
-          "project_id": 5,
-          "created_at": "2016-06-14T15:02:04.570Z",
-          "updated_at": "2016-06-14T15:02:04.570Z",
-          "action": 1,
-          "author_id": 20
-        }
-      ]
-    },
-    {
-      "id": 16,
-      "title": "v0.0",
-      "project_id": 5,
-      "description": "Velit numquam et sed sit.",
-      "due_date": null,
-      "created_at": "2016-06-14T15:02:04.561Z",
-      "updated_at": "2016-06-14T15:02:04.561Z",
-      "state": "closed",
-      "iid": 1,
-      "events": [
-        {
-          "id": 244,
-          "target_type": "Milestone",
-          "target_id": 16,
-          "title": null,
-          "data": null,
-          "project_id": 36,
-          "created_at": "2016-06-14T15:02:04.563Z",
-          "updated_at": "2016-06-14T15:02:04.563Z",
-          "action": 1,
-          "author_id": 26
-        },
-        {
-          "id": 56,
-          "target_type": "Milestone",
-          "target_id": 16,
-          "title": null,
-          "data": null,
-          "project_id": 5,
-          "created_at": "2016-06-14T15:02:04.563Z",
-          "updated_at": "2016-06-14T15:02:04.563Z",
-          "action": 1,
-          "author_id": 26
-        }
-      ]
     }
   ],
   "snippets": [
@@ -2471,7 +2396,6 @@
       "title": "Cannot be automatically merged",
       "created_at": "2016-06-14T15:02:36.568Z",
       "updated_at": "2016-06-14T15:02:56.815Z",
-      "milestone_id": null,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -2909,7 +2833,6 @@
       "title": "Can be automatically merged",
       "created_at": "2016-06-14T15:02:36.418Z",
       "updated_at": "2016-06-14T15:02:57.013Z",
-      "milestone_id": null,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -3194,7 +3117,6 @@
       "title": "Qui accusantium et inventore facilis doloribus occaecati officiis.",
       "created_at": "2016-06-14T15:02:25.168Z",
       "updated_at": "2016-06-14T15:02:59.521Z",
-      "milestone_id": 17,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -3479,7 +3401,6 @@
       "title": "In voluptas aut sequi voluptatem ullam vel corporis illum consequatur.",
       "created_at": "2016-06-14T15:02:24.760Z",
       "updated_at": "2016-06-14T15:02:59.749Z",
-      "milestone_id": 20,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -4170,7 +4091,6 @@
       "title": "Voluptates consequatur eius nemo amet libero animi illum delectus tempore.",
       "created_at": "2016-06-14T15:02:24.415Z",
       "updated_at": "2016-06-14T15:02:59.958Z",
-      "milestone_id": 17,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -4719,7 +4639,6 @@
       "title": "In a rerum harum nihil accusamus aut quia nobis non.",
       "created_at": "2016-06-14T15:02:24.000Z",
       "updated_at": "2016-06-14T15:03:00.225Z",
-      "milestone_id": 19,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -5219,7 +5138,6 @@
       "title": "Corporis provident similique perspiciatis dolores eos animi.",
       "created_at": "2016-06-14T15:02:23.767Z",
       "updated_at": "2016-06-14T15:03:00.475Z",
-      "milestone_id": 18,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -5480,7 +5398,6 @@
       "title": "Eligendi reprehenderit doloribus quia et sit id.",
       "created_at": "2016-06-14T15:02:23.014Z",
       "updated_at": "2016-06-14T15:03:00.685Z",
-      "milestone_id": 20,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,
@@ -6171,7 +6088,6 @@
       "title": "Et ipsam voluptas velit sequi illum ut.",
       "created_at": "2016-06-14T15:02:22.825Z",
       "updated_at": "2016-06-14T15:03:00.904Z",
-      "milestone_id": 16,
       "state": "opened",
       "merge_status": "unchecked",
       "target_project_id": 5,

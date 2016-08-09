@@ -1,6 +1,6 @@
 # File finder
 
-_**Note:** This feature was [introduced][gh-9889] in GitLab 8.4._
+> [Introduced][gh-9889] in GitLab 8.4.
 
 ---
 

@@ -7,7 +7,7 @@ module NotesHelper
   end
 
   def note_editable?(note)
-    note.editable? && can?(current_user, :admin_note, note)
+    Ability.can_edit_note?(current_user, note)
   end
 
   def noteable_json(noteable)
@@ -87,14 +87,17 @@ module NotesHelper
     end
   end
 
-  def note_max_access_for_user(note)
-    @max_access_by_user_id ||= Hash.new do |hash, key|
-      project = key[:project]
-      hash[key] = project.team.human_max_access(key[:user_id])
-    end
+  def preload_max_access_for_authors(notes, project)
+    user_ids = notes.map(&:author_id)
+    project.team.max_member_access_for_user_ids(user_ids)
+  end
 
-    full_key = { project: note.project, user_id: note.author_id }
-    @max_access_by_user_id[full_key]
+  def preload_noteable_for_regular_notes(notes)
+    ActiveRecord::Associations::Preloader.new.preload(notes.select { |note| !note.for_commit? }, :noteable)
+  end
+
+  def note_max_access_for_user(note)
+    note.project.team.human_max_access(note.author_id)
   end
 
   def discussion_diff_path(discussion)

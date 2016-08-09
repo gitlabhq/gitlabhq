@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
@@ -59,6 +58,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
 
         expect { restored_project_json }.to change(MergeRequestDiff.where.not(st_diffs: nil), :count).by(9)
+      end
+
+      it 'has labels associated to label links, associated to issues' do
+        restored_project_json
+
+        expect(Label.first.label_links.first.target).not_to be_nil
+      end
+
+      it 'has milestones associated to issues' do
+        restored_project_json
+
+        expect(Milestone.find_by_description('test milestone').issues).not_to be_empty
       end
     end
   end

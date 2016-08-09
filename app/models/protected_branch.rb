@@ -5,6 +5,12 @@ class ProtectedBranch < ActiveRecord::Base
   validates :name, presence: true
   validates :project, presence: true
 
+  has_one :merge_access_level, dependent: :destroy
+  has_one :push_access_level, dependent: :destroy
+
+  accepts_nested_attributes_for :push_access_level
+  accepts_nested_attributes_for :merge_access_level
+
   def commit
     project.commit(self.name)
   end

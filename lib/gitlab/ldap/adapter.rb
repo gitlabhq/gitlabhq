@@ -13,7 +13,7 @@ module Gitlab
         Gitlab::LDAP::Config.new(provider)
       end
 
-      def initialize(provider, ldap=nil)
+      def initialize(provider, ldap = nil)
         @provider = provider
         @ldap = ldap || Net::LDAP.new(config.adapter_options)
       end

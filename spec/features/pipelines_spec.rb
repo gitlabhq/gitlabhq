@@ -116,8 +116,18 @@ describe "Pipelines" do
         it { expect(page).to have_link(with_artifacts.name) }
       end
 
+      context 'with artifacts expired' do
+        let!(:with_artifacts_expired) { create(:ci_build, :artifacts_expired, :success, pipeline: pipeline, name: 'rspec', stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
+
+        it { expect(page).not_to have_selector('.build-artifacts') }
+      end
+
       context 'without artifacts' do
         let!(:without_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'rspec', stage: 'test') }
+
+        before { visit namespace_project_pipelines_path(project.namespace, project) }
 
         it { expect(page).not_to have_selector('.build-artifacts') }
       end

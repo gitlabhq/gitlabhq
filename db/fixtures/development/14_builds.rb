@@ -1,6 +1,6 @@
 class Gitlab::Seeder::Builds
   STAGES = %w[build notify_build test notify_test deploy notify_deploy]
-  
+
   def initialize(project)
     @project = project
   end
@@ -8,26 +8,26 @@ class Gitlab::Seeder::Builds
   def seed!
     pipelines.each do |pipeline|
       begin
-        build_create!(pipeline, name: 'build:linux', stage: 'build')
-        build_create!(pipeline, name: 'build:osx', stage: 'build')
+        build_create!(pipeline, name: 'build:linux', stage: 'build', status_event: :success)
+        build_create!(pipeline, name: 'build:osx', stage: 'build', status_event: :success)
 
-        build_create!(pipeline, name: 'slack post build', stage: 'notify_build')
+        build_create!(pipeline, name: 'slack post build', stage: 'notify_build', status_event: :success)
 
-        build_create!(pipeline, name: 'rspec:linux', stage: 'test')
-        build_create!(pipeline, name: 'rspec:windows', stage: 'test')
-        build_create!(pipeline, name: 'rspec:windows', stage: 'test')
-        build_create!(pipeline, name: 'rspec:osx', stage: 'test')
-        build_create!(pipeline, name: 'spinach:linux', stage: 'test')
-        build_create!(pipeline, name: 'spinach:osx', stage: 'test')
-        build_create!(pipeline, name: 'cucumber:linux', stage: 'test')
-        build_create!(pipeline, name: 'cucumber:osx', stage: 'test')
+        build_create!(pipeline, name: 'rspec:linux', stage: 'test', status_event: :success)
+        build_create!(pipeline, name: 'rspec:windows', stage: 'test', status_event: :success)
+        build_create!(pipeline, name: 'rspec:windows', stage: 'test', status_event: :success)
+        build_create!(pipeline, name: 'rspec:osx', stage: 'test', status_event: :success)
+        build_create!(pipeline, name: 'spinach:linux', stage: 'test', status: :pending)
+        build_create!(pipeline, name: 'spinach:osx', stage: 'test', status_event: :cancel)
+        build_create!(pipeline, name: 'cucumber:linux', stage: 'test', status_event: :run)
+        build_create!(pipeline, name: 'cucumber:osx', stage: 'test', status_event: :drop)
 
-        build_create!(pipeline, name: 'slack post test', stage: 'notify_test')
+        build_create!(pipeline, name: 'slack post test', stage: 'notify_test', status_event: :success)
 
-        build_create!(pipeline, name: 'staging', stage: 'deploy', environment: 'staging')
-        build_create!(pipeline, name: 'production', stage: 'deploy', environment: 'production', when: 'manual')
+        build_create!(pipeline, name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success)
+        build_create!(pipeline, name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :success)
 
-        commit_status_create!(pipeline, name: 'jenkins')
+        commit_status_create!(pipeline, name: 'jenkins', status: :success)
 
         print '.'
       rescue ActiveRecord::RecordInvalid
@@ -48,7 +48,7 @@ class Gitlab::Seeder::Builds
 
   def build_create!(pipeline, opts = {})
     attributes = build_attributes_for(pipeline, opts)
-    build = Ci::Build.new(attributes)
+    build = Ci::Build.create!(attributes)
 
     if opts[:name].start_with?('build')
       artifacts_cache_file(artifacts_archive_path) do |file|
@@ -60,23 +60,20 @@ class Gitlab::Seeder::Builds
       end
     end
 
-    build.save!
-    build.update(status: build_status)
-
     if %w(running success failed).include?(build.status)
       # We need to set build trace after saving a build (id required)
       build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
     end
   end
-  
+
   def commit_status_create!(pipeline, opts = {})
     attributes = commit_status_attributes_for(pipeline, opts)
-    GenericCommitStatus.create(attributes)
+    GenericCommitStatus.create!(attributes)
   end
-  
+
   def commit_status_attributes_for(pipeline, opts)
     { name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
-      ref: 'master', user: build_user, project: @project, pipeline: pipeline,
+      ref: 'master', tag: false, user: build_user, project: @project, pipeline: pipeline,
       created_at: Time.now, updated_at: Time.now
     }.merge(opts)
   end

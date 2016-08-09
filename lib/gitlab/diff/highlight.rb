@@ -40,8 +40,6 @@ module Gitlab
       def highlight_line(diff_line)
         return unless diff_file && diff_file.diff_refs
 
-        line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
-
         rich_line =
           if diff_line.unchanged? || diff_line.added?
             new_lines[diff_line.new_pos - 1]
@@ -51,7 +49,10 @@ module Gitlab
 
         # Only update text if line is found. This will prevent
         # issues with submodules given the line only exists in diff content.
-        "#{line_prefix}#{rich_line}".html_safe if rich_line
+        if rich_line
+          line_prefix = diff_line.text.match(/\A(.)/) ? $1 : ' '
+          "#{line_prefix}#{rich_line}".html_safe
+        end
       end
 
       def inline_diffs

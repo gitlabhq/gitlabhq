@@ -1,6 +1,6 @@
 # Health Check
 
->**Note:** This feature was [introduced][ce-3888] in GitLab 8.8.
+> [Introduced][ce-3888] in GitLab 8.8.
 
 GitLab provides a health check endpoint for uptime monitoring on the `health_check` web
 endpoint. The health check reports on the overall system status based on the status of

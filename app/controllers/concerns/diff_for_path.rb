@@ -1,8 +1,8 @@
 module DiffForPath
   extend ActiveSupport::Concern
 
-  def render_diff_for_path(diffs, diff_refs, project)
-    diff_file = safe_diff_files(diffs, diff_refs: diff_refs, repository: project.repository).find do |diff|
+  def render_diff_for_path(diffs)
+    diff_file = diffs.diff_files.find do |diff|
       diff.old_path == params[:old_path] && diff.new_path == params[:new_path]
     end
 
@@ -14,7 +14,7 @@ module DiffForPath
     locals = {
       diff_file: diff_file,
       diff_commit: diff_commit,
-      diff_refs: diff_refs,
+      diff_refs: diffs.diff_refs,
       blob: blob,
       project: project
     }

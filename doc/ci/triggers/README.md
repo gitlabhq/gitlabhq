@@ -1,6 +1,6 @@
 # Triggering Builds through the API
 
-_**Note:** This feature was [introduced][ci-229] in GitLab CE 7.14_
+> [Introduced][ci-229] in GitLab CE 7.14.
 
 Triggers can be used to force a rebuild of a specific branch, tag or commit,
 with an API call.

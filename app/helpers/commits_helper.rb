@@ -1,4 +1,3 @@
-# encoding: utf-8
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -207,10 +206,10 @@ module CommitsHelper
     end
   end
 
-  def view_file_btn(commit_sha, diff, project)
+  def view_file_btn(commit_sha, diff_new_path, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
-                                  tree_join(commit_sha, diff.new_path)),
+                                  tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file btn-file-option'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],

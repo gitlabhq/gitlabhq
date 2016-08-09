@@ -17,15 +17,12 @@ module Banzai
 
       def highlight_node(node)
         language = node.attr('class')
-        code     = node.text
-
+        code = node.text
         css_classes = "code highlight"
-
-        lexer = Rouge::Lexer.find_fancy(language) || Rouge::Lexers::PlainText
-        formatter = Rouge::Formatters::HTML.new
+        lexer = lexer_for(language)
 
         begin
-          code = formatter.format(lexer.lex(code))
+          code = format(lex(lexer, code))
 
           css_classes << " js-syntax-highlight #{lexer.tag}"
         rescue
@@ -41,14 +38,27 @@ module Banzai
 
       private
 
+      # Separate method so it can be instrumented.
+      def lex(lexer, code)
+        lexer.lex(code)
+      end
+
+      def format(tokens)
+        rouge_formatter.format(tokens)
+      end
+
+      def lexer_for(language)
+        (Rouge::Lexer.find(language) || Rouge::Lexers::PlainText).new
+      end
+
       def replace_parent_pre_element(node, highlighted)
         # Replace the parent `pre` element with the entire highlighted block
         node.parent.replace(highlighted)
       end
 
       # Override Rouge::Plugins::Redcarpet#rouge_formatter
-      def rouge_formatter(lexer)
-        Rouge::Formatters::HTML.new
+      def rouge_formatter(lexer = nil)
+        @rouge_formatter ||= Rouge::Formatters::HTML.new
       end
     end
   end

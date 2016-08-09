@@ -72,6 +72,14 @@
   &.large {
     width: 200px;
   }
+
+  &.wide {
+    width: 100%;
+
+    + .dropdown-select {
+      width: 100%;
+    }
+  }
 }
 
 .dropdown-menu,
@@ -350,6 +358,7 @@
 
 .dropdown-input-field, .default-dropdown-input {
   width: 100%;
+  min-height: 30px;
   padding: 0 7px;
   color: $dropdown-input-color;
   line-height: 30px;

@@ -25,6 +25,14 @@ class LegacyDiffNote < Note
     @discussion_id ||= self.class.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
+  def project_repository
+    if RequestStore.active?
+      RequestStore.fetch("project:#{project_id}:repository") { self.project.repository }
+    else
+      self.project.repository
+    end
+  end
+
   def diff_file_hash
     line_code.split('_')[0] if line_code
   end
@@ -34,7 +42,7 @@ class LegacyDiffNote < Note
   end
 
   def diff_file
-    @diff_file ||= Gitlab::Diff::File.new(diff, repository: self.project.repository) if diff
+    @diff_file ||= Gitlab::Diff::File.new(diff, repository: project_repository) if diff
   end
 
   def diff_line
@@ -77,7 +85,7 @@ class LegacyDiffNote < Note
     return nil unless noteable
     return @diff if defined?(@diff)
 
-    @diff = noteable.diffs(Commit.max_diff_options).find do |d|
+    @diff = noteable.raw_diffs(Commit.max_diff_options).find do |d|
       d.new_path && Digest::SHA1.hexdigest(d.new_path) == diff_file_hash
     end
   end
@@ -108,7 +116,7 @@ class LegacyDiffNote < Note
 
   # Find the diff on noteable that matches our own
   def find_noteable_diff
-    diffs = noteable.diffs(Commit.max_diff_options)
+    diffs = noteable.raw_diffs(Commit.max_diff_options)
     diffs.find { |d| d.new_path == self.diff.new_path }
   end
 end

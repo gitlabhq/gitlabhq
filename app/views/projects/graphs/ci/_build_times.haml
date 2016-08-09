@@ -19,4 +19,9 @@
     ]
   }
   var ctx = $("#build_timesChart").get(0).getContext("2d");
-  new Chart(ctx).Bar(data,{"scaleOverlay": true, responsive: true, maintainAspectRatio: false});
+  var options = { scaleOverlay: true, responsive: true, maintainAspectRatio: false };
+  if (window.innerWidth < 768) {
+    // Scale fonts if window width lower than 768px (iPad portrait)
+    options.scaleFontSize = 8
+  }
+  new Chart(ctx).Bar(data, options);
