@@ -1,5 +1,37 @@
 class Ability
   class << self
+    # Given a list of users and a project this method returns the users that can
+    # read the given project.
+    def users_that_can_read_project(users, project)
+      if project.public?
+        users
+      else
+        users.select do |user|
+          if user.admin?
+            true
+          elsif project.internal? && !user.external?
+            true
+          elsif project.owner == user
+            true
+          elsif project.team.members.include?(user)
+            true
+          else
+            false
+          end
+        end
+      end
+    end
+
+    # Returns an Array of Issues that can be read by the given user.
+    #
+    # issues - The issues to reduce down to those readable by the user.
+    # user - The User for which to check the issues
+    def issues_readable_by_user(issues, user = nil)
+      return issues if user && user.admin?
+
+      issues.select { |issue| issue.visible_to_user?(user) }
+    end
+
     def allowed?(user, action, subject)
       cached_allowed(user, subject).include?(action)
     end
@@ -38,38 +70,6 @@ class Ability
       when Ci::Runner then runner_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
-    end
-
-    # Given a list of users and a project this method returns the users that can
-    # read the given project.
-    def users_that_can_read_project(users, project)
-      if project.public?
-        users
-      else
-        users.select do |user|
-          if user.admin?
-            true
-          elsif project.internal? && !user.external?
-            true
-          elsif project.owner == user
-            true
-          elsif project.team.members.include?(user)
-            true
-          else
-            false
-          end
-        end
-      end
-    end
-
-    # Returns an Array of Issues that can be read by the given user.
-    #
-    # issues - The issues to reduce down to those readable by the user.
-    # user - The User for which to check the issues
-    def issues_readable_by_user(issues, user = nil)
-      return issues if user && user.admin?
-
-      issues.select { |issue| issue.visible_to_user?(user) }
     end
 
     # List of possible abilities for anonymous user
