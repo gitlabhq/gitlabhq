@@ -1,4 +1,4 @@
-(() => {
+(function () {
   const BoardList = Vue.extend({
     props: {
       disabled: Boolean,
@@ -50,12 +50,13 @@
         group: 'issues',
         disabled: this.disabled,
         onAdd: (e) => {
-          const fromListId = parseInt(e.from.getAttribute('data-board')),
+          const card = e.item,
+                fromListId = parseInt(e.from.getAttribute('data-board')),
                 toListId = parseInt(e.to.getAttribute('data-board')),
-                issueId = parseInt(e.item.getAttribute('data-issue'));
+                issueId = parseInt(card.getAttribute('data-issue'));
 
           // Remove the new dom element & let vue add the element
-          e.item.parentNode.removeChild(e.item);
+          card.parentNode.removeChild(card);
 
           BoardsStore.moveCardToList(fromListId, toListId, issueId);
         }

@@ -1,4 +1,4 @@
-(() => {
+(function () {
   const BoardBlankState = Vue.extend({
     methods: {
       addDefaultLists: function () {

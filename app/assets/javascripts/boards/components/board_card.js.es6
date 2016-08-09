@@ -1,4 +1,4 @@
-(() => {
+(function () {
   const BoardCard = Vue.extend({
     props: {
       issue: Object,

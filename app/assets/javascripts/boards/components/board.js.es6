@@ -1,4 +1,4 @@
-(() => {
+(function () {
   const Board = Vue.extend({
     props: {
       list: Object,
