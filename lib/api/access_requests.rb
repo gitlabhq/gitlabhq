@@ -18,10 +18,9 @@ module API
           source = find_source(source_type, params[:id])
           authorize_admin_source!(source_type, source)
 
-          access_requesters = source.requesters
-          users = Kaminari.paginate_array(access_requesters.map(&:user))
+          access_requesters = paginate(source.requesters.includes(:user))
 
-          present paginate(users), with: Entities::AccessRequester, source: source
+          present access_requesters.map(&:user), with: Entities::AccessRequester, access_requesters: access_requesters
         end
 
         # Request access to the group/project
