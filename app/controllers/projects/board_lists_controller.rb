@@ -9,7 +9,7 @@ class Projects::BoardListsController < Projects::ApplicationController
     list = Boards::Lists::CreateService.new(project, current_user, list_params).execute
 
     if list.valid?
-      render json: list.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color] } })
+      render json: list.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color, :priority] } })
     else
       render json: list.errors, status: :unprocessable_entity
     end
@@ -39,7 +39,7 @@ class Projects::BoardListsController < Projects::ApplicationController
     service = Boards::Lists::GenerateService.new(project, current_user)
 
     if service.execute
-      render json: project.board.lists.label.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color] } })
+      render json: project.board.lists.label.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :color, :priority] } })
     else
       head :unprocessable_entity
     end

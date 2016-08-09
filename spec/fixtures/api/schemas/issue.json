@@ -14,7 +14,8 @@
       "required": [
         "id",
         "color",
-        "title"
+        "title",
+        "priority"
       ],
       "properties": {
         "id": { "type": "integer" },
@@ -22,7 +23,8 @@
           "type": "string",
           "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
         },
-        "title": { "type": "string" }
+        "title": { "type": "string" },
+        "priority": { "type": ["integer", "null"] }
       }
     },
     "assignee": {

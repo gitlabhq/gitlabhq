@@ -14,7 +14,7 @@ class Projects::BoardIssuesController < Projects::ApplicationController
       only: [:iid, :title, :confidential],
       include: {
         assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-        labels:   { only: [:id, :title, :color] }
+        labels:   { only: [:id, :title, :color, :priority] }
       })
   end
 
