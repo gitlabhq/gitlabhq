@@ -163,7 +163,7 @@ module ApplicationHelper
   # `html_class` argument is provided.
   #
   # Returns an HTML-safe String
-  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time_ago', skip_js: false)
+  def time_ago_with_tooltip(time, placement: 'top', html_class: 'time-ago', skip_js: false)
     element = content_tag :time, time.to_s,
       class: "#{html_class} js-timeago #{"js-timeago-pending" unless skip_js}",
       datetime: time.to_time.getutc.iso8601,
@@ -179,7 +179,7 @@ module ApplicationHelper
     element
   end
 
-  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time_ago', include_author: false)
+  def edited_time_ago_with_tooltip(object, placement: 'top', html_class: 'time-ago', include_author: false)
     return if object.updated_at == object.created_at
 
     content_tag :small, class: "edited-text" do
