@@ -1,6 +1,5 @@
 class Ability
   class << self
-    # rubocop: disable Metrics/CyclomaticComplexity
     def allowed(user, subject)
       return anonymous_abilities(user, subject) if user.nil?
       return [] unless user.is_a?(User)
