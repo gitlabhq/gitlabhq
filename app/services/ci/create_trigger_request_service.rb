@@ -4,7 +4,7 @@ module Ci
       trigger_request = trigger.trigger_requests.create(variables: variables)
 
       pipeline = Ci::CreatePipelineService.new(project, nil, ref: ref).
-        execute(skip_ci: false, trigger_request: trigger_request)
+        execute(ignore_skip_ci: true, trigger_request: trigger_request)
       if pipeline.persisted?
         trigger_request
       end
