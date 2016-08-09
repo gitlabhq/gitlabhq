@@ -20,7 +20,8 @@ $(function () {
     el: '#board-app',
     props: {
       disabled: Boolean,
-      endpoint: String
+      endpoint: String,
+      issueLinkBase: String
     },
     data: {
       state: BoardsStore.state,

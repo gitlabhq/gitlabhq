@@ -2,7 +2,8 @@
   const Board = Vue.extend({
     props: {
       list: Object,
-      disabled: Boolean
+      disabled: Boolean,
+      issueLinkBase: String
     },
     data: function () {
       return {

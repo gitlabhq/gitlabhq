@@ -4,9 +4,9 @@
     %p
       Add the following default lists to your Issue Board with one click:
     %ul.board-blank-state-list
-      %li
-        %span.label-color{ style: "background-color: red;" }
-        Development
+      %li{ "v-for" => "label in predefinedLabels" }
+        %span.label-color{ ":style" =>  "{ backgroundColor: label.color } " }
+        {{ label.title }}
     %p
       Starting out with the default set of lists will get you right on the way to making the most of your board.
     %button.btn.btn-create.btn-inverted.btn-block{ type: "button", "@click" => "addDefaultLists" }

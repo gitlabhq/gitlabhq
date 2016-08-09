@@ -2,7 +2,8 @@
   "v-cloak" => true,
   "v-for" => "list in state.lists | orderBy 'position'",
   ":list" => "list",
-  ":disabled" => "#{current_user.nil?}" }
+  ":disabled" => "disabled",
+  ":issue-link-base" => "issueLinkBase" }
   .board{ ":class" => "{ 'is-draggable': !isPreset }" }
     .board-inner
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
@@ -27,7 +28,7 @@
         ":issues" => "list.issues",
         ":loading" => "list.loading",
         ":disabled" => "disabled",
-        ":issue-link-base" => "'#{namespace_project_issues_path(@project.namespace, @project)}'" }
+        ":issue-link-base" => "issueLinkBase" }
         .board-list-loading.text-center{ "v-if" => "loading" }
           = icon("spinner spin")
         %ul.board-list{ "v-el:list" => true,
