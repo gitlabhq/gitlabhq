@@ -35,7 +35,7 @@ POST /ci/api/v1/builds/register
 
 
 ```
-curl -X POST "https://gitlab.example.com/ci/api/v1/builds/register" -F "token=t0k3n"
+curl --request POST "https://gitlab.example.com/ci/api/v1/builds/register" --form "token=t0k3n"
 ```
 
 ### Update details of an existing build
@@ -52,7 +52,7 @@ PUT /ci/api/v1/builds/:id
 | `trace`   | string  | no       | The trace of a build |
 
 ```
-curl -X PUT "https://gitlab.example.com/ci/api/v1/builds/1234" -F "token=t0k3n" -F "state=running" -F "trace=Running git clone...\n"
+curl --request PUT "https://gitlab.example.com/ci/api/v1/builds/1234" --form "token=t0k3n" --form "state=running" --form "trace=Running git clone...\n"
 ```
 
 ### Incremental build trace update
@@ -87,7 +87,7 @@ Headers:
 | `Content-Range` | string  | yes      | Bytes range of trace that is sent |
 
 ```
-curl -X PATCH "https://gitlab.example.com/ci/api/v1/builds/1234/trace.txt" -H "BUILD-TOKEN=build_t0k3n" -H "Content-Range=0-21" -d "Running git clone...\n"
+curl --request PATCH "https://gitlab.example.com/ci/api/v1/builds/1234/trace.txt" --header "BUILD-TOKEN=build_t0k3n" --header "Content-Range=0-21" --data "Running git clone...\n"
 ```
 
 
@@ -104,7 +104,7 @@ POST /ci/api/v1/builds/:id/artifacts
 | `file`    | mixed   | yes      | Artifacts file                |
 
 ```
-curl -X POST "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" -F "token=build_t0k3n" -F "file=@/path/to/file"
+curl --request POST "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" --form "token=build_t0k3n" --form "file=@/path/to/file"
 ```
 
 ### Download the artifacts file from build
@@ -119,7 +119,7 @@ GET /ci/api/v1/builds/:id/artifacts
 | `token`   | string  | yes      | The build authorization token |
 
 ```
-curl "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" -F "token=build_t0k3n"
+curl "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" --form "token=build_t0k3n"
 ```
 
 ### Remove the artifacts file from build
@@ -134,5 +134,5 @@ DELETE /ci/api/v1/builds/:id/artifacts
 | `token`   | string  | yes      | The build authorization token |
 
 ```
-curl -X DELETE "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" -F "token=build_t0k3n"
+curl --request DELETE "https://gitlab.example.com/ci/api/v1/builds/1234/artifacts" --form "token=build_t0k3n"
 ```
