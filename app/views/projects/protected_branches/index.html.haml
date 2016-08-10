@@ -14,37 +14,7 @@
         %li prevent <strong>anyone</strong> from deleting the branch
       %p.append-bottom-0 Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
   .col-lg-9
-    %h5.prepend-top-0
-      Protect a branch
     - if can? current_user, :admin_project, @project
-      = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
-        = form_errors(@protected_branch)
+      = render 'create_protected_branch'
 
-        .form-group
-          = f.label :name, "Branch", class: "label-light"
-          = render partial: "dropdown", locals: { f: f }
-          %p.help-block
-            = link_to "Wildcards", help_page_path('user/project/protected_branches', anchor: "wildcard-protected-branches")
-            such as
-            %code *-stable
-            or
-            %code production/*
-            are supported.
-
-        .form-group
-          = f.check_box :developers_can_push, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to push to this branch
-
-        .form-group
-          = f.check_box :developers_can_merge, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_merge, "Developers can merge", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to accept merge requests to this branch
-        = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
-
-    %hr
     = render "branches_list"

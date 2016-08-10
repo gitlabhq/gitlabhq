@@ -6,37 +6,65 @@ describe Projects::IssuesController do
   let(:issue)   { create(:issue, project: project) }
 
   describe "GET #index" do
-    before do
-      sign_in(user)
-      project.team << [user, :developer]
+    context 'external issue tracker' do
+      it 'redirects to the external issue tracker' do
+        external = double(issues_url: 'https://example.com/issues')
+        allow(project).to receive(:external_issue_tracker).and_return(external)
+        controller.instance_variable_set(:@project, project)
+
+        get :index, namespace_id: project.namespace.path, project_id: project
+
+        expect(response).to redirect_to('https://example.com/issues')
+      end
     end
 
-    it "returns index" do
-      get :index, namespace_id: project.namespace.path, project_id: project.path
+    context 'internal issue tracker' do
+      before do
+        sign_in(user)
+        project.team << [user, :developer]
+      end
 
-      expect(response).to have_http_status(200)
+      it "returns index" do
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+
+        expect(response).to have_http_status(200)
+      end
+
+      it "returns 301 if request path doesn't match project path" do
+        get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+
+        expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
+      end
+
+      it "returns 404 when issues are disabled" do
+        project.issues_enabled = false
+        project.save
+
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+        expect(response).to have_http_status(404)
+      end
+
+      it "returns 404 when external issue tracker is enabled" do
+        controller.instance_variable_set(:@project, project)
+        allow(project).to receive(:default_issues_tracker?).and_return(false)
+
+        get :index, namespace_id: project.namespace.path, project_id: project.path
+        expect(response).to have_http_status(404)
+      end
     end
+  end
 
-    it "return 301 if request path doesn't match project path" do
-      get :index, namespace_id: project.namespace.path, project_id: project.path.upcase
+  describe 'GET #new' do
+    context 'external issue tracker' do
+      it 'redirects to the external issue tracker' do
+        external = double(new_issue_path: 'https://example.com/issues/new')
+        allow(project).to receive(:external_issue_tracker).and_return(external)
+        controller.instance_variable_set(:@project, project)
 
-      expect(response).to redirect_to(namespace_project_issues_path(project.namespace, project))
-    end
+        get :new, namespace_id: project.namespace.path, project_id: project
 
-    it "returns 404 when issues are disabled" do
-      project.issues_enabled = false
-      project.save
-
-      get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response).to have_http_status(404)
-    end
-
-    it "returns 404 when external issue tracker is enabled" do
-      controller.instance_variable_set(:@project, project)
-      allow(project).to receive(:default_issues_tracker?).and_return(false)
-
-      get :index, namespace_id: project.namespace.path, project_id: project.path
-      expect(response).to have_http_status(404)
+        expect(response).to redirect_to('https://example.com/issues/new')
+      end
     end
   end
 
@@ -91,21 +119,21 @@ describe Projects::IssuesController do
     let!(:request_forgery_timing_attack) { create(:issue, :confidential, project: project, assignee: assignee) }
 
     describe 'GET #index' do
-      it 'should not list confidential issues for guests' do
+      it 'does not list confidential issues for guests' do
         sign_out(:user)
         get_issues
 
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should not list confidential issues for non project members' do
+      it 'does not list confidential issues for non project members' do
         sign_in(non_member)
         get_issues
 
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should not list confidential issues for project members with guest role' do
+      it 'does not list confidential issues for project members with guest role' do
         sign_in(member)
         project.team << [member, :guest]
 
@@ -114,7 +142,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to eq [issue]
       end
 
-      it 'should list confidential issues for author' do
+      it 'lists confidential issues for author' do
         sign_in(author)
         get_issues
 
@@ -122,7 +150,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).not_to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for assignee' do
+      it 'lists confidential issues for assignee' do
         sign_in(assignee)
         get_issues
 
@@ -130,7 +158,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for project members' do
+      it 'lists confidential issues for project members' do
         sign_in(member)
         project.team << [member, :developer]
 
@@ -140,7 +168,7 @@ describe Projects::IssuesController do
         expect(assigns(:issues)).to include request_forgery_timing_attack
       end
 
-      it 'should list confidential issues for admin' do
+      it 'lists confidential issues for admin' do
         sign_in(admin)
         get_issues
 
@@ -239,6 +267,37 @@ describe Projects::IssuesController do
           project_id: project.to_param,
           id: id,
           issue: { title: 'New title' }
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    context 'Akismet is enabled' do
+      before do
+        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:check_for_spam?).and_return(true)
+        allow_any_instance_of(Gitlab::AkismetHelper).to receive(:is_spam?).and_return(true)
+      end
+
+      def post_spam_issue
+        sign_in(user)
+        spam_project = create(:empty_project, :public)
+        post :create, {
+          namespace_id: spam_project.namespace.to_param,
+          project_id: spam_project.to_param,
+          issue: { title: 'Spam Title', description: 'Spam lives here' }
+        }
+      end
+
+      it 'rejects an issue recognized as spam' do
+        expect{ post_spam_issue }.not_to change(Issue, :count)
+        expect(response).to render_template(:new)
+      end
+
+      it 'creates a spam log' do
+        post_spam_issue
+        spam_logs = SpamLog.all
+        expect(spam_logs.count).to eq(1)
+        expect(spam_logs[0].title).to eq('Spam Title')
       end
     end
   end

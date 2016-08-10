@@ -471,15 +471,15 @@ describe SystemNoteService, services: true do
     shared_examples 'cross project mentionable' do
       include GitlabMarkdownHelper
 
-      it 'should contain cross reference to new noteable' do
+      it 'contains cross reference to new noteable' do
         expect(subject.note).to include cross_project_reference(new_project, new_noteable)
       end
 
-      it 'should mention referenced noteable' do
+      it 'mentions referenced noteable' do
         expect(subject.note).to include new_noteable.to_reference
       end
 
-      it 'should mention referenced project' do
+      it 'mentions referenced project' do
         expect(subject.note).to include new_project.to_reference
       end
     end
@@ -489,7 +489,7 @@ describe SystemNoteService, services: true do
 
       it_behaves_like 'cross project mentionable'
 
-      it 'should notify about noteable being moved to' do
+      it 'notifies about noteable being moved to' do
         expect(subject.note).to match /Moved to/
       end
     end
@@ -499,7 +499,7 @@ describe SystemNoteService, services: true do
 
       it_behaves_like 'cross project mentionable'
 
-      it 'should notify about noteable being moved from' do
+      it 'notifies about noteable being moved from' do
         expect(subject.note).to match /Moved from/
       end
     end
@@ -507,7 +507,7 @@ describe SystemNoteService, services: true do
     context 'invalid direction' do
       let(:direction) { :invalid }
 
-      it 'should raise error' do
+      it 'raises error' do
         expect { subject }.to raise_error StandardError, /Invalid direction/
       end
     end

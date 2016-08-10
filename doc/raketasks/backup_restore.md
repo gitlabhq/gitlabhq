@@ -382,6 +382,13 @@ backups using all your disk space.  To do this add the following lines to
 gitlab_rails['backup_keep_time'] = 604800
 ```
 
+Note that the `backup_keep_time` configuration option only manages local
+files. GitLab does not automatically prune old files stored in a third-party
+object storage (e.g. AWS S3) because the user may not have permission to list
+and delete files. We recommend that you configure the appropriate retention
+policy for your object storage. For example, you can configure [the S3 backup
+policy here as described here](http://stackoverflow.com/questions/37553070/gitlab-omnibus-delete-backup-from-amazon-s3).
+
 NOTE: This cron job does not [backup your omnibus-gitlab configuration](#backup-and-restore-omnibus-gitlab-configuration) or [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
 ## Alternative backup strategies

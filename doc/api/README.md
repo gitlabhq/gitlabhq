@@ -74,14 +74,14 @@ You can use an OAuth 2 token to authenticate with the API by passing it either i
 Example of using the OAuth2 token in the header:
 
 ```shell
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
 ```
 
 Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ### Personal Access Tokens
 
-> **Note:** This feature was [introduced][ce-3749] in GitLab 8.8
+> [Introduced][ce-3749] in GitLab 8.8.
 
 You can create as many personal access tokens as you like from your GitLab
 profile (`/profile/personal_access_tokens`); perhaps one for each application
@@ -204,7 +204,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -218,7 +218,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:

@@ -90,5 +90,21 @@ FactoryGirl.define do
         build.save!
       end
     end
+
+    trait :artifacts_expired do
+      after(:create) do |build, _|
+        build.artifacts_file =
+          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
+            'application/zip')
+
+        build.artifacts_metadata =
+          fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
+            'application/x-gzip')
+
+        build.artifacts_expire_at = 1.minute.ago
+
+        build.save!
+      end
+    end
   end
 end

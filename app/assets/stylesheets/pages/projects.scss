@@ -512,18 +512,12 @@ pre.light-well {
   .project-row {
     border-color: $table-border-color;
 
-    &.no-description {
-      .project {
-        line-height: 40px;
-      }
-    }
-
     .project-full-name {
       @include str-truncated;
     }
 
     .controls {
-      line-height: 40px;
+      line-height: $list-text-height;
 
       a:hover {
         text-decoration: none;
@@ -661,13 +655,38 @@ pre.light-well {
   }
 }
 
+.new_protected_branch {
+  label {
+    margin-top: 6px;
+    font-weight: normal;
+  }
+}
+
 .protected-branches-list {
   a {
     color: $gl-gray;
-    font-weight: 600;
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &.is-active {
+      font-weight: 600;
+    }
+  }
+
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
+    border-radius: 1px;
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: solid 1px transparent;
     }
   }
 }

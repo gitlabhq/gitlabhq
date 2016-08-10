@@ -6,14 +6,14 @@ describe RepairLdapBlockedUserService, services: true do
   subject(:service) { RepairLdapBlockedUserService.new(user) }
 
   describe '#execute' do
-    it 'change to normal block after destroying last ldap identity' do
+    it 'changes to normal block after destroying last ldap identity' do
       identity.destroy
       service.execute
 
       expect(user.reload).not_to be_ldap_blocked
     end
 
-    it 'change to normal block after changing last ldap identity to another provider' do
+    it 'changes to normal block after changing last ldap identity to another provider' do
       identity.update_attribute(:provider, 'twitter')
       service.execute
 

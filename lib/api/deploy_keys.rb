@@ -10,6 +10,9 @@ module API
       present keys, with: Entities::SSHKey
     end
 
+    params do
+      requires :id, type: String, desc: 'The ID of the project'
+    end
     resource :projects do
       before { authorize_admin_project }
 
@@ -17,52 +20,43 @@ module API
       # Use "projects/:id/deploy_keys/..." instead.
       #
       %w(keys deploy_keys).each do |path|
-        # Get a specific project's deploy keys
-        #
-        # Example Request:
-        #   GET /projects/:id/deploy_keys
+        desc "Get a specific project's deploy keys" do
+          success Entities::SSHKey
+        end
         get ":id/#{path}" do
           present user_project.deploy_keys, with: Entities::SSHKey
         end
 
-        # Get single deploy key owned by currently authenticated user
-        #
-        # Example Request:
-        #   GET /projects/:id/deploy_keys/:key_id
+        desc 'Get single deploy key' do
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
         get ":id/#{path}/:key_id" do
           key = user_project.deploy_keys.find params[:key_id]
           present key, with: Entities::SSHKey
         end
 
-        # Add new deploy key to currently authenticated user
-        # If deploy key already exists - it will be joined to project
-        # but only if original one was accessible by same user
-        #
-        # Parameters:
-        #   key (required) - New deploy Key
-        #   title (required) - New deploy Key's title
-        # Example Request:
-        #   POST /projects/:id/deploy_keys
+        # TODO: for 9.0 we should check if params are there with the params block
+        # grape provides, at this point we'd change behaviour so we can't
+        # Behaviour now if you don't provide all required params: it renders a
+        # validation error or two.
+        desc 'Add new deploy key to currently authenticated user' do
+          success Entities::SSHKey
+        end
         post ":id/#{path}" do
           attrs = attributes_for_keys [:title, :key]
+          attrs[:key].strip! if attrs[:key]
 
-          if attrs[:key].present?
-            attrs[:key].strip!
+          key = user_project.deploy_keys.find_by(key: attrs[:key])
+          present key, with: Entities::SSHKey if key
 
-            # check if key already exist in project
-            key = user_project.deploy_keys.find_by(key: attrs[:key])
-            if key
-              present key, with: Entities::SSHKey
-              next
-            end
-
-            # Check for available deploy keys in other projects
-            key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
-            if key
-              user_project.deploy_keys << key
-              present key, with: Entities::SSHKey
-              next
-            end
+          # Check for available deploy keys in other projects
+          key = current_user.accessible_deploy_keys.find_by(key: attrs[:key])
+          if key
+            user_project.deploy_keys << key
+            present key, with: Entities::SSHKey
           end
 
           key = DeployKey.new attrs
@@ -74,12 +68,46 @@ module API
           end
         end
 
-        # Delete existing deploy key of currently authenticated user
-        #
-        # Example Request:
-        #   DELETE /projects/:id/deploy_keys/:key_id
+        desc 'Enable a deploy key for a project' do
+          detail 'This feature was added in GitLab 8.11'
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
+        post ":id/#{path}/:key_id/enable" do
+          key = ::Projects::EnableDeployKeyService.new(user_project,
+                                                        current_user, declared(params)).execute
+
+          if key
+            present key, with: Entities::SSHKey
+          else
+            not_found!('Deploy Key')
+          end
+        end
+
+        desc 'Disable a deploy key for a project' do
+          detail 'This feature was added in GitLab 8.11'
+          success Entities::SSHKey
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
+        delete ":id/#{path}/:key_id/disable" do
+          key = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+          key.destroy
+
+          present key.deploy_key, with: Entities::SSHKey
+        end
+
+        desc 'Delete existing deploy key of currently authenticated user' do
+          success Key
+        end
+        params do
+          requires :key_id, type: Integer, desc: 'The ID of the deploy key'
+        end
         delete ":id/#{path}/:key_id" do
-          key = user_project.deploy_keys.find params[:key_id]
+          key = user_project.deploy_keys.find(params[:key_id])
           key.destroy
         end
       end

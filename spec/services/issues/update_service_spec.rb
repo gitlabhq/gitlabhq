@@ -53,7 +53,7 @@ describe Issues::UpdateService, services: true do
       it { expect(@issue.labels.count).to eq(1) }
       it { expect(@issue.labels.first.title).to eq(label.name) }
 
-      it 'should send email to user2 about assign of new issue and email to user3 about issue unassignment' do
+      it 'sends email to user2 about assign of new issue and email to user3 about issue unassignment' do
         deliveries = ActionMailer::Base.deliveries
         email = deliveries.last
         recipients = deliveries.last(2).map(&:to).flatten
@@ -61,14 +61,14 @@ describe Issues::UpdateService, services: true do
         expect(email.subject).to include(issue.title)
       end
 
-      it 'should create system note about issue reassign' do
+      it 'creates system note about issue reassign' do
         note = find_note('Reassigned to')
 
         expect(note).not_to be_nil
         expect(note.note).to include "Reassigned to \@#{user2.username}"
       end
 
-      it 'should create system note about issue label edit' do
+      it 'creates system note about issue label edit' do
         note = find_note('Added ~')
 
         expect(note).not_to be_nil
@@ -267,7 +267,7 @@ describe Issues::UpdateService, services: true do
           expect(note).to be_nil
         end
 
-        it 'should not generate a new note at all' do
+        it 'does not generate a new note at all' do
           expect do
             update_issue({ description: "- [ ] One\n- [ ] Two\n- [ ] Three" })
           end.not_to change { Note.count }

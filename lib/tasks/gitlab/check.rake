@@ -46,7 +46,7 @@ namespace :gitlab do
       }
 
       correct_options = options.map do |name, value|
-        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
+        run_command(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
       end
 
       if correct_options.all?
@@ -316,7 +316,7 @@ namespace :gitlab do
       min_redis_version = "2.8.0"
       print "Redis version >= #{min_redis_version}? ... "
 
-      redis_version = run(%W(redis-cli --version))
+      redis_version = run_command(%W(redis-cli --version))
       redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
@@ -893,7 +893,7 @@ namespace :gitlab do
 
   def check_ruby_version
     required_version = Gitlab::VersionInfo.new(2, 1, 0)
-    current_version = Gitlab::VersionInfo.parse(run(%W(ruby --version)))
+    current_version = Gitlab::VersionInfo.parse(run_command(%W(ruby --version)))
 
     print "Ruby version >= #{required_version} ? ... "
 
@@ -910,7 +910,7 @@ namespace :gitlab do
 
   def check_git_version
     required_version = Gitlab::VersionInfo.new(2, 7, 3)
-    current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
+    current_version = Gitlab::VersionInfo.parse(run_command(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "

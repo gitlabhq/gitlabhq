@@ -35,7 +35,7 @@ Where REDIRECT_URI is the URL in your app where users will be sent after authori
 To request the access token, you should use the returned code and exchange it for an access token. To do that you can use any HTTP client. In this case, I used rest-client:
 
 ```
-parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=AUTHORIZATION_CODE&redirect_uri=REDIRECT_URI'
+parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI'
 RestClient.post 'http://localhost:3000/oauth/token', parameters
 
 # The response will be
@@ -60,7 +60,7 @@ GET https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
 Or you can put the token to the Authorization header:
 
 ```
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
 ```
 
 ## Resource Owner Password Credentials

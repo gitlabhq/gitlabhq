@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160721081015) do
+ActiveRecord::Schema.define(version: 20160804150737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(version: 20160721081015) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,        null: false
+    t.boolean  "user_default_external",                 default: false,       null: false
     t.text     "after_sign_up_text"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
@@ -427,9 +427,10 @@ ActiveRecord::Schema.define(version: 20160721081015) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",       null: false
+    t.string   "name",         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "external_url"
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
@@ -607,9 +608,9 @@ ActiveRecord::Schema.define(version: 20160721081015) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
-    t.string   "target_branch",                             null: false
-    t.string   "source_branch",                             null: false
-    t.integer  "source_project_id",                         null: false
+    t.string   "target_branch",                                null: false
+    t.string   "source_branch",                                null: false
+    t.integer  "source_project_id",                            null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -618,20 +619,21 @@ ActiveRecord::Schema.define(version: 20160721081015) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",                         null: false
+    t.integer  "target_project_id",                            null: false
     t.integer  "iid"
     t.text     "description"
-    t.integer  "position",                  default: 0
+    t.integer  "position",                     default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
     t.string   "merge_error"
     t.text     "merge_params"
-    t.boolean  "merge_when_build_succeeds", default: false, null: false
+    t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.string   "in_progress_merge_commit_sha"
   end
+
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at", "id"], name: "index_merge_requests_on_created_at_and_id", using: :btree
@@ -850,7 +852,6 @@ ActiveRecord::Schema.define(version: 20160721081015) do
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
-  add_index "projects", ["builds_enabled"], name: "index_projects_on_builds_enabled", using: :btree
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
   add_index "projects", ["created_at", "id"], name: "index_projects_on_created_at_and_id", using: :btree
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -866,13 +867,29 @@ ActiveRecord::Schema.define(version: 20160721081015) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+  create_table "protected_branch_merge_access_levels", force: :cascade do |t|
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "protected_branch_merge_access_levels", ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
+
+  create_table "protected_branch_push_access_levels", force: :cascade do |t|
+    t.integer  "protected_branch_id",              null: false
+    t.integer  "access_level",        default: 40, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+  end
+
+  add_index "protected_branch_push_access_levels", ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
+
   create_table "protected_branches", force: :cascade do |t|
-    t.integer  "project_id",                           null: false
-    t.string   "name",                                 null: false
+    t.integer  "project_id", null: false
+    t.string   "name",       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "developers_can_push",  default: false, null: false
-    t.boolean  "developers_can_merge", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
@@ -1135,5 +1152,7 @@ ActiveRecord::Schema.define(version: 20160721081015) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "personal_access_tokens", "users"
+  add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
+  add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "u2f_registrations", "users"
 end

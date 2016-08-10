@@ -147,4 +147,10 @@ describe Gitlab::Metrics do
       end
     end
   end
+
+  describe '#series_prefix' do
+    it 'returns a String' do
+      expect(described_class.series_prefix).to be_an_instance_of(String)
+    end
+  end
 end

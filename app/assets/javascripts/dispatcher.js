@@ -171,6 +171,11 @@
           break;
         case 'search:show':
           new Search();
+          break;
+        case 'projects:protected_branches:index':
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
+          break;
       }
       switch (path.first()) {
         case 'admin':

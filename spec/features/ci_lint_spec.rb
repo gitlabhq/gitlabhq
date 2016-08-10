@@ -17,7 +17,7 @@ describe 'CI Lint' do
         File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
       end
 
-      it 'Yaml parsing' do
+      it 'parses Yaml' do
         within "table" do
           expect(page).to have_content('Job - rspec')
           expect(page).to have_content('Job - spinach')

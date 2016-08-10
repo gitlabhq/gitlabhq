@@ -1,14 +1,15 @@
 / Side-by-side diff view
 %div.text-file.diff-wrap-lines.code.file-content.js-syntax-highlight{ data: diff_view_data }
   %table
+    - last_line = 0
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]
+      - last_line = right.new_pos if right
       %tr.line_holder.parallel
         - if left
           - if left.meta?
-            %td.old_line.diff-line-num.empty-cell
-            %td.line_content.parallel.match= left.text
+            = diff_match_line left.old_pos, nil, text: left.text, view: :parallel
           - else
             - left_line_code = diff_file.line_code(left)
             - left_position = diff_file.position(left)
@@ -21,8 +22,7 @@
 
         - if right
           - if right.meta?
-            %td.old_line.diff-line-num.empty-cell
-            %td.line_content.parallel.match= left.text
+            = diff_match_line nil, right.new_pos, text: left.text, view: :parallel
           - else
             - right_line_code = diff_file.line_code(right)
             - right_position = diff_file.position(right)
@@ -37,3 +37,5 @@
         - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
         - if discussion_left || discussion_right
           = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
+    - if !diff_file.new_file && last_line > 0
+      = diff_match_line last_line, last_line, bottom: true, view: :parallel

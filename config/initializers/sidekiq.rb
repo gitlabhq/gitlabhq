@@ -1,12 +1,14 @@
+# Custom Redis configuration
+redis_config_hash = Gitlab::Redis.params
+redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
+
 Sidekiq.configure_server do |config|
-  config.redis = {
-    url: Gitlab::Redis.url,
-    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
-  }
+  config.redis = redis_config_hash
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MEMORY_KILLER_MAX_RSS']
+    chain.add Gitlab::SidekiqMiddleware::RequestStoreMiddleware unless ENV['SIDEKIQ_REQUEST_STORE'] == '0'
   end
 
   # Sidekiq-cron: load recurring jobs from gitlab.yml
@@ -38,8 +40,5 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = {
-    url: Gitlab::Redis.url,
-    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
-  }
+  config.redis = redis_config_hash
 end

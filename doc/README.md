@@ -9,7 +9,7 @@
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
+- [Markdown](user/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
@@ -54,7 +54,5 @@
 
 ## Contributor documentation
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
-  contributing to documentation.
-- [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
+- [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Legal](legal/README.md) Contributor license agreements.

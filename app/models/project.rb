@@ -379,9 +379,10 @@ class Project < ActiveRecord::Base
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
 
-    # Deletes gitlab project export files older than 24 hours
-    def remove_gitlab_exports!
-      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
+    def cached_count
+      Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
+        Project.count
+      end
     end
   end
 
@@ -451,7 +452,9 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     if forked?
-      job_id = RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
+      job_id = RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
+                                                  forked_from_project.path_with_namespace,
+                                                  self.namespace.path)
     else
       job_id = RepositoryImportWorker.perform_async(self.id)
     end
@@ -584,7 +587,11 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    path
+    if persisted? && errors.include?(:path)
+      path_was
+    else
+      path
+    end
   end
 
   def to_reference(_from_project = nil)
@@ -597,6 +604,13 @@ class Project < ActiveRecord::Base
 
   def web_url_without_protocol
     web_url.split('://')[1]
+  end
+
+  def new_issue_address(author)
+    if Gitlab::IncomingEmail.enabled? && author
+      Gitlab::IncomingEmail.reply_address(
+        "#{path_with_namespace}+#{author.authentication_token}")
+    end
   end
 
   def build_commit_note(commit)
@@ -857,16 +871,14 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
+    return true if empty_repo? && default_branch_protected?
+
     @protected_branches ||= self.protected_branches.to_a
     ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
-  def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_push)
-  end
-
-  def developers_can_merge_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_merge)
+  def user_can_push_to_empty_repo?(user)
+    !default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
   def forked?
@@ -1151,7 +1163,10 @@ class Project < ActiveRecord::Base
 
   def schedule_delete!(user_id, params)
     # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
+    run_after_commit do
+      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
+      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
+    end
 
     update_attribute(:pending_delete, true)
   end
@@ -1245,7 +1260,22 @@ class Project < ActiveRecord::Base
       authorized_for_user_by_shared_projects?(user, min_access_level)
   end
 
+  def append_or_update_attribute(name, value)
+    old_values = public_send(name.to_s)
+
+    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
+      update_attribute(name, old_values + value)
+    else
+      update_attribute(name, value)
+    end
+  end
+
   private
+
+  def default_branch_protected?
+    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
+      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+  end
 
   def authorized_for_user_by_group?(user, min_access_level)
     member = user.group_members.find_by(source_id: group)

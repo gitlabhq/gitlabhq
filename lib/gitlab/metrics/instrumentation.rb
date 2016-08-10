@@ -9,12 +9,15 @@ module Gitlab
     #
     #     Gitlab::Metrics::Instrumentation.instrument_method(User, :by_login)
     module Instrumentation
-      SERIES = 'method_calls'
-
       PROXY_IVAR = :@__gitlab_instrumentation_proxy
 
       def self.configure
         yield self
+      end
+
+      # Returns the name of the series to use for storing method calls.
+      def self.series
+        @series ||= "#{Metrics.series_prefix}method_calls"
       end
 
       # Instruments a class method.
@@ -141,15 +144,15 @@ module Gitlab
         # generated method _only_ accepts regular arguments if the underlying
         # method also accepts them.
         if method.arity == 0
-          args_signature = '&block'
+          args_signature = ''
         else
-          args_signature = '*args, &block'
+          args_signature = '*args'
         end
 
         proxy_module.class_eval <<-EOF, __FILE__, __LINE__ + 1
           def #{name}(#{args_signature})
             if trans = Gitlab::Metrics::Instrumentation.transaction
-              trans.measure_method(#{label.inspect}) { super }
+              trans.method_call_for(#{label.to_sym.inspect}).measure { super }
             else
               super
             end

@@ -9,7 +9,7 @@ describe API::API, api: true  do
   before { project.team << [user, :developer] }
 
   describe "GET /projects/:id/repository/files" do
-    it "should return file info" do
+    it "returns file info" do
       params = {
         file_path: file_path,
         ref: 'master',
@@ -23,12 +23,12 @@ describe API::API, api: true  do
       expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       get api("/projects/#{project.id}/repository/files", user)
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 404 if such file does not exist" do
+    it "returns a 404 if such file does not exist" do
       params = {
         file_path: 'app/models/application.rb',
         ref: 'master',
@@ -49,18 +49,18 @@ describe API::API, api: true  do
       }
     end
 
-    it "should create a new file in project repo" do
+    it "creates a new file in project repo" do
       post api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response).to have_http_status(201)
       expect(json_response['file_path']).to eq('newfile.rb')
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       post api("/projects/#{project.id}/repository/files", user)
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 400 if editor fails to create file" do
+    it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:commit_file).
         and_return(false)
 
@@ -79,13 +79,13 @@ describe API::API, api: true  do
       }
     end
 
-    it "should update existing file in project repo" do
+    it "updates existing file in project repo" do
       put api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       put api("/projects/#{project.id}/repository/files", user)
       expect(response).to have_http_status(400)
     end
@@ -100,18 +100,18 @@ describe API::API, api: true  do
       }
     end
 
-    it "should delete existing file in project repo" do
+    it "deletes existing file in project repo" do
       delete api("/projects/#{project.id}/repository/files", user), valid_params
       expect(response).to have_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
     end
 
-    it "should return a 400 bad request if no params given" do
+    it "returns a 400 bad request if no params given" do
       delete api("/projects/#{project.id}/repository/files", user)
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 400 if fails to create file" do
+    it "returns a 400 if fails to create file" do
       allow_any_instance_of(Repository).to receive(:remove_file).and_return(false)
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params

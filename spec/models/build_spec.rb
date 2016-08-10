@@ -32,7 +32,7 @@ describe Ci::Build, models: true do
     end
     let(:create_from_build) { Ci::Build.create_from build }
 
-    it 'there should be a pending task' do
+    it 'exists a pending task' do
       expect(Ci::Build.pending.count(:all)).to eq 0
       create_from_build
       expect(Ci::Build.pending.count(:all)).to be > 0
@@ -259,7 +259,7 @@ describe Ci::Build, models: true do
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
       let(:user_trigger_variable) do
-        { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
+        { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
       end
       let(:predefined_trigger_variable) do
         { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
@@ -573,19 +573,19 @@ describe Ci::Build, models: true do
     let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
     let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
-    it 'to have no dependents if this is first build' do
+    it 'expects to have no dependents if this is first build' do
       expect(build.depends_on_builds).to be_empty
     end
 
-    it 'to have one dependent if this is test' do
+    it 'expects to have one dependent if this is test' do
       expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
     end
 
-    it 'to have all builds from build and test stage if this is last' do
+    it 'expects to have all builds from build and test stage if this is last' do
       expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
     end
 
-    it 'to have retried builds instead the original ones' do
+    it 'expects to have retried builds instead the original ones' do
       retried_rspec = Ci::Build.retry(rspec_test)
       expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
     end
@@ -655,23 +655,23 @@ describe Ci::Build, models: true do
 
   describe 'build erasable' do
     shared_examples 'erasable' do
-      it 'should remove artifact file' do
+      it 'removes artifact file' do
         expect(build.artifacts_file.exists?).to be_falsy
       end
 
-      it 'should remove artifact metadata file' do
+      it 'removes artifact metadata file' do
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
-      it 'should erase build trace in trace file' do
+      it 'erases build trace in trace file' do
         expect(build.trace).to be_empty
       end
 
-      it 'should set erased to true' do
+      it 'sets erased to true' do
         expect(build.erased?).to be true
       end
 
-      it 'should set erase date' do
+      it 'sets erase date' do
         expect(build.erased_at).not_to be_falsy
       end
     end
@@ -704,7 +704,7 @@ describe Ci::Build, models: true do
 
           include_examples 'erasable'
 
-          it 'should record user who erased a build' do
+          it 'records user who erased a build' do
             expect(build.erased_by).to eq user
           end
         end
@@ -714,7 +714,7 @@ describe Ci::Build, models: true do
 
           include_examples 'erasable'
 
-          it 'should not set user who erased a build' do
+          it 'does not set user who erased a build' do
             expect(build.erased_by).to be_nil
           end
         end
@@ -750,7 +750,7 @@ describe Ci::Build, models: true do
         end
 
         describe '#erase' do
-          it 'should not raise error' do
+          it 'does not raise error' do
             expect { build.erase }.not_to raise_error
           end
         end

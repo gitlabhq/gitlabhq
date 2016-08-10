@@ -9,6 +9,7 @@ gem 'responders', '~> 2.0'
 # Specify a sprockets version due to increased performance
 # See https://gitlab.com/gitlab-org/gitlab-ce/issues/6069
 gem 'sprockets', '~> 3.6.0'
+gem 'sprockets-es6'
 
 # Default values for AR models
 gem 'default_value_for', '~> 3.0.0'
@@ -52,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.3.2'
+gem 'gitlab_git', '~> 10.4.5'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -68,7 +69,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.13.0'
+gem 'grape',        '~> 0.15.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -153,7 +154,7 @@ gem 'settingslogic', '~> 2.0.9'
 
 # Misc
 
-gem 'version_sorter', '~> 2.0.0'
+gem 'version_sorter', '~> 2.1.0'
 
 # Cache
 gem 'redis-rails', '~> 4.0.0'
@@ -224,7 +225,7 @@ gem 'addressable',        '~> 2.3.8'
 gem 'bootstrap-sass',     '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.6.1'
 gem 'gemojione',          '~> 3.0'
-gem 'gon',                '~> 6.0.1'
+gem 'gon',                '~> 6.1.0'
 gem 'jquery-atwho-rails', '~> 1.3.2'
 gem 'jquery-rails',       '~> 4.1.0'
 gem 'jquery-ui-rails',    '~> 5.0.0'
@@ -252,7 +253,7 @@ group :development do
 
   gem 'letter_opener_web', '~> 1.3.0'
   gem 'rerun', '~> 0.11.0'
-  gem 'bullet', '~> 5.0.0', require: false
+  gem 'bullet', '~> 5.2.0', require: false
   gem 'rblineprof', '~> 0.3.6', platform: :mri, require: false
   gem 'web-console', '~> 2.0'
 
@@ -274,7 +275,7 @@ group :development, :test do
   gem 'awesome_print', '~> 1.2.0', require: false
   gem 'fuubar', '~> 2.0.0'
 
-  gem 'database_cleaner',   '~> 1.4.0'
+  gem 'database_cleaner',   '~> 1.5.0'
   gem 'factory_girl_rails', '~> 4.6.0'
   gem 'rspec-rails',        '~> 3.5.0'
   gem 'rspec-retry',        '~> 0.4.5'
@@ -302,7 +303,7 @@ group :development, :test do
   gem 'rubocop', '~> 0.41.2', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false
   gem 'scss_lint', '~> 0.47.0', require: false
-  gem 'simplecov', '~> 0.11.0', require: false
+  gem 'simplecov', '0.12.0', require: false
   gem 'flog', '~> 4.3.2', require: false
   gem 'flay', '~> 2.6.1', require: false
   gem 'bundler-audit', '~> 0.5.0', require: false
@@ -325,13 +326,15 @@ group :production do
   gem 'gitlab_meta', '7.0'
 end
 
-gem 'newrelic_rpm', '~> 3.14'
+gem 'newrelic_rpm', '~> 3.16'
 
 gem 'octokit', '~> 4.3.0'
 
 gem 'mail_room', '~> 0.8'
 
 gem 'email_reply_parser', '~> 0.5.8'
+
+gem 'ruby-prof', '~> 0.15.9'
 
 ## CI
 gem 'activerecord-session_store', '~> 1.0.0'

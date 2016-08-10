@@ -34,17 +34,15 @@ task :spinach do
   run_spinach_tests(nil)
 end
 
-def run_command(cmd)
+def run_system_command(cmd)
   system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd)
 end
 
 def run_spinach_command(args)
-  run_command(%w(spinach -r rerun) + args)
+  run_system_command(%w(spinach -r rerun) + args)
 end
 
 def run_spinach_tests(tags)
-  #run_command(%w(rake gitlab:setup)) or raise('gitlab:setup failed!')
-
   success = run_spinach_command(%W(--tags #{tags}))
   3.times do |_|
     break if success

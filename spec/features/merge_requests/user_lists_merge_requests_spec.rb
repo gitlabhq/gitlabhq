@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Projects > Merge requests > User lists merge requests', feature: true do
+  include MergeRequestHelpers
   include SortingHelper
 
   let(:project) { create(:project, :public) }
@@ -23,10 +24,12 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
            milestone: create(:milestone, due_date: '2013-12-12'),
            created_at: 2.minutes.ago,
            updated_at: 2.minutes.ago)
+    # lfs in itself is not a great choice for the title if one wants to match the whole body content later on
+    # just think about the scenario when faker generates 'Chester Runolfsson' as the user's name
     create(:merge_request,
-           title: 'lfs',
+           title: 'merge_lfs',
            source_project: project,
-           source_branch: 'lfs',
+           source_branch: 'merge_lfs',
            created_at: 3.minutes.ago,
            updated_at: 10.seconds.ago)
   end
@@ -35,7 +38,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
     visit_merge_requests(project, assignee_id: IssuableFinder::NONE)
 
     expect(current_path).to eq(namespace_project_merge_requests_path(project.namespace, project))
-    expect(page).to have_content 'lfs'
+    expect(page).to have_content 'merge_lfs'
     expect(page).not_to have_content 'fix'
     expect(page).not_to have_content 'markdown'
     expect(count_merge_requests).to eq(1)
@@ -44,7 +47,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
   it 'filters on a specific assignee' do
     visit_merge_requests(project, assignee_id: user.id)
 
-    expect(page).not_to have_content 'lfs'
+    expect(page).not_to have_content 'merge_lfs'
     expect(page).to have_content 'fix'
     expect(page).to have_content 'markdown'
     expect(count_merge_requests).to eq(2)
@@ -53,23 +56,23 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
   it 'sorts by newest' do
     visit_merge_requests(project, sort: sort_value_recently_created)
 
-    expect(first_merge_request).to include('lfs')
-    expect(last_merge_request).to include('fix')
+    expect(first_merge_request).to include('fix')
+    expect(last_merge_request).to include('merge_lfs')
     expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by oldest' do
     visit_merge_requests(project, sort: sort_value_oldest_created)
 
-    expect(first_merge_request).to include('fix')
-    expect(last_merge_request).to include('lfs')
+    expect(first_merge_request).to include('merge_lfs')
+    expect(last_merge_request).to include('fix')
     expect(count_merge_requests).to eq(3)
   end
 
   it 'sorts by last updated' do
     visit_merge_requests(project, sort: sort_value_recently_updated)
 
-    expect(first_merge_request).to include('lfs')
+    expect(first_merge_request).to include('merge_lfs')
     expect(count_merge_requests).to eq(3)
   end
 
@@ -141,18 +144,6 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
         expect(first_merge_request).to include('fix')
       end
     end
-  end
-
-  def visit_merge_requests(project, opts = {})
-    visit namespace_project_merge_requests_path(project.namespace, project, opts)
-  end
-
-  def first_merge_request
-    page.all('ul.mr-list > li').first.text
-  end
-
-  def last_merge_request
-    page.all('ul.mr-list > li').last.text
   end
 
   def count_merge_requests

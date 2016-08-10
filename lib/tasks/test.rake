@@ -7,5 +7,5 @@ end
 
 unless Rails.env.production?
   desc "GitLab | Run all tests on CI with simplecov"
-  task test_ci: [:rubocop, :brakeman, 'teaspoon', :spinach, :spec]
+  task test_ci: [:rubocop, :brakeman, :teaspoon, :spinach, :spec]
 end
