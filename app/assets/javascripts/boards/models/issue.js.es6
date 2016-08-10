@@ -9,11 +9,11 @@ class Issue {
 
     this.labels = [];
 
-    obj.labels.forEach((label) => {
+    _.each(obj.labels, (label) => {
       this.labels.push(new Label(label));
     });
 
-    this.priority = this.labels.reduce((max, label) => {
+    this.priority = _.reduce(this.labels, (max, label) => {
       return (label.priority < max) ? label.priority : max;
     }, Infinity);
   }

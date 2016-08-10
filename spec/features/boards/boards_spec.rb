@@ -3,10 +3,12 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   let(:project)   { create(:project) }
   let(:user)      { create(:user) }
+  let!(:user2)    { create(:user) }
   let!(:board)    { Boards::CreateService.new(project, user).execute }
 
   before do
     project.team << [user, :master]
+    project.team << [user2, :master]
     login_as(user)
   end
 
@@ -42,22 +44,25 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   context 'with lists' do
+    let(:milestone) { create(:milestone, project: project) }
+
     let(:planning)    { create(:label, project: project, name: 'Planning') }
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)     { create(:label, project: project, name: 'Testing') }
+    let(:bug)         { create(:label, project: project, name: 'Bug') }
 
     let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: project.board, label: development, position: 1) }
 
     let!(:issue1) { create(:issue, project: project, assignee: user) }
-    let!(:issue2) { create(:issue, project: project) }
+    let!(:issue2) { create(:issue, project: project, author: user2) }
     let!(:issue3) { create(:issue, project: project) }
     let!(:issue4) { create(:issue, project: project) }
-    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning]) }
+    let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone) }
     let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development]) }
     let!(:issue7) { create(:labeled_issue, project: project, labels: [development]) }
     let!(:issue8) { create(:closed_issue, project: project) }
-    let!(:issue9) { create(:labeled_issue, project: project, labels: [testing]) }
+    let!(:issue9) { create(:labeled_issue, project: project, labels: [testing, bug]) }
 
     before do
       visit namespace_project_board_path(project.namespace, project)
@@ -159,6 +164,13 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     context 'lists' do
+      it 'changes position of list' do
+        drag_to(list_from_index: 1, list_to_index: 2, selector: '.js-board-handle')
+
+        expect(all('.board')[1]).to have_content(development.title)
+        expect(all('.board')[1]).to have_content(planning.title)
+      end
+
       it 'moves between lists' do
         drag_to(list_from_index: 1, card_index: 1, list_to_index: 2)
 
@@ -235,12 +247,140 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     context 'filtering' do
+      it 'filters by author' do
+        page.within '.issues-filters' do
+          click_button('Author')
 
+          page.within '.dropdown-menu-author' do
+            click_link(user2.name)
+          end
+
+          expect(find('.js-author-search')).to have_content(user2.name)
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'filters by assignee' do
+        page.within '.issues-filters' do
+          click_button('Assignee')
+
+          page.within '.dropdown-menu-assignee' do
+            click_link(user.name)
+          end
+
+          expect(find('.js-assignee-search')).to have_content(user.name)
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'filters by milestone' do
+        page.within '.issues-filters' do
+          click_button('Milestone')
+
+          page.within '.milestone-filter' do
+            click_link(milestone.title)
+          end
+
+          expect(find('.js-milestone-select')).to have_content(milestone.title)
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+      end
+
+      it 'filters by label' do
+        page.within '.issues-filters' do
+          click_button('Label')
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'filters by multiple labels' do
+        page.within '.issues-filters' do
+          click_button('Label')
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+            click_link(bug.title)
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('2')
+          expect(page).to have_selector('.card', count: 2)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'filters by no label' do
+        page.within '.issues-filters' do
+          click_button('Label')
+
+          page.within '.dropdown-menu-labels' do
+            click_link("No Label")
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('4')
+          expect(page).to have_selector('.card', count: 4)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
     end
   end
 
-  def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0)
-    evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('.board-list').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
+  def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
+    evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('#{selector}').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
     sleep 1
   end
 end
