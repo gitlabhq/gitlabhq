@@ -21,6 +21,7 @@ class CommitStatus < ActiveRecord::Base
 
     where(id: max_id.group(:name, :commit_id))
   end
+
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
@@ -83,18 +84,17 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
+  def self.duration
+    select(:started_at, :finished_at).all.
+      map(&:duration).compact.inject(0, &:+)
+  end
+
   def ignored?
     allow_failure? && (failed? || canceled?)
   end
 
   def duration
-    duration =
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.now - started_at
-      end
-    duration
+    calculate_duration
   end
 
   def stuck?

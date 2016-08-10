@@ -34,6 +34,10 @@ module Ci
       CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
+    def self.duration
+      where.not(duration: nil).pluck(:duration).inject(0, &:+)
+    end
+
     def project_id
       project.id
     end
@@ -213,10 +217,6 @@ module Ci
       ]
     end
 
-    def wall_clock_duration
-      finished_at.to_i - started_at.to_i if finished_at && started_at
-    end
-
     private
 
     def build_builds_for_stages(stages, user, status, trigger_request)
@@ -240,7 +240,7 @@ module Ci
                     end
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
-      self.duration = statuses.latest.duration
+      self.duration = calculate_duration.to_i
       save
     end
 
