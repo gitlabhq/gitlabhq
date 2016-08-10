@@ -175,7 +175,7 @@ describe Gitlab::SlashCommands::Extractor do
     end
 
     it 'does not extract commands inside a blockcode' do
-      msg = msg = "Hello\r\n```\r\nThis is some text\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
+      msg = "Hello\r\n```\r\nThis is some text\r\n/close\r\n/assign @user\r\n```\r\n\r\nWorld"
       expected = msg.delete("\r")
       commands = extractor.extract_commands!(msg)
 
@@ -193,7 +193,7 @@ describe Gitlab::SlashCommands::Extractor do
     end
 
     it 'does not extract commands inside a HTML tag' do
-      msg = msg = "Hello\r\n<div>\r\nThis is some text\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
+      msg = "Hello\r\n<div>\r\nThis is some text\r\n/close\r\n/assign @user\r\n</div>\r\n\r\nWorld"
       expected = msg.delete("\r")
       commands = extractor.extract_commands!(msg)
 

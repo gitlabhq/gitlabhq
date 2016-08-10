@@ -117,7 +117,7 @@ module SlashCommands
       return unless noteable.respond_to?(:due_date)
 
       due_date = begin
-        if due_date_param.downcase == 'tomorrow'
+        if due_date_param.casecmp('tomorrow').zero?
           Date.tomorrow
         else
           Time.now + ChronicDuration.parse(due_date_param)
@@ -134,6 +134,14 @@ module SlashCommands
       return unless noteable.respond_to?(:due_date)
 
       @updates[:due_date] = nil
+    end
+
+    # This is a dummy command, so that it appears in the autocomplete commands
+    desc 'CC'
+    params '@user'
+    noop true
+    command :cc do
+      return
     end
 
     def find_label_ids(labels_param)

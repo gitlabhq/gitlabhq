@@ -29,6 +29,11 @@ describe Gitlab::SlashCommands::Dsl do
       command :wildcard do |*args|
         args
       end
+
+      noop true
+      command :cc do |*args|
+        args
+      end
     end
   end
   let(:dummy) { DummyClass.new }
@@ -36,11 +41,12 @@ describe Gitlab::SlashCommands::Dsl do
   describe '.command_definitions' do
     it 'returns an array with commands definitions' do
       expected = [
-        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [] },
-        { name: :returning, aliases: [], description: 'A command returning a value', params: [] },
-        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'] },
-        { name: :two_args, aliases: [], description: 'A command with two args', params: ['The first argument', 'The second argument'] },
-        { name: :wildcard, aliases: [], description: '', params: [] }
+        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [], noop: false },
+        { name: :returning, aliases: [], description: 'A command returning a value', params: [], noop: false },
+        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'], noop: false },
+        { name: :two_args, aliases: [], description: 'A command with two args', params: ['The first argument', 'The second argument'], noop: false },
+        { name: :wildcard, aliases: [], description: '', params: [], noop: false },
+        { name: :cc, aliases: [], description: '', params: [], noop: true }
       ]
 
       expect(DummyClass.command_definitions).to eq expected

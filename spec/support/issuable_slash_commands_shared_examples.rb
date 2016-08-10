@@ -28,7 +28,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
         issuable = project.public_send(issuable_type.to_s.pluralize).first
 
-        expect(issuable.description).to eq "bug description\r\n"
+        expect(issuable.description).to eq "bug description\n"
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
         expect(page).to have_content 'bug 345'
@@ -57,7 +57,7 @@ shared_examples 'issuable record that supports slash commands in its description
         issuable.reload
         note = issuable.notes.user.first
 
-        expect(note.note).to eq "Awesome!\r\n"
+        expect(note.note).to eq "Awesome!\n"
         expect(issuable.assignee).to eq assignee
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
@@ -189,7 +189,6 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         it "does not reopen the #{issuable_type}" do
-          current_title = issuable.title
           page.within('.js-main-target-form') do
             fill_in 'note[note]', with: "/title Awesome new title"
             click_button 'Comment'
