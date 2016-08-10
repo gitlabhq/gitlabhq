@@ -31,9 +31,10 @@
       this.removeBlankState();
     },
     updateNewListDropdown: function () {
-      const data = $('.js-new-board-list').data('glDropdown').renderedData;
+      let data = $('.js-new-board-list').data('glDropdown');
 
       if (data) {
+        data = data.renderedData;
         $('.js-new-board-list').data('glDropdown').renderData(data);
       }
     },
