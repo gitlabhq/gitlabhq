@@ -4,7 +4,7 @@
 
 - [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) main contributing guide
 - [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) contributing process
-- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to install a development version
+- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md) to install a development version
 
 ## Styleguides
 
