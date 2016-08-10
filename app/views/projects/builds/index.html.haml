@@ -4,9 +4,8 @@
 
 %div{ class: container_class }
   .top-area
-    - scopes = [:all, :pending, :running, :finished]
-    - paths = scopes.zip(scopes.map { |scope| project_builds_path(@project, scope: scope) }).to_h
-    = render "builds", paths: paths
+    - build_path = ->(scope) { project_builds_path(@project, scope: scope) }
+    = render "tabs", build_path: build_path
 
     .nav-controls
       - if can?(current_user, :update_build, @project)

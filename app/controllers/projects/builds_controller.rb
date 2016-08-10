@@ -10,8 +10,6 @@ class Projects::BuildsController < Projects::ApplicationController
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope
-      when 'all'
-        @builds
       when 'pending'
         @builds.pending.reverse_order
       when 'running'

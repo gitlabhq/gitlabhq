@@ -4,9 +4,8 @@
 %div{ class: container_class }
 
   .top-area
-    - scopes = [:all, :pending, :running, :finished]
-    - paths = scopes.zip(scopes.map { |scope| admin_builds_path(scope: scope) }).to_h
-    = render "projects/builds/builds", paths: paths
+    - build_path = ->(scope) { admin_builds_path(scope: scope) }
+    = render "projects/builds/tabs", build_path: build_path
 
     .nav-controls
       - if @all_builds.running_or_pending.any?
