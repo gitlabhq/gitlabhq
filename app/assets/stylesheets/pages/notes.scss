@@ -442,8 +442,8 @@ ul.notes {
   &.is-active {
     color: $gl-text-green;
 
-    svg {
-      color: $gl-text-green;
+    svg path {
+      fill: $gl-text-green;
     }
   }
 
@@ -451,6 +451,10 @@ ul.notes {
     position: relative;
     color: $notes-action-color;
     vertical-align: top;
+
+    path {
+      fill: $notes-action-color;
+    }
   }
 }
 
