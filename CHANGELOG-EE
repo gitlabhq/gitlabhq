@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
   - Performance improvement of push rules
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
+  - Removed unused GitLab GEO database index
 
 v 8.10.5 (unreleased)
   - Used cached value of project count to reduce DB load

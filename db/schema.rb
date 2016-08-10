@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160804150737) do
+ActiveRecord::Schema.define(version: 20160810153405) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,17 +87,17 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.string   "health_check_access_token"
     t.boolean  "send_user_confirmation_email",          default: false
     t.integer  "container_registry_token_expire_delay", default: 5
-    t.boolean  "user_default_external",                 default: false,       null: false
     t.text     "after_sign_up_text"
+    t.boolean  "user_default_external",                 default: false,       null: false
     t.boolean  "elasticsearch_indexing",                default: false,       null: false
     t.boolean  "elasticsearch_search",                  default: false,       null: false
     t.string   "elasticsearch_host",                    default: "localhost"
     t.string   "elasticsearch_port",                    default: "9200"
     t.string   "repository_storage",                    default: "default"
     t.string   "enabled_git_access_protocol"
-    t.boolean  "usage_ping_enabled",                    default: true,        null: false
     t.boolean  "domain_blacklist_enabled",              default: false
     t.text     "domain_blacklist"
+    t.boolean  "usage_ping_enabled",                    default: true,        null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -193,8 +193,8 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.text     "artifacts_metadata"
     t.integer  "erased_by_id"
     t.datetime "erased_at"
-    t.string   "environment"
     t.datetime "artifacts_expire_at"
+    t.string   "environment"
     t.integer  "artifacts_size"
     t.string   "when"
     t.text     "yaml_variables"
@@ -500,7 +500,6 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.integer "system_hook_id"
   end
 
-  add_index "geo_nodes", ["geo_node_key_id"], name: "index_geo_nodes_on_geo_node_key_id", using: :btree
   add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
 
@@ -549,10 +548,10 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.integer  "iid"
     t.integer  "updated_by_id"
     t.integer  "weight"
-    t.integer  "moved_to_id"
     t.boolean  "confidential",  default: false
     t.datetime "deleted_at"
     t.date     "due_date"
+    t.integer  "moved_to_id"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -746,18 +745,18 @@ ActiveRecord::Schema.define(version: 20160804150737) do
   add_index "milestones", ["title"], name: "index_milestones_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
 
   create_table "namespaces", force: :cascade do |t|
-    t.string   "name",                                   null: false
-    t.string   "path",                                   null: false
+    t.string   "name",                                                  null: false
+    t.string   "path",                                                  null: false
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "type"
-    t.string   "description",            default: "",    null: false
+    t.string   "description",                         default: "",      null: false
     t.string   "avatar"
-    t.boolean  "membership_lock",       default: false
-    t.boolean  "share_with_group_lock", default: false
-    t.integer  "visibility_level",      default: 20,    null: false
-    t.boolean  "request_access_enabled", default: true,  null: false
+    t.boolean  "membership_lock",                     default: false
+    t.boolean  "share_with_group_lock",               default: false
+    t.integer  "visibility_level",                    default: 20,      null: false
+    t.boolean  "request_access_enabled",              default: true,    null: false
     t.string   "ldap_sync_status",                    default: "ready", null: false
     t.string   "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
@@ -891,10 +890,10 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.integer  "user_id",                    null: false
     t.string   "token",                      null: false
     t.string   "name",                       null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
     t.boolean  "revoked",    default: false
     t.datetime "expires_at"
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
@@ -924,11 +923,10 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.datetime "updated_at"
     t.integer  "creator_id"
     t.boolean  "issues_enabled",                     default: true,      null: false
+    t.boolean  "wall_enabled",                       default: true,      null: false
     t.boolean  "merge_requests_enabled",             default: true,      null: false
     t.boolean  "wiki_enabled",                       default: true,      null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",                     default: "gitlab",  null: false
-    t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",                   default: true,      null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
@@ -969,8 +967,8 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.boolean  "only_allow_merge_if_build_succeeds", default: false,     null: false
     t.boolean  "has_external_issue_tracker"
     t.string   "repository_storage",                 default: "default", null: false
-    t.boolean  "has_external_wiki"
     t.boolean  "request_access_enabled",             default: true,      null: false
+    t.boolean  "has_external_wiki"
   end
 
   add_index "projects", ["builds_enabled", "shared_runners_enabled"], name: "index_projects_on_builds_enabled_and_shared_runners_enabled", using: :btree
@@ -1303,8 +1301,8 @@ ActiveRecord::Schema.define(version: 20160804150737) do
     t.boolean  "note_events",                          default: false,         null: false
     t.boolean  "enable_ssl_verification",              default: true
     t.boolean  "build_events",                         default: false,         null: false
-    t.boolean  "wiki_page_events",                     default: false,         null: false
     t.string   "token"
+    t.boolean  "wiki_page_events",                     default: false,         null: false
   end
 
   add_index "web_hooks", ["created_at", "id"], name: "index_web_hooks_on_created_at_and_id", using: :btree
@@ -1313,8 +1311,8 @@ ActiveRecord::Schema.define(version: 20160804150737) do
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
-  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
+  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "u2f_registrations", "users"
 end
