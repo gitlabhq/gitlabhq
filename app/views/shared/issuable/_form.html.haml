@@ -54,7 +54,7 @@
           .issuable-form-select-holder
             = users_select_tag("#{issuable.class.model_name.param_key}[assignee_id]",
                 placeholder: 'Select assignee', class: 'custom-form-control', null_user: true,
-                selected: issuable.assignee_id, project: @target_project || @project,
+                selected: issuable.assignee_id, project: issuable.respond_to?(:target_project) && issuable.target_project || @project,
                 first_user: true, current_user: true, include_blank: true)
           %div
             = link_to 'Assign to me', '#', class: 'assign-to-me-link prepend-top-5 inline'

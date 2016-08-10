@@ -145,14 +145,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     build_merge_request
     @noteable = @merge_request
 
-    @target_branches = if @merge_request.target_project
-                         @merge_request.target_project.repository.branch_names
-                       else
-                         []
-                       end
-
-    @target_project = merge_request.target_project
-    @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits.reverse
     @commit = @merge_request.diff_head_commit
     @base_commit = @merge_request.diff_base_commit
