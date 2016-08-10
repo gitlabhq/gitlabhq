@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
