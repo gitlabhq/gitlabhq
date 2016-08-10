@@ -3,10 +3,10 @@
     data: function () {
       return {
         predefinedLabels: [
-          new Label({ title: 'Development', color: '#5CB85C' }),
-          new Label({ title: 'Testing', color: '#F0AD4E' }),
-          new Label({ title: 'Production', color: '#FF5F00' }),
-          new Label({ title: 'Ready', color: '#FF0000' })
+          new ListLabel({ title: 'Development', color: '#5CB85C' }),
+          new ListLabel({ title: 'Testing', color: '#F0AD4E' }),
+          new ListLabel({ title: 'Production', color: '#FF5F00' }),
+          new ListLabel({ title: 'Ready', color: '#FF0000' })
         ]
       }
     },
