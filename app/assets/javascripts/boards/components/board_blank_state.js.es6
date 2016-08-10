@@ -11,7 +11,8 @@
       }
     },
     methods: {
-      addDefaultLists: function () {
+      addDefaultLists: function (e) {
+        e.stopImmediatePropagation();
         BoardsStore.removeBlankState();
 
         _.each(this.predefinedLabels, (label, i) => {
