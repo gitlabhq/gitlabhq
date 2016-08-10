@@ -26,6 +26,7 @@ v 8.11.0 (unreleased)
   - Add experimental Redis Sentinel support !1877
   - Fix branches page dropdown sort initial state (ClemMakesApps)
   - Environments have an url to link to
+  - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
