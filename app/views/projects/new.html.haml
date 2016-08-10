@@ -49,21 +49,15 @@
                       = icon('github', text: 'GitHub')
                 %div
                   - if bitbucket_import_enabled?
-                    - if bitbucket_import_configured?
-                      = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
-                        = icon('bitbucket', text: 'Bitbucket')
-                    - else
-                      = link_to status_import_bitbucket_path, class: 'how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true" do
-                        = icon('bitbucket', text: 'Bitbucket')
+                    = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}", "data-no-turbolink" => "true" do
+                      = icon('bitbucket', text: 'Bitbucket')
+                    - unless bitbucket_import_configured?
                       = render 'bitbucket_import_modal'
                 %div
                   - if gitlab_import_enabled?
-                    - if gitlab_import_configured?
-                      = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
-                        = icon('gitlab', text: 'GitLab.com')
-                    - else
-                      = link_to status_import_gitlab_path, class: 'how_to_import_link btn import_gitlab' do
-                        = icon('gitlab', text: 'GitLab.com')
+                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless bitbucket_import_configured?}" do
+                      = icon('gitlab', text: 'GitLab.com')
+                    - unless gitlab_import_configured?
                       = render 'gitlab_import_modal'
                 %div
                   - if gitorious_import_enabled?
