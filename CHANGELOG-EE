@@ -5,8 +5,8 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
-v 8.10.5 (unreleased)
-  - Used cached value of project count to reduce DB load
+v 8.10.5
+  - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637
 
 v 8.10.4
   - Fix available users in userselect dropdown when there is more than one userselect on the page. !604 (Rik de Groot)
