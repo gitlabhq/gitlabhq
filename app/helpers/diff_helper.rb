@@ -109,11 +109,10 @@ module DiffHelper
     end
   end
 
-  def diff_file_html_data(project, diff_file)
-    commit = commit_for_diff(diff_file)
+  def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
-                                                       tree_join(commit.id, diff_file.file_path)),
+                                                       tree_join(diff_commit_id, diff_file_path)),
       view: diff_view
     }
   end
