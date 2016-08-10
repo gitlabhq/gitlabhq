@@ -22,7 +22,7 @@ module Ci
 
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest_successful_for, ->(ref) do
-      latest(ref).success
+      latest_for(ref).success
     end
 
     scope :latest_for, ->(ref) do
