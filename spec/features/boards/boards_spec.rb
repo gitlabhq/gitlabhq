@@ -93,6 +93,25 @@ describe 'Issue Boards', feature: true, js: true do
       expect(page).to have_selector('.board', count: 3)
     end
 
+    it 'infinite scrolls list' do
+      50.times do
+        create(:issue, project: project)
+      end
+
+      visit namespace_project_board_path(project.namespace, project)
+      sleep 1
+
+      page.within(first('.board')) do
+        expect(page.find('.board-header')).to have_content('20')
+        expect(page).to have_selector('.card', count: 20)
+
+        evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+
+        expect(page.find('.board-header')).to have_content('40')
+        expect(page).to have_selector('.card', count: 40)
+      end
+    end
+
     context 'backlog' do
       it 'shows issues in backlog with no labels' do
         page.within(first('.board')) do
@@ -331,6 +350,31 @@ describe 'Issue Boards', feature: true, js: true do
         page.within(all('.board')[1]) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
+      it 'infinite scrolls list with label filter' do
+        50.times do
+          create(:labeled_issue, project: project, labels: [testing])
+        end
+
+        page.within '.issues-filters' do
+          click_button('Label')
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('20')
+          expect(page).to have_selector('.card', count: 20)
+
+          evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+
+          expect(page.find('.board-header')).to have_content('40')
+          expect(page).to have_selector('.card', count: 40)
         end
       end
 
