@@ -58,13 +58,9 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
 
   def tmp_filename
     name = request.headers['X-Gitlab-Lfs-Tmp']
-    if name.present?
-      name.gsub!(/^.*(\\|\/)/, '')
-      name = name.match(/[0-9a-f]{73}/)
-      name[0] if name
-    else
-      nil
-    end
+    return if name.include?('/')
+    return unless oid.present? && name.start_with?(oid)
+    name
   end
 
   def store_file(oid, size, tmp_file)

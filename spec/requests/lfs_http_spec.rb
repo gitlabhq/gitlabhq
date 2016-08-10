@@ -556,7 +556,7 @@ describe 'Git LFS API and storage' do
 
       context 'and request is sent with a malformed headers' do
         before do
-          put_finalize('cat /etc/passwd')
+          put_finalize('/etc/passwd')
         end
 
         it 'does not recognize it as a valid lfs command' do
@@ -588,7 +588,7 @@ describe 'Git LFS API and storage' do
 
       context 'and request is sent with a malformed headers' do
         before do
-          put_finalize('cat /etc/passwd')
+          put_finalize('/etc/passwd')
         end
 
         it 'does not recognize it as a valid lfs command' do
@@ -635,6 +635,18 @@ describe 'Git LFS API and storage' do
 
             it 'lfs object is linked to the project' do
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
+            end
+          en
+
+          context 'invalid tempfiles' do
+            it 'rejects slashes in the tempfile name (path traversal' do
+              put_finalize('foo/bar')
+              expect(response).to have_http_status(403)
+            end
+
+            it 'rejects tempfile names that do not start with the oid' do
+              put_finalize("foo#{sample_oid}")
+              expect(response).to have_http_status(403)
             end
           end
         end
