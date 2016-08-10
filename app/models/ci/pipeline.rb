@@ -21,8 +21,12 @@ module Ci
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_successful_for, ->(ref = default_branch) do
-      where(ref: ref).success.order(id: :desc).limit(1)
+    scope :latest_successful_for, ->(ref) do
+      latest(ref).success
+    end
+
+    scope :latest_for, ->(ref) do
+      where(ref: ref).order(id: :desc).limit(1)
     end
 
     def self.truncate_sha(sha)
@@ -96,6 +100,10 @@ module Ci
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
+    end
+
+    def latest
+      project.pipelines.latest_for(ref).first
     end
 
     def latest?

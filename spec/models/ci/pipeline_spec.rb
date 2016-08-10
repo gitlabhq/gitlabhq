@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
-  let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+  let(:project) { create(:empty_project) }
+  let(:pipeline) { create(:ci_pipeline, project: project) }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -478,6 +478,50 @@ describe Ci::Pipeline, models: true do
       it 'return false when tag is set to true' do
         is_expected.to be_falsey
       end
+    end
+  end
+
+  context 'with non-empty project' do
+    let(:project) { create(:project) }
+    let(:pipeline) { create_pipeline }
+
+    describe '#latest?' do
+      context 'with latest sha' do
+        it 'returns true' do
+          expect(pipeline).to be_latest
+        end
+      end
+
+      context 'with not latest sha' do
+        before do
+          pipeline.update(
+            sha: project.commit("#{project.default_branch}~1").sha)
+        end
+
+        it 'returns false' do
+          expect(pipeline).not_to be_latest
+        end
+      end
+    end
+
+    describe '#latest' do
+      let(:previous_pipeline) { create_pipeline }
+
+      before do
+        previous_pipeline
+        pipeline
+      end
+
+      it 'gives the latest pipeline' do
+        expect(previous_pipeline.latest).to eq(pipeline)
+      end
+    end
+
+    def create_pipeline
+      create(:ci_pipeline,
+             project: project,
+             ref: project.default_branch,
+             sha: project.commit.sha)
     end
   end
 
