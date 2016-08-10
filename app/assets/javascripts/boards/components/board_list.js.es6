@@ -48,6 +48,7 @@
       const list = this.list;
       let options = _.extend({
         group: 'issues',
+        sort: false,
         disabled: this.disabled,
         onAdd: (e) => {
           const card = e.item,
