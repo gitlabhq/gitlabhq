@@ -5,12 +5,15 @@ feature 'Download buttons in files tree', feature: true do
   given(:role) { :developer }
   given(:status) { 'success' }
   given(:project) { create(:project) }
+
   given(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.sha,
-                         ref: project.default_branch,
-                         status: status)
+    create(:ci_pipeline,
+           project: project,
+           sha: project.commit.sha,
+           ref: project.default_branch,
+           status: status)
   end
+
   given!(:build) do
     create(:ci_build, :success, :artifacts,
            pipeline: pipeline,

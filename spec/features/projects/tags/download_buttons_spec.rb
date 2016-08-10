@@ -6,12 +6,15 @@ feature 'Download buttons in tags page', feature: true do
   given(:status) { 'success' }
   given(:tag) { 'v1.0.0' }
   given(:project) { create(:project) }
+
   given(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         sha: project.commit.sha,
-                         ref: tag,
-                         status: status)
+    create(:ci_pipeline,
+           project: project,
+           sha: project.commit.sha,
+           ref: tag,
+           status: status)
   end
+
   given!(:build) do
     create(:ci_build, :success, :artifacts,
            pipeline: pipeline,

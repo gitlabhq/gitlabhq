@@ -3,12 +3,14 @@ require 'spec_helper'
 describe Projects::ArtifactsController do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
+
   let(:pipeline) do
     create(:ci_pipeline,
             project: project,
             sha: project.commit.sha,
             ref: project.default_branch)
   end
+
   let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   describe 'GET /:project/builds/artifacts/:ref_name/browse?job=name' do
