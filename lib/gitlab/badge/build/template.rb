@@ -1,6 +1,6 @@
 module Gitlab
   module Badge
-    class Build
+    module Build
       ##
       # Class that represents a build badge template.
       #

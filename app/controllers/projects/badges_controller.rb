@@ -4,7 +4,7 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :no_cache_headers, except: [:index]
 
   def build
-    badge = Gitlab::Badge::Build.new(project, params[:ref])
+    badge = Gitlab::Badge::Build::Status.new(project, params[:ref])
 
     respond_to do |format|
       format.html { render_404 }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Badge::Coverage do
+describe Gitlab::Badge::Coverage::Report do
   let(:project) { create(:project) }
 
   let(:pipeline) do
@@ -9,11 +9,13 @@ describe Gitlab::Badge::Coverage do
                          ref: 'master')
   end
 
-  let(:badge) { described_class.new(project, 'master') }
+  let(:badge) do
+    described_class.new(project, 'master')
+  end
 
   context 'builds exist' do
   end
 
-  context 'build does not exist' do
+  context 'builds do not exist' do
   end
 end

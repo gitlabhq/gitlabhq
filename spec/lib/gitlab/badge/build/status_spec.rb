@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Badge::Build do
+describe Gitlab::Badge::Build::Status do
   let(:project) { create(:project) }
   let(:sha) { project.commit.sha }
   let(:branch) { 'master' }
