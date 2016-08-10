@@ -5,6 +5,7 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
   - Removed unused GitLab GEO database index
+  - Enable monitoring for ES classes
 
 v 8.10.5
   - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637
