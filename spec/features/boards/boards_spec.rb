@@ -54,6 +54,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: project.board, label: development, position: 1) }
 
+    let!(:confidential_issue) { create(:issue, :confidential, project: project, author: user) }
     let!(:issue1) { create(:issue, project: project, assignee: user) }
     let!(:issue2) { create(:issue, project: project, author: user2) }
     let!(:issue3) { create(:issue, project: project) }
@@ -86,6 +87,12 @@ describe 'Issue Boards', feature: true, js: true do
       end
     end
 
+    it 'shows confidential issues with icon' do
+      page.within(first('.board')) do
+        expect(page).to have_selector('.confidential-icon', count: 1)
+      end
+    end
+
     it 'allows user to delete board' do
       page.within(all('.board')[1]) do
         find('.board-delete').click
@@ -115,8 +122,8 @@ describe 'Issue Boards', feature: true, js: true do
     context 'backlog' do
       it 'shows issues in backlog with no labels' do
         page.within(first('.board')) do
-          expect(page.find('.board-header')).to have_content('5')
-          expect(page).to have_selector('.card', count: 5)
+          expect(page.find('.board-header')).to have_content('6')
+          expect(page).to have_selector('.card', count: 6)
         end
       end
 
@@ -136,7 +143,7 @@ describe 'Issue Boards', feature: true, js: true do
 
           find('.board-search-clear-btn').click
 
-          expect(page).to have_selector('.card', count: 2)
+          expect(page).to have_selector('.card', count: 6)
         end
       end
 
@@ -144,8 +151,8 @@ describe 'Issue Boards', feature: true, js: true do
         drag_to(list_to_index: 1)
 
         page.within(first('.board')) do
-          expect(page.find('.board-header')).to have_content('3')
-          expect(page).to have_selector('.card', count: 3)
+          expect(page.find('.board-header')).to have_content('5')
+          expect(page).to have_selector('.card', count: 5)
         end
 
         page.within(all('.board')[1]) do
@@ -168,7 +175,7 @@ describe 'Issue Boards', feature: true, js: true do
         drag_to(list_from_index: 0, list_to_index: 3)
 
         expect(all('.board').last).to have_selector('.card', count: 2)
-        expect(all('.board').last).to have_content(issue4.title)
+        expect(all('.board').last).to have_content(issue9.title)
         expect(all('.board').last).not_to have_content(planning.title)
       end
 
@@ -195,8 +202,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         expect(all('.board')[1]).to have_selector('.card', count: 1)
         expect(all('.board')[2]).to have_selector('.card', count: 3)
-        expect(all('.board')[2]).to have_content(issue5.title)
-        expect(all('.board')[2].all('.card').last).to have_content(development.title)
+        expect(all('.board')[2]).to have_content(issue6.title)
+        expect(all('.board')[2].all('.card').last).not_to have_content(development.title)
       end
 
       it 'moves between lists' do
@@ -205,7 +212,7 @@ describe 'Issue Boards', feature: true, js: true do
         expect(all('.board')[1]).to have_selector('.card', count: 3)
         expect(all('.board')[2]).to have_selector('.card', count: 1)
         expect(all('.board')[1]).to have_content(issue7.title)
-        expect(all('.board')[1].all('.card').first).to have_content(planning.title)
+        expect(all('.board')[1].all('.card').first).not_to have_content(planning.title)
       end
 
       it 'moves from done' do
@@ -219,7 +226,7 @@ describe 'Issue Boards', feature: true, js: true do
       context 'issue card' do
         it 'shows assignee' do
           page.within(first('.board')) do
-            expect(all('.card').last).to have_selector('.avatar')
+            expect(page).to have_selector('.avatar', count: 1)
           end
         end
       end
@@ -247,8 +254,8 @@ describe 'Issue Boards', feature: true, js: true do
 
         it 'moves issues from backlog into new list' do
           page.within(first('.board')) do
-            expect(page.find('.board-header')).to have_content('5')
-            expect(page).to have_selector('.card', count: 5)
+            expect(page.find('.board-header')).to have_content('6')
+            expect(page).to have_selector('.card', count: 6)
           end
 
           click_button 'Create new list'
@@ -258,8 +265,8 @@ describe 'Issue Boards', feature: true, js: true do
           end
 
           page.within(first('.board')) do
-            expect(page.find('.board-header')).to have_content('4')
-            expect(page).to have_selector('.card', count: 4)
+            expect(page.find('.board-header')).to have_content('5')
+            expect(page).to have_selector('.card', count: 5)
           end
         end
       end
@@ -390,8 +397,8 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         page.within(first('.board')) do
-          expect(page.find('.board-header')).to have_content('2')
-          expect(page).to have_selector('.card', count: 2)
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
         end
 
         page.within(all('.board')[1]) do
@@ -411,8 +418,8 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         page.within(first('.board')) do
-          expect(page.find('.board-header')).to have_content('4')
-          expect(page).to have_selector('.card', count: 4)
+          expect(page.find('.board-header')).to have_content('5')
+          expect(page).to have_selector('.card', count: 5)
         end
 
         page.within(all('.board')[1]) do
@@ -442,11 +449,9 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         page.within(first('.board')) do
-          page.within(first('.card')) do
-            click_button(bug.title)
-          end
+          click_button(bug.title)
 
-          expect(page).to have_selector('.card', count: 5)
+          expect(page).to have_selector('.card', count: 6)
         end
 
         page.within('.labels-filter') do

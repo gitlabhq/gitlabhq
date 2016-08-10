@@ -1,6 +1,7 @@
 (function () {
   const BoardCard = Vue.extend({
     props: {
+      list: Object,
       issue: Object,
       issueLinkBase: String,
       disabled: Boolean

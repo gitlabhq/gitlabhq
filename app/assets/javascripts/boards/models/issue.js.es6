@@ -2,6 +2,7 @@ class Issue {
   constructor (obj) {
     this.id = obj.iid;
     this.title = obj.title;
+    this.confidential = obj.confidential;
 
     if (obj.assignee) {
       this.assignee = new User(obj.assignee);
