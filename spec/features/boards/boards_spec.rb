@@ -22,7 +22,7 @@ describe 'Issue Boards', feature: true, js: true do
       expect(page).to have_content('Welcome to your Issue Board!')
     end
 
-    it 'hides the blank state when clicking nermind button' do
+    it 'hides the blank state when clicking nevermind button' do
       page.within('.board-blank-state') do
         click_button('Nevermind, I\'ll use my own')
       end
@@ -158,10 +158,6 @@ describe 'Issue Boards', feature: true, js: true do
         page.within(all('.board')[1]) do
           expect(page.find('.board-header')).to have_content('3')
           expect(page).to have_selector('.card', count: 3)
-
-          all('.card').each do |card|
-            expect(card.all('.label').last).to have_content(planning.title)
-          end
         end
       end
     end
@@ -220,7 +216,6 @@ describe 'Issue Boards', feature: true, js: true do
 
         expect(all('.board')[1]).to have_selector('.card', count: 3)
         expect(all('.board')[1]).to have_content(issue8.title)
-        expect(all('.board')[1].all('.card').first).to have_content(planning.title)
       end
 
       context 'issue card' do

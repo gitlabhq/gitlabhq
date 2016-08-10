@@ -10,7 +10,7 @@
     ghostClass: 'is-ghost',
     filter: '.has-tooltip',
     scrollSensitivity: 100,
-    scrollSpeed: 10,
+    scrollSpeed: 20,
     onStart: function () {
       document.body.classList.add('is-dragging');
     },
