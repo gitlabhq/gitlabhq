@@ -90,6 +90,7 @@ v 8.11.0 (unreleased)
   - Sort folders with submodules in Files view !5521
 
 v 8.10.5 (unreleased)
+  - Cache project count for 5 minutes to reduce DB load
 
 v 8.10.4
   - Don't close referenced upstream issues from a forked project.
