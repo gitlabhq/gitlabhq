@@ -67,7 +67,6 @@ describe Gitlab::Redis do
       expect(subject).to receive(:fetch_config) { 'redis://myredis:6379' }
       expect(subject.send(:raw_config_hash)).to eq(url: 'redis://myredis:6379')
     end
-
   end
 
   describe '#fetch_config' do
