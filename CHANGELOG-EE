@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
 v 8.10.5 (unreleased)
+  - Used cached value of project count to reduce DB load
 
 v 8.10.4
   - Fix available users in userselect dropdown when there is more than one userselect on the page. !604 (Rik de Groot)
