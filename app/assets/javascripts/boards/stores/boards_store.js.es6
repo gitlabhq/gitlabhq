@@ -31,11 +31,14 @@
       this.removeBlankState();
     },
     updateNewListDropdown: function () {
-      let data = $('.js-new-board-list').data('glDropdown');
+      const glDropdown = $('.js-new-board-list').data('glDropdown');
 
-      if (data) {
-        data = data.renderedData;
-        $('.js-new-board-list').data('glDropdown').renderData(data);
+      if (glDropdown) {
+        const renderedData = glDropdown.renderedData;
+
+        if (renderedData) {
+          glDropdown.renderData(renderedData);
+        }
       }
     },
     shouldAddBlankState: function () {

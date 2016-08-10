@@ -376,6 +376,53 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 0)
         end
       end
+
+      it 'filters by clicking label button on issue' do
+        page.within '.issues-filters' do
+          click_button('Label')
+
+          page.within '.dropdown-menu-labels' do
+            click_link(bug.title)
+            find('.dropdown-menu-close').click
+          end
+        end
+
+        page.within(first('.board')) do
+          expect(page.find('.board-header')).to have_content('1')
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within(all('.board')[1]) do
+          expect(page.find('.board-header')).to have_content('0')
+          expect(page).to have_selector('.card', count: 0)
+        end
+
+        page.within(first('.board')) do
+          page.within(first('.card')) do
+            click_button(bug.title)
+          end
+
+          expect(page).to have_selector('.card', count: 5)
+        end
+
+        page.within('.labels-filter') do
+          expect(find('.dropdown-toggle-text')).not_to have_content(bug.title)
+        end
+      end
+
+      it 'removes label filter by clicking label button on issue' do
+        page.within(first('.board')) do
+          page.within(first('.card')) do
+            click_button(bug.title)
+          end
+
+          expect(page).to have_selector('.card', count: 1)
+        end
+
+        page.within('.labels-filter') do
+          expect(find('.dropdown-toggle-text')).to have_content(bug.title)
+        end
+      end
     end
   end
 
