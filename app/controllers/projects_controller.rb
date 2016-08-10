@@ -146,7 +146,7 @@ class ProjectsController < Projects::ApplicationController
       mergerequests: autocomplete.merge_requests,
       labels: autocomplete.labels,
       members: participants,
-      commands: autocomplete.commands
+      commands: autocomplete.commands(note_type, note_id)
     }
 
     respond_to do |format|

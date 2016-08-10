@@ -25,5 +25,5 @@ do.
 | `/done`                    | None                | Mark todo as done |
 | `/subscribe`               | None                | Subscribe |
 | `/unsubscribe`             | None                | Unsubscribe |
-| `/due_date <YYYY-MM-DD> | <N days>` | `/due`     | Set a due date |
+| `/due_date a date in natural language` | `/due`  | Set due date |
 | `/clear_due_date`          | None                | Remove due date |

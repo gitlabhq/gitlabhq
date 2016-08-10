@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::SlashCommands::Dsl do
+  COND_LAMBDA = ->(opts) { opts[:project] == 'foo' }
   before :all do
     DummyClass = Class.new do
       include Gitlab::SlashCommands::Dsl
@@ -20,18 +21,23 @@ describe Gitlab::SlashCommands::Dsl do
         arg1
       end
 
-      desc 'A command with two args'
+      desc ->(opts) { "A dynamic description for #{opts.fetch(:noteable)}" }
       params 'The first argument', 'The second argument'
       command :two_args do |arg1, arg2|
         [arg1, arg2]
       end
 
-      command :wildcard do |*args|
+      noop true
+      command :cc do |*args|
         args
       end
 
-      noop true
-      command :cc do |*args|
+      condition COND_LAMBDA
+      command :cond_action do |*args|
+        args
+      end
+
+      command :wildcard do |*args|
         args
       end
     end
@@ -39,26 +45,72 @@ describe Gitlab::SlashCommands::Dsl do
   let(:dummy) { DummyClass.new }
 
   describe '.command_definitions' do
-    it 'returns an array with commands definitions' do
-      expected = [
-        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [], noop: false },
-        { name: :returning, aliases: [], description: 'A command returning a value', params: [], noop: false },
-        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'], noop: false },
-        { name: :two_args, aliases: [], description: 'A command with two args', params: ['The first argument', 'The second argument'], noop: false },
-        { name: :wildcard, aliases: [], description: '', params: [], noop: false },
-        { name: :cc, aliases: [], description: '', params: [], noop: true }
+    let(:base_expected) do
+      [
+        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [] },
+        { name: :returning, aliases: [], description: 'A command returning a value', params: [] },
+        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'] },
+        { name: :two_args, aliases: [], description: '', params: ['The first argument', 'The second argument'] },
+        { name: :cc, aliases: [], description: '', params: [], noop: true },
+        { name: :wildcard, aliases: [], description: '', params: [] }
       ]
+    end
 
-      expect(DummyClass.command_definitions).to eq expected
+    it 'returns an array with commands definitions' do
+      expect(DummyClass.command_definitions).to match_array base_expected
+    end
+
+    context 'with options passed' do
+      context 'when condition is met' do
+        let(:expected) { base_expected << { name: :cond_action, aliases: [], description: '', params: [], cond_lambda: COND_LAMBDA } }
+
+        it 'returns an array with commands definitions' do
+          expect(DummyClass.command_definitions(project: 'foo')).to match_array expected
+        end
+      end
+
+      context 'when condition is not met' do
+        it 'returns an array with commands definitions without actions that did not met conditions' do
+          expect(DummyClass.command_definitions(project: 'bar')).to match_array base_expected
+        end
+      end
+
+      context 'when description can be generated dynamically' do
+        it 'returns an array with commands definitions with dynamic descriptions' do
+          base_expected[3][:description] = 'A dynamic description for merge request'
+
+          expect(DummyClass.command_definitions(noteable: 'merge request')).to match_array base_expected
+        end
+      end
     end
   end
 
   describe '.command_names' do
-    it 'returns an array with commands definitions' do
-      expect(DummyClass.command_names).to eq [
+    let(:base_expected) do
+      [
         :no_args, :none, :returning, :one_arg,
         :once, :first, :two_args, :wildcard
       ]
+    end
+
+    it 'returns an array with commands definitions' do
+      expect(DummyClass.command_names).to eq base_expected
+    end
+
+    context 'with options passed' do
+      context 'when condition is met' do
+        let(:expected) { base_expected << :cond_action }
+
+        it 'returns an array with commands definitions' do
+          expect(DummyClass.command_names(project: 'foo')).to match_array expected
+        end
+      end
+
+      context 'when condition is not met' do
+        it 'returns an array with commands definitions without action that did not met conditions' do
+          expect(DummyClass.command_names(project: 'bar')).to match_array base_expected
+        end
+      end
     end
   end
 
