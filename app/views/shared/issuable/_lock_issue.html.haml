@@ -1,0 +1,21 @@
+.block.light.lock-issue-block{data: {locked: locked}}
+  %template{"v-if" => "locked"}
+    .sidebar-collapsed-icon
+      = icon('lock')
+    .title.hide-collapsed
+      Lock issue
+      = icon('lock', class: 'state-icon')
+    %button.btn.btn-block.btn-default.hide-collapsed{"type" => "button", "@click" => "toggleLock"}
+      %span Unlock
+
+  %template{"v-if" => "!locked"}
+    .sidebar-collapsed-icon
+      = icon('unlock-alt')
+    .title.hide-collapsed
+      Lock issue
+      = icon('unlock-alt', class: 'state-icon')
+    %button.btn.btn-block.btn-default.hide-collapsed{"type" => "button", "@click" => "toggleLock"}
+      %span Lock
+
+  .hide-collapsed
+    Locking this issue will prevent other users from commenting. Project members will still be able to leave comment.

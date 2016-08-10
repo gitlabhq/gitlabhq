@@ -154,6 +154,9 @@
             .subscribed{class: ( 'hidden' unless subscribed )}
               You're receiving notifications because you're subscribed to this thread.
 
+      - if current_user
+        = render "shared/issuable/lock_issue", locked: 'false'
+
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
         .sidebar-collapsed-icon.dont-change-state

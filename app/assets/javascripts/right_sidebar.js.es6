@@ -1,11 +1,14 @@
+/*= require lib/vue */
+
 (function() {
   var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   this.Sidebar = (function() {
     function Sidebar(currentUser) {
       this.toggleTodo = bind(this.toggleTodo, this);
-      this.sidebar = $('aside');
+      this.sidebar = $('aside.right-sidebar');
       this.addEventListeners();
+      this.initVue()
     }
 
     Sidebar.prototype.addEventListeners = function() {
@@ -192,6 +195,20 @@
 
     Sidebar.prototype.getBlock = function(name) {
       return this.sidebar.find(".block." + name);
+    };
+
+    Sidebar.prototype.initVue = function() {
+      new Vue({
+        el: this.sidebar.find('.lock-issue-block')[0],
+        name: 'RightSidebarLockIssueBlock',
+        data: { locked: false },
+        methods: {
+          toggleLock(e) {
+            e.stopImmediatePropagation();
+            this.locked = !this.locked;
+          }
+        }
+      });
     };
 
     return Sidebar;
