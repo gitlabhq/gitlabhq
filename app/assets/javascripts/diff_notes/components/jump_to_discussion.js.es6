@@ -64,8 +64,9 @@
           discussionIdsInScope = discussionIdsForElements($(discussionsSelector));
 
           let unresolvedDiscussionCount = 0;
-          for (const discussionId of discussionIdsInScope) {
-            const discussion = discussions[discussionId];
+          
+          for (let i = 0; i < discussionIdsInScope.length; i++) {
+            const discussionId = discussionIdsInScope[i];
             if (discussion && !discussion.isResolved()) {
               unresolvedDiscussionCount++;
             }
@@ -104,7 +105,8 @@
         }
 
         let currentDiscussionFound = false;
-        for (const discussionId of discussionIdsInScope) {
+        for (let i = 0; i < discussionIdsInScope.length; i++) {
+          const discussionId = discussionIdsInScope[i];
           const discussion = discussions[discussionId];
 
           if (!discussion) {
@@ -177,7 +179,7 @@
 
         // If the next discussion is closed, toggle it open.
         if ($target.find(".js-toggle-content").attr('style') == "display: none;") {
-          $target.find('i').toggleClass('fa fa-chevron-down').toggleClass('fa fa-chevron-up');
+          $target.find('.js-toggle-button i').toggleClass('fa fa-chevron-down').toggleClass('fa fa-chevron-up');
           $target.find(".js-toggle-content").toggle();
         }
       }
