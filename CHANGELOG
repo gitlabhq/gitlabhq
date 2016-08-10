@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
   - Revert the "Defend against 'Host' header injection" change in the source NGINX templates. !5706
+  - Cache project count for 5 minutes to reduce DB load. !5746 & !5754
 
 v 8.10.4
   - Don't close referenced upstream issues from a forked project.
