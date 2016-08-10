@@ -24,7 +24,7 @@ describe 'projects/merge_requests/edit.html.haml' do
       .and_return(User.find(closed_merge_request.author_id))
   end
 
-  context 'when closed merge request without fork' do
+  context 'when a merge request without fork' do
     it "shows editable fields" do
       unlink_project.execute
       closed_merge_request.reload
@@ -39,7 +39,7 @@ describe 'projects/merge_requests/edit.html.haml' do
     end
   end
 
-  context 'when closed merge request with fork' do
+  context 'when a merge request with an existing source project is closed' do
     it "shows editable fields" do
       render
 

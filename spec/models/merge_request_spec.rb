@@ -969,7 +969,7 @@ describe MergeRequest, models: true do
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
-    context "when fork exists" do
+    context "when the fork exists" do
       let(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
@@ -979,13 +979,13 @@ describe MergeRequest, models: true do
       it { expect(merge_request.fork_missing?).to be_falsey }
     end
 
-    context "when source project is the target project" do
+    context "when the source project is the same as the target project" do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
       it { expect(merge_request.fork_missing?).to be_falsey }
     end
 
-    context "when fork does not exist" do
+    context "when the fork does not exist" do
       let(:merge_request) do
         create(:merge_request,
           source_project: fork_project,
@@ -1007,18 +1007,18 @@ describe MergeRequest, models: true do
     let(:user)         { create(:user) }
     let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
-    context "when merge request is closed" do
+    context "when the merge request is closed" do
       let(:closed_merge_request) do
         create(:closed_merge_request,
           source_project: fork_project,
           target_project: project)
       end
 
-      it "returns false if fork exist" do
+      it "returns false if the fork exist" do
         expect(closed_merge_request.closed_without_fork?).to be_falsey
       end
 
-      it "returns true if fork doesn't exist" do
+      it "returns true if the fork does not exist" do
         unlink_project.execute
         closed_merge_request.reload
 
@@ -1026,7 +1026,7 @@ describe MergeRequest, models: true do
       end
     end
 
-    context "when merge request is open" do
+    context "when the merge request is open" do
       let(:open_merge_request) do
         create(:merge_request,
           source_project: fork_project,

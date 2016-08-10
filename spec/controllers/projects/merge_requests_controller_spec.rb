@@ -171,7 +171,7 @@ describe Projects::MergeRequestsController do
         expect(merge_request.reload.closed?).to be_truthy
       end
 
-      it 'allow to edit closed MR' do
+      it 'allows editing of a closed merge request' do
         merge_request.close!
 
         put :update,
@@ -186,7 +186,7 @@ describe Projects::MergeRequestsController do
         expect(merge_request.reload.title).to eq 'New title'
       end
 
-      it 'does not allow to update target branch closed MR' do
+      it 'does not allow to update target branch closed merge request' do
         merge_request.close!
 
         put :update,
