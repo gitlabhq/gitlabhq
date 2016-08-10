@@ -54,6 +54,7 @@
 
         setTimeout(() => {
           expect(list.issues.length).toBe(1);
+          expect(list.issues[0].id).toBe(1);
           done();
         }, 0);
       });
@@ -135,10 +136,10 @@
 
         expect(BoardsStore.state.lists.length).toBe(2);
 
-        setTimeout(() => {
-          const list = BoardsStore.findList('id', 1);
-          const listTwo = BoardsStore.findList('id', 2);
+        const list = BoardsStore.findList('id', 1),
+              listTwo = BoardsStore.findList('id', 2);
 
+        setTimeout(() => {
           expect(list.issues.length).toBe(1);
           expect(listTwo.issues.length).toBe(1);
 
@@ -148,7 +149,7 @@
           expect(listTwo.issues.length).toBe(1);
 
           done();
-        });
+        }, 0);
       });
     });
   });

@@ -19,7 +19,7 @@ describe('Issue model', () => {
     gl.boardService = new BoardService('/test/issue-boards/board');
     BoardsStore.create();
 
-    issue = new Issue({
+    issue = new ListIssue({
       title: 'Testing',
       iid: 1,
       confidential: false,

@@ -1,4 +1,4 @@
-class Label {
+class ListLabel {
   constructor (obj) {
     this.id = obj.id;
     this.title = obj.title;

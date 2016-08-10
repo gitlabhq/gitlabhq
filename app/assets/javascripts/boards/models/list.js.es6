@@ -10,7 +10,7 @@ class List {
     this.issues = [];
 
     if (obj.label) {
-      this.label = new Label(obj.label);
+      this.label = new ListLabel(obj.label);
     }
 
     if (this.type !== 'blank' && this.id) {
@@ -85,8 +85,8 @@ class List {
   }
 
   createIssues (data) {
-    _.each(data, (issue) => {
-      this.issues.push(new Issue(issue));
+    _.each(data, (issueObj) => {
+      this.issues.push(new ListIssue(issueObj));
     });
   }
 

@@ -1,17 +1,17 @@
-class Issue {
+class ListIssue {
   constructor (obj) {
     this.id = obj.iid;
     this.title = obj.title;
     this.confidential = obj.confidential;
 
     if (obj.assignee) {
-      this.assignee = new User(obj.assignee);
+      this.assignee = new ListUser(obj.assignee);
     }
 
     this.labels = [];
 
     _.each(obj.labels, (label) => {
-      this.labels.push(new Label(label));
+      this.labels.push(new ListLabel(label));
     });
 
     this.priority = _.reduce(this.labels, (max, label) => {
@@ -24,7 +24,7 @@ class Issue {
       const hasLabel = this.findLabel(label);
 
       if (!hasLabel) {
-        this.labels.push(new Label(label));
+        this.labels.push(new ListLabel(label));
       }
     }
   }
