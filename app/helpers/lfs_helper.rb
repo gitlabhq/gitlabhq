@@ -1,5 +1,5 @@
 module LfsHelper
-  def lfs_enabled!
+  def require_lfs_enabled!
     return if Gitlab.config.lfs.enabled
 
     render(

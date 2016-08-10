@@ -1,7 +1,7 @@
 class Projects::LfsStorageController < Projects::GitHttpClientController
   include LfsHelper
 
-  before_action :lfs_enabled!
+  before_action :require_lfs_enabled!
   before_action :lfs_check_access!
 
   def download
