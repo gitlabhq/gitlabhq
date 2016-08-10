@@ -22,129 +22,109 @@ feature 'Diff notes', js: true, feature: true do
       end
 
       context 'with an old line on the left and no line on the right' do
-        let(:line_holder) { find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..') }
-
         it 'should allow commenting on the left side' do
-          should_allow_commenting line_holder, 'left'
+          should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'left')
         end
 
         it 'should not allow commenting on the right side' do
-          should_not_allow_commenting line_holder, 'right'
+          should_not_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_23_22"]').find(:xpath, '..'), 'right')
         end
       end
 
       context 'with no line on the left and a new line on the right' do
-        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..') }
-
         it 'should not allow commenting on the left side' do
-          should_not_allow_commenting line_holder, 'left'
+          should_not_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'left')
         end
 
         it 'should allow commenting on the right side' do
-          should_allow_commenting line_holder, 'right'
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_15"]').find(:xpath, '..'), 'right')
         end
       end
 
       context 'with an old line on the left and a new line on the right' do
-        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..') }
-
         it 'should allow commenting on the left side' do
-          should_allow_commenting line_holder, 'left'
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'left')
         end
 
         it 'should allow commenting on the right side' do
-          should_allow_commenting line_holder, 'right'
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_9_9"]').find(:xpath, '..'), 'right')
         end
       end
 
       context 'with an unchanged line on the left and an unchanged line on the right' do
-        let(:line_holder) { first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..') }
-
         it 'should allow commenting on the left side' do
-          should_allow_commenting line_holder, 'left'
+          should_allow_commenting(first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..'), 'left')
         end
 
         it 'should allow commenting on the right side' do
-          should_allow_commenting line_holder, 'right'
+          should_allow_commenting(first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..'), 'right')
         end
       end
 
       context 'with a match line' do
-        let(:line_holder) { first('.match').find(:xpath, '..') }
-
         it 'should not allow commenting on the left side' do
-          should_not_allow_commenting line_holder, 'left'
+          should_not_allow_commenting(first('.match').find(:xpath, '..'), 'left')
         end
 
         it 'should not allow commenting on the right side' do
-          should_not_allow_commenting line_holder, 'right'
+          should_not_allow_commenting(first('.match').find(:xpath, '..'), 'right')
         end
       end
     end
 
     context 'when hovering over the inline view diff file' do
-      let(:comment_button_class) { '.add-diff-note' }
-
-      before(:each) do
+      before do
         visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
         click_link 'Inline'
       end
 
       context 'with a new line' do
-        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]') }
-
         it 'should allow commenting' do
-          should_allow_commenting line_holder
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
         end
       end
 
       context 'with an old line' do
-        let(:line_holder) { find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]') }
-
         it 'should allow commenting' do
-          should_allow_commenting line_holder
+          should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
         end
       end
 
       context 'with an unchanged line' do
-        let(:line_holder) { find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]') }
-
         it 'should allow commenting' do
-          should_allow_commenting line_holder
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
         end
       end
 
       context 'with a match line' do
-        let(:line_holder) { first('.match') }
-
         it 'should not allow commenting' do
-          should_not_allow_commenting line_holder
+          should_not_allow_commenting(first('.match'))
         end
       end
     end
 
     def should_allow_commenting(line_holder, diff_side = nil)
-      line = get_line_components line_holder, diff_side
+      line = get_line_components(line_holder, diff_side)
       line[:content].hover
       expect(line[:num]).to have_css comment_button_class
 
-      comment_on_line line_holder, line
+      comment_on_line(line_holder, line)
       wait_for_ajax
 
-      assert_comment_persistence line_holder
+      assert_comment_persistence(line_holder)
     end
 
     def should_not_allow_commenting(line_holder, diff_side = nil)
-      line = get_line_components line_holder, diff_side
+      line = get_line_components(line_holder, diff_side)
       line[:content].hover
       expect(line[:num]).not_to have_css comment_button_class
     end
 
     def get_line_components(line_holder, diff_side = nil)
       if diff_side.nil?
-        get_inline_line_components line_holder
+        get_inline_line_components(line_holder)
       else
-        get_parallel_line_components line_holder, diff_side
+        get_parallel_line_components(line_holder, diff_side)
       end
     end
 
@@ -162,7 +142,7 @@ feature 'Diff notes', js: true, feature: true do
       expect(line_holder).to have_xpath notes_holder_input_xpath
 
       notes_holder_input = line_holder.find(:xpath, notes_holder_input_xpath)
-      expect(notes_holder_input[:class].include? notes_holder_input_class).to be true
+      expect(notes_holder_input[:class]).to include(notes_holder_input_class)
 
       notes_holder_input.fill_in 'note[note]', with: test_note_comment
       click_button 'Comment'
@@ -172,7 +152,7 @@ feature 'Diff notes', js: true, feature: true do
       expect(line_holder).to have_xpath notes_holder_input_xpath
 
       notes_holder_saved = line_holder.find(:xpath, notes_holder_input_xpath)
-      expect(notes_holder_saved[:class].include? notes_holder_input_class).to be false
+      expect(notes_holder_saved[:class]).not_to include(notes_holder_input_class)
       expect(notes_holder_saved).to have_content test_note_comment
     end
   end
