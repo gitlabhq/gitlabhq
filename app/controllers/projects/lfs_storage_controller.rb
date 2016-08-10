@@ -68,22 +68,13 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
   end
 
   def store_file(oid, size, tmp_file)
+    # Define tmp_file_path early because we use it in "ensure"
     tmp_file_path = File.join("#{Gitlab.config.lfs.storage_path}/tmp/upload", tmp_file)
 
     object = LfsObject.find_or_create_by(oid: oid, size: size)
-    if object.file.exists?
-      success = true
-    else
-      success = move_tmp_file_to_storage(object, tmp_file_path)
-    end
-
-    if success
-      success = link_to_project(object)
-    end
-
-    success
+    file_exists = object.file.exists? || move_tmp_file_to_storage(object, tmp_file_path)
+    file_exists && link_to_project(object)
   ensure
-    # Ensure that the tmp file is removed
     FileUtils.rm_f(tmp_file_path)
   end
 
