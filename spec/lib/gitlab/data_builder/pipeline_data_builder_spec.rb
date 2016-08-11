@@ -3,11 +3,15 @@ require 'spec_helper'
 describe Gitlab::DataBuilder::PipelineDataBuilder do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
+
   let(:pipeline) do
     create(:ci_pipeline,
-           project: project, status: 'success',
-           sha: project.commit.sha, ref: project.default_branch)
+           project: project,
+           status: 'success',
+           sha: project.commit.sha,
+           ref: project.default_branch)
   end
+
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe '.build' do

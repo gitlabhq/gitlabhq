@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -17,6 +17,8 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+
+  it { is_expected.to delegate_method(:stages).to(:statuses) }
 
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
@@ -261,43 +263,40 @@ describe Ci::Pipeline, models: true do
     end
 
     before do
-      WebMock.stub_request(:post, hook.url)
-      pipeline.touch
       ProjectWebHookWorker.drain
     end
 
     context 'with pipeline hooks enabled' do
       let(:enabled) { true }
 
-      it 'executes pipeline_hook after touched' do
-        expect(WebMock).to have_requested(:post, hook.url).once
-      end
-
       context 'with multiple builds' do
-        let(:build_a) { create_build('a') }
-        let(:build_b) { create_build('b') }
+        let!(:build_a) { create_build('a') }
+        let!(:build_b) { create_build('b') }
 
-        before do
+        it 'fires exactly 3 hooks' do
+          stub_request('pending')
+          build_a.queue
+          build_b.queue
+
+          stub_request('running')
           build_a.run
           build_b.run
+
+          stub_request('success')
           build_a.success
           build_b.success
-        end
-
-        it 'fires 3 hooks' do
-          %w(pending running success).each do |status|
-            expect(WebMock).to requested(status)
-          end
         end
 
         def create_build(name)
           create(:ci_build, :pending, pipeline: pipeline, name: name)
         end
 
-        def requested(status)
-          have_requested(:post, hook.url).with do |req|
-            JSON.parse(req.body)['object_attributes']['status'] == status
-          end.once
+        def stub_request(status)
+          WebMock.stub_request(:post, hook.url).with do |req|
+            json_body = JSON.parse(req.body)
+            json_body['object_attributes']['status'] == status &&
+              json_body['builds'].length == 2
+          end
         end
       end
     end
