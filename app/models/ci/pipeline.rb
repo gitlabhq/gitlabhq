@@ -185,6 +185,7 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
+
       reload_status!
     end
 
@@ -195,7 +196,7 @@ module Ci
     end
 
     def reload_status!
-      statuses.reload
+      reload
       self.status =
         if yaml_errors.blank?
           statuses.latest.status || 'skipped'

@@ -254,4 +254,49 @@ describe Ci::Pipeline, models: true do
       end
     end
   end
+
+  describe '#status' do
+    let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
+
+    subject { pipeline.reload.status }
+
+    context 'on queuing' do
+      before { build.queue }
+
+      it { is_expected.to eq('pending') }
+    end
+
+    context 'on run' do
+      before do
+        build.queue
+        build.run
+      end
+
+      it { is_expected.to eq('running') }
+    end
+
+    context 'on drop' do
+      before do
+        build.drop
+      end
+
+      it { is_expected.to eq('failed') }
+    end
+
+    context 'on success' do
+      before do
+        build.success
+      end
+
+      it { is_expected.to eq('success') }
+    end
+
+    context 'on cancel' do
+      before do
+        build.cancel
+      end
+
+      it { is_expected.to eq('canceled') }
+    end
+  end
 end

@@ -76,6 +76,12 @@ class CommitStatus < ActiveRecord::Base
 
       commit_status.pipeline.process! if commit_status.pipeline
     end
+
+    around_transition any => [:pending, :running] do |commit_status, block|
+      block.call
+
+      commit_status.pipeline.reload_status! if commit_status.pipeline
+    end
   end
 
   delegate :sha, :short_sha, to: :pipeline
