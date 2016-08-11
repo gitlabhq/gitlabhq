@@ -95,8 +95,8 @@ window.MergeConflictDataProvider = class MergeConflictDataProvider {
 
       for (let i = 0, len = linesObj.left.length; i < len; i++) {
         file.parallelLines.push([
-          linesObj.left[i],
-          linesObj.right[i]
+          linesObj.right[i],
+          linesObj.left[i]
         ]);
       }
 
