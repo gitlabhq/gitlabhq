@@ -53,7 +53,13 @@ describe PostReceive do
       subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
 
       context "creates a Ci::Pipeline for every change" do
-        before { stub_ci_pipeline_to_return_yaml_file }
+        before do
+          allow_any_instance_of(Ci::CreatePipelineService).to receive(:commit) do
+            OpenStruct.new(id: '123456')
+          end
+          allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
+          stub_ci_pipeline_to_return_yaml_file
+        end
 
         it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
       end

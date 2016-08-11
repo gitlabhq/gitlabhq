@@ -6,112 +6,102 @@ describe Ci::API::API do
   let(:runner) { FactoryGirl.create(:ci_runner, tag_list: ["mysql", "ruby"]) }
   let(:project) { FactoryGirl.create(:empty_project) }
 
-  before do
-    stub_ci_pipeline_to_return_yaml_file
-  end
-
   describe "Builds API for runners" do
-    let(:shared_runner) { FactoryGirl.create(:ci_runner, token: "SharedRunner") }
-    let(:shared_project) { FactoryGirl.create(:empty_project, name: "SharedProject") }
+    let(:pipeline) { create(:ci_pipeline_without_jobs, project: project, ref: 'master') }
 
     before do
-      FactoryGirl.create :ci_runner_project, project: project, runner: runner
+      project.runners << runner
     end
 
     describe "POST /builds/register" do
-      it "starts a build" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-        build = pipeline.builds.first
+      let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+      it "starts a build" do
+        register_builds info: { platform: :darwin }
 
         expect(response).to have_http_status(201)
         expect(json_response['sha']).to eq(build.sha)
         expect(runner.reload.platform).to eq("darwin")
-      end
-
-      it "returns 404 error if no pending build found" do
-        post ci_api("/builds/register"), token: runner.token
-
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns 404 error if no builds for specific runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: shared_project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
-
-        post ci_api("/builds/register"), token: runner.token
-
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns 404 error if no builds for shared runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
-
-        post ci_api("/builds/register"), token: shared_runner.token
-
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns options" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
-
-        expect(response).to have_http_status(201)
         expect(json_response["options"]).to eq({ "image" => "ruby:2.1", "services" => ["postgres"] })
-      end
-
-      it "returns variables" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
-
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
-
-        expect(response).to have_http_status(201)
         expect(json_response["variables"]).to include(
           { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
           { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
-          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false }
+          { "key" => "DB_NAME", "value" => "postgres", "public" => true }
         )
       end
 
-      it "returns variables for triggers" do
-        trigger = FactoryGirl.create(:ci_trigger, project: project)
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
+      context 'when builds are finished' do
+        before do
+          build.success
+        end
 
-        trigger_request = FactoryGirl.create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger)
-        pipeline.create_builds(nil, trigger_request)
-        project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
+        it "returns 404 error if no builds for specific runner" do
+          register_builds
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
-
-        expect(response).to have_http_status(201)
-        expect(json_response["variables"]).to include(
-          { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
-          { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
-          { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
-          { "key" => "DB_NAME", "value" => "postgres", "public" => true },
-          { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
-          { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false }
-        )
+          expect(response).to have_http_status(404)
+        end
       end
 
-      it "returns dependent builds" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil, nil)
-        pipeline.builds.where(stage: 'test').each(&:success)
+      context 'for other project with builds' do
+        before do
+          build.success
+          create(:ci_build, :pending)
+        end
 
-        post ci_api("/builds/register"), token: runner.token, info: { platform: :darwin }
+        it "returns 404 error if no builds for shared runner" do
+          register_builds
 
-        expect(response).to have_http_status(201)
-        expect(json_response["depends_on_builds"].count).to eq(2)
-        expect(json_response["depends_on_builds"][0]["name"]).to eq("rspec")
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'for shared runner' do
+        let(:shared_runner) { create(:ci_runner, token: "SharedRunner") }
+
+        it "should return 404 error if no builds for shared runner" do
+          register_builds shared_runner.token
+
+          expect(response).to have_http_status(404)
+        end
+      end
+
+      context 'for triggered build' do
+        before do
+          trigger = create(:ci_trigger, project: project)
+          create(:ci_trigger_request_with_variables, pipeline: pipeline, builds: [build], trigger: trigger)
+          project.variables << Ci::Variable.new(key: "SECRET_KEY", value: "secret_value")
+        end
+
+        it "returns variables for triggers" do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["variables"]).to include(
+            { "key" => "CI_BUILD_NAME", "value" => "spinach", "public" => true },
+            { "key" => "CI_BUILD_STAGE", "value" => "test", "public" => true },
+            { "key" => "CI_BUILD_TRIGGERED", "value" => "true", "public" => true },
+            { "key" => "DB_NAME", "value" => "postgres", "public" => true },
+            { "key" => "SECRET_KEY", "value" => "secret_value", "public" => false },
+            { "key" => "TRIGGER_KEY_1", "value" => "TRIGGER_VALUE_1", "public" => false },
+          )
+        end
+      end
+
+      context 'with multiple builds' do
+        before do
+          build.success
+        end
+
+        let!(:test_build) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
+
+        it "returns dependent builds" do
+          register_builds info: { platform: :darwin }
+
+          expect(response).to have_http_status(201)
+          expect(json_response["id"]).to eq(test_build.id)
+          expect(json_response["depends_on_builds"].count).to eq(1)
+          expect(json_response["depends_on_builds"][0]).to include('id' => build.id, 'name' => 'spinach')
+        end
       end
 
       %w(name version revision platform architecture).each do |param|
@@ -121,8 +111,9 @@ describe Ci::API::API do
           subject { runner.read_attribute(param.to_sym) }
 
           it do
-            post ci_api("/builds/register"), token: runner.token, info: { param => value }
-            expect(response).to have_http_status(404)
+            register_builds info: { param => value }
+
+            expect(response).to have_http_status(201)
             runner.reload
             is_expected.to eq(value)
           end
@@ -131,8 +122,7 @@ describe Ci::API::API do
 
       context 'when build has no tags' do
         before do
-          pipeline = create(:ci_pipeline, project: project)
-          create(:ci_build, pipeline: pipeline, tags: [])
+          build.update(tags: [])
         end
 
         context 'when runner is allowed to pick untagged builds' do
@@ -154,17 +144,15 @@ describe Ci::API::API do
             expect(response).to have_http_status 404
           end
         end
+      end
 
-        def register_builds
-          post ci_api("/builds/register"), token: runner.token,
-                                           info: { platform: :darwin }
-        end
+      def register_builds(token = runner.token, **params)
+        post ci_api("/builds/register"), params.merge(token: token)
       end
     end
 
     describe "PUT /builds/:id" do
-      let(:pipeline) {create(:ci_pipeline, project: project)}
-      let(:build) { create(:ci_build, :trace, pipeline: pipeline, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, :trace, pipeline: pipeline, runner_id: runner.id) }
 
       before do
         build.run!
@@ -189,7 +177,7 @@ describe Ci::API::API do
     end
 
     describe 'PATCH /builds/:id/trace.txt' do
-      let(:build) { create(:ci_build, :trace, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, :trace, runner_id: runner.id) }
       let(:headers) { { Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token, 'Content-Type' => 'text/plain' } }
       let(:headers_with_range) { headers.merge({ 'Content-Range' => '11-20' }) }
 
@@ -237,8 +225,7 @@ describe Ci::API::API do
     context "Artifacts" do
       let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
       let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
-      let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline, runner_id: runner.id) }
+      let(:build) { create(:ci_build, :pending, pipeline: pipeline, runner_id: runner.id) }
       let(:authorize_url) { ci_api("/builds/#{build.id}/artifacts/authorize") }
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
