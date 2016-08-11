@@ -52,8 +52,22 @@
       this.initTooltips();
     }
 
+    // Add extra padding for the last month label if it is also the last column
+    Calendar.prototype.getExtraWidthPadding = function(group) {
+      var extraWidthPadding = 0;
+      var lastColMonth = this.timestampsTmp[group - 1][0].date.getMonth();
+      var secondLastColMonth = this.timestampsTmp[group - 2][0].date.getMonth();
+
+      if (lastColMonth != secondLastColMonth) {
+        extraWidthPadding = 3;
+      }
+
+      return extraWidthPadding;
+    }
+
     Calendar.prototype.renderSvg = function(group) {
-      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', (group + 1) * this.daySizeWithSpace).attr('height', 167).attr('class', 'contrib-calendar');
+      var width = (group + 1) * this.daySizeWithSpace + this.getExtraWidthPadding(group);
+      return this.svg = d3.select('.js-contrib-calendar').append('svg').attr('width', width).attr('height', 167).attr('class', 'contrib-calendar');
     };
 
     Calendar.prototype.renderDays = function() {
