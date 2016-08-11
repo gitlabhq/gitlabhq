@@ -250,8 +250,11 @@
               } else if (label.title) {
                 BoardsStore.state.filters['label_name'].push(label.title);
               } else {
-                var labelIndex = BoardsStore.state.filters['label_name'].indexOf(label.text());
-                BoardsStore.state.filters['label_name'].splice(labelIndex, 1);
+                var filters = BoardsStore.state.filters['label_name'];
+                filters = filters.filter(function (label) {
+                  return label !== $el.text().trim();
+                });
+                BoardsStore.state.filters['label_name'] = filters;
               }
 
               BoardsStore.updateFiltersUrl();
