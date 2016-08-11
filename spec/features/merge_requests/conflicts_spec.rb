@@ -61,7 +61,7 @@ feature 'Merge request conflict resolution', js: true, feature: true do
         visit current_url + '/conflicts'
         wait_for_ajax
 
-        expect(find('#conflicts')).to have_content('Unable to resolve conflicts')
+        expect(find('#conflicts')).to have_content('Please try to resolve them locally.')
       end
     end
   end
