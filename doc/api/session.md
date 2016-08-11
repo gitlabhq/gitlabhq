@@ -21,7 +21,7 @@ POST /session
 | `password` | string  | yes     | The password of the user |
 
 ```bash
-curl -X POST "https://gitlab.example.com/api/v3/session?login=john_smith&password=strongpassw0rd"
+curl --request POST "https://gitlab.example.com/api/v3/session?login=john_smith&password=strongpassw0rd"
 ```
 
 Example response:

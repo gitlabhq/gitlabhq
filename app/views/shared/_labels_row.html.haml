@@ -1,9 +1,5 @@
 - labels.each do |label|
   %span.label-row.btn-group{ role: "group", aria: { label: label.name }, style: "color: #{text_color_for_bg(label.color)}" }
-    = link_to label.name, label_filter_path(@project, label, type: controller.controller_name),
-      class: "btn btn-transparent has-tooltip",
-      style: "background-color: #{label.color};",
-      title: escape_once(label.description),
-      data: { container: "body" }
+    = link_to_label(label, css_class: 'btn btn-transparent')
     %button.btn.btn-transparent.label-remove.js-label-filter-remove{ type: "button", style: "background-color: #{label.color};", data: { label: label.title } }
       = icon("times")

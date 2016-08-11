@@ -23,13 +23,13 @@ describe Issues::CloseService, services: true do
       it { expect(@issue).to be_valid }
       it { expect(@issue).to be_closed }
 
-      it 'should send email to user2 about assign of new issue' do
+      it 'sends email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(issue.title)
       end
 
-      it 'should create system note about issue reassign' do
+      it 'creates system note about issue reassign' do
         note = @issue.notes.last
         expect(note.note).to include "Status changed to closed"
       end

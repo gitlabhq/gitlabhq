@@ -1,6 +1,6 @@
 # Health Check
 
->**Note:** This feature was [introduced][ce-3888] in GitLab 8.8.
+> [Introduced][ce-3888] in GitLab 8.8.
 
 GitLab provides a health check endpoint for uptime monitoring on the `health_check` web
 endpoint. The health check reports on the overall system status based on the status of
@@ -24,7 +24,7 @@ https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN
 or as an HTTP header:
 
 ```bash
-curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
+curl --header "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
 ```
 
 ## Using the Endpoint
@@ -45,7 +45,7 @@ You can also ask for the status of specific services:
 For example, the JSON output of the following health check:
 
 ```bash
-curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
+curl --header "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
 ```
 
 would be like:

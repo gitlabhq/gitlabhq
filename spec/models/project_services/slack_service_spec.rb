@@ -95,31 +95,31 @@ describe SlackService, models: true do
       @wiki_page_sample_data = wiki_page_service.hook_data(@wiki_page, 'create')
     end
 
-    it "should call Slack API for push events" do
+    it "calls Slack API for push events" do
       slack.execute(push_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "should call Slack API for issue events" do
+    it "calls Slack API for issue events" do
       slack.execute(@issues_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "should call Slack API for merge requests events" do
+    it "calls Slack API for merge requests events" do
       slack.execute(@merge_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it "should call Slack API for wiki page events" do
+    it "calls Slack API for wiki page events" do
       slack.execute(@wiki_page_sample_data)
 
       expect(WebMock).to have_requested(:post, webhook_url).once
     end
 
-    it 'should use the username as an option for slack when configured' do
+    it 'uses the username as an option for slack when configured' do
       allow(slack).to receive(:username).and_return(username)
       expect(Slack::Notifier).to receive(:new).
        with(webhook_url, username: username).
@@ -130,7 +130,7 @@ describe SlackService, models: true do
       slack.execute(push_sample_data)
     end
 
-    it 'should use the channel as an option when it is configured' do
+    it 'uses the channel as an option when it is configured' do
       allow(slack).to receive(:channel).and_return(channel)
       expect(Slack::Notifier).to receive(:new).
         with(webhook_url, channel: channel).
@@ -237,7 +237,7 @@ describe SlackService, models: true do
                                 note: 'a comment on a commit')
       end
 
-      it "should call Slack API for commit comment events" do
+      it "calls Slack API for commit comment events" do
         data = Gitlab::DataBuilder::NoteDataBuilder.build(commit_note, user)
         slack.execute(data)
 
@@ -251,7 +251,7 @@ describe SlackService, models: true do
                                        note: "merge request note")
       end
 
-      it "should call Slack API for merge request comment events" do
+      it "calls Slack API for merge request comment events" do
         data = Gitlab::DataBuilder::NoteDataBuilder.
           build(merge_request_note, user)
         slack.execute(data)
@@ -265,7 +265,7 @@ describe SlackService, models: true do
         create(:note_on_issue, project: project, note: "issue note")
       end
 
-      it "should call Slack API for issue comment events" do
+      it "calls Slack API for issue comment events" do
         data = Gitlab::DataBuilder::NoteDataBuilder.build(issue_note, user)
         slack.execute(data)
 
@@ -279,7 +279,7 @@ describe SlackService, models: true do
                                          note: "snippet note")
       end
 
-      it "should call Slack API for snippet comment events" do
+      it "calls Slack API for snippet comment events" do
         data = Gitlab::DataBuilder::NoteDataBuilder.build(snippet_note, user)
         slack.execute(data)
 

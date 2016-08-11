@@ -60,7 +60,7 @@ GET https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
 Or you can put the token to the Authorization header:
 
 ```
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
 ```
 
 ## Resource Owner Password Credentials

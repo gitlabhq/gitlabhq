@@ -16,7 +16,7 @@ GET /projects/:id/repository/commits
 | `until` | string | no | Only commits before or in this date will be returned in ISO 8601 format YYYY-MM-DDTHH:MM:SSZ |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits"
 ```
 
 Example response:
@@ -62,7 +62,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master
 ```
 
 Example response:
@@ -106,7 +106,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/diff"
 ```
 
 Example response:
@@ -142,7 +142,7 @@ Parameters:
 | `sha` | string | yes | The commit hash or name of a repository branch or tag |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/commits/master/comments"
 ```
 
 Example response:
@@ -195,7 +195,7 @@ POST /projects/:id/repository/commits/:sha/comments
 | `line_type` | string  | no  | The line type. Takes `new` or `old` as arguments |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -F "note=Nice picture man\!" -F "path=dudeism.md" -F "line=11" -F "line_type=new" https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments
 ```
 
 Example response:
@@ -240,7 +240,7 @@ GET /projects/:id/repository/commits/:sha/statuses
 | `all`     | boolean | no  | Return all statuses, not only the latest ones
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/statuses
 ```
 
 Example response:
@@ -315,7 +315,7 @@ POST /projects/:id/statuses/:sha
 | `description` | string  | no  | The short description of the status
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/17/statuses/18f3e63d05582537db6d183d9d557be09e1f90c8?state=success"
 ```
 
 Example response:

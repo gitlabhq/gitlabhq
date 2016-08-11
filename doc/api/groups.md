@@ -104,7 +104,7 @@ Parameters:
 | `id` | integer/string | yes | The ID or path of a group |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4
 ```
 
 Example response:
@@ -319,7 +319,7 @@ PUT /groups/:id
 | `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"
 
 ```
 

@@ -19,7 +19,7 @@
         = f.label :token, "Secret Token", class: 'label-light'
         = f.text_field :token, class: "form-control", placeholder: ''
         %p.help-block
-          Use this token to validate received payloads
+          Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.
       .form-group
         = f.label :url, "Trigger", class: 'label-light'
         %ul.list-unstyled

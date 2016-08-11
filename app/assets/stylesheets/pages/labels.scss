@@ -182,6 +182,17 @@
   .btn {
     color: inherit;
   }
+
+  a.btn {
+    padding: 0;
+
+    .has-tooltip {
+      top: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      line-height: 1.1;
+    }
+  }
 }
 
 .label-options-toggle {

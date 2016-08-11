@@ -222,7 +222,22 @@ teaspoon:
   stage: test
   <<: *use-db
   script:
+    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
+    - apt-get install --assume-yes nodejs
+    - npm install --global istanbul
     - teaspoon
+  artifacts:
+    name: coverage-javascript
+    expire_in: 31d
+    paths:
+    - coverage-javascript/default/
+
+lint-doc:
+  stage: test
+  image: "phusion/baseimage:latest"
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
 
 bundler:audit:
   stage: test
@@ -252,6 +267,9 @@ coverage:
 
 notify:slack:
   stage: post-test
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure
@@ -266,10 +284,12 @@ pages:
   stage: pages
   dependencies:
     - coverage
+    - teaspoon
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage public/coverage-ruby
+    - mv coverage-javascript/default/ public/coverage-javascript/
   artifacts:
     paths:
       - public

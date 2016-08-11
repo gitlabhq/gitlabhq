@@ -18,7 +18,7 @@ describe API::API, api: true do
     before { get api("/projects/#{project.id}/builds?#{query}", api_user) }
 
     context 'authorized user' do
-      it 'should return project builds' do
+      it 'returns project builds' do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
       end
@@ -84,7 +84,7 @@ describe API::API, api: true do
             get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", api_user)
           end
 
-          it 'should return project builds for specific commit' do
+          it 'returns project builds for specific commit' do
             expect(response).to have_http_status(200)
             expect(json_response).to be_an Array
             expect(json_response.size).to eq 2
@@ -113,7 +113,7 @@ describe API::API, api: true do
           get api("/projects/#{project.id}/repository/commits/#{project.commit.id}/builds", nil)
         end
 
-        it 'should not return project builds' do
+        it 'does not return project builds' do
           expect(response).to have_http_status(401)
           expect(json_response.except('message')).to be_empty
         end
@@ -125,7 +125,7 @@ describe API::API, api: true do
     before { get api("/projects/#{project.id}/builds/#{build.id}", api_user) }
 
     context 'authorized user' do
-      it 'should return specific build data' do
+      it 'returns specific build data' do
         expect(response).to have_http_status(200)
         expect(json_response['name']).to eq('test')
       end
@@ -134,7 +134,7 @@ describe API::API, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not return specific build data' do
+      it 'does not return specific build data' do
         expect(response).to have_http_status(401)
       end
     end
@@ -152,7 +152,7 @@ describe API::API, api: true do
             'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
         end
 
-        it 'should return specific build artifacts' do
+        it 'returns specific build artifacts' do
           expect(response).to have_http_status(200)
           expect(response.headers).to include(download_headers)
         end
@@ -161,13 +161,13 @@ describe API::API, api: true do
       context 'unauthorized user' do
         let(:api_user) { nil }
 
-        it 'should not return specific build artifacts' do
+        it 'does not return specific build artifacts' do
           expect(response).to have_http_status(401)
         end
       end
     end
 
-    it 'should not return build artifacts if not uploaded' do
+    it 'does not return build artifacts if not uploaded' do
       expect(response).to have_http_status(404)
     end
   end
@@ -272,7 +272,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user' do
-      it 'should return specific build trace' do
+      it 'returns specific build trace' do
         expect(response).to have_http_status(200)
         expect(response.body).to eq(build.trace)
       end
@@ -281,7 +281,7 @@ describe API::API, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not return specific build trace' do
+      it 'does not return specific build trace' do
         expect(response).to have_http_status(401)
       end
     end
@@ -292,7 +292,7 @@ describe API::API, api: true do
 
     context 'authorized user' do
       context 'user with :update_build persmission' do
-        it 'should cancel running or pending build' do
+        it 'cancels running or pending build' do
           expect(response).to have_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
         end
@@ -301,7 +301,7 @@ describe API::API, api: true do
       context 'user without :update_build permission' do
         let(:api_user) { reporter.user }
 
-        it 'should not cancel build' do
+        it 'does not cancel build' do
           expect(response).to have_http_status(403)
         end
       end
@@ -310,7 +310,7 @@ describe API::API, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not cancel build' do
+      it 'does not cancel build' do
         expect(response).to have_http_status(401)
       end
     end
@@ -323,7 +323,7 @@ describe API::API, api: true do
 
     context 'authorized user' do
       context 'user with :update_build permission' do
-        it 'should retry non-running build' do
+        it 'retries non-running build' do
           expect(response).to have_http_status(201)
           expect(project.builds.first.status).to eq('canceled')
           expect(json_response['status']).to eq('pending')
@@ -333,7 +333,7 @@ describe API::API, api: true do
       context 'user without :update_build permission' do
         let(:api_user) { reporter.user }
 
-        it 'should not retry build' do
+        it 'does not retry build' do
           expect(response).to have_http_status(403)
         end
       end
@@ -342,7 +342,7 @@ describe API::API, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not retry build' do
+      it 'does not retry build' do
         expect(response).to have_http_status(401)
       end
     end
@@ -356,14 +356,14 @@ describe API::API, api: true do
     context 'build is erasable' do
       let(:build) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
 
-      it 'should erase build content' do
+      it 'erases build content' do
         expect(response.status).to eq 201
         expect(build.trace).to be_empty
         expect(build.artifacts_file.exists?).to be_falsy
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
-      it 'should update build' do
+      it 'updates build' do
         expect(build.reload.erased_at).to be_truthy
         expect(build.reload.erased_by).to eq user
       end
@@ -372,7 +372,7 @@ describe API::API, api: true do
     context 'build is not erasable' do
       let(:build) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
 
-      it 'should respond with forbidden' do
+      it 'responds with forbidden' do
         expect(response.status).to eq 403
       end
     end

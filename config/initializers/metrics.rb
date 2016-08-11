@@ -144,6 +144,10 @@ if Gitlab::Metrics.enabled?
     end
 
     config.instrument_methods(Rinku)
+    config.instrument_instance_methods(Repository)
+
+    config.instrument_methods(Gitlab::Highlight)
+    config.instrument_instance_methods(Gitlab::Highlight)
   end
 
   GC::Profiler.enable

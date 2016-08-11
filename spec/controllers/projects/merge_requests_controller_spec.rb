@@ -36,7 +36,7 @@ describe Projects::MergeRequestsController do
 
   describe "GET show" do
     shared_examples "export merge as" do |format|
-      it "should generally work" do
+      it "does generally work" do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -46,7 +46,7 @@ describe Projects::MergeRequestsController do
         expect(response).to be_success
       end
 
-      it "should generate it" do
+      it "generates it" do
         expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
 
         get(:show,
@@ -56,7 +56,7 @@ describe Projects::MergeRequestsController do
             format: format)
       end
 
-      it "should render it" do
+      it "renders it" do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,
@@ -66,7 +66,7 @@ describe Projects::MergeRequestsController do
         expect(response.body).to eq(merge_request.send(:"to_#{format}").to_s)
       end
 
-      it "should not escape Html" do
+      it "does not escape Html" do
         allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").
           and_return('HTML entities &<>" ')
 
@@ -118,7 +118,7 @@ describe Projects::MergeRequestsController do
 
     context 'when filtering by opened state' do
       context 'with opened merge requests' do
-        it 'should list those merge requests' do
+        it 'lists those merge requests' do
           get_merge_requests
 
           expect(assigns(:merge_requests)).to include(merge_request)
@@ -131,7 +131,7 @@ describe Projects::MergeRequestsController do
           merge_request.reopen!
         end
 
-        it 'should list those merge requests' do
+        it 'lists those merge requests' do
           get_merge_requests
 
           expect(assigns(:merge_requests)).to include(merge_request)
@@ -392,9 +392,9 @@ describe Projects::MergeRequestsController do
             end
 
             it 'only renders the diffs for the path given' do
-              expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-                expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-                meth.call(diffs, diff_refs, project)
+              expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+                expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+                meth.call(diffs)
               end
 
               diff_for_path(id: merge_request.iid, old_path: existing_path, new_path: existing_path)
@@ -455,9 +455,9 @@ describe Projects::MergeRequestsController do
         end
 
         it 'only renders the diffs for the path given' do
-          expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-            expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-            meth.call(diffs, diff_refs, project)
+          expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+            expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+            meth.call(diffs)
           end
 
           diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_branch: 'feature', target_branch: 'master' })
@@ -477,9 +477,9 @@ describe Projects::MergeRequestsController do
           end
 
           it 'only renders the diffs for the path given' do
-            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs, diff_refs, project|
-              expect(diffs.map(&:new_path)).to contain_exactly(existing_path)
-              meth.call(diffs, diff_refs, project)
+            expect(controller).to receive(:render_diff_for_path).and_wrap_original do |meth, diffs|
+              expect(diffs.diff_files.map(&:new_path)).to contain_exactly(existing_path)
+              meth.call(diffs)
             end
 
             diff_for_path(old_path: existing_path, new_path: existing_path, merge_request: { source_project: other_project, source_branch: 'feature', target_branch: 'master' })

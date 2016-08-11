@@ -1,6 +1,8 @@
 class RepositoryArchiveCleanUpService
   LAST_MODIFIED_TIME_IN_MINUTES = 120
 
+  attr_reader :mmin, :path
+
   def initialize(mmin = LAST_MODIFIED_TIME_IN_MINUTES)
     @mmin = mmin
     @path = Gitlab.config.gitlab.repository_downloads_path
@@ -16,8 +18,6 @@ class RepositoryArchiveCleanUpService
   end
 
   private
-
-  attr_reader :mmin, :path
 
   def clean_up_old_archives
     run(%W(find #{path} -not -path #{path} -type f \( -name \*.tar -o -name \*.bz2 -o -name \*.tar.gz -o -name \*.zip \) -maxdepth 2 -mmin +#{mmin} -delete))

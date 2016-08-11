@@ -1,6 +1,6 @@
-.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_file)}
+.diff-file.file-holder{id: "diff-#{index}", data: diff_file_html_data(project, diff_file.file_path, diff_commit.id)}
   .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
-    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{i}"
+    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{index}"
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
@@ -15,6 +15,6 @@
                 from_merge_request_id: @merge_request.id,
                 skip_visible_check: true)
 
-        = view_file_btn(diff_commit.id, diff_file, project)
+        = view_file_btn(diff_commit.id, diff_file.new_path, project)
 
-  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, diff_refs: diff_refs, blob: blob, project: project
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

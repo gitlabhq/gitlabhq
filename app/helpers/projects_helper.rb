@@ -263,6 +263,10 @@ module ProjectsHelper
     filename_path(project, :version)
   end
 
+  def ci_configuration_path(project)
+    filename_path(project, :gitlab_ci_yml)
+  end
+
   def project_wiki_path_with_version(proj, page, version, is_newest)
     url_params = is_newest ? {} : { version_id: version }
     namespace_project_wiki_path(proj.namespace, proj, page, url_params)
