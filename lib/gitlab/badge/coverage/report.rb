@@ -29,6 +29,14 @@ module Gitlab
           @coverage.to_i
         end
 
+        def metadata
+          @metadata ||= Coverage::Metadata.new(self)
+        end
+
+        def template
+          @template ||= Coverage::Template.new(self)
+        end
+
         private
 
         def raw_coverage

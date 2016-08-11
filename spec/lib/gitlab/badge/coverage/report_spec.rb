@@ -14,6 +14,18 @@ describe Gitlab::Badge::Coverage::Report do
     end
   end
 
+  describe '#metadata' do
+    it 'returns correct metadata' do
+      expect(badge.metadata.image_url).to include 'coverage.svg'
+    end
+  end
+
+  describe '#template' do
+    it 'returns correct template' do
+      expect(badge.template.key_text).to eq 'coverage'
+    end
+  end
+
   shared_examples 'unknown coverage report' do
     context 'particular job specified' do
       let(:job_name) { '' }
