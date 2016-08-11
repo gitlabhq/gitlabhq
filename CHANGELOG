@@ -90,6 +90,9 @@ v 8.11.0 (unreleased)
   - Fix importing GitLab projects with an invalid MR source project
   - Sort folders with submodules in Files view !5521
 
+v 8.10.6 (unreleased)
+  - Fix import/export configuration missing some included attributes
+
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
   - Revert the "Defend against 'Host' header injection" change in the source NGINX templates. !5706

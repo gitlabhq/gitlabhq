@@ -7,6 +7,8 @@ project_tree:
     - :merge_request_test
   - commit_statuses:
     - :commit
+  - project_members:
+    - :user
 
 included_attributes:
   project:
@@ -14,6 +16,8 @@ included_attributes:
     - :path
   merge_requests:
     - :id
+  user:
+    - :email
 
 excluded_attributes:
   merge_requests:
