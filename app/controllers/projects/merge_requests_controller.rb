@@ -165,8 +165,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     begin
       MergeRequests::ResolveService.new(@merge_request.source_project, current_user, params).execute(@merge_request)
 
-      flash[:conflicts_message] = 'Merge conflicts resolved.'
-      flash.keep
+      flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
 
       render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Conflict::File::MissingResolution => e
