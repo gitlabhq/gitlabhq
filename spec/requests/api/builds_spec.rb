@@ -238,10 +238,6 @@ describe API::API, api: true do
         it { expect(response.headers).to include(download_headers) }
       end
 
-      before do
-        pipeline.reload_status!
-      end
-
       context 'with regular branch' do
         before do
           pipeline.update(ref: 'master',

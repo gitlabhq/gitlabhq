@@ -34,7 +34,6 @@ describe "Pipelines" do
       let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -53,7 +52,6 @@ describe "Pipelines" do
       let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -87,7 +85,6 @@ describe "Pipelines" do
         let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
@@ -104,7 +101,6 @@ describe "Pipelines" do
         let!(:failed) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 

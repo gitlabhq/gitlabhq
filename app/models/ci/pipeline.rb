@@ -19,6 +19,37 @@ module Ci
 
     after_save :keep_around_commits
 
+    state_machine :status, initial: :created do
+      event :skip do
+        transition any => :skipped
+      end
+
+      event :drop do
+        transition any => :failed
+      end
+
+      event :update_status do
+        transition any => :pending, if: ->(pipeline) { pipeline.can_transition_to?('pending') }
+        transition any => :running, if: ->(pipeline) { pipeline.can_transition_to?('running') }
+        transition any => :failed, if: ->(pipeline) { pipeline.can_transition_to?('failed') }
+        transition any => :success, if: ->(pipeline) { pipeline.can_transition_to?('success') }
+        transition any => :canceled, if: ->(pipeline) { pipeline.can_transition_to?('canceled') }
+        transition any => :skipped, if: ->(pipeline) { pipeline.can_transition_to?('skipped') }
+      end
+
+      after_transition [:created, :pending] => :running do |pipeline|
+        pipeline.update(started_at: Time.now)
+      end
+
+      after_transition any => [:success, :failed, :canceled] do |pipeline|
+        pipeline.update(finished_at: Time.now)
+      end
+
+      after_transition do |pipeline|
+        pipeline.update_duration
+      end
+    end
+
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest_successful_for, ->(ref = default_branch) do
       where(ref: ref).success.order(id: :desc).limit(1)
@@ -89,16 +120,12 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
-
-      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
-
-      reload_status!
     end
 
     def latest?
@@ -185,8 +212,6 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
-
-      reload_status!
     end
 
     def predefined_variables
@@ -195,21 +220,21 @@ module Ci
       ]
     end
 
-    def reload_status!
-      reload
-      self.status =
-        if yaml_errors.blank?
-          statuses.latest.status || 'skipped'
-        else
-          'failed'
-        end
-      self.started_at = statuses.started_at
-      self.finished_at = statuses.finished_at
-      self.duration = statuses.latest.duration
-      save
+    def can_transition_to?(expected_status)
+      latest_status == expected_status
+    end
+
+    def update_duration
+      update(duration: statuses.latest.duration)
     end
 
     private
+
+    def latest_status
+      return 'failed' unless yaml_errors.blank?
+
+      statuses.latest.status || 'skipped'
+    end
 
     def keep_around_commits
       return unless project
