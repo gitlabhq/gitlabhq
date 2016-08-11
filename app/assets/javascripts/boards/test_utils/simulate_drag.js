@@ -85,14 +85,10 @@
 		simulateEvent(fromEl, 'mousedown', {button: 0});
 		options.ontap && options.ontap();
 
-		requestAnimationFrame(function () {
-			options.ondragstart && options.ondragstart();
-		});
-
-		requestAnimationFrame(function loop() {
+		var dragInterval = setInterval(function loop() {
 			var progress = (new Date().getTime() - startTime) / duration;
 			var x = (fromRect.cx + (toRect.cx - fromRect.cx) * progress) - scrollable.scrollLeft;
-			var y = fromRect.cy + (toRect.cy - fromRect.cy) * progress;
+			var y = (fromRect.cy + (toRect.cy - fromRect.cy) * progress)  - scrollable.scrollTop;
 			var overEl = fromEl.ownerDocument.elementFromPoint(x, y);
 
 			simulateEvent(overEl, 'mousemove', {
@@ -100,13 +96,12 @@
 				clientY: y
 			});
 
-			if (progress < 1) {
-				requestAnimationFrame(loop);
-			} else {
+			if (progress >= 1) {
 				options.ondragend && options.ondragend();
 				simulateEvent(toEl, 'mouseup');
+				clearInterval(dragInterval);
 			}
-		});
+		}, 100);
 
 		return {
 			target: fromEl,
