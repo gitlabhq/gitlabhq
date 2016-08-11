@@ -170,6 +170,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.integer  "artifacts_size"
     t.string   "when"
     t.text     "yaml_variables"
+    t.datetime "queued_at"
   end
 
   add_index "ci_builds", ["commit_id", "stage_idx", "created_at"], name: "index_ci_builds_on_commit_id_and_stage_idx_and_created_at", using: :btree

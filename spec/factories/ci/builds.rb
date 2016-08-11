@@ -7,6 +7,7 @@ FactoryGirl.define do
     stage_idx 0
     ref 'master'
     tag false
+    status 'pending'
     created_at 'Di 29. Okt 09:50:00 CET 2013'
     started_at 'Di 29. Okt 09:51:28 CET 2013'
     finished_at 'Di 29. Okt 09:53:28 CET 2013'
@@ -43,6 +44,10 @@ FactoryGirl.define do
 
     trait :pending do
       status 'pending'
+    end
+
+    trait :created do
+      status 'created'
     end
 
     trait :manual do

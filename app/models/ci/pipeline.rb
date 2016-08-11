@@ -13,11 +13,10 @@ module Ci
     has_many :trigger_requests, dependent: :destroy, class_name: 'Ci::TriggerRequest', foreign_key: :commit_id
 
     validates_presence_of :sha
+    validates_presence_of :ref
     validates_presence_of :status
     validate :valid_commit_sha
 
-    # Invalidate object and save if when touched
-    after_touch :update_state
     after_save :keep_around_commits
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -90,12 +89,16 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
+
+      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
+
+      reload_status!
     end
 
     def latest?
@@ -109,37 +112,6 @@ module Ci
       trigger_requests.any?
     end
 
-    def create_builds(user, trigger_request = nil)
-      ##
-      # We persist pipeline only if there are builds available
-      #
-      return unless config_processor
-
-      build_builds_for_stages(config_processor.stages, user,
-                              'success', trigger_request) && save
-    end
-
-    def create_next_builds(build)
-      return unless config_processor
-
-      # don't create other builds if this one is retried
-      latest_builds = builds.latest
-      return unless latest_builds.exists?(build.id)
-
-      # get list of stages after this build
-      next_stages = config_processor.stages.drop_while { |stage| stage != build.stage }
-      next_stages.delete(build.stage)
-
-      # get status for all prior builds
-      prior_builds = latest_builds.where.not(stage: next_stages)
-      prior_status = prior_builds.status
-
-      # build builds for next stage that has builds available
-      # and save pipeline if we have builds
-      build_builds_for_stages(next_stages, build.user, prior_status,
-                              build.trigger_request) && save
-    end
-
     def retried
       @retried ||= (statuses.order(id: :desc) - statuses.latest)
     end
@@ -149,6 +121,14 @@ module Ci
       if coverage_array.size >= 1
         '%.2f' % (coverage_array.reduce(:+) / coverage_array.size)
       end
+    end
+
+    def config_builds_attributes
+      return [] unless config_processor
+
+      config_processor.
+        builds_for_ref(ref, tag?, trigger_requests.first).
+        sort_by { |build| build[:stage_idx] }
     end
 
     def has_warnings?
@@ -182,10 +162,6 @@ module Ci
       end
     end
 
-    def skip_ci?
-      git_commit_message =~ /\[(ci skip|skip ci)\]/i if git_commit_message
-    end
-
     def environments
       builds.where.not(environment: nil).success.pluck(:environment).uniq
     end
@@ -207,38 +183,32 @@ module Ci
       Note.for_commit_id(sha)
     end
 
+    def process!
+      Ci::ProcessPipelineService.new(project, user).execute(self)
+      reload_status!
+    end
+
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
       ]
     end
 
-    private
-
-    def build_builds_for_stages(stages, user, status, trigger_request)
-      ##
-      # Note that `Array#any?` implements a short circuit evaluation, so we
-      # build builds only for the first stage that has builds available.
-      #
-      stages.any? do |stage|
-        CreateBuildsService.new(self).
-          execute(stage, user, status, trigger_request).
-          any?(&:active?)
-      end
-    end
-
-    def update_state
+    def reload_status!
       statuses.reload
-      self.status = if yaml_errors.blank?
-                      statuses.latest.status || 'skipped'
-                    else
-                      'failed'
-                    end
+      self.status =
+        if yaml_errors.blank?
+          statuses.latest.status || 'skipped'
+        else
+          'failed'
+        end
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
       save
     end
+
+    private
 
     def keep_around_commits
       return unless project
