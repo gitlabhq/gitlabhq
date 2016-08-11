@@ -72,8 +72,10 @@ module Gitlab
       def sections
         return @sections if @sections
 
-        chunked_lines = lines.chunk { |line| line.type.nil? }
+        chunked_lines = lines.chunk { |line| line.type.nil? }.to_a
         match_line = nil
+
+        sections_count = chunked_lines.size
 
         @sections = chunked_lines.flat_map.with_index do |(no_conflict, lines), i|
           section = nil
@@ -82,7 +84,7 @@ module Gitlab
           # always shown in full.
           if no_conflict
             conflict_before = i > 0
-            conflict_after = chunked_lines.peek
+            conflict_after = (sections_count - i) > 1
 
             if conflict_before && conflict_after
               # Create a gap in a long context section.
