@@ -27,7 +27,7 @@
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default', method: :post, title: "Compare" do
           Compare
 
-      - pipeline = @project.pipelines.latest_successful_for(branch.name).first
+      - pipeline = @project.pipelines.latest_successful_for(branch.name)
       - if pipeline
         - artifacts = pipeline.builds.latest.with_artifacts
         - if artifacts.any?

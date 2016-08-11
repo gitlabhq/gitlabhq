@@ -12,7 +12,7 @@
     %li
       = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
         %span Download tar.gz
-    - pipeline = project.pipelines.latest_successful_for(ref).first
+    - pipeline = project.pipelines.latest_successful_for(ref)
     - if pipeline
       - artifacts = pipeline.builds.latest.with_artifacts
       - if artifacts.any?

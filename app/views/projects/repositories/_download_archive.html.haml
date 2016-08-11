@@ -25,7 +25,7 @@
         = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: ref, format: 'tar'), rel: 'nofollow' do
           %i.fa.fa-download
           %span Download tar
-      - pipeline = @project.pipelines.latest_successful_for(ref).first
+      - pipeline = @project.pipelines.latest_successful_for(ref)
       - if pipeline
         - artifacts = pipeline.builds.latest.with_artifacts
         - if artifacts.any?
