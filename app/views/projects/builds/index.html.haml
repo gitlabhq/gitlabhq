@@ -20,23 +20,4 @@
           %span CI Lint
 
   %ul.content-list.builds-content-list
-    - if @builds.blank?
-      %li
-        .nothing-here-block No builds to show
-    - else
-      .table-holder
-        %table.table.builds
-          %thead
-            %tr
-              %th Status
-              %th Commit
-              %th Stage
-              %th Name
-              %th
-              - if @project.build_coverage_enabled?
-                %th Coverage
-              %th
-
-          = render @builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: @project.build_coverage_enabled?
-
-      = paginate @builds, theme: 'gitlab'
+    = render "content_list", builds: @builds, project: @project
