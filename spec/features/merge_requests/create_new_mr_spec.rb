@@ -8,10 +8,11 @@ feature 'Create New Merge Request', feature: true, js: true do
     project.team << [user, :master]
 
     login_as user
-    visit namespace_project_merge_requests_path(project.namespace, project)
   end
 
   it 'generates a diff for an orphaned branch' do
+    visit namespace_project_merge_requests_path(project.namespace, project)
+
     click_link 'New Merge Request'
 
     first('.js-source-branch').click
@@ -39,5 +40,21 @@ feature 'Create New Merge Request', feature: true, js: true do
 
       expect(page).not_to have_content private_project.to_reference
     end
+  end
+
+  it 'allows to change the diff view' do
+    visit new_namespace_project_merge_request_path(project.namespace, project, merge_request: { target_branch: 'master', source_branch: 'fix' })
+
+    click_link 'Changes'
+
+    expect(page.find_link('Inline')[:class]).to match(/\bactive\b/)
+    expect(page.find_link('Side-by-side')[:class]).not_to match(/\bactive\b/)
+
+    click_link 'Side-by-side'
+
+    click_link 'Changes'
+
+    expect(page.find_link('Inline')[:class]).not_to match(/\bactive\b/)
+    expect(page.find_link('Side-by-side')[:class]).to match(/\bactive\b/)
   end
 end
