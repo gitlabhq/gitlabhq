@@ -14,7 +14,10 @@
       - else
         (branch was removed from repository)
 
-  = render partial: 'update_protected_branch', locals: { protected_branch: protected_branch }
+  = render partial: 'protected_branch_access_summary', locals: { protected_branch: protected_branch }
+
+  %td
+    = link_to "Settings", namespace_project_protected_branch_path(@project.namespace, @project, protected_branch), class: "btn btn-info"
 
   - if can_admin_project
     %td

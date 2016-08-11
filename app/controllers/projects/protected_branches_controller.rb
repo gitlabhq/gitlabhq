@@ -25,6 +25,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def show
     @matching_branches = @protected_branch.matching(@project.repository.branches)
+    gon.push(js_access_levels)
   end
 
   def update
@@ -58,8 +59,8 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def protected_branch_params
     params.require(:protected_branch).permit(:name,
-                                             merge_access_levels_attributes: [:access_level, :id],
-                                             push_access_levels_attributes: [:access_level, :id])
+                                             merge_access_levels_attributes: [:access_level, :id, :user_id],
+                                             push_access_levels_attributes: [:access_level, :id, :user_id])
   end
 
   def load_protected_branches
@@ -69,7 +70,9 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   def access_levels_options
     {
       push_access_levels: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
-      merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } }
+      merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
+      selected_merge_access_levels: @protected_branch.merge_access_levels.map { |access_level| access_level.user_id || access_level.access_level },
+      selected_push_access_levels: @protected_branch.push_access_levels.map { |access_level| access_level.user_id || access_level.access_level }
     }
   end
 

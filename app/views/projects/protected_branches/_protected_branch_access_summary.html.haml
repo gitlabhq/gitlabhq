@@ -1,0 +1,9 @@
+%td
+  - access_by_type = protected_branch.merge_access_level_frequencies
+  - tooltip_text = protected_branch.merge_access_levels.map { |access_level| "<li>#{access_level.humanize}</li>" }.join
+  %span.has-tooltip{ title: tooltip_text, data: { container: "body", html: 1 } }= [pluralize(access_by_type[:user], 'user'), pluralize(access_by_type[:role], 'role')].to_sentence
+
+%td
+  - access_by_type = protected_branch.push_access_level_frequencies
+  - tooltip_text = protected_branch.push_access_levels.map { |access_level| "<li>#{access_level.humanize}</li>" }.join
+  %span.has-tooltip{ title: tooltip_text, data: { container: "body", html: 1 } }= [pluralize(access_by_type[:user], 'user'), pluralize(access_by_type[:role], 'role')].to_sentence

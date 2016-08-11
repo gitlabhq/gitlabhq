@@ -1,0 +1,62 @@
+- url = namespace_project_protected_branch_path(@project.namespace, @project, @protected_branch)
+
+%h5 Access Settings
+
+.form-group.allowed-to-merge-container
+  .prepend-left-10
+    %h5.label-light.append-bottom-20 Allowed to merge
+
+    - if @protected_branch.merge_access_levels.present?
+      .table-responsive
+        %table.table.protected-branch-merge-access-list
+          %colgroup
+            %col{ width: "70%" }
+            %col{ width: "30%" }
+          %thead
+            %tr
+              %th User / Role
+              %th
+          %tbody
+            - @protected_branch.merge_access_levels.each do |access_level|
+              %tr
+                %td= access_level.humanize
+                %td
+                  %button.btn.btn-sm.btn-warning.pull-right= link_to "Delete", namespace_project_protected_branch_merge_access_level_path(@project.namespace, @project, @protected_branch, access_level), method: :delete, data: { confirm: "Are you sure?" }
+
+    - else
+      %p.settings-message.text-center
+        No merge access settings have been created yet.
+
+    = dropdown_tag("Add new", options: { toggle_class: 'allowed-to-merge btn btn-success btn-sm', toggle_link: true,
+                            dropdown_class: 'dropdown-menu-selectable dropdown-menu-user', filter: true,
+                            data: { url: url, type: 'merge_access_levels' }})
+
+.form-group.allowed-to-push-container
+  .prepend-left-10.prepend-top-10
+    %h5.label-light.append-bottom-20 Allowed to push
+
+    - if @protected_branch.push_access_levels.present?
+      .table-responsive
+        %table.table.protected-branch-push-access-list
+          %colgroup
+            %col{ width: "70%" }
+            %col{ width: "30%" }
+          %thead
+            %tr
+              %th User / Role
+              %th
+          %tbody
+            - @protected_branch.push_access_levels.each do |access_level|
+              %tr
+                %td= access_level.humanize
+                %td
+                  %button.btn.btn-sm.btn-warning.pull-right= link_to "Delete", namespace_project_protected_branch_push_access_level_path(@project.namespace, @project, @protected_branch, access_level), method: :delete, data: { confirm: "Are you sure?" }
+
+    - else
+      %p.settings-message.text-center
+        No push access settings have been created yet.
+
+    = dropdown_tag("Add new",
+               options: { toggle_class: 'allowed-to-push btn btn-success btn-sm', toggle_link: true,
+                          dropdown_class: 'dropdown-menu-selectable dropdown-menu-user', filter: true,
+                          data: { url: url, type: 'push_access_levels' }})
