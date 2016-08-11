@@ -720,6 +720,11 @@ class MergeRequest < ActiveRecord::Base
     @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
   end
 
+  def conflicts_can_be_resolved_by?(user)
+    access = ::Gitlab::UserAccess.new(user, project: source_project)
+    access.can_push_to_branch?(source_branch)
+  end
+
   def conflicts_can_be_resolved_in_ui?
     return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
 

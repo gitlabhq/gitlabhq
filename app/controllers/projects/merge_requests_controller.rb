@@ -28,6 +28,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # Allow modify merge_request
   before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
 
+  before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :resolve_conflicts]
+
   def index
     terms = params['issue_search']
     @merge_requests = merge_requests_collection
@@ -366,6 +368,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def authorize_admin_merge_request!
     return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
+  end
+
+  def authorize_can_resolve_conflicts!
+    return render_404 unless @merge_request.conflicts_can_be_resolved_by?(current_user)
   end
 
   def module_enabled
