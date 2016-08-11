@@ -67,7 +67,7 @@ describe API::Builds, api: true do
     context 'unauthorized user' do
       let(:api_user) { nil }
 
-      it 'should not return project builds' do
+      it 'does not return project builds' do
         expect(response).to have_http_status(401)
       end
     end
