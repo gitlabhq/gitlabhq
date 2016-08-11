@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::SlashCommands::Dsl do
-  COND_LAMBDA = ->(opts) { opts[:project] == 'foo' }
   before :all do
-    DummyClass = Class.new do
+    DummyClass = Struct.new(:project) do
       include Gitlab::SlashCommands::Dsl
 
       desc 'A command with no args'
@@ -21,20 +20,21 @@ describe Gitlab::SlashCommands::Dsl do
         arg1
       end
 
-      desc ->(opts) { "A dynamic description for #{opts.fetch(:noteable)}" }
+      desc do
+        "A dynamic description for #{noteable.upcase}"
+      end
       params 'The first argument', 'The second argument'
       command :two_args do |arg1, arg2|
         [arg1, arg2]
       end
 
-      noop true
-      command :cc do |*args|
-        args
-      end
+      command :cc, noop: true
 
-      condition COND_LAMBDA
-      command :cond_action do |*args|
-        args
+      condition do
+        project == 'foo'
+      end
+      command :cond_action do |arg|
+        arg
       end
 
       command :wildcard do |*args|
@@ -42,17 +42,16 @@ describe Gitlab::SlashCommands::Dsl do
       end
     end
   end
-  let(:dummy) { DummyClass.new }
 
   describe '.command_definitions' do
     let(:base_expected) do
       [
-        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [] },
-        { name: :returning, aliases: [], description: 'A command returning a value', params: [] },
-        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'] },
-        { name: :two_args, aliases: [], description: '', params: ['The first argument', 'The second argument'] },
-        { name: :cc, aliases: [], description: '', params: [], noop: true },
-        { name: :wildcard, aliases: [], description: '', params: [] }
+        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [], noop: false, cond_block: nil },
+        { name: :returning, aliases: [], description: 'A command returning a value', params: [], noop: false, cond_block: nil },
+        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'], noop: false, cond_block: nil },
+        { name: :two_args, aliases: [], description: '', params: ['The first argument', 'The second argument'], noop: false, cond_block: nil },
+        { name: :cc, aliases: [], description: '', params: [], noop: true, cond_block: nil },
+        { name: :wildcard, aliases: [], description: '', params: [], noop: false, cond_block: nil}
       ]
     end
 
@@ -62,7 +61,7 @@ describe Gitlab::SlashCommands::Dsl do
 
     context 'with options passed' do
       context 'when condition is met' do
-        let(:expected) { base_expected << { name: :cond_action, aliases: [], description: '', params: [], cond_lambda: COND_LAMBDA } }
+        let(:expected) { base_expected << { name: :cond_action, aliases: [], description: '', params: [], noop: false, cond_block: a_kind_of(Proc) } }
 
         it 'returns an array with commands definitions' do
           expect(DummyClass.command_definitions(project: 'foo')).to match_array expected
@@ -77,7 +76,7 @@ describe Gitlab::SlashCommands::Dsl do
 
       context 'when description can be generated dynamically' do
         it 'returns an array with commands definitions with dynamic descriptions' do
-          base_expected[3][:description] = 'A dynamic description for merge request'
+          base_expected[3][:description] = 'A dynamic description for MERGE REQUEST'
 
           expect(DummyClass.command_definitions(noteable: 'merge request')).to match_array base_expected
         end
@@ -114,6 +113,8 @@ describe Gitlab::SlashCommands::Dsl do
     end
   end
 
+  let(:dummy) { DummyClass.new(nil) }
+
   describe 'command with no args' do
     context 'called with no args' do
       it 'succeeds' do
@@ -142,6 +143,28 @@ describe Gitlab::SlashCommands::Dsl do
     context 'called with two args' do
       it 'succeeds' do
         expect(dummy.__send__(:two_args, 42, 'foo')).to eq [42, 'foo']
+      end
+    end
+  end
+
+  describe 'noop command' do
+    it 'is not meant to be called directly' do
+      expect { dummy.__send__(:cc) }.to raise_error(NoMethodError)
+    end
+  end
+
+  describe 'command with condition' do
+    context 'when condition is not met' do
+      it 'returns nil' do
+        expect(dummy.__send__(:cond_action)).to be_nil
+      end
+    end
+
+    context 'when condition is met' do
+      let(:dummy) { DummyClass.new('foo') }
+
+      it 'succeeds' do
+        expect(dummy.__send__(:cond_action, 42)).to eq 42
       end
     end
   end

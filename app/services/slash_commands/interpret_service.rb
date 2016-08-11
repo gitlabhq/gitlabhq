@@ -26,25 +26,23 @@ module SlashCommands
       Gitlab::SlashCommands::Extractor.new(self.class.command_names(opts))
     end
 
-    desc ->(opts) { "Close this #{opts[:noteable].to_ability_name.humanize(capitalize: false)}" }
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].open? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"update_#{opts[:noteable].to_ability_name}", opts[:project])
+    desc do
+      "Close this #{noteable.to_ability_name.humanize(capitalize: false)}"
+    end
+    condition do
+      noteable.open? &&
+      current_user.can?(:"update_#{noteable.to_ability_name}", project)
     end
     command :close do
       @updates[:state_event] = 'close'
     end
 
-    desc ->(opts) { "Reopen this #{opts[:noteable].to_ability_name.humanize(capitalize: false)}" }
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].closed? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"update_#{opts[:noteable].to_ability_name}", opts[:project])
+    desc do
+      "Reopen this #{noteable.to_ability_name.humanize(capitalize: false)}"
+    end
+    condition do
+      noteable.closed? &&
+      current_user.can?(:"update_#{noteable.to_ability_name}", project)
     end
     command :open, :reopen do
       @updates[:state_event] = 'reopen'
@@ -52,12 +50,9 @@ module SlashCommands
 
     desc 'Change title'
     params '<New title>'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].persisted? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"update_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.persisted? &&
+      current_user.can?(:"update_#{noteable.to_ability_name}", project)
     end
     command :title do |title_param|
       @updates[:title] = title_param
@@ -65,11 +60,8 @@ module SlashCommands
 
     desc 'Assign'
     params '@user'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :assign, :reassign do |assignee_param|
       user = extract_references(assignee_param, :user).first
@@ -79,12 +71,9 @@ module SlashCommands
     end
 
     desc 'Remove assignee'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].assignee_id? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.assignee_id? &&
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :unassign, :remove_assignee do
       @updates[:assignee_id] = nil
@@ -92,12 +81,9 @@ module SlashCommands
 
     desc 'Set milestone'
     params '%"milestone"'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project]) &&
-      opts[:project].milestones.active.any?
+    condition do
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project) &&
+      project.milestones.active.any?
     end
     command :milestone do |milestone_param|
       milestone = extract_references(milestone_param, :milestone).first
@@ -107,12 +93,9 @@ module SlashCommands
     end
 
     desc 'Remove milestone'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].milestone_id? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.milestone_id? &&
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :clear_milestone, :remove_milestone do
       @updates[:milestone_id] = nil
@@ -120,12 +103,9 @@ module SlashCommands
 
     desc 'Add label(s)'
     params '~label1 ~"label 2"'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project]) &&
-      opts[:project].labels.any?
+    condition do
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project) &&
+      project.labels.any?
     end
     command :label, :labels do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -136,12 +116,9 @@ module SlashCommands
 
     desc 'Remove label(s)'
     params '~label1 ~"label 2"'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].labels.any? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.labels.any? &&
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :unlabel, :remove_label, :remove_labels do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -151,55 +128,46 @@ module SlashCommands
     end
 
     desc 'Remove all labels'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].labels.any? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"admin_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.labels.any? &&
+      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :clear_labels, :clear_label do
       @updates[:label_ids] = []
     end
 
     desc 'Add a todo'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].persisted? &&
-      opts[:current_user] &&
-      !TodosFinder.new(opts[:current_user]).execute.exists?(target: opts[:noteable])
+    condition do
+      noteable.persisted? &&
+      current_user &&
+      !TodosFinder.new(current_user).execute.exists?(target: noteable)
     end
     command :todo do
       @updates[:todo_event] = 'add'
     end
 
     desc 'Mark todo as done'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      TodosFinder.new(opts[:current_user]).execute.exists?(target: opts[:noteable])
+    condition do
+      current_user &&
+      TodosFinder.new(current_user).execute.exists?(target: noteable)
     end
     command :done do
       @updates[:todo_event] = 'done'
     end
 
     desc 'Subscribe'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      opts[:noteable].persisted? &&
-      !opts[:noteable].subscribed?(opts[:current_user])
+    condition do
+      noteable.persisted? &&
+      !noteable.subscribed?(current_user)
     end
     command :subscribe do
       @updates[:subscription_event] = 'subscribe'
     end
 
     desc 'Unsubscribe'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:current_user] &&
-      opts[:noteable].persisted? &&
-      opts[:noteable].subscribed?(opts[:current_user])
+    condition do
+      noteable.persisted? &&
+      noteable.subscribed?(current_user)
     end
     command :unsubscribe do
       @updates[:subscription_event] = 'unsubscribe'
@@ -207,12 +175,9 @@ module SlashCommands
 
     desc 'Set due date'
     params 'a date in natural language'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].respond_to?(:due_date) &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"update_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.respond_to?(:due_date) &&
+      current_user.can?(:"update_#{noteable.to_ability_name}", project)
     end
     command :due_date, :due do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
@@ -221,13 +186,10 @@ module SlashCommands
     end
 
     desc 'Remove due date'
-    condition ->(opts) do
-      opts[:noteable] &&
-      opts[:noteable].respond_to?(:due_date) &&
-      opts[:noteable].due_date? &&
-      opts[:current_user] &&
-      opts[:project] &&
-      opts[:current_user].can?(:"update_#{opts[:noteable].to_ability_name}", opts[:project])
+    condition do
+      noteable.respond_to?(:due_date) &&
+      noteable.due_date? &&
+      current_user.can?(:"update_#{noteable.to_ability_name}", project)
     end
     command :clear_due_date do
       @updates[:due_date] = nil
@@ -236,10 +198,7 @@ module SlashCommands
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
-    noop true
-    command :cc do
-      return
-    end
+    command :cc, noop: true
 
     def find_label_ids(labels_param)
       extract_references(labels_param, :label).map(&:id)
