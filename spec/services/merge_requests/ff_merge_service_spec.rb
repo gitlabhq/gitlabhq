@@ -28,7 +28,7 @@ describe MergeRequests::FfMergeService do
         end
       end
 
-      it "should not create merge commit" do
+      it "does not create merge commit" do
         source_branch_sha = merge_request.source_project.repository.commit(merge_request.source_branch).sha
         target_branch_sha = merge_request.target_project.repository.commit(merge_request.target_branch).sha
         expect(source_branch_sha).to eq(target_branch_sha)
@@ -37,13 +37,13 @@ describe MergeRequests::FfMergeService do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
-      it 'should send email to user2 about merge of new merge_request' do
+      it 'sends email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'should create system note about merge_request merge' do
+      it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
       end

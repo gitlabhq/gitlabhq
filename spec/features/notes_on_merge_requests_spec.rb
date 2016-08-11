@@ -91,7 +91,7 @@ describe 'Comments', feature: true do
         end
 
         # TODO: fix after 7.7 release
-        # it "should reset the edit note form textarea with the original content of the note if cancelled" do
+        # it "resets the edit note form textarea with the original content of the note if cancelled" do
         #   within(".current-note-edit-form") do
         #     fill_in "note[note]", with: "Some new content"
         #     find(".btn-cancel").click
@@ -184,7 +184,7 @@ describe 'Comments', feature: true do
       end
 
       describe 'the note form' do
-        it "shouldn't add a second form for same row" do
+        it "does not add a second form for same row" do
           click_diff_line
 
           is_expected.
@@ -192,7 +192,7 @@ describe 'Comments', feature: true do
                         count: 1)
         end
 
-        it 'should be removed when canceled' do
+        it 'is removed when canceled' do
           is_expected.to have_css('.js-temp-notes-holder')
 
           page.within("form[data-line-code='#{line_code}']") do

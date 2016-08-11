@@ -305,7 +305,7 @@ describe API::API, api: true  do
     before { project }
     before { admin }
 
-    it 'should create new project without path and return 201' do
+    it 'creates new project without path and return 201' do
       expect { post api("/projects/user/#{user.id}", admin), name: 'foo' }.to change {Project.count}.by(1)
       expect(response).to have_http_status(201)
     end

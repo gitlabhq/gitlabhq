@@ -91,7 +91,7 @@ describe Projects::UpdateRemoteMirrorService do
       end
 
       context 'when there are not tags to push' do
-        it 'should not try to push tags' do
+        it 'does not try to push tags' do
           allow(repository).to receive(:remote_tags) { {} }
           allow(repository).to receive(:tags) { [] }
 
@@ -102,7 +102,7 @@ describe Projects::UpdateRemoteMirrorService do
       end
 
       context 'when there are some tags to push' do
-        it 'should push tags to remote' do
+        it 'pushes tags to remote' do
           allow(repository).to receive(:remote_tags) { {} }
 
           expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['v1.0.0', 'v1.1.0'])
@@ -112,7 +112,7 @@ describe Projects::UpdateRemoteMirrorService do
       end
 
       context 'when there are some tags to delete' do
-        it 'should delete tags from remote' do
+        it 'deletes tags from remote' do
           allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
           repository.rm_tag('v1.0.0')
 

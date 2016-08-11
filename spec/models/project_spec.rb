@@ -251,7 +251,7 @@ describe Project, models: true do
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:empty_project, path: "somewhere") }
 
-    it 'should return valid kerberos url for this repo' do
+    it 'returns valid kerberos url for this repo' do
       expect(project.kerberos_url_to_repo).to eq("#{Gitlab.config.build_gitlab_kerberos_url}/#{project.namespace.path}/somewhere.git")
     end
   end
