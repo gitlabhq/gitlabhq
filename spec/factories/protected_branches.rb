@@ -8,22 +8,38 @@ FactoryGirl.define do
       protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MASTER)
     end
 
+    transient do
+      authorize_user_to_push nil
+      authorize_user_to_merge nil
+    end
+
     trait :developers_can_push do
       after(:create) do |protected_branch|
-        protected_branch.push_access_levels.first.update!(access_level: Gitlab::Access::DEVELOPER)
+        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
     trait :developers_can_merge do
       after(:create) do |protected_branch|
-        protected_branch.merge_access_levels.first.update!(access_level: Gitlab::Access::DEVELOPER)
+        protected_branch.merge_access_levels.create!(access_level: Gitlab::Access::DEVELOPER)
       end
     end
 
     trait :no_one_can_push do
       after(:create) do |protected_branch|
-        protected_branch.push_access_levels.first.update!(access_level: Gitlab::Access::NO_ACCESS)
+        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::NO_ACCESS)
       end
+    end
+
+    trait :masters_can_push do
+      after(:create) do |protected_branch|
+        protected_branch.push_access_levels.create!(access_level: Gitlab::Access::MASTER)
+      end
+    end
+
+    after(:create) do |protected_branch, evaluator|
+      protected_branch.push_access_levels.create!(user: evaluator.authorize_user_to_push) if evaluator.authorize_user_to_push
+      protected_branch.merge_access_levels.create!(user: evaluator.authorize_user_to_merge) if evaluator.authorize_user_to_merge
     end
   end
 end

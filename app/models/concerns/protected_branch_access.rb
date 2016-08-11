@@ -1,7 +1,17 @@
 module ProtectedBranchAccess
   extend ActiveSupport::Concern
 
+  def type
+    if self.user.present?
+      :user
+    else
+      :role
+    end
+  end
+
   def humanize
+    return self.user.name if self.user.present?
+
     self.class.human_access_levels[self.access_level]
   end
 end

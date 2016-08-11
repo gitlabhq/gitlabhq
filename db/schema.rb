@@ -953,18 +953,22 @@ ActiveRecord::Schema.define(version: 20160810153405) do
     t.integer  "access_level",        default: 40, null: false
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.integer  "user_id"
   end
 
   add_index "protected_branch_merge_access_levels", ["protected_branch_id"], name: "index_protected_branch_merge_access", using: :btree
+  add_index "protected_branch_merge_access_levels", ["user_id"], name: "index_protected_branch_merge_access_levels_on_user_id", using: :btree
 
   create_table "protected_branch_push_access_levels", force: :cascade do |t|
     t.integer  "protected_branch_id",              null: false
     t.integer  "access_level",        default: 40, null: false
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
+    t.integer  "user_id"
   end
 
   add_index "protected_branch_push_access_levels", ["protected_branch_id"], name: "index_protected_branch_push_access", using: :btree
+  add_index "protected_branch_push_access_levels", ["user_id"], name: "index_protected_branch_push_access_levels_on_user_id", using: :btree
 
   create_table "protected_branches", force: :cascade do |t|
     t.integer  "project_id", null: false
@@ -1278,7 +1282,9 @@ ActiveRecord::Schema.define(version: 20160810153405) do
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
+  add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
   add_foreign_key "remote_mirrors", "projects"
+  add_foreign_key "protected_branch_push_access_levels", "users"
   add_foreign_key "u2f_registrations", "users"
 end

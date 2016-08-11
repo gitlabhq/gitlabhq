@@ -8,8 +8,8 @@ class ProtectedBranch < ActiveRecord::Base
   has_many :merge_access_levels, dependent: :destroy
   has_many :push_access_levels, dependent: :destroy
 
-  validates_length_of :merge_access_levels, is: 1, message: "are restricted to a single instance per protected branch."
-  validates_length_of :push_access_levels, is: 1, message: "are restricted to a single instance per protected branch."
+  validates_length_of :merge_access_levels, minimum: 0
+  validates_length_of :push_access_levels, minimum: 0
 
   accepts_nested_attributes_for :push_access_levels
   accepts_nested_attributes_for :merge_access_levels
@@ -44,6 +44,24 @@ class ProtectedBranch < ActiveRecord::Base
   # Checks if this protected branch contains a wildcard
   def wildcard?
     self.name && self.name.include?('*')
+  end
+
+  # Returns a hash were keys are types of push access levels (user, role), and
+  # values are the number of access levels of the particular type.
+  def push_access_level_frequencies
+    push_access_levels.reduce(Hash.new(0)) do |frequencies, access_level|
+      frequencies[access_level.type] = frequencies[access_level.type] + 1
+      frequencies
+    end
+  end
+
+  # Returns a hash were keys are types of merge access levels (user, role), and
+  # values are the number of access levels of the particular type.
+  def merge_access_level_frequencies
+    merge_access_levels.reduce(Hash.new(0)) do |frequencies, access_level|
+      frequencies[access_level.type] = frequencies[access_level.type] + 1
+      frequencies
+    end
   end
 
   protected
