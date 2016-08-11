@@ -15,9 +15,6 @@ module Gitlab
       end
 
       def hook_attrs(pipeline)
-        first_pending_build = pipeline.builds.first_pending
-        config_processor = pipeline.config_processor unless pipeline.skip_ci?
-
         {
           id: pipeline.id,
           ref: pipeline.ref,
@@ -25,8 +22,7 @@ module Gitlab
           sha: pipeline.sha,
           before_sha: pipeline.before_sha,
           status: pipeline.status,
-          stage: first_pending_build.try(:stage),
-          stages: config_processor.try(:stages),
+          stages: pipeline.stages,
           created_at: pipeline.created_at,
           finished_at: pipeline.finished_at,
           duration: pipeline.duration
