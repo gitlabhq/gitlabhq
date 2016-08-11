@@ -45,6 +45,7 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 
 Please see the [requirements documentation](doc/install/requirements.md) for system requirements and more information about the supported operating systems.
 
+
 ## Installation
 
 The recommended way to install GitLab is with the [Omnibus packages](https://about.gitlab.com/downloads/) on our package server.
