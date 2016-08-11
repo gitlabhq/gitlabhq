@@ -30,6 +30,7 @@ v 8.13.0 (unreleased)
   - Replace `alias_method_chain` with `Module#prepend`
   - Enable GitLab Import/Export for non-admin users.
   - Preserve label filters when sorting !6136 (Joseph Frazier)
+  - MergeRequest#new form load diff asynchronously
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
   - Use custom Ruby images to test builds (registry.dev.gitlab.org/gitlab/gitlab-build-images:*)
