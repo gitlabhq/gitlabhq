@@ -88,7 +88,7 @@
 		var dragInterval = setInterval(function loop() {
 			var progress = (new Date().getTime() - startTime) / duration;
 			var x = (fromRect.cx + (toRect.cx - fromRect.cx) * progress) - scrollable.scrollLeft;
-			var y = (fromRect.cy + (toRect.cy - fromRect.cy) * progress)  - scrollable.scrollTop;
+			var y = (fromRect.cy + (toRect.cy - fromRect.cy) * progress) - scrollable.scrollTop;
 			var overEl = fromEl.ownerDocument.elementFromPoint(x, y);
 
 			simulateEvent(overEl, 'mousemove', {

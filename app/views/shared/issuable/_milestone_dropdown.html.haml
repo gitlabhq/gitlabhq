@@ -1,6 +1,10 @@
+- is_boards = controller.controller_name == 'boards'
+
 - if params[:milestone_title].present?
   = hidden_field_tag(:milestone_title, params[:milestone_title])
-= dropdown_tag(milestone_dropdown_label(params[:milestone_title]), options: { title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
+- elsif is_boards
+  = hidden_field_tag(:milestone_title, Milestone::Upcoming.name)
+= dropdown_tag(milestone_dropdown_label(params[:milestone_title], is_boards), options: { title: "Filter by milestone", toggle_class: 'js-milestone-select js-filter-submit', filter: true, dropdown_class: "dropdown-menu-selectable",
   placeholder: "Search milestones", footer_content: @project.present?, data: { show_no: true, show_any: true, show_upcoming: true, field_name: "milestone_title", selected: params[:milestone_title], project_id: @project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
   - if @project
     %ul.dropdown-footer-list
