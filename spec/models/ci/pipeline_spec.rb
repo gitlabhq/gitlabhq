@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -303,6 +303,9 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#execute_hooks' do
+    let!(:build_a) { create_build('a') }
+    let!(:build_b) { create_build('b') }
+
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
     end
@@ -314,30 +317,48 @@ describe Ci::Pipeline, models: true do
     context 'with pipeline hooks enabled' do
       let(:enabled) { true }
 
+      before do
+        WebMock.stub_request(:post, hook.url)
+      end
+
       context 'with multiple builds' do
-        let!(:build_a) { create_build('a') }
-        let!(:build_b) { create_build('b') }
+        context 'when build is queued' do
+          before do
+            build_a.queue
+            build_b.queue
+          end
 
-        it 'fires exactly 3 hooks' do
-          stub_request('pending')
-          build_a.queue
-          build_b.queue
-
-          stub_request('running')
-          build_a.run
-          build_b.run
-
-          stub_request('success')
-          build_a.success
-          build_b.success
+          it 'receive a pending event once' do
+            expect(WebMock).to requested('pending').once
+          end
         end
 
-        def create_build(name)
-          create(:ci_build, :pending, pipeline: pipeline, name: name)
+        context 'when build is run' do
+          before do
+            build_a.queue
+            build_a.run
+            build_b.queue
+            build_b.run
+          end
+
+          it 'receive a running event once' do
+            expect(WebMock).to requested('running').once
+          end
         end
 
-        def stub_request(status)
-          WebMock.stub_request(:post, hook.url).with do |req|
+        context 'when all builds succeed' do
+          before do
+            build_a.success
+            build_b.success
+          end
+
+          it 'receive a success event once' do
+            expect(WebMock).to requested('success').once
+          end
+        end
+
+        def requested(status)
+          have_requested(:post, hook.url).with do |req|
             json_body = JSON.parse(req.body)
             json_body['object_attributes']['status'] == status &&
               json_body['builds'].length == 2
@@ -349,9 +370,18 @@ describe Ci::Pipeline, models: true do
     context 'with pipeline hooks disabled' do
       let(:enabled) { false }
 
+      before do
+        build_a.queue
+        build_b.queue
+      end
+
       it 'did not execute pipeline_hook after touched' do
         expect(WebMock).not_to have_requested(:post, hook.url)
       end
+    end
+
+    def create_build(name)
+      create(:ci_build, :created, pipeline: pipeline, name: name)
     end
   end
 end

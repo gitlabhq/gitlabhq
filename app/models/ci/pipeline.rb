@@ -208,8 +208,10 @@ module Ci
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
+
+      should_execute_hooks = status_changed?
       save
-      execute_hooks if status_changed?
+      execute_hooks if should_execute_hooks
     end
 
     private
