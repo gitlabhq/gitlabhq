@@ -9,7 +9,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.open_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.open_issue(issue, issue.author) }.to change { Event.count }
       end
     end
@@ -19,7 +19,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.close_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.close_issue(issue, issue.author) }.to change { Event.count }
       end
     end
@@ -29,7 +29,7 @@ describe EventCreateService, services: true do
 
       it { expect(service.reopen_issue(issue, issue.author)).to be_truthy }
 
-      it "should create new event" do
+      it "creates new event" do
         expect { service.reopen_issue(issue, issue.author) }.to change { Event.count }
       end
     end

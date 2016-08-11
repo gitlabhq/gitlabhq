@@ -15,7 +15,7 @@ describe PagesService, services: true do
     context 'on success' do
       before { build.success }
 
-      it 'should execute worker' do
+      it 'executes worker' do
         expect(PagesWorker).to receive(:perform_async)
         service.execute
       end
@@ -25,7 +25,7 @@ describe PagesService, services: true do
       context "on #{status}" do
         before { build.status = status }
 
-        it 'should not execute worker' do
+        it 'does not execute worker' do
           expect(PagesWorker).not_to receive(:perform_async)
           service.execute
         end
@@ -39,7 +39,7 @@ describe PagesService, services: true do
       build.success
     end
 
-    it 'should not execute worker' do
+    it 'does not execute worker' do
       expect(PagesWorker).not_to receive(:perform_async)
       service.execute
     end

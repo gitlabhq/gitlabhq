@@ -27,7 +27,7 @@ describe MergeRequests::CloseService, services: true do
       it { expect(@merge_request).to be_valid }
       it { expect(@merge_request).to be_closed }
 
-      it 'should execute hooks with close action' do
+      it 'executes hooks with close action' do
         expect(service).to have_received(:execute_hooks).
                                with(@merge_request, 'close')
       end

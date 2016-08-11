@@ -9,7 +9,7 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
 
   describe 'GET /license' do
-    it 'should retrieve the license information if admin is logged in' do
+    it 'retrieves the license information if admin is logged in' do
       get api('/license', admin)
       expect(response.status).to eq 200
       expect(json_response['user_limit']).to eq 0
@@ -19,7 +19,7 @@ describe API::API, api: true  do
       expect(json_response['licensee']).not_to be_empty
     end
 
-    it 'should deny access if not admin' do
+    it 'denies access if not admin' do
       get api('/license', user)
       expect(response.status).to eq 403
     end

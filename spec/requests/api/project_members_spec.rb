@@ -97,7 +97,7 @@ describe API::API, api: true  do
         post api("/projects/#{project2.id}/members", user), user_id: user2.id, access_level: ProjectMember::MASTER
       end
 
-      it 'should return a 405 method not allowed error when group membership lock is enabled' do
+      it 'returns a 405 method not allowed error when group membership lock is enabled' do
         expect(response.status).to eq 405
       end
     end

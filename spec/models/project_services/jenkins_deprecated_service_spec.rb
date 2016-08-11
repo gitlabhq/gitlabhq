@@ -49,7 +49,7 @@ eos
 
       statuses = { 'blue.png' => 'success', 'yellow.png' => 'failed', 'red.png' => 'failed', 'aborted.png' => 'failed', 'blue-anime.gif' => 'running', 'grey.png' => 'pending' }
       statuses.each do |icon, state|
-        it "should have a status of #{state} when the icon #{icon} exists." do
+        it "has a status of #{state} when the icon #{icon} exists." do
           stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon(icon), headers: {})
           expect(@service.commit_status("2ab7834c", 'master')).to eq(state)
         end
@@ -68,7 +68,7 @@ eos
         )
       end
 
-      it "should have a status of success when the icon yellow exists." do
+      it "has a status of success when the icon yellow exists." do
         stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
         expect(@service.commit_status("2ab7834c", 'master')).to eq('success')
       end
