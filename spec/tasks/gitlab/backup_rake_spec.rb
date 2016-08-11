@@ -42,7 +42,7 @@ describe 'gitlab:app namespace rake task' do
       before do
         allow(Dir).to receive(:glob).and_return([])
         allow(Dir).to receive(:chdir)
-        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)

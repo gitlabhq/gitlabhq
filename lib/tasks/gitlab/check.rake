@@ -64,7 +64,7 @@ namespace :gitlab do
           for_more_information(
             see_installation_guide_section "GitLab"
           )
-       end
+        end
       end
     end
 
@@ -73,7 +73,7 @@ namespace :gitlab do
 
       database_config_file = Rails.root.join("config", "database.yml")
 
-      if File.exists?(database_config_file)
+      if File.exist?(database_config_file)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -94,7 +94,7 @@ namespace :gitlab do
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
 
-      if File.exists?(gitlab_config_file)
+      if File.exist?(gitlab_config_file)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -113,7 +113,7 @@ namespace :gitlab do
       print "GitLab config outdated? ... "
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
-      unless File.exists?(gitlab_config_file)
+      unless File.exist?(gitlab_config_file)
         puts "can't check because of previous errors".color(:magenta)
       end
 
@@ -144,7 +144,7 @@ namespace :gitlab do
 
       script_path = "/etc/init.d/gitlab"
 
-      if File.exists?(script_path)
+      if File.exist?(script_path)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -169,7 +169,7 @@ namespace :gitlab do
       recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
       script_path = "/etc/init.d/gitlab"
 
-      unless File.exists?(script_path)
+      unless File.exist?(script_path)
         puts "can't check because of previous errors".color(:magenta)
         return
       end
@@ -361,7 +361,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        if File.exists?(repo_base_path)
+        if File.exist?(repo_base_path)
           puts "yes".color(:green)
         else
           puts "no".color(:red)
@@ -385,7 +385,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end
@@ -408,7 +408,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end
@@ -438,7 +438,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end

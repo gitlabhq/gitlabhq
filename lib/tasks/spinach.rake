@@ -46,7 +46,7 @@ def run_spinach_tests(tags)
   success = run_spinach_command(%W(--tags #{tags}))
   3.times do |_|
     break if success
-    break unless File.exists?('tmp/spinach-rerun.txt')
+    break unless File.exist?('tmp/spinach-rerun.txt')
 
     tests = File.foreach('tmp/spinach-rerun.txt').map(&:chomp)
     puts ''
