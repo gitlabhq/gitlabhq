@@ -45,10 +45,10 @@
         selectable: true,
         data: this.projectsData,
         text: (project) => {
-          (project.name_with_namespace || project.name)
+          (project.name_with_namespace || project.name);
         },
         id: (project) => {
-          project.id
+          project.id;
         }
       });
     });

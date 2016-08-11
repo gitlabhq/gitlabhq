@@ -111,9 +111,9 @@
             matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
             if (!$el.is('.dropdown-header')) {
               if (matches.length) {
-                return $el.show();
+                return $el.show().removeClass('option-hidden');
               } else {
-                return $el.hide();
+                return $el.hide().addClass('option-hidden');
               }
             }
           });
@@ -191,9 +191,9 @@
 
     currentIndex = -1;
 
-    NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
+    NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link, .option-hidden';
 
-  	SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ")";
+    SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ")";
 
     CURSOR_SELECT_SCROLL_PADDING = 5
 
@@ -247,7 +247,7 @@
           keys: searchFields,
           elements: (function(_this) {
             return function() {
-              selector = SELECTABLE_CLASSES;
+              selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
               if (_this.dropdown.find('.dropdown-toggle-page').length) {
                 selector = ".dropdown-page-one " + selector;
               }
@@ -263,7 +263,7 @@
             return function(data) {
               _this.parseData(data);
               if (_this.filterInput.val() !== '') {
-                selector = '.dropdown-content li:not(.divider):visible';
+                selector = SELECTABLE_CLASSES;
                 if (_this.dropdown.find('.dropdown-toggle-page').length) {
                   selector = ".dropdown-page-one " + selector;
                 }
@@ -502,7 +502,7 @@
           text = this.highlightTextMatches(text, this.filterInput.val());
         }
         if (group) {
-          groupAttrs = "data-group='" + group + "' data-index='" + index + "'";
+          groupAttrs = 'data-group=' + group + ' data-index=' + index;
         } else {
           groupAttrs = '';
         }
@@ -617,11 +617,8 @@
       }
       $el = $(selector, this.dropdown);
       if ($el.length) {
-        return $el.first().trigger('click');
-        e.preventDefault();
-        e.stopImmediatePropagation();
         $el.first().trigger('click');
-        href = $el.attr('href');
+        var href = $el.attr('href');
   	    if (href && href !== '#') Turbolinks.visit(href);
       }
     };
@@ -671,8 +668,8 @@
     };
 
     GitLabDropdown.prototype.resetRows = function resetRows() {
-	    currentIndex = -1;
-	    $('.is-focused', this.dropdown).removeClass('is-focused');
+      currentIndex = -1;
+      $('.is-focused', this.dropdown).removeClass('is-focused');
     };
 
     GitLabDropdown.prototype.highlightRowAtIndex = function($listItems, index) {
@@ -691,8 +688,8 @@
       if (!index) {
         $dropdownContent.scrollTop(0)
 	    } else if (index === ($listItems.length - 1)) {
-  	    $dropdownContent.scrollTop $dropdownContent.prop('scrollHeight');
-      } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop))
+  	    $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));
+      } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop)) {
         $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom + CURSOR_SELECT_SCROLL_PADDING);
       } else if (listItemTop < (dropdownContentTop + dropdownScrollTop)) {
         return $dropdownContent.scrollTop(listItemTop - dropdownContentTop - CURSOR_SELECT_SCROLL_PADDING);
