@@ -666,7 +666,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def pipeline
-    @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+    return unless diff_head_sha && source_project
+    @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def merge_commit

@@ -40,7 +40,7 @@ class Gitlab::Seeder::Builds
     commits = @project.repository.commits('master', limit: 5)
     commits_sha = commits.map { |commit| commit.raw.id }
     commits_sha.map do |sha|
-      @project.ensure_pipeline(sha, 'master')
+      @project.ensure_pipeline('master', sha)
     end
   rescue
     []

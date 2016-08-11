@@ -688,7 +688,7 @@ describe Project, models: true do
     let(:project) { create :project }
     let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
-    subject { project.pipeline(pipeline.sha, 'master') }
+    subject { project.pipeline_for('master', pipeline.sha) }
 
     it { is_expected.to eq(pipeline) }
 

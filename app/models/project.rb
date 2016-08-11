@@ -1086,12 +1086,13 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def pipeline(sha, ref)
+  def pipeline_for(ref, sha)
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref, current_user = nil)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
+  def ensure_pipeline(ref, sha, current_user = nil)
+    pipeline_for(ref, sha) ||
+      pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
