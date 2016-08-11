@@ -102,10 +102,6 @@ module Ci
       end
     end
 
-    def latest
-      project.pipelines.latest_for(ref).first
-    end
-
     def latest?
       return false unless ref
       commit = project.commit(ref)

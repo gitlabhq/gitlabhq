@@ -483,7 +483,13 @@ describe Ci::Pipeline, models: true do
 
   context 'with non-empty project' do
     let(:project) { create(:project) }
-    let(:pipeline) { create_pipeline }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             ref: project.default_branch,
+             sha: project.commit.sha)
+    end
 
     describe '#latest?' do
       context 'with latest sha' do
@@ -502,26 +508,6 @@ describe Ci::Pipeline, models: true do
           expect(pipeline).not_to be_latest
         end
       end
-    end
-
-    describe '#latest' do
-      let(:previous_pipeline) { create_pipeline }
-
-      before do
-        previous_pipeline
-        pipeline
-      end
-
-      it 'gives the latest pipeline' do
-        expect(previous_pipeline.latest).to eq(pipeline)
-      end
-    end
-
-    def create_pipeline
-      create(:ci_pipeline,
-             project: project,
-             ref: project.default_branch,
-             sha: project.commit.sha)
     end
   end
 
