@@ -28,7 +28,7 @@ module API
 
       # If the sudo is the current user do nothing
       if identifier && !(@current_user.id == identifier || @current_user.username == identifier)
-        render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
+        forbidden!('Must be admin to use sudo') unless @current_user.is_admin?
         @current_user = User.by_username_or_id(identifier)
         not_found!("No user id or username for: #{identifier}") if @current_user.nil?
       end
@@ -49,16 +49,15 @@ module API
 
     def user_project
       @project ||= find_project(params[:id])
-      @project || not_found!("Project")
     end
 
     def find_project(id)
       project = Project.find_with_namespace(id) || Project.find_by(id: id)
 
-      if project && can?(current_user, :read_project, project)
+      if can?(current_user, :read_project, project)
         project
       else
-        nil
+        not_found!('Project')
       end
     end
 
@@ -89,11 +88,7 @@ module API
     end
 
     def find_group(id)
-      begin
-        group = Group.find(id)
-      rescue ActiveRecord::RecordNotFound
-        group = Group.find_by!(path: id)
-      end
+      group = Group.find_by(path: id) || Group.find_by(id: id)
 
       if can?(current_user, :read_group, group)
         group
@@ -135,7 +130,7 @@ module API
     end
 
     def authorize!(action, subject)
-      forbidden! unless abilities.allowed?(current_user, action, subject)
+      forbidden! unless can?(current_user, action, subject)
     end
 
     def authorize_push_project
@@ -195,10 +190,6 @@ module API
       end
 
       errors
-    end
-
-    def validate_access_level?(level)
-      Gitlab::Access.options_with_owner.values.include? level.to_i
     end
 
     # Checks the occurrences of datetime attributes, each attribute if present in the params hash must be in ISO 8601
@@ -409,11 +400,6 @@ module API
 
     def secret_token
       File.read(Gitlab.config.gitlab_shell.secret_file).chomp
-    end
-
-    def handle_member_errors(errors)
-      error!(errors[:access_level], 422) if errors[:access_level].any?
-      not_found!(errors)
     end
 
     def send_git_blob(repository, blob)

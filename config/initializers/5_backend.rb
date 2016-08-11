@@ -1,6 +1,3 @@
-# GIT over HTTP
-require_dependency Rails.root.join('lib/gitlab/backend/grack_auth')
-
 # GIT over SSH
 require_dependency Rails.root.join('lib/gitlab/backend/shell')
 

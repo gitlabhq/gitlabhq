@@ -89,15 +89,28 @@ describe API::API, api: true  do
 
       it "returns nil for commit without CI" do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+
         expect(response).to have_http_status(200)
         expect(json_response['status']).to be_nil
       end
 
       it "returns status for CI" do
         pipeline = project.ensure_pipeline(project.repository.commit.sha, 'master')
+        pipeline.update(status: 'success')
+
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq(pipeline.status)
+      end
+
+      it "returns status for CI when pipeline is created" do
+        project.ensure_pipeline(project.repository.commit.sha, 'master')
+
+        get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
+
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to be_nil
       end
     end
 

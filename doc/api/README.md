@@ -16,6 +16,8 @@ following locations:
 - [Commits](commits.md)
 - [Deploy Keys](deploy_keys.md)
 - [Groups](groups.md)
+- [Group Access Requests](access_requests.md)
+- [Group Members](members.md)
 - [Issues](issues.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
@@ -25,6 +27,8 @@ following locations:
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Projects](projects.md) including setting Webhooks
+- [Project Access Requests](access_requests.md)
+- [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
@@ -154,7 +158,7 @@ be returned with status code `403`:
 
 ```json
 {
-  "message": "403 Forbidden: Must be admin to use sudo"
+  "message": "403 Forbidden - Must be admin to use sudo"
 }
 ```
 

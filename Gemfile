@@ -163,9 +163,6 @@ gem 'redis-rails', '~> 4.0.0'
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
 
-# Campfire integration
-gem 'tinder', '~> 1.10.0'
-
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
 

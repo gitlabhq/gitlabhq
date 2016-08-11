@@ -5,7 +5,7 @@ class CommitStatus < ActiveRecord::Base
   self.table_name = 'ci_builds'
 
   belongs_to :project, class_name: '::Project', foreign_key: :gl_project_id
-  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id, touch: true
+  belongs_to :pipeline, class_name: 'Ci::Pipeline', foreign_key: :commit_id
   belongs_to :user
 
   delegate :commit, to: :pipeline
@@ -25,28 +25,36 @@ class CommitStatus < ActiveRecord::Base
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
-  state_machine :status, initial: :pending do
+  state_machine :status do
     event :queue do
-      transition skipped: :pending
+      transition [:created, :skipped] => :pending
     end
 
     event :run do
       transition pending: :running
     end
 
+    event :skip do
+      transition [:created, :pending] => :skipped
+    end
+
     event :drop do
-      transition [:pending, :running] => :failed
+      transition [:created, :pending, :running] => :failed
     end
 
     event :success do
-      transition [:pending, :running] => :success
+      transition [:created, :pending, :running] => :success
     end
 
     event :cancel do
-      transition [:pending, :running] => :canceled
+      transition [:created, :pending, :running] => :canceled
     end
 
-    after_transition pending: :running do |commit_status|
+    after_transition created: [:pending, :running] do |commit_status|
+      commit_status.update_attributes queued_at: Time.now
+    end
+
+    after_transition [:created, :pending] => :running do |commit_status|
       commit_status.update_attributes started_at: Time.now
     end
 
@@ -54,12 +62,19 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition [:pending, :running] => :success do |commit_status|
+    after_transition [:created, :pending, :running] => :success do |commit_status|
       MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
     end
 
     after_transition any => :failed do |commit_status|
       MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
+    end
+
+    # We use around_transition to process pipeline on next stages as soon as possible, before the `after_*` is executed
+    around_transition any => [:success, :failed, :canceled] do |commit_status, block|
+      block.call
+
+      commit_status.pipeline.process! if commit_status.pipeline
     end
   end
 
