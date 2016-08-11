@@ -11,19 +11,18 @@
       .diff-wrap-lines.code.file-content.js-syntax-highlight
         %table
           %tr.line_holder.diff-inline{"v-for" => "line in file.inlineLines"}
-
             %template{"v-if" => "!line.isHeader"}
-              %td.diff-line-num.new_line{":class" => "#{class_bindings}"}
+              %td.diff-line-num.new_line{":class" => class_bindings}
                 %a {{line.new_line}}
-              %td.diff-line-num.old_line{":class" => "#{class_bindings}"}
+              %td.diff-line-num.old_line{":class" => class_bindings}
                 %a {{line.old_line}}
-              %td.line_content{":class" => "#{class_bindings}"}
+              %td.line_content{":class" => class_bindings}
                 {{{line.richText}}}
 
             %template{"v-if" => "line.isHeader"}
-              %td.diff-line-num.header{":class" => "#{class_bindings}"}
-              %td.diff-line-num.header{":class" => "#{class_bindings}"}
-              %td.line_content.header{":class" => "#{class_bindings}"}
+              %td.diff-line-num.header{":class" => class_bindings}
+              %td.diff-line-num.header{":class" => class_bindings}
+              %td.line_content.header{":class" => class_bindings}
                 %strong {{{line.richText}}}
                 %button.btn{"@click" => "handleSelected(line.id, line.section)"}
                   {{line.buttonTitle}}
