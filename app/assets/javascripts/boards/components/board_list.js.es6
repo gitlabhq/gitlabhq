@@ -1,4 +1,4 @@
-(function () {
+(() => {
   const BoardList = Vue.extend({
     props: {
       disabled: Boolean,
@@ -7,7 +7,7 @@
       loading: Boolean,
       issueLinkBase: String
     },
-    data: function () {
+    data () {
       return {
         scrollOffset: 250,
         loadingMore: false,
@@ -15,8 +15,8 @@
       };
     },
     watch: {
-      'filters': {
-        handler: function () {
+      filters: {
+        handler () {
           this.loadingMore = false;
           this.$els.list.scrollTop = 0;
         },
@@ -24,16 +24,16 @@
       }
     },
     methods: {
-      listHeight: function () {
+      listHeight () {
         return this.$els.list.getBoundingClientRect().height;
       },
-      scrollHeight: function () {
+      scrollHeight () {
         return this.$els.list.scrollHeight;
       },
-      scrollTop: function () {
+      scrollTop () {
         return this.$els.list.scrollTop + this.listHeight();
       },
-      loadNextPage: function () {
+      loadNextPage () {
         this.loadingMore = true;
         const getIssues = this.list.nextPage();
 
@@ -44,24 +44,24 @@
         }
       },
     },
-    ready: function () {
-      const list = this.list;
-      let options = _.extend({
-        group: 'issues',
-        sort: false,
-        disabled: this.disabled,
-        onAdd: (e) => {
-          const card = e.item,
-                fromListId = parseInt(e.from.getAttribute('data-board')),
-                toListId = parseInt(e.to.getAttribute('data-board')),
-                issueId = parseInt(card.getAttribute('data-issue'));
+    ready () {
+      const list = this.list,
+        options = gl.getBoardSortableDefaultOptions({
+          group: 'issues',
+          sort: false,
+          disabled: this.disabled,
+          onAdd (e) {
+            const card = e.item,
+                  fromListId = parseInt(e.from.getAttribute('data-board')),
+                  toListId = parseInt(e.to.getAttribute('data-board')),
+                  issueId = parseInt(card.getAttribute('data-issue'));
 
-          // Remove the new dom element & let vue add the element
-          card.parentNode.removeChild(card);
+            // Remove the new dom element & let vue add the element
+            card.parentNode.removeChild(card);
 
-          BoardsStore.moveCardToList(fromListId, toListId, issueId);
-        }
-      }, gl.boardSortableDefaultOptions);
+            BoardsStore.moveCardToList(fromListId, toListId, issueId);
+          }
+        });
 
       if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
         options.handle = '.js-card-drag-handle';

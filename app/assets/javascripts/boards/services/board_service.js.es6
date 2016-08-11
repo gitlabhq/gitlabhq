@@ -55,7 +55,8 @@ class BoardService {
   }
 
   getIssuesForList (id, filter = {}) {
-    const data = _.extend({ id }, filter)
+    let data = { id };
+    Object.keys(filter).forEach((key) => { data[key] = filter[key]; });
     this.setCSRF();
 
     return this.issues.get(data);

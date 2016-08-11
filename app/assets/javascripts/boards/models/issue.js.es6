@@ -10,11 +10,12 @@ class ListIssue {
 
     this.labels = [];
 
-    _.each(obj.labels, (label) => {
+    for (let i = 0, objLabelsLength = obj.labels.length; i < objLabelsLength; i++) {
+      const label = obj.labels[i];
       this.labels.push(new ListLabel(label));
-    });
+    }
 
-    this.priority = _.reduce(this.labels, (max, label) => {
+    this.priority = this.labels.reduce((max, label) => {
       return (label.priority < max) ? label.priority : max;
     }, Infinity);
   }
@@ -30,25 +31,28 @@ class ListIssue {
   }
 
   findLabel (findLabel) {
-    return _.find(this.labels, (label) => {
+    return this.labels.filter((label) => {
       return label.title === findLabel.title;
-    });
+    })[0];
   }
 
   removeLabel (removeLabel) {
     if (removeLabel) {
-      this.labels = _.reject(this.labels, (label) => {
-        return removeLabel.title === label.title;
+      this.labels = this.labels.filter((label) => {
+        return removeLabel.title !== label.title;
       });
     }
   }
 
   removeLabels (labels) {
-    _.each(labels, this.removeLabel.bind(this));
+    for (let i = 0, labelsLength = labels.length; i < labelsLength; i++) {
+      const label = labels[i];
+      this.removeLabel(label);
+    }
   }
 
   getLists () {
-    return _.filter(BoardsStore.state.lists, (list) => {
+    return BoardsStore.state.lists.filter((list) => {
       return list.findIssue(this.id);
     });
   }

@@ -4,7 +4,7 @@
       list: Object
     },
     methods: {
-      deleteBoard: function (e) {
+      deleteBoard (e) {
         e.stopImmediatePropagation();
         $(this.$el).tooltip('hide');
 

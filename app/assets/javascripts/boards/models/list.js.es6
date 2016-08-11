@@ -33,8 +33,8 @@ class List {
 
   destroy () {
     if (this.type !== 'blank') {
-      BoardsStore.state.lists = _.reject(BoardsStore.state.lists, (list) => {
-        return list.id === this.id;
+      BoardsStore.state.lists = BoardsStore.state.lists.filter((list) => {
+        return list.id !== this.id;
       });
       BoardsStore.updateNewListDropdown();
 
@@ -59,11 +59,14 @@ class List {
   }
 
   getIssues (emptyIssues = true) {
-    let data = _.extend({ page: this.page }, this.filters);
+    const filters = this.filters;
+    let data = { page: this.page };
+
+    Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
 
     if (this.label) {
-      data.label_name = _.reject(data.label_name, (label) => {
-        return label === this.label.title;
+      data.label_name = data.label_name.filter((label) => {
+        return label !== this.label.title;
       });
     }
 
@@ -85,9 +88,10 @@ class List {
   }
 
   createIssues (data) {
-    _.each(data, (issueObj) => {
+    for (let i = 0, dataLength = data.length; i < dataLength; i++) {
+      const issueObj = data[i];
       this.issues.push(new ListIssue(issueObj));
-    });
+    }
   }
 
   addIssue (issue, listFrom) {
@@ -99,20 +103,20 @@ class List {
   }
 
   findIssue (id) {
-    return _.find(this.issues, (issue) => {
+    return this.issues.filter((issue) => {
       return issue.id === id;
-    });
+    })[0];
   }
 
   removeIssue (removeIssue) {
-    this.issues = _.reject(this.issues, (issue) => {
+    this.issues = this.issues.filter((issue) => {
       const matchesRemove = removeIssue.id === issue.id;
 
       if (matchesRemove) {
         issue.removeLabel(this.label);
       }
 
-      return matchesRemove;
+      return !matchesRemove;
     });
   }
 }

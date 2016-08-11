@@ -1,25 +1,25 @@
-(function () {
+(() => {
   const Board = Vue.extend({
     props: {
       list: Object,
       disabled: Boolean,
       issueLinkBase: String
     },
-    data: function () {
+    data () {
       return {
         query: '',
         filters: BoardsStore.state.filters
       };
     },
     watch: {
-      'query': function () {
+      query () {
         if (this.list.canSearch()) {
           this.list.filters = this.getFilterData();
           this.list.getIssues(true);
         }
       },
-      'filters': {
-        handler: function () {
+      filters: {
+        handler () {
           this.list.page = 1;
           this.list.getIssues(true);
         },
@@ -27,30 +27,33 @@
       }
     },
     methods: {
-      clearSearch: function () {
+      clearSearch () {
         this.query = '';
       },
-      getFilterData: function () {
-        const queryData = this.list.canSearch() ? { search: this.query } : {};
+      getFilterData () {
+        const filters = this.filters;
+        let queryData = this.list.canSearch() ? { search: this.query } : {};
+        
+        Object.keys(filters).forEach((key) => { queryData[key] = filters[key]; });
 
-        return _.extend(queryData, this.filters);
+        return queryData;
       }
     },
     computed: {
-      isPreset: function () {
+      isPreset () {
         return this.list.type === 'backlog' || this.list.type === 'done' || this.list.type === 'blank';
       }
     },
-    ready: function () {
-      let options = _.extend({
+    ready () {
+      const options = gl.getBoardSortableDefaultOptions({
         disabled: this.disabled,
         group: 'boards',
         draggable: '.is-draggable',
         handle: '.js-board-handle',
-        onUpdate: function (e) {
+        onUpdate (e) {
           BoardsStore.moveList(e.oldIndex, e.newIndex);
         }
-      }, gl.boardSortableDefaultOptions);
+      });
 
       if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
         options.handle = '.js-board-drag-handle';

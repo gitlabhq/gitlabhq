@@ -1,4 +1,4 @@
-(function () {
+(() => {
   const BoardCard = Vue.extend({
     props: {
       list: Object,
@@ -7,7 +7,7 @@
       disabled: Boolean
     },
     methods: {
-      filterByLabel: function (label, $event) {
+      filterByLabel (label, $event) {
         let labelToggleText = label.title;
         const labelIndex = BoardsStore.state.filters['label_name'].indexOf(label.title);
         $($event.target).tooltip('hide');

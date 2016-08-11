@@ -1,18 +1,18 @@
-$(function () {
+$(() => {
   $('.js-new-board-list').each(function () {
     const $this = $(this);
 
     new gl.CreateLabelDropdown($this.closest('.dropdown').find('.dropdown-new-label'), $this.data('project-id'));
 
     $this.glDropdown({
-      data: function(term, callback) {
+      data(term, callback) {
         $.ajax({
           url: $this.attr('data-labels')
         }).then((resp) => {
           callback(resp);
         });
       },
-      renderRow: (label) => {
+      renderRow (label) {
         const active = BoardsStore.findList('title', label.title),
               $li = $('<li />',),
               $a = $('<a />', {
@@ -32,7 +32,7 @@ $(function () {
 			},
 			filterable: true,
       selectable: true,
-      clicked: (label, $el, e) => {
+      clicked (label, $el, e) {
         e.preventDefault();
 
         if (!BoardsStore.findList('title', label.title)) {

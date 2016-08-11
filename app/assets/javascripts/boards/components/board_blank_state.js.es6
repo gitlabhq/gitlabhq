@@ -1,6 +1,6 @@
 (() => {
   const BoardBlankState = Vue.extend({
-    data: function () {
+    data () {
       return {
         predefinedLabels: [
           new ListLabel({ title: 'Development', color: '#5CB85C' }),
@@ -11,11 +11,13 @@
       }
     },
     methods: {
-      addDefaultLists: function (e) {
+      addDefaultLists (e) {
         e.stopImmediatePropagation();
         BoardsStore.removeBlankState();
 
-        _.each(this.predefinedLabels, (label, i) => {
+        for (let i = 0, labelsLength = this.predefinedLabels.length; i < labelsLength; i++) {
+          const label = this.predefinedLabels[i];
+
           BoardsStore.addList({
             title: label.title,
             position: i,
@@ -25,7 +27,7 @@
               color: label.color
             }
           });
-        });
+        }
 
         // Save the labels
         gl.boardService
@@ -33,15 +35,16 @@
           .then((resp) => {
             const data = resp.json();
 
-            _.each(data, (listObj) => {
-              const list = BoardsStore.findList('title', listObj.title);
+            for (let i = 0, dataLength = data.length; i < dataLength; i++) {
+              const listObj = data[i],
+                    list = BoardsStore.findList('title', listObj.title);
               list.id = listObj.id;
               list.label.id = listObj.label.id;
               list.getIssues();
-            });
+            }
           });
       },
-      clearBlankState: function () {
+      clearBlankState () {
         BoardsStore.removeBlankState();
       }
     }
