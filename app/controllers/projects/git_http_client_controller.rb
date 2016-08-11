@@ -29,6 +29,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         # Not allowed
       else
         @user = auth_result.user
+        check_2fa(auth_result.type)
       end
 
       if ci? || user
@@ -89,6 +90,12 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     # Something is wrong with params[:project_id]; do not pass it on.
     [nil, nil]
+  end
+
+  def check_2fa(auth_type)
+    if user && user.two_factor_enabled? && auth_type == :gitlab_or_ldap
+      render plain: "HTTP Basic: Access denied\nYou have 2FA enabled, please use a personal access token for Git over HTTP\n", status: 401
+    end
   end
 
   def repository
