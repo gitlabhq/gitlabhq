@@ -163,7 +163,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     begin
-      MergeRequests::ResolveService.new(project, current_user, params).execute(@merge_request)
+      MergeRequests::ResolveService.new(@merge_request.source_project, current_user, params).execute(@merge_request)
 
       flash[:conflicts_message] = 'Merge conflicts resolved.'
       flash.keep
