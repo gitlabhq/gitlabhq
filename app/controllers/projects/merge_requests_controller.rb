@@ -135,7 +135,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.html { define_discussion_vars }
 
       format.json do
-        if @merge_request.can_resolve_conflicts_in_ui?
+        if @merge_request.conflicts_can_be_resolved_in_ui?
           render json: @merge_request.conflicts
         else
           render json: {

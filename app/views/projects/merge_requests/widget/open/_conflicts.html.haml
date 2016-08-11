@@ -4,7 +4,7 @@
 
 %p
   Please
-  - if @merge_request.can_resolve_conflicts_in_ui?
+  - if @merge_request.conflicts_can_be_resolved_in_ui?
     = link_to "resolve these conflicts", conflicts_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
     or
   - if @merge_request.can_be_merged_via_command_line_by?(current_user)

@@ -720,14 +720,16 @@ class MergeRequest < ActiveRecord::Base
     @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
   end
 
-  def can_resolve_conflicts_in_ui?
-    return false unless cannot_be_merged?
-    return false unless has_complete_diff_refs?
+  def conflicts_can_be_resolved_in_ui?
+    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
+
+    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
+    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
 
     begin
-      conflicts.files.each(&:lines)
+      @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
     rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
-      false
+      @conflicts_can_be_resolved_in_ui = false
     end
   end
 end
