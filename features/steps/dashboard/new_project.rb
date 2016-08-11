@@ -14,14 +14,13 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_content('Project name')
   end
 
-  step 'I see all possible import optios' do
+  step 'I see all possible import options' do
     expect(page).to have_link('GitHub')
     expect(page).to have_link('Bitbucket')
     expect(page).to have_link('GitLab.com')
     expect(page).to have_link('Gitorious.org')
     expect(page).to have_link('Google Code')
     expect(page).to have_link('Repo by URL')
-    expect(page).to have_link('GitLab export')
   end
 
   step 'I click on "Import project from GitHub"' do
