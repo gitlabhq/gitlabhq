@@ -53,6 +53,10 @@ module Elastic
       def searchable?
         true
       end
+
+      def es_parent
+        project_id
+      end
     end
 
     module ClassMethods
@@ -63,6 +67,16 @@ module Elastic
         end
 
         { fields: es_fields }
+      end
+
+      def import_with_parent(options = {})
+        transform = lambda do |r|
+          { index: { _id: r.id, _parent: r.es_parent, data: r.__elasticsearch__.as_indexed_json } }
+        end
+
+        options.merge!(transform: transform)
+
+        self.import(options)
       end
 
       def basic_query_hash(fields, query)
@@ -111,16 +125,41 @@ module Elastic
         }
       end
 
-      def project_ids_filter(query_hash, project_ids)
+      def project_ids_filter(query_hash, project_ids, public_and_internal_projects = true)
         if project_ids
+          condition = project_ids_condition(project_ids, public_and_internal_projects)
+
           query_hash[:query][:bool][:filter] = {
-            bool: {
-              must: [ { terms: { project_id: project_ids } } ]
+            has_parent: {
+              parent_type: "project",
+              query: {
+                bool: {
+                  should: condition
+                }
+              }
             }
           }
         end
 
         query_hash
+      end
+
+      def project_ids_condition(project_ids, public_and_internal_projects)
+        conditions = [{
+          terms: { id: project_ids }
+        }]
+
+        if public_and_internal_projects
+          conditions << {
+            term: { visibility_level: Project::PUBLIC }
+          }
+
+          conditions << {
+            term: { visibility_level: Project::INTERNAL }
+          }
+        end
+
+        conditions
       end
     end
   end

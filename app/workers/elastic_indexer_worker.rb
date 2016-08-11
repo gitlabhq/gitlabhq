@@ -13,7 +13,12 @@ class ElasticIndexerWorker
     when /index|update/
       record = klass.find(record_id)
       record.__elasticsearch__.client = client
-      record.__elasticsearch__.__send__ "#{operation}_document"
+
+      if [Project, PersonalSnippet, ProjectSnippet, Snippet].include?(klass)
+        record.__elasticsearch__.__send__ "#{operation}_document"
+      else
+        record.__elasticsearch__.__send__ "#{operation}_document", parent: record.es_parent
+      end
 
       update_issue_notes(record, options["changed_fields"]) if klass == Issue
     when /delete/
@@ -27,7 +32,7 @@ class ElasticIndexerWorker
 
   def update_issue_notes(record, changed_fields)
     if changed_fields && (changed_fields & ISSUE_TRACKED_FIELDS).any?
-      Note.import query: -> { where(noteable: record) }
+      Note.import_with_parent query: -> { where(noteable: record) }
     end
   end
 

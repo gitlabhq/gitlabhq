@@ -7,7 +7,6 @@ module Elastic
 
       mappings do
         indexes :id,               type: :integer
-
         indexes :title,            type: :string,
                                    index_options: 'offsets'
         indexes :file_name,        type: :string,
@@ -17,7 +16,6 @@ module Elastic
         indexes :created_at,       type: :date
         indexes :updated_at,       type: :date
         indexes :state,            type: :string
-
         indexes :project_id,       type: :integer
         indexes :author_id,        type: :integer
         indexes :visibility_level, type: :integer

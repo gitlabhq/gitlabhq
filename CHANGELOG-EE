@@ -7,6 +7,7 @@ v 8.11.0 (unreleased)
   - Removed unused GitLab GEO database index
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
+  - [Elastic] Significant improvement of global search performance
 
 v 8.10.5
   - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637

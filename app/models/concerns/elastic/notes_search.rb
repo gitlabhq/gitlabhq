@@ -5,7 +5,7 @@ module Elastic
     included do
       include ApplicationSearch
 
-      mappings do
+      mappings _parent: { type: 'project' } do
         indexes :id,          type: :integer
         indexes :note,        type: :string,
                               index_options: 'offsets'
@@ -56,7 +56,7 @@ module Elastic
           query_hash[:track_scores] = true
         end
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
         query_hash[:sort] = [
