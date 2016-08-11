@@ -5,6 +5,7 @@ v 8.11.0 (unreleased)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Improve diff performance by eliminating redundant checks for text blobs
+  - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
   - API: Endpoints for enabling and disabling deploy keys
   - Use long options for curl examples in documentation !5703 (winniehell)
