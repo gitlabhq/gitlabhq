@@ -684,23 +684,37 @@ describe Project, models: true do
     end
   end
 
-  describe '#pipeline' do
-    let(:project) { create :project }
-    let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
+  describe '#pipeline_for' do
+    let(:project) { create(:project) }
+    let!(:pipeline) { create_pipeline }
 
-    subject { project.pipeline_for('master', pipeline.sha) }
+    shared_examples 'giving the correct pipeline' do
+      it { is_expected.to eq(pipeline) }
 
-    it { is_expected.to eq(pipeline) }
+      context 'return latest' do
+        let!(:pipeline2) { create_pipeline }
 
-    context 'return latest' do
-      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
-
-      before do
-        pipeline
-        pipeline2
+        it { is_expected.to eq(pipeline2) }
       end
+    end
 
-      it { is_expected.to eq(pipeline2) }
+    context 'with explicit sha' do
+      subject { project.pipeline_for('master', pipeline.sha) }
+
+      it_behaves_like 'giving the correct pipeline'
+    end
+
+    context 'with implicit sha' do
+      subject { project.pipeline_for('master') }
+
+      it_behaves_like 'giving the correct pipeline'
+    end
+
+    def create_pipeline
+      create(:ci_pipeline,
+             project: project,
+             ref: 'master',
+             sha: project.commit('master').sha)
     end
   end
 
