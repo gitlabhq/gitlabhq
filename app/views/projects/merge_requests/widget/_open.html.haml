@@ -9,7 +9,7 @@
       = render 'projects/merge_requests/widget/open/missing_branch'
     - elsif @merge_request.unchecked?
       = render 'projects/merge_requests/widget/open/check'
-    - elsif @merge_request.cannot_be_merged?
+    - elsif @merge_request.cannot_be_merged? && !params[:resolved_conflicts]
       = render 'projects/merge_requests/widget/open/conflicts'
     - elsif @merge_request.work_in_progress?
       = render 'projects/merge_requests/widget/open/wip'

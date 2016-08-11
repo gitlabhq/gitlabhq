@@ -168,7 +168,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       flash[:conflicts_message] = 'Merge conflicts resolved.'
       flash.keep
 
-      render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request) }
+      render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
     rescue Gitlab::Conflict::File::MissingResolution => e
       render status: :bad_request, json: { message: e.message }
     end
