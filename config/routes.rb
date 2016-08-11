@@ -869,7 +869,10 @@ Rails.application.routes.draw do
         resources :badges, only: [:index] do
           collection do
             scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
-              get :build, constraints: { format: /svg/ }
+              constraints format: /svg/ do
+                get :build
+                get :coverage
+              end
             end
           end
         end
