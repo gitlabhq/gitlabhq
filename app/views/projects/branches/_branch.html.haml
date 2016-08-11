@@ -40,7 +40,10 @@
             %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
               %li.dropdown-header Artifacts
               - unless pipeline.latest?
-                = " (not latest, but #{link_to(pipeline.short_sha, namespace_project_pipeline_path(@project.namespace, @project, pipeline))})"
+                - latest_pipeline = @project.pipeline_for(branch.name)
+                %li
+                  %span= latest_pipeline.status.humanize
+                %li.dropdown-header Previous Artifacts
               - artifacts.each do |job|
                 %li
                   = link_to search_namespace_project_artifacts_path(@project.namespace, @project, branch.name, 'download', job: job.name), rel: 'nofollow' do
