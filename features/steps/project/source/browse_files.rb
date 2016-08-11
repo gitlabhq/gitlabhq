@@ -69,6 +69,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I edit code' do
+    expect(page).to have_selector('.file-editor')
     set_new_content
   end
 

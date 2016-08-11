@@ -4,26 +4,32 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   include SharedProject
 
   step 'I should see push event' do
+    sleep 1
     expect(page).to have_selector('span.pushed')
   end
 
   step 'I should not see push event' do
+    sleep 1
     expect(page).not_to have_selector('span.pushed')
   end
 
   step 'I should see new member event' do
+    sleep 1
     expect(page).to have_selector('span.joined')
   end
 
   step 'I should not see new member event' do
+    sleep 1
     expect(page).not_to have_selector('span.joined')
   end
 
   step 'I should see merge request event' do
+    sleep 1
     expect(page).to have_selector('span.accepted')
   end
 
   step 'I should not see merge request event' do
+    sleep 1
     expect(page).not_to have_selector('span.accepted')
   end
 
