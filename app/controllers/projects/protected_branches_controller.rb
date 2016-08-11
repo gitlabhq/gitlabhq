@@ -25,7 +25,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def show
     @matching_branches = @protected_branch.matching(@project.repository.branches)
-    gon.push(js_access_levels)
+    gon.push(access_levels_options)
   end
 
   def update
@@ -78,6 +78,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def load_gon_index
     params = { open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } }
+    params.merge!(current_project_id: @project.id) if @project
     gon.push(params.merge(access_levels_options))
   end
 end

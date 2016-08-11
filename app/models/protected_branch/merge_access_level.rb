@@ -8,6 +8,8 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
   validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
                                                              Gitlab::Access::DEVELOPER] }
 
+  scope :by_user, -> (user) { where(user: user ) }
+
   def self.human_access_levels
     {
       Gitlab::Access::MASTER => "Masters",

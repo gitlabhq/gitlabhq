@@ -14,6 +14,20 @@ class ProtectedBranch < ActiveRecord::Base
   accepts_nested_attributes_for :push_access_levels
   accepts_nested_attributes_for :merge_access_levels
 
+  # Scopes
+
+  # Returns all merge access levels (for protected branches in scope) that grant merge
+  # access to the given user.
+  def self.merge_access_by_user(user)
+    MergeAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(MergeAccessLevel.by_user(user))
+  end
+
+  # Returns all push access levels (for protected branches in scope) that grant push
+  # access to the given user.
+  def self.push_access_by_user(user)
+    PushAccessLevel.joins(:protected_branch).where(protected_branch_id: self.ids).merge(PushAccessLevel.by_user(user))
+  end
+
   def commit
     project.commit(self.name)
   end

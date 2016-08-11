@@ -9,6 +9,8 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
                                                              Gitlab::Access::DEVELOPER,
                                                              Gitlab::Access::NO_ACCESS] }
 
+  scope :by_user, -> (user) { where(user: user ) }
+
   def self.human_access_levels
     {
       Gitlab::Access::MASTER => "Masters",

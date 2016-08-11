@@ -18,7 +18,7 @@ class AllowNullsForProtectedBranchAccessLevels < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def change
-    change_column :protected_branch_merge_access_levels, :access_level, :integer, null: true
-    change_column :protected_branch_push_access_levels, :access_level, :integer, null: true
+    change_column_null :protected_branch_merge_access_levels, :access_level, true
+    change_column_null :protected_branch_push_access_levels, :access_level, true
   end
 end

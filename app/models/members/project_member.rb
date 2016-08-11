@@ -108,16 +108,8 @@ class ProjectMember < Member
 
   def delete_member_branch_protection
     if user.present? && project.present?
-      push_access_levels = ProtectedBranch::PushAccessLevel.joins(:protected_branch).
-                           where('protected_branches.project_id' => self.project.id,
-                                 'protected_branch_push_access_levels.user_id' => self.user.id)
-
-      merge_access_levels = ProtectedBranch::MergeAccessLevel.joins(:protected_branch).
-                            where('protected_branches.project_id' => self.project.id,
-                                  'protected_branch_merge_access_levels.user_id' => self.user.id)
-
-      push_access_levels.destroy_all
-      merge_access_levels.destroy_all
+      project.protected_branches.merge_access_by_user(user).destroy_all
+      project.protected_branches.push_access_by_user(user).destroy_all
     end
   end
 
