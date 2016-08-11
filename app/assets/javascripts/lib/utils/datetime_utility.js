@@ -67,6 +67,14 @@
       $.timeago.settings.strings = tmpLocale;
     };
 
+    w.gl.utils.getDayDifference = function(a, b) {
+      var millisecondsPerDay = 1000 * 60 * 60 * 24;
+      var date1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+      var date2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+      return Math.floor((date2 - date1) / millisecondsPerDay);
+    }
+
   })(window);
 
 }).call(this);
