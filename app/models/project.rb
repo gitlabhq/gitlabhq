@@ -999,6 +999,10 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
+  def add_user(user, access_level, current_user = nil)
+    team.add_user(user, access_level, current_user)
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end

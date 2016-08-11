@@ -8,6 +8,7 @@ class ProjectMember < Member
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
   validates_format_of :source_type, with: /\AProject\z/
+  validates :access_level, inclusion: { in: Gitlab::Access.values }
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :in_project, ->(project) { where(source_id: project.id) }
