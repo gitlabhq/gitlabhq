@@ -23,6 +23,7 @@ v 8.11.0 (unreleased)
   - Cache highlighted diff lines for merge requests
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Show member roles to all users on members page
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
