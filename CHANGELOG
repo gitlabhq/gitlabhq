@@ -6,6 +6,7 @@ v 8.11.0 (unreleased)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
+  - Update to Ruby 2.3.1. !4948
   - Improve diff performance by eliminating redundant checks for text blobs
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
