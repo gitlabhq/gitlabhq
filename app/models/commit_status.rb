@@ -74,13 +74,33 @@ class CommitStatus < ActiveRecord::Base
     around_transition any => [:success, :failed, :canceled] do |commit_status, block|
       block.call
 
-      commit_status.pipeline.process! if commit_status.pipeline
+      commit_status.pipeline.try(:process!)
     end
 
-    around_transition any => [:pending, :running] do |commit_status, block|
-      block.call
+    # Try to update the pipeline status
 
-      commit_status.pipeline.reload_status! if commit_status.pipeline
+    after_transition any => :pending do |commit_status|
+      commit_status.pipeline.try(:start)
+    end
+
+    after_transition any => :running do |commit_status|
+      commit_status.pipeline.try(:run)
+    end
+
+    after_transition any => :success do |commit_status|
+      commit_status.pipeline.try(:succeed)
+    end
+
+    after_transition any => :failed do |commit_status|
+      commit_status.pipeline.try(:drop)
+    end
+
+    after_transition any => :skipped do |commit_status|
+      commit_status.pipeline.try(:skip)
+    end
+
+    after_transition any => :canceled do |commit_status|
+      commit_status.pipeline.try(:cancel)
     end
   end
 

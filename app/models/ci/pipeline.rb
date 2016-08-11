@@ -19,6 +19,40 @@ module Ci
 
     after_save :keep_around_commits
 
+    state_machine :status, initial: :created do
+      event :start do
+        transition any => :pending, if: ->(pipeline) { pipeline.can_transition_to?('pending') }
+      end
+
+      event :run do
+        transition any => :running, if: ->(pipeline) { pipeline.can_transition_to?('running') }
+      end
+
+      event :drop do
+        transition any => :failed, if: ->(pipeline) { pipeline.can_transition_to?('failed') }
+      end
+
+      event :succeed do
+        transition any => :success, if: ->(pipeline) { pipeline.can_transition_to?('success') }
+      end
+
+      event :cancel do
+        transition any => :canceled, if: ->(pipeline) { pipeline.can_transition_to?('canceled') }
+      end
+
+      event :skip do
+        transition any => :skipped, if: ->(pipeline) { pipeline.can_transition_to?('skipped') }
+      end
+
+      before_transition do |pipeline|
+        pipeline.update_counters
+      end
+
+      after_transition any => any do |pipeline, transition|
+        pipeline.execute_hooks unless transition.loopback?
+      end
+    end
+
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest_successful_for, ->(ref = default_branch) do
       where(ref: ref).success.order(id: :desc).limit(1)
@@ -89,16 +123,12 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
-
-      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
-
-      reload_status!
     end
 
     def latest?
@@ -185,8 +215,6 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
-
-      reload_status!
     end
 
     def predefined_variables
@@ -194,15 +222,12 @@ module Ci
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
       ]
     end
+    
+    def can_transition_to?(expected_status)
+      current_status == expected_status
+    end
 
-    def reload_status!
-      reload
-      self.status =
-        if yaml_errors.blank?
-          statuses.latest.status || 'skipped'
-        else
-          'failed'
-        end
+    def update_counters
       self.started_at = statuses.started_at
       self.finished_at = statuses.finished_at
       self.duration = statuses.latest.duration
@@ -210,6 +235,12 @@ module Ci
     end
 
     private
+
+    def current_status
+      return 'failed' unless yaml_errors.blank?
+
+      statuses.latest.status || 'skipped'
+    end
 
     def keep_around_commits
       return unless project

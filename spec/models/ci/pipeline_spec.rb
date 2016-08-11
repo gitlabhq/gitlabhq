@@ -51,25 +51,6 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe "#finished_at" do
-    let(:pipeline) { FactoryGirl.create :ci_pipeline }
-
-    it "returns finished_at of latest build" do
-      build = FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 60
-      FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 120
-      pipeline.reload_status!
-
-      expect(pipeline.finished_at.to_i).to eq(build.finished_at.to_i)
-    end
-
-    it "returns nil if there is no finished build" do
-      FactoryGirl.create :ci_not_started_build, pipeline: pipeline
-      pipeline.reload_status!
-
-      expect(pipeline.finished_at).to be_nil
-    end
-  end
-
   describe "coverage" do
     let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
     let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
@@ -139,31 +120,20 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#reload_status!' do
+  describe '#update_counters' do
     let(:pipeline) { create :ci_empty_pipeline, project: project }
-
-    context 'dependent objects' do
-      let(:commit_status) { create :commit_status, :pending, pipeline: pipeline }
-
-      it 'executes reload_status! after succeeding dependent object' do
-        expect(pipeline).to receive(:reload_status!).and_return(true)
-
-        commit_status.success
-      end
-    end
 
     context 'updates' do
       let(:current) { Time.now.change(usec: 0) }
       let(:build) { FactoryGirl.create :ci_build, pipeline: pipeline, started_at: current - 120, finished_at: current - 60 }
 
       before do
-        build
-        pipeline.reload_status!
+        build.skip
       end
 
       [:status, :started_at, :finished_at, :duration].each do |param|
         it "#{param}" do
-          expect(pipeline.send(param)).to eq(build.send(param))
+          expect(pipeline.reload.send(param)).to eq(build.send(param))
         end
       end
     end
