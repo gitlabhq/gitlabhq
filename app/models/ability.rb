@@ -71,7 +71,7 @@ class Ability
     def abilities_by_subject_class(user:, subject:)
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
-      when Project then project_abilities(user, subject)
+      when Project then ProjectPolicy.new(user, subject).abilities
       when Issue then issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
@@ -85,7 +85,7 @@ class Ability
       when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
       when Ci::Runner then runner_abilities(user, subject)
       else []
-      end.concat(global_abilities(user))
+      end + global_abilities(user)
     end
 
     # List of possible abilities for anonymous user
@@ -193,35 +193,8 @@ class Ability
     end
 
     def project_abilities(user, project)
-      rules = []
-
-      # Push abilities on the users team role
-      rules.push(*project_team_rules(project.team, user))
-
-      owner = user.admin? ||
-              project.owner == user ||
-              (project.group && project.group.has_owner?(user))
-
-      if owner
-        rules.push(*project_owner_rules)
-      end
-
-      if project.public? || (project.internal? && !user.external?)
-        rules.push(*public_project_rules)
-
-        # Allow to read builds for internal projects
-        rules << :read_build if project.public_builds?
-
-        unless owner || project.team.member?(user) || project_group_member?(project, user)
-          rules << :request_access if project.request_access_enabled
-        end
-      end
-
-      if project.archived?
-        rules -= project_archived_rules
-      end
-
-      rules - project_disabled_features_rules(project)
+      # temporary patch, deleteme before merge
+      ProjectPolicy.new(user, project).abilities.to_a
     end
 
     def project_team_rules(team, user)
