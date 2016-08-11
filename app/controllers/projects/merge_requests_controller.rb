@@ -139,9 +139,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       format.json do
         if @merge_request.conflicts_can_be_resolved_in_ui?
           render json: @merge_request.conflicts
+        elsif @merge_request.can_be_merged?
+          render json: {
+            message: 'The merge conflicts for this merge request have already been resolved. Please return to the merge request.',
+            type: 'error'
+          }
         else
           render json: {
-            message: 'Unable to resolve conflicts in the web interface for this merge request.',
+            message: 'The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally.',
             type: 'error'
           }
         end
@@ -150,6 +155,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def resolve_conflicts
+    return render_404 unless @merge_request.conflicts_can_be_resolved_in_ui?
+
+    if @merge_request.can_be_merged?
+      render status: :bad_request, json: { message: 'The merge conflicts for this merge request have already been resolved.' }
+      return
+    end
+
     begin
       MergeRequests::ResolveService.new(project, current_user, params).execute(@merge_request)
 

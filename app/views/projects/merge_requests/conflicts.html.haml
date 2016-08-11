@@ -17,12 +17,12 @@
   .loading{"v-if" => "isLoading"}
     %i.fa.fa-spinner.fa-spin
 
-  .content-block.oneline-block{"v-if" => "hasError"}
-    %p {{conflictsData.errorMessage}}
+  .nothing-here-block{"v-if" => "hasError"}
+    {{conflictsData.errorMessage}}
 
-  = render partial: "projects/merge_requests/conflicts/commit_stats.html.haml"
+  = render partial: "projects/merge_requests/conflicts/commit_stats"
 
   .files-wrapper{"v-if" => "!isLoading && !hasError"}
-    = render partial: "projects/merge_requests/conflicts/parallel_view.html.haml", locals: { class_bindings: class_bindings }
-    = render partial: "projects/merge_requests/conflicts/inline_view.html.haml", locals: { class_bindings: class_bindings }
-    = render partial: "projects/merge_requests/conflicts/submit_form.html.haml"
+    = render partial: "projects/merge_requests/conflicts/parallel_view", locals: { class_bindings: class_bindings }
+    = render partial: "projects/merge_requests/conflicts/inline_view", locals: { class_bindings: class_bindings }
+    = render partial: "projects/merge_requests/conflicts/submit_form"
