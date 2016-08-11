@@ -51,7 +51,7 @@ describe Gitlab::SlashCommands::Dsl do
         { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'], noop: false, cond_block: nil },
         { name: :two_args, aliases: [], description: '', params: ['The first argument', 'The second argument'], noop: false, cond_block: nil },
         { name: :cc, aliases: [], description: '', params: [], noop: true, cond_block: nil },
-        { name: :wildcard, aliases: [], description: '', params: [], noop: false, cond_block: nil}
+        { name: :wildcard, aliases: [], description: '', params: [], noop: false, cond_block: nil }
       ]
     end
 

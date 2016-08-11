@@ -140,7 +140,7 @@ module SlashCommands
     condition do
       noteable.persisted? &&
       current_user &&
-      !TodosFinder.new(current_user).execute.exists?(target: noteable)
+      !TodoService.new.todo_exist?(noteable, current_user)
     end
     command :todo do
       @updates[:todo_event] = 'add'
@@ -149,7 +149,7 @@ module SlashCommands
     desc 'Mark todo as done'
     condition do
       current_user &&
-      TodosFinder.new(current_user).execute.exists?(target: noteable)
+      TodoService.new.todo_exist?(noteable, current_user)
     end
     command :done do
       @updates[:todo_event] = 'done'

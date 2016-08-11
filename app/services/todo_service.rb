@@ -154,6 +154,10 @@ class TodoService
     create_todos(current_user, attributes)
   end
 
+  def todo_exist?(issuable, current_user)
+    TodosFinder.new(current_user).execute.exists?(target: issuable)
+  end
+
   private
 
   def create_todos(users, attributes)

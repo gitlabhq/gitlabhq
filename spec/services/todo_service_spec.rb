@@ -290,6 +290,18 @@ describe TodoService, services: true do
         should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
       end
     end
+
+    describe '#todo_exists?' do
+      it 'returns false when no todo exist for the given issuable' do
+        expect(service.todo_exist?(unassigned_issue, author)).to be_falsy
+      end
+
+      it 'returns true when a todo exist for the given issuable' do
+        service.mark_todo(unassigned_issue, author)
+
+        expect(service.todo_exist?(unassigned_issue, author)).to be_truthy
+      end
+    end
   end
 
   describe 'Merge Requests' do
