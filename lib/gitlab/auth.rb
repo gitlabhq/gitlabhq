@@ -14,6 +14,8 @@ module Gitlab
           result.type = :gitlab_or_ldap
         elsif result.user = oauth_access_token_check(login, password)
           result.type = :oauth
+        elsif result.user = personal_access_token_check(login, password)
+          result.type = :personal_token
         end
 
         rate_limit!(ip, success: !!result.user || (result.type == :ci), login: login)
@@ -80,6 +82,13 @@ module Gitlab
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
           token && token.accessible? && User.find_by(id: token.resource_owner_id)
+        end
+      end
+
+      def personal_access_token_check(login, password)
+        if login && password
+          user = User.find_by_personal_access_token(password)
+          user if user && user.username == login
         end
       end
     end
