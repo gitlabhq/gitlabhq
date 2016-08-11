@@ -6,7 +6,7 @@ module Gitlab
       #
       # Template object will be passed to badge.svg.erb template.
       #
-      class Template
+      class Template < Badge::Template
         STATUS_COLOR = {
           success: '#4c1',
           failed: '#e05d44',
@@ -38,24 +38,8 @@ module Gitlab
           54
         end
 
-        def key_color
-          '#555'
-        end
-
         def value_color
           STATUS_COLOR[@status.to_sym] || STATUS_COLOR[:unknown]
-        end
-
-        def key_text_anchor
-          key_width / 2
-        end
-
-        def value_text_anchor
-          key_width + (value_width / 2)
-        end
-
-        def width
-          key_width + value_width
         end
       end
     end
