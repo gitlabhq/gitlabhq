@@ -7,6 +7,12 @@ describe Gitlab::Badge::Build::Metadata do
 
   it_behaves_like 'badge metadata'
 
+  describe '#title' do
+    it 'returns build status title' do
+      expect(metadata.title).to eq 'build status'
+    end
+  end
+
   describe '#image_url' do
     it 'returns valid url' do
       expect(metadata.image_url).to include 'badges/feature/build.svg'

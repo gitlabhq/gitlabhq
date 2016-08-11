@@ -4,23 +4,15 @@ module Gitlab
       ##
       # Class that describes coverage badge metadata
       #
-      class Metadata
-        include Gitlab::Application.routes.url_helpers
-        include ActionView::Helpers::AssetTagHelper
-        include ActionView::Helpers::UrlHelper
-
+      class Metadata < Badge::Metadata
         def initialize(badge)
           @project = badge.project
           @ref = badge.ref
           @job = badge.job
         end
 
-        def to_html
-          link_to(image_tag(image_url, alt: 'coverage report'), link_url)
-        end
-
-        def to_markdown
-          "[![coverage report](#{image_url})](#{link_url})"
+        def title
+          'coverage report'
         end
 
         def image_url

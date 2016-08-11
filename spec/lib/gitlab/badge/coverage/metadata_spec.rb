@@ -10,6 +10,12 @@ describe Gitlab::Badge::Coverage::Metadata do
 
   it_behaves_like 'badge metadata'
 
+  describe '#title' do
+    it 'returns coverage report title' do
+      expect(metadata.title).to eq 'coverage report'
+    end
+  end
+
   describe '#image_url' do
     it 'returns valid url' do
       expect(metadata.image_url).to include 'badges/feature/coverage.svg'
