@@ -14,6 +14,7 @@ v 8.11.0 (unreleased)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
+  - Add a button to download latest successful artifacts for branches and tags
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
