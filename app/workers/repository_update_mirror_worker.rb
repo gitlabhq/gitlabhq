@@ -4,16 +4,12 @@ class RepositoryUpdateMirrorWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
 
-  LEASE_TIMEOUT = 300
-
   sidekiq_options queue: :gitlab_shell
 
   attr_accessor :project, :repository, :current_user
 
   def perform(project_id)
     begin
-      return unless try_obtain_lease(project_id)
-
       @project = Project.find(project_id)
       @current_user = @project.mirror_user || @project.creator
 
@@ -29,13 +25,5 @@ class RepositoryUpdateMirrorWorker
 
       raise UpdateMirrorError, "#{ex.class}: #{Gitlab::UrlSanitizer.sanitize(ex.message)}"
     end
-  end
-
-  private
-
-  def try_obtain_lease(project_id)
-    # Using 5 minutes timeout based on the 95th percent of timings (currently max of 25 seconds)
-    lease = ::Gitlab::ExclusiveLease.new("repository_update_mirror:#{project_id}", timeout: LEASE_TIMEOUT)
-    lease.try_obtain
   end
 end
