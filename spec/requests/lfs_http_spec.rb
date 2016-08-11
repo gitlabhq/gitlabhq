@@ -636,7 +636,7 @@ describe 'Git LFS API and storage' do
             it 'lfs object is linked to the project' do
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
             end
-          en
+          end
 
           context 'invalid tempfiles' do
             it 'rejects slashes in the tempfile name (path traversal' do
