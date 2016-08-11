@@ -9,9 +9,9 @@ module Gitlab
         include ActionView::Helpers::AssetTagHelper
         include ActionView::Helpers::UrlHelper
 
-        def initialize(project, ref)
-          @project = project
-          @ref = ref
+        def initialize(badge)
+          @project = badge.project
+          @ref = badge.ref
         end
 
         def to_html

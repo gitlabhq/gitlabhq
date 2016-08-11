@@ -5,12 +5,17 @@ module Gitlab
       # Build status badge
       #
       class Status < Badge::Base
-        delegate :key_text, :value_text, to: :template
+        attr_reader :project, :ref
 
         def initialize(project, ref)
           @project = project
           @ref = ref
+
           @sha = @project.commit(@ref).try(:sha)
+        end
+
+        def entity
+          'build'
         end
 
         def status
@@ -20,11 +25,11 @@ module Gitlab
         end
 
         def metadata
-          @metadata ||= Build::Metadata.new(@project, @ref)
+          @metadata ||= Build::Metadata.new(self)
         end
 
         def template
-          @template ||= Build::Template.new(status)
+          @template ||= Build::Template.new(self)
         end
       end
     end

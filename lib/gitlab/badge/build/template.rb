@@ -17,16 +17,17 @@ module Gitlab
           unknown: '#9f9f9f'
         }
 
-        def initialize(status)
-          @status = status
+        def initialize(badge)
+          @entity = badge.entity
+          @status = badge.status
         end
 
         def key_text
-          'build'
+          @entity.to_s
         end
 
         def value_text
-          @status
+          @status.to_s
         end
 
         def key_width
@@ -42,8 +43,7 @@ module Gitlab
         end
 
         def value_color
-          STATUS_COLOR[@status.to_sym] ||
-            STATUS_COLOR[:unknown]
+          STATUS_COLOR[@status.to_sym] || STATUS_COLOR[:unknown]
         end
 
         def key_text_anchor

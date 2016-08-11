@@ -1,11 +1,11 @@
 module Gitlab
   module Badge
     class Base
-      def key_text
+      def entity
         raise NotImplementedError
       end
 
-      def value_text
+      def status
         raise NotImplementedError
       end
 
