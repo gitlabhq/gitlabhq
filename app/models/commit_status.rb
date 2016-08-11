@@ -62,14 +62,6 @@ class CommitStatus < ActiveRecord::Base
       commit_status.update_attributes finished_at: Time.now
     end
 
-    after_transition [:created, :pending, :running] => :success do |commit_status|
-      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
-    end
-
-    after_transition any => :failed do |commit_status|
-      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
-    end
-
     # We use around_transition to process pipeline on next stages as soon as possible, before the `after_*` is executed
     around_transition any => [:success, :failed, :canceled] do |commit_status, block|
       block.call
@@ -77,10 +69,16 @@ class CommitStatus < ActiveRecord::Base
       commit_status.pipeline.try(:process!)
     end
 
-    # Try to update the pipeline status
-
     after_transition do |commit_status, transition|
       commit_status.pipeline.try(:update_status) unless transition.loopback?
+    end
+
+    after_transition [:created, :pending, :running] => :success do |commit_status|
+      MergeRequests::MergeWhenBuildSucceedsService.new(commit_status.pipeline.project, nil).trigger(commit_status)
+    end
+
+    after_transition any => :failed do |commit_status|
+      MergeRequests::AddTodoWhenBuildFailsService.new(commit_status.pipeline.project, nil).execute(commit_status)
     end
   end
 

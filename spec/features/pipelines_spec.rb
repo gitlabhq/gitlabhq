@@ -12,7 +12,7 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines' do
-    let!(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: 'running') }
+    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running') }
 
     [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
@@ -31,9 +31,10 @@ describe "Pipelines" do
     end
 
     context 'cancelable pipeline' do
-      let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
+        build.run
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -49,9 +50,10 @@ describe "Pipelines" do
     end
 
     context 'retryable pipelines' do
-      let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
+        build.drop
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -98,9 +100,10 @@ describe "Pipelines" do
       end
 
       context 'when failed' do
-        let!(:failed) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
+        let!(:status) { create(:generic_commit_status, :pending, pipeline: pipeline, stage: 'test') }
 
         before do
+          status.drop
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 

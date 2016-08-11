@@ -120,22 +120,18 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#update_counters' do
-    let(:pipeline) { create :ci_empty_pipeline, project: project }
+  describe '#duration' do
+    let(:current) { Time.now.change(usec: 0) }
+    let!(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let!(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
 
-    context 'updates' do
-      let(:current) { Time.now.change(usec: 0) }
-      let(:build) { FactoryGirl.create :ci_build, pipeline: pipeline, started_at: current - 120, finished_at: current - 60 }
+    before do
+      build.skip
+      build2.skip
+    end
 
-      before do
-        build.skip
-      end
-
-      [:status, :started_at, :finished_at, :duration].each do |param|
-        it "#{param}" do
-          expect(pipeline.reload.send(param)).to eq(build.send(param))
-        end
-      end
+    it 'matches sum of builds duration' do
+      expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
     end
   end
 

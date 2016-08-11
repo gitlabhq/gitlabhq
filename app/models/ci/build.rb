@@ -42,24 +42,25 @@ module Ci
       end
 
       def retry(build, user = nil)
-        new_build = Ci::Build.new(status: 'pending')
-        new_build.ref = build.ref
-        new_build.tag = build.tag
-        new_build.options = build.options
-        new_build.commands = build.commands
-        new_build.tag_list = build.tag_list
-        new_build.project = build.project
-        new_build.pipeline = build.pipeline
-        new_build.name = build.name
-        new_build.allow_failure = build.allow_failure
-        new_build.stage = build.stage
-        new_build.stage_idx = build.stage_idx
-        new_build.trigger_request = build.trigger_request
-        new_build.yaml_variables = build.yaml_variables
-        new_build.when = build.when
-        new_build.user = user
-        new_build.environment = build.environment
-        new_build.save
+        new_build = Ci::Build.create(
+          ref: build.ref,
+          tag: build.tag,
+          options: build.options,
+          commands: build.commands,
+          tag_list: build.tag_list,
+          project: build.project,
+          pipeline: build.pipeline,
+          name: build.name,
+          allow_failure: build.allow_failure,
+          stage: build.stage,
+          stage_idx: build.stage_idx,
+          trigger_request: build.trigger_request,
+          yaml_variables: build.yaml_variables,
+          when: build.when,
+          user: user,
+          environment: build.environment,
+          status_event: 'queue'
+        )
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
       end
