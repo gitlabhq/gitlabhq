@@ -13,7 +13,8 @@
 
 = render 'shared/issuable/sidebar', issuable: @merge_request
 
-#conflicts{"v-cloak" => "true"}
+#conflicts{"v-cloak" => "true", data: { conflicts_path: conflicts_namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request, format: :json),
+    resolve_conflicts_path: resolve_conflicts_namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request) } }
   .loading{"v-if" => "isLoading"}
     %i.fa.fa-spinner.fa-spin
 

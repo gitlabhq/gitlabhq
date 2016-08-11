@@ -45,7 +45,7 @@ window.MergeConflictResolver = class MergeConflictResolver {
   fetchData() {
     const dp = this.dataProvider;
 
-    $.get('./conflicts.json')
+    $.get($('#conflicts').data('conflictsPath'))
       .done((data) => {
         dp.decorateData(this.vue, data);
       })
@@ -69,7 +69,7 @@ window.MergeConflictResolver = class MergeConflictResolver {
   commit() {
     this.vue.isSubmitting = true;
 
-    $.post('./resolve_conflicts', this.dataProvider.getCommitData())
+    $.post($('#conflicts').data('resolveConflictsPath'), this.dataProvider.getCommitData())
       .done((data) => {
         window.location.href = data.redirect_to;
       })

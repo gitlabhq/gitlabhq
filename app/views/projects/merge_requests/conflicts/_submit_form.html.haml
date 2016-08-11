@@ -13,6 +13,4 @@
     %span Commit conflict resolution
     %a.fa.fa-spin.fa-spinner{":class" => "{'hidden': !isSubmitting}"}
 
-  / FIXME: Hardcoded path
-  %a.btn.btn-cancel{"href" => "diffs"}
-    Cancel
+  = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"
