@@ -18,7 +18,7 @@ describe Issues::CloseService, services: true do
     context "valid params" do
       before do
         perform_enqueued_jobs do
-          @issue = described_class.new(project, user, {}).execute(issue)
+          @issue = described_class.new(project, user).execute(issue)
         end
       end
 
@@ -53,10 +53,21 @@ describe Issues::CloseService, services: true do
       end
     end
 
-    context "external issue tracker" do
+    context 'when issue is confidential' do
+      it 'does not execute hooks' do
+        issue = create(:issue, :confidential, project: project)
+
+        expect(project).not_to receive(:execute_hooks)
+        expect(project).not_to receive(:execute_services)
+
+        described_class.new(project, user).execute(issue)
+      end
+    end
+
+    context 'external issue tracker' do
       before do
         allow(project).to receive(:default_issues_tracker?).and_return(false)
-        @issue = described_class.new(project, user, {}).execute(issue)
+        @issue = described_class.new(project, user).execute(issue)
       end
 
       it { expect(@issue).to be_valid }

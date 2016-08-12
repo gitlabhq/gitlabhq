@@ -72,6 +72,15 @@ describe Issues::CreateService, services: true do
           expect(issue.milestone).not_to eq milestone
         end
       end
+
+      it 'does not execute hooks when issue is confidential' do
+        opts = { title: 'Title', description: 'Description', confidential: true }
+
+        expect(project).not_to receive(:execute_hooks)
+        expect(project).not_to receive(:execute_services)
+
+        described_class.new(project, user, opts).execute
+      end
     end
 
     it_behaves_like 'new issuable record that supports slash commands'

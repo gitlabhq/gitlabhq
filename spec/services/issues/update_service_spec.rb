@@ -28,6 +28,11 @@ describe Issues::UpdateService, services: true do
       end
     end
 
+    def update_issue(opts)
+      @issue = described_class.new(project, user, opts).execute(issue)
+      @issue.reload
+    end
+
     context "valid params" do
       before do
         opts = {
@@ -35,12 +40,11 @@ describe Issues::UpdateService, services: true do
           description: 'Also please fix',
           assignee_id: user2.id,
           state_event: 'close',
-          label_ids: [label.id],
-          confidential: true
+          label_ids: [label.id]
         }
 
         perform_enqueued_jobs do
-          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          @issue = described_class.new(project, user, opts).execute(issue)
         end
 
         @issue.reload
@@ -81,18 +85,35 @@ describe Issues::UpdateService, services: true do
         expect(note).not_to be_nil
         expect(note.note).to eq 'Changed title: **{-Old-} title** → **{+New+} title**'
       end
+    end
+
+    context 'when issue turns confidential' do
+      let(:opts) do
+        {
+          title: 'New title',
+          description: 'Also please fix',
+          assignee_id: user2.id,
+          state_event: 'close',
+          label_ids: [label.id],
+          confidential: true
+        }
+      end
 
       it 'creates system note about confidentiality change' do
+        update_issue({ confidential: true })
+
         note = find_note('Made the issue confidential')
 
         expect(note).not_to be_nil
         expect(note.note).to eq 'Made the issue confidential'
       end
-    end
 
-    def update_issue(opts)
-      @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
-      @issue.reload
+      it 'does not execute hooks' do
+        expect(project).not_to receive(:execute_hooks)
+        expect(project).not_to receive(:execute_services)
+
+        update_issue({ confidential: true })
+      end
     end
 
     context 'todos' do
@@ -176,7 +197,7 @@ describe Issues::UpdateService, services: true do
         opts = { label_ids: [label.id] }
 
         perform_enqueued_jobs do
-          @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+          @issue = described_class.new(project, user, opts).execute(issue)
         end
 
         should_email(subscriber)
@@ -190,7 +211,7 @@ describe Issues::UpdateService, services: true do
           opts = { label_ids: [label.id, label2.id] }
 
           perform_enqueued_jobs do
-            @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+            @issue = described_class.new(project, user, opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -201,7 +222,7 @@ describe Issues::UpdateService, services: true do
           opts = { label_ids: [label2.id] }
 
           perform_enqueued_jobs do
-            @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
+            @issue = described_class.new(project, user, opts).execute(issue)
           end
 
           should_not_email(subscriber)
@@ -210,7 +231,7 @@ describe Issues::UpdateService, services: true do
       end
     end
 
-    context 'when Issue has tasks' do
+    context 'when issue has tasks' do
       before { update_issue({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 
       it { expect(@issue.tasks?).to eq(true) }
@@ -277,7 +298,7 @@ describe Issues::UpdateService, services: true do
 
     context 'updating labels' do
       let(:label3) { create(:label, project: project) }
-      let(:result) { Issues::UpdateService.new(project, user, params).execute(issue).reload }
+      let(:result) { described_class.new(project, user, params).execute(issue).reload }
 
       context 'when add_label_ids and label_ids are passed' do
         let(:params) { { label_ids: [label.id], add_label_ids: [label3.id] } }

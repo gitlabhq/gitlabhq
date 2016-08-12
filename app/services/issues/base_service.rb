@@ -14,6 +14,8 @@ module Issues
     end
 
     def execute_hooks(issue, action = 'open')
+      return if issue.confidential?
+
       issue_data = hook_data(issue, action)
       issue.project.execute_hooks(issue_data, :issue_hooks)
       issue.project.execute_services(issue_data, :issue_hooks)
