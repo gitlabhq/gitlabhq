@@ -888,7 +888,7 @@ describe Ci::Build, models: true do
 
     context 'for successful build' do
       before do
-        build.success
+        build.update(status: 'success')
       end
 
       it 'creates a new build' do
