@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe Geo::EnqueueWikiUpdateService, services: true do
   subject { Geo::EnqueueWikiUpdateService.new(project) }
   let(:project) { double(:project) }
