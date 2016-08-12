@@ -29,4 +29,21 @@ describe API::API, 'MergeRequestDiffs', api: true  do
       expect(response).to have_http_status(404)
     end
   end
+
+  describe 'GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id' do
+    context 'valid merge request' do
+      before { get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/#{merge_request_diff.id}", user) }
+      let(:merge_request_diff) { merge_request.merge_request_diffs.first }
+
+      it { expect(response.status).to eq 200 }
+      it { expect(json_response['id']).to eq(merge_request_diff.id) }
+      it { expect(json_response['head_commit_sha']).to eq(merge_request_diff.head_commit_sha) }
+      it { expect(json_response['diffs'].size).to eq(merge_request_diff.diffs.size) }
+    end
+
+    it 'returns a 404 when merge_request_id not found' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/versions/999", user)
+      expect(response).to have_http_status(404)
+    end
+  end
 end
