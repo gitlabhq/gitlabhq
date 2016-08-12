@@ -71,7 +71,7 @@ class Ability
     def abilities_by_subject_class(user:, subject:)
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
-      when Project then ProjectPolicy.new(user, subject).abilities
+      when Project then ProjectPolicy.abilities(user, subject)
       when Issue then issue_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
@@ -96,8 +96,10 @@ class Ability
         anonymous_project_snippet_abilities(subject)
       elsif subject.is_a?(CommitStatus)
         anonymous_commit_status_abilities(subject)
-      elsif subject.is_a?(Project) || subject.respond_to?(:project)
-        anonymous_project_abilities(subject)
+      elsif subject.is_a?(Project)
+        ProjectPolicy.abilities(nil, subject)
+      elsif subject.respond_to?(:project)
+        ProjectPolicy.abilities(nil, subject.project)
       elsif subject.is_a?(Group) || subject.respond_to?(:group)
         anonymous_group_abilities(subject)
       elsif subject.is_a?(User)
@@ -194,174 +196,7 @@ class Ability
 
     def project_abilities(user, project)
       # temporary patch, deleteme before merge
-      ProjectPolicy.new(user, project).abilities.to_a
-    end
-
-    def project_team_rules(team, user)
-      # Rules based on role in project
-      if team.master?(user)
-        project_master_rules
-      elsif team.developer?(user)
-        project_dev_rules
-      elsif team.reporter?(user)
-        project_report_rules
-      elsif team.guest?(user)
-        project_guest_rules
-      else
-        []
-      end
-    end
-
-    def public_project_rules
-      @public_project_rules ||= project_guest_rules + [
-        :download_code,
-        :fork_project,
-        :read_commit_status,
-        :read_pipeline,
-        :read_container_image
-      ]
-    end
-
-    def project_guest_rules
-      @project_guest_rules ||= [
-        :read_project,
-        :read_wiki,
-        :read_issue,
-        :read_board,
-        :read_list,
-        :read_label,
-        :read_milestone,
-        :read_project_snippet,
-        :read_project_member,
-        :read_merge_request,
-        :read_note,
-        :create_project,
-        :create_issue,
-        :create_note,
-        :upload_file
-      ]
-    end
-
-    def project_report_rules
-      @project_report_rules ||= project_guest_rules + [
-        :download_code,
-        :fork_project,
-        :create_project_snippet,
-        :update_issue,
-        :admin_issue,
-        :admin_label,
-        :admin_list,
-        :read_commit_status,
-        :read_build,
-        :read_container_image,
-        :read_pipeline,
-        :read_environment,
-        :read_deployment
-      ]
-    end
-
-    def project_dev_rules
-      @project_dev_rules ||= project_report_rules + [
-        :admin_merge_request,
-        :update_merge_request,
-        :create_commit_status,
-        :update_commit_status,
-        :create_build,
-        :update_build,
-        :create_pipeline,
-        :update_pipeline,
-        :create_merge_request,
-        :create_wiki,
-        :push_code,
-        :resolve_note,
-        :create_container_image,
-        :update_container_image,
-        :create_environment,
-        :create_deployment
-      ]
-    end
-
-    def project_archived_rules
-      @project_archived_rules ||= [
-        :create_merge_request,
-        :push_code,
-        :push_code_to_protected_branches,
-        :update_merge_request,
-        :admin_merge_request
-      ]
-    end
-
-    def project_master_rules
-      @project_master_rules ||= project_dev_rules + [
-        :push_code_to_protected_branches,
-        :update_project_snippet,
-        :update_environment,
-        :update_deployment,
-        :admin_milestone,
-        :admin_project_snippet,
-        :admin_project_member,
-        :admin_merge_request,
-        :admin_note,
-        :admin_wiki,
-        :admin_project,
-        :admin_commit_status,
-        :admin_build,
-        :admin_container_image,
-        :admin_pipeline,
-        :admin_environment,
-        :admin_deployment
-      ]
-    end
-
-    def project_owner_rules
-      @project_owner_rules ||= project_master_rules + [
-        :change_namespace,
-        :change_visibility_level,
-        :rename_project,
-        :remove_project,
-        :archive_project,
-        :remove_fork_project,
-        :destroy_merge_request,
-        :destroy_issue
-      ]
-    end
-
-    def project_disabled_features_rules(project)
-      rules = []
-
-      unless project.issues_enabled
-        rules += named_abilities('issue')
-      end
-
-      unless project.merge_requests_enabled
-        rules += named_abilities('merge_request')
-      end
-
-      unless project.issues_enabled or project.merge_requests_enabled
-        rules += named_abilities('label')
-        rules += named_abilities('milestone')
-      end
-
-      unless project.snippets_enabled
-        rules += named_abilities('project_snippet')
-      end
-
-      unless project.has_wiki?
-        rules += named_abilities('wiki')
-      end
-
-      unless project.builds_enabled
-        rules += named_abilities('build')
-        rules += named_abilities('pipeline')
-        rules += named_abilities('environment')
-        rules += named_abilities('deployment')
-      end
-
-      unless project.container_registry_enabled
-        rules += named_abilities('container_image')
-      end
-
-      rules
+      ProjectPolicy.abilities(user, project).to_a
     end
 
     def group_abilities(user, group)
@@ -569,15 +404,6 @@ class Ability
       current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
     end
 
-    def named_abilities(name)
-      [
-        :"read_#{name}",
-        :"create_#{name}",
-        :"update_#{name}",
-        :"admin_#{name}"
-      ]
-    end
-
     def filter_confidential_issues_abilities(user, issue, rules)
       return rules if user.admin? || !issue.confidential?
 
@@ -588,14 +414,6 @@ class Ability
       end
 
       rules
-    end
-
-    def project_group_member?(project, user)
-      project.group &&
-      (
-        project.group.members.exists?(user_id: user.id) ||
-        project.group.requesters.exists?(user_id: user.id)
-      )
     end
   end
 end
