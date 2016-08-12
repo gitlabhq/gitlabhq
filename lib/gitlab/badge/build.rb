@@ -4,42 +4,26 @@ module Gitlab
     # Build badge
     #
     class Build
-      include Gitlab::Application.routes.url_helpers
-      include ActionView::Helpers::AssetTagHelper
-      include ActionView::Helpers::UrlHelper
+      delegate :key_text, :value_text, to: :template
 
       def initialize(project, ref)
-        @project, @ref = project, ref
-        @image = ::Ci::ImageForBuildService.new.execute(project, ref: ref)
+        @project = project
+        @ref = ref
+        @sha = @project.commit(@ref).try(:sha)
       end
 
-      def type
-        'image/svg+xml'
+      def status
+        @project.pipelines
+          .where(sha: @sha, ref: @ref)
+          .status || 'unknown'
       end
 
-      def data
-        File.read(@image[:path])
+      def metadata
+        @metadata ||= Build::Metadata.new(@project, @ref)
       end
 
-      def to_s
-        @image[:name].sub(/\.svg$/, '')
-      end
-
-      def to_html
-        link_to(image_tag(image_url, alt: 'build status'), link_url)
-      end
-
-      def to_markdown
-        "[![build status](#{image_url})](#{link_url})"
-      end
-
-      def image_url
-        build_namespace_project_badges_url(@project.namespace,
-                                           @project, @ref, format: :svg)
-      end
-
-      def link_url
-        namespace_project_commits_url(@project.namespace, @project, id: @ref)
+      def template
+        @template ||= Build::Template.new(status)
       end
     end
   end

@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :broadcast_message do
     message "MyText"
-    starts_at Date.yesterday
-    ends_at Date.tomorrow
+    starts_at 1.day.ago
+    ends_at 1.day.from_now
 
     trait :expired do
       starts_at 5.days.ago

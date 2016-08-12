@@ -24,7 +24,7 @@
           = icon('star')
           = project.star_count
       %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
-        = visibility_level_icon(project.visibility_level, fw: false)
+        = visibility_level_icon(project.visibility_level, fw: true)
 
     .title
       = link_to project_path(project), class: dom_class(project) do

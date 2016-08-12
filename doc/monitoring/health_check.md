@@ -24,7 +24,7 @@ https://gitlab.example.com/health_check.json?token=ACCESS_TOKEN
 or as an HTTP header:
 
 ```bash
-curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
+curl --header "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
 ```
 
 ## Using the Endpoint
@@ -45,7 +45,7 @@ You can also ask for the status of specific services:
 For example, the JSON output of the following health check:
 
 ```bash
-curl -H "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
+curl --header "TOKEN: ACCESS_TOKEN" https://gitlab.example.com/health_check.json
 ```
 
 would be like:

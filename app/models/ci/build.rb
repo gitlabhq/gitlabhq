@@ -16,7 +16,7 @@ module Ci
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
-    scope :manual_actions, ->() { where(when: :manual) }
+    scope :manual_actions, ->() { where(when: :manual).relevant }
 
     mount_uploader :artifacts_file, ArtifactUploader
     mount_uploader :artifacts_metadata, ArtifactUploader
@@ -65,15 +65,9 @@ module Ci
       end
     end
 
-    state_machine :status, initial: :pending do
+    state_machine :status do
       after_transition pending: :running do |build|
         build.execute_hooks
-      end
-
-      # We use around_transition to create builds for next stage as soon as possible, before the `after_*` is executed
-      around_transition any => [:success, :failed, :canceled] do |build, block|
-        block.call
-        build.pipeline.create_next_builds(build) if build.pipeline
       end
 
       after_transition any => [:success, :failed, :canceled] do |build|
@@ -462,7 +456,7 @@ module Ci
 
     def build_attributes_from_config
       return {} unless pipeline.config_processor
-      
+
       pipeline.config_processor.build_attributes(name)
     end
   end

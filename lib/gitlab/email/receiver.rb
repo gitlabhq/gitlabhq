@@ -1,5 +1,5 @@
 
-require 'gitlab/email/handler'
+require_dependency 'gitlab/email/handler'
 
 # Inspired in great part by Discourse's Email::Receiver
 module Gitlab

@@ -19,7 +19,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref(type, "master").first).to eq({
           stage: "test",
           stage_idx: 1,
-          name: :rspec,
+          name: "rspec",
           commands: "pwd\nrspec",
           tag_list: [],
           options: {},
@@ -433,7 +433,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
           stage: "test",
           stage_idx: 1,
-          name: :rspec,
+          name: "rspec",
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -461,7 +461,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
           stage: "test",
           stage_idx: 1,
-          name: :rspec,
+          name: "rspec",
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -531,10 +531,6 @@ module Ci
             before_script: ['pwd'],
             rspec: { script: 'rspec', variables: variables }
           }
-        end
-
-        context 'when also global variables are defined' do
-
         end
 
         context 'when syntax is correct' do
@@ -704,7 +700,7 @@ module Ci
         expect(config_processor.builds_for_stage_and_ref("test", "master").first).to eq({
           stage: "test",
           stage_idx: 1,
-          name: :rspec,
+          name: "rspec",
           commands: "pwd\nrspec",
           tag_list: [],
           options: {
@@ -841,7 +837,7 @@ module Ci
           expect(subject.first).to eq({
             stage: "test",
             stage_idx: 1,
-            name: :normal_job,
+            name: "normal_job",
             commands: "test",
             tag_list: [],
             options: {},
@@ -886,7 +882,7 @@ module Ci
           expect(subject.first).to eq({
             stage: "build",
             stage_idx: 0,
-            name: :job1,
+            name: "job1",
             commands: "execute-script-for-job",
             tag_list: [],
             options: {},
@@ -898,7 +894,7 @@ module Ci
           expect(subject.second).to eq({
             stage: "build",
             stage_idx: 0,
-            name: :job2,
+            name: "job2",
             commands: "execute-script-for-job",
             tag_list: [],
             options: {},

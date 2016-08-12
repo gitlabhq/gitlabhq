@@ -5,6 +5,7 @@ describe Ci::Charts, lib: true do
     before do
       @pipeline = FactoryGirl.create(:ci_pipeline)
       FactoryGirl.create(:ci_build, pipeline: @pipeline)
+      @pipeline.reload_status!
     end
 
     it 'returns build times in minutes' do

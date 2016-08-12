@@ -62,7 +62,7 @@ module Ci
         #  - before script should be a concatenated command
         commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
-        name: job[:name],
+        name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
         when: job[:when] || 'on_success',
         environment: job[:environment],

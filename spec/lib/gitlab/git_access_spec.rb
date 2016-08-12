@@ -24,11 +24,11 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       it 'blocks ssh git push' do
-        expect(@acc.check('git-receive-pack').allowed?).to be_falsey
+        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
       end
 
       it 'blocks ssh git pull' do
-        expect(@acc.check('git-upload-pack').allowed?).to be_falsey
+        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
       end
     end
 
@@ -39,17 +39,17 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       it 'blocks http push' do
-        expect(@acc.check('git-receive-pack').allowed?).to be_falsey
+        expect(@acc.check('git-receive-pack', '_any').allowed?).to be_falsey
       end
 
       it 'blocks http git pull' do
-        expect(@acc.check('git-upload-pack').allowed?).to be_falsey
+        expect(@acc.check('git-upload-pack', '_any').allowed?).to be_falsey
       end
     end
   end
 
   describe 'download_access_check' do
-    subject { access.check('git-upload-pack') }
+    subject { access.check('git-upload-pack', '_any') }
 
     describe 'master permissions' do
       before { project.team << [user, :master] }
@@ -526,7 +526,7 @@ describe Gitlab::GitAccess, lib: true do
     let(:actor) { key }
 
     context 'push code' do
-      subject { access.check('git-receive-pack') }
+      subject { access.check('git-receive-pack', '_any') }
 
       context 'when project is authorized' do
         before { key.projects << project }

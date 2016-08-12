@@ -149,7 +149,7 @@ Style/EmptyLinesAroundAccessModifier:
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
@@ -161,7 +161,7 @@ Style/EmptyLinesAroundModuleBody:
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
-  Enabled: false
+  Enabled: true
 
 # Avoid the use of END blocks.
 Style/EndBlock:

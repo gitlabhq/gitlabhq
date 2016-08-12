@@ -11,12 +11,13 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 on, for example 7.2.1. The best way to migrate your repositories from one server to
 another is through backup restore.
 
-You need to keep a separate copy of `/etc/gitlab/gitlab-secrets.json`
-(for omnibus packages) or `/home/git/gitlab/.secret` (for installations
-from source). This file contains the database encryption key used
-for two-factor authentication. If you restore a GitLab backup without
-restoring the database encryption key, users who have two-factor
-authentication enabled will lose access to your GitLab server.
+You need to keep separate copies of `/etc/gitlab/gitlab-secrets.json` and
+`/etc/gitlab/gitlab.rb` (for omnibus packages) or
+`/home/git/gitlab/config/secrets.yml` (for installations from source). This file
+contains the database encryption keys used for two-factor authentication and CI
+secret variables, among other things. If you restore a GitLab backup without
+restoring the database encryption key, users who have two-factor authentication
+enabled will lose access to your GitLab server.
 
 ```
 # use this command if you've installed GitLab with the Omnibus package
@@ -235,11 +236,12 @@ of using encryption in the first place!
 
 If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you have an installation from source, please consider backing up your `.secret` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+If you have an installation from source, please consider backing up your `config/secrets.yml` file, `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
 
-At the very **minimum** you should backup `/etc/gitlab/gitlab-secrets.json`
-(Omnibus) or `/home/git/gitlab/.secret` (source) to preserve your
-database encryption key.
+At the very **minimum** you should backup `/etc/gitlab/gitlab.rb` and
+`/etc/gitlab/gitlab-secrets.json` (Omnibus), or
+`/home/git/gitlab/config/secrets.yml` (source) to preserve your database
+encryption key.
 
 ## Restore a previously created backup
 
@@ -254,11 +256,11 @@ the SQL database it needs to import data into ('gitlabhq_production').
 All existing data will be either erased (SQL) or moved to a separate
 directory (repositories, uploads).
 
-If some or all of your GitLab users are using two-factor authentication
-(2FA) then you must also make sure to restore
-`/etc/gitlab/gitlab-secrets.json` (Omnibus) or `/home/git/gitlab/.secret`
-(installations from source). Note that you need to run `gitlab-ctl
-reconfigure` after changing `gitlab-secrets.json`.
+If some or all of your GitLab users are using two-factor authentication (2FA)
+then you must also make sure to restore `/etc/gitlab/gitlab.rb` and
+`/etc/gitlab/gitlab-secrets.json` (Omnibus), or
+`/home/git/gitlab/config/secrets.yml` (installations from source). Note that you
+need to run `gitlab-ctl reconfigure` after changing `gitlab-secrets.json`.
 
 ### Installation from source
 

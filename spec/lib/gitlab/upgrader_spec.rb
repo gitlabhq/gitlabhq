@@ -16,6 +16,11 @@ describe Gitlab::Upgrader, lib: true do
   end
 
   describe 'latest_version_raw' do
+    it 'is the latest version for GitLab 5' do
+      allow(upgrader).to receive(:current_version_raw).and_return("5.3.0")
+      expect(upgrader.latest_version_raw).to eq("v5.4.2")
+    end
+
     it 'gets the latest version from tags' do
       allow(upgrader).to receive(:fetch_git_tags).and_return([
         '6f0733310546402c15d3ae6128a95052f6c8ea96  refs/tags/v7.1.1-ee',

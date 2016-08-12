@@ -8,8 +8,9 @@ class Projects::BadgesController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { render_404 }
+
       format.svg do
-        send_data(badge.data, type: badge.type, disposition: 'inline')
+        render 'badge', locals: { badge: badge.template }
       end
     end
   end

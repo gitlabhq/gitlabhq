@@ -25,7 +25,6 @@ describe Gitlab::Git::Hook, lib: true do
     end
 
     ['pre-receive', 'post-receive', 'update'].each do |hook_name|
-
       context "when triggering a #{hook_name} hook" do
         context "when the hook is successful" do
           it "returns success with no errors" do

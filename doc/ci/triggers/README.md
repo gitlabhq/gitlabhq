@@ -77,9 +77,9 @@ See the [Examples](#examples) section below for more details.
 Using cURL you can trigger a rebuild with minimal effort, for example:
 
 ```bash
-curl -X POST \
-     -F token=TOKEN \
-     -F ref=master \
+curl --request POST \
+     --form token=TOKEN \
+     --form ref=master \
      https://gitlab.example.com/api/v3/projects/9/trigger/builds
 ```
 
@@ -88,7 +88,7 @@ In this case, the project with ID `9` will get rebuilt on `master` branch.
 Alternatively, you can pass the `token` and `ref` arguments in the query string:
 
 ```bash
-curl -X POST \
+curl --request POST \
     "https://gitlab.example.com/api/v3/projects/9/trigger/builds?token=TOKEN&ref=master"
 ```
 
@@ -103,7 +103,7 @@ need to add in project's A `.gitlab-ci.yml`:
 build_docs:
   stage: deploy
   script:
-  - "curl -X POST -F token=TOKEN -F ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds"
+  - "curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds"
   only:
   - tags
 ```
@@ -158,10 +158,10 @@ You can then trigger a rebuild while you pass the `UPLOAD_TO_S3` variable
 and the script of the `upload_package` job will run:
 
 ```bash
-curl -X POST \
-  -F token=TOKEN \
-  -F ref=master \
-  -F "variables[UPLOAD_TO_S3]=true" \
+curl --request POST \
+  --form token=TOKEN \
+  --form ref=master \
+  --form "variables[UPLOAD_TO_S3]=true" \
   https://gitlab.example.com/api/v3/projects/9/trigger/builds
 ```
 
@@ -172,7 +172,7 @@ in conjunction with cron. The example below triggers a build on the `master`
 branch of project with ID `9` every night at `00:30`:
 
 ```bash
-30 0 * * * curl -X POST -F token=TOKEN -F ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds
+30 0 * * * curl --request POST --form token=TOKEN --form ref=master https://gitlab.example.com/api/v3/projects/9/trigger/builds
 ```
 
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229

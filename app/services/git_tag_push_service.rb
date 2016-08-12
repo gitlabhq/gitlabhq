@@ -11,12 +11,16 @@ class GitTagPushService < BaseService
     SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
+<<<<<<< HEAD
     CreateCommitBuildsService.new.execute(
       project,
       current_user,
       @push_data,
       mirror_update: params[:mirror_update]
     )
+=======
+    Ci::CreatePipelineService.new(project, current_user, @push_data).execute
+>>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
     ProjectCacheWorker.perform_async(project.id)
 
     true

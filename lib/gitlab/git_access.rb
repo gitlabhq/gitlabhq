@@ -17,7 +17,7 @@ module Gitlab
       @user_access = UserAccess.new(user, project: project)
     end
 
-    def check(cmd, changes = nil)
+    def check(cmd, changes)
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
@@ -247,7 +247,7 @@ module Gitlab
     end
 
     def build_status_object(status, message = '')
-      GitAccessStatus.new(status, message)
+      Gitlab::GitAccessStatus.new(status, message)
     end
 
     def git_annex_access_check(project, changes)

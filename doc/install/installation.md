@@ -89,7 +89,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -O --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.7.4.tar.gz
     echo '7104c4f5d948a75b499a954524cb281fe30c6649d8abe20982936f75ec1f275b  git-2.7.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.7.4.tar.gz
     cd git-2.7.4/
     ./configure
@@ -124,7 +124,7 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -O --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.8.tar.gz
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.8.tar.gz
     echo 'c7e50159357afd87b13dc5eaf4ac486a70011149  ruby-2.1.8.tar.gz' | shasum -c - && tar xzf ruby-2.1.8.tar.gz
     cd ruby-2.1.8
     ./configure --disable-install-rdoc
@@ -143,7 +143,7 @@ gitlab-workhorse we need a Go compiler. The instructions below assume you
 use 64-bit Linux. You can find downloads for other platforms at the [Go download
 page](https://golang.org/dl).
 
-    curl -O --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
+    curl --remote-name --progress https://storage.googleapis.com/golang/go1.5.3.linux-amd64.tar.gz
     echo '43afe0c5017e502630b1aea4d44b8a7f059bf60d7f29dfd58db454d4e4e0ae53  go1.5.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
       sudo tar -C /usr/local -xzf go1.5.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
@@ -595,15 +595,17 @@ for the changes to take effect.
 
 ### Custom Redis Connection
 
-If you'd like Resque to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
+If you'd like to connect to a Redis server on a non-standard port or on a different host, you can configure its connection string via the `config/resque.yml` file.
 
     # example
-    production: redis://redis.example.tld:6379
+    production: 
+      url: redis://redis.example.tld:6379
 
 If you want to connect the Redis server via socket, then use the "unix:" URL scheme and the path to the Redis socket file in the `config/resque.yml` file.
 
     # example
-    production: unix:/path/to/redis/socket
+    production: 
+      url: unix:/path/to/redis/socket
 
 ### Custom SSH Connection
 

@@ -161,21 +161,9 @@
         $emojiButton = votesBlock.find("[data-emoji=" + mutualVote + "]").parent();
         isAlreadyVoted = $emojiButton.hasClass('active');
         if (isAlreadyVoted) {
-          this.showEmojiLoader($emojiButton);
-          return this.addAward(votesBlock, awardUrl, mutualVote, false, function() {
-            return $emojiButton.removeClass('is-loading');
-          });
+          this.addAward(votesBlock, awardUrl, mutualVote, false);
         }
       }
-    };
-
-    AwardsHandler.prototype.showEmojiLoader = function($emojiButton) {
-      var $loader;
-      $loader = $emojiButton.find('.fa-spinner');
-      if (!$loader.length) {
-        $emojiButton.append('<i class="fa fa-spinner fa-spin award-control-icon award-control-icon-loading"></i>');
-      }
-      return $emojiButton.addClass('is-loading');
     };
 
     AwardsHandler.prototype.isActive = function($emojiButton) {

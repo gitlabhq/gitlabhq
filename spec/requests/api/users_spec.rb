@@ -410,9 +410,9 @@ describe API::API, api: true  do
       end.to change{ user.keys.count }.by(1)
     end
 
-    it "returns 405 for invalid ID" do
-      post api("/users/ASDF/keys", admin)
-      expect(response).to have_http_status(405)
+    it "returns 400 for invalid ID" do
+      post api("/users/999999/keys", admin)
+      expect(response).to have_http_status(400)
     end
   end
 
@@ -440,11 +440,6 @@ describe API::API, api: true  do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['title']).to eq(key.title)
-      end
-
-      it "returns 405 for invalid ID" do
-        get api("/users/ASDF/keys", admin)
-        expect(response).to have_http_status(405)
       end
     end
   end
@@ -502,8 +497,8 @@ describe API::API, api: true  do
     end
 
     it "raises error for invalid ID" do
-      post api("/users/ASDF/emails", admin)
-      expect(response).to have_http_status(405)
+      post api("/users/999999/emails", admin)
+      expect(response).to have_http_status(400)
     end
   end
 

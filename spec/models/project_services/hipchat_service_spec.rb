@@ -162,7 +162,7 @@ describe HipchatService, models: true do
       end
 
       context 'merge request message' do
-        it 'creates a message for opened merge requests' do
+        it "creates a merge request message" do
           message = hipchat.send(:create_merge_request_message, merge_sample_data)
 
           obj_attr = merge_sample_data[:object_attributes]
@@ -304,7 +304,8 @@ describe HipchatService, models: true do
     end
 
     context 'build events' do
-      let(:build) { create(:ci_build) }
+      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
       let(:data) { Gitlab::BuildDataBuilder.build(build) }
 
       context 'for failed' do
