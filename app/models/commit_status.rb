@@ -70,7 +70,7 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition do |commit_status, transition|
-      commit_status.pipeline.try(:update_status) unless transition.loopback?
+      commit_status.pipeline.try(:build_updated) unless transition.loopback?
     end
 
     after_transition [:created, :pending, :running] => :success do |commit_status|

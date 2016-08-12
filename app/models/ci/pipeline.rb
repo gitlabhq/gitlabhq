@@ -20,6 +20,14 @@ module Ci
     after_save :keep_around_commits
 
     state_machine :status, initial: :created do
+      event :queue do
+        transition :created => :pending
+      end
+
+      event :run do
+        transition [:pending, :success, :failed, :canceled, :skipped] => :running
+      end
+
       event :skip do
         transition any => :skipped
       end
@@ -28,13 +36,12 @@ module Ci
         transition any => :failed
       end
 
-      event :update_status do
-        transition any => :pending, if: ->(pipeline) { pipeline.can_transition_to?('pending') }
-        transition any => :running, if: ->(pipeline) { pipeline.can_transition_to?('running') }
-        transition any => :failed, if: ->(pipeline) { pipeline.can_transition_to?('failed') }
-        transition any => :success, if: ->(pipeline) { pipeline.can_transition_to?('success') }
-        transition any => :canceled, if: ->(pipeline) { pipeline.can_transition_to?('canceled') }
-        transition any => :skipped, if: ->(pipeline) { pipeline.can_transition_to?('skipped') }
+      event :succeed do
+        transition any => :success
+      end
+
+      event :cancel do
+        transition any => :canceled
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
@@ -214,14 +221,27 @@ module Ci
       Ci::ProcessPipelineService.new(project, user).execute(self)
     end
 
+    def build_updated
+      case latest_builds_status
+      when 'pending'
+        queue
+      when 'running'
+        run
+      when 'success'
+        succeed
+      when 'failed'
+        drop
+      when 'canceled'
+        cancel
+      when 'skipped'
+        skip
+      end
+    end
+
     def predefined_variables
       [
         { key: 'CI_PIPELINE_ID', value: id.to_s, public: true }
       ]
-    end
-
-    def can_transition_to?(expected_status)
-      latest_status == expected_status
     end
 
     def update_duration
@@ -230,7 +250,7 @@ module Ci
 
     private
 
-    def latest_status
+    def latest_builds_status
       return 'failed' unless yaml_errors.blank?
 
       statuses.latest.status || 'skipped'
