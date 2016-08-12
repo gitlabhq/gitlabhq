@@ -319,5 +319,38 @@ describe Issues::UpdateService, services: true do
         end
       end
     end
+
+    context 'updated user mentions' do
+      let(:user4) { create(:user) }
+      before do
+        project.team << [user4, :developer]
+      end
+
+      context "in title" do
+        before do
+          perform_enqueued_jobs { update_issue(title: user4.to_reference) }
+        end
+
+        it "should email only the newly-mentioned user" do
+          should_not_email(user)
+          should_not_email(user2)
+          should_not_email(user3)
+          should_email(user4)
+        end
+      end
+
+      context "in description" do
+        before do
+          perform_enqueued_jobs { update_issue(description: user4.to_reference) }
+        end
+
+        it "should email only the newly-mentioned user" do
+          should_not_email(user)
+          should_not_email(user2)
+          should_not_email(user3)
+          should_email(user4)
+        end
+      end
+    end
   end
 end

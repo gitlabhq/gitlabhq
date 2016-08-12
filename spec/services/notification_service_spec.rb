@@ -399,6 +399,32 @@ describe NotificationService, services: true do
       end
     end
 
+    describe '#new_mentions_in_issue' do
+      def send_notifications(*new_mentions)
+        ActionMailer::Base.deliveries.clear
+        notification.new_mentions_in_issue(issue, new_mentions, @u_disabled)
+      end
+
+      it "should not email anyone unless they are newly mentioned" do
+        send_notifications()
+        expect(ActionMailer::Base.deliveries).to eq []
+      end
+
+      it "should email new mentions with a watch level higher than participant" do
+        send_notifications(@u_watcher, @u_participant_mentioned)
+
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+
+        expect(ActionMailer::Base.deliveries.count).to eq 2
+      end
+
+      it "should not email new mentions with a watch level equal to or less than participant" do
+        send_notifications(@u_participating, @u_mentioned)
+        expect(ActionMailer::Base.deliveries).to eq []
+      end
+    end
+
     describe '#reassigned_issue' do
       before do
         update_custom_notification(:reassign_issue, @u_guest_custom, project)
