@@ -22,7 +22,7 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
     pushd vendor/apt
     PHANTOMJS_FILE="phantomjs-$PHANTOMJS_VERSION-linux-x86_64"
     if [ ! -d "$PHANTOMJS_FILE" ]; then
-        curl -q -L "https://gitlab.com/iamphill/phantomjs/raw/master/$PHANTOMJS_FILE.tar.bz2" | tar jx
+        curl -q -L "https://s3.amazonaws.com/gitlab-build-helpers/phantomjs-2.1.1-linux-x86_64.tar.bz2" | tar jx
     fi
     cp "$PHANTOMJS_FILE/bin/phantomjs" "/usr/bin/"
     popd
