@@ -73,17 +73,20 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   end
 
   When 'I click "push" event filter' do
-    click_link("push_event_filter")
     sleep 1
+    click_link("Push events")
+    sleep 2
   end
 
   When 'I click "team" event filter' do
-    click_link("team_event_filter")
     sleep 1
+    click_link("Team")
+    sleep 2
   end
 
   When 'I click "merge" event filter' do
-    click_link("merged_event_filter")
     sleep 1
+    click_link("Merge events")
+    sleep 2
   end
 end
