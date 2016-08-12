@@ -76,10 +76,10 @@ module Gitlab
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.map(&:strip).reject(&:blank?).each do |change|
+      changes_list.each do |change|
         status = change_access_check(change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push

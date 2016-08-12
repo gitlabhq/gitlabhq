@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -50,25 +50,6 @@ describe Ci::Pipeline, models: true do
 
     it 'returns old builds' do
       is_expected.to contain_exactly(@build1)
-    end
-  end
-
-  describe "#finished_at" do
-    let(:pipeline) { FactoryGirl.create :ci_pipeline }
-
-    it "returns finished_at of latest build" do
-      build = FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 60
-      FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 120
-      pipeline.reload_status!
-
-      expect(pipeline.finished_at.to_i).to eq(build.finished_at.to_i)
-    end
-
-    it "returns nil if there is no finished build" do
-      FactoryGirl.create :ci_not_started_build, pipeline: pipeline
-      pipeline.reload_status!
-
-      expect(pipeline.finished_at).to be_nil
     end
   end
 
@@ -141,32 +122,47 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#reload_status!' do
-    let(:pipeline) { create :ci_empty_pipeline, project: project }
+  describe 'state machine' do
+    let(:current) { Time.now.change(usec: 0) }
+    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
 
-    context 'dependent objects' do
-      let(:commit_status) { create :commit_status, :pending, pipeline: pipeline }
+    describe '#duration' do
+      before do
+        build.skip
+        build2.skip
+      end
 
-      it 'executes reload_status! after succeeding dependent object' do
-        expect(pipeline).to receive(:reload_status!).and_return(true)
-
-        commit_status.success
+      it 'matches sum of builds duration' do
+        expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
       end
     end
 
-    context 'updates' do
-      let(:current) { Time.now.change(usec: 0) }
-      let(:build) { FactoryGirl.create :ci_build, pipeline: pipeline, started_at: current - 120, finished_at: current - 60 }
+    describe '#started_at' do
+      it 'updates on transitioning to running' do
+        build.run
 
-      before do
-        build
-        pipeline.reload_status!
+        expect(pipeline.reload.started_at).not_to be_nil
       end
 
-      [:status, :started_at, :finished_at, :duration].each do |param|
-        it "#{param}" do
-          expect(pipeline.send(param)).to eq(build.send(param))
-        end
+      it 'do not update on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.started_at).to be_nil
+      end
+    end
+
+    describe '#finished_at' do
+      it 'updates on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.finished_at).not_to be_nil
+      end
+
+      it 'do not update on transitioning to running' do
+        build.run
+
+        expect(pipeline.reload.finished_at).to be_nil
       end
     end
   end

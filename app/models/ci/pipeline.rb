@@ -21,6 +21,49 @@ module Ci
 
     delegate :stages, to: :statuses
 
+    state_machine :status, initial: :created do
+      event :queue do
+        transition :created => :pending
+        transition any - [:created, :pending] => :running
+      end
+
+      event :run do
+        transition any => :running
+      end
+
+      event :skip do
+        transition any => :skipped
+      end
+
+      event :drop do
+        transition any => :failed
+      end
+
+      event :succeed do
+        transition any => :success
+      end
+
+      event :cancel do
+        transition any => :canceled
+      end
+
+      before_transition [:created, :pending] => :running do |pipeline|
+        pipeline.started_at = Time.now
+      end
+
+      before_transition any => [:success, :failed, :canceled] do |pipeline|
+        pipeline.finished_at = Time.now
+      end
+
+      before_transition do |pipeline|
+        pipeline.update_duration
+      end
+
+      after_transition do |pipeline, transition|
+        pipeline.execute_hooks unless transition.loopback?
+      end
+    end
+
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest_successful_for, ->(ref = default_branch) do
       where(ref: ref).success.order(id: :desc).limit(1)
@@ -91,16 +134,12 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
-
-      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
-
-      reload_status!
     end
 
     def latest?
@@ -187,8 +226,23 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
+    end
 
-      reload_status!
+    def build_updated
+      case latest_builds_status
+      when 'pending'
+        queue
+      when 'running'
+        run
+      when 'success'
+        succeed
+      when 'failed'
+        drop
+      when 'canceled'
+        cancel
+      when 'skipped'
+        skip
+      end
     end
 
     def predefined_variables
@@ -197,21 +251,8 @@ module Ci
       ]
     end
 
-    def reload_status!
-      reload
-      self.status =
-        if yaml_errors.blank?
-          statuses.latest.status || 'skipped'
-        else
-          'failed'
-        end
-      self.started_at = statuses.started_at
-      self.finished_at = statuses.finished_at
+    def update_duration
       self.duration = statuses.latest.duration
-
-      should_execute_hooks = status_changed?
-      save
-      execute_hooks if should_execute_hooks
     end
 
     private
@@ -223,6 +264,12 @@ module Ci
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
+    end
+
+    def latest_builds_status
+      return 'failed' unless yaml_errors.blank?
+
+      statuses.latest.status || 'skipped'
     end
 
     def keep_around_commits

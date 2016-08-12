@@ -37,7 +37,8 @@ module Ci
       end
 
       if !ignore_skip_ci && skip_ci?
-        return error('Creation of pipeline is skipped', save: save_on_errors)
+        pipeline.skip if save_on_errors
+        return pipeline
       end
 
       unless pipeline.config_builds_attributes.present?
@@ -93,10 +94,7 @@ module Ci
 
     def error(message, save: false)
       pipeline.errors.add(:base, message)
-      if save
-        pipeline.save
-        pipeline.reload_status!
-      end
+      pipeline.drop if save
       pipeline
     end
   end
