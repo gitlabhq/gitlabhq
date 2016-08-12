@@ -15,8 +15,8 @@ The process of solving performance problems is roughly as follows:
 3. Add your findings based on the measurement period (screenshots of graphs,
    timings, etc) to the issue mentioned in step 1.
 4. Solve the problem.
-5. Create a merge request, assign the "performance" label and ping the right
-   people (e.g. [@yorickpeterse][yorickpeterse] and [@joshfng][joshfng]).
+5. Create a merge request, assign the "Performance" label and assign it to
+   [@yorickpeterse][yorickpeterse] for reviewing.
 6. Once a change has been deployed make sure to _again_ measure for at least 24
    hours to see if your changes have any impact on the production environment.
 7. Repeat until you're done.
@@ -36,8 +36,8 @@ graphs/dashboards.
 
 GitLab provides two built-in tools to aid the process of improving performance:
 
-* [Sherlock](doc/development/profiling.md#sherlock)
-* [GitLab Performance Monitoring](doc/monitoring/performance/monitoring.md)
+* [Sherlock](profiling.md#sherlock)
+* [GitLab Performance Monitoring](../monitoring/performance/monitoring.md)
 
 GitLab employees can use GitLab.com's performance monitoring systems located at
 <http://performance.gitlab.net>, this requires you to log in using your
@@ -254,5 +254,4 @@ referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
 [yorickpeterse]: https://gitlab.com/u/yorickpeterse
-[joshfng]: https://gitlab.com/u/joshfng
 [anti-pattern]: https://en.wikipedia.org/wiki/Anti-pattern
