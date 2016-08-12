@@ -354,7 +354,8 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   def filter_issue(text)
+    sleep 1
     fill_in 'issue_search', with: text
-    find('#issue_search').native.send_keys(:return)
+    sleep 1
   end
 end

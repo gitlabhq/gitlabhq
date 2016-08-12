@@ -5,38 +5,26 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   include SharedProject
 
   step 'I should see push event' do
-    wait_for_ajax
-    sleep 1
     expect(page).to have_selector('span.pushed')
   end
 
   step 'I should not see push event' do
-    wait_for_ajax
-    sleep 1
     expect(page).not_to have_selector('span.pushed')
   end
 
   step 'I should see new member event' do
-    wait_for_ajax
-    sleep 1
     expect(page).to have_selector('span.joined')
   end
 
   step 'I should not see new member event' do
-    wait_for_ajax
-    sleep 1
     expect(page).not_to have_selector('span.joined')
   end
 
   step 'I should see merge request event' do
-    wait_for_ajax
-    sleep 1
     expect(page).to have_selector('span.accepted')
   end
 
   step 'I should not see merge request event' do
-    wait_for_ajax
-    sleep 1
     expect(page).not_to have_selector('span.accepted')
   end
 
@@ -86,13 +74,16 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
 
   When 'I click "push" event filter' do
     click_link("push_event_filter")
+    sleep 1
   end
 
   When 'I click "team" event filter' do
     click_link("team_event_filter")
+    sleep 1
   end
 
   When 'I click "merge" event filter' do
     click_link("merged_event_filter")
+    sleep 1
   end
 end
