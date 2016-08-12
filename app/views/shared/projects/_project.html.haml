@@ -12,6 +12,8 @@
 %li.project-row{ class: css_class }
   = cache(cache_key) do
     .controls
+      - if project.archived
+        %span.label.label-warning archived
       - if project.commit.try(:status)
         %span
           = render_commit_status(project.commit)
