@@ -22,10 +22,11 @@ module Ci
     state_machine :status, initial: :created do
       event :queue do
         transition :created => :pending
+        transition any - [:created, :pending] => :running
       end
 
       event :run do
-        transition [:pending, :success, :failed, :canceled, :skipped] => :running
+        transition any => :running
       end
 
       event :skip do
@@ -44,15 +45,15 @@ module Ci
         transition any => :canceled
       end
 
-      after_transition [:created, :pending] => :running do |pipeline|
-        pipeline.update(started_at: Time.now)
+      before_transition [:created, :pending] => :running do |pipeline|
+        pipeline.started_at = Time.now
       end
 
-      after_transition any => [:success, :failed, :canceled] do |pipeline|
-        pipeline.update(finished_at: Time.now)
+      before_transition any => [:success, :failed, :canceled] do |pipeline|
+        pipeline.finished_at = Time.now
       end
 
-      after_transition do |pipeline|
+      before_transition do |pipeline|
         pipeline.update_duration
       end
     end
@@ -245,7 +246,7 @@ module Ci
     end
 
     def update_duration
-      update(duration: statuses.latest.duration)
+      self.duration = statuses.latest.duration
     end
 
     private

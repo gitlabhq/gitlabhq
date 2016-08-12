@@ -120,18 +120,48 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#duration' do
+  describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let!(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
-    let!(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
 
-    before do
-      build.skip
-      build2.skip
+    describe '#duration' do
+      before do
+        build.skip
+        build2.skip
+      end
+
+      it 'matches sum of builds duration' do
+        expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
+      end
     end
 
-    it 'matches sum of builds duration' do
-      expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
+    describe '#started_at' do
+      it 'updates on transitioning to running' do
+        build.run
+
+        expect(pipeline.reload.started_at).not_to be_nil
+      end
+
+      it 'do not update on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.started_at).to be_nil
+      end
+    end
+
+    describe '#finished_at' do
+      it 'updates on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.finished_at).not_to be_nil
+      end
+
+      it 'do not update on transitioning to running' do
+        build.run
+
+        expect(pipeline.reload.finished_at).to be_nil
+      end
     end
   end
 
