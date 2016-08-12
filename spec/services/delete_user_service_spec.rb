@@ -15,7 +15,7 @@ describe DeleteUserService, services: true do
       end
 
       it 'will delete the project in the near future' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:pending_delete!).once
+        expect_any_instance_of(Projects::DestroyService).to receive(:async_execute).once
 
         DeleteUserService.new(current_user).execute(user)
       end

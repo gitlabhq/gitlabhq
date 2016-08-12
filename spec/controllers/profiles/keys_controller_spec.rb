@@ -6,7 +6,7 @@ describe Profiles::KeysController do
   describe '#new' do
     before { sign_in(user) }
 
-    it 'redirect to #index' do
+    it 'redirects to #index' do
       get :new
 
       expect(response).to redirect_to(profile_keys_path)
@@ -15,7 +15,7 @@ describe Profiles::KeysController do
 
   describe "#get_keys" do
     describe "non existant user" do
-      it "should generally not work" do
+      it "does not generally work" do
         get :get_keys, username: 'not-existent'
 
         expect(response).not_to be_success
@@ -23,19 +23,19 @@ describe Profiles::KeysController do
     end
 
     describe "user with no keys" do
-      it "should generally work" do
+      it "does generally work" do
         get :get_keys, username: user.username
 
         expect(response).to be_success
       end
 
-      it "should render all keys separated with a new line" do
+      it "renders all keys separated with a new line" do
         get :get_keys, username: user.username
 
         expect(response.body).to eq("")
       end
 
-      it "should respond with text/plain content type" do
+      it "responds with text/plain content type" do
         get :get_keys, username: user.username
         expect(response.content_type).to eq("text/plain")
       end
@@ -47,13 +47,13 @@ describe Profiles::KeysController do
         user.keys << create(:another_key)
       end
 
-      it "should generally work" do
+      it "does generally work" do
         get :get_keys, username: user.username
 
         expect(response).to be_success
       end
 
-      it "should render all keys separated with a new line" do
+      it "renders all keys separated with a new line" do
         get :get_keys, username: user.username
 
         expect(response.body).not_to eq("")
@@ -65,13 +65,13 @@ describe Profiles::KeysController do
         expect(response.body).to match(/AQDmTillFzNTrrGgwaCKaSj/)
       end
 
-      it "should not render the comment of the key" do
+      it "does not render the comment of the key" do
         get :get_keys, username: user.username
 
         expect(response.body).not_to match(/dummy@gitlab.com/)
       end
 
-      it "should respond with text/plain content type" do
+      it "responds with text/plain content type" do
         get :get_keys, username: user.username
         expect(response.content_type).to eq("text/plain")
       end

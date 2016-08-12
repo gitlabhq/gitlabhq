@@ -378,6 +378,12 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    def cached_count
+      Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
+        Project.count
+      end
+    end
   end
 
   def repository_storage_path
@@ -993,6 +999,10 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
+  def add_user(user, access_level, current_user = nil)
+    team.add_user(user, access_level, current_user)
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
@@ -1153,16 +1163,6 @@ class Project < ActiveRecord::Base
 
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
-  end
-
-  def schedule_delete!(user_id, params)
-    # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit do
-      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
-      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
-    end
-
-    update_attribute(:pending_delete, true)
   end
 
   def running_or_pending_build_count(force: false)

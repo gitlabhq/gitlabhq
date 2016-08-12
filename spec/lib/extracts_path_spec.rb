@@ -25,18 +25,31 @@ describe ExtractsPath, lib: true do
       @project = create(:project)
     end
 
-    it "log tree path should have no escape sequences" do
+    it "log tree path has no escape sequences" do
       assign_ref_vars
       expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
-    context 'escaped sequences in ref' do
-      let(:ref) { "improve%2Fawesome" }
+    context 'escaped slash character in ref' do
+      let(:ref) { 'improve%2Fawesome' }
 
-      it "id should have no escape sequences" do
+      it 'has no escape sequences in @ref or @logs_path' do
         assign_ref_vars
+
         expect(@ref).to eq('improve/awesome')
         expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
+      end
+    end
+
+    context 'ref contains %20' do
+      let(:ref) { 'foo%20bar' }
+
+      it 'is not converted to a space in @id' do
+        @project.repository.add_branch(@project.owner, 'foo%20bar', 'master')
+
+        assign_ref_vars
+
+        expect(@id).to start_with('foo%20bar/')
       end
     end
   end

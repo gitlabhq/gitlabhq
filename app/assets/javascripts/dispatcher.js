@@ -186,6 +186,12 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              switch (path[2]) {
+                case 'edit':
+                  new Labels();
+              }
           }
           break;
         case 'dashboard':
@@ -211,6 +217,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();

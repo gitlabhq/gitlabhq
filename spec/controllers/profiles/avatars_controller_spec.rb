@@ -8,7 +8,7 @@ describe Profiles::AvatarsController do
     controller.instance_variable_set(:@user, user)
   end
 
-  it 'destroy should remove avatar from DB' do
+  it 'removes avatar from DB by calling destroy' do
     delete :destroy
     @user = assigns(:user)
     expect(@user.avatar.present?).to be_falsey

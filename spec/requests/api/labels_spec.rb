@@ -12,7 +12,7 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/labels' do
-    it 'should return project labels' do
+    it 'returns project labels' do
       get api("/projects/#{project.id}/labels", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -22,7 +22,7 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/labels' do
-    it 'should return created label when all params' do
+    it 'returns created label when all params' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAABB',
@@ -33,7 +33,7 @@ describe API::API, api: true  do
       expect(json_response['description']).to eq('test')
     end
 
-    it 'should return created label when only required params' do
+    it 'returns created label when only required params' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo & Bar',
            color: '#FFAABB'
@@ -43,17 +43,17 @@ describe API::API, api: true  do
       expect(json_response['description']).to be_nil
     end
 
-    it 'should return a 400 bad request if name not given' do
+    it 'returns a 400 bad request if name not given' do
       post api("/projects/#{project.id}/labels", user), color: '#FFAABB'
       expect(response).to have_http_status(400)
     end
 
-    it 'should return a 400 bad request if color not given' do
+    it 'returns a 400 bad request if color not given' do
       post api("/projects/#{project.id}/labels", user), name: 'Foobar'
       expect(response).to have_http_status(400)
     end
 
-    it 'should return 400 for invalid color' do
+    it 'returns 400 for invalid color' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAA'
@@ -61,7 +61,7 @@ describe API::API, api: true  do
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
-    it 'should return 400 for too long color code' do
+    it 'returns 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAAFFFF'
@@ -69,7 +69,7 @@ describe API::API, api: true  do
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
-    it 'should return 400 for invalid name' do
+    it 'returns 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
            name: ',',
            color: '#FFAABB'
@@ -77,7 +77,7 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
-    it 'should return 409 if label already exists' do
+    it 'returns 409 if label already exists' do
       post api("/projects/#{project.id}/labels", user),
            name: 'label1',
            color: '#FFAABB'
@@ -87,25 +87,25 @@ describe API::API, api: true  do
   end
 
   describe 'DELETE /projects/:id/labels' do
-    it 'should return 200 for existing label' do
+    it 'returns 200 for existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label1'
       expect(response).to have_http_status(200)
     end
 
-    it 'should return 404 for non existing label' do
+    it 'returns 404 for non existing label' do
       delete api("/projects/#{project.id}/labels", user), name: 'label2'
       expect(response).to have_http_status(404)
       expect(json_response['message']).to eq('404 Label Not Found')
     end
 
-    it 'should return 400 for wrong parameters' do
+    it 'returns 400 for wrong parameters' do
       delete api("/projects/#{project.id}/labels", user)
       expect(response).to have_http_status(400)
     end
   end
 
   describe 'PUT /projects/:id/labels' do
-    it 'should return 200 if name and colors and description are changed' do
+    it 'returns 200 if name and colors and description are changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: 'New Label',
@@ -117,7 +117,7 @@ describe API::API, api: true  do
       expect(json_response['description']).to eq('test')
     end
 
-    it 'should return 200 if name is changed' do
+    it 'returns 200 if name is changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: 'New Label'
@@ -126,7 +126,7 @@ describe API::API, api: true  do
       expect(json_response['color']).to eq(label1.color)
     end
 
-    it 'should return 200 if colors is changed' do
+    it 'returns 200 if colors is changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FFFFFF'
@@ -135,7 +135,7 @@ describe API::API, api: true  do
       expect(json_response['color']).to eq('#FFFFFF')
     end
 
-    it 'should return 200 if description is changed' do
+    it 'returns 200 if description is changed' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           description: 'test'
@@ -144,27 +144,27 @@ describe API::API, api: true  do
       expect(json_response['description']).to eq('test')
     end
 
-    it 'should return 404 if label does not exist' do
+    it 'returns 404 if label does not exist' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label2',
           new_name: 'label3'
       expect(response).to have_http_status(404)
     end
 
-    it 'should return 400 if no label name given' do
+    it 'returns 400 if no label name given' do
       put api("/projects/#{project.id}/labels", user), new_name: 'label2'
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('400 (Bad request) "name" not given')
     end
 
-    it 'should return 400 if no new parameters given' do
+    it 'returns 400 if no new parameters given' do
       put api("/projects/#{project.id}/labels", user), name: 'label1'
       expect(response).to have_http_status(400)
       expect(json_response['message']).to eq('Required parameters '\
                                          '"new_name" or "color" missing')
     end
 
-    it 'should return 400 for invalid name' do
+    it 'returns 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: ',',
@@ -173,7 +173,7 @@ describe API::API, api: true  do
       expect(json_response['message']['title']).to eq(['is invalid'])
     end
 
-    it 'should return 400 when color code is too short' do
+    it 'returns 400 when color code is too short' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FF'
@@ -181,7 +181,7 @@ describe API::API, api: true  do
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
 
-    it 'should return 400 for too long color code' do
+    it 'returns 400 for too long color code' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAAFFFF'
@@ -192,7 +192,7 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/labels/:label_id/subscription" do
     context "when label_id is a label title" do
-      it "should subscribe to the label" do
+      it "subscribes to the label" do
         post api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
 
         expect(response).to have_http_status(201)
@@ -202,7 +202,7 @@ describe API::API, api: true  do
     end
 
     context "when label_id is a label ID" do
-      it "should subscribe to the label" do
+      it "subscribes to the label" do
         post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
         expect(response).to have_http_status(201)
@@ -214,7 +214,7 @@ describe API::API, api: true  do
     context "when user is already subscribed to label" do
       before { label1.subscribe(user) }
 
-      it "should return 304" do
+      it "returns 304" do
         post api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
         expect(response).to have_http_status(304)
@@ -222,7 +222,7 @@ describe API::API, api: true  do
     end
 
     context "when label ID is not found" do
-      it "should a return 404 error" do
+      it "returns 404 error" do
         post api("/projects/#{project.id}/labels/1234/subscription", user)
 
         expect(response).to have_http_status(404)
@@ -234,7 +234,7 @@ describe API::API, api: true  do
     before { label1.subscribe(user) }
 
     context "when label_id is a label title" do
-      it "should unsubscribe from the label" do
+      it "unsubscribes from the label" do
         delete api("/projects/#{project.id}/labels/#{label1.title}/subscription", user)
 
         expect(response).to have_http_status(200)
@@ -244,7 +244,7 @@ describe API::API, api: true  do
     end
 
     context "when label_id is a label ID" do
-      it "should unsubscribe from the label" do
+      it "unsubscribes from the label" do
         delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
         expect(response).to have_http_status(200)
@@ -256,7 +256,7 @@ describe API::API, api: true  do
     context "when user is already unsubscribed from label" do
       before { label1.unsubscribe(user) }
 
-      it "should return 304" do
+      it "returns 304" do
         delete api("/projects/#{project.id}/labels/#{label1.id}/subscription", user)
 
         expect(response).to have_http_status(304)
@@ -264,7 +264,7 @@ describe API::API, api: true  do
     end
 
     context "when label ID is not found" do
-      it "should a return 404 error" do
+      it "returns 404 error" do
         delete api("/projects/#{project.id}/labels/1234/subscription", user)
 
         expect(response).to have_http_status(404)

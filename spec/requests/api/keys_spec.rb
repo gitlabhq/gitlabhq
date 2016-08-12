@@ -12,20 +12,20 @@ describe API::API, api: true  do
     before { admin }
 
     context 'when unauthenticated' do
-      it 'should return authentication error' do
+      it 'returns authentication error' do
         get api("/keys/#{key.id}")
         expect(response).to have_http_status(401)
       end
     end
 
     context 'when authenticated' do
-      it 'should return 404 for non-existing key' do
+      it 'returns 404 for non-existing key' do
         get api('/keys/999999', admin)
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Not found')
       end
 
-      it 'should return single ssh key with user information' do
+      it 'returns single ssh key with user information' do
         user.keys << key
         user.save
         get api("/keys/#{key.id}", admin)

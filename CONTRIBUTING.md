@@ -465,6 +465,7 @@ merge request:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
+1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
 1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
 1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
@@ -537,6 +538,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
+[newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/

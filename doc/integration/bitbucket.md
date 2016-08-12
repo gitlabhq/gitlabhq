@@ -14,7 +14,7 @@ Bitbucket will generate an application ID and secret key for you to use.
 1.  Select "Add consumer".
 
 1.  Provide the required details.
-    - Name: This can be anything. Consider something like "\<Organization\>'s GitLab" or "\<Your Name\>'s GitLab" or something else descriptive.
+    - Name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Application description: Fill this in if you wish.
     - URL: The URL to your GitLab installation. 'https://gitlab.company.com'
 1.  Select "Save".

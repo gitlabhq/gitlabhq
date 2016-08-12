@@ -1,25 +1,40 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
+  - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
+  - Update to Ruby 2.3.1. !4948
   - Improve diff performance by eliminating redundant checks for text blobs
+  - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
+  - API: Endpoints for enabling and disabling deploy keys
+  - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
+  - Use long options for curl examples in documentation !5703 (winniehell)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
+  - Fix filter label tooltip HTML rendering (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
+  - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Show member roles to all users on members page
+  - Project.visible_to_user is instrumented again
+  - Fix awardable button mutuality loading spinners (ClemMakesApps)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
+  - Add experimental Redis Sentinel support !1877
+  - Fix branches page dropdown sort initial state (ClemMakesApps)
   - Environments have an url to link to
+  - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
@@ -32,10 +47,15 @@ v 8.11.0 (unreleased)
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
   - Retrieve rendered HTML from cache in one request
   - Fix renaming repository when name contains invalid chararacters under project settings
+  - Upgrade Grape from 0.13.0 to 0.15.0. !4601
+  - Trigram indexes for the "ci_runners" table have been removed to speed up UPDATE queries
   - Fix devise deprecation warnings.
+  - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
+  - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Nokogiri's various parsing methods are now instrumented
   - Add simple identifier to public SSH keys (muteor)
+  - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Fix filter input alignment (ClemMakesApps)
   - Include old revision in merge request update hooks (Ben Boeckel)
@@ -44,6 +64,7 @@ v 8.11.0 (unreleased)
   - Document that webhook secret token is sent in X-Gitlab-Token HTTP header !5664 (lycoperdon)
   - Gitlab::Highlight is now instrumented
   - All created issues, API or WebUI, can be submitted to Akismet for spam check !5333
+  - Allow users to import cross-repository pull requests from GitHub
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
@@ -59,6 +80,7 @@ v 8.11.0 (unreleased)
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
+  - Improve OAuth2 client documentation (muteor)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
@@ -73,12 +95,22 @@ v 8.11.0 (unreleased)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
+  - Avoid commit lookup on diff_helper passing existing local variable to the helper method
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
   - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
   - Adds support for pending invitation project members importing projects
+  - Update devise initializer to turn on changed password notification emails. !5648 (tombell)
+  - Avoid to show the original password field when password is automatically set. !5712 (duduribeiro)
+  - Fix importing GitLab projects with an invalid MR source project
+  - Sort folders with submodules in Files view !5521
+  - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
+  - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
 
-v 8.10.5 (unreleased)
+v 8.10.5
+  - Add a data migration to fix some missing timestamps in the members table. !5670
+  - Revert the "Defend against 'Host' header injection" change in the source NGINX templates. !5706
+  - Cache project count for 5 minutes to reduce DB load. !5746 & !5754
 
 v 8.10.4
   - Don't close referenced upstream issues from a forked project.

@@ -23,13 +23,13 @@
       = link_to "Read more", help_page_path("ci/environments"), class: "btn btn-success"
   - else
     .table-holder
-      %table.table.environments
+      %table.table.builds.environments
         %thead
           %tr
             %th ID
             %th Commit
             %th Build
-            %th Date
+            %th
             %th
 
         = render @deployments

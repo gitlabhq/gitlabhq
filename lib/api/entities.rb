@@ -91,9 +91,17 @@ module API
       end
     end
 
-    class ProjectMember < UserBasic
+    class Member < UserBasic
       expose :access_level do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).access_level
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.access_level
+      end
+    end
+
+    class AccessRequester < UserBasic
+      expose :requested_at do |user, options|
+        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester.requested_at
       end
     end
 
@@ -106,12 +114,6 @@ module API
     class GroupDetail < Group
       expose :projects, using: Entities::Project
       expose :shared_projects, using: Entities::Project
-    end
-
-    class GroupMember < UserBasic
-      expose :access_level do |user, options|
-        options[:group].group_members.find_by(user_id: user.id).access_level
-      end
     end
 
     class RepoBranch < Grape::Entity
@@ -325,7 +327,7 @@ module API
       expose :id, :path, :kind
     end
 
-    class Member < Grape::Entity
+    class MemberAccess < Grape::Entity
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
@@ -334,10 +336,10 @@ module API
       end
     end
 
-    class ProjectAccess < Member
+    class ProjectAccess < MemberAccess
     end
 
-    class GroupAccess < Member
+    class GroupAccess < MemberAccess
     end
 
     class ProjectService < Grape::Entity

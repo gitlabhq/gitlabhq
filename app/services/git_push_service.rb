@@ -69,7 +69,7 @@ class GitPushService < BaseService
     SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
   end
 

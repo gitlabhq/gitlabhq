@@ -7,13 +7,11 @@ module Gitlab
 
           class_methods do
             def validator
-              validator = Class.new(Node::Validator)
-
-              if defined?(@validations)
-                @validations.each { |rules| validator.class_eval(&rules) }
+              @validator ||= Class.new(Node::Validator).tap do |validator|
+                if defined?(@validations)
+                  @validations.each { |rules| validator.class_eval(&rules) }
+                end
               end
-
-              validator
             end
 
             private

@@ -30,6 +30,7 @@
 /config/secrets.yml
 /config/sidekiq.yml
 /coverage/*
+/coverage-javascript/
 /db/*.sqlite3
 /db/*.sqlite3-journal
 /db/data.yml
