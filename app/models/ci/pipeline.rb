@@ -255,12 +255,12 @@ module Ci
       self.duration = statuses.latest.duration
     end
 
-    private
-
     def execute_hooks
       project.execute_hooks(pipeline_data, :pipeline_hooks)
       project.execute_services(pipeline_data, :pipeline_hooks)
     end
+
+    private
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)
