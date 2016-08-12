@@ -23,7 +23,7 @@ module Ci
 
     state_machine :status, initial: :created do
       event :queue do
-        transition :created => :pending
+        transition created: :pending
         transition any - [:created, :pending] => :running
       end
 
