@@ -73,20 +73,20 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   end
 
   When 'I click "push" event filter' do
-    sleep 1
+    wait_for_ajax
     click_link("Push events")
-    sleep 2
+    wait_for_ajax
   end
 
   When 'I click "team" event filter' do
-    sleep 1
+    wait_for_ajax
     click_link("Team")
-    sleep 2
+    wait_for_ajax
   end
 
   When 'I click "merge" event filter' do
-    sleep 1
+    wait_for_ajax
     click_link("Merge events")
-    sleep 2
+    wait_for_ajax
   end
 end
