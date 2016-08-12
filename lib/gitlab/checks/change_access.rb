@@ -5,8 +5,8 @@ module Gitlab
       attr_reader :user_access, :project
 
       def initialize(change, user_access:, project:)
-        @oldrev, @newrev, @ref = change.split(' ')
-        @branch_name = branch_name(@ref)
+        @oldrev, @newrev, @ref = change.values_at(:oldrev, :newrev, :ref)
+        @branch_name = Gitlab::Git.branch_name(@ref)
         @user_access = user_access
         @project = project
       end
@@ -48,7 +48,7 @@ module Gitlab
       end
 
       def tag_checks
-        tag_ref = tag_name(@ref)
+        tag_ref = Gitlab::Git.tag_name(@ref)
 
         if tag_ref && protected_tag?(tag_ref) && user_access.cannot_do_action?(:admin_project)
           "You are not allowed to change existing tags on this project."

@@ -37,7 +37,7 @@ module Ci
       return false unless Statuseable::COMPLETED_STATUSES.include?(current_status)
 
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.queue
+        build.enqueue
         true
       else
         build.skip

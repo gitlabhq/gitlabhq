@@ -12,7 +12,7 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines' do
-    let!(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: 'running') }
+    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running') }
 
     [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
@@ -31,10 +31,10 @@ describe "Pipelines" do
     end
 
     context 'cancelable pipeline' do
-      let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
+        build.run
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -50,10 +50,10 @@ describe "Pipelines" do
     end
 
     context 'retryable pipelines' do
-      let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
+        build.drop
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -64,7 +64,7 @@ describe "Pipelines" do
         before { click_link('Retry') }
 
         it { expect(page).not_to have_link('Retry') }
-        it { expect(page).to have_selector('.ci-pending') }
+        it { expect(page).to have_selector('.ci-running') }
       end
     end
 
@@ -87,7 +87,6 @@ describe "Pipelines" do
         let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
@@ -101,10 +100,10 @@ describe "Pipelines" do
       end
 
       context 'when failed' do
-        let!(:failed) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
+        let!(:status) { create(:generic_commit_status, :pending, pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
+          status.drop
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
@@ -206,7 +205,7 @@ describe "Pipelines" do
     before { visit new_namespace_project_pipeline_path(project.namespace, project) }
 
     context 'for valid commit' do
-      before { fill_in('Create for', with: 'master') }
+      before { fill_in('pipeline[ref]', with: 'master') }
 
       context 'with gitlab-ci.yml' do
         before { stub_ci_pipeline_to_return_yaml_file }
@@ -223,11 +222,37 @@ describe "Pipelines" do
 
     context 'for invalid commit' do
       before do
-        fill_in('Create for', with: 'invalid-reference')
+        fill_in('pipeline[ref]', with: 'invalid-reference')
         click_on 'Create pipeline'
       end
 
       it { expect(page).to have_content('Reference not found') }
+    end
+  end
+
+  describe 'Create pipelines', feature: true do
+    let(:project) { create(:project) }
+
+    before do
+      visit new_namespace_project_pipeline_path(project.namespace, project)
+    end
+
+    describe 'new pipeline page' do
+      it 'has field to add a new pipeline' do
+        expect(page).to have_field('pipeline[ref]')
+        expect(page).to have_content('Create for')
+      end
+    end
+
+    describe 'find pipelines' do
+      it 'shows filtered pipelines', js: true do
+        fill_in('pipeline[ref]', with: 'fix')
+        find('input#ref').native.send_keys(:keydown)
+
+        within('.ui-autocomplete') do
+          expect(page).to have_selector('li', text: 'fix')
+        end
+      end
     end
   end
 end

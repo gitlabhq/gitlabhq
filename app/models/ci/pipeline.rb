@@ -19,6 +19,45 @@ module Ci
 
     after_save :keep_around_commits
 
+    state_machine :status, initial: :created do
+      event :enqueue do
+        transition created: :pending
+        transition [:success, :failed, :canceled, :skipped] => :running
+      end
+
+      event :run do
+        transition any => :running
+      end
+
+      event :skip do
+        transition any => :skipped
+      end
+
+      event :drop do
+        transition any => :failed
+      end
+
+      event :succeed do
+        transition any => :success
+      end
+
+      event :cancel do
+        transition any => :canceled
+      end
+
+      before_transition [:created, :pending] => :running do |pipeline|
+        pipeline.started_at = Time.now
+      end
+
+      before_transition any => [:success, :failed, :canceled] do |pipeline|
+        pipeline.finished_at = Time.now
+      end
+
+      before_transition do |pipeline|
+        pipeline.update_duration
+      end
+    end
+
     # ref can't be HEAD or SHA, can only be branch/tag name
     scope :latest_successful_for, ->(ref = default_branch) do
       where(ref: ref).success.order(id: :desc).limit(1)
@@ -89,16 +128,12 @@ module Ci
 
     def cancel_running
       builds.running_or_pending.each(&:cancel)
-
-      reload_status!
     end
 
     def retry_failed(user)
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
-
-      reload_status!
     end
 
     def latest?
@@ -185,7 +220,17 @@ module Ci
 
     def process!
       Ci::ProcessPipelineService.new(project, user).execute(self)
-      reload_status!
+    end
+
+    def build_updated
+      case latest_builds_status
+      when 'pending' then enqueue
+      when 'running' then run
+      when 'success' then succeed
+      when 'failed' then drop
+      when 'canceled' then cancel
+      when 'skipped' then skip
+      end
     end
 
     def predefined_variables
@@ -194,21 +239,17 @@ module Ci
       ]
     end
 
-    def reload_status!
-      statuses.reload
-      self.status =
-        if yaml_errors.blank?
-          statuses.latest.status || 'skipped'
-        else
-          'failed'
-        end
-      self.started_at = statuses.started_at
-      self.finished_at = statuses.finished_at
+    def update_duration
       self.duration = statuses.latest.duration
-      save
     end
 
     private
+
+    def latest_builds_status
+      return 'failed' unless yaml_errors.blank?
+
+      statuses.latest.status || 'skipped'
+    end
 
     def keep_around_commits
       return unless project
