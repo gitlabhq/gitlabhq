@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::DataBuilder::PipelineDataBuilder do
+describe Gitlab::DataBuilder::Pipeline do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 

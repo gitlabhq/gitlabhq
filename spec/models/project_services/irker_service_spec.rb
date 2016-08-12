@@ -47,7 +47,7 @@ describe IrkerService, models: true do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
     let(:sample_data) do
-      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+      Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
     let(:recipients) { '#commits irc://test.net/#test ftp://bad' }

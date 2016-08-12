@@ -66,8 +66,7 @@ describe JiraService, models: true do
         password: 'gitlab_jira_password'
       )
       @jira_service.save # will build API URL, as api_url was not specified above
-      @sample_data = Gitlab::DataBuilder::PushDataBuilder.
-        build_sample(project, user)
+      @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       # https://github.com/bblimke/webmock#request-with-basic-authentication
       @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
       @comment_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/comment'

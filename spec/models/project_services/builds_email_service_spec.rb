@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe BuildsEmailService do
   let(:data) do
-    Gitlab::DataBuilder::BuildDataBuilder.build(create(:ci_build))
+    Gitlab::DataBuilder::Build.build(create(:ci_build))
   end
 
   describe 'Validations' do
@@ -41,7 +41,7 @@ describe BuildsEmailService do
 
   describe '#test' do
     it 'sends email' do
-      data = Gitlab::DataBuilder::BuildDataBuilder.build(create(:ci_build))
+      data = Gitlab::DataBuilder::Build.build(create(:ci_build))
       subject.recipients = 'test@gitlab.com'
 
       expect(BuildEmailWorker).to receive(:perform_async)
@@ -51,7 +51,7 @@ describe BuildsEmailService do
 
     context 'notify only failed builds is true' do
       it 'sends email' do
-        data = Gitlab::DataBuilder::BuildDataBuilder.build(create(:ci_build))
+        data = Gitlab::DataBuilder::Build.build(create(:ci_build))
         data[:build_status] = "success"
         subject.recipients = 'test@gitlab.com'
 

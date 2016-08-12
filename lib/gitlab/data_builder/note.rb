@@ -1,6 +1,6 @@
 module Gitlab
   module DataBuilder
-    module NoteDataBuilder
+    module Note
       extend self
 
       # Produce a hash of post-receive data

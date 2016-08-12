@@ -5,7 +5,7 @@ describe BuildEmailWorker do
 
   let(:build) { create(:ci_build) }
   let(:user) { create(:user) }
-  let(:data) { Gitlab::DataBuilder::BuildDataBuilder.build(build) }
+  let(:data) { Gitlab::DataBuilder::Build.build(build) }
 
   subject { BuildEmailWorker.new }
 

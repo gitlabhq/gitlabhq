@@ -49,7 +49,7 @@ describe HipchatService, models: true do
     let(:token) { 'verySecret' }
     let(:server_url) { 'https://hipchat.example.com'}
     let(:push_sample_data) do
-      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+      Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
     before(:each) do
@@ -111,7 +111,7 @@ describe HipchatService, models: true do
 
     context 'tag_push events' do
       let(:push_sample_data) do
-        Gitlab::DataBuilder::PushDataBuilder.build(
+        Gitlab::DataBuilder::Push.build(
           project,
           user,
           Gitlab::Git::BLANK_SHA,
@@ -195,7 +195,7 @@ describe HipchatService, models: true do
         end
 
         it "calls Hipchat API for commit comment events" do
-          data = Gitlab::DataBuilder::NoteDataBuilder.build(commit_note, user)
+          data = Gitlab::DataBuilder::Note.build(commit_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -227,7 +227,7 @@ describe HipchatService, models: true do
         end
 
         it "calls Hipchat API for merge request comment events" do
-          data = Gitlab::DataBuilder::NoteDataBuilder.build(merge_request_note, user)
+          data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -254,7 +254,7 @@ describe HipchatService, models: true do
         end
 
         it "calls Hipchat API for issue comment events" do
-          data = Gitlab::DataBuilder::NoteDataBuilder.build(issue_note, user)
+          data = Gitlab::DataBuilder::Note.build(issue_note, user)
           hipchat.execute(data)
 
           message = hipchat.send(:create_message, data)
@@ -280,7 +280,7 @@ describe HipchatService, models: true do
         end
 
         it "calls Hipchat API for snippet comment events" do
-          data = Gitlab::DataBuilder::NoteDataBuilder.build(snippet_note, user)
+          data = Gitlab::DataBuilder::Note.build(snippet_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -303,7 +303,7 @@ describe HipchatService, models: true do
     context 'build events' do
       let(:pipeline) { create(:ci_empty_pipeline) }
       let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:data) { Gitlab::DataBuilder::BuildDataBuilder.build(build) }
+      let(:data) { Gitlab::DataBuilder::Build.build(build) }
 
       context 'for failed' do
         before { build.drop }

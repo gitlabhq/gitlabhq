@@ -34,12 +34,24 @@ class GitTagPushService < BaseService
       end
     end
 
-    Gitlab::DataBuilder::PushDataBuilder.
-      build(project, current_user, params[:oldrev], params[:newrev], params[:ref], commits, message)
+    Gitlab::DataBuilder::Push.build(
+      project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      commits,
+      message)
   end
 
   def build_system_push_data
-    Gitlab::DataBuilder::PushDataBuilder.
-      build(project, current_user, params[:oldrev], params[:newrev], params[:ref], [], '')
+    Gitlab::DataBuilder::Push.build(
+      project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      [],
+      '')
   end
 end

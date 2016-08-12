@@ -896,7 +896,7 @@ describe User, models: true do
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project1) }
     let!(:push_data) do
-      Gitlab::DataBuilder::PushDataBuilder.build_sample(project2, subject)
+      Gitlab::DataBuilder::Push.build_sample(project2, subject)
     end
     let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
 

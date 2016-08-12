@@ -39,8 +39,7 @@ describe AssemblaService, models: true do
         token: 'verySecret',
         subdomain: 'project_name'
       )
-      @sample_data = Gitlab::DataBuilder::PushDataBuilder.
-        build_sample(project, user)
+      @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       @api_url = 'https://atlas.assembla.com/spaces/project_name/github_tool?secret_key=verySecret'
       WebMock.stub_request(:post, @api_url)
     end

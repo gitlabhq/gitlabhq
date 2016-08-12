@@ -85,7 +85,7 @@ describe DroneCiService, models: true do
 
     let(:user)    { create(:user, username: 'username') }
     let(:push_sample_data) do
-      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+      Gitlab::DataBuilder::Push.build_sample(project, user)
     end
 
     it do

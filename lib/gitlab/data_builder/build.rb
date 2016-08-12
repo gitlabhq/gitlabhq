@@ -1,6 +1,6 @@
 module Gitlab
   module DataBuilder
-    module BuildDataBuilder
+    module Build
       extend self
 
       def build(build)

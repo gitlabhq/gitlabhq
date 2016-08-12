@@ -222,7 +222,7 @@ module Ci
     end
 
     def pipeline_data
-      Gitlab::DataBuilder::PipelineDataBuilder.build(self)
+      Gitlab::DataBuilder::Pipeline.build(self)
     end
 
     def keep_around_commits

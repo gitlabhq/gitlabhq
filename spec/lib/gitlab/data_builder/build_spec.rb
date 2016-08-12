@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::DataBuilder::BuildDataBuilder do
+describe Gitlab::DataBuilder::Build do
   let(:build) { create(:ci_build) }
 
   describe '.build' do

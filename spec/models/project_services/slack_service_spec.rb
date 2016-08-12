@@ -46,7 +46,7 @@ describe SlackService, models: true do
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
     let(:push_sample_data) do
-      Gitlab::DataBuilder::PushDataBuilder.build_sample(project, user)
+      Gitlab::DataBuilder::Push.build_sample(project, user)
     end
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
     let(:username) { 'slack_username' }
@@ -197,8 +197,7 @@ describe SlackService, models: true do
         it "uses the right channel" do
           slack.update_attributes(note_channel: "random")
 
-          note_data = Gitlab::DataBuilder::NoteDataBuilder.
-            build(issue_note, user)
+          note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
           expect(Slack::Notifier).to receive(:new).
            with(webhook_url, channel: "random").
@@ -238,7 +237,7 @@ describe SlackService, models: true do
       end
 
       it "calls Slack API for commit comment events" do
-        data = Gitlab::DataBuilder::NoteDataBuilder.build(commit_note, user)
+        data = Gitlab::DataBuilder::Note.build(commit_note, user)
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
@@ -252,8 +251,7 @@ describe SlackService, models: true do
       end
 
       it "calls Slack API for merge request comment events" do
-        data = Gitlab::DataBuilder::NoteDataBuilder.
-          build(merge_request_note, user)
+        data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
@@ -266,7 +264,7 @@ describe SlackService, models: true do
       end
 
       it "calls Slack API for issue comment events" do
-        data = Gitlab::DataBuilder::NoteDataBuilder.build(issue_note, user)
+        data = Gitlab::DataBuilder::Note.build(issue_note, user)
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
@@ -280,7 +278,7 @@ describe SlackService, models: true do
       end
 
       it "calls Slack API for snippet comment events" do
-        data = Gitlab::DataBuilder::NoteDataBuilder.build(snippet_note, user)
+        data = Gitlab::DataBuilder::Note.build(snippet_note, user)
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once

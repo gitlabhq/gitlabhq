@@ -1,6 +1,6 @@
 module Gitlab
   module DataBuilder
-    module PushDataBuilder
+    module Push
       extend self
 
       # Produce a hash of post-receive data
