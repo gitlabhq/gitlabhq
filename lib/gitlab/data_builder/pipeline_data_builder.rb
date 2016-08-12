@@ -1,7 +1,7 @@
 module Gitlab
   module DataBuilder
     module PipelineDataBuilder
-      module_function
+      extend self
 
       def build(pipeline)
         {
