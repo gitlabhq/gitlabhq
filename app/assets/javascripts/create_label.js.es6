@@ -103,7 +103,7 @@
           if (typeof label.message === 'string') {
             errors = label.message;
           } else {
-            errors = _.map(label.message, function (value, key) {
+            errors = label.message.map(function (value, key) {
               return key + " " + value[0];
             }).join("<br/>");
           }
