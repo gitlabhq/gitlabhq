@@ -15,7 +15,7 @@ describe Gitlab::DataBuilder::PipelineDataBuilder do
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe '.build' do
-    let(:data) { Gitlab::DataBuilder::PipelineDataBuilder.build(pipeline) }
+    let(:data) { described_class.build(pipeline) }
     let(:attributes) { data[:object_attributes] }
     let(:build_data) { data[:builds].first }
     let(:project_data) { data[:project] }

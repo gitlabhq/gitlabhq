@@ -5,7 +5,7 @@ describe Gitlab::DataBuilder::BuildDataBuilder do
 
   describe '.build' do
     let(:data) do
-      Gitlab::DataBuilder::BuildDataBuilder.build(build)
+      described_class.build(build)
     end
 
     it { expect(data).to be_a(Hash) }
