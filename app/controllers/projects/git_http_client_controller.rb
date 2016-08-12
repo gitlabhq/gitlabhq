@@ -94,7 +94,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def check_2fa(auth_type)
     if user && user.two_factor_enabled? && auth_type == :gitlab_or_ldap
-      render plain: "HTTP Basic: Access denied\nYou have 2FA enabled, please use a personal access token for Git over HTTP\n", status: 401
+      render plain: "HTTP Basic: Access denied\n"\
+                      "You have 2FA enabled, please use a personal access token for Git over HTTP.\n"\
+                      "You can generate one at #{profile_personal_access_tokens_url}",
+             status: 401
     end
   end
 
