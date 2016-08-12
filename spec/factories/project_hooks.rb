@@ -7,15 +7,13 @@ FactoryGirl.define do
     end
 
     trait :all_events_enabled do
-      %w[push_events
-         merge_requests_events
-         tag_push_events
-         issues_events
-         note_events
-         build_events
-         pipeline_events].each do |event|
-        send(event, true)
-      end
+      push_events true
+      merge_requests_events true
+      tag_push_events true
+      issues_events true
+      note_events true
+      build_events true
+      pipeline_events true
     end
   end
 end
