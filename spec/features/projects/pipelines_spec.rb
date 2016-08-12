@@ -12,7 +12,7 @@ describe "Pipelines" do
   end
 
   describe 'GET /:project/pipelines' do
-    let!(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', status: 'running') }
+    let!(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running') }
 
     [:all, :running, :branches].each do |scope|
       context "displaying #{scope}" do
@@ -31,10 +31,10 @@ describe "Pipelines" do
     end
 
     context 'cancelable pipeline' do
-      let!(:running) { create(:ci_build, :running, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
+        build.run
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -50,10 +50,10 @@ describe "Pipelines" do
     end
 
     context 'retryable pipelines' do
-      let!(:failed) { create(:ci_build, :failed, pipeline: pipeline, stage: 'test', commands: 'test') }
+      let!(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
 
       before do
-        pipeline.reload_status!
+        build.drop
         visit namespace_project_pipelines_path(project.namespace, project)
       end
 
@@ -64,7 +64,7 @@ describe "Pipelines" do
         before { click_link('Retry') }
 
         it { expect(page).not_to have_link('Retry') }
-        it { expect(page).to have_selector('.ci-pending') }
+        it { expect(page).to have_selector('.ci-running') }
       end
     end
 
@@ -87,7 +87,6 @@ describe "Pipelines" do
         let!(:running) { create(:generic_commit_status, status: 'running', pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
@@ -101,10 +100,10 @@ describe "Pipelines" do
       end
 
       context 'when failed' do
-        let!(:failed) { create(:generic_commit_status, status: 'failed', pipeline: pipeline, stage: 'test') }
+        let!(:status) { create(:generic_commit_status, :pending, pipeline: pipeline, stage: 'test') }
 
         before do
-          pipeline.reload_status!
+          status.drop
           visit namespace_project_pipelines_path(project.namespace, project)
         end
 
