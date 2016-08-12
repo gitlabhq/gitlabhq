@@ -1004,6 +1004,52 @@ describe NotificationService, services: true do
         end
       end
     end
+
+    describe "#resolve_all_discussions" do
+      it do
+        notification.resolve_all_discussions(merge_request, @u_disabled)
+
+        should_email(merge_request.assignee)
+        should_email(@u_watcher)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      context 'participating' do
+        context 'by assignee' do
+          before do
+            merge_request.update_attribute(:assignee, @u_lazy_participant)
+            notification.resolve_all_discussions(merge_request, @u_disabled)
+          end
+
+          it { should_email(@u_lazy_participant) }
+        end
+
+        context 'by note' do
+          let!(:note) { create(:note_on_issue, noteable: merge_request, project_id: project.id, note: 'anything', author: @u_lazy_participant) }
+
+          before { notification.resolve_all_discussions(merge_request, @u_disabled) }
+
+          it { should_email(@u_lazy_participant) }
+        end
+
+        context 'by author' do
+          before do
+            merge_request.author = @u_lazy_participant
+            merge_request.save
+            notification.resolve_all_discussions(merge_request, @u_disabled)
+          end
+
+          it { should_email(@u_lazy_participant) }
+        end
+      end
+    end
   end
 
   describe 'Projects' do
