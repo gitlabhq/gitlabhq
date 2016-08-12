@@ -1,34 +1,44 @@
 class Spinach::Features::EventFilters < Spinach::FeatureSteps
+  include WaitForAjax
   include SharedAuthentication
   include SharedPaths
   include SharedProject
 
   step 'I should see push event' do
+    wait_for_ajax
     sleep 1
     expect(page).to have_selector('span.pushed')
   end
 
   step 'I should not see push event' do
+    wait_for_ajax
+    save_and_open_screenshot
     sleep 1
+    save_and_open_screenshot
     expect(page).not_to have_selector('span.pushed')
+    save_and_open_screenshot
   end
 
   step 'I should see new member event' do
+    wait_for_ajax
     sleep 1
     expect(page).to have_selector('span.joined')
   end
 
   step 'I should not see new member event' do
+    wait_for_ajax
     sleep 1
     expect(page).not_to have_selector('span.joined')
   end
 
   step 'I should see merge request event' do
+    wait_for_ajax
     sleep 1
     expect(page).to have_selector('span.accepted')
   end
 
   step 'I should not see merge request event' do
+    wait_for_ajax
     sleep 1
     expect(page).not_to have_selector('span.accepted')
   end
