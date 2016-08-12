@@ -99,8 +99,8 @@
       listFrom.update();
     },
     moveCardToList (listFromId, listToId, issueId) {
-      const listFrom = this.findList('id', listFromId),
-            listTo = this.findList('id', listToId),
+      const listFrom = this.findList('id', listFromId, false),
+            listTo = this.findList('id', listToId, false),
             issueTo = listTo.findIssue(issueId),
             issue = listFrom.findIssue(issueId),
             issueLists = issue.getLists(),
@@ -125,7 +125,9 @@
     },
     findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {
-        return list[key] === val && list['type'] === type;
+        const byType = type ? list['type'] === type : true;
+        
+        return list[key] === val && byType;
       })[0];
     },
     updateFiltersUrl () {
