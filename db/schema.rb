@@ -640,9 +640,11 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.boolean  "share_with_group_lock",  default: false
     t.integer  "visibility_level",       default: 20,    null: false
     t.boolean  "request_access_enabled", default: true,  null: false
+    t.datetime "deleted_at"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
+  add_index "namespaces", ["deleted_at"], name: "index_namespaces_on_deleted_at", using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
