@@ -83,9 +83,7 @@ class Discussion
   end
 
   def to_be_resolved?
-    return @to_be_resolved if defined?(@to_be_resolved)
-
-    @to_be_resolved = notes.any?(&:to_be_resolved?)
+    resolvable? && !resolved?
   end
 
   def can_resolve?(current_user)
@@ -97,12 +95,16 @@ class Discussion
   end
 
   def resolve!(current_user)
+    return unless resolvable?
+
     notes.each do |note|
       note.resolve!(current_user) if note.resolvable?
     end
   end
 
   def unresolve!
+    return unless resolvable?
+
     notes.each do |note|
       note.unresolve! if note.resolvable?
     end
