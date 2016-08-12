@@ -887,8 +887,10 @@ describe Ci::Build, models: true do
       is_expected.to eq(build)
     end
 
-    context 'for success build' do
-      before { build.queue }
+    context 'for successful build' do
+      before do
+        build.update(status: 'success')
+      end
 
       it 'creates a new build' do
         is_expected.to be_pending
