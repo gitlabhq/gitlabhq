@@ -3,6 +3,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
 
   belongs_to :protected_branch
   belongs_to :user
+
   delegate :project, to: :protected_branch
 
   validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,

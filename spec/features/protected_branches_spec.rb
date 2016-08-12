@@ -202,8 +202,13 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         it "allows deleting a user-specific access level" do
+          other_authorized_user = create(:user)
+          project.team << [other_authorized_user, :developer]
+
           visit namespace_project_protected_branches_path(project.namespace, project)
           set_protected_branch_name('master')
+
+          # First authorized user has access
           within('.new_protected_branch') do
             find(".allowed-to-#{git_operation_type}").click
             click_on authorized_user.name
@@ -211,11 +216,24 @@ feature 'Projected Branches', feature: true, js: true do
           click_on "Protect"
 
           within(".protected-branches-list") { click_on "Settings" }
+
+          # Second authorized user has access
+          within(".allowed-to-#{git_operation_type}-container") do
+            find(".js-allowed-to-#{git_operation_type}").click
+            perform_enqueued_jobs { click_on other_authorized_user.name }
+          end
+
+          # Remove first user's access
           within(".protected-branch-#{git_operation_type}-access-list") do
-            perform_enqueued_jobs { click_link "Delete" }
+            perform_enqueued_jobs { click_link "Delete", match: :first }
           end
 
           expect(page).to have_content("Successfully deleted.")
+
+          access_levels = ProtectedBranch.first.send("#{git_operation_type}_access_levels".to_sym)
+
+          expect(access_levels.count).to eq(1)
+          expect(access_levels.first.user).to eq(other_authorized_user)
         end
       end
     end
