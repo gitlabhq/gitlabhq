@@ -39,6 +39,9 @@ class MergeConflictDataProvider {
 
     vueInstance.conflictsData = data;
     vueInstance.isSubmitting = false;
+
+    const conflictsText = this.getConflictsCount() > 1 ? 'conflicts' : 'conflict';
+    vueInstance.conflictsData.conflictsText = conflictsText;
   }
 
 
@@ -101,7 +104,6 @@ class MergeConflictDataProvider {
       }
 
     });
-
   }
 
 
