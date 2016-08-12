@@ -95,9 +95,7 @@ class TodosFinder
 
   def projects(items)
     item_project_ids = items.reorder(nil).select(:project_id)
-    ProjectsFinder.new.execute(current_user) do |relation|
-      relation.where(id: item_project_ids)
-    end
+    ProjectsFinder.new.execute(current_user, item_project_ids)
   end
 
   def type?

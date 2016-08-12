@@ -1,7 +1,7 @@
 class ProjectsFinder < UnionFinder
-  def execute(current_user = nil, options = {}, &block)
+  def execute(current_user = nil, project_ids_relation = nil)
     segments = all_projects(current_user)
-    segments.map!(&block) if block
+    segments.map! { |s| s.where(id: project_ids_relation) } if project_ids_relation
 
     find_union(segments, Project)
   end
