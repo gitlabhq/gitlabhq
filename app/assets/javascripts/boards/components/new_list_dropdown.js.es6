@@ -16,7 +16,7 @@ $(() => {
         const active = BoardsStore.findList('title', label.title),
               $li = $('<li />',),
               $a = $('<a />', {
-                class: (active ? 'is-active' : ''),
+                class: (active ? `is-active js-board-list-${active.id}` : ''),
                 text: label.title,
                 href: '#'
               }),
@@ -39,6 +39,7 @@ $(() => {
           BoardsStore.new({
             title: label.title,
             position: BoardsStore.state.lists.length - 1,
+            list_type: 'label',
             label: {
               id: label.id,
               title: label.title,

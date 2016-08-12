@@ -33,16 +33,8 @@
         });
       this.removeBlankState();
     },
-    updateNewListDropdown () {
-      const glDropdown = $('.js-new-board-list').data('glDropdown');
-
-      if (glDropdown) {
-        const renderedData = glDropdown.renderedData;
-
-        if (renderedData) {
-          glDropdown.renderData(renderedData);
-        }
-      }
+    updateNewListDropdown (listId) {
+      $(`.js-board-list-${listId}`).removeClass('is-active');
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
@@ -126,7 +118,7 @@
     findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {
         const byType = type ? list['type'] === type : true;
-        
+
         return list[key] === val && byType;
       })[0];
     },

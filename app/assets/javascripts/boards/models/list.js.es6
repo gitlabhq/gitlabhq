@@ -36,7 +36,7 @@ class List {
       BoardsStore.state.lists = BoardsStore.state.lists.filter((list) => {
         return list.id !== this.id;
       });
-      BoardsStore.updateNewListDropdown();
+      BoardsStore.updateNewListDropdown(this.id);
 
       gl.boardService.destroyList(this.id);
     }

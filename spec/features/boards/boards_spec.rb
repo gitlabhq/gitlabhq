@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'Issue Boards', feature: true, js: true do
+  include WaitForAjax
+
   let(:project)   { create(:project) }
   let(:user)      { create(:user) }
   let!(:user2)    { create(:user) }
@@ -100,6 +102,18 @@ describe 'Issue Boards', feature: true, js: true do
         find('.board-delete').click
       end
       expect(page).to have_selector('.board', count: 3)
+    end
+
+    it 'removes checkmark in new list dropdown after deleting' do
+      click_button 'Create new list'
+      wait_for_ajax
+
+      page.within(all('.board')[1]) do
+        find('.board-delete').click
+      end
+      expect(page).to have_selector('.board', count: 3)
+
+      expect(find(".js-board-list-#{planning.id}", visible: false)).not_to have_css('.is-active')
     end
 
     it 'infinite scrolls list' do
