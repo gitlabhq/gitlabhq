@@ -14,14 +14,7 @@ describe Ci::API::API do
     end
 
     describe "POST /builds/register" do
-<<<<<<< HEAD
-      it "starts a build" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
-        pipeline.create_builds(nil)
-        build = pipeline.builds.first
-=======
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
 
       it "starts a build" do
         register_builds info: { platform: :darwin }
@@ -37,22 +30,10 @@ describe Ci::API::API do
         )
       end
 
-<<<<<<< HEAD
-      it "returns 404 error if no pending build found" do
-        post ci_api("/builds/register"), token: runner.token
-
-        expect(response).to have_http_status(404)
-      end
-
-      it "returns 404 error if no builds for specific runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: shared_project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
-=======
       context 'when builds are finished' do
         before do
           build.success
         end
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
 
         it "returns 404 error if no builds for specific runner" do
           register_builds
@@ -61,17 +42,11 @@ describe Ci::API::API do
         end
       end
 
-<<<<<<< HEAD
-      it "returns 404 error if no builds for shared runner" do
-        pipeline = FactoryGirl.create(:ci_pipeline, project: project)
-        FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
-=======
       context 'for other project with builds' do
         before do
           build.success
           create(:ci_build, :pending)
         end
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
 
         it "returns 404 error if no builds for shared runner" do
           register_builds

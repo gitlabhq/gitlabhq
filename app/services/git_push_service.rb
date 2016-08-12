@@ -74,12 +74,7 @@ class GitPushService < BaseService
     SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-<<<<<<< HEAD
-
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data, mirror_update: mirror_update)
-=======
-    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(mirror_update: mirror_update)
     ProjectCacheWorker.perform_async(@project.id)
   end
 
