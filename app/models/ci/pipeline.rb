@@ -20,7 +20,7 @@ module Ci
     after_save :keep_around_commits
 
     state_machine :status, initial: :created do
-      event :queue do
+      event :enqueue do
         transition created: :pending
         transition any - [:created, :pending] => :running
       end
@@ -224,18 +224,12 @@ module Ci
 
     def build_updated
       case latest_builds_status
-      when 'pending'
-        queue
-      when 'running'
-        run
-      when 'success'
-        succeed
-      when 'failed'
-        drop
-      when 'canceled'
-        cancel
-      when 'skipped'
-        skip
+      when 'pending' then enqueue
+      when 'running' then run
+      when 'success' then succeed
+      when 'failed' then drop
+      when 'canceled' then cancel
+      when 'skipped' then skip
       end
     end
 

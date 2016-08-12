@@ -143,7 +143,7 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.started_at).not_to be_nil
       end
 
-      it 'do not update on transitioning to success' do
+      it 'does not update on transitioning to success' do
         build.success
 
         expect(pipeline.reload.started_at).to be_nil
@@ -157,7 +157,7 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.finished_at).not_to be_nil
       end
 
-      it 'do not update on transitioning to running' do
+      it 'does not update on transitioning to running' do
         build.run
 
         expect(pipeline.reload.finished_at).to be_nil
@@ -257,14 +257,16 @@ describe Ci::Pipeline, models: true do
     subject { pipeline.reload.status }
 
     context 'on queuing' do
-      before { build.queue }
+      before do
+        build.enqueue
+      end
 
       it { is_expected.to eq('pending') }
     end
 
     context 'on run' do
       before do
-        build.queue
+        build.enqueue
         build.run
       end
 
@@ -293,6 +295,19 @@ describe Ci::Pipeline, models: true do
       end
 
       it { is_expected.to eq('canceled') }
+    end
+
+    context 'on failure and build retry' do
+      before do
+        build.drop
+        Ci::Build.retry(build)
+      end
+
+      # We are changing a state: created > failed > running
+      # Instead of: created > failed > pending
+      # Since the pipeline already run, so it should not be pending anymore
+
+      it { is_expected.to eq('running') }
     end
   end
 end
