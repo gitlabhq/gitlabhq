@@ -296,6 +296,7 @@ group :development, :test do
   gem 'spring-commands-rspec',    '~> 1.0.4'
   gem 'spring-commands-spinach',  '~> 1.1.0'
   gem 'spring-commands-teaspoon', '~> 0.0.2'
+  gem "spring-commands-sidekiq"
 
   gem 'rubocop', '~> 0.41.2', require: false
   gem 'rubocop-rspec', '~> 1.5.0', require: false

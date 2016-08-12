@@ -696,6 +696,8 @@ GEM
     spring (1.7.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
+    spring-commands-sidekiq (1.0.0)
+      spring (>= 0.9.1)
     spring-commands-spinach (1.1.0)
       spring (>= 0.9.1)
     spring-commands-teaspoon (0.0.2)
@@ -955,6 +957,7 @@ DEPENDENCIES
   spinach-rerun-reporter (~> 0.0.2)
   spring (~> 1.7.0)
   spring-commands-rspec (~> 1.0.4)
+  spring-commands-sidekiq
   spring-commands-spinach (~> 1.1.0)
   spring-commands-teaspoon (~> 0.0.2)
   sprockets (~> 3.6.0)

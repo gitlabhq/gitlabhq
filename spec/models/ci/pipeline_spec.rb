@@ -335,8 +335,8 @@ describe Ci::Pipeline, models: true do
       context 'with multiple builds' do
         context 'when build is queued' do
           before do
-            build_a.queue
-            build_b.queue
+            build_a.enqueue
+            build_b.enqueue
           end
 
           it 'receive a pending event once' do
@@ -346,9 +346,9 @@ describe Ci::Pipeline, models: true do
 
         context 'when build is run' do
           before do
-            build_a.queue
+            build_a.enqueue
             build_a.run
-            build_b.queue
+            build_b.enqueue
             build_b.run
           end
 
@@ -382,8 +382,8 @@ describe Ci::Pipeline, models: true do
       let(:enabled) { false }
 
       before do
-        build_a.queue
-        build_b.queue
+        build_a.enqueue
+        build_b.enqueue
       end
 
       it 'did not execute pipeline_hook after touched' do
