@@ -424,6 +424,10 @@ class MergeRequest < ActiveRecord::Base
       discussions
   end
 
+  def find_discussion(discussion_id)
+    discussions.find { |d| d.id == discussion_id }
+  end
+
   def discussions_resolvable?
     discussions.any?(&:resolvable?)
   end

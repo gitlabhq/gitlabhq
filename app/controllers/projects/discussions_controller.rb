@@ -34,7 +34,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @merge_request.discussions.find { |d| d.id == params[:id] } || render_404
+    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!

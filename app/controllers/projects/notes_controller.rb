@@ -5,7 +5,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
-  before_action :authorize_resolve_note!, only: [:resolve]
+  before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
   before_action :find_current_user_notes, only: [:index]
 
   def index
