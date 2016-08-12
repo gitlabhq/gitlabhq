@@ -3,7 +3,7 @@
 # This file loads spring without using Bundler, in order to be fast.
 # It gets overwritten when you run the `spring binstub` command.
 
-unless defined?(Spring)
+unless (defined?(Spring) || ENV['ENABLE_SPRING'] != '1') && File.basename($0) != 'spring'
   require 'rubygems'
   require 'bundler'
 
