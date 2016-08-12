@@ -419,6 +419,20 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
+  describe '#commits_sha' do
+    let(:commit0) { double('commit0', sha: 'sha1') }
+    let(:commit1) { double('commit1', sha: 'sha2') }
+    let(:commit2) { double('commit2', sha: 'sha3') }
+
+    before do
+      allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
+    end
+
+    it 'returns sha of commits' do
+      expect(subject.commits_sha).to contain_exactly('sha1', 'sha2', 'sha3')
+    end
+  end
+
   describe '#pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
@@ -440,6 +454,24 @@ describe MergeRequest, models: true do
 
         expect(subject.pipeline).to be_nil
       end
+    end
+  end
+
+  describe '#all_pipelines' do
+    let(:commit0) { double('commit0', sha: 'sha1') }
+    let(:commit1) { double('commit1', sha: 'sha2') }
+    let(:commit2) { double('commit2', sha: 'sha3') }
+    let!(:pipeline) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha1', ref: subject.source_branch) }
+    let!(:pipeline2) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha1', ref: subject.source_branch) }
+    let!(:pipeline3) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha2', ref: subject.source_branch) }
+    let!(:pipeline4) { create(:ci_empty_pipeline, project: subject.target_project, sha: 'sha1', ref: subject.target_branch) }
+
+    before do
+      allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
+    end
+
+    it 'returns a pipelines from source projects' do
+      expect(subject.all_pipelines).to eq([pipeline3, pipeline2, pipeline])
     end
   end
 

@@ -642,8 +642,19 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
+  def commits_sha
+    commits.map(&:sha)
+  end
+
   def pipeline
     @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+  end
+
+  def all_pipelines
+    @all_pipelines ||=
+      if diff_head_sha && source_project
+        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
+      end
   end
 
   def merge_commit
