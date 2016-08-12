@@ -87,32 +87,14 @@ module Gitlab
         Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
       end
 
-      def branch_name(ref)
-        ref = @ref.to_s
-        if Gitlab::Git.branch_ref?(ref)
-          Gitlab::Git.ref_name(ref)
-        else
-          nil
-        end
-      end
-
-      def tag_name(ref)
-        ref = @ref.to_s
-        if Gitlab::Git.tag_ref?(ref)
-          Gitlab::Git.ref_name(ref)
-        else
-          nil
-        end
-      end
-
       def push_rule_check
         return unless project.push_rule && @newrev && @oldrev
 
         push_rule = project.push_rule
 
         # Prevent tag removal
-        if tag_name(@ref)
-          if push_rule.deny_delete_tag && protected_tag?(tag_name(@ref)) && Gitlab::Git.blank_ref?(@newrev)
+        if Gitlab::Git.tag_name(@ref)
+          if push_rule.deny_delete_tag && protected_tag?(Gitlab::Git.tag_name(@ref)) && Gitlab::Git.blank_ref?(@newrev)
             "You can not delete tag"
           end
         else

@@ -100,8 +100,6 @@ module Gitlab
         return build_status_object(false, message)
       end
 
-      changes = changes.lines if changes.kind_of?(String)
-
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
