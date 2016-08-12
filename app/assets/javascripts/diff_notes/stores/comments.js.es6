@@ -4,12 +4,21 @@
     get: function (discussionId, noteId) {
       return this.state[discussionId].getNote(noteId);
     },
-    create: function (discussionId, noteId, canResolve, resolved, resolved_by) {
+    createDiscussion: function (discussionId, canResolve) {
       let discussion = this.state[discussionId];
       if (!this.state[discussionId]) {
         discussion = new DiscussionModel(discussionId);
         Vue.set(this.state, discussionId, discussion);
       }
+
+      if (canResolve !== undefined) {
+        discussion.canResolve = canResolve;
+      }
+
+      return discussion;
+    },
+    create: function (discussionId, noteId, canResolve, resolved, resolved_by) {
+      const discussion = this.createDiscussion(discussionId);
 
       discussion.createNote(noteId, canResolve, resolved, resolved_by);
     },

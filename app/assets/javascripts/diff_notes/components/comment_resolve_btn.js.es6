@@ -9,10 +9,8 @@
         return CommentsStore.state[this.discussionId];
       },
       showButton: function () {
-        if (!this.discussion) {
-          return false;
-        } else {
-          return this.discussion.canResolve();
+        if (this.discussion) {
+          return this.discussion.isResolvable();
         }
       },
       isDiscussionResolved: function () {

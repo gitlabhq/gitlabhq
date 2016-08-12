@@ -8,6 +8,7 @@
       mergeRequestId: Number,
       namespacePath: String,
       projectPath: String,
+      canResolve: Boolean,
     },
     data: function() {
       return {
@@ -17,6 +18,11 @@
     computed: {
       discussion: function () {
         return this.discussions[this.discussionId];
+      },
+      showButton: function () {
+        if (this.discussion) {
+          return this.discussion.isResolvable();
+        }
       },
       allResolved: function () {
         if (this.discussion) {
@@ -40,6 +46,9 @@
       resolve: function () {
         ResolveService.toggleResolveForDiscussion(this.namespace, this.mergeRequestId, this.discussionId);
       }
+    },
+    created: function () {
+      CommentsStore.createDiscussion(this.discussionId, this.canResolve);
     }
   });
 })(window);

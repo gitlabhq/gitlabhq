@@ -3,6 +3,7 @@ class DiscussionModel {
     this.id = discussionId;
     this.notes = {};
     this.loading = false;
+    this.canResolve = false;
   }
 
   createNote (noteId, canResolve, resolved, resolved_by) {
@@ -68,7 +69,11 @@ class DiscussionModel {
     }
   }
 
-  canResolve () {
+  isResolvable () {
+    if (!this.canResolve) {
+      return false;
+    }
+    
     for (const noteId in this.notes) {
       const note = this.notes[noteId];
 
