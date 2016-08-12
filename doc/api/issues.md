@@ -33,7 +33,7 @@ GET /issues?labels=foo,bar&state=opened
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
 ```
 
 Example response:
@@ -110,7 +110,7 @@ GET /groups/:id/issues?milestone=1.0.0&state=opened
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/issues
 ```
 
 Example response:
@@ -189,7 +189,7 @@ GET /projects/:id/issues?iid=42
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
 ```
 
 Example response:
@@ -254,7 +254,7 @@ GET /projects/:id/issues/:issue_id
 | `issue_id`| integer | yes   | The ID of a project's issue |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
 ```
 
 Example response:
@@ -327,7 +327,7 @@ POST /projects/:id/issues
 | `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
 ```
 
 Example response:
@@ -388,7 +388,7 @@ PUT /projects/:id/issues/:issue_id
 | `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
 ```
 
 Example response:
@@ -438,7 +438,7 @@ DELETE /projects/:id/issues/:issue_id
 | `issue_id`      | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
 ```
 
 ## Move an issue
@@ -463,7 +463,7 @@ POST /projects/:id/issues/:issue_id/move
 | `to_project_id` | integer | yes | The ID of the new project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
 ```
 
 Example response:
@@ -518,7 +518,7 @@ POST /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
@@ -573,7 +573,7 @@ DELETE /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
@@ -628,7 +628,7 @@ POST /projects/:id/issues/:issue_id/todo
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/todo
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/todo
 ```
 
 Example response:

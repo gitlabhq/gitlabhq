@@ -4,7 +4,7 @@
 - content_for :page_specific_javascripts do
   = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
-- if diff_view == 'parallel'
+- if diff_view == :parallel
   - fluid_layout true
 
 .merge-request{'data-url' => merge_request_path(@merge_request)}

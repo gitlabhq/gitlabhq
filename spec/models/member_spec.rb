@@ -10,7 +10,7 @@ describe Member, models: true do
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
-    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
+    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.all_values) }
 
     it_behaves_like 'an object with email-formated attributes', :invite_email do
       subject { build(:project_member) }

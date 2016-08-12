@@ -13,6 +13,10 @@ module Gitlab
       File.join(Settings.shared['path'], 'tmp/project_exports')
     end
 
+    def import_upload_path(filename:)
+      File.join(storage_path, 'uploads', filename)
+    end
+
     def project_filename
       "project.json"
     end

@@ -116,7 +116,7 @@ describe Group, models: true do
     let(:user) { create(:user) }
     before { group.add_users([user.id], GroupMember::GUEST) }
 
-    it "should update the group permission" do
+    it "updates the group permission" do
       expect(group.group_members.guests.map(&:user)).to include(user)
       group.add_users([user.id], GroupMember::DEVELOPER)
       expect(group.group_members.developers.map(&:user)).to include(user)
@@ -128,12 +128,12 @@ describe Group, models: true do
     let(:user) { create(:user) }
     before { group.add_user(user, GroupMember::MASTER) }
 
-    it "should be true if avatar is image" do
+    it "is true if avatar is image" do
       group.update_attribute(:avatar, 'uploads/avatar.png')
       expect(group.avatar_type).to be_truthy
     end
 
-    it "should be false if avatar is html page" do
+    it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
       expect(group.avatar_type).to eq(["only images allowed"])
     end

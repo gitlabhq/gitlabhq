@@ -237,6 +237,15 @@ Feature: Project Merge Requests
     Then I should see additional file lines
 
   @javascript
+  Scenario: I unfold diff in Side-by-Side view
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I click Side-by-side Diff tab
+    And I unfold diff
+    Then I should see additional file lines
+
+  @javascript
   Scenario: I show comments on a merge request side-by-side diff with comments in multiple files
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"

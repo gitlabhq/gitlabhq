@@ -15,7 +15,7 @@ describe NotificationService, services: true do
 
       it { expect(notification.new_key(key)).to be_truthy }
 
-      it 'should sent email to key owner' do
+      it 'sends email to key owner' do
         expect{ notification.new_key(key) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
       end
     end
@@ -27,7 +27,7 @@ describe NotificationService, services: true do
 
       it { expect(notification.new_email(email)).to be_truthy }
 
-      it 'should send email to email owner' do
+      it 'sends email to email owner' do
         expect{ notification.new_email(email) }.to change{ ActionMailer::Base.deliveries.size }.by(1)
       end
     end
@@ -593,7 +593,7 @@ describe NotificationService, services: true do
         update_custom_notification(:close_issue, @u_custom_global)
       end
 
-      it 'should sent email to issue assignee and issue author' do
+      it 'sends email to issue assignee and issue author' do
         notification.close_issue(issue, @u_disabled)
 
         should_email(issue.assignee)
@@ -646,7 +646,7 @@ describe NotificationService, services: true do
         update_custom_notification(:reopen_issue, @u_custom_global)
       end
 
-      it 'should send email to issue assignee and issue author' do
+      it 'sends email to issue assignee and issue author' do
         notification.reopen_issue(issue, @u_disabled)
 
         should_email(issue.assignee)

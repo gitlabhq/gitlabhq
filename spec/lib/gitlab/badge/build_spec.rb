@@ -6,39 +6,17 @@ describe Gitlab::Badge::Build do
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
 
-  describe '#type' do
-    subject { badge.type }
-    it { is_expected.to eq 'image/svg+xml' }
-  end
-
-  describe '#to_html' do
-    let(:html) { Nokogiri::HTML.parse(badge.to_html) }
-    let(:a_href) { html.at('a') }
-
-    it 'points to link' do
-      expect(a_href[:href]).to eq badge.link_url
-    end
-
-    it 'contains clickable image' do
-      expect(a_href.children.first.name).to eq 'img'
+  describe '#metadata' do
+    it 'returns badge metadata' do
+      expect(badge.metadata.image_url)
+        .to include 'badges/master/build.svg'
     end
   end
 
-  describe '#to_markdown' do
-    subject { badge.to_markdown }
-
-    it { is_expected.to include badge.image_url }
-    it { is_expected.to include badge.link_url }
-  end
-
-  describe '#image_url' do
-    subject { badge.image_url }
-    it { is_expected.to include "badges/#{branch}/build.svg" }
-  end
-
-  describe '#link_url' do
-    subject { badge.link_url }
-    it { is_expected.to include "commits/#{branch}" }
+  describe '#key_text' do
+    it 'always says build' do
+      expect(badge.key_text).to eq 'build'
+    end
   end
 
   context 'build exists' do
@@ -47,16 +25,15 @@ describe Gitlab::Badge::Build do
     context 'build success' do
       before { build.success! }
 
-      describe '#to_s' do
-        subject { badge.to_s }
-        it { is_expected.to eq 'build-success' }
+      describe '#status' do
+        it 'is successful' do
+          expect(badge.status).to eq 'success'
+        end
       end
 
-      describe '#data' do
-        let(:data) { badge.data }
-
-        it 'contains information about success' do
-          expect(status_node(data, 'success')).to be_truthy
+      describe '#value_text' do
+        it 'returns correct value text' do
+          expect(badge.value_text).to eq 'success'
         end
       end
     end
@@ -64,60 +41,66 @@ describe Gitlab::Badge::Build do
     context 'build failed' do
       before { build.drop! }
 
-      describe '#to_s' do
-        subject { badge.to_s }
-        it { is_expected.to eq 'build-failed' }
+      describe '#status' do
+        it 'failed' do
+          expect(badge.status).to eq 'failed'
+        end
       end
 
-      describe '#data' do
-        let(:data) { badge.data }
-
-        it 'contains information about failure' do
-          expect(status_node(data, 'failed')).to be_truthy
+      describe '#value_text' do
+        it 'has correct value text' do
+          expect(badge.value_text).to eq 'failed'
         end
+      end
+    end
+
+    context 'when outdated pipeline for given ref exists' do
+      before do
+        build.success!
+
+        old_build = create_build(project, '11eeffdd', branch)
+        old_build.drop!
+      end
+
+      it 'does not take outdated pipeline into account' do
+        expect(badge.status).to eq 'success'
+      end
+    end
+
+    context 'when multiple pipelines exist for given sha' do
+      before do
+        build.drop!
+
+        new_build = create_build(project, sha, branch)
+        new_build.success!
+      end
+
+      it 'reports the compound status' do
+        expect(badge.status).to eq 'failed'
       end
     end
   end
 
   context 'build does not exist' do
-    describe '#to_s' do
-      subject { badge.to_s }
-      it { is_expected.to eq 'build-unknown' }
+    describe '#status' do
+      it 'is unknown' do
+        expect(badge.status).to eq 'unknown'
+      end
     end
 
-    describe '#data' do
-      let(:data) { badge.data }
-
-      it 'contains infromation about unknown build' do
-        expect(status_node(data, 'unknown')).to be_truthy
+    describe '#value_text' do
+      it 'has correct value text' do
+        expect(badge.value_text).to eq 'unknown'
       end
     end
   end
 
-  context 'when outdated pipeline for given ref exists' do
-    before do
-      build = create_build(project, sha, branch)
-      build.success!
-
-      old_build = create_build(project, '11eeffdd', branch)
-      old_build.drop!
-    end
-
-    it 'does not take outdated pipeline into account' do
-      expect(badge.to_s).to eq 'build-success'
-    end
-  end
-
   def create_build(project, sha, branch)
-    pipeline = create(:ci_pipeline, project: project,
-                                    sha: sha,
-                                    ref: branch)
+    pipeline = create(:ci_empty_pipeline,
+                      project: project,
+                      sha: sha,
+                      ref: branch)
 
     create(:ci_build, pipeline: pipeline, stage: 'notify')
-  end
-
-  def status_node(data, status)
-    xml = Nokogiri::XML.parse(data)
-    xml.at(%Q{text:contains("#{status}")})
   end
 end

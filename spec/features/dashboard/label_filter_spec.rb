@@ -16,7 +16,7 @@ describe 'Dashboard > label filter', feature: true, js: true do
   end
 
   context 'duplicate labels' do
-    it 'should remove duplicate labels' do
+    it 'removes duplicate labels' do
       page.within('.labels-filter') do
         click_button 'Label'
       end

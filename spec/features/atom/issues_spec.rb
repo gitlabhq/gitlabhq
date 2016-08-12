@@ -9,7 +9,7 @@ describe 'Issues Feed', feature: true  do
     before { project.team << [user, :developer] }
 
     context 'when authenticated' do
-      it 'should render atom feed' do
+      it 'renders atom feed' do
         login_with user
         visit namespace_project_issues_path(project.namespace, project, :atom)
 
@@ -22,7 +22,7 @@ describe 'Issues Feed', feature: true  do
     end
 
     context 'when authenticated via private token' do
-      it 'should render atom feed' do
+      it 'renders atom feed' do
         visit namespace_project_issues_path(project.namespace, project, :atom,
                                             private_token: user.private_token)
 
