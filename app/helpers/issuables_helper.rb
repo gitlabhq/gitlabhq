@@ -49,16 +49,12 @@ module IssuablesHelper
     end
   end
 
-  def milestone_dropdown_label(milestone_title, is_boards, default_label = "Milestone")
+  def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     if milestone_title == Milestone::Upcoming.name
       milestone_title = Milestone::Upcoming.title
     end
 
-    if is_boards
-      boards_default = Milestone::Upcoming.title
-    end
-
-    h(milestone_title.presence || boards_default || default_label)
+    h(milestone_title.presence || default_label)
   end
 
   def issuable_meta(issuable, project, text)
