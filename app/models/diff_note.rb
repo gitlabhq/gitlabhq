@@ -107,6 +107,9 @@ class DiffNote < Note
     return unless resolvable?
 
     discussion_notes = self.noteable.notes.fresh.select { |n| n.discussion_id == self.discussion_id }
+
+    return if discussion_notes.empty?
+
     Discussion.new(discussion_notes)
   end
 
