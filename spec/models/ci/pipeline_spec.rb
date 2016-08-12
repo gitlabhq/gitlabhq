@@ -329,7 +329,7 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'receive a pending event once' do
-            expect(WebMock).to requested('pending').once
+            expect(WebMock).to have_requested_pipeline_hook('pending').once
           end
         end
 
@@ -342,7 +342,7 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'receive a running event once' do
-            expect(WebMock).to requested('running').once
+            expect(WebMock).to have_requested_pipeline_hook('running').once
           end
         end
 
@@ -353,11 +353,11 @@ describe Ci::Pipeline, models: true do
           end
 
           it 'receive a success event once' do
-            expect(WebMock).to requested('success').once
+            expect(WebMock).to have_requested_pipeline_hook('success').once
           end
         end
 
-        def requested(status)
+        def have_requested_pipeline_hook(status)
           have_requested(:post, hook.url).with do |req|
             json_body = JSON.parse(req.body)
             json_body['object_attributes']['status'] == status &&
