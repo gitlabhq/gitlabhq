@@ -46,5 +46,13 @@ describe ProjectsFinder do
         end
       end
     end
+
+    describe 'with project_ids_relation' do
+      let(:project_ids_relation) { Project.where(id: internal_project.id) }
+
+      subject { finder.execute(user, project_ids_relation) }
+
+      it { is_expected.to eq([internal_project]) }
+    end
   end
 end
