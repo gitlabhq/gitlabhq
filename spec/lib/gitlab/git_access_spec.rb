@@ -561,7 +561,7 @@ describe Gitlab::GitAccess, lib: true do
       project = create(:project, :read_only_repository)
       project.team << [user, :master]
 
-      check = access.check('git-receive-pack')
+      check = access.check('git-receive-pack', '_any')
 
       expect(check).not_to be_allowed
     end
