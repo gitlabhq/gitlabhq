@@ -55,8 +55,8 @@ $colors: (
   monokai_line_origin_chosen    : rgba(#60d9f1, .35),
   monokai_button_origin_chosen  : #3ea4b2,
 
-  monokai_header_not_chosen     : rgba(#fff, .24),
-  monokai_line_not_chosen       : rgba(#fff, .1),
+  monokai_header_not_chosen     : rgba(#76715d, .24),
+  monokai_line_not_chosen       : rgba(#76715d, .1),
 
 
   solarized_light_header_head_neutral   : rgba(#859900, .37),
@@ -75,8 +75,8 @@ $colors: (
   solarized_light_line_origin_chosen    : rgba(#2878c9, .37),
   solarized_light_button_origin_chosen  : #2482b2,
 
-  solarized_light_header_not_chosen     : rgba(#fff, .37),
-  solarized_light_line_not_chosen       : rgba(#fff, .2),
+  solarized_light_header_not_chosen     : rgba(#839496, .37),
+  solarized_light_line_not_chosen       : rgba(#839496, .2),
 
 
   solarized_dark_header_head_neutral   : rgba(#859900, .35),
@@ -95,8 +95,8 @@ $colors: (
   solarized_dark_line_origin_chosen    : rgba(#2878c9, .35),
   solarized_dark_button_origin_chosen  : #0082cc,
 
-  solarized_dark_header_not_chosen     : rgba(#fff, .25),
-  solarized_dark_line_not_chosen       : rgba(#fff, .15)
+  solarized_dark_header_not_chosen     : rgba(#839496, .25),
+  solarized_dark_line_not_chosen       : rgba(#839496, .15)
 );
 
 
@@ -104,20 +104,60 @@ $colors: (
   .header.line_content, .diff-line-num {
     &.origin {
       background-color: map-get($colors, #{$color}_header_origin_neutral);
+      border-color: map-get($colors, #{$color}_header_origin_neutral);
+
+      button {
+        background-color: map-get($colors, #{$color}_button_origin_neutral);
+        border-color: darken(map-get($colors, #{$color}_button_origin_neutral), 15);
+      }
+
       &.selected {
         background-color: map-get($colors, #{$color}_header_origin_chosen);
+        border-color: map-get($colors, #{$color}_header_origin_chosen);
+
+        button {
+          background-color: map-get($colors, #{$color}_button_origin_chosen);
+          border-color: darken(map-get($colors, #{$color}_button_origin_chosen), 15);
+        }
       }
+
       &.unselected {
         background-color: map-get($colors, #{$color}_header_not_chosen);
+        border-color: map-get($colors, #{$color}_header_not_chosen);
+
+        button {
+          background-color: lighten(map-get($colors, #{$color}_button_origin_neutral), 15);
+          border-color: map-get($colors, #{$color}_button_origin_neutral);
+        }
       }
     }
     &.head {
       background-color: map-get($colors, #{$color}_header_head_neutral);
+      border-color: map-get($colors, #{$color}_header_head_neutral);
+
+      button {
+        background-color: map-get($colors, #{$color}_button_head_neutral);
+        border-color: darken(map-get($colors, #{$color}_button_head_neutral), 15);
+      }
+
       &.selected {
         background-color: map-get($colors, #{$color}_header_head_chosen);
+        border-color: map-get($colors, #{$color}_header_head_chosen);
+
+        button {
+          background-color: map-get($colors, #{$color}_button_head_chosen);
+          border-color: darken(map-get($colors, #{$color}_button_head_chosen), 15);
+        }
       }
+
       &.unselected {
         background-color: map-get($colors, #{$color}_header_not_chosen);
+        border-color: map-get($colors, #{$color}_header_not_chosen);
+
+        button {
+          background-color: lighten(map-get($colors, #{$color}_button_head_neutral), 15);
+          border-color: map-get($colors, #{$color}_button_head_neutral);
+        }
       }
     }
   }
@@ -125,18 +165,22 @@ $colors: (
   .line_content {
     &.origin {
       background-color: map-get($colors, #{$color}_line_origin_neutral);
+
       &.selected {
         background-color: map-get($colors, #{$color}_line_origin_chosen);
       }
+
       &.unselected {
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
     }
     &.head {
       background-color: map-get($colors, #{$color}_line_head_neutral);
+
       &.selected {
         background-color: map-get($colors, #{$color}_line_head_chosen);
       }
+
       &.unselected {
         background-color: map-get($colors, #{$color}_line_not_chosen);
       }
@@ -176,16 +220,15 @@ $colors: (
     position: relative;
 
     button {
-      border-radius: 4px;
-      border: 1px solid #e1e1e1;
-      background: #fff;
+      border-radius: 2px;
       font-size: 10px;
       position: absolute;
       right: 10px;
-      height: 17px;
-      line-height: 4px; // FIXME: 4px?
-      top: 1px;
+      padding: 0;
       outline: none;
+      color: #fff;
+      width: 75px; // static width to make 2 buttons have same width
+      height: 19px;
     }
   }
 
