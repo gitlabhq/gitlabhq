@@ -159,5 +159,4 @@ describe API::API, api: true  do
       end
     end
   end
-
 end

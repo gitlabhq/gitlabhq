@@ -7,7 +7,6 @@ class Projects::MirrorsController < Projects::ApplicationController
   layout "project_settings"
 
   def show
-
   end
 
   def update

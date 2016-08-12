@@ -13,6 +13,7 @@ feature 'Edit Merge Request', feature: true do
 
       visit edit_namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
+  end
 
   context 'editing a MR' do
     it 'has class js-quick-submit in form' do

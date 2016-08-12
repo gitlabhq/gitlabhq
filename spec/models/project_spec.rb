@@ -1187,7 +1187,6 @@ describe Project, models: true do
         expect(project.reload.import_url).to eq('http://test.com')
       end
     end
-
   end
 
   describe '#protected_branch?' do
@@ -1362,7 +1361,6 @@ describe Project, models: true do
   end
 
   describe 'Project import job' do
-
     let(:project) { create(:empty_project) }
     let(:mirror) { false }
 

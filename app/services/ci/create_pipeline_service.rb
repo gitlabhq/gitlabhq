@@ -3,7 +3,6 @@ module Ci
     attr_reader :pipeline
 
     def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, mirror_update: false)
-
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,

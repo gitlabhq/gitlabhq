@@ -150,7 +150,7 @@ describe Ci::Pipeline, models: true do
 
         commit_status.success
       end
-    ends
+    end
 
     context 'updates' do
       let(:current) { Time.now.change(usec: 0) }
