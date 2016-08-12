@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
