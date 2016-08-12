@@ -42,7 +42,7 @@ describe Ci::Build, models: true do
   describe '#ignored?' do
     subject { build.ignored? }
 
-    context 'if build is not allowed to fail' do
+    context 'when build is not allowed to fail' do
       before do
         build.allow_failure = false
       end
@@ -64,7 +64,7 @@ describe Ci::Build, models: true do
       end
     end
 
-    context 'if build is allowed to fail' do
+    context 'when build is allowed to fail' do
       before do
         build.allow_failure = true
       end
@@ -92,7 +92,7 @@ describe Ci::Build, models: true do
 
     it { is_expected.to be_empty }
 
-    context 'if build.trace contains text' do
+    context 'when build.trace contains text' do
       let(:text) { 'example output' }
       before do
         build.trace = text
@@ -102,7 +102,7 @@ describe Ci::Build, models: true do
       it { expect(subject.length).to be >= text.length }
     end
 
-    context 'if build.trace hides token' do
+    context 'when build.trace hides token' do
       let(:token) { 'my_secret_token' }
 
       before do
@@ -284,13 +284,13 @@ describe Ci::Build, models: true do
           stub_ci_pipeline_yaml_file(config)
         end
 
-        context 'if config is not found' do
+        context 'when config is not found' do
           let(:config) { nil }
 
           it { is_expected.to eq(predefined_variables) }
         end
 
-        context 'if config does not have a questioned job' do
+        context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
               test_other: {
@@ -302,7 +302,7 @@ describe Ci::Build, models: true do
           it { is_expected.to eq(predefined_variables) }
         end
 
-        context 'if config has variables' do
+        context 'when config has variables' do
           let(:config) do
             YAML.dump({
               test: {
@@ -394,7 +394,7 @@ describe Ci::Build, models: true do
       it { is_expected.to be_falsey }
     end
 
-    context 'if there are runner' do
+    context 'when there are runners' do
       let(:runner) { create(:ci_runner) }
 
       before do
@@ -424,8 +424,8 @@ describe Ci::Build, models: true do
   describe '#stuck?' do
     subject { build.stuck? }
 
-    %w(pending).each do |state|
-      context "if commit_status.status is #{state}" do
+    %w[pending].each do |state|
+      context "when commit_status.status is #{state}" do
         before do
           build.status = state
         end
@@ -445,8 +445,8 @@ describe Ci::Build, models: true do
       end
     end
 
-    %w(success failed canceled running).each do |state|
-      context "if commit_status.status is #{state}" do
+    %w[success failed canceled running].each do |state|
+      context "when commit_status.status is #{state}" do
         before do
           build.status = state
         end
@@ -768,7 +768,7 @@ describe Ci::Build, models: true do
   describe '#when' do
     subject { build.when }
 
-    context 'if is undefined' do
+    context 'when `when` is undefined' do
       before do
         build.when = nil
       end
@@ -778,13 +778,13 @@ describe Ci::Build, models: true do
           stub_ci_pipeline_yaml_file(config)
         end
 
-        context 'if config is not found' do
+        context 'when config is not found' do
           let(:config) { nil }
 
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config does not have a questioned job' do
+        context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
                         test_other: {
@@ -796,7 +796,7 @@ describe Ci::Build, models: true do
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config has when' do
+        context 'when config has `when`' do
           let(:config) do
             YAML.dump({
                         test: {
@@ -882,7 +882,7 @@ describe Ci::Build, models: true do
 
     subject { build.play }
 
-    it 'enques a build' do
+    it 'enqueues a build' do
       is_expected.to be_pending
       is_expected.to eq(build)
     end
