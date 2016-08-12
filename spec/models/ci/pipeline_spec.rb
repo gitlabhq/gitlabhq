@@ -139,16 +139,8 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-<<<<<<< HEAD
-  describe '#update_state' do
-    it 'executes update_state after touching object' do
-      expect(pipeline).to receive(:update_state).and_return(true)
-      pipeline.touch
-    end
-=======
   describe '#reload_status!' do
     let(:pipeline) { create :ci_empty_pipeline, project: project }
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
 
     context 'dependent objects' do
       let(:commit_status) { create :commit_status, :pending, pipeline: pipeline }
@@ -156,15 +148,9 @@ describe Ci::Pipeline, models: true do
       it 'executes reload_status! after succeeding dependent object' do
         expect(pipeline).to receive(:reload_status!).and_return(true)
 
-<<<<<<< HEAD
-      it 'executes update_state after saving dependent object' do
-        expect(pipeline).to receive(:update_state).and_return(true)
-        commit_status.save
-=======
         commit_status.success
->>>>>>> 5a33bc984abfb4ee6243c00bbcc71ccd086d2266
       end
-    end
+    ends
 
     context 'updates' do
       let(:current) { Time.now.change(usec: 0) }

@@ -2,7 +2,8 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil)
+    def execute(ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, mirror_update: false)
+
       @pipeline = Ci::Pipeline.new(
         project: project,
         ref: ref,
@@ -15,6 +16,10 @@ module Ci
 
       unless project.builds_enabled?
         return error('Pipeline is disabled')
+      end
+
+      unless project.mirror_trigger_builds?
+        return error('Pipeline is disabled for mirror updates') if mirror_update
       end
 
       unless trigger_request || can?(current_user, :create_pipeline, project)
