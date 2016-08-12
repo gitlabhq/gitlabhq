@@ -37,7 +37,7 @@ describe Gitlab::Badge::Coverage::Template do
   describe '#value_width' do
     context 'when coverage is known' do
       it 'is narrower when coverage is known' do
-        expect(template.value_width).to eq 32
+        expect(template.value_width).to eq 36
       end
     end
 
@@ -75,7 +75,7 @@ describe Gitlab::Badge::Coverage::Template do
       end
 
       it 'is green-orange' do
-        expect(template.value_color).to eq '#b0c'
+        expect(template.value_color).to eq '#a3c51c'
       end
     end
 
@@ -113,7 +113,7 @@ describe Gitlab::Badge::Coverage::Template do
   describe '#width' do
     context 'when coverage is known' do
       it 'returns the key width plus value width' do
-        expect(template.width).to eq 94
+        expect(template.width).to eq 98
       end
     end
 

@@ -9,7 +9,7 @@ module Gitlab
       class Template < Badge::Template
         STATUS_COLOR = {
           good: '#4c1',
-          acceptable: '#b0c',
+          acceptable: '#a3c51c',
           medium: '#dfb317',
           low: '#e05d44',
           unknown: '#9f9f9f'
@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def value_width
-          @status ? 32 : 58
+          @status ? 36 : 58
         end
 
         def value_color
