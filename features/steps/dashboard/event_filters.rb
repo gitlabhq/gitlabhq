@@ -12,11 +12,8 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
 
   step 'I should not see push event' do
     wait_for_ajax
-    save_and_open_screenshot
     sleep 1
-    save_and_open_screenshot
     expect(page).not_to have_selector('span.pushed')
-    save_and_open_screenshot
   end
 
   step 'I should see new member event' do
