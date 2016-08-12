@@ -61,3 +61,11 @@ If you click the "Hide whitespace changes" button, you can see the diff without 
 It is also working on commits compare view.
 
 ![Commit Compare](merge_requests/commit_compare.png)
+
+## Merge Requests versions
+
+Every time you push to merge request branch, a new version of merge request diff
+is created. When you visit the merge request page you see latest version of changes.
+However you can select an older one from version dropdown
+
+![Merge Request Versions](merge_requests/versions.png)
