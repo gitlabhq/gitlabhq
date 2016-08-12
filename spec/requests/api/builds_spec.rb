@@ -9,7 +9,7 @@ describe API::API, api: true do
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }
-  let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
+  let!(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch) }
   let!(:build) { create(:ci_build, pipeline: pipeline) }
 
   describe 'GET /projects/:id/builds ' do
@@ -174,7 +174,11 @@ describe API::API, api: true do
 
   describe 'GET /projects/:id/artifacts/:ref_name/download?job=name' do
     let(:api_user) { reporter.user }
-    let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
+    let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+    before do
+      build.success
+    end
 
     def path_for_ref(ref = pipeline.ref, job = build.name)
       api("/projects/#{project.id}/builds/artifacts/#{ref}/download?job=#{job}", api_user)
@@ -236,10 +240,6 @@ describe API::API, api: true do
 
         it { expect(response).to have_http_status(200) }
         it { expect(response.headers).to include(download_headers) }
-      end
-
-      before do
-        pipeline.reload_status!
       end
 
       context 'with regular branch' do

@@ -1,7 +1,7 @@
-image: "ruby:2.3"
+image: "ruby:2.3.1"
 
 cache:
-  key: "ruby-23"
+  key: "ruby-231"
   paths:
   - vendor/apt
   - vendor/ruby

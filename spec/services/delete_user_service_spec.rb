@@ -9,9 +9,11 @@ describe DeleteUserService, services: true do
 
     context 'no options are given' do
       it 'deletes the user' do
-        DeleteUserService.new(current_user).execute(user)
+        user_data = DeleteUserService.new(current_user).execute(user)
 
-        expect { User.find(user.id)       }.to  raise_error(ActiveRecord::RecordNotFound)
+        expect { user_data['email'].to eq(user.email) }
+        expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { Namespace.with_deleted.find(user.namespace.id) }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'will delete the project in the near future' do

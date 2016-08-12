@@ -14,7 +14,6 @@ module Ci
       context 'branch name' do
         before { allow(project).to receive(:commit).and_return(OpenStruct.new(sha: commit_sha)) }
         before { build.run! }
-        before { pipeline.reload_status! }
         let(:image) { service.execute(project, ref: 'master') }
 
         it { expect(image).to be_kind_of(OpenStruct) }
@@ -32,7 +31,6 @@ module Ci
 
       context 'commit sha' do
         before { build.run! }
-        before { pipeline.reload_status! }
         let(:image) { service.execute(project, sha: build.sha) }
 
         it { expect(image).to be_kind_of(OpenStruct) }

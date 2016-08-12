@@ -12,7 +12,6 @@ module SharedBuilds
   step 'project has a recent build' do
     @pipeline = create(:ci_empty_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
     @build = create(:ci_build_with_coverage, pipeline: @pipeline)
-    @pipeline.reload_status!
   end
 
   step 'recent build is successful' do
@@ -24,8 +23,7 @@ module SharedBuilds
   end
 
   step 'project has another build that is running' do
-    create(:ci_build, pipeline: @pipeline, name: 'second build', status: 'running')
-    @pipeline.reload_status!
+    create(:ci_build, pipeline: @pipeline, name: 'second build', status_event: 'run')
   end
 
   step 'I visit recent build details page' do
