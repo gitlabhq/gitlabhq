@@ -1,6 +1,7 @@
 class ProjectsFinder < UnionFinder
-  def execute(current_user = nil, options = {})
+  def execute(current_user = nil, options = {}, &block)
     segments = all_projects(current_user)
+    segments.map!(&block) if block
 
     find_union(segments, Project)
   end
