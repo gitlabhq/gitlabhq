@@ -36,8 +36,9 @@ class MergeConflictResolver {
 
     return {
       conflictsCount() { return dp.getConflictsCount() },
-      resolvedCount()  { return dp.getResolvedCount() },
-      allResolved()    { return dp.isAllResolved() }
+      resolvedCount() { return dp.getResolvedCount() },
+      readyToCommit() { return dp.isReadyToCommit() },
+      commitButtonText() { return dp.getCommitButtonText() }
     }
   }
 

@@ -239,6 +239,13 @@ class MergeConflictDataProvider {
 
   isAllResolved() {
     return !this.vueInstance.isSubmitting && this.getConflictsCount() === this.getResolvedCount();
+
+  getCommitButtonText() {
+    const initial = 'Commit conflict resolution';
+    const inProgress = 'Committing...';
+    const vue = this.vueInstance;
+
+    return vue ? vue.isSubmitting ? inProgress : initial : initial;
   }
 
 

@@ -10,7 +10,7 @@
       {{{conflictsData.commitMessage}}}
 
   %button{type: "button", class: "btn btn-success js-submit-button", ":disabled" => "!allResolved", "@click" => "commit()"}
-    %span Commit conflict resolution
     %a.fa.fa-spin.fa-spinner{":class" => "{'hidden': !isSubmitting}"}
+    %span {{commitButtonText}}
 
   = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"
