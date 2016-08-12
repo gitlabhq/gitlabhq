@@ -18,6 +18,7 @@
               ":list" => "list" }
               %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click" => "deleteBoard" }
                 = icon("trash")
+          = icon("spinner spin", class: "board-header-loading-spinner pull-right", "v-show" => "list.loadingMore")
       .board-inner-container.board-search-container{ "v-if" => "list.canSearch()" }
         %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
         = icon("search", class: "board-search-icon", "v-show" => "!query")

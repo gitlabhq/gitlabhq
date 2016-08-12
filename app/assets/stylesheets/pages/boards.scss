@@ -133,6 +133,11 @@
   }
 }
 
+.board-header-loading-spinner {
+  margin-right: 10px;
+  color: $gray-darkest;
+}
+
 .board-inner-container {
   border-bottom: 1px solid $border-color;
   padding: $gl-padding;

@@ -10,14 +10,13 @@
     data () {
       return {
         scrollOffset: 250,
-        loadingMore: false,
         filters: BoardsStore.state.filters
       };
     },
     watch: {
       filters: {
         handler () {
-          this.loadingMore = false;
+          this.list.loadingMore = false;
           this.$els.list.scrollTop = 0;
         },
         deep: true
@@ -34,12 +33,12 @@
         return this.$els.list.scrollTop + this.listHeight();
       },
       loadNextPage () {
-        this.loadingMore = true;
         const getIssues = this.list.nextPage();
 
         if (getIssues) {
+          this.list.loadingMore = true;
           getIssues.then(() => {
-            this.loadingMore = false;
+            this.list.loadingMore = false;
           });
         }
       },
@@ -71,7 +70,7 @@
 
       // Scroll event on list to load more
       this.$els.list.onscroll = () => {
-        if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.loadingMore) {
+        if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
           this.loadNextPage();
         }
       };

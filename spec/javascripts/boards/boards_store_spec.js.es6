@@ -46,6 +46,18 @@
         expect(list).toBeDefined();
       });
 
+      it('finds list limited by type', () => {
+        BoardsStore.addList({
+          id: 1,
+          position: 0,
+          title: 'Test',
+          list_type: 'backlog'
+        });
+        const list = BoardsStore.findList('id', 1, 'backlog');
+
+        expect(list).toBeDefined();
+      });
+
       it('gets issue when new list added', (done) => {
         BoardsStore.addList(listObj);
         const list = BoardsStore.findList('id', 1);

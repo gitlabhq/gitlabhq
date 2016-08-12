@@ -7,6 +7,7 @@ class List {
     this.filters = BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;
+    this.loadingMore = false;
     this.issues = [];
 
     if (obj.label) {
