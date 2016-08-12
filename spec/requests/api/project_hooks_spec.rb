@@ -7,10 +7,9 @@ describe API::API, 'ProjectHooks', api: true do
   let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) do
     create(:project_hook,
-           project: project, url: "http://example.com",
-           push_events: true, merge_requests_events: true,
-           tag_push_events: true, issues_events: true, note_events: true,
-           build_events: true, pipeline_events: true,
+           :all_events_enabled,
+           project: project,
+           url: 'http://example.com',
            enable_ssl_verification: true)
   end
 
