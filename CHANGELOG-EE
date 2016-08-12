@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
   - [Elastic] Significant improvement of global search performance
+  - [Fix] Push rules check existing commits in some cases
 
 v 8.10.5
   - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637

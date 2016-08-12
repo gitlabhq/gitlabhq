@@ -119,11 +119,8 @@ module Gitlab
           # if newrev is blank, the branch was deleted
           return if Gitlab::Git.blank_ref?(@newrev) || !push_rule.commit_validation?
 
-          # if oldrev is blank, the branch was just created
-          oldrev = Gitlab::Git.blank_ref?(@oldrev) ? project.default_branch : @oldrev
-
-          commits(oldrev).each do |commit|
-            next if commit_from_annex_sync?(commit.safe_message) || old_commit?(commit)
+          commits.each do |commit|
+            next if commit_from_annex_sync?(commit.safe_message)
 
             if error = check_commit(commit, push_rule)
               return error
@@ -140,7 +137,7 @@ module Gitlab
         # locks protect default branch only
         return if project.default_branch != branch_name(@ref)
 
-        commits(@oldrev).each do |commit|
+        commits.each do |commit|
           next if commit_from_annex_sync?(commit.safe_message)
 
           commit.raw_diffs.each do |diff|
@@ -216,12 +213,8 @@ module Gitlab
         nil
       end
 
-      def commits(oldrev)
-        if oldrev
-          project.repository.commits_between(oldrev, @newrev)
-        else
-          project.repository.commits(@newrev)
-        end
+      def commits
+        project.repository.new_commits(@newrev)
       end
 
       def commit_from_annex_sync?(commit_message)
@@ -229,11 +222,6 @@ module Gitlab
 
         # Commit message starting with <git-annex in > so avoid push rules on this
         commit_message.start_with?('git-annex in')
-      end
-
-      def old_commit?(commit)
-        # We skip refs/tmp ref because we use it for Web UI commiting
-        commit.refs(project.repository).reject { |ref| ref.name.start_with?('refs/tmp') }.any?
       end
     end
   end

@@ -666,6 +666,15 @@ class Repository
     commit(sha)
   end
 
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    args = %W(#{Gitlab.config.git.bin_path} rev-list #{newrev} --not --all)
+
+    Gitlab::Popen.popen(args, path_to_repo).first.split("\n").map do |sha|
+      commit(sha.strip)
+    end
+  end
+
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
