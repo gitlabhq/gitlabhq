@@ -64,7 +64,7 @@ describe "Pipelines" do
         before { click_link('Retry') }
 
         it { expect(page).not_to have_link('Retry') }
-        it { expect(page).to have_selector('.ci-pending') }
+        it { expect(page).to have_selector('.ci-running') }
       end
     end
 
