@@ -79,7 +79,7 @@ feature 'Issue Sidebar', feature: true do
       visit_issue(project, issue)
     end
 
-    it 'should update weight in sidebar to 1' do
+    it 'updates weight in sidebar to 1' do
       page.within '.weight' do
         click_link 'Edit'
         click_link '1'
@@ -90,7 +90,7 @@ feature 'Issue Sidebar', feature: true do
       end
     end
 
-    it 'should update weight in sidebar to no weight' do
+    it 'updates weight in sidebar to no weight' do
       page.within '.weight' do
         click_link 'Edit'
         click_link 'No Weight'

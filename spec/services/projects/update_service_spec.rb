@@ -139,6 +139,38 @@ describe Projects::UpdateService, services: true do
     end
   end
 
+  describe 'repository_storage' do
+    let(:admin_user) { create(:user, admin: true) }
+    let(:user) { create(:user) }
+    let(:project) { create(:project, repository_storage: 'a') }
+    let(:opts) { { repository_storage: 'b' } }
+
+    before do
+      FileUtils.mkdir('tmp/tests/storage_a')
+      FileUtils.mkdir('tmp/tests/storage_b')
+
+      storages = { 'a' => 'tmp/tests/storage_a', 'b' => 'tmp/tests/storage_b' }
+      allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    end
+
+    after do
+      FileUtils.rm_rf('tmp/tests/storage_a')
+      FileUtils.rm_rf('tmp/tests/storage_b')
+    end
+
+    it 'calls the change repository storage method if the storage changed' do
+      expect(project).to receive(:change_repository_storage).with('b')
+
+      update_project(project, admin_user, opts).inspect
+    end
+
+    it "doesn't call the change repository storage for non-admin users" do
+      expect(project).not_to receive(:change_repository_storage)
+
+      update_project(project, user, opts).inspect
+    end
+  end
+
   def update_project(project, user, opts)
     Projects::UpdateService.new(project, user, opts).execute
   end

@@ -280,7 +280,8 @@ Parameters:
       "group_name": "Gitlab Org",
       "group_access_level": 10
     }
-  ]
+  ],
+  "repository_storage": "default"
 }
 ```
 
@@ -448,6 +449,7 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 - `public_builds` (optional)
+- `repository_storage` (optional, available only for admins)
 
 ### Create project for user
 
@@ -473,6 +475,7 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 - `public_builds` (optional)
+- `repository_storage` (optional, available only for admins)
 
 ### Edit project
 
@@ -499,6 +502,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `public_builds` (optional)
+- `repository_storage` (optional, available only for admins)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.

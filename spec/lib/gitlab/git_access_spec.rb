@@ -555,4 +555,15 @@ describe Gitlab::GitAccess, lib: true do
       end
     end
   end
+
+  context 'when the repository is read only' do
+    it 'denies push access' do
+      project = create(:project, :read_only_repository)
+      project.team << [user, :master]
+
+      check = access.check('git-receive-pack')
+
+      expect(check).not_to be_allowed
+    end
+  end
 end

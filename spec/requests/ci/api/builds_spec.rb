@@ -236,7 +236,7 @@ describe Ci::API::API do
       before { build.run! }
 
       describe "POST /builds/:id/artifacts/authorize" do
-        context "should authorize posting artifact to running build" do
+        context "authorizes posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response).to have_http_status(200)
@@ -250,7 +250,7 @@ describe Ci::API::API do
           end
         end
 
-        context "should fail to post too large artifact" do
+        context "fails to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.token, filesize: 100 }, headers

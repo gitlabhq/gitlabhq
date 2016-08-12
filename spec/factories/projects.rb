@@ -44,6 +44,10 @@ FactoryGirl.define do
         project.create_repository
       end
     end
+
+    trait :read_only_repository do
+      repository_read_only true
+    end
   end
 
   # Project with empty repository

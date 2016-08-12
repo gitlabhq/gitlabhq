@@ -59,6 +59,10 @@ module Gitlab
     end
 
     def push_access_check(changes)
+      if project.repository_read_only?
+        return build_status_object(false, 'The repository is temporarily read-only. Please try again later.')
+      end
+
       if Gitlab::Geo.secondary?
         return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
       end

@@ -100,7 +100,7 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'user was admin, now should not be' do
-          it 'should make user non admin' do
+          it 'makes user non admin' do
             existing_user.update_attribute('admin', true)
             saml_user.save
             expect(gl_user).to be_valid

@@ -111,7 +111,7 @@
       });
     });
     describe('::getAwardUrl', function() {
-      return it('should return the url for request', function() {
+      return it('returns the url for request', function() {
         return expect(awardsHandler.getAwardUrl()).toBe('/gitlab-org/gitlab-test/issues/8/toggle_award_emoji');
       });
     });

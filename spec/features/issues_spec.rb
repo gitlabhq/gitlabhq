@@ -443,7 +443,7 @@ describe 'Issues', feature: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
     end
 
-    it 'should allow user to update to a weight' do
+    it 'allows user to update to a weight' do
       page.within('.weight') do
         expect(page).to have_content "None"
         click_link 'Edit'

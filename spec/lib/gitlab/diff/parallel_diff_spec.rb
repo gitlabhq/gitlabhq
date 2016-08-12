@@ -12,7 +12,7 @@ describe Gitlab::Diff::ParallelDiff, lib: true do
   subject { described_class.new(diff_file) }
 
   describe '#parallelize' do
-    it 'should return an array of arrays containing the parsed diff' do
+    it 'returns an array of arrays containing the parsed diff' do
       diff_lines = diff_file.highlighted_diff_lines
       expected = [
         # Unchanged lines
