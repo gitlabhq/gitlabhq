@@ -150,7 +150,7 @@ describe JenkinsService do
         expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
       end
 
-      it 'should reset password if url changed, even if setter called multiple times' do
+      it 'resets password if url changed, even if setter called multiple times' do
         @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
         @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
         @jenkins_service.save

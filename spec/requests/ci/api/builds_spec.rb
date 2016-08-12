@@ -19,7 +19,7 @@ describe Ci::API::API do
     end
 
     describe "POST /builds/register" do
-      it "should start a build" do
+      it "starts a build" do
         pipeline = FactoryGirl.create(:ci_pipeline, project: project, ref: 'master')
         pipeline.create_builds(nil)
         build = pipeline.builds.first
@@ -31,13 +31,13 @@ describe Ci::API::API do
         expect(runner.reload.platform).to eq("darwin")
       end
 
-      it "should return 404 error if no pending build found" do
+      it "returns 404 error if no pending build found" do
         post ci_api("/builds/register"), token: runner.token
 
         expect(response).to have_http_status(404)
       end
 
-      it "should return 404 error if no builds for specific runner" do
+      it "returns 404 error if no builds for specific runner" do
         pipeline = FactoryGirl.create(:ci_pipeline, project: shared_project)
         FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
 
@@ -46,7 +46,7 @@ describe Ci::API::API do
         expect(response).to have_http_status(404)
       end
 
-      it "should return 404 error if no builds for shared runner" do
+      it "returns 404 error if no builds for shared runner" do
         pipeline = FactoryGirl.create(:ci_pipeline, project: project)
         FactoryGirl.create(:ci_build, pipeline: pipeline, status: 'pending')
 
@@ -171,18 +171,18 @@ describe Ci::API::API do
         put ci_api("/builds/#{build.id}"), token: runner.token
       end
 
-      it "should update a running build" do
+      it "updates a running build" do
         expect(response).to have_http_status(200)
       end
 
-      it 'should not override trace information when no trace is given' do
+      it 'does not override trace information when no trace is given' do
         expect(build.reload.trace).to eq 'BUILD TRACE'
       end
 
       context 'build has been erased' do
         let(:build) { create(:ci_build, runner_id: runner.id, erased_at: Time.now) }
 
-        it 'should respond with forbidden' do
+        it 'responds with forbidden' do
           expect(response.status).to eq 403
         end
       end
@@ -249,7 +249,7 @@ describe Ci::API::API do
       before { build.run! }
 
       describe "POST /builds/:id/artifacts/authorize" do
-        context "should authorize posting artifact to running build" do
+        context "authorizes posting artifact to running build" do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response).to have_http_status(200)
@@ -263,7 +263,7 @@ describe Ci::API::API do
           end
         end
 
-        context "should fail to post too large artifact" do
+        context "fails to post too large artifact" do
           it "using token as parameter" do
             stub_application_setting(max_artifacts_size: 0)
             post authorize_url, { token: build.token, filesize: 100 }, headers
@@ -280,7 +280,7 @@ describe Ci::API::API do
         context 'authorization token is invalid' do
           before { post authorize_url, { token: 'invalid', filesize: 100 } }
 
-          it 'should respond with forbidden' do
+          it 'responds with forbidden' do
             expect(response).to have_http_status(403)
           end
         end
@@ -300,7 +300,7 @@ describe Ci::API::API do
               upload_artifacts(file_upload, headers_with_token)
             end
 
-            it 'should respond with forbidden' do
+            it 'responds with forbidden' do
               expect(response.status).to eq 403
             end
           end
@@ -342,7 +342,7 @@ describe Ci::API::API do
             end
           end
 
-          context 'should post artifacts file and metadata file' do
+          context 'posts artifacts file and metadata file' do
             let!(:artifacts) { file_upload }
             let!(:metadata) { file_upload2 }
 
@@ -354,7 +354,7 @@ describe Ci::API::API do
               post(post_url, post_data, headers_with_token)
             end
 
-            context 'post data accelerated by workhorse is correct' do
+            context 'posts data accelerated by workhorse is correct' do
               let(:post_data) do
                 { 'file.path' => artifacts.path,
                   'file.name' => artifacts.original_filename,
@@ -422,7 +422,7 @@ describe Ci::API::API do
           end
 
           context "artifacts file is too large" do
-            it "should fail to post too large artifact" do
+            it "fails to post too large artifact" do
               stub_application_setting(max_artifacts_size: 0)
               upload_artifacts(file_upload, headers_with_token)
               expect(response).to have_http_status(413)
@@ -430,14 +430,14 @@ describe Ci::API::API do
           end
 
           context "artifacts post request does not contain file" do
-            it "should fail to post artifacts without file" do
+            it "fails to post artifacts without file" do
               post post_url, {}, headers_with_token
               expect(response).to have_http_status(400)
             end
           end
 
           context 'GitLab Workhorse is not configured' do
-            it "should fail to post artifacts without GitLab-Workhorse" do
+            it "fails to post artifacts without GitLab-Workhorse" do
               post post_url, { token: build.token }, {}
               expect(response).to have_http_status(403)
             end
@@ -456,7 +456,7 @@ describe Ci::API::API do
             FileUtils.remove_entry @tmpdir
           end
 
-          it "should fail to post artifacts for outside of tmp path" do
+          it "fails to post artifacts for outside of tmp path" do
             upload_artifacts(file_upload, headers_with_token)
             expect(response).to have_http_status(400)
           end
@@ -482,7 +482,7 @@ describe Ci::API::API do
           build.reload
         end
 
-        it 'should remove build artifacts' do
+        it 'removes build artifacts' do
           expect(response).to have_http_status(200)
           expect(build.artifacts_file.exists?).to be_falsy
           expect(build.artifacts_metadata.exists?).to be_falsy
@@ -500,14 +500,14 @@ describe Ci::API::API do
               'Content-Disposition' => 'attachment; filename=ci_build_artifacts.zip' }
           end
 
-          it 'should download artifact' do
+          it 'downloads artifact' do
             expect(response).to have_http_status(200)
             expect(response.headers).to include download_headers
           end
         end
 
         context 'build does not has artifacts' do
-          it 'should respond with not found' do
+          it 'responds with not found' do
             expect(response).to have_http_status(404)
           end
         end

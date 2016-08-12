@@ -167,7 +167,7 @@ describe Projects::ProjectMembersController do
           sign_in(user)
         end
 
-        it 'cannot remove himself from the project' do
+        it 'does not remove himself from the project' do
           delete :leave, namespace_id: project.namespace,
                          project_id: project
 

@@ -7,10 +7,11 @@ module Gitlab
       # It allows us to search only for projects user has access to
       attr_reader :limit_project_ids
 
-      def initialize(current_user, limit_project_ids, query)
+      def initialize(current_user, query, limit_project_ids, public_and_internal_projects = true)
         @current_user = current_user
-        @limit_project_ids = limit_project_ids || Project.all
+        @limit_project_ids = limit_project_ids
         @query = Shellwords.shellescape(query) if query.present?
+        @public_and_internal_projects = public_and_internal_projects
       end
 
       def objects(scope, page = nil)
@@ -56,7 +57,8 @@ module Gitlab
 
       def projects
         opt = {
-          pids: limit_project_ids
+          pids: limit_project_ids,
+          public_and_internal_projects: @public_and_internal_projects
         }
 
         @projects = Project.elastic_search(query, options: opt)
@@ -65,7 +67,8 @@ module Gitlab
       def issues
         opt = {
           project_ids: limit_project_ids,
-          current_user: current_user
+          current_user: current_user,
+          public_and_internal_projects: @public_and_internal_projects
         }
 
         Issue.elastic_search(query, options: opt)
@@ -73,7 +76,8 @@ module Gitlab
 
       def milestones
         opt = {
-          project_ids: limit_project_ids
+          project_ids: limit_project_ids,
+          public_and_internal_projects: @public_and_internal_projects
         }
 
         Milestone.elastic_search(query, options: opt)
@@ -81,7 +85,8 @@ module Gitlab
 
       def merge_requests
         opt = {
-          project_ids: limit_project_ids
+          project_ids: limit_project_ids,
+          public_and_internal_projects: @public_and_internal_projects
         }
 
         MergeRequest.elastic_search(query, options: opt)

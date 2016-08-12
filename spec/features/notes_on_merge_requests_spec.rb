@@ -23,7 +23,7 @@ describe 'Comments', feature: true do
     subject { page }
 
     describe 'the note form' do
-      it 'should be valid' do
+      it 'is valid' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
         expect(find('.js-main-target-form input[type=submit]').value).
           to eq('Comment')
@@ -39,7 +39,7 @@ describe 'Comments', feature: true do
           end
         end
 
-        it 'should have enable submit button and preview button' do
+        it 'has enable submit button and preview button' do
           page.within('.js-main-target-form') do
             expect(page).not_to have_css('.js-comment-button[disabled]')
             expect(page).to have_css('.js-md-preview-button', visible: true)
@@ -57,7 +57,7 @@ describe 'Comments', feature: true do
         end
       end
 
-      it 'should be added and form reset' do
+      it 'is added and form reset' do
         is_expected.to have_content('This is awsome!')
         page.within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
@@ -70,7 +70,7 @@ describe 'Comments', feature: true do
     end
 
     describe 'when editing a note', js: true do
-      it 'should contain the hidden edit form' do
+      it 'contains the hidden edit form' do
         page.within("#note_#{note.id}") do
           is_expected.to have_css('.note-edit-form', visible: false)
         end
@@ -82,7 +82,7 @@ describe 'Comments', feature: true do
           find(".js-note-edit").click
         end
 
-        it 'should show the note edit form and hide the note body' do
+        it 'shows the note edit form and hide the note body' do
           page.within("#note_#{note.id}") do
             expect(find('.current-note-edit-form', visible: true)).to be_visible
             expect(find('.note-edit-form', visible: true)).to be_visible
@@ -91,7 +91,7 @@ describe 'Comments', feature: true do
         end
 
         # TODO: fix after 7.7 release
-        # it "should reset the edit note form textarea with the original content of the note if cancelled" do
+        # it "resets the edit note form textarea with the original content of the note if cancelled" do
         #   within(".current-note-edit-form") do
         #     fill_in "note[note]", with: "Some new content"
         #     find(".btn-cancel").click
@@ -184,7 +184,7 @@ describe 'Comments', feature: true do
       end
 
       describe 'the note form' do
-        it "shouldn't add a second form for same row" do
+        it "does not add a second form for same row" do
           click_diff_line
 
           is_expected.
@@ -192,7 +192,7 @@ describe 'Comments', feature: true do
                         count: 1)
         end
 
-        it 'should be removed when canceled' do
+        it 'is removed when canceled' do
           is_expected.to have_css('.js-temp-notes-holder')
 
           page.within("form[data-line-code='#{line_code}']") do
@@ -234,7 +234,7 @@ describe 'Comments', feature: true do
           end
         end
 
-        it 'should be added as discussion' do
+        it 'adds as discussion' do
           is_expected.to have_content('Another comment on line 10')
           is_expected.to have_css('.notes_holder')
           is_expected.to have_css('.notes_holder .note', count: 1)

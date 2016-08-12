@@ -73,7 +73,7 @@ module EE
           def groups_where_group_links_with_provider_ordered
             ::Group.where_group_links_with_provider(provider)
               .preload(:ldap_group_links)
-              .reorder('last_ldap_sync_at ASC, namespaces.id ASC')
+              .reorder('ldap_sync_last_successful_update_at ASC, namespaces.id ASC')
               .distinct
           end
 

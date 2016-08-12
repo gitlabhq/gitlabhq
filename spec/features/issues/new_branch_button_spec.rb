@@ -41,7 +41,7 @@ feature 'Start new branch from an issue', feature: true do
   end
 
   context "for visiters" do
-    it 'no button is shown', js: true do
+    it 'shows no buttons', js: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).not_to have_css('#new-branch')

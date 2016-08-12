@@ -41,7 +41,7 @@ describe ApplicationSetting, 'TokenAuthenticatable' do
       describe 'ensured! token' do
         subject { described_class.new.send("ensure_#{token_field}!") }
 
-        it 'should persist new token' do
+        it 'persists new token' do
           expect(subject).to eq described_class.current[token_field]
         end
       end

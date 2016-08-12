@@ -16,7 +16,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
   end
 
   describe 'initialize with empty ref' do
-    subject(:results) { described_class.new(user, project.id, query, '') }
+    subject(:results) { described_class.new(user, query, project.id, '') }
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to be_nil }
@@ -25,7 +25,7 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
   describe 'initialize with ref' do
     let(:ref) { 'refs/heads/test' }
-    subject(:results) { described_class.new(user, project.id, query, ref) }
+    subject(:results) { described_class.new(user, query, project.id, ref) }
 
     it { expect(results.project).to eq(project) }
     it { expect(results.repository_ref).to eq(ref) }
@@ -53,12 +53,12 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::ProjectSearchResults.new(user, project.id, "term")
+      result = Gitlab::Elastic::ProjectSearchResults.new(user, "term", project.id)
       expect(result.notes_count).to eq(1)
       expect(result.wiki_blobs_count).to eq(1)
       expect(result.blobs_count).to eq(1)
 
-      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, project.id, "initial")
+      result1 = Gitlab::Elastic::ProjectSearchResults.new(user, "initial", project.id)
       expect(result1.commits_count).to eq(1)
     end
   end
@@ -78,8 +78,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    it 'should not list project confidential issues for non project members' do
-      results = described_class.new(non_member, project.id, query)
+    it 'does not list project confidential issues for non project members' do
+      results = described_class.new(non_member, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue
@@ -88,8 +88,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should list project confidential issues for author' do
-      results = described_class.new(author, project.id, query)
+    it 'lists project confidential issues for author' do
+      results = described_class.new(author, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue
@@ -98,8 +98,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'should list project confidential issues for assignee' do
-      results = described_class.new(assignee, project.id, query)
+    it 'lists project confidential issues for assignee' do
+      results = described_class.new(assignee, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue
@@ -108,10 +108,10 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'should list project confidential issues for project members' do
+    it 'lists project confidential issues for project members' do
       project.team << [member, :developer]
 
-      results = described_class.new(member, project.id, query)
+      results = described_class.new(member, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue
@@ -120,10 +120,10 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 3
     end
 
-    it 'should not list project confidential issues for project members with guest role' do
+    it 'does not list project confidential issues for project members with guest role' do
       project.team << [member, :guest]
 
-      results = described_class.new(member, project.id, query)
+      results = described_class.new(member, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue
@@ -132,8 +132,8 @@ describe Gitlab::Elastic::ProjectSearchResults, lib: true do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should list all project issues for admin' do
-      results = described_class.new(admin, project.id, query)
+    it 'lists all project issues for admin' do
+      results = described_class.new(admin, query, project.id)
       issues = results.objects('issues')
 
       expect(issues).to include issue

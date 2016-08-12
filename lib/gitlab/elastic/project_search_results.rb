@@ -6,7 +6,7 @@ module Gitlab
     class ProjectSearchResults < Gitlab::Elastic::SearchResults
       attr_reader :project, :repository_ref
 
-      def initialize(current_user, project_id, query, repository_ref = nil)
+      def initialize(current_user, query, project_id, repository_ref = nil)
         @current_user = current_user
         @project = Project.find(project_id)
 
@@ -16,6 +16,7 @@ module Gitlab
                             nil
                           end
         @query = query
+        @public_and_internal_projects = false
       end
 
       def objects(scope, page = nil)
@@ -90,7 +91,8 @@ module Gitlab
       def notes
         opt = {
           project_ids: limit_project_ids,
-          current_user: @current_user
+          current_user: @current_user,
+          public_and_internal_projects: @public_and_internal_projects
         }
 
         Note.elastic_search(query, options: opt)

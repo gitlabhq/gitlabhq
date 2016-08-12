@@ -41,8 +41,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    it 'should list issues that title or description contain the query' do
-      results = described_class.new(user, limit_project_ids, 'hello world')
+    it 'lists issues that title or description contain the query' do
+      results = described_class.new(user, 'hello world', limit_project_ids)
       issues = results.objects('issues')
 
       expect(issues).to include @issue_1
@@ -51,15 +51,15 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'should return empty list when issues title or description does not contain the query' do
-      results = described_class.new(user, limit_project_ids, 'security')
+    it 'returns empty list when issues title or description does not contain the query' do
+      results = described_class.new(user, 'security', limit_project_ids)
 
       expect(results.objects('issues')).to be_empty
       expect(results.issues_count).to eq 0
     end
 
-    it 'should list issue when search by a valid iid' do
-      results = described_class.new(user, limit_project_ids, '#2')
+    it 'lists issue when search by a valid iid' do
+      results = described_class.new(user, '#2', limit_project_ids)
       issues = results.objects('issues')
 
       expect(issues).not_to include @issue_1
@@ -68,8 +68,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should return empty list when search by invalid iid' do
-      results = described_class.new(user, limit_project_ids, '#222')
+    it 'returns empty list when search by invalid iid' do
+      results = described_class.new(user, '#222', limit_project_ids)
 
       expect(results.objects('issues')).to be_empty
       expect(results.issues_count).to eq 0
@@ -100,8 +100,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     context 'search by term' do
       let(:query) { 'issue' }
 
-      it 'should not list confidential issues for guests' do
-        results = described_class.new(nil, limit_project_ids, query)
+      it 'does not list confidential issues for guests' do
+        results = described_class.new(nil, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -113,8 +113,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 1
       end
 
-      it 'should not list confidential issues for non project members' do
-        results = described_class.new(non_member, limit_project_ids, query)
+      it 'does not list confidential issues for non project members' do
+        results = described_class.new(non_member, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -126,8 +126,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 1
       end
 
-      it 'should list confidential issues for author' do
-        results = described_class.new(author, limit_project_ids, query)
+      it 'lists confidential issues for author' do
+        results = described_class.new(author, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -139,8 +139,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 3
       end
 
-      it 'should list confidential issues for assignee' do
-        results = described_class.new(assignee, limit_project_ids, query)
+      it 'lists confidential issues for assignee' do
+        results = described_class.new(assignee, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -152,11 +152,11 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 3
       end
 
-      it 'should list confidential issues for project members' do
+      it 'lists confidential issues for project members' do
         project_1.team << [member, :developer]
         project_2.team << [member, :developer]
 
-        results = described_class.new(member, limit_project_ids, query)
+        results = described_class.new(member, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -168,8 +168,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 4
       end
 
-      it 'should list all issues for admin' do
-        results = described_class.new(admin, limit_project_ids, query)
+      it 'lists all issues for admin' do
+        results = described_class.new(admin, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -185,8 +185,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
     context 'search by iid' do
       let(:query) { '#1' }
 
-      it 'should not list confidential issues for guests' do
-        results = described_class.new(nil, limit_project_ids, query)
+      it 'does not list confidential issues for guests' do
+        results = described_class.new(nil, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -198,8 +198,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 1
       end
 
-      it 'should not list confidential issues for non project members' do
-        results = described_class.new(non_member, limit_project_ids, query)
+      it 'does not list confidential issues for non project members' do
+        results = described_class.new(non_member, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -211,8 +211,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 1
       end
 
-      it 'should list confidential issues for author' do
-        results = described_class.new(author, limit_project_ids, query)
+      it 'lists confidential issues for author' do
+        results = described_class.new(author, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -224,8 +224,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 2
       end
 
-      it 'should list confidential issues for assignee' do
-        results = described_class.new(assignee, limit_project_ids, query)
+      it 'lists confidential issues for assignee' do
+        results = described_class.new(assignee, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -237,11 +237,11 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 2
       end
 
-      it 'should list confidential issues for project members' do
+      it 'lists confidential issues for project members' do
         project_2.team << [member, :developer]
         project_3.team << [member, :developer]
 
-        results = described_class.new(member, limit_project_ids, query)
+        results = described_class.new(member, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -253,8 +253,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
         expect(results.issues_count).to eq 3
       end
 
-      it 'should list all issues for admin' do
-        results = described_class.new(admin, limit_project_ids, query)
+      it 'lists all issues for admin' do
+        results = described_class.new(admin, query, limit_project_ids)
         issues = results.objects('issues')
 
         expect(issues).to include @issue
@@ -297,8 +297,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    it 'should list merge requests that title or description contain the query' do
-      results = described_class.new(user, limit_project_ids, 'hello world')
+    it 'lists merge requests that title or description contain the query' do
+      results = described_class.new(user, 'hello world', limit_project_ids)
       merge_requests = results.objects('merge_requests')
 
       expect(merge_requests).to include @merge_request_1
@@ -307,15 +307,15 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.merge_requests_count).to eq 2
     end
 
-    it 'should return empty list when merge requests title or description does not contain the query' do
-      results = described_class.new(user, limit_project_ids, 'security')
+    it 'returns empty list when merge requests title or description does not contain the query' do
+      results = described_class.new(user, 'security', limit_project_ids)
 
       expect(results.objects('merge_requests')).to be_empty
       expect(results.merge_requests_count).to eq 0
     end
 
-    it 'should list merge request when search by a valid iid' do
-      results = described_class.new(user, limit_project_ids, '#2')
+    it 'lists merge request when search by a valid iid' do
+      results = described_class.new(user, '#2', limit_project_ids)
       merge_requests = results.objects('merge_requests')
 
       expect(merge_requests).not_to include @merge_request_1
@@ -324,8 +324,8 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.merge_requests_count).to eq 1
     end
 
-    it 'should return empty list when search by invalid iid' do
-      results = described_class.new(user, limit_project_ids, '#222')
+    it 'returns empty list when search by invalid iid' do
+      results = described_class.new(user, '#222', limit_project_ids)
 
       expect(results.objects('merge_requests')).to be_empty
       expect(results.merge_requests_count).to eq 0
@@ -358,7 +358,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
 
       Gitlab::Elastic::Helper.refresh_index
 
-      result = Gitlab::Elastic::SearchResults.new(user, [project.id], 'term')
+      result = Gitlab::Elastic::SearchResults.new(user, 'term', [project.id])
 
       expect(result.issues_count).to eq(2)
       expect(result.merge_requests_count).to eq(2)

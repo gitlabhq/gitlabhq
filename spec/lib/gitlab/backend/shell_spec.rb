@@ -44,6 +44,30 @@ describe Gitlab::Shell, lib: true do
     end
   end
 
+  describe 'projects commands' do
+    let(:projects_path) { 'tmp/tests/shell-projects-test/bin/gitlab-projects' }
+
+    before do
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return('tmp/tests/shell-projects-test')
+    end
+
+    describe 'mv_repository' do
+      it 'executes the command' do
+        expect(Gitlab::Utils).to receive(:system_silent).
+          with([projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git'])
+        gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
+      end
+    end
+
+    describe 'mv_storage' do
+      it 'executes the command' do
+        expect(Gitlab::Utils).to receive(:system_silent).
+          with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
+        gitlab_shell.mv_storage('current/storage', 'project/path', 'new/storage')
+      end
+    end
+  end
+
   describe Gitlab::Shell::KeyAdder, lib: true do
     describe '#add_key' do
       it 'normalizes space characters in the key' do

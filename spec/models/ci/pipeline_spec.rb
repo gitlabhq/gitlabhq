@@ -427,7 +427,7 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#update_state' do
-    it 'execute update_state after touching object' do
+    it 'executes update_state after touching object' do
       expect(pipeline).to receive(:update_state).and_return(true)
       pipeline.touch
     end
@@ -435,7 +435,7 @@ describe Ci::Pipeline, models: true do
     context 'dependent objects' do
       let(:commit_status) { build :commit_status, pipeline: pipeline }
 
-      it 'execute update_state after saving dependent object' do
+      it 'executes update_state after saving dependent object' do
         expect(pipeline).to receive(:update_state).and_return(true)
         commit_status.save
       end
@@ -513,7 +513,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :failed, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns true' do
         is_expected.to be_truthy
       end
@@ -524,7 +524,7 @@ describe Ci::Pipeline, models: true do
         create :ci_build, :success, pipeline: pipeline, name: 'rspec'
         create :ci_build, :allowed_to_fail, :success, pipeline: pipeline, name: 'rubocop'
       end
-      
+
       it 'returns false' do
         is_expected.to be_falsey
       end

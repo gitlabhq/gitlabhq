@@ -21,7 +21,7 @@ describe MergeRequests::RebaseService do
         service.execute(merge_request)
       end
 
-      it "should rebase source branch" do
+      it 'rebases source branch' do
         parent_sha = merge_request.source_project.repository.commit(merge_request.source_branch).parents.first.sha
         target_branch_sha = merge_request.target_project.repository.commit(merge_request.target_branch).sha
         expect(parent_sha).to eq(target_branch_sha)

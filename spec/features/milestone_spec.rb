@@ -13,7 +13,7 @@ feature 'Milestone', feature: true do
   end
 
   feature 'Create a milestone' do
-    scenario 'should show an informative message for a new issue' do
+    scenario 'shows an informative message for a new issue' do
       visit new_namespace_project_milestone_path(project.namespace, project)
       page.within '.milestone-form' do
         fill_in "milestone_title", with: '8.7'
@@ -25,7 +25,7 @@ feature 'Milestone', feature: true do
   end
 
   feature 'Open a milestone with closed issues' do
-    scenario 'should show an informative message' do
+    scenario 'shows an informative message' do
       create(:issue, title: "Bugfix1", project: project, milestone: milestone, state: "closed")
       visit namespace_project_milestone_path(project.namespace, project, milestone)
 

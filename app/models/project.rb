@@ -408,6 +408,12 @@ class Project < ActiveRecord::Base
 
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
+
+    def cached_count
+      Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
+        Project.count
+      end
+    end
   end
 
   def repository_storage_path
@@ -1489,6 +1495,16 @@ class Project < ActiveRecord::Base
     else
       update_attribute(name, value)
     end
+  end
+
+  def change_repository_storage(new_repository_storage_key)
+    return if repository_read_only?
+    return if repository_storage == new_repository_storage_key
+
+    raise ArgumentError unless Gitlab.config.repositories.storages.keys.include?(new_repository_storage_key)
+
+    run_after_commit { ProjectUpdateRepositoryStorageWorker.perform_async(id, new_repository_storage_key) }
+    self.repository_read_only = true
   end
 
   private

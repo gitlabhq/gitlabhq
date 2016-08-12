@@ -26,7 +26,7 @@ describe Projects::ForkService, services: true do
     end
 
     context 'project already exists' do
-      it "should fail due to validation, not transaction failure" do
+      it "fails due to validation, not transaction failure" do
         @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
         @to_project = fork_project(@from_project, @to_user)
         expect(@existing_project.persisted?).to be_truthy
@@ -36,7 +36,7 @@ describe Projects::ForkService, services: true do
     end
 
     context 'GitLab CI is enabled' do
-      it "fork and enable CI for fork" do
+      it "forks and enables CI for fork" do
         @from_project.enable_ci
         @to_project = fork_project(@from_project, @to_user)
         expect(@to_project.builds_enabled?).to be_truthy
@@ -97,14 +97,14 @@ describe Projects::ForkService, services: true do
     end
 
     context 'fork project for group when user not owner' do
-      it 'group developer should fail to fork project into the group' do
+      it 'group developer fails to fork project into the group' do
         to_project = fork_project(@project, @developer, @opts)
         expect(to_project.errors[:namespace]).to eq(['is not valid'])
       end
     end
 
     context 'project already exists in group' do
-      it 'should fail due to validation, not transaction failure' do
+      it 'fails due to validation, not transaction failure' do
         existing_project = create(:project, name: @project.name,
                                             namespace: @group)
         to_project = fork_project(@project, @group_owner, @opts)

@@ -32,27 +32,27 @@ describe DiffHelper do
   end
 
   describe 'diff_options' do
-    it 'should return no collapse false' do
+    it 'returns no collapse false' do
       expect(diff_options).to include(no_collapse: false)
     end
 
-    it 'should return no collapse true if expand_all_diffs' do
+    it 'returns no collapse true if expand_all_diffs' do
       allow(controller).to receive(:params) { { expand_all_diffs: true } }
       expect(diff_options).to include(no_collapse: true)
     end
 
-    it 'should return no collapse true if action name diff_for_path' do
+    it 'returns no collapse true if action name diff_for_path' do
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options).to include(no_collapse: true)
     end
 
-    it 'should return paths if action name diff_for_path and param old path' do
+    it 'returns paths if action name diff_for_path and param old path' do
       allow(controller).to receive(:params) { { old_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')
     end
 
-    it 'should return paths if action name diff_for_path and param new path' do
+    it 'returns paths if action name diff_for_path and param new path' do
       allow(controller).to receive(:params) { { new_path: 'lib/wadus.rb' } }
       allow(controller).to receive(:action_name) { 'diff_for_path' }
       expect(diff_options[:paths]).to include('lib/wadus.rb')
@@ -60,11 +60,11 @@ describe DiffHelper do
   end
 
   describe '#diff_line_content' do
-    it 'should return non breaking space when line is empty' do
+    it 'returns non breaking space when line is empty' do
       expect(diff_line_content(nil)).to eq(' &nbsp;')
     end
 
-    it 'should return the line itself' do
+    it 'returns the line itself' do
       expect(diff_line_content(diff_file.diff_lines.first.text)).
         to eq('@@ -6,12 +6,18 @@ module Popen')
       expect(diff_line_content(diff_file.diff_lines.first.type)).to eq('match')
@@ -91,7 +91,7 @@ describe DiffHelper do
     let(:new_pos) { 50 }
     let(:text) { 'some_text' }
 
-    it "should generate foldable top match line for inline view with empty text by default" do
+    it "generates foldable top match line for inline view with empty text by default" do
       output = diff_match_line old_pos, new_pos
 
       expect(output).to be_html_safe
@@ -100,7 +100,7 @@ describe DiffHelper do
       expect(output).to have_css 'td:nth-child(3):not(.parallel).line_content.match', text: ''
     end
 
-    it "should allow to define text and bottom option" do
+    it "allows to define text and bottom option" do
       output = diff_match_line old_pos, new_pos, text: text, bottom: true
 
       expect(output).to be_html_safe
@@ -109,7 +109,7 @@ describe DiffHelper do
       expect(output).to have_css 'td:nth-child(3):not(.parallel).line_content.match', text: text
     end
 
-    it "should generate match line for parallel view" do
+    it "generates match line for parallel view" do
       output = diff_match_line old_pos, new_pos, text: text, view: :parallel
 
       expect(output).to be_html_safe
@@ -119,7 +119,7 @@ describe DiffHelper do
       expect(output).to have_css 'td:nth-child(4).line_content.match.parallel', text: text
     end
 
-    it "should allow to generate only left match line for parallel view" do
+    it "allows to generate only left match line for parallel view" do
       output = diff_match_line old_pos, nil, text: text, view: :parallel
 
       expect(output).to be_html_safe
@@ -128,7 +128,7 @@ describe DiffHelper do
       expect(output).not_to have_css 'td:nth-child(3)'
     end
 
-    it "should allow to generate only right match line for parallel view" do
+    it "allows to generate only right match line for parallel view" do
       output = diff_match_line nil, new_pos, text: text, view: :parallel
 
       expect(output).to be_html_safe

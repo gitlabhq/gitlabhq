@@ -13,7 +13,7 @@ describe API::API, api: true  do
     before { project_member }
     before { project_member2 }
 
-    it "should return project team members" do
+    it "returns project team members" do
       get api("/projects/#{project.id}/members", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -29,7 +29,7 @@ describe API::API, api: true  do
       expect(json_response.first['username']).to eq(user.username)
     end
 
-    it "should return a 404 error if id not found" do
+    it "returns a 404 error if id not found" do
       get api("/projects/9999/members", user)
       expect(response).to have_http_status(404)
     end
@@ -38,21 +38,21 @@ describe API::API, api: true  do
   describe "GET /projects/:id/members/:user_id" do
     before { project_member }
 
-    it "should return project team member" do
+    it "returns project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user.username)
       expect(json_response['access_level']).to eq(ProjectMember::MASTER)
     end
 
-    it "should return a 404 error if user id not found" do
+    it "returns a 404 error if user id not found" do
       get api("/projects/#{project.id}/members/1234", user)
       expect(response).to have_http_status(404)
     end
   end
 
   describe "POST /projects/:id/members" do
-    it "should add user to project team" do
+    it "adds user to project team" do
       expect do
         post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: ProjectMember::DEVELOPER
       end.to change { ProjectMember.count }.by(1)
@@ -62,7 +62,7 @@ describe API::API, api: true  do
       expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
-    it "should return a 201 status if user is already project member" do
+    it "returns a 201 status if user is already project member" do
       post api("/projects/#{project.id}/members", user),
            user_id: user2.id,
            access_level: ProjectMember::DEVELOPER
@@ -75,17 +75,17 @@ describe API::API, api: true  do
       expect(json_response['access_level']).to eq(ProjectMember::DEVELOPER)
     end
 
-    it "should return a 400 error when user id is not given" do
+    it "returns a 400 error when user id is not given" do
       post api("/projects/#{project.id}/members", user), access_level: ProjectMember::MASTER
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 400 error when access level is not given" do
+    it "returns a 400 error when access level is not given" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 422 error when access level is not known" do
+    it "returns a 422 error when access level is not known" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id, access_level: 1234
       expect(response).to have_http_status(422)
     end
@@ -97,7 +97,7 @@ describe API::API, api: true  do
         post api("/projects/#{project2.id}/members", user), user_id: user2.id, access_level: ProjectMember::MASTER
       end
 
-      it 'should return a 405 method not allowed error when group membership lock is enabled' do
+      it 'returns a 405 method not allowed error when group membership lock is enabled' do
         expect(response.status).to eq 405
       end
     end
@@ -106,24 +106,24 @@ describe API::API, api: true  do
   describe "PUT /projects/:id/members/:user_id" do
     before { project_member2 }
 
-    it "should update project team member" do
+    it "updates project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: ProjectMember::MASTER
       expect(response).to have_http_status(200)
       expect(json_response['username']).to eq(user3.username)
       expect(json_response['access_level']).to eq(ProjectMember::MASTER)
     end
 
-    it "should return a 404 error if user_id is not found" do
+    it "returns a 404 error if user_id is not found" do
       put api("/projects/#{project.id}/members/1234", user), access_level: ProjectMember::MASTER
       expect(response).to have_http_status(404)
     end
 
-    it "should return a 400 error when access level is not given" do
+    it "returns a 400 error when access level is not given" do
       put api("/projects/#{project.id}/members/#{user3.id}", user)
       expect(response).to have_http_status(400)
     end
 
-    it "should return a 422 error when access level is not known" do
+    it "returns a 422 error when access level is not known" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: 123
       expect(response).to have_http_status(422)
     end
@@ -135,13 +135,13 @@ describe API::API, api: true  do
       project_member2
     end
 
-    it "should remove user from project team" do
+    it "removes user from project team" do
       expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
       end.to change { ProjectMember.count }.by(-1)
     end
 
-    it "should return 200 if team member is not part of a project" do
+    it "returns 200 if team member is not part of a project" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect do
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
@@ -149,13 +149,13 @@ describe API::API, api: true  do
       expect(response).to have_http_status(200)
     end
 
-    it "should return 200 if team member already removed" do
+    it "returns 200 if team member already removed" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect(response).to have_http_status(200)
     end
 
-    it "should return 200 OK when the user was not member" do
+    it "returns 200 OK when the user was not member" do
       expect do
         delete api("/projects/#{project.id}/members/1000000", user)
       end.to change { ProjectMember.count }.by(0)

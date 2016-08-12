@@ -324,7 +324,13 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     context "when using git annex" do
-      before { project.team << [user, :master] }
+      before do
+        project.team << [user, :master]
+
+        allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+          project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        )
+      end
 
       describe 'and gitlab geo is enabled in a secondary node' do
         before do
@@ -374,7 +380,9 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           describe 'git annex disabled' do
-            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
+            before do
+              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false)
+            end
 
             it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
           end
@@ -394,7 +402,9 @@ describe Gitlab::GitAccess, lib: true do
           end
 
           describe 'git annex disabled' do
-            before { allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false) }
+            before do
+              allow(Gitlab.config.gitlab_shell).to receive(:git_annex_enabled).and_return(false)
+            end
 
             it { expect(access.check('git-annex-shell', git_annex_changes).allowed?).to be_falsey }
             it { expect(access.push_access_check(git_annex_changes)).not_to be_allowed }
@@ -404,7 +414,13 @@ describe Gitlab::GitAccess, lib: true do
     end
 
     describe "push_rule_check" do
-      before { project.team << [user, :developer] }
+      before do
+        project.team << [user, :developer]
+
+        allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+          project.repository.commits_between('6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9', '570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        )
+      end
 
       describe "author email check" do
         it 'returns true' do
@@ -455,6 +471,7 @@ describe Gitlab::GitAccess, lib: true do
           ref_object = double(name: 'refs/tmp')
           allow(bad_commit).to receive(:refs).and_return([ref_object])
           allow_any_instance_of(Repository).to receive(:commits_between).and_return([bad_commit])
+          allow_any_instance_of(Repository).to receive(:new_commits).and_return([bad_commit])
 
           project.create_push_rule
           project.push_rule.update(commit_message_regex: "Change some files")
@@ -481,6 +498,12 @@ describe Gitlab::GitAccess, lib: true do
       end
 
       describe "file names check" do
+        before do
+          allow_any_instance_of(Repository).to receive(:new_commits).and_return(
+            project.repository.commits_between('913c66a37b4a45b9769037c55c2d238bd0942d2e', '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+          )
+        end
+
         it 'returns false when filename is prohibited' do
           project.create_push_rule
           project.push_rule.update(file_name_regex: "jpg$")
@@ -553,6 +576,17 @@ describe Gitlab::GitAccess, lib: true do
           it { expect(subject).not_to be_allowed }
         end
       end
+    end
+  end
+
+  context 'when the repository is read only' do
+    it 'denies push access' do
+      project = create(:project, :read_only_repository)
+      project.team << [user, :master]
+
+      check = access.check('git-receive-pack')
+
+      expect(check).not_to be_allowed
     end
   end
 end

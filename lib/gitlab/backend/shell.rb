@@ -106,6 +106,20 @@ module Gitlab
                                    storage, "#{path}.git", "#{new_path}.git"])
     end
 
+    # Move repository storage
+    #
+    # current_storage - project's current storage path
+    # path - project path with namespace
+    # new_storage - new storage path
+    #
+    # Ex.
+    #   mv_storage("/path/to/storage", "randx/gitlab-ci", "/new/storage/path")
+    #
+    def mv_storage(current_storage, path, new_storage)
+      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'mv-storage',
+                                   current_storage, "#{path}.git", new_storage])
+    end
+
     # Fork repository to new namespace
     # forked_from_storage - forked-from project's storage path
     # path - project path with namespace

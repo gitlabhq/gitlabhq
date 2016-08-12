@@ -20,14 +20,14 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/merge_requests" do
     context "when unauthenticated" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/projects/#{project.id}/merge_requests")
         expect(response).to have_http_status(401)
       end
     end
 
     context "when authenticated" do
-      it "should return an array of all merge_requests" do
+      it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -35,7 +35,7 @@ describe API::API, api: true  do
         expect(json_response.last['title']).to eq(merge_request.title)
       end
 
-      it "should return an array of all merge_requests" do
+      it "returns an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -43,7 +43,7 @@ describe API::API, api: true  do
         expect(json_response.last['title']).to eq(merge_request.title)
       end
 
-      it "should return an array of open merge_requests" do
+      it "returns an array of open merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=opened", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -51,7 +51,7 @@ describe API::API, api: true  do
         expect(json_response.last['title']).to eq(merge_request.title)
       end
 
-      it "should return an array of closed merge_requests" do
+      it "returns an array of closed merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=closed", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -59,7 +59,7 @@ describe API::API, api: true  do
         expect(json_response.first['title']).to eq(merge_request_closed.title)
       end
 
-      it "should return an array of merged merge_requests" do
+      it "returns an array of merged merge_requests" do
         get api("/projects/#{project.id}/merge_requests?state=merged", user)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -73,7 +73,7 @@ describe API::API, api: true  do
           @mr_earlier = mr_with_earlier_created_and_updated_at_time
         end
 
-        it "should return an array of merge_requests in ascending order" do
+        it "returns an array of merge_requests in ascending order" do
           get api("/projects/#{project.id}/merge_requests?sort=asc", user)
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
@@ -82,7 +82,7 @@ describe API::API, api: true  do
           expect(response_dates).to eq(response_dates.sort)
         end
 
-        it "should return an array of merge_requests in descending order" do
+        it "returns an array of merge_requests in descending order" do
           get api("/projects/#{project.id}/merge_requests?sort=desc", user)
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
@@ -91,7 +91,7 @@ describe API::API, api: true  do
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
-        it "should return an array of merge_requests ordered by updated_at" do
+        it "returns an array of merge_requests ordered by updated_at" do
           get api("/projects/#{project.id}/merge_requests?order_by=updated_at", user)
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
@@ -100,7 +100,7 @@ describe API::API, api: true  do
           expect(response_dates).to eq(response_dates.sort.reverse)
         end
 
-        it "should return an array of merge_requests ordered by created_at" do
+        it "returns an array of merge_requests ordered by created_at" do
           get api("/projects/#{project.id}/merge_requests?order_by=created_at&sort=asc", user)
           expect(response).to have_http_status(200)
           expect(json_response).to be_an Array
@@ -142,7 +142,7 @@ describe API::API, api: true  do
       expect(json_response['force_close_merge_request']).to be_falsy
     end
 
-    it "should return merge_request" do
+    it "returns merge_request" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user)
       expect(response).to have_http_status(200)
       expect(json_response['title']).to eq(merge_request.title)
@@ -153,7 +153,7 @@ describe API::API, api: true  do
       expect(json_response['force_close_merge_request']).to be_falsy
     end
 
-    it 'should return merge_request by iid' do
+    it 'returns merge_request by iid' do
       url = "/projects/#{project.id}/merge_requests?iid=#{merge_request.iid}"
       get api(url, user)
       expect(response.status).to eq 200
@@ -161,7 +161,7 @@ describe API::API, api: true  do
       expect(json_response.first['id']).to eq merge_request.id
     end
 
-    it "should return a 404 error if merge_request_id not found" do
+    it "returns a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999", user)
       expect(response).to have_http_status(404)
     end
@@ -169,7 +169,7 @@ describe API::API, api: true  do
     context 'Work in Progress' do
       let!(:merge_request_wip) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
 
-      it "should return merge_request" do
+      it "returns merge_request" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.id}", user)
         expect(response).to have_http_status(200)
         expect(json_response['work_in_progress']).to eq(true)
@@ -195,7 +195,7 @@ describe API::API, api: true  do
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_id/changes' do
-    it 'should return the change information of the merge_request' do
+    it 'returns the change information of the merge_request' do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/changes", user)
       expect(response.status).to eq 200
       expect(json_response['changes'].size).to eq(merge_request.diffs.size)
@@ -209,7 +209,7 @@ describe API::API, api: true  do
 
   describe "POST /projects/:id/merge_requests" do
     context 'between branches projects' do
-      it "should return merge_request" do
+      it "returns merge_request" do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
              source_branch: 'feature_conflict',
@@ -223,31 +223,31 @@ describe API::API, api: true  do
         expect(json_response['milestone']['id']).to eq(milestone.id)
       end
 
-      it "should return 422 when source_branch equals target_branch" do
+      it "returns 422 when source_branch equals target_branch" do
         post api("/projects/#{project.id}/merge_requests", user),
         title: "Test merge_request", source_branch: "master", target_branch: "master", author: user
         expect(response).to have_http_status(422)
       end
 
-      it "should return 400 when source_branch is missing" do
+      it "returns 400 when source_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         title: "Test merge_request", target_branch: "master", author: user
         expect(response).to have_http_status(400)
       end
 
-      it "should return 400 when target_branch is missing" do
+      it "returns 400 when target_branch is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         title: "Test merge_request", source_branch: "markdown", author: user
         expect(response).to have_http_status(400)
       end
 
-      it "should return 400 when title is missing" do
+      it "returns 400 when title is missing" do
         post api("/projects/#{project.id}/merge_requests", user),
         target_branch: 'master', source_branch: 'markdown'
         expect(response).to have_http_status(400)
       end
 
-      it 'should allow special label names' do
+      it 'allows special label names' do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
              source_branch: 'markdown',
@@ -272,7 +272,7 @@ describe API::API, api: true  do
           @mr = MergeRequest.all.last
         end
 
-        it 'should return 409 when MR already exists for source/target' do
+        it 'returns 409 when MR already exists for source/target' do
           expect do
             post api("/projects/#{project.id}/merge_requests", user),
                  title: 'New test merge_request',
@@ -294,7 +294,7 @@ describe API::API, api: true  do
         fork_project.team << [user2, :reporters]
       end
 
-      it "should return merge_request" do
+      it "returns merge_request" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
           title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
           author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
@@ -303,7 +303,7 @@ describe API::API, api: true  do
         expect(json_response['description']).to eq('Test description for Test merge_request')
       end
 
-      it "should not return 422 when source_branch equals target_branch" do
+      it "does not return 422 when source_branch equals target_branch" do
         expect(project.id).not_to eq(fork_project.id)
         expect(fork_project.forked?).to be_truthy
         expect(fork_project.forked_from_project).to eq(project)
@@ -313,26 +313,26 @@ describe API::API, api: true  do
         expect(json_response['title']).to eq('Test merge_request')
       end
 
-      it "should return 400 when source_branch is missing" do
+      it "returns 400 when source_branch is missing" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_http_status(400)
       end
 
-      it "should return 400 when target_branch is missing" do
+      it "returns 400 when target_branch is missing" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: "master", author: user2, target_project_id: project.id
         expect(response).to have_http_status(400)
       end
 
-      it "should return 400 when title is missing" do
+      it "returns 400 when title is missing" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: project.id
         expect(response).to have_http_status(400)
       end
 
       context 'when target_branch is specified' do
-        it 'should return 422 if not a forked project' do
+        it 'returns 422 if not a forked project' do
           post api("/projects/#{project.id}/merge_requests", user),
                title: 'Test merge_request',
                target_branch: 'master',
@@ -342,7 +342,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(422)
         end
 
-        it 'should return 422 if targeting a different fork' do
+        it 'returns 422 if targeting a different fork' do
           post api("/projects/#{fork_project.id}/merge_requests", user2),
                title: 'Test merge_request',
                target_branch: 'master',
@@ -353,7 +353,7 @@ describe API::API, api: true  do
         end
       end
 
-      it "should return 201 when target_branch is specified and for the same project" do
+      it "returns 201 when target_branch is specified and for the same project" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'markdown', author: user2, target_project_id: fork_project.id
         expect(response).to have_http_status(201)
@@ -445,7 +445,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/merge_requests/:merge_request_id to close MR" do
-    it "should return merge_request" do
+    it "returns merge_request" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), state_event: "close"
       expect(response).to have_http_status(200)
       expect(json_response['state']).to eq('closed')
@@ -455,13 +455,13 @@ describe API::API, api: true  do
   describe "PUT /projects/:id/merge_requests/:merge_request_id/merge" do
     let(:pipeline) { create(:ci_pipeline_without_jobs) }
 
-    it "should return merge_request in case of success" do
+    it "returns merge_request in case of success" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
 
       expect(response).to have_http_status(200)
     end
 
-    it "should return 406 if branch can't be merged" do
+    it "returns 406 if branch can't be merged" do
       allow_any_instance_of(MergeRequest).
         to receive(:can_be_merged?).and_return(false)
 
@@ -471,14 +471,14 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('Branch cannot be merged')
     end
 
-    it "should return 405 if merge_request is not open" do
+    it "returns 405 if merge_request is not open" do
       merge_request.close
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
-    it "should return 405 if merge_request is a work in progress" do
+    it "returns 405 if merge_request is a work in progress" do
       merge_request.update_attribute(:title, "WIP: #{merge_request.title}")
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user)
       expect(response).to have_http_status(405)
@@ -494,7 +494,7 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
-    it "should return 401 if user has no permissions to merge" do
+    it "returns 401 if user has no permissions to merge" do
       user2 = create(:user)
       project.team << [user2, :reporter]
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/merge", user2)
@@ -546,19 +546,19 @@ describe API::API, api: true  do
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
-    it "should return 400 when source_branch is specified" do
+    it "returns 400 when source_branch is specified" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user),
       source_branch: "master", target_branch: "master"
       expect(response).to have_http_status(400)
     end
 
-    it "should return merge_request with renamed target_branch" do
+    it "returns merge_request with renamed target_branch" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}", user), target_branch: "wiki"
       expect(response).to have_http_status(200)
       expect(json_response['target_branch']).to eq('wiki')
     end
 
-    it 'should allow special label names' do
+    it 'allows special label names' do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.id}",
               user),
           title: 'new issue',
@@ -573,7 +573,7 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/merge_requests/:merge_request_id/comments" do
-    it "should return comment" do
+    it "returns comment" do
       original_count = merge_request.notes.size
 
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user), note: "My comment"
@@ -584,12 +584,12 @@ describe API::API, api: true  do
       expect(merge_request.notes.size).to eq(original_count + 1)
     end
 
-    it "should return 400 if note is missing" do
+    it "returns 400 if note is missing" do
       post api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
       expect(response).to have_http_status(400)
     end
 
-    it "should return 404 if note is attached to non existent merge request" do
+    it "returns 404 if note is attached to non existent merge request" do
       post api("/projects/#{project.id}/merge_requests/404/comments", user),
            note: 'My comment'
       expect(response).to have_http_status(404)
@@ -597,7 +597,7 @@ describe API::API, api: true  do
   end
 
   describe "GET :id/merge_requests/:merge_request_id/comments" do
-    it "should return merge_request comments ordered by created_at" do
+    it "returns merge_request comments ordered by created_at" do
       get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/comments", user)
       expect(response).to have_http_status(200)
       expect(json_response).to be_an Array
@@ -607,7 +607,7 @@ describe API::API, api: true  do
       expect(json_response.last['note']).to eq("another comment on a MR")
     end
 
-    it "should return a 404 error if merge_request_id not found" do
+    it "returns a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_requests/999/comments", user)
       expect(response).to have_http_status(404)
     end

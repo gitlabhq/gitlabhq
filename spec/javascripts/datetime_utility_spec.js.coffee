@@ -2,30 +2,30 @@
 
 describe 'Date time utils', ->
   describe 'get day name', ->
-    it 'should return Sunday', ->
+    it 'returns Sunday', ->
       day = gl.utils.getDayName(new Date('07/17/2016'))
       expect(day).toBe('Sunday')
 
-    it 'should return Monday', ->
+    it 'returns Monday', ->
       day = gl.utils.getDayName(new Date('07/18/2016'))
       expect(day).toBe('Monday')
 
-    it 'should return Tuesday', ->
+    it 'returns Tuesday', ->
       day = gl.utils.getDayName(new Date('07/19/2016'))
       expect(day).toBe('Tuesday')
 
-    it 'should return Wednesday', ->
+    it 'returns Wednesday', ->
       day = gl.utils.getDayName(new Date('07/20/2016'))
       expect(day).toBe('Wednesday')
 
-    it 'should return Thursday', ->
+    it 'returns Thursday', ->
       day = gl.utils.getDayName(new Date('07/21/2016'))
       expect(day).toBe('Thursday')
 
-    it 'should return Friday', ->
+    it 'returns Friday', ->
       day = gl.utils.getDayName(new Date('07/22/2016'))
       expect(day).toBe('Friday')
 
-    it 'should return Saturday', ->
+    it 'returns Saturday', ->
       day = gl.utils.getDayName(new Date('07/23/2016'))
       expect(day).toBe('Saturday')

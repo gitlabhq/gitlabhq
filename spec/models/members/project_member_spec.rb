@@ -52,7 +52,7 @@ describe ProjectMember, models: true do
       master_todos
     end
 
-    it "destroy itself and delete associated todos" do
+    it "destroys itself and delete associated todos" do
       expect(owner.user.todos.size).to eq(2)
       expect(master.user.todos.size).to eq(3)
       expect(Todo.count).to eq(5)

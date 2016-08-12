@@ -7,9 +7,6 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
   let(:user) { create(:user) }
 
   before do
-    allow_any_instance_of(::Gitlab::ExclusiveLease)
-      .to receive(:try_obtain).and_return(true)
-
     create(:identity, user: user, extern_uid: user_dn(user.username))
 
     stub_ldap_config(active_directory: false)
@@ -26,6 +23,35 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     context 'with all functionality against one LDAP group type' do
       context 'with basic add/update actions' do
         let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
+
+        it 'fails a stuck group older than 1 hour' do
+          group.start_ldap_sync
+          group.update_column(:ldap_sync_last_sync_at, 61.minutes.ago)
+
+          expect(group).to receive(:mark_ldap_sync_as_failed)
+
+          sync_group.update_permissions
+        end
+
+        context 'when the group ldap sync is already started' do
+          it 'logs a debug message' do
+            group.start_ldap_sync
+
+            expect(Rails.logger).to receive(:debug) do |&block|
+              expect(block.call).to match /^Group '\w*' is not ready for LDAP sync. Skipping/
+            end.at_least(1).times
+
+            sync_group.update_permissions
+          end
+
+          it 'does not add new members' do
+            group.start_ldap_sync
+
+            sync_group.update_permissions
+
+            expect(group.members).not_to include(user)
+          end
+        end
 
         it 'adds new members' do
           sync_group.update_permissions
@@ -53,6 +79,13 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
           expect(group.members.find_by(user_id: user.id).access_level)
             .to eq(::Gitlab::Access::DEVELOPER)
+        end
+
+        it 'uses the ldap sync state machine' do
+          expect(group).to receive(:start_ldap_sync)
+          expect(group).to receive(:finish_ldap_sync)
+
+          sync_group.update_permissions
         end
       end
 

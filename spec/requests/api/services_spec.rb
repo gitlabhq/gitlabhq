@@ -11,13 +11,13 @@ describe API::API, api: true  do
     describe "PUT /projects/:id/services/#{service.dasherize}" do
       include_context service
 
-      it "should update #{service} settings" do
+      it "updates #{service} settings" do
         put api("/projects/#{project.id}/services/#{dashed_service}", user), service_attrs
 
         expect(response).to have_http_status(200)
       end
 
-      it "should return if required fields missing" do
+      it "returns if required fields missing" do
         attrs = service_attrs
 
         required_attributes = service_attrs_list.select do |attr|
@@ -32,7 +32,7 @@ describe API::API, api: true  do
           attrs.delete(required_attributes.sample)
           expected_code = 400
         end
-        
+
         put api("/projects/#{project.id}/services/#{dashed_service}", user), attrs
 
         expect(response.status).to eq(expected_code)
@@ -42,7 +42,7 @@ describe API::API, api: true  do
     describe "DELETE /projects/:id/services/#{service.dasherize}" do
       include_context service
 
-      it "should delete #{service}" do
+      it "deletes #{service}" do
         delete api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_http_status(200)
@@ -62,29 +62,29 @@ describe API::API, api: true  do
         service_object.save
       end
 
-      it 'should return authentication error when unauthenticated' do
+      it 'returns authentication error when unauthenticated' do
         get api("/projects/#{project.id}/services/#{dashed_service}")
         expect(response).to have_http_status(401)
       end
-      
-      it "should return all properties of service #{service} when authenticated as admin" do
+
+      it "returns all properties of service #{service} when authenticated as admin" do
         get api("/projects/#{project.id}/services/#{dashed_service}", admin)
-        
+
         expect(response).to have_http_status(200)
         expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list.map)
       end
 
-      it "should return properties of service #{service} other than passwords when authenticated as project owner" do
+      it "returns properties of service #{service} other than passwords when authenticated as project owner" do
         get api("/projects/#{project.id}/services/#{dashed_service}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['properties'].keys.map(&:to_sym)).to match_array(service_attrs_list_without_passwords)
       end
 
-      it "should return error when authenticated but not a project owner" do
+      it "returns error when authenticated but not a project owner" do
         project.team << [user2, :developer]
         get api("/projects/#{project.id}/services/#{dashed_service}", user2)
-        
+
         expect(response).to have_http_status(403)
       end
     end

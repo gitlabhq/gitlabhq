@@ -44,7 +44,7 @@ feature 'Project', feature: true do
       visit edit_namespace_project_path(project.namespace, project)
     end
 
-    it 'should remove fork' do
+    it 'removes fork' do
       expect(page).to have_content 'Remove fork relationship'
 
       remove_with_confirm('Remove fork relationship', project.path)
@@ -65,7 +65,7 @@ feature 'Project', feature: true do
       visit edit_namespace_project_path(project.namespace, project)
     end
 
-    it 'should remove project' do
+    it 'removes project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
     end
   end
@@ -82,7 +82,7 @@ feature 'Project', feature: true do
       visit namespace_project_path(project.namespace, project)
     end
 
-    it 'click toggle and show dropdown', js: true do
+    it 'clicks toggle and shows dropdown', js: true do
       find('.js-projects-dropdown-toggle').click
       expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 1)
     end
@@ -102,7 +102,7 @@ feature 'Project', feature: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
 
-      it 'click toggle and show dropdown' do
+      it 'clicks toggle and shows dropdown' do
         find('.js-projects-dropdown-toggle').click
         expect(page).to have_css('.dropdown-menu-projects .dropdown-content li', count: 2)
 

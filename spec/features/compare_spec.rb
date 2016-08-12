@@ -11,11 +11,11 @@ describe "Compare", js: true do
   end
 
   describe "branches" do
-    it "should pre-populate fields" do
+    it "pre-populates fields" do
       expect(page.find_field("from").value).to eq("master")
     end
 
-    it "should compare branches" do
+    it "compares branches" do
       fill_in "from", with: "fea"
       find("#from").click
 
@@ -28,7 +28,7 @@ describe "Compare", js: true do
   end
 
   describe "tags" do
-    it "should compare tags" do
+    it "compares tags" do
       fill_in "from", with: "v1.0"
       find("#from").click
 
