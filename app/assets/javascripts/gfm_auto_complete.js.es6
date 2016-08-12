@@ -268,7 +268,7 @@
           return _.template(tpl)(value);
         },
         insertTpl: function(value) {
-          var tpl = "\n/${name} ";
+          var tpl = "/${name} ";
           var reference_prefix = null;
           if (value.params.length > 0) {
             reference_prefix = value.params[0][0];
@@ -282,7 +282,16 @@
         callbacks: {
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
-          beforeInsert: this.DefaultOptions.beforeInsert
+          beforeInsert: this.DefaultOptions.beforeInsert,
+          matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
+            var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi
+            var match = regexp.exec(subtext);
+            if (match) {
+              return match[1];
+            } else {
+              return null;
+            }
+          }
         }
       });
       return;
