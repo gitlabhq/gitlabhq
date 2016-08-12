@@ -14,6 +14,7 @@ module API
       user = Gitlab::Auth.find_with_user_password(params[:email] || params[:login], params[:password])
 
       return unauthorized! unless user
+      return render_2fa_error! if user.two_factor_enabled?
       present user, with: Entities::UserLogin
     end
   end
