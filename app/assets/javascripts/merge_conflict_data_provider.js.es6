@@ -1,10 +1,10 @@
 const HEAD_HEADER_TEXT    = 'HEAD//our changes';
 const ORIGIN_HEADER_TEXT  = 'origin//their changes';
-
 const HEAD_BUTTON_TITLE   = 'Use ours';
 const ORIGIN_BUTTON_TITLE = 'Use theirs';
 
-window.MergeConflictDataProvider = class MergeConflictDataProvider {
+
+class MergeConflictDataProvider {
 
   getInitialData() {
     const diffViewType = $.cookie('diff_view');

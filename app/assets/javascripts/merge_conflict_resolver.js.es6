@@ -1,6 +1,6 @@
 //= require lib/vue
 
-window.MergeConflictResolver = class MergeConflictResolver {
+class MergeConflictResolver {
 
   constructor() {
     this.dataProvider = new MergeConflictDataProvider()
