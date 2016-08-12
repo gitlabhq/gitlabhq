@@ -46,12 +46,42 @@ describe Gitlab::SlashCommands::Dsl do
   describe '.command_definitions' do
     let(:base_expected) do
       [
-        { name: :no_args, aliases: [:none], description: 'A command with no args', params: [], noop: false, cond_block: nil },
-        { name: :returning, aliases: [], description: 'A command returning a value', params: [], noop: false, cond_block: nil },
-        { name: :one_arg, aliases: [:once, :first], description: '', params: ['The first argument'], noop: false, cond_block: nil },
-        { name: :two_args, aliases: [], description: '', params: ['The first argument', 'The second argument'], noop: false, cond_block: nil },
-        { name: :cc, aliases: [], description: '', params: [], noop: true, cond_block: nil },
-        { name: :wildcard, aliases: [], description: '', params: [], noop: false, cond_block: nil }
+        {
+          name: :no_args, aliases: [:none],
+          description: 'A command with no args', params: [],
+          condition_block: nil, action_block: a_kind_of(Proc),
+          opts: {}
+        },
+        {
+          name: :returning, aliases: [],
+          description: 'A command returning a value', params: [],
+          condition_block: nil, action_block: a_kind_of(Proc),
+          opts: {}
+        },
+        {
+          name: :one_arg, aliases: [:once, :first],
+          description: '', params: ['The first argument'],
+          condition_block: nil, action_block: a_kind_of(Proc),
+          opts: {}
+        },
+        {
+          name: :two_args, aliases: [],
+          description: '', params: ['The first argument', 'The second argument'],
+          condition_block: nil, action_block: a_kind_of(Proc),
+          opts: {}
+        },
+        {
+          name: :cc, aliases: [],
+          description: '', params: [],
+          condition_block: nil, action_block: nil,
+          opts: { noop: true }
+        },
+        {
+          name: :wildcard, aliases: [],
+          description: '', params: [],
+          condition_block: nil, action_block: a_kind_of(Proc),
+          opts: {}
+        }
       ]
     end
 
@@ -61,7 +91,14 @@ describe Gitlab::SlashCommands::Dsl do
 
     context 'with options passed' do
       context 'when condition is met' do
-        let(:expected) { base_expected << { name: :cond_action, aliases: [], description: '', params: [], noop: false, cond_block: a_kind_of(Proc) } }
+        let(:expected) do
+          base_expected << {
+            name: :cond_action, aliases: [],
+            description: '', params: [],
+            condition_block: a_kind_of(Proc), action_block: a_kind_of(Proc),
+            opts: {}
+          }
+        end
 
         it 'returns an array with commands definitions' do
           expect(DummyClass.command_definitions(project: 'foo')).to match_array expected
@@ -115,76 +152,78 @@ describe Gitlab::SlashCommands::Dsl do
 
   let(:dummy) { DummyClass.new(nil) }
 
-  describe 'command with no args' do
-    context 'called with no args' do
-      it 'succeeds' do
-        expect(dummy.__send__(:no_args)).to eq 'Hello World!'
+  describe '#execute_command' do
+    describe 'command with no args' do
+      context 'called with no args' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:no_args)).to eq 'Hello World!'
+        end
       end
     end
-  end
 
-  describe 'command with an explicit return' do
-    context 'called with no args' do
-      it 'succeeds' do
-        expect(dummy.__send__(:returning)).to eq 42
+    describe 'command with an explicit return' do
+      context 'called with no args' do
+        it 'succeeds' do
+          expect { dummy.execute_command(:returning) }.to raise_error(LocalJumpError)
+        end
       end
     end
-  end
 
-  describe 'command with one arg' do
-    context 'called with one arg' do
-      it 'succeeds' do
-        expect(dummy.__send__(:one_arg, 42)).to eq 42
+    describe 'command with one arg' do
+      context 'called with one arg' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:one_arg, 42)).to eq 42
+        end
       end
     end
-  end
 
-  describe 'command with two args' do
-    context 'called with two args' do
-      it 'succeeds' do
-        expect(dummy.__send__(:two_args, 42, 'foo')).to eq [42, 'foo']
+    describe 'command with two args' do
+      context 'called with two args' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:two_args, 42, 'foo')).to eq [42, 'foo']
+        end
       end
     end
-  end
 
-  describe 'noop command' do
-    it 'is not meant to be called directly' do
-      expect { dummy.__send__(:cc) }.to raise_error(NoMethodError)
-    end
-  end
-
-  describe 'command with condition' do
-    context 'when condition is not met' do
+    describe 'noop command' do
       it 'returns nil' do
-        expect(dummy.__send__(:cond_action)).to be_nil
+        expect(dummy.execute_command(:cc)).to be_nil
       end
     end
 
-    context 'when condition is met' do
-      let(:dummy) { DummyClass.new('foo') }
-
-      it 'succeeds' do
-        expect(dummy.__send__(:cond_action, 42)).to eq 42
+    describe 'command with condition' do
+      context 'when condition is not met' do
+        it 'returns nil' do
+          expect(dummy.execute_command(:cond_action)).to be_nil
+        end
       end
-    end
-  end
 
-  describe 'command with wildcard' do
-    context 'called with no args' do
-      it 'succeeds' do
-        expect(dummy.__send__(:wildcard)).to eq []
-      end
-    end
+      context 'when condition is met' do
+        let(:dummy) { DummyClass.new('foo') }
 
-    context 'called with one arg' do
-      it 'succeeds' do
-        expect(dummy.__send__(:wildcard, 42)).to eq [42]
+        it 'succeeds' do
+          expect(dummy.execute_command(:cond_action, 42)).to eq 42
+        end
       end
     end
 
-    context 'called with two args' do
-      it 'succeeds' do
-        expect(dummy.__send__(:wildcard, 42, 'foo')).to eq [42, 'foo']
+    describe 'command with wildcard' do
+      context 'called with no args' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:wildcard)).to eq []
+        end
+      end
+
+      context 'called with one arg' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:wildcard, 42)).to eq [42]
+        end
+      end
+
+      context 'called with two args' do
+        it 'succeeds' do
+          expect(dummy.execute_command(:wildcard, 42, 'foo')).to eq [42, 'foo']
+        end
       end
     end
   end

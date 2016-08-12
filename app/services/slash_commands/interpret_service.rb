@@ -11,8 +11,8 @@ module SlashCommands
       @updates = {}
 
       commands = extractor(noteable: noteable).extract_commands!(content)
-      commands.each do |command|
-        __send__(*command)
+      commands.each do |command, *args|
+        execute_command(command, *args)
       end
 
       @updates
@@ -30,8 +30,9 @@ module SlashCommands
       "Close this #{noteable.to_ability_name.humanize(capitalize: false)}"
     end
     condition do
+      noteable.persisted? &&
       noteable.open? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", project)
+      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :close do
       @updates[:state_event] = 'close'
@@ -42,7 +43,7 @@ module SlashCommands
     end
     condition do
       noteable.closed? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", project)
+      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :open, :reopen do
       @updates[:state_event] = 'reopen'
@@ -52,7 +53,7 @@ module SlashCommands
     params '<New title>'
     condition do
       noteable.persisted? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", project)
+      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :title do |title_param|
       @updates[:title] = title_param
@@ -65,9 +66,8 @@ module SlashCommands
     end
     command :assign, :reassign do |assignee_param|
       user = extract_references(assignee_param, :user).first
-      return unless user
 
-      @updates[:assignee_id] = user.id
+      @updates[:assignee_id] = user.id if user
     end
 
     desc 'Remove assignee'
@@ -87,9 +87,8 @@ module SlashCommands
     end
     command :milestone do |milestone_param|
       milestone = extract_references(milestone_param, :milestone).first
-      return unless milestone
 
-      @updates[:milestone_id] = milestone.id
+      @updates[:milestone_id] = milestone.id if milestone
     end
 
     desc 'Remove milestone'
@@ -109,9 +108,8 @@ module SlashCommands
     end
     command :label, :labels do |labels_param|
       label_ids = find_label_ids(labels_param)
-      return if label_ids.empty?
 
-      @updates[:add_label_ids] = label_ids
+      @updates[:add_label_ids] = label_ids unless label_ids.empty?
     end
 
     desc 'Remove label(s)'
@@ -122,9 +120,8 @@ module SlashCommands
     end
     command :unlabel, :remove_label, :remove_labels do |labels_param|
       label_ids = find_label_ids(labels_param)
-      return if label_ids.empty?
 
-      @updates[:remove_label_ids] = label_ids
+      @updates[:remove_label_ids] = label_ids unless label_ids.empty?
     end
 
     desc 'Remove all labels'
@@ -139,7 +136,6 @@ module SlashCommands
     desc 'Add a todo'
     condition do
       noteable.persisted? &&
-      current_user &&
       !TodoService.new.todo_exist?(noteable, current_user)
     end
     command :todo do
@@ -148,7 +144,6 @@ module SlashCommands
 
     desc 'Mark todo as done'
     condition do
-      current_user &&
       TodoService.new.todo_exist?(noteable, current_user)
     end
     command :done do
@@ -174,12 +169,12 @@ module SlashCommands
     end
 
     desc 'Set due date'
-    params 'a date in natural language'
+    params '<in 2 days | this Friday | December 31st>'
     condition do
       noteable.respond_to?(:due_date) &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", project)
+      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
-    command :due_date, :due do |due_date_param|
+    command :due, :due_date do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
 
       @updates[:due_date] = due_date if due_date
@@ -189,7 +184,7 @@ module SlashCommands
     condition do
       noteable.respond_to?(:due_date) &&
       noteable.due_date? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", project)
+      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :clear_due_date do
       @updates[:due_date] = nil

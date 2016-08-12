@@ -14,7 +14,8 @@ module Notes
       # We execute commands (extracted from `params[:note]`) on the noteable
       # **before** we save the note because if the note consists of commands
       # only, there is no need be create a note!
-      commands_executed = SlashCommandsService.new(project, current_user).execute(note)
+      slash_commands_service = SlashCommandsService.new(project, current_user)
+      commands = slash_commands_service.extract_commands(note)
 
       if note.save
         # Finish the harder work in the background
@@ -24,7 +25,7 @@ module Notes
 
       # We must add the error after we call #save because errors are reset
       # when #save is called
-      if commands_executed && note.note.blank?
+      if slash_commands_service.execute(commands, note) && note.note.blank?
         note.errors.add(:commands_only, 'Your commands are being executed.')
       end
 

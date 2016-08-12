@@ -55,5 +55,4 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
       end
     end
   end
-
 end

@@ -4,20 +4,34 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        @command_definitions = []
+        cattr_accessor :definitions
       end
 
-      module ClassMethods
-        # This method is used to generate the autocompletion menu
-        # It returns no-op slash commands (such as `/cc`)
+      def execute_command(name, *args)
+        name = name.to_sym
+        cmd_def = self.class.definitions.find do |cmd_def|
+          self.class.command_name_and_aliases(cmd_def).include?(name)
+        end
+        return unless cmd_def && cmd_def[:action_block]
+        return if self.class.command_unavailable?(cmd_def, self)
+
+        block_arity = cmd_def[:action_block].arity
+        if block_arity == -1 || block_arity == args.size
+          instance_exec(*args, &cmd_def[:action_block])
+        end
+      end
+
+      class_methods do
+        # This method is used to generate the autocompletion menu.
+        # It returns no-op slash commands (such as `/cc`).
         def command_definitions(opts = {})
-          @command_definitions.map do |cmd_def|
+          self.definitions.map do |cmd_def|
             context = OpenStruct.new(opts)
-            next if cmd_def[:cond_block] && !context.instance_exec(&cmd_def[:cond_block])
+            next if command_unavailable?(cmd_def, context)
 
             cmd_def = cmd_def.dup
 
-            if cmd_def[:description].present? && cmd_def[:description].respond_to?(:call)
+            if cmd_def[:description].respond_to?(:call)
               cmd_def[:description] = context.instance_exec(&cmd_def[:description]) rescue ''
             end
 
@@ -30,11 +44,22 @@ module Gitlab
         # It excludes no-op slash commands (such as `/cc`).
         # This list can then be given to `Gitlab::SlashCommands::Extractor`.
         def command_names(opts = {})
-          command_definitions(opts).flat_map do |command_definition|
-            next if command_definition[:noop]
+          self.definitions.flat_map do |cmd_def|
+            next if cmd_def[:opts].fetch(:noop, false)
 
-            [command_definition[:name], *command_definition[:aliases]]
+            context = OpenStruct.new(opts)
+            next if command_unavailable?(cmd_def, context)
+
+            command_name_and_aliases(cmd_def)
           end.compact
+        end
+
+        def command_unavailable?(cmd_def, context)
+          cmd_def[:condition_block] && !context.instance_exec(&cmd_def[:condition_block])
+        end
+
+        def command_name_and_aliases(cmd_def)
+          [cmd_def[:name], *cmd_def[:aliases]]
         end
 
         # Allows to give a description to the next slash command.
@@ -81,7 +106,7 @@ module Gitlab
         #     # Awesome code block
         #   end
         def condition(&block)
-          @cond_block = block
+          @condition_block = block
         end
 
         # Registers a new command which is recognizeable from body of email or
@@ -95,45 +120,22 @@ module Gitlab
         #   end
         def command(*command_names, &block)
           opts = command_names.extract_options!
-          command_name, *aliases = command_names
-          proxy_method_name = "__#{command_name}__"
+          name, *aliases = command_names
 
-          if block_given?
-            # This proxy method is needed because calling `return` from inside a
-            # block/proc, causes a `return` from the enclosing method or lambda,
-            # otherwise a LocalJumpError error is raised.
-            define_method(proxy_method_name, &block)
-
-            define_method(command_name) do |*args|
-              return if @cond_block && !instance_exec(&@cond_block)
-
-              proxy_method = method(proxy_method_name)
-
-              if proxy_method.arity == -1 || proxy_method.arity == args.size
-                instance_exec(*args, &proxy_method)
-              end
-            end
-
-            private command_name
-            aliases.each do |alias_command|
-              alias_method alias_command, command_name
-              private alias_command
-            end
-          end
-
-          command_definition = {
-            name: command_name,
+          self.definitions ||= []
+          self.definitions << {
+            name: name,
             aliases: aliases,
             description: @description || '',
-            params: @params || []
+            params: @params || [],
+            condition_block: @condition_block,
+            action_block: block,
+            opts: opts
           }
-          command_definition[:noop] = opts[:noop] || false
-          command_definition[:cond_block] = @cond_block
-          @command_definitions << command_definition
 
           @description = nil
           @params = nil
-          @cond_block = nil
+          @condition_block = nil
         end
       end
     end

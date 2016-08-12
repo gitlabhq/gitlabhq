@@ -6,16 +6,19 @@ module Notes
       'MergeRequest' => MergeRequests::UpdateService
     }
 
-    def execute(note)
-      noteable_update_service = UPDATE_SERVICES[note.noteable_type]
-      return false unless noteable_update_service
-      return false unless can?(current_user, :"update_#{note.noteable_type.underscore}", note.noteable)
+    def extract_commands(note)
+      @noteable_update_service = UPDATE_SERVICES[note.noteable_type]
+      return [] unless @noteable_update_service
+      return [] unless can?(current_user, :"update_#{note.noteable_type.underscore}", note.noteable)
 
-      commands = SlashCommands::InterpretService.new(project, current_user).
+      SlashCommands::InterpretService.new(project, current_user).
         execute(note.note, note.noteable)
+    end
 
+    def execute(commands, note)
       if commands.any?
-        noteable_update_service.new(project, current_user, commands).execute(note.noteable)
+        @noteable_update_service.new(project, current_user, commands).
+          execute(note.noteable)
       end
     end
   end

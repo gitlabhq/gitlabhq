@@ -134,10 +134,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def autocomplete_sources
-    note_type = params['type']
-    note_id = params['type_id']
-    autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
-    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
+    autocomplete = ::Projects::AutocompleteService.new(@project, current_user, params)
+    participants = ::Projects::ParticipantsService.new(@project, current_user, params).execute
 
     @suggestions = {
       emojis: Gitlab::AwardEmoji.urls,
@@ -146,7 +144,7 @@ class ProjectsController < Projects::ApplicationController
       mergerequests: autocomplete.merge_requests,
       labels: autocomplete.labels,
       members: participants,
-      commands: autocomplete.commands(note_type, note_id)
+      commands: autocomplete.commands
     }
 
     respond_to do |format|

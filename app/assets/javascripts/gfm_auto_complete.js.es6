@@ -249,7 +249,8 @@
           }
         }
       });
-      return this.input.atwho({
+      // We don't instantiate the slash commands autocomplete for note edit forms
+      $("form:not(.edit-note) .js-gfm-input").atwho({
         at: '/',
         alias: 'commands',
         displayTpl: function(value) {
@@ -284,6 +285,7 @@
           beforeInsert: this.DefaultOptions.beforeInsert
         }
       });
+      return;
     },
     destroyAtWho: function() {
       return this.input.atwho('destroy');

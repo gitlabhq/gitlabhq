@@ -2,6 +2,6 @@
 - noteable_class = @noteable.class if @noteable.present?
 
 :javascript
-  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(project.namespace, project, type: noteable_class, type_id: params[:id])}"
+  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_namespace_project_path(project.namespace, project, type: noteable_class, type_id: params[:id], action_name: action_name)}"
   GitLab.GfmAutoComplete.cachedData = undefined;
   GitLab.GfmAutoComplete.setup();

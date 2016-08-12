@@ -1,8 +1,11 @@
 module Projects
   class ParticipantsService < BaseService
-    def execute(noteable_type, noteable_id)
-      @noteable_type = noteable_type
-      @noteable_id = noteable_id
+    attr_reader :noteable_type, :noteable_id
+
+    def execute
+      @noteable_type = params[:type]
+      @noteable_id = params[:type_id]
+
       project_members = sorted(project.team.members)
       participants = target_owner + participants_in_target + all_members + groups + project_members
       participants.uniq
@@ -10,13 +13,15 @@ module Projects
 
     def target
       @target ||=
-        case @noteable_type
-        when "Issue"
-          project.issues.find_by_iid(@noteable_id)
-        when "MergeRequest"
-          project.merge_requests.find_by_iid(@noteable_id)
-        when "Commit"
-          project.commit(@noteable_id)
+        case noteable_type
+        when 'Issue'
+          IssuesFinder.new(current_user, project_id: project.id, state: 'all').
+            execute.find_by(iid: noteable_id)
+        when 'MergeRequest'
+          MergeRequestsFinder.new(current_user, project_id: project.id, state: 'all').
+            execute.find_by(iid: noteable_id)
+        when 'Commit'
+          project.commit(noteable_id)
         else
           nil
         end

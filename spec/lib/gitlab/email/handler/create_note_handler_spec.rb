@@ -75,9 +75,50 @@ describe Gitlab::Email::Handler::CreateNoteHandler, lib: true do
           project.team << [user, :developer]
         end
 
-        it 'raises a CommandsOnlyNoteError' do
-          expect { receiver.execute }.not_to raise_error
+        it 'does not raise an error' do
+          expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
+
+          # One system note is created for the 'close' event
+          expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+
+          expect(noteable.reload).to be_closed
+          expect(noteable.due_date).to eq(Date.tomorrow)
+          expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
         end
+      end
+    end
+  end
+
+  context 'when the note contains slash commands' do
+    let!(:email_raw) { fixture_file("emails/commands_in_reply.eml") }
+
+    context 'and current user cannot update noteable' do
+      it 'post a note and does not update the noteable' do
+        expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
+
+        # One system note is created for the new note
+        expect { receiver.execute }.to change { noteable.notes.count }.by(1)
+
+        expect(noteable.reload).to be_open
+        expect(noteable.due_date).to be_nil
+        expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
+      end
+    end
+
+    context 'and current user can update noteable' do
+      before do
+        project.team << [user, :developer]
+      end
+
+      it 'post a note and updates the noteable' do
+        expect(TodoService.new.todo_exist?(noteable, user)).to be_falsy
+
+        # One system note is created for the new note, one for the 'close' event
+        expect { receiver.execute }.to change { noteable.notes.count }.by(2)
+
+        expect(noteable.reload).to be_closed
+        expect(noteable.due_date).to eq(Date.tomorrow)
+        expect(TodoService.new.todo_exist?(noteable, user)).to be_truthy
       end
     end
   end
