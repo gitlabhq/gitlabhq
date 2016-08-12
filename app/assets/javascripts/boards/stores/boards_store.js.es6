@@ -19,7 +19,7 @@
     },
     new (listObj) {
       const list = this.addList(listObj),
-            backlogList = this.findList('type', 'backlog');
+            backlogList = this.findList('type', 'backlog', 'backlog');
 
       list
         .save()
@@ -123,9 +123,9 @@
         listFrom.removeIssue(issue);
       }
     },
-    findList (key, val) {
+    findList (key, val, type = 'label') {
       return this.state.lists.filter((list) => {
-        return list[key] === val;
+        return list[key] === val && list['type'] === type;
       })[0];
     },
     updateFiltersUrl () {

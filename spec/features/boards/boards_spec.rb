@@ -50,6 +50,8 @@ describe 'Issue Boards', feature: true, js: true do
     let(:development) { create(:label, project: project, name: 'Development') }
     let(:testing)     { create(:label, project: project, name: 'Testing') }
     let(:bug)         { create(:label, project: project, name: 'Bug') }
+    let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
+    let!(:done)       { create(:label, project: project, name: 'Done') }
 
     let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: project.board, label: development, position: 1) }
@@ -62,7 +64,7 @@ describe 'Issue Boards', feature: true, js: true do
     let!(:issue5) { create(:labeled_issue, project: project, labels: [planning], milestone: milestone) }
     let!(:issue6) { create(:labeled_issue, project: project, labels: [planning, development]) }
     let!(:issue7) { create(:labeled_issue, project: project, labels: [development]) }
-    let!(:issue8) { create(:closed_issue, project: project, milestone: milestone_upcoming) }
+    let!(:issue8) { create(:closed_issue, project: project) }
     let!(:issue9) { create(:labeled_issue, project: project, labels: [testing, bug]) }
 
     before do
@@ -242,6 +244,26 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link testing.title
+          end
+
+          expect(page).to have_selector('.board', count: 5)
+        end
+
+        it 'creates new list for Backlog label' do
+          click_button 'Create new list'
+
+          page.within('.dropdown-menu-issues-board-new') do
+            click_link backlog.title
+          end
+
+          expect(page).to have_selector('.board', count: 5)
+        end
+
+        it 'creates new list for Done label' do
+          click_button 'Create new list'
+
+          page.within('.dropdown-menu-issues-board-new') do
+            click_link done.title
           end
 
           expect(page).to have_selector('.board', count: 5)

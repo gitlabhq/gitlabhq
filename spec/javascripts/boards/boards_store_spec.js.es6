@@ -104,7 +104,7 @@
       it('adds the blank state', () => {
         BoardsStore.addBlankState();
 
-        const list = BoardsStore.findList('type', 'blank');
+        const list = BoardsStore.findList('type', 'blank', 'blank');
         expect(list).toBeDefined();
       });
 
