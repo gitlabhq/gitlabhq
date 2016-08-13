@@ -56,6 +56,10 @@ class ProjectWiki
     end
   end
 
+  def repository_exists?
+    !!repository.exists?
+  end
+
   def empty?
     pages.empty?
   end
