@@ -253,6 +253,7 @@
       this.input.filter('[data-supports-slash-commands="true"]').atwho({
         at: '/',
         alias: 'commands',
+        searchKey: 'search',
         displayTpl: function(value) {
           var tpl = '<li>/${name}';
           if (value.aliases.length > 0) {
@@ -283,6 +284,21 @@
           sorter: this.DefaultOptions.sorter,
           filter: this.DefaultOptions.filter,
           beforeInsert: this.DefaultOptions.beforeInsert,
+          beforeSave: function(commands) {
+            return $.map(commands, function(c) {
+              var search = c.name;
+              if (c.aliases.length > 0) {
+                search = search + " " + c.aliases.join(" ");
+              }
+              return {
+                name: c.name,
+                aliases: c.aliases,
+                params: c.params,
+                description: c.description,
+                search: search
+              };
+            });
+          },
           matcher: function(flag, subtext, should_startWithSpace, acceptSpaceBar) {
             var regexp = /(?:^|\n)\/([A-Za-z_]*)$/gi
             var match = regexp.exec(subtext);
