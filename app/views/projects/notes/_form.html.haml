@@ -15,7 +15,7 @@
       classes: 'note-textarea js-note-text',
       placeholder: "Write a comment or drag your files here...",
       supports_slash_commands: true
-    = render 'projects/notes/hints'
+    = render 'projects/notes/hints', supports_slash_commands: true
     .error-alert
 
   .note-form-actions.clearfix
