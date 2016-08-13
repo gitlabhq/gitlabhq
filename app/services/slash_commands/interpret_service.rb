@@ -74,6 +74,8 @@ module SlashCommands
     end
     command :assign, :reassign do |assignee_param|
       user = extract_references(assignee_param, :user).first
+      user ||= User.find_by(username: assignee_param)
+      user ||= User.find_by(name: assignee_param)
 
       @updates[:assignee_id] = user.id if user
     end
@@ -95,6 +97,7 @@ module SlashCommands
     end
     command :milestone do |milestone_param|
       milestone = extract_references(milestone_param, :milestone).first
+      milestone ||= project.milestones.find_by(title: milestone_param.strip)
 
       @updates[:milestone_id] = milestone.id if milestone
     end
@@ -204,12 +207,15 @@ module SlashCommands
     command :cc, noop: true
 
     def find_label_ids(labels_param)
-      extract_references(labels_param, :label).map(&:id)
+      label_ids_by_reference = extract_references(labels_param, :label).map(&:id)
+      labels_ids_by_name = @project.labels.where(name: labels_param.split).select(:id)
+
+      label_ids_by_reference | labels_ids_by_name
     end
 
-    def extract_references(cmd_arg, type)
+    def extract_references(arg, type)
       ext = Gitlab::ReferenceExtractor.new(project, current_user)
-      ext.analyze(cmd_arg, author: current_user)
+      ext.analyze(arg, author: current_user)
 
       ext.references(type)
     end
