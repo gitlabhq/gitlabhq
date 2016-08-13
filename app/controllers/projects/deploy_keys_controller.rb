@@ -29,14 +29,15 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    log_audit_event(@key.title, action: :create)
+    load_key
     Projects::EnableDeployKeyService.new(@project, current_user, params).execute
+    log_audit_event(@key.title, action: :create)
 
     redirect_to namespace_project_deploy_keys_path(@project.namespace, @project)
   end
 
   def disable
-    @key = accessible_keys.find(params[:id])
+    load_key
     @project.deploy_keys_projects.find_by(deploy_key_id: params[:id]).destroy
     log_audit_event(@key.title, action: :destroy)
 
@@ -64,5 +65,9 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def log_audit_event(key_title, options = {})
     AuditEventService.new(current_user, @project, options).
       for_deploy_key(key_title).security_event
+  end
+
+  def load_key
+    @key ||= current_user.accessible_deploy_keys.find(params[:id])
   end
 end
