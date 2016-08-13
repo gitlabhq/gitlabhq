@@ -205,7 +205,7 @@ time drop.
 1.  A force merge should be called after enabling the refreshing above:
 
     ```bash
-    curl -XPOST 'http://localhost:9200/_forcemerge?max_num_segments=5'
+    curl --request POST 'http://localhost:9200/_forcemerge?max_num_segments=5'
     ```
 
 To minimize downtime of the search feature we recommend the following:
