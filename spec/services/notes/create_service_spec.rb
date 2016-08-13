@@ -56,7 +56,7 @@ describe Notes::CreateService, services: true do
 
     it "creates regular note if emoji name is invalid" do
       opts = {
-        note: ':smile: moretext: ',
+        note: ':smile: moretext:',
         noteable_type: 'Issue',
         noteable_id: issue.id
       }

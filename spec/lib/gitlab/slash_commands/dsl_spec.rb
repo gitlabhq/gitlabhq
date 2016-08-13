@@ -10,9 +10,9 @@ describe Gitlab::SlashCommands::Dsl do
         "Hello World!"
       end
 
-      desc 'A command returning a value'
+      desc { "A command with #{something}" }
       command :returning do
-        return 42
+        42
       end
 
       params 'The first argument'
@@ -28,7 +28,7 @@ describe Gitlab::SlashCommands::Dsl do
         [arg1, arg2]
       end
 
-      command :cc, noop: true
+      command :cc
 
       condition do
         project == 'foo'
@@ -49,182 +49,74 @@ describe Gitlab::SlashCommands::Dsl do
         {
           name: :no_args, aliases: [:none],
           description: 'A command with no args', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc),
-          opts: {}
+          condition_block: nil, action_block: a_kind_of(Proc)
         },
         {
           name: :returning, aliases: [],
           description: 'A command returning a value', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc),
-          opts: {}
+          condition_block: nil, action_block: a_kind_of(Proc)
         },
         {
           name: :one_arg, aliases: [:once, :first],
           description: '', params: ['The first argument'],
-          condition_block: nil, action_block: a_kind_of(Proc),
-          opts: {}
+          condition_block: nil, action_block: a_kind_of(Proc)
         },
         {
           name: :two_args, aliases: [],
           description: '', params: ['The first argument', 'The second argument'],
-          condition_block: nil, action_block: a_kind_of(Proc),
-          opts: {}
+          condition_block: nil, action_block: a_kind_of(Proc)
         },
         {
           name: :cc, aliases: [],
           description: '', params: [],
-          condition_block: nil, action_block: nil,
-          opts: { noop: true }
+          condition_block: nil, action_block: nil
         },
         {
           name: :wildcard, aliases: [],
           description: '', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc),
-          opts: {}
+          condition_block: nil, action_block: a_kind_of(Proc)
         }
       ]
     end
 
     it 'returns an array with commands definitions' do
-      expect(DummyClass.command_definitions).to match_array base_expected
-    end
+      no_args_def, returning_def, one_arg_def, two_args_def, cc_def, cond_action_def, wildcard_def = DummyClass.command_definitions
 
-    context 'with options passed' do
-      context 'when condition is met' do
-        let(:expected) do
-          base_expected << {
-            name: :cond_action, aliases: [],
-            description: '', params: [],
-            condition_block: a_kind_of(Proc), action_block: a_kind_of(Proc),
-            opts: {}
-          }
-        end
+      expect(no_args_def.name).to eq(:no_args)
+      expect(no_args_def.aliases).to eq([:none])
+      expect(no_args_def.description).to eq('A command with no args')
+      expect(no_args_def.params).to eq([])
+      expect(no_args_def.condition_block).to be_nil
+      expect(no_args_def.action_block).to be_a_kind_of(Proc)
 
-        it 'returns an array with commands definitions' do
-          expect(DummyClass.command_definitions(project: 'foo')).to match_array expected
-        end
-      end
+      expect(returning_def.name).to eq(:returning)
+      expect(returning_def.aliases).to eq([])
+      expect(returning_def.description).to be_a_kind_of(Proc)
+      expect(returning_def.to_h(something: "a block description")[:description]).to eq('A command with a block description')
+      expect(returning_def.params).to eq([])
+      expect(returning_def.condition_block).to be_nil
+      expect(returning_def.action_block).to be_a_kind_of(Proc)
 
-      context 'when condition is not met' do
-        it 'returns an array with commands definitions without actions that did not met conditions' do
-          expect(DummyClass.command_definitions(project: 'bar')).to match_array base_expected
-        end
-      end
+      expect(one_arg_def.name).to eq(:one_arg)
+      expect(one_arg_def.aliases).to eq([:once, :first])
+      expect(one_arg_def.description).to eq('')
+      expect(one_arg_def.params).to eq(['The first argument'])
+      expect(one_arg_def.condition_block).to be_nil
+      expect(one_arg_def.action_block).to be_a_kind_of(Proc)
 
-      context 'when description can be generated dynamically' do
-        it 'returns an array with commands definitions with dynamic descriptions' do
-          base_expected[3][:description] = 'A dynamic description for MERGE REQUEST'
+      expect(cc_def.name).to eq(:cc)
+      expect(cc_def.aliases).to eq([])
+      expect(cc_def.description).to eq('')
+      expect(cc_def.params).to eq([])
+      expect(cc_def.condition_block).to be_nil
+      expect(cc_def.action_block).to be_nil
 
-          expect(DummyClass.command_definitions(noteable: 'merge request')).to match_array base_expected
-        end
-      end
-    end
-  end
-
-  describe '.command_names' do
-    let(:base_expected) do
-      [
-        :no_args, :none, :returning, :one_arg,
-        :once, :first, :two_args, :wildcard
-      ]
-    end
-
-    it 'returns an array with commands definitions' do
-      expect(DummyClass.command_names).to eq base_expected
-    end
-
-    context 'with options passed' do
-      context 'when condition is met' do
-        let(:expected) { base_expected << :cond_action }
-
-        it 'returns an array with commands definitions' do
-          expect(DummyClass.command_names(project: 'foo')).to match_array expected
-        end
-      end
-
-      context 'when condition is not met' do
-        it 'returns an array with commands definitions without action that did not met conditions' do
-          expect(DummyClass.command_names(project: 'bar')).to match_array base_expected
-        end
-      end
-    end
-  end
-
-  let(:dummy) { DummyClass.new(nil) }
-
-  describe '#execute_command' do
-    describe 'command with no args' do
-      context 'called with no args' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:no_args)).to eq 'Hello World!'
-        end
-      end
-    end
-
-    describe 'command with an explicit return' do
-      context 'called with no args' do
-        it 'succeeds' do
-          expect { dummy.execute_command(:returning) }.to raise_error(LocalJumpError)
-        end
-      end
-    end
-
-    describe 'command with one arg' do
-      context 'called with one arg' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:one_arg, 42)).to eq 42
-        end
-      end
-    end
-
-    describe 'command with two args' do
-      context 'called with two args' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:two_args, 42, 'foo')).to eq [42, 'foo']
-        end
-      end
-    end
-
-    describe 'noop command' do
-      it 'returns nil' do
-        expect(dummy.execute_command(:cc)).to be_nil
-      end
-    end
-
-    describe 'command with condition' do
-      context 'when condition is not met' do
-        it 'returns nil' do
-          expect(dummy.execute_command(:cond_action)).to be_nil
-        end
-      end
-
-      context 'when condition is met' do
-        let(:dummy) { DummyClass.new('foo') }
-
-        it 'succeeds' do
-          expect(dummy.execute_command(:cond_action, 42)).to eq 42
-        end
-      end
-    end
-
-    describe 'command with wildcard' do
-      context 'called with no args' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:wildcard)).to eq []
-        end
-      end
-
-      context 'called with one arg' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:wildcard, 42)).to eq [42]
-        end
-      end
-
-      context 'called with two args' do
-        it 'succeeds' do
-          expect(dummy.execute_command(:wildcard, 42, 'foo')).to eq [42, 'foo']
-        end
-      end
+      expect(wildcard_def.name).to eq(:wildcard)
+      expect(wildcard_def.aliases).to eq([])
+      expect(wildcard_def.description).to eq('')
+      expect(wildcard_def.params).to eq([])
+      expect(wildcard_def.condition_block).to be_nil
+      expect(wildcard_def.action_block).to be_a_kind_of(Proc)
     end
   end
 end

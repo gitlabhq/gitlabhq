@@ -73,15 +73,12 @@ module Gitlab
         def command(*command_names, &block)
           name, *aliases = command_names
 
-          definition = CommandDefinition.new
-          definition.name            =  name
+          definition = CommandDefinition.new(name)
           definition.aliases         =  aliases
           definition.description     =  @description || ''
           definition.params          =  @params || []
           definition.condition_block =  @condition_block
           definition.action_block    =  block
-
-          return unless definition.valid?
 
           self.command_definitions << definition
 

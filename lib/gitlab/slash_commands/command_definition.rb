@@ -3,8 +3,8 @@ module Gitlab
     class CommandDefinition
       attr_accessor :name, :aliases, :description, :params, :condition_block, :action_block
 
-      def valid?
-        name.present?
+      def initialize(name)
+        @name = name
       end
 
       def all_names
@@ -20,13 +20,6 @@ module Gitlab
 
         context = OpenStruct.new(opts)
         context.instance_exec(&condition_block)
-      end
-
-      def to_description(opts)
-        return description unless description.respond_to?(:call)
-
-        context = OpenStruct.new(opts)
-        context.instance_exec(&description) rescue ''
       end
 
       def execute(context, opts, *args)

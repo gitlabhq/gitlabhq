@@ -12,7 +12,6 @@ describe Notes::SlashCommandsService, services: true do
 
     before do
       note.note = note_text
-      described_class.new(project, master).execute(note)
     end
 
     describe 'note with only command' do
@@ -20,7 +19,10 @@ describe Notes::SlashCommandsService, services: true do
         let(:note_text) { %(/close\n/assign @#{assignee.username}") }
 
         it 'saves the note and does not alter the note text' do
-          expect(note.note).to eq note_text
+          content, command_params = service.extract_commands(note)
+
+          expect(content).to eq note_text
+          expect(command_params).to be_empty
         end
       end
     end
@@ -30,7 +32,10 @@ describe Notes::SlashCommandsService, services: true do
         let(:note_text) { %(HELLO\n/close\n/assign @#{assignee.username}\nWORLD) }
 
         it 'saves the note and does not alter the note text' do
-          expect(note.note).to eq note_text
+          content, command_params = service.extract_commands(note)
+
+          expect(content).to eq note_text
+          expect(command_params).to be_empty
         end
       end
     end
@@ -53,9 +58,10 @@ describe Notes::SlashCommandsService, services: true do
         end
 
         it 'closes noteable, sets labels, assigns, and sets milestone to noteable, and leave no note' do
-          described_class.new(project, master).execute(note)
+          content, command_params = service.extract_commands(note)
+          service.execute(command_params, note)
 
-          expect(note.note).to eq ''
+          expect(content).to eq ''
           expect(note.noteable).to be_closed
           expect(note.noteable.labels).to match_array(labels)
           expect(note.noteable.assignee).to eq(assignee)
@@ -71,9 +77,10 @@ describe Notes::SlashCommandsService, services: true do
         let(:note_text) { '/open' }
 
         it 'opens the noteable, and leave no note' do
-          described_class.new(project, master).execute(note)
+          content, command_params = service.extract_commands(note)
+          service.execute(command_params, note)
 
-          expect(note.note).to eq ''
+          expect(content).to eq ''
           expect(note.noteable).to be_open
         end
       end
@@ -86,9 +93,10 @@ describe Notes::SlashCommandsService, services: true do
         end
 
         it 'closes noteable, sets labels, assigns, and sets milestone to noteable' do
-          described_class.new(project, master).execute(note)
+          content, command_params = service.extract_commands(note)
+          service.execute(command_params, note)
 
-          expect(note.note).to eq "HELLO\nWORLD"
+          expect(content).to eq "HELLO\nWORLD"
           expect(note.noteable).to be_closed
           expect(note.noteable.labels).to match_array(labels)
           expect(note.noteable.assignee).to eq(assignee)
@@ -104,9 +112,10 @@ describe Notes::SlashCommandsService, services: true do
         let(:note_text) { "HELLO\n/open\nWORLD" }
 
         it 'opens the noteable' do
-          described_class.new(project, master).execute(note)
+          content, command_params = service.extract_commands(note)
+          service.execute(command_params, note)
 
-          expect(note.note).to eq "HELLO\nWORLD"
+          expect(content).to eq "HELLO\nWORLD"
           expect(note.noteable).to be_open
         end
       end
@@ -114,6 +123,8 @@ describe Notes::SlashCommandsService, services: true do
   end
 
   describe '#execute' do
+    let(:service) { described_class.new(project, master) }
+
     it_behaves_like 'note on noteable that supports slash commands' do
       let(:note) { build(:note_on_issue, project: project) }
     end

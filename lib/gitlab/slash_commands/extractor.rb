@@ -29,8 +29,8 @@ module Gitlab
       # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\nworld"
       # ```
-      def extract_commands(content, opts)
-        return [] unless content
+      def extract_commands(content, opts = {})
+        return [content, []] unless content
 
         content = content.dup
 
@@ -107,7 +107,13 @@ module Gitlab
               # Command not in a blockquote, blockcode, or HTML tag:
               # /close
 
-              ^\/(?<cmd>#{Regexp.union(names)})(?:$|\ (?<args>[^\/\n]*)$)
+              ^\/
+              (?<cmd>#{Regexp.union(names)})
+              (?:
+                [ ]
+                (?<args>[^\/\n]*)
+              )?
+              (?:\n|$)
             )
         }mx
       end
