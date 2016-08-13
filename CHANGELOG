@@ -25,6 +25,7 @@ v 8.11.0 (unreleased)
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Show member roles to all users on members page
+  - Project.visible_to_user is instrumented again
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
@@ -93,6 +94,7 @@ v 8.11.0 (unreleased)
   - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
+  - Fix bug where destroying a namespace would not always destroy projects
   - Fix RequestProfiler::Middleware error when code is reloaded in development
   - Catch what warden might throw when profiling requests to re-throw it
   - Avoid commit lookup on diff_helper passing existing local variable to the helper method
