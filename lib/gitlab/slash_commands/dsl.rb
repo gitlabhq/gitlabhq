@@ -4,64 +4,16 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        cattr_accessor :definitions
-      end
-
-      def execute_command(name, *args)
-        name = name.to_sym
-        cmd_def = self.class.definitions.find do |cmd_def|
-          self.class.command_name_and_aliases(cmd_def).include?(name)
+        cattr_accessor :command_definitions, instance_accessor: false do
+          []
         end
-        return unless cmd_def && cmd_def[:action_block]
-        return if self.class.command_unavailable?(cmd_def, self)
 
-        block_arity = cmd_def[:action_block].arity
-        if block_arity == -1 || block_arity == args.size
-          instance_exec(*args, &cmd_def[:action_block])
+        cattr_accessor :command_definitions_by_name, instance_accessor: false do
+          {}
         end
       end
 
       class_methods do
-        # This method is used to generate the autocompletion menu.
-        # It returns no-op slash commands (such as `/cc`).
-        def command_definitions(opts = {})
-          self.definitions.map do |cmd_def|
-            context = OpenStruct.new(opts)
-            next if command_unavailable?(cmd_def, context)
-
-            cmd_def = cmd_def.dup
-
-            if cmd_def[:description].respond_to?(:call)
-              cmd_def[:description] = context.instance_exec(&cmd_def[:description]) rescue ''
-            end
-
-            cmd_def
-          end.compact
-        end
-
-        # This method is used to generate a list of valid commands in the current
-        # context of `opts`.
-        # It excludes no-op slash commands (such as `/cc`).
-        # This list can then be given to `Gitlab::SlashCommands::Extractor`.
-        def command_names(opts = {})
-          self.definitions.flat_map do |cmd_def|
-            next if cmd_def[:opts].fetch(:noop, false)
-
-            context = OpenStruct.new(opts)
-            next if command_unavailable?(cmd_def, context)
-
-            command_name_and_aliases(cmd_def)
-          end.compact
-        end
-
-        def command_unavailable?(cmd_def, context)
-          cmd_def[:condition_block] && !context.instance_exec(&cmd_def[:condition_block])
-        end
-
-        def command_name_and_aliases(cmd_def)
-          [cmd_def[:name], *cmd_def[:aliases]]
-        end
-
         # Allows to give a description to the next slash command.
         # This description is shown in the autocomplete menu.
         # It accepts a block that will be evaluated with the context given to
@@ -119,19 +71,23 @@ module Gitlab
         #     # Awesome code block
         #   end
         def command(*command_names, &block)
-          opts = command_names.extract_options!
           name, *aliases = command_names
 
-          self.definitions ||= []
-          self.definitions << {
-            name: name,
-            aliases: aliases,
-            description: @description || '',
-            params: @params || [],
-            condition_block: @condition_block,
-            action_block: block,
-            opts: opts
-          }
+          definition = CommandDefinition.new
+          definition.name            =  name
+          definition.aliases         =  aliases
+          definition.description     =  @description || ''
+          definition.params          =  @params || []
+          definition.condition_block =  @condition_block
+          definition.action_block    =  block
+
+          return unless definition.valid?
+
+          self.command_definitions << definition
+
+          definition.all_names.each do |name|
+            self.command_definitions_by_name[name] = definition
+          end
 
           @description = nil
           @params = nil

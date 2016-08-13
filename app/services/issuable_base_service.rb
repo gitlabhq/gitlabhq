@@ -94,10 +94,13 @@ class IssuableBaseService < BaseService
   end
 
   def merge_slash_commands_into_params!(issuable)
-    commands = SlashCommands::InterpretService.new(project, current_user).
+    description, command_params =
+      SlashCommands::InterpretService.new(project, current_user).
       execute(params[:description], issuable)
 
-    params.merge!(commands)
+    params[:description] = description
+
+    params.merge!(command_params)
   end
 
   def create_issuable(issuable, attributes)

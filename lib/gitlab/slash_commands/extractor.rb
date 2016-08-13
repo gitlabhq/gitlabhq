@@ -7,10 +7,10 @@ module Gitlab
     # extractor = Gitlab::SlashCommands::Extractor.new([:open, :assign, :labels])
     # ```
     class Extractor
-      attr_reader :command_names
+      attr_reader :command_definitions
 
-      def initialize(command_names)
-        @command_names = command_names
+      def initialize(command_definitions)
+        @command_definitions = command_definitions
       end
 
       # Extracts commands from content and return an array of commands.
@@ -26,16 +26,18 @@ module Gitlab
       # ```
       # extractor = Gitlab::SlashCommands::Extractor.new([:open, :assign, :labels])
       # msg = %(hello\n/labels ~foo ~"bar baz"\nworld)
-      # commands = extractor.extract_commands! #=> [['labels', '~foo ~"bar baz"']]
+      # commands = extractor.extract_commands(msg) #=> [['labels', '~foo ~"bar baz"']]
       # msg #=> "hello\nworld"
       # ```
-      def extract_commands!(content)
+      def extract_commands(content, opts)
         return [] unless content
+
+        content = content.dup
 
         commands = []
 
         content.delete!("\r")
-        content.gsub!(commands_regex) do
+        content.gsub!(commands_regex(opts)) do
           if $~[:cmd]
             commands << [$~[:cmd], $~[:args]].reject(&:blank?)
             ''
@@ -44,10 +46,18 @@ module Gitlab
           end
         end
 
-        commands
+        [content.strip, commands]
       end
 
       private
+
+      def command_names(opts)
+        command_definitions.flat_map do |command|
+          next if command.noop?
+
+          command.all_names
+        end.compact
+      end
 
       # Builds a regular expression to match known commands.
       # First match group captures the command name and
@@ -56,7 +66,9 @@ module Gitlab
       # It looks something like:
       #
       #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<args>[^\/\n]*)(?:\n|$)/
-      def commands_regex
+      def commands_regex(opts)
+        names = command_names(opts).map(&:to_s)
+
         @commands_regex ||= %r{
             (?<code>
               # Code blocks:
@@ -95,7 +107,7 @@ module Gitlab
               # Command not in a blockquote, blockcode, or HTML tag:
               # /close
 
-              ^\/(?<cmd>#{command_names.join('|')})(?:(\ |$))(?<args>[^\/\n]*)(?:\n|$)
+              ^\/(?<cmd>#{Regexp.union(names)})(?:$|\ (?<args>[^\/\n]*)$)
             )
         }mx
       end

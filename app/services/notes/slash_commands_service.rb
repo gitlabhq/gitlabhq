@@ -1,6 +1,5 @@
 module Notes
   class SlashCommandsService < BaseService
-
     UPDATE_SERVICES = {
       'Issue' => Issues::UpdateService,
       'MergeRequest' => MergeRequests::UpdateService
@@ -15,11 +14,11 @@ module Notes
         execute(note.note, note.noteable)
     end
 
-    def execute(commands, note)
-      if commands.any?
-        @noteable_update_service.new(project, current_user, commands).
-          execute(note.noteable)
-      end
+    def execute(command_params, note)
+      return if command_params.empty?
+
+      @noteable_update_service.new(project, current_user, command_params).
+        execute(note.noteable)
     end
   end
 end

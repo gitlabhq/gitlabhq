@@ -10,20 +10,28 @@ module SlashCommands
       @noteable = noteable
       @updates = {}
 
-      commands = extractor(noteable: noteable).extract_commands!(content)
-      commands.each do |command, *args|
-        execute_command(command, *args)
+      opts = {
+        noteable:     noteable,
+        current_user: current_user,
+        project:      project
+      }
+
+      content, commands = extractor.extract_commands(content, opts)
+
+      commands.each do |name, *args|
+        definition = self.class.command_definitions_by_name[name.to_sym]
+        next unless definition
+
+        definition.execute(self, opts, *args)
       end
 
-      @updates
+      [content, @updates]
     end
 
     private
 
-    def extractor(opts = {})
-      opts.merge!(current_user: current_user, project: project)
-
-      Gitlab::SlashCommands::Extractor.new(self.class.command_names(opts))
+    def extractor
+      Gitlab::SlashCommands::Extractor.new(self.class.command_definitions)
     end
 
     desc do
