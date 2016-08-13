@@ -108,7 +108,10 @@
   .message {
     word-wrap: break-word;
   }
-
+  .btn {
+    white-space: normal;
+    padding: $gl-btn-padding;
+  }
   th {
     width: 15%;
     &.wide {

@@ -12,8 +12,8 @@ window.gl = window.gl || {};
     }
 
     truncateLongMessage() {
-      let $messageCellElement = $(this);
-      let reportMessage = $messageCellElement.text();
+      const $messageCellElement = $(this);
+      const reportMessage = $messageCellElement.text();
       if (reportMessage.length > MAX_MESSAGE_LENGTH) {
         $messageCellElement.data('original-message', reportMessage);
         $messageCellElement.data('message-truncated', 'true');
@@ -22,8 +22,8 @@ window.gl = window.gl || {};
     }
 
     toggleMessageTruncation() {
-      let $messageCellElement = $(this);
-      let originalMessage = $messageCellElement.data('original-message');
+      const $messageCellElement = $(this);
+      const originalMessage = $messageCellElement.data('original-message');
       if (!originalMessage) return;
       if ($messageCellElement.data('message-truncated') === 'true') {
         $messageCellElement.data('message-truncated', 'false');
