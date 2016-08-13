@@ -13,8 +13,8 @@ describe Banzai::Filter::ImageLinkFilter, lib: true do
   end
 
   it 'does not wrap a duplicate link' do
-    exp = act = %q(<a href="/whatever">#{image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')}</a>)
-    expect(filter(act).to_html).to eq exp
+    doc = filter(%Q(<a href="/whatever">#{image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')}</a>))
+    expect(doc.to_html).to match /^<a href="\/whatever"><img[^>]*><\/a>$/
   end
 
   it 'works with external images' do
