@@ -324,7 +324,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+    @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request

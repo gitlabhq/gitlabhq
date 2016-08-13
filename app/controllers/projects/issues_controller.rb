@@ -176,11 +176,12 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @issue ||= begin
-                 @project.issues.find_by!(iid: params[:id])
-               rescue ActiveRecord::RecordNotFound
-                 redirect_old
-               end
+    @noteable = @issue ||=
+      begin
+        @project.issues.find_by!(iid: params[:id])
+      rescue ActiveRecord::RecordNotFound
+        redirect_old
+      end
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue

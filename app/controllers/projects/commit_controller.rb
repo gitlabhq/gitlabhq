@@ -93,7 +93,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @commit ||= @project.commit(params[:id])
+    @noteable = @commit ||= @project.commit(params[:id])
   end
 
   def pipelines
