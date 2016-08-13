@@ -13,6 +13,7 @@ module Projects
     def execute
       # Create status notifying the deployment of pages
       @status = create_status
+      @status.enqueue!
       @status.run!
 
       raise 'missing pages artifacts' unless build.artifacts_file?
