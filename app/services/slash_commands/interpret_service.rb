@@ -39,8 +39,8 @@ module SlashCommands
     end
     condition do
       noteable.persisted? &&
-      noteable.open? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
+        noteable.open? &&
+        current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :close do
       @updates[:state_event] = 'close'
@@ -51,9 +51,9 @@ module SlashCommands
     end
     condition do
       noteable.closed? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
+        current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
-    command :open, :reopen do
+    command :reopen, :open do
       @updates[:state_event] = 'reopen'
     end
 
@@ -61,7 +61,7 @@ module SlashCommands
     params '<New title>'
     condition do
       noteable.persisted? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
+        current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :title do |title_param|
       @updates[:title] = title_param
@@ -72,7 +72,7 @@ module SlashCommands
     condition do
       current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
-    command :assign, :reassign do |assignee_param|
+    command :assign do |assignee_param|
       user = extract_references(assignee_param, :user).first
       user ||= User.find_by(username: assignee_param)
       user ||= User.find_by(name: assignee_param)
@@ -83,7 +83,7 @@ module SlashCommands
     desc 'Remove assignee'
     condition do
       noteable.assignee_id? &&
-      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
+        current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :unassign, :remove_assignee do
       @updates[:assignee_id] = nil
@@ -93,7 +93,7 @@ module SlashCommands
     params '%"milestone"'
     condition do
       current_user.can?(:"admin_#{noteable.to_ability_name}", project) &&
-      project.milestones.active.any?
+        project.milestones.active.any?
     end
     command :milestone do |milestone_param|
       milestone = extract_references(milestone_param, :milestone).first
@@ -105,7 +105,7 @@ module SlashCommands
     desc 'Remove milestone'
     condition do
       noteable.milestone_id? &&
-      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
+        current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :clear_milestone, :remove_milestone do
       @updates[:milestone_id] = nil
@@ -115,7 +115,7 @@ module SlashCommands
     params '~label1 ~"label 2"'
     condition do
       current_user.can?(:"admin_#{noteable.to_ability_name}", project) &&
-      project.labels.any?
+        project.labels.any?
     end
     command :label, :labels do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -127,7 +127,7 @@ module SlashCommands
     params '~label1 ~"label 2"'
     condition do
       noteable.labels.any? &&
-      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
+        current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :unlabel, :remove_label, :remove_labels do |labels_param|
       label_ids = find_label_ids(labels_param)
@@ -138,7 +138,7 @@ module SlashCommands
     desc 'Remove all labels'
     condition do
       noteable.labels.any? &&
-      current_user.can?(:"admin_#{noteable.to_ability_name}", project)
+        current_user.can?(:"admin_#{noteable.to_ability_name}", project)
     end
     command :clear_labels, :clear_label do
       @updates[:label_ids] = []
@@ -147,7 +147,7 @@ module SlashCommands
     desc 'Add a todo'
     condition do
       noteable.persisted? &&
-      !TodoService.new.todo_exist?(noteable, current_user)
+        !TodoService.new.todo_exist?(noteable, current_user)
     end
     command :todo do
       @updates[:todo_event] = 'add'
@@ -155,7 +155,7 @@ module SlashCommands
 
     desc 'Mark todo as done'
     condition do
-      TodoService.new.todo_exist?(noteable, current_user)
+        TodoService.new.todo_exist?(noteable, current_user)
     end
     command :done do
       @updates[:todo_event] = 'done'
@@ -164,7 +164,7 @@ module SlashCommands
     desc 'Subscribe'
     condition do
       noteable.persisted? &&
-      !noteable.subscribed?(current_user)
+        !noteable.subscribed?(current_user)
     end
     command :subscribe do
       @updates[:subscription_event] = 'subscribe'
@@ -173,17 +173,17 @@ module SlashCommands
     desc 'Unsubscribe'
     condition do
       noteable.persisted? &&
-      noteable.subscribed?(current_user)
+        noteable.subscribed?(current_user)
     end
     command :unsubscribe do
       @updates[:subscription_event] = 'unsubscribe'
     end
 
     desc 'Set due date'
-    params '<in 2 days | this Friday | December 31st>'
+    params '<in 2 days; this Friday; December 31st>'
     condition do
       noteable.respond_to?(:due_date) &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
+        current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :due, :due_date do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
@@ -194,8 +194,8 @@ module SlashCommands
     desc 'Remove due date'
     condition do
       noteable.respond_to?(:due_date) &&
-      noteable.due_date? &&
-      current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
+        noteable.due_date? &&
+        current_user.can?(:"update_#{noteable.to_ability_name}", noteable)
     end
     command :clear_due_date do
       @updates[:due_date] = nil
@@ -204,7 +204,7 @@ module SlashCommands
     # This is a dummy command, so that it appears in the autocomplete commands
     desc 'CC'
     params '@user'
-    command :cc, noop: true
+    command :cc
 
     def find_label_ids(labels_param)
       label_ids_by_reference = extract_references(labels_param, :label).map(&:id)

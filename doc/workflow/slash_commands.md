@@ -12,9 +12,9 @@ do.
 | Command                    | Aliases             | Action       |
 |:---------------------------|:--------------------|:-------------|
 | `/close`                   | None                | Close the issue or merge request |
-| `/open`                    | `/reopen`           | Reopen the issue or merge request |
+| `/reopen`                  | `/open`             | Reopen the issue or merge request |
 | `/title <New title>`       | None                | Change title |
-| `/assign @username`        | `/reassign`         | Assign |
+| `/assign @username`        | None                | Assign |
 | `/unassign`                | `/remove_assignee`  | Remove assignee |
 | `/milestone %milestone`    | None                | Set milestone |
 | `/clear_milestone`         | `/remove_milestone` | Remove milestone |
@@ -25,5 +25,5 @@ do.
 | `/done`                    | None                | Mark todo as done |
 | `/subscribe`               | None                | Subscribe |
 | `/unsubscribe`             | None                | Unsubscribe |
-| `/due <in 2 days | this Friday | December 31st>` | `/due_date` | Set due date |
+| `/due <in 2 days; this Friday; December 31st>` | `/due_date` | Set due date |
 | `/clear_due_date`          | None                | Remove due date |
