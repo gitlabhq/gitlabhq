@@ -24,7 +24,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def destroy
-    DeleteUserService.new(current_user).execute(current_user)
+    Users::DestroyService.new(current_user).execute(current_user)
 
     respond_to do |format|
       format.html do
