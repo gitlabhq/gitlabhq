@@ -74,7 +74,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'
         expect(page).not_to have_content '/milestone %"ASAP"'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         issuable.reload
 
@@ -98,7 +98,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/close'
-          expect(page).to have_content 'Your commands are being executed.'
+          expect(page).to have_content 'Your commands have been executed!'
 
           expect(issuable.reload).to be_closed
         end
@@ -118,7 +118,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/close'
-          expect(page).not_to have_content 'Your commands are being executed.'
+          expect(page).not_to have_content 'Your commands have been executed!'
 
           expect(issuable).to be_open
         end
@@ -139,7 +139,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/reopen'
-          expect(page).to have_content 'Your commands are being executed.'
+          expect(page).to have_content 'Your commands have been executed!'
 
           expect(issuable.reload).to be_open
         end
@@ -159,7 +159,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/reopen'
-          expect(page).not_to have_content 'Your commands are being executed.'
+          expect(page).not_to have_content 'Your commands have been executed!'
 
           expect(issuable).to be_closed
         end
@@ -175,7 +175,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/title'
-          expect(page).to have_content 'Your commands are being executed.'
+          expect(page).to have_content 'Your commands have been executed!'
 
           expect(issuable.reload.title).to eq 'Awesome new title'
         end
@@ -195,7 +195,7 @@ shared_examples 'issuable record that supports slash commands in its description
           end
 
           expect(page).not_to have_content '/title'
-          expect(page).not_to have_content 'Your commands are being executed.'
+          expect(page).not_to have_content 'Your commands have been executed!'
 
           expect(issuable.reload.title).not_to eq 'Awesome new title'
         end
@@ -210,7 +210,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         expect(page).not_to have_content '/todo'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         todos = TodosFinder.new(master).execute
         todo = todos.first
@@ -244,7 +244,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         expect(page).not_to have_content '/done'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         expect(todo.reload).to be_done
       end
@@ -260,7 +260,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         expect(page).not_to have_content '/subscribe'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         expect(issuable.subscribed?(master)).to be_truthy
       end
@@ -280,7 +280,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         expect(page).not_to have_content '/unsubscribe'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         expect(issuable.subscribed?(master)).to be_falsy
       end

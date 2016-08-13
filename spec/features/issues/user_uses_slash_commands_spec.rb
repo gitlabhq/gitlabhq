@@ -27,7 +27,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         end
 
         expect(page).not_to have_content '/due_date 2016-08-28'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         issue.reload
 
@@ -47,7 +47,7 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         end
 
         expect(page).not_to have_content '/clear_due_date'
-        expect(page).to have_content 'Your commands are being executed.'
+        expect(page).to have_content 'Your commands have been executed!'
 
         issue.reload
 

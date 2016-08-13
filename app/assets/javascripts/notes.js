@@ -201,7 +201,7 @@
     Increase @pollingInterval up to 120 seconds on every function call,
     if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
     will reset to @basePollingInterval.
-    
+
     Note: this function is used to gradually increase the polling interval
     if there aren't new notes coming from the server
      */
@@ -223,7 +223,7 @@
 
     /*
     Render note in main comments area.
-    
+
     Note: for rendering inline notes use renderDiscussionNote
      */
 
@@ -236,6 +236,7 @@
         else {
           if (note.errors.commands_only) {
             new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
+            this.refresh();
           }
         }
         return;
@@ -250,6 +251,7 @@
         $notesList.append(note.html).syntaxHighlight();
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
         this.initTaskList();
+        this.refresh();
         return this.updateNotesCount(1);
       }
     };
@@ -270,7 +272,7 @@
 
     /*
     Render note in discussion area.
-    
+
     Note: for rendering inline notes use renderDiscussionNote
      */
 
@@ -309,7 +311,7 @@
 
     /*
     Called in response the main target form has been successfully submitted.
-    
+
     Removes any errors.
     Resets text and preview.
     Resets buttons.
@@ -334,7 +336,7 @@
 
     /*
     Shows the main form and does some setup on it.
-    
+
     Sets some hidden fields in the form.
      */
 
@@ -354,7 +356,7 @@
 
     /*
     General note form setup.
-    
+
     deactivates the submit button when text is empty
     hides the preview button when text is empty
     setup GFM auto complete
@@ -371,7 +373,7 @@
 
     /*
     Called in response to the new note form being submitted
-    
+
     Adds new note to list.
      */
 
@@ -386,7 +388,7 @@
 
     /*
     Called in response to the new note form being submitted
-    
+
     Adds new note to list.
      */
 
@@ -398,7 +400,7 @@
 
     /*
     Called in response to the edit note form being submitted
-    
+
     Updates the current note field.
      */
 
@@ -415,7 +417,7 @@
 
     /*
     Called in response to clicking the edit note link
-    
+
     Replaces the note text with the note edit form
     Adds a data attribute to the form with the original content of the note for cancellations
      */
@@ -455,7 +457,7 @@
 
     /*
     Called in response to clicking the edit note link
-    
+
     Hides edit form and restores the original note text to the editor textarea.
      */
 
@@ -477,7 +479,7 @@
 
     /*
     Called in response to deleting a note of any kind.
-    
+
     Removes the actual note from view.
     Removes the whole discussion if the last note is being removed.
      */
@@ -503,7 +505,7 @@
 
     /*
     Called in response to clicking the delete attachment link
-    
+
     Removes the attachment wrapper view, including image tag if it exists
     Resets the note editing form
      */
@@ -520,7 +522,7 @@
 
     /*
     Called when clicking on the "reply" button for a diff line.
-    
+
     Shows the note form below the notes.
      */
 
@@ -536,9 +538,9 @@
 
     /*
     Shows the diff or discussion form and does some setup on it.
-    
+
     Sets some hidden fields in the form.
-    
+
     Note: dataHolder must have the "discussionId", "lineCode", "noteableType"
     and "noteableId" data attributes set.
      */
@@ -562,7 +564,7 @@
 
     /*
     Called when clicking on the "add a comment" button on the side of a diff line.
-    
+
     Inserts a temporary row for the form below the line.
     Sets up the form and shows it.
      */
@@ -610,7 +612,7 @@
 
     /*
     Called in response to "cancel" on a diff note form.
-    
+
     Shows the reply button again.
     Removes the form and if necessary it's temporary row.
      */
@@ -639,7 +641,7 @@
 
     /*
     Called after an attachment file has been selected.
-    
+
     Updates the file name for the selected attachment.
      */
 

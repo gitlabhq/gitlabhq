@@ -28,7 +28,7 @@ module Notes
       # We must add the error after we call #save because errors are reset
       # when #save is called
       if slash_commands_service.execute(command_params, note) && note.note.blank?
-        note.errors.add(:commands_only, 'Your commands are being executed.')
+        note.errors.add(:commands_only, 'Your commands have been executed!')
       end
 
       note
