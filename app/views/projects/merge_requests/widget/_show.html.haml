@@ -7,17 +7,4 @@
 - elsif @merge_request.locked?
   = render 'projects/merge_requests/widget/locked'
 
-.js-merge-request-widget-options{ data: { merge_check_url: merge_check_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-  check_enable: (@merge_request.unchecked? ? 'true' : 'false'),
-  ci_status_url: ci_status_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-  gitlab_icon: asset_path('gitlab_logo.png'),
-  ci_status: (@merge_request.pipeline ? @merge_request.pipeline.status : ''),
-  ci_message: { normal: 'Build {{status}} for "{{title}}"', preparing: '{{status}} build for "{{title}}"' },
-  ci_enable: (@project.ci_service ? 'true' : 'false'),
-  ci_title: { preparing: "{{status}} build", normal: "Build {{status}}" },
-  builds_path: builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-  pipelines_path: pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-  merge_path: merge_namespace_project_merge_request_path(@project.namespace, @project, @merge_request),
-  remove_path: namespace_project_branch_path(@merge_request.source_project.namespace, @merge_request.source_project, @merge_request.source_branch),
-  cancel_merge_on_success_path: cancel_merge_when_build_succeeds_namespace_project_merge_request_path(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request),
-  check_status: (@merge_request.open? && @merge_request.unchecked? ? 'true' : 'false') } }
+.js-merge-request-widget-options{ data: widget_options }

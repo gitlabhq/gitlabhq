@@ -312,14 +312,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # to wait until CI completes to know
     unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)
       @status = :failed
-      render_merge_request_widget_partial
-      return
+      return render_widget(@status)
     end
 
     if params[:sha] != @merge_request.diff_head_sha
       @status = :sha_mismatch
-      render_merge_request_widget_partial
-      return
+      return render_widget(@status)
     end
 
     TodoService.new.merge_merge_request(merge_request, current_user)
@@ -329,8 +327,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if params[:merge_when_build_succeeds].present?
       unless @merge_request.pipeline
         @status = :failed
-        render_merge_request_widget_partial
-        return
+        return render_widget(@status)
       end
 
       if @merge_request.pipeline.active?
@@ -350,11 +347,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @status = :success
     end
 
-    render_merge_request_widget_partial
+    render_widget(@status)
   end
 
-  def render_merge_request_widget_partial
-    case @status
+  def render_widget(status)
+    case status
     when :success
       render json: { merge_in_progress: params[:should_remove_source_branch] == '1' }
     when :merge_when_build_succeeds
