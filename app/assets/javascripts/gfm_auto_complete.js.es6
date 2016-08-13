@@ -249,8 +249,8 @@
           }
         }
       });
-      // We don't instantiate the slash commands autocomplete for note edit forms
-      $("form:not(.edit-note) .js-gfm-input").atwho({
+      // We don't instantiate the slash commands autocomplete for note and issue/MR edit forms
+      this.input.filter('[data-supports-slash-commands="true"]').atwho({
         at: '/',
         alias: 'commands',
         displayTpl: function(value) {
