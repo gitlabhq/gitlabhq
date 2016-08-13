@@ -22,8 +22,8 @@ describe Banzai::Filter::ImageLinkFilter, lib: true do
     expect(doc.at_css('img')['src']).to eq doc.at_css('a')['href']
   end
 
-  it 'wraps the image with a link and a div' do
-    doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
-    expect(doc.to_html).to include('<div class="image-container">')
+  it 'works with inline images' do
+    doc = filter(%Q(<p>test #{image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg')} inline</p>))
+    expect(doc.to_html).to match /^<p>test <a[^>]*><img[^>]*><\/a> inline<\/p>$/
   end
 end

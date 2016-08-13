@@ -61,7 +61,7 @@ describe "User Feed", feature: true  do
       end
 
       it 'has XHTML summaries in merge request descriptions' do
-        expect(body).to match /Here is the fix: <\/p><div[^>]*><a[^>]*><img[^>]*\/><\/a><\/div>/
+        expect(body).to match /Here is the fix: <a[^>]*><img[^>]*\/><\/a>/
       end
     end
   end
