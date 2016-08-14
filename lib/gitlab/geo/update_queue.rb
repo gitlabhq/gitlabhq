@@ -89,7 +89,7 @@ module Gitlab
         redis_config_file = Rails.root.join('config', 'resque.yml')
 
         redis_url_string = if File.exist?(redis_config_file)
-                             YAML.load_file(redis_config_file)[Rails.env]
+                             YAML.load_file(redis_config_file)[Rails.env][:url]
                            else
                              'redis://localhost:6379'
                            end
