@@ -126,6 +126,7 @@ v 8.10.6
   - Restore "Largest repository" sort option on Admin > Projects page. !5797
   - Fix privilege escalation via project export.
   - Require administrator privileges to perform a project import.
+  - Allow to add deploy keys with write-access !5807 (Ali Ibrahim)
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670

@@ -10,4 +10,13 @@
     %p.light.append-bottom-0
       Paste a machine public key here. Read more about how to generate it
       = link_to "here", help_page_path("ssh/README")
+  .form-group
+    .checkbox
+      = f.label :can_push do
+        = f.check_box :can_push
+        %strong Allow write access
+  .form-group
+    %p.light.append-bottom-0
+      Can this key be used to push to this repository? Deploy keys always have pull access
+
   = f.submit "Add key", class: "btn-create btn"

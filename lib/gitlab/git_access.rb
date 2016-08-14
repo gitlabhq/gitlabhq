@@ -50,10 +50,13 @@ module Gitlab
     end
 
     def push_access_check(changes)
+      unless project.repository.exists?
+        return build_status_object(false, "A repository for this project does not exist yet.")
+      end
       if user
         user_push_access_check(changes)
       elsif deploy_key
-        build_status_object(false, "Deploy keys are not allowed to push code.")
+        deploy_key_push_access_check(changes)
       else
         raise 'Wrong actor'
       end
@@ -72,10 +75,6 @@ module Gitlab
         return build_status_object(true)
       end
 
-      unless project.repository.exists?
-        return build_status_object(false, "A repository for this project does not exist yet.")
-      end
-
       changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
@@ -88,6 +87,14 @@ module Gitlab
       end
 
       build_status_object(true)
+    end
+
+    def deploy_key_push_access_check(changes)
+      if actor.can_push?
+        build_status_object(true)
+      else
+        build_status_object(false, "The deploy key does not have write access to the project.")
+      end
     end
 
     def change_access_check(change)

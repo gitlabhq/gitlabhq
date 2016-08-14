@@ -284,19 +284,22 @@ describe Gitlab::GitAccess, lib: true do
   end
 
   describe 'deploy key permissions' do
-    let(:key) { create(:deploy_key) }
-    let(:actor) { key }
-
     context 'push code' do
       subject { access.check('git-receive-pack', '_any') }
 
       context 'when project is authorized' do
+        let(:key) { create(:deploy_key, can_push: true) }
+        let(:actor) { key }
+
         before { key.projects << project }
 
-        it { expect(subject).not_to be_allowed }
+        it { expect(subject).to be_allowed }
       end
 
       context 'when unauthorized' do
+        let(:key) { create(:deploy_key, can_push: false) }
+        let(:actor) { key }
+
         context 'to public project' do
           let(:project) { create(:project, :public) }
 
