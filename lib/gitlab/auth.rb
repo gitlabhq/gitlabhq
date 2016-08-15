@@ -11,14 +11,20 @@ module Gitlab
         if valid_ci_request?(login, password, project)
           result.type = :ci
         elsif result.user = find_with_user_password(login, password)
-          result.type = :gitlab_or_ldap
+          if result.user.two_factor_enabled?
+            result.user = nil
+            result.type = :missing_personal_token
+          else
+            result.type = :gitlab_or_ldap
+          end
         elsif result.user = oauth_access_token_check(login, password)
           result.type = :oauth
         elsif result.user = personal_access_token_check(login, password)
           result.type = :personal_token
         end
 
-        rate_limit!(ip, success: !!result.user || (result.type == :ci), login: login)
+        success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
+        rate_limit!(ip, success: success, login: login)
         result
       end
 

@@ -27,9 +27,11 @@ class Projects::GitHttpClientController < Projects::ApplicationController
         @ci = true
       elsif auth_result.type == :oauth && !download_request?
         # Not allowed
+      elsif auth_result.type == :missing_personal_token
+        render_missing_personal_token
+        return # Render above denied access, nothing left to do
       else
         @user = auth_result.user
-        check_2fa(auth_result.type)
       end
 
       if ci? || user
@@ -92,13 +94,11 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     [nil, nil]
   end
 
-  def check_2fa(auth_type)
-    if user && user.two_factor_enabled? && auth_type == :gitlab_or_ldap
-      render plain: "HTTP Basic: Access denied\n"\
-                      "You have 2FA enabled, please use a personal access token for Git over HTTP.\n"\
-                      "You can generate one at #{profile_personal_access_tokens_url}",
-             status: 401
-    end
+  def render_missing_personal_token
+    render plain: "HTTP Basic: Access denied\n"\
+                  "You have 2FA enabled, please use a personal access token for Git over HTTP.\n"\
+                  "You can generate one at #{profile_personal_access_tokens_url}",
+           status: 401
   end
 
   def repository
