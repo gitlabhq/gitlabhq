@@ -79,10 +79,10 @@ namespace :gitlab do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         print "Indexing #{klass} records... "
 
-        case klass
-        when Note
+        case klass.to_s
+        when 'Note'
           Note.searchable.import_with_parent
-        when Project, Snippet
+        when 'Project', 'Snippet'
           klass.import
         else
           klass.import_with_parent
