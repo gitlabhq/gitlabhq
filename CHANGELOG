@@ -82,6 +82,7 @@ v 8.11.0 (unreleased)
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
+  - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
