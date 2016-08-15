@@ -104,6 +104,7 @@ class MergeRequest < ActiveRecord::Base
   scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
+  scope :from_source_branches, ->(branches) { where(source_branch: branches) }
 
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }

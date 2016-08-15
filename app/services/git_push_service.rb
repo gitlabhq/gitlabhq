@@ -69,7 +69,7 @@ class GitPushService < BaseService
     SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
   end
 
@@ -138,13 +138,23 @@ class GitPushService < BaseService
   end
 
   def build_push_data
-    @push_data ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+    @push_data ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      push_commits)
   end
 
   def build_push_data_system_hook
-    @push_data_system ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
+    @push_data_system ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      [])
   end
 
   def push_to_existing_branch?

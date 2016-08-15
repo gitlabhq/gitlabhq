@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.7.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -69,7 +69,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.13.0'
+gem 'grape',        '~> 0.15.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -162,9 +162,6 @@ gem 'redis-rails', '~> 4.0.0'
 # Redis
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
-
-# Campfire integration
-gem 'tinder', '~> 1.10.0'
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'

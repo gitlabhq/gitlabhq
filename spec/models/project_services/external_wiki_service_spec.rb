@@ -56,7 +56,7 @@ describe ExternalWikiService, models: true do
         @service.destroy!
       end
 
-      it 'should replace the wiki url' do
+      it 'replaces the wiki url' do
         wiki_path = get_project_wiki_path(project)
         expect(wiki_path).to match('https://gitlab.com')
       end

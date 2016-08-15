@@ -16,7 +16,7 @@ describe 'Search::GlobalService', services: true do
 
   describe '#execute' do
     context 'unauthenticated' do
-      it 'should return public projects only' do
+      it 'returns public projects only' do
         context = Search::GlobalService.new(nil, search: "searchable")
         results = context.execute
         expect(results.objects('projects')).to match_array [public_project]
@@ -24,19 +24,19 @@ describe 'Search::GlobalService', services: true do
     end
 
     context 'authenticated' do
-      it 'should return public, internal and private projects' do
+      it 'returns public, internal and private projects' do
         context = Search::GlobalService.new(user, search: "searchable")
         results = context.execute
         expect(results.objects('projects')).to match_array [public_project, found_project, internal_project]
       end
 
-      it 'should return only public & internal projects' do
+      it 'returns only public & internal projects' do
         context = Search::GlobalService.new(internal_user, search: "searchable")
         results = context.execute
         expect(results.objects('projects')).to match_array [internal_project, public_project]
       end
 
-      it 'namespace name should be searchable' do
+      it 'namespace name is searchable' do
         context = Search::GlobalService.new(user, search: found_project.namespace.path)
         results = context.execute
         expect(results.objects('projects')).to match_array [found_project]

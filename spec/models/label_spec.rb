@@ -18,7 +18,7 @@ describe Label, models: true do
   describe 'validation' do
     it { is_expected.to validate_presence_of(:project) }
 
-    it 'should validate color code' do
+    it 'validates color code' do
       expect(label).not_to allow_value('G-ITLAB').for(:color)
       expect(label).not_to allow_value('AABBCC').for(:color)
       expect(label).not_to allow_value('#AABBCCEE').for(:color)
@@ -30,7 +30,7 @@ describe Label, models: true do
       expect(label).to allow_value('#abcdef').for(:color)
     end
 
-    it 'should validate title' do
+    it 'validates title' do
       expect(label).not_to allow_value('G,ITLAB').for(:title)
       expect(label).not_to allow_value('').for(:title)
 

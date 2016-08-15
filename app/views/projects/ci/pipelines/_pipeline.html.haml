@@ -33,7 +33,7 @@
           Cant find HEAD commit for this branch
 
 
-    - stages_status = pipeline.statuses.latest.stages_status
+    - stages_status = pipeline.statuses.relevant.latest.stages_status
     - stages.each do |stage|
       %td.stage-cell
         - status = stages_status[stage]

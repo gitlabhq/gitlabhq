@@ -27,7 +27,7 @@ module Backup
 
     def backup_existing_files_dir
       timestamped_files_path = File.join(files_parent_dir, "#{name}.#{Time.now.to_i}")
-      if File.exists?(app_files_dir)
+      if File.exist?(app_files_dir)
         FileUtils.mv(app_files_dir, File.expand_path(timestamped_files_path))
       end
     end

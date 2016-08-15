@@ -20,7 +20,7 @@ Parameters:
 | `state` | string | optional | Return  only `active` or `closed` milestones` |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/milestones
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/milestones
 ```
 
 Example Response:

@@ -9,54 +9,6 @@ describe MembersHelper do
     it { expect(action_member_permission(:admin, group_member)).to eq :admin_group_member }
   end
 
-  describe '#default_show_roles' do
-    let(:user) { double }
-    let(:member) { build(:project_member) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).with(user, :update_project_member, member).and_return(false)
-      allow(helper).to receive(:can?).with(user, :destroy_project_member, member).and_return(false)
-      allow(helper).to receive(:can?).with(user, :admin_project_member, member.source).and_return(false)
-    end
-
-    context 'when the current cannot update, destroy or admin the passed member' do
-      it 'returns false' do
-        expect(helper.default_show_roles(member)).to be_falsy
-      end
-    end
-
-    context 'when the current can update the passed member' do
-      before do
-        allow(helper).to receive(:can?).with(user, :update_project_member, member).and_return(true)
-      end
-
-      it 'returns true' do
-        expect(helper.default_show_roles(member)).to be_truthy
-      end
-    end
-
-    context 'when the current can destroy the passed member' do
-      before do
-        allow(helper).to receive(:can?).with(user, :destroy_project_member, member).and_return(true)
-      end
-
-      it 'returns true' do
-        expect(helper.default_show_roles(member)).to be_truthy
-      end
-    end
-
-    context 'when the current can admin the passed member source' do
-      before do
-        allow(helper).to receive(:can?).with(user, :admin_project_member, member.source).and_return(true)
-      end
-
-      it 'returns true' do
-        expect(helper.default_show_roles(member)).to be_truthy
-      end
-    end
-  end
-
   describe '#remove_member_message' do
     let(:requester) { build(:user) }
     let(:project) { create(:project) }

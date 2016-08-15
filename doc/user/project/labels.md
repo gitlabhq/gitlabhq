@@ -22,19 +22,6 @@ created yet.
 
 ![Generate new labels](img/labels_generate.png)
 
----
-
-You can skip that and create a new label or click that link and GitLab will
-generate a set of predefined labels for you. There 8 default generated labels
-in total and you can see them in the screenshot below.
-
-![Default generated labels](img/labels_default.png)
-
----
-
-You can see that from the labels page you can have an overview of the number of
-issues and merge requests assigned to each label.
-
 Creating a new label from scratch is as easy as pressing the **New label**
 button. From there on you can choose the name, give it an optional description,
 a color and you are set.
@@ -42,6 +29,31 @@ a color and you are set.
 When you are ready press the **Create label** button to create the new label.
 
 ![New label](img/labels_new_label.png)
+
+---
+
+## Default Labels
+
+It's possible to populate the labels for your project from a set of predefined labels.
+
+### Generate GitLab's predefined label set
+
+![Generate new labels](img/labels_generate.png)
+
+Click the link to 'Generate a default set of labels' and GitLab will
+generate a set of predefined labels for you. There are 8 default generated labels
+in total and you can see them in the screenshot below.
+
+![Default generated labels](img/labels_default.png)
+
+---
+
+## Labels Overview
+
+![Default generated labels](img/labels_default.png)
+
+You can see that from the labels page you can have an overview of the number of
+issues and merge requests assigned to each label.
 
 ## Prioritize labels
 

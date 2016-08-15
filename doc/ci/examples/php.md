@@ -49,7 +49,7 @@ apt-get update -yqq
 apt-get install git -yqq
 
 # Install phpunit, the tool that we will use for testing
-curl -Lo /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
+curl --location --output /usr/local/bin/phpunit https://phar.phpunit.de/phpunit.phar
 chmod +x /usr/local/bin/phpunit
 
 # Install mysql driver
@@ -235,7 +235,7 @@ cache:
 
 before_script:
 # Install composer dependencies
-- curl -sS https://getcomposer.org/installer | php
+- curl --silent --show-error https://getcomposer.org/installer | php
 - php composer.phar install
 
 ...
