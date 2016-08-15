@@ -47,7 +47,7 @@
       }
     },
     ready () {
-      const options = gl.getBoardSortableDefaultOptions({
+      const options = gl.issueBoards.getBoardSortableDefaultOptions({
         disabled: this.disabled,
         group: 'boards',
         draggable: '.is-draggable',

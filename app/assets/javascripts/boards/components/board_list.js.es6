@@ -44,7 +44,7 @@
       },
     },
     ready () {
-      const options = gl.getBoardSortableDefaultOptions({
+      const options = gl.issueBoards.getBoardSortableDefaultOptions({
           group: 'issues',
           sort: false,
           disabled: this.disabled,

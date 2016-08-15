@@ -1,9 +1,8 @@
 ((w) => {
-  if (!window.gl) {
-    window.gl = {};
-  }
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
 
-  gl.getBoardSortableDefaultOptions = (obj) => {
+  gl.issueBoards.getBoardSortableDefaultOptions = (obj) => {
     let defaultSortOptions = {
       forceFallback: true,
       fallbackClass: 'is-dragging',
