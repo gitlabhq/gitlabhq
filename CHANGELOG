@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)

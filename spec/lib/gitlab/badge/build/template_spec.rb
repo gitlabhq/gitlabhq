@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Badge::Build::Template do
-  let(:status) { 'success' }
-  let(:template) { described_class.new(status) }
+  let(:badge) { double(entity: 'build', status: 'success') }
+  let(:template) { described_class.new(badge) }
 
   describe '#key_text' do
     it 'is always says build' do
@@ -34,15 +34,15 @@ describe Gitlab::Badge::Build::Template do
 
   describe '#value_color' do
     context 'when status is success' do
-      let(:status) { 'success' }
-
       it 'has expected color' do
         expect(template.value_color).to eq '#4c1'
       end
     end
 
     context 'when status is failed' do
-      let(:status) { 'failed' }
+      before do
+        allow(badge).to receive(:status).and_return('failed')
+      end
 
       it 'has expected color' do
         expect(template.value_color).to eq '#e05d44'
@@ -50,7 +50,9 @@ describe Gitlab::Badge::Build::Template do
     end
 
     context 'when status is running' do
-      let(:status) { 'running' }
+      before do
+        allow(badge).to receive(:status).and_return('running')
+      end
 
       it 'has expected color' do
         expect(template.value_color).to eq '#dfb317'
@@ -58,7 +60,9 @@ describe Gitlab::Badge::Build::Template do
     end
 
     context 'when status is unknown' do
-      let(:status) { 'unknown' }
+      before do
+        allow(badge).to receive(:status).and_return('unknown')
+      end
 
       it 'has expected color' do
         expect(template.value_color).to eq '#9f9f9f'
@@ -66,7 +70,9 @@ describe Gitlab::Badge::Build::Template do
     end
 
     context 'when status does not match any known statuses' do
-      let(:status) { 'invalid status' }
+      before do
+        allow(badge).to receive(:status).and_return('invalid')
+      end
 
       it 'has expected color' do
         expect(template.value_color).to eq '#9f9f9f'

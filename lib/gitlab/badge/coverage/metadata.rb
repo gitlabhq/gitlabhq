@@ -1,22 +1,24 @@
 module Gitlab
   module Badge
-    module Build
+    module Coverage
       ##
-      # Class that describes build badge metadata
+      # Class that describes coverage badge metadata
       #
       class Metadata < Badge::Metadata
         def initialize(badge)
           @project = badge.project
           @ref = badge.ref
+          @job = badge.job
         end
 
         def title
-          'build status'
+          'coverage report'
         end
 
         def image_url
-          build_namespace_project_badges_url(@project.namespace,
-                                             @project, @ref, format: :svg)
+          coverage_namespace_project_badges_url(@project.namespace,
+                                                @project, @ref,
+                                                format: :svg)
         end
 
         def link_url

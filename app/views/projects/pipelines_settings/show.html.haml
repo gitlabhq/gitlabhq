@@ -80,27 +80,4 @@
 %hr
 
 .row.prepend-top-default
-  .col-lg-3.profile-settings-sidebar
-    %h4.prepend-top-0
-      Builds Badge
-  .col-lg-9
-    .prepend-top-10
-      .panel.panel-default
-        .panel-heading
-          %b Builds badge &middot;
-          = @build_badge.to_html
-          .pull-right
-            = render 'shared/ref_switcher', destination: 'badges', align_right: true
-        .panel-body
-          .row
-            .col-md-2.text-center
-              Markdown
-            .col-md-10.code.js-syntax-highlight
-              = highlight('.md', @build_badge.to_markdown)
-          .row
-            %hr
-          .row
-            .col-md-2.text-center
-              HTML
-            .col-md-10.code.js-syntax-highlight
-              = highlight('.html', @build_badge.to_html)
+  = render partial: 'badge', collection: @badges
