@@ -8,7 +8,8 @@ describe Projects::ArtifactsController do
     create(:ci_pipeline,
             project: project,
             sha: project.commit.sha,
-            ref: project.default_branch)
+            ref: project.default_branch,
+            status: 'success')
   end
 
   let(:build) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
