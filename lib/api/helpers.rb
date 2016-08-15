@@ -144,6 +144,10 @@ module API
       authorize! :push_code, user_project
     end
 
+    def validate_access_level?(level)
+      Gitlab::Access.options_with_owner.values.include? level.to_i
+    end
+
     def authorize_admin_project
       authorize! :admin_project, user_project
     end
