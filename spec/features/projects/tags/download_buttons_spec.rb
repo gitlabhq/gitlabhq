@@ -10,7 +10,7 @@ feature 'Download buttons in tags page', feature: true do
   given(:pipeline) do
     create(:ci_pipeline,
            project: project,
-           sha: project.commit.sha,
+           sha: project.commit(tag).sha,
            ref: tag,
            status: status)
   end
