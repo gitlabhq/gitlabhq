@@ -9,6 +9,8 @@ module ProtectedBranchAccess
   def type
     if self.user.present?
       :user
+    elsif self.group.present?
+      :group
     else
       :role
     end
@@ -16,6 +18,7 @@ module ProtectedBranchAccess
 
   def humanize
     return self.user.name if self.user.present?
+    return self.group.name if self.group.present?
 
     self.class.human_access_levels[self.access_level]
   end

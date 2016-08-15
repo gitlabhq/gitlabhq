@@ -40,6 +40,7 @@ Rails.application.routes.draw do
   get '/autocomplete/users' => 'autocomplete#users'
   get '/autocomplete/users/:id' => 'autocomplete#user'
   get '/autocomplete/projects' => 'autocomplete#projects'
+  get '/autocomplete/project_groups' => 'autocomplete#project_groups'
 
   # Emojis
   resources :emojis, only: :index
