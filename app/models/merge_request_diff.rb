@@ -42,8 +42,19 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def ensure_commits_sha
     self.start_commit_sha ||= merge_request.target_branch_sha
-    self.head_commit_sha  ||= last_commit.try(:sha) || merge_request.source_branch_sha
+    self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha
+    save
+  end
+
+  # Override head_commit_sha to keep compatibility with merge request diff
+  # created before version 8.4 that does not store head_commit_sha in separate db field.
+  def head_commit_sha
+    if persisted? && super.nil?
+      last_commit.try(:sha)
+    else
+      super
+    end
   end
 
   # This method will rely on repository branch sha
@@ -57,7 +68,7 @@ class MergeRequestDiff < ActiveRecord::Base
   # in case head_commit_sha is nil. Its necesarry for old merge request diff
   # created before version 8.4 to work
   def safe_head_commit_sha
-    head_commit_sha || last_commit.try(:sha) || merge_request.source_branch_sha
+    head_commit_sha || merge_request.source_branch_sha
   end
 
   def size
@@ -111,7 +122,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def head_commit
-    return last_commit unless head_commit_sha
+    return unless head_commit_sha
 
     project.commit(head_commit_sha)
   end
