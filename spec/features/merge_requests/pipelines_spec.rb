@@ -24,7 +24,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    scenario 'does click a pipeline tab and sees a list of pipelines' do
+    scenario 'user visits merge request pipelines tab' do
       page.within('.merge-request-tabs') do
         click_link('Pipelines')
       end
@@ -39,7 +39,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
       visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
-    scenario 'does not find a pipeline link' do
+    scenario 'user visits merge request page' do
       page.within('.merge-request-tabs') do
         expect(page).not_to have_link('Pipelines')
       end

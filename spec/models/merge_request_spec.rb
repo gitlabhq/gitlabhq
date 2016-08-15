@@ -425,7 +425,7 @@ describe MergeRequest, models: true do
     let(:commit2) { double('commit2', sha: 'sha3') }
 
     before do
-      allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
+      allow(subject.merge_request_diff).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
     it 'returns sha of commits' do
@@ -458,20 +458,15 @@ describe MergeRequest, models: true do
   end
 
   describe '#all_pipelines' do
-    let(:commit0) { double('commit0', sha: 'sha1') }
-    let(:commit1) { double('commit1', sha: 'sha2') }
-    let(:commit2) { double('commit2', sha: 'sha3') }
-    let!(:pipeline) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha1', ref: subject.source_branch) }
-    let!(:pipeline2) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha1', ref: subject.source_branch) }
-    let!(:pipeline3) { create(:ci_empty_pipeline, project: subject.source_project, sha: 'sha2', ref: subject.source_branch) }
-    let!(:pipeline4) { create(:ci_empty_pipeline, project: subject.target_project, sha: 'sha1', ref: subject.target_branch) }
-
-    before do
-      allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
+    let!(:pipelines) do
+      subject.merge_request_diff.commits.map do |commit|
+        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+      end
     end
 
-    it 'returns a pipelines from source projects' do
-      expect(subject.all_pipelines).to eq([pipeline3, pipeline2, pipeline])
+    it 'returns a pipelines from source projects with proper ordering' do
+      expect(subject.all_pipelines).not_to be_empty
+      expect(subject.all_pipelines).to eq(pipelines.reverse)
     end
   end
 
