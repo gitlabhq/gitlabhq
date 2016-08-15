@@ -7,8 +7,6 @@ module AvatarsHelper
     }))
   end
 
-  private
-
   def user_avatar(options = {})
     avatar_size = options[:size] || 16
     user_name = options[:user].try(:name) || options[:user_name]

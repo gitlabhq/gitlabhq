@@ -145,7 +145,7 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.started_at).not_to be_nil
       end
 
-      it 'do not update on transitioning to success' do
+      it 'does not update on transitioning to success' do
         build.success
 
         expect(pipeline.reload.started_at).to be_nil
@@ -159,7 +159,7 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.finished_at).not_to be_nil
       end
 
-      it 'do not update on transitioning to running' do
+      it 'does not update on transitioning to running' do
         build.run
 
         expect(pipeline.reload.finished_at).to be_nil
@@ -259,14 +259,16 @@ describe Ci::Pipeline, models: true do
     subject { pipeline.reload.status }
 
     context 'on queuing' do
-      before { build.queue }
+      before do
+        build.enqueue
+      end
 
       it { is_expected.to eq('pending') }
     end
 
     context 'on run' do
       before do
-        build.queue
+        build.enqueue
         build.run
       end
 
@@ -296,6 +298,19 @@ describe Ci::Pipeline, models: true do
 
       it { is_expected.to eq('canceled') }
     end
+
+    context 'on failure and build retry' do
+      before do
+        build.drop
+        Ci::Build.retry(build)
+      end
+
+      # We are changing a state: created > failed > running
+      # Instead of: created > failed > pending
+      # Since the pipeline already run, so it should not be pending anymore
+
+      it { is_expected.to eq('running') }
+    end
   end
 
   describe '#execute_hooks' do
@@ -320,8 +335,8 @@ describe Ci::Pipeline, models: true do
       context 'with multiple builds' do
         context 'when build is queued' do
           before do
-            build_a.queue
-            build_b.queue
+            build_a.enqueue
+            build_b.enqueue
           end
 
           it 'receive a pending event once' do
@@ -331,9 +346,9 @@ describe Ci::Pipeline, models: true do
 
         context 'when build is run' do
           before do
-            build_a.queue
+            build_a.enqueue
             build_a.run
-            build_b.queue
+            build_b.enqueue
             build_b.run
           end
 
@@ -367,8 +382,8 @@ describe Ci::Pipeline, models: true do
       let(:enabled) { false }
 
       before do
-        build_a.queue
-        build_b.queue
+        build_a.enqueue
+        build_b.enqueue
       end
 
       it 'did not execute pipeline_hook after touched' do

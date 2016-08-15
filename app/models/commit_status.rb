@@ -27,7 +27,7 @@ class CommitStatus < ActiveRecord::Base
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
 
   state_machine :status do
-    event :queue do
+    event :enqueue do
       transition [:created, :skipped] => :pending
     end
 

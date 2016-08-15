@@ -59,7 +59,7 @@ module Ci
           when: build.when,
           user: user,
           environment: build.environment,
-          status_event: 'queue'
+          status_event: 'enqueue'
         )
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
         new_build
@@ -102,7 +102,7 @@ module Ci
 
     def play(current_user = nil)
       # Try to queue a current build
-      if self.queue
+      if self.enqueue
         self.update(user: current_user)
         self
       else
