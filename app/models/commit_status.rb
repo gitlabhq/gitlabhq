@@ -103,11 +103,6 @@ class CommitStatus < ActiveRecord::Base
     end
   end
 
-  def self.duration
-    select(:started_at, :finished_at).all.
-      map(&:duration).compact.inject(0, &:+)
-  end
-
   def ignored?
     allow_failure? && (failed? || canceled?)
   end

@@ -78,7 +78,7 @@ module Ci
       CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
-    def self.duration
+    def self.total_duration
       where.not(duration: nil).sum(:duration)
     end
 
