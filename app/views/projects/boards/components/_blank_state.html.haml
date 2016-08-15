@@ -9,7 +9,7 @@
         {{ label.title }}
     %p
       Starting out with the default set of lists will get you right on the way to making the most of your board.
-    %button.btn.btn-create.btn-inverted.btn-block{ type: "button", "@click" => "addDefaultLists" }
+    %button.btn.btn-create.btn-inverted.btn-block{ type: "button", "@click.stop" => "addDefaultLists" }
       Add default lists
-    %button.btn.btn-default.btn-block{ type: "button", "@click" => "clearBlankState" }
+    %button.btn.btn-default.btn-block{ type: "button", "@click.stop" => "clearBlankState" }
       Nevermind, I'll use my own

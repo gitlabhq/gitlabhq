@@ -26,7 +26,7 @@ describe 'Issue Boards', feature: true, js: true do
 
     it 'hides the blank state when clicking nevermind button' do
       page.within('.board-blank-state') do
-        click_button('Nevermind, I\'ll use my own')
+        click_button("Nevermind, I'll use my own")
       end
       expect(page).to have_selector('.board', count: 2)
     end

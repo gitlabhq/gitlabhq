@@ -65,7 +65,7 @@
       return $.cookie('issue_board_welcome_hidden') === 'true';
     },
     removeList (id) {
-      const list = this.findList('id', id);
+      const list = this.findList('id', id, 'blank');
 
       if (!list) return;
 

@@ -11,8 +11,7 @@
       }
     },
     methods: {
-      addDefaultLists (e) {
-        e.stopImmediatePropagation();
+      addDefaultLists () {
         BoardsStore.removeBlankState();
 
         for (let i = 0, labelsLength = this.predefinedLabels.length; i < labelsLength; i++) {
