@@ -35,11 +35,15 @@
       }
     };
 
-    w.gl.utils.shortTimeAgo = function($el) {
-      var tmpLocale = $.timeago.settings.strings;
+    w.gl.utils.shortTimeAgo = function($els) {
+      clearInterval(window.refreshIntervalId);
 
-      // Set short locale for timeago
-      $.timeago.settings.strings = {
+      if (!$els.length) {
+        return;
+      }
+
+      var tmpLocale = $.timeago.settings.strings;
+      var shortLocale = {
         prefixAgo: null,
         prefixFromNow: null,
         suffixAgo: 'ago',
@@ -59,20 +63,37 @@
         numbers: []
       };
 
-      $el.each(function() {
-        var $el = $(this);
-        var elementDatetime = $.trim($el.text());
+      function updateShortTimeago($els) {
+        // Set short locale for timeago
+        $.timeago.settings.strings = shortLocale;
 
-        // Set short date
-        $el.text($.timeago(new Date(elementDatetime)));
+        $els.each(function() {
+          var $el = $(this);
+          var elementDatetime = $.trim($el.data('originalDate') || $el.text());
 
-        // Set tooltip
-        $el.attr('title', gl.utils.formatDate(elementDatetime)); // The tooltip should have the time based on user's timezone
-        $el.tooltip();
-      });
+          // Set short date
+          $el.text($.timeago(new Date(elementDatetime)));
 
-      // Restore default locale for timeago
-      $.timeago.settings.strings = tmpLocale;
+          // Set tooltip
+          if ($el.data('bs.tooltip')) {
+            $el.tooltip('destroy');
+          } else {
+            $el.data('originalDate', elementDatetime);
+          }
+
+          $el.attr('title', gl.utils.formatDate(elementDatetime)); // The tooltip should have the time based on user's timezone
+          $el.tooltip();
+        });
+
+        // Restore default locale for timeago
+        $.timeago.settings.strings = tmpLocale;
+      }
+
+      updateShortTimeago($els);
+
+      window.refreshIntervalId = setInterval(function () {
+        updateShortTimeago($els);
+      }, 60000);
     };
 
     w.gl.utils.getDayDifference = function(a, b) {
