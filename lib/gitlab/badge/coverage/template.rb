@@ -1,19 +1,17 @@
 module Gitlab
   module Badge
-    module Build
+    module Coverage
       ##
-      # Class that represents a build badge template.
+      # Class that represents a coverage badge template.
       #
       # Template object will be passed to badge.svg.erb template.
       #
       class Template < Badge::Template
         STATUS_COLOR = {
-          success: '#4c1',
-          failed: '#e05d44',
-          running: '#dfb317',
-          pending: '#dfb317',
-          canceled: '#9f9f9f',
-          skipped: '#9f9f9f',
+          good: '#4c1',
+          acceptable: '#a3c51c',
+          medium: '#dfb317',
+          low: '#e05d44',
           unknown: '#9f9f9f'
         }
 
@@ -27,19 +25,26 @@ module Gitlab
         end
 
         def value_text
-          @status.to_s
+          @status ? "#{@status}%" : 'unknown'
         end
 
         def key_width
-          38
+          62
         end
 
         def value_width
-          54
+          @status ? 36 : 58
         end
 
         def value_color
-          STATUS_COLOR[@status.to_sym] || STATUS_COLOR[:unknown]
+          case @status
+          when 95..100 then STATUS_COLOR[:good]
+          when 90..95 then STATUS_COLOR[:acceptable]
+          when 75..90 then STATUS_COLOR[:medium]
+          when 0..75 then STATUS_COLOR[:low]
+          else
+            STATUS_COLOR[:unknown]
+          end
         end
       end
     end

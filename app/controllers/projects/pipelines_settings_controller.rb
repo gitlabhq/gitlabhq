@@ -3,7 +3,13 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
 
   def show
     @ref = params[:ref] || @project.default_branch || 'master'
-    @build_badge = Gitlab::Badge::Build.new(@project, @ref).metadata
+
+    @badges = [Gitlab::Badge::Build::Status,
+               Gitlab::Badge::Coverage::Report]
+
+    @badges.map! do |badge|
+      badge.new(@project, @ref).metadata
+    end
   end
 
   def update
