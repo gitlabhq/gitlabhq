@@ -5,7 +5,6 @@ v 8.11.0 (unreleased)
   - Add rake task to remove old repository copies from repositories moved to another storage
   - Performance improvement of push rules
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
-  - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
   - Removed unused GitLab GEO database index
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
@@ -22,6 +21,7 @@ v 8.10.4
 v 8.10.3
   - Fix regression in Git Annex permission check. !599
   - [Elastic] Fix commit search for some URLs. !605
+  - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
 v 8.10.2
   - Fix pagination on search result page when ES search is enabled. !592
