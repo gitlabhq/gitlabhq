@@ -34,9 +34,7 @@ class List {
 
   destroy () {
     if (this.type !== 'blank') {
-      gl.issueBoards.BoardsStore.state.lists = gl.issueBoards.BoardsStore.state.lists.filter((list) => {
-        return list.id !== this.id;
-      });
+      gl.issueBoards.BoardsStore.state.lists.$remove(this);
       gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
       gl.boardService.destroyList(this.id);

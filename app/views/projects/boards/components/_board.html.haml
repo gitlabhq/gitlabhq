@@ -4,7 +4,8 @@
   ":list" => "list",
   ":disabled" => "disabled",
   ":issue-link-base" => "issueLinkBase" }
-  .board{ ":class" => "{ 'is-draggable': !isPreset }" }
+  .board{ ":class" => "{ 'is-draggable': !isPreset }",
+    ":data-id" => "list.id" }
     .board-inner
       %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !isPreset) }" }
@@ -14,8 +15,7 @@
             {{ list.issues.length }}
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
-              "v-if" => "!isPreset",
-              ":list" => "list" }
+              "v-if" => "!isPreset && list.id" }
               %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
                 = icon("trash")
           = icon("spinner spin", class: "board-header-loading-spinner pull-right", "v-show" => "list.loadingMore")

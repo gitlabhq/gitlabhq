@@ -155,7 +155,7 @@
           expect(list.issues.length).toBe(1);
           expect(listTwo.issues.length).toBe(1);
 
-          gl.issueBoards.BoardsStore.moveCardToList(1, 2, 1);
+          gl.issueBoards.BoardsStore.moveIssueToList(1, 2, 1);
 
           expect(list.issues.length).toBe(0);
           expect(listTwo.issues.length).toBe(1);

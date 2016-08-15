@@ -1,12 +1,14 @@
 %board-card{ "inline-template" => true,
   "v-for" => "issue in issues | orderBy 'priority'",
+  "v-ref:issue" => true,
+  ":index" => "$index",
   ":list" => "list",
   ":issue" => "issue",
   ":issue-link-base" => "issueLinkBase",
   ":disabled" => "disabled",
   "track-by" => "id" }
-  %li.card{ ":data-issue" => "issue.id",
-    ":class" => "{ 'user-can-drag': !disabled }" }
+  %li.card{ ":class" => "{ 'user-can-drag': !disabled }",
+    ":index" => "index" }
     = icon("align-justify", class: "board-mobile-handle js-card-drag-handle", "v-if" => "!disabled")
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")

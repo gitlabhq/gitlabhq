@@ -7,7 +7,8 @@
       list: Object,
       issue: Object,
       issueLinkBase: String,
-      disabled: Boolean
+      disabled: Boolean,
+      index: Number
     },
     methods: {
       filterByLabel (label, e) {

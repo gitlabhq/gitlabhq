@@ -56,16 +56,28 @@
           group: 'issues',
           sort: false,
           disabled: this.disabled,
-          onAdd (e) {
+          onStart: (e) => {
+            const card = this.$refs.issue[e.oldIndex];
+
+            gl.issueBoards.BoardsStore.moving.issue = card.issue;
+            gl.issueBoards.BoardsStore.moving.list = card.list;
+          },
+          onAdd: (e) => {
             const card = e.item,
-                  fromListId = parseInt(e.from.getAttribute('data-board')),
-                  toListId = parseInt(e.to.getAttribute('data-board')),
-                  issueId = parseInt(card.getAttribute('data-issue'));
+                  fromList = gl.issueBoards.BoardsStore.moving.list,
+                  issue = gl.issueBoards.BoardsStore.moving.issue;
+
+            gl.issueBoards.BoardsStore.moveIssueToList(fromList, this.list, issue);
+          },
+          onRemove (e) {
+            const card = e.item,
+                  list = gl.issueBoards.BoardsStore.moving.list,
+                  issue = gl.issueBoards.BoardsStore.moving.issue;
 
             // Remove the new dom element & let vue add the element
             card.parentNode.removeChild(card);
 
-            gl.issueBoards.BoardsStore.moveCardToList(fromListId, toListId, issueId);
+            list.removeIssue(issue);
           }
         });
 

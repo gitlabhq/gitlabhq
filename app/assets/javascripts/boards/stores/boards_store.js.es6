@@ -5,6 +5,10 @@
   gl.issueBoards.BoardsStore = {
     disabled: false,
     state: {},
+    moving: {
+      issue: {},
+      list: {}
+    },
     create () {
       this.state.lists = [];
       this.state.filters = {
@@ -76,31 +80,21 @@
         return list.id !== id;
       });
     },
-    moveList (oldIndex, newIndex) {
-      if (oldIndex === newIndex) return;
+    moveList (oldIndex, orderLists) {
+      const listFrom = this.findList('position', oldIndex);
 
-      const listFrom = this.findList('position', oldIndex),
-            listTo = this.findList('position', newIndex);
+      for (let i = 0, orderLength = orderLists.length; i < orderLength; i++) {
+        const id = parseInt(orderLists[i]),
+              list = this.findList('id', id);
 
-      listFrom.position = newIndex;
-      if (newIndex === listTo.position) {
-        listTo.position = oldIndex;
-      } else if (newIndex > listTo.position) {
-        listTo.position--;
-      } else {
-        listTo.position++;
+        list.position = i;
       }
-
-      listFrom.update();
     },
-    moveCardToList (listFromId, listToId, issueId) {
-      const listFrom = this.findList('id', listFromId, false),
-            listTo = this.findList('id', listToId, false),
-            issueTo = listTo.findIssue(issueId),
-            issue = listFrom.findIssue(issueId),
+    moveIssueToList (listFrom, listTo, issue) {
+      const issueTo = listTo.findIssue(issue.id),
             issueLists = issue.getLists(),
-            listLabels = issueLists.map((issue) => {
-              return issue.label;
+            listLabels = issueLists.map((listIssue) => {
+              return listIssue.label;
             });
 
       // Add to new lists issues if it doesn't already exist
@@ -114,8 +108,6 @@
           list.removeIssue(issue);
         }
         issue.removeLabels(listLabels);
-      } else {
-        listFrom.removeIssue(issue);
       }
     },
     findList (key, val, type = 'label') {

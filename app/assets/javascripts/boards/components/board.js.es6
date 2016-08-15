@@ -64,8 +64,10 @@
         group: 'boards',
         draggable: '.is-draggable',
         handle: '.js-board-handle',
-        onUpdate (e) {
-          gl.issueBoards.BoardsStore.moveList(e.oldIndex, e.newIndex);
+        onUpdate: (e) => {
+          if (e.oldIndex !== e.newIndex) {
+            gl.issueBoards.BoardsStore.moveList(e.oldIndex, this.sortable.toArray());
+          }
         }
       });
 
@@ -76,7 +78,11 @@
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
     beforeDestroy () {
-      this.sortable.destroy();
+      this.list.destroy();
+
+      if (gl.issueBoards.BoardsStore.state.lists.length === 0) {
+        this.sortable.destroy();
+      }
     }
   });
 })();

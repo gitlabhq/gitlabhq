@@ -38,7 +38,7 @@ $(() => {
         if (!gl.issueBoards.BoardsStore.findList('title', label.title)) {
           gl.issueBoards.BoardsStore.new({
             title: label.title,
-            position: gl.issueBoards.BoardsStore.state.lists.length - 1,
+            position: gl.issueBoards.BoardsStore.state.lists.length - 2,
             list_type: 'label',
             label: {
               id: label.id,
