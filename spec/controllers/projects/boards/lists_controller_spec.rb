@@ -11,6 +11,46 @@ describe Projects::Boards::ListsController do
     project.team << [guest, :guest]
   end
 
+  describe 'GET #index' do
+    it 'returns a successful 200 response' do
+      read_board_list user: user
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type).to eq 'application/json'
+    end
+
+    it 'returns a list of board lists' do
+      board = project.create_board
+      create(:backlog_list, board: board)
+      create(:list, board: board)
+      create(:done_list, board: board)
+
+      read_board_list user: user
+
+      parsed_response = JSON.parse(response.body)
+
+      expect(response).to match_response_schema('list', array: true)
+      expect(parsed_response.length).to eq 3
+    end
+
+    it 'returns a successful 403 response with unauthorized user' do
+      allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+      allow(Ability.abilities).to receive(:allowed?).with(user, :read_list, project).and_return(false)
+
+      read_board_list user: user
+
+      expect(response).to have_http_status(403)
+    end
+
+    def read_board_list(user:)
+      sign_in(user)
+
+      get :index, namespace_id: project.namespace.to_param,
+                  project_id: project.to_param,
+                  format: :json
+    end
+  end
+
   describe 'POST #create' do
     let(:label) { create(:label, project: project, name: 'Development') }
 

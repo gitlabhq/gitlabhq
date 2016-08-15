@@ -1,7 +1,12 @@
 module Projects
   module Boards
     class ListsController < Boards::ApplicationController
-      before_action :authorize_admin_list!
+      before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
+      before_action :authorize_read_list!, only: [:index]
+
+      def index
+        render json: project.board.lists.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :description, :color, :priority] } })
+      end
 
       def create
         list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute
@@ -47,6 +52,10 @@ module Projects
 
       def authorize_admin_list!
         return render_403 unless can?(current_user, :admin_list, project)
+      end
+
+      def authorize_read_list!
+        return render_403 unless can?(current_user, :read_list, project)
       end
 
       def list_params

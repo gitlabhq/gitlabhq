@@ -91,6 +91,7 @@ class Ability
         rules = [
           :read_project,
           :read_board,
+          :read_list,
           :read_wiki,
           :read_label,
           :read_milestone,
@@ -230,6 +231,7 @@ class Ability
         :read_wiki,
         :read_issue,
         :read_board,
+        :read_list,
         :read_label,
         :read_milestone,
         :read_project_snippet,

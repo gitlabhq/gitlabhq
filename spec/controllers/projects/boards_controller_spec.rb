@@ -10,64 +10,24 @@ describe Projects::BoardsController do
   end
 
   describe 'GET #show' do
-    context 'when project does not have a board' do
-      it 'creates a new board' do
-        expect { read_board }.to change(Board, :count).by(1)
-      end
+    it 'creates a new board when project does not have one' do
+      expect { read_board }.to change(Board, :count).by(1)
     end
 
-    context 'when format is HTML' do
-      it 'renders HTML template' do
-        read_board
+    it 'renders HTML template' do
+      read_board
 
-        expect(response).to render_template :show
-        expect(response.content_type).to eq 'text/html'
-      end
-
-      context 'with unauthorized user' do
-        it 'returns a successful 404 response' do
-          allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-          allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
-
-          read_board
-
-          expect(response).to have_http_status(404)
-        end
-      end
+      expect(response).to render_template :show
+      expect(response.content_type).to eq 'text/html'
     end
 
-    context 'when format is JSON' do
-      it 'returns a successful 200 response' do
-        read_board format: :json
+    it 'returns a successful 404 response with unauthorized user' do
+      allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+      allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
 
-        expect(response).to have_http_status(200)
-        expect(response.content_type).to eq 'application/json'
-      end
+      read_board
 
-      it 'returns a list of board lists' do
-        board = project.create_board
-        create(:backlog_list, board: board)
-        create(:list, board: board)
-        create(:done_list, board: board)
-
-        read_board format: :json
-
-        parsed_response = JSON.parse(response.body)
-
-        expect(response).to match_response_schema('list', array: true)
-        expect(parsed_response.length).to eq 3
-      end
-
-      context 'with unauthorized user' do
-        it 'returns a successful 403 response' do
-          allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-          allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
-
-          read_board format: :json
-
-          expect(response).to have_http_status(403)
-        end
-      end
+      expect(response).to have_http_status(404)
     end
 
     def read_board(format: :html)
