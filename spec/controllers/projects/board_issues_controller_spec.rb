@@ -64,13 +64,13 @@ describe Projects::BoardIssuesController do
 
     context 'with valid params' do
       it 'returns a successful 200 response' do
-        move user: user, issue: issue, from: list1.id, to: list2.id
+        move user: user, issue: issue, from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(200)
       end
 
       it 'moves issue to the desired list' do
-        move user: user, issue: issue, from: list1.id, to: list2.id
+        move user: user, issue: issue, from_list_id: list1.id, to_list_id: list2.id
 
         expect(issue.reload.labels).to contain_exactly(development)
       end
@@ -78,13 +78,13 @@ describe Projects::BoardIssuesController do
 
     context 'with invalid params' do
       it 'returns a unprocessable entity 422 response for invalid lists' do
-        move user: user, issue: issue, from: nil, to: nil
+        move user: user, issue: issue, from_list_id: nil, to_list_id: nil
 
         expect(response).to have_http_status(422)
       end
 
       it 'returns a not found 404 response for invalid issue id' do
-        move user: user, issue: 999, from: list1.id, to: list2.id
+        move user: user, issue: 999, from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(404)
       end
@@ -98,19 +98,20 @@ describe Projects::BoardIssuesController do
       end
 
       it 'returns a successful 403 response' do
-        move user: guest, issue: issue, from: list1.id, to: list2.id
+        move user: guest, issue: issue, from_list_id: list1.id, to_list_id: list2.id
 
         expect(response).to have_http_status(403)
       end
     end
 
-    def move(user:, issue:, from:, to:)
+    def move(user:, issue:, from_list_id:, to_list_id:)
       sign_in(user)
 
       patch :update, namespace_id: project.namespace.to_param,
                      project_id: project.to_param,
                      id: issue.to_param,
-                     issue: { from: from, to: to },
+                     from_list_id: from_list_id,
+                     to_list_id: to_list_id,
                      format: :json
     end
   end

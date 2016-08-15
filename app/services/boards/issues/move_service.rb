@@ -23,11 +23,11 @@ module Boards
       end
 
       def moving_from
-        @moving_from ||= board.lists.find_by(id: params[:from])
+        @moving_from ||= board.lists.find_by(id: params[:from_list_id])
       end
 
       def moving_to
-        @moving_to ||= board.lists.find_by(id: params[:to])
+        @moving_to ||= board.lists.find_by(id: params[:to_list_id])
       end
 
       def close_service

@@ -43,7 +43,7 @@ class Projects::BoardIssuesController < Projects::ApplicationController
   end
 
   def move_params
-    params.require(:issue).permit(:from, :to).merge(id: params[:id])
+    params.permit(:id, :from_list_id, :to_list_id)
   end
 
   def record_not_found(exception)
