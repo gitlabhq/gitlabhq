@@ -112,6 +112,9 @@ v 8.11.0 (unreleased)
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
 
+v 8.10.6 (unreleased)
+  - Fix import/export configuration missing some included attributes
+
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
   - Revert the "Defend against 'Host' header injection" change in the source NGINX templates. !5706
