@@ -1,9 +1,11 @@
 %board{ "inline-template" => true,
   "v-cloak" => true,
   "v-for" => "list in state.lists | orderBy 'position'",
+  "v-ref:board" => true,
   ":list" => "list",
   ":disabled" => "disabled",
-  ":issue-link-base" => "issueLinkBase" }
+  ":issue-link-base" => "issueLinkBase",
+  "track-by" => "_uid" }
   .board{ ":class" => "{ 'is-draggable': !isPreset }",
     ":data-id" => "list.id" }
     .board-inner
@@ -15,6 +17,7 @@
             {{ list.issues.length }}
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
+              ":list" => "list",
               "v-if" => "!isPreset && list.id" }
               %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
                 = icon("trash")

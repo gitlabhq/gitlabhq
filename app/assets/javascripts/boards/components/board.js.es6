@@ -64,9 +64,20 @@
         group: 'boards',
         draggable: '.is-draggable',
         handle: '.js-board-handle',
-        onUpdate: (e) => {
-          if (e.oldIndex !== e.newIndex) {
-            gl.issueBoards.BoardsStore.moveList(e.oldIndex, this.sortable.toArray());
+        onEnd: (e) => {
+          document.body.classList.remove('is-dragging');
+
+          if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
+            const order = this.sortable.toArray(),
+                  $board = this.$parent.$refs.board[e.oldIndex + 1],
+                  list = $board.list;
+
+            $board.$destroy(true);
+
+            this.$nextTick(() => {
+              gl.issueBoards.BoardsStore.state.lists.splice(e.newIndex, 0, list);
+              gl.issueBoards.BoardsStore.moveList(list, order);
+            });
           }
         }
       });
@@ -78,11 +89,7 @@
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
     beforeDestroy () {
-      this.list.destroy();
-
-      if (gl.issueBoards.BoardsStore.state.lists.length === 0) {
-        this.sortable.destroy();
-      }
+      gl.issueBoards.BoardsStore.state.lists.$remove(this.list);
     }
   });
 })();

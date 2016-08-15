@@ -80,15 +80,14 @@
         return list.id !== id;
       });
     },
-    moveList (oldIndex, orderLists) {
-      const listFrom = this.findList('position', oldIndex);
-
+    moveList (listFrom, orderLists) {
       for (let i = 0, orderLength = orderLists.length; i < orderLength; i++) {
         const id = parseInt(orderLists[i]),
               list = this.findList('id', id);
 
         list.position = i;
       }
+      listFrom.update();
     },
     moveIssueToList (listFrom, listTo, issue) {
       const issueTo = listTo.findIssue(issue.id),

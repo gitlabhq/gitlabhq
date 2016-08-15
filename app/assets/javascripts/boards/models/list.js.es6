@@ -1,6 +1,7 @@
 class List {
   constructor (obj) {
     this.id = obj.id;
+    this._uid = Math.ceil(Math.random() * 1000);
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
