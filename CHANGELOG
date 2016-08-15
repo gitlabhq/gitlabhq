@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
+  - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
@@ -32,12 +33,14 @@ v 8.11.0 (unreleased)
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
   - Add experimental Redis Sentinel support !1877
+  - Rendering of SVGs as blobs is now limited to SVGs with a size smaller or equal to 2MB
   - Fix branches page dropdown sort initial state (ClemMakesApps)
   - Environments have an url to link to
   - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Limit git rev-list output count to one in forced push check
+  - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
@@ -54,6 +57,7 @@ v 8.11.0 (unreleased)
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Nokogiri's various parsing methods are now instrumented
+  - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
@@ -108,6 +112,8 @@ v 8.11.0 (unreleased)
   - Sort folders with submodules in Files view !5521
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
+  - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
+  - Speed up todos queries by limiting the projects set we join with
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
@@ -272,6 +278,7 @@ v 8.10.0
   - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Be explicit to define merge request discussion variables
+  - Use cache for todos counter calling TodoService
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
