@@ -13,6 +13,8 @@ feature 'Create New Merge Request', feature: true, js: true do
 
   it 'generates a diff for an orphaned branch' do
     click_link 'New Merge Request'
+    expect(page).to have_content('Source branch')
+    expect(page).to have_content('Target branch')
 
     first('.js-source-branch').click
     first('.dropdown-source-branch .dropdown-content a', text: 'orphaned-branch').click

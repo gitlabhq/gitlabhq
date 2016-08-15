@@ -509,11 +509,12 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill in merge request search with "Fe"' do
+    sleep 1
     fill_in 'issue_search', with: "Fe"
   end
 
   step 'I click the "Target branch" dropdown' do
-    sleep 0.5
+    expect(page).to have_content('Target branch')
     first('.target_branch').click
   end
 

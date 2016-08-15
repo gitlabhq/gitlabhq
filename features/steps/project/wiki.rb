@@ -143,7 +143,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I edit the Wiki page with a path' do
+    expect(page).to have_content('three')
     click_on 'three'
+    expect(find('.nav-text')).to have_content('Three')
     click_on 'Edit'
   end
 

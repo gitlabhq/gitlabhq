@@ -846,13 +846,13 @@ class User < ActiveRecord::Base
 
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
-      todos.done.count
+      TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
-      todos.pending.count
+      TodosFinder.new(self, state: :pending).execute.count
     end
   end
 
