@@ -73,12 +73,14 @@ describe Snippet, elastic: true do
   it 'searches snippets by title and file_name' do
     user = create(:user)
 
-    create(:snippet, :public, title: 'home')
-    create(:snippet, :private, title: 'home 1')
-    create(:snippet, :public, file_name: 'index.php')
-    create(:snippet)
+    Sidekiq::Testing.inline! do
+      create(:snippet, :public, title: 'home')
+      create(:snippet, :private, title: 'home 1')
+      create(:snippet, :public, file_name: 'index.php')
+      create(:snippet)
 
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     options = { user: user }
 
