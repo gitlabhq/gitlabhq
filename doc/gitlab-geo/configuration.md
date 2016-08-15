@@ -178,6 +178,24 @@ to fix (all commands and path locations are for Omnibus installs):
 - Did I defined the correct SSH Key for the node?
     - You must create an SSH Key for `git` user
     - This key is the one you have to inform at `Admin > Geo`
+- Can I SSH from secondary to primary node using `git` user account?
+    - This is the most obvious cause of problems with repository replication issues.
+      If you have not added primary node's key to `known_hosts`, you will endup with
+      a lot of failed sidekiq jobs with an error similar to:
+
+      ```
+      Gitlab::Shell::Error: Host key verification failed. fatal: Could not read from remote repository. Please make sure you have the correct access rights and the repository exists.
+      ```
+
+      Easy way to fix is by logging in as the `git` user in the secondary node and run:
+
+      ```
+      # remove old entries to your primary gitlab in known_hosts
+      ssh-keyscan -R your-primary-gitlab.example.com
+
+      # add a new entry in known_hosts
+      ssh-keyscan -t rsa your-primary-gitlab.example.com >> ~/.ssh/known_hosts
+      ```
 - Can primary node communicate with secondary node by HTTP/HTTPS ports?
 - Can secondary nodes communicate with primary node by HTTP/HTTPS/SSH ports?
 - Can secondary nodes execute a succesfull git clone using git user's own
