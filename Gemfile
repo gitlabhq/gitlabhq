@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.7.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -162,9 +162,6 @@ gem 'redis-rails', '~> 4.0.0'
 # Redis
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
-
-# Campfire integration
-gem 'tinder', '~> 1.10.0'
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'

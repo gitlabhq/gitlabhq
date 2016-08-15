@@ -46,28 +46,18 @@
                 %div
                   - if github_import_enabled?
                     = link_to new_import_github_path, class: 'btn import_github' do
-                      = icon 'github', text: 'GitHub'
+                      = icon('github', text: 'GitHub')
                 %div
                   - if bitbucket_import_enabled?
-                    - if bitbucket_import_configured?
-                      = link_to status_import_bitbucket_path, class: 'btn import_bitbucket', "data-no-turbolink" => "true" do
-                        %i.fa.fa-bitbucket
-                        Bitbucket
-                    - else
-                      = link_to status_import_bitbucket_path, class: 'how_to_import_link btn import_bitbucket', "data-no-turbolink" => "true" do
-                        %i.fa.fa-bitbucket
-                        Bitbucket
+                    = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}", "data-no-turbolink" => "true" do
+                      = icon('bitbucket', text: 'Bitbucket')
+                    - unless bitbucket_import_configured?
                       = render 'bitbucket_import_modal'
                 %div
                   - if gitlab_import_enabled?
-                    - if gitlab_import_configured?
-                      = link_to status_import_gitlab_path, class: 'btn import_gitlab' do
-                        %i.fa.fa-heart
-                        GitLab.com
-                    - else
-                      = link_to status_import_gitlab_path, class: 'how_to_import_link btn import_gitlab' do
-                        %i.fa.fa-heart
-                        GitLab.com
+                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless bitbucket_import_configured?}" do
+                      = icon('gitlab', text: 'GitLab.com')
+                    - unless gitlab_import_configured?
                       = render 'gitlab_import_modal'
                 %div
                   - if gitorious_import_enabled?
@@ -77,23 +67,19 @@
                 %div
                   - if google_code_import_enabled?
                     = link_to new_import_google_code_path, class: 'btn import_google_code' do
-                      %i.fa.fa-google
-                      Google Code
+                      = icon('google', text: 'Google Code')
                 %div
                   - if fogbugz_import_enabled?
                     = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
-                      %i.fa.fa-bug
-                      Fogbugz
+                      = icon('bug', text: 'Fogbugz')
                 %div
                   - if git_import_enabled?
                     = link_to "#", class: 'btn js-toggle-button import_git' do
-                      %i.fa.fa-git
-                      %span Repo by URL
+                      = icon('git', text: 'Repo by URL')
                 %div{ class: 'import_gitlab_project' }
                   - if gitlab_project_import_enabled?
                     = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
-                      %i.fa.fa-gitlab
-                      %span GitLab export
+                      = icon('gitlab', text: 'GitLab export')
 
             .js-toggle-content.hide
               = render "shared/import_form", f: f

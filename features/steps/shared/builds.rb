@@ -10,20 +10,20 @@ module SharedBuilds
   end
 
   step 'project has a recent build' do
-    @pipeline = create(:ci_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
+    @pipeline = create(:ci_empty_pipeline, project: @project, sha: @project.commit.sha, ref: 'master')
     @build = create(:ci_build_with_coverage, pipeline: @pipeline)
   end
 
   step 'recent build is successful' do
-    @build.update(status: 'success')
+    @build.success
   end
 
   step 'recent build failed' do
-    @build.update(status: 'failed')
+    @build.drop
   end
 
   step 'project has another build that is running' do
-    create(:ci_build, pipeline: @pipeline, name: 'second build', status: 'running')
+    create(:ci_build, pipeline: @pipeline, name: 'second build', status_event: 'run')
   end
 
   step 'I visit recent build details page' do

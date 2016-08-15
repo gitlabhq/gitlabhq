@@ -355,7 +355,7 @@ PUT /projects/:id/services/gemnasium
 
 Parameters:
 
-- `api_key` (**required**) - Your personal API KEY on gemnasium.com 
+- `api_key` (**required**) - Your personal API KEY on gemnasium.com
 - `token` (**required**) - The project's slug on gemnasium.com
 
 ### Delete Gemnasium service
@@ -503,6 +503,7 @@ PUT /projects/:id/services/pivotaltracker
 Parameters:
 
 - `token` (**required**)
+- `restrict_to_branch` (optional) - Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.
 
 ### Delete PivotalTracker service
 
@@ -661,4 +662,3 @@ Get JetBrains TeamCity CI service settings for a project.
 ```
 GET /projects/:id/services/teamcity
 ```
-

@@ -28,7 +28,7 @@
     };
 
     MarkdownPreview.prototype.renderMarkdown = function(text, success) {
-      if (!window.markdown_preview_path) {
+      if (!window.preview_markdown_path) {
         return;
       }
       if (text === this.ajaxCache.text) {
@@ -36,7 +36,7 @@
       }
       return $.ajax({
         type: 'POST',
-        url: window.markdown_preview_path,
+        url: window.preview_markdown_path,
         data: {
           text: text
         },

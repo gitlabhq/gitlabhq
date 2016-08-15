@@ -148,6 +148,9 @@ if Gitlab::Metrics.enabled?
 
     config.instrument_methods(Gitlab::Highlight)
     config.instrument_instance_methods(Gitlab::Highlight)
+
+    # This is a Rails scope so we have to instrument it manually.
+    config.instrument_method(Project, :visible_to_user)
   end
 
   GC::Profiler.enable

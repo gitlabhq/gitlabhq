@@ -37,8 +37,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
 
   def todos_counts
     {
-      count: TodosFinder.new(current_user, state: :pending).execute.count,
-      done_count: TodosFinder.new(current_user, state: :done).execute.count
+      count: current_user.todos_pending_count,
+      done_count: current_user.todos_done_count
     }
   end
 end

@@ -117,7 +117,7 @@ describe 'Filter issues', feature: true do
 
       find('.dropdown-menu-user-link', text: user.username).click
 
-      wait_for_ajax
+      expect(page).not_to have_selector('.issues-list .issue')
 
       find('.js-label-select').click
 

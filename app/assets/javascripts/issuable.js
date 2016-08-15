@@ -5,13 +5,10 @@
 
   this.Issuable = {
     init: function() {
-      if (!issuable_created) {
-        issuable_created = true;
-        Issuable.initTemplates();
-        Issuable.initSearch();
-        Issuable.initChecks();
-        return Issuable.initLabelFilterRemove();
-      }
+      Issuable.initTemplates();
+      Issuable.initSearch();
+      Issuable.initChecks();
+      return Issuable.initLabelFilterRemove();
     },
     initTemplates: function() {
       return Issuable.labelRow = _.template('<% _.each(labels, function(label){ %> <span class="label-row btn-group" role="group" aria-label="<%- label.title %>" style="color: <%- label.text_color %>;"> <a href="#" class="btn btn-transparent has-tooltip" style="background-color: <%- label.color %>;" title="<%- label.description %>" data-container="body"> <%- label.title %> </a> <button type="button" class="btn btn-transparent label-remove js-label-filter-remove" style="background-color: <%- label.color %>;" data-label="<%- label.title %>"> <i class="fa fa-times"></i> </button> </span> <% }); %>');

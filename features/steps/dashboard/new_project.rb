@@ -29,6 +29,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   end
 
   step 'I am redirected to the GitHub import page' do
+    expect(page).to have_content('Import Projects from GitHub')
     expect(current_path).to eq new_import_github_path
   end
 
@@ -47,6 +48,7 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
   end
 
   step 'I redirected to Google Code import page' do
+    expect(page).to have_content('Import projects from Google Code')
     expect(current_path).to eq new_import_google_code_path
   end
 end

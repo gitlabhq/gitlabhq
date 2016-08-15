@@ -1,12 +1,13 @@
 class Projects::BranchesController < Projects::ApplicationController
   include ActionView::Helpers::SanitizeHelper
+  include SortingHelper
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create, :destroy]
 
   def index
-    @sort = params[:sort].presence || 'name'
+    @sort = params[:sort].presence || sort_value_name
     @branches = BranchesFinder.new(@repository, params).execute
     @branches = Kaminari.paginate_array(@branches).page(params[:page])
 
