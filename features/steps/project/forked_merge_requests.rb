@@ -34,6 +34,9 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
+    expect(page).to have_content('Source branch')
+    expect(page).to have_content('Target branch')
+
     first('.js-source-project').click
     first('.dropdown-source-project a', text: @forked_project.path_with_namespace)
 

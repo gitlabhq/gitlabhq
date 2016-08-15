@@ -14,6 +14,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     visit namespace_project_path(project.namespace, project)
     click_link 'Create empty bare repository'
     click_on 'LICENSE'
+    expect(page).to have_content('New File')
 
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))

@@ -69,6 +69,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I edit code' do
+    expect(page).to have_selector('.file-editor')
     set_new_content
   end
 
@@ -131,6 +132,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I click on "New file" link in repo' do
     find('.add-to-tree').click
     click_link 'New file'
+    expect(page).to have_selector('.file-editor')
   end
 
   step 'I click on "Upload file" link in repo' do
