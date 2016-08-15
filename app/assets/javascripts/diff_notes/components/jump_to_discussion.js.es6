@@ -149,6 +149,11 @@
 
         if (activeTab === 'notes') {
           $target = $target.closest('.note-discussion');
+
+          // If the next discussion is closed, toggle it open.
+          if ($target.find('.js-toggle-content').is(':hidden')) {
+            $target.find('.js-toggle-button i').trigger('click')
+          }
         } else if (activeTab === 'diffs') {
           // Resolved discussions are hidden in the diffs tab by default.
           // If they are marked unresolved on the notes tab, they will still be hidden on the diffs tab.
@@ -176,12 +181,6 @@
         $.scrollTo($target, {
           offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
         });
-
-        // If the next discussion is closed, toggle it open.
-        if ($target.find(".js-toggle-content").attr('style') == "display: none;") {
-          $target.find('.js-toggle-button i').toggleClass('fa fa-chevron-down').toggleClass('fa fa-chevron-up');
-          $target.find(".js-toggle-content").toggle();
-        }
       }
     }
   });

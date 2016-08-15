@@ -652,6 +652,16 @@ ActiveRecord::Schema.define(version: 20160810142633) do
   add_index "namespaces", ["path"], name: "index_namespaces_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "namespaces", ["type"], name: "index_namespaces_on_type", using: :btree
 
+  create_table "note_templates", force: :cascade do |t|
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "note_templates", ["user_id"], name: "index_note_templates_on_user_id", using: :btree
+
   create_table "notes", force: :cascade do |t|
     t.text     "note"
     t.string   "noteable_type"
