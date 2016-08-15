@@ -33,7 +33,6 @@ module Oauth2
 
         Doorkeeper::AccessToken.by_token(logout_token)
       end
-
     end
   end
 end

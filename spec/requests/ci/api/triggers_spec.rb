@@ -42,7 +42,8 @@ describe Ci::API::API do
         post ci_api("/projects/#{project.ci_id}/refs/master/trigger"), options
         expect(response).to have_http_status(201)
         pipeline.builds.reload
-        expect(pipeline.builds.size).to eq(2)
+        expect(pipeline.builds.pending.size).to eq(2)
+        expect(pipeline.builds.size).to eq(5)
       end
 
       it 'returns bad request with no builds created if there\'s no commit for that ref' do

@@ -1,38 +1,59 @@
 # GitLab as an OAuth2 client
 
-This document is about using other OAuth authentication service providers to sign into GitLab.
+This document covers using the OAuth2 protocol to access GitLab.
+
 If you want GitLab to be an OAuth authentication service provider to sign into other services please see the [Oauth2 provider documentation](../integration/oauth_provider.md).
 
-OAuth2 is a protocol that enables us to authenticate a user without requiring them to give their password. 
-
-Before using the OAuth2 you should create an application in user's account. Each application gets a unique App ID and App Secret parameters. You should not share these.
+OAuth2 is a protocol that enables us to authenticate a user without requiring them to give their password to a third-party. 
 
 This functionality is based on [doorkeeper gem](https://github.com/doorkeeper-gem/doorkeeper)
 
 ## Web Application Flow
 
-This flow is using for authentication from third-party web sites and is probably used the most. 
-It basically consists of an exchange of an authorization token for an access token. For more detailed info, check out the [RFC spec here](http://tools.ietf.org/html/rfc6749#section-4.1)
+This is the most common type of flow and is used by server-side clients that wish to access GitLab on a user's behalf.
 
-This flow consists from 3 steps.
+>**Note:**
+This flow **should not** be used for client-side clients as you would leak your `client_secret`. Client-side clients should use the Implicit Grant (which is currently unsupported).
+
+For more detailed information, check out the [RFC spec](http://tools.ietf.org/html/rfc6749#section-4.1)
+
+In the following sections you will be introduced to the three steps needed for this flow.
 
 ### 1. Registering the client
 
-Create an application in user's account profile.
+First, you should create an application (`/profile/applications`) in your user's account.
+Each application gets a unique App ID and App Secret parameters. 
+
+>**Note:**
+**You should not share/leak your App ID or App Secret.**
 
 ### 2. Requesting authorization
 
-To request the authorization token, you should visit the `/oauth/authorize` endpoint. You can do that by visiting manually the URL:
+To request the authorization code, you should redirect the user to the `/oauth/authorize` endpoint:
 
 ```
-http://localhost:3000/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code
+https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=your_unique_state_hash
 ```
 
-Where REDIRECT_URI is the URL in your app where users will be sent after authorization. 	
+This will ask the user to approve the applications access to their account and then redirect back to the `REDIRECT_URI` you provided.
+
+The redirect will include the GET `code` parameter, for example:
+
+```
+http://myapp.com/oauth/redirect?code=1234567890&state=your_unique_state_hash
+```
+
+You should then use the `code` to request an access token.
+
+>**Important:**
+It is highly recommended that you send a `state` value with the request to `/oauth/authorize` and 
+validate that value is returned and matches in the redirect request. 
+This is important to prevent [CSFR attacks](http://www.oauthsecurity.com/#user-content-authorization-code-flow), 
+`state` really should have been a requirement in the standard! 
 
 ### 3. Requesting the access token
 
-To request the access token, you should use the returned code and exchange it for an access token. To do that you can use any HTTP client. In this case, I used rest-client:
+Once you have the authorization code you can request an `access_token` using the code, to do that you can use any HTTP client. In the following example, we are using Ruby's `rest-client`:
 
 ```
 parameters = 'client_id=APP_ID&client_secret=APP_SECRET&code=RETURNED_CODE&grant_type=authorization_code&redirect_uri=REDIRECT_URI'
@@ -46,6 +67,8 @@ RestClient.post 'http://localhost:3000/oauth/token', parameters
  "refresh_token": "8257e65c97202ed1726cf9571600918f3bffb2544b26e00a61df9897668c33a1"
 }
 ```
+>**Note:**
+The `redirect_uri` must match the `redirect_uri` used in the original authorization request.
 
 You can now make requests to the API with the access token returned.
 
@@ -60,7 +83,7 @@ GET https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
 Or you can put the token to the Authorization header:
 
 ```
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
 ```
 
 ## Resource Owner Password Credentials
@@ -76,6 +99,9 @@ In this flow, a token is requested in exchange for the resource owner credential
 The credentials should only be used when there is a high degree of trust between the resource owner and the client (e.g. the
 client is part of the device operating system or a highly privileged application), and when other authorization grant types are not
 available (such as an authorization code).
+
+>**Important:**
+Never store the users credentials and only use this grant type when your client is deployed to a trusted environment, in 99% of cases [personal access tokens] are a better choice.
 
 Even though this grant type requires direct client access to the resource owner credentials, the resource owner credentials are used
 for a single request and are exchanged for an access token.  This grant type can eliminate the need for the client to store the

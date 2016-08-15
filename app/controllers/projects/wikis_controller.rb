@@ -100,7 +100,7 @@ class Projects::WikisController < Projects::ApplicationController
     )
   end
 
-  def markdown_preview
+  def preview_markdown
     text = params[:text]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)

@@ -32,20 +32,6 @@ describe Gitlab::GithubImport::BranchFormatter, lib: true do
     end
   end
 
-  describe '#name' do
-    it 'returns raw ref when branch exists' do
-      branch = described_class.new(project, double(raw))
-
-      expect(branch.name).to eq 'feature'
-    end
-
-    it 'returns formatted ref when branch does not exist' do
-      branch = described_class.new(project, double(raw.merge(ref: 'removed-branch', sha: '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b')))
-
-      expect(branch.name).to eq 'removed-branch-2e5d3239'
-    end
-  end
-
   describe '#repo' do
     it 'returns raw repo' do
       branch = described_class.new(project, double(raw))

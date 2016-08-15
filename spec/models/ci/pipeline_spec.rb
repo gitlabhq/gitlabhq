@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -38,9 +38,6 @@ describe Ci::Pipeline, models: true do
     it { expect(pipeline.sha).to start_with(subject) }
   end
 
-  describe '#create_next_builds' do
-  end
-
   describe '#retried' do
     subject { pipeline.retried }
 
@@ -54,312 +51,9 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#create_builds' do
-    let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project, ref: 'master', tag: false }
-
-    def create_builds(trigger_request = nil)
-      pipeline.create_builds(nil, trigger_request)
-    end
-
-    def create_next_builds
-      pipeline.create_next_builds(pipeline.builds.order(:id).last)
-    end
-
-    it 'creates builds' do
-      expect(create_builds).to be_truthy
-      pipeline.builds.update_all(status: "success")
-      expect(pipeline.builds.count(:all)).to eq(2)
-
-      expect(create_next_builds).to be_truthy
-      pipeline.builds.update_all(status: "success")
-      expect(pipeline.builds.count(:all)).to eq(4)
-
-      expect(create_next_builds).to be_truthy
-      pipeline.builds.update_all(status: "success")
-      expect(pipeline.builds.count(:all)).to eq(5)
-
-      expect(create_next_builds).to be_falsey
-    end
-
-    context 'custom stage with first job allowed to fail' do
-      let(:yaml) do
-        {
-          stages: ['clean', 'test'],
-          clean_job: {
-            stage: 'clean',
-            allow_failure: true,
-            script: 'BUILD',
-          },
-          test_job: {
-            stage: 'test',
-            script: 'TEST',
-          },
-        }
-      end
-
-      before do
-        stub_ci_pipeline_yaml_file(YAML.dump(yaml))
-        create_builds
-      end
-
-      it 'properly schedules builds' do
-        expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-        pipeline.builds.running_or_pending.each(&:drop)
-        expect(pipeline.builds.pluck(:status)).to contain_exactly('pending', 'failed')
-      end
-    end
-
-    context 'properly creates builds when "when" is defined' do
-      let(:yaml) do
-        {
-          stages: ["build", "test", "test_failure", "deploy", "cleanup"],
-          build: {
-            stage: "build",
-            script: "BUILD",
-          },
-          test: {
-            stage: "test",
-            script: "TEST",
-          },
-          test_failure: {
-            stage: "test_failure",
-            script: "ON test failure",
-            when: "on_failure",
-          },
-          deploy: {
-            stage: "deploy",
-            script: "PUBLISH",
-          },
-          cleanup: {
-            stage: "cleanup",
-            script: "TIDY UP",
-            when: "always",
-          }
-        }
-      end
-
-      before do
-        stub_ci_pipeline_yaml_file(YAML.dump(yaml))
-      end
-
-      context 'when builds are successful' do
-        it 'properly creates builds' do
-          expect(create_builds).to be_truthy
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'success', 'success')
-          pipeline.reload
-          expect(pipeline.status).to eq('success')
-        end
-      end
-
-      context 'when test job fails' do
-        it 'properly creates builds' do
-          expect(create_builds).to be_truthy
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'pending')
-          pipeline.builds.running_or_pending.each(&:drop)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'success', 'success')
-          pipeline.reload
-          expect(pipeline.status).to eq('failed')
-        end
-      end
-
-      context 'when test and test_failure jobs fail' do
-        it 'properly creates builds' do
-          expect(create_builds).to be_truthy
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'pending')
-          pipeline.builds.running_or_pending.each(&:drop)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'pending')
-          pipeline.builds.running_or_pending.each(&:drop)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'test_failure', 'cleanup')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'failed', 'failed', 'success')
-          pipeline.reload
-          expect(pipeline.status).to eq('failed')
-        end
-      end
-
-      context 'when deploy job fails' do
-        it 'properly creates builds' do
-          expect(create_builds).to be_truthy
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'pending')
-          pipeline.builds.running_or_pending.each(&:drop)
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test', 'deploy', 'cleanup')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'success', 'failed', 'success')
-          pipeline.reload
-          expect(pipeline.status).to eq('failed')
-        end
-      end
-
-      context 'when build is canceled in the second stage' do
-        it 'does not schedule builds after build has been canceled' do
-          expect(create_builds).to be_truthy
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('pending')
-          pipeline.builds.running_or_pending.each(&:success)
-
-          expect(pipeline.builds.running_or_pending).not_to be_empty
-
-          expect(pipeline.builds.pluck(:name)).to contain_exactly('build', 'test')
-          expect(pipeline.builds.pluck(:status)).to contain_exactly('success', 'pending')
-          pipeline.builds.running_or_pending.each(&:cancel)
-
-          expect(pipeline.builds.running_or_pending).to be_empty
-          expect(pipeline.reload.status).to eq('canceled')
-        end
-      end
-
-      context 'when listing manual actions' do
-        let(:yaml) do
-          {
-            stages: ["build", "test", "staging", "production", "cleanup"],
-            build: {
-              stage: "build",
-              script: "BUILD",
-            },
-            test: {
-              stage: "test",
-              script: "TEST",
-            },
-            staging: {
-              stage: "staging",
-              script: "PUBLISH",
-            },
-            production: {
-              stage: "production",
-              script: "PUBLISH",
-              when: "manual",
-            },
-            cleanup: {
-              stage: "cleanup",
-              script: "TIDY UP",
-              when: "always",
-            },
-            clear_cache: {
-              stage: "cleanup",
-              script: "CLEAR CACHE",
-              when: "manual",
-            }
-          }
-        end
-
-        it 'returns only for skipped builds' do
-          # currently all builds are created
-          expect(create_builds).to be_truthy
-          expect(manual_actions).to be_empty
-
-          # succeed stage build
-          pipeline.builds.running_or_pending.each(&:success)
-          expect(manual_actions).to be_empty
-
-          # succeed stage test
-          pipeline.builds.running_or_pending.each(&:success)
-          expect(manual_actions).to be_empty
-
-          # succeed stage staging and skip stage production
-          pipeline.builds.running_or_pending.each(&:success)
-          expect(manual_actions).to be_many # production and clear cache
-
-          # succeed stage cleanup
-          pipeline.builds.running_or_pending.each(&:success)
-
-          # after processing a pipeline we should have 6 builds, 5 succeeded
-          expect(pipeline.builds.count).to eq(6)
-          expect(pipeline.builds.success.count).to eq(4)
-        end
-
-        def manual_actions
-          pipeline.manual_actions
-        end
-      end
-    end
-
-    context 'when no builds created' do
-      let(:pipeline) { build(:ci_pipeline) }
-
-      before do
-        stub_ci_pipeline_yaml_file(YAML.dump(before_script: ['ls']))
-      end
-
-      it 'returns false' do
-        expect(pipeline.create_builds(nil)).to be_falsey
-        expect(pipeline).not_to be_persisted
-      end
-    end
-  end
-
-  describe "#finished_at" do
-    let(:pipeline) { FactoryGirl.create :ci_pipeline }
-
-    it "returns finished_at of latest build" do
-      build = FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 60
-      FactoryGirl.create :ci_build, pipeline: pipeline, finished_at: Time.now - 120
-
-      expect(pipeline.finished_at.to_i).to eq(build.finished_at.to_i)
-    end
-
-    it "returns nil if there is no finished build" do
-      FactoryGirl.create :ci_not_started_build, pipeline: pipeline
-
-      expect(pipeline.finished_at).to be_nil
-    end
-  end
-
   describe "coverage" do
     let(:project) { FactoryGirl.create :empty_project, build_coverage_regex: "/.*/" }
-    let(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
+    let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
 
     it "calculates average when there are two builds with coverage" do
       FactoryGirl.create :ci_build, name: "rspec", coverage: 30, pipeline: pipeline
@@ -426,33 +120,47 @@ describe Ci::Pipeline, models: true do
     end
   end
 
-  describe '#update_state' do
-    it 'executes update_state after touching object' do
-      expect(pipeline).to receive(:update_state).and_return(true)
-      pipeline.touch
-    end
+  describe 'state machine' do
+    let(:current) { Time.now.change(usec: 0) }
+    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
 
-    context 'dependent objects' do
-      let(:commit_status) { build :commit_status, pipeline: pipeline }
-
-      it 'executes update_state after saving dependent object' do
-        expect(pipeline).to receive(:update_state).and_return(true)
-        commit_status.save
-      end
-    end
-
-    context 'update state' do
-      let(:current) { Time.now.change(usec: 0) }
-      let(:build) { FactoryGirl.create :ci_build, :success, pipeline: pipeline, started_at: current - 120, finished_at: current - 60 }
-
+    describe '#duration' do
       before do
-        build
+        build.skip
+        build2.skip
       end
 
-      [:status, :started_at, :finished_at, :duration].each do |param|
-        it "update #{param}" do
-          expect(pipeline.send(param)).to eq(build.send(param))
-        end
+      it 'matches sum of builds duration' do
+        expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
+      end
+    end
+
+    describe '#started_at' do
+      it 'updates on transitioning to running' do
+        build.run
+
+        expect(pipeline.reload.started_at).not_to be_nil
+      end
+
+      it 'does not update on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.started_at).to be_nil
+      end
+    end
+
+    describe '#finished_at' do
+      it 'updates on transitioning to success' do
+        build.success
+
+        expect(pipeline.reload.finished_at).not_to be_nil
+      end
+
+      it 'does not update on transitioning to running' do
+        build.run
+
+        expect(pipeline.reload.finished_at).to be_nil
       end
     end
   end
@@ -540,6 +248,66 @@ describe Ci::Pipeline, models: true do
       it 'returns false' do
         is_expected.to be_falsey
       end
+    end
+  end
+
+  describe '#status' do
+    let!(:build) { create(:ci_build, :created, pipeline: pipeline, name: 'test') }
+
+    subject { pipeline.reload.status }
+
+    context 'on queuing' do
+      before do
+        build.enqueue
+      end
+
+      it { is_expected.to eq('pending') }
+    end
+
+    context 'on run' do
+      before do
+        build.enqueue
+        build.run
+      end
+
+      it { is_expected.to eq('running') }
+    end
+
+    context 'on drop' do
+      before do
+        build.drop
+      end
+
+      it { is_expected.to eq('failed') }
+    end
+
+    context 'on success' do
+      before do
+        build.success
+      end
+
+      it { is_expected.to eq('success') }
+    end
+
+    context 'on cancel' do
+      before do
+        build.cancel
+      end
+
+      it { is_expected.to eq('canceled') }
+    end
+
+    context 'on failure and build retry' do
+      before do
+        build.drop
+        Ci::Build.retry(build)
+      end
+
+      # We are changing a state: created > failed > running
+      # Instead of: created > failed > pending
+      # Since the pipeline already run, so it should not be pending anymore
+
+      it { is_expected.to eq('running') }
     end
   end
 end

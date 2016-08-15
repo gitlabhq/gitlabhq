@@ -50,7 +50,8 @@ describe API::API do
         post api("/projects/#{project.id}/trigger/builds"), options.merge(ref: 'master')
         expect(response).to have_http_status(201)
         pipeline.builds.reload
-        expect(pipeline.builds.size).to eq(2)
+        expect(pipeline.builds.pending.size).to eq(2)
+        expect(pipeline.builds.size).to eq(5)
       end
 
       it 'returns bad request with no builds created if there\'s no commit for that ref' do

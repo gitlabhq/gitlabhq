@@ -1,7 +1,7 @@
-image: "ruby:2.1"
+image: "ruby:2.3.1"
 
 cache:
-  key: "ruby21"
+  key: "ruby-231"
   paths:
   - vendor/apt
   - vendor/ruby
@@ -140,57 +140,57 @@ spinach 7 10: *spinach-knapsack
 spinach 8 10: *spinach-knapsack
 spinach 9 10: *spinach-knapsack
 
-# Execute all testing suites against Ruby 2.3
-.ruby-23: &ruby-23
-  image: "ruby:2.3"
+# Execute all testing suites against Ruby 2.1
+.ruby-21: &ruby-21
+  image: "ruby:2.1"
   <<: *use-db
   only:
     - master
   cache:
-    key: "ruby-23"
+    key: "ruby21"
     paths:
       - vendor/apt
       - vendor/ruby
 
-.rspec-knapsack-ruby23: &rspec-knapsack-ruby23
+.rspec-knapsack-ruby21: &rspec-knapsack-ruby21
   <<: *rspec-knapsack
-  <<: *ruby-23
+  <<: *ruby-21
 
-.spinach-knapsack-ruby23: &spinach-knapsack-ruby23
+.spinach-knapsack-ruby21: &spinach-knapsack-ruby21
   <<: *spinach-knapsack
-  <<: *ruby-23
+  <<: *ruby-21
 
-rspec 0 20 ruby23: *rspec-knapsack-ruby23
-rspec 1 20 ruby23: *rspec-knapsack-ruby23
-rspec 2 20 ruby23: *rspec-knapsack-ruby23
-rspec 3 20 ruby23: *rspec-knapsack-ruby23
-rspec 4 20 ruby23: *rspec-knapsack-ruby23
-rspec 5 20 ruby23: *rspec-knapsack-ruby23
-rspec 6 20 ruby23: *rspec-knapsack-ruby23
-rspec 7 20 ruby23: *rspec-knapsack-ruby23
-rspec 8 20 ruby23: *rspec-knapsack-ruby23
-rspec 9 20 ruby23: *rspec-knapsack-ruby23
-rspec 10 20 ruby23: *rspec-knapsack-ruby23
-rspec 11 20 ruby23: *rspec-knapsack-ruby23
-rspec 12 20 ruby23: *rspec-knapsack-ruby23
-rspec 13 20 ruby23: *rspec-knapsack-ruby23
-rspec 14 20 ruby23: *rspec-knapsack-ruby23
-rspec 15 20 ruby23: *rspec-knapsack-ruby23
-rspec 16 20 ruby23: *rspec-knapsack-ruby23
-rspec 17 20 ruby23: *rspec-knapsack-ruby23
-rspec 18 20 ruby23: *rspec-knapsack-ruby23
-rspec 19 20 ruby23: *rspec-knapsack-ruby23
+rspec 0 20 ruby21: *rspec-knapsack-ruby21
+rspec 1 20 ruby21: *rspec-knapsack-ruby21
+rspec 2 20 ruby21: *rspec-knapsack-ruby21
+rspec 3 20 ruby21: *rspec-knapsack-ruby21
+rspec 4 20 ruby21: *rspec-knapsack-ruby21
+rspec 5 20 ruby21: *rspec-knapsack-ruby21
+rspec 6 20 ruby21: *rspec-knapsack-ruby21
+rspec 7 20 ruby21: *rspec-knapsack-ruby21
+rspec 8 20 ruby21: *rspec-knapsack-ruby21
+rspec 9 20 ruby21: *rspec-knapsack-ruby21
+rspec 10 20 ruby21: *rspec-knapsack-ruby21
+rspec 11 20 ruby21: *rspec-knapsack-ruby21
+rspec 12 20 ruby21: *rspec-knapsack-ruby21
+rspec 13 20 ruby21: *rspec-knapsack-ruby21
+rspec 14 20 ruby21: *rspec-knapsack-ruby21
+rspec 15 20 ruby21: *rspec-knapsack-ruby21
+rspec 16 20 ruby21: *rspec-knapsack-ruby21
+rspec 17 20 ruby21: *rspec-knapsack-ruby21
+rspec 18 20 ruby21: *rspec-knapsack-ruby21
+rspec 19 20 ruby21: *rspec-knapsack-ruby21
 
-spinach 0 10 ruby23: *spinach-knapsack-ruby23
-spinach 1 10 ruby23: *spinach-knapsack-ruby23
-spinach 2 10 ruby23: *spinach-knapsack-ruby23
-spinach 3 10 ruby23: *spinach-knapsack-ruby23
-spinach 4 10 ruby23: *spinach-knapsack-ruby23
-spinach 5 10 ruby23: *spinach-knapsack-ruby23
-spinach 6 10 ruby23: *spinach-knapsack-ruby23
-spinach 7 10 ruby23: *spinach-knapsack-ruby23
-spinach 8 10 ruby23: *spinach-knapsack-ruby23
-spinach 9 10 ruby23: *spinach-knapsack-ruby23
+spinach 0 10 ruby21: *spinach-knapsack-ruby21
+spinach 1 10 ruby21: *spinach-knapsack-ruby21
+spinach 2 10 ruby21: *spinach-knapsack-ruby21
+spinach 3 10 ruby21: *spinach-knapsack-ruby21
+spinach 4 10 ruby21: *spinach-knapsack-ruby21
+spinach 5 10 ruby21: *spinach-knapsack-ruby21
+spinach 6 10 ruby21: *spinach-knapsack-ruby21
+spinach 7 10 ruby21: *spinach-knapsack-ruby21
+spinach 8 10 ruby21: *spinach-knapsack-ruby21
+spinach 9 10 ruby21: *spinach-knapsack-ruby21
 
 # Other generic tests
 
@@ -224,7 +224,22 @@ teaspoon:
   stage: test
   <<: *use-db
   script:
+    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
+    - apt-get install --assume-yes nodejs
+    - npm install --global istanbul
     - teaspoon
+  artifacts:
+    name: coverage-javascript
+    expire_in: 31d
+    paths:
+    - coverage-javascript/default/
+
+lint-doc:
+  stage: test
+  image: "phusion/baseimage:latest"
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
 
 bundler:audit:
   stage: test
@@ -271,10 +286,12 @@ pages:
   stage: pages
   dependencies:
     - coverage
+    - teaspoon
   script:
     - mv public/ .public/
     - mkdir public/
     - mv coverage public/coverage-ruby
+    - mv coverage-javascript/default/ public/coverage-javascript/
   artifacts:
     paths:
       - public

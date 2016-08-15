@@ -60,8 +60,8 @@ block_auto_created_users: false
 ## Disable Two-factor Authentication (2FA) for all users
 
 This task will disable 2FA for all users that have it enabled. This can be
-useful if GitLab's `.secret` file has been lost and users are unable to login,
-for example.
+useful if GitLab's `config/secrets.yml` file has been lost and users are unable
+to login, for example.
 
 ```bash
 # omnibus-gitlab

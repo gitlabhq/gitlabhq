@@ -121,6 +121,10 @@ Registry is exposed to the outside world is `4567`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
 
+>**Note:**
+Be careful to choose a port different than the one that Registry listens to (`5000` by default),
+otherwise you will run into conflicts .
+
 ---
 
 **Omnibus GitLab installations**

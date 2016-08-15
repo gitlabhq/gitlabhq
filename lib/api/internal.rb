@@ -74,6 +74,10 @@ module API
         response
       end
 
+      get "/merge_request_urls" do
+        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
+      end
+
       #
       # Get a ssh key using the fingerprint
       #

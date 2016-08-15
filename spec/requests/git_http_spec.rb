@@ -75,9 +75,9 @@ describe 'Git HTTP requests', lib: true do
       context "with correct credentials" do
         let(:env) { { user: user.username, password: user.password } }
 
-        it "uploads get status 200 (because Push rules do the real check)" do
+        it "uploads get status 403" do
           upload(path, env) do |response|
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(403)
           end
         end
 
@@ -86,7 +86,7 @@ describe 'Git HTTP requests', lib: true do
             allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
 
             upload(path, env) do |response|
-              expect(response).to have_http_status(404)
+              expect(response).to have_http_status(403)
             end
           end
         end
@@ -324,9 +324,9 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
-            it "uploads get status 200 (because Push rules do the real check)" do
+            it "uploads get status 404" do
               upload(path, user: user.username, password: user.password) do |response|
-                expect(response).to have_http_status(200)
+                expect(response).to have_http_status(404)
               end
             end
           end

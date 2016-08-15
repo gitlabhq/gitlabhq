@@ -92,9 +92,6 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  # Enable Grack support (for LFS only)
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
-
   # Help
   get 'help'           => 'help#index'
   get 'help/shortcuts' => 'help#shortcuts'
@@ -515,7 +512,7 @@ Rails.application.routes.draw do
         post :unarchive
         post :housekeeping
         post :toggle_star
-        post :markdown_preview
+        post :preview_markdown
         post :export
         post :remove_export
         post :generate_new_export
@@ -526,11 +523,26 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
-        # Git HTTP clients ('git clone' etc.)
         scope constraints: { id: /.+\.git/, format: nil } do
+          # Git HTTP clients ('git clone' etc.)
           get '/info/refs', to: 'git_http#info_refs'
           post '/git-upload-pack', to: 'git_http#git_upload_pack'
           post '/git-receive-pack', to: 'git_http#git_receive_pack'
+
+          # Git LFS API (metadata)
+          post '/info/lfs/objects/batch', to: 'lfs_api#batch'
+          post '/info/lfs/objects', to: 'lfs_api#deprecated'
+          get '/info/lfs/objects/*oid', to: 'lfs_api#deprecated'
+
+          # GitLab LFS object storage
+          scope constraints: { oid: /[a-f0-9]{64}/ } do
+            get '/gitlab-lfs/objects/*oid', to: 'lfs_storage#download'
+
+            scope constraints: { size: /[0-9]+/ } do
+              put '/gitlab-lfs/objects/*oid/*size/authorize', to: 'lfs_storage#upload_authorize'
+              put '/gitlab-lfs/objects/*oid/*size', to: 'lfs_storage#upload_finalize'
+            end
+          end
         end
 
         # Allow /info/refs, /info/refs?service=git-upload-pack, and
@@ -708,7 +720,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
-          post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
+          post '/wikis/*id/preview_markdown', to: 'wikis#preview_markdown', constraints: WIKI_SLUG_ID, as: 'wiki_preview_markdown'
         end
 
         resource :repository, only: [:create] do

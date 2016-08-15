@@ -33,7 +33,6 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
     end
 
     context 'when group_base is present' do
-
       context 'and admin_group and external_groups are not present' do
         before { stub_ldap_config(group_base: 'dc=example,dc=com') }
 

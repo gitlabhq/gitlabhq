@@ -17,7 +17,7 @@ module Gitlab
       @user_access = UserAccess.new(user, project: project)
     end
 
-    def check(cmd, changes = nil)
+    def check(cmd, changes)
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
@@ -100,10 +100,10 @@ module Gitlab
         return build_status_object(false, message)
       end
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.map(&:strip).reject(&:blank?).each do |change|
+      changes_list.each do |change|
         status = change_access_check(change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
@@ -251,7 +251,7 @@ module Gitlab
     end
 
     def build_status_object(status, message = '')
-      GitAccessStatus.new(status, message)
+      Gitlab::GitAccessStatus.new(status, message)
     end
 
     def git_annex_access_check(project, changes)

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Projects::UpdateRepositoryStorageService, services: true do
-
   subject { described_class.new(project) }
 
   describe "#execute" do
