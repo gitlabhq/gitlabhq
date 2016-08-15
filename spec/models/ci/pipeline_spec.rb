@@ -129,12 +129,15 @@ describe Ci::Pipeline, models: true do
 
     describe '#duration' do
       before do
-        build.skip
-        build2.skip
+        allow(Gitlab::Utils).to receive(:now).
+          and_return(current - 120, current)
+
+        pipeline.run
+        pipeline.succeed
       end
 
       it 'matches sum of builds duration' do
-        expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
+        expect(pipeline.reload.duration).to eq(120)
       end
     end
 
