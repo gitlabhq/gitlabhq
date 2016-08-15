@@ -1,11 +1,7 @@
 module Projects
   module Boards
-    class ListsController < Projects::ApplicationController
-      respond_to :json
-
+    class ListsController < Boards::ApplicationController
       before_action :authorize_admin_list!
-
-      rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
       def create
         list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute
@@ -59,10 +55,6 @@ module Projects
 
       def move_params
         params.require(:list).permit(:position).merge(id: params[:id])
-      end
-
-      def record_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
       end
     end
   end
