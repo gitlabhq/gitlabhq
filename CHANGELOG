@@ -275,6 +275,7 @@ v 8.10.0
   - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Be explicit to define merge request discussion variables
+  - Use cache for todos counter calling TodoService
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
