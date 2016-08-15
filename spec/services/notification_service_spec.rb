@@ -406,7 +406,7 @@ describe NotificationService, services: true do
       end
 
       it "should not email anyone unless they are newly mentioned" do
-        send_notifications()
+        send_notifications
         expect(ActionMailer::Base.deliveries).to eq []
       end
 
