@@ -86,7 +86,7 @@
                   %i.fa.fa-git
                   %span Repo by URL
 
-              - if gitlab_project_import_enabled?
+              - if gitlab_project_import_enabled? && current_user.is_admin?
                 = link_to new_import_gitlab_project_path, class: 'btn import_gitlab_project project-submit' do
                   %i.fa.fa-gitlab
                   %span GitLab export

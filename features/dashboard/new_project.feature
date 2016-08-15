@@ -9,7 +9,7 @@ Background:
   @javascript
   Scenario: I should see New Projects page
   Then I see "New Project" page
-  Then I see all possible import optios
+  Then I see all possible import options
 
   @javascript
   Scenario: I should see instructions on how to import from Git URL

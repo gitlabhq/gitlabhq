@@ -6,8 +6,7 @@
     than that of the exporter.
   - For existing installations, the project import option has to be enabled in
     application settings (`/admin/application_settings`) under 'Import sources'.
-    Ask your administrator if you don't see the **GitLab export** button when
-    creating a new project.
+    You will have to be an administrator to enable and use the import functionality.
   - You can find some useful raketasks if you are an administrator in the
     [import_export](../../../administration/raketasks/project_import_export.md)
     raketask.
