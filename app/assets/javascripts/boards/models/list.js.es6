@@ -4,7 +4,7 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.filters = BoardsStore.state.filters;
+    this.filters = gl.issueBoards.BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;
     this.loadingMore = false;
@@ -34,10 +34,10 @@ class List {
 
   destroy () {
     if (this.type !== 'blank') {
-      BoardsStore.state.lists = BoardsStore.state.lists.filter((list) => {
+      gl.issueBoards.BoardsStore.state.lists = gl.issueBoards.BoardsStore.state.lists.filter((list) => {
         return list.id !== this.id;
       });
-      BoardsStore.updateNewListDropdown(this.id);
+      gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
       gl.boardService.destroyList(this.id);
     }

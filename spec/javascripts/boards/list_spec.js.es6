@@ -17,7 +17,7 @@ describe('List model', () => {
 
   beforeEach(() => {
     gl.boardService = new BoardService('/test/issue-boards/board');
-    BoardsStore.create();
+    gl.issueBoards.BoardsStore.create();
 
     list = new List(listObj);
   });
@@ -49,13 +49,13 @@ describe('List model', () => {
   });
 
   it('destroys the list', (done) => {
-    BoardsStore.addList(listObj);
-    list = BoardsStore.findList('id', 1);
-    expect(BoardsStore.state.lists.length).toBe(1);
+    gl.issueBoards.BoardsStore.addList(listObj);
+    list = gl.issueBoards.BoardsStore.findList('id', 1);
+    expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
     list.destroy();
 
     setTimeout(() => {
-      expect(BoardsStore.state.lists.length).toBe(0);
+      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
       done();
     }, 0);
   });

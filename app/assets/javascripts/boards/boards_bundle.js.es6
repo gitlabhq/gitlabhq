@@ -10,9 +10,7 @@
 $(() => {
   const $boardApp = $('#board-app');
 
-  if (!window.gl) {
-    window.gl = {};
-  }
+  window.gl = window.gl || {};
 
   if (gl.IssueBoardsApp) {
     gl.IssueBoardsApp.$destroy(true);
@@ -21,14 +19,14 @@ $(() => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp.get(0),
     data: {
-      state: BoardsStore.state,
+      state: gl.issueBoards.BoardsStore.state,
       loading: true,
       endpoint: $boardApp.data('endpoint'),
       disabled: $boardApp.data('disabled'),
       issueLinkBase: $boardApp.data('issue-link-base')
     },
     init () {
-      BoardsStore.create();
+      gl.issueBoards.BoardsStore.create();
     },
     created () {
       this.loading = true;
@@ -40,14 +38,14 @@ $(() => {
         .removeAttr('data-issue-link-base');
     },
     ready () {
-      BoardsStore.disabled = this.disabled;
+      gl.issueBoards.BoardsStore.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
           const boards = resp.json();
 
           for (let i = 0, boardsLength = boards.length; i < boardsLength; i++) {
             const board = boards[i],
-                  list = BoardsStore.addList(board);
+                  list = gl.issueBoards.BoardsStore.addList(board);
 
             if (list.type === 'done') {
               list.position = Infinity;
@@ -56,7 +54,7 @@ $(() => {
             }
           }
 
-          BoardsStore.addBlankState();
+          gl.issueBoards.BoardsStore.addBlankState();
           this.loading = false;
         });
     }

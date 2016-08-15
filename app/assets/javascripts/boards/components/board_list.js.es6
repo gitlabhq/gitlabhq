@@ -10,7 +10,7 @@
     data () {
       return {
         scrollOffset: 250,
-        filters: BoardsStore.state.filters
+        filters: gl.issueBoards.BoardsStore.state.filters
       };
     },
     watch: {
@@ -57,7 +57,7 @@
             // Remove the new dom element & let vue add the element
             card.parentNode.removeChild(card);
 
-            BoardsStore.moveCardToList(fromListId, toListId, issueId);
+            gl.issueBoards.BoardsStore.moveCardToList(fromListId, toListId, issueId);
           }
         });
 

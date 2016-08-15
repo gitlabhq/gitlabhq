@@ -151,8 +151,8 @@
               }
               if (page === 'projects:boards:show') {
                 selectedId = user.id;
-                BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
-                BoardsStore.updateFiltersUrl();
+                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
+                gl.issueBoards.BoardsStore.updateFiltersUrl();
                 e.preventDefault();
               } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;

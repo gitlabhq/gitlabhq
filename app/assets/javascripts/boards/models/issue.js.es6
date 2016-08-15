@@ -52,7 +52,7 @@ class ListIssue {
   }
 
   getLists () {
-    return BoardsStore.state.lists.filter((list) => {
+    return gl.issueBoards.BoardsStore.state.lists.filter((list) => {
       return list.findIssue(this.id);
     });
   }

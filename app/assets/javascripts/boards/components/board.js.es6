@@ -8,7 +8,7 @@
     data () {
       return {
         query: '',
-        filters: BoardsStore.state.filters
+        filters: gl.issueBoards.BoardsStore.state.filters
       };
     },
     watch: {
@@ -53,7 +53,7 @@
         draggable: '.is-draggable',
         handle: '.js-board-handle',
         onUpdate (e) {
-          BoardsStore.moveList(e.oldIndex, e.newIndex);
+          gl.issueBoards.BoardsStore.moveList(e.oldIndex, e.newIndex);
         }
       });
 

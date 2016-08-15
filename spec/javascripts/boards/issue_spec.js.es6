@@ -17,7 +17,7 @@ describe('Issue model', () => {
 
   beforeEach(() => {
     gl.boardService = new BoardService('/test/issue-boards/board');
-    BoardsStore.create();
+    gl.issueBoards.BoardsStore.create();
 
     issue = new ListIssue({
       title: 'Testing',

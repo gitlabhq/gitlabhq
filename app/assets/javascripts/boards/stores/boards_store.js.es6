@@ -1,5 +1,8 @@
-((w) => {
-  w.BoardsStore = {
+(() => {
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.BoardsStore = {
     disabled: false,
     state: {},
     create () {
@@ -126,4 +129,4 @@
       history.pushState(null, null, `?${$.param(this.state.filters)}`);
     }
   };
-}(window));
+})();

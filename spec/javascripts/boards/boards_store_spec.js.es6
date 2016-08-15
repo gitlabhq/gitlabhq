@@ -15,54 +15,54 @@
 (() => {
   beforeEach(() => {
     gl.boardService = new BoardService('/test/issue-boards/board');
-    BoardsStore.create();
+    gl.issueBoards.BoardsStore.create();
 
     $.cookie('issue_board_welcome_hidden', 'false');
   });
 
   describe('Store', () => {
     it('starts with a blank state', () => {
-      expect(BoardsStore.state.lists.length).toBe(0);
+      expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
     });
 
     describe('lists', () => {
       it('creates new list without persisting to DB', () => {
-        BoardsStore.addList(listObj);
+        gl.issueBoards.BoardsStore.addList(listObj);
 
-        expect(BoardsStore.state.lists.length).toBe(1);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
       });
 
       it('finds list by ID', () => {
-        BoardsStore.addList(listObj);
-        const list = BoardsStore.findList('id', 1);
+        gl.issueBoards.BoardsStore.addList(listObj);
+        const list = gl.issueBoards.BoardsStore.findList('id', 1);
 
         expect(list.id).toBe(1);
       });
 
       it('finds list by type', () => {
-        BoardsStore.addList(listObj);
-        const list = BoardsStore.findList('type', 'label');
+        gl.issueBoards.BoardsStore.addList(listObj);
+        const list = gl.issueBoards.BoardsStore.findList('type', 'label');
 
         expect(list).toBeDefined();
       });
 
       it('finds list limited by type', () => {
-        BoardsStore.addList({
+        gl.issueBoards.BoardsStore.addList({
           id: 1,
           position: 0,
           title: 'Test',
           list_type: 'backlog'
         });
-        const list = BoardsStore.findList('id', 1, 'backlog');
+        const list = gl.issueBoards.BoardsStore.findList('id', 1, 'backlog');
 
         expect(list).toBeDefined();
       });
 
       it('gets issue when new list added', (done) => {
-        BoardsStore.addList(listObj);
-        const list = BoardsStore.findList('id', 1);
+        gl.issueBoards.BoardsStore.addList(listObj);
+        const list = gl.issueBoards.BoardsStore.findList('id', 1);
 
-        expect(BoardsStore.state.lists.length).toBe(1);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
         setTimeout(() => {
           expect(list.issues.length).toBe(1);
@@ -72,7 +72,7 @@
       });
 
       it('persists new list', (done) => {
-        BoardsStore.new({
+        gl.issueBoards.BoardsStore.new({
           title: 'Test',
           type: 'label',
           label: {
@@ -82,10 +82,10 @@
             description: 'testing;'
           }
         });
-        expect(BoardsStore.state.lists.length).toBe(1);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
         setTimeout(() => {
-          const list = BoardsStore.findList('id', 1);
+          const list = gl.issueBoards.BoardsStore.findList('id', 1);
           expect(list).toBeDefined();
           expect(list.id).toBe(1);
           expect(list.position).toBe(0);
@@ -94,68 +94,68 @@
       });
 
       it('check for blank state adding', () => {
-        expect(BoardsStore.shouldAddBlankState()).toBe(true);
+        expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(true);
       });
 
       it('check for blank state not adding', () => {
-        BoardsStore.addList(listObj);
-        expect(BoardsStore.shouldAddBlankState()).toBe(false);
+        gl.issueBoards.BoardsStore.addList(listObj);
+        expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(false);
       });
 
       it('check for blank state adding when backlog & done list exist', () => {
-        BoardsStore.addList({
+        gl.issueBoards.BoardsStore.addList({
           list_type: 'backlog'
         });
-        BoardsStore.addList({
+        gl.issueBoards.BoardsStore.addList({
           list_type: 'done'
         });
 
-        expect(BoardsStore.shouldAddBlankState()).toBe(true);
+        expect(gl.issueBoards.BoardsStore.shouldAddBlankState()).toBe(true);
       });
 
       it('adds the blank state', () => {
-        BoardsStore.addBlankState();
+        gl.issueBoards.BoardsStore.addBlankState();
 
-        const list = BoardsStore.findList('type', 'blank', 'blank');
+        const list = gl.issueBoards.BoardsStore.findList('type', 'blank', 'blank');
         expect(list).toBeDefined();
       });
 
       it('removes list from state', () => {
-        BoardsStore.addList(listObj);
+        gl.issueBoards.BoardsStore.addList(listObj);
 
-        expect(BoardsStore.state.lists.length).toBe(1);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
-        BoardsStore.removeList(1);
+        gl.issueBoards.BoardsStore.removeList(1);
 
-        expect(BoardsStore.state.lists.length).toBe(0);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
       });
 
       it('moves the position of lists', () => {
-        BoardsStore.addList(listObj);
-        BoardsStore.addList(listObjDuplicate);
+        gl.issueBoards.BoardsStore.addList(listObj);
+        gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
-        expect(BoardsStore.state.lists.length).toBe(2);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-        BoardsStore.moveList(0, 1);
+        gl.issueBoards.BoardsStore.moveList(0, 1);
 
-        const list = BoardsStore.findList('id', 1);
+        const list = gl.issueBoards.BoardsStore.findList('id', 1);
         expect(list.position).toBe(1);
       });
 
       it('moves an issue from one list to another', (done) => {
-        BoardsStore.addList(listObj);
-        BoardsStore.addList(listObjDuplicate);
+        gl.issueBoards.BoardsStore.addList(listObj);
+        gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
-        expect(BoardsStore.state.lists.length).toBe(2);
+        expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-        const list = BoardsStore.findList('id', 1),
-              listTwo = BoardsStore.findList('id', 2);
+        const list = gl.issueBoards.BoardsStore.findList('id', 1),
+              listTwo = gl.issueBoards.BoardsStore.findList('id', 2);
 
         setTimeout(() => {
           expect(list.issues.length).toBe(1);
           expect(listTwo.issues.length).toBe(1);
 
-          BoardsStore.moveCardToList(1, 2, 1);
+          gl.issueBoards.BoardsStore.moveCardToList(1, 2, 1);
 
           expect(list.issues.length).toBe(0);
           expect(listTwo.issues.length).toBe(1);

@@ -13,7 +13,7 @@ $(() => {
         });
       },
       renderRow (label) {
-        const active = BoardsStore.findList('title', label.title),
+        const active = gl.issueBoards.BoardsStore.findList('title', label.title),
               $li = $('<li />',),
               $a = $('<a />', {
                 class: (active ? `is-active js-board-list-${active.id}` : ''),
@@ -35,10 +35,10 @@ $(() => {
       clicked (label, $el, e) {
         e.preventDefault();
 
-        if (!BoardsStore.findList('title', label.title)) {
-          BoardsStore.new({
+        if (!gl.issueBoards.BoardsStore.findList('title', label.title)) {
+          gl.issueBoards.BoardsStore.new({
             title: label.title,
-            position: BoardsStore.state.lists.length - 1,
+            position: gl.issueBoards.BoardsStore.state.lists.length - 1,
             list_type: 'label',
             label: {
               id: label.id,

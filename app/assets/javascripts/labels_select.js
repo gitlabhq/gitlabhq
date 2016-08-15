@@ -246,18 +246,18 @@
             isMRIndex = page === 'projects:merge_requests:index';
             if (page === 'projects:boards:show') {
               if (label.isAny) {
-                BoardsStore.state.filters['label_name'] = [];
+                gl.issueBoards.BoardsStore.state.filters['label_name'] = [];
               } else if (label.title) {
-                BoardsStore.state.filters['label_name'].push(label.title);
+                gl.issueBoards.BoardsStore.state.filters['label_name'].push(label.title);
               } else {
-                var filters = BoardsStore.state.filters['label_name'];
+                var filters = gl.issueBoards.BoardsStore.state.filters['label_name'];
                 filters = filters.filter(function (label) {
                   return label !== $el.text().trim();
                 });
-                BoardsStore.state.filters['label_name'] = filters;
+                gl.issueBoards.BoardsStore.state.filters['label_name'] = filters;
               }
 
-              BoardsStore.updateFiltersUrl();
+              gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
               return;
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {

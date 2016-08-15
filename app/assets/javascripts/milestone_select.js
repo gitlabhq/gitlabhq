@@ -103,8 +103,8 @@
               return;
             }
             if (page === 'projects:boards:show') {
-              BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
-              BoardsStore.updateFiltersUrl();
+              gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = selected.name;
+              gl.issueBoards.BoardsStore.updateFiltersUrl();
               e.preventDefault();
             } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
               if (selected.name != null) {
