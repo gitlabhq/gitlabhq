@@ -56,7 +56,14 @@ module MergeRequests
         )
       end
 
-      # TODO(nick): use old_mentioned_users to send notify for changed mentions
+      added_mentions = merge_request.mentioned_users - old_mentioned_users
+      if added_mentions.present?
+        notification_service.new_mentions_in_merge_request(
+          merge_request,
+          added_mentions,
+          current_user
+        )
+      end
     end
 
     def reopen_service

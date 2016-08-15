@@ -89,6 +89,20 @@ class NotificationService
     new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
   end
 
+  # When merge request text is updated, we should send an email to:
+  #
+  #  * newly mentioned project team members with notification level higher than Participating
+  #
+  def new_mentions_in_merge_request(merge_request, new_mentioned_users, current_user)
+    new_mentions_in_resource_email(
+      merge_request,
+      merge_request.target_project,
+      new_mentioned_users,
+      current_user,
+      :new_mention_in_merge_request_email
+    )
+  end
+
   # When we reassign a merge_request we should send an email to:
   #
   #  * merge_request old assignee if their notification level is not Disabled
