@@ -22,10 +22,6 @@ class MergeRequestDiff < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  # For compatibility with old MergeRequestDiff which
-  # does not store those variables in database
-  after_initialize :ensure_commits_sha, if: :persisted?
-
   # All diff information is collected from repository after object is created.
   # It allows you to override variables like head_commit_sha before getting diff.
   after_create :save_git_content, unless: :importing?
@@ -50,6 +46,20 @@ class MergeRequestDiff < ActiveRecord::Base
     self.base_commit_sha  ||= find_base_sha
   end
 
+  # This method will rely on repository branch sha
+  # in case start_commit_sha is nil. Its necesarry for old merge request diff
+  # created before version 8.4 to work
+  def safe_start_commit_sha
+    start_commit_sha || merge_request.target_branch_sha
+  end
+
+  # This method will rely on repository branch sha
+  # in case head_commit_sha is nil. Its necesarry for old merge request diff
+  # created before version 8.4 to work
+  def safe_head_commit_sha
+    head_commit_sha || last_commit.try(:sha) || merge_request.source_branch_sha
+  end
+
   def size
     real_size.presence || diffs.size
   end
@@ -60,8 +70,8 @@ class MergeRequestDiff < ActiveRecord::Base
         begin
           compare = Gitlab::Git::Compare.new(
             repository.raw_repository,
-            start_commit_sha,
-            head_commit_sha
+            safe_start_commit_sha,
+            safe_head_commit_sha
           )
           compare.diffs(options)
         end
@@ -126,8 +136,8 @@ class MergeRequestDiff < ActiveRecord::Base
 
         Gitlab::Git::Compare.new(
           repository.raw_repository,
-          start_commit_sha,
-          head_commit_sha
+          safe_start_commit_sha,
+          safe_head_commit_sha
         )
       end
   end
@@ -216,9 +226,6 @@ class MergeRequestDiff < ActiveRecord::Base
     return unless head_commit_sha && start_commit_sha
 
     project.merge_base_commit(head_commit_sha, start_commit_sha).try(:sha)
-  rescue Rugged::OdbError
-    # In case head or start commit does not exist in the repository any more
-    nil
   end
 
   def utf8_st_diffs

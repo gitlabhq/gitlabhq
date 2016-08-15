@@ -261,7 +261,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    if merge_request_diff
+    if persisted?
       merge_request_diff.diff_refs
     else
       start_sha = target_branch_sha
