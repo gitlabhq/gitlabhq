@@ -35,10 +35,14 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def search
-    if params[:path]
-      url = namespace_project_build_url(project.namespace, project, build)
+    path = params[:path]
 
-      redirect_to "#{url}/artifacts/#{params[:path]}"
+    if %w[download browse file].include?(path)
+      redirect_to send(
+        "#{path}_namespace_project_build_artifacts_url",
+        project.namespace,
+        project,
+        build)
     else
       render_404
     end
