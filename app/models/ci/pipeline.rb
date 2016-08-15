@@ -79,7 +79,7 @@ module Ci
     end
 
     def self.duration
-      where.not(duration: nil).pluck(:duration).inject(0, &:+)
+      where.not(duration: nil).sum(:duration)
     end
 
     def project_id
