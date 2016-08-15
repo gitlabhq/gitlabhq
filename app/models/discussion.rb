@@ -49,6 +49,12 @@ class Discussion
     self.noteable == target && !diff_discussion?
   end
 
+  def active?
+    return @active if defined?(@active)
+
+    @active = first_note.active?
+  end
+
   def expanded?
     !diff_discussion? || active?
   end

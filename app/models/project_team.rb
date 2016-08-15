@@ -34,7 +34,7 @@ class ProjectTeam
   end
 
   def add_users(users, access, current_user = nil)
-    ProjectMember.add_users_into_projects(
+    ProjectMember.add_users_to_projects(
       [project.id],
       users,
       access,

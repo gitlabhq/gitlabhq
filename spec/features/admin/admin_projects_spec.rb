@@ -11,11 +11,11 @@ describe "Admin::Projects", feature: true  do
       visit admin_namespaces_projects_path
     end
 
-    it "should be ok" do
+    it "is ok" do
       expect(current_path).to eq(admin_namespaces_projects_path)
     end
 
-    it "should have projects list" do
+    it "has projects list" do
       expect(page).to have_content(@project.name)
     end
   end
@@ -26,7 +26,7 @@ describe "Admin::Projects", feature: true  do
       click_link "#{@project.name}"
     end
 
-    it "should have project info" do
+    it "has project info" do
       expect(page).to have_content(@project.path)
       expect(page).to have_content(@project.name)
     end

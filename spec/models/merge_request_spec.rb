@@ -128,6 +128,31 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#raw_diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.merge_request_diff = MergeRequestDiff.new
+
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+  end
+
   describe '#diffs' do
     let(:merge_request) { build(:merge_request) }
     let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
@@ -136,7 +161,7 @@ describe MergeRequest, models: true do
       it 'delegates to the MR diffs' do
         merge_request.merge_request_diffs.build
 
-        expect(merge_request.merge_request_diff).to receive(:diffs).with(options)
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
 
         merge_request.diffs(options)
       end
@@ -163,12 +188,12 @@ describe MergeRequest, models: true do
       create(:note, noteable: merge_request, project: merge_request.project)
     end
 
-    it "should include notes for commits" do
+    it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
 
-    it "should include notes for commits from target project as well" do
+    it "includes notes for commits from target project as well" do
       create(:note_on_commit, commit_id: merge_request.commits.first.id,
                               project: merge_request.target_project)
 
@@ -279,7 +304,7 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
-    it "cant remove a root ref" do
+    it "can't remove a root ref" do
       subject.source_branch = "master"
       subject.target_branch = "feature"
 
@@ -663,6 +688,12 @@ describe MergeRequest, models: true do
       expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
     end
 
+    it "executs diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
+
+      subject.reload_diff
+    end
+
     it "updates diff note positions" do
       old_diff_refs = subject.diff_refs
 
@@ -692,6 +723,7 @@ describe MergeRequest, models: true do
     end
   end
 
+<<<<<<< HEAD
   describe '#branch_merge_base_commit' do
     context 'source and target branch exist' do
       it { expect(subject.branch_merge_base_commit.sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
@@ -705,6 +737,28 @@ describe MergeRequest, models: true do
 
       it 'returns nil' do
         expect(subject.branch_merge_base_commit).to be_nil
+=======
+  describe "#diff_sha_refs" do
+    context "with diffs" do
+      subject { create(:merge_request, :with_diffs) }
+
+      it "does not touch the repository" do
+        subject # Instantiate the object
+
+        expect_any_instance_of(Repository).not_to receive(:commit)
+
+        subject.diff_sha_refs
+      end
+
+      it "returns expected diff_refs" do
+        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+
+        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+>>>>>>> master
       end
     end
   end

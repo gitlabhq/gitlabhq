@@ -2,9 +2,9 @@
   .pull-right
     - actions = deployment.manual_actions
     - if actions.present?
-      .btn-group.inline
-        .btn-group
-          %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+      .inline
+        .dropdown
+          %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
             = icon("play")
             %b.caret
           %ul.dropdown-menu.dropdown-menu-align-right

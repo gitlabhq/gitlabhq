@@ -6,6 +6,7 @@ module TestEnv
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'empty-branch'          => '7efb185',
+    'ends-with.json'        => '98b0d8b3',
     'flatten-dir'           => 'e56497b',
     'feature'               => '0b4bc9a',
     'feature_conflict'      => 'bb5206f',

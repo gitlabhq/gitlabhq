@@ -85,7 +85,7 @@ class LegacyDiffNote < Note
     return nil unless noteable
     return @diff if defined?(@diff)
 
-    @diff = noteable.diffs(Commit.max_diff_options).find do |d|
+    @diff = noteable.raw_diffs(Commit.max_diff_options).find do |d|
       d.new_path && Digest::SHA1.hexdigest(d.new_path) == diff_file_hash
     end
   end
@@ -116,7 +116,7 @@ class LegacyDiffNote < Note
 
   # Find the diff on noteable that matches our own
   def find_noteable_diff
-    diffs = noteable.diffs(Commit.max_diff_options)
+    diffs = noteable.raw_diffs(Commit.max_diff_options)
     diffs.find { |d| d.new_path == self.diff.new_path }
   end
 end

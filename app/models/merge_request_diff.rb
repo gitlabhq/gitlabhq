@@ -72,10 +72,10 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def size
-    real_size.presence || diffs.size
+    real_size.presence || raw_diffs.size
   end
 
-  def diffs(options={})
+  def raw_diffs(options = {})
     if options[:ignore_whitespace_change]
       @diffs_no_whitespace ||=
         begin
@@ -87,8 +87,8 @@ class MergeRequestDiff < ActiveRecord::Base
           compare.diffs(options)
         end
     else
-      @diffs ||= {}
-      @diffs[options] ||= load_diffs(st_diffs, options)
+      @raw_diffs ||= {}
+      @raw_diffs[options] ||= load_diffs(st_diffs, options)
     end
   end
 
@@ -135,6 +135,10 @@ class MergeRequestDiff < ActiveRecord::Base
       start_sha: start_commit_sha,
       head_sha:  head_commit_sha
     )
+  end
+
+  def diff_refs_by_sha?
+    base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
   private

@@ -46,5 +46,5 @@
         - if pipeline.project.build_coverage_enabled?
           %th Coverage
         %th
-    - pipeline.statuses.stages.each do |stage|
-      = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.where(stage: stage)
+    - pipeline.statuses.relevant.stages.each do |stage|
+      = render 'projects/commit/ci_stage', stage: stage, statuses: pipeline.statuses.relevant.where(stage: stage)

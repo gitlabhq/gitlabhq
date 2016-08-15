@@ -106,6 +106,7 @@ class MergeRequest < ActiveRecord::Base
   scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
+  scope :from_source_branches, ->(branches) { where(source_branch: branches) }
 
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
@@ -166,8 +167,16 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    if self.compare
+      self.compare.diffs(diff_options)
+    else
+      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+    end
   end
 
   def diff_size
@@ -278,6 +287,19 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Return diff_refs instance trying to not touch the git repository
+  def diff_sha_refs
+    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+      return Gitlab::Diff::DiffRefs.new(
+        base_sha:  merge_request_diff.base_commit_sha,
+        start_sha: merge_request_diff.start_commit_sha,
+        head_sha:  merge_request_diff.head_commit_sha
+      )
+    else
+      diff_refs
+    end
+  end
+
   def validate_branches
     if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
@@ -334,6 +356,7 @@ class MergeRequest < ActiveRecord::Base
 
     old_diff_refs = self.diff_refs
     create_merge_request_diff
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
@@ -693,7 +716,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def support_new_diff_notes?
-    diff_refs && diff_refs.complete?
+    diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)

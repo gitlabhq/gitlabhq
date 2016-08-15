@@ -1,4 +1,4 @@
-= form_tag(user_omniauth_authorize_path("crowd"), id: 'new_crowd_user' ) do
+= form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user' ) do
   = text_field_tag :username, nil, {class: "form-control top", placeholder: "Username", autofocus: "autofocus"}
   = password_field_tag :password, nil, {class: "form-control bottom", placeholder: "Password"}
   - if devise_mapping.rememberable?

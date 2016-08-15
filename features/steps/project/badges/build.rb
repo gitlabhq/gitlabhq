@@ -26,7 +26,7 @@ class Spinach::Features::ProjectBadgesBuild < Spinach::FeatureSteps
 
   def expect_badge(status)
     svg = Nokogiri::XML.parse(page.body)
-    expect(page.response_headers).to include('Content-Type' => 'image/svg+xml')
+    expect(page.response_headers['Content-Type']).to include('image/svg+xml')
     expect(svg.at(%Q{text:contains("#{status}")})).to be_truthy
   end
 end

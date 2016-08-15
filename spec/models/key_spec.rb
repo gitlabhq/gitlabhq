@@ -16,12 +16,13 @@ describe Key, models: true do
   end
 
   describe "Methods" do
+    let(:user) { create(:user) }
     it { is_expected.to respond_to :projects }
     it { is_expected.to respond_to :publishable_key }
 
     describe "#publishable_keys" do
-      it 'strips all personal information' do
-        expect(build(:key).publishable_key).not_to match(/dummy@gitlab/)
+      it 'replaces SSH key comment with simple identifier of username + hostname' do
+        expect(build(:key, user: user).publishable_key).to include("#{user.name} (localhost)")
       end
     end
   end
@@ -72,13 +73,13 @@ describe Key, models: true do
   end
 
   context 'callbacks' do
-    it 'should add new key to authorized_file' do
+    it 'adds new key to authorized_file' do
       @key = build(:personal_key, id: 7)
       expect(GitlabShellWorker).to receive(:perform_async).with(:add_key, @key.shell_id, @key.key)
       @key.save
     end
 
-    it 'should remove key from authorized_file' do
+    it 'removes key from authorized_file' do
       @key = create(:personal_key)
       expect(GitlabShellWorker).to receive(:perform_async).with(:remove_key, @key.shell_id, @key.key)
       @key.destroy

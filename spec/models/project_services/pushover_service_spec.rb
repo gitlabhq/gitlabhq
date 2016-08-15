@@ -72,7 +72,7 @@ describe PushoverService, models: true do
       WebMock.stub_request(:post, api_url)
     end
 
-    it 'should call Pushover API' do
+    it 'calls Pushover API' do
       pushover.execute(sample_data)
 
       expect(WebMock).to have_requested(:post, api_url).once

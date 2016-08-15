@@ -7,7 +7,7 @@
   = render "ci_menu"
 - else
   %div.block-connector
-= render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @commit.diff_refs
+= render "projects/diffs/diffs", diffs: @diffs
 = render "projects/notes/notes_with_form"
 - if can_collaborate_with_project?
   - %w(revert cherry-pick).each do |type|

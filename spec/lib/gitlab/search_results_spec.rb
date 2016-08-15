@@ -73,7 +73,7 @@ describe Gitlab::SearchResults do
     let!(:security_issue_4) { create(:issue, :confidential, project: project_3, title: 'Security issue 4', assignee: assignee) }
     let!(:security_issue_5) { create(:issue, :confidential, project: project_4, title: 'Security issue 5') }
 
-    it 'should not list confidential issues for non project members' do
+    it 'does not list confidential issues for non project members' do
       results = described_class.new(non_member, limit_projects, query)
       issues = results.objects('issues')
 
@@ -86,7 +86,7 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should not list confidential issues for project members with guest role' do
+    it 'does not list confidential issues for project members with guest role' do
       project_1.team << [member, :guest]
       project_2.team << [member, :guest]
 
@@ -102,7 +102,7 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 1
     end
 
-    it 'should list confidential issues for author' do
+    it 'lists confidential issues for author' do
       results = described_class.new(author, limit_projects, query)
       issues = results.objects('issues')
 
@@ -115,7 +115,7 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 3
     end
 
-    it 'should list confidential issues for assignee' do
+    it 'lists confidential issues for assignee' do
       results = described_class.new(assignee, limit_projects, query)
       issues = results.objects('issues')
 
@@ -128,7 +128,7 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 3
     end
 
-    it 'should list confidential issues for project members' do
+    it 'lists confidential issues for project members' do
       project_1.team << [member, :developer]
       project_2.team << [member, :developer]
 
@@ -144,7 +144,7 @@ describe Gitlab::SearchResults do
       expect(results.issues_count).to eq 4
     end
 
-    it 'should list all issues for admin' do
+    it 'lists all issues for admin' do
       results = described_class.new(admin, limit_projects, query)
       issues = results.objects('issues')
 

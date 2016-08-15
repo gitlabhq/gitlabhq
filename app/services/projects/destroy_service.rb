@@ -6,8 +6,12 @@ module Projects
 
     DELETED_FLAG = '+deleted'
 
-    def pending_delete!
-      project.schedule_delete!(current_user.id, params)
+    def async_execute
+      project.transaction do
+        project.update_attribute(:pending_delete, true)
+        job_id = ProjectDestroyWorker.perform_async(project.id, current_user.id, params)
+        Rails.logger.info("User #{current_user.id} scheduled destruction of project #{project.path_with_namespace} with job ID #{job_id}")
+      end
     end
 
     def execute

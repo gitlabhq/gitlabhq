@@ -28,7 +28,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def diff_for_path
-    render_diff_for_path(@diffs, @commit.diff_refs, @project)
+    render_diff_for_path(@commit.diffs(diff_options))
   end
 
   def builds
@@ -134,8 +134,8 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def define_status_vars
-    @statuses = CommitStatus.where(pipeline: pipelines)
-    @builds = Ci::Build.where(pipeline: pipelines)
+    @statuses = CommitStatus.where(pipeline: pipelines).relevant
+    @builds = Ci::Build.where(pipeline: pipelines).relevant
   end
 
   def assign_change_commit_vars(mr_source_branch)

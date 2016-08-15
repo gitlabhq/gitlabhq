@@ -56,18 +56,18 @@ describe Note, models: true do
     let!(:note) { create(:note_on_commit, note: "+1 from me") }
     let!(:commit) { note.noteable }
 
-    it "should be accessible through #noteable" do
+    it "is accessible through #noteable" do
       expect(note.commit_id).to eq(commit.id)
       expect(note.noteable).to be_a(Commit)
       expect(note.noteable).to eq(commit)
     end
 
-    it "should save a valid note" do
+    it "saves a valid note" do
       expect(note.commit_id).to eq(commit.id)
       note.noteable == commit
     end
 
-    it "should be recognized by #for_commit?" do
+    it "is recognized by #for_commit?" do
       expect(note).to be_for_commit
     end
 
