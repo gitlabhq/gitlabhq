@@ -20,7 +20,7 @@
         - unless pipeline.latest?
           - latest_pipeline = project.pipeline_for(ref)
           %li
-            %span= latest_pipeline.status.humanize
+            %span= ci_status_for_statuseable(latest_pipeline)
           %li.dropdown-header Previous Artifacts
         - artifacts.each do |job|
           %li
