@@ -723,7 +723,6 @@ describe MergeRequest, models: true do
     end
   end
 
-<<<<<<< HEAD
   describe '#branch_merge_base_commit' do
     context 'source and target branch exist' do
       it { expect(subject.branch_merge_base_commit.sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
@@ -737,8 +736,11 @@ describe MergeRequest, models: true do
 
       it 'returns nil' do
         expect(subject.branch_merge_base_commit).to be_nil
-=======
-  describe "#diff_sha_refs" do
+      end
+    end
+  end
+
+  describe "#diff_refs" do
     context "with diffs" do
       subject { create(:merge_request, :with_diffs) }
 
@@ -747,7 +749,7 @@ describe MergeRequest, models: true do
 
         expect_any_instance_of(Repository).not_to receive(:commit)
 
-        subject.diff_sha_refs
+        subject.diff_refs
       end
 
       it "returns expected diff_refs" do
@@ -757,8 +759,7 @@ describe MergeRequest, models: true do
           head_sha:  subject.merge_request_diff.head_commit_sha
         )
 
-        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
->>>>>>> master
+        expect(subject.diff_refs).to eq(expected_diff_refs)
       end
     end
   end

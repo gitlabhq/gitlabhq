@@ -79,11 +79,7 @@ class DiffNote < Note
   end
 
   def noteable_diff_refs
-    if noteable.respond_to?(:diff_sha_refs)
-      noteable.diff_sha_refs
-    else
-      noteable.diff_refs
-    end
+    noteable.diff_refs
   end
 
   def set_original_position

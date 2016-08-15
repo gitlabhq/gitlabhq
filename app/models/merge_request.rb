@@ -270,7 +270,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diff_refs
-    if persisted?
+    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
       merge_request_diff.diff_refs
     else
       start_sha = target_branch_sha
@@ -284,19 +284,6 @@ class MergeRequest < ActiveRecord::Base
           head_sha:  head_sha
         )
       end
-    end
-  end
-
-  # Return diff_refs instance trying to not touch the git repository
-  def diff_sha_refs
-    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
-      return Gitlab::Diff::DiffRefs.new(
-        base_sha:  merge_request_diff.base_commit_sha,
-        start_sha: merge_request_diff.start_commit_sha,
-        head_sha:  merge_request_diff.head_commit_sha
-      )
-    else
-      diff_refs
     end
   end
 
@@ -716,7 +703,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def support_new_diff_notes?
-    diff_sha_refs && diff_sha_refs.complete?
+    diff_refs && diff_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)

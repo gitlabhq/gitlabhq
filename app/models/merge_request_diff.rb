@@ -128,7 +128,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diff_refs
-    return unless start_commit || base_commit
+    return unless start_commit_sha || base_commit_sha
 
     Gitlab::Diff::DiffRefs.new(
       base_sha:  base_commit_sha,
