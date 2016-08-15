@@ -1,9 +1,7 @@
 require "spec_helper"
 
 describe Gitlab::LDAP::Person do
-
   describe "#kerberos_principal" do
-
     let(:entry) do
       ldif = "dn: cn=foo, dc=bar, dc=com\n"
       ldif += "sAMAccountName: #{sam_account_name}\n" if sam_account_name
@@ -13,7 +11,6 @@ describe Gitlab::LDAP::Person do
     subject { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
 
     context "when sAMAccountName is not defined (non-AD LDAP server)" do
-
       let(:sam_account_name) { nil }
 
       it "returns nil" do
@@ -22,7 +19,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when sAMAccountName is defined (AD server)" do
-
       let(:sam_account_name) { "mylogin" }
 
       it "returns the principal combining sAMAccountName and DC components of the distinguishedName" do
@@ -32,7 +28,6 @@ describe Gitlab::LDAP::Person do
   end
 
   describe "#ssh_keys" do
-
     let(:ssh_key) { "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrSQHff6a1rMqBdHFt+FwIbytMZ+hJKN3KLkTtOWtSvNIriGhnTdn4rs+tjD/w+z+revytyWnMDM9dS7J8vQi006B16+hc9Xf82crqRoPRDnBytgAFFQY1G/55ql2zdfsC5yvpDOFzuwIJq5dNGsojS82t6HNmmKPq130fzsenFnj5v1pl3OJvk513oduUyKiZBGTroWTn7H/eOPtu7s9MD7pAdEjqYKFLeaKmyidiLmLqQlCRj3Tl2U9oyFg4PYNc0bL5FZJ/Z6t0Ds3i/a2RanQiKxrvgu3GSnUKMx7WIX373baL4jeM7cprRGiOY/1NcS+1cAjfJ8oaxQF/1dYj" }
     let(:ssh_key_attribute_name) { 'altSecurityIdentities' }
     let(:entry) do
@@ -46,7 +41,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when the SSH key is literal" do
-
       let(:keys) { "#{ssh_key_attribute_name}: #{ssh_key}" }
 
       it "includes the SSH key" do
@@ -55,7 +49,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when the SSH key is prefixed" do
-
       let(:keys) { "#{ssh_key_attribute_name}: SSHKey:#{ssh_key}" }
 
       it "includes the SSH key" do
@@ -64,7 +57,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when the SSH key is suffixed" do
-
       let(:keys) { "#{ssh_key_attribute_name}: #{ssh_key} (SSH key)" }
 
       it "includes the SSH key" do
@@ -73,7 +65,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when the SSH key is followed by a newline" do
-
       let(:keys) { "#{ssh_key_attribute_name}: #{ssh_key}\n" }
 
       it "includes the SSH key" do
@@ -82,7 +73,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when the key is not an SSH key" do
-
       let(:keys) { "#{ssh_key_attribute_name}: KerberosKey:bogus" }
 
       it "is empty" do
@@ -91,7 +81,6 @@ describe Gitlab::LDAP::Person do
     end
 
     context "when there are multiple keys" do
-
       let(:keys) { "#{ssh_key_attribute_name}: #{ssh_key}\n#{ssh_key_attribute_name}: KerberosKey:bogus\n#{ssh_key_attribute_name}: ssh-rsa keykeykey" }
 
       it "includes both SSH keys" do

@@ -105,7 +105,6 @@ describe License do
         it "is valid" do
           expect(license).not_to be_valid
         end
-
       end
 
       context "when the license has yet to expire" do
@@ -261,5 +260,4 @@ describe License do
       build(:license, data: gl_license.export)
     end
   end
-
 end

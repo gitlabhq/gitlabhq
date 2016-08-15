@@ -162,6 +162,9 @@ if Gitlab::Metrics.enabled?
     config.instrument_instance_methods(Elastic::RepositoriesSearch)
     config.instrument_instance_methods(Elastic::SnippetsSearch)
     config.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
+    
+    # This is a Rails scope so we have to instrument it manually.
+    config.instrument_method(Project, :visible_to_user)
   end
 
   GC::Profiler.enable

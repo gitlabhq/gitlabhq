@@ -126,7 +126,7 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).pending_delete!
+    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
     flash[:alert] = "Project '#{@project.name}' will be deleted."
 
     redirect_to dashboard_projects_path
@@ -239,7 +239,7 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
-  def markdown_preview
+  def preview_markdown
     text = params[:text]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)

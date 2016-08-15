@@ -28,7 +28,7 @@ module Backup
 
         wiki = ProjectWiki.new(project)
 
-        if File.exists?(path_to_repo(wiki))
+        if File.exist?(path_to_repo(wiki))
           $progress.print " * #{wiki.path_with_namespace} ... "
           if wiki.repository.empty?
             $progress.puts " [SKIPPED]".color(:cyan)
@@ -49,7 +49,7 @@ module Backup
 
     def restore
       Gitlab.config.repositories.storages.each do |name, path|
-        next unless File.exists?(path)
+        next unless File.exist?(path)
 
         # Move repos dir to 'repositories.old' dir
         bk_repos_path = File.join(path, '..', 'repositories.old.' + Time.now.to_i.to_s)
@@ -63,7 +63,7 @@ module Backup
 
         project.ensure_dir_exist
 
-        if File.exists?(path_to_bundle(project))
+        if File.exist?(path_to_bundle(project))
           FileUtils.mkdir_p(path_to_repo(project))
           cmd = %W(tar -xf #{path_to_bundle(project)} -C #{path_to_repo(project)})
         else
@@ -80,7 +80,7 @@ module Backup
 
         wiki = ProjectWiki.new(project)
 
-        if File.exists?(path_to_bundle(wiki))
+        if File.exist?(path_to_bundle(wiki))
           $progress.print " * #{wiki.path_with_namespace} ... "
 
           # If a wiki bundle exists, first remove the empty repo

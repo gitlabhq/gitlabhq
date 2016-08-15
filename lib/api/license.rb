@@ -3,7 +3,6 @@ module API
     before { authenticated_as_admin! }
 
     resource :license do
-
       # Get information on the currently active license
       #
       # Example request:

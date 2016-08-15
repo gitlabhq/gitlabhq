@@ -20,5 +20,4 @@ describe PathLocks::UnlockService, services: true do
       described_class.new(project, user).execute(path_lock)
     end.to raise_exception(PathLocks::UnlockService::AccessDenied)
   end
-
 end

@@ -114,7 +114,7 @@ module Backup
 
       tar_file = ENV["BACKUP"].nil? ? File.join("#{file_list.first}_gitlab_backup.tar") : File.join(ENV["BACKUP"] + "_gitlab_backup.tar")
 
-      unless File.exists?(tar_file)
+      unless File.exist?(tar_file)
         puts "The specified backup doesn't exist!"
         exit 1
       end

@@ -4,17 +4,16 @@
 
 - [CONTRIBUTING.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) main contributing guide
 - [PROCESS.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md) contributing process
-- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit) to install a development version
+- [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/master/doc/howto/README.md) to install a development version
 
 ## Styleguides
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
+- [Documentation styleguide](doc_styleguide.md) Use this styleguide if you are
   contributing to documentation.
-- [Migration Style Guide](migration_style_guide.md) for creating safe migrations
+- [SQL Migration Style Guide](migration_style_guide.md) for creating safe SQL migrations
 - [Testing standards and style guidelines](testing.md)
-- [UI guide](ui_guide.md) for building GitLab with existing css styles and elements
+- [UI guide](ui_guide.md) for building GitLab with existing CSS styles and elements
 - [SQL guidelines](sql.md) for SQL guidelines
-
 
 ## Process
 

@@ -764,6 +764,53 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#when' do
+    subject { build.when }
+
+    context 'if is undefined' do
+      before do
+        build.when = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'if config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'if config has when' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('always') }
+        end
+      end
+    end
+  end
+
   describe '#retryable?' do
     context 'when build is running' do
       before do
@@ -839,8 +886,10 @@ describe Ci::Build, models: true do
       is_expected.to eq(build)
     end
 
-    context 'for success build' do
-      before { build.queue }
+    context 'for successful build' do
+      before do
+        build.update(status: 'success')
+      end
 
       it 'creates a new build' do
         is_expected.to be_pending

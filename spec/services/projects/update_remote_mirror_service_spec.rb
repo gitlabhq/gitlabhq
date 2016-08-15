@@ -122,7 +122,6 @@ describe Projects::UpdateRemoteMirrorService do
         end
       end
     end
-
   end
 
   def create_branch(repository, branch_name)

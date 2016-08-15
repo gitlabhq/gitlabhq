@@ -45,6 +45,5 @@ describe EE::Gitlab::LDAP::Group, lib: true do
           )
         )
     end
-
   end
 end

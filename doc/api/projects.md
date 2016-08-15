@@ -533,7 +533,7 @@ POST /projects/:id/star
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -599,7 +599,7 @@ DELETE /projects/:id/star
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -669,7 +669,7 @@ POST /projects/:id/archive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
 ```
 
 Example response:
@@ -755,7 +755,7 @@ POST /projects/:id/unarchive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
 ```
 
 Example response:
@@ -862,95 +862,9 @@ Parameters:
 In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
 
 
-## Team members
+## Project members
 
-### List project team members
-
-Get a list of a project's team members.
-
-```
-GET /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `query` (optional) - Query string to search for members
-
-### Get project team member
-
-Gets a project team member.
-
-```
-GET /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user
-
-```json
-{
-  "id": 1,
-  "username": "john_smith",
-  "email": "john@example.com",
-  "name": "John Smith",
-  "state": "active",
-  "created_at": "2012-05-23T08:00:58Z",
-  "access_level": 40
-}
-```
-
-### Add project team member
-
-Adds a user to a project team. This is an idempotent method and can be called multiple times
-with the same parameters. Adding team membership to a user that is already a member does not
-affect the existing membership.
-
-```
-POST /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user to add
-- `access_level` (required) - Project access level
-
-### Edit project team member
-
-Updates a project team member to a specified access level.
-
-```
-PUT /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-- `access_level` (required) - Project access level
-
-### Remove project team member
-
-Removes a user from a project team.
-
-```
-DELETE /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-
-This method removes the project member if the user has the proper access rights to do so.
-It returns a status code 403 if the member does not have the proper rights to perform this action.
-In all other cases this method is idempotent and revoking team membership for a user who is not
-currently a team member is considered success.
-Please note that the returned JSON currently differs slightly. Thus you should not
-rely on the returned JSON structure.
+Please consult the [Project Members](members.md) documentation.
 
 ### Share project with group
 

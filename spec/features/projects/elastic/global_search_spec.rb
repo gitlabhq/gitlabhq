@@ -34,5 +34,4 @@ feature 'Global elastic search', feature: true do
       expect(page).to have_selector('.gl-pagination .page', count: 2)
     end
   end
-
 end

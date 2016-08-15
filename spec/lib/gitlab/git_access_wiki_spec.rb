@@ -26,6 +26,5 @@ describe Gitlab::GitAccessWiki, lib: true do
         it { expect(subject.allowed?).to be_falsey }
       end
     end
-
   end
 end

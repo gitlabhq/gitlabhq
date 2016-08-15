@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe MergeRequests::MergeRequestDiffCacheService do
-
   let(:subject) { MergeRequests::MergeRequestDiffCacheService.new }
 
   describe '#execute' do

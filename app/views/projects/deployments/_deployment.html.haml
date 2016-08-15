@@ -8,6 +8,7 @@
   %td
     - if deployment.deployable
       = link_to [@project.namespace.becomes(Namespace), @project, deployment.deployable] do
+        = user_avatar(user: deployment.user, size: 20)
         = "#{deployment.deployable.name} (##{deployment.deployable.id})"
 
   %td

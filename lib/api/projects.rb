@@ -329,7 +329,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).pending_delete!
+        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
       end
 
       # Mark this project as forked from another

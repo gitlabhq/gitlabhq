@@ -176,7 +176,6 @@ describe JenkinsService do
         expect(@jenkins_service.password).to eq('password')
         expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
       end
-
     end
   end
 end

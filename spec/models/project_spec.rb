@@ -754,6 +754,20 @@ describe Project, models: true do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.cached_count', caching: true do
+    let(:group)     { create(:group, :public) }
+    let!(:project1) { create(:empty_project, :public, group: group) }
+    let!(:project2) { create(:empty_project, :public, group: group) }
+
+    it 'returns total project count' do
+      expect(Project).to receive(:count).once.and_call_original
+
+      3.times do
+        expect(Project.cached_count).to eq(2)
+      end
+    end
+  end
+
   describe '.trending' do
     let(:group)    { create(:group, :public) }
     let(:project1) { create(:empty_project, :public, group: group) }
@@ -1173,7 +1187,6 @@ describe Project, models: true do
         expect(project.reload.import_url).to eq('http://test.com')
       end
     end
-
   end
 
   describe '#protected_branch?' do
@@ -1348,7 +1361,6 @@ describe Project, models: true do
   end
 
   describe 'Project import job' do
-
     let(:project) { create(:empty_project) }
     let(:mirror) { false }
 
