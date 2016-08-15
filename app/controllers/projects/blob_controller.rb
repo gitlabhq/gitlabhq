@@ -17,6 +17,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_action :require_branch_head, only: [:edit, :update]
   before_action :editor_variables, except: [:show, :preview, :diff]
   before_action :validate_diff_params, only: :diff
+  before_action :set_last_commit_sha, only: [:edit, :update]
 
   def new
     commit unless @repository.empty?
@@ -33,7 +34,6 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def edit
-    @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
     blob.load_all_data!(@repository)
   end
 
@@ -55,6 +55,10 @@ class Projects::BlobController < Projects::ApplicationController
     create_commit(Files::UpdateService, success_path: after_edit_path,
                                         failure_view: :edit,
                                         failure_path: namespace_project_blob_path(@project.namespace, @project, @id))
+
+  rescue Files::UpdateService::FileChangedError
+    @conflict = true
+    render :edit
   end
 
   def preview
@@ -152,7 +156,8 @@ class Projects::BlobController < Projects::ApplicationController
       file_path: @file_path,
       commit_message: params[:commit_message],
       file_content: params[:content],
-      file_content_encoding: params[:encoding]
+      file_content_encoding: params[:encoding],
+      last_commit_sha: params[:last_commit_sha]
     }
   end
 
@@ -160,5 +165,10 @@ class Projects::BlobController < Projects::ApplicationController
     if [:since, :to, :offset].any? { |key| params[key].blank? }
       render nothing: true
     end
+  end
+
+  def set_last_commit_sha
+    @last_commit_sha = Gitlab::Git::Commit.
+      last_for_path(@repository, @ref, @path).sha
   end
 end

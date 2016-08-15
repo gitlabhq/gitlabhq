@@ -42,6 +42,7 @@ describe 'Project variables', js: true do
       find('.btn-variable-edit').click
     end
 
+    expect(page).to have_content('Update variable')
     fill_in('variable_key', with: 'key')
     fill_in('variable_value', with: 'key value')
     click_button('Save variable')

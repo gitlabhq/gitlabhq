@@ -10,6 +10,7 @@ class Spinach::Features::ProjectBuildsArtifacts < Spinach::FeatureSteps
 
   step 'I click artifacts browse button' do
     click_link 'Browse'
+    expect(page).not_to have_selector('.build-sidebar')
   end
 
   step 'I should see content of artifacts archive' do
