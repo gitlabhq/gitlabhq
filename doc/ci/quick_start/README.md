@@ -218,20 +218,12 @@ project's settings.
 For more information read the
 [Builds emails service documentation](../../project_services/builds_emails.md).
 
-## Builds badge
-
-You can access a builds badge image using following link:
-
-```
-http://example.gitlab.com/namespace/project/badges/branch/build.svg
-```
-
-Awesome! You started using CI in GitLab!
-
 ## Examples
 
 Visit the [examples README][examples] to see a list of examples using GitLab
 CI with various languages.
+
+Awesome! You started using CI in GitLab!
 
 [runner-install]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/tree/master#install-gitlab-runner
 [blog-ci]: https://about.gitlab.com/2015/05/06/why-were-replacing-gitlab-ci-jobs-with-gitlab-ci-dot-yml/

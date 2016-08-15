@@ -1,21 +1,27 @@
 require 'spec_helper'
 
-describe Gitlab::Badge::Build do
+describe Gitlab::Badge::Build::Status do
   let(:project) { create(:project) }
   let(:sha) { project.commit.sha }
   let(:branch) { 'master' }
   let(:badge) { described_class.new(project, branch) }
 
+  describe '#entity' do
+    it 'always says build' do
+      expect(badge.entity).to eq 'build'
+    end
+  end
+
+  describe '#template' do
+    it 'returns badge template' do
+      expect(badge.template.key_text).to eq 'build'
+    end
+  end
+
   describe '#metadata' do
     it 'returns badge metadata' do
       expect(badge.metadata.image_url)
         .to include 'badges/master/build.svg'
-    end
-  end
-
-  describe '#key_text' do
-    it 'always says build' do
-      expect(badge.key_text).to eq 'build'
     end
   end
 
@@ -30,12 +36,6 @@ describe Gitlab::Badge::Build do
           expect(badge.status).to eq 'success'
         end
       end
-
-      describe '#value_text' do
-        it 'returns correct value text' do
-          expect(badge.value_text).to eq 'success'
-        end
-      end
     end
 
     context 'build failed' do
@@ -44,12 +44,6 @@ describe Gitlab::Badge::Build do
       describe '#status' do
         it 'failed' do
           expect(badge.status).to eq 'failed'
-        end
-      end
-
-      describe '#value_text' do
-        it 'has correct value text' do
-          expect(badge.value_text).to eq 'failed'
         end
       end
     end
@@ -85,12 +79,6 @@ describe Gitlab::Badge::Build do
     describe '#status' do
       it 'is unknown' do
         expect(badge.status).to eq 'unknown'
-      end
-    end
-
-    describe '#value_text' do
-      it 'has correct value text' do
-        expect(badge.value_text).to eq 'unknown'
       end
     end
   end
