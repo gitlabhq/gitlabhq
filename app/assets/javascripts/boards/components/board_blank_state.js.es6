@@ -20,7 +20,7 @@
           BoardsStore.addList({
             title: label.title,
             position: i,
-            type: 'label',
+            list_type: 'label',
             label: {
               title: label.title,
               color: label.color
@@ -37,6 +37,7 @@
             for (let i = 0, dataLength = data.length; i < dataLength; i++) {
               const listObj = data[i],
                     list = BoardsStore.findList('title', listObj.title);
+
               list.id = listObj.id;
               list.label.id = listObj.label.id;
               list.getIssues();

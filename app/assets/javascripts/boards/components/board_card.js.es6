@@ -7,10 +7,10 @@
       disabled: Boolean
     },
     methods: {
-      filterByLabel (label, $event) {
+      filterByLabel (label, e) {
         let labelToggleText = label.title;
         const labelIndex = BoardsStore.state.filters['label_name'].indexOf(label.title);
-        $($event.target).tooltip('hide');
+        $(e.target).tooltip('hide');
 
         if (labelIndex === -1) {
           BoardsStore.state.filters['label_name'].push(label.title);

@@ -44,8 +44,7 @@
       },
     },
     ready () {
-      const list = this.list,
-        options = gl.getBoardSortableDefaultOptions({
+      const options = gl.getBoardSortableDefaultOptions({
           group: 'issues',
           sort: false,
           disabled: this.disabled,
@@ -66,7 +65,7 @@
         options.handle = '.js-card-drag-handle';
       }
 
-      Sortable.create(this.$els.list, options);
+      this.sortable = Sortable.create(this.$els.list, options);
 
       // Scroll event on list to load more
       this.$els.list.onscroll = () => {
@@ -74,6 +73,9 @@
           this.loadNextPage();
         }
       };
+    },
+    beforeDestroy () {
+      this.sortable.destroy();
     }
   });
 

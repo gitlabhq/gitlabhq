@@ -31,9 +31,11 @@
         this.query = '';
       },
       getFilterData () {
+        if (!this.list.canSearch()) return this.filters;
+
         const filters = this.filters;
-        let queryData = this.list.canSearch() ? { search: this.query } : {};
-        
+        let queryData = { search: this.query };
+
         Object.keys(filters).forEach((key) => { queryData[key] = filters[key]; });
 
         return queryData;
@@ -41,7 +43,7 @@
     },
     computed: {
       isPreset () {
-        return this.list.type === 'backlog' || this.list.type === 'done' || this.list.type === 'blank';
+        return ['backlog', 'done', 'blank'].indexOf(this.list.type) > -1;
       }
     },
     ready () {
@@ -59,7 +61,10 @@
         options.handle = '.js-board-drag-handle';
       }
 
-      Sortable.create(this.$el.parentNode, options);
+      this.sortable = Sortable.create(this.$el.parentNode, options);
+    },
+    beforeDestroy () {
+      this.sortable.destroy();
     }
   });
 
