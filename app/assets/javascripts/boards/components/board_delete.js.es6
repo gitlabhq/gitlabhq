@@ -1,5 +1,8 @@
 (() => {
-  const BoardDelete = Vue.extend({
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.BoardDelete = Vue.extend({
     props: {
       list: Object
     },
@@ -14,6 +17,4 @@
       }
     }
   });
-
-  Vue.component('board-delete', BoardDelete);
 })();

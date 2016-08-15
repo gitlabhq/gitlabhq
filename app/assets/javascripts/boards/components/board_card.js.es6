@@ -1,5 +1,8 @@
 (() => {
-  const BoardCard = Vue.extend({
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.BoardCard = Vue.extend({
     props: {
       list: Object,
       issue: Object,
@@ -34,6 +37,4 @@
       }
     }
   });
-
-  Vue.component('board-card', BoardCard);
 })();

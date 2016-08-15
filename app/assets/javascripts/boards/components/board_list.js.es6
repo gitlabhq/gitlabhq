@@ -1,5 +1,13 @@
+//= require ./board_card
+
 (() => {
-  const BoardList = Vue.extend({
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.BoardList = Vue.extend({
+    components: {
+      'board-card': gl.issueBoards.BoardCard
+    },
     props: {
       disabled: Boolean,
       list: Object,
@@ -78,6 +86,4 @@
       this.sortable.destroy();
     }
   });
-
-  Vue.component('board-list', BoardList);
 })();

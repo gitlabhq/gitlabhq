@@ -1,5 +1,8 @@
 (() => {
-  const BoardBlankState = Vue.extend({
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.BoardBlankState = Vue.extend({
     data () {
       return {
         predefinedLabels: [
@@ -49,6 +52,4 @@
       }
     }
   });
-
-  Vue.component('board-blank-state', BoardBlankState);
 })();

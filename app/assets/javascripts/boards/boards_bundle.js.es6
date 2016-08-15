@@ -5,7 +5,8 @@
 //= require_tree ./stores
 //= require_tree ./services
 //= require_tree ./mixins
-//= require_tree ./components
+//= require ./components/board
+//= require ./components/new_list_dropdown
 
 $(() => {
   const $boardApp = $('#board-app');
@@ -18,6 +19,9 @@ $(() => {
 
   gl.IssueBoardsApp = new Vue({
     el: $boardApp.get(0),
+    components: {
+      'board': gl.issueBoards.Board
+    },
     data: {
       state: gl.issueBoards.BoardsStore.state,
       loading: true,

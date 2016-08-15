@@ -1,5 +1,17 @@
+//= require ./board_blank_state
+//= require ./board_delete
+//= require ./board_list
+
 (() => {
-  const Board = Vue.extend({
+  window.gl = window.gl || {};
+  window.gl.issueBoards = window.gl.issueBoards || {};
+
+  gl.issueBoards.Board = Vue.extend({
+    components: {
+      'board-list': gl.issueBoards.BoardList,
+      'board-delete': gl.issueBoards.BoardDelete,
+      'board-blank-state': gl.issueBoards.BoardBlankState
+    },
     props: {
       list: Object,
       disabled: Boolean,
@@ -67,6 +79,4 @@
       this.sortable.destroy();
     }
   });
-
-  Vue.component('board', Board)
 })();
