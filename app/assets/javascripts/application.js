@@ -223,9 +223,10 @@
       return $('.navbar-toggle').toggleClass('active');
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
-      $(this).toggleClass('active');
-      var notesHolders = $(this).closest(".diff-file").find(".notes_holder");
-      if ($(this).hasClass('active')) {
+      var $this = $(this);
+      $this.toggleClass('active');
+      var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+      if ($this.hasClass('active')) {
         notesHolders.show();
       } else {
         notesHolders.hide();
