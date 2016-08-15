@@ -256,7 +256,7 @@ module Ci
     end
 
     def update_duration
-      self.duration = statuses.latest.duration
+      self.duration = calculate_duration
     end
 
     def execute_hooks
