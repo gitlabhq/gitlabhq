@@ -18,7 +18,7 @@
       - if artifacts.any?
         %li.dropdown-header Artifacts
         - unless pipeline.latest?
-          - latest_pipeline = @project.pipeline_for(ref)
+          - latest_pipeline = project.pipeline_for(ref)
           %li
             %span= latest_pipeline.status.humanize
           %li.dropdown-header Previous Artifacts
