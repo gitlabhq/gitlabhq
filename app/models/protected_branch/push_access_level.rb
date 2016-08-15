@@ -12,6 +12,7 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
                                                              Gitlab::Access::NO_ACCESS] }
 
   scope :by_user, -> (user) { where(user: user ) }
+  scope :by_group, -> (group) { where(group: group ) }
 
   def self.human_access_levels
     {

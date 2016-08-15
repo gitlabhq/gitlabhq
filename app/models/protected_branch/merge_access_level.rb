@@ -11,6 +11,7 @@ class ProtectedBranch::MergeAccessLevel < ActiveRecord::Base
                                                              Gitlab::Access::DEVELOPER] }
 
   scope :by_user, -> (user) { where(user: user ) }
+  scope :by_group, -> (group) { where(group: group ) }
 
   def self.human_access_levels
     {
