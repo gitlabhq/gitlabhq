@@ -162,7 +162,12 @@ class IssuableBaseService < BaseService
 
     if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
-      handle_common_system_notes(issuable, old_labels: old_labels)
+
+      # We do not touch as it will affect a update on updated_at field
+      ActiveRecord::Base.no_touching do
+        handle_common_system_notes(issuable, old_labels: old_labels)
+      end
+
       handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')

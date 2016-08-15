@@ -479,16 +479,16 @@ describe API::API, api: true  do
       expect(json_response['labels']).to eq(['label', 'label2'])
     end
 
-    it "emails label subscribers" do
-      clear_enqueued_jobs
+    it "sends notifications for subscribers of newly added labels" do
       label = project.labels.first
       label.toggle_subscription(user2)
 
-      expect do
+      perform_enqueued_jobs do
         post api("/projects/#{project.id}/issues", user),
           title: 'new issue', labels: label.title
-      end.to change{enqueued_jobs.size}.by(1)
-      expect(response.status).to eq(201)
+      end
+
+      should_email(user2)
     end
 
     it "returns a 400 bad request if title not given" do
@@ -644,6 +644,18 @@ describe API::API, api: true  do
           title: 'updated title'
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([label.title])
+    end
+
+    it "sends notifications for subscribers of newly added labels when issue is updated" do
+      label = project.labels.first
+      label.toggle_subscription(user2)
+
+      perform_enqueued_jobs do
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title', labels: label.title
+      end
+
+      should_email(user2)
     end
 
     it 'removes all labels' do

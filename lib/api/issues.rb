@@ -154,14 +154,9 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
-        # Find or create labels
-        if params[:labels].present?
-          attrs[:label_ids] = params[:labels].split(",").map do |label_name|
-            user_project.labels.create_with(color: Label::DEFAULT_COLOR)
-                               .find_or_create_by(title: label_name.strip)
-                               .id
-          end
-        end
+        # Find or create labels to attach to the issue. Labels are vaild
+        # because we already checked its name, so there can't be an error here
+        attrs[:label_ids] = get_label_ids(params[:labels]) if params[:labels].present?
 
         issue = ::Issues::CreateService.new(user_project, current_user, attrs.merge(request: request, api: true)).execute
 
@@ -203,17 +198,16 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
+        # Find or create labels and attach to issue. Labels are valid because
+        # we already checked its name, so there can't be an error here
+        if params[:labels] && can?(current_user, :admin_issue, user_project)
+          issue.remove_labels
+          attrs[:label_ids] = get_label_ids(params[:labels])
+        end
+
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 
         if issue.valid?
-          # Find or create labels and attach to issue. Labels are valid because
-          # we already checked its name, so there can't be an error here
-          if params[:labels] && can?(current_user, :admin_issue, user_project)
-            issue.remove_labels
-            # Create and add labels to the new created issue
-            issue.add_labels_by_names(params[:labels].split(','))
-          end
-
           present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
