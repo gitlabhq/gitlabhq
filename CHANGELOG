@@ -3,6 +3,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
   - Fix privilege escalation via project export.
+  - Require administrator privileges to perform a project import.
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
