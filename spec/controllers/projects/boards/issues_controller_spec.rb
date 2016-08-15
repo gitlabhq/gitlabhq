@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::BoardIssuesController do
+describe Projects::Boards::IssuesController do
   let(:project) { create(:project_with_board) }
   let(:user)    { create(:user) }
 

@@ -857,14 +857,16 @@ Rails.application.routes.draw do
         end
 
         resource :board, only: [:show] do
-          resources :issues, only: [:update], controller: :board_issues
+          scope module: :boards do
+            resources :issues, only: [:update]
 
-          resources :lists, only: [:create, :update, :destroy], controller: :board_lists do
-            collection do
-              post :generate
+            resources :lists, only: [:create, :update, :destroy] do
+              collection do
+                post :generate
+              end
+
+              resources :issues, only: [:index]
             end
-
-            resources :issues, only: [:index], controller: :board_issues
           end
         end
 
