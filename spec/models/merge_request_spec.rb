@@ -159,7 +159,7 @@ describe MergeRequest, models: true do
 
     context 'when there are MR diffs' do
       it 'delegates to the MR diffs' do
-        merge_request.merge_request_diffs.build
+        merge_request.save
 
         expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
 
