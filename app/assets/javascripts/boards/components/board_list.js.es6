@@ -69,7 +69,7 @@
           }
         });
 
-      if (bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'xs') {
+      if (bp.getBreakpointSize() === 'xs') {
         options.handle = '.js-card-drag-handle';
       }
 
