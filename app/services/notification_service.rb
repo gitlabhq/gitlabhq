@@ -500,7 +500,8 @@ class NotificationService
   end
 
   def new_mentions_in_resource_email(target, project, new_mentioned_users, current_user, method)
-    recipients = build_recipients(target, project, current_user) & new_mentioned_users
+    recipients = build_recipients(target, project, current_user, action: "new")
+    recipients = recipients & new_mentioned_users
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, current_user.id).deliver_later

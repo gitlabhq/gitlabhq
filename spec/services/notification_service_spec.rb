@@ -411,12 +411,13 @@ describe NotificationService, services: true do
       end
 
       it "should email new mentions with a watch level higher than participant" do
-        send_notifications(@u_watcher, @u_participant_mentioned)
+        send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
 
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
+        should_email(@u_custom_global)
 
-        expect(ActionMailer::Base.deliveries.count).to eq 2
+        expect(ActionMailer::Base.deliveries.count).to eq 3
       end
 
       it "should not email new mentions with a watch level equal to or less than participant" do
@@ -726,6 +727,8 @@ describe NotificationService, services: true do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
+      update_custom_notification(:new_merge_request, @u_guest_custom, project)
+      update_custom_notification(:new_merge_request, @u_custom_global)
       ActionMailer::Base.deliveries.clear
     end
 
@@ -801,12 +804,13 @@ describe NotificationService, services: true do
       end
 
       it "should email new mentions with a watch level higher than participant" do
-        send_notifications(@u_watcher, @u_participant_mentioned)
+        send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
 
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
+        should_email(@u_custom_global)
 
-        expect(ActionMailer::Base.deliveries.count).to eq 2
+        expect(ActionMailer::Base.deliveries.count).to eq 3
       end
 
       it "should not email new mentions with a watch level equal to or less than participant" do
