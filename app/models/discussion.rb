@@ -57,6 +57,8 @@ class Discussion
   def id
     first_note.discussion_id
   end
+  
+  alias_method :to_param, :id
 
   def diff_discussion?
     first_note.diff_note?

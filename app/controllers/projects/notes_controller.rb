@@ -72,7 +72,7 @@ class Projects::NotesController < Projects::ApplicationController
 
     note.resolve!(current_user)
 
-    MergeRequests::AllDiscussionsResolvedService.new(project, current_user).execute(note.noteable)
+    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
 
     discussion = note.discussion
 
@@ -166,7 +166,7 @@ class Projects::NotesController < Projects::ApplicationController
       }
 
       if note.diff_note?
-        discussion = note.as_discussion
+        discussion = note.to_discussion
 
         attrs.merge!(
           diff_discussion_html: diff_discussion_html(discussion),

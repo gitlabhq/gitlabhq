@@ -5,6 +5,16 @@ describe Projects::DiscussionsController do
   let(:project) { create(:project) }
   let(:merge_request) { create(:merge_request, source_project: project) }
   let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+  let(:discussion) { note.discussion }
+
+  let(:request_params) do
+    {
+      namespace_id: project.namespace,
+      project_id: project,
+      merge_request_id: merge_request,
+      id: note.discussion_id
+    }
+  end
 
   describe 'POST resolve' do
     before do
@@ -13,7 +23,7 @@ describe Projects::DiscussionsController do
 
     context "when the user is not authorized to resolve the discussion" do
       it "returns status 404" do
-        post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+        post :resolve, request_params
 
         expect(response).to have_http_status(404)
       end
@@ -30,7 +40,7 @@ describe Projects::DiscussionsController do
         end
 
         it "returns status 404" do
-          post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          post :resolve, request_params
 
           expect(response).to have_http_status(404)
         end
@@ -38,25 +48,26 @@ describe Projects::DiscussionsController do
 
       context "when the discussion is resolvable" do
         it "resolves the discussion" do
-          expect_any_instance_of(Discussion).to receive(:resolve!).with(user)
+          post :resolve, request_params
 
-          post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          expect(note.reload.discussion.resolved?).to be true
+          expect(note.reload.discussion.resolved_by).to eq(user)
         end
 
-        it "checks whether all notes are resolved" do
-          expect_any_instance_of(MergeRequests::AllDiscussionsResolvedService).to receive(:execute).with(merge_request)
+        it "sends notifications if all discussions are resolved" do
+          expect_any_instance_of(MergeRequests::ResolvedDiscussionNotificationService).to receive(:execute).with(merge_request)
 
-          post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          post :resolve, request_params
         end
 
         it "returns the name of the resolving user" do
-          post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          post :resolve, request_params
 
           expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
         end
 
         it "returns status 200" do
-          post :resolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          post :resolve, request_params
 
           expect(response).to have_http_status(200)
         end
@@ -67,11 +78,13 @@ describe Projects::DiscussionsController do
   describe 'DELETE unresolve' do
     before do
       sign_in user
+
+      note.discussion.resolve!(user)
     end
 
     context "when the user is not authorized to resolve the discussion" do
       it "returns status 404" do
-        delete :unresolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+        delete :unresolve, request_params
 
         expect(response).to have_http_status(404)
       end
@@ -88,7 +101,7 @@ describe Projects::DiscussionsController do
         end
 
         it "returns status 404" do
-          delete :unresolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          delete :unresolve, request_params
 
           expect(response).to have_http_status(404)
         end
@@ -96,13 +109,13 @@ describe Projects::DiscussionsController do
 
       context "when the discussion is resolvable" do
         it "unresolves the discussion" do
-          expect_any_instance_of(Discussion).to receive(:unresolve!)
+          delete :unresolve, request_params
 
-          delete :unresolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          expect(note.reload.discussion.resolved?).to be false
         end
 
         it "returns status 200" do
-          delete :unresolve, namespace_id: project.namespace.path, project_id: project.path, merge_request_id: merge_request.iid, id: note.discussion_id
+          delete :unresolve, request_params
 
           expect(response).to have_http_status(200)
         end

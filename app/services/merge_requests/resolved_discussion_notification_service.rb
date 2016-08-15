@@ -1,5 +1,5 @@
 module MergeRequests
-  class AllDiscussionsResolvedService < MergeRequests::BaseService
+  class ResolvedDiscussionNotificationService < MergeRequests::BaseService
     def execute(merge_request)
       return unless merge_request.discussions_resolved?
 

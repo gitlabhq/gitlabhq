@@ -103,7 +103,7 @@ describe DiffNote, models: true do
 
   describe "#active?" do
     context "when noteable is a commit" do
-      subject { create(:diff_note_on_commit, project: project, position: position) }
+      subject { build(:diff_note_on_commit, project: project, position: position) }
 
       it "returns true" do
         expect(subject.active?).to be true

@@ -113,7 +113,7 @@ class DiffNote < Note
     Discussion.new(discussion_notes)
   end
 
-  def as_discussion
+  def to_discussion
     Discussion.new([self])
   end
 
