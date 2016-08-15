@@ -14,14 +14,16 @@ describe MergeRequest, elastic: true do
   it "searches merge requests" do
     project = create :project
 
-    create :merge_request, title: 'bla-bla term', source_project: project
-    create :merge_request, description: 'term in description', source_project: project, target_branch: "feature2"
-    create :merge_request, source_project: project, target_branch: "feature3"
+    Sidekiq::Testing.inline! do
+      create :merge_request, title: 'bla-bla term', source_project: project
+      create :merge_request, description: 'term in description', source_project: project, target_branch: "feature2"
+      create :merge_request, source_project: project, target_branch: "feature3"
 
-    # The merge request you have no access to
-    create :merge_request, title: 'also with term'
+      # The merge request you have no access to
+      create :merge_request, title: 'also with term'
 
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     options = { project_ids: [project.id] }
 
