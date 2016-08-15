@@ -172,10 +172,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
-    if self.compare
-      self.compare.diffs(diff_options)
+    if compare
+      compare.diffs(diff_options)
     else
-      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+      merge_request_diff.diffs(diff_options)
     end
   end
 

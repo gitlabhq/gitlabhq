@@ -141,7 +141,13 @@ class MergeRequestDiff < ActiveRecord::Base
     base_commit_sha? && head_commit_sha? && start_commit_sha?
   end
 
-  private
+  def diffs(diff_options = nil)
+    Gitlab::Diff::FileCollection::MergeRequestDiff.new(self, diff_options: diff_options)
+  end
+
+  def project
+    merge_request.target_project
+  end
 
   def compare
     @compare ||=
@@ -156,6 +162,8 @@ class MergeRequestDiff < ActiveRecord::Base
         )
       end
   end
+
+  private
 
   def dump_commits(commits)
     commits.map(&:to_hash)
@@ -227,10 +235,6 @@ class MergeRequestDiff < ActiveRecord::Base
 
     new_attributes[:st_diffs] = new_diffs
     update_columns_serialized(new_attributes)
-  end
-
-  def project
-    merge_request.target_project
   end
 
   def repository
