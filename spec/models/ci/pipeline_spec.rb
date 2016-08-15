@@ -124,8 +124,7 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
-    let(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline }
 
     describe '#duration' do
       before do
