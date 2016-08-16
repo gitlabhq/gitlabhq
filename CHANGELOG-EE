@@ -13,7 +13,7 @@ v 8.11.0 (unreleased)
   - [Fix] Push rules check existing commits in some cases
 
 v 8.10.6
-  - Fix race condition with UpdateMirrorWorker Lease
+  - Fix race condition with UpdateMirrorWorker Lease. !641
 
 v 8.10.5
   - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637
@@ -48,8 +48,8 @@ v 8.10.0
   - Ticket-based Kerberos authentication (SPNEGO)
   - [Elastic] Suppress ActiveRecord::RecordNotFound error in ElasticIndexWorker
 
-v.8.9.7 (unreleased)
-  - Fix error in admin dashboard when Geo is enabled and current node is nil.
+v 8.9.7
+  - No EE-specific changes
 
 v 8.9.6
   - Avoid adding index for key fingerprint if it already exists. !539
@@ -94,6 +94,9 @@ v 8.9.0
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
   - Fix: Git hooks don't fire when committing from the UI
+
+v 8.8.8
+  - No EE-specific changes
 
 v 8.8.7
   - No EE-specific changes
