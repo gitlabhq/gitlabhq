@@ -6,36 +6,24 @@ module Boards
         return false unless valid_move?
 
         update_service.execute(issue)
-        reopen_service.execute(issue) if moving_from.done?
-        close_service.execute(issue)  if moving_to.done?
-
-        true
       end
 
       private
 
       def valid_move?
-        moving_from.present? && moving_to.present?
+        moving_from_list.present? && moving_to_list.present?
       end
 
       def issue
         @issue ||= project.issues.visible_to_user(user).find_by!(iid: params[:id])
       end
 
-      def moving_from
-        @moving_from ||= board.lists.find_by(id: params[:from_list_id])
+      def moving_from_list
+        @moving_from_list ||= board.lists.find_by(id: params[:from_list_id])
       end
 
-      def moving_to
-        @moving_to ||= board.lists.find_by(id: params[:to_list_id])
-      end
-
-      def close_service
-        ::Issues::CloseService.new(project, user)
-      end
-
-      def reopen_service
-        ::Issues::ReopenService.new(project, user)
+      def moving_to_list
+        @moving_to_list ||= board.lists.find_by(id: params[:to_list_id])
       end
 
       def update_service
@@ -45,18 +33,24 @@ module Boards
       def issue_params
         {
           add_label_ids: add_label_ids,
-          remove_label_ids: remove_label_ids
+          remove_label_ids: remove_label_ids,
+          state_event: issue_state
         }
       end
 
+      def issue_state
+        return 'reopen' if moving_from_list.done?
+        return 'close'  if moving_to_list.done?
+      end
+
       def add_label_ids
-        [moving_to.label_id].compact
+        [moving_to_list.label_id].compact
       end
 
       def remove_label_ids
         label_ids =
-          if moving_to.label?
-            moving_from.label_id
+          if moving_to_list.label?
+            moving_from_list.label_id
           else
             board.lists.label.pluck(:label_id)
           end
