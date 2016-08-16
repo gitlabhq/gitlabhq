@@ -676,6 +676,7 @@ class MergeRequest < ActiveRecord::Base
 
   def pipeline
     return unless diff_head_sha && source_project
+
     @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
