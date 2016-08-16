@@ -37,5 +37,5 @@
             %li.dropdown-header Previous Artifacts
           - artifacts.each do |job|
             %li
-              = link_to search_namespace_project_artifacts_path(@project.namespace, @project, ref, 'download', job: job.name), rel: 'nofollow' do
+              = link_to latest_succeeded_namespace_project_artifacts_path(@project.namespace, @project, ref, 'download', job: job.name), rel: 'nofollow' do
                 %span Download '#{job.name}'
