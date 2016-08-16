@@ -6,6 +6,8 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy
+    todo = Todo.new(id: params[:id])
+
     TodoService.new.mark_todos_as_done([todo], current_user)
 
     respond_to do |format|
@@ -26,10 +28,6 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   private
-
-  def todo
-    @todo ||= find_todos.find(params[:id])
-  end
 
   def find_todos
     @todos ||= TodosFinder.new(current_user, params).execute
