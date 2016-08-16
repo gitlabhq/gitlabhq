@@ -134,8 +134,8 @@ feature 'Diff notes', js: true, feature: true do
 
     def get_parallel_line_components(line_holder, diff_side = nil)
       side_index = diff_side == 'left' ? 0 : 1
-      find('.line_content', match: :first)
-      find('.diff-line-num', match: :first)
+      line_holder.find('.line_content', match: :first)
+      line_holder.find('.diff-line-num', match: :first)
       { content: line_holder.all('.line_content')[side_index], num: line_holder.all('.diff-line-num')[side_index] }
     end
 
