@@ -5,14 +5,14 @@ module Projects
       before_action :authorize_read_list!, only: [:index]
 
       def index
-        render json: project.board.lists.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :description, :color, :priority] } })
+        render json: serialize_as_json(project.board.lists)
       end
 
       def create
         list = ::Boards::Lists::CreateService.new(project, current_user, list_params).execute
 
         if list.valid?
-          render json: list.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :description, :color, :priority] } })
+          render json: serialize_as_json(list)
         else
           render json: list.errors, status: :unprocessable_entity
         end
@@ -42,7 +42,7 @@ module Projects
         service = ::Boards::Lists::GenerateService.new(project, current_user)
 
         if service.execute
-          render json: project.board.lists.label.as_json(only: [:id, :list_type, :position], methods: [:title], include: { label: { only: [:id, :title, :description, :color, :priority] } })
+          render json: serialize_as_json(project.board.lists.label)
         else
           head :unprocessable_entity
         end
@@ -64,6 +64,15 @@ module Projects
 
       def move_params
         params.require(:list).permit(:position).merge(id: params[:id])
+      end
+
+      def serialize_as_json(resource)
+        resource.as_json(
+          only: [:id, :list_type, :position],
+          methods: [:title],
+          include: {
+            label: { only: [:id, :title, :description, :color, :priority] }
+          })
       end
     end
   end
