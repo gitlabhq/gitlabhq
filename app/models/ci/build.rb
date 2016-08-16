@@ -351,7 +351,7 @@ module Ci
     end
 
     def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
+      !artifacts_expired? && artifacts_size.present?
     end
 
     def artifacts_metadata?
