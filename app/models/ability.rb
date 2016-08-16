@@ -73,7 +73,6 @@ class Ability
 
     def abilities_by_subject_class(user:, subject:)
       case subject
-      when Group then group_abilities(user, subject)
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
       when ProjectMember then project_member_abilities(user, subject)
@@ -88,8 +87,8 @@ class Ability
     def anonymous_abilities(subject)
       if subject.respond_to?(:project)
         ProjectPolicy.abilities(nil, subject.project)
-      elsif subject.is_a?(Group) || subject.respond_to?(:group)
-        anonymous_group_abilities(subject)
+      elsif subject.respond_to?(:group)
+        GroupPolicy.abilities(nil, subject.group)
       elsif subject.is_a?(User)
         anonymous_user_abilities
       else
@@ -164,38 +163,6 @@ class Ability
       ProjectPolicy.abilities(user, project).to_a
     end
 
-    def group_abilities(user, group)
-      rules = []
-      rules << :read_group if can_read_group?(user, group)
-
-      owner = user.admin? || group.has_owner?(user)
-      master = owner || group.has_master?(user)
-
-      # Only group masters and group owners can create new projects
-      if master
-        rules += [
-          :create_projects,
-          :admin_milestones
-        ]
-      end
-
-      # Only group owner and administrators can admin group
-      if owner
-        rules += [
-          :admin_group,
-          :admin_namespace,
-          :admin_group_member,
-          :change_visibility_level
-        ]
-      end
-
-      if group.public? || (group.internal? && !user.external?)
-        rules << :request_access if group.request_access_enabled && group.users.exclude?(user)
-      end
-
-      rules.flatten
-    end
-
     def can_read_group?(user, group)
       return true if user.admin?
       return true if group.public?
@@ -225,7 +192,7 @@ class Ability
       group = subject.group
 
       unless group.last_owner?(target_user)
-        can_manage = group_abilities(user, group).include?(:admin_group_member)
+        can_manage = allowed?(user, :admin_group_member, group)
 
         if can_manage
           rules << :update_group_member
