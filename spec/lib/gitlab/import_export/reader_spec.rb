@@ -12,7 +12,8 @@ describe Gitlab::ImportExport::Reader, lib: true  do
                   except: [:iid],
                   include: [:merge_request_diff, :merge_request_test]
                 } },
-                { commit_statuses: { include: :commit } }]
+                { commit_statuses: { include: :commit } },
+                { project_members: { include: { user: { only: [:email] } } } }]
     }
   end
 
