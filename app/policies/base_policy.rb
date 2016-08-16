@@ -3,6 +3,10 @@ class BasePolicy
     new(user, subject).abilities
   end
 
+  def self.class_for(subject)
+    "#{subject.class.name}Policy".constantize
+  end
+
   attr_reader :user, :subject
   def initialize(user, subject)
     @user = user
@@ -18,8 +22,12 @@ class BasePolicy
     collect_rules { anonymous_rules }
   end
 
-  def generate!
-    raise 'abstract'
+  def anonymous_rules
+    rules
+  end
+
+  def delegate!(new_subject)
+    @can.merge(BasePolicy.class_for(new_subject).abilities(@user, new_subject))
   end
 
   def can!(*rules)
