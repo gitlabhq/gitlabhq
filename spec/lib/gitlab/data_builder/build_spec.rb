@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe 'Gitlab::BuildDataBuilder' do
+describe Gitlab::DataBuilder::Build do
   let(:build) { create(:ci_build) }
 
   describe '.build' do
     let(:data) do
-      Gitlab::BuildDataBuilder.build(build)
+      described_class.build(build)
     end
 
     it { expect(data).to be_a(Hash) }
