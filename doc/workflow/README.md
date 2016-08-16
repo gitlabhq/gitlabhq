@@ -6,6 +6,7 @@
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
+- [Issue Board](../user/project/issue_board.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [Slash commands](slash_commands.md)
 - [File finder](file_finder.md)
