@@ -289,6 +289,7 @@ v 8.10.0
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Made project list visibility icon fixed width
   - Set import_url validation to be more strict
   - Memoize MR merged/closed events retrieval
   - Don't render discussion notes when requesting diff tab through AJAX
