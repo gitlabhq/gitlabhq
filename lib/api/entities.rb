@@ -129,12 +129,12 @@ module API
 
       expose :developers_can_push do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_levels.first.access_level == Gitlab::Access::DEVELOPER }
       end
 
       expose :developers_can_merge do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
+        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_levels.first.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 

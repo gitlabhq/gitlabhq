@@ -71,7 +71,10 @@ feature 'Projected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'production-stable', 'master')
       project.repository.add_branch(user, 'staging-stable', 'master')
       project.repository.add_branch(user, 'development', 'master')
-      create(:protected_branch, project: project, name: "*-stable")
+
+      visit namespace_project_protected_branches_path(project.namespace, project)
+      set_protected_branch_name('*-stable')
+      click_on "Protect"
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       click_on "2 matching branches"
@@ -96,7 +99,7 @@ feature 'Projected Branches', feature: true, js: true do
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_levels.first.access_level).to eq(access_type_id)
       end
 
       it "allows updating protected branches so that #{access_type_name} can push to them" do
@@ -112,7 +115,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.push_access_level.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_levels.first.access_level).to eq(access_type_id)
       end
     end
 
@@ -127,7 +130,7 @@ feature 'Projected Branches', feature: true, js: true do
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_levels.first.access_level).to eq(access_type_id)
       end
 
       it "allows updating protected branches so that #{access_type_name} can merge to them" do
@@ -143,7 +146,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.merge_access_level.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_levels.first.access_level).to eq(access_type_id)
       end
     end
   end
