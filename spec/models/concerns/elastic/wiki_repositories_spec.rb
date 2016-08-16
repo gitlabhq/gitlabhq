@@ -14,11 +14,12 @@ describe ProjectWiki, elastic: true do
   it "searches wiki page" do
     project = create :empty_project
 
-    project.wiki.create_page("index_page", "Bla bla")
+    Sidekiq::Testing.inline! do
+      project.wiki.create_page("index_page", "Bla bla")
+      project.wiki.index_blobs
 
-    project.wiki.index_blobs
-
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     expect(project.wiki.search('bla', type: :blob)[:blobs][:total_count]).to eq(1)
   end

@@ -14,13 +14,15 @@ describe Note, elastic: true do
   it "searches notes" do
     issue = create :issue
 
-    create :note, note: 'bla-bla term', project: issue.project
-    create :note, project: issue.project
+    Sidekiq::Testing.inline! do
+      create :note, note: 'bla-bla term', project: issue.project
+      create :note, project: issue.project
 
-    # The note in the project you have no access to
-    create :note, note: 'bla-bla term'
+      # The note in the project you have no access to
+      create :note, note: 'bla-bla term'
 
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     options = { project_ids: [issue.project.id] }
 
@@ -56,10 +58,10 @@ describe Note, elastic: true do
     it "does not find note" do
       issue = create :issue, :confidential
 
-      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
-      create :note, project: issue.project, noteable: issue
-
-      Gitlab::Elastic::Helper.refresh_index
+      Sidekiq::Testing.inline! do
+        create_notes_for(issue, 'bla-bla term')
+        Gitlab::Elastic::Helper.refresh_index
+      end
 
       options = { project_ids: [issue.project.id] }
 
@@ -70,10 +72,10 @@ describe Note, elastic: true do
       user = create :user
       issue = create :issue, :confidential, author: user
 
-      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
-      create :note, project: issue.project, noteable: issue
-
-      Gitlab::Elastic::Helper.refresh_index
+      Sidekiq::Testing.inline! do
+        create_notes_for(issue, 'bla-bla term')
+        Gitlab::Elastic::Helper.refresh_index
+      end
 
       options = { project_ids: [issue.project.id], current_user: user }
 
@@ -87,10 +89,10 @@ describe Note, elastic: true do
       member = create(:user)
       issue.project.team << [member, :developer]
 
-      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
-      create :note, project: issue.project, noteable: issue
-
-      Gitlab::Elastic::Helper.refresh_index
+      Sidekiq::Testing.inline! do
+        create_notes_for(issue, 'bla-bla term')
+        Gitlab::Elastic::Helper.refresh_index
+      end
 
       options = { project_ids: [issue.project.id], current_user: member }
 
@@ -104,14 +106,19 @@ describe Note, elastic: true do
       member = create(:user)
       issue.project.team << [member, :guest]
 
-      create :note, note: 'bla-bla term', project: issue.project, noteable: issue
-      create :note, project: issue.project, noteable: issue
-
-      Gitlab::Elastic::Helper.refresh_index
+      Sidekiq::Testing.inline! do
+        create_notes_for(issue, 'bla-bla term')
+        Gitlab::Elastic::Helper.refresh_index
+      end
 
       options = { project_ids: [issue.project.id], current_user: member }
 
       expect(Note.elastic_search('term', options: options).total_count).to eq(0)
     end
+  end
+
+  def create_notes_for(issue, note)
+    create :note, note: note, project: issue.project, noteable: issue
+    create :note, project: issue.project, noteable: issue
   end
 end

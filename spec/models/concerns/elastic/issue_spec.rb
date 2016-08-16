@@ -14,14 +14,16 @@ describe Issue, elastic: true do
   it "searches issues" do
     project = create :empty_project
 
-    create :issue, title: 'bla-bla term', project: project
-    create :issue, description: 'bla-bla term', project: project
-    create :issue, project: project
+    Sidekiq::Testing.inline! do
+      create :issue, title: 'bla-bla term', project: project
+      create :issue, description: 'bla-bla term', project: project
+      create :issue, project: project
 
-    # The issue I have no access to
-    create :issue, title: 'bla-bla term'
+      # The issue I have no access to
+      create :issue, title: 'bla-bla term'
 
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     options = { project_ids: [project.id] }
 
