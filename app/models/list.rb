@@ -9,12 +9,10 @@ class List < ActiveRecord::Base
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: :label?
 
-  delegate :name, to: :label, allow_nil: true, prefix: true
-
   before_destroy :can_be_destroyed, unless: :label?
 
   def title
-    label? ? label_name : list_type.humanize
+    label? ? label.name : list_type.humanize
   end
 
   private

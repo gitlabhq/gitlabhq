@@ -6,10 +6,6 @@ describe List do
     it { is_expected.to belong_to(:label) }
   end
 
-  describe 'delegate methods' do
-    it { is_expected.to delegate_method(:name).to(:label).with_prefix }
-  end
-
   describe 'validations' do
     it { is_expected.to validate_presence_of(:board) }
     it { is_expected.to validate_presence_of(:label) }
