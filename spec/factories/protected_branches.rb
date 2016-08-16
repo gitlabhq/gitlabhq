@@ -3,9 +3,9 @@ FactoryGirl.define do
     name
     project
 
-    after(:create) do |protected_branch|
-      protected_branch.push_access_levels.create!(access_level: Gitlab::Access::MASTER)
-      protected_branch.merge_access_levels.create!(access_level: Gitlab::Access::MASTER)
+    before(:create) do |protected_branch|
+      protected_branch.push_access_levels.new(access_level: Gitlab::Access::MASTER)
+      protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MASTER)
     end
 
     trait :developers_can_push do
