@@ -45,10 +45,10 @@ module Boards
 
       def remove_label_ids
         label_ids =
-          if moving_to_list.label?
+          if moving_to_list.movable?
             moving_from_list.label_id
           else
-            board.lists.label.pluck(:label_id)
+            board.lists.movable.pluck(:label_id)
           end
 
         Array(label_ids).compact

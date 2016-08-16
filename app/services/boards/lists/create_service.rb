@@ -10,7 +10,7 @@ module Boards
       private
 
       def next_position
-        max_position = board.lists.label.maximum(:position)
+        max_position = board.lists.movable.maximum(:position)
         max_position.nil? ? 0 : max_position.succ
       end
 

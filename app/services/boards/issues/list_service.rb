@@ -3,8 +3,8 @@ module Boards
     class ListService < Boards::BaseService
       def execute
         issues = IssuesFinder.new(user, filter_params).execute
-        issues = without_board_labels(issues) unless list.label?
-        issues = with_list_label(issues) if list.label?
+        issues = without_board_labels(issues) unless list.movable?
+        issues = with_list_label(issues) if list.movable?
         issues
       end
 
@@ -40,7 +40,7 @@ module Boards
       end
 
       def board_label_ids
-        @board_label_ids ||= board.lists.label.pluck(:label_id)
+        @board_label_ids ||= board.lists.movable.pluck(:label_id)
       end
 
       def without_board_labels(issues)

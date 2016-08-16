@@ -5,7 +5,7 @@ module Boards
         @old_position = list.position
         @new_position = params[:position]
 
-        return false unless list.label?
+        return false unless list.movable?
         return false unless valid_move?
 
         list.with_lock do
@@ -20,7 +20,7 @@ module Boards
 
       def valid_move?
         new_position.present? && new_position != old_position &&
-          new_position >= 0 && new_position < board.lists.label.size
+          new_position >= 0 && new_position < board.lists.movable.size
       end
 
       def reorder_intermediate_lists
@@ -32,15 +32,15 @@ module Boards
       end
 
       def decrement_intermediate_lists
-        board.lists.label.where('position > ?',  old_position)
-                         .where('position <= ?', new_position)
-                         .update_all('position = position - 1')
+        board.lists.movable.where('position > ?',  old_position)
+                           .where('position <= ?', new_position)
+                           .update_all('position = position - 1')
       end
 
       def increment_intermediate_lists
-        board.lists.label.where('position >= ?', new_position)
-                         .where('position < ?',  old_position)
-                         .update_all('position = position + 1')
+        board.lists.movable.where('position >= ?', new_position)
+                           .where('position < ?',  old_position)
+                           .update_all('position = position + 1')
       end
 
       def update_list_position(list)

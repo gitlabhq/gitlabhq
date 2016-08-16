@@ -13,7 +13,7 @@ module Boards
       private
 
       def decrement_higher_lists(list)
-        board.lists.label.where('position > ?',  list.position)
+        board.lists.movable.where('position > ?',  list.position)
                    .update_all('position = position - 1')
       end
 

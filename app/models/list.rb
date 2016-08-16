@@ -12,8 +12,13 @@ class List < ActiveRecord::Base
   before_destroy :can_be_destroyed
 
   scope :destroyable, -> { where(list_type: list_types[:label]) }
+  scope :movable, -> { where(list_type: list_types[:label]) }
 
   def destroyable?
+    label?
+  end
+
+  def movable?
     label?
   end
 

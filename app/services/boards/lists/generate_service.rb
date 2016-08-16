@@ -2,7 +2,7 @@ module Boards
   module Lists
     class GenerateService < Boards::BaseService
       def execute
-        return false unless board.lists.label.empty?
+        return false unless board.lists.movable.empty?
 
         List.transaction do
           label_params.each { |params| create_list(params) }

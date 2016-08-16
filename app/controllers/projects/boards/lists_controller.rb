@@ -19,7 +19,7 @@ module Projects
       end
 
       def update
-        list = project.board.lists.find(params[:id])
+        list = project.board.lists.movable.find(params[:id])
         service = ::Boards::Lists::MoveService.new(project, current_user, move_params)
 
         if service.execute(list)
@@ -44,7 +44,7 @@ module Projects
         service = ::Boards::Lists::GenerateService.new(project, current_user)
 
         if service.execute
-          render json: serialize_as_json(project.board.lists.label)
+          render json: serialize_as_json(project.board.lists.movable)
         else
           head :unprocessable_entity
         end
