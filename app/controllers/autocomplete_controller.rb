@@ -2,6 +2,7 @@ class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users]
   before_action :load_project, only: [:users]
   before_action :find_users, only: [:users]
+  before_action :load_project, only: [:users]
 
   def users
     @users = @users.non_ldap if params[:skip_ldap] == 'true'
@@ -55,9 +56,8 @@ class AutocompleteController < ApplicationController
     return if params[:project_id].blank?
     return if ability.blank?
 
-    project = Project.find_by(id: params[:project_id])
     @users.to_a.
-      select { |user| user.can?(ability, project) }.
+      select { |user| user.can?(ability, @project) }.
       take(Kaminari.config.default_per_page)
   end
 
