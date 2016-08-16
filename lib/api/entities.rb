@@ -512,6 +512,7 @@ module API
 
     class Environment < Grape::Entity
       expose :id, :name, :external_url
+      expose :project, using: Entities::Project
     end
 
     class EnvironmentBasic < Grape::Entity
