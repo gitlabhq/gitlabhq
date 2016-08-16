@@ -30,6 +30,10 @@ class BasePolicy
     @can.merge(BasePolicy.class_for(new_subject).abilities(@user, new_subject))
   end
 
+  def can?(rule)
+    @can.include?(rule) && !@cannot.include?(rule)
+  end
+
   def can!(*rules)
     @can.merge(rules)
   end
