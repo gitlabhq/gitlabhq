@@ -38,6 +38,11 @@ describe NotesHelper do
   end
 
   describe '#preload_max_access_for_authors' do
+    before do
+      # This method reads cache from RequestStore, so make sure it's clean.
+      RequestStore.clear!
+    end
+
     it 'loads multiple users' do
       expected_access = {
         owner.id => Gitlab::Access::OWNER,

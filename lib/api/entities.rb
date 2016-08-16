@@ -48,7 +48,8 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
+      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :note_events, :build_events, :pipeline_events
       expose :enable_ssl_verification
     end
 
@@ -129,12 +130,14 @@ module API
 
       expose :developers_can_push do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:push_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
 
       expose :developers_can_merge do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:merge_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -344,7 +347,8 @@ module API
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
+      expose :push_events, :issues_events, :merge_requests_events
+      expose :tag_push_events, :note_events, :build_events, :pipeline_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.

@@ -36,6 +36,9 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -261,5 +264,10 @@ class Issue < ActiveRecord::Base
 
   def overdue?
     due_date.try(:past?) || false
+  end
+
+  # Only issues on public projects should be checked for spam
+  def check_for_spam?
+    project.public?
   end
 end

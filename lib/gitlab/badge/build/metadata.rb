@@ -1,25 +1,17 @@
 module Gitlab
   module Badge
-    class Build
+    module Build
       ##
       # Class that describes build badge metadata
       #
-      class Metadata
-        include Gitlab::Application.routes.url_helpers
-        include ActionView::Helpers::AssetTagHelper
-        include ActionView::Helpers::UrlHelper
-
-        def initialize(project, ref)
-          @project = project
-          @ref = ref
+      class Metadata < Badge::Metadata
+        def initialize(badge)
+          @project = badge.project
+          @ref = badge.ref
         end
 
-        def to_html
-          link_to(image_tag(image_url, alt: 'build status'), link_url)
-        end
-
-        def to_markdown
-          "[![build status](#{image_url})](#{link_url})"
+        def title
+          'build status'
         end
 
         def image_url
