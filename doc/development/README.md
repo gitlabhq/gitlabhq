@@ -30,7 +30,11 @@
 - [Rake tasks](rake_tasks.md) for development
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [Sidekiq debugging](sidekiq_debugging.md)
+
+## Databases
+
 - [What requires downtime?](what_requires_downtime.md)
+- [Adding database indexes](adding_database_indexes.md)
 
 ## Compliance
 
