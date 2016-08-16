@@ -14,9 +14,9 @@ FactoryGirl.define do
     end
 
     trait :remove_default_access_levels do
-      after(:create) do |protected_branch|
-        protected_branch.push_access_levels.destroy_all
-        protected_branch.merge_access_levels.destroy_all
+      after(:build) do |protected_branch|
+        protected_branch.push_access_levels = []
+        protected_branch.merge_access_levels = []
       end
     end
 
