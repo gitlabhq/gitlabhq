@@ -3,12 +3,14 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
 
-  let(:project)   { create(:project) }
+  let(:project)   { create(:project_with_board) }
   let(:user)      { create(:user) }
   let!(:user2)    { create(:user) }
-  let!(:board)    { Boards::CreateService.new(project, user).execute }
 
   before do
+    create(:backlog_list, board: project.board)
+    create(:done_list, board: project.board)
+
     project.team << [user, :master]
     project.team << [user2, :master]
     login_as(user)
