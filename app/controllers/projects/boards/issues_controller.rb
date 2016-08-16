@@ -29,7 +29,11 @@ module Projects
       private
 
       def issue
-        @issue ||= project.issues.visible_to_user(current_user).find_by!(iid: params[:id])
+        @issue ||=
+          IssuesFinder.new(current_user, project_id: project.id, state: 'all')
+                      .execute
+                      .where(iid: params[:id])
+                      .first!
       end
 
       def authorize_read_issue!
