@@ -1,7 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
+  - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
@@ -32,12 +34,16 @@ v 8.11.0 (unreleased)
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
   - Add experimental Redis Sentinel support !1877
+  - Rendering of SVGs as blobs is now limited to SVGs with a size smaller or equal to 2MB
   - Fix branches page dropdown sort initial state (ClemMakesApps)
   - Environments have an url to link to
   - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
+  - Get issue and merge request description templates from repositories
+  - Add hover state to todos !5361 (winniehell)
   - Limit git rev-list output count to one in forced push check
+  - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
@@ -54,6 +60,7 @@ v 8.11.0 (unreleased)
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Nokogiri's various parsing methods are now instrumented
+  - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
   - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
@@ -68,6 +75,7 @@ v 8.11.0 (unreleased)
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
+  - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
@@ -77,6 +85,7 @@ v 8.11.0 (unreleased)
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
+  - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
@@ -107,6 +116,15 @@ v 8.11.0 (unreleased)
   - Sort folders with submodules in Files view !5521
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
+  - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
+  - Speed up todos queries by limiting the projects set we join with
+  - Ensure file editing in UI does not overwrite commited changes without warning user
+
+v 8.10.6
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Restore "Largest repository" sort option on Admin > Projects page. !5797
+  - Fix privilege escalation via project export.
+  - Require administrator privileges to perform a project import.
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
@@ -271,9 +289,11 @@ v 8.10.0
   - Fix new snippet style bug (elliotec)
   - Instrument Rinku usage
   - Be explicit to define merge request discussion variables
+  - Use cache for todos counter calling TodoService
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Made project list visibility icon fixed width
   - Set import_url validation to be more strict
   - Memoize MR merged/closed events retrieval
   - Don't render discussion notes when requesting diff tab through AJAX
@@ -319,6 +339,10 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.7
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Require administrator privileges to perform a project import.
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
@@ -584,6 +608,9 @@ v 8.9.0
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.8
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
 
 v 8.8.7
   - Fix privilege escalation issue with OAuth external users.

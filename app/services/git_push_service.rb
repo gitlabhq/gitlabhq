@@ -91,12 +91,12 @@ class GitPushService < BaseService
 
       params = {
         name: @project.default_branch,
-        push_access_level_attributes: {
+        push_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        },
-        merge_access_level_attributes: {
+        }],
+        merge_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }
+        }]
       }
 
       ProtectedBranches::CreateService.new(@project, current_user, params).execute
@@ -138,13 +138,23 @@ class GitPushService < BaseService
   end
 
   def build_push_data
-    @push_data ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+    @push_data ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      push_commits)
   end
 
   def build_push_data_system_hook
-    @push_data_system ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
+    @push_data_system ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      [])
   end
 
   def push_to_existing_branch?
