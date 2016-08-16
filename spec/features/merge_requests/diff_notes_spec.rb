@@ -53,21 +53,21 @@ feature 'Diff notes', js: true, feature: true do
 
       context 'with an unchanged line on the left and an unchanged line on the right' do
         it 'should allow commenting on the left side' do
-          should_allow_commenting(first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..'), 'left')
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'left')
         end
 
         it 'should allow commenting on the right side' do
-          should_allow_commenting(first('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]').find(:xpath, '..'), 'right')
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]', match: :first).find(:xpath, '..'), 'right')
         end
       end
 
       context 'with a match line' do
         it 'should not allow commenting on the left side' do
-          should_not_allow_commenting(first('.match').find(:xpath, '..'), 'left')
+          should_not_allow_commenting(find('.match', match: :first).find(:xpath, '..'), 'left')
         end
 
         it 'should not allow commenting on the right side' do
-          should_not_allow_commenting(first('.match').find(:xpath, '..'), 'right')
+          should_not_allow_commenting(find('.match', match: :first).find(:xpath, '..'), 'right')
         end
       end
     end
@@ -98,7 +98,7 @@ feature 'Diff notes', js: true, feature: true do
 
       context 'with a match line' do
         it 'should not allow commenting' do
-          should_not_allow_commenting(first('.match'))
+          should_not_allow_commenting(find('.match', match: :first))
         end
       end
     end
