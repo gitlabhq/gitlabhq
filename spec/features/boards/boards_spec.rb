@@ -3,17 +3,18 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
 
-  let(:project)   { create(:empty_project) }
-  let(:user)      { create(:user) }
-  let(:user2)     { create(:user) }
+  let(:project) { create(:empty_project) }
+  let(:user)    { create(:user) }
+  let!(:user2)  { create(:user) }
 
   before do
-    project.create_board!
-    create(:backlog_list, board: project.board)
-    create(:done_list, board: project.board)
+    project.create_board
+    project.board.lists.create(list_type: :backlog)
+    project.board.lists.create(list_type: :done)
 
     project.team << [user, :master]
     project.team << [user2, :master]
+
     login_as(user)
   end
 
@@ -52,7 +53,7 @@ describe 'Issue Boards', feature: true, js: true do
   end
 
   context 'with lists' do
-    let(:milestone)           { create(:milestone, project: project) }
+    let(:milestone) { create(:milestone, project: project) }
 
     let(:planning)    { create(:label, project: project, name: 'Planning') }
     let(:development) { create(:label, project: project, name: 'Development') }
@@ -81,7 +82,10 @@ describe 'Issue Boards', feature: true, js: true do
       wait_for_vue_resource
 
       expect(page).to have_selector('.board', count: 4)
-      has_issues
+      expect(find('.board:nth-child(1)')).to have_selector('.card')
+      expect(find('.board:nth-child(2)')).to have_selector('.card')
+      expect(find('.board:nth-child(3)')).to have_selector('.card')
+      expect(find('.board:nth-child(4)')).to have_selector('.card')
     end
 
     it 'shows lists' do
@@ -123,9 +127,10 @@ describe 'Issue Boards', feature: true, js: true do
       page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end
-      wait_for_vue_resource
-      expect(page).to have_selector('.board', count: 3)
 
+      wait_for_vue_resource
+
+      expect(page).to have_selector('.board', count: 3)
       expect(find(".js-board-list-#{planning.id}", visible: false)).not_to have_css('.is-active')
     end
 
@@ -273,6 +278,8 @@ describe 'Issue Boards', feature: true, js: true do
             click_link testing.title
           end
 
+          wait_for_vue_resource
+
           expect(page).to have_selector('.board', count: 5)
         end
 
@@ -283,6 +290,8 @@ describe 'Issue Boards', feature: true, js: true do
             click_link backlog.title
           end
 
+          wait_for_vue_resource
+
           expect(page).to have_selector('.board', count: 5)
         end
 
@@ -292,6 +301,8 @@ describe 'Issue Boards', feature: true, js: true do
           page.within('.dropdown-menu-issues-board-new') do
             click_link done.title
           end
+
+          wait_for_vue_resource
 
           expect(page).to have_selector('.board', count: 5)
         end
@@ -307,6 +318,8 @@ describe 'Issue Boards', feature: true, js: true do
           page.within('.dropdown-menu-issues-board-new') do
             click_link testing.title
           end
+
+          wait_for_vue_resource
 
           page.within(find('.board', match: :first)) do
             expect(page.find('.board-header')).to have_content('5')
@@ -537,18 +550,21 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
-  def has_issues
-    expect(find('.board:nth-child(1)')).to have_selector('.card')
-    expect(find('.board:nth-child(2)')).to have_selector('.card')
-    expect(find('.board:nth-child(3)')).to have_selector('.card')
-    expect(find('.board:nth-child(4)')).to have_selector('.card')
-  end
-
   def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
     evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('#{selector}').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
+
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').zero?
+    end
+
+    wait_for_vue_resource
   end
 
   def wait_for_vue_resource
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until page.evaluate_script('Vue.activeResources').zero?
+    end
+
     expect(find('.boards-list')).not_to have_selector('.fa-spinner')
   end
 end
