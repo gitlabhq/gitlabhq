@@ -1,3 +1,6 @@
+%p
+  You have been mentioned in Merge Request #{@merge_request.to_reference}
+
 - if current_application_settings.email_author_in_body
   %div
     #{link_to @merge_request.author_name, user_url(@merge_request.author)} wrote:
