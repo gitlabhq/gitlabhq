@@ -405,12 +405,12 @@ describe NotificationService, services: true do
         notification.new_mentions_in_issue(issue, new_mentions, @u_disabled)
       end
 
-      it "should not email anyone unless they are newly mentioned" do
+      it 'sends no emails when no new mentions are present' do
         send_notifications
-        expect(ActionMailer::Base.deliveries).to eq []
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
 
-      it "should email new mentions with a watch level higher than participant" do
+      it 'emails new mentions with a watch level higher than participant' do
         send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
 
         should_email(@u_watcher)
@@ -420,9 +420,9 @@ describe NotificationService, services: true do
         expect(ActionMailer::Base.deliveries.count).to eq 3
       end
 
-      it "should not email new mentions with a watch level equal to or less than participant" do
+      it 'does not email new mentions with a watch level equal to or less than participant' do
         send_notifications(@u_participating, @u_mentioned)
-        expect(ActionMailer::Base.deliveries).to eq []
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
 
@@ -798,12 +798,12 @@ describe NotificationService, services: true do
         notification.new_mentions_in_merge_request(merge_request, new_mentions, @u_disabled)
       end
 
-      it "should not email anyone unless they are newly mentioned" do
+      it 'sends no emails when there are no new mentions' do
         send_notifications
-        expect(ActionMailer::Base.deliveries).to eq []
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
 
-      it "should email new mentions with a watch level higher than participant" do
+      it 'emails new mentions with a watch level higher than participant' do
         send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
 
         should_email(@u_watcher)
@@ -813,9 +813,9 @@ describe NotificationService, services: true do
         expect(ActionMailer::Base.deliveries.count).to eq 3
       end
 
-      it "should not email new mentions with a watch level equal to or less than participant" do
+      it 'does not email new mentions with a watch level equal to or less than participant' do
         send_notifications(@u_participating, @u_mentioned)
-        expect(ActionMailer::Base.deliveries).to eq []
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
 
