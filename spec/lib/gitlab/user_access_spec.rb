@@ -66,7 +66,7 @@ describe Gitlab::UserAccess, lib: true do
     end
 
     describe 'push to protected branch' do
-      let(:branch) { create :protected_branch, project: project }
+      let(:branch) { create :protected_branch, :remove_default_access_levels, project: project }
 
       it 'returns false if user is a master' do
         project.team << [user, :master]
