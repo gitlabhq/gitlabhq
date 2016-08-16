@@ -2,7 +2,7 @@ module Boards
   module Issues
     class ListService < Boards::BaseService
       def execute
-        issues = IssuesFinder.new(user, filter_params).execute
+        issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless list.movable?
         issues = with_list_label(issues) if list.movable?
         issues

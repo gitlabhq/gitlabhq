@@ -2,7 +2,7 @@ module Boards
   module Issues
     class MoveService < Boards::BaseService
       def execute(issue)
-        return false unless user.can?(:update_issue, issue)
+        return false unless can?(current_user, :update_issue, issue)
         return false unless valid_move?
 
         update_service.execute(issue)
@@ -23,7 +23,7 @@ module Boards
       end
 
       def update_service
-        ::Issues::UpdateService.new(project, user, issue_params)
+        ::Issues::UpdateService.new(project, current_user, issue_params)
       end
 
       def issue_params
