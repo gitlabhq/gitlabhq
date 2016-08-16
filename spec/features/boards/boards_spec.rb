@@ -72,10 +72,11 @@ describe 'Issue Boards', feature: true, js: true do
     before do
       visit namespace_project_board_path(project.namespace, project)
 
-      sleep 1
+      wait_for_vue_resource
     end
 
     it 'shows lists' do
+      wait_for_vue_resource
       expect(page).to have_selector('.board', count: 4)
     end
 
@@ -122,7 +123,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       visit namespace_project_board_path(project.namespace, project)
-      sleep 1
+      wait_for_vue_resource
 
       page.within(first('.board')) do
         expect(page.find('.board-header')).to have_content('20')
@@ -158,6 +159,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 1)
 
           find('.board-search-clear-btn').click
+
+          wait_for_vue_resource
 
           expect(page).to have_selector('.card', count: 6)
         end
@@ -315,6 +318,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(find('.js-author-search')).to have_content(user2.name)
         end
 
+        wait_for_vue_resource
+
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
@@ -336,6 +341,8 @@ describe 'Issue Boards', feature: true, js: true do
 
           expect(find('.js-assignee-search')).to have_content(user.name)
         end
+
+        wait_for_vue_resource
 
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('1')
@@ -359,6 +366,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(find('.js-milestone-select')).to have_content(milestone.title)
         end
 
+        wait_for_vue_resource
+
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
@@ -379,6 +388,8 @@ describe 'Issue Boards', feature: true, js: true do
             find('.dropdown-menu-close').click
           end
         end
+
+        wait_for_vue_resource
 
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('1')
@@ -405,11 +416,15 @@ describe 'Issue Boards', feature: true, js: true do
           end
         end
 
+        wait_for_vue_resource
+
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('20')
           expect(page).to have_selector('.card', count: 20)
 
           evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+
+          wait_for_vue_resource
 
           expect(page.find('.board-header')).to have_content('40')
           expect(page).to have_selector('.card', count: 40)
@@ -426,6 +441,8 @@ describe 'Issue Boards', feature: true, js: true do
             find('.dropdown-menu-close').click
           end
         end
+
+        wait_for_vue_resource
 
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('1')
@@ -448,6 +465,8 @@ describe 'Issue Boards', feature: true, js: true do
           end
         end
 
+        wait_for_vue_resource
+
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('5')
           expect(page).to have_selector('.card', count: 5)
@@ -468,6 +487,8 @@ describe 'Issue Boards', feature: true, js: true do
             find('.dropdown-menu-close').click
           end
         end
+
+        wait_for_vue_resource
 
         page.within(first('.board')) do
           expect(page.find('.board-header')).to have_content('1')
@@ -499,6 +520,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 1)
         end
 
+        wait_for_vue_resource
+
         page.within('.labels-filter') do
           expect(find('.dropdown-toggle-text')).to have_content(bug.title)
         end
@@ -511,6 +534,12 @@ describe 'Issue Boards', feature: true, js: true do
 
     Timeout.timeout(Capybara.default_max_wait_time) do
       loop until page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').zero?
+    end
+  end
+
+  def wait_for_vue_resource
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until page.evaluate_script('Vue.activeResources').zero?
     end
   end
 end

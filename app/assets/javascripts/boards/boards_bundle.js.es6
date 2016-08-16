@@ -7,6 +7,7 @@
 //= require_tree ./mixins
 //= require ./components/board
 //= require ./components/new_list_dropdown
+//= require ./vue_resource_interceptor
 
 $(() => {
   const $boardApp = document.getElementById('board-app'),
