@@ -4,7 +4,21 @@ class BasePolicy
   end
 
   def self.class_for(subject)
-    "#{subject.class.name}Policy".constantize
+    subject.class.ancestors.each do |klass|
+      next unless klass.name
+
+      begin
+        policy_class = "#{klass.name}Policy".constantize
+
+        # NB: the < operator here tests whether policy_class
+        # inherits from BasePolicy
+        return policy_class if policy_class < BasePolicy
+      rescue NameError
+        nil
+      end
+    end
+
+    raise "no policy for #{subject.class.name}"
   end
 
   attr_reader :user, :subject
