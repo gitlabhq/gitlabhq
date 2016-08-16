@@ -425,20 +425,18 @@ ul.notes {
 .line-resolve-btn {
   display: inline-block;
   position: relative;
-  top: -1px;
-  width: 14px;
-  height: 14px;
+  top: 2px;
   padding: 0;
   background-color: transparent;
   border: none;
   outline: 0;
-  vertical-align: middle;
 
   &.is-disabled {
     cursor: default;
   }
 
   &:not(.is-disabled):hover,
+  &:not(.is-disabled):focus,
   &.is-active {
     color: $gl-text-green;
 
@@ -450,7 +448,6 @@ ul.notes {
   svg {
     position: relative;
     color: $notes-action-color;
-    vertical-align: top;
 
     path {
       fill: $notes-action-color;
