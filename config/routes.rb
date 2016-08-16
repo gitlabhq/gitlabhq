@@ -765,9 +765,10 @@ Rails.application.routes.draw do
 
             resources :artifacts, only: [] do
               collection do
-                get :search, path: ':ref_name/*path',
-                             format: false,
-                             constraints: { ref_name: /.+/ } # could have /
+                get :latest_succeeded,
+                  path: ':ref_name/*path',
+                  format: false,
+                  constraints: { ref_name: /.+/ } # could have /
               end
             end
           end

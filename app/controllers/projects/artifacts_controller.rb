@@ -34,7 +34,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
     redirect_to namespace_project_build_path(project.namespace, project, build)
   end
 
-  def search
+  def latest_succeeded
     path = params[:path]
 
     if %w[download browse file].include?(path)
