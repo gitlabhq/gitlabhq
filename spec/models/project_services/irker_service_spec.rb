@@ -52,19 +52,20 @@ describe IrkerService, models: true do
     let(:colorize_messages) { '1' }
 
     before do
+      @irker_server = TCPServer.new 'localhost', 0
+
       allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,
         service_hook: true,
-        server_host: 'localhost',
-        server_port: 6659,
+        server_host: @irker_server.addr[2],
+        server_port: @irker_server.addr[1],
         default_irc_uri: 'irc://chat.freenode.net/',
         recipients: recipients,
         colorize_messages: colorize_messages)
 
       irker.valid?
-      @irker_server = TCPServer.new 'localhost', 6659
     end
 
     after do
