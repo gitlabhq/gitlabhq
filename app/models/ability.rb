@@ -70,13 +70,14 @@ class Ability
 
     def abilities_by_subject_class(user:, subject:)
       case subject
-      when CommitStatus then commit_status_abilities(user, subject)
       when Project then ProjectPolicy.abilities(user, subject)
       when Issue then IssuePolicy.abilities(user, subject)
+      when MergeRequest then MergeRequestPolicy.abilities(user, subject)
+
+      when CommitStatus then commit_status_abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
-      when MergeRequest then merge_request_abilities(user, subject)
       when Group then group_abilities(user, subject)
       when Namespace then namespace_abilities(user, subject)
       when GroupMember then group_member_abilities(user, subject)
@@ -100,6 +101,8 @@ class Ability
         ProjectPolicy.abilities(nil, subject)
       elsif subject.is_a?(Issue)
         IssuePolicy.abilities(nil, subject)
+      elsif subject.is_a?(MergeRequest)
+        MergeRequestPolicy.abilities(nil, subject)
       elsif subject.respond_to?(:project)
         ProjectPolicy.abilities(nil, subject.project)
       elsif subject.is_a?(Group) || subject.respond_to?(:group)
