@@ -229,3 +229,19 @@
     box-shadow: none;
   }
 }
+
+.pipelines.tab-pane {
+
+  .content-list.pipelines {
+    width: auto;
+  }
+
+  .table.builds {
+    min-width: 900px;
+  }
+
+  .stage {
+    max-width: 60px;
+    width: 60px;
+  }
+}
