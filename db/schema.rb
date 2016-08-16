@@ -950,7 +950,7 @@ ActiveRecord::Schema.define(version: 20160810153405) do
 
   create_table "protected_branch_merge_access_levels", force: :cascade do |t|
     t.integer  "protected_branch_id",              null: false
-    t.integer  "access_level",        default: 40, null: false
+    t.integer  "access_level",        default: 40
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.integer  "user_id"
@@ -961,7 +961,7 @@ ActiveRecord::Schema.define(version: 20160810153405) do
 
   create_table "protected_branch_push_access_levels", force: :cascade do |t|
     t.integer  "protected_branch_id",              null: false
-    t.integer  "access_level",        default: 40, null: false
+    t.integer  "access_level",        default: 40
     t.datetime "created_at",                       null: false
     t.datetime "updated_at",                       null: false
     t.integer  "user_id"
