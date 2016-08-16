@@ -57,19 +57,16 @@ module Gitlab
       # +value+ existing model to be included in the hash
       # +json_config_hash+ the original hash containing the root model
       def create_model_value(current_key, value, json_config_hash)
-        parsed_hash = { include: value }
-        parse_hash(value, parsed_hash)
-
-        json_config_hash[current_key] = parsed_hash
+        json_config_hash[current_key] = parse_hash(value) || { include: value }
       end
 
       # Calls attributes finder to parse the hash and add any attributes to it
       #
       # +value+ existing model to be included in the hash
       # +parsed_hash+ the original hash
-      def parse_hash(value, parsed_hash)
+      def parse_hash(value)
         @attributes_finder.parse(value) do |hash|
-          parsed_hash = { include: hash_or_merge(value, hash) }
+          { include: hash_or_merge(value, hash) }
         end
       end
 
