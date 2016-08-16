@@ -73,7 +73,6 @@ class Ability
 
     def abilities_by_subject_class(user:, subject:)
       case subject
-      when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
       when Group then group_abilities(user, subject)
       when Namespace then namespace_abilities(user, subject)
@@ -140,13 +139,6 @@ class Ability
       end
     end
 
-    def anonymous_commit_status_abilities(subject)
-      rules = anonymous_project_abilities(subject.project)
-      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
-      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
-      rules
-    end
-
     def anonymous_group_abilities(subject)
       rules = []
 
@@ -164,14 +156,6 @@ class Ability
     def anonymous_personal_snippet_abilities(snippet)
       if snippet.public?
         [:read_personal_snippet]
-      else
-        []
-      end
-    end
-
-    def anonymous_project_snippet_abilities(snippet)
-      if snippet.public?
-        [:read_project_snippet]
       else
         []
       end
@@ -248,46 +232,6 @@ class Ability
       rules.flatten
     end
 
-    [:issue, :merge_request].each do |name|
-      define_method "#{name}_abilities" do |user, subject|
-        rules = []
-
-        if subject.author == user || (subject.respond_to?(:assignee) && subject.assignee == user)
-          rules += [
-            :"read_#{name}",
-            :"update_#{name}",
-          ]
-        end
-
-        rules += project_abilities(user, subject.project)
-        rules = filter_confidential_issues_abilities(user, subject, rules) if subject.is_a?(Issue)
-        rules
-      end
-    end
-
-    def note_abilities(user, note)
-      rules = []
-
-      if note.author == user
-        rules += [
-          :read_note,
-          :update_note,
-          :admin_note,
-          :resolve_note
-        ]
-      end
-
-      if note.respond_to?(:project) && note.project
-        rules += project_abilities(user, note.project)
-      end
-
-      if note.for_merge_request? && note.noteable.author == user
-        rules << :resolve_note
-      end
-
-      rules
-    end
-
     def personal_snippet_abilities(user, snippet)
       rules = []
 
@@ -301,24 +245,6 @@ class Ability
 
       if snippet.public? || (snippet.internal? && !user.external?)
         rules << :read_personal_snippet
-      end
-
-      rules
-    end
-
-    def project_snippet_abilities(user, snippet)
-      rules = []
-
-      if snippet.author == user || user.admin?
-        rules += [
-          :read_project_snippet,
-          :update_project_snippet,
-          :admin_project_snippet
-        ]
-      end
-
-      if snippet.public? || (snippet.internal? && !user.external?) || (snippet.private? && snippet.project.team.member?(user))
-        rules << :read_project_snippet
       end
 
       rules
@@ -359,13 +285,6 @@ class Ability
         end
       end
 
-      rules
-    end
-
-    def commit_status_abilities(user, subject)
-      rules = project_abilities(user, subject.project)
-      # If subject is Ci::Build which inherits from CommitStatus filter the abilities
-      rules = filter_build_abilities(rules) if subject.is_a?(Ci::Build)
       rules
     end
 
