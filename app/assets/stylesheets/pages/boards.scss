@@ -59,6 +59,8 @@
   .issue-boards-content {
     display: -webkit-flex;
     display: flex;
+    -webkit-flex: 1;
+    flex: 1;
     width: 100%;
 
     .content {
@@ -81,6 +83,8 @@
   display: flex;
   -webkit-flex: 1;
   flex: 1;
+  -webkit-flex-basis: 0;
+  flex-basis: 0;
   min-height: calc(100vh - 152px);
   max-height: calc(100vh - 152px);
   padding-top: 25px;
@@ -90,6 +94,7 @@
 
   @media (min-width: $screen-sm-min) {
     min-height: 475px;
+    max-height: none;
   }
 }
 
