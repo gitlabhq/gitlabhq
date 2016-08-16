@@ -226,37 +226,9 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
-    context 'updated user mentions' do
-      let(:user4) { create(:user) }
-      before do
-        project.team << [user4, :developer]
-      end
-
-      context 'in title' do
-        before do
-          perform_enqueued_jobs { update_merge_request(title: user4.to_reference) }
-        end
-
-        it 'emails only the newly-mentioned user' do
-          should_not_email(user)
-          should_not_email(user2)
-          should_not_email(user3)
-          should_email(user4)
-        end
-      end
-
-      context 'in description' do
-        before do
-          perform_enqueued_jobs { update_merge_request(description: user4.to_reference) }
-        end
-
-        it 'emails only the newly-mentioned user' do
-          should_not_email(user)
-          should_not_email(user2)
-          should_not_email(user3)
-          should_email(user4)
-        end
-      end
+    context 'updating mentions' do
+      let(:mentionable) { merge_request }
+      include_examples 'updating mentions', MergeRequests::UpdateService
     end
 
     context 'when MergeRequest has tasks' do
