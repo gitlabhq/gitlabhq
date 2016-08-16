@@ -49,7 +49,7 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
             sync_group.update_permissions
 
-            expect(group.members).not_to include(user)
+            expect(group.members.pluck(:user_id)).not_to include(user.id)
           end
         end
 
@@ -57,6 +57,22 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
           sync_group.update_permissions
 
           expect(group.members.pluck(:user_id)).to include(user.id)
+        end
+
+        it 'converts an existing membership access request to a real member' do
+          group.members.create(
+            user: user,
+            access_level: ::Gitlab::Access::MASTER,
+            requested_at: DateTime.now
+          )
+          # Validate that the user is properly created as a requester first.
+          expect(group.requesters.pluck(:user_id)).to include(user.id)
+
+          sync_group.update_permissions
+
+          expect(group.members.pluck(:user_id)).to include(user.id)
+          expect(group.members.find_by(user_id: user.id).access_level)
+            .to eq(::Gitlab::Access::DEVELOPER)
         end
 
         it 'downgrades existing member access' do
