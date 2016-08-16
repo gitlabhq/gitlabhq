@@ -2,8 +2,7 @@ class BoardService {
   constructor (root) {
     Vue.http.options.root = root;
 
-    this.lists = Vue.resource(`${root}{/id}.json`, {});
-    this.list = Vue.resource(`${root}/lists{/id}.json`, {}, {
+    this.lists = Vue.resource(`${root}/lists{/id}.json`, {}, {
       generate: {
         method: 'POST',
         url: `${root}/lists/generate.json`
@@ -25,13 +24,13 @@ class BoardService {
   generateDefaultLists () {
     this.setCSRF();
 
-    return this.list.generate({});
+    return this.lists.generate({});
   }
 
   createList (labelId) {
     this.setCSRF();
 
-    return this.list.save({}, {
+    return this.lists.save({}, {
       list: {
         label_id: labelId
       }
@@ -41,7 +40,7 @@ class BoardService {
   updateList (list) {
     this.setCSRF();
 
-    return this.list.update({ id: list.id }, {
+    return this.lists.update({ id: list.id }, {
       list: {
         position: list.position
       }
@@ -51,7 +50,7 @@ class BoardService {
   destroyList (id) {
     this.setCSRF();
 
-    return this.list.delete({ id });
+    return this.lists.delete({ id });
   }
 
   getIssuesForList (id, filter = {}) {
@@ -62,12 +61,10 @@ class BoardService {
     return this.issues.get(data);
   }
 
-  moveIssue (id, from, to) {
+  moveIssue (id, from_list_id, to_list_id) {
     return this.issue.update({ id }, {
-      issue: {
-        from,
-        to
-      }
+      from_list_id,
+      to_list_id
     });
   }
 };
