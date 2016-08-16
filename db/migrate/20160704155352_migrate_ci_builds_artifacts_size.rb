@@ -70,10 +70,13 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
       return
     end
 
-    start_id = select_all(builds_sql(1, task.offset)).first['id']
-    stop_id = select_all(builds_sql(1, task.offset + task.limit)).first['id']
+    start_id, stop_id = select_start_and_stop_id(task)
 
-    say("##{task.index} Working from #{start_id} <= id < #{stop_id}...")
+    if stop_id
+      say("##{task.index} Working from #{start_id} <= id < #{stop_id}...")
+    else
+      say("##{task.index} Working from #{start_id} <= id...")
+    end
 
     loop do
       say("##{task.index} Fetching and updating #{n + BATCH} ci_builds...")
@@ -135,6 +138,17 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
     Gitlab.config.artifacts.path
   end
 
+  def select_start_and_stop_id(task)
+    start_id = select_all(builds_sql(1, task.offset)).first['id']
+
+    if task.index != THREADS - 1 # The last worker would not have stop_id
+      stop_id =
+        select_all(builds_sql(1, task.offset + task.limit)).first['id']
+    end
+
+    [start_id, stop_id]
+  end
+
   def cleanup_ci_builds_artifacts_file
     execute(normalize_sql(<<-SQL))
       UPDATE ci_builds SET artifacts_file = NULL
@@ -170,7 +184,11 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   end
 
   def worker_where_sql(start_id, stop_id)
-    "AND #{start_id} <= b.id AND b.id < #{stop_id}"
+    if stop_id
+      "AND #{start_id} <= b.id AND b.id < #{stop_id}"
+    else
+      "AND #{start_id} <= b.id"
+    end
   end
 
   def normalize_sql(sql)
