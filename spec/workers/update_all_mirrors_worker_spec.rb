@@ -15,14 +15,14 @@ describe UpdateAllMirrorsWorker do
       worker.perform
     end
 
-    it 'updates all mirrored Projects' do
+    it 'enqueue a job on all mirrored Projects' do
       worker = described_class.new
 
-      create(:empty_project, :mirror)
+      mirror = create(:empty_project, :mirror)
       create(:empty_project)
 
       expect(worker).to receive(:rand).with(30.minutes).and_return(10)
-      expect_any_instance_of(Project).to receive(:update_mirror).with(delay: 10).once
+      expect(RepositoryUpdateMirrorDispatchWorker).to receive(:perform_in).with(10, mirror.id)
 
       worker.perform
     end
