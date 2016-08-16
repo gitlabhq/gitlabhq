@@ -1,7 +1,7 @@
 class List {
   constructor (obj) {
     this.id = obj.id;
-    this._uid = Math.ceil(Math.random() * 1000);
+    this._uid = this.guid();
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
@@ -18,6 +18,13 @@ class List {
     if (this.type !== 'blank' && this.id) {
       this.getIssues();
     }
+  }
+
+  guid() {
+    const s4 = () => {
+      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
 
   save () {

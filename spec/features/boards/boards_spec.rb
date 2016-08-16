@@ -25,18 +25,23 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'hides the blank state when clicking nevermind button' do
-      page.within('.board-blank-state') do
+      expect(page).to have_selector('.board', count: 3)
+      page.within(find('.board-blank-state')) do
         click_button("Nevermind, I'll use my own")
       end
       expect(page).to have_selector('.board', count: 2)
     end
 
     it 'creates default lists' do
+      expect(page).to have_selector('.board', count: 3)
+
       lists = ['Backlog', 'Development', 'Testing', 'Production', 'Ready', 'Done']
 
-      page.within('.board-blank-state') do
+      page.within(find('.board-blank-state')) do
         click_button('Add default lists')
       end
+      wait_for_vue_resource
+
       expect(page).to have_selector('.board', count: 6)
 
       page.all('.board').each_with_index do |list, i|
@@ -81,27 +86,30 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'shows issues in lists' do
-      page.within(all('.board')[1]) do
+      page.within(find('.board:nth-child(2)')) do
         expect(page.find('.board-header')).to have_content('2')
         expect(page).to have_selector('.card', count: 2)
       end
 
-      page.within(all('.board')[2]) do
+      page.within(find('.board:nth-child(3)')) do
         expect(page.find('.board-header')).to have_content('2')
         expect(page).to have_selector('.card', count: 2)
       end
     end
 
     it 'shows confidential issues with icon' do
-      page.within(first('.board')) do
+      page.within(find('.board', match: :first)) do
         expect(page).to have_selector('.confidential-icon', count: 1)
       end
     end
 
     it 'allows user to delete board' do
-      page.within(all('.board')[1]) do
+      page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end
+
+      wait_for_vue_resource
+
       expect(page).to have_selector('.board', count: 3)
     end
 
@@ -109,9 +117,10 @@ describe 'Issue Boards', feature: true, js: true do
       click_button 'Create new list'
       wait_for_ajax
 
-      page.within(all('.board')[1]) do
+      page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
       end
+      wait_for_vue_resource
       expect(page).to have_selector('.board', count: 3)
 
       expect(find(".js-board-list-#{planning.id}", visible: false)).not_to have_css('.is-active')
@@ -125,7 +134,7 @@ describe 'Issue Boards', feature: true, js: true do
       visit namespace_project_board_path(project.namespace, project)
       wait_for_vue_resource
 
-      page.within(first('.board')) do
+      page.within(find('.board', match: :first)) do
         expect(page.find('.board-header')).to have_content('20')
         expect(page).to have_selector('.card', count: 20)
 
@@ -138,14 +147,14 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'backlog' do
       it 'shows issues in backlog with no labels' do
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('6')
           expect(page).to have_selector('.card', count: 6)
         end
       end
 
       it 'is searchable' do
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           find('.form-control').set issue1.title
 
           expect(page).to have_selector('.card', count: 1)
@@ -153,7 +162,7 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'clears search' do
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           find('.form-control').set issue1.title
 
           expect(page).to have_selector('.card', count: 1)
@@ -167,14 +176,15 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'moves issue from backlog into list' do
+        has_issues
         drag_to(list_to_index: 1)
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('5')
           expect(page).to have_selector('.card', count: 5)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('3')
           expect(page).to have_selector('.card', count: 3)
         end
@@ -183,63 +193,70 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'done' do
       it 'shows list of done issues' do
-        expect(all('.board').last).to have_selector('.card', count: 1)
+        expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
       end
 
       it 'moves issue to done' do
+        has_issues
         drag_to(list_from_index: 0, list_to_index: 3)
 
-        expect(all('.board').last).to have_selector('.card', count: 2)
-        expect(all('.board').last).to have_content(issue9.title)
-        expect(all('.board').last).not_to have_content(planning.title)
+        expect(find('.board:nth-child(4)')).to have_selector('.card', count: 2)
+        expect(find('.board:nth-child(4)')).to have_content(issue9.title)
+        expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
 
       it 'removes all of the same issue to done' do
+        has_issues
         drag_to(list_from_index: 1, list_to_index: 3)
 
-        expect(all('.board')[1]).to have_selector('.card', count: 1)
-        expect(all('.board')[2]).to have_selector('.card', count: 1)
-        expect(all('.board').last).to have_content(issue6.title)
-        expect(all('.board').last).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
+        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 1)
+        expect(find('.board:nth-child(4)')).to have_content(issue6.title)
+        expect(find('.board:nth-child(4)')).not_to have_content(planning.title)
       end
     end
 
     context 'lists' do
       it 'changes position of list' do
+        expect(page).to have_selector('.board', count: 4)
+        has_issues
         drag_to(list_from_index: 1, list_to_index: 2, selector: '.js-board-handle')
 
-        expect(all('.board')[1]).to have_content(development.title)
-        expect(all('.board')[1]).to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
-      it 'moves between lists' do
+      it 'issue moves between lists' do
+        has_issues
         drag_to(list_from_index: 1, card_index: 1, list_to_index: 2)
 
-        expect(all('.board')[1]).to have_selector('.card', count: 1)
-        expect(all('.board')[2]).to have_selector('.card', count: 3)
-        expect(all('.board')[2]).to have_content(issue6.title)
-        expect(all('.board')[2].all('.card').last).not_to have_content(development.title)
+        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
+        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 3)
+        expect(find('.board:nth-child(3)')).to have_content(issue6.title)
+        expect(find('.board:nth-child(3)').all('.card').last).not_to have_content(development.title)
       end
 
-      it 'moves between lists' do
+      it 'issue moves between lists' do
+        has_issues
         drag_to(list_from_index: 2, list_to_index: 1)
 
-        expect(all('.board')[1]).to have_selector('.card', count: 3)
-        expect(all('.board')[2]).to have_selector('.card', count: 1)
-        expect(all('.board')[1]).to have_content(issue7.title)
-        expect(all('.board')[1].all('.card').first).not_to have_content(planning.title)
+        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
+        expect(find('.board:nth-child(3)')).to have_selector('.card', count: 1)
+        expect(find('.board:nth-child(2)')).to have_content(issue7.title)
+        expect(find('.board:nth-child(2)').all('.card').first).not_to have_content(planning.title)
       end
 
-      it 'moves from done' do
+      it 'issue moves from done' do
+        has_issues
         drag_to(list_from_index: 3, list_to_index: 1)
 
-        expect(all('.board')[1]).to have_selector('.card', count: 3)
-        expect(all('.board')[1]).to have_content(issue8.title)
+        expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
+        expect(find('.board:nth-child(2)')).to have_content(issue8.title)
       end
 
       context 'issue card' do
         it 'shows assignee' do
-          page.within(first('.board')) do
+          page.within(find('.board', match: :first)) do
             expect(page).to have_selector('.avatar', count: 1)
           end
         end
@@ -287,7 +304,7 @@ describe 'Issue Boards', feature: true, js: true do
         end
 
         it 'moves issues from backlog into new list' do
-          page.within(first('.board')) do
+          page.within(find('.board', match: :first)) do
             expect(page.find('.board-header')).to have_content('6')
             expect(page).to have_selector('.card', count: 6)
           end
@@ -298,7 +315,7 @@ describe 'Issue Boards', feature: true, js: true do
             click_link testing.title
           end
 
-          page.within(first('.board')) do
+          page.within(find('.board', match: :first)) do
             expect(page.find('.board-header')).to have_content('5')
             expect(page).to have_selector('.card', count: 5)
           end
@@ -320,12 +337,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -344,12 +361,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -368,12 +385,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
@@ -391,12 +408,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -418,7 +435,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('20')
           expect(page).to have_selector('.card', count: 20)
 
@@ -444,12 +461,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -467,12 +484,12 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('5')
           expect(page).to have_selector('.card', count: 5)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
@@ -490,17 +507,17 @@ describe 'Issue Boards', feature: true, js: true do
 
         wait_for_vue_resource
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
           expect(page).to have_selector('.card', count: 1)
         end
 
-        page.within(all('.board')[1]) do
+        page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('0')
           expect(page).to have_selector('.card', count: 0)
         end
 
-        page.within(first('.board')) do
+        page.within(find('.board', match: :first)) do
           click_button(bug.title)
 
           expect(page).to have_selector('.card', count: 6)
@@ -512,8 +529,8 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'removes label filter by clicking label button on issue' do
-        page.within(first('.board')) do
-          page.within(first('.card')) do
+        page.within(find('.board', match: :first)) do
+          page.within(find('.card', match: :first)) do
             click_button(bug.title)
           end
 
@@ -527,6 +544,13 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
     end
+  end
+
+  def has_issues
+    expect(find('.board:nth-child(1)')).to have_selector('.card')
+    expect(find('.board:nth-child(2)')).to have_selector('.card')
+    expect(find('.board:nth-child(3)')).to have_selector('.card')
+    expect(find('.board:nth-child(4)')).to have_selector('.card')
   end
 
   def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
