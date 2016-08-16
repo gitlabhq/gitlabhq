@@ -39,12 +39,14 @@
           _method: 'PATCH',
           id: this.$wrap.data('banchId'),
           protected_branch: {
-            merge_access_level_attributes: {
+            merge_access_levels_attributes: [{
+              id: this.$allowedToMergeDropdown.data('access-level-id'),
               access_level: $allowedToMergeInput.val()
-            },
-            push_access_level_attributes: {
+            }],
+            push_access_levels_attributes: [{
+              id: this.$allowedToPushDropdown.data('access-level-id'),
               access_level: $allowedToPushInput.val()
-            }
+            }]
           }
         },
         success: () => {
