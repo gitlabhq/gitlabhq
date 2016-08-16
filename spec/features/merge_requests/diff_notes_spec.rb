@@ -141,7 +141,7 @@ feature 'Diff notes', js: true, feature: true do
 
     def comment_on_line(line_holder, line)
       line[:num].find(comment_button_class).trigger 'click'
-      expect(line_holder).to have_xpath notes_holder_input_xpath
+      line_holder.find(:xpath, notes_holder_input_xpath)
 
       notes_holder_input = line_holder.find(:xpath, notes_holder_input_xpath)
       expect(notes_holder_input[:class]).to include(notes_holder_input_class)
