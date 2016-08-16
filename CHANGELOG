@@ -120,8 +120,11 @@ v 8.11.0 (unreleased)
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
 
-v 8.10.6 (unreleased)
-  - Fix import/export configuration missing some included attributes
+v 8.10.6
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Restore "Largest repository" sort option on Admin > Projects page. !5797
+  - Fix privilege escalation via project export.
+  - Require administrator privileges to perform a project import.
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
@@ -336,6 +339,10 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.7
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Require administrator privileges to perform a project import.
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
@@ -601,6 +608,9 @@ v 8.9.0
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.8
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
 
 v 8.8.7
   - Fix privilege escalation issue with OAuth external users.
