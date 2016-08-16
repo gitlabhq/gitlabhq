@@ -6,9 +6,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy
-    todo = Todo.new(id: params[:id])
-
-    TodoService.new.mark_todos_as_done([todo], current_user)
+    TodoService.new.mark_todos_as_done_by_id([params[:id]], current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }

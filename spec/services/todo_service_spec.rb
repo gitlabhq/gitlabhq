@@ -194,12 +194,12 @@ describe TodoService, services: true do
       end
     end
 
-    describe '#mark_todos_as_done' do
-      it 'marks related todos for the user as done' do
-        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
-        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+    shared_examples 'marking todos as done' do |meth|
+      let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
+      let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
 
-        service.mark_todos_as_done([first_todo, second_todo], john_doe)
+      it 'marks related todos for the user as done' do
+        service.send(meth, collection, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
@@ -207,17 +207,27 @@ describe TodoService, services: true do
 
       describe 'cached counts' do
         it 'updates when todos change' do
-          todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
-
           expect(john_doe.todos_done_count).to eq(0)
-          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(2)
           expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
-          service.mark_todos_as_done([todo], john_doe)
+          service.send(meth, collection, john_doe)
 
-          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_done_count).to eq(2)
           expect(john_doe.todos_pending_count).to eq(0)
         end
+      end
+    end
+
+    describe '#mark_todos_as_done' do
+      it_behaves_like 'marking todos as done', :mark_todos_as_done do
+        let(:collection) { [first_todo, second_todo] }
+      end
+    end
+
+    describe '#mark_todos_as_done_by_id' do
+      it_behaves_like 'marking todos as done', :mark_todos_as_done_by_id do
+        let(:collection) { [first_todo, second_todo].map(&:id) }
       end
     end
 
