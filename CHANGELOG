@@ -40,6 +40,7 @@ v 8.11.0 (unreleased)
   - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
+  - Get issue and merge request description templates from repositories
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
@@ -83,6 +84,7 @@ v 8.11.0 (unreleased)
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
+  - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
@@ -115,6 +117,10 @@ v 8.11.0 (unreleased)
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
+  - Ensure file editing in UI does not overwrite commited changes without warning user
+
+v 8.10.6 (unreleased)
+  - Fix import/export configuration missing some included attributes
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670

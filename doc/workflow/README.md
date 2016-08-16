@@ -17,6 +17,7 @@
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
+- [Issuable Templates](issuable_templates.md)
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
 - [Revert changes](revert_changes.md)

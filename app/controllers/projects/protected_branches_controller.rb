@@ -9,16 +9,16 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def index
     @protected_branch = @project.protected_branches.new
-    load_protected_branches_gon_variables
+    load_gon_index
   end
 
   def create
-    @protected_branch = ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params).execute
+    @protected_branch = ::ProtectedBranches::CreateService.new(@project, current_user, protected_branch_params).execute
     if @protected_branch.persisted?
       redirect_to namespace_project_protected_branches_path(@project.namespace, @project)
     else
       load_protected_branches
-      load_protected_branches_gon_variables
+      load_gon_index
       render :index
     end
   end
@@ -28,7 +28,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def update
-    @protected_branch = ProtectedBranches::UpdateService.new(@project, current_user, protected_branch_params).execute(@protected_branch)
+    @protected_branch = ::ProtectedBranches::UpdateService.new(@project, current_user, protected_branch_params).execute(@protected_branch)
 
     if @protected_branch.valid?
       respond_to do |format|
@@ -58,17 +58,23 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def protected_branch_params
     params.require(:protected_branch).permit(:name,
-                                             merge_access_level_attributes: [:access_level],
-                                             push_access_level_attributes: [:access_level])
+                                             merge_access_levels_attributes: [:access_level, :id],
+                                             push_access_levels_attributes: [:access_level, :id])
   end
 
   def load_protected_branches
     @protected_branches = @project.protected_branches.order(:name).page(params[:page])
   end
 
-  def load_protected_branches_gon_variables
-    gon.push({ open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } },
-               push_access_levels: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text } },
-               merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text } } })
+  def access_levels_options
+    {
+      push_access_levels: ProtectedBranch::PushAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } },
+      merge_access_levels: ProtectedBranch::MergeAccessLevel.human_access_levels.map { |id, text| { id: id, text: text, before_divider: true } }
+    }
+  end
+
+  def load_gon_index
+    params = { open_branches: @project.open_branches.map { |br| { text: br.name, id: br.name, title: br.name } } }
+    gon.push(params.merge(access_levels_options))
   end
 end
