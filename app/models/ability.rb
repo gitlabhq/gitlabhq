@@ -74,7 +74,8 @@ class Ability
       when Issue then IssuePolicy.abilities(user, subject)
       when MergeRequest then MergeRequestPolicy.abilities(user, subject)
 
-      when CommitStatus then commit_status_abilities(user, subject)
+      when Ci::Build then Ci::BuildPolicy.abilities(user, subject)
+      when CommitStatus then CommitStatus.abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
