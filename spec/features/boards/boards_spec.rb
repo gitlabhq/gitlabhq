@@ -3,11 +3,12 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
 
-  let(:project)   { create(:project_with_board) }
+  let(:project)   { create(:empty_project) }
   let(:user)      { create(:user) }
-  let!(:user2)    { create(:user) }
+  let(:user2)     { create(:user) }
 
   before do
+    project.create_board!
     create(:backlog_list, board: project.board)
     create(:done_list, board: project.board)
 
@@ -545,16 +546,9 @@ describe 'Issue Boards', feature: true, js: true do
 
   def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
     evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('#{selector}').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
-
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').zero?
-    end
   end
 
   def wait_for_vue_resource
-    Timeout.timeout(Capybara.default_max_wait_time) do
-      loop until page.evaluate_script('Vue.activeResources').zero?
-    end
     expect(find('.boards-list')).not_to have_selector('.fa-spinner')
   end
 end
