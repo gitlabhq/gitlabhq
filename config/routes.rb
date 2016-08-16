@@ -530,6 +530,11 @@ Rails.application.routes.draw do
         put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
         post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
 
+        #
+        # Templates
+        #
+        get '/templates/:template_type/:key' => 'templates#show', as: :template
+
         scope do
           get(
             '/blob/*id/diff',
