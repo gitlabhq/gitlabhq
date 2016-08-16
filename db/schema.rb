@@ -924,6 +924,7 @@ ActiveRecord::Schema.define(version: 20160818205718) do
     t.string   "category",              default: "common", null: false
     t.boolean  "default",               default: false
     t.boolean  "wiki_page_events",      default: true
+    t.boolean  "pipeline_events",       default: false,    null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -1138,6 +1139,7 @@ ActiveRecord::Schema.define(version: 20160818205718) do
     t.boolean  "build_events",                         default: false,         null: false
     t.boolean  "wiki_page_events",                     default: false,         null: false
     t.string   "token"
+    t.boolean  "pipeline_events",                      default: false,         null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

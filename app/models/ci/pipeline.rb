@@ -19,6 +19,8 @@ module Ci
 
     after_save :keep_around_commits
 
+    delegate :stages, to: :statuses
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -55,6 +57,10 @@ module Ci
 
       before_transition do |pipeline|
         pipeline.update_duration
+      end
+
+      after_transition do |pipeline, transition|
+        pipeline.execute_hooks unless transition.loopback?
       end
     end
 
@@ -255,7 +261,17 @@ module Ci
       self.duration = calculate_duration
     end
 
+    def execute_hooks
+      data = pipeline_data
+      project.execute_hooks(data, :pipeline_hooks)
+      project.execute_services(data, :pipeline_hooks)
+    end
+
     private
+
+    def pipeline_data
+      Gitlab::DataBuilder::Pipeline.build(self)
+    end
 
     def latest_builds_status
       return 'failed' unless yaml_errors.blank?
