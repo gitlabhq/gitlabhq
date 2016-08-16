@@ -1082,12 +1082,12 @@ ActiveRecord::Schema.define(version: 20160810153405) do
     t.string   "source_ip"
     t.string   "user_agent"
     t.boolean  "via_api"
-    t.integer  "project_id"
     t.string   "noteable_type"
     t.string   "title"
     t.text     "description"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.boolean  "submitted_as_ham", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -1154,6 +1154,16 @@ ActiveRecord::Schema.define(version: 20160810153405) do
 
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
+  create_table "user_agent_details", force: :cascade do |t|
+    t.string   "user_agent",   null: false
+    t.string   "ip_address",   null: false
+    t.integer  "subject_id",   null: false
+    t.string   "subject_type", null: false
+    t.boolean  "submitted",    default: false, null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false

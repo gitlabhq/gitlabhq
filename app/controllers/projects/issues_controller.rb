@@ -4,6 +4,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
+  include SpammableActions
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
@@ -191,6 +192,7 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
+  alias_method :spammable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
