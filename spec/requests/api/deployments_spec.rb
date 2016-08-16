@@ -45,6 +45,7 @@ describe API::API, api: true  do
 
         expect(response).to have_http_status(200)
         expect(json_response['sha']).to match /\A\h{40}\z/
+        expect(json_response['id']).to eq(deployment.id)
       end
     end
 
