@@ -2,7 +2,6 @@ class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users]
   before_action :load_project, only: [:users]
   before_action :find_users, only: [:users]
-  before_action :load_project, only: [:users]
 
   def users
     @users = @users.non_ldap if params[:skip_ldap] == 'true'
