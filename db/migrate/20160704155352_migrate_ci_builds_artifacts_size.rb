@@ -56,7 +56,7 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
     loop_through_builds(task) do |id, store_path, artifacts_size|
       if artifacts_size
         execute(update_build_sql(id, artifacts_size)) unless task.dry
-      else
+      elsif !task.dry
         say("File is unexpectedly missing for #{id} at #{store_path}")
       end
     end
