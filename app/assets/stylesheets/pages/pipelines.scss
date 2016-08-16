@@ -233,11 +233,7 @@
 .pipelines.tab-pane {
 
   .content-list.pipelines {
-    width: auto;
-  }
-
-  .table.builds {
-    min-width: 900px;
+    overflow: scroll;
   }
 
   .stage {
