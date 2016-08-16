@@ -103,7 +103,7 @@ feature 'Projected Branches', feature: true, js: true do
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.push_access_levels.first.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to eq([access_type_id])
       end
 
       it "allows updating protected branches so that #{access_type_name} can push to them" do
@@ -119,7 +119,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.push_access_levels.first.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
       end
     end
 
@@ -138,7 +138,7 @@ feature 'Projected Branches', feature: true, js: true do
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
-        expect(ProtectedBranch.last.merge_access_levels.first.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to eq([access_type_id])
       end
 
       it "allows updating protected branches so that #{access_type_name} can merge to them" do
@@ -154,7 +154,7 @@ feature 'Projected Branches', feature: true, js: true do
         end
 
         wait_for_ajax
-        expect(ProtectedBranch.last.merge_access_levels.first.access_level).to eq(access_type_id)
+        expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to include(access_type_id)
       end
     end
   end
