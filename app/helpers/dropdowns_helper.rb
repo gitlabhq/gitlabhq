@@ -7,10 +7,10 @@ module DropdownsHelper
         data_attr = options[:data].merge(data_attr)
       end
 
+      dropdown_output = dropdown_toggle(toggle_text, data_attr, options)
+
       if options.has_key?(:toggle_link)
         dropdown_output = dropdown_toggle_link(toggle_text, data_attr, options)
-      else
-        dropdown_output = dropdown_toggle(toggle_text, data_attr, options)
       end
 
       dropdown_output << content_tag(:div, class: "dropdown-menu dropdown-select #{options[:dropdown_class] if options.has_key?(:dropdown_class)}") do
