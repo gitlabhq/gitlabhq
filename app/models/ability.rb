@@ -72,7 +72,7 @@ class Ability
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then ProjectPolicy.abilities(user, subject)
-      when Issue then issue_abilities(user, subject)
+      when Issue then IssuePolicy.abilities(user, subject)
       when Note then note_abilities(user, subject)
       when ProjectSnippet then project_snippet_abilities(user, subject)
       when PersonalSnippet then personal_snippet_abilities(user, subject)
@@ -89,7 +89,7 @@ class Ability
     end
 
     # List of possible abilities for anonymous user
-    def anonymous_abilities(user, subject)
+    def anonymous_abilities(subject)
       if subject.is_a?(PersonalSnippet)
         anonymous_personal_snippet_abilities(subject)
       elsif subject.is_a?(ProjectSnippet)
@@ -98,6 +98,8 @@ class Ability
         anonymous_commit_status_abilities(subject)
       elsif subject.is_a?(Project)
         ProjectPolicy.abilities(nil, subject)
+      elsif subject.is_a?(Issue)
+        IssuePolicy.abilities(nil, subject)
       elsif subject.respond_to?(:project)
         ProjectPolicy.abilities(nil, subject.project)
       elsif subject.is_a?(Group) || subject.respond_to?(:group)

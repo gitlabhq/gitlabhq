@@ -203,6 +203,9 @@ class ProjectPolicy < BasePolicy
     can! :read_container_image
     can! :download_code
 
+    # NB: may be overridden by IssuePolicy
+    can! :read_issue
+
     # Allow to read builds by anonymous user if guests are allowed
     can! :read_build if project.public_builds?
 
