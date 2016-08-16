@@ -17,15 +17,15 @@ describe 'Issue Boards', feature: true, js: true do
   context 'no lists' do
     before do
       visit namespace_project_board_path(project.namespace, project)
+      wait_for_vue_resource
+      expect(page).to have_selector('.board', count: 3)
     end
 
     it 'shows blank state' do
-      expect(page).to have_selector('.board', count: 3)
       expect(page).to have_content('Welcome to your Issue Board!')
     end
 
     it 'hides the blank state when clicking nevermind button' do
-      expect(page).to have_selector('.board', count: 3)
       page.within(find('.board-blank-state')) do
         click_button("Nevermind, I'll use my own")
       end
@@ -33,8 +33,6 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     it 'creates default lists' do
-      expect(page).to have_selector('.board', count: 3)
-
       lists = ['Backlog', 'Development', 'Testing', 'Production', 'Ready', 'Done']
 
       page.within(find('.board-blank-state')) do
@@ -78,10 +76,12 @@ describe 'Issue Boards', feature: true, js: true do
       visit namespace_project_board_path(project.namespace, project)
 
       wait_for_vue_resource
+
+      expect(page).to have_selector('.board', count: 4)
+      has_issues
     end
 
     it 'shows lists' do
-      wait_for_vue_resource
       expect(page).to have_selector('.board', count: 4)
     end
 
@@ -169,14 +169,11 @@ describe 'Issue Boards', feature: true, js: true do
 
           find('.board-search-clear-btn').click
 
-          wait_for_vue_resource
-
           expect(page).to have_selector('.card', count: 6)
         end
       end
 
       it 'moves issue from backlog into list' do
-        has_issues
         drag_to(list_to_index: 1)
 
         page.within(find('.board', match: :first)) do
@@ -197,7 +194,6 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'moves issue to done' do
-        has_issues
         drag_to(list_from_index: 0, list_to_index: 3)
 
         expect(find('.board:nth-child(4)')).to have_selector('.card', count: 2)
@@ -206,7 +202,6 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'removes all of the same issue to done' do
-        has_issues
         drag_to(list_from_index: 1, list_to_index: 3)
 
         expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
@@ -218,16 +213,13 @@ describe 'Issue Boards', feature: true, js: true do
 
     context 'lists' do
       it 'changes position of list' do
-        expect(page).to have_selector('.board', count: 4)
-        has_issues
-        drag_to(list_from_index: 1, list_to_index: 2, selector: '.js-board-handle')
+        drag_to(list_from_index: 1, list_to_index: 2, selector: '.board-header')
 
         expect(find('.board:nth-child(2)')).to have_content(development.title)
         expect(find('.board:nth-child(2)')).to have_content(planning.title)
       end
 
       it 'issue moves between lists' do
-        has_issues
         drag_to(list_from_index: 1, card_index: 1, list_to_index: 2)
 
         expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
@@ -237,7 +229,6 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves between lists' do
-        has_issues
         drag_to(list_from_index: 2, list_to_index: 1)
 
         expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
@@ -247,7 +238,6 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'issue moves from done' do
-        has_issues
         drag_to(list_from_index: 3, list_to_index: 1)
 
         expect(find('.board:nth-child(2)')).to have_selector('.card', count: 3)
@@ -441,8 +431,6 @@ describe 'Issue Boards', feature: true, js: true do
 
           evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
 
-          wait_for_vue_resource
-
           expect(page.find('.board-header')).to have_content('40')
           expect(page).to have_selector('.card', count: 40)
         end
@@ -565,5 +553,6 @@ describe 'Issue Boards', feature: true, js: true do
     Timeout.timeout(Capybara.default_max_wait_time) do
       loop until page.evaluate_script('Vue.activeResources').zero?
     end
+    expect(find('.boards-list')).not_to have_selector('.fa-spinner')
   end
 end

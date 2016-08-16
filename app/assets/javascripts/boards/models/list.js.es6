@@ -50,7 +50,7 @@ class List {
   }
 
   update () {
-    gl.boardService.updateList(this);
+    gl.boardService.updateList(this.id, this.position);
   }
 
   nextPage () {

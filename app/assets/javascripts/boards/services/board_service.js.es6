@@ -2,14 +2,14 @@ class BoardService {
   constructor (root) {
     Vue.http.options.root = root;
 
-    this.lists = Vue.resource(`${root}/lists{/id}.json`, {}, {
+    this.lists = Vue.resource(`${root}/lists{/id}`, {}, {
       generate: {
         method: 'POST',
         url: `${root}/lists/generate.json`
       }
     });
-    this.issue = Vue.resource(`${root}/issues{/id}.json`, {});
-    this.issues = Vue.resource(`${root}/lists{/id}/issues.json`, {});
+    this.issue = Vue.resource(`${root}/issues{/id}`, {});
+    this.issues = Vue.resource(`${root}/lists{/id}/issues`, {});
   }
 
   setCSRF () {
@@ -37,12 +37,12 @@ class BoardService {
     });
   }
 
-  updateList (list) {
+  updateList (id, position) {
     this.setCSRF();
 
-    return this.lists.update({ id: list.id }, {
+    return this.lists.update({ id }, {
       list: {
-        position: list.position
+        position
       }
     });
   }
