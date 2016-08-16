@@ -1,33 +1,26 @@
 module Boards
   module Lists
     class MoveService < Boards::BaseService
-      def execute
+      def execute(list)
+        @old_position = list.position
+        @new_position = params[:position]
+
         return false unless list.label?
         return false unless valid_move?
 
         list.with_lock do
           reorder_intermediate_lists
-          update_list_position
+          update_list_position(list)
         end
       end
 
       private
 
-      def list
-        @list ||= board.lists.find(params[:id])
-      end
+      attr_reader :old_position, :new_position
 
       def valid_move?
         new_position.present? && new_position != old_position &&
           new_position >= 0 && new_position < board.lists.label.size
-      end
-
-      def old_position
-        @old_position ||= list.position
-      end
-
-      def new_position
-        @new_position ||= params[:position]
       end
 
       def reorder_intermediate_lists
@@ -50,7 +43,7 @@ module Boards
                          .update_all('position = position + 1')
       end
 
-      def update_list_position
+      def update_list_position(list)
         list.update_attribute(:position, new_position)
       end
     end

@@ -15,90 +15,90 @@ describe Boards::Lists::MoveService, services: true do
 
     context 'when list type is set to label' do
       it 'keeps position of lists when new position is nil' do
-        service = described_class.new(project, user, id: planning.id, position: nil)
+        service = described_class.new(project, user, position: nil)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [0, 1, 2, 3]
       end
 
       it 'keeps position of lists when new positon is equal to old position' do
-        service = described_class.new(project, user, id: planning.id, position: planning.position)
+        service = described_class.new(project, user, position: planning.position)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [0, 1, 2, 3]
       end
 
       it 'keeps position of lists when new positon is negative' do
-        service = described_class.new(project, user, id: planning.id, position: -1)
+        service = described_class.new(project, user, position: -1)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [0, 1, 2, 3]
       end
 
       it 'keeps position of lists when new positon is equal to number of labels lists' do
-        service = described_class.new(project, user, id: planning.id, position: board.lists.label.size)
+        service = described_class.new(project, user, position: board.lists.label.size)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [0, 1, 2, 3]
       end
 
       it 'keeps position of lists when new positon is greater than number of labels lists' do
-        service = described_class.new(project, user, id: planning.id, position: board.lists.label.size + 1)
+        service = described_class.new(project, user, position: board.lists.label.size + 1)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [0, 1, 2, 3]
       end
 
       it 'increments position of intermediate lists when new positon is equal to first position' do
-        service = described_class.new(project, user, id: staging.id, position: 0)
+        service = described_class.new(project, user, position: 0)
 
-        service.execute
+        service.execute(staging)
 
         expect(current_list_positions).to eq [1, 2, 3, 0]
       end
 
       it 'decrements position of intermediate lists when new positon is equal to last position' do
-        service = described_class.new(project, user, id: planning.id, position: board.lists.label.last.position)
+        service = described_class.new(project, user, position: board.lists.label.last.position)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [3, 0, 1, 2]
       end
 
       it 'decrements position of intermediate lists when new position is greater than old position' do
-        service = described_class.new(project, user, id: planning.id, position: 2)
+        service = described_class.new(project, user, position: 2)
 
-        service.execute
+        service.execute(planning)
 
         expect(current_list_positions).to eq [2, 0, 1, 3]
       end
 
       it 'increments position of intermediate lists when new position is lower than old position' do
-        service = described_class.new(project, user, id: staging.id, position: 1)
+        service = described_class.new(project, user, position: 1)
 
-        service.execute
+        service.execute(staging)
 
         expect(current_list_positions).to eq [0, 2, 3, 1]
       end
     end
 
     it 'keeps position of lists when list type is backlog' do
-      service = described_class.new(project, user, id: backlog.id, position: 2)
+      service = described_class.new(project, user, position: 2)
 
-      service.execute
+      service.execute(backlog)
 
       expect(current_list_positions).to eq [0, 1, 2, 3]
     end
 
     it 'keeps position of lists when list type is done' do
-      service = described_class.new(project, user, id: done.id, position: 2)
+      service = described_class.new(project, user, position: 2)
 
-      service.execute
+      service.execute(done)
 
       expect(current_list_positions).to eq [0, 1, 2, 3]
     end

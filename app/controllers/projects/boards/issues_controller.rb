@@ -19,7 +19,7 @@ module Projects
       def update
         service = ::Boards::Issues::MoveService.new(project, current_user, move_params)
 
-        if service.execute
+        if service.execute(issue)
           head :ok
         else
           head :unprocessable_entity
@@ -28,12 +28,16 @@ module Projects
 
       private
 
+      def issue
+        @issue ||= project.issues.visible_to_user(current_user).find_by!(iid: params[:id])
+      end
+
       def authorize_read_issue!
         return render_403 unless can?(current_user, :read_issue, project)
       end
 
       def authorize_update_issue!
-        return render_403 unless can?(current_user, :update_issue, project)
+        return render_403 unless can?(current_user, :update_issue, issue)
       end
 
       def filter_params

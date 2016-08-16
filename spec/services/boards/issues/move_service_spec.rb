@@ -22,9 +22,9 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from backlog' do
       it 'adds the label of the list it goes to' do
         issue = create(:labeled_issue, project: project, labels: [bug])
-        params = { id: issue.iid, from_list_id: backlog.id, to_list_id: list1.id }
+        params = { from_list_id: backlog.id, to_list_id: list1.id }
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
 
         expect(issue.reload.labels).to contain_exactly(bug, development)
       end
@@ -33,9 +33,9 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving to backlog' do
       it 'removes all list-labels' do
         issue = create(:labeled_issue, project: project, labels: [bug, development, testing])
-        params = { id: issue.iid, from_list_id: list1.id, to_list_id: backlog.id }
+        params = { from_list_id: list1.id, to_list_id: backlog.id }
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
 
         expect(issue.reload.labels).to contain_exactly(bug)
       end
@@ -44,9 +44,9 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from backlog to done' do
       it 'closes the issue' do
         issue = create(:labeled_issue, project: project, labels: [bug])
-        params = { id: issue.iid, from_list_id: backlog.id, to_list_id: done.id }
+        params = { from_list_id: backlog.id, to_list_id: done.id }
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug)
@@ -56,16 +56,16 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving an issue between lists' do
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
-      let(:params) { { id: issue.iid, from_list_id: list1.id, to_list_id: list2.id } }
+      let(:params) { { from_list_id: list1.id, to_list_id: list2.id } }
 
       it 'delegates the label changes to Issues::UpdateService' do
         expect_any_instance_of(Issues::UpdateService).to receive(:execute).with(issue).once
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
       end
 
-      it 'removess the label from the list it came from and adds the label of the list it goes to' do
-        described_class.new(project, user, params).execute
+      it 'removes the label from the list it came from and adds the label of the list it goes to' do
+        described_class.new(project, user, params).execute(issue)
 
         expect(issue.reload.labels).to contain_exactly(bug, testing)
       end
@@ -73,16 +73,16 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving to done' do
       let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development, testing]) }
-      let(:params) { { id: issue.iid, from_list_id: list2.id, to_list_id: done.id } }
+      let(:params) { { from_list_id: list2.id, to_list_id: done.id } }
 
       it 'delegates the close proceedings to Issues::CloseService' do
         expect_any_instance_of(Issues::CloseService).to receive(:execute).with(issue).once
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
       end
 
       it 'removes all list-labels and close the issue' do
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug)
@@ -92,16 +92,16 @@ describe Boards::Issues::MoveService, services: true do
 
     context 'when moving from done' do
       let(:issue)  { create(:labeled_issue, :closed, project: project, labels: [bug]) }
-      let(:params) { { id: issue.iid, from_list_id: done.id, to_list_id: list2.id } }
+      let(:params) { { from_list_id: done.id, to_list_id: list2.id } }
 
       it 'delegates the re-open proceedings to Issues::ReopenService' do
         expect_any_instance_of(Issues::ReopenService).to receive(:execute).with(issue).once
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
       end
 
       it 'adds the label of the list it goes to and reopen the issue' do
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug, testing)
@@ -112,9 +112,9 @@ describe Boards::Issues::MoveService, services: true do
     context 'when moving from done to backlog' do
       it 'reopens the issue' do
         issue = create(:labeled_issue, :closed, project: project, labels: [bug])
-        params = { id: issue.iid, from_list_id: done.id, to_list_id: backlog.id }
+        params = { from_list_id: done.id, to_list_id: backlog.id }
 
-        described_class.new(project, user, params).execute
+        described_class.new(project, user, params).execute(issue)
         issue.reload
 
         expect(issue.labels).to contain_exactly(bug)
