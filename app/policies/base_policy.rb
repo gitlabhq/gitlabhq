@@ -4,6 +4,8 @@ class BasePolicy
   end
 
   def self.class_for(subject)
+    return GlobalPolicy if subject.nil?
+
     subject.class.ancestors.each do |klass|
       next unless klass.name
 
@@ -59,8 +61,6 @@ class BasePolicy
   private
 
   def collect_rules(&b)
-    return Set.new if @subject.nil?
-
     @can = Set.new
     @cannot = Set.new
     yield
