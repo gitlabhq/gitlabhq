@@ -1,5 +1,6 @@
 class AutocompleteController < ApplicationController
   skip_before_action :authenticate_user!, only: [:users]
+  before_action :load_project, only: [:users]
   before_action :find_users, only: [:users]
 
   def users
@@ -55,11 +56,8 @@ class AutocompleteController < ApplicationController
 
   def find_users
     @users =
-      if params[:project_id].present?
-        project = Project.find(params[:project_id])
-        return render_404 unless can?(current_user, :read_project, project)
-
-        project.team.users
+      if @project
+        @project.team.users
       elsif params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
@@ -70,5 +68,15 @@ class AutocompleteController < ApplicationController
       else
         User.none
       end
+  end
+
+  def load_project
+    @project ||= begin
+      if params[:project_id].present?
+        project = Project.find(params[:project_id])
+        return render_404 unless can?(current_user, :read_project, project)
+        project
+      end
+    end
   end
 end
