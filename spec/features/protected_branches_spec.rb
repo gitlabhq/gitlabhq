@@ -93,8 +93,12 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".js-allowed-to-push").click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          allowed_to_push_button = find(".js-allowed-to-push")
+
+          unless allowed_to_push_button.text == access_type_name
+            allowed_to_push_button.click
+            within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          end
         end
         click_on "Protect"
 
@@ -124,8 +128,12 @@ feature 'Projected Branches', feature: true, js: true do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
         within('.new_protected_branch') do
-          find(".js-allowed-to-merge").click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          allowed_to_merge_button = find(".js-allowed-to-merge")
+
+          unless allowed_to_merge_button.text == access_type_name
+            allowed_to_merge_button.click
+            within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          end
         end
         click_on "Protect"
 
