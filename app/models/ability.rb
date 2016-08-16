@@ -96,57 +96,6 @@ class Ability
       end
     end
 
-    def anonymous_project_abilities(subject)
-      project = if subject.is_a?(Project)
-                  subject
-                else
-                  subject.project
-                end
-
-      if project && project.public?
-        rules = [
-          :read_project,
-          :read_board,
-          :read_list,
-          :read_wiki,
-          :read_label,
-          :read_milestone,
-          :read_project_snippet,
-          :read_project_member,
-          :read_merge_request,
-          :read_note,
-          :read_pipeline,
-          :read_commit_status,
-          :read_container_image,
-          :download_code
-        ]
-
-        # Allow to read builds by anonymous user if guests are allowed
-        rules << :read_build if project.public_builds?
-
-        # Allow to read issues by anonymous user if issue is not confidential
-        rules << :read_issue unless subject.is_a?(Issue) && subject.confidential?
-
-        rules - project_disabled_features_rules(project)
-      else
-        []
-      end
-    end
-
-    def anonymous_group_abilities(subject)
-      rules = []
-
-      group = if subject.is_a?(Group)
-                subject
-              else
-                subject.group
-              end
-
-      rules << :read_group if group.public?
-
-      rules
-    end
-
     def anonymous_user_abilities
       [:read_user] unless restricted_public_level?
     end
@@ -211,7 +160,7 @@ class Ability
       project = subject.project
 
       unless target_user == project.owner
-        can_manage = project_abilities(user, project).include?(:admin_project_member)
+        can_manage = allowed?(user, :admin_project_member, project)
 
         if can_manage
           rules << :update_project_member
