@@ -71,8 +71,8 @@
     welcomeIsHidden () {
       return $.cookie('issue_board_welcome_hidden') === 'true';
     },
-    removeList (id) {
-      const list = this.findList('id', id, 'blank');
+    removeList (id, type = 'blank') {
+      const list = this.findList('id', id, type);
 
       if (!list) return;
 
@@ -107,6 +107,8 @@
           list.removeIssue(issue);
         }
         issue.removeLabels(listLabels);
+      } else {
+        listFrom.removeIssue(issue);
       }
     },
     findList (key, val, type = 'label') {

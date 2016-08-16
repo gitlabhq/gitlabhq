@@ -508,6 +508,9 @@ describe 'Issue Boards', feature: true, js: true do
 
   def drag_to(list_from_index: 0, card_index: 0, to_index: 0, list_to_index: 0, selector: '.board-list')
     evaluate_script("simulateDrag({scrollable: document.getElementById('board-app'), from: {el: $('#{selector}').eq(#{list_from_index}).get(0), index: #{card_index}}, to: {el: $('.board-list').eq(#{list_to_index}).get(0), index: #{to_index}}});")
-    sleep 1
+
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until page.evaluate_script('window.SIMULATE_DRAG_ACTIVE').zero?
+    end
   end
 end

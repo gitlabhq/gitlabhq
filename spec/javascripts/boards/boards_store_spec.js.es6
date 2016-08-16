@@ -125,39 +125,35 @@
 
         expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(1);
 
-        gl.issueBoards.BoardsStore.removeList(1);
+        gl.issueBoards.BoardsStore.removeList(1, 'label');
 
         expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(0);
       });
 
       it('moves the position of lists', () => {
-        gl.issueBoards.BoardsStore.addList(listObj);
-        gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+        const listOne = gl.issueBoards.BoardsStore.addList(listObj),
+              listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
         expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-        gl.issueBoards.BoardsStore.moveList(0, 1);
+        gl.issueBoards.BoardsStore.moveList(listOne, ['2', '1']);
 
-        const list = gl.issueBoards.BoardsStore.findList('id', 1);
-        expect(list.position).toBe(1);
+        expect(listOne.position).toBe(1);
       });
 
       it('moves an issue from one list to another', (done) => {
-        gl.issueBoards.BoardsStore.addList(listObj);
-        gl.issueBoards.BoardsStore.addList(listObjDuplicate);
+        const listOne = gl.issueBoards.BoardsStore.addList(listObj),
+              listTwo = gl.issueBoards.BoardsStore.addList(listObjDuplicate);
 
         expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-        const list = gl.issueBoards.BoardsStore.findList('id', 1),
-              listTwo = gl.issueBoards.BoardsStore.findList('id', 2);
-
         setTimeout(() => {
-          expect(list.issues.length).toBe(1);
+          expect(listOne.issues.length).toBe(1);
           expect(listTwo.issues.length).toBe(1);
 
-          gl.issueBoards.BoardsStore.moveIssueToList(1, 2, 1);
+          gl.issueBoards.BoardsStore.moveIssueToList(listOne, listTwo, listOne.findIssue(1));
 
-          expect(list.issues.length).toBe(0);
+          expect(listOne.issues.length).toBe(0);
           expect(listTwo.issues.length).toBe(1);
 
           done();

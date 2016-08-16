@@ -84,6 +84,7 @@
 		var duration = options.duration || 1000;
 		simulateEvent(fromEl, 'mousedown', {button: 0});
 		options.ontap && options.ontap();
+		window.SIMULATE_DRAG_ACTIVE = 1;
 
 		var dragInterval = setInterval(function loop() {
 			var progress = (new Date().getTime() - startTime) / duration;
@@ -100,6 +101,7 @@
 				options.ondragend && options.ondragend();
 				simulateEvent(toEl, 'mouseup');
 				clearInterval(dragInterval);
+				window.SIMULATE_DRAG_ACTIVE = 0;
 			}
 		}, 100);
 
