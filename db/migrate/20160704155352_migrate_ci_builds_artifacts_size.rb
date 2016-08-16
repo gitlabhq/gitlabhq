@@ -4,7 +4,8 @@ class MigrateCiBuildsArtifactsSize < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   BATCH = 1000
-  THREADS = 8
+  THREADS = 1
+  DOWNTIME = false
 
   Task = Struct.new(:dry, :limit, :offset, :index)
 
