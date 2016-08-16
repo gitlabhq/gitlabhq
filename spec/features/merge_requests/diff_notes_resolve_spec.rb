@@ -292,6 +292,24 @@ feature 'Diff notes resolve', feature: true, js: true do
           expect(holder).to have_selector('.discussion-next-btn')
         end
       end
+      
+      it 'displays next discussion even if hidden' do
+        page.all('.note-discussion').each do |discussion|
+          page.within discussion do
+            click_link 'Toggle discussion'
+          end
+        end
+
+        page.within('.issuable-discussion #notes') do
+          expect(page).not_to have_selector('.btn', text: 'Resolve discussion')
+        end
+
+        page.within '.line-resolve-all-container' do
+          page.find('.discussion-next-btn').click
+        end
+
+        expect(find('.discussion-with-resolve-btn')).to have_selector('.btn', text: 'Resolve discussion')
+      end
     end
 
     context 'changes tab' do
