@@ -43,11 +43,11 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   # A U2F (universal 2nd factor) device's information is stored after successful
   # registration, which is then used while 2FA authentication is taking place.
   def create_u2f
-    @u2f_registration = U2fRegistration.register(current_user, u2f_app_id, params[:device_response], session[:challenges])
+    @u2f_registration = U2fRegistration.register(current_user, u2f_app_id, u2f_registration_params, session[:challenges])
 
     if @u2f_registration.persisted?
       session.delete(:challenges)
-      redirect_to profile_account_path, notice: "Your U2F device was registered!"
+      redirect_to profile_two_factor_auth_path, notice: "Your U2F device was registered!"
     else
       @qr_code = build_qr_code
       setup_u2f_registration
@@ -91,7 +91,8 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   # Actual communication is performed using a Javascript API
   def setup_u2f_registration
     @u2f_registration ||= U2fRegistration.new
-    @registration_key_handles = current_user.u2f_registrations.pluck(:key_handle)
+    @u2f_registrations = current_user.u2f_registrations
+    @registration_key_handles = @u2f_registrations.pluck(:key_handle)
     u2f = U2F::U2F.new(u2f_app_id)
 
     registration_requests = u2f.registration_requests
@@ -101,5 +102,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     gon.push(u2f: { challenges: session[:challenges], app_id: u2f_app_id,
                     register_requests: registration_requests,
                     sign_requests: sign_requests })
+  end
+
+  def u2f_registration_params
+    params.require(:u2f_registration).permit(:device_response, :name)
   end
 end
