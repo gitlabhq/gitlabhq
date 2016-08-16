@@ -9,6 +9,28 @@ describe NotificationService, services: true do
     end
   end
 
+  shared_examples 'notifications for new mentions' do
+    def send_notifications(*new_mentions)
+      reset_delivered_emails!
+      notification.send(notification_method, mentionable, new_mentions, @u_disabled)
+    end
+
+    it 'sends no emails when no new mentions are present' do
+      send_notifications
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+
+    it 'emails new mentions with a watch level higher than participant' do
+      send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
+      should_only_email(@u_watcher, @u_participant_mentioned, @u_custom_global)
+    end
+
+    it 'does not email new mentions with a watch level equal to or less than participant' do
+      send_notifications(@u_participating, @u_mentioned)
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+  end
+
   describe 'Keys' do
     describe '#new_key' do
       let!(:key) { create(:personal_key) }
@@ -400,30 +422,10 @@ describe NotificationService, services: true do
     end
 
     describe '#new_mentions_in_issue' do
-      def send_notifications(*new_mentions)
-        ActionMailer::Base.deliveries.clear
-        notification.new_mentions_in_issue(issue, new_mentions, @u_disabled)
-      end
+      let(:notification_method) { :new_mentions_in_issue }
+      let(:mentionable) { issue }
 
-      it 'sends no emails when no new mentions are present' do
-        send_notifications
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
-
-      it 'emails new mentions with a watch level higher than participant' do
-        send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
-
-        should_email(@u_watcher)
-        should_email(@u_participant_mentioned)
-        should_email(@u_custom_global)
-
-        expect(ActionMailer::Base.deliveries.count).to eq 3
-      end
-
-      it 'does not email new mentions with a watch level equal to or less than participant' do
-        send_notifications(@u_participating, @u_mentioned)
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
+      include_examples 'notifications for new mentions'
     end
 
     describe '#reassigned_issue' do
@@ -793,30 +795,10 @@ describe NotificationService, services: true do
     end
 
     describe '#new_mentions_in_merge_request' do
-      def send_notifications(*new_mentions)
-        ActionMailer::Base.deliveries.clear
-        notification.new_mentions_in_merge_request(merge_request, new_mentions, @u_disabled)
-      end
+      let(:notification_method) { :new_mentions_in_merge_request }
+      let(:mentionable) { merge_request }
 
-      it 'sends no emails when there are no new mentions' do
-        send_notifications
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
-
-      it 'emails new mentions with a watch level higher than participant' do
-        send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
-
-        should_email(@u_watcher)
-        should_email(@u_participant_mentioned)
-        should_email(@u_custom_global)
-
-        expect(ActionMailer::Base.deliveries.count).to eq 3
-      end
-
-      it 'does not email new mentions with a watch level equal to or less than participant' do
-        send_notifications(@u_participating, @u_mentioned)
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
+      include_examples 'notifications for new mentions'
     end
 
     describe '#reassigned_merge_request' do
