@@ -54,6 +54,26 @@ describe List do
     end
   end
 
+  describe '#destroyable?' do
+    it 'retruns true when list_type is set to label' do
+      subject.list_type = :label
+
+      expect(subject).to be_destroyable
+    end
+
+    it 'retruns false when list_type is set to backlog' do
+      subject.list_type = :backlog
+
+      expect(subject).not_to be_destroyable
+    end
+
+    it 'retruns false when list_type is set to done' do
+      subject.list_type = :done
+
+      expect(subject).not_to be_destroyable
+    end
+  end
+
   describe '#title' do
     it 'returns label name when list_type is set to label' do
       subject.list_type = :label

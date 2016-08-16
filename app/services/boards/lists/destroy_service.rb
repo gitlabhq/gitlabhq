@@ -2,7 +2,7 @@ module Boards
   module Lists
     class DestroyService < Boards::BaseService
       def execute(list)
-        return false unless list.label?
+        return false unless list.destroyable?
 
         list.with_lock do
           decrement_higher_lists(list)

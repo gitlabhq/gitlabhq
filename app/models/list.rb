@@ -9,7 +9,13 @@ class List < ActiveRecord::Base
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?
   validates :position, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, if: :label?
 
-  before_destroy :can_be_destroyed, unless: :label?
+  before_destroy :can_be_destroyed
+
+  scope :destroyable, -> { where(list_type: list_types[:label]) }
+
+  def destroyable?
+    label?
+  end
 
   def title
     label? ? label.name : list_type.humanize
@@ -18,6 +24,6 @@ class List < ActiveRecord::Base
   private
 
   def can_be_destroyed
-    false
+    destroyable?
   end
 end

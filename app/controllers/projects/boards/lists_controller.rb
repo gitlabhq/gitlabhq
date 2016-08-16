@@ -3,7 +3,6 @@ module Projects
     class ListsController < Boards::ApplicationController
       before_action :authorize_admin_list!, only: [:create, :update, :destroy, :generate]
       before_action :authorize_read_list!, only: [:index]
-      before_action :load_list, only: [:update, :destroy]
 
       def index
         render json: serialize_as_json(project.board.lists)
@@ -20,9 +19,10 @@ module Projects
       end
 
       def update
+        list = project.board.lists.find(params[:id])
         service = ::Boards::Lists::MoveService.new(project, current_user, move_params)
 
-        if service.execute(@list)
+        if service.execute(list)
           head :ok
         else
           head :unprocessable_entity
@@ -30,9 +30,10 @@ module Projects
       end
 
       def destroy
+        list = project.board.lists.destroyable.find(params[:id])
         service = ::Boards::Lists::DestroyService.new(project, current_user, params)
 
-        if service.execute(@list)
+        if service.execute(list)
           head :ok
         else
           head :unprocessable_entity
@@ -57,10 +58,6 @@ module Projects
 
       def authorize_read_list!
         return render_403 unless can?(current_user, :read_list, project)
-      end
-
-      def load_list
-        @list = project.board.lists.find(params[:id])
       end
 
       def list_params
