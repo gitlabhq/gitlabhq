@@ -47,7 +47,7 @@ class List {
   }
 
   nextPage () {
-    if (this.issues.length / 20 === this.page) {
+    if (Math.floor(this.issues.length / 20) === this.page) {
       this.page++;
 
       return this.getIssues(false);
