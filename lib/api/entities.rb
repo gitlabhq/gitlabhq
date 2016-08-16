@@ -514,6 +514,18 @@ module API
       expose :id, :name, :external_url
     end
 
+    class EnvironmentBasic < Grape::Entity
+      expose :id, :name, :external_url
+    end
+
+    class Deployment < Grape::Entity
+      expose :id, :iid, :ref, :sha, :created_at
+      expose :project,      using: Entities::Project
+      expose :user,         using: Entities::UserBasic
+      expose :environment,  using: Entities::EnvironmentBasic
+      expose :deployable,   using: Entities::Build
+    end
+
     class RepoLicense < Grape::Entity
       expose :key, :name, :nickname
       expose :featured, as: :popular
