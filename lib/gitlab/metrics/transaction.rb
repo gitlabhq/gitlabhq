@@ -4,7 +4,10 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      attr_reader :tags, :values, :methods
+      # The series to store events (e.g. Git pushes) in.
+      EVENT_SERIES = 'events'
+
+      attr_reader :tags, :values, :method, :metrics
 
       attr_accessor :action
 
@@ -55,6 +58,20 @@ module Gitlab
         @metrics << Metric.new("#{Metrics.series_prefix}#{series}", values, tags)
       end
 
+      # Tracks a business level event
+      #
+      # Business level events including events such as Git pushes, Emails being
+      # sent, etc.
+      #
+      # event_name - The name of the event (e.g. "git_push").
+      # tags - A set of tags to attach to the event.
+      def add_event(event_name, tags = {})
+        @metrics << Metric.new(EVENT_SERIES,
+                               { count: 1 },
+                               { event: event_name }.merge(tags),
+                               :event)
+      end
+
       # Returns a MethodCall object for the given name.
       def method_call_for(name)
         unless method = @methods[name]
@@ -101,7 +118,7 @@ module Gitlab
         submit_hashes = submit.map do |metric|
           hash = metric.to_hash
 
-          hash[:tags][:action] ||= @action if @action
+          hash[:tags][:action] ||= @action if @action && !metric.event?
 
           hash
         end

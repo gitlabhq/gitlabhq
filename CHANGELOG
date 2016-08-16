@@ -16,6 +16,7 @@ v 8.11.0 (unreleased)
   - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
   - Use long options for curl examples in documentation !5703 (winniehell)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
+  - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)

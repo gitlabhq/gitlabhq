@@ -12,7 +12,9 @@ describe Gitlab::Metrics::SidekiqMiddleware do
         with('TestWorker#perform').
         and_call_original
 
-      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set).with(:sidekiq_queue_duration, instance_of(Float))
+      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set).
+        with(:sidekiq_queue_duration, instance_of(Float))
+
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:finish)
 
       middleware.call(worker, message, :test) { nil }
@@ -25,10 +27,28 @@ describe Gitlab::Metrics::SidekiqMiddleware do
         with('TestWorker#perform').
         and_call_original
 
-      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set).with(:sidekiq_queue_duration, instance_of(Float))
+      expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:set).
+        with(:sidekiq_queue_duration, instance_of(Float))
+
       expect_any_instance_of(Gitlab::Metrics::Transaction).to receive(:finish)
 
       middleware.call(worker, {}, :test) { nil }
+    end
+
+    it 'tracks any raised exceptions' do
+      worker = double(:worker, class: double(:class, name: 'TestWorker'))
+
+      expect_any_instance_of(Gitlab::Metrics::Transaction).
+        to receive(:run).and_raise(RuntimeError)
+
+      expect_any_instance_of(Gitlab::Metrics::Transaction).
+        to receive(:add_event).with(:sidekiq_exception)
+
+      expect_any_instance_of(Gitlab::Metrics::Transaction).
+        to receive(:finish)
+
+      expect { middleware.call(worker, message, :test) }.
+        to raise_error(RuntimeError)
     end
   end
 end
