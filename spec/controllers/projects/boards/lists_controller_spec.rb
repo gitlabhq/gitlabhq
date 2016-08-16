@@ -29,7 +29,7 @@ describe Projects::Boards::ListsController do
 
       parsed_response = JSON.parse(response.body)
 
-      expect(response).to match_response_schema('list', array: true)
+      expect(response).to match_response_schema('lists')
       expect(parsed_response.length).to eq 3
     end
 
@@ -204,7 +204,7 @@ describe Projects::Boards::ListsController do
       it 'returns the defaults lists' do
         generate_default_board_lists user: user
 
-        expect(response).to match_response_schema('list', array: true)
+        expect(response).to match_response_schema('lists')
       end
     end
 

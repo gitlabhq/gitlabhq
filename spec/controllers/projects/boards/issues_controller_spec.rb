@@ -26,7 +26,7 @@ describe Projects::Boards::IssuesController do
 
         parsed_response = JSON.parse(response.body)
 
-        expect(response).to match_response_schema('issue', array: true)
+        expect(response).to match_response_schema('issues')
         expect(parsed_response.length).to eq 2
       end
     end
