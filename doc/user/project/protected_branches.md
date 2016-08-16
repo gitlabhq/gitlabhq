@@ -47,8 +47,7 @@ creation.
 
 ## Wildcard protected branches
 
->**Note:**
-This feature was [introduced][ce-4665] in GitLab 8.10.
+> [Introduced][ce-4665] in GitLab 8.10.
 
 You can specify a wildcard protected branch, which will protect all branches
 matching the wildcard. For example:

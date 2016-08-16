@@ -18,9 +18,6 @@ At its current state, GitHub importer can import:
 
 With GitLab 8.7+, references to pull requests and issues are preserved.
 
-It is not yet possible to import your cross-repository pull requests (those from
-forks). We are working on improving this in the near future.
-
 The importer page is visible when you [create a new project][new-project].
 Click on the **GitHub** link and, if you are logged in via the GitHub
 integration, you will be redirected to GitHub for permission to access your

@@ -7,6 +7,30 @@ FactoryGirl.define do
     started_at 'Tue, 26 Jan 2016 08:21:42 +0100'
     finished_at 'Tue, 26 Jan 2016 08:23:42 +0100'
 
+    trait :success do
+      status 'success'
+    end
+
+    trait :failed do
+      status 'failed'
+    end
+
+    trait :canceled do
+      status 'canceled'
+    end
+
+    trait :running do
+      status 'running'
+    end
+
+    trait :pending do
+      status 'pending'
+    end
+
+    trait :created do
+      status 'created'
+    end
+
     after(:build) do |build, evaluator|
       build.project = build.pipeline.project
     end

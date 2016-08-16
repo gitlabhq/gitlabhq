@@ -60,7 +60,7 @@ end
 #                  project GET    /:id(.:format)          projects#show
 #                          PUT    /:id(.:format)          projects#update
 #                          DELETE /:id(.:format)          projects#destroy
-# markdown_preview_project POST   /:id/markdown_preview(.:format) projects#markdown_preview
+# preview_markdown_project POST   /:id/preview_markdown(.:format) projects#preview_markdown
 describe ProjectsController, 'routing' do
   it 'to #create' do
     expect(post('/projects')).to route_to('projects#create')
@@ -91,9 +91,9 @@ describe ProjectsController, 'routing' do
     expect(delete('/gitlab/gitlabhq')).to route_to('projects#destroy', namespace_id: 'gitlab', id: 'gitlabhq')
   end
 
-  it 'to #markdown_preview' do
-    expect(post('/gitlab/gitlabhq/markdown_preview')).to(
-      route_to('projects#markdown_preview', namespace_id: 'gitlab', id: 'gitlabhq')
+  it 'to #preview_markdown' do
+    expect(post('/gitlab/gitlabhq/preview_markdown')).to(
+      route_to('projects#preview_markdown', namespace_id: 'gitlab', id: 'gitlabhq')
     )
   end
 end
@@ -134,10 +134,6 @@ describe Projects::RepositoriesController, 'routing' do
 
   it 'to #archive format:tar.bz2' do
     expect(get('/gitlab/gitlabhq/repository/archive.tar.bz2')).to route_to('projects/repositories#archive', namespace_id: 'gitlab', project_id: 'gitlabhq', format: 'tar.bz2')
-  end
-
-  it 'to #show' do
-    expect(get('/gitlab/gitlabhq/repository')).to route_to('projects/repositories#show', namespace_id: 'gitlab', project_id: 'gitlabhq')
   end
 end
 
@@ -483,13 +479,16 @@ end
 describe Projects::NetworkController, 'routing' do
   it 'to #show' do
     expect(get('/gitlab/gitlabhq/network/master')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
-    expect(get('/gitlab/gitlabhq/network/master.json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
+    expect(get('/gitlab/gitlabhq/network/ends-with.json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
+    expect(get('/gitlab/gitlabhq/network/master?format=json')).to route_to('projects/network#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
   end
 end
 
 describe Projects::GraphsController, 'routing' do
   it 'to #show' do
     expect(get('/gitlab/gitlabhq/graphs/master')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
+    expect(get('/gitlab/gitlabhq/graphs/ends-with.json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'ends-with.json')
+    expect(get('/gitlab/gitlabhq/graphs/master?format=json')).to route_to('projects/graphs#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
   end
 end
 

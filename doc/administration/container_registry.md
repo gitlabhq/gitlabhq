@@ -1,7 +1,6 @@
 # GitLab Container Registry Administration
 
-> **Note:**
-This feature was [introduced][ce-4040] in GitLab 8.8.
+> [Introduced][ce-4040] in GitLab 8.8.
 
 With the Docker Container Registry integrated into GitLab, every project can
 have its own space to store its Docker images.
@@ -121,6 +120,10 @@ Assuming that the GitLab domain is `https://gitlab.example.com` and the port the
 Registry is exposed to the outside world is `4567`, here is what you need to set
 in `gitlab.rb` or `gitlab.yml` if you are using Omnibus GitLab or installed
 GitLab from source respectively.
+
+>**Note:**
+Be careful to choose a port different than the one that Registry listens to (`5000` by default),
+otherwise you will run into conflicts .
 
 ---
 

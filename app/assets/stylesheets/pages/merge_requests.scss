@@ -69,6 +69,10 @@
 
     &.ci-success {
       color: $gl-success;
+
+      a.environment {
+        color: inherit;
+      }
     }
 
     &.ci-success_with_warnings {
@@ -126,7 +130,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-
     }
 
     p:last-child {
@@ -215,6 +218,11 @@
           width: 16px;
           position: relative;
           top: 3px;
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
         }
       }
     }

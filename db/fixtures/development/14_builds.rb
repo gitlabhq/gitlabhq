@@ -1,6 +1,22 @@
 class Gitlab::Seeder::Builds
   STAGES = %w[build notify_build test notify_test deploy notify_deploy]
-  
+  BUILDS = [
+    { name: 'build:linux', stage: 'build', status: :success },
+    { name: 'build:osx', stage: 'build', status: :success },
+    { name: 'slack post build', stage: 'notify_build', status: :success },
+    { name: 'rspec:linux', stage: 'test', status: :success },
+    { name: 'rspec:windows', stage: 'test', status: :success },
+    { name: 'rspec:windows', stage: 'test', status: :success },
+    { name: 'rspec:osx', stage: 'test', status_event: :success },
+    { name: 'spinach:linux', stage: 'test', status: :pending },
+    { name: 'spinach:osx', stage: 'test', status: :canceled },
+    { name: 'cucumber:linux', stage: 'test', status: :running },
+    { name: 'cucumber:osx', stage: 'test', status: :failed },
+    { name: 'slack post test', stage: 'notify_test', status: :success },
+    { name: 'staging', stage: 'deploy', environment: 'staging', status: :success },
+    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :success },
+  ]
+
   def initialize(project)
     @project = project
   end
@@ -8,26 +24,8 @@ class Gitlab::Seeder::Builds
   def seed!
     pipelines.each do |pipeline|
       begin
-        build_create!(pipeline, name: 'build:linux', stage: 'build')
-        build_create!(pipeline, name: 'build:osx', stage: 'build')
-
-        build_create!(pipeline, name: 'slack post build', stage: 'notify_build')
-
-        build_create!(pipeline, name: 'rspec:linux', stage: 'test')
-        build_create!(pipeline, name: 'rspec:windows', stage: 'test')
-        build_create!(pipeline, name: 'rspec:windows', stage: 'test')
-        build_create!(pipeline, name: 'rspec:osx', stage: 'test')
-        build_create!(pipeline, name: 'spinach:linux', stage: 'test')
-        build_create!(pipeline, name: 'spinach:osx', stage: 'test')
-        build_create!(pipeline, name: 'cucumber:linux', stage: 'test')
-        build_create!(pipeline, name: 'cucumber:osx', stage: 'test')
-
-        build_create!(pipeline, name: 'slack post test', stage: 'notify_test')
-
-        build_create!(pipeline, name: 'staging', stage: 'deploy', environment: 'staging')
-        build_create!(pipeline, name: 'production', stage: 'deploy', environment: 'production', when: 'manual')
-
-        commit_status_create!(pipeline, name: 'jenkins')
+        BUILDS.each { |opts| build_create!(pipeline, opts) }
+        commit_status_create!(pipeline, name: 'jenkins', status: :success)
 
         print '.'
       rescue ActiveRecord::RecordInvalid
@@ -48,35 +46,33 @@ class Gitlab::Seeder::Builds
 
   def build_create!(pipeline, opts = {})
     attributes = build_attributes_for(pipeline, opts)
-    build = Ci::Build.new(attributes)
 
-    if opts[:name].start_with?('build')
-      artifacts_cache_file(artifacts_archive_path) do |file|
-        build.artifacts_file = file
+    Ci::Build.create!(attributes) do |build|
+      if opts[:name].start_with?('build')
+        artifacts_cache_file(artifacts_archive_path) do |file|
+          build.artifacts_file = file
+        end
+
+        artifacts_cache_file(artifacts_metadata_path) do |file|
+          build.artifacts_metadata = file
+        end
       end
 
-      artifacts_cache_file(artifacts_metadata_path) do |file|
-        build.artifacts_metadata = file
+      if %w(running success failed).include?(build.status)
+        # We need to set build trace after saving a build (id required)
+        build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
       end
-    end
-
-    build.save!
-    build.update(status: build_status)
-
-    if %w(running success failed).include?(build.status)
-      # We need to set build trace after saving a build (id required)
-      build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
     end
   end
-  
+
   def commit_status_create!(pipeline, opts = {})
     attributes = commit_status_attributes_for(pipeline, opts)
-    GenericCommitStatus.create(attributes)
+    GenericCommitStatus.create!(attributes)
   end
-  
+
   def commit_status_attributes_for(pipeline, opts)
     { name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
-      ref: 'master', user: build_user, project: @project, pipeline: pipeline,
+      ref: 'master', tag: false, user: build_user, project: @project, pipeline: pipeline,
       created_at: Time.now, updated_at: Time.now
     }.merge(opts)
   end

@@ -23,25 +23,25 @@ describe "GitLab Flavored Markdown", feature: true do
   end
 
   describe "for commits" do
-    it "should render title in commits#index" do
+    it "renders title in commits#index" do
       visit namespace_project_commits_path(project.namespace, project, 'master', limit: 1)
 
       expect(page).to have_link(issue.to_reference)
     end
 
-    it "should render title in commits#show" do
+    it "renders title in commits#show" do
       visit namespace_project_commit_path(project.namespace, project, commit)
 
       expect(page).to have_link(issue.to_reference)
     end
 
-    it "should render description in commits#show" do
+    it "renders description in commits#show" do
       visit namespace_project_commit_path(project.namespace, project, commit)
 
       expect(page).to have_link(fred.to_reference)
     end
 
-    it "should render title in repositories#branches" do
+    it "renders title in repositories#branches" do
       visit namespace_project_branches_path(project.namespace, project)
 
       expect(page).to have_link(issue.to_reference)
@@ -62,19 +62,19 @@ describe "GitLab Flavored Markdown", feature: true do
                       description: "ask #{fred.to_reference} for details")
     end
 
-    it "should render subject in issues#index" do
+    it "renders subject in issues#index" do
       visit namespace_project_issues_path(project.namespace, project)
 
       expect(page).to have_link(@other_issue.to_reference)
     end
 
-    it "should render subject in issues#show" do
+    it "renders subject in issues#show" do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link(@other_issue.to_reference)
     end
 
-    it "should render details in issues#show" do
+    it "renders details in issues#show" do
       visit namespace_project_issue_path(project.namespace, project, @issue)
 
       expect(page).to have_link(fred.to_reference)
@@ -86,13 +86,13 @@ describe "GitLab Flavored Markdown", feature: true do
       @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix #{issue.to_reference}")
     end
 
-    it "should render title in merge_requests#index" do
+    it "renders title in merge_requests#index" do
       visit namespace_project_merge_requests_path(project.namespace, project)
 
       expect(page).to have_link(issue.to_reference)
     end
 
-    it "should render title in merge_requests#show" do
+    it "renders title in merge_requests#show" do
       visit namespace_project_merge_request_path(project.namespace, project, @merge_request)
 
       expect(page).to have_link(issue.to_reference)
@@ -107,19 +107,19 @@ describe "GitLab Flavored Markdown", feature: true do
                           description: "ask #{fred.to_reference} for details")
     end
 
-    it "should render title in milestones#index" do
+    it "renders title in milestones#index" do
       visit namespace_project_milestones_path(project.namespace, project)
 
       expect(page).to have_link(issue.to_reference)
     end
 
-    it "should render title in milestones#show" do
+    it "renders title in milestones#show" do
       visit namespace_project_milestone_path(project.namespace, project, @milestone)
 
       expect(page).to have_link(issue.to_reference)
     end
 
-    it "should render description in milestones#show" do
+    it "renders description in milestones#show" do
       visit namespace_project_milestone_path(project.namespace, project, @milestone)
 
       expect(page).to have_link(fred.to_reference)

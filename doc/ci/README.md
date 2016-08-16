@@ -14,7 +14,7 @@
 - [Use variables in your `.gitlab-ci.yml`](variables/README.md)
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger builds through the API](triggers/README.md)
-- [Build artifacts](build_artifacts/README.md)
+- [Build artifacts](../user/project/builds/artifacts.md)
 - [User permissions](../user/permissions.md#gitlab-ci)
 - [API](../api/ci/README.md)
 - [CI services (linked docker containers)](services/README.md)

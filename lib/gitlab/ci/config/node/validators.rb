@@ -5,10 +5,11 @@ module Gitlab
         module Validators
           class AllowedKeysValidator < ActiveModel::EachValidator
             def validate_each(record, attribute, value)
-              if record.unknown_keys.any?
-                unknown_list = record.unknown_keys.join(', ')
-                record.errors.add(:config,
-                                  "contains unknown keys: #{unknown_list}")
+              unknown_keys = record.config.try(:keys).to_a - options[:in]
+
+              if unknown_keys.any?
+                record.errors.add(:config, 'contains unknown keys: ' +
+                                            unknown_keys.join(', '))
               end
             end
           end
@@ -33,6 +34,16 @@ module Gitlab
             end
           end
 
+          class DurationValidator < ActiveModel::EachValidator
+            include LegacyValidationHelpers
+
+            def validate_each(record, attribute, value)
+              unless validate_duration(value)
+                record.errors.add(attribute, 'should be a duration')
+              end
+            end
+          end
+
           class KeyValidator < ActiveModel::EachValidator
             include LegacyValidationHelpers
 
@@ -49,7 +60,8 @@ module Gitlab
               raise unless type.is_a?(Class)
 
               unless value.is_a?(type)
-                record.errors.add(attribute, "should be a #{type.name}")
+                message = options[:message] || "should be a #{type.name}"
+                record.errors.add(attribute, message)
               end
             end
           end

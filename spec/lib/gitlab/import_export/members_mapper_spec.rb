@@ -26,6 +26,20 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
              "email" => user2.email,
              "username" => user2.username
            }
+       },
+       {
+         "id" => 3,
+         "access_level" => 40,
+         "source_id" => 14,
+         "source_type" => "Project",
+         "user_id" => nil,
+         "notification_level" => 3,
+         "created_at" => "2016-03-11T10:21:44.822Z",
+         "updated_at" => "2016-03-11T10:21:44.822Z",
+         "created_by_id" => 1,
+         "invite_email" => 'invite@test.com',
+         "invite_token" => 'token',
+         "invite_accepted_at" => nil
        }]
     end
 
@@ -46,6 +60,12 @@ describe Gitlab::ImportExport::MembersMapper, services: true do
       members_mapper.map[-1]
 
       expect(members_mapper.missing_author_ids.first).to eq(-1)
+    end
+
+    it 'has invited members with no user' do
+      members_mapper.map
+
+      expect(ProjectMember.find_by_invite_email('invite@test.com')).not_to be_nil
     end
   end
 end

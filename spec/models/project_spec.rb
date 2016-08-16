@@ -69,6 +69,7 @@ describe Project, models: true do
     it { is_expected.to include_module(Gitlab::ConfigHelper) }
     it { is_expected.to include_module(Gitlab::ShellAdapter) }
     it { is_expected.to include_module(Gitlab::VisibilityLevel) }
+    it { is_expected.to include_module(Gitlab::CurrentSettings) }
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
   end
@@ -88,7 +89,7 @@ describe Project, models: true do
     it { is_expected.to validate_presence_of(:namespace) }
     it { is_expected.to validate_presence_of(:repository_storage) }
 
-    it 'should not allow new projects beyond user limits' do
+    it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
       allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       expect(project2).not_to be_valid
@@ -97,7 +98,7 @@ describe Project, models: true do
 
     describe 'wiki path conflict' do
       context "when the new path has been used by the wiki of other Project" do
-        it 'should have an error on the name attribute' do
+        it 'has an error on the name attribute' do
           new_project = build_stubbed(:project, namespace_id: project.namespace_id, path: "#{project.path}.wiki")
 
           expect(new_project).not_to be_valid
@@ -106,7 +107,7 @@ describe Project, models: true do
       end
 
       context "when the new wiki path has been used by the path of other Project" do
-        it 'should have an error on the name attribute' do
+        it 'has an error on the name attribute' do
           project_with_wiki_suffix = create(:project, path: 'foo.wiki')
           new_project = build_stubbed(:project, namespace_id: project_with_wiki_suffix.namespace_id, path: 'foo')
 
@@ -124,7 +125,7 @@ describe Project, models: true do
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
-      it "should not allow repository storages that don't match a label in the configuration" do
+      it "does not allow repository storages that don't match a label in the configuration" do
         expect(project2).not_to be_valid
         expect(project2.errors[:repository_storage].first).to match(/is not included in the list/)
       end
@@ -171,12 +172,12 @@ describe Project, models: true do
   end
 
   describe 'project token' do
-    it 'should set an random token if none provided' do
+    it 'sets an random token if none provided' do
       project = FactoryGirl.create :empty_project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
-    it 'should not set an random toke if one provided' do
+    it 'does not set an random toke if one provided' do
       project = FactoryGirl.create :empty_project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
@@ -224,7 +225,7 @@ describe Project, models: true do
     end
   end
 
-  it 'should return valid url to repo' do
+  it 'returns valid url to repo' do
     project = Project.new(path: 'somewhere')
     expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + 'somewhere.git')
   end
@@ -245,12 +246,40 @@ describe Project, models: true do
     end
   end
 
+  describe "#new_issue_address" do
+    let(:project) { create(:empty_project, path: "somewhere") }
+    let(:user) { create(:user) }
+
+    context 'incoming email enabled' do
+      before do
+        stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
+      end
+
+      it 'returns the address to create a new issue' do
+        token = user.authentication_token
+        address = "p+#{project.namespace.path}/#{project.path}+#{token}@gl.ab"
+
+        expect(project.new_issue_address(user)).to eq(address)
+      end
+    end
+
+    context 'incoming email disabled' do
+      before do
+        stub_incoming_email_setting(enabled: false)
+      end
+
+      it 'returns nil' do
+        expect(project.new_issue_address(user)).to be_nil
+      end
+    end
+  end
+
   describe 'last_activity methods' do
     let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }
 
     describe 'last_activity' do
-      it 'should alias last_activity to last_event' do
+      it 'alias last_activity to last_event' do
         allow(project).to receive(:last_event).and_return(last_event)
         expect(project.last_activity).to eq(last_event)
       end
@@ -321,13 +350,13 @@ describe Project, models: true do
     let(:prev_commit_id) { merge_request.commits.last.id }
     let(:commit_id) { merge_request.commits.first.id }
 
-    it 'should close merge request if last commit from source branch was pushed to target branch' do
+    it 'closes merge request if last commit from source branch was pushed to target branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
       merge_request.reload
       expect(merge_request.merged?).to be_truthy
     end
 
-    it 'should update merge request commits with new one if pushed to source branch' do
+    it 'updates merge request commits with new one if pushed to source branch' do
       project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
       merge_request.reload
       expect(merge_request.diff_head_sha).to eq(commit_id)
@@ -372,6 +401,24 @@ describe Project, models: true do
 
       it { expect(@project.to_param).to eq('gitlabhq') }
     end
+
+    context 'with invalid path' do
+      it 'returns previous path to keep project suitable for use in URLs when persisted' do
+        project = create(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'gitlab'
+      end
+
+      it 'returns current path when new record' do
+        project = build(:empty_project, path: 'gitlab')
+        project.path = 'foo&bar'
+
+        expect(project).not_to be_valid
+        expect(project.to_param).to eq 'foo&bar'
+      end
+    end
   end
 
   describe '#repository' do
@@ -386,11 +433,11 @@ describe Project, models: true do
     let(:project) { create(:project) }
     let(:ext_project) { create(:redmine_project) }
 
-    it "should be true if used internal tracker" do
+    it "is true if used internal tracker" do
       expect(project.default_issues_tracker?).to be_truthy
     end
 
-    it "should be false if used other tracker" do
+    it "is false if used other tracker" do
       expect(ext_project.default_issues_tracker?).to be_falsey
     end
   end
@@ -589,12 +636,12 @@ describe Project, models: true do
   describe '#avatar_type' do
     let(:project) { create(:project) }
 
-    it 'should be true if avatar is image' do
+    it 'is true if avatar is image' do
       project.update_attribute(:avatar, 'uploads/avatar.png')
       expect(project.avatar_type).to be_truthy
     end
 
-    it 'should be false if avatar is html page' do
+    it 'is false if avatar is html page' do
       project.update_attribute(:avatar, 'uploads/avatar.html')
       expect(project.avatar_type).to eq(['only images allowed'])
     end
@@ -665,6 +712,20 @@ describe Project, models: true do
     subject { project.builds_enabled }
 
     it { expect(project.builds_enabled?).to be_truthy }
+  end
+
+  describe '.cached_count', caching: true do
+    let(:group)     { create(:group, :public) }
+    let!(:project1) { create(:empty_project, :public, group: group) }
+    let!(:project2) { create(:empty_project, :public, group: group) }
+
+    it 'returns total project count' do
+      expect(Project).to receive(:count).once.and_call_original
+
+      3.times do
+        expect(Project.cached_count).to eq(2)
+      end
+    end
   end
 
   describe '.trending' do
@@ -767,16 +828,16 @@ describe Project, models: true do
     context 'for shared runners disabled' do
       let(:shared_runners_enabled) { false }
 
-      it 'there are no runners available' do
+      it 'has no runners available' do
         expect(project.any_runners?).to be_falsey
       end
 
-      it 'there is a specific runner' do
+      it 'has a specific runner' do
         project.runners << specific_runner
         expect(project.any_runners?).to be_truthy
       end
 
-      it 'there is a shared runner, but they are prohibited to use' do
+      it 'has a shared runner, but they are prohibited to use' do
         shared_runner
         expect(project.any_runners?).to be_falsey
       end
@@ -790,7 +851,7 @@ describe Project, models: true do
     context 'for shared runners enabled' do
       let(:shared_runners_enabled) { true }
 
-      it 'there is a shared runner' do
+      it 'has a shared runner' do
         shared_runner
         expect(project.any_runners?).to be_truthy
       end
@@ -1024,68 +1085,97 @@ describe Project, models: true do
   end
 
   describe '#protected_branch?' do
-    let(:project) { create(:empty_project) }
+    context 'existing project' do
+      let(:project) { create(:project) }
 
-    it 'returns true when the branch matches a protected branch via direct match' do
-      project.protected_branches.create!(name: 'foo')
+      it 'returns true when the branch matches a protected branch via direct match' do
+        project.protected_branches.create!(name: 'foo')
 
-      expect(project.protected_branch?('foo')).to eq(true)
+        expect(project.protected_branch?('foo')).to eq(true)
+      end
+
+      it 'returns true when the branch matches a protected branch via wildcard match' do
+        project.protected_branches.create!(name: 'production/*')
+
+        expect(project.protected_branch?('production/some-branch')).to eq(true)
+      end
+
+      it 'returns false when the branch does not match a protected branch via direct match' do
+        expect(project.protected_branch?('foo')).to eq(false)
+      end
+
+      it 'returns false when the branch does not match a protected branch via wildcard match' do
+        project.protected_branches.create!(name: 'production/*')
+
+        expect(project.protected_branch?('staging/some-branch')).to eq(false)
+      end
     end
 
-    it 'returns true when the branch matches a protected branch via wildcard match' do
-      project.protected_branches.create!(name: 'production/*')
+    context "new project" do
+      let(:project) { create(:empty_project) }
 
-      expect(project.protected_branch?('production/some-branch')).to eq(true)
-    end
+      it 'returns false when default_protected_branch is unprotected' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
-    it 'returns false when the branch does not match a protected branch via direct match' do
-      expect(project.protected_branch?('foo')).to eq(false)
-    end
+        expect(project.protected_branch?('master')).to be false
+      end
 
-    it 'returns false when the branch does not match a protected branch via wildcard match' do
-      project.protected_branches.create!(name: 'production/*')
+      it 'returns false when default_protected_branch lets developers push' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-      expect(project.protected_branch?('staging/some-branch')).to eq(false)
+        expect(project.protected_branch?('master')).to be false
+      end
+
+      it 'returns true when default_branch_protection does not let developers push but let developer merge branches' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
+
+        expect(project.protected_branch?('master')).to be true
+      end
+
+      it 'returns true when default_branch_protection is in full protection' do
+        stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
+
+        expect(project.protected_branch?('master')).to be true
+      end
     end
   end
 
-  describe "#developers_can_push_to_protected_branch?" do
+  describe '#user_can_push_to_empty_repo?' do
     let(:project) { create(:empty_project) }
+    let(:user)    { create(:user) }
 
-    context "when the branch matches a protected branch via direct match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: true)
+    it 'returns false when default_branch_protection is in full protection and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
-        expect(project.developers_can_push_to_protected_branch?('production')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
-    context "when the branch matches a protected branch via wilcard match" do
-      it "returns true if 'Developers can Push' is turned on" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+    it 'returns false when default_branch_protection only lets devs merge and user is dev' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be true
-      end
-
-      it "returns false if 'Developers can Push' is turned off" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: false)
-
-        expect(project.developers_can_push_to_protected_branch?('production/some-branch')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
-    context "when the branch does not match a protected branch" do
-      it "returns false" do
-        create(:protected_branch, name: "production/*", project: project, developers_can_push: true)
+    it 'returns true when default_branch_protection lets devs push and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
-        expect(project.developers_can_push_to_protected_branch?('staging/some-branch')).to be false
-      end
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
+    end
+
+    it 'returns true when default_branch_protection is unprotected and user is developer' do
+      project.team << [user, :developer]
+      stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
+    end
+
+    it 'returns true when user is master' do
+      project.team << [user, :master]
+
+      expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
   end
 
@@ -1240,6 +1330,32 @@ describe Project, models: true do
 
         expect(builds).to be_kind_of(ActiveRecord::Relation)
         expect(builds).to be_empty
+      end
+    end
+  end
+
+  describe '#add_import_job' do
+    context 'forked' do
+      let(:forked_project_link) { create(:forked_project_link) }
+      let(:forked_from_project) { forked_project_link.forked_from_project }
+      let(:project) { forked_project_link.forked_to_project }
+
+      it 'schedules a RepositoryForkWorker job' do
+        expect(RepositoryForkWorker).to receive(:perform_async).
+          with(project.id, forked_from_project.repository_storage_path,
+              forked_from_project.path_with_namespace, project.namespace.path)
+
+        project.add_import_job
+      end
+    end
+
+    context 'not forked' do
+      let(:project) { create(:project) }
+
+      it 'schedules a RepositoryImportWorker job' do
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id)
+
+        project.add_import_job
       end
     end
   end

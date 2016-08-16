@@ -24,7 +24,7 @@ describe 'Dashboard Todos', feature: true do
         visit dashboard_todos_path
       end
 
-      it 'todo is present' do
+      it 'has todo present' do
         expect(page).to have_selector('.todos-list .todo', count: 1)
       end
 

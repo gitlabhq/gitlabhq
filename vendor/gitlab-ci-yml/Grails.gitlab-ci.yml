@@ -1,0 +1,40 @@
+# This template uses the java:8 docker image because there isn't any
+# official Grails image at this moment
+#
+# Grails Framework https://grails.org/ is a powerful Groovy-based web application framework for the JVM
+#
+# This yml works with Grails 3.x only
+# Feel free to change GRAILS_VERSION version with your project version (3.0.1, 3.1.1,...)
+# Feel free to change GRADLE_VERSION version with your gradle project version (2.13, 2.14,...)
+# If you use Angular profile, this yml it's prepared to work with it
+
+image: java:8
+
+variables:
+  GRAILS_VERSION: "3.1.9"
+  GRADLE_VERSION: "2.13"
+  
+# We use SDKMan as tool for managing versions
+before_script:
+   - apt-get update -qq && apt-get install -y -qq unzip
+   - curl -sSL https://get.sdkman.io | bash
+   - echo sdkman_auto_answer=true > /root/.sdkman/etc/config
+   - source /root/.sdkman/bin/sdkman-init.sh
+   - sdk install gradle $GRADLE_VERSION < /dev/null
+   - sdk use gradle $GRADLE_VERSION
+# As it's not a good idea to version gradle.properties feel free to add your
+# environments variable here   
+   - echo grailsVersion=$GRAILS_VERSION > gradle.properties
+   - echo gradleWrapperVersion=2.14 >> gradle.properties
+# refresh dependencies from your project   
+   - ./gradlew --refresh-dependencies
+# Be aware that if you are using Angular profile,
+# Bower cannot be run as root if you don't allow it before.
+# Feel free to remove next line if you are not using Bower
+   - echo {\"allow_root\":true} > /root/.bowerrc
+
+# This build job does the full grails pipeline
+# (compile, test, integrationTest, war, assemble).
+build:
+ script: 
+   - ./gradlew build

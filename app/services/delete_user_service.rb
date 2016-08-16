@@ -18,9 +18,14 @@ class DeleteUserService
     user.personal_projects.each do |project|
       # Skip repository removal because we remove directory with namespace
       # that contain all this repositories
-      ::Projects::DestroyService.new(project, current_user, skip_repo: true).pending_delete!
+      ::Projects::DestroyService.new(project, current_user, skip_repo: true).async_execute
     end
 
-    user.destroy
+    # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
+    namespace = user.namespace
+    user_data = user.destroy
+    namespace.really_destroy!
+
+    user_data
   end
 end

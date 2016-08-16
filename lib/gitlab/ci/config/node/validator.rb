@@ -21,18 +21,19 @@ module Gitlab
             'Validator'
           end
 
-          def unknown_keys
-            return [] unless config.is_a?(Hash)
-
-            config.keys - @node.class.nodes.keys
-          end
-
           private
 
           def location
             predecessors = ancestors.map(&:key).compact
-            current = key || @node.class.name.demodulize.underscore
-            predecessors.append(current).join(':')
+            predecessors.append(key_name).join(':')
+          end
+
+          def key_name
+            if key.blank?
+              @node.class.name.demodulize.underscore.humanize
+            else
+              key
+            end
           end
         end
       end

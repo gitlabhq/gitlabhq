@@ -12,17 +12,17 @@ feature 'Member autocomplete', feature: true do
   end
 
   shared_examples "open suggestions" do
-    it 'suggestions are displayed' do
+    it 'displays suggestions' do
       expect(page).to have_selector('.atwho-view', visible: true)
     end
 
-    it 'author is suggested' do
+    it 'suggests author' do
       page.within('.atwho-view', visible: true) do
         expect(page).to have_content(author.username)
       end
     end
 
-    it 'participant is suggested' do
+    it 'suggests participant' do
       page.within('.atwho-view', visible: true) do
         expect(page).to have_content(participant.username)
       end

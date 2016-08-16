@@ -94,7 +94,7 @@ module ExtractsPath
     @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
     @options = HashWithIndifferentAccess.new(@options)
 
-    @id = Addressable::URI.unescape(get_id)
+    @id = Addressable::URI.normalize_component(get_id)
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
     if @options[:extended_sha1].blank?

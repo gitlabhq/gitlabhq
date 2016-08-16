@@ -1,8 +1,12 @@
 class Projects::IssuesController < Projects::ApplicationController
+  include NotesHelper
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
+  include IssuableCollections
+  include SpammableActions
 
+  before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
   before_action :issue, only: [:edit, :update, :show, :referenced_merge_requests,
                                :related_branches, :can_create_branch]
@@ -23,7 +27,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
-    @issues = get_issues_collection
+    @issues = issues_collection
 
     if terms.present?
       if terms =~ /\A#(\d+)\z/
@@ -70,6 +74,8 @@ class Projects::IssuesController < Projects::ApplicationController
     @note     = @project.notes.new(noteable: @issue)
     @noteable = @issue
 
+    preload_max_access_for_authors(@notes, @project)
+
     respond_to do |format|
       format.html
       format.json do
@@ -79,7 +85,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    @issue = Issues::CreateService.new(project, current_user, issue_params).execute
+    @issue = Issues::CreateService.new(project, current_user, issue_params.merge(request: request)).execute
 
     respond_to do |format|
       format.html do
@@ -89,7 +95,7 @@ class Projects::IssuesController < Projects::ApplicationController
           render :new
         end
       end
-      format.js do |format|
+      format.js do
         @link = @issue.attachment.url.to_js
       end
     end
@@ -180,6 +186,7 @@ class Projects::IssuesController < Projects::ApplicationController
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
+  alias_method :spammable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
@@ -195,6 +202,18 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def module_enabled
     return render_404 unless @project.issues_enabled && @project.default_issues_tracker?
+  end
+
+  def redirect_to_external_issue_tracker
+    external = @project.external_issue_tracker
+
+    return unless external
+
+    if action_name == 'new'
+      redirect_to external.new_issue_path
+    else
+      redirect_to external.issues_url
+    end
   end
 
   # Since iids are implemented only in 6.1

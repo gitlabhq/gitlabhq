@@ -8,6 +8,7 @@ feature 'project import', feature: true, js: true do
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
   let(:project) { Project.last }
+  let(:project_hook) { Gitlab::Git::Hook.new('post-receive', project.repository.path) }
 
   background do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -37,7 +38,7 @@ feature 'project import', feature: true, js: true do
     expect(project).not_to be_nil
     expect(project.issues).not_to be_empty
     expect(project.merge_requests).not_to be_empty
-    expect(project.repo_exists?).to be true
+    expect(project_hook).to exist
     expect(wiki_exists?).to be true
     expect(project.import_status).to eq('finished')
   end

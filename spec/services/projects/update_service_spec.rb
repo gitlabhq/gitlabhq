@@ -9,7 +9,7 @@ describe Projects::UpdateService, services: true do
       @opts = {}
     end
 
-    context 'should be private when updated to private' do
+    context 'is private when updated to private' do
       before do
         @created_private = @project.private?
 
@@ -21,7 +21,7 @@ describe Projects::UpdateService, services: true do
       it { expect(@project.private?).to be_truthy }
     end
 
-    context 'should be internal when updated to internal' do
+    context 'is internal when updated to internal' do
       before do
         @created_private = @project.private?
 
@@ -33,7 +33,7 @@ describe Projects::UpdateService, services: true do
       it { expect(@project.internal?).to be_truthy }
     end
 
-    context 'should be public when updated to public' do
+    context 'is public when updated to public' do
       before do
         @created_private = @project.private?
 
@@ -50,7 +50,7 @@ describe Projects::UpdateService, services: true do
         stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
       end
 
-      context 'should be private when updated to private' do
+      context 'is private when updated to private' do
         before do
           @created_private = @project.private?
 
@@ -62,7 +62,7 @@ describe Projects::UpdateService, services: true do
         it { expect(@project.private?).to be_truthy }
       end
 
-      context 'should be internal when updated to internal' do
+      context 'is internal when updated to internal' do
         before do
           @created_private = @project.private?
 
@@ -74,7 +74,7 @@ describe Projects::UpdateService, services: true do
         it { expect(@project.internal?).to be_truthy }
       end
 
-      context 'should be private when updated to public' do
+      context 'is private when updated to public' do
         before do
           @created_private = @project.private?
 
@@ -86,7 +86,7 @@ describe Projects::UpdateService, services: true do
         it { expect(@project.private?).to be_truthy }
       end
 
-      context 'should be public when updated to public by admin' do
+      context 'is public when updated to public by admin' do
         before do
           @created_private = @project.private?
 
@@ -114,7 +114,7 @@ describe Projects::UpdateService, services: true do
       @fork_created_internal = forked_project.internal?
     end
 
-    context 'should update forks visibility level when parent set to more restrictive' do
+    context 'updates forks visibility level when parent set to more restrictive' do
       before do
         opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
         update_project(project, user, opts).inspect
@@ -126,7 +126,7 @@ describe Projects::UpdateService, services: true do
       it { expect(project.forks.first.private?).to be_truthy }
     end
 
-    context 'should not update forks visibility level when parent set to less restrictive' do
+    context 'does not update forks visibility level when parent set to less restrictive' do
       before do
         opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_project(project, user, opts).inspect

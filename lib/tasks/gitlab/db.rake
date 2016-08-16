@@ -25,6 +25,10 @@ namespace :gitlab do
     desc 'Drop all tables'
     task :drop_tables => :environment do
       connection = ActiveRecord::Base.connection
+
+      # If MySQL, turn off foreign key checks
+      connection.execute('SET FOREIGN_KEY_CHECKS=0') if Gitlab::Database.mysql?
+
       tables = connection.tables
       tables.delete 'schema_migrations'
       # Truncate schema_migrations to ensure migrations re-run
@@ -35,6 +39,9 @@ namespace :gitlab do
       # MySQL: http://dev.mysql.com/doc/refman/5.7/en/drop-table.html
       # Add `IF EXISTS` because cascade could have already deleted a table.
       tables.each { |t| connection.execute("DROP TABLE IF EXISTS #{connection.quote_table_name(t)} CASCADE") }
+
+      # If MySQL, re-enable foreign key checks
+      connection.execute('SET FOREIGN_KEY_CHECKS=1') if Gitlab::Database.mysql?
     end
 
     desc 'Configures the database by running migrate, or by loading the schema and seeding if needed'

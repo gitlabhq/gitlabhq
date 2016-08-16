@@ -10,7 +10,7 @@ describe Member, models: true do
 
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:source) }
-    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
+    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.all_values) }
 
     it_behaves_like 'an object with email-formated attributes', :invite_email do
       subject { build(:project_member) }
@@ -77,6 +77,18 @@ describe Member, models: true do
 
       accepted_request_user = create(:user).tap { |u| project.request_access(u) }
       @accepted_request_member = project.requesters.find_by(user_id: accepted_request_user.id).tap { |m| m.accept_request }
+    end
+
+    describe '.access_for_user_ids' do
+      it 'returns the right access levels' do
+        users = [@owner_user.id, @master_user.id]
+        expected = {
+          @owner_user.id => Gitlab::Access::OWNER,
+          @master_user.id => Gitlab::Access::MASTER
+        }
+
+        expect(described_class.access_for_user_ids(users)).to eq(expected)
+      end
     end
 
     describe '.invite' do

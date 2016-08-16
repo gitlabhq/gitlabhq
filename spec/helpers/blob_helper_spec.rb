@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe BlobHelper do
+  include TreeHelper
+
   let(:blob_name) { 'test.lisp' }
   let(:no_context_content) { ":type \"assem\"))" }
   let(:blob_content) { "(make-pathname :defaults name\n#{no_context_content}" }
@@ -15,19 +17,19 @@ describe BlobHelper do
   end
 
   describe '#highlight' do
-    it 'should return plaintext for unknown lexer context' do
+    it 'returns plaintext for unknown lexer context' do
       result = helper.highlight(blob_name, no_context_content)
       expect(result).to eq(%[<pre class="code highlight"><code><span id="LC1" class="line">:type "assem"))</span></code></pre>])
     end
 
-    it 'should highlight single block' do
+    it 'highlights single block' do
       expected = %Q[<pre class="code highlight"><code><span id="LC1" class="line"><span class="p">(</span><span class="nb">make-pathname</span> <span class="ss">:defaults</span> <span class="nv">name</span></span>
 <span id="LC2" class="line"><span class="ss">:type</span> <span class="s">"assem"</span><span class="p">))</span></span></code></pre>]
 
       expect(helper.highlight(blob_name, blob_content)).to eq(expected)
     end
 
-    it 'should highlight multi-line comments' do
+    it 'highlights multi-line comments' do
       result = helper.highlight(blob_name, multiline_content)
       html = Nokogiri::HTML(result)
       lines = html.search('.s')
@@ -47,7 +49,7 @@ describe BlobHelper do
 <span id="LC4" class="line"> ddd</span></code></pre>)
       end
 
-      it 'should highlight each line properly' do
+      it 'highlights each line properly' do
         result = helper.highlight(blob_name, blob_content)
         expect(result).to eq(expected)
       end
@@ -60,9 +62,25 @@ describe BlobHelper do
     let(:expected_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
     let(:expected) { open(expected_svg_path).read }
 
-    it 'should retain essential elements' do
+    it 'retains essential elements' do
       blob = OpenStruct.new(data: data)
       expect(sanitize_svg(blob).data).to eq(expected)
+    end
+  end
+
+  describe "#edit_blob_link" do
+    let(:project) { create(:project) }
+
+    before do
+      allow(self).to receive(:current_user).and_return(double)
+    end
+
+    it 'verifies blob is text' do
+      expect(self).not_to receive(:blob_text_viewable?)
+
+      button = edit_blob_link(project, 'refs/heads/master', 'README.md')
+
+      expect(button).to start_with('<button')
     end
   end
 end
