@@ -1,6 +1,8 @@
 //= require ./board_card
 
 (() => {
+  const Store = gl.issueBoards.BoardsStore;
+
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
@@ -18,7 +20,7 @@
     data () {
       return {
         scrollOffset: 250,
-        filters: gl.issueBoards.BoardsStore.state.filters
+        filters: Store.state.filters
       };
     },
     watch: {
@@ -59,20 +61,19 @@
           onStart: (e) => {
             const card = this.$refs.issue[e.oldIndex];
 
-            gl.issueBoards.BoardsStore.moving.issue = card.issue;
-            gl.issueBoards.BoardsStore.moving.list = card.list;
+            Store.moving.issue = card.issue;
+            Store.moving.list = card.list;
           },
           onAdd: (e) => {
-            const card = e.item,
-                  fromList = gl.issueBoards.BoardsStore.moving.list,
-                  issue = gl.issueBoards.BoardsStore.moving.issue;
+            const fromList = Store.moving.list,
+                  issue = Store.moving.issue;
 
             gl.issueBoards.BoardsStore.moveIssueToList(fromList, this.list, issue);
           },
           onRemove (e) {
             const card = e.item,
-                  list = gl.issueBoards.BoardsStore.moving.list,
-                  issue = gl.issueBoards.BoardsStore.moving.issue;
+                  list = Store.moving.list,
+                  issue = Store.moving.issue;
 
             // Remove the new dom element & let vue add the element
             card.parentNode.removeChild(card);

@@ -3,6 +3,8 @@
 //= require ./board_list
 
 (() => {
+  const Store = gl.issueBoards.BoardsStore;
+
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
@@ -20,7 +22,7 @@
     data () {
       return {
         query: '',
-        filters: gl.issueBoards.BoardsStore.state.filters
+        filters: Store.state.filters
       };
     },
     watch: {
@@ -75,8 +77,8 @@
             $board.$destroy(true);
 
             this.$nextTick(() => {
-              gl.issueBoards.BoardsStore.state.lists.splice(e.newIndex, 0, list);
-              gl.issueBoards.BoardsStore.moveList(list, order);
+              Store.state.lists.splice(e.newIndex, 0, list);
+              Store.moveList(list, order);
             });
           }
         }
@@ -89,7 +91,7 @@
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
     beforeDestroy () {
-      gl.issueBoards.BoardsStore.state.lists.$remove(this.list);
+      Store.state.lists.$remove(this.list);
     }
   });
 })();

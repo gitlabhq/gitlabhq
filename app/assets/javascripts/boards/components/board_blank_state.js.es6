@@ -1,4 +1,6 @@
 (() => {
+  const Store = gl.issueBoards.BoardsStore;
+
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
@@ -15,12 +17,12 @@
     },
     methods: {
       addDefaultLists () {
-        gl.issueBoards.BoardsStore.removeBlankState();
+        Store.removeBlankState();
 
         for (let i = 0, labelsLength = this.predefinedLabels.length; i < labelsLength; i++) {
           const label = this.predefinedLabels[i];
 
-          gl.issueBoards.BoardsStore.addList({
+          Store.addList({
             title: label.title,
             position: i,
             list_type: 'label',
@@ -39,7 +41,7 @@
 
             for (let i = 0, dataLength = data.length; i < dataLength; i++) {
               const listObj = data[i],
-                    list = gl.issueBoards.BoardsStore.findList('title', listObj.title);
+                    list = Store.findList('title', listObj.title);
 
               list.id = listObj.id;
               list.label.id = listObj.label.id;
@@ -48,7 +50,7 @@
           });
       },
       clearBlankState () {
-        gl.issueBoards.BoardsStore.removeBlankState();
+        Store.removeBlankState();
       }
     }
   });

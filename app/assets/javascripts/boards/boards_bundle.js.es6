@@ -9,7 +9,8 @@
 //= require ./components/new_list_dropdown
 
 $(() => {
-  const $boardApp = $('#board-app');
+  const $boardApp = document.getElementById('board-app'),
+        Store = gl.issueBoards.BoardsStore;
 
   window.gl = window.gl || {};
 
@@ -18,16 +19,16 @@ $(() => {
   }
 
   gl.IssueBoardsApp = new Vue({
-    el: $boardApp.get(0),
+    el: $boardApp,
     components: {
       'board': gl.issueBoards.Board
     },
     data: {
-      state: gl.issueBoards.BoardsStore.state,
+      state: Store.state,
       loading: true,
-      endpoint: $boardApp.data('endpoint'),
-      disabled: $boardApp.data('disabled'),
-      issueLinkBase: $boardApp.data('issue-link-base')
+      endpoint: $boardApp.dataset.endpoint,
+      disabled: $boardApp.dataset.disabled === 'true',
+      issueLinkBase: $boardApp.dataset.issueLinkBase
     },
     init () {
       gl.issueBoards.BoardsStore.create();
@@ -35,21 +36,16 @@ $(() => {
     created () {
       this.loading = true;
       gl.boardService = new BoardService(this.endpoint);
-
-      $boardApp
-        .removeAttr('data-endpoint')
-        .removeAttr('data-disabled')
-        .removeAttr('data-issue-link-base');
     },
     ready () {
-      gl.issueBoards.BoardsStore.disabled = this.disabled;
+      Store.disabled = this.disabled;
       gl.boardService.all()
         .then((resp) => {
           const boards = resp.json();
 
           for (let i = 0, boardsLength = boards.length; i < boardsLength; i++) {
             const board = boards[i],
-                  list = gl.issueBoards.BoardsStore.addList(board);
+                  list = Store.addList(board);
 
             if (list.type === 'done') {
               list.position = Infinity;
@@ -58,7 +54,7 @@ $(() => {
             }
           }
 
-          gl.issueBoards.BoardsStore.addBlankState();
+          Store.addBlankState();
           this.loading = false;
         });
     }

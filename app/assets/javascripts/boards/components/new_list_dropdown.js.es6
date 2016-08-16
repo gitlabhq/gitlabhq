@@ -1,4 +1,6 @@
 $(() => {
+  const Store = gl.issueBoards.BoardsStore;
+
   $('.js-new-board-list').each(function () {
     const $this = $(this);
 
@@ -13,7 +15,7 @@ $(() => {
         });
       },
       renderRow (label) {
-        const active = gl.issueBoards.BoardsStore.findList('title', label.title),
+        const active = Store.findList('title', label.title),
               $li = $('<li />',),
               $a = $('<a />', {
                 class: (active ? `is-active js-board-list-${active.id}` : ''),
@@ -35,10 +37,10 @@ $(() => {
       clicked (label, $el, e) {
         e.preventDefault();
 
-        if (!gl.issueBoards.BoardsStore.findList('title', label.title)) {
-          gl.issueBoards.BoardsStore.new({
+        if (!Store.findList('title', label.title)) {
+          Store.new({
             title: label.title,
-            position: gl.issueBoards.BoardsStore.state.lists.length - 2,
+            position: Store.state.lists.length - 2,
             list_type: 'label',
             label: {
               id: label.id,
