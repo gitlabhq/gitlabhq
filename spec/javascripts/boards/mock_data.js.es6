@@ -26,7 +26,7 @@ const listObjDuplicate = {
 
 const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/lists{/id}/issues.json': [{
+    '/test/issue-boards/board/lists{/id}/issues': [{
       title: 'Testing',
       iid: 1,
       confidential: false,
@@ -34,18 +34,19 @@ const BoardsMockData = {
     }]
   },
   'POST': {
-    '/test/issue-boards/board/lists{/id}.json': listObj
+    '/test/issue-boards/board/lists{/id}': listObj
   },
   'PUT': {
-    '/test/issue-boards/board/lists{/id}.json': {}
+    '/test/issue-boards/board/lists{/id}': {}
   },
   'DELETE': {
-    '/test/issue-boards/board/lists{/id}.json': {}
+    '/test/issue-boards/board/lists{/id}': {}
   }
 };
 
 Vue.http.interceptors.push((request, next) => {
   const body = BoardsMockData[request.method][request.url];
+  console.log(request.url);
 
   next(request.respondWith(JSON.stringify(body), {
     status: 200
