@@ -5,6 +5,7 @@ v 8.11.0 (unreleased)
   - Add rake task to remove old repository copies from repositories moved to another storage
   - Performance improvement of push rules
   - Temporary fix for #825 - LDAP sync converts access requests to members. !655
+  - Optimize commit and diff changes access check to reduce git operations
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - Removed unused GitLab GEO database index
   - Enable monitoring for ES classes
