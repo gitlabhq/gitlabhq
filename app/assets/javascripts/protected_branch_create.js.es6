@@ -40,9 +40,8 @@
       const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
       const $allowedToMergeInputs = this.$wrap.find('input[name^="protected_branch[merge_access_levels_attributes]"]');
       const $allowedToPushInputs = this.$wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]');
-      console.log('x');
+
       if ($branchInput.length && $allowedToMergeInputs.length && $allowedToPushInputs.length){
-        console.log('onSelect');
         this.$form.find('input[type="submit"]').removeAttr('disabled');
       }
     }

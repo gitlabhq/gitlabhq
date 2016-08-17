@@ -20,7 +20,8 @@
         renderRow: this.renderRow.bind(this),
         toggleLabel: this.toggleLabel.bind(this),
         fieldName: this.fieldName.bind(this),
-        setActiveIds() {
+        hidden() {
+          // Here because last selected item is not considered after first close
           this.activeIds = self.getActiveIds();
         },
         clicked(item, $el, e) {
@@ -34,6 +35,10 @@
 
     fieldName() {
       throw new Error('No fieldName method defined');
+    }
+
+    getActiveIds() {
+      throw new Error('No getActiveIds method defined');
     }
 
     toggleLabel(selectedItem, el) {
@@ -100,27 +105,23 @@
     }
 
     renderRow(item, instance) {
+      const isActive = _.findWhere(instance.activeIds, {id: item.id, type: item.type}) ? 'is-active' : '';
       if (item.type === 'user') {
-        return this.userRowHtml(item);
+        return this.userRowHtml(item, isActive);
       } else if (item.type === 'role') {
-        return this.roleRowHtml(item);
+        return this.roleRowHtml(item, isActive);
       }
     }
 
-    userRowHtml(user) {
+    userRowHtml(user, isActive) {
       const  avatarHtml = `<img src='${user.avatar_url}' class='avatar avatar-inline' width='30'>`;
       const  nameHtml = `<strong class='dropdown-menu-user-full-name'>${user.name}</strong>`;
       const  usernameHtml = `<span class='dropdown-menu-user-username'>${user.username}</span>`;
-
-      return `<li><a href='#' data-type='${user.type}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}' data-type='${user.type}'>${avatarHtml} ${nameHtml} ${usernameHtml}</a></li>`;
     }
 
-    roleRowHtml(role) {
-      return `<li><a href='#' data-type='${role.type}'>${role.text}</a></li>`;
-    }
-
-    getActiveIds() {
-      console.log('getActiveIds');
+    roleRowHtml(role, isActive) {
+      return `<li><a href='#' class='${isActive ? 'is-active' : ''}' data-type='${role.type}'>${role.text}</a></li>`;
     }
   }
 
