@@ -27,27 +27,15 @@
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default', method: :post, title: "Compare" do
           Compare
 
-      - pipeline = @project.pipelines.latest_successful_for(branch.name)
-      - if pipeline
-        - artifacts = pipeline.builds.latest.with_artifacts
-        - if artifacts.any?
-          .dropdown.inline.artifacts-btn
-            %a.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
-              = icon('download')
-              %span.caret
-              %span.sr-only
-                Select Archive Format
-            %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
-              %li.dropdown-header Artifacts
-              - unless pipeline.latest?
-                - latest_pipeline = @project.pipeline_for(branch.name)
-                %li
-                  .unclickable= ci_status_for_statuseable(latest_pipeline)
-                %li.dropdown-header Previous Artifacts
-              - artifacts.each do |job|
-                %li
-                  = link_to latest_succeeded_namespace_project_artifacts_path(@project.namespace, @project, branch.name, 'download', job: job.name), rel: 'nofollow' do
-                    %span Download '#{job.name}'
+      - if @project.latest_successful_builds_for(branch.name).any?
+        .dropdown.inline.artifacts-btn
+          %a.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+            = icon('download')
+            %span.caret
+            %span.sr-only
+              Select Archive Format
+          %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
+            = render 'projects/buttons/artifacts', project: @project, ref: branch.name
 
       - if can_remove_branch?(@project, branch.name)
         = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
