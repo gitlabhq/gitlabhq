@@ -22,6 +22,10 @@ module Elastic
         )
       end
 
+      def self.nested?
+        true
+      end
+
       def self.elastic_search(query, options: {})
         options[:in] = %w(title^2 description)
 
