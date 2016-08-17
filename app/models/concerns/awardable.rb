@@ -59,6 +59,15 @@ module Awardable
     true
   end
 
+  def awardable_votes?(name)
+    AwardEmoji::UPVOTE_NAME == name || AwardEmoji::DOWNVOTE_NAME == name
+  end
+
+  def user_can_award?(current_user, name)
+    name = normalize_name(name)
+    !(self.user_authored?(current_user) && awardable_votes?(name))
+  end
+
   def awarded_emoji?(emoji_name, current_user)
     award_emoji.where(name: emoji_name, user: current_user).exists?
   end
