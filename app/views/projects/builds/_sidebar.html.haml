@@ -11,6 +11,42 @@
       %p.build-detail-row
         #{@build.coverage}%
 
+  - builds = @build.pipeline.builds.latest.to_a
+  - statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
+  - if builds.size > 1
+    .dropdown.build-dropdown
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.stage-selection More
+        = icon('caret-down')
+      %ul.dropdown-menu
+        - builds.map(&:stage).uniq.each do |stage|
+          %li
+            %a.stage-item= stage
+
+    .dropdown.build-dropdown
+      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+        %span.build-selection More
+        = icon('caret-down')
+      %ul.dropdown-menu
+        - statuses.each do |build_status|
+          - builds.select{|build| build.status == build_status}.each do |build|
+            %li.build-job{class: ('active' if build == @build), data: {stage: build.stage}}
+              = link_to namespace_project_build_path(@project.namespace, @project, build) do
+                = ci_icon_for_status(build.status)
+                %span
+                  - if build.name
+                    = build.name
+                  - else
+                    = build.id
+
+      - if @build.retried?
+        %li.active
+          %a
+            Build ##{@build.id}
+            &middot;
+            %i.fa.fa-warning
+            This build was retried.
+
   - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
     .block{ class: ("block-first" if !@build.coverage) }
       .title

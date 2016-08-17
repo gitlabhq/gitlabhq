@@ -18,7 +18,7 @@
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
 
-      this.populateJobDropdown(build_stage);
+      this.populateJobs(build_stage);
       this.updateStageDropdownText(build_stage);
       this.updateJobDropdownText(build_name);
       this.hideSidebar();
@@ -139,7 +139,7 @@
       }
     };
 
-    Build.prototype.populateJobDropdown = function(stage) {
+    Build.prototype.populateJobs = function(stage) {
       $('.build-job').hide();
       $('.build-job[data-stage="' + stage + '"]').show();
     };
@@ -157,7 +157,7 @@
       e.preventDefault();
       var stage = e.target.text;
       this.updateStageDropdownText(stage);
-      this.populateJobDropdown(stage);
+      this.populateJobs(stage);
     };
 
     return Build;
