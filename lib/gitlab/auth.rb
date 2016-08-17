@@ -11,7 +11,7 @@ module Gitlab
         if valid_ci_request?(login, password, project)
           result.type = :ci
         else
-          result.user, result.type = populate_result(login, password)
+          result = populate_result(login, password)
         end
 
         success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
@@ -75,12 +75,34 @@ module Gitlab
         end
       end
 
+      def populate_result(login, password)
+        result =
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          personal_access_token_check(login, password)
+
+        if result
+          result.type = nil unless result.user
+
+          if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
+            result.type = :missing_personal_token
+          end
+        end
+
+        result || Result.new
+      end
+
+      def user_with_password_for_git(login, password)
+        user = find_with_user_password(login, password)
+        Result.new(user, :gitlab_or_ldap) if user
+      end
+
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            return user, :oauth
+            Result.new(user, :oauth)
           end
         end
       end
@@ -89,25 +111,8 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          return user, :personal_token if user == validation
+          Result.new(user, :personal_token) if user == validation
         end
-      end
-
-      def user_with_password_for_git(login, password)
-        user = find_with_user_password(login, password)
-        return user, :gitlab_or_ldap if user
-      end
-
-      def populate_result(login, password)
-        user, type =
-          user_with_password_for_git(login, password) || oauth_access_token_check(login, password) || personal_access_token_check(login, password)
-
-        if user && user.two_factor_enabled? && type == :gitlab_or_ldap
-          user = nil
-          type = :missing_personal_token
-        end
-
-        [user, type]
       end
     end
   end
