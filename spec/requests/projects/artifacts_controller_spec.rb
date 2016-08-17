@@ -25,7 +25,7 @@ describe Projects::ArtifactsController do
 
     def path_from_ref(
       ref = pipeline.ref, job = build.name, path = 'browse')
-      search_namespace_project_artifacts_path(
+      latest_succeeded_namespace_project_artifacts_path(
         project.namespace,
         project,
         ref,
