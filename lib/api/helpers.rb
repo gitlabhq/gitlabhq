@@ -276,7 +276,7 @@ module API
     end
 
     def render_2fa_error!
-      render_api_error!('401 You have 2FA enabled. Please use a personal access token to access the API', 401)
+      render_api_error!('401 Unauthorized. You have 2FA enabled. Please use a personal access token to access the API', 401)
     end
 
     def render_api_error!(message, status)
