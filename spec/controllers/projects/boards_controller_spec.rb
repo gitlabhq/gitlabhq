@@ -9,7 +9,7 @@ describe Projects::BoardsController do
     sign_in(user)
   end
 
-  describe 'GET #show' do
+  describe 'GET show' do
     it 'creates a new board when project does not have one' do
       expect { read_board }.to change(Board, :count).by(1)
     end

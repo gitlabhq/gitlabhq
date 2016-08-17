@@ -11,7 +11,7 @@ describe Projects::Boards::ListsController do
     project.team << [guest, :guest]
   end
 
-  describe 'GET #index' do
+  describe 'GET index' do
     it 'returns a successful 200 response' do
       read_board_list user: user
 
@@ -51,7 +51,7 @@ describe Projects::Boards::ListsController do
     end
   end
 
-  describe 'POST #create' do
+  describe 'POST create' do
     let(:label) { create(:label, project: project, name: 'Development') }
 
     context 'with valid params' do
@@ -99,7 +99,7 @@ describe Projects::Boards::ListsController do
     end
   end
 
-  describe 'PATCH #update' do
+  describe 'PATCH update' do
     let!(:planning)    { create(:list, board: board, position: 0) }
     let!(:development) { create(:list, board: board, position: 1) }
 
@@ -152,7 +152,7 @@ describe Projects::Boards::ListsController do
     end
   end
 
-  describe 'DELETE #destroy' do
+  describe 'DELETE destroy' do
     let!(:planning) { create(:list, board: board, position: 0) }
 
     context 'with valid list id' do
@@ -193,7 +193,7 @@ describe Projects::Boards::ListsController do
     end
   end
 
-  describe 'POST #generate' do
+  describe 'POST generate' do
     context 'when board lists is empty' do
       it 'returns a successful 200 response' do
         generate_default_board_lists user: user

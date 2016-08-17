@@ -14,7 +14,7 @@ describe Projects::Boards::IssuesController do
     project.team << [user, :master]
   end
 
-  describe 'GET #index' do
+  describe 'GET index' do
     context 'with valid list id' do
       it 'returns issues that have the list label applied' do
         johndoe = create(:user, avatar: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
@@ -59,7 +59,7 @@ describe Projects::Boards::IssuesController do
     end
   end
 
-  describe 'PATCH #update' do
+  describe 'PATCH update' do
     let(:issue) { create(:labeled_issue, project: project, labels: [planning]) }
 
     context 'with valid params' do
