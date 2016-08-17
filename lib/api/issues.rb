@@ -3,8 +3,6 @@ module API
   class Issues < Grape::API
     before { authenticate! }
 
-    helpers ::Gitlab::AkismetHelper
-
     helpers do
       def filter_issues_state(issues, state)
         case state

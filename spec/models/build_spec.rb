@@ -275,8 +275,7 @@ describe Ci::Build, models: true do
 
     context 'when yaml_variables are undefined' do
       before do
-        build.update(yaml_variables: nil)
-        build.reload # reload pipeline so that it resets config_processor
+        build.yaml_variables = nil
       end
 
       context 'use from gitlab-ci.yml' do
@@ -424,24 +423,22 @@ describe Ci::Build, models: true do
   describe '#stuck?' do
     subject { build.stuck? }
 
-    %w[pending].each do |state|
-      context "when commit_status.status is #{state}" do
+    context "when commit_status.status is pending" do
+      before do
+        build.status = 'pending'
+      end
+
+      it { is_expected.to be_truthy }
+
+      context "and there are specific runner" do
+        let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
+
         before do
-          build.status = state
+          build.project.runners << runner
+          runner.save
         end
 
-        it { is_expected.to be_truthy }
-
-        context "and there are specific runner" do
-          let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
-
-          before do
-            build.project.runners << runner
-            runner.save
-          end
-
-          it { is_expected.to be_falsey }
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -904,8 +901,7 @@ describe Ci::Build, models: true do
 
     context 'when `when` is undefined' do
       before do
-        build.update(when: nil)
-        build.reload # reload pipeline so that it resets config_processor
+        build.when = nil
       end
 
       context 'use from gitlab-ci.yml' do

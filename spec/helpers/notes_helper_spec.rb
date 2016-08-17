@@ -39,8 +39,7 @@ describe NotesHelper do
 
   describe '#preload_max_access_for_authors' do
     before do
-      # #preload_max_access_for_authors would read cache from RequestStore,
-      # so we should make sure it's clean.
+      # This method reads cache from RequestStore, so make sure it's clean.
       RequestStore.clear!
     end
 

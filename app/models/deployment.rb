@@ -36,4 +36,10 @@ class Deployment < ActiveRecord::Base
   def manual_actions
     deployable.try(:other_actions)
   end
+
+  def includes_commit?(commit)
+    return false unless commit
+
+    project.repository.is_ancestor?(commit.id, sha)
+  end
 end

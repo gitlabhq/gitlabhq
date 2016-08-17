@@ -30,10 +30,21 @@ module MergeRequests
     end
 
     def get_branches(changes)
+      return [] if project.empty_repo?
+      return [] unless project.merge_requests_enabled
+
       changes_list = Gitlab::ChangesList.new(changes)
       changes_list.map do |change|
         next unless Gitlab::Git.branch_ref?(change[:ref])
-        Gitlab::Git.branch_name(change[:ref])
+
+        # Deleted branch
+        next if Gitlab::Git.blank_ref?(change[:newrev])
+
+        # Default branch
+        branch_name = Gitlab::Git.branch_name(change[:ref])
+        next if branch_name == project.default_branch
+
+        branch_name
       end.compact
     end
 
