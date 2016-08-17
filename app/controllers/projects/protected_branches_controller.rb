@@ -60,8 +60,8 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
   def protected_branch_params
     params.require(:protected_branch).permit(:name,
-                                             merge_access_levels_attributes: [:access_level, :id, :user_id],
-                                             push_access_levels_attributes: [:access_level, :id, :user_id])
+                                             merge_access_levels_attributes: [:access_level, :id, :user_id, :_destroy],
+                                             push_access_levels_attributes: [:access_level, :id, :user_id, :_destroy])
   end
 
   def load_protected_branches

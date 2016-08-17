@@ -11,8 +11,8 @@ class ProtectedBranch < ActiveRecord::Base
   validates_length_of :merge_access_levels, minimum: 0
   validates_length_of :push_access_levels, minimum: 0
 
-  accepts_nested_attributes_for :push_access_levels
-  accepts_nested_attributes_for :merge_access_levels
+  accepts_nested_attributes_for :push_access_levels, allow_destroy: true
+  accepts_nested_attributes_for :merge_access_levels, allow_destroy: true
 
   # Returns all merge access levels (for protected branches in scope) that grant merge
   # access to the given user.
