@@ -1,4 +1,4 @@
-//= require lib/vue
+//= require vue
 
 class MergeConflictResolver {
 
