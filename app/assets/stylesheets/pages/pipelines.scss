@@ -232,10 +232,35 @@
 
 // Pipeline visualization
 
+.toggle-pipeline-btn {
+  background-color: $gray-dark;
+
+  .caret {
+    border-top: none;
+    border-bottom: 4px solid;
+  }
+
+  &.graph-collapsed {
+    background-color: $white-light;
+
+    .caret {
+      border-bottom: none;
+      border-top: 4px solid;
+    }
+  }
+}
+
 .pipeline-graph {
   width: 100%;
   overflow: auto;
   white-space: nowrap;
+  max-height: 500px;
+  transition: max-height 0.3s, padding 0.3s;
+
+  &.graph-collapsed {
+    max-height: 0;
+    padding: 0 16px;
+  }
 }
 
 .pipeline-visualization {
@@ -315,7 +340,6 @@
         right: -20px;
         border-right: 2px solid $border-color;
         border-radius: 0 0 50px;
-        -webkit-border-radius: 0 0 50px;
       }
 
       // Left connecting curves
@@ -323,7 +347,6 @@
         left: -20px;
         border-left: 2px solid $border-color;
         border-radius: 0 0 0 50px;
-        -webkit-border-radius: 0 0 0 50px;
       }
     }
 
@@ -332,11 +355,6 @@
       &::after, &::before {
         height: 45px;
         top: -26px;
-      }
-      &::after {
-        // border-left: 2px solid $border-color;
-        border-top-right-radius: -50px;
-        -webkit-border-top-right-radius: -50px;
       }
     }
   }
@@ -367,5 +385,16 @@
         }
       }
     }
+  }
+}
+
+.pipeline-actions {
+  border-bottom: none;
+}
+
+.toggle-pipeline-btn {
+
+  .fa {
+    color: $dropdown-header-color;
   }
 }
