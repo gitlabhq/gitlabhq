@@ -9,6 +9,8 @@
 
     MergeRequestTabs.prototype.buildsLoaded = false;
 
+    MergeRequestTabs.prototype.pipelinesLoaded = false;
+
     MergeRequestTabs.prototype.commitsLoaded = false;
 
     function MergeRequestTabs(opts) {
@@ -50,6 +52,9 @@
       } else if (action === 'builds') {
         this.loadBuilds($target.attr('href'));
         this.expandView();
+      } else if (action === 'pipelines') {
+        this.loadPipelines($target.attr('href'));
+        this.expandView();
       } else {
         this.expandView();
       }
@@ -82,7 +87,7 @@
         action = 'notes';
       }
       this.currentAction = action;
-      new_state = this._location.pathname.replace(/\/(commits|diffs|builds)(\.html)?\/?$/, '');
+      new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
       if (action !== 'notes') {
         new_state += "/" + action;
       }
@@ -180,6 +185,21 @@
             return _this.scrollToElement("#builds");
           };
         })(this)
+      });
+    };
+
+    MergeRequestTabs.prototype.loadPipelines = function(source) {
+      if (this.pipelinesLoaded) {
+        return;
+      }
+      return this._get({
+        url: source + ".json",
+        success: function(data) {
+          $('#pipelines').html(data.html);
+          gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
+          this.pipelinesLoaded = true;
+          return this.scrollToElement("#pipelines");
+        }.bind(this)
       });
     };
 

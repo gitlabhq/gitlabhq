@@ -320,4 +320,8 @@ module ApplicationHelper
       capture(&block)
     end
   end
+
+  def page_class
+    "issue-boards-page" if current_controller?(:boards)
+  end
 end
