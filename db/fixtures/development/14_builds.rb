@@ -34,33 +34,38 @@ class Gitlab::Seeder::Builds
     end
   end
 
+  private
+
   def pipelines
-    master_pipelines + merge_request_pipelines
+    create_master_pipelines + create_merge_request_pipelines
   end
 
-  def master_pipelines
-    create_pipelines_for(@project, 'master')
-  rescue
-    []
-  end
-
-  def merge_request_pipelines
-    @project.merge_requests.last(5).map do |merge_request|
-      create_pipelines(merge_request.source_project, merge_request.source_branch, merge_request.commits.last(5))
-    end.flatten
-  rescue
-    []
-  end
-
-  def create_pipelines_for(project, ref)
-    commits = project.repository.commits(ref, limit: 5)
-    create_pipelines(project, ref, commits)
-  end
-
-  def create_pipelines(project, ref, commits)
-    commits.map do |commit|
-      project.pipelines.create(sha: commit.id, ref: ref)
+  def create_master_pipelines
+    @project.repository.commits('master', limit: 5).map do |commit|
+      create_pipeline!(@project, 'master', commit)
     end
+  rescue
+    []
+  end
+
+  def create_merge_request_pipelines
+    pipelines = @project.merge_requests.first(5).map do |merge_request|
+      project = merge_request.source_project
+      branch = merge_request.source_branch
+
+      merge_request.commits.last(5).map do |commit|
+        create_pipeline!(project, branch, commit)
+      end
+    end
+
+    pipelines.flatten
+  rescue
+    []
+  end
+
+
+  def create_pipeline!(project, ref, commit)
+    project.pipelines.create(sha: commit.id, ref: ref)
   end
 
   def build_create!(pipeline, opts = {})
