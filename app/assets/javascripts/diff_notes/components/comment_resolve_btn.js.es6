@@ -11,6 +11,8 @@
       showButton: function () {
         if (this.discussion) {
           return this.discussion.isResolvable();
+        } else {
+          return undefined;
         }
       },
       isDiscussionResolved: function () {
