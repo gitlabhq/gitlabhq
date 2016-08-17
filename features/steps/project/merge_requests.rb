@@ -22,6 +22,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "All"' do
     click_link "All"
+    # Waits for load
+    expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
 
   step 'I click link "Merged"' do
