@@ -49,7 +49,7 @@ module NotesHelper
     }
 
     if use_legacy_diff_note
-      discussion_id = LegacyDiffNote.build_discussion_id(
+      discussion_id = LegacyDiffNote.discussion_id(
         @comments_target[:noteable_type],
         @comments_target[:noteable_id] || @comments_target[:commit_id],
         line_code
@@ -57,10 +57,10 @@ module NotesHelper
 
       data.merge!(
         note_type: LegacyDiffNote.name,
-        discussion_id: Digest::SHA1.hexdigest(discussion_id)
+        discussion_id: discussion_id
       )
     else
-      discussion_id = DiffNote.build_discussion_id(
+      discussion_id = DiffNote.discussion_id(
         @comments_target[:noteable_type],
         @comments_target[:noteable_id] || @comments_target[:commit_id],
         position
@@ -69,7 +69,7 @@ module NotesHelper
       data.merge!(
         position: position.to_json,
         note_type: DiffNote.name,
-        discussion_id: Digest::SHA1.hexdigest(discussion_id)
+        discussion_id: discussion_id
       )
     end
 

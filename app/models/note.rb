@@ -70,7 +70,9 @@ class Note < ActiveRecord::Base
              project: [:project_members, { group: [:group_members] }])
   end
 
+  after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
+  before_validation :set_discussion_id
   after_save :keep_around_commit
 
   class << self
@@ -80,6 +82,10 @@ class Note < ActiveRecord::Base
 
     def build_discussion_id(noteable_type, noteable_id)
       [:discussion, noteable_type.try(:underscore), noteable_id].join("-")
+    end
+
+    def self.discussion_id(*args)
+      Digest::SHA1.hexdigest(build_discussion_id(*args))
     end
 
     def discussions
@@ -140,15 +146,6 @@ class Note < ActiveRecord::Base
 
   def to_be_resolved?
     resolvable? && !resolved?
-  end
-
-  def discussion_id
-    @discussion_id ||=
-      if for_merge_request?
-        Digest::SHA1.hexdigest([:discussion, :note, id].join("-"))
-      else
-        Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id))
-      end
   end
 
   def max_attachment_size
@@ -255,5 +252,25 @@ class Note < ActiveRecord::Base
 
   def nullify_blank_line_code
     self.line_code = nil if self.line_code.blank?
+  end
+
+  def ensure_discussion_id
+    return unless self.persisted?
+    return if self.discussion_id
+
+    set_discussion_id
+    update_column(:discussion_id, self.discussion_id)
+  end
+
+  def set_discussion_id
+    self.discussion_id = Digest::SHA1.hexdigest(build_discussion_id)
+  end
+
+  def build_discussion_id
+    if for_merge_request?
+      [:discussion, :note, id].join("-")
+    else
+      self.class.build_discussion_id(noteable_type, noteable_id || commit_id)
+    end
   end
 end

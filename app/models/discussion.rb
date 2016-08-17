@@ -57,7 +57,7 @@ class Discussion
   def id
     first_note.discussion_id
   end
-  
+
   alias_method :to_param, :id
 
   def diff_discussion?
@@ -93,7 +93,7 @@ class Discussion
     return false unless resolvable?
 
     current_user == self.noteable.author ||
-      current_user.can?(:push_code, self.project)
+      current_user.can?(:resolve_note, self.project)
   end
 
   def resolve!(current_user)

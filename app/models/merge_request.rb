@@ -425,16 +425,23 @@ class MergeRequest < ActiveRecord::Base
       discussions
   end
 
-  def find_discussion(discussion_id)
-    discussions.find { |d| d.id == discussion_id }
+  def diff_discussions
+    @diff_discussions ||= self.notes.diff_notes.discussions
+  end
+
+  def find_diff_discussion(discussion_id)
+    notes = self.notes.diff_notes.where(discussion_id: discussion_id).fresh.to_a
+    return if notes.empty?
+
+    Discussion.new(notes)
   end
 
   def discussions_resolvable?
-    discussions.any?(&:resolvable?)
+    diff_discussions.any?(&:resolvable?)
   end
 
   def discussions_resolved?
-    discussions_resolvable? && discussions.none?(&:to_be_resolved?)
+    discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
   end
 
   def hook_attrs

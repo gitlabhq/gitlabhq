@@ -15,8 +15,9 @@ class DiffNote < Note
   validate :positions_complete
   validate :verify_supported
 
+  after_initialize :ensure_original_discussion_id
   before_validation :set_original_position, :update_position, on: :create
-  before_validation :set_line_code
+  before_validation :set_line_code, :set_original_discussion_id
   after_save :keep_around_commits
 
   class << self
@@ -31,14 +32,6 @@ class DiffNote < Note
 
   def diff_attributes
     { position: position.to_json }
-  end
-
-  def discussion_id
-    @discussion_id ||= Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id, position))
-  end
-
-  def original_discussion_id
-    @original_discussion_id ||= Digest::SHA1.hexdigest(self.class.build_discussion_id(noteable_type, noteable_id || commit_id, original_position))
   end
 
   def position=(new_position)
@@ -106,11 +99,7 @@ class DiffNote < Note
   def discussion
     return unless resolvable?
 
-    discussion_notes = self.noteable.notes.fresh.select { |n| n.discussion_id == self.discussion_id }
-
-    return if discussion_notes.empty?
-
-    Discussion.new(discussion_notes)
+    self.noteable.find_diff_discussion(self.discussion_id)
   end
 
   def to_discussion
@@ -137,6 +126,26 @@ class DiffNote < Note
 
   def set_line_code
     self.line_code = self.position.line_code(self.project.repository)
+  end
+
+  def ensure_original_discussion_id
+    return unless self.persisted?
+    return if self.original_discussion_id
+
+    set_original_discussion_id
+    update_column(:original_discussion_id, self.original_discussion_id)
+  end
+
+  def set_original_discussion_id
+    self.original_discussion_id = Digest::SHA1.hexdigest(build_original_discussion_id)
+  end
+
+  def build_discussion_id
+    self.class.build_discussion_id(noteable_type, noteable_id || commit_id, position)
+  end
+
+  def build_original_discussion_id
+    self.class.build_discussion_id(noteable_type, noteable_id || commit_id, original_position)
   end
 
   def update_position

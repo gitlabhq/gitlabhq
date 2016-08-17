@@ -763,7 +763,7 @@ describe MergeRequest, models: true do
     let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
 
     before do
-      allow(subject).to receive(:discussions).and_return([first_discussion, second_discussion, third_discussion])
+      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
     end
 
     describe "#discussions_resolvable?" do

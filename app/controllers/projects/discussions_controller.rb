@@ -5,8 +5,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
   before_action :authorize_resolve_discussion!
 
   def resolve
-    return render_404 unless discussion.resolvable?
-
     discussion.resolve!(current_user)
 
     MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(merge_request)
@@ -18,8 +16,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def unresolve
-    return render_404 unless discussion.resolvable?
-
     discussion.unresolve!
 
     render json: {
@@ -34,7 +30,7 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def discussion
-    @discussion ||= @merge_request.find_discussion(params[:id]) || render_404
+    @discussion ||= @merge_request.find_diff_discussion(params[:id]) || render_404
   end
 
   def authorize_resolve_discussion!
