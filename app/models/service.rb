@@ -100,7 +100,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue merge_request wiki_page)
+    %w[push tag_push issues merge_requests wiki_page]
   end
 
   def execute(data)

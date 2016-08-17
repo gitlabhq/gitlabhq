@@ -25,7 +25,7 @@ class CampfireService < Service
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def execute(data)
@@ -76,7 +76,7 @@ class CampfireService < Service
   # Returns a list of rooms, or [].
   # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
   def rooms(auth)
-    res = self.class.get("/rooms.json", auth) 
+    res = self.class.get("/rooms.json", auth)
     res.code == 200 ? res["rooms"] : []
   end
 

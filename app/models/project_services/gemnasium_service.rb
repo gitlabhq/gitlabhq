@@ -24,7 +24,7 @@ class GemnasiumService < Service
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def execute(data)

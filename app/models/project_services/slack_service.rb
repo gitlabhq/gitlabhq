@@ -44,7 +44,7 @@ class SlackService < Service
   end
 
   def supported_events
-    %w(push issue merge_request note tag_push build wiki_page)
+    %w[push issues merge_requests note tag_push build wiki_page]
   end
 
   def execute(data)

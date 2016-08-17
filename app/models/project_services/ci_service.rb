@@ -9,7 +9,7 @@ class CiService < Service
   end
 
   def supported_events
-    %w(push)
+    %w[push]
   end
 
   def merge_request_page(iid, sha, ref)
