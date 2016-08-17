@@ -3,15 +3,16 @@ require 'spec_helper'
 describe 'projects/merge_requests/show.html.haml' do
   include Devise::TestHelpers
 
+  let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:fork_project) { create(:project, forked_from_project: project) }
+  let(:unlink_project) { Projects::UnlinkForkService.new(fork_project, user) }
 
   let(:closed_merge_request) do
     create(:closed_merge_request,
       source_project: fork_project,
-      source_branch: 'add-submodule-version-bump',
-      target_branch: 'master',
-      target_project: project)
+      target_project: project,
+      author: user)
   end
 
   before do
@@ -31,7 +32,8 @@ describe 'projects/merge_requests/show.html.haml' do
     end
 
     it 'does not show the "Reopen" button when the source project does not exist' do
-      fork_project.destroy
+      unlink_project.execute
+      closed_merge_request.reload
 
       render
 
