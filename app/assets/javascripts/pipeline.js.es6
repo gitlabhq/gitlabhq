@@ -1,13 +1,15 @@
-function toggleGraph() {
-  const indexOfBtn = $('.toggle-pipeline-btn').index($(this));
+(function() {
+  function toggleGraph() {
+    const $pipelineBtn = $(this).closest('.toggle-pipeline-btn');
+    const $pipelineGraph = $(this).closest('.row-content-block').next('.pipeline-graph');
+    const $btnText = $(this).find('.toggle-btn-text');
 
-  $($('.pipeline-graph')[indexOfBtn]).toggleClass('graph-collapsed');
-  $($('.toggle-pipeline-btn')[indexOfBtn]).toggleClass('graph-collapsed');
+    $($pipelineBtn).add($pipelineGraph).toggleClass('graph-collapsed');
 
-  const $btnText = $($('.toggle-pipeline-btn .btn-text')[indexOfBtn]);
-  const graphCollapsed = $($('.pipeline-graph')[indexOfBtn]).hasClass('graph-collapsed');
+    const graphCollapsed = $pipelineGraph.hasClass('graph-collapsed');
 
-  graphCollapsed ? $btnText.text('Expand') : $btnText.text('Hide')
-}
+    graphCollapsed ? $btnText.text('Expand') : $btnText.text('Hide')
+  }
 
-$(document).on('click', '.toggle-pipeline-btn', toggleGraph);
+  $(document).on('click', '.toggle-pipeline-btn', toggleGraph);
+})();
