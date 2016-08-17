@@ -40,12 +40,10 @@ class List {
   }
 
   destroy () {
-    if (this.type !== 'blank') {
-      gl.issueBoards.BoardsStore.state.lists.$remove(this);
-      gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
+    gl.issueBoards.BoardsStore.state.lists.$remove(this);
+    gl.issueBoards.BoardsStore.updateNewListDropdown(this.id);
 
-      gl.boardService.destroyList(this.id);
-    }
+    gl.boardService.destroyList(this.id);
   }
 
   update () {
@@ -93,16 +91,20 @@ class List {
 
   createIssues (data) {
     data.forEach((issueObj) => {
-      this.issues.push(new ListIssue(issueObj));
+      this.addIssue(new ListIssue(issueObj));
     });
   }
 
   addIssue (issue, listFrom) {
     this.issues.push(issue);
 
-    issue.addLabel(this.label);
+    if (this.label) {
+      issue.addLabel(this.label);
+    }
 
-    gl.boardService.moveIssue(issue.id, listFrom.id, this.id);
+    if (listFrom) {
+      gl.boardService.moveIssue(issue.id, listFrom.id, this.id);
+    }
   }
 
   findIssue (id) {
