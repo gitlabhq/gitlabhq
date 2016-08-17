@@ -197,6 +197,8 @@ class Project < ActiveRecord::Base
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
+  scope :excluding_project, ->(project) { where.not(id: project) }
+
   state_machine :import_status, initial: :none do
     event :import_start do
       transition [:none, :finished] => :started
@@ -377,6 +379,12 @@ class Project < ActiveRecord::Base
       ) join_note_counts ON projects.id = join_note_counts.project_id"
 
       joins(join_body).reorder('join_note_counts.amount DESC')
+    end
+
+    def cached_count
+      Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
+        Project.count
+      end
     end
   end
 
@@ -993,6 +1001,10 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
+  def add_user(user, access_level, current_user = nil)
+    team.add_user(user, access_level, current_user)
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
@@ -1153,16 +1165,6 @@ class Project < ActiveRecord::Base
 
   def wiki
     @wiki ||= ProjectWiki.new(self, self.owner)
-  end
-
-  def schedule_delete!(user_id, params)
-    # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit do
-      job_id = ProjectDestroyWorker.perform_async(id, user_id, params)
-      Rails.logger.info("User #{user_id} scheduled destruction of project #{path_with_namespace} with job ID #{job_id}")
-    end
-
-    update_attribute(:pending_delete, true)
   end
 
   def running_or_pending_build_count(force: false)

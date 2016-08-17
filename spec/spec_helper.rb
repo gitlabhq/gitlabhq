@@ -42,6 +42,13 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
+
+  config.around(:each, :caching) do |example|
+    caching_store = Rails.cache
+    Rails.cache = ActiveSupport::Cache::MemoryStore.new if example.metadata[:caching]
+    example.run
+    Rails.cache = caching_store
+  end
 end
 
 FactoryGirl::SyntaxRunner.class_eval do

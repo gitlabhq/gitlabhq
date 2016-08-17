@@ -1,4 +1,4 @@
-.diff-file.file-holder{id: "diff-#{index}", data: diff_file_html_data(project, diff_file)}
+.diff-file.file-holder{id: "diff-#{index}", data: diff_file_html_data(project, diff_file.file_path, diff_commit.id)}
   .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
     = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{index}"
 

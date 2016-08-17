@@ -714,6 +714,20 @@ describe Project, models: true do
     it { expect(project.builds_enabled?).to be_truthy }
   end
 
+  describe '.cached_count', caching: true do
+    let(:group)     { create(:group, :public) }
+    let!(:project1) { create(:empty_project, :public, group: group) }
+    let!(:project2) { create(:empty_project, :public, group: group) }
+
+    it 'returns total project count' do
+      expect(Project).to receive(:count).once.and_call_original
+
+      3.times do
+        expect(Project.cached_count).to eq(2)
+      end
+    end
+  end
+
   describe '.trending' do
     let(:group)    { create(:group, :public) }
     let(:project1) { create(:empty_project, :public, group: group) }
@@ -1075,13 +1089,13 @@ describe Project, models: true do
       let(:project) { create(:project) }
 
       it 'returns true when the branch matches a protected branch via direct match' do
-        project.protected_branches.create!(name: 'foo')
+        create(:protected_branch, project: project, name: "foo")
 
         expect(project.protected_branch?('foo')).to eq(true)
       end
 
       it 'returns true when the branch matches a protected branch via wildcard match' do
-        project.protected_branches.create!(name: 'production/*')
+        create(:protected_branch, project: project, name: "production/*")
 
         expect(project.protected_branch?('production/some-branch')).to eq(true)
       end
@@ -1091,7 +1105,7 @@ describe Project, models: true do
       end
 
       it 'returns false when the branch does not match a protected branch via wildcard match' do
-        project.protected_branches.create!(name: 'production/*')
+        create(:protected_branch, project: project, name: "production/*")
 
         expect(project.protected_branch?('staging/some-branch')).to eq(false)
       end

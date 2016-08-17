@@ -13,7 +13,7 @@ GET /projects/:id/variables
 | `id`      | integer | yes      | The ID of a project |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables"
+curl --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables"
 ```
 
 ```json
@@ -43,7 +43,7 @@ GET /projects/:id/variables/:key
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```
-curl -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/TEST_VARIABLE_1"
+curl --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/TEST_VARIABLE_1"
 ```
 
 ```json
@@ -68,7 +68,7 @@ POST /projects/:id/variables
 | `value`   | string  | yes      | The `value` of a variable |
 
 ```
-curl -X POST -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables" -F "key=NEW_VARIABLE" -F "value=new value"
+curl --request POST --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables" --form "key=NEW_VARIABLE" --form "value=new value"
 ```
 
 ```json
@@ -93,7 +93,7 @@ PUT /projects/:id/variables/:key
 | `value`   | string  | yes      | The `value` of a variable |
 
 ```
-curl -X PUT -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/NEW_VARIABLE" -F "value=updated value"
+curl --request PUT --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/NEW_VARIABLE" --form "value=updated value"
 ```
 
 ```json
@@ -117,7 +117,7 @@ DELETE /projects/:id/variables/:key
 | `key`     | string  | yes      | The `key` of a variable |
 
 ```
-curl -X DELETE -H "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/VARIABLE_1"
+curl --request DELETE --header "PRIVATE_TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/variables/VARIABLE_1"
 ```
 
 ```json

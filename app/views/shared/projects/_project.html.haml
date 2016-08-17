@@ -12,6 +12,8 @@
 %li.project-row{ class: css_class }
   = cache(cache_key) do
     .controls
+      - if project.archived
+        %span.label.label-warning archived
       - if project.commit.try(:status)
         %span
           = render_commit_status(project.commit)
@@ -24,7 +26,7 @@
           = icon('star')
           = project.star_count
       %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(project)}
-        = visibility_level_icon(project.visibility_level, fw: false)
+        = visibility_level_icon(project.visibility_level, fw: true)
 
     .title
       = link_to project_path(project), class: dom_class(project) do

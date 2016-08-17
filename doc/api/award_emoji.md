@@ -25,7 +25,7 @@ Parameters:
 | `awardable_id` | integer | yes | The ID of an awardable |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji
 ```
 
 Example Response:
@@ -85,7 +85,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/1
 ```
 
 Example Response:
@@ -127,7 +127,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji?name=blowfish
 ```
 
 Example Response:
@@ -170,7 +170,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/344
 ```
 
 Example Response:
@@ -217,7 +217,7 @@ Parameters:
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji
 ```
 
 Example Response:
@@ -259,7 +259,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of the award emoji |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji/2
 ```
 
 Example Response:
@@ -299,7 +299,7 @@ Parameters:
 | `name` | string | yes | The name of the emoji, without colons |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/notes/1/award_emoji?name=rocket
 ```
 
 Example Response:
@@ -342,7 +342,7 @@ Parameters:
 | `award_id` | integer | yes | The ID of a award_emoji |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" http://gitlab.example.com/api/v3/projects/1/issues/80/award_emoji/345
 ```
 
 Example Response:

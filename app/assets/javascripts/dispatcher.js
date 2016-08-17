@@ -55,6 +55,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
@@ -62,6 +63,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -186,6 +188,12 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              switch (path[2]) {
+                case 'edit':
+                  new Labels();
+              }
           }
           break;
         case 'dashboard':
@@ -211,6 +219,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();

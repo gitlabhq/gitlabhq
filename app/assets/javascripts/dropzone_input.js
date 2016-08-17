@@ -1,5 +1,5 @@
 
-/*= require markdown_preview */
+/*= require preview_markdown */
 
 (function() {
   this.DropzoneInput = (function() {

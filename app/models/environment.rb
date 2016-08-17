@@ -25,4 +25,10 @@ class Environment < ActiveRecord::Base
   def nullify_external_url
     self.external_url = nil if self.external_url.blank?
   end
+
+  def includes_commit?(commit)
+    return false unless last_deployment
+
+    last_deployment.includes_commit?(commit)
+  end
 end

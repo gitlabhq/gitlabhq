@@ -30,4 +30,37 @@ describe Environment, models: true do
       expect(env.external_url).to be_nil
     end
   end
+
+  describe '#includes_commit?' do
+    context 'without a last deployment' do
+      it "returns false" do
+        expect(environment.includes_commit?('HEAD')).to be false
+      end
+    end
+
+    context 'with a last deployment' do
+      let(:project)     { create(:project) }
+      let(:environment) { create(:environment, project: project) }
+
+      let!(:deployment) do
+        create(:deployment, environment: environment, sha: project.commit('master').id)
+      end
+
+      context 'in the same branch' do
+        it 'returns true' do
+          expect(environment.includes_commit?(RepoHelpers.sample_commit)).to be true
+        end
+      end
+
+      context 'not in the same branch' do
+        before do
+          deployment.update(sha: project.commit('feature').id)
+        end
+
+        it 'returns false' do
+          expect(environment.includes_commit?(RepoHelpers.sample_commit)).to be false
+        end
+      end
+    end
+  end
 end
