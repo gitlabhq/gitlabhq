@@ -34,7 +34,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
 
     if @protected_branch.valid?
       respond_to do |format|
-        format.json { render json: @protected_branch, status: :ok }
+        format.json { render json: @protected_branch, status: :ok, include: [:merge_access_levels, :push_access_levels] }
       end
     else
       respond_to do |format|
