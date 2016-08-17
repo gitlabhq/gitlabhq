@@ -55,6 +55,10 @@ module Elastic
         target_project_id
       end
 
+      def self.nested?
+        true
+      end
+
       def self.elastic_search(query, options: {})
         if query =~ /#(\d+)\z/
           query_hash = iid_query_hash(query_hash, $1)

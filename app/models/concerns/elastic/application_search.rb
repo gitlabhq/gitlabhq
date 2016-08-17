@@ -45,7 +45,12 @@ module Elastic
 
       after_commit on: :destroy do
         if current_application_settings.elasticsearch_indexing? && self.searchable?
-          ElasticIndexerWorker.perform_async(:delete, self.class.to_s, self.id)
+          ElasticIndexerWorker.perform_async(
+            :delete,
+            self.class.to_s,
+            self.id,
+            project_id: self.es_parent
+          )
         end
       end
 
@@ -55,11 +60,16 @@ module Elastic
       end
 
       def es_parent
-        project_id
+        project_id if respond_to?(:project_id)
       end
     end
 
     module ClassMethods
+      # Should be overridden for all nested models
+      def nested?
+        false
+      end
+
       def highlight_options(fields)
         es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
           memo[field.to_sym] = {}

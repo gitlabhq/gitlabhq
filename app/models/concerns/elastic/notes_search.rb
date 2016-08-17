@@ -40,6 +40,10 @@ module Elastic
         data
       end
 
+      def self.nested?
+        true
+      end
+
       def self.elastic_search(query, options: {})
         options[:in] = ['note']
 
