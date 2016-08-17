@@ -35,14 +35,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def latest_succeeded
-    path = params[:path]
+    target_url = artifacts_action_url(params[:path], project, build)
 
-    if %w[download browse file].include?(path)
-      redirect_to send(
-        "#{path}_namespace_project_build_artifacts_url",
-        project.namespace,
-        project,
-        build)
+    if target_url
+      redirect_to(target_url)
     else
       render_404
     end
