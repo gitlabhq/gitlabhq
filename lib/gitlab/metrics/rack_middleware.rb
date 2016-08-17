@@ -17,6 +17,10 @@ module Gitlab
         begin
           retval = trans.run { @app.call(env) }
 
+        rescue Exception => error # rubocop: disable Lint/RescueException
+          trans.add_event(:rails_exception)
+
+          raise error
         # Even in the event of an error we want to submit any metrics we
         # might've gathered up to this point.
         ensure
