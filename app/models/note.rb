@@ -84,7 +84,7 @@ class Note < ActiveRecord::Base
       [:discussion, noteable_type.try(:underscore), noteable_id].join("-")
     end
 
-    def self.discussion_id(*args)
+    def discussion_id(*args)
       Digest::SHA1.hexdigest(build_discussion_id(*args))
     end
 
