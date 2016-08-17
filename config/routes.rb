@@ -859,6 +859,20 @@ Rails.application.routes.draw do
           end
         end
 
+        resource :board, only: [:show] do
+          scope module: :boards do
+            resources :issues, only: [:update]
+
+            resources :lists, only: [:index, :create, :update, :destroy] do
+              collection do
+                post :generate
+              end
+
+              resources :issues, only: [:index]
+            end
+          end
+        end
+
         resources :todos, only: [:create]
 
         resources :uploads, only: [:create] do
