@@ -6,11 +6,12 @@
 
     Build.state = null;
 
-    function Build(page_url, build_url, build_status, build_stage, build_name, state1) {
-      this.page_url = page_url;
-      this.build_url = build_url;
-      this.build_status = build_status;
-      this.state = state1;
+    function Build(options) {
+      this.page_url = options.page_url;
+      this.build_url = options.build_url;
+      this.build_status = options.build_status;
+      this.state = options.state1;
+      this.build_stage = options.build_stage;
       this.hideSidebar = bind(this.hideSidebar, this);
       this.toggleSidebar = bind(this.toggleSidebar, this);
       this.updateDropdown = bind(this.updateDropdown, this);
@@ -18,13 +19,13 @@
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
 
-      this.populateJobs(build_stage);
-      this.updateStageDropdownText(build_stage);
+      this.populateJobs(this.build_stage);
+      this.updateStageDropdownText(this.build_stage);
       this.hideSidebar();
 
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
-      $(document).on('click', '.stage-item', this.updateDropdown);
+      $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
@@ -149,7 +150,7 @@
 
     Build.prototype.updateDropdown = function(e) {
       e.preventDefault();
-      var stage = e.target.text;
+      var stage = e.currentTarget.text;
       this.updateStageDropdownText(stage);
       this.populateJobs(stage);
     };

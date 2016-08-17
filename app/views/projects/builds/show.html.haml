@@ -47,4 +47,10 @@
 = render "sidebar"
 
 :javascript
-  new Build("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}", "#{@build.status}", "#{@build.stage}", "#{@build.name}", "#{trace_with_state[:state]}")
+  new Build({
+    page_url: "#{namespace_project_build_url(@project.namespace, @project, @build)}",
+    build_url: "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}",
+    build_status: "#{@build.status}",
+    build_stage: "#{@build.stage}",
+    state1: "#{trace_with_state[:state]}"
+  })

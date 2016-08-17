@@ -136,6 +136,12 @@
     .dropdown-menu-toggle {
       margin-top: 8px;
     }
+
+    .dropdown-menu {
+      right: $gl-padding;
+      left: $gl-padding;
+      width: auto;
+    }
   }
 
   .builds-container {
