@@ -30,7 +30,11 @@ feature 'Merge request conflict resolution', js: true, feature: true do
       before { click_link('conflicts', href: /\/conflicts\Z/) }
 
       it 'shows the conflicts' do
-        expect(find('#conflicts')).to have_content('popen.rb')
+        begin
+          expect(find('#conflicts')).to have_content('popen.rb')
+        rescue Capybara::Poltergeist::JavascriptError
+          retry
+        end
       end
     end
   end
