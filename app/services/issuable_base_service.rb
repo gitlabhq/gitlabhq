@@ -104,11 +104,12 @@ class IssuableBaseService < BaseService
     change_subscription(issuable)
     filter_params
     old_labels = issuable.labels.to_a
+    old_mentioned_users = issuable.mentioned_users.to_a
 
     if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
-      handle_changes(issuable, old_labels: old_labels)
+      handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end

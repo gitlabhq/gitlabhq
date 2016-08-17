@@ -1,0 +1,15 @@
+%p
+  You have been mentioned in Merge Request #{@merge_request.to_reference}
+
+- if current_application_settings.email_author_in_body
+  %div
+    #{link_to @merge_request.author_name, user_url(@merge_request.author)} wrote:
+%p.details
+  != merge_path_description(@merge_request, '&rarr;')
+
+- if @merge_request.assignee_id.present?
+  %p
+    Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
+
+-if @merge_request.description
+  = markdown(@merge_request.description, pipeline: :email, author: @merge_request.author)
