@@ -1,6 +1,6 @@
 # Description templates
 
->**Note:** [Introduced][ce-4981] in GitLab 8.11.
+>[Introduced][ce-4981] in GitLab 8.11.
 
 Description templates allow you to define context-specific templates for issue
 and merge request description fields for your project.
@@ -31,10 +31,11 @@ push to your default branch.
 
 ## Using the templates
 
-Let's take for example that you have created the file `.gitlab/issue_templates/bug.md`.
-This will enable the `bug` dropdown option when creating or editing issues. When
-`bug` is selected, the content from the `bug.md` template file will be copied
-to the issue description field.
+Let's take for example that you've created the file `.gitlab/issue_templates/Bug.md`.
+This will enable the `Bug` dropdown option when creating or editing issues. When
+`Bug` is selected, the content from the `Bug.md` template file will be copied
+to the issue description field. The 'Reset template' button will discard any
+changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
 
