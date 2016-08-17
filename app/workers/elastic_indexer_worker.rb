@@ -5,7 +5,6 @@ class ElasticIndexerWorker
   sidekiq_options queue: :elasticsearch
 
   ISSUE_TRACKED_FIELDS = %w(assignee_id author_id confidential)
-  NOT_NESTED_ENTITIES = [Project, PersonalSnippet, ProjectSnippet, Snippet]
 
   def perform(operation, class_name, record_id, options = {})
     klass = class_name.constantize
@@ -15,23 +14,23 @@ class ElasticIndexerWorker
       record = klass.find(record_id)
       record.__elasticsearch__.client = client
 
-      if NOT_NESTED_ENTITIES.include?(klass)
-        record.__elasticsearch__.__send__ "#{operation}_document"
-      else
+      if klass.nested?
         record.__elasticsearch__.__send__ "#{operation}_document", parent: record.es_parent
+      else
+        record.__elasticsearch__.__send__ "#{operation}_document"
       end
 
       update_issue_notes(record, options["changed_fields"]) if klass == Issue
     when /delete/
-      if NOT_NESTED_ENTITIES.include?(klass)
-        client.delete index: klass.index_name, type: klass.document_type, id: record_id
-      else
+      if klass.nested?
         client.delete(
           index: klass.index_name,
           type: klass.document_type,
           id: record_id,
           parent: options["project_id"]
         )
+      else
+        client.delete index: klass.index_name, type: klass.document_type, id: record_id
       end
 
       clear_project_indexes(record_id) if klass == Project

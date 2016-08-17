@@ -60,11 +60,16 @@ module Elastic
       end
 
       def es_parent
-        return project_id if respond_to?(:project_id)
+        project_id if respond_to?(:project_id)
       end
     end
 
     module ClassMethods
+      # Should be overridden for all nested models
+      def nested?
+        false
+      end
+
       def highlight_options(fields)
         es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
           memo[field.to_sym] = {}
