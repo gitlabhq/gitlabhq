@@ -45,20 +45,24 @@
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
-          = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
+          = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion
             %span.badge= @merge_request.mr_and_commit_notes.user.count
         %li.commits-tab
-          = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
+          = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
             Commits
             %span.badge= @commits_count
         - if @pipeline
+          %li.pipelines-tab
+            = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
+              Pipelines
+              %span.badge= @merge_request.all_pipelines.size
           %li.builds-tab
-            = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
+            = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#builds', action: 'builds', toggle: 'tab' } do
               Builds
               %span.badge= @statuses.size
         %li.diffs-tab
-          = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+          = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
             Changes
             %span.badge= @merge_request.diff_size
 
@@ -75,6 +79,8 @@
         #commits.commits.tab-pane
           - # This tab is always loaded via AJAX
         #builds.builds.tab-pane
+          - # This tab is always loaded via AJAX
+        #pipelines.pipelines.tab-pane
           - # This tab is always loaded via AJAX
         #diffs.diffs.tab-pane
           - # This tab is always loaded via AJAX
