@@ -17,9 +17,4 @@ module ServicesHelper
       "Event will be triggered when a wiki page is created/updated"
     end
   end
-
-  def service_event_field_name(event)
-    event = event.pluralize if %w[merge_request issue].include?(event)
-    "#{event}_events"
-  end
 end

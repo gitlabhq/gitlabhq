@@ -16,9 +16,9 @@
   .col-sm-10
     - @service.supported_events.each do |event|
       %div
-        = form.check_box service_event_field_name(event), class: 'pull-left'
+        = form.check_box "#{event}_events", class: 'pull-left'
         .prepend-left-20
-          = form.label service_event_field_name(event), class: 'list-label' do
+          = form.label "#{event}_events", class: 'list-label' do
             %strong
               = event.humanize
 
