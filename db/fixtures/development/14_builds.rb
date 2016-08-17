@@ -1,9 +1,8 @@
 class Gitlab::Seeder::Builds
-  STAGES = %w[build notify_build test notify_test deploy notify_deploy]
+  STAGES = %w[build test deploy notify]
   BUILDS = [
     { name: 'build:linux', stage: 'build', status: :success },
     { name: 'build:osx', stage: 'build', status: :success },
-    { name: 'slack post build', stage: 'notify_build', status: :success },
     { name: 'rspec:linux', stage: 'test', status: :success },
     { name: 'rspec:windows', stage: 'test', status: :success },
     { name: 'rspec:windows', stage: 'test', status: :success },
@@ -12,9 +11,9 @@ class Gitlab::Seeder::Builds
     { name: 'spinach:osx', stage: 'test', status: :canceled },
     { name: 'cucumber:linux', stage: 'test', status: :running },
     { name: 'cucumber:osx', stage: 'test', status: :failed },
-    { name: 'slack post test', stage: 'notify_test', status: :success },
     { name: 'staging', stage: 'deploy', environment: 'staging', status: :success },
-    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :success },
+    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :skipped },
+    { name: 'slack', stage: 'notify', when: 'manual', status: :created },
   ]
 
   def initialize(project)
@@ -25,7 +24,7 @@ class Gitlab::Seeder::Builds
     pipelines.each do |pipeline|
       begin
         BUILDS.each { |opts| build_create!(pipeline, opts) }
-        commit_status_create!(pipeline, name: 'jenkins', status: :success)
+        commit_status_create!(pipeline, name: 'jenkins', stage: 'test', status: :success)
         print '.'
       rescue ActiveRecord::RecordInvalid
         print 'F'
