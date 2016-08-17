@@ -530,6 +530,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 0)
         end
 
+        wait_for_vue_resource
+
         page.within(find('.board', match: :first)) do
           click_button(bug.title)
           wait_for_vue_resource(spinner: false)
