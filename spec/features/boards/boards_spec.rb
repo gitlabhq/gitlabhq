@@ -508,17 +508,11 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'filters by clicking label button on issue' do
-        page.within '.issues-filters' do
-          click_button('Label')
-
-          page.within '.dropdown-menu-labels' do
-            click_link(bug.title)
-            wait_for_vue_resource(spinner: false)
-            find('.dropdown-menu-close').click
-          end
+        page.within(find('.board', match: :first)) do
+          expect(page).to have_selector('.card', count: 6)
+          click_button(bug.title)
+          wait_for_vue_resource(spinner: false)
         end
-
-        wait_for_vue_resource
 
         page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
@@ -530,17 +524,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 0)
         end
 
-        wait_for_vue_resource
-
-        page.within(find('.board', match: :first)) do
-          click_button(bug.title)
-          wait_for_vue_resource(spinner: false)
-
-          expect(page).to have_selector('.card', count: 6)
-        end
-
         page.within('.labels-filter') do
-          expect(find('.dropdown-toggle-text')).not_to have_content(bug.title)
+          expect(find('.dropdown-toggle-text')).to have_content(bug.title)
         end
       end
 
