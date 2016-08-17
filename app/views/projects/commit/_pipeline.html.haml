@@ -45,7 +45,7 @@
                   .build-content
                     %span{class: "ci-status-link ci-status-icon-#{status}"}
                       = ci_icon_for_status(status)
-                    = build.name
+                    = link_to build.name, namespace_project_build_url(build.project.namespace, build.project, build)
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger

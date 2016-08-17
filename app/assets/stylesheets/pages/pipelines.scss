@@ -303,6 +303,10 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      a {
+        color: $layout-link-gray;
+      }
     }
 
     svg {
