@@ -40,6 +40,8 @@
           return `Resolved by ${this.resolvedByName}`;
         } else if (this.canResolve) {
           return 'Mark as resolved';
+        } else {
+          return 'Unable to resolve';
         }
       },
       isResolved: function () {
