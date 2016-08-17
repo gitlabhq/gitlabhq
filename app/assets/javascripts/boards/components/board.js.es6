@@ -27,10 +27,8 @@
     },
     watch: {
       query () {
-        if (this.list.canSearch()) {
-          this.list.filters = this.getFilterData();
-          this.list.getIssues(true);
-        }
+        this.list.filters = this.getFilterData();
+        this.list.getIssues(true);
       },
       filters: {
         handler () {
@@ -41,23 +39,13 @@
       }
     },
     methods: {
-      clearSearch () {
-        this.query = '';
-      },
       getFilterData () {
-        if (!this.list.canSearch()) return this.filters;
-
         const filters = this.filters;
         let queryData = { search: this.query };
 
         Object.keys(filters).forEach((key) => { queryData[key] = filters[key]; });
 
         return queryData;
-      }
-    },
-    computed: {
-      isPreset () {
-        return ['backlog', 'done', 'blank'].indexOf(this.list.type) > -1;
       }
     },
     ready () {

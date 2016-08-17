@@ -55,32 +55,22 @@
     },
     ready () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
-          group: 'issues',
-          sort: false,
-          disabled: this.disabled,
-          onStart: (e) => {
-            const card = this.$refs.issue[e.oldIndex];
+        group: 'issues',
+        sort: false,
+        disabled: this.disabled,
+        onStart: (e) => {
+          const card = this.$refs.issue[e.oldIndex];
 
-            Store.moving.issue = card.issue;
-            Store.moving.list = card.list;
-          },
-          onAdd: (e) => {
-            const fromList = Store.moving.list,
-                  issue = Store.moving.issue;
-
-            gl.issueBoards.BoardsStore.moveIssueToList(fromList, this.list, issue);
-          },
-          onRemove (e) {
-            const card = e.item,
-                  list = Store.moving.list,
-                  issue = Store.moving.issue;
-
-            // Remove the new dom element & let vue add the element
-            card.parentNode.removeChild(card);
-
-            list.removeIssue(issue);
-          }
-        });
+          Store.moving.issue = card.issue;
+          Store.moving.list = card.list;
+        },
+        onAdd: (e) => {
+          gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
+        },
+        onRemove: (e) => {
+          this.$refs.issue[e.oldIndex].$destroy(true);
+        }
+      });
 
       if (bp.getBreakpointSize() === 'xs') {
         options.handle = '.js-card-drag-handle';
@@ -94,9 +84,6 @@
           this.loadNextPage();
         }
       };
-    },
-    beforeDestroy () {
-      this.sortable.destroy();
     }
   });
 })();

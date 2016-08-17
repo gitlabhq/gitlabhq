@@ -8,15 +8,14 @@ $(() => {
 
     $this.glDropdown({
       data(term, callback) {
-        $.ajax({
-          url: $this.attr('data-labels')
-        }).then((resp) => {
-          callback(resp);
-        });
+        $.get($this.attr('data-labels'))
+          .then((resp) => {
+            callback(resp);
+          });
       },
       renderRow (label) {
         const active = Store.findList('title', label.title),
-              $li = $('<li />',),
+              $li = $('<li />'),
               $a = $('<a />', {
                 class: (active ? `is-active js-board-list-${active.id}` : ''),
                 text: label.title,

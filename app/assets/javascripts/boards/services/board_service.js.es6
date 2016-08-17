@@ -10,36 +10,30 @@ class BoardService {
     });
     this.issue = Vue.resource(`${root}/issues{/id}`, {});
     this.issues = Vue.resource(`${root}/lists{/id}/issues`, {});
-  }
 
-  setCSRF () {
-    Vue.http.headers.common['X-CSRF-Token'] = $.rails.csrfToken();
+    Vue.http.interceptors.push((request, next) => {
+      request.headers['X-CSRF-Token'] = $.rails.csrfToken();
+      next();
+    });
   }
 
   all () {
-    this.setCSRF();
     return this.lists.get();
   }
 
   generateDefaultLists () {
-    this.setCSRF();
-
     return this.lists.generate({});
   }
 
-  createList (labelId) {
-    this.setCSRF();
-
+  createList (label_id) {
     return this.lists.save({}, {
       list: {
-        label_id: labelId
+        label_id
       }
     });
   }
 
   updateList (id, position) {
-    this.setCSRF();
-
     return this.lists.update({ id }, {
       list: {
         position
@@ -48,15 +42,12 @@ class BoardService {
   }
 
   destroyList (id) {
-    this.setCSRF();
-
     return this.lists.delete({ id });
   }
 
   getIssuesForList (id, filter = {}) {
     let data = { id };
     Object.keys(filter).forEach((key) => { data[key] = filter[key]; });
-    this.setCSRF();
 
     return this.issues.get(data);
   }

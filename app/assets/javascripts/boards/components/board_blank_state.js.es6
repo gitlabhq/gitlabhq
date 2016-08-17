@@ -17,11 +17,9 @@
     },
     methods: {
       addDefaultLists () {
-        Store.removeBlankState();
+        this.clearBlankState();
 
-        for (let i = 0, labelsLength = this.predefinedLabels.length; i < labelsLength; i++) {
-          const label = this.predefinedLabels[i];
-
+        this.predefinedLabels.forEach((label, i) => {
           Store.addList({
             title: label.title,
             position: i,
@@ -31,27 +29,21 @@
               color: label.color
             }
           });
-        }
+        });
 
         // Save the labels
-        gl.boardService
-          .generateDefaultLists()
+        gl.boardService.generateDefaultLists()
           .then((resp) => {
-            const data = resp.json();
-
-            for (let i = 0, dataLength = data.length; i < dataLength; i++) {
-              const listObj = data[i],
-                    list = Store.findList('title', listObj.title);
+            resp.json().forEach((listObj) => {
+              const list = Store.findList('title', listObj.title);
 
               list.id = listObj.id;
               list.label.id = listObj.label.id;
               list.getIssues();
-            }
+            });
           });
       },
-      clearBlankState () {
-        Store.removeBlankState();
-      }
+      clearBlankState: Store.removeBlankState.bind(Store)
     }
   });
 })();

@@ -5,6 +5,7 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
+    this.preset = ['backlog', 'done', 'blank'].indexOf(this.type) > -1;
     this.filters = gl.issueBoards.BoardsStore.state.filters;
     this.page = 1;
     this.loading = true;
@@ -21,9 +22,7 @@ class List {
   }
 
   guid() {
-    const s4 = () => {
-      return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
+    const s4 = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     return `${s4()}${s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
   }
 
@@ -72,9 +71,7 @@ class List {
     Object.keys(filters).forEach((key) => { data[key] = filters[key]; });
 
     if (this.label) {
-      data.label_name = data.label_name.filter((label) => {
-        return label !== this.label.title;
-      });
+      data.label_name = data.label_name.filter( label => label !== this.label.title );
     }
 
     if (emptyIssues) {
@@ -95,10 +92,9 @@ class List {
   }
 
   createIssues (data) {
-    for (let i = 0, dataLength = data.length; i < dataLength; i++) {
-      const issueObj = data[i];
+    data.forEach((issueObj) => {
       this.issues.push(new ListIssue(issueObj));
-    }
+    });
   }
 
   addIssue (issue, listFrom) {
@@ -110,9 +106,7 @@ class List {
   }
 
   findIssue (id) {
-    return this.issues.filter((issue) => {
-      return issue.id === id;
-    })[0];
+    return this.issues.filter( issue => issue.id === id )[0];
   }
 
   removeIssue (removeIssue) {
