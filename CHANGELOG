@@ -48,6 +48,7 @@ v 8.11.0 (unreleased)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
+  - Fix repository push email formatting in Outlook
   - Improve performance of syntax highlighting Markdown code blocks
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
