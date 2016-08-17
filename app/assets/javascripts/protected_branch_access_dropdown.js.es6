@@ -9,6 +9,7 @@
       this.$dropdown = $dropdown;
       this.usersPath = '/autocomplete/users.json';
       this.inputCount = 0;
+      this.defaultLabel = this.$dropdown.data('defaultLabel');
 
       $dropdown.glDropdown({
         selectable: true,
@@ -28,7 +29,6 @@
           e.preventDefault();
           self.inputCount++;
           onSelect();
-          return;
         }
       });
     }
@@ -46,9 +46,13 @@
       let types = _.groupBy(currentItems, (item) => { return item.dataset.type; });
       let label = [];
 
-      _.allKeys(types).map((type) => {
-        label.push(`${types[type].length} ${type}`);
-      });
+      if (_.isEmpty(types)) {
+        label.push(this.defaultLabel);
+      } else {
+        _.allKeys(types).map((type) => {
+          label.push(`${types[type].length} ${type}`);
+        });
+      }
 
       return label.join(' and ');
     }
