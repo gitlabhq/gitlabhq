@@ -4,23 +4,15 @@ describe AutocompleteController do
   let!(:project) { create(:project) }
   let!(:user) { create(:user) }
 
-<<<<<<< HEAD
-  context 'project members' do
-    before do
-      sign_in(user)
-      project.team << [user, :master]
-      project.team << [user2, :developer]
-    end
-=======
   context 'users and members' do
-    let!(:user2) { create(:user) }
+    let(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
->>>>>>> d1da2e8180d92e5f4a8b5ebb36b0f4e4d0618bf8
 
     context 'project members' do
       before do
         sign_in(user)
         project.team << [user, :master]
+        project.team << [user2, :developer]
       end
 
       describe 'GET #users with project ID' do
@@ -28,47 +20,31 @@ describe AutocompleteController do
           get(:users, project_id: project.id)
         end
 
-<<<<<<< HEAD
-      it { expect(body).to be_kind_of(Array) }
-      it { expect(body.size).to eq 2 }
-      it { expect(body.map { |u| u["username"] }).to include(user.username) }
-    end
-=======
         let(:body) { JSON.parse(response.body) }
->>>>>>> d1da2e8180d92e5f4a8b5ebb36b0f4e4d0618bf8
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 1 }
+        it { expect(body.size).to eq 2 }
         it { expect(body.map { |u| u["username"] }).to include(user.username) }
       end
 
-<<<<<<< HEAD
-      it { expect(response).to have_http_status(404) }
-    end
-
-    describe "GET #users that can push to protected branches" do
-      before do
-        get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
-      end
-
-      let(:body) { JSON.parse(response.body) }
-
-      it { expect(body).to be_kind_of(Array) }
-      it { expect(body.size).to eq 1 }
-      it { expect(body.first["username"]).to eq user.username }
-    end
-  end
-
-  context 'group members' do
-    let(:group) { create(:group) }
-=======
       describe 'GET #users with unknown project' do
         before do
           get(:users, project_id: 'unknown')
         end
->>>>>>> d1da2e8180d92e5f4a8b5ebb36b0f4e4d0618bf8
 
         it { expect(response).to have_http_status(404) }
+      end
+
+      describe "GET #users that can push to protected branches" do
+        before do
+          get(:users, project_id: project.id, push_code_to_protected_branches: 'true')
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it { expect(body).to be_kind_of(Array) }
+        it { expect(body.size).to eq 1 }
+        it { expect(body.first["username"]).to eq user.username }
       end
     end
 
