@@ -152,8 +152,9 @@ class TodoService
   def mark_todos_as_done(todos, current_user)
     todos = current_user.todos.where(id: todos.map(&:id)) unless todos.respond_to?(:update_all)
 
-    todos.update_all(state: :done)
+    marked_todos = todos.update_all(state: :done)
     current_user.update_todos_count_cache
+    marked_todos
   end
 
   # When user marks an issue as todo

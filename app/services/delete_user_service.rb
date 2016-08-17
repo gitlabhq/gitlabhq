@@ -21,6 +21,11 @@ class DeleteUserService
       ::Projects::DestroyService.new(project, current_user, skip_repo: true).async_execute
     end
 
-    user.destroy
+    # Destroy the namespace after destroying the user since certain methods may depend on the namespace existing
+    namespace = user.namespace
+    user_data = user.destroy
+    namespace.really_destroy!
+
+    user_data
   end
 end

@@ -702,6 +702,14 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
+  def environments
+    return unless diff_head_commit
+
+    target_project.environments.select do |environment|
+      environment.includes_commit?(diff_head_commit)
+    end
+  end
+
   def state_human_name
     if merged?
       "Merged"

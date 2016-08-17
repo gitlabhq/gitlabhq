@@ -12,7 +12,7 @@ module Gitlab
       end
 
       def exec
-        error = protected_branch_checks || tag_checks || push_checks || push_rules_checks
+        error = push_checks || tag_checks || protected_branch_checks || push_rules_checks
 
         if error
           GitAccessStatus.new(false, error)

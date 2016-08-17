@@ -576,12 +576,14 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /users/:id" do
+    let!(:namespace) { user.namespace }
     before { admin }
 
     it "deletes user" do
       delete api("/users/#{user.id}", admin)
       expect(response).to have_http_status(200)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
+      expect { Namespace.find(namespace.id) }.to raise_error ActiveRecord::RecordNotFound
       expect(json_response['email']).to eq(user.email)
     end
 

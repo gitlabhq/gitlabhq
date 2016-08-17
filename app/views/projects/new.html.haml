@@ -77,7 +77,7 @@
                     = link_to "#", class: 'btn js-toggle-button import_git' do
                       = icon('git', text: 'Repo by URL')
                 %div{ class: 'import_gitlab_project' }
-                  - if gitlab_project_import_enabled?
+                  - if gitlab_project_import_enabled? && current_user.is_admin?
                     = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
                       = icon('gitlab', text: 'GitLab export')
 

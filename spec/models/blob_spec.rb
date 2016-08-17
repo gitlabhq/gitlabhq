@@ -94,4 +94,26 @@ describe Blob do
       expect(blob.to_partial_path).to eq 'download'
     end
   end
+
+  describe '#size_within_svg_limits?' do
+    let(:blob) { described_class.decorate(double(:blob)) }
+
+    it 'returns true when the blob size is smaller than the SVG limit' do
+      expect(blob).to receive(:size).and_return(42)
+
+      expect(blob.size_within_svg_limits?).to eq(true)
+    end
+
+    it 'returns true when the blob size is equal to the SVG limit' do
+      expect(blob).to receive(:size).and_return(Blob::MAXIMUM_SVG_SIZE)
+
+      expect(blob.size_within_svg_limits?).to eq(true)
+    end
+
+    it 'returns false when the blob size is larger than the SVG limit' do
+      expect(blob).to receive(:size).and_return(1.terabyte)
+
+      expect(blob.size_within_svg_limits?).to eq(false)
+    end
+  end
 end

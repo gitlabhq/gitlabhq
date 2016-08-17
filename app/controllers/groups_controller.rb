@@ -87,9 +87,9 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    DestroyGroupService.new(@group, current_user).execute
+    DestroyGroupService.new(@group, current_user).async_execute
 
-    redirect_to root_path, alert: "Group '#{@group.name}' was successfully deleted."
+    redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   def autocomplete

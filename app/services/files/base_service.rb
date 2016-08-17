@@ -15,6 +15,7 @@ module Files
                         else
                           params[:file_content]
                         end
+      @last_commit_sha = params[:last_commit_sha]
 
       # Validate parameters
       validate

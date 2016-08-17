@@ -164,6 +164,10 @@
     @include btn-outline($white-light, $orange-normal, $orange-normal, $orange-light, $white-light, $orange-light);
   }
 
+  &.btn-spam {
+    @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
+  }
+
   &.btn-danger,
   &.btn-remove,
   &.btn-red {
