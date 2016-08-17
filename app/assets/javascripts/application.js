@@ -224,8 +224,11 @@
       return $('.navbar-toggle').toggleClass('active');
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
-      $(this).toggleClass('active');
-      $(this).closest(".diff-file").find(".notes_holder").toggle();
+      var $this = $(this);
+      var showComments = $this.hasClass('active');
+
+      $this.toggleClass('active');
+      $this.closest(".diff-file").find(".notes_holder").toggle(showComments);
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');

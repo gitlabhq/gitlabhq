@@ -91,6 +91,7 @@ v 8.11.0 (unreleased)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Improve OAuth2 client documentation (muteor)
+  - Fix diff comments inverted toggle bug (ClemMakesApps)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
