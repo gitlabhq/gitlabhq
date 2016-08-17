@@ -121,5 +121,20 @@ describe Boards::Issues::MoveService, services: true do
         expect(issue).to be_reopened
       end
     end
+
+    context 'when moving to same list' do
+      let(:issue)  { create(:labeled_issue, project: project, labels: [bug, development]) }
+      let(:params) { { from_list_id: list1.id, to_list_id: list1.id } }
+
+      it 'returns false' do
+        expect(described_class.new(project, user, params).execute(issue)).to eq false
+      end
+
+      it 'keeps issues labels' do
+        described_class.new(project, user, params).execute(issue)
+
+        expect(issue.reload.labels).to contain_exactly(bug, development)
+      end
+    end
   end
 end

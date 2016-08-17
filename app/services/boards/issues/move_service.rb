@@ -11,7 +11,8 @@ module Boards
       private
 
       def valid_move?
-        moving_from_list.present? && moving_to_list.present?
+        moving_from_list.present? && moving_to_list.present? &&
+          moving_from_list != moving_to_list
       end
 
       def moving_from_list
