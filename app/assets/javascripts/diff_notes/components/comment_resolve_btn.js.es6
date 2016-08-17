@@ -12,7 +12,7 @@
         if (this.discussion) {
           return this.discussion.isResolvable();
         } else {
-          return undefined;
+          return false;
         }
       },
       isDiscussionResolved: function () {
