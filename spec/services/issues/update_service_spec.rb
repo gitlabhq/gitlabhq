@@ -324,6 +324,5 @@ describe Issues::UpdateService, services: true do
       let(:mentionable) { issue }
       include_examples 'updating mentions', Issues::UpdateService
     end
-
   end
 end
