@@ -30,9 +30,8 @@
 .row-content-block.build-content.middle-block.pipeline-graph
   .pipeline-visualization
     %ul.stage-column-list
-      - pipeline.statuses.stages.each do |stage|
-        - statuses = pipeline.statuses.where(stage: stage)
-        - status = statuses.latest.status
+      - stages = pipeline.stages_with_latest_statuses
+      - stages.each do |stage, statuses|
         %li.stage-column
           .stage-name
             %a{name: stage}
@@ -40,12 +39,9 @@
               = stage.titleize
           .builds-container
             %ul
-              - statuses.each do |build|
-                %li.build
-                  .build-content
-                    %span{class: "ci-status-link ci-status-icon-#{status}"}
-                      = ci_icon_for_status(status)
-                    = link_to build.name, namespace_project_build_url(build.project.namespace, build.project, build)
+              - statuses.each do |status|
+                = render "projects/#{status.to_partial_path}_pipeline", subject: status
+
 
 - if pipeline.yaml_errors.present?
   .bs-callout.bs-callout-danger

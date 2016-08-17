@@ -1,9 +1,9 @@
 %li.build
   .build-content
-    %span{class: "ci-status-link ci-status-icon-#{subject.status}"}
-      - if subject.target_url
-        - link_to subject.target_url do
-          = ci_icon_for_status(subject.status)
-      - else
-        = ci_icon_for_status(subject.status)
-    = subject.name
+    - if subject.target_url
+      - link_to subject.target_url do
+        = render_status_with_link('commit status', subject.status)
+        = subject.name
+    - else
+      = render_status_with_link('commit status', subject.status)
+      = subject.name
