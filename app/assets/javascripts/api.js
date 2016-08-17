@@ -10,10 +10,11 @@
     gitignorePath: "/api/:version/gitignores/:key",
     ldapGroupsPath: "/api/:version/ldap/:provider/groups.json",
     gitlabCiYmlPath: "/api/:version/gitlab_ci_ymls/:key",
+    issuableTemplatePath: "/:namespace_path/:project_path/templates/:type/:key",
+
     group: function(group_id, callback) {
-      var url;
-      url = Api.buildUrl(Api.groupPath);
-      url = url.replace(':id', group_id);
+      var url = Api.buildUrl(Api.groupPath)
+        .replace(':id', group_id);
       return $.ajax({
         url: url,
         data: {
@@ -25,8 +26,7 @@
       });
     },
     groups: function(query, skip_ldap, callback) {
-      var url;
-      url = Api.buildUrl(Api.groupsPath);
+      var url = Api.buildUrl(Api.groupsPath);
       return $.ajax({
         url: url,
         data: {
@@ -40,8 +40,7 @@
       });
     },
     namespaces: function(query, callback) {
-      var url;
-      url = Api.buildUrl(Api.namespacesPath);
+      var url = Api.buildUrl(Api.namespacesPath);
       return $.ajax({
         url: url,
         data: {
@@ -55,8 +54,7 @@
       });
     },
     projects: function(query, order, callback) {
-      var url;
-      url = Api.buildUrl(Api.projectsPath);
+      var url = Api.buildUrl(Api.projectsPath);
       return $.ajax({
         url: url,
         data: {
@@ -71,9 +69,8 @@
       });
     },
     newLabel: function(project_id, data, callback) {
-      var url;
-      url = Api.buildUrl(Api.labelsPath);
-      url = url.replace(':id', project_id);
+      var url = Api.buildUrl(Api.labelsPath)
+        .replace(':id', project_id);
       data.private_token = gon.api_token;
       return $.ajax({
         url: url,
@@ -87,9 +84,8 @@
       });
     },
     groupProjects: function(group_id, query, callback) {
-      var url;
-      url = Api.buildUrl(Api.groupProjectsPath);
-      url = url.replace(':id', group_id);
+      var url = Api.buildUrl(Api.groupProjectsPath)
+        .replace(':id', group_id);
       return $.ajax({
         url: url,
         data: {
@@ -103,8 +99,8 @@
       });
     },
     licenseText: function(key, data, callback) {
-      var url;
-      url = Api.buildUrl(Api.licensePath).replace(':key', key);
+      var url = Api.buildUrl(Api.licensePath)
+        .replace(':key', key);
       return $.ajax({
         url: url,
         data: data
@@ -113,18 +109,31 @@
       });
     },
     gitignoreText: function(key, callback) {
-      var url;
-      url = Api.buildUrl(Api.gitignorePath).replace(':key', key);
+      var url = Api.buildUrl(Api.gitignorePath)
+        .replace(':key', key);
       return $.get(url, function(gitignore) {
         return callback(gitignore);
       });
     },
     gitlabCiYml: function(key, callback) {
-      var url;
-      url = Api.buildUrl(Api.gitlabCiYmlPath).replace(':key', key);
+      var url = Api.buildUrl(Api.gitlabCiYmlPath)
+        .replace(':key', key);
       return $.get(url, function(file) {
         return callback(file);
       });
+    },
+    issueTemplate: function(namespacePath, projectPath, key, type, callback) {
+      var url = Api.buildUrl(Api.issuableTemplatePath)
+        .replace(':key', key)
+        .replace(':type', type)
+        .replace(':project_path', projectPath)
+        .replace(':namespace_path', namespacePath);
+      $.ajax({
+        url: url,
+        dataType: 'json'
+      }).done(function(file) {
+        callback(null, file);
+      }).error(callback);
     },
     buildUrl: function(url) {
       if (gon.relative_url_root != null) {

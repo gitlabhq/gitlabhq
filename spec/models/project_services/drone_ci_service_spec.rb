@@ -84,7 +84,9 @@ describe DroneCiService, models: true do
     include_context :drone_ci_service
 
     let(:user)    { create(:user, username: 'username') }
-    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:push_sample_data) do
+      Gitlab::DataBuilder::Push.build_sample(project, user)
+    end
 
     it do
       service_hook = double

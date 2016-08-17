@@ -243,7 +243,7 @@ describe API::API, api: true  do
     end
 
     it "removes protected branch" do
-      project.protected_branches.create(name: branch_name)
+      create(:protected_branch, project: project, name: branch_name)
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('Protected branch cant be removed')

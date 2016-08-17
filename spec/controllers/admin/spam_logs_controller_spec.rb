@@ -34,4 +34,16 @@ describe Admin::SpamLogsController do
       expect { User.find(user.id) }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  describe '#mark_as_ham' do
+    before do
+      allow_any_instance_of(AkismetService).to receive(:submit_ham).and_return(true)
+    end
+    it 'submits the log as ham' do
+      post :mark_as_ham, id: first_spam.id
+
+      expect(response).to have_http_status(302)
+      expect(SpamLog.find(first_spam.id).submitted_as_ham).to be_truthy
+    end
+  end
 end

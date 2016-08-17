@@ -133,9 +133,7 @@ module SharedIssuable
   end
 
   step 'The list should be sorted by "Oldest updated"' do
-    page.within('.content div.dropdown.inline.prepend-left-10') do
-      expect(page.find('button.dropdown-toggle.btn')).to have_content('Oldest updated')
-    end
+    expect(find('.issues-filters')).to have_content('Oldest updated')
   end
 
   step 'I click link "Next" in the sidebar' do

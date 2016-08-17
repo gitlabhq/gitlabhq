@@ -757,6 +757,21 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe "#environments" do
+    let(:project)       { create(:project) }
+    let!(:environment)  { create(:environment, project: project) }
+    let!(:environment1) { create(:environment, project: project) }
+    let!(:environment2) { create(:environment, project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    it 'selects deployed environments' do
+      create(:deployment, environment: environment, sha: project.commit('master').id)
+      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+
+      expect(merge_request.environments).to eq [environment]
+    end
+  end
+
   describe "#reload_diff" do
     let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
 

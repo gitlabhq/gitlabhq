@@ -208,6 +208,8 @@ class Project < ActiveRecord::Base
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
+  scope :excluding_project, ->(project) { where.not(id: project) }
+
   state_machine :import_status, initial: :none do
     event :import_start do
       transition [:none, :finished] => :started

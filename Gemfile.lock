@@ -362,7 +362,7 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    httpclient (2.7.0.1)
+    httpclient (2.8.2)
     i18n (0.7.0)
     ice_nine (0.11.1)
     influxdb (0.2.3)

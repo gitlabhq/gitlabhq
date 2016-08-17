@@ -344,7 +344,7 @@ module Ci
 
     def execute_hooks
       return unless project
-      build_data = Gitlab::BuildDataBuilder.build(self)
+      build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
       PagesService.new(build_data).execute

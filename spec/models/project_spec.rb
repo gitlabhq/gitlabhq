@@ -1194,13 +1194,13 @@ describe Project, models: true do
       let(:project) { create(:project) }
 
       it 'returns true when the branch matches a protected branch via direct match' do
-        project.protected_branches.create!(name: 'foo')
+        create(:protected_branch, project: project, name: "foo")
 
         expect(project.protected_branch?('foo')).to eq(true)
       end
 
       it 'returns true when the branch matches a protected branch via wildcard match' do
-        project.protected_branches.create!(name: 'production/*')
+        create(:protected_branch, project: project, name: "production/*")
 
         expect(project.protected_branch?('production/some-branch')).to eq(true)
       end
@@ -1210,7 +1210,7 @@ describe Project, models: true do
       end
 
       it 'returns false when the branch does not match a protected branch via wildcard match' do
-        project.protected_branches.create!(name: 'production/*')
+        create(:protected_branch, project: project, name: "production/*")
 
         expect(project.protected_branch?('staging/some-branch')).to eq(false)
       end

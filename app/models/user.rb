@@ -462,6 +462,13 @@ class User < ActiveRecord::Base
                     owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
+  # Returns projects which user can admin issues on (for example to move an issue to that project).
+  #
+  # This logic is duplicated from `Ability#project_abilities` into a SQL form.
+  def projects_where_can_admin_issues
+    authorized_projects(Gitlab::Access::REPORTER).non_archived.where.not(issues_enabled: false)
+  end
+
   def is_admin?
     admin
   end
@@ -846,13 +853,13 @@ class User < ActiveRecord::Base
 
   def todos_done_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
-      todos.done.count
+      TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
     Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
-      todos.pending.count
+      TodosFinder.new(self, state: :pending).execute.count
     end
   end
 
