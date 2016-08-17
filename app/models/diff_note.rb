@@ -109,11 +109,7 @@ class DiffNote < Note
   private
 
   def supported?
-<<<<<<< HEAD
-    for_commit? || self.noteable.support_new_diff_notes?
-=======
-    !self.for_merge_request? || self.noteable.has_complete_diff_refs?
->>>>>>> master
+    for_commit? || self.noteable.has_complete_diff_refs?
   end
 
   def noteable_diff_refs
