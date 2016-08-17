@@ -198,6 +198,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
+    apply_diff_view_cookie!
+
     build_merge_request
     @noteable = @merge_request
 

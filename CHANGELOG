@@ -99,6 +99,7 @@ v 8.11.0 (unreleased)
   - Speedup DiffNote#active? on discussions, preloading noteables and avoid touching git repository to return diff_refs when possible
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
+  - Fix merge request new view not changing code view rendering style
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace
