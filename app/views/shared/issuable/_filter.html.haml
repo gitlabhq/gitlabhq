@@ -29,7 +29,7 @@
         .pull-right
           - if controller.controller_name != 'boards'
             = render 'shared/sort_dropdown'
-          - elsif current_user
+          - if can?(current_user, :admin_list, @project)
             .dropdown
               %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
                 Create new list

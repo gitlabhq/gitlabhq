@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'Issue Boards', feature: true, js: true do
   include WaitForAjax
 
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:empty_project, :public) }
   let(:user)    { create(:user) }
   let!(:user2)  { create(:user) }
 
@@ -558,6 +558,32 @@ describe 'Issue Boards', feature: true, js: true do
           expect(find('.dropdown-toggle-text')).to have_content(bug.title)
         end
       end
+    end
+  end
+
+  context 'signed out user' do
+    before do
+      logout
+      visit namespace_project_board_path(project.namespace, project)
+    end
+
+    it 'does not show create new list' do
+      expect(page).not_to have_selector('.js-new-board-list')
+    end
+  end
+
+  context 'as guest user' do
+    let(:user_guest) { create(:user) }
+
+    before do
+      project.team << [user_guest, :guest]
+      logout
+      login_as(user_guest)
+      visit namespace_project_board_path(project.namespace, project)
+    end
+
+    it 'does not show create new list' do
+      expect(page).not_to have_selector('.js-new-board-list')
     end
   end
 
