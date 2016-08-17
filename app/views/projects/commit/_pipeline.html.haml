@@ -1,9 +1,8 @@
 .row-content-block.build-content.middle-block.pipeline-graph
   .pipeline-visualization
     %ul.stage-column-list
-      - pipeline.statuses.stages.each do |stage|
-        - statuses = pipeline.statuses.where(stage: stage)
-        - status = statuses.latest.status
+      - stages = pipeline.statuses.latest.order(:stage_idx).group_by(&:stage)
+      - stages.each do |stage, builds|
         %li.stage-column
           .stage-name
             %a{name: stage}
@@ -11,11 +10,16 @@
               = stage.titleize
           .builds-container
             %ul
-              - statuses.each do |build|
+              - builds.each do |build|
                 %li.build
                   .build-content
-                    %span{class: "ci-status-link ci-status-icon-#{status}"}
-                      = ci_icon_for_status(status)
+                    %span{class: "ci-status-link ci-status-icon-#{build.status}"}
+                      - if build.try(:playable?)
+                        = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play' do
+                          = icon('play')
+                      - else
+                        = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
+                          = ci_icon_for_status(build.status)
                     = build.name
 
 .row-content-block.build-content.middle-block.pipeline-graph

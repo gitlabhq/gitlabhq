@@ -34,6 +34,10 @@ module Ci
       CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
+    def stages
+      statuses.order(:stage_idx).latest.group_by(&:stage)
+    end
+
     def project_id
       project.id
     end
