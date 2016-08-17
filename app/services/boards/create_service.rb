@@ -1,5 +1,5 @@
 module Boards
-  class CreateService < BaseService
+  class CreateService < Boards::BaseService
     def execute
       create_board! unless project.board.present?
       project.board
