@@ -410,3 +410,15 @@
     color: $dropdown-header-color;
   }
 }
+
+.pipelines.tab-pane {
+
+  .content-list.pipelines {
+    overflow: scroll;
+  }
+
+  .stage {
+    max-width: 60px;
+    width: 60px;
+  }
+}

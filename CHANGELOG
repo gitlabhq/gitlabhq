@@ -121,6 +121,7 @@ v 8.11.0 (unreleased)
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
+  - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
 
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781

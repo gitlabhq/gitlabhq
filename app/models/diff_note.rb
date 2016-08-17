@@ -75,7 +75,7 @@ class DiffNote < Note
   private
 
   def supported?
-    !self.for_merge_request? || self.noteable.support_new_diff_notes?
+    !self.for_merge_request? || self.noteable.has_complete_diff_refs?
   end
 
   def noteable_diff_refs
