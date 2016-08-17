@@ -869,6 +869,14 @@ class Repository
     end
   end
 
+  def resolve_conflicts(user, branch, params)
+    commit_with_hooks(user, branch) do
+      committer = user_to_committer(user)
+
+      Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
+    end
+  end
+
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target.sha
     args       = [commit.id, source_sha]
