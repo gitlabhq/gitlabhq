@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Template::Gitignore do
+describe Gitlab::Template::GitignoreTemplate do
   subject { described_class }
 
   describe '.all' do
@@ -24,7 +24,7 @@ describe Gitlab::Template::Gitignore do
     it 'returns the Gitignore object of a valid file' do
       ruby = subject.find('Ruby')
 
-      expect(ruby).to be_a Gitlab::Template::Gitignore
+      expect(ruby).to be_a Gitlab::Template::GitignoreTemplate
       expect(ruby.name).to eq('Ruby')
     end
   end

@@ -40,6 +40,8 @@ v 8.11.0 (unreleased)
   - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
+  - Get issue and merge request description templates from repositories
+  - Add hover state to todos !5361 (winniehell)
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
@@ -73,6 +75,7 @@ v 8.11.0 (unreleased)
   - The overhead of instrumented method calls has been reduced
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
+  - Add pipeline events hook
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
@@ -82,6 +85,7 @@ v 8.11.0 (unreleased)
   - Make "New issue" button in Issue page less obtrusive !5457 (winniehell)
   - Gitlab::Metrics.current_transaction needs to be public for RailsQueueDuration
   - Fix search for notes which belongs to deleted objects
+  - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
@@ -93,6 +97,7 @@ v 8.11.0 (unreleased)
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
   - Make error pages responsive (Takuya Noguchi)
+  - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
   - Bump gitlab_git to lazy load compare commits
@@ -116,6 +121,12 @@ v 8.11.0 (unreleased)
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
 
+v 8.10.6
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Restore "Largest repository" sort option on Admin > Projects page. !5797
+  - Fix privilege escalation via project export.
+  - Require administrator privileges to perform a project import.
+
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
   - Revert the "Defend against 'Host' header injection" change in the source NGINX templates. !5706
@@ -136,6 +147,9 @@ v 8.10.3
   - Fix importer for GitHub Pull Requests when a branch was removed. !5573
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
   - Trim extra displayed carriage returns in diffs and files with CRLFs. !5588
+  - Fix label already exist error message in the right sidebar.
+
+v 8.10.3 (unreleased)
 
 v 8.10.2
   - User can now search branches by name. !5144
@@ -283,6 +297,7 @@ v 8.10.0
   - Metrics for Rouge::Plugins::Redcarpet and Rouge::Formatters::HTMLGitlab
   - RailsCache metris now includes fetch_hit/fetch_miss and read_hit/read_miss info.
   - Allow [ci skip] to be in any case and allow [skip ci]. !4785 (simon_w)
+  - Made project list visibility icon fixed width
   - Set import_url validation to be more strict
   - Memoize MR merged/closed events retrieval
   - Don't render discussion notes when requesting diff tab through AJAX
@@ -328,6 +343,10 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.7
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Require administrator privileges to perform a project import.
 
 v 8.9.6
   - Fix importing of events under notes for GitLab projects. !5154
@@ -593,6 +612,9 @@ v 8.9.0
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.8
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
 
 v 8.8.7
   - Fix privilege escalation issue with OAuth external users.

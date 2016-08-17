@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'Gitlab::NoteDataBuilder', lib: true do
+describe Gitlab::DataBuilder::Note, lib: true do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:data) { Gitlab::NoteDataBuilder.build(note, user) }
+  let(:data) { described_class.build(note, user) }
   let(:fixed_time) { Time.at(1425600000) } # Avoid time precision errors
 
   before(:each) do
