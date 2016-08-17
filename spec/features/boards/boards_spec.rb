@@ -565,6 +565,7 @@ describe 'Issue Boards', feature: true, js: true do
     before do
       logout
       visit namespace_project_board_path(project.namespace, project)
+      wait_for_vue_resource
     end
 
     it 'does not show create new list' do
@@ -580,6 +581,7 @@ describe 'Issue Boards', feature: true, js: true do
       logout
       login_as(user_guest)
       visit namespace_project_board_path(project.namespace, project)
+      wait_for_vue_resource
     end
 
     it 'does not show create new list' do
