@@ -188,14 +188,12 @@
       }
       return this._get({
         url: source + ".json",
-        success: (function(_this) {
-          return function(data) {
-            document.querySelector("div#pipelines").innerHTML = data.html;
-            gl.utils.localTimeAgo($('.js-timeago', 'div#pipelines'));
-            _this.pipelinesLoaded = true;
-            return _this.scrollToElement("#pipelines");
-          };
-        })(this)
+        success: function(data) {
+          $('#pipelines').html(data.html);
+          gl.utils.localTimeAgo($('.js-timeago', '#pipelines'));
+          this.pipelinesLoaded = true;
+          return this.scrollToElement("#pipelines");
+        }.bind(this)
       });
     };
 
