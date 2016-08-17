@@ -101,7 +101,6 @@
 
 .right-sidebar.build-sidebar {
   padding: $gl-padding 0;
-  border-left: 1px solid $border-color;
 
   &.right-sidebar-collapsed {
     display: none;
@@ -133,13 +132,19 @@
 
   .build-dropdown {
     padding: 0 $gl-padding;
+
+    .dropdown-menu-toggle {
+      margin-top: 8px;
+    }
   }
 
   .builds-container {
-    margin: $gl-padding 0;
+    margin-top: $gl-padding;
     background-color: $white-light;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
+    max-height: 300px;
+    overflow: scroll;
 
     svg {
       position: relative;
@@ -150,7 +155,11 @@
 
     a {
       display: block;
-      padding: $gl-padding 10px;
+      padding: $gl-padding 10px $gl-padding 40px;
+      width: 270px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       &:hover {
         background-color: $row-hover;
@@ -159,8 +168,21 @@
     }
 
     .build-job {
+      position: relative;
+
+      .fa {
+        position: absolute;
+        left: 15px;
+        top: 20px;
+        display: none;
+      }
+
       &.active {
         font-weight: bold;
+
+        .fa {
+          display: block;
+        }
       }
     }
   }
