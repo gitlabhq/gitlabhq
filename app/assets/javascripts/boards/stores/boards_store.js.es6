@@ -33,10 +33,7 @@
         .then(() => {
           // Remove any new issues from the backlog
           // as they will be visible in the new list
-          for (let i = 0, issuesLength = list.issues.length; i < issuesLength; i++) {
-            const issue = list.issues[i];
-            backlogList.removeIssue(issue);
-          }
+          list.issues.forEach(backlogList.removeIssue.bind(backlogList));
         });
       this.removeBlankState();
     },
@@ -45,21 +42,17 @@
     },
     shouldAddBlankState () {
       // Decide whether to add the blank state
-      return !(this.state.lists.filter((list) => {
-        return list.type !== 'backlog' && list.type !== 'done';
-      })[0]);
+      return !(this.state.lists.filter( list => list.type !== 'backlog' && list.type !== 'done' )[0]);
     },
     addBlankState () {
-      if (this.welcomeIsHidden() || this.disabled) return;
+      if (!this.shouldAddBlankState() || this.welcomeIsHidden() || this.disabled) return;
 
-      if (this.shouldAddBlankState()) {
-        this.addList({
-          id: 'blank',
-          list_type: 'blank',
-          title: 'Welcome to your Issue Board!',
-          position: 0
-        });
-      }
+      this.addList({
+        id: 'blank',
+        list_type: 'blank',
+        title: 'Welcome to your Issue Board!',
+        position: 0
+      });
     },
     removeBlankState () {
       this.removeList('blank');
@@ -76,25 +69,20 @@
 
       if (!list) return;
 
-      this.state.lists = this.state.lists.filter((list) => {
-        return list.id !== id;
-      });
+      this.state.lists = this.state.lists.filter( list => list.id !== id );
     },
     moveList (listFrom, orderLists) {
-      for (let i = 0, orderLength = orderLists.length; i < orderLength; i++) {
-        const id = parseInt(orderLists[i]),
-              list = this.findList('id', id);
+      orderLists.forEach((id, i) => {
+        const list = this.findList('id', id);
 
         list.position = i;
-      }
+      });
       listFrom.update();
     },
     moveIssueToList (listFrom, listTo, issue) {
       const issueTo = listTo.findIssue(issue.id),
             issueLists = issue.getLists(),
-            listLabels = issueLists.map((listIssue) => {
-              return listIssue.label;
-            });
+            listLabels = issueLists.map( listIssue => listIssue.label );
 
       // Add to new lists issues if it doesn't already exist
       if (!issueTo) {
@@ -102,10 +90,9 @@
       }
 
       if (listTo.type === 'done' && listFrom.type !== 'backlog') {
-        for (let i = 0, listsLength = issueLists.length; i < listsLength; i++) {
-          const list = issueLists[i];
+        issueLists.forEach((list) => {
           list.removeIssue(issue);
-        }
+        })
         issue.removeLabels(listLabels);
       } else {
         listFrom.removeIssue(issue);

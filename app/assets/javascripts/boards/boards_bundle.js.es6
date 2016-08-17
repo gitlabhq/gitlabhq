@@ -31,29 +31,23 @@ $(() => {
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase
     },
-    init () {
-      gl.issueBoards.BoardsStore.create();
-    },
+    init: Store.create.bind(Store),
     created () {
-      this.loading = true;
       gl.boardService = new BoardService(this.endpoint);
     },
     ready () {
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then((resp) => {
-          const boards = resp.json();
-
-          for (let i = 0, boardsLength = boards.length; i < boardsLength; i++) {
-            const board = boards[i],
-                  list = Store.addList(board);
+        .then((resp) => {          
+          resp.json().forEach((board) => {
+            const list = Store.addList(board);
 
             if (list.type === 'done') {
               list.position = Infinity;
             } else if (list.type === 'backlog') {
               list.position = -1;
             }
-          }
+          });
 
           Store.addBlankState();
           this.loading = false;

@@ -29,7 +29,9 @@ class ListIssue {
   }
 
   removeLabel (removeLabel) {
-    this.labels = this.labels.filter( label => removeLabel.title !== label.title );
+    if (removeLabel) {
+      this.labels = this.labels.filter( label => removeLabel.title !== label.title );
+    }
   }
 
   removeLabels (labels) {
