@@ -101,6 +101,7 @@ v 8.11.0 (unreleased)
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace
+  - Add all builds into stage/job dropdowns on builds page
   - Change requests_profiles resource constraint to catch virtually any file
   - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
