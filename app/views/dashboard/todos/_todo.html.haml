@@ -1,6 +1,7 @@
 %li{class: "todo todo-#{todo.done? ? 'done' : 'pending'}", id: dom_id(todo), data:{url: todo_target_path(todo)} }
+  = author_avatar(todo, size: 40)
+
   .todo-item.todo-block
-    = image_tag avatar_icon(todo.author_email, 40), class: 'avatar s40', alt:''
     .todo-title.title
       - unless todo.build_failed?
         = todo_target_state_pill(todo)
@@ -19,13 +20,13 @@
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
 
-    - if todo.pending?
-      .todo-actions.pull-right
-        = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading done-todo' do
-          Done
-          = icon('spinner spin')
-
     .todo-body
       .todo-note
         .md
           = event_note(todo.body, project: todo.project)
+
+  - if todo.pending?
+    .todo-actions
+      = link_to [:dashboard, todo], method: :delete, class: 'btn btn-loading done-todo' do
+        Done
+        = icon('spinner spin')

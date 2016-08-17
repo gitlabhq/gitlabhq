@@ -5,6 +5,7 @@
         Protect a branch
     .panel-body
       .form-horizontal
+        = form_errors(@protected_branch)
         .form-group
           = f.label :name, class: 'col-md-2 text-right' do
             Branch:
@@ -18,19 +19,19 @@
               %code production/*
               are supported
         .form-group
-          %label.col-md-2.text-right{ for: 'merge_access_level_attributes' }
+          %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
             Allowed to merge:
           .col-md-10
             = dropdown_tag('Select',
                            options: { toggle_class: 'js-allowed-to-merge wide',
-                           data: { field_name: 'protected_branch[merge_access_level_attributes][access_level]', input_id: 'merge_access_level_attributes' }})
+                           data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes' }})
         .form-group
-          %label.col-md-2.text-right{ for: 'push_access_level_attributes' }
+          %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
             Allowed to push:
           .col-md-10
             = dropdown_tag('Select',
                            options: { toggle_class: 'js-allowed-to-push wide',
-                           data: { field_name: 'protected_branch[push_access_level_attributes][access_level]', input_id: 'push_access_level_attributes' }})
+                           data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
 
     .panel-footer
       = f.submit 'Protect', class: 'btn-create btn', disabled: true

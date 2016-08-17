@@ -9,6 +9,7 @@
       }
       this.onClick = bind(this.onClick, this);
       this.dropdown = opts.dropdown, this.data = opts.data, this.pattern = opts.pattern, this.wrapper = opts.wrapper, this.editor = opts.editor, this.fileEndpoint = opts.fileEndpoint, this.$input = (ref = opts.$input) != null ? ref : $('#file_name');
+      this.dropdownIcon = $('.fa-chevron-down', this.dropdown);
       this.buildDropdown();
       this.bindEvents();
       this.onFilenameUpdate();
@@ -60,11 +61,26 @@
       return this.requestFile(item);
     };
 
-    TemplateSelector.prototype.requestFile = function(item) {};
+    TemplateSelector.prototype.requestFile = function(item) {
+      // This `requestFile` method is an abstract method that should
+      // be added by all subclasses.
+    };
 
-    TemplateSelector.prototype.requestFileSuccess = function(file) {
+    TemplateSelector.prototype.requestFileSuccess = function(file, skipFocus) {
       this.editor.setValue(file.content, 1);
-      return this.editor.focus();
+      if (!skipFocus) this.editor.focus();
+    };
+
+    TemplateSelector.prototype.startLoadingSpinner = function() {
+      this.dropdownIcon
+        .addClass('fa-spinner fa-spin')
+        .removeClass('fa-chevron-down');
+    };
+
+    TemplateSelector.prototype.stopLoadingSpinner = function() {
+      this.dropdownIcon
+        .addClass('fa-chevron-down')
+        .removeClass('fa-spinner fa-spin');
     };
 
     return TemplateSelector;
