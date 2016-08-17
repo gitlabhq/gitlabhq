@@ -22,11 +22,15 @@
       showButton: function () {
         if (this.discussion) {
           return this.discussion.isResolvable();
+        } else {
+          return undefined;
         }
       },
       allResolved: function () {
         if (this.discussion) {
           return this.discussion.isResolved();
+        } else {
+          return undefined;
         }
       },
       buttonText: function () {
@@ -39,6 +43,8 @@
       loading: function () {
         if (this.discussion) {
           return this.discussion.loading;
+        } else {
+          return undefined;
         }
       }
     },

@@ -16,6 +16,8 @@
       allResolved: function () {
         if (this.discussion) {
           return this.unresolvedDiscussionCount === 0;
+        } else {
+          return true;
         }
       },
       showButton: function () {
