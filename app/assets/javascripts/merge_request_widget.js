@@ -28,7 +28,7 @@
 
     MergeRequestWidget.prototype.addEventListeners = function() {
       var allowedPages;
-      allowedPages = ['show', 'commits', 'builds', 'changes'];
+      allowedPages = ['show', 'commits', 'builds', 'pipelines', 'changes'];
       return $(document).on('page:change.merge_request', (function(_this) {
         return function() {
           var page;

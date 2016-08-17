@@ -23,7 +23,8 @@
       preparing: "{{status}} build",
       normal: "Build {{status}}"
     },
-    builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
+    builds_path: "#{builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}",
+    pipelines_path: "#{pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)}"
   };
 
   if (typeof merge_request_widget !== 'undefined') {
