@@ -3,8 +3,14 @@ module Gitlab
     class CommandDefinition
       attr_accessor :name, :aliases, :description, :params, :condition_block, :action_block
 
-      def initialize(name)
+      def initialize(name, attributes = {})
         @name = name
+
+        @aliases          =  attributes[:aliases] || []
+        @description      =  attributes[:description] || ''
+        @params           =  attributes[:params] || []
+        @condition_block  =  attributes[:condition_block]
+        @action_block     =  attributes[:action_block]
       end
 
       def all_names

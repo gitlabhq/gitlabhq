@@ -28,7 +28,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
         issuable = project.public_send(issuable_type.to_s.pluralize).first
 
-        expect(issuable.description).to eq "bug description\n"
+        expect(issuable.description).to eq "bug description"
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone
         expect(page).to have_content 'bug 345'
@@ -57,7 +57,7 @@ shared_examples 'issuable record that supports slash commands in its description
         issuable.reload
         note = issuable.notes.user.first
 
-        expect(note.note).to eq "Awesome!\n"
+        expect(note.note).to eq "Awesome!"
         expect(issuable.assignee).to eq assignee
         expect(issuable.labels).to eq [label_bug]
         expect(issuable.milestone).to eq milestone

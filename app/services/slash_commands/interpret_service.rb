@@ -4,8 +4,8 @@ module SlashCommands
 
     attr_reader :issuable
 
-    # Takes a text and interpret the commands that are extracted from it.
-    # Returns a hash of changes to be applied to a record.
+    # Takes a text and interprets the commands that are extracted from it.
+    # Returns the content without commands, and hash of changes to be applied to a record.
     def execute(content, issuable)
       @issuable = issuable
       @updates = {}

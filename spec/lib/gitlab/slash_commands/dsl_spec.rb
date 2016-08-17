@@ -10,11 +10,6 @@ describe Gitlab::SlashCommands::Dsl do
         "Hello World!"
       end
 
-      desc { "A command with #{something}" }
-      command :returning do
-        42
-      end
-
       params 'The first argument'
       command :one_arg, :once, :first do |arg1|
         arg1
@@ -44,43 +39,8 @@ describe Gitlab::SlashCommands::Dsl do
   end
 
   describe '.command_definitions' do
-    let(:base_expected) do
-      [
-        {
-          name: :no_args, aliases: [:none],
-          description: 'A command with no args', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc)
-        },
-        {
-          name: :returning, aliases: [],
-          description: 'A command returning a value', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc)
-        },
-        {
-          name: :one_arg, aliases: [:once, :first],
-          description: '', params: ['The first argument'],
-          condition_block: nil, action_block: a_kind_of(Proc)
-        },
-        {
-          name: :two_args, aliases: [],
-          description: '', params: ['The first argument', 'The second argument'],
-          condition_block: nil, action_block: a_kind_of(Proc)
-        },
-        {
-          name: :cc, aliases: [],
-          description: '', params: [],
-          condition_block: nil, action_block: nil
-        },
-        {
-          name: :wildcard, aliases: [],
-          description: '', params: [],
-          condition_block: nil, action_block: a_kind_of(Proc)
-        }
-      ]
-    end
-
     it 'returns an array with commands definitions' do
-      no_args_def, returning_def, one_arg_def, two_args_def, cc_def, cond_action_def, wildcard_def = DummyClass.command_definitions
+      no_args_def, one_arg_def, two_args_def, cc_def, cond_action_def, wildcard_def = DummyClass.command_definitions
 
       expect(no_args_def.name).to eq(:no_args)
       expect(no_args_def.aliases).to eq([:none])
@@ -89,14 +49,6 @@ describe Gitlab::SlashCommands::Dsl do
       expect(no_args_def.condition_block).to be_nil
       expect(no_args_def.action_block).to be_a_kind_of(Proc)
 
-      expect(returning_def.name).to eq(:returning)
-      expect(returning_def.aliases).to eq([])
-      expect(returning_def.description).to be_a_kind_of(Proc)
-      expect(returning_def.to_h(something: "a block description")[:description]).to eq('A command with a block description')
-      expect(returning_def.params).to eq([])
-      expect(returning_def.condition_block).to be_nil
-      expect(returning_def.action_block).to be_a_kind_of(Proc)
-
       expect(one_arg_def.name).to eq(:one_arg)
       expect(one_arg_def.aliases).to eq([:once, :first])
       expect(one_arg_def.description).to eq('')
@@ -104,12 +56,26 @@ describe Gitlab::SlashCommands::Dsl do
       expect(one_arg_def.condition_block).to be_nil
       expect(one_arg_def.action_block).to be_a_kind_of(Proc)
 
+      expect(two_args_def.name).to eq(:two_args)
+      expect(two_args_def.aliases).to eq([])
+      expect(two_args_def.to_h(noteable: "issue")[:description]).to eq('A dynamic description for ISSUE')
+      expect(two_args_def.params).to eq(['The first argument', 'The second argument'])
+      expect(two_args_def.condition_block).to be_nil
+      expect(two_args_def.action_block).to be_a_kind_of(Proc)
+
       expect(cc_def.name).to eq(:cc)
       expect(cc_def.aliases).to eq([])
       expect(cc_def.description).to eq('')
       expect(cc_def.params).to eq([])
       expect(cc_def.condition_block).to be_nil
       expect(cc_def.action_block).to be_nil
+
+      expect(cond_action_def.name).to eq(:cond_action)
+      expect(cond_action_def.aliases).to eq([])
+      expect(cond_action_def.description).to eq('')
+      expect(cond_action_def.params).to eq([])
+      expect(cond_action_def.condition_block).to be_a_kind_of(Proc)
+      expect(cond_action_def.action_block).to be_a_kind_of(Proc)
 
       expect(wildcard_def.name).to eq(:wildcard)
       expect(wildcard_def.aliases).to eq([])

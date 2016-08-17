@@ -29,7 +29,7 @@ module Projects
 
       opts = {
         project: project,
-        noteable: noteable,
+        issuable: noteable,
         current_user: current_user
       }
       SlashCommands::InterpretService.command_definitions.map do |definition|

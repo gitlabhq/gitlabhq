@@ -5,12 +5,15 @@ module Issues
       @api = params.delete(:api)
 
       @issue = project.issues.new
-      @issue.spam = spam_service.check(@api)
 
       create(@issue)
     end
 
-    def handle_creation(issuable)
+    def before_create(issuable)
+      issuable.spam = spam_service.check(@api)
+    end
+
+    def after_create(issuable)
       event_service.open_issue(issuable, current_user)
       notification_service.new_issue(issuable, current_user)
       todo_service.new_issue(issuable, current_user)

@@ -4,7 +4,8 @@ Slash commands are textual shortcuts for common actions on issues or merge
 requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 You can enter these commands while creating a new issue or merge request, and
 in comments. Each command should be on a separate line in order to be properly
-detected and executed.
+detected and executed. The commands are removed from the issue, merge request or
+comment body before it is saved and will not be visible as such to anyone else.
 
 Here is a list of all of the available commands and descriptions about what they
 do.

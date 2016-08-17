@@ -80,13 +80,16 @@ class IssuableBaseService < BaseService
     params[key] = project.labels.where(id: params[key]).pluck(:id)
   end
 
-  def process_label_ids(attributes, base_label_ids: [], merge_all: false)
+  def process_label_ids(attributes, existing_label_ids: [])
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
 
-    new_label_ids = base_label_ids
-    new_label_ids = label_ids if label_ids && (merge_all || (add_label_ids.blank? && remove_label_ids.blank?))
+    new_label_ids = existing_label_ids
+
+    override_existing = new_label_ids.empty? || (add_label_ids.blank? && remove_label_ids.blank?)
+    new_label_ids = label_ids if label_ids && override_existing
+
     new_label_ids |= add_label_ids if add_label_ids
     new_label_ids -= remove_label_ids if remove_label_ids
 
@@ -103,14 +106,8 @@ class IssuableBaseService < BaseService
     params.merge!(command_params)
   end
 
-  def create_issuable(issuable, attributes)
+  def create_issuable(issuable, attributes, label_ids:)
     issuable.with_transaction_returning_status do
-      attributes.delete(:state_event)
-      params[:author] ||= current_user
-      label_ids = process_label_ids(attributes, merge_all: true)
-
-      issuable.assign_attributes(attributes)
-
       if issuable.save
         issuable.update_attributes(label_ids: label_ids)
       end
@@ -121,8 +118,16 @@ class IssuableBaseService < BaseService
     merge_slash_commands_into_params!(issuable)
     filter_params
 
-    if params.present? && create_issuable(issuable, params)
-      handle_creation(issuable)
+    params.delete(:state_event)
+    params[:author] ||= current_user
+    label_ids = process_label_ids(params)
+
+    issuable.assign_attributes(params)
+
+    before_create(issuable)
+
+    if params.present? && create_issuable(issuable, params, label_ids: label_ids)
+      after_create(issuable)
       issuable.create_cross_references!(current_user)
       execute_hooks(issuable)
     end
@@ -130,10 +135,16 @@ class IssuableBaseService < BaseService
     issuable
   end
 
+  def before_create(issuable)
+    # To be overridden by subclasses
+  end
+
+  def after_create(issuable)
+    # To be overridden by subclasses
+  end
+
   def update_issuable(issuable, attributes)
     issuable.with_transaction_returning_status do
-      attributes[:label_ids] = process_label_ids(attributes, base_label_ids: issuable.label_ids)
-
       issuable.update(attributes.merge(updated_by: current_user))
     end
   end
@@ -144,6 +155,8 @@ class IssuableBaseService < BaseService
     change_todo(issuable)
     filter_params
     old_labels = issuable.labels.to_a
+
+    params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
 
     if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache

@@ -16,7 +16,7 @@ module MergeRequests
       create(merge_request)
     end
 
-    def handle_creation(issuable)
+    def after_create(issuable)
       event_service.open_mr(issuable, current_user)
       notification_service.new_merge_request(issuable, current_user)
       todo_service.new_merge_request(issuable, current_user)

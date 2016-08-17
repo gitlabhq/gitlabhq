@@ -17,7 +17,7 @@ module Gitlab
         # Allows to give a description to the next slash command.
         # This description is shown in the autocomplete menu.
         # It accepts a block that will be evaluated with the context given to
-        # `.command_definitions` or `.command_names`.
+        # `CommandDefintion#to_h`.
         #
         # Example:
         #
@@ -47,7 +47,7 @@ module Gitlab
         # Allows to define conditions that must be met in order for the command
         # to be returned by `.command_names` & `.command_definitions`.
         # It accepts a block that will be evaluated with the context given to
-        # `.command_definitions`, `.command_names`, and the actual command method.
+        # `CommandDefintion#to_h`.
         #
         # Example:
         #
@@ -73,12 +73,14 @@ module Gitlab
         def command(*command_names, &block)
           name, *aliases = command_names
 
-          definition = CommandDefinition.new(name)
-          definition.aliases         =  aliases
-          definition.description     =  @description || ''
-          definition.params          =  @params || []
-          definition.condition_block =  @condition_block
-          definition.action_block    =  block
+          definition = CommandDefinition.new(
+            name,
+            aliases:          aliases,
+            description:      @description,
+            params:           @params,
+            condition_block:  @condition_block,
+            action_block:     block
+          )
 
           self.command_definitions << definition
 
