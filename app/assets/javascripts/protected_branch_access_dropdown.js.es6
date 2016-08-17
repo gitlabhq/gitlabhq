@@ -7,6 +7,7 @@
       const self = this;
 
       this.$dropdown = $dropdown;
+      this.$wrap = this.$dropdown.parents().eq(1); // TODO: Find a better way to get the wrap element
       this.usersPath = '/autocomplete/users.json';
       this.inputCount = 0;
       this.defaultLabel = this.$dropdown.data('defaultLabel');

@@ -5,11 +5,23 @@
 
   class allowedToPushDropdown extends gl.ProtectedBranchAccessDropdown {
     fieldName(selectedItem) {
-      // Role by default
-      let fieldName = `protected_branch[push_access_levels_attributes][${this.inputCount}][access_level]`;
+      let fieldName = '';
+      let typeToName = {
+        role: 'access_level',
+        user: 'user_id',
+      };
+      let $input = this.$wrap.find(`input[name$="[${typeToName[selectedItem.type]}]"][value="${selectedItem.id}"]`);
 
-      if (selectedItem.type === 'user') {
-        fieldName = `protected_branch[push_access_levels_attributes][${this.inputCount}][user_id]`;
+      if ($input.length) {
+        // If input exists return actual name
+        fieldName = $input.attr('name');
+      } else {
+        // If not suggest a name
+        fieldName = `protected_branch[push_access_levels_attributes][${this.inputCount}][access_level]`; // Role by default
+
+        if (selectedItem.type === 'user') {
+          fieldName = `protected_branch[push_access_levels_attributes][${this.inputCount}][user_id]`;
+        }
       }
 
       return fieldName;
@@ -18,10 +30,7 @@
     getActiveIds() {
       let selected = [];
 
-      // Todo: Find a better way to get the wrap element of each dropdown
-      let $wrap = this.$dropdown.parents().eq(1); // Please, don't judge me
-      
-      $wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]')
+      this.$wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]')
                         .map((i, el) => {
                           const $el = $(el);
                           selected.push({
