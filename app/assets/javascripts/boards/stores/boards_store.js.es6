@@ -73,7 +73,7 @@
     },
     moveList (listFrom, orderLists) {
       orderLists.forEach((id, i) => {
-        const list = this.findList('id', id);
+        const list = this.findList('id', parseInt(id));
 
         list.position = i;
       });

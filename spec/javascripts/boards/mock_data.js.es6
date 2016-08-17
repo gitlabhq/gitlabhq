@@ -46,7 +46,6 @@ const BoardsMockData = {
 
 Vue.http.interceptors.push((request, next) => {
   const body = BoardsMockData[request.method][request.url];
-  console.log(request.url);
 
   next(request.respondWith(JSON.stringify(body), {
     status: 200
