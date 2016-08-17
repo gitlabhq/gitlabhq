@@ -31,6 +31,8 @@
       note: function () {
         if (this.discussion) {
           return this.discussion.getNote(this.noteId);
+        } else {
+          return undefined;
         }
       },
       buttonText: function () {
@@ -43,6 +45,8 @@
       isResolved: function () {
         if (this.note) {
           return this.note.resolved;
+        } else {
+          return false;
         }
       },
       resolvedByName: function () {
