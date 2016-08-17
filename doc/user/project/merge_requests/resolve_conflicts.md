@@ -1,5 +1,7 @@
 # Merge conflict resolution
 
+> [Introduced][ce-5479] in GitLab 8.11.
+
 When a merge request has conflicts, GitLab may provide the option to resolve
 those conflicts in the GitLab UI. (See
 [conflicts available for resolution](#conflicts-available-for-resolution) for
@@ -35,3 +37,5 @@ Additionally, GitLab does not detect conflicts in renames away from a path. For
 example, this will not create a conflict: on branch `a`, doing `git mv file1
 file2`; on branch `b`, doing `git mv file1 file3`. Instead, both files will be
 present in the branch after the merge request is merged.
+
+[ce-5479]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5479
