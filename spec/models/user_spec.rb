@@ -957,6 +957,53 @@ describe User, models: true do
     end
   end
 
+  describe '#projects_where_can_admin_issues' do
+    let(:user) { create(:user) }
+
+    it 'includes projects for which the user access level is above or equal to reporter' do
+      create(:project)
+      reporter_project = create(:project)
+      developer_project = create(:project)
+      master_project = create(:project)
+
+      reporter_project.team << [user, :reporter]
+      developer_project.team << [user, :developer]
+      master_project.team << [user, :master]
+
+      expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
+      expect(user.can?(:admin_issue, master_project)).to eq(true)
+      expect(user.can?(:admin_issue, developer_project)).to eq(true)
+      expect(user.can?(:admin_issue, reporter_project)).to eq(true)
+    end
+
+    it 'does not include for which the user access level is below reporter' do
+      project = create(:project)
+      guest_project = create(:project)
+
+      guest_project.team << [user, :guest]
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, guest_project)).to eq(false)
+      expect(user.can?(:admin_issue, project)).to eq(false)
+    end
+
+    it 'does not include archived projects' do
+      project = create(:project)
+      project.update_attributes(archived: true)
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, project)).to eq(false)
+    end
+
+    it 'does not include projects for which issues are disabled' do
+      project = create(:project)
+      project.update_attributes(issues_enabled: false)
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, project)).to eq(false)
+    end
+  end
+
   describe '#ci_authorized_runners' do
     let(:user) { create(:user) }
     let(:runner) { create(:ci_runner) }

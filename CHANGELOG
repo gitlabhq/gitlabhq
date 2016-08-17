@@ -97,6 +97,7 @@ v 8.11.0 (unreleased)
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
   - Make error pages responsive (Takuya Noguchi)
+  - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Change requests_profiles resource constraint to catch virtually any file
   - Bump gitlab_git to lazy load compare commits
@@ -146,6 +147,9 @@ v 8.10.3
   - Fix importer for GitHub Pull Requests when a branch was removed. !5573
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
   - Trim extra displayed carriage returns in diffs and files with CRLFs. !5588
+  - Fix label already exist error message in the right sidebar.
+
+v 8.10.3 (unreleased)
 
 v 8.10.2
   - User can now search branches by name. !5144

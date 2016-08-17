@@ -70,13 +70,15 @@
               name: newLabelField.val(),
               color: newColorField.val()
             }, function(label) {
-              var errors;
               $newLabelCreateButton.enable();
               if (label.message != null) {
-                errors = _.map(label.message, function(value, key) {
-                  return key + " " + value[0];
-                });
-                return $newLabelError.html(errors.join("<br/>")).show();
+                var errorText = label.message;
+                if (_.isObject(label.message)) {
+                  errorText = _.map(label.message, function(value, key) {
+                    return key + " " + value[0];
+                  }).join('<br/>');
+                }
+                return $newLabelError.html(errorText).show();
               } else {
                 return $('.dropdown-menu-back', $dropdown.parent()).trigger('click');
               }
