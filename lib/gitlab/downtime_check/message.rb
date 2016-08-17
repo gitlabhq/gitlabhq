@@ -1,7 +1,7 @@
 module Gitlab
   class DowntimeCheck
     class Message
-      attr_reader :path, :offline, :reason
+      attr_reader :path, :offline
 
       OFFLINE = "\e[31moffline\e[0m"
       ONLINE = "\e[32monline\e[0m"
@@ -19,9 +19,20 @@ module Gitlab
         label = offline ? OFFLINE : ONLINE
 
         message = "[#{label}]: #{path}"
-        message += ": #{reason}" if reason
+
+        if reason?
+          message += ":\n\n#{reason}\n\n"
+        end
 
         message
+      end
+
+      def reason?
+        @reason.present?
+      end
+
+      def reason
+        @reason.strip.lines.map(&:strip).join("\n")
       end
     end
   end
