@@ -41,7 +41,7 @@ feature 'Pipelines for Merge Requests', feature: true, js: true do
 
     scenario 'user visits merge request page' do
       page.within('.merge-request-tabs') do
-        expect(page).not_to have_link('Pipelines')
+        expect(page).to have_no_link('Pipelines')
       end
     end
   end
