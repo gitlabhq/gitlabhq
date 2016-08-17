@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe PagesService, services: true do
   let(:build) { create(:ci_build) }
-  let(:data) { Gitlab::BuildDataBuilder.build(build) }
+  let(:data) { Gitlab::DataBuilder::Build.build(build) }
   let(:service) { PagesService.new(data) }
 
   before do
