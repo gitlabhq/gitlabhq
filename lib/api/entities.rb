@@ -503,7 +503,7 @@ module API
     end
 
     class Pipeline < Grape::Entity
-      expose :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
 
       expose :user, with: Entities::UserBasic
       expose :created_at, :updated_at, :started_at, :finished_at, :committed_at

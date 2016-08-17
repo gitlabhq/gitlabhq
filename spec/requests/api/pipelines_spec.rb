@@ -12,9 +12,7 @@ describe API::API, api: true do
                                ref: project.default_branch)
   end
 
-  before do
-    project.team << [user, :master]
-  end
+  before { project.team << [user, :master] }
 
   describe 'GET /projects/:id/pipelines ' do
     it_behaves_like 'a paginated resources' do
@@ -28,6 +26,7 @@ describe API::API, api: true do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
+        expect(json_response.first['id']).to eq pipeline.id
       end
     end
 
@@ -36,6 +35,8 @@ describe API::API, api: true do
         get api("/projects/#{project.id}/pipelines", non_member)
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response).not_to be_an Array
       end
     end
   end
@@ -53,6 +54,8 @@ describe API::API, api: true do
         get api("/projects/#{project.id}/pipelines/123456", user)
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Not found'
+        expect(json_response['id']).to be nil
       end
     end
 
@@ -61,6 +64,8 @@ describe API::API, api: true do
         get api("/projects/#{project.id}/pipelines/#{pipeline.id}", non_member)
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response['id']).to be nil
       end
     end
   end
@@ -80,6 +85,7 @@ describe API::API, api: true do
         end.to change { pipeline.builds.count }.from(1).to(2)
 
         expect(response).to have_http_status(201)
+        expect(build.reload.retried?).to be true
       end
     end
 
@@ -88,6 +94,8 @@ describe API::API, api: true do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/retry", non_member)
 
         expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq '404 Project Not Found'
+        expect(json_response['id']).to be nil
       end
     end
   end
@@ -118,6 +126,7 @@ describe API::API, api: true do
         post api("/projects/#{project.id}/pipelines/#{pipeline.id}/cancel", reporter)
 
         expect(response).to have_http_status(403)
+        expect(pipeline.reload.status).to eq('pending')
       end
     end
   end
