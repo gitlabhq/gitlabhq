@@ -18,11 +18,11 @@ module SlashCommands
 
       content, commands = extractor.extract_commands(content, opts)
 
-      commands.each do |name, *args|
+      commands.each do |name, args|
         definition = self.class.command_definitions_by_name[name.to_sym]
         next unless definition
 
-        definition.execute(self, opts, *args)
+        definition.execute(self, opts, args)
       end
 
       [content, @updates]
@@ -76,7 +76,6 @@ module SlashCommands
     command :assign do |assignee_param|
       user = extract_references(assignee_param, :user).first
       user ||= User.find_by(username: assignee_param)
-      user ||= User.find_by(name: assignee_param)
 
       @updates[:assignee_id] = user.id if user
     end

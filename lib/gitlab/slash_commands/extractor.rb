@@ -50,15 +50,6 @@ module Gitlab
       end
 
       private
-
-      def command_names(opts)
-        command_definitions.flat_map do |command|
-          next if command.noop?
-
-          command.all_names
-        end.compact
-      end
-
       # Builds a regular expression to match known commands.
       # First match group captures the command name and
       # second match group captures its arguments.
@@ -116,6 +107,14 @@ module Gitlab
               (?:\n|$)
             )
         }mx
+      end
+
+      def command_names(opts)
+        command_definitions.flat_map do |command|
+          next if command.noop?
+
+          command.all_names
+        end.compact
       end
     end
   end

@@ -193,9 +193,7 @@ class IssuableBaseService < BaseService
       todo_service.mark_todo(issuable, current_user)
     when 'done'
       todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
-      if todo
-        todo_service.mark_todos_as_done([todo], current_user)
-      end
+      todo_service.mark_todos_as_done([todo], current_user) if todo
     end
   end
 

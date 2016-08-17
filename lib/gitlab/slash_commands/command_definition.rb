@@ -6,11 +6,11 @@ module Gitlab
       def initialize(name, attributes = {})
         @name = name
 
-        @aliases          =  attributes[:aliases] || []
-        @description      =  attributes[:description] || ''
-        @params           =  attributes[:params] || []
-        @condition_block  =  attributes[:condition_block]
-        @action_block     =  attributes[:action_block]
+        @aliases         = attributes[:aliases] || []
+        @description     = attributes[:description] || ''
+        @params          = attributes[:params] || []
+        @condition_block = attributes[:condition_block]
+        @action_block    = attributes[:action_block]
       end
 
       def all_names
@@ -28,13 +28,13 @@ module Gitlab
         context.instance_exec(&condition_block)
       end
 
-      def execute(context, opts, *args)
+      def execute(context, opts, args)
         return if noop? || !available?(opts)
 
         block_arity = action_block.arity
-        return unless block_arity == -1 || block_arity == args.size
+        return unless (args.present? && block_arity == 1) || (args.blank? && block_arity <= 0)
 
-        context.instance_exec(*args, &action_block)
+        context.instance_exec(args, &action_block)
       end
 
       def to_h(opts)
