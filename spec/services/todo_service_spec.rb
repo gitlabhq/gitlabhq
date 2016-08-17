@@ -225,8 +225,8 @@ describe TodoService, services: true do
       end
     end
 
-    describe '#mark_todos_as_done_by_id' do
-      it_behaves_like 'marking todos as done', :mark_todos_as_done_by_id do
+    describe '#mark_todos_as_done_by_ids' do
+      it_behaves_like 'marking todos as done', :mark_todos_as_done_by_ids do
         let(:collection) { [first_todo, second_todo].map(&:id) }
       end
     end
