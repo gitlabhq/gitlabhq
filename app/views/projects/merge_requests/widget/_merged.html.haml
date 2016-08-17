@@ -6,7 +6,7 @@
       - if @merge_request.merge_event
         by #{link_to_member(@project, @merge_request.merge_event.author, avatar: true)}
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
-    - if !@merge_request.source_branch_exists? || (params[:delete_source] == 'true')
+    - if !@merge_request.source_branch_exists? || params[:deleted_source_branch]
       %p
         The changes were merged into
         #{link_to @merge_request.target_branch, namespace_project_commits_path(@project.namespace, @project, @merge_request.target_branch), class: "label-branch"}.

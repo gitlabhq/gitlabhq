@@ -783,4 +783,56 @@ describe MergeRequest, models: true do
       end
     end
   end
+
+  describe '#conflicts_can_be_resolved_in_ui?' do
+    def create_merge_request(source_branch)
+      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
+        mr.mark_as_unmergeable
+      end
+    end
+
+    it 'returns a falsey value when the MR can be merged without conflicts' do
+      merge_request = create_merge_request('master')
+      merge_request.mark_as_mergeable
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the MR does not support new diff notes' do
+      merge_request = create_merge_request('conflict-resolvable')
+      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a large file' do
+      merge_request = create_merge_request('conflict-too-large')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a binary file' do
+      merge_request = create_merge_request('conflict-binary-file')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file with ambiguous conflict markers' do
+      merge_request = create_merge_request('conflict-contains-conflict-markers')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
+      merge_request = create_merge_request('conflict-missing-side')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a truthy value when the conflicts are resolvable in the UI' do
+      merge_request = create_merge_request('conflict-resolvable')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
+    end
+  end
 end

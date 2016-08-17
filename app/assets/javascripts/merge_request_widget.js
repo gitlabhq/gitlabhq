@@ -53,7 +53,7 @@
           return function(data) {
             var callback, urlSuffix;
             if (data.state === "merged") {
-              urlSuffix = deleteSourceBranch ? '?delete_source=true' : '';
+              urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
               return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
