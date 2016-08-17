@@ -28,10 +28,6 @@
         onSelect: this.onSelectCallback
       });
 
-      // Select default
-      $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
-      $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
-
       // Protected branch dropdown
       new gl.ProtectedBranchDropdown({
         $dropdown: this.$wrap.find('.js-protected-branch-select'),
@@ -39,16 +35,13 @@
       });
     }
 
-    // This will run after clicked callback
+    // Enable submit button after selecting an option
     onSelect() {
-
-      // Enable submit button
       const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
-      const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_levels_attributes][][access_level]"]');
-      const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_levels_attributes][][access_level]"]');
-
-      console.log('onSelect');
-      if ($branchInput.val() && $allowedToMergeInput.val() && $allowedToPushInput.val()){
+      const $allowedToMergeInputs = this.$wrap.find('input[name^="protected_branch[merge_access_levels_attributes]"]');
+      const $allowedToPushInputs = this.$wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]');
+      console.log('x');
+      if ($branchInput.length && $allowedToMergeInputs.length && $allowedToPushInputs.length){
         console.log('onSelect');
         this.$form.find('input[type="submit"]').removeAttr('disabled');
       }
