@@ -319,5 +319,10 @@ describe Issues::UpdateService, services: true do
         end
       end
     end
+
+    context 'updating mentions' do
+      let(:mentionable) { issue }
+      include_examples 'updating mentions', Issues::UpdateService
+    end
   end
 end

@@ -16,7 +16,7 @@ module MergeRequests
       update(merge_request)
     end
 
-    def handle_changes(merge_request, old_labels: [])
+    def handle_changes(merge_request, old_labels: [], old_mentioned_users: [])
       if has_changes?(merge_request, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)
       end
@@ -52,6 +52,15 @@ module MergeRequests
         notification_service.relabeled_merge_request(
           merge_request,
           added_labels,
+          current_user
+        )
+      end
+
+      added_mentions = merge_request.mentioned_users - old_mentioned_users
+      if added_mentions.present?
+        notification_service.new_mentions_in_merge_request(
+          merge_request,
+          added_mentions,
           current_user
         )
       end

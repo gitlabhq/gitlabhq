@@ -34,6 +34,7 @@ v 8.11.0 (unreleased)
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
+  - Send notification emails to users newly mentioned in issue and MR edits !5800
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
   - Add experimental Redis Sentinel support !1877
