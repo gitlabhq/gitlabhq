@@ -39,14 +39,14 @@ module CiStatusHelper
       when 'running'
         'icon_status_running'
       when 'play'
-        'icon_status_warning'
+        'play'
       when 'created'
         'icon_status_pending'
       else
         'icon_status_cancel'
       end
 
-    custom_icon(icon_name)
+    status == 'play' ? icon(icon_name + ' fw') : custom_icon(icon_name)
   end
 
   def render_commit_status(commit, tooltip_placement: 'auto left')

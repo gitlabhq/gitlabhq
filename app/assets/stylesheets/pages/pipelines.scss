@@ -298,6 +298,10 @@
     width: 150px;
     margin-bottom: 10px;
 
+    &.deployable {
+      background-color: $gray-light;
+    }
+
     .build-content {
       width: 130px;
       white-space: nowrap;
@@ -313,6 +317,10 @@
       position: relative;
       top: 2px;
       margin-right: 5px;
+    }
+
+    .fa {
+      font-size: 13px;
     }
 
     // Connect first build in each stage with right horizontal line

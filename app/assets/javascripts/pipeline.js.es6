@@ -1,8 +1,11 @@
 function toggleGraph() {
-  $('.pipeline-graph, .toggle-pipeline-btn').toggleClass('graph-collapsed');
+  const indexOfBtn = $('.toggle-pipeline-btn').index($(this));
 
-  const $btnText = $('.toggle-pipeline-btn .btn-text');
-  const graphCollapsed = $('.pipeline-graph').hasClass('graph-collapsed');
+  $($('.pipeline-graph')[indexOfBtn]).toggleClass('graph-collapsed');
+  $($('.toggle-pipeline-btn')[indexOfBtn]).toggleClass('graph-collapsed');
+
+  const $btnText = $($('.toggle-pipeline-btn .btn-text')[indexOfBtn]);
+  const graphCollapsed = $($('.pipeline-graph')[indexOfBtn]).hasClass('graph-collapsed');
 
   graphCollapsed ? $btnText.text('Expand') : $btnText.text('Hide')
 }

@@ -1,4 +1,4 @@
-%li.build
+%li.build{class: ("deployable" if subject.playable? && can?(current_user, :update_build, @project))}
   .build-content
     - if subject.playable? && can?(current_user, :update_build, @project)
       = link_to play_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: 'Play' do
@@ -11,4 +11,3 @@
     - else
       = render_status_with_link('build', subject.status)
       = ci_icon_for_status(subject.status)
-
