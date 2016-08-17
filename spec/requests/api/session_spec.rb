@@ -25,6 +25,7 @@ describe API::API, api: true  do
           post api('/session'), email: user.email, password: user.password
 
           expect(response).to have_http_status(401)
+          expect(response.body).to include('You have 2FA enabled.')
         end
       end
     end

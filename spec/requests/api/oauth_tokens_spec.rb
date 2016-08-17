@@ -11,6 +11,7 @@ describe API::API, api: true  do
     context 'when user has 2FA enabled' do
       it 'does not create an access token' do
         user = create(:user, :two_factor)
+
         request_oauth_token(user)
 
         expect(response).to have_http_status(401)
@@ -21,6 +22,7 @@ describe API::API, api: true  do
     context 'when user does not have 2FA enabled' do
       it 'creates an access token' do
         user = create(:user)
+
         request_oauth_token(user)
 
         expect(response).to have_http_status(200)
