@@ -456,6 +456,8 @@ class Repository
     expire_exists_cache
     expire_root_ref_cache
     expire_emptiness_caches
+
+    repository_event(:create_repository)
   end
 
   # Runs code just before a repository is deleted.
@@ -472,6 +474,8 @@ class Repository
     expire_root_ref_cache
     expire_emptiness_caches
     expire_exists_cache
+
+    repository_event(:remove_repository)
   end
 
   # Runs code just before the HEAD of a repository is changed.
@@ -479,6 +483,8 @@ class Repository
     # Cached divergent commit counts are based on repository head
     expire_branch_cache
     expire_root_ref_cache
+
+    repository_event(:change_default_branch)
   end
 
   # Runs code before pushing (= creating or removing) a tag.
@@ -486,12 +492,16 @@ class Repository
     expire_cache
     expire_tags_cache
     expire_tag_count_cache
+
+    repository_event(:push_tag)
   end
 
   # Runs code before removing a tag.
   def before_remove_tag
     expire_tags_cache
     expire_tag_count_cache
+
+    repository_event(:remove_tag)
   end
 
   def before_import
@@ -508,6 +518,8 @@ class Repository
   # Runs code after a new commit has been pushed.
   def after_push_commit(branch_name, revision)
     expire_cache(branch_name, revision)
+
+    repository_event(:push_commit, branch: branch_name)
   end
 
   # Runs code after a new branch has been created.
@@ -515,11 +527,15 @@ class Repository
     expire_branches_cache
     expire_has_visible_content_cache
     expire_branch_count_cache
+
+    repository_event(:push_branch)
   end
 
   # Runs code before removing an existing branch.
   def before_remove_branch
     expire_branches_cache
+
+    repository_event(:remove_branch)
   end
 
   # Runs code after an existing branch has been removed.
@@ -974,6 +990,14 @@ class Repository
     end
   end
 
+  def resolve_conflicts(user, branch, params)
+    commit_with_hooks(user, branch) do
+      committer = user_to_committer(user)
+
+      Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
+    end
+  end
+
   def check_revert_content(commit, base_branch)
     source_sha = find_branch(base_branch).target.sha
     args       = [commit.id, source_sha]
@@ -1268,5 +1292,9 @@ class Repository
 
   def keep_around_ref_name(sha)
     "refs/keep-around/#{sha}"
+  end
+
+  def repository_event(event, tags = {})
+    Gitlab::Metrics.add_event(event, { path: path_with_namespace }.merge(tags))
   end
 end

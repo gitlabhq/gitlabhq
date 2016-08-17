@@ -462,6 +462,13 @@ class User < ActiveRecord::Base
                     owned_groups.select(:id), namespace.id).joins(:namespace)
   end
 
+  # Returns projects which user can admin issues on (for example to move an issue to that project).
+  #
+  # This logic is duplicated from `Ability#project_abilities` into a SQL form.
+  def projects_where_can_admin_issues
+    authorized_projects(Gitlab::Access::REPORTER).non_archived.where.not(issues_enabled: false)
+  end
+
   def is_admin?
     admin
   end

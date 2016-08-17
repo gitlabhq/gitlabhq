@@ -45,6 +45,15 @@ describe Gitlab::Metrics::RackMiddleware do
 
       middleware.call(env)
     end
+
+    it 'tracks any raised exceptions' do
+      expect(app).to receive(:call).with(env).and_raise(RuntimeError)
+
+      expect_any_instance_of(Gitlab::Metrics::Transaction).
+        to receive(:add_event).with(:rails_exception)
+
+      expect { middleware.call(env) }.to raise_error(RuntimeError)
+    end
   end
 
   describe '#transaction_from_env' do

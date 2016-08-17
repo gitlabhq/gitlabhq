@@ -98,28 +98,31 @@ module CommitsHelper
   end
 
   def link_to_browse_code(project, commit)
-    if current_controller?(:projects, :commits)
-      if @repo.blob_at(commit.id, @path)
-        return link_to(
-          "Browse File",
-          namespace_project_blob_path(project.namespace, project,
-                                      tree_join(commit.id, @path)),
-          class: "btn btn-default"
-        )
-      elsif @path.present?
-        return link_to(
-          "Browse Directory",
-          namespace_project_tree_path(project.namespace, project,
-                                      tree_join(commit.id, @path)),
-          class: "btn btn-default"
-        )
-      end
+    if @path.blank?
+      return link_to(
+        "Browse Files",
+        namespace_project_tree_path(project.namespace, project, commit),
+        class: "btn btn-default"
+      )
     end
-    link_to(
-      "Browse Files",
-      namespace_project_tree_path(project.namespace, project, commit),
-      class: "btn btn-default"
-    )
+
+    return unless current_controller?(:projects, :commits)
+
+    if @repo.blob_at(commit.id, @path)
+      return link_to(
+        "Browse File",
+        namespace_project_blob_path(project.namespace, project,
+                                    tree_join(commit.id, @path)),
+        class: "btn btn-default"
+      )
+    elsif @path.present?
+      return link_to(
+        "Browse Directory",
+        namespace_project_tree_path(project.namespace, project,
+                                    tree_join(commit.id, @path)),
+        class: "btn btn-default"
+      )
+    end
   end
 
   def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)

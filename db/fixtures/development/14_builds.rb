@@ -26,22 +26,42 @@ class Gitlab::Seeder::Builds
       begin
         BUILDS.each { |opts| build_create!(pipeline, opts) }
         commit_status_create!(pipeline, name: 'jenkins', status: :success)
-
         print '.'
       rescue ActiveRecord::RecordInvalid
         print 'F'
+      ensure
+        pipeline.build_updated
       end
     end
   end
 
   def pipelines
-    commits = @project.repository.commits('master', limit: 5)
-    commits_sha = commits.map { |commit| commit.raw.id }
-    commits_sha.map do |sha|
-      @project.ensure_pipeline(sha, 'master')
-    end
+    master_pipelines + merge_request_pipelines
+  end
+
+  def master_pipelines
+    create_pipelines_for(@project, 'master')
   rescue
     []
+  end
+
+  def merge_request_pipelines
+    @project.merge_requests.last(5).map do |merge_request|
+      create_pipelines(merge_request.source_project, merge_request.source_branch, merge_request.commits.last(5))
+    end.flatten
+  rescue
+    []
+  end
+
+  def create_pipelines_for(project, ref)
+    commits = project.repository.commits(ref, limit: 5)
+    create_pipelines(project, ref, commits)
+  end
+
+  def create_pipelines(project, ref, commits)
+    commits.map do |commit|
+      project.pipelines.create(sha: commit.id, ref: ref)
+    end
   end
 
   def build_create!(pipeline, opts = {})

@@ -22,11 +22,11 @@ To use Akismet:
 
 2. Sign-in or create a new account.
 
-3. Click on "Show" to reveal the API key.
+3. Click on **Show** to reveal the API key.
 
 4. Go to Applications Settings on Admin Area (`admin/application_settings`)
 
-5. Check the `Enable Akismet` checkbox
+5. Check the **Enable Akismet** checkbox
 
 6. Fill in the API key from step 3.
 
@@ -44,13 +44,13 @@ filter whenever there is a false positive or false negative.
 
 When an entry is recognized as spam, it is rejected and added to the Spam Logs. 
 From here you can review if they are really spam. If one of them is not really
-spam, you can use the `Submit as ham` button to tell Akismet that it falsely 
+spam, you can use the **Submit as ham** button to tell Akismet that it falsely 
 recognized an entry as spam.
 
 ![Screenshot of Spam Logs](img/spam_log.png)
 
 If an entry that is actually spam was not recognized as such, you will be able
-to also submit this to Akismet. The `Submit as spam` button will only appear
+to also submit this to Akismet. The **Submit as spam** button will only appear
 to admin users.
 
 ![Screenshot of Issue](img/submit_issue.png)

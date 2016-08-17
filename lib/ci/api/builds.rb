@@ -20,8 +20,13 @@ module Ci
           build = Ci::RegisterBuildService.new.execute(current_runner)
 
           if build
+            Gitlab::Metrics.add_event(:build_found,
+                                      project: build.project.path_with_namespace)
+
             present build, with: Entities::BuildDetails
           else
+            Gitlab::Metrics.add_event(:build_not_found)
+
             not_found!
           end
         end
@@ -41,6 +46,9 @@ module Ci
           forbidden!('Build has been erased!') if build.erased?
 
           build.update_attributes(trace: params[:trace]) if params[:trace]
+
+          Gitlab::Metrics.add_event(:update_build,
+                                    project: build.project.path_with_namespace)
 
           case params[:state].to_s
           when 'success'

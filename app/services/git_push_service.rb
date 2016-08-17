@@ -96,12 +96,12 @@ class GitPushService < BaseService
 
       params = {
         name: @project.default_branch,
-        push_access_level_attributes: {
+        push_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        },
-        merge_access_level_attributes: {
+        }],
+        merge_access_levels_attributes: [{
           access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-        }
+        }]
       }
 
       ProtectedBranches::CreateService.new(@project, current_user, params).execute

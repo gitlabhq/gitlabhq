@@ -143,6 +143,14 @@ ActiveRecord::Schema.define(version: 20160810153405) do
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
 
+  create_table "boards", force: :cascade do |t|
+    t.integer  "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
+
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
@@ -607,6 +615,19 @@ ActiveRecord::Schema.define(version: 20160810153405) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "lists", force: :cascade do |t|
+    t.integer  "board_id",               null: false
+    t.integer  "label_id"
+    t.integer  "list_type",  default: 1, null: false
+    t.integer  "position"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
+  add_index "lists", ["board_id"], name: "index_lists_on_board_id", using: :btree
+  add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
 
   create_table "members", force: :cascade do |t|
     t.integer  "access_level",       null: false
@@ -1273,6 +1294,9 @@ ActiveRecord::Schema.define(version: 20160810153405) do
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "boards", "projects"
+  add_foreign_key "lists", "boards"
+  add_foreign_key "lists", "labels"
   add_foreign_key "path_locks", "projects"
   add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
