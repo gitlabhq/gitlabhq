@@ -10,17 +10,8 @@ module Gitlab
 
         if valid_ci_request?(login, password, project)
           result.type = :ci
-        elsif result.user = find_with_user_password(login, password)
-          if result.user.two_factor_enabled?
-            result.user = nil
-            result.type = :missing_personal_token
-          else
-            result.type = :gitlab_or_ldap
-          end
-        elsif result.user = oauth_access_token_check(login, password)
-          result.type = :oauth
-        elsif result.user = personal_access_token_check(login, password)
-          result.type = :personal_token
+        else
+          result.user, result.type = populate_result(login, password)
         end
 
         success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
@@ -87,15 +78,36 @@ module Gitlab
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
-          token && token.accessible? && User.find_by(id: token.resource_owner_id)
+          if token && token.accessible?
+            user = User.find_by(id: token.resource_owner_id)
+            return user, :oauth
+          end
         end
       end
 
       def personal_access_token_check(login, password)
         if login && password
           user = User.find_by_personal_access_token(password)
-          user if user && user.username == login
+          validation = User.by_login(login)
+          return user, :personal_token if user == validation
         end
+      end
+
+      def user_with_password_for_git(login, password)
+        user = find_with_user_password(login, password)
+        return user, :gitlab_or_ldap if user
+      end
+
+      def populate_result(login, password)
+        user, type =
+          user_with_password_for_git(login, password) || oauth_access_token_check(login, password) || personal_access_token_check(login, password)
+
+        if user && user.two_factor_enabled? && type == :gitlab_or_ldap
+          user = nil
+          type = :missing_personal_token
+        end
+
+        [user, type]
       end
     end
   end

@@ -199,21 +199,23 @@ describe 'Git HTTP requests', lib: true do
             end
 
             context 'when user has 2FA enabled' do
+              let(:user) { create(:user, :two_factor) }
+              let(:access_token) { create(:personal_access_token, user: user) }
+
               before do
-                @user = create(:user, :two_factor)
-                project.team << [@user, :master]
+                project.team << [user, :master]
               end
 
               context 'when username and password are provided' do
                 it 'rejects the clone attempt' do
-                  download("#{project.path_with_namespace}.git", user: @user.username, password: @user.password) do |response|
+                  download("#{project.path_with_namespace}.git", user: user.username, password: user.password) do |response|
                     expect(response).to have_http_status(401)
                     expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
                   end
                 end
 
                 it 'rejects the push attempt' do
-                  upload("#{project.path_with_namespace}.git", user: @user.username, password: @user.password) do |response|
+                  upload("#{project.path_with_namespace}.git", user: user.username, password: user.password) do |response|
                     expect(response).to have_http_status(401)
                     expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
                   end
@@ -221,18 +223,14 @@ describe 'Git HTTP requests', lib: true do
               end
 
               context 'when username and personal access token are provided' do
-                before do
-                  @token = create(:personal_access_token, user: @user)
-                end
-
                 it 'allows clones' do
-                  download("#{project.path_with_namespace}.git", user: @user.username, password: @token.token) do |response|
+                  download("#{project.path_with_namespace}.git", user: user.username, password: access_token.token) do |response|
                     expect(response).to have_http_status(200)
                   end
                 end
 
                 it 'allows pushes' do
-                  upload("#{project.path_with_namespace}.git", user: @user.username, password: @token.token) do |response|
+                  upload("#{project.path_with_namespace}.git", user: user.username, password: access_token.token) do |response|
                     expect(response).to have_http_status(200)
                   end
                 end
