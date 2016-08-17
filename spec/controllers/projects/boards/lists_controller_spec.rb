@@ -33,13 +33,17 @@ describe Projects::Boards::ListsController do
       expect(parsed_response.length).to eq 3
     end
 
-    it 'returns a successful 403 response with unauthorized user' do
-      allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-      allow(Ability.abilities).to receive(:allowed?).with(user, :read_list, project).and_return(false)
+    context 'with unauthorized user' do
+      before do
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_list, project).and_return(false)
+      end
 
-      read_board_list user: user
+      it 'returns a successful 403 response' do
+        read_board_list user: user
 
-      expect(response).to have_http_status(403)
+        expect(response).to have_http_status(403)
+      end
     end
 
     def read_board_list(user:)

@@ -21,13 +21,17 @@ describe Projects::BoardsController do
       expect(response.content_type).to eq 'text/html'
     end
 
-    it 'returns a successful 404 response with unauthorized user' do
-      allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-      allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+    context 'with unauthorized user' do
+      before do
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+      end
 
-      read_board
+      it 'returns a successful 404 response' do
+        read_board
 
-      expect(response).to have_http_status(404)
+        expect(response).to have_http_status(404)
+      end
     end
 
     def read_board(format: :html)
