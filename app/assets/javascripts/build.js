@@ -20,7 +20,6 @@
 
       this.populateJobs(build_stage);
       this.updateStageDropdownText(build_stage);
-      this.updateJobDropdownText(build_name);
       this.hideSidebar();
 
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
@@ -146,11 +145,6 @@
 
     Build.prototype.updateStageDropdownText = function(stage) {
       $('.stage-selection').text(stage);
-      this.updateJobDropdownText('-');
-    };
-
-    Build.prototype.updateJobDropdownText = function(name) {
-      $('.build-selection').text(name);
     };
 
     Build.prototype.updateDropdown = function(e) {

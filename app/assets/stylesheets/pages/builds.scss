@@ -53,22 +53,6 @@
       left: 70px;
     }
   }
-
-  .build-dropdown {
-    display: inline-block;
-    margin-top: 16px;
-
-    svg {
-      position: relative;
-      top: 2px;
-      margin-right: 3px;
-      height: 13px;
-    }
-
-    .stage-item {
-      cursor: pointer;
-    }
-  }
 }
 
 .build-header {
@@ -116,11 +100,15 @@
 }
 
 .right-sidebar.build-sidebar {
-  padding-top: $gl-padding;
-  padding-bottom: $gl-padding;
+  padding: $gl-padding 0;
+  border-left: 1px solid $border-color;
 
   &.right-sidebar-collapsed {
     display: none;
+  }
+
+  .blocks-container {
+    padding: $gl-padding;
   }
 
   .block {
@@ -128,10 +116,52 @@
   }
 
   .build-sidebar-header {
-    padding-top: 0;
+    padding: 0 $gl-padding $gl-padding;
 
     .gutter-toggle {
       margin-top: 0;
+    }
+  }
+
+  .stage-item {
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color;
+    }
+  }
+
+  .build-dropdown {
+    padding: 0 $gl-padding;
+  }
+
+  .builds-container {
+    margin: $gl-padding 0;
+    background-color: $white-light;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
+      height: 13px;
+    }
+
+    a {
+      display: block;
+      padding: $gl-padding 10px;
+
+      &:hover {
+        background-color: $row-hover;
+        color: $gl-text-color;
+      }
+    }
+
+    .build-job {
+      &.active {
+        font-weight: bold;
+      }
     }
   }
 }
