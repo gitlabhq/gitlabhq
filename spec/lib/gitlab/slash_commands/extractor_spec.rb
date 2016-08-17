@@ -18,7 +18,7 @@ describe Gitlab::SlashCommands::Extractor do
     it 'extracts command' do
       msg, commands = extractor.extract_commands(original_msg)
 
-      expect(commands).to eq [['open']]
+      expect(commands).to eq [['reopen']]
       expect(msg).to eq final_msg
     end
   end
@@ -45,31 +45,31 @@ describe Gitlab::SlashCommands::Extractor do
     describe 'command with no argument' do
       context 'at the start of content' do
         it_behaves_like 'command with no argument' do
-          let(:original_msg) { "/open\nworld" }
+          let(:original_msg) { "/reopen\nworld" }
           let(:final_msg) { "world" }
         end
       end
 
       context 'in the middle of content' do
         it_behaves_like 'command with no argument' do
-          let(:original_msg) { "hello\n/open\nworld" }
+          let(:original_msg) { "hello\n/reopen\nworld" }
           let(:final_msg) { "hello\nworld" }
         end
       end
 
       context 'in the middle of a line' do
         it 'does not extract command' do
-          msg = "hello\nworld /open"
+          msg = "hello\nworld /reopen"
           msg, commands = extractor.extract_commands(msg)
 
           expect(commands).to be_empty
-          expect(msg).to eq "hello\nworld /open"
+          expect(msg).to eq "hello\nworld /reopen"
         end
       end
 
       context 'at the end of content' do
         it_behaves_like 'command with no argument' do
-          let(:original_msg) { "hello\n/open" }
+          let(:original_msg) { "hello\n/reopen" }
           let(:final_msg) { "hello" }
         end
       end
@@ -170,10 +170,10 @@ describe Gitlab::SlashCommands::Extractor do
     end
 
     it 'extracts multiple commands' do
-      msg = %(hello\n/power @user.name %9.10 ~"bar baz.2" label\nworld\n/open)
+      msg = %(hello\n/power @user.name %9.10 ~"bar baz.2" label\nworld\n/reopen)
       msg, commands = extractor.extract_commands(msg)
 
-      expect(commands).to eq [['power', '@user.name %9.10 ~"bar baz.2" label'], ['open']]
+      expect(commands).to eq [['power', '@user.name %9.10 ~"bar baz.2" label'], ['reopen']]
       expect(msg).to eq "hello\nworld"
     end
 

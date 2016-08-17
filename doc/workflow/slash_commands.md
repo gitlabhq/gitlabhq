@@ -5,26 +5,26 @@ requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
 You can enter these commands while creating a new issue or merge request, and
 in comments. Each command should be on a separate line in order to be properly
 detected and executed. The commands are removed from the issue, merge request or
-comment body before it is saved and will not be visible as such to anyone else.
+comment body before it is saved and will not be visible to anyone else.
 
-Here is a list of all of the available commands and descriptions about what they
+Below is a list of all of the available commands and descriptions about what they
 do.
 
-| Command                    | Aliases             | Action       |
-|:---------------------------|:--------------------|:-------------|
-| `/close`                   | None                | Close the issue or merge request |
-| `/reopen`                  | `/open`             | Reopen the issue or merge request |
-| `/title <New title>`       | None                | Change title |
-| `/assign @username`        | None                | Assign |
-| `/unassign`                | `/remove_assignee`  | Remove assignee |
-| `/milestone %milestone`    | None                | Set milestone |
-| `/clear_milestone`         | `/remove_milestone` | Remove milestone |
-| `/label ~foo ~"bar baz"`   | `/labels`           | Add label(s) |
-| `/unlabel ~foo ~"bar baz"` | `/remove_label`, `remove_labels` | Remove label(s) |
-| `/clear_labels`            | `/clear_label`      | Clear all labels |
-| `/todo`                    | None                | Add a todo |
-| `/done`                    | None                | Mark todo as done |
-| `/subscribe`               | None                | Subscribe |
-| `/unsubscribe`             | None                | Unsubscribe |
-| `/due <in 2 days; this Friday; December 31st>` | `/due_date` | Set due date |
-| `/clear_due_date`          | None                | Remove due date |
+| Command                    | Action       |
+|:---------------------------|:-------------|
+| `/close`                   | Close the issue or merge request |
+| `/reopen`                  | Reopen the issue or merge request |
+| `/title <New title>`       | Change title |
+| `/assign @username`        | Assign |
+| `/unassign`                | Remove assignee |
+| `/milestone %milestone`    | Set milestone |
+| `/remove_milestone`        | Remove milestone |
+| `/label ~foo ~"bar baz"`   | Add label(s) |
+| `/unlabel ~foo ~"bar baz"` | Remove all or specific label(s) |
+| `/relabel ~foo ~"bar baz"` | Replace all label(s) |
+| `/todo`                    | Add a todo |
+| `/done`                    | Mark todo as done |
+| `/subscribe`               | Subscribe |
+| `/unsubscribe`             | Unsubscribe |
+| `/due <in 2 days | this Friday | December 31st>` | Set due date |
+| `/remove_due_date`          | Remove due date |

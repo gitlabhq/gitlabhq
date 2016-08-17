@@ -14,7 +14,7 @@ shared_examples 'new issuable record that supports slash commands' do
   context 'with labels in command only' do
     let(:example_params) do
       {
-        description: "/label ~#{labels.first.name} ~#{labels.second.name}\n/remove_label ~#{labels.third.name}"
+        description: "/label ~#{labels.first.name} ~#{labels.second.name}\n/unlabel ~#{labels.third.name}"
       }
     end
 
@@ -28,7 +28,7 @@ shared_examples 'new issuable record that supports slash commands' do
     let(:example_params) do
       {
         label_ids: [labels.second.id],
-        description: "/label ~#{labels.first.name}\n/remove_label ~#{labels.third.name}"
+        description: "/label ~#{labels.first.name}\n/unlabel ~#{labels.third.name}"
       }
     end
 

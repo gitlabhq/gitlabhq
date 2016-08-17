@@ -16,8 +16,8 @@ describe SlashCommands::InterpretService, services: true do
     let(:service) { described_class.new(project, user) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
-    shared_examples 'open command' do
-      it 'returns state_event: "open" if content contains /open' do
+    shared_examples 'reopen command' do
+      it 'returns state_event: "reopen" if content contains /reopen' do
         issuable.close!
         _, updates = service.execute(content, issuable)
 
@@ -26,7 +26,7 @@ describe SlashCommands::InterpretService, services: true do
     end
 
     shared_examples 'close command' do
-      it 'returns state_event: "close" if content contains /open' do
+      it 'returns state_event: "close" if content contains /close' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(state_event: 'close')
@@ -67,8 +67,8 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-    shared_examples 'clear_milestone command' do
-      it 'populates milestone_id: nil if content contains /clear_milestone' do
+    shared_examples 'remove_milestone command' do
+      it 'populates milestone_id: nil if content contains /remove_milestone' do
         issuable.update(milestone_id: milestone.id)
         _, updates = service.execute(content, issuable)
 
@@ -95,12 +95,22 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-    shared_examples 'clear_labels command' do
-      it 'populates label_ids: [] if content contains /clear_labels' do
+    shared_examples 'unlabel command with no argument' do
+      it 'populates label_ids: [] if content contains /unlabel with no arguments' do
         issuable.update(label_ids: [inprogress.id]) # populate the label
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(label_ids: [])
+      end
+    end
+
+    shared_examples 'relabel command' do
+      it 'populates label_ids: [] if content contains /relabel' do
+        issuable.update(label_ids: [bug.id]) # populate the label
+        inprogress # populate the label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(label_ids: [inprogress.id])
       end
     end
 
@@ -138,16 +148,16 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-    shared_examples 'due_date command' do
-      it 'populates due_date: Date.new(2016, 8, 28) if content contains /due_date 2016-08-28' do
+    shared_examples 'due command' do
+      it 'populates due_date: Date.new(2016, 8, 28) if content contains /due 2016-08-28' do
         _, updates = service.execute(content, issuable)
 
         expect(updates).to eq(due_date: defined?(expected_date) ? expected_date : Date.new(2016, 8, 28))
       end
     end
 
-    shared_examples 'clear_due_date command' do
-      it 'populates due_date: nil if content contains /clear_due_date' do
+    shared_examples 'remove_due_date command' do
+      it 'populates due_date: nil if content contains /remove_due_date' do
         issuable.update(due_date: Date.today)
         _, updates = service.execute(content, issuable)
 
@@ -163,19 +173,14 @@ describe SlashCommands::InterpretService, services: true do
       end
     end
 
-    it_behaves_like 'open command' do
-      let(:content) { '/open' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'open command' do
-      let(:content) { '/open' }
-      let(:issuable) { merge_request }
-    end
-
-    it_behaves_like 'open command' do
+    it_behaves_like 'reopen command' do
       let(:content) { '/reopen' }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'reopen command' do
+      let(:content) { '/reopen' }
+      let(:issuable) { merge_request }
     end
 
     it_behaves_like 'close command' do
@@ -233,11 +238,6 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'unassign command' do
-      let(:content) { '/remove_assignee' }
-      let(:issuable) { issue }
-    end
-
     it_behaves_like 'milestone command' do
       let(:content) { "/milestone %#{milestone.title}" }
       let(:issuable) { issue }
@@ -248,21 +248,16 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'clear_milestone command' do
-      let(:content) { '/clear_milestone' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'clear_milestone command' do
-      let(:content) { '/clear_milestone' }
-      let(:issuable) { merge_request }
-    end
-
-    it_behaves_like 'clear_milestone command' do
+    it_behaves_like 'remove_milestone command' do
       let(:content) { '/remove_milestone' }
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'remove_milestone command' do
+      let(:content) { '/remove_milestone' }
+      let(:issuable) { merge_request }
+    end
+
     it_behaves_like 'label command' do
       let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
       let(:issuable) { issue }
@@ -271,11 +266,6 @@ describe SlashCommands::InterpretService, services: true do
     it_behaves_like 'label command' do
       let(:content) { %(/label ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
       let(:issuable) { merge_request }
-    end
-
-    it_behaves_like 'label command' do
-      let(:content) { %(/labels ~"#{inprogress.title}" ~#{bug.title} ~unknown) }
-      let(:issuable) { issue }
     end
 
     it_behaves_like 'unlabel command' do
@@ -288,29 +278,24 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'unlabel command' do
-      let(:content) { %(/remove_labels ~"#{inprogress.title}") }
+    it_behaves_like 'unlabel command with no argument' do
+      let(:content) { %(/unlabel) }
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'unlabel command' do
-      let(:content) { %(/remove_label ~"#{inprogress.title}") }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'clear_labels command' do
-      let(:content) { '/clear_labels' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'clear_labels command' do
-      let(:content) { '/clear_labels' }
+    it_behaves_like 'unlabel command with no argument' do
+      let(:content) { %(/unlabel) }
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'clear_labels command' do
-      let(:content) { '/clear_label' }
+    it_behaves_like 'relabel command' do
+      let(:content) { %(/relabel ~"#{inprogress.title}") }
       let(:issuable) { issue }
+    end
+
+    it_behaves_like 'relabel command' do
+      let(:content) { %(/relabel ~"#{inprogress.title}") }
+      let(:issuable) { merge_request }
     end
 
     it_behaves_like 'todo command' do
@@ -353,46 +338,46 @@ describe SlashCommands::InterpretService, services: true do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'due_date command' do
-      let(:content) { '/due_date 2016-08-28' }
+    it_behaves_like 'due command' do
+      let(:content) { '/due 2016-08-28' }
       let(:issuable) { issue }
     end
 
-    it_behaves_like 'due_date command' do
+    it_behaves_like 'due command' do
       let(:content) { '/due tomorrow' }
       let(:issuable) { issue }
       let(:expected_date) { Date.tomorrow }
     end
 
-    it_behaves_like 'due_date command' do
+    it_behaves_like 'due command' do
       let(:content) { '/due 5 days from now' }
       let(:issuable) { issue }
       let(:expected_date) { 5.days.from_now.to_date }
     end
 
-    it_behaves_like 'due_date command' do
+    it_behaves_like 'due command' do
       let(:content) { '/due in 2 days' }
       let(:issuable) { issue }
       let(:expected_date) { 2.days.from_now.to_date }
     end
 
     it_behaves_like 'empty command' do
-      let(:content) { '/due_date foo bar' }
+      let(:content) { '/due foo bar' }
       let(:issuable) { issue }
     end
 
     it_behaves_like 'empty command' do
-      let(:content) { '/due_date 2016-08-28' }
+      let(:content) { '/due 2016-08-28' }
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'clear_due_date command' do
-      let(:content) { '/clear_due_date' }
+    it_behaves_like 'remove_due_date command' do
+      let(:content) { '/remove_due_date' }
       let(:issuable) { issue }
     end
 
     it_behaves_like 'empty command' do
-      let(:content) { '/clear_due_date' }
+      let(:content) { '/remove_due_date' }
       let(:issuable) { merge_request }
     end
   end

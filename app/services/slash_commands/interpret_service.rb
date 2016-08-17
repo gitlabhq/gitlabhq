@@ -54,7 +54,7 @@ module SlashCommands
         issuable.closed? &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
-    command :reopen, :open do
+    command :reopen do
       @updates[:state_event] = 'reopen'
     end
 
@@ -86,7 +86,7 @@ module SlashCommands
         issuable.assignee_id? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unassign, :remove_assignee do
+    command :unassign do
       @updates[:assignee_id] = nil
     end
 
@@ -109,7 +109,7 @@ module SlashCommands
         issuable.milestone_id? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :clear_milestone, :remove_milestone do
+    command :remove_milestone do
       @updates[:milestone_id] = nil
     end
 
@@ -119,33 +119,40 @@ module SlashCommands
       current_user.can?(:"admin_#{issuable.to_ability_name}", project) &&
         project.labels.any?
     end
-    command :label, :labels do |labels_param|
+    command :label do |labels_param|
       label_ids = find_label_ids(labels_param)
 
       @updates[:add_label_ids] = label_ids unless label_ids.empty?
     end
 
-    desc 'Remove label(s)'
+    desc 'Remove all or specific label(s)'
     params '~label1 ~"label 2"'
     condition do
       issuable.persisted? &&
         issuable.labels.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :unlabel, :remove_label, :remove_labels do |labels_param|
-      label_ids = find_label_ids(labels_param)
+    command :unlabel do |labels_param = nil|
+      if labels_param.present?
+        label_ids = find_label_ids(labels_param)
 
-      @updates[:remove_label_ids] = label_ids unless label_ids.empty?
+        @updates[:remove_label_ids] = label_ids unless label_ids.empty?
+      else
+        @updates[:label_ids] = []
+      end
     end
 
-    desc 'Remove all labels'
+    desc 'Replace all label(s)'
+    params '~label1 ~"label 2"'
     condition do
       issuable.persisted? &&
         issuable.labels.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
-    command :clear_labels, :clear_label do
-      @updates[:label_ids] = []
+    command :relabel do |labels_param|
+      label_ids = find_label_ids(labels_param)
+
+      @updates[:label_ids] = label_ids unless label_ids.empty?
     end
 
     desc 'Add a todo'
@@ -185,12 +192,12 @@ module SlashCommands
     end
 
     desc 'Set due date'
-    params '<in 2 days; this Friday; December 31st>'
+    params '<in 2 days | this Friday | December 31st>'
     condition do
       issuable.respond_to?(:due_date) &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
-    command :due, :due_date do |due_date_param|
+    command :due do |due_date_param|
       due_date = Chronic.parse(due_date_param).try(:to_date)
 
       @updates[:due_date] = due_date if due_date
@@ -203,7 +210,7 @@ module SlashCommands
         issuable.due_date? &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
-    command :clear_due_date do
+    command :remove_due_date do
       @updates[:due_date] = nil
     end
 

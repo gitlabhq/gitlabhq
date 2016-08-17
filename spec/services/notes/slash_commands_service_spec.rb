@@ -69,12 +69,12 @@ describe Notes::SlashCommandsService, services: true do
         end
       end
 
-      describe '/open' do
+      describe '/reopen' do
         before do
           note.noteable.close!
           expect(note.noteable).to be_closed
         end
-        let(:note_text) { '/open' }
+        let(:note_text) { '/reopen' }
 
         it 'opens the noteable, and leave no note' do
           content, command_params = service.extract_commands(note)
@@ -104,12 +104,12 @@ describe Notes::SlashCommandsService, services: true do
         end
       end
 
-      describe '/open' do
+      describe '/reopen' do
         before do
           note.noteable.close
           expect(note.noteable).to be_closed
         end
-        let(:note_text) { "HELLO\n/open\nWORLD" }
+        let(:note_text) { "HELLO\n/reopen\nWORLD" }
 
         it 'opens the noteable' do
           content, command_params = service.extract_commands(note)

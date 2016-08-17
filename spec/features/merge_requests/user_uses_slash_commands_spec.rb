@@ -22,11 +22,11 @@ feature 'Merge Requests > User uses slash commands', feature: true, js: true do
 
     it 'does not recognize the command nor create a note' do
       page.within('.js-main-target-form') do
-        fill_in 'note[note]', with: "/due_date 2016-08-28"
+        fill_in 'note[note]', with: "/due 2016-08-28"
         click_button 'Comment'
       end
 
-      expect(page).not_to have_content '/due_date 2016-08-28'
+      expect(page).not_to have_content '/due 2016-08-28'
     end
   end
 end

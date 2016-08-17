@@ -22,11 +22,11 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
 
       it 'does not create a note, and sets the due date accordingly' do
         page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/due_date 2016-08-28"
+          fill_in 'note[note]', with: "/due 2016-08-28"
           click_button 'Comment'
         end
 
-        expect(page).not_to have_content '/due_date 2016-08-28'
+        expect(page).not_to have_content '/due 2016-08-28'
         expect(page).to have_content 'Your commands have been executed!'
 
         issue.reload
@@ -42,11 +42,11 @@ feature 'Issues > User uses slash commands', feature: true, js: true do
         expect(issue.due_date).to eq Date.new(2016, 8, 28)
 
         page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/clear_due_date"
+          fill_in 'note[note]', with: "/remove_due_date"
           click_button 'Comment'
         end
 
-        expect(page).not_to have_content '/clear_due_date'
+        expect(page).not_to have_content '/remove_due_date'
         expect(page).to have_content 'Your commands have been executed!'
 
         issue.reload
