@@ -1,7 +1,15 @@
+= content_for :head do
+  = stylesheet_link_tag 'mailers/highlighted_diff_email'
+
 - if @note.diff_note? && @note.diff_file
   %p.details
     New comment on diff for
     = link_to @note.diff_file.file_path, @target_url
     \:
+
+    .diff-content.code.js-syntax-highlight
+      %table
+        - Discussion.new([@note]).truncated_diff_lines.each do |line|
+          = render "projects/diffs/line", line: line, diff_file: @note.diff_file, plain: true
 
 = render 'note_message'

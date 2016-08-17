@@ -580,8 +580,10 @@ describe Notify do
       let(:note_author) { create(:user, name: 'author_name') }
       let(:note) { create(:note, project: project, author: note_author) }
 
-      before :each do
-        allow(Note).to receive(:find).with(note.id).and_return(note)
+      before do |example|
+        unless example.metadata[:skip_before]
+          allow(Note).to receive(:find).with(note.id).and_return(note)
+        end
       end
 
       shared_examples 'a note email' do
@@ -660,6 +662,19 @@ describe Notify do
 
         it 'contains a link to the merge request note' do
           is_expected.to have_body_text /#{note_on_merge_request_path}/
+        end
+      end
+
+      describe "on a merge request with diffs", :skip_before do
+        let(:merge_request) { create(:merge_request_with_diffs) }
+        let(:note_with_diff) {create(:diff_note_on_merge_request)}
+
+        before(:each) { allow(note_with_diff).to receive(:noteable).and_return(merge_request) }
+        subject { Notify.note_merge_request_email(recipient.id, note_with_diff.id) }
+
+        it 'includes diffs with character-level highlighting' do
+          expected_line_text = Discussion.new([note_with_diff]).truncated_diff_lines.first.text
+          is_expected.to have_body_text expected_line_text
         end
       end
 
