@@ -1,4 +1,4 @@
-class Gitlab::Seeder::Builds
+class Gitlab::Seeder::Pipelines
   STAGES = %w[build test deploy notify]
   BUILDS = [
     { name: 'build:linux', stage: 'build', status: :success },
@@ -148,7 +148,7 @@ end
 
 Gitlab::Seeder.quiet do
   Project.all.sample(5).each do |project|
-    project_builds = Gitlab::Seeder::Builds.new(project)
+    project_builds = Gitlab::Seeder::Pipelines.new(project)
     project_builds.seed!
   end
 end
