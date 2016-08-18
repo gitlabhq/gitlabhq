@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Delete branch', feature: true, js: true do
+  include WaitForAjax
+
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
@@ -15,7 +17,7 @@ feature 'Delete branch', feature: true, js: true do
     expect(page).to have_selector('.tooltip')
 
     first('.remove-row').click
-    sleep 1
+    wait_for_ajax
 
     expect(page).not_to have_selector('.tooltip')
   end
