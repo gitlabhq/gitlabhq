@@ -65,6 +65,7 @@
 
           for (let i = 0; i < discussionIdsInScope.length; i++) {
             const discussionId = discussionIdsInScope[i];
+            const discussion = discussions[discussionId];
             if (discussion && !discussion.isResolved()) {
               unresolvedDiscussionCount++;
             }
