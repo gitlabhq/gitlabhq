@@ -43,7 +43,7 @@ class BasePolicy
   end
 
   def delegate!(new_subject)
-    @can.merge(BasePolicy.class_for(new_subject).abilities(@user, new_subject))
+    @can.merge(Ability.allowed(@user, new_subject))
   end
 
   def can?(rule)
