@@ -130,6 +130,7 @@ v 8.11.0 (unreleased)
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
+  - Update gitlab_git gem to 10.4.7
 
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
