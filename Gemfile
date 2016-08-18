@@ -77,7 +77,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem 'kaminari', '~> 0.17.0'
 
 # HAML
-gem 'hamlit', '~> 2.5'
+gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 0.10.0'
