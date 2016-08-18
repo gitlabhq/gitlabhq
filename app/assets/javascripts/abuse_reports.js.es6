@@ -17,7 +17,7 @@ window.gl = window.gl || {};
       if (reportMessage.length > MAX_MESSAGE_LENGTH) {
         $messageCellElement.data('original-message', reportMessage);
         $messageCellElement.data('message-truncated', 'true');
-        $messageCellElement.text(`${reportMessage.substr(0, (MAX_MESSAGE_LENGTH - 3))}...`);
+        $messageCellElement.text(global.text.truncate(reportMessage, MAX_MESSAGE_LENGTH));
       }
     }
 
