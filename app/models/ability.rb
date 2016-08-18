@@ -73,12 +73,8 @@ class Ability
 
     def abilities_by_subject_class(user:, subject:)
       case subject
-      when Namespace then namespace_abilities(user, subject)
-      when GroupMember then group_member_abilities(user, subject)
-      when ProjectMember then project_member_abilities(user, subject)
       when User then user_abilities
       when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
-      when Ci::Runner then runner_abilities(user, subject)
       else []
       end + global_abilities(user)
     end
@@ -112,48 +108,6 @@ class Ability
       ProjectPolicy.abilities(user, project).to_a
     end
 
-    def can_read_group?(user, group)
-      return true if user.admin?
-      return true if group.public?
-      return true if group.internal? && !user.external?
-      return true if group.users.include?(user)
-
-      GroupProjectsFinder.new(group).execute(user).any?
-    end
-
-    def namespace_abilities(user, namespace)
-      rules = []
-
-      # Only namespace owner and administrators can admin it
-      if namespace.owner == user || user.admin?
-        rules += [
-          :create_projects,
-          :admin_namespace
-        ]
-      end
-
-      rules.flatten
-    end
-
-    def group_member_abilities(user, subject)
-      rules = []
-      target_user = subject.user
-      group = subject.group
-
-      unless group.last_owner?(target_user)
-        can_manage = allowed?(user, :admin_group_member, group)
-
-        if can_manage
-          rules << :update_group_member
-          rules << :destroy_group_member
-        elsif user == target_user
-          rules << :destroy_group_member
-        end
-      end
-
-      rules
-    end
-
     def project_member_abilities(user, subject)
       rules = []
       target_user = subject.user
@@ -180,18 +134,6 @@ class Ability
         rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
       rules
-    end
-
-    def runner_abilities(user, runner)
-      if user.is_admin?
-        [:assign_runner]
-      elsif runner.is_shared? || runner.locked?
-        []
-      elsif user.ci_authorized_runners.include?(runner)
-        [:assign_runner]
-      else
-        []
-      end
     end
 
     def user_abilities
