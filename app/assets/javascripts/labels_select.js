@@ -32,6 +32,8 @@
           labelNoneHTMLTemplate = '<span class="no-value">None</span>';
         }
 
+        $sidebarLabelTooltip.tooltip();
+
         new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
 
         saveLabelData = function() {

@@ -72,18 +72,14 @@ module IssuablesHelper
     end
   end
 
-  def issuable_labels_tooltip(labels)
-    max_labels = 5
-    label_size = labels.size
-    label_names = labels.each_with_index.map do |label, i|
-      label.name unless i >= max_labels
-    end
+  def issuable_labels_tooltip(labels, limit: 5)
+    first = labels[0...limit]
+    last = labels[(limit-1)...-1]
 
-    if label_size > max_labels
-      label_names << "and #{label_size - max_labels} more"
-    end
+    label_names = first.collect(&:name)
+    label_names << "and #{last.size} more" unless last.empty?
 
-    label_names.compact.join(', ')
+    label_names.join(', ')
   end
 
   private

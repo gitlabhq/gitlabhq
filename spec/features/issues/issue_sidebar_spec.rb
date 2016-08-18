@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Issue Sidebar', feature: true do
+  include WaitForAjax
+
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
@@ -103,7 +105,7 @@ feature 'Issue Sidebar', feature: true do
           end
 
           find('.edit-link').click
-          sleep 1
+          wait_for_ajax 
 
           expect(find('.js-sidebar-labels-tooltip', visible: false)['data-original-title']).to eq('a, b, c, d, e, and 1 more')
         end
