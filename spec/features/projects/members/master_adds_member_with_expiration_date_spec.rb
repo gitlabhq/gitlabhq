@@ -4,8 +4,8 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
   include Select2Helper
   include ActiveSupport::Testing::TimeHelpers
 
-  let!(:master) { create(:user) }
-  let!(:project) { create(:project) }
+  let(:master) { create(:user) }
+  let(:project) { create(:project) }
   let!(:new_member) { create(:user) }
 
   background do
