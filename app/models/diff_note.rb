@@ -4,8 +4,6 @@ class DiffNote < Note
   serialize :original_position, Gitlab::Diff::Position
   serialize :position, Gitlab::Diff::Position
 
-  belongs_to :resolved_by, class_name: "User"
-
   validates :original_position, presence: true
   validates :position, presence: true
   validates :diff_line, presence: true

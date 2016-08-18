@@ -1,7 +1,7 @@
 - email = local_assigns.fetch(:email, false)
 - plain = local_assigns.fetch(:plain, false)
 - type = line.type
-- line_code = diff_file.line_code(line) unless plain
+- line_code = diff_file.line_code(line)
 %tr.line_holder{ plain ? { class: type} : { class: type, id: line_code } }
   - case type
   - when 'match'
@@ -28,3 +28,10 @@
         %pre= diff_line_content(line.text, type)
       - else
         = diff_line_content(line.text, type)
+
+- discussions = local_assigns.fetch(:discussions, nil)
+- discussion_expanded = local_assigns.fetch(:discussion_expanded, false)
+- if discussions && !line.meta?
+  - discussion = discussions[line_code]
+  - if discussion
+    = render "discussions/diff_discussion", discussion: discussion, expanded: discussion_expanded

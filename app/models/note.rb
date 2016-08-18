@@ -25,6 +25,9 @@ class Note < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
 
+  # Only used by DiffNote, but defined here so that it can be used in `Note.includes`
+  belongs_to :resolved_by, class_name: "User"
+
   has_many :todos, dependent: :destroy
   has_many :events, as: :target, dependent: :destroy
 
@@ -59,7 +62,7 @@ class Note < ActiveRecord::Base
   scope :fresh, ->{ order(created_at: :asc, id: :asc) }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
-  scope :inc_author_project_award_emoji, ->{ includes(:project, :author, :award_emoji) }
+  scope :inc_relations_for_view, ->{ includes(:project, :author, :updated_by, :resolved_by, :award_emoji) }
 
   scope :diff_notes, ->{ where(type: ['LegacyDiffNote', 'DiffNote']) }
   scope :non_diff_notes, ->{ where(type: ['Note', nil]) }

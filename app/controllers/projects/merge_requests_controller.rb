@@ -471,7 +471,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
-    @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.notes.inc_relations_for_view.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
       @grouped_diff_discussions.values.flat_map(&:notes),

@@ -420,7 +420,7 @@ class MergeRequest < ActiveRecord::Base
 
   def discussions
     @discussions ||= self.mr_and_commit_notes.
-      inc_author_project_award_emoji.
+      inc_relations_for_view.
       fresh.
       discussions
   end
