@@ -13,14 +13,14 @@
     buildDropdowns() {
 
       // Allowed to merge dropdown
-      new gl.ProtectedBranchAccessDropdown({
+      new gl.allowedToMergeDropdown({
         $dropdown: this.$allowedToMergeDropdown,
         data: gon.merge_access_levels,
         onSelect: this.onSelect.bind(this)
       });
 
       // Allowed to push dropdown
-      new gl.ProtectedBranchAccessDropdown({
+      new gl.allowedToPushDropdown({
         $dropdown: this.$allowedToPushDropdown,
         data: gon.push_access_levels,
         onSelect: this.onSelect.bind(this)

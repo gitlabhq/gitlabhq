@@ -16,9 +16,6 @@
 
   = render partial: 'protected_branch_access_summary', locals: { protected_branch: protected_branch }
 
-  %td
-    = link_to "Settings", namespace_project_protected_branch_path(@project.namespace, @project, protected_branch), class: "btn btn-info"
-
   - if can_admin_project
     %td
       = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, protected_branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: 'btn btn-warning'

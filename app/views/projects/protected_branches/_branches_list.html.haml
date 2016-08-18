@@ -10,17 +10,18 @@
 
     %table.table.table-bordered
       %colgroup
-        %col{ width: "25%" }
-        %col{ width: "30%" }
-        %col{ width: "25%" }
         %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        - if can_admin_project
+          %col
       %thead
         %tr
           %th Protected branch (#{@protected_branches.size})
           %th Last commit
           %th Allowed to merge
           %th Allowed to push
-          %th
           - if can_admin_project
             %th
       %tbody

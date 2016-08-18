@@ -26,6 +26,10 @@
           // Here because last selected item is not considered after first close
           this.activeIds = self.getActiveIds();
         },
+        setActiveIds() {
+          // Needed for pre select options
+          this.activeIds = self.getActiveIds();
+        },
         clicked(item, $el, e) {
           e.preventDefault();
           self.inputCount++;
