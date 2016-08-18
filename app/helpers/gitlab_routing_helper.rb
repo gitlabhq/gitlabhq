@@ -152,16 +152,16 @@ module GitlabRoutingHelper
 
   # Artifacts
 
-  def artifacts_action_url(path, project, build)
+  def artifacts_action_path(path, project, build)
     args = [project.namespace, project, build]
 
     case path
     when 'download'
-      download_namespace_project_build_artifacts_url(*args)
+      download_namespace_project_build_artifacts_path(*args)
     when 'browse'
-      browse_namespace_project_build_artifacts_url(*args)
+      browse_namespace_project_build_artifacts_path(*args)
     when 'file'
-      file_namespace_project_build_artifacts_url(*args)
+      file_namespace_project_build_artifacts_path(*args)
     end
   end
 end

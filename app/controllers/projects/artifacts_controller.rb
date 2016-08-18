@@ -35,10 +35,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def latest_succeeded
-    target_url = artifacts_action_url(params[:path], project, build)
+    target_path = artifacts_action_path(params[:path], project, build)
 
     if target_url
-      redirect_to(target_url)
+      redirect_to(target_path)
     else
       render_404
     end
