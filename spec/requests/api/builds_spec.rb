@@ -419,6 +419,7 @@ describe API::API, api: true do
       it 'plays the build' do
         expect(response).to have_http_status 200
         expect(json_response['user']['id']).to eq(user.id)
+        expect(json_response['id']).to eq(build.id)
       end
     end
 

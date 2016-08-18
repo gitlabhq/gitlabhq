@@ -202,15 +202,13 @@ module API
 
         build = get_build!(params[:build_id])
 
-        if build.playable?
-          build.play(current_user)
+        bad_request!("Unplayable Build") unless build.playable?
 
-          status 200
-          present build, with: Entities::Build,
-                         user_can_download_artifacts: can?(current_user, :read_build, user_project)
-        else
-          bad_request!("Unplayable Build")
-        end
+        build.play(current_user)
+
+        status 200
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
     end
 

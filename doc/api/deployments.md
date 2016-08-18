@@ -260,10 +260,10 @@ GET /projects/:id/deployments/:deployment_id
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a project |
-| `deployment_id` | string  | yes      | The ID of the deployment |
+| `deployment_id` | integer | yes      | The ID of the deployment |
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/deployment/1"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/deployments/1"
 ```
 
 Example of response
