@@ -36,8 +36,8 @@ There are three types of lists, of which two are default:
 
 In short, here's a list of actions you can take in an Issue Board:
 
-- [Add a new list](#adding-a-new-list).
-- [Remove an existing list](#removing-a-list).
+- [Create a new list](#creating-a-new-list).
+- [Delete an existing list](#deleting-a-list).
 - Drag issues between lists.
 - Drag and reorder the lists themselves.
 - Change issue labels on-the-fly while dragging issues between lists.
@@ -62,10 +62,10 @@ because the labels associated to them will not exist up until that moment,
 which means the system has no way of populating them automatically. It'll be
 the users' job to add individual issues to them.
 
-## Adding a new list
+## Creating a new list
 
-Add a new list by clicking on the **Add new list** button at the upper right
-corner of the Issue Board.
+Create a new list by clicking on the **Create new list** button at the upper
+right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)
 
@@ -73,16 +73,16 @@ Simply choose the label to create the list from. The new list will be inserted
 at the end of the lists, before **Done**. Moving and reordering lists is as
 easy as dragging them around.
 
-To add a list for a label that doesn't exist yet, simply create the label by
+To create a list for a label that doesn't exist yet, simply create the label by
 choosing **Create new label**. The label will be created on-the-fly and it will
-be immediately added to the dropdown. You can now choose it to add a list.
+be immediately added to the dropdown. You can now choose it to create a list.
 
-## Removing a list
+## Deleting a list
 
-To remove a list from the Issue Board use the small trash icon that is present
+To delete a list from the Issue Board use the small trash icon that is present
 in the list's heading. A confirmation dialog will appear for you to confirm.
 
-Removing a list doesn't have any effect in issues and labels, it's just the
+Deleting a list doesn't have any effect in issues and labels, it's just the
 list view that is removed.
 
 ## Filtering issues
@@ -114,13 +114,13 @@ A typical workflow of using the Issue Board would be:
 1. When the issue is finally resolved, the issue is moved to the **Done** list
    and gets automatically closed.
 
-For instance you can add a
-list based on the label of 'Frontend' and one for 'Backend'. A designer can start
-working on an issue by dragging it from **Backlog** to 'Frontend'. That way, everyone
-knows that this issue is now being worked on by the designers. Then, once they’re
-done, all they have to do is drag it over to the next list, 'Backend', where a
-backend developer can eventually pick it up. Once they’re done, they move it to
-**Done**, to close the issue.
+For instance you can add a list based on the label of 'Frontend' and one for
+'Backend'. A designer can start working on an issue by dragging it from
+**Backlog** to 'Frontend'. That way, everyone knows that this issue is now being
+worked on by the designers. Then, once they're done, all they have to do is
+drag it over to the next list, 'Backend', where a backend developer can
+eventually pick it up. Once they’re done, they move it to **Done**, to close the
+issue.
 
 ## Permissions
 
