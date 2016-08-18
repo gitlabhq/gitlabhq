@@ -121,6 +121,7 @@ v 8.11.0 (unreleased)
   - Sort folders with submodules in Files view !5521
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
+  - Add pipelines tab to merge requests
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
