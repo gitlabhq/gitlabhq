@@ -1,7 +1,7 @@
 class ElasticCommitIndexerWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :elasticsearch
+  sidekiq_options queue: :elasticsearch, retry: 2
 
   def perform(project_id, oldrev = nil, newrev = nil)
     project = Project.find(project_id)

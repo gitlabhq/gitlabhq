@@ -2,7 +2,7 @@ class ElasticIndexerWorker
   include Sidekiq::Worker
   include Elasticsearch::Model::Client::ClassMethods
 
-  sidekiq_options queue: :elasticsearch
+  sidekiq_options queue: :elasticsearch, retry: 2
 
   ISSUE_TRACKED_FIELDS = %w(assignee_id author_id confidential)
 
