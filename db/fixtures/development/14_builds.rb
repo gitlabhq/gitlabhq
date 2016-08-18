@@ -147,7 +147,7 @@ class Gitlab::Seeder::Builds
 end
 
 Gitlab::Seeder.quiet do
-  Project.all.sample(10).each do |project|
+  Project.all.sample(5).each do |project|
     project_builds = Gitlab::Seeder::Builds.new(project)
     project_builds.seed!
   end
