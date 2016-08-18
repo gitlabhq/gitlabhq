@@ -1,5 +1,5 @@
-- if can?(current_user, :remove_pages, @project)
-  - if @project.pages_deployed?
+- if @project.pages_deployed?
+  - if can?(current_user, :remove_pages, @project)
     .panel.panel-default.panel.panel-danger
       .panel-heading Remove pages
       .errors-holder
@@ -8,5 +8,5 @@
           Removing the pages will prevent from exposing them to outside world.
         .form-actions
           = link_to 'Remove pages', namespace_project_pages_path(@project.namespace, @project), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove"
-- else
-  .nothing-here-block Only the project owner can remove pages
+  - else
+    .nothing-here-block Only the project owner can remove pages
