@@ -1,5 +1,5 @@
 %td
-  = render partial: 'access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.merge_access_levels, input_basic_name: 'merge_access_levels_attributes', toggle_class: 'js-allowed-to-merge' }
+  = render partial: 'access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.merge_access_levels, level_frequencies: protected_branch.merge_access_level_frequencies, input_basic_name: 'merge_access_levels_attributes', toggle_class: 'js-allowed-to-merge' }
 
 %td
-  = render partial: 'access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.push_access_levels, input_basic_name: 'push_access_levels_attributes', toggle_class: 'js-allowed-to-push' }
+  = render partial: 'access_level_dropdown', locals: { protected_branch: protected_branch, access_levels: protected_branch.push_access_levels, level_frequencies: protected_branch.push_access_level_frequencies, input_basic_name: 'push_access_levels_attributes', toggle_class: 'js-allowed-to-push' }

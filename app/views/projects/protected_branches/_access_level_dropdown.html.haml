@@ -1,6 +1,5 @@
 - defaultLabel = 'Select'
 - dropdownLabel = defaultLabel
-- access_by_type = protected_branch.merge_access_level_frequencies
 
 - if access_levels.present?
   - access_levels.map.with_index do |level, i|
@@ -13,7 +12,7 @@
     %input{ type: 'hidden', name: "protected_branch[#{input_basic_name}][#{i}][#{fieldKey}]",
                             value: value, data: { type: level.type, id: level.id } }
   
-  - dropdownLabel = [pluralize(access_by_type[:role], 'role'), pluralize(access_by_type[:user], 'user')].to_sentence
+  - dropdownLabel = [pluralize(level_frequencies[:role], 'role'), pluralize(level_frequencies[:user], 'user')].to_sentence
 
 = dropdown_tag(dropdownLabel, options: { toggle_class: "#{toggle_class} js-multiselect", dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
                                     data: { default_label: defaultLabel } })
