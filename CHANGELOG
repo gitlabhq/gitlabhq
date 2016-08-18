@@ -127,6 +127,7 @@ v 8.11.0 (unreleased)
   - Ensure file editing in UI does not overwrite commited changes without warning user
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
+  - Simplify SQL queries of marking a todo as done
 
 v 8.10.6 (unreleased)
   - Fix import/export configuration missing some included attributes
