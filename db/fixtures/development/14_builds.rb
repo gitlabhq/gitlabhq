@@ -41,7 +41,7 @@ class Gitlab::Seeder::Builds
   end
 
   def create_master_pipelines
-    @project.repository.commits('master', limit: 5).map do |commit|
+    @project.repository.commits('master', limit: 4).map do |commit|
       create_pipeline!(@project, 'master', commit)
     end
   rescue
@@ -49,11 +49,11 @@ class Gitlab::Seeder::Builds
   end
 
   def create_merge_request_pipelines
-    pipelines = @project.merge_requests.first(5).map do |merge_request|
+    pipelines = @project.merge_requests.first(3).map do |merge_request|
       project = merge_request.source_project
       branch = merge_request.source_branch
 
-      merge_request.commits.last(5).map do |commit|
+      merge_request.commits.last(4).map do |commit|
         create_pipeline!(project, branch, commit)
       end
     end
@@ -71,7 +71,7 @@ class Gitlab::Seeder::Builds
   def build_create!(pipeline, opts = {})
     attributes = build_attributes_for(pipeline, opts)
 
-    Ci::Build.create!(attributes) do |build|
+    Ci::Build.create!(attributes).tap do |build|
       if opts[:name].start_with?('build')
         artifacts_cache_file(artifacts_archive_path) do |file|
           build.artifacts_file = file
@@ -82,8 +82,12 @@ class Gitlab::Seeder::Builds
         end
       end
 
+      ##
+      # We need to set build trace after saving a build (id required)
+      # That is why we need `#tap` method instead of passing block
+      # directly to `Ci::Build#create!`.
+      #
       if %w(running success failed).include?(build.status)
-        # We need to set build trace after saving a build (id required)
         build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
       end
     end
