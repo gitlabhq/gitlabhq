@@ -61,7 +61,7 @@
           Joined #{time_ago_with_tooltip(member.created_at)}
         - if member.expires?
           ·
-          %span{ class: ('text-warning' if member_expires_soon?(member)) }
+          %span{ class: ('text-warning' if member.expires_soon?) }
             Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
     - else

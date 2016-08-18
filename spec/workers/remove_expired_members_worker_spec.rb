@@ -14,12 +14,12 @@ describe RemoveExpiredMembersWorker do
         expect(Member.find_by(id: expired_project_member.id)).to be_nil
       end
 
-      it 'leaves members who expire in the future' do
+      it 'leaves members that expire in the future' do
         worker.perform
         expect(project_member_expiring_in_future.reload).to be_present
       end
 
-      it 'leaves members who do not expire at all' do
+      it 'leaves members that do not expire at all' do
         worker.perform
         expect(non_expiring_project_member.reload).to be_present
       end
@@ -35,12 +35,12 @@ describe RemoveExpiredMembersWorker do
         expect(Member.find_by(id: expired_group_member.id)).to be_nil
       end
 
-      it 'leaves members who expire in the future' do
+      it 'leaves members that expire in the future' do
         worker.perform
         expect(group_member_expiring_in_future.reload).to be_present
       end
 
-      it 'leaves members who do not expire at all' do
+      it 'leaves members that do not expire at all' do
         worker.perform
         expect(non_expiring_group_member.reload).to be_present
       end

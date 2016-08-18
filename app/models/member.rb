@@ -1,6 +1,7 @@
 class Member < ActiveRecord::Base
   include Sortable
   include Importable
+  include Expirable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -31,7 +32,6 @@ class Member < ActiveRecord::Base
   scope :non_invite, -> { where(invite_token: nil) }
   scope :request, -> { where.not(requested_at: nil) }
   scope :has_access, -> { where('access_level > 0') }
-  scope :expired, -> { where('expires_at <= ?', Time.current) }
 
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
@@ -123,10 +123,6 @@ class Member < ActiveRecord::Base
 
   def pending?
     invite? || request?
-  end
-
-  def expires?
-    expires_at.present?
   end
 
   def accept_request

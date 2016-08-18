@@ -173,6 +173,7 @@
           new BuildArtifacts();
           break;
         case 'projects:group_links:index':
+          new MemberExpirationDate();
           new GroupsSelect();
           break;
         case 'search:show':
