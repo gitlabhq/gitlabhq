@@ -3,7 +3,7 @@
 
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
-      const { $dropdown, data, onSelect } = options;
+      const { $dropdown, onSelect, onHide } = options;
       const self = this;
 
       this.$dropdown = $dropdown;
@@ -25,6 +25,10 @@
         hidden() {
           // Here because last selected item is not considered after first close
           this.activeIds = self.getActiveIds();
+
+          if (onHide) {
+            onHide();
+          }
         },
         setActiveIds() {
           // Needed for pre select options
@@ -33,7 +37,10 @@
         clicked(item, $el, e) {
           e.preventDefault();
           self.inputCount++;
-          onSelect();
+
+          if (onSelect) {
+            onSelect();
+          } 
         }
       });
     }
