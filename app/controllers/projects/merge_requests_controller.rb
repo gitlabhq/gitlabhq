@@ -216,7 +216,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
-
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses.relevant if @pipeline
 
@@ -382,7 +381,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+    @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request

@@ -199,6 +199,9 @@
                 case 'edit':
                   new Labels();
               }
+            case 'abuse_reports':
+              new gl.AbuseReports();
+              break;
           }
           break;
         case 'dashboard':

@@ -1,6 +1,8 @@
 module Issues
   class CloseService < Issues::BaseService
     def execute(issue, commit: nil, notifications: true, system_note: true)
+      return issue unless can?(current_user, :update_issue, issue)
+
       if project.jira_tracker? && project.jira_service.active
         project.jira_service.execute(commit, issue)
         todo_service.close_issue(issue, current_user)

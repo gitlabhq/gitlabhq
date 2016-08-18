@@ -532,3 +532,49 @@ Example response:
   "user": null
 }
 ```
+
+## Play a build
+
+Triggers a manual action to start a build.
+
+```
+POST /projects/:id/builds/:build_id/play
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer | yes      | The ID of a project |
+| `build_id` | integer | yes      | The ID of a build   |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/play"
+```
+
+Example of response
+
+```json
+{
+  "commit": {
+    "author_email": "admin@example.com",
+    "author_name": "Administrator",
+    "created_at": "2015-12-24T16:51:14.000+01:00",
+    "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+    "message": "Test the CI integration.",
+    "short_id": "0ff3ae19",
+    "title": "Test the CI integration."
+  },
+  "coverage": null,
+  "created_at": "2016-01-11T10:13:33.506Z",
+  "artifacts_file": null,
+  "finished_at": null,
+  "id": 69,
+  "name": "rubocop",
+  "ref": "master",
+  "runner": null,
+  "stage": "test",
+  "started_at": null,
+  "status": "started",
+  "tag": false,
+  "user": null
+}
+```

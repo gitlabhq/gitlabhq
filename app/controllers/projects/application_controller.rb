@@ -83,6 +83,7 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def apply_diff_view_cookie!
+    @show_changes_tab = params[:view].present?
     cookies.permanent[:diff_view] = params.delete(:view) if params[:view].present?
   end
 

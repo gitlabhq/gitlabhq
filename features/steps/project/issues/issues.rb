@@ -299,7 +299,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I fill in issue search with \'Rock and roll\'' do
-    filter_issue 'Description for issue'
+    filter_issue 'Rock and roll'
   end
 
   step 'I should see \'Bugfix1\' in issues' do
