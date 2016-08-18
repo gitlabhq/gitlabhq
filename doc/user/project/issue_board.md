@@ -15,6 +15,14 @@ With the Issue Board you can have a different view of your issues while also
 maintaining the same filtering and sorting abilities you see across the
 issue tracker.
 
+Below is a table of the definitions used for GitLab's Issue Board.
+
+| How we call it  | What it means |
+| --------------  | ------------- |
+| **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
+| **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
+| **Card**        | Every card represents an issue and it is shown under the list for which it has a label for. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. Issues inside lists are [ordered by priority](labels.md#prioritize-labels). |
+
 There are three types of lists, of which two are default:
 
 - **Backlog** (default): shows all issues that do not fall in one of the other
@@ -26,86 +34,116 @@ There are three types of lists, of which two are default:
 
 ---
 
-Below is a table of the definitions used for GitLab's Issue Board.
+In short, here's a list of actions you can take in an Issue Board:
 
-| Term | Definition |
-| ---- | ----------- |
-| **Issue Board** | It can have multiple lists with each list consisting of issues represented by cards. |
-| **List** | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
-| **Card** | Every card represents an issue. The information you can see on a card consists of the issue number, the issue title and the labels associated with it. You can drag cards around from one lists to another. Issues are [ordered by priority](labels.md#prioritize-labels). |
+- [Add a new list](#adding-a-new-list).
+- [Remove an existing list](#removing-a-list).
+- Drag issues between lists.
+- Drag and reorder the lists themselves.
+- Change issue labels on-the-fly while dragging issues between lists.
+- Close an issue if you drag it to the **Done** list.
+- Add a new list from a non-existing label by creating the label on-the-fly.
+- [Filter issues](#filtering-issues) that appear across your Issue Board.
 
-## Functionality
-
-The Issue Board consists of lists appearing as columns. Each list you add is
-named after and based on the labels that already exist in your issue tracker.
-Issues can be seen as cards and they can easily be moved between the lists, as
-to create workflows. The issues inside each list are sorted by priority.
-
-The first time you navigate to your Issue Board, you will be presented with the
-two special lists (**Backlog** and **Done**) and a welcoming message that
-The starting point is two lists: **Backlog** and **Done**. The **Backlog**
-list shows all issues that do not fall in one of the other lists. Drag a card
-to the **Done** list and the relevant issue will be closed.
-
-Here's a list of actions you can take in an Issue Board:
-
-1. Add a new issue list
-1. Delete an issue list
-1. Drag issues between lists
-1. Drag and reorder the lists themselves
-1. Change issue labels on-the-fly while dragging issues between lists
-1. Close an issue if you drag it to the **Done** list
-1. Add a new list from a non-existing label by creating the label on-the-fly
-1. Populate lists with issues automatically
-
-Moving an issue between lists removes the label from the list it came from
-and adds the label of the list it goes to.
-
-When moving to Done, remove the label of the list it came from and close the issue.
-
-An issue can exist in multiple lists if it has more than one labels.
+If you are not able to perform one or more of the things above, make sure you
+have the right [permissions](#permissions).
 
 ## First time using the Issue Board
 
-When default lists are created, they are empty because the labels associated to
-them did not exist up until that moment, which means the system has no way of
-populating them automatically. It'll be the users' job to add individual issues to them.
+The first time you navigate to your Issue Board, you will be presented with the
+two special lists (**Backlog** and **Done**) and a welcoming message that gives
+you two options. You can either create a predefined set of labels and add their
+corresponding lists to the Issue Board or opt-out and use your own lists.
+
+![Issue Board welcome message](img/issue_board_welcome_message.png)
+
+If you choose to use and add the default lists, they will appear as empty
+because the labels associated to them will not exist up until that moment,
+which means the system has no way of populating them automatically. It'll be
+the users' job to add individual issues to them.
 
 ## Adding a new list
 
-Add a new list by clicking on the button. In a modal you will find a label
-dropdown, where you can also create new labels (like in the sidebar).
+Add a new list by clicking on the **Add new list** button at the upper right
+corner of the Issue Board.
 
-The new list should be inserted at the end of the lists, before Done.
+![Issue Board welcome message](img/issue_board_add_list.png)
 
-## Moving lists
+Simply choose the label to create the list from. The new list will be inserted
+at the end of the lists, before **Done**. Moving and reordering lists is as
+easy as dragging them around.
 
-You should be able to drag the label lists around by dragging them on the top.
+To add a list for a label that doesn't exist yet, simply create the label by
+choosing **Create new label**. The label will be created on-the-fly and it will
+be immediately added to the dropdown. You can now choose it to add a list.
+
+## Removing a list
+
+To remove a list from the Issue Board use the small trash icon that is present
+in the list's heading. A confirmation dialog will appear for you to confirm.
+
+Removing a list doesn't have any effect in issues and labels, it's just the
+list view that is removed.
+
+## Filtering issues
+
+You should be able to use the filters on top of your Issue Board to show only
+the results you want. This is similar to the filtering used in the issue tracker
+since the metadata from the issues and labels are re-used in the Issue Board.
+
+You can filter by author, assignee, milestone and label.
 
 ## Creating workflows
 
-By adding new lists, you can create workflows. For instance you can create a
+By adding new lists, you can create workflows. As lists in Issue Boards are
+based on labels, it works out of the box with your existing issues. So if you've
+already labeled things with 'Backend' and 'Frontend', the issue will appear in
+the lists as you create them. In addition, this means you can easily move
+something between lists by changing a label.
+
+A typical workflow of using the Issue Board would be:
+
+1. You have [created labels] so that you can easily categorize your issues.
+1. You have a bunch of issues (ideally labeled).
+1. You visit the Issue Board and start [adding lists](#adding-a-new-list) as to
+   create a workflow.
+1. You move issues around in lists so that your team knows who should be working
+   on what issue.
+1. When the work by one team is done, the issue can be dragged to the next list
+   so someone else can pick up.
+1. When the issue is finally resolved, the issue is moved to the **Done** list
+   and gets automatically closed.
+
+For instance you can add a
 list based on the label of 'Frontend' and one for 'Backend'. A designer can start
 working on an issue by dragging it from **Backlog** to 'Frontend'. That way, everyone
-knows, this issue is now being worked on by the designers. Then, once they’re
+knows that this issue is now being worked on by the designers. Then, once they’re
 done, all they have to do is drag it over to the next list, 'Backend', where a
 backend developer can eventually pick it up. Once they’re done, they move it to
 **Done**, to close the issue.
 
-As lists in Issue Boards are based on labels, it works out of the box with your
-existing issues. So if you've already labeled things with 'Backend' and 'Frontend',
-the issue will appear in the lists as you create them. In addition, this means
-you can easily move something between lists by changing a label.
+## Permissions
 
-If you move an issue from one list to the next, it removes the label from the
-list it comes from and adds the label from the list it moves towards.
+[Developers and up](../permissions.md) can use all the functionality of the
+Issue Board, that is add/remove lists and drag issues around.
 
-## Filtering issues
+## Tips
 
-You should be able to use the filters on top, as seen in the mockup and similar to the issue list.
-Every issue contains metadata.
+A few things to remember:
+
+- Moving an issue between lists removes the label from the list it came from
+  and adds the label from the list it goes to.
+- When moving a card to **Done**, the label of the list it came from is removed
+  the issue gets closed.
+- An issue can exist in multiple lists if it has more than one labels.
+- Lists are populated with issues automatically if the issues are labeled.
+- Clicking on the issue title inside a card will get you to that issue.
+- Clicking on a label inside a card will quickly filter the entire Issue Board
+  and show only the issues from all lists that have that label.
+- Issues inside lists are [ordered by priority](labels.md#prioritize-labels).
 
 [ce-5554]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5554
 [labels]: ./labels.md
 [scrum]: https://en.wikipedia.org/wiki/Scrum_(software_development)
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)
+[created labels]: ./labels.md#create-new-labels
