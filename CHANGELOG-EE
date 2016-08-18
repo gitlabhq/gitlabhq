@@ -8,6 +8,7 @@ v 8.11.0 (unreleased)
   - Optimize commit and diff changes access check to reduce git operations
   - Allow syncing a group against all providers at once
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
+  - Allow LDAP `sync_ssh_keys` setting to be set to `true`
   - Removed unused GitLab GEO database index
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
