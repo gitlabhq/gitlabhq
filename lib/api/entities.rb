@@ -97,15 +97,16 @@ module API
         member = options[:member] || options[:members].find { |m| m.user_id == user.id }
         member.access_level
       end
+      expose :expires_at do |user, options|
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.expires_at
+      end
     end
 
     class AccessRequester < UserBasic
       expose :requested_at do |user, options|
         access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
         access_requester.requested_at
-      end
-      expose :expires_at do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).expires_at
       end
     end
 

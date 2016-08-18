@@ -126,6 +126,7 @@
           new NotificationsDropdown();
           break;
         case 'groups:group_members:index':
+          new MemberExpirationDate();
           new GroupMembers();
           new UsersSelect();
           break;

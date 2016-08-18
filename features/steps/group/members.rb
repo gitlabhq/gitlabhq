@@ -117,7 +117,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
 
     page.within "#group_member_#{member.id}" do
       click_button 'Edit'
-      select 'Developer', from: 'group_member_access_level'
+      select 'Developer', from: "member_access_level_#{member.id}"
       click_on 'Save'
     end
   end

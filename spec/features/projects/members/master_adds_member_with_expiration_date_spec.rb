@@ -19,7 +19,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
 
       page.within '.users-project-form' do
         select2(new_member.id, from: '#user_ids', multiple: true)
-        fill_in 'Access expiration date', with: '2016-08-10'
+        fill_in 'expires_at', with: '2016-08-10'
         click_on 'Add users to project'
       end
 

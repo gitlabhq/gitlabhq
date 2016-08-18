@@ -122,12 +122,13 @@ describe API::Members, api: true  do
         it 'creates a new member' do
           expect do
             post api("/#{source_type.pluralize}/#{source.id}/members", master),
-                 user_id: stranger.id, access_level: Member::DEVELOPER
+                 user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: '2016-08-05'
 
             expect(response).to have_http_status(201)
           end.to change { source.members.count }.by(1)
           expect(json_response['id']).to eq(stranger.id)
           expect(json_response['access_level']).to eq(Member::DEVELOPER)
+          expect(json_response['expires_at']).to eq('2016-08-05')
         end
       end
 
@@ -183,11 +184,12 @@ describe API::Members, api: true  do
       context 'when authenticated as a master/owner' do
         it 'updates the member' do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
-              access_level: Member::MASTER
+              access_level: Member::MASTER, expires_at: '2016-08-05'
 
           expect(response).to have_http_status(200)
           expect(json_response['id']).to eq(developer.id)
           expect(json_response['access_level']).to eq(Member::MASTER)
+          expect(json_response['expires_at']).to eq('2016-08-05')
         end
       end
 
