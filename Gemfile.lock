@@ -317,7 +317,7 @@ GEM
     grape-entity (0.4.8)
       activesupport
       multi_json (>= 1.3.2)
-    hamlit (2.5.0)
+    hamlit (2.6.1)
       temple (~> 0.7.6)
       thor
       tilt
@@ -869,7 +869,7 @@ DEPENDENCIES
   gon (~> 6.0.1)
   grape (~> 0.13.0)
   grape-entity (~> 0.4.2)
-  hamlit (~> 2.5)
+  hamlit (~> 2.6.1)
   health_check (~> 2.1.0)
   hipchat (~> 1.5.0)
   html-pipeline (~> 1.11.0)
