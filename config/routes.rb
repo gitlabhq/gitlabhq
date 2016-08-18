@@ -375,6 +375,8 @@ Rails.application.routes.draw do
           patch :skip
         end
       end
+
+      resources :u2f_registrations, only: [:destroy]
     end
   end
 

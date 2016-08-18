@@ -12,10 +12,12 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
   end
 
   def register_u2f_device(u2f_device = nil)
-    u2f_device ||= FakeU2fDevice.new(page)
+    name = FFaker::Name.first_name
+    u2f_device ||= FakeU2fDevice.new(page, name)
     u2f_device.respond_to_u2f_registration
     click_on 'Setup New U2F Device'
     expect(page).to have_content('Your device was successfully set up')
+    fill_in "Pick a name", with: name
     click_on 'Register U2F Device'
     u2f_device
   end
@@ -40,13 +42,14 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
     end
 
     describe 'when 2FA via OTP is enabled' do
-      it 'allows registering a new device' do
+      it 'allows registering a new device with a name' do
         visit profile_account_path
         manage_two_factor_authentication
         expect(page.body).to match("You've already enabled two-factor authentication using mobile")
 
-        register_u2f_device
+        u2f_device = register_u2f_device
 
+        expect(page.body).to match(u2f_device.name)
         expect(page.body).to match('Your U2F device was registered')
       end
 
@@ -55,15 +58,31 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
 
         # First device
         manage_two_factor_authentication
-        register_u2f_device
+        first_device = register_u2f_device
         expect(page.body).to match('Your U2F device was registered')
 
         # Second device
-        manage_two_factor_authentication
-        register_u2f_device
+        second_device = register_u2f_device
         expect(page.body).to match('Your U2F device was registered')
+
+        expect(page.body).to match(first_device.name)
+        expect(page.body).to match(second_device.name)
+        expect(U2fRegistration.count).to eq(2)
+      end
+
+      it 'allows deleting a device' do
+        visit profile_account_path
         manage_two_factor_authentication
-        expect(page.body).to match('You have 2 U2F devices registered')
+        expect(page.body).to match("You've already enabled two-factor authentication using mobile")
+
+        first_u2f_device = register_u2f_device
+        second_u2f_device = register_u2f_device
+
+        click_on "Delete", match: :first
+
+        expect(page.body).to match('Successfully deleted')
+        expect(page.body).not_to match(first_u2f_device.name)
+        expect(page.body).to match(second_u2f_device.name)
       end
     end
 
@@ -208,7 +227,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
 
     describe "when a given U2F device has not been registered" do
       it "does not allow logging in with that particular device" do
-        unregistered_device = FakeU2fDevice.new(page)
+        unregistered_device = FakeU2fDevice.new(page, FFaker::Name.first_name)
         login_as(user)
         unregistered_device.respond_to_u2f_authentication
         click_on "Login Via U2F Device"
@@ -262,6 +281,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
       end
 
       it "deletes u2f registrations" do
+        visit profile_account_path
         expect { click_on "Disable" }.to change { U2fRegistration.count }.by(-1)
       end
     end

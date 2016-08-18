@@ -189,6 +189,27 @@ module API
         present build, with: Entities::Build,
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
+
+      desc 'Trigger a manual build' do
+        success Entities::Build
+        detail 'This feature was added in GitLab 8.11'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a Build'
+      end
+      post ":id/builds/:build_id/play" do
+        authorize_read_builds!
+
+        build = get_build!(params[:build_id])
+
+        bad_request!("Unplayable Build") unless build.playable?
+
+        build.play(current_user)
+
+        status 200
+        present build, with: Entities::Build,
+                       user_can_download_artifacts: can?(current_user, :read_build, user_project)
+      end
     end
 
     helpers do

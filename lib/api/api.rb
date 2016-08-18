@@ -43,6 +43,7 @@ module API
     mount ::API::CommitStatuses
     mount ::API::Commits
     mount ::API::DeployKeys
+    mount ::API::Deployments
     mount ::API::Environments
     mount ::API::Files
     mount ::API::Groups
@@ -56,6 +57,7 @@ module API
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::Pipelines
     mount ::API::ProjectHooks
     mount ::API::ProjectSnippets
     mount ::API::Projects
