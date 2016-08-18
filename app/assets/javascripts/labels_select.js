@@ -34,7 +34,9 @@
 
         $sidebarLabelTooltip.tooltip();
 
-        new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+        if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
+          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+        }
 
         saveLabelData = function() {
           var data, selected;
