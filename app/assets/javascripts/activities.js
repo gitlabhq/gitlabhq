@@ -12,7 +12,7 @@
     }
 
     Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '#activity'));
+      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
     };
 
     Activities.prototype.reloadActivities = function() {
