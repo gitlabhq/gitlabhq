@@ -43,6 +43,7 @@ module API
     mount ::API::CommitStatuses
     mount ::API::Commits
     mount ::API::DeployKeys
+    mount ::API::Deployments
     mount ::API::Environments
     mount ::API::Files
     mount ::API::Groups
