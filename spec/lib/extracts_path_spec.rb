@@ -30,17 +30,6 @@ describe ExtractsPath, lib: true do
       expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
-    context 'escaped slash character in ref' do
-      let(:ref) { 'improve%2Fawesome' }
-
-      it 'has no escape sequences in @ref or @logs_path' do
-        assign_ref_vars
-
-        expect(@ref).to eq('improve/awesome')
-        expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
-      end
-    end
-
     context 'ref contains %20' do
       let(:ref) { 'foo%20bar' }
 
