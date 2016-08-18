@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160810142633) do
+ActiveRecord::Schema.define(version: 20160816161312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1015,6 +1015,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.integer  "user_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "name"
   end
 
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
