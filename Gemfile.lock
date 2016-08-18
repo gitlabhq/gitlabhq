@@ -887,12 +887,8 @@ DEPENDENCIES
   github-markup (~> 1.4)
   gitlab-elasticsearch-git (~> 0.0.17)
   gitlab-flowdock-git-hook (~> 1.0.1)
-<<<<<<< HEAD
   gitlab-license (~> 1.0)
-  gitlab_git (~> 10.4.5)
-=======
   gitlab_git (~> 10.4.7)
->>>>>>> ce/8-11-stable
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (~> 1.2.1)
   gollum-lib (~> 4.2)
