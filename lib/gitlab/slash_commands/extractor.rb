@@ -39,7 +39,7 @@ module Gitlab
         content.delete!("\r")
         content.gsub!(commands_regex(opts)) do
           if $~[:cmd]
-            commands << [$~[:cmd], $~[:args]].reject(&:blank?)
+            commands << [$~[:cmd], $~[:arg]].reject(&:blank?)
             ''
           else
             $~[0]
@@ -50,13 +50,14 @@ module Gitlab
       end
 
       private
+
       # Builds a regular expression to match known commands.
       # First match group captures the command name and
       # second match group captures its arguments.
       #
       # It looks something like:
       #
-      #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<args>[^\/\n]*)(?:\n|$)/
+      #   /^\/(?<cmd>close|reopen|...)(?:( |$))(?<arg>[^\/\n]*)(?:\n|$)/
       def commands_regex(opts)
         names = command_names(opts).map(&:to_s)
 
@@ -64,7 +65,7 @@ module Gitlab
             (?<code>
               # Code blocks:
               # ```
-              # Anything, including `/cmd args` which are ignored by this filter
+              # Anything, including `/cmd arg` which are ignored by this filter
               # ```
 
               ^```
@@ -75,7 +76,7 @@ module Gitlab
             (?<html>
               # HTML block:
               # <tag>
-              # Anything, including `/cmd args` which are ignored by this filter
+              # Anything, including `/cmd arg` which are ignored by this filter
               # </tag>
 
               ^<[^>]+?>\n
@@ -86,7 +87,7 @@ module Gitlab
             (?<html>
               # Quote block:
               # >>>
-              # Anything, including `/cmd args` which are ignored by this filter
+              # Anything, including `/cmd arg` which are ignored by this filter
               # >>>
 
               ^>>>
@@ -102,7 +103,7 @@ module Gitlab
               (?<cmd>#{Regexp.union(names)})
               (?:
                 [ ]
-                (?<args>[^\/\n]*)
+                (?<arg>[^\/\n]*)
               )?
               (?:\n|$)
             )

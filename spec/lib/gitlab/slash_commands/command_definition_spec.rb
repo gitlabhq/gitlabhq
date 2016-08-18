@@ -24,7 +24,7 @@ describe Gitlab::SlashCommands::CommandDefinition do
   describe "#noop?" do
     context "when the command has an action block" do
       before do
-        subject.action_block = -> { }
+        subject.action_block = proc { }
       end
 
       it "returns false" do
@@ -44,7 +44,7 @@ describe Gitlab::SlashCommands::CommandDefinition do
 
     context "when the command has a condition block" do
       before do
-        subject.condition_block = -> { go }
+        subject.condition_block = proc { go }
       end
 
       context "when the condition block returns true" do
@@ -78,7 +78,7 @@ describe Gitlab::SlashCommands::CommandDefinition do
       it "doesn't execute the command" do
         expect(context).not_to receive(:instance_exec)
 
-        subject.execute(context, {})
+        subject.execute(context, {}, nil)
 
         expect(context.run).to be false
       end
@@ -86,52 +86,82 @@ describe Gitlab::SlashCommands::CommandDefinition do
 
     context "when the command is not a noop" do
       before do
-        subject.action_block = -> { self.run = true }
+        subject.action_block = proc { self.run = true }
       end
 
       context "when the command is not available" do
         before do
-          subject.condition_block = -> { false }
+          subject.condition_block = proc { false }
         end
 
         it "doesn't execute the command" do
-          subject.execute(context, {})
+          subject.execute(context, {}, nil)
 
           expect(context.run).to be false
         end
       end
 
       context "when the command is available" do
-        context "when the command has an exact number of arguments" do
+        context "when the commnd has no arguments" do
           before do
-            subject.action_block = ->(arg) { self.run = arg }
+            subject.action_block = proc { self.run = true }
           end
 
-          context "when the command is provided a wrong number of arguments" do
-            it "doesn't execute the command" do
-              subject.execute(context, {}, true, true)
-
-              expect(context.run).to be false
-            end
-          end
-
-          context "when the command is provided the right number of arguments" do
+          context "when the command is provided an argument" do
             it "executes the command" do
               subject.execute(context, {}, true)
 
               expect(context.run).to be true
             end
           end
+
+          context "when the command is not provided an argument" do
+            it "executes the command" do
+              subject.execute(context, {}, nil)
+
+              expect(context.run).to be true
+            end
+          end
         end
 
-        context "when the command has a variable number of arguments" do
+        context "when the command has 1 required argument" do
           before do
-            subject.action_block = ->(*args) { self.run = args.first }
+            subject.action_block = ->(arg) { self.run = arg }
           end
 
-          context "when the command is provided any number of arguments" do
+          context "when the command is provided an argument" do
             it "executes the command" do
-              subject.execute(context, {}, true, true)
+              subject.execute(context, {}, true)
+
+              expect(context.run).to be true
+            end
+          end
+
+          context "when the command is not provided an argument" do
+            it "doesn't execute the command" do
+              subject.execute(context, {}, nil)
+
+              expect(context.run).to be false
+            end
+          end
+        end
+
+        context "when the command has 1 optional argument" do
+          before do
+            subject.action_block = proc { |arg = nil| self.run = arg || true }
+          end
+
+          context "when the command is provided an argument" do
+            it "executes the command" do
+              subject.execute(context, {}, true)
+
+              expect(context.run).to be true
+            end
+          end
+
+          context "when the command is not provided an argument" do
+            it "executes the command" do
+              subject.execute(context, {}, nil)
 
               expect(context.run).to be true
             end

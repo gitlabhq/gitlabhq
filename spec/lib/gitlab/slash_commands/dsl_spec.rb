@@ -31,16 +31,12 @@ describe Gitlab::SlashCommands::Dsl do
       command :cond_action do |arg|
         arg
       end
-
-      command :wildcard do |*args|
-        args
-      end
     end
   end
 
   describe '.command_definitions' do
     it 'returns an array with commands definitions' do
-      no_args_def, one_arg_def, two_args_def, cc_def, cond_action_def, wildcard_def = DummyClass.command_definitions
+      no_args_def, one_arg_def, two_args_def, cc_def, cond_action_def = DummyClass.command_definitions
 
       expect(no_args_def.name).to eq(:no_args)
       expect(no_args_def.aliases).to eq([:none])
@@ -76,13 +72,6 @@ describe Gitlab::SlashCommands::Dsl do
       expect(cond_action_def.params).to eq([])
       expect(cond_action_def.condition_block).to be_a_kind_of(Proc)
       expect(cond_action_def.action_block).to be_a_kind_of(Proc)
-
-      expect(wildcard_def.name).to eq(:wildcard)
-      expect(wildcard_def.aliases).to eq([])
-      expect(wildcard_def.description).to eq('')
-      expect(wildcard_def.params).to eq([])
-      expect(wildcard_def.condition_block).to be_nil
-      expect(wildcard_def.action_block).to be_a_kind_of(Proc)
     end
   end
 end

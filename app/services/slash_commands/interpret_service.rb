@@ -18,11 +18,11 @@ module SlashCommands
 
       content, commands = extractor.extract_commands(content, opts)
 
-      commands.each do |name, args|
+      commands.each do |name, arg|
         definition = self.class.command_definitions_by_name[name.to_sym]
         next unless definition
 
-        definition.execute(self, opts, args)
+        definition.execute(self, opts, arg)
       end
 
       [content, @updates]

@@ -28,13 +28,14 @@ module Gitlab
         context.instance_exec(&condition_block)
       end
 
-      def execute(context, opts, args)
+      def execute(context, opts, arg)
         return if noop? || !available?(opts)
 
-        block_arity = action_block.arity
-        return unless (args.present? && block_arity == 1) || (args.blank? && block_arity <= 0)
-
-        context.instance_exec(args, &action_block)
+        if arg.present?
+          context.instance_exec(arg, &action_block)
+        elsif action_block.arity == 0
+          context.instance_exec(&action_block)
+        end
       end
 
       def to_h(opts)
