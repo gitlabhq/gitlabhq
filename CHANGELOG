@@ -11,6 +11,7 @@ v 8.11.0 (unreleased)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
   - Update to Ruby 2.3.1. !4948
   - Add Issues Board !5548
+  - Allow resolving merge conflicts in the UI !5479
   - Improve diff performance by eliminating redundant checks for text blobs
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
