@@ -48,6 +48,7 @@ v 8.11.0 (unreleased)
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
+  - API: Add enpoints for pipelines
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
   - Fix repository push email formatting in Outlook
