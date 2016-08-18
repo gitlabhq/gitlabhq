@@ -80,18 +80,19 @@ class IssuableBaseService < BaseService
     params[key] = project.labels.where(id: params[key]).pluck(:id)
   end
 
-  def process_label_ids(attributes, existing_label_ids: [])
+  def process_label_ids(attributes, existing_label_ids: nil)
     label_ids = attributes.delete(:label_ids)
     add_label_ids = attributes.delete(:add_label_ids)
     remove_label_ids = attributes.delete(:remove_label_ids)
 
-    new_label_ids = existing_label_ids
+    new_label_ids = existing_label_ids || label_ids || []
 
-    override_existing = new_label_ids.empty? || (add_label_ids.blank? && remove_label_ids.blank?)
-    new_label_ids = label_ids if label_ids && override_existing
-
-    new_label_ids |= add_label_ids if add_label_ids
-    new_label_ids -= remove_label_ids if remove_label_ids
+    if add_label_ids.blank? && remove_label_ids.blank?
+      new_label_ids = label_ids if label_ids
+    else
+      new_label_ids |= add_label_ids if add_label_ids
+      new_label_ids -= remove_label_ids if remove_label_ids
+    end
 
     new_label_ids
   end
