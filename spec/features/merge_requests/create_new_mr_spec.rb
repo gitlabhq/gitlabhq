@@ -51,15 +51,12 @@ feature 'Create New Merge Request', feature: true, js: true do
 
     click_link 'Changes'
 
-    expect(page.find_link('Inline')[:class]).to match(/\bactive\b/)
-    expect(page.find_link('Side-by-side')[:class]).not_to match(/\bactive\b/)
+    expect(page).to have_css('a.btn.active', text: 'Inline')
+    expect(page).not_to have_css('a.btn.active', text: 'Side-by-side')
 
     click_link 'Side-by-side'
-    wait_for_ajax
 
-    within '.merge-request' do
-      expect(page).not_to have_css('a.btn.active', text: 'Inline')
-      expect(page).to have_css('a.btn.active', text: 'Side-by-side')
-    end
+    expect(page).to have_css('a.btn.active', text: 'Side-by-side')
+    expect(page).not_to have_css('a.btn.active', text: 'Inline')
   end
 end
