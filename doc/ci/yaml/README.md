@@ -353,7 +353,7 @@ job_name:
 | except        | no | Defines a list of git refs for which build is not created |
 | tags          | no | Defines a list of tags which are used to select Runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
-| when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| when          | no | Define when to run build. Can be `on_success`, `on_failure`, `always` or `manual` |
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list of build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
