@@ -77,11 +77,17 @@
   - if show_roles
     .edit-member.hide.js-toggle-content
       %br
-      = form_for member, remote: true do |f|
-        .prepend-top-10
-          = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
+      = form_for member, remote: true, html: { class: 'form-horizontal' }  do |f|
+        .form-group
+          = label_tag :expires_at, 'Project access', class: 'control-label'
+          .col-sm-10
+            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
         - if member.is_a?(ProjectMember)
-          .prepend-top-10
-            = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Access expiration date', id: "member_expires_at_#{member.id}"
+          .form-group
+            = label_tag :expires_at, 'Access expiration date', class: 'control-label'
+            .col-sm-10
+              .clearable-input
+                = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date', id: "member_expires_at_#{member.id}"
+                %i.clear-icon.js-clear-input
         .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'

@@ -15,11 +15,11 @@
         %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
   .form-group
-    = label_tag :expires_at, 'Access expiration date', class: 'control-label'
+    = f.label :expires_at, 'Access expiration date', class: 'control-label'
     .col-sm-10
-      = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
-      .help-block
-        Leave it empty if you do not want this user's access to expire.
+      .clearable-input
+        = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
+        %i.clear-icon.js-clear-input
 
   .form-actions
     = f.submit 'Add users to project', class: "btn btn-create"

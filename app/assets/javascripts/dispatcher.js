@@ -126,6 +126,7 @@
           new UsersSelect();
           break;
         case 'projects:project_members:index':
+          new MemberExpirationDate();
           new ProjectMembers();
           new UsersSelect();
           break;
