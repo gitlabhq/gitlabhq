@@ -216,7 +216,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
-
+    @show_diff_tab = check_diff_tab
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses.relevant if @pipeline
 
@@ -519,5 +519,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+  end
+
+  private
+
+  def check_diff_tab
+    request.query_parameters[:view].present?
   end
 end
