@@ -452,7 +452,11 @@ ul.notes {
 }
 
 .discussion-next-btn {
-  path {
-    fill: $gray-darkest;
+  svg {
+    margin: 0;
+    
+    path {
+      fill: $gray-darkest;
+    }
   }
 }
