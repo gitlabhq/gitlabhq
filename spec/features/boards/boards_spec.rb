@@ -147,6 +147,7 @@ describe 'Issue Boards', feature: true, js: true do
         expect(page).to have_selector('.card', count: 20)
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+        wait_for_vue_resource(spinner: false)
 
         expect(page.find('.board-header')).to have_content('40')
         expect(page).to have_selector('.card', count: 40)
@@ -165,6 +166,8 @@ describe 'Issue Boards', feature: true, js: true do
         page.within(find('.board', match: :first)) do
           find('.form-control').set issue1.title
 
+          wait_for_vue_resource(spinner: false)
+
           expect(page).to have_selector('.card', count: 1)
         end
       end
@@ -176,7 +179,11 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page).to have_selector('.card', count: 1)
 
           find('.board-search-clear-btn').click
+        end
 
+        wait_for_vue_resource
+
+        page.within(find('.board', match: :first)) do
           expect(page).to have_selector('.card', count: 6)
         end
       end
@@ -188,6 +195,8 @@ describe 'Issue Boards', feature: true, js: true do
           expect(page.find('.board-header')).to have_content('5')
           expect(page).to have_selector('.card', count: 5)
         end
+
+        wait_for_vue_resource
 
         page.within(find('.board:nth-child(2)')) do
           expect(page.find('.board-header')).to have_content('3')
@@ -263,6 +272,7 @@ describe 'Issue Boards', feature: true, js: true do
       context 'new list' do
         it 'shows all labels in new list dropdown' do
           click_button 'Create new list'
+          wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
             expect(page).to have_content(planning.title)
@@ -273,6 +283,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         it 'creates new list for label' do
           click_button 'Create new list'
+          wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link testing.title
@@ -285,6 +296,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         it 'creates new list for Backlog label' do
           click_button 'Create new list'
+          wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link backlog.title
@@ -297,6 +309,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         it 'creates new list for Done label' do
           click_button 'Create new list'
+          wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link done.title
@@ -314,6 +327,7 @@ describe 'Issue Boards', feature: true, js: true do
           end
 
           click_button 'Create new list'
+          wait_for_ajax
 
           page.within('.dropdown-menu-issues-board-new') do
             click_link testing.title
@@ -333,6 +347,7 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by author' do
         page.within '.issues-filters' do
           click_button('Author')
+          wait_for_ajax
 
           page.within '.dropdown-menu-author' do
             click_link(user2.name)
@@ -358,6 +373,7 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by assignee' do
         page.within '.issues-filters' do
           click_button('Assignee')
+          wait_for_ajax
 
           page.within '.dropdown-menu-assignee' do
             click_link(user.name)
@@ -383,6 +399,7 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by milestone' do
         page.within '.issues-filters' do
           click_button('Milestone')
+          wait_for_ajax
 
           page.within '.milestone-filter' do
             click_link(milestone.title)
@@ -408,6 +425,7 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by label' do
         page.within '.issues-filters' do
           click_button('Label')
+          wait_for_ajax
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
@@ -436,6 +454,7 @@ describe 'Issue Boards', feature: true, js: true do
 
         page.within '.issues-filters' do
           click_button('Label')
+          wait_for_ajax
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
@@ -460,8 +479,9 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by multiple labels' do
         page.within '.issues-filters' do
           click_button('Label')
+          wait_for_ajax
 
-          page.within '.dropdown-menu-labels' do
+          page.within(find('.dropdown-menu-labels')) do
             click_link(testing.title)
             wait_for_vue_resource(spinner: false)
             click_link(bug.title)
@@ -486,6 +506,7 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by no label' do
         page.within '.issues-filters' do
           click_button('Label')
+          wait_for_ajax
 
           page.within '.dropdown-menu-labels' do
             click_link("No Label")
@@ -510,9 +531,12 @@ describe 'Issue Boards', feature: true, js: true do
       it 'filters by clicking label button on issue' do
         page.within(find('.board', match: :first)) do
           expect(page).to have_selector('.card', count: 6)
+          expect(find('.card', match: :first)).to have_content(bug.title)
           click_button(bug.title)
           wait_for_vue_resource(spinner: false)
         end
+
+        wait_for_vue_resource
 
         page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('1')
