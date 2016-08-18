@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Create New Merge Request', feature: true, js: true do
+  include WaitForAjax
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
 
@@ -53,10 +55,11 @@ feature 'Create New Merge Request', feature: true, js: true do
     expect(page.find_link('Side-by-side')[:class]).not_to match(/\bactive\b/)
 
     click_link 'Side-by-side'
+    wait_for_ajax
 
-    click_link 'Changes'
-
-    expect(page.find_link('Inline')[:class]).not_to match(/\bactive\b/)
-    expect(page.find_link('Side-by-side')[:class]).to match(/\bactive\b/)
+    within '.merge-request' do
+      expect(page).not_to have_css('a.btn.active', text: 'Inline')
+      expect(page).to have_css('a.btn.active', text: 'Side-by-side')
+    end
   end
 end
