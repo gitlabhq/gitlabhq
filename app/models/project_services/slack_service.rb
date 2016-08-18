@@ -48,7 +48,6 @@ class SlackService < Service
   end
 
   def execute(data)
-    return unless supported_events.include?(data[:object_kind])
     return unless webhook.present?
 
     object_kind = data[:object_kind]
@@ -78,6 +77,8 @@ class SlackService < Service
         WikiPageMessage.new(data)
       end
 
+    return unless message
+
     opt = {}
 
     event_channel = get_channel_field(object_kind) || channel
@@ -85,10 +86,8 @@ class SlackService < Service
     opt[:channel] = event_channel if event_channel
     opt[:username] = username if username
 
-    if message
-      notifier = Slack::Notifier.new(webhook, opt)
-      notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
-    end
+    notifier = Slack::Notifier.new(webhook, opt)
+    notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
   end
 
   def event_channel_names
@@ -117,7 +116,12 @@ class SlackService < Service
   end
 
   def event_channel_name(event)
-    "#{event}_channel"
+    case event
+    when 'issues', 'merge_requests'
+      "#{event.singularize}_channel" # unfortunate legacy name
+    else
+      "#{event}_channel"
+    end
   end
 
   def project_name
