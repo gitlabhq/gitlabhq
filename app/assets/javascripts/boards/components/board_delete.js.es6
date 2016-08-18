@@ -10,7 +10,7 @@
       deleteBoard () {
         $(this.$el).tooltip('hide');
 
-        if (confirm('Are you sure you want to delete this list?')) {
+        if (confirm('Are you sure you want to remove this list?')) {
           this.list.destroy();
         }
       }

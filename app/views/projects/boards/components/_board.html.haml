@@ -19,7 +19,7 @@
             %board-delete{ "inline-template" => true,
               ":list" => "list",
               "v-if" => "!list.preset && list.id" }
-              %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+              %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Remove list", "aria-label" => "Remove list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
                 = icon("trash")
           = icon("spinner spin", class: "board-header-loading-spinner pull-right", "v-show" => "list.loadingMore")
       .board-inner-container.board-search-container{ "v-if" => "list.canSearch()" }
