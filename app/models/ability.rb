@@ -73,7 +73,6 @@ class Ability
 
     def abilities_by_subject_class(user:, subject:)
       case subject
-      when User then user_abilities
       when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
       else []
       end + global_abilities(user)
@@ -85,15 +84,9 @@ class Ability
         ProjectPolicy.abilities(nil, subject.project)
       elsif subject.respond_to?(:group)
         GroupPolicy.abilities(nil, subject.group)
-      elsif subject.is_a?(User)
-        anonymous_user_abilities
       else
         []
       end
-    end
-
-    def anonymous_user_abilities
-      [:read_user] unless restricted_public_level?
     end
 
     def global_abilities(user)
@@ -134,10 +127,6 @@ class Ability
         rules.delete(:"#{rule}_commit_status") unless rules.include?(:"#{rule}_build")
       end
       rules
-    end
-
-    def user_abilities
-      [:read_user]
     end
 
     def restricted_public_level?
