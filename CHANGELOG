@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.8.9
+  - Upgrade Doorkeeper to 4.2.0. !5881
+
 v 8.8.8
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
 
