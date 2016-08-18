@@ -127,7 +127,7 @@
 
     Issue.prototype.initCanCreateBranch = function() {
       var $container;
-      $container = $('div#new-branch');
+      $container = $('#new-branch');
       if ($container.length === 0) {
         return;
       }
@@ -139,7 +139,6 @@
         if (data.can_create_branch) {
           $container.find('.checking').hide();
           $container.find('.available').show();
-          return $container.find('a').attr('disabled', false);
         } else {
           $container.find('.checking').hide();
           return $container.find('.unavailable').show();

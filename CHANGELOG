@@ -20,6 +20,7 @@ v 8.11.0
   - Add Issues Board !5548
   - Allow resolving merge conflicts in the UI !5479
   - Improve diff performance by eliminating redundant checks for text blobs
+  - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
   - API: Endpoints for enabling and disabling deploy keys
