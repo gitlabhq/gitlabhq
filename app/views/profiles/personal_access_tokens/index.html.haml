@@ -7,6 +7,10 @@
       = page_title
     %p
       You can generate a personal access token for each application you use that needs access to the GitLab API.
+    %p
+      You can also use personal access tokens to authenticate against Git over HTTP.
+      They are the only accepted password when you have Two-Factor Authentication (2FA) enabled.
+
   .col-lg-9
 
     - if flash[:personal_access_token]
