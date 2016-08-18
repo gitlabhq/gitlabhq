@@ -268,7 +268,9 @@ class Note < ActiveRecord::Base
 
   def build_discussion_id
     if for_merge_request?
-      [:discussion, :note, id].join("-")
+      # Notes on merge requests are always in a discussion of their own,
+      # so we generate a unique discussion ID.
+      [:discussion, :note, SecureRandom.hex].join("-")
     else
       self.class.build_discussion_id(noteable_type, noteable_id || commit_id)
     end
