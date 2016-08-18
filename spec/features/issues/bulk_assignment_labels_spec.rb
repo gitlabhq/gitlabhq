@@ -175,7 +175,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           visit namespace_project_issues_path(project.namespace, project)
         end
 
-        it 'labels are kept' do
+        it 'keeps labels' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
 
@@ -197,7 +197,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           visit namespace_project_issues_path(project.namespace, project)
         end
 
-        it 'existing label is kept and new label is present' do
+        it 'keeps existing label and new label is present' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
 
           check 'check_all_issues'
@@ -222,7 +222,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           visit namespace_project_issues_path(project.namespace, project)
         end
 
-        it 'existing label is kept and new label is present' do
+        it 'keeps existing label and new label is present' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'
@@ -252,7 +252,7 @@ feature 'Issues > Labels bulk assignment', feature: true do
           visit namespace_project_issues_path(project.namespace, project)
         end
 
-        it 'labels are kept' do
+        it 'keeps labels' do
           expect(find("#issue_#{issue1.id}")).to have_content 'bug'
           expect(find("#issue_#{issue1.id}")).to have_content 'First Release'
           expect(find("#issue_#{issue2.id}")).to have_content 'feature'

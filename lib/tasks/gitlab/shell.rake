@@ -5,7 +5,8 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       default_version = Gitlab::Shell.version_required
-      args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      default_version_tag = 'v' + default_version
+      args.with_defaults(tag: default_version_tag, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
       user = Gitlab.config.gitlab.user
       home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
@@ -15,7 +16,12 @@ namespace :gitlab do
       target_dir = Gitlab.config.gitlab_shell.path
 
       # Clone if needed
-      unless File.directory?(target_dir)
+      if File.directory?(target_dir)
+        Dir.chdir(target_dir) do
+          system(*%W(Gitlab.config.git.bin_path} fetch --tags --quiet))
+          system(*%W(Gitlab.config.git.bin_path} checkout --quiet #{default_version_tag}))
+        end
+      else
         system(*%W(#{Gitlab.config.git.bin_path} clone -- #{args.repo} #{target_dir}))
       end
 
@@ -84,7 +90,7 @@ namespace :gitlab do
     task build_missing_projects: :environment do
       Project.find_each(batch_size: 1000) do |project|
         path_to_repo = project.repository.path_to_repo
-        if File.exists?(path_to_repo)
+        if File.exist?(path_to_repo)
           print '-'
         else
           if Gitlab::Shell.new.add_repository(project.repository_storage_path,

@@ -67,7 +67,7 @@ class DiffNote < Note
     return false unless supported?
     return true if for_commit?
 
-    diff_refs ||= self.noteable.diff_refs
+    diff_refs ||= noteable_diff_refs
 
     self.position.diff_refs == diff_refs
   end
@@ -75,7 +75,15 @@ class DiffNote < Note
   private
 
   def supported?
-    !self.for_merge_request? || self.noteable.support_new_diff_notes?
+    !self.for_merge_request? || self.noteable.has_complete_diff_refs?
+  end
+
+  def noteable_diff_refs
+    if noteable.respond_to?(:diff_sha_refs)
+      noteable.diff_sha_refs
+    else
+      noteable.diff_refs
+    end
   end
 
   def set_original_position
@@ -96,7 +104,7 @@ class DiffNote < Note
       self.project,
       nil,
       old_diff_refs: self.position.diff_refs,
-      new_diff_refs: self.noteable.diff_refs,
+      new_diff_refs: noteable_diff_refs,
       paths: self.position.paths
     ).execute(self)
   end

@@ -1,8 +1,8 @@
 module Gitlab
   module GithubImport
     class PullRequestFormatter < BaseFormatter
-      delegate :exists?, :name, :project, :repo, :sha, to: :source_branch, prefix: true
-      delegate :exists?, :name, :project, :repo, :sha, to: :target_branch, prefix: true
+      delegate :exists?, :project, :ref, :repo, :sha, to: :source_branch, prefix: true
+      delegate :exists?, :project, :ref, :repo, :sha, to: :target_branch, prefix: true
 
       def attributes
         {
@@ -33,15 +33,27 @@ module Gitlab
       end
 
       def valid?
-        source_branch.valid? && target_branch.valid? && !cross_project?
+        source_branch.valid? && target_branch.valid?
       end
 
       def source_branch
         @source_branch ||= BranchFormatter.new(project, raw_data.head)
       end
 
+      def source_branch_name
+        @source_branch_name ||= begin
+          source_branch_exists? ? source_branch_ref : "pull/#{number}/#{source_branch_ref}"
+        end
+      end
+
       def target_branch
         @target_branch ||= BranchFormatter.new(project, raw_data.base)
+      end
+
+      def target_branch_name
+        @target_branch_name ||= begin
+          target_branch_exists? ? target_branch_ref : "pull/#{number}/#{target_branch_ref}"
+        end
       end
 
       private
@@ -66,10 +78,6 @@ module Gitlab
 
       def body
         raw_data.body || ""
-      end
-
-      def cross_project?
-        source_branch_repo.id != target_branch_repo.id
       end
 
       def description

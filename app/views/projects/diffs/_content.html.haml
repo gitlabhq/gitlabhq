@@ -13,7 +13,7 @@
       .nothing-here-block.diff-collapsed{data: { diff_for_path: url } }
         This diff is collapsed. Click to expand it.
     - elsif diff_file.diff_lines.length > 0
-      - if diff_view == 'parallel'
+      - if diff_view == :parallel
         = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob
       - else
         = render "projects/diffs/text_file", diff_file: diff_file

@@ -104,6 +104,7 @@ class MergeRequest < ActiveRecord::Base
   scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
+  scope :from_source_branches, ->(branches) { where(source_branch: branches) }
 
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
@@ -164,8 +165,16 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    if self.compare
+      self.compare.diffs(diff_options)
+    else
+      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+    end
   end
 
   def diff_size
@@ -238,11 +247,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def target_branch_sha
-    target_branch_head.try(:sha)
+    @target_branch_sha || target_branch_head.try(:sha)
   end
 
   def source_branch_sha
-    source_branch_head.try(:sha)
+    @source_branch_sha || source_branch_head.try(:sha)
   end
 
   def diff_refs
@@ -253,6 +262,19 @@ class MergeRequest < ActiveRecord::Base
       start_sha: diff_start_sha,
       head_sha:  diff_head_sha
     )
+  end
+
+  # Return diff_refs instance trying to not touch the git repository
+  def diff_sha_refs
+    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+      return Gitlab::Diff::DiffRefs.new(
+        base_sha:  merge_request_diff.base_commit_sha,
+        start_sha: merge_request_diff.start_commit_sha,
+        head_sha:  merge_request_diff.head_commit_sha
+      )
+    else
+      diff_refs
+    end
   end
 
   def validate_branches
@@ -299,6 +321,8 @@ class MergeRequest < ActiveRecord::Base
     old_diff_refs = self.diff_refs
 
     merge_request_diff.reload_content
+
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
 
     new_diff_refs = self.diff_refs
 
@@ -567,6 +591,14 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
+  def environments
+    return unless diff_head_commit
+
+    target_project.environments.select do |environment|
+      environment.includes_commit?(diff_head_commit)
+    end
+  end
+
   def state_human_name
     if merged?
       "Merged"
@@ -642,8 +674,19 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
+  def commits_sha
+    commits.map(&:sha)
+  end
+
   def pipeline
     @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+  end
+
+  def all_pipelines
+    @all_pipelines ||=
+      if diff_head_sha && source_project
+        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
+      end
   end
 
   def merge_commit
@@ -658,12 +701,12 @@ class MergeRequest < ActiveRecord::Base
     merge_commit
   end
 
-  def support_new_diff_notes?
-    diff_refs && diff_refs.complete?
+  def has_complete_diff_refs?
+    diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
-    return unless support_new_diff_notes?
+    return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
     active_diff_notes = self.notes.diff_notes.select do |note|
@@ -690,5 +733,27 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
+  end
+
+  def conflicts
+    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
+  end
+
+  def conflicts_can_be_resolved_by?(user)
+    access = ::Gitlab::UserAccess.new(user, project: source_project)
+    access.can_push_to_branch?(source_branch)
+  end
+
+  def conflicts_can_be_resolved_in_ui?
+    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
+
+    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
+    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
+
+    begin
+      @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
+    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      @conflicts_can_be_resolved_in_ui = false
+    end
   end
 end

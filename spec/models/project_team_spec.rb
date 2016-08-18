@@ -199,48 +199,69 @@ describe ProjectTeam, models: true do
     end
   end
 
-  describe "#max_member_access_for_users" do
-    it 'returns correct roles for different users' do
-      master = create(:user)
-      reporter = create(:user)
-      promoted_guest = create(:user)
-      guest = create(:user)
-      project = create(:project)
+  shared_examples_for "#max_member_access_for_users" do |enable_request_store|
+    describe "#max_member_access_for_users" do
+      before do
+        RequestStore.begin! if enable_request_store
+      end
 
-      project.team << [master, :master]
-      project.team << [reporter, :reporter]
-      project.team << [promoted_guest, :guest]
-      project.team << [guest, :guest]
+      after do
+        if enable_request_store
+          RequestStore.end!
+          RequestStore.clear!
+        end
+      end
 
-      group = create(:group)
-      group_developer = create(:user)
-      second_developer = create(:user)
-      project.project_group_links.create(
-        group: group,
-        group_access: Gitlab::Access::DEVELOPER)
+      it 'returns correct roles for different users' do
+        master = create(:user)
+        reporter = create(:user)
+        promoted_guest = create(:user)
+        guest = create(:user)
+        project = create(:project)
 
-      group.add_master(promoted_guest)
-      group.add_developer(group_developer)
-      group.add_developer(second_developer)
+        project.team << [master, :master]
+        project.team << [reporter, :reporter]
+        project.team << [promoted_guest, :guest]
+        project.team << [guest, :guest]
 
-      second_group = create(:group)
-      project.project_group_links.create(
-        group: second_group,
-        group_access: Gitlab::Access::MASTER)
-      second_group.add_master(second_developer)
+        group = create(:group)
+        group_developer = create(:user)
+        second_developer = create(:user)
+        project.project_group_links.create(
+          group: group,
+          group_access: Gitlab::Access::DEVELOPER)
 
-      users = [master, reporter, promoted_guest, guest, group_developer, second_developer].map(&:id)
+        group.add_master(promoted_guest)
+        group.add_developer(group_developer)
+        group.add_developer(second_developer)
 
-      expected = {
-        master.id => Gitlab::Access::MASTER,
-        reporter.id => Gitlab::Access::REPORTER,
-        promoted_guest.id => Gitlab::Access::DEVELOPER,
-        guest.id => Gitlab::Access::GUEST,
-        group_developer.id => Gitlab::Access::DEVELOPER,
-        second_developer.id => Gitlab::Access::MASTER
-      }
+        second_group = create(:group)
+        project.project_group_links.create(
+          group: second_group,
+          group_access: Gitlab::Access::MASTER)
+        second_group.add_master(second_developer)
 
-      expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)
+        users = [master, reporter, promoted_guest, guest, group_developer, second_developer].map(&:id)
+
+        expected = {
+          master.id => Gitlab::Access::MASTER,
+          reporter.id => Gitlab::Access::REPORTER,
+          promoted_guest.id => Gitlab::Access::DEVELOPER,
+          guest.id => Gitlab::Access::GUEST,
+          group_developer.id => Gitlab::Access::DEVELOPER,
+          second_developer.id => Gitlab::Access::MASTER
+        }
+
+        expect(project.team.max_member_access_for_user_ids(users)).to eq(expected)
+      end
     end
+  end
+
+  describe '#max_member_access_for_users with RequestStore' do
+    it_behaves_like "#max_member_access_for_users", true
+  end
+
+  describe '#max_member_access_for_users without RequestStore' do
+    it_behaves_like "#max_member_access_for_users", false
   end
 end

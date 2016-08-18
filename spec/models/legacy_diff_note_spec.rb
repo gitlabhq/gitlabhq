@@ -5,12 +5,12 @@ describe LegacyDiffNote, models: true do
     let!(:note) { create(:legacy_diff_note_on_commit, note: "+1 from me") }
     let!(:commit) { note.noteable }
 
-    it "should save a valid note" do
+    it "saves a valid note" do
       expect(note.commit_id).to eq(commit.id)
       expect(note.noteable.id).to eq(commit.id)
     end
 
-    it "should be recognized by #legacy_diff_note?" do
+    it "is recognized by #legacy_diff_note?" do
       expect(note).to be_legacy_diff_note
     end
   end
@@ -58,7 +58,7 @@ describe LegacyDiffNote, models: true do
 
         # Generate a real line_code value so we know it will match. We use a
         # random line from a random diff just for funsies.
-        diff = merge.diffs.to_a.sample
+        diff = merge.raw_diffs.to_a.sample
         line = Gitlab::Diff::Parser.new.parse(diff.diff.each_line).to_a.sample
         code = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
 

@@ -6,12 +6,6 @@ module MembersHelper
     "#{action}_#{member.type.underscore}".to_sym
   end
 
-  def default_show_roles(member)
-    can?(current_user, action_member_permission(:update, member), member) ||
-      can?(current_user, action_member_permission(:destroy, member), member) ||
-      can?(current_user, action_member_permission(:admin, member), member.source)
-  end
-
   def remove_member_message(member, user: nil)
     user = current_user if defined?(current_user)
 

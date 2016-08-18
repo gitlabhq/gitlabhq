@@ -142,5 +142,62 @@ describe Gitlab::Metrics::Transaction do
 
       transaction.submit
     end
+
+    it 'does not add an action tag for events' do
+      transaction.action = 'Foo#bar'
+      transaction.add_event(:meow)
+
+      hash = {
+        series:    'events',
+        tags:      { event: :meow },
+        values:    { count: 1 },
+        timestamp: an_instance_of(Fixnum)
+      }
+
+      expect(Gitlab::Metrics).to receive(:submit_metrics).
+        with([hash])
+
+      transaction.submit
+    end
+  end
+
+  describe '#add_event' do
+    it 'adds a metric' do
+      transaction.add_event(:meow)
+
+      expect(transaction.metrics[0]).to be_an_instance_of(Gitlab::Metrics::Metric)
+    end
+
+    it "does not prefix the metric's series name" do
+      transaction.add_event(:meow)
+
+      metric = transaction.metrics[0]
+
+      expect(metric.series).to eq(described_class::EVENT_SERIES)
+    end
+
+    it 'tracks a counter for every event' do
+      transaction.add_event(:meow)
+
+      metric = transaction.metrics[0]
+
+      expect(metric.values).to eq(count: 1)
+    end
+
+    it 'tracks the event name' do
+      transaction.add_event(:meow)
+
+      metric = transaction.metrics[0]
+
+      expect(metric.tags).to eq(event: :meow)
+    end
+
+    it 'allows tracking of custom tags' do
+      transaction.add_event(:meow, animal: 'cat')
+
+      metric = transaction.metrics[0]
+
+      expect(metric.tags).to eq(event: :meow, animal: 'cat')
+    end
   end
 end

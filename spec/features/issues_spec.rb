@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'Issues', feature: true do
+  include IssueHelpers
   include SortingHelper
 
   let(:project) { create(:project) }
@@ -25,7 +26,7 @@ describe 'Issues', feature: true do
       find('.js-zen-enter').click
     end
 
-    it 'should open new issue popup' do
+    it 'opens new issue popup' do
       expect(page).to have_content("Issue ##{issue.iid}")
     end
 
@@ -70,7 +71,7 @@ describe 'Issues', feature: true do
         visit new_namespace_project_issue_path(project.namespace, project)
       end
 
-      it 'should save with due date' do
+      it 'saves with due date' do
         date = Date.today.at_beginning_of_month
 
         fill_in 'issue_title', with: 'bug 345'
@@ -98,7 +99,7 @@ describe 'Issues', feature: true do
         visit edit_namespace_project_issue_path(project.namespace, project, issue)
       end
 
-      it 'should save with due date' do
+      it 'saves with due date' do
         date = Date.today.at_beginning_of_month
 
         expect(find('#issuable-due-date').value).to eq date.to_s
@@ -154,7 +155,7 @@ describe 'Issues', feature: true do
 
     let(:issue) { @issue }
 
-    it 'should allow filtering by issues with no specified assignee' do
+    it 'allows filtering by issues with no specified assignee' do
       visit namespace_project_issues_path(project.namespace, project, assignee_id: IssuableFinder::NONE)
 
       expect(page).to have_content 'foobar'
@@ -162,7 +163,7 @@ describe 'Issues', feature: true do
       expect(page).not_to have_content 'gitlab'
     end
 
-    it 'should allow filtering by a specified assignee' do
+    it 'allows filtering by a specified assignee' do
       visit namespace_project_issues_path(project.namespace, project, assignee_id: @user.id)
 
       expect(page).not_to have_content 'foobar'
@@ -186,15 +187,15 @@ describe 'Issues', feature: true do
     it 'sorts by newest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_recently_created)
 
-      expect(first_issue).to include('baz')
-      expect(last_issue).to include('foo')
+      expect(first_issue).to include('foo')
+      expect(last_issue).to include('baz')
     end
 
     it 'sorts by oldest' do
       visit namespace_project_issues_path(project.namespace, project, sort: sort_value_oldest_created)
 
-      expect(first_issue).to include('foo')
-      expect(last_issue).to include('baz')
+      expect(first_issue).to include('baz')
+      expect(last_issue).to include('foo')
     end
 
     it 'sorts by most recently updated' do
@@ -350,8 +351,8 @@ describe 'Issues', feature: true do
                                             sort: sort_value_oldest_created,
                                             assignee_id: user2.id)
 
-        expect(first_issue).to include('foo')
-        expect(last_issue).to include('bar')
+        expect(first_issue).to include('bar')
+        expect(last_issue).to include('foo')
         expect(page).not_to have_content 'baz'
       end
     end
@@ -513,7 +514,7 @@ describe 'Issues', feature: true do
         visit new_namespace_project_issue_path(project.namespace, project)
       end
 
-      it 'should upload file when dragging into textarea' do
+      it 'uploads file when dragging into textarea' do
         drop_in_dropzone test_image_file
 
         # Wait for the file to upload
@@ -561,7 +562,7 @@ describe 'Issues', feature: true do
         visit namespace_project_issue_path(project.namespace, project, issue)
       end
 
-      it 'should add due date to issue' do
+      it 'adds due date to issue' do
         page.within '.due_date' do
           click_link 'Edit'
 
@@ -573,7 +574,7 @@ describe 'Issues', feature: true do
         end
       end
 
-      it 'should remove due date from issue' do
+      it 'removes due date from issue' do
         page.within '.due_date' do
           click_link 'Edit'
 
@@ -588,14 +589,6 @@ describe 'Issues', feature: true do
         end
       end
     end
-  end
-
-  def first_issue
-    page.all('ul.issues-list > li').first.text
-  end
-
-  def last_issue
-    page.all('ul.issues-list > li').last.text
   end
 
   def drop_in_dropzone(file_path)

@@ -41,6 +41,7 @@
 /*= require date.format */
 /*= require_directory ./behaviors */
 /*= require_directory ./blob */
+/*= require_directory ./templates */
 /*= require_directory ./commit */
 /*= require_directory ./extensions */
 /*= require_directory ./lib/utils */
@@ -223,8 +224,11 @@
       return $('.navbar-toggle').toggleClass('active');
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
-      $(this).toggleClass('active');
-      $(this).closest(".diff-file").find(".notes_holder").toggle();
+      var $this = $(this);
+      var showComments = $this.hasClass('active');
+
+      $this.toggleClass('active');
+      $this.closest(".diff-file").find(".notes_holder").toggle(showComments);
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');
@@ -287,7 +291,7 @@
       $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
       $('.navbar-fixed-top').removeClass('header-pinned-nav');
     }
-    return $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
+    $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
       var $page, $pinBtn, $tooltip, $topNav, doPinNav, tooltipText;
       e.preventDefault();
       $pinBtn = $(e.currentTarget);
@@ -315,6 +319,8 @@
       $tooltip.find('.tooltip-inner').text(tooltipText);
       return $pinBtn.attr('title', tooltipText).tooltip('fixTitle');
     });
-  });
 
+    // Custom time ago
+    gl.utils.shortTimeAgo($('.js-short-timeago'));
+  });
 }).call(this);

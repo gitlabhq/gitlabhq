@@ -596,7 +596,7 @@ describe Notify do
           is_expected.to have_body_text /#{note.note}/
         end
 
-        it 'not contains note author' do
+        it 'does not contain note author' do
           is_expected.not_to have_body_text /wrote\:/
         end
 
@@ -954,8 +954,9 @@ describe Notify do
   describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits, nil) }
+    let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
+    let(:compare) { Compare.decorate(raw_compare, project) }
+    let(:commits) { compare.commits }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
@@ -1056,8 +1057,9 @@ describe Notify do
   describe 'email on push with a single commit' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits, nil) }
+    let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
+    let(:compare) { Compare.decorate(raw_compare, project) }
+    let(:commits) { compare.commits }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 

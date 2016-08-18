@@ -34,7 +34,7 @@ class ProjectTeam
   end
 
   def add_users(users, access, current_user: nil, expires_at: nil)
-    ProjectMember.add_users_into_projects(
+    ProjectMember.add_users_to_projects(
       [project.id],
       users,
       access,
@@ -139,8 +139,13 @@ class ProjectTeam
   def max_member_access_for_user_ids(user_ids)
     user_ids = user_ids.uniq
     key = "max_member_access:#{project.id}"
-    RequestStore.store[key] ||= {}
-    access = RequestStore.store[key]
+
+    access = {}
+
+    if RequestStore.active?
+      RequestStore.store[key] ||= {}
+      access = RequestStore.store[key]
+    end
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys

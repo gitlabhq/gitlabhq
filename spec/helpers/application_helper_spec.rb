@@ -54,7 +54,7 @@ describe ApplicationHelper do
   describe 'project_icon' do
     let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
 
-    it 'should return an url for the avatar' do
+    it 'returns an url for the avatar' do
       project = create(:project, avatar: File.open(avatar_file_path))
 
       avatar_url = "http://localhost/uploads/project/avatar/#{project.id}/banana_sample.gif"
@@ -62,7 +62,7 @@ describe ApplicationHelper do
         to eq "<img src=\"#{avatar_url}\" alt=\"Banana sample\" />"
     end
 
-    it 'should give uploaded icon when present' do
+    it 'gives uploaded icon when present' do
       project = create(:project)
 
       allow_any_instance_of(Project).to receive(:avatar_in_git).and_return(true)
@@ -76,14 +76,14 @@ describe ApplicationHelper do
   describe 'avatar_icon' do
     let(:avatar_file_path) { File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif') }
 
-    it 'should return an url for the avatar' do
+    it 'returns an url for the avatar' do
       user = create(:user, avatar: File.open(avatar_file_path))
 
       expect(helper.avatar_icon(user.email).to_s).
         to match("/uploads/user/avatar/#{user.id}/banana_sample.gif")
     end
 
-    it 'should return an url for the avatar with relative url' do
+    it 'returns an url for the avatar with relative url' do
       stub_config_setting(relative_url_root: '/gitlab')
       # Must be stubbed after the stub above, and separately
       stub_config_setting(url: Settings.send(:build_gitlab_url))
@@ -94,14 +94,14 @@ describe ApplicationHelper do
         to match("/gitlab/uploads/user/avatar/#{user.id}/banana_sample.gif")
     end
 
-    it 'should call gravatar_icon when no User exists with the given email' do
+    it 'calls gravatar_icon when no User exists with the given email' do
       expect(helper).to receive(:gravatar_icon).with('foo@example.com', 20, 2)
 
       helper.avatar_icon('foo@example.com', 20, 2)
     end
 
     describe 'using a User' do
-      it 'should return an URL for the avatar' do
+      it 'returns an URL for the avatar' do
         user = create(:user, avatar: File.open(avatar_file_path))
 
         expect(helper.avatar_icon(user).to_s).
@@ -146,7 +146,7 @@ describe ApplicationHelper do
           to match('https://secure.gravatar.com')
       end
 
-      it 'should return custom gravatar path when gravatar_url is set' do
+      it 'returns custom gravatar path when gravatar_url is set' do
         stub_gravatar_setting(plain_url: 'http://example.local/?s=%{size}&hash=%{hash}')
 
         expect(gravatar_icon(user_email, 20)).
@@ -218,12 +218,12 @@ describe ApplicationHelper do
     end
 
     it 'includes a default js-timeago class' do
-      expect(element.attr('class')).to eq 'time_ago js-timeago js-timeago-pending'
+      expect(element.attr('class')).to eq 'js-timeago js-timeago-pending'
     end
 
     it 'accepts a custom html_class' do
       expect(element(html_class: 'custom_class').attr('class')).
-        to eq 'custom_class js-timeago js-timeago-pending'
+        to eq 'js-timeago custom_class js-timeago-pending'
     end
 
     it 'accepts a custom tooltip placement' do
@@ -244,6 +244,19 @@ describe ApplicationHelper do
     it 'converts to Time' do
       expect { helper.time_ago_with_tooltip(Date.today) }.not_to raise_error
     end
+
+    it 'add class for the short format and includes inline script' do
+      timeago_element = element(short_format: 'short')
+      expect(timeago_element.attr('class')).to eq 'js-short-timeago js-timeago-pending'
+      script_element = timeago_element.next_element
+      expect(script_element.name).to eq 'script'
+    end
+
+    it 'add class for the short format and does not include inline script' do
+      timeago_element = element(short_format: 'short', skip_js: true)
+      expect(timeago_element.attr('class')).to eq 'js-short-timeago'
+      expect(timeago_element.next_element).to eq nil
+    end
   end
 
   describe 'render_markup' do
@@ -253,19 +266,19 @@ describe ApplicationHelper do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    it 'should preserve encoding' do
+    it 'preserves encoding' do
       expect(content.encoding.name).to eq('UTF-8')
       expect(helper.render_markup('foo.rst', content).encoding.name).to eq('UTF-8')
     end
 
-    it "should delegate to #markdown when file name corresponds to Markdown" do
+    it "delegates to #markdown when file name corresponds to Markdown" do
       expect(helper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
       expect(helper).to receive(:markdown).and_return('NOEL')
 
       expect(helper.render_markup('foo.md', content)).to eq('NOEL')
     end
 
-    it "should delegate to #asciidoc when file name corresponds to AsciiDoc" do
+    it "delegates to #asciidoc when file name corresponds to AsciiDoc" do
       expect(helper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
       expect(helper).to receive(:asciidoc).and_return('NOEL')
 

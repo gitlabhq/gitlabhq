@@ -20,13 +20,19 @@ module SortingHelper
   end
 
   def projects_sort_options_hash
-    {
+    options = {
       sort_value_name => sort_title_name,
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated,
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
     }
+
+    if current_controller?('admin/projects')
+      options.merge!(sort_value_largest_repo => sort_title_largest_repo)
+    end
+
+    options
   end
 
   def sort_title_priority
@@ -102,11 +108,11 @@ module SortingHelper
   end
 
   def sort_value_oldest_created
-    'id_asc'
+    'created_asc'
   end
 
   def sort_value_recently_created
-    'id_desc'
+    'created_desc'
   end
 
   def sort_value_milestone_soon

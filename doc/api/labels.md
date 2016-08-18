@@ -13,7 +13,7 @@ GET /projects/:id/labels
 | `id`      | integer | yes      | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/labels
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/labels
 ```
 
 Example response:
@@ -82,7 +82,7 @@ POST /projects/:id/labels
 | `description` | string  | no       | The description of the label |
 
 ```bash
-curl --data "name=feature&color=#5843AD" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
+curl --data "name=feature&color=#5843AD" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
 ```
 
 Example response:
@@ -113,7 +113,7 @@ DELETE /projects/:id/labels
 | `name`    | string  | yes      | The name of the label |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels?name=bug"
 ```
 
 Example response:
@@ -153,7 +153,7 @@ PUT /projects/:id/labels
 | `description`   | string  | no                                | The new description of the label |
 
 ```bash
-curl -X PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
+curl --request PUT --data "name=documentation&new_name=docs&color=#8E44AD&description=Documentation" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/labels"
 ```
 
 Example response:
@@ -184,7 +184,7 @@ POST /projects/:id/labels/:label_id/subscription
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
 ```
 
 Example response:
@@ -219,7 +219,7 @@ DELETE /projects/:id/labels/:label_id/subscription
 | `label_id` | integer or string | yes      | The ID or title of a project's label |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/labels/1/subscription
 ```
 
 Example response:

@@ -23,6 +23,10 @@ describe Gitlab::Ci::Config::Node::Validatable do
         .to be Gitlab::Ci::Config::Node::Validator
     end
 
+    it 'returns only one validator to mitigate leaks' do
+      expect { node.validator }.not_to change { node.validator }
+    end
+
     context 'when validating node instance' do
       let(:node_instance) { node.new }
 

@@ -70,8 +70,7 @@ There are multiple ways to create a branch from GitLab's web interface.
 
 ### Create a new branch from an issue
 
->**Note:**
-This feature was [introduced][ce-2808] in GitLab 8.6.
+> [Introduced][ce-2808] in GitLab 8.6.
 
 In case your development workflow dictates to have an issue for every merge
 request, you can quickly create a branch right on the issue page which will be

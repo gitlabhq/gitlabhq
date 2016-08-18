@@ -2,8 +2,9 @@ module Members
   class DestroyService < BaseService
     attr_accessor :member, :current_user
 
-    def initialize(member, user)
-      @member, @current_user = member, user
+    def initialize(member, current_user)
+      @member = member
+      @current_user = current_user
     end
 
     def execute

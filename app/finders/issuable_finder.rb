@@ -109,7 +109,7 @@ class IssuableFinder
 
         scope.where(title: params[:milestone_title])
       else
-        nil
+        Milestone.none
       end
   end
 

@@ -35,6 +35,7 @@ module Banzai
 
       def process_link_attr(html_attr)
         return if html_attr.blank?
+        return if html_attr.value.start_with?('//')
 
         uri = URI(html_attr.value)
         if uri.relative? && uri.path.present?
@@ -51,7 +52,7 @@ module Banzai
           relative_url_root,
           context[:project].path_with_namespace,
           uri_type(file_path),
-          ref || context[:project].default_branch,  # if no ref exists, point to the default branch
+          ref,
           file_path
         ].compact.join('/').squeeze('/').chomp('/')
 
@@ -87,9 +88,12 @@ module Banzai
       def build_relative_path(path, request_path)
         return request_path if path.empty?
         return path unless request_path
+        return path[1..-1] if path.start_with?('/')
 
         parts = request_path.split('/')
         parts.pop if uri_type(request_path) != :tree
+
+        path.sub!(%r{\A\./}, '')
 
         while path.start_with?('../')
           parts.pop
@@ -112,7 +116,7 @@ module Banzai
       end
 
       def current_commit
-        @current_commit ||= context[:commit] || ref ? repository.commit(ref) : repository.head_commit
+        @current_commit ||= context[:commit] || repository.commit(ref)
       end
 
       def relative_url_root
@@ -120,7 +124,7 @@ module Banzai
       end
 
       def ref
-        context[:ref]
+        context[:ref] || context[:project].default_branch
       end
 
       def repository

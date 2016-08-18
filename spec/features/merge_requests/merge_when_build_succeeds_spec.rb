@@ -73,7 +73,7 @@ feature 'Merge When Build Succeeds', feature: true, js: true do
   end
 
   context 'Build is not active' do
-    it "should not allow for enabling" do
+    it "does not allow for enabling" do
       visit_merge_request(merge_request)
       expect(page).not_to have_link "Merge When Build Succeeds"
     end

@@ -1,7 +1,22 @@
-= form_for @environment, url: namespace_project_environments_path(@project.namespace, @project), html: { class: 'col-lg-9' } do |f|
-  = form_errors(@environment)
-  .form-group
-    = f.label :name, 'Name', class: 'label-light'
-    = f.text_field :name, required: true, class: 'form-control'
-  = f.submit 'Create environment', class: 'btn btn-create'
-  = link_to 'Cancel', namespace_project_environments_path(@project.namespace, @project), class: 'btn btn-cancel'
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Environments
+    %p
+      Environments allow you to track deployments of your application
+      = succeed "." do
+        = link_to "Read more about environments", help_page_path("ci/environments")
+
+  = form_for [@project.namespace.becomes(Namespace), @project, @environment], html: { class: 'col-lg-9' } do |f|
+    = form_errors(@environment)
+
+    .form-group
+      = f.label :name, 'Name', class: 'label-light'
+      = f.text_field :name, required: true, class: 'form-control'
+    .form-group
+      = f.label :external_url, 'External URL', class: 'label-light'
+      = f.url_field :external_url, class: 'form-control'
+
+    .form-actions
+      = f.submit 'Save', class: 'btn btn-save'
+      = link_to 'Cancel', namespace_project_environments_path(@project.namespace, @project), class: 'btn btn-cancel'

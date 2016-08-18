@@ -1,6 +1,6 @@
 # GitLab Todos
 
->**Note:** This feature was [introduced][ce-2817] in GitLab 8.5.
+> [Introduced][ce-2817] in GitLab 8.5.
 
 When you log into GitLab, you normally want to see where you should spend your
 time and take some action, or what you need to keep an eye on. All without the

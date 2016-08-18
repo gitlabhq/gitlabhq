@@ -30,7 +30,9 @@ module Gitlab
       return false unless user
 
       if project.protected_branch?(ref)
-        access_levels = project.protected_branches.matching(ref).map(&:push_access_level)
+        return true if project.empty_repo? && project.user_can_push_to_empty_repo?(user)
+
+        access_levels = project.protected_branches.matching(ref).map(&:push_access_levels).flatten
         access_levels.any? { |access_level| access_level.check_access(user) }
       else
         user.can?(:push_code, project)
@@ -41,7 +43,7 @@ module Gitlab
       return false unless user
 
       if project.protected_branch?(ref)
-        access_levels = project.protected_branches.matching(ref).map(&:merge_access_level)
+        access_levels = project.protected_branches.matching(ref).map(&:merge_access_levels).flatten
         access_levels.any? { |access_level| access_level.check_access(user) }
       else
         user.can?(:push_code, project)

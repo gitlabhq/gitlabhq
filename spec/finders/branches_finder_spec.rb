@@ -20,7 +20,11 @@ describe BranchesFinder do
 
         result = branches_finder.execute
 
-        expect(result.first.name).to eq('video')
+        recently_updated_branch = repository.branches.max do |a, b|
+          repository.commit(a.target).committed_date <=> repository.commit(b.target).committed_date
+        end
+
+        expect(result.first.name).to eq(recently_updated_branch.name)
       end
 
       it 'sorts by last_updated' do

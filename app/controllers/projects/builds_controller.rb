@@ -6,7 +6,7 @@ class Projects::BuildsController < Projects::ApplicationController
 
   def index
     @scope = params[:scope]
-    @all_builds = project.builds
+    @all_builds = project.builds.relevant
     @builds = @all_builds.order('created_at DESC')
     @builds =
       case @scope

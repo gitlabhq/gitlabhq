@@ -48,7 +48,9 @@ describe HipchatService, models: true do
     let(:project_name) { project.name_with_namespace.gsub(/\s/, '') }
     let(:token) { 'verySecret' }
     let(:server_url) { 'https://hipchat.example.com'}
-    let(:push_sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:push_sample_data) do
+      Gitlab::DataBuilder::Push.build_sample(project, user)
+    end
 
     before(:each) do
       allow(hipchat).to receive_messages(
@@ -61,7 +63,7 @@ describe HipchatService, models: true do
       WebMock.stub_request(:post, api_url)
     end
 
-    it 'should test and return errors' do
+    it 'tests and return errors' do
       allow(hipchat).to receive(:execute).and_raise(StandardError, 'no such room')
       result = hipchat.test(push_sample_data)
 
@@ -69,7 +71,7 @@ describe HipchatService, models: true do
       expect(result[:result].to_s).to eq('no such room')
     end
 
-    it 'should use v1 if version is provided' do
+    it 'uses v1 if version is provided' do
       allow(hipchat).to receive(:api_version).and_return('v1')
       expect(HipChat::Client).to receive(:new).with(
         token,
@@ -79,7 +81,7 @@ describe HipchatService, models: true do
       hipchat.execute(push_sample_data)
     end
 
-    it 'should use v2 as the version when nothing is provided' do
+    it 'uses v2 as the version when nothing is provided' do
       allow(hipchat).to receive(:api_version).and_return('')
       expect(HipChat::Client).to receive(:new).with(
         token,
@@ -90,13 +92,13 @@ describe HipchatService, models: true do
     end
 
     context 'push events' do
-      it "should call Hipchat API for push events" do
+      it "calls Hipchat API for push events" do
         hipchat.execute(push_sample_data)
 
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create a push message" do
+      it "creates a push message" do
         message = hipchat.send(:create_push_message, push_sample_data)
 
         push_sample_data[:object_attributes]
@@ -108,15 +110,23 @@ describe HipchatService, models: true do
     end
 
     context 'tag_push events' do
-      let(:push_sample_data) { Gitlab::PushDataBuilder.build(project, user, Gitlab::Git::BLANK_SHA, '1' * 40, 'refs/tags/test', []) }
+      let(:push_sample_data) do
+        Gitlab::DataBuilder::Push.build(
+          project,
+          user,
+          Gitlab::Git::BLANK_SHA,
+          '1' * 40,
+          'refs/tags/test',
+          [])
+      end
 
-      it "should call Hipchat API for tag push events" do
+      it "calls Hipchat API for tag push events" do
         hipchat.execute(push_sample_data)
 
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create a tag push message" do
+      it "creates a tag push message" do
         message = hipchat.send(:create_push_message, push_sample_data)
 
         push_sample_data[:object_attributes]
@@ -131,13 +141,13 @@ describe HipchatService, models: true do
       let(:issue_service) { Issues::CreateService.new(project, user) }
       let(:issues_sample_data) { issue_service.hook_data(issue, 'open') }
 
-      it "should call Hipchat API for issue events" do
+      it "calls Hipchat API for issue events" do
         hipchat.execute(issues_sample_data)
 
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create an issue message" do
+      it "creates an issue message" do
         message = hipchat.send(:create_issue_message, issues_sample_data)
 
         obj_attr = issues_sample_data[:object_attributes]
@@ -154,13 +164,13 @@ describe HipchatService, models: true do
       let(:merge_service) { MergeRequests::CreateService.new(project, user) }
       let(:merge_sample_data) { merge_service.hook_data(merge_request, 'open') }
 
-      it "should call Hipchat API for merge requests events" do
+      it "calls Hipchat API for merge requests events" do
         hipchat.execute(merge_sample_data)
 
         expect(WebMock).to have_requested(:post, api_url).once
       end
 
-      it "should create a merge request message" do
+      it "creates a merge request message" do
         message = hipchat.send(:create_merge_request_message,
                                merge_sample_data)
 
@@ -184,8 +194,8 @@ describe HipchatService, models: true do
                                   note: 'a comment on a commit')
         end
 
-        it "should call Hipchat API for commit comment events" do
-          data = Gitlab::NoteDataBuilder.build(commit_note, user)
+        it "calls Hipchat API for commit comment events" do
+          data = Gitlab::DataBuilder::Note.build(commit_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -216,8 +226,8 @@ describe HipchatService, models: true do
                                          note: "merge request note")
         end
 
-        it "should call Hipchat API for merge request comment events" do
-          data = Gitlab::NoteDataBuilder.build(merge_request_note, user)
+        it "calls Hipchat API for merge request comment events" do
+          data = Gitlab::DataBuilder::Note.build(merge_request_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -243,8 +253,8 @@ describe HipchatService, models: true do
                                  note: "issue note")
         end
 
-        it "should call Hipchat API for issue comment events" do
-          data = Gitlab::NoteDataBuilder.build(issue_note, user)
+        it "calls Hipchat API for issue comment events" do
+          data = Gitlab::DataBuilder::Note.build(issue_note, user)
           hipchat.execute(data)
 
           message = hipchat.send(:create_message, data)
@@ -269,8 +279,8 @@ describe HipchatService, models: true do
                                            note: "snippet note")
         end
 
-        it "should call Hipchat API for snippet comment events" do
-          data = Gitlab::NoteDataBuilder.build(snippet_note, user)
+        it "calls Hipchat API for snippet comment events" do
+          data = Gitlab::DataBuilder::Note.build(snippet_note, user)
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
@@ -291,19 +301,20 @@ describe HipchatService, models: true do
     end
 
     context 'build events' do
-      let(:build) { create(:ci_build) }
-      let(:data) { Gitlab::BuildDataBuilder.build(build) }
+      let(:pipeline) { create(:ci_empty_pipeline) }
+      let(:build) { create(:ci_build, pipeline: pipeline) }
+      let(:data) { Gitlab::DataBuilder::Build.build(build) }
 
       context 'for failed' do
         before { build.drop }
 
-        it "should call Hipchat API" do
+        it "calls Hipchat API" do
           hipchat.execute(data)
 
           expect(WebMock).to have_requested(:post, api_url).once
         end
 
-        it "should create a build message" do
+        it "creates a build message" do
           message = hipchat.send(:create_build_message, data)
 
           project_url = project.web_url
@@ -325,13 +336,13 @@ describe HipchatService, models: true do
           build.success
         end
 
-        it "should call Hipchat API" do
+        it "calls Hipchat API" do
           hipchat.notify_only_broken_builds = false
           hipchat.execute(data)
           expect(WebMock).to have_requested(:post, api_url).once
         end
 
-        it "should notify only broken" do
+        it "notifies only broken" do
           hipchat.notify_only_broken_builds = true
           hipchat.execute(data)
           expect(WebMock).not_to have_requested(:post, api_url).once

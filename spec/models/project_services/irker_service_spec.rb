@@ -46,32 +46,35 @@ describe IrkerService, models: true do
     let(:irker) { IrkerService.new }
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+    let(:sample_data) do
+      Gitlab::DataBuilder::Push.build_sample(project, user)
+    end
 
     let(:recipients) { '#commits irc://test.net/#test ftp://bad' }
     let(:colorize_messages) { '1' }
 
     before do
+      @irker_server = TCPServer.new 'localhost', 0
+
       allow(irker).to receive_messages(
         active: true,
         project: project,
         project_id: project.id,
         service_hook: true,
-        server_host: 'localhost',
-        server_port: 6659,
+        server_host: @irker_server.addr[2],
+        server_port: @irker_server.addr[1],
         default_irc_uri: 'irc://chat.freenode.net/',
         recipients: recipients,
         colorize_messages: colorize_messages)
 
       irker.valid?
-      @irker_server = TCPServer.new 'localhost', 6659
     end
 
     after do
       @irker_server.close
     end
 
-    it 'should send valid JSON messages to an Irker listener' do
+    it 'sends valid JSON messages to an Irker listener' do
       irker.execute(sample_data)
 
       conn = @irker_server.accept

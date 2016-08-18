@@ -124,6 +124,15 @@ module Gitlab
       trans.action = action if trans
     end
 
+    # Tracks an event.
+    #
+    # See `Gitlab::Metrics::Transaction#add_event` for more details.
+    def self.add_event(*args)
+      trans = current_transaction
+
+      trans.add_event(*args) if trans
+    end
+
     # Returns the prefix to use for the name of a series.
     def self.series_prefix
       @series_prefix ||= Sidekiq.server? ? 'sidekiq_' : 'rails_'
@@ -141,10 +150,9 @@ module Gitlab
       end
     end
 
+    # Allow access from other metrics related middlewares
     def self.current_transaction
       Transaction.current
     end
-
-    private_class_method :current_transaction
   end
 end

@@ -16,7 +16,7 @@ describe Projects::ForksController do
     context 'when fork is public' do
       before { forked_project.update_attribute(:visibility_level, Project::PUBLIC) }
 
-      it 'should be visible for non logged in users' do
+      it 'is visible for non logged in users' do
         get_forks
 
         expect(assigns[:forks]).to be_present
@@ -28,7 +28,7 @@ describe Projects::ForksController do
         forked_project.update_attributes(visibility_level: Project::PRIVATE, group: group)
       end
 
-      it 'should not be visible for non logged in users' do
+      it 'is not be visible for non logged in users' do
         get_forks
 
         expect(assigns[:forks]).to be_blank
@@ -38,7 +38,7 @@ describe Projects::ForksController do
         before { sign_in(project.creator) }
 
         context 'when user is not a Project member neither a group member' do
-          it 'should not see the Project listed' do
+          it 'does not see the Project listed' do
             get_forks
 
             expect(assigns[:forks]).to be_blank
@@ -48,7 +48,7 @@ describe Projects::ForksController do
         context 'when user is a member of the Project' do
           before { forked_project.team << [project.creator, :developer] }
 
-          it 'should see the project listed' do
+          it 'sees the project listed' do
             get_forks
 
             expect(assigns[:forks]).to be_present
@@ -58,7 +58,7 @@ describe Projects::ForksController do
         context 'when user is a member of the Group' do
           before { forked_project.group.add_developer(project.creator) }
 
-          it 'should see the project listed' do
+          it 'sees the project listed' do
             get_forks
 
             expect(assigns[:forks]).to be_present

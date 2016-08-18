@@ -12,7 +12,7 @@ describe API::API, api: true do
 
   describe 'GET /projects/:id/variables' do
     context 'authorized user with proper permissions' do
-      it 'should return project variables' do
+      it 'returns project variables' do
         get api("/projects/#{project.id}/variables", user)
 
         expect(response).to have_http_status(200)
@@ -21,7 +21,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user with invalid permissions' do
-      it 'should not return project variables' do
+      it 'does not return project variables' do
         get api("/projects/#{project.id}/variables", user2)
 
         expect(response).to have_http_status(403)
@@ -29,7 +29,7 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not return project variables' do
+      it 'does not return project variables' do
         get api("/projects/#{project.id}/variables")
 
         expect(response).to have_http_status(401)
@@ -39,14 +39,14 @@ describe API::API, api: true do
 
   describe 'GET /projects/:id/variables/:key' do
     context 'authorized user with proper permissions' do
-      it 'should return project variable details' do
+      it 'returns project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user)
 
         expect(response).to have_http_status(200)
         expect(json_response['value']).to eq(variable.value)
       end
 
-      it 'should respond with 404 Not Found if requesting non-existing variable' do
+      it 'responds with 404 Not Found if requesting non-existing variable' do
         get api("/projects/#{project.id}/variables/non_existing_variable", user)
 
         expect(response).to have_http_status(404)
@@ -54,7 +54,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user with invalid permissions' do
-      it 'should not return project variable details' do
+      it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
         expect(response).to have_http_status(403)
@@ -62,7 +62,7 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not return project variable details' do
+      it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}")
 
         expect(response).to have_http_status(401)
@@ -72,7 +72,7 @@ describe API::API, api: true do
 
   describe 'POST /projects/:id/variables' do
     context 'authorized user with proper permissions' do
-      it 'should create variable' do
+      it 'creates variable' do
         expect do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
         end.to change{project.variables.count}.by(1)
@@ -82,7 +82,7 @@ describe API::API, api: true do
         expect(json_response['value']).to eq('VALUE_2')
       end
 
-      it 'should not allow to duplicate variable key' do
+      it 'does not allow to duplicate variable key' do
         expect do
           post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2'
         end.to change{project.variables.count}.by(0)
@@ -92,7 +92,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user with invalid permissions' do
-      it 'should not create variable' do
+      it 'does not create variable' do
         post api("/projects/#{project.id}/variables", user2)
 
         expect(response).to have_http_status(403)
@@ -100,7 +100,7 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not create variable' do
+      it 'does not create variable' do
         post api("/projects/#{project.id}/variables")
 
         expect(response).to have_http_status(401)
@@ -110,7 +110,7 @@ describe API::API, api: true do
 
   describe 'PUT /projects/:id/variables/:key' do
     context 'authorized user with proper permissions' do
-      it 'should update variable data' do
+      it 'updates variable data' do
         initial_variable = project.variables.first
         value_before = initial_variable.value
 
@@ -123,7 +123,7 @@ describe API::API, api: true do
         expect(updated_variable.value).to eq('VALUE_1_UP')
       end
 
-      it 'should responde with 404 Not Found if requesting non-existing variable' do
+      it 'responds with 404 Not Found if requesting non-existing variable' do
         put api("/projects/#{project.id}/variables/non_existing_variable", user)
 
         expect(response).to have_http_status(404)
@@ -131,7 +131,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user with invalid permissions' do
-      it 'should not update variable' do
+      it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
         expect(response).to have_http_status(403)
@@ -139,7 +139,7 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not update variable' do
+      it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}")
 
         expect(response).to have_http_status(401)
@@ -149,14 +149,14 @@ describe API::API, api: true do
 
   describe 'DELETE /projects/:id/variables/:key' do
     context 'authorized user with proper permissions' do
-      it 'should delete variable' do
+      it 'deletes variable' do
         expect do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
         end.to change{project.variables.count}.by(-1)
         expect(response).to have_http_status(200)
       end
 
-      it 'should responde with 404 Not Found if requesting non-existing variable' do
+      it 'responds with 404 Not Found if requesting non-existing variable' do
         delete api("/projects/#{project.id}/variables/non_existing_variable", user)
 
         expect(response).to have_http_status(404)
@@ -164,7 +164,7 @@ describe API::API, api: true do
     end
 
     context 'authorized user with invalid permissions' do
-      it 'should not delete variable' do
+      it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
         expect(response).to have_http_status(403)
@@ -172,7 +172,7 @@ describe API::API, api: true do
     end
 
     context 'unauthorized user' do
-      it 'should not delete variable' do
+      it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}")
 
         expect(response).to have_http_status(401)

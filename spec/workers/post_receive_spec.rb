@@ -22,7 +22,7 @@ describe PostReceive do
     context "branches" do
       let(:changes) { "123456 789012 refs/heads/tést" }
 
-      it "should call GitTagPushService" do
+      it "calls GitTagPushService" do
         expect_any_instance_of(GitPushService).to receive(:execute).and_return(true)
         expect_any_instance_of(GitTagPushService).not_to receive(:execute)
         PostReceive.new.perform(pwd(project), key_id, base64_changes)
@@ -32,7 +32,7 @@ describe PostReceive do
     context "tags" do
       let(:changes) { "123456 789012 refs/tags/tag" }
 
-      it "should call GitTagPushService" do
+      it "calls GitTagPushService" do
         expect_any_instance_of(GitPushService).not_to receive(:execute)
         expect_any_instance_of(GitTagPushService).to receive(:execute).and_return(true)
         PostReceive.new.perform(pwd(project), key_id, base64_changes)
@@ -42,7 +42,7 @@ describe PostReceive do
     context "merge-requests" do
       let(:changes) { "123456 789012 refs/merge-requests/123" }
 
-      it "should not call any of the services" do
+      it "does not call any of the services" do
         expect_any_instance_of(GitPushService).not_to receive(:execute)
         expect_any_instance_of(GitTagPushService).not_to receive(:execute)
         PostReceive.new.perform(pwd(project), key_id, base64_changes)
@@ -53,7 +53,13 @@ describe PostReceive do
       subject { PostReceive.new.perform(pwd(project), key_id, base64_changes) }
 
       context "creates a Ci::Pipeline for every change" do
-        before { stub_ci_pipeline_to_return_yaml_file }
+        before do
+          allow_any_instance_of(Ci::CreatePipelineService).to receive(:commit) do
+            OpenStruct.new(id: '123456')
+          end
+          allow_any_instance_of(Ci::CreatePipelineService).to receive(:branch?).and_return(true)
+          stub_ci_pipeline_to_return_yaml_file
+        end
 
         it { expect{ subject }.to change{ Ci::Pipeline.count }.by(2) }
       end
