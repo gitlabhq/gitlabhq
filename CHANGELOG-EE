@@ -12,6 +12,7 @@ v 8.11.0 (unreleased)
   - [Elastic] Improve code search
   - [Elastic] Significant improvement of global search performance
   - [Fix] Push rules check existing commits in some cases
+  - [ES] Limit amount of retries for sidekiq jobs
 
 v 8.10.6
   - Fix race condition with UpdateMirrorWorker Lease. !641
