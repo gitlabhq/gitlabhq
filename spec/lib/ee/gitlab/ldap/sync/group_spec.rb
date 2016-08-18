@@ -13,7 +13,89 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     stub_ldap_group_find_by_cn('ldap_group1', ldap_group1, adapter)
   end
 
+  shared_examples :group_state_machine do
+    it 'uses the ldap sync state machine' do
+      expect(group).to receive(:start_ldap_sync)
+      expect(group).to receive(:finish_ldap_sync)
+      expect(EE::Gitlab::LDAP::Sync::Group)
+        .to receive(:new).at_most(:twice).and_call_original
+
+      execute
+    end
+
+    it 'fails a stuck group older than 1 hour' do
+      group.start_ldap_sync
+      group.update_column(:ldap_sync_last_sync_at, 61.minutes.ago)
+
+      expect(group).to receive(:mark_ldap_sync_as_failed)
+
+      execute
+    end
+
+    context 'when the group ldap sync is already started' do
+      it 'logs a debug message' do
+        group.start_ldap_sync
+
+        expect(Rails.logger)
+          .to receive(:warn)
+                .with(/^Group '\w*' is not ready for LDAP sync. Skipping/)
+                .at_least(:once)
+
+        execute
+      end
+
+      it 'does not update permissions' do
+        group.start_ldap_sync
+
+        expect_any_instance_of(EE::Gitlab::LDAP::Sync::Group)
+          .not_to receive(:update_permissions)
+
+        execute
+      end
+    end
+  end
+
+  describe '.execute_all_providers' do
+    def execute
+      described_class.execute_all_providers(group)
+    end
+
+    before do
+      allow(Gitlab::LDAP::Config)
+        .to receive(:providers).and_return(['main', 'secondary'])
+      allow(EE::Gitlab::LDAP::Sync::Proxy)
+        .to receive(:open).and_yield(double('proxy').as_null_object)
+    end
+
+    let(:group) do
+      create(:group_with_ldap_group_link,
+             cn: 'ldap_group1',
+             group_access: ::Gitlab::Access::DEVELOPER)
+    end
+    let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
+
+    include_examples :group_state_machine
+  end
+
+  describe '.execute' do
+    def execute
+      described_class.execute(group, proxy(adapter))
+    end
+
+    let(:group) do
+      create(:group_with_ldap_group_link,
+             cn: 'ldap_group1',
+             group_access: ::Gitlab::Access::DEVELOPER)
+    end
+    let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
+
+    include_examples :group_state_machine
+  end
+
   describe '#update_permissions' do
+    before { group.start_ldap_sync }
+    after { group.finish_ldap_sync }
+
     let(:group) do
       create(:group_with_ldap_group_link,
              cn: 'ldap_group1',
@@ -24,33 +106,13 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
       context 'with basic add/update actions' do
         let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
 
-        it 'fails a stuck group older than 1 hour' do
-          group.start_ldap_sync
-          group.update_column(:ldap_sync_last_sync_at, 61.minutes.ago)
+        it 'does not update permissions unless ldap sync status is started' do
+          group.finish_ldap_sync
 
-          expect(group).to receive(:mark_ldap_sync_as_failed)
+          expect(Rails.logger)
+            .to receive(:warn).with(/status must be 'started' before updating permissions/)
 
           sync_group.update_permissions
-        end
-
-        context 'when the group ldap sync is already started' do
-          it 'logs a debug message' do
-            group.start_ldap_sync
-
-            expect(Rails.logger).to receive(:debug) do |&block|
-              expect(block.call).to match /^Group '\w*' is not ready for LDAP sync. Skipping/
-            end.at_least(1).times
-
-            sync_group.update_permissions
-          end
-
-          it 'does not add new members' do
-            group.start_ldap_sync
-
-            sync_group.update_permissions
-
-            expect(group.members).not_to include(user)
-          end
         end
 
         it 'adds new members' do
@@ -79,13 +141,6 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
           expect(group.members.find_by(user_id: user.id).access_level)
             .to eq(::Gitlab::Access::DEVELOPER)
-        end
-
-        it 'uses the ldap sync state machine' do
-          expect(group).to receive(:start_ldap_sync)
-          expect(group).to receive(:finish_ldap_sync)
-
-          sync_group.update_permissions
         end
       end
 
