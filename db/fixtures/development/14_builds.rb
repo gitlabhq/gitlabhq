@@ -69,44 +69,50 @@ class Gitlab::Seeder::Builds
   end
 
   def build_create!(pipeline, opts = {})
-    attributes = build_attributes_for(pipeline, opts)
+    attributes = job_attributes(pipeline, opts)
+      .merge(commands: '$ build command')
 
     Ci::Build.create!(attributes).tap do |build|
-      if opts[:name].start_with?('build')
-        artifacts_cache_file(artifacts_archive_path) do |file|
-          build.artifacts_file = file
-        end
+      setup_artifacts(build)
+      setup_build_log(build)
+      build.save
+    end
+  end
 
-        artifacts_cache_file(artifacts_metadata_path) do |file|
-          build.artifacts_metadata = file
-        end
-      end
+  def setup_artifacts(build)
+    return unless %w[build test].include?(build.stage)
 
-      ##
-      # We need to set build trace after saving a build (id required)
-      # That is why we need `#tap` method instead of passing block
-      # directly to `Ci::Build#create!`.
-      #
-      if %w(running success failed).include?(build.status)
-        build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
-      end
+    artifacts_cache_file(artifacts_archive_path) do |file|
+      build.artifacts_file = file
+    end
+
+    artifacts_cache_file(artifacts_metadata_path) do |file|
+      build.artifacts_metadata = file
+    end
+  end
+
+  def setup_build_log(build)
+    ##
+    # We need to set build trace after saving a build (id required)
+    # That is why we need `#tap` method instead of passing block
+    # directly to `Ci::Build#create!`.
+    #
+    if %w(running success failed).include?(build.status)
+      build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
     end
   end
 
   def commit_status_create!(pipeline, opts = {})
-    attributes = commit_status_attributes_for(pipeline, opts)
+    attributes = job_attributes(pipeline, opts)
+
     GenericCommitStatus.create!(attributes)
   end
 
-  def commit_status_attributes_for(pipeline, opts)
+  def job_attributes(pipeline, opts)
     { name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
       ref: 'master', tag: false, user: build_user, project: @project, pipeline: pipeline,
       created_at: Time.now, updated_at: Time.now
     }.merge(opts)
-  end
-
-  def build_attributes_for(pipeline, opts)
-    commit_status_attributes_for(pipeline, opts).merge(commands: '$ build command')
   end
 
   def build_user
