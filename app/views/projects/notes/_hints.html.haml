@@ -1,8 +1,15 @@
+- supports_slash_commands = local_assigns.fetch(:supports_slash_commands, false)
 .comment-toolbar.clearfix
   .toolbar-text
     Styling with
     = link_to 'Markdown', help_page_path('markdown/markdown'), target: '_blank', tabindex: -1
-    is supported
+    - if supports_slash_commands
+      and
+      = link_to 'slash commands', help_page_path('workflow/slash_commands'), target: '_blank', tabindex: -1
+      are
+    - else
+      is
+    supported
   %button.toolbar-button.markdown-selector{ type: 'button', tabindex: '-1' }
     = icon('file-image-o', class: 'toolbar-button-icon')
     Attach a file

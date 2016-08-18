@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Issues::CloseService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
+  let(:guest) { create(:user) }
   let(:issue) { create(:issue, assignee: user2) }
   let(:project) { issue.project }
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: issue, author: user2) }
@@ -10,13 +11,14 @@ describe Issues::CloseService, services: true do
   before do
     project.team << [user, :master]
     project.team << [user2, :developer]
+    project.team << [guest, :guest]
   end
 
   describe '#execute' do
     context "valid params" do
       before do
         perform_enqueued_jobs do
-          @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+          @issue = described_class.new(project, user, {}).execute(issue)
         end
       end
 
@@ -39,10 +41,22 @@ describe Issues::CloseService, services: true do
       end
     end
 
+    context 'current user is not authorized to close issue' do
+      before do
+        perform_enqueued_jobs do
+          @issue = described_class.new(project, guest).execute(issue)
+        end
+      end
+
+      it 'does not close the issue' do
+        expect(@issue).to be_open
+      end
+    end
+
     context "external issue tracker" do
       before do
         allow(project).to receive(:default_issues_tracker?).and_return(false)
-        @issue = Issues::CloseService.new(project, user, {}).execute(issue)
+        @issue = described_class.new(project, user, {}).execute(issue)
       end
 
       it { expect(@issue).to be_valid }

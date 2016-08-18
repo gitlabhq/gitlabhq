@@ -125,7 +125,7 @@ class Projects::NotesController < Projects::ApplicationController
         id:     note.id,
         name:   note.name
       }
-    elsif note.valid?
+    elsif note.persisted?
       Banzai::NoteRenderer.render([note], @project, current_user)
 
       attrs = {
