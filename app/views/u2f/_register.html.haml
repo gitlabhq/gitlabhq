@@ -28,14 +28,15 @@
 
 %script#js-register-u2f-registered{ type: "text/template" }
   %div.row.append-bottom-10
-    %p Your device was successfully set up! Give it a name and register it with the GitLab server.
-    = form_tag(create_u2f_profile_two_factor_auth_path, method: :post) do
-      .row.append-bottom-10
-        .col-md-3
-          = text_field_tag 'u2f_registration[name]', nil, class: 'form-control', placeholder: "Pick a name"
-        .col-md-3
-          = hidden_field_tag 'u2f_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
-          = submit_tag "Register U2F Device", class: "btn btn-success"
+    .col-md-12
+      %p Your device was successfully set up! Give it a name and register it with the GitLab server.
+      = form_tag(create_u2f_profile_two_factor_auth_path, method: :post) do
+        .row.append-bottom-10
+          .col-md-3
+            = text_field_tag 'u2f_registration[name]', nil, class: 'form-control', placeholder: "Pick a name"
+          .col-md-3
+            = hidden_field_tag 'u2f_registration[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
+            = submit_tag "Register U2F Device", class: "btn btn-success"
 
 :javascript
   var u2fRegister = new U2FRegister($("#js-register-u2f"), gon.u2f);

@@ -92,11 +92,10 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def setup_u2f_registration
     @u2f_registration ||= U2fRegistration.new
     @u2f_registrations = current_user.u2f_registrations
-    @registration_key_handles = @u2f_registrations.pluck(:key_handle)
     u2f = U2F::U2F.new(u2f_app_id)
 
     registration_requests = u2f.registration_requests
-    sign_requests = u2f.authentication_requests(@registration_key_handles)
+    sign_requests = u2f.authentication_requests(@u2f_registrations.map(&:key_handle))
     session[:challenges] = registration_requests.map(&:challenge)
 
     gon.push(u2f: { challenges: session[:challenges], app_id: u2f_app_id,
