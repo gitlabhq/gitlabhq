@@ -61,14 +61,7 @@ class Ability
     private
 
     def uncached_allowed(user, subject)
-      policy_class = BasePolicy.class_for(subject) rescue nil
-      return policy_class.abilities(user, subject) if policy_class
-
-      return anonymous_abilities(subject) if user.nil?
-      return [] unless user.is_a?(User)
-      return [] if user.blocked?
-
-      abilities_by_subject_class(user: user, subject: subject)
+      BasePolicy.class_for(subject).abilities(user, subject)
     end
 
     def abilities_by_subject_class(user:, subject:)
