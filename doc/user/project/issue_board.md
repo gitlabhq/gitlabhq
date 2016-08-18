@@ -30,8 +30,8 @@ Below is a table of the definitions used for GitLab's Issue Board.
 
 | Term | Definition |
 | ---- | ----------- |
-| **Issue Board** | It can have up to 10 lists with each list consisting of issues represented by cards. |
-| **List** | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. You can create up to 10 lists per Issue Board. |
+| **Issue Board** | It can have multiple lists with each list consisting of issues represented by cards. |
+| **List** | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
 | **Card** | Every card represents an issue. The information you can see on a card consists of the issue number, the issue title and the labels associated with it. You can drag cards around from one lists to another. Issues are [ordered by priority](labels.md#prioritize-labels). |
 
 ## Functionality
