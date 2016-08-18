@@ -10,10 +10,9 @@
           \
 
           - if editable_diff?(diff_file)
-            = edit_blob_link(@merge_request.source_project,
-                @merge_request.source_branch, diff_file.new_path,
-                from_merge_request_id: @merge_request.id,
-                skip_visible_check: true)
+            - link_opts = @merge_request.id ? { from_merge_request_id: @merge_request.id } : {}
+            = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
+                             blob: blob, link_opts: link_opts)
 
         = view_file_btn(diff_commit.id, diff_file.new_path, project)
 

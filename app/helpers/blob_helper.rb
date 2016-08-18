@@ -11,17 +11,14 @@ module BlobHelper
   def edit_blob_link(project = @project, ref = @ref, path = @path, options = {})
     return unless current_user
 
-    blob = project.repository.blob_at(ref, path) rescue nil
+    blob = options.delete(:blob)
+    blob ||= project.repository.blob_at(ref, path) rescue nil
 
     return unless blob
 
-    from_mr = options[:from_merge_request_id]
-    link_opts = {}
-    link_opts[:from_merge_request_id] = from_mr if from_mr
-
     edit_path = namespace_project_edit_blob_path(project.namespace, project,
                                      tree_join(ref, path),
-                                     link_opts)
+                                     options[:link_opts])
 
     if !on_top_of_branch?(project, ref)
       button_tag "Edit", class: "btn disabled has-tooltip btn-file-option", title: "You can only edit files when you are on a branch", data: { container: 'body' }

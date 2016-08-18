@@ -69,18 +69,40 @@ describe BlobHelper do
   end
 
   describe "#edit_blob_link" do
-    let(:project) { create(:project) }
+    let(:namespace) { create(:namespace, name: 'gitlab' )}
+    let(:project) { create(:project, namespace: namespace) }
 
     before do
       allow(self).to receive(:current_user).and_return(double)
+      allow(self).to receive(:can_collaborate_with_project?).and_return(true)
     end
 
     it 'verifies blob is text' do
-      expect(self).not_to receive(:blob_text_viewable?)
+      expect(helper).not_to receive(:blob_text_viewable?)
 
       button = edit_blob_link(project, 'refs/heads/master', 'README.md')
 
       expect(button).to start_with('<button')
+    end
+
+    it 'uses the passed blob instead retrieve from repository' do
+      blob = project.repository.blob_at('refs/heads/master', 'README.md')
+
+      expect(project.repository).not_to receive(:blob_at)
+
+      edit_blob_link(project, 'refs/heads/master', 'README.md', blob: blob)
+    end
+
+    it 'returns a link with the proper route' do
+      link = edit_blob_link(project, 'master', 'README.md')
+
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq('/gitlab/gitlabhq/edit/master/README.md')
+    end
+
+    it 'returns a link with the passed link_opts on the expected route' do
+      link = edit_blob_link(project, 'master', 'README.md', link_opts: { mr_id: 10 })
+
+      expect(Capybara.string(link).find_link('Edit')[:href]).to eq('/gitlab/gitlabhq/edit/master/README.md?mr_id=10')
     end
   end
 end
