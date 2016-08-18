@@ -97,7 +97,7 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual?
+      project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
     def play(current_user = nil)

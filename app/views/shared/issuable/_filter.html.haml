@@ -39,7 +39,9 @@
                       = weight
 
         .pull-right
-          - if controller.controller_name == 'boards' && can?(current_user, :admin_list, @project)
+          - if controller.controller_name != 'boards'
+            = render 'shared/sort_dropdown'
+          - if can?(current_user, :admin_list, @project)
             .dropdown
               %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
                 Create new list
@@ -48,8 +50,6 @@
                 - if can?(current_user, :admin_label, @project)
                   = render partial: "shared/issuable/label_page_create"
                 = dropdown_loading
-          - else
-            = render 'shared/sort_dropdown'
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide

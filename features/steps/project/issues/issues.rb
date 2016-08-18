@@ -45,6 +45,8 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I click link "All"' do
     click_link "All"
+    # Waits for load
+    expect(find('.issues-state-filters > .active')).to have_content 'All'
   end
 
   step 'I click link "Release 0.4"' do
@@ -297,7 +299,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I fill in issue search with \'Rock and roll\'' do
-    filter_issue 'Description for issue'
+    filter_issue 'Rock and roll'
   end
 
   step 'I should see \'Bugfix1\' in issues' do
@@ -354,8 +356,6 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   def filter_issue(text)
-    sleep 1
     fill_in 'issue_search', with: text
-    sleep 1
   end
 end
