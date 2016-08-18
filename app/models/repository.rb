@@ -1272,14 +1272,14 @@ class Repository
     end
   end
 
+  def head_exists?
+    exists? && !empty? && !rugged.head_unborn?
+  end
+
   private
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
-  end
-
-  def head_exists?
-    exists? && !empty? && !rugged.head_unborn?
   end
 
   def file_on_head(regex)
