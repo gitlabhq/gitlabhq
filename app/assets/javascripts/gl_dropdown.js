@@ -562,10 +562,9 @@
           field.remove();
         }
         if (this.options.toggleLabel) {
-          return this.updateLabel(selectedObject, el, this);
-        } else {
-          return selectedObject;
+          this.updateLabel(selectedObject, el, this);
         }
+        return selectedObject;
       } else if (el.hasClass(INDETERMINATE_CLASS)) {
         el.addClass(ACTIVE_CLASS);
         el.removeClass(INDETERMINATE_CLASS);
