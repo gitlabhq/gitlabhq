@@ -2,6 +2,7 @@
 
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Change your time zone](timezone.md)
+- [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
@@ -18,7 +19,6 @@
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
-- [Issuable Templates](issuable_templates.md)
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
 - [Revert changes](revert_changes.md)
