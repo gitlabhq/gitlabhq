@@ -217,13 +217,13 @@ v 8.11.0
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
   - Upgrade Doorkeeper to 4.2.0. !5881
+  - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
 
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
   - Restore "Largest repository" sort option on Admin > Projects page. !5797
   - Fix privilege escalation via project export.
   - Require administrator privileges to perform a project import.
-  - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
