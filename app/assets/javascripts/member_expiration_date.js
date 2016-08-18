@@ -8,6 +8,8 @@
     $('.js-access-expiration-date').each(function(i, element) {
       var expirationDateInput = $(element);
 
+      if (expirationDateInput.hasClass('hasDatepicker')) { return; }
+
       function toggleClearInput() {
         expirationDateInput.parent().toggleClass('has-value', !!expirationDateInput.val());
       }

@@ -79,12 +79,12 @@
       %br
       = form_for member, remote: true, html: { class: 'form-horizontal' }  do |f|
         .form-group
-          = label_tag :expires_at, 'Project access', class: 'control-label'
+          = label_tag "member_access_level_#{member.id}", 'Project access', class: 'control-label'
           .col-sm-10
-            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
+            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control', id: "member_access_level_#{member.id}"
         - if member.is_a?(ProjectMember)
           .form-group
-            = label_tag :expires_at, 'Access expiration date', class: 'control-label'
+            = label_tag "member_expires_at_#{member.id}", 'Access expiration date', class: 'control-label'
             .col-sm-10
               .clearable-input
                 = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date', id: "member_expires_at_#{member.id}"
