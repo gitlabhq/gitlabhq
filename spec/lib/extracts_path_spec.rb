@@ -52,6 +52,16 @@ describe ExtractsPath, lib: true do
         expect(@id).to start_with('foo%20bar/')
       end
     end
+
+    context 'path contains space' do
+      let(:params) { { path: 'with space', ref: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' } }
+
+      it 'is not converted to %20 in @path' do
+        assign_ref_vars
+
+        expect(@path).to eq(params[:path])
+      end
+    end
   end
 
   describe '#extract_ref' do
