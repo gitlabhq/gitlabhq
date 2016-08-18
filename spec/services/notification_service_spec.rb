@@ -9,6 +9,28 @@ describe NotificationService, services: true do
     end
   end
 
+  shared_examples 'notifications for new mentions' do
+    def send_notifications(*new_mentions)
+      reset_delivered_emails!
+      notification.send(notification_method, mentionable, new_mentions, @u_disabled)
+    end
+
+    it 'sends no emails when no new mentions are present' do
+      send_notifications
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+
+    it 'emails new mentions with a watch level higher than participant' do
+      send_notifications(@u_watcher, @u_participant_mentioned, @u_custom_global)
+      should_only_email(@u_watcher, @u_participant_mentioned, @u_custom_global)
+    end
+
+    it 'does not email new mentions with a watch level equal to or less than participant' do
+      send_notifications(@u_participating, @u_mentioned)
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+  end
+
   describe 'Keys' do
     describe '#new_key' do
       let!(:key) { create(:personal_key) }
@@ -399,6 +421,13 @@ describe NotificationService, services: true do
       end
     end
 
+    describe '#new_mentions_in_issue' do
+      let(:notification_method) { :new_mentions_in_issue }
+      let(:mentionable) { issue }
+
+      include_examples 'notifications for new mentions'
+    end
+
     describe '#reassigned_issue' do
       before do
         update_custom_notification(:reassign_issue, @u_guest_custom, project)
@@ -700,6 +729,8 @@ describe NotificationService, services: true do
     before do
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
+      update_custom_notification(:new_merge_request, @u_guest_custom, project)
+      update_custom_notification(:new_merge_request, @u_custom_global)
       ActionMailer::Base.deliveries.clear
     end
 
@@ -796,6 +827,13 @@ describe NotificationService, services: true do
           it { should_not_email(@u_lazy_participant) }
         end
       end
+    end
+
+    describe '#new_mentions_in_merge_request' do
+      let(:notification_method) { :new_mentions_in_merge_request }
+      let(:mentionable) { merge_request }
+
+      include_examples 'notifications for new mentions'
     end
 
     describe '#reassigned_merge_request' do

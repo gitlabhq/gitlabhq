@@ -9,6 +9,7 @@ The following measurements are currently stored in InfluxDB:
 - `PROCESS_object_counts`
 - `PROCESS_transactions`
 - `PROCESS_views`
+- `events`
 
 Here, `PROCESS` is replaced with either `rails` or `sidekiq` depending on the
 process type. In all series, any form of duration is stored in milliseconds.
@@ -77,6 +78,14 @@ following value fields are available:
 
 The `action` tag contains the action name of the transaction that rendered the
 view.
+
+## events
+
+This measurement is used to store generic events such as the number of Git
+pushes, Emails sent, etc. Each point in this measurement has a single value
+field called `count`. The value of this field is simply set to `1`. Each point
+also has at least one tag: `event`. This tag's value is set to the event name.
+Depending on the event type additional tags may be available as well.
 
 ---
 

@@ -88,6 +88,8 @@
           new ZenMode();
           new MergedButtons();
           break;
+        case "projects:merge_requests:conflicts":
+          window.mcui = new MergeConflictResolver()
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
           Issuable.init();

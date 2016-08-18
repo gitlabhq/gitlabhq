@@ -1,4 +1,10 @@
 /* https://gist.github.com/qguv/7936275 */
+
+@mixin matchLine {
+  color: $black-transparent;
+  background: rgba(255, 255, 255, 0.4);
+}
+
 .code.solarized-light {
   // Line numbers
   .line-numbers, .diff-line-num {
@@ -21,6 +27,10 @@
 
   // Diff line
   .line_holder {
+    &.match .line_content {
+      @include matchLine;
+    }
+
     td.diff-line-num.hll:not(.empty-cell),
     td.line_content.hll:not(.empty-cell) {
       background-color: #ddd8c5;
@@ -36,8 +46,7 @@
     }
 
     .line_content.match {
-      color: $black-transparent;
-      background: rgba(255, 255, 255, 0.4);
+      @include matchLine;
     }
   }
 

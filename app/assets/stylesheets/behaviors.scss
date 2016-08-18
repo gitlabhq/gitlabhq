@@ -20,3 +20,8 @@
     .turn-off { display: block; }
   }
 }
+
+
+[v-cloak] {
+  display: none;
+}
