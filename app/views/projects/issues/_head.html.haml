@@ -6,6 +6,11 @@
           %span
             Issues
 
+      = nav_link(controller: :boards) do
+        = link_to namespace_project_board_path(@project.namespace, @project), title: 'Board' do
+          %span
+            Board
+
     - if project_nav_tab?(:merge_requests) && current_controller?(:merge_requests)
       = nav_link(controller: :merge_requests) do
         = link_to namespace_project_merge_requests_path(@project.namespace, @project), title: 'Merge Requests' do

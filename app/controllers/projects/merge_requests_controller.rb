@@ -9,15 +9,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   before_action :module_enabled
   before_action :merge_request, only: [
-    :edit, :update, :show, :diffs, :commits, :builds, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip
+    :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
   ]
-  before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds]
-  before_action :define_show_vars, only: [:show, :diffs, :commits, :builds]
+  before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
+  before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds, :pipelines]
   before_action :define_widget_vars, only: [:merge, :cancel_merge_when_build_succeeds, :merge_check]
   before_action :define_commit_vars, only: [:diffs]
   before_action :define_diff_comment_vars, only: [:diffs]
-  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds]
+  before_action :ensure_ref_fetched, only: [:show, :diffs, :commits, :builds, :conflicts, :pipelines]
 
   # Allow read any merge_request
   before_action :authorize_read_merge_request!
@@ -27,6 +27,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   # Allow modify merge_request
   before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
+
+  before_action :authorize_can_resolve_conflicts!, only: [:conflicts, :resolve_conflicts]
 
   def index
     terms = params['issue_search']
@@ -130,6 +132,47 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def conflicts
+    respond_to do |format|
+      format.html { define_discussion_vars }
+
+      format.json do
+        if @merge_request.conflicts_can_be_resolved_in_ui?
+          render json: @merge_request.conflicts
+        elsif @merge_request.can_be_merged?
+          render json: {
+            message: 'The merge conflicts for this merge request have already been resolved. Please return to the merge request.',
+            type: 'error'
+          }
+        else
+          render json: {
+            message: 'The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally.',
+            type: 'error'
+          }
+        end
+      end
+    end
+  end
+
+  def resolve_conflicts
+    return render_404 unless @merge_request.conflicts_can_be_resolved_in_ui?
+
+    if @merge_request.can_be_merged?
+      render status: :bad_request, json: { message: 'The merge conflicts for this merge request have already been resolved.' }
+      return
+    end
+
+    begin
+      MergeRequests::ResolveService.new(@merge_request.source_project, current_user, params).execute(@merge_request)
+
+      flash[:notice] = 'All merge conflicts were resolved. The merge request can now be merged.'
+
+      render json: { redirect_to: namespace_project_merge_request_url(@project.namespace, @project, @merge_request, resolved_conflicts: true) }
+    rescue Gitlab::Conflict::File::MissingResolution => e
+      render status: :bad_request, json: { message: e.message }
+    end
+  end
+
   def builds
     respond_to do |format|
       format.html do
@@ -141,7 +184,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
+  def pipelines
+    @pipelines = @merge_request.all_pipelines
+
+    respond_to do |format|
+      format.html do
+        define_discussion_vars
+
+        render 'show'
+      end
+      format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_pipelines') } }
+    end
+  end
+
   def new
+    apply_diff_view_cookie!
+
     build_merge_request
     @noteable = @merge_request
 
@@ -338,6 +396,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
   end
 
+  def authorize_can_resolve_conflicts!
+    return render_404 unless @merge_request.conflicts_can_be_resolved_by?(current_user)
+  end
+
   def module_enabled
     return render_404 unless @project.merge_requests_enabled
   end
@@ -412,7 +474,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       noteable_id: @merge_request.id
     }
 
-    @use_legacy_diff_notes = !@merge_request.support_new_diff_notes?
+    @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
     @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(

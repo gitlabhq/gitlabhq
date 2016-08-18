@@ -1,0 +1,2 @@
+<% type = Rails.env.development? ? 'full' : 'min' %>
+<%= File.read(Rails.root.join("vendor/assets/javascripts/vue.#{type}.js")) %>

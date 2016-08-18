@@ -62,6 +62,8 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
+  has_one :board, dependent: :destroy
+
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
@@ -196,6 +198,8 @@ class Project < ActiveRecord::Base
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
+
+  scope :excluding_project, ->(project) { where.not(id: project) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
