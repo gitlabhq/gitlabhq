@@ -23,18 +23,18 @@
         if (this.discussion) {
           return this.discussion.isResolvable();
         } else {
-          return undefined;
+          return false;
         }
       },
-      allResolved: function () {
+      isDiscussionResolved: function () {
         if (this.discussion) {
           return this.discussion.isResolved();
         } else {
-          return undefined;
+          return false;
         }
       },
       buttonText: function () {
-        if (this.allResolved) {
+        if (this.isDiscussionResolved) {
           return "Unresolve discussion";
         } else {
           return "Resolve discussion";
@@ -44,7 +44,7 @@
         if (this.discussion) {
           return this.discussion.loading;
         } else {
-          return undefined;
+          return false;
         }
       }
     },

@@ -14,11 +14,7 @@
         return this.discussions[this.discussionId];
       },
       allResolved: function () {
-        if (this.discussion) {
-          return this.unresolvedDiscussionCount === 0;
-        } else {
-          return true;
-        }
+        return this.unresolvedDiscussionCount === 0;
       },
       showButton: function () {
         if (this.discussionId) {
@@ -66,7 +62,7 @@
           discussionIdsInScope = discussionIdsForElements($(discussionsSelector));
 
           let unresolvedDiscussionCount = 0;
-          
+
           for (let i = 0; i < discussionIdsInScope.length; i++) {
             const discussionId = discussionIdsInScope[i];
             if (discussion && !discussion.isResolved()) {
