@@ -1,3 +1,4 @@
+- email = local_assigns.fetch(:email, false)
 - plain = local_assigns.fetch(:plain, false)
 - type = line.type
 - line_code = diff_file.line_code(line) unless plain
@@ -22,4 +23,8 @@
         = link_text
       - else
         %a{href: "##{line_code}", data: { linenumber: link_text }}
-    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }= diff_line_content(line.text, type)
+    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
+      - if email
+        %pre= diff_line_content(line.text, type)
+      - else
+        = diff_line_content(line.text, type)
