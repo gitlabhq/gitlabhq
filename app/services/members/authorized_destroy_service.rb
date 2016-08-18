@@ -7,6 +7,8 @@ module Members
     end
 
     def execute
+      return false if member.is_a?(GroupMember) && member.source.last_owner?(member.user)
+
       member.destroy
 
       if member.request? && member.user != user
