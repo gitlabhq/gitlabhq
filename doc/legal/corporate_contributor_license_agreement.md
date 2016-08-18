@@ -16,7 +16,7 @@ Subject to the terms and conditions of this Agreement, You hereby grant to GitLa
 
 Subject to the terms and conditions of this Agreement, You hereby grant to GitLab B.V. and to recipients of software distributed by GitLab B.V. a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by You that are necessarily infringed by Your Contribution(s) alone or by combination of Your Contribution(s) with the Work to which such Contribution(s) was submitted. If any entity institutes patent litigation against You or any other entity (including a cross-claim or counterclaim in a lawsuit) alleging that your Contribution, or the Work to which you have contributed, constitutes direct or contributory patent infringement, then any patent licenses granted to that entity under this Agreement for that Contribution or Work shall terminate as of the date such litigation is filed.
 
-4.  You represent that You are legally entitled to grant the above license. You represent further that each employee of the Corporation is authorized to submit Contributions on behalf of the Corporation, but excluding employees that are designated in writing by You as "Not authorized to submit Contributions on behalf of [name of corporation here]."
+4.  You represent that You are legally entitled to grant the above license. You represent further that each of Your employees is authorized to submit Contributions on Your behalf, but excluding employees that are designated in writing by You as "Not authorized to submit Contributions on behalf of [name of Your corporation here]." Such designations of exclusion for unauthorized employees are to be submitted via email to legal@gitlab.com.
 
 5.  You represent that each of Your Contributions is Your original creation (see section 7 for submissions on behalf of others).
 
@@ -24,6 +24,6 @@ Subject to the terms and conditions of this Agreement, You hereby grant to GitLa
 
 7.  Should You wish to submit work that is not Your original creation, You may submit it to GitLab B.V. separately from any Contribution, identifying the complete details of its source and of any license or other restriction (including, but not limited to, related patents, trademarks, and license agreements) of which you are personally aware, and conspicuously marking the work as "Submitted on behalf of a third-party: [named here]".
 
-8.  It is your responsibility to notify GitLab B.V. when any change is required to the designation of employees not authorized to submit Contributions on behalf of the Corporation, or to the Corporation's Point of Contact with GitLab B.V..
+8.  It is Your responsibility to notify GitLab.com when any change is required to the list of designated employees excluded from submitting Contributions on Your behalf per Section 4. Such notification should be sent via email to legal@gitlab.com.
 
 This text is licensed under the [Creative Commons Attribution 3.0 License](https://creativecommons.org/licenses/by/3.0/) and the original source is the Google Open Source Programs Office.
