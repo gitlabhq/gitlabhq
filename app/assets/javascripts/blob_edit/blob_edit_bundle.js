@@ -2,10 +2,10 @@
 
 (function() {
   $(function() {
-    url = $(".js-edit-blob-form").data("relative-url-root");
+    var url = $(".js-edit-blob-form").data("relative-url-root");
     url += $(".js-edit-blob-form").data("assets-prefix");
 
-    blob = new EditBlob(url, $('.js-edit-blob-form').data('blob-language'));
+    var blob = new EditBlob(url, $('.js-edit-blob-form').data('blob-language'));
     new NewCommitForm($('.js-edit-blob-form'));
   });
 
