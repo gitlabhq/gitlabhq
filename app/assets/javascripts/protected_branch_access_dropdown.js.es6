@@ -39,7 +39,7 @@
           self.inputCount++;
 
           if (onSelect) {
-            onSelect();
+            onSelect(item, $el);
           } 
         }
       });
