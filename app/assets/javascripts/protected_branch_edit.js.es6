@@ -1,22 +1,34 @@
 (global => {
   global.gl = global.gl || {};
 
+  const LEVEL_TYPES = {
+    USER: 'user',
+    ROLE: 'role',
+  };
+
+  const ACCESS_LEVELS = {
+    MERGE: 'merge_access_levels',
+    PUSH: 'push_access_levels',
+  };
+
   gl.ProtectedBranchEdit = class {
     constructor(options) {
+      this.$wraps = {};
       this.hasChanges = false;
       this.$wrap = options.$wrap;
       this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
-      this.$allowedToMergeDropdownWrap = this.$allowedToMergeDropdown.parents().eq(1);
       this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
-      this.$allowedToPushDropdownWrap = this.$allowedToPushDropdown.parents().eq(1);
+
+      this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.parents().eq(1);
+      this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.parents().eq(1);
 
       this.buildDropdowns();
 
-      // Save initial state
-      this.state = {
-        merge: this.getMergeAccessLevelsAttributes(),
-        push: this.getPushAccessLevelsAttributes()
-      };
+      // Save initial state with existing dropdowns
+      this.state = {};
+      for (let ACCESS_LEVEL in ACCESS_LEVELS) {
+        this.state[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.getAccessLevelData(ACCESS_LEVEL);
+      }
     }
 
     buildDropdowns() {
@@ -48,9 +60,11 @@
     }
 
     updatePermissions() {
+      let formData = {};
 
-      let merge = this.consolidateMergeData();
-      let push = this.getPushAccessLevelsAttributes();
+      for (let ACCESS_LEVEL in ACCESS_LEVELS) {
+        formData[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.consolidateAccessLevelData(ACCESS_LEVEL);
+      }
 
       return $.ajax({
         type: 'POST',
@@ -59,29 +73,37 @@
         data: {
           _method: 'PATCH',
           id: this.$wrap.data('banchId'),
-          protected_branch: {
-            merge_access_levels_attributes: merge,
-            push_access_levels_attributes: push
-          }
+          protected_branch: formData
         },
         success: (response) => {
           this.$wrap.effect('highlight');
           this.hasChanges = false;
 
           // Update State
-          this.state.merge = response.merge_access_levels.map((access) => {
-            if (access.user_id) {
-              return {
-                id: access.id,
-                user_id: access.user_id,
-              };
-            } else {
-              return {
-                id: access.id,
-                access_level: access.access_level,
-              };
+          for (let ACCESS_LEVEL in ACCESS_LEVELS) {
+            let accessLevel = ACCESS_LEVELS[ACCESS_LEVEL];
+
+            this.state[`${accessLevel}_attributes`] = [];
+
+            for (let i = 0; i < response[accessLevel].length; i++) {
+              let access = response[accessLevel][i];
+              let accessData = {};
+
+              if (access.user_id) {
+                accessData = {
+                  id: access.id,
+                  user_id: access.user_id,
+                };
+              } else {
+                accessData ={
+                  id: access.id,
+                  access_level: access.access_level,
+                };
+              }
+
+              this.state[`${accessLevel}_attributes`].push(accessData);
             }
-          });
+          }
         },
         error() {
           $.scrollTo(0);
@@ -90,49 +112,48 @@
       });
     }
 
-    consolidateMergeData() {
+    consolidateAccessLevelData(accessLevelKey) {
       // State takes precedence
-      let mergeData = [];
-      let mergeInputsData = this.getMergeAccessLevelsAttributes()
+      let accessLevel = ACCESS_LEVELS[accessLevelKey];
+      let accessLevelData = [];
+      let dataFromInputs = this.getAccessLevelData(accessLevelKey);
 
-      for (var i = 0; i < mergeInputsData.length; i++) {
+      for (let i = 0; i < dataFromInputs.length; i++) {
         let inState;
         let adding;
-        var userId = parseInt(mergeInputsData[i].user_id);
+        var userId = parseInt(dataFromInputs[i].user_id);
 
         if (userId) {
           adding = 'user';
-          inState = _.findWhere(this.state.merge, {user_id: userId});
+          inState = _.findWhere(this.state[`${accessLevel}_attributes`], { user_id: userId });
         } else {
           adding = 'role';
-          inState = _.findWhere(this.state.merge, {access_level: parseInt(mergeInputsData[i].access_level)});
+          inState = _.findWhere(this.state[`${accessLevel}_attributes`], { access_level: parseInt(dataFromInputs[i].access_level) });
         }
 
-
         if (inState) {
-          mergeData.push(inState);
+          accessLevelData.push(inState);
         } else {
           if (adding === 'user') {
-            mergeData.push({
-              user_id: parseInt(mergeInputsData[i].user_id)
+            accessLevelData.push({
+              user_id: parseInt(dataFromInputs[i].user_id)
             });
           } else if (adding === 'role') {
-            mergeData.push({
-              access_level: parseInt(mergeInputsData[i].access_level)
+            accessLevelData.push({
+              access_level: parseInt(dataFromInputs[i].access_level)
             });
           }
-
         }
       }
 
-      return mergeData;
+      return accessLevelData;
     }
 
-    getMergeAccessLevelsAttributes() {
+    getAccessLevelData(accessLevelKey) {
       let accessLevels = [];
-
-      this.$allowedToMergeDropdownWrap
-        .find('input[name^="protected_branch[merge_access_levels_attributes]"]')
+      let accessLevel = ACCESS_LEVELS[accessLevelKey];
+      this.$wraps[accessLevel]
+        .find(`input[name^="protected_branch[${accessLevel}_attributes]"]`)
         .map((i, el) => {
           const $el = $(el);
           const type = $el.data('type');
@@ -149,30 +170,6 @@
           if (id) obj.id = id;
 
           accessLevels.push(obj);
-        });
-
-      return accessLevels;
-    }
-
-    getPushAccessLevelsAttributes() {
-      let accessLevels = [];
-
-      this.$allowedToPushDropdownWrap
-        .find('input[name^="protected_branch[push_access_levels_attributes]"]')
-        .map((i, el) => {
-          const $el = $(el);
-          const type = $el.data('type');
-          const value = $el.val();
-
-          if (type === 'role') {
-            accessLevels.push({
-              access_level: value
-            });
-          } else if (type === 'user') {
-            accessLevels.push({
-              user_id: value
-            });
-          }
         });
 
       return accessLevels;
