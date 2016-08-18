@@ -6,19 +6,26 @@
 
     Build.state = null;
 
-    function Build(page_url, build_url, build_status, state1) {
-      this.page_url = page_url;
-      this.build_url = build_url;
-      this.build_status = build_status;
-      this.state = state1;
+    function Build(options) {
+      this.page_url = options.page_url;
+      this.build_url = options.build_url;
+      this.build_status = options.build_status;
+      this.state = options.state1;
+      this.build_stage = options.build_stage;
       this.hideSidebar = bind(this.hideSidebar, this);
       this.toggleSidebar = bind(this.toggleSidebar, this);
+      this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
       this.bp = Breakpoints.get();
-      this.hideSidebar();
       $('.js-build-sidebar').niceScroll();
+
+      this.populateJobs(this.build_stage);
+      this.updateStageDropdownText(this.build_stage);
+      this.hideSidebar();
+
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
+      $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
@@ -130,6 +137,22 @@
         date = $date.text();
         return $date.text($.timefor(new Date(date.replace(/-/g, '/')), ' '));
       }
+    };
+
+    Build.prototype.populateJobs = function(stage) {
+      $('.build-job').hide();
+      $('.build-job[data-stage="' + stage + '"]').show();
+    };
+
+    Build.prototype.updateStageDropdownText = function(stage) {
+      $('.stage-selection').text(stage);
+    };
+
+    Build.prototype.updateDropdown = function(e) {
+      e.preventDefault();
+      var stage = e.currentTarget.text;
+      this.updateStageDropdownText(stage);
+      this.populateJobs(stage);
     };
 
     return Build;

@@ -198,6 +198,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
+    apply_diff_view_cookie!
+
     build_merge_request
     @noteable = @merge_request
 
@@ -214,7 +216,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
-
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses.relevant if @pipeline
 
