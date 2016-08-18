@@ -154,9 +154,7 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
-        # Find or create labels to attach to the issue. Labels are vaild
-        # because we already checked its name, so there can't be an error here
-        attrs[:label_ids] = get_label_ids(params[:labels]) if params[:labels].present?
+        attrs[:labels] = params[:labels] if params[:labels]
 
         issue = ::Issues::CreateService.new(user_project, current_user, attrs.merge(request: request, api: true)).execute
 
@@ -198,12 +196,7 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
-        # Find or create labels and attach to issue. Labels are valid because
-        # we already checked its name, so there can't be an error here
-        if params[:labels] && can?(current_user, :admin_issue, user_project)
-          issue.remove_labels
-          attrs[:label_ids] = get_label_ids(params[:labels])
-        end
+        attrs[:labels] = params[:labels] if params[:labels]
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 

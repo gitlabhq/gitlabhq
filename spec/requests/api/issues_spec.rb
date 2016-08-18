@@ -647,7 +647,7 @@ describe API::API, api: true  do
     end
 
     it "sends notifications for subscribers of newly added labels when issue is updated" do
-      label = project.labels.first
+      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
       label.toggle_subscription(user2)
 
       perform_enqueued_jobs do

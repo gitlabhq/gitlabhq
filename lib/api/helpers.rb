@@ -102,14 +102,6 @@ module API
       label || not_found!('Label')
     end
 
-    def get_label_ids(labels)
-      labels.split(",").map do |label_name|
-        user_project.labels.create_with(color: Label::DEFAULT_COLOR)
-                           .find_or_create_by(title: label_name.strip)
-                           .id
-      end
-    end
-
     def find_project_issue(id)
       issue = user_project.issues.find(id)
       not_found! unless can?(current_user, :read_issue, issue)
