@@ -16,7 +16,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKey.new(deploy_key_params)
+    @key = DeployKey.new(deploy_key_params.merge(user: current_user))
     set_index_vars
 
     if @key.valid? && @project.deploy_keys << @key
