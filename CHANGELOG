@@ -51,6 +51,7 @@ v 8.11.0 (unreleased)
   - Get issue and merge request description templates from repositories
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
@@ -67,6 +68,7 @@ v 8.11.0 (unreleased)
   - Upgrade Grape from 0.13.0 to 0.15.0. !4601
   - Trigram indexes for the "ci_runners" table have been removed to speed up UPDATE queries
   - Fix devise deprecation warnings.
+  - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
