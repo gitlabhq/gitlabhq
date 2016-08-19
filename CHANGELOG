@@ -127,6 +127,7 @@ v 8.11.0 (unreleased)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix bug where destroying a namespace would not always destroy projects
   - Fix RequestProfiler::Middleware error when code is reloaded in development
+  - Allow horizontal scrolling of code blocks in issue body
   - Catch what warden might throw when profiling requests to re-throw it
   - Avoid commit lookup on diff_helper passing existing local variable to the helper method
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
