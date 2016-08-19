@@ -53,6 +53,7 @@ module Gitlab
       unless project.repository.exists?
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
+
       if user
         user_push_access_check(changes)
       elsif deploy_key
