@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
@@ -18,13 +19,16 @@ v 8.11.0 (unreleased)
   - API: Endpoints for enabling and disabling deploy keys
   - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
   - Use long options for curl examples in documentation !5703 (winniehell)
+  - Added tooltip listing label names to the labels value in the collapsed issuable sidebar
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
+  - Fix badge count alignment (ClemMakesApps)
   - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Allow naming U2F devices !5833
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
+  - Fix commit mention font inconsistency (ClemMakesApps)
   - Fix filter label tooltip HTML rendering (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Expand commit message width in repo view (ClemMakesApps)
@@ -56,6 +60,7 @@ v 8.11.0 (unreleased)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
+  - Fix branch title trailing space on hover (ClemMakesApps)
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines
@@ -72,6 +77,7 @@ v 8.11.0 (unreleased)
   - Fix devise deprecation warnings.
   - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
+  - Load branches asynchronously in Cherry Pick and Revert dialogs.
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Fix syntax highlighting in file editor
@@ -106,12 +112,14 @@ v 8.11.0 (unreleased)
   - Fix search for notes which belongs to deleted objects
   - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Improve OAuth2 client documentation (muteor)
   - Fix diff comments inverted toggle bug (ClemMakesApps)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
+  - Fix button missing type (ClemMakesApps)
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
   - Speedup DiffNote#active? on discussions, preloading noteables and avoid touching git repository to return diff_refs when possible
   - Add commit stats in commit api. !5517 (dixpac)
@@ -120,6 +128,7 @@ v 8.11.0 (unreleased)
   - edit_blob_link will use blob passed onto the options parameter
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
+  - Move to project dropdown with infinite scroll for better performance
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Add all builds into stage/job dropdowns on builds page
   - Change requests_profiles resource constraint to catch virtually any file
@@ -128,6 +137,7 @@ v 8.11.0 (unreleased)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix bug where destroying a namespace would not always destroy projects
   - Fix RequestProfiler::Middleware error when code is reloaded in development
+  - Allow horizontal scrolling of code blocks in issue body
   - Catch what warden might throw when profiling requests to re-throw it
   - Avoid commit lookup on diff_helper passing existing local variable to the helper method
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
@@ -142,6 +152,7 @@ v 8.11.0 (unreleased)
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
   - Add pipelines tab to merge requests
+  - Fix notification_service argument error of declined invitation emails
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user

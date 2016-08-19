@@ -14,10 +14,18 @@
     margin-top: 0;
   }
 
+  // Single code lines should wrap
   code {
     font-family: $monospace_font;
-    white-space: pre;
+    white-space: pre-wrap;
     word-wrap: normal;
+  }
+
+  // Multi-line code blocks should scroll horizontally
+  pre {
+    code {
+      white-space: pre;
+    }
   }
 
   kbd {

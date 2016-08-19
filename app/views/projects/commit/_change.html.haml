@@ -17,7 +17,9 @@
           .form-group.branch
             = label_tag 'target_branch', target_label, class: 'control-label'
             .col-sm-10
-              = select_tag "target_branch", project_branches, class: "select2 select2-sm js-target-branch"
+              = hidden_field_tag :target_branch, @project.default_branch, id: 'target_branch'
+              = dropdown_tag(@project.default_branch, options: { title: "Switch branch", filter: true, placeholder: "Search branches", toggle_class: 'js-project-refs-dropdown js-target-branch dynamic', dropdown_class: 'dropdown-menu-selectable', data: { field_name: "target_branch", selected: @project.default_branch, target_branch: @project.default_branch, refs_url: namespace_project_branches_path(@project.namespace, @project), submit_form_on_click: false }})
+
               - if can?(current_user, :push_code, @project)
                 .js-create-merge-request-container
                   .checkbox
