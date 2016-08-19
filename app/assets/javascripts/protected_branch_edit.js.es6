@@ -35,14 +35,16 @@
       // Allowed to merge dropdown
       new gl.allowedToMergeDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
+        accessLevelsData: gon.merge_access_levels,
         $dropdown: this.$allowedToMergeDropdown,
         onSelect: this.onSelectOption.bind(this),
-        onHide: this.onDropdownHide.bind(this),
+        onHide: this.onDropdownHide.bind(this)
       });
 
       // Allowed to push dropdown
       new gl.allowedToPushDropdown({
         accessLevel: ACCESS_LEVELS.PUSH,
+        accessLevelsData: gon.push_access_levels,
         $dropdown: this.$allowedToPushDropdown,
         onSelect: this.onSelectOption.bind(this),
         onHide: this.onDropdownHide.bind(this)

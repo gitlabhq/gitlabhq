@@ -3,10 +3,11 @@
 
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
-      const { $dropdown, onSelect, onHide, accessLevel } = options;
+      const { $dropdown, onSelect, onHide, accessLevel, accessLevelsData } = options;
       const self = this;
 
       this.accessLevel = accessLevel;
+      this.accessLevelsData = accessLevelsData;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.parents().eq(1); // TODO: Find a better way to get the wrap element
       this.usersPath = '/autocomplete/users.json';
@@ -85,7 +86,7 @@
         return user;
       });
 
-      let mergeAccessLevels = gon.merge_access_levels.map((level) => {
+      let mergeAccessLevels = this.accessLevelsData.map((level) => {
         level.type = 'role';
         return level;
       });

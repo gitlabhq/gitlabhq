@@ -17,14 +17,14 @@
       // Allowed to Merge dropdown
       new gl.allowedToMergeDropdown({
         $dropdown: $allowedToMergeDropdown,
-        data: gon.merge_access_levels,
+        accessLevelsData: gon.merge_access_levels,
         onSelect: this.onSelectCallback
       });
 
       // Allowed to Push dropdown
       new gl.allowedToPushDropdown({
         $dropdown: $allowedToPushDropdown,
-        data: gon.push_access_levels,
+        accessLevelsData: gon.push_access_levels,
         onSelect: this.onSelectCallback
       });
 
