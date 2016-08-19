@@ -52,6 +52,7 @@ v 8.11.0 (unreleased)
   - Get issue and merge request description templates from repositories
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Fix alignment of icon buttons !5887 (winniehell)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
