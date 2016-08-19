@@ -54,6 +54,11 @@ v 8.11.1
   - Pulled due to packaging error.
 
 v 8.11.0
+  - Add merge request versions !5467
+v 8.12.0
+  - Wrap text in commit message containers
+
+v 8.11.0 (unreleased)
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)

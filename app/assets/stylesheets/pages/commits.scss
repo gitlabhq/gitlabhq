@@ -118,6 +118,8 @@
     margin: 10px 0;
     background: $gray-light;
     display: none;
+    white-space: pre-line;
+    word-break: normal;
 
     pre {
       border: none;
