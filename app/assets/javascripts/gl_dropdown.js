@@ -470,7 +470,6 @@
       } else {
         if (!selected) {
           value = this.options.id ? this.options.id(data) : data.id;
-          // fieldName = this.options.fieldName;
           fieldName = _.isFunction(this.options.fieldName) ? this.options.fieldName() : this.options.fieldName;
 
           field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
@@ -535,7 +534,6 @@
 
     GitLabDropdown.prototype.rowClicked = function(el) {
       var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value;
-      // fieldName = this.options.fieldName;
       isInput = $(this.el).is('input');
       if (this.renderedData) {
         groupName = el.data('group');
