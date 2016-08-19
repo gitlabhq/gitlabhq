@@ -109,7 +109,9 @@ module ExtractsPath
     @logs_path = logs_file_namespace_project_ref_path(@project.namespace,
                                                       @project, @ref, @path)
 
-  rescue RuntimeError, NoMethodError, InvalidPathError
+  rescue RuntimeError, NoMethodError, InvalidPathError => ex
+    puts "ERROR on assign_ref_vars"
+    puts ex.backtrace
     render_404
   end
 

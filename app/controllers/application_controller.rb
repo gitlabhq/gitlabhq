@@ -139,6 +139,8 @@ class ApplicationController < ActionController::Base
   end
 
   def render_404
+    puts "CALLER OF 404"
+    puts caller
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
