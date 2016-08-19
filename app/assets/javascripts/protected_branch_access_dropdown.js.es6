@@ -73,13 +73,10 @@
 
     consolidateData(response, callback) {
       let consolidatedData;
-
-      // This probably should come from the backend already formatted
       let users = response.map((user) => {
         user.type = 'user';
         return user;
       });
-
       let mergeAccessLevels = this.accessLevelsData.map((level) => {
         level.type = 'role';
         return level;
