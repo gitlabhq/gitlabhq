@@ -9,39 +9,62 @@ describe ProtectedBranch, models: true do
 
   describe "Uniqueness validations" do
     [ProtectedBranch::MergeAccessLevel, ProtectedBranch::PushAccessLevel].each do |access_level_class|
+      let(:user) { create(:user) }
       let(:factory_name) { access_level_class.to_s.underscore.sub('/', '_').to_sym }
       let(:association_name) { access_level_class.to_s.underscore.sub('protected_branch/', '').pluralize.to_sym }
       human_association_name = access_level_class.to_s.underscore.humanize.sub('Protected branch/', '')
 
-      it "allows a single #{human_association_name} for a role (per protected branch)" do
-        first_protected_branch = create(:protected_branch, :remove_default_access_levels)
-        second_protected_branch = create(:protected_branch, :remove_default_access_levels)
+      context "while checking uniqueness of a role-based #{human_association_name}" do
+        it "allows a single #{human_association_name} for a role (per protected branch)" do
+          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
 
-        first_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
-        second_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+          first_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+          second_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
 
-        expect(first_protected_branch).to be_valid
-        expect(second_protected_branch).to be_valid
+          expect(first_protected_branch).to be_valid
+          expect(second_protected_branch).to be_valid
 
-        first_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
-        expect(first_protected_branch).to be_invalid
-        expect(first_protected_branch.errors.full_messages.first).to match("access level has already been taken")
+          first_protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+          expect(first_protected_branch).to be_invalid
+          expect(first_protected_branch.errors.full_messages.first).to match("access level has already been taken")
+        end
+
+        it "does not count a user-based #{human_association_name} with an `access_level` set" do
+          protected_branch = create(:protected_branch, :remove_default_access_levels)
+
+          protected_branch.send(association_name) << build(factory_name, user: user, access_level: Gitlab::Access::MASTER)
+          protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+
+          expect(protected_branch).to be_valid
+        end
       end
 
-      it "allows a single #{human_association_name} for a user (per protected branch)" do
-        user = create(:user)
-        first_protected_branch = create(:protected_branch, :remove_default_access_levels)
-        second_protected_branch = create(:protected_branch, :remove_default_access_levels)
 
-        first_protected_branch.send(association_name) << build(factory_name, user: user)
-        second_protected_branch.send(association_name) << build(factory_name, user: user)
+      context "while checking uniqueness of a user-based #{human_association_name}" do
+        it "allows a single #{human_association_name} for a user (per protected branch)" do
+          first_protected_branch = create(:protected_branch, :remove_default_access_levels)
+          second_protected_branch = create(:protected_branch, :remove_default_access_levels)
 
-        expect(first_protected_branch).to be_valid
-        expect(second_protected_branch).to be_valid
+          first_protected_branch.send(association_name) << build(factory_name, user: user)
+          second_protected_branch.send(association_name) << build(factory_name, user: user)
 
-        first_protected_branch.send(association_name) << build(factory_name, user: user)
-        expect(first_protected_branch).to be_invalid
-        expect(first_protected_branch.errors.full_messages.first).to match("user has already been taken")
+          expect(first_protected_branch).to be_valid
+          expect(second_protected_branch).to be_valid
+
+          first_protected_branch.send(association_name) << build(factory_name, user: user)
+          expect(first_protected_branch).to be_invalid
+          expect(first_protected_branch.errors.full_messages.first).to match("user has already been taken")
+        end
+
+        it "ignores the `access_level` while validating a user-based #{human_association_name}" do
+          protected_branch = create(:protected_branch, :remove_default_access_levels)
+
+          protected_branch.send(association_name) << build(factory_name, access_level: Gitlab::Access::MASTER)
+          protected_branch.send(association_name) << build(factory_name, user: user, access_level: Gitlab::Access::MASTER)
+
+          expect(protected_branch).to be_valid
+        end
       end
     end
   end
