@@ -103,6 +103,8 @@ class Ability
       if project && project.public?
         rules = [
           :read_project,
+          :read_board,
+          :read_list,
           :read_wiki,
           :read_label,
           :read_milestone,
@@ -243,6 +245,8 @@ class Ability
         :read_project,
         :read_wiki,
         :read_issue,
+        :read_board,
+        :read_list,
         :read_label,
         :read_milestone,
         :read_project_snippet,
@@ -264,6 +268,7 @@ class Ability
         :update_issue,
         :admin_issue,
         :admin_label,
+        :admin_list,
         :read_commit_status,
         :read_build,
         :read_container_image,
@@ -286,6 +291,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :push_code,
+        :resolve_note,
         :create_container_image,
         :update_container_image,
         :create_environment,
@@ -476,12 +482,17 @@ class Ability
         rules += [
           :read_note,
           :update_note,
-          :admin_note
+          :admin_note,
+          :resolve_note
         ]
       end
 
       if note.respond_to?(:project) && note.project
         rules += project_abilities(user, note.project)
+      end
+
+      if note.for_merge_request? && note.noteable.author == user
+        rules << :resolve_note
       end
 
       rules

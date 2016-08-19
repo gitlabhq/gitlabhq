@@ -396,6 +396,8 @@ Rails.application.routes.draw do
           patch :skip
         end
       end
+
+      resources :u2f_registrations, only: [:destroy]
     end
   end
 
@@ -775,7 +777,9 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :diffs
+            get :conflicts
             get :builds
+            get :pipelines
             get :merge_check
             post :merge
             post :cancel_merge_when_build_succeeds
@@ -786,6 +790,7 @@ Rails.application.routes.draw do
             post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
+            post :resolve_conflicts
           end
 
           collection do
@@ -794,7 +799,15 @@ Rails.application.routes.draw do
             get :update_branches
             get :diff_for_path
           end
+
           resources :approvers, only: :destroy
+
+          resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
+          end
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
@@ -915,6 +928,22 @@ Rails.application.routes.draw do
           member do
             post :toggle_award_emoji
             delete :delete_attachment
+            post :resolve
+            delete :resolve, action: :unresolve
+          end
+        end
+
+        resource :board, only: [:show] do
+          scope module: :boards do
+            resources :issues, only: [:update]
+
+            resources :lists, only: [:index, :create, :update, :destroy] do
+              collection do
+                post :generate
+              end
+
+              resources :issues, only: [:index]
+            end
           end
         end
 

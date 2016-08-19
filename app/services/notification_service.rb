@@ -35,6 +35,20 @@ class NotificationService
     new_resource_email(issue, issue.project, :new_issue_email)
   end
 
+  # When issue text is updated, we should send an email to:
+  #
+  #  * newly mentioned project team members with notification level higher than Participating
+  #
+  def new_mentions_in_issue(issue, new_mentioned_users, current_user)
+    new_mentions_in_resource_email(
+      issue,
+      issue.project,
+      new_mentioned_users,
+      current_user,
+      :new_mention_in_issue_email
+    )
+  end
+
   # When we close an issue we should send an email to:
   #
   #  * issue author if their notification level is not Disabled
@@ -74,6 +88,20 @@ class NotificationService
   #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, merge_request.target_project, :new_merge_request_email)
+  end
+
+  # When merge request text is updated, we should send an email to:
+  #
+  #  * newly mentioned project team members with notification level higher than Participating
+  #
+  def new_mentions_in_merge_request(merge_request, new_mentioned_users, current_user)
+    new_mentions_in_resource_email(
+      merge_request,
+      merge_request.target_project,
+      new_mentioned_users,
+      current_user,
+      :new_mention_in_merge_request_email
+    )
   end
 
   # When we reassign a merge_request we should send an email to:
@@ -131,6 +159,14 @@ class NotificationService
 
   def approve_mr(merge_request, current_user)
     approve_mr_email(merge_request, merge_request.target_project, current_user)
+  end
+
+  def resolve_all_discussions(merge_request, current_user)
+    recipients = build_recipients(merge_request, merge_request.target_project, current_user, action: "resolve_all_discussions")
+
+    recipients.each do |recipient|
+      mailer.resolved_all_discussions_email(recipient.id, merge_request.id, current_user.id).deliver_later
+    end
   end
 
   # Notify new user with email after creation
@@ -481,6 +517,15 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id).deliver_later
+    end
+  end
+
+  def new_mentions_in_resource_email(target, project, new_mentioned_users, current_user, method)
+    recipients = build_recipients(target, project, current_user, action: "new")
+    recipients = recipients & new_mentioned_users
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, current_user.id).deliver_later
     end
   end
 

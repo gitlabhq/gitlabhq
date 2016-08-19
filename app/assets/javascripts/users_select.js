@@ -141,7 +141,7 @@
               $selectbox.hide();
               return $value.css('display', '');
             },
-            clicked: function(user) {
+            clicked: function(user, $el, e) {
               var isIssueIndex, isMRIndex, page, selected;
               page = $('body').data('page');
               isIssueIndex = page === 'projects:issues:index';
@@ -149,7 +149,12 @@
               if ($dropdown.hasClass('js-filter-bulk-update')) {
                 return;
               }
-              if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
+              if (page === 'projects:boards:show') {
+                selectedId = user.id;
+                gl.issueBoards.BoardsStore.state.filters[$dropdown.data('field-name')] = user.id;
+                gl.issueBoards.BoardsStore.updateFiltersUrl();
+                e.preventDefault();
+              } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
                 selectedId = user.id;
                 return Issuable.filterResults($dropdown.closest('form'));
               } else if ($dropdown.hasClass('js-filter-submit')) {

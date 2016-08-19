@@ -45,6 +45,7 @@ module Gitlab
 
         def verify_record!(record:, invalid_exception:, record_name:)
           return if record.persisted?
+          return if record.errors.key?(:commands_only)
 
           error_title = "The #{record_name} could not be created for the following reasons:"
 

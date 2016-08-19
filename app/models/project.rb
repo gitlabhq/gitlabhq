@@ -58,6 +58,7 @@ class Project < ActiveRecord::Base
   belongs_to :mirror_user, foreign_key: 'mirror_user_id', class_name: 'User'
 
   has_one :push_rule, dependent: :destroy
+  has_one :board, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services

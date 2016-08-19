@@ -17,6 +17,17 @@ describe API::API, api: true  do
         expect(json_response['can_create_project']).to eq(user.can_create_project?)
         expect(json_response['can_create_group']).to eq(user.can_create_group?)
       end
+
+      context 'with 2FA enabled' do
+        it 'rejects sign in attempts' do
+          user = create(:user, :two_factor)
+
+          post api('/session'), email: user.email, password: user.password
+
+          expect(response).to have_http_status(401)
+          expect(response.body).to include('You have 2FA enabled.')
+        end
+      end
     end
 
     context 'when email has case-typo and password is valid' do

@@ -183,11 +183,7 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @issue ||= begin
-                 @project.issues.find_by!(iid: params[:id])
-               rescue ActiveRecord::RecordNotFound
-                 redirect_old
-               end
+    @noteable = @issue ||= @project.issues.find_by(iid: params[:id]) || redirect_old
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
@@ -232,7 +228,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if issue
       redirect_to issue_path(issue)
-      return
     else
       raise ActiveRecord::RecordNotFound.new
     end

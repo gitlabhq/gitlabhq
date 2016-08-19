@@ -5,10 +5,13 @@ v 8.11.0 (unreleased)
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
+  - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
   - Update to Ruby 2.3.1. !4948
+  - Add Issues Board !5548
+  - Allow resolving merge conflicts in the UI !5479
   - Improve diff performance by eliminating redundant checks for text blobs
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
@@ -16,7 +19,9 @@ v 8.11.0 (unreleased)
   - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
   - Use long options for curl examples in documentation !5703 (winniehell)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
+  - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
+  - Allow naming U2F devices !5833
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
@@ -25,12 +30,16 @@ v 8.11.0 (unreleased)
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
+  - Allow merge request diff notes and discussions to be explicitly marked as resolved
+  - API: Add deployment endpoints
+  - API: Add Play endpoint on Builds
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Show member roles to all users on members page
   - Project.visible_to_user is instrumented again
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
+  - Send notification emails to users newly mentioned in issue and MR edits !5800
   - Add "No one can push" as an option for protected branches. !5081
   - Improve performance of AutolinkFilter#text_parse by using XPath
   - Add experimental Redis Sentinel support !1877
@@ -42,12 +51,16 @@ v 8.11.0 (unreleased)
   - Remove unused images (ClemMakesApps)
   - Get issue and merge request description templates from repositories
   - Add hover state to todos !5361 (winniehell)
+  - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
+  - API: Add enpoints for pipelines
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
+  - Fix repository push email formatting in Outlook
   - Improve performance of syntax highlighting Markdown code blocks
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
@@ -56,9 +69,12 @@ v 8.11.0 (unreleased)
   - Upgrade Grape from 0.13.0 to 0.15.0. !4601
   - Trigram indexes for the "ci_runners" table have been removed to speed up UPDATE queries
   - Fix devise deprecation warnings.
+  - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
+  - Fix syntax highlighting in file editor
+  - Support slash commands in issue and merge request descriptions as well as comments. !5021
   - Nokogiri's various parsing methods are now instrumented
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
@@ -76,6 +92,8 @@ v 8.11.0 (unreleased)
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add pipeline events hook
+  - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
+  - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
@@ -90,15 +108,19 @@ v 8.11.0 (unreleased)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Improve OAuth2 client documentation (muteor)
+  - Fix diff comments inverted toggle bug (ClemMakesApps)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
   - Speedup DiffNote#active? on discussions, preloading noteables and avoid touching git repository to return diff_refs when possible
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
+  - Fix merge request new view not changing code view rendering style
+  - edit_blob_link will use blob passed onto the options parameter
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace
+  - Add all builds into stage/job dropdowns on builds page
   - Change requests_profiles resource constraint to catch virtually any file
   - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
@@ -111,15 +133,20 @@ v 8.11.0 (unreleased)
   - Speed up and reduce memory usage of Commit#repo_changes, Repository#expire_avatar_cache and IrkerWorker
   - Add unfold links for Side-by-Side view. !5415 (Tim Masliuchenko)
   - Adds support for pending invitation project members importing projects
+  - Add pipeline visualization/graph on pipeline page
   - Update devise initializer to turn on changed password notification emails. !5648 (tombell)
   - Avoid to show the original password field when password is automatically set. !5712 (duduribeiro)
   - Fix importing GitLab projects with an invalid MR source project
   - Sort folders with submodules in Files view !5521
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
+  - Add pipelines tab to merge requests
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user
+  - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
+  - Update gitlab_git gem to 10.4.7
+  - Simplify SQL queries of marking a todo as done
 
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781

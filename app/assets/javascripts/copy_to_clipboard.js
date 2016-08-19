@@ -34,6 +34,7 @@
 
   $(function() {
     var clipboard;
+
     clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
     clipboard.on('success', genericSuccess);
     return clipboard.on('error', genericError);

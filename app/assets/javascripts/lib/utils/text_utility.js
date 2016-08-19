@@ -104,8 +104,11 @@
         return self.updateText($this.closest('.md-area').find('textarea'), $this.data('md-tag'), $this.data('md-block'), !$this.data('md-prepend'));
       });
     };
-    return gl.text.removeListeners = function(form) {
+    gl.text.removeListeners = function(form) {
       return $('.js-md', form).off();
+    };
+    return gl.text.truncate = function(string, maxLength) {
+      return string.substr(0, (maxLength - 3)) + '...';
     };
   })(window);
 
