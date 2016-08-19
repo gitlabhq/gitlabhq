@@ -147,7 +147,7 @@ feature 'project export', feature: true, js: true do
   def has_sensitive_attributes?(sensitive_word, project_hash)
     loop do
       object, parent = deep_find_with_parent(sensitive_word, project_hash)
-      parent.except!('created_at', 'updated_at', 'url') if parent
+      parent.except!('created_at', 'updated_at', 'url', 'group_id') if parent
 
       if object && safe_hashes[sensitive_word.to_sym].include?(parent)
         # It's in the safe list, remove hash and keep looking
