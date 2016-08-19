@@ -15,20 +15,9 @@ module TimeHelper
     "#{from.to_s(:short)} - #{to.to_s(:short)}"
   end
 
-  def duration_in_numbers(finished_at, started_at)
-    interval = interval_in_seconds(started_at, finished_at)
-    time_format = interval < 1.hour ? "%M:%S" : "%H:%M:%S"
+  def duration_in_numbers(duration)
+    time_format = duration < 1.hour ? "%M:%S" : "%H:%M:%S"
 
-    Time.at(interval).utc.strftime(time_format)
-  end
-
-  private
-
-  def interval_in_seconds(started_at, finished_at = nil)
-    if started_at && finished_at
-      finished_at.to_i - started_at.to_i
-    elsif started_at
-      Time.now.to_i - started_at.to_i
-    end
+    Time.at(duration).utc.strftime(time_format)
   end
 end
