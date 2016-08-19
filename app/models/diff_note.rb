@@ -57,6 +57,10 @@ class DiffNote < Note
     diff_file.position(line) == self.original_position
   end
 
+  def original_line_code
+    self.diff_file.line_code(self.diff_line)
+  end
+
   def active?(diff_refs = nil)
     return false unless supported?
     return true if for_commit?

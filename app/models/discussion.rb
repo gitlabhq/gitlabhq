@@ -12,6 +12,7 @@ class Discussion
             :for_merge_request?,
 
             :line_code,
+            :original_line_code,
             :diff_file,
             :for_line?,
             :active?,
