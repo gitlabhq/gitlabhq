@@ -339,6 +339,48 @@ describe Gitlab::Diff::Position, lib: true do
     end
   end
 
+  describe "position for a file in the initial commit" do
+    let(:commit) { project.commit("1a0b36b3cdad1d2ee32457c102a8c0b7056fa863") }
+
+    subject do
+      described_class.new(
+        old_path: "README.md",
+        new_path: "README.md",
+        old_line: nil,
+        new_line: 1,
+        diff_refs: commit.diff_refs
+      )
+    end
+
+    describe "#diff_file" do
+      it "returns the correct diff file" do
+        diff_file = subject.diff_file(project.repository)
+
+        expect(diff_file.new_file).to be true
+        expect(diff_file.new_path).to eq(subject.new_path)
+        expect(diff_file.diff_refs).to eq(subject.diff_refs)
+      end
+    end
+
+    describe "#diff_line" do
+      it "returns the correct diff line" do
+        diff_line = subject.diff_line(project.repository)
+
+        expect(diff_line.added?).to be true
+        expect(diff_line.new_line).to eq(subject.new_line)
+        expect(diff_line.text).to eq("+testme")
+      end
+    end
+
+    describe "#line_code" do
+      it "returns the correct line code" do
+        line_code = Gitlab::Diff::LineCode.generate(subject.file_path, subject.new_line, 0)
+
+        expect(subject.line_code(project.repository)).to eq(line_code)
+      end
+    end
+  end
+
   describe "#to_json" do
     let(:hash) do
       {
