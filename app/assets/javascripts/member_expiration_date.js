@@ -5,30 +5,28 @@
   // datepicker, and make clicking on that element clear the field.
   //
   gl.MemberExpirationDate = function() {
-    $('.js-access-expiration-date').each(function(i, element) {
-      var expirationDateInput = $(element);
+    function toggleClearInput() {
+      $(this).closest('.clearable-input').toggleClass('has-value', $(this).val() !== '');
+    }
 
-      if (expirationDateInput.hasClass('hasDatepicker')) { return; }
+    var inputs = $('.js-access-expiration-date');
 
-      function toggleClearInput() {
-        expirationDateInput.closest('.clearable-input').toggleClass('has-value', expirationDateInput.val() !== '');
-      }
-
-      expirationDateInput.datepicker({
-        dateFormat: 'yy-mm-dd',
-        minDate: 1,
-        onSelect: toggleClearInput
-      });
-
-      expirationDateInput.on('blur', toggleClearInput);
-
-      toggleClearInput();
-
-      expirationDateInput.next('.js-clear-input').on('click', function(event) {
-        event.preventDefault();
-        expirationDateInput.datepicker('setDate', null);
-        toggleClearInput();
-      });
+    inputs.datepicker({
+      dateFormat: 'yy-mm-dd',
+      minDate: 1,
+      onSelect: toggleClearInput
     });
+
+    inputs.next('.js-clear-input').on('click', function(event) {
+      event.preventDefault();
+
+      var input = $(this).closest('.clearable-input').find('.js-access-expiration-date');
+      input.datepicker('setDate', null);
+      toggleClearInput.call(input);
+    });
+
+    inputs.on('blur', toggleClearInput);
+
+    inputs.each(toggleClearInput);
   };
 }).call(this);
