@@ -544,8 +544,28 @@ module API
       expose :key, :value
     end
 
+    class Pipeline < Grape::Entity
+      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+
+      expose :user, with: Entities::UserBasic
+      expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
+      expose :duration
+    end
+
     class Environment < Grape::Entity
       expose :id, :name, :external_url
+      expose :project, using: Entities::Project
+    end
+
+    class EnvironmentBasic < Grape::Entity
+      expose :id, :name, :external_url
+    end
+
+    class Deployment < Grape::Entity
+      expose :id, :iid, :ref, :sha, :created_at
+      expose :user,        using: Entities::UserBasic
+      expose :environment, using: Entities::EnvironmentBasic
+      expose :deployable,  using: Entities::Build
     end
 
     class RepoLicense < Grape::Entity

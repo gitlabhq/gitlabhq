@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
   - Update to Ruby 2.3.1. !4948
   - Add Issues Board !5548
+  - Allow resolving merge conflicts in the UI !5479
   - Improve diff performance by eliminating redundant checks for text blobs
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
@@ -19,6 +20,7 @@ v 8.11.0 (unreleased)
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
+  - Allow naming U2F devices !5833
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
@@ -27,6 +29,9 @@ v 8.11.0 (unreleased)
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
+  - Allow merge request diff notes and discussions to be explicitly marked as resolved
+  - API: Add deployment endpoints
+  - API: Add Play endpoint on Builds
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
   - Show member roles to all users on members page
   - Project.visible_to_user is instrumented again
@@ -43,12 +48,18 @@ v 8.11.0 (unreleased)
   - Various redundant database indexes have been removed
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
+  - Get issue and merge request description templates from repositories
+  - Add hover state to todos !5361 (winniehell)
+  - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
+  - API: Add enpoints for pipelines
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
+  - Fix repository push email formatting in Outlook
   - Improve performance of syntax highlighting Markdown code blocks
   - Update to gitlab_git 10.4.1 and take advantage of preserved Ref objects
   - Remove delay when hitting "Reply..." button on page with a lot of discussions
@@ -57,9 +68,12 @@ v 8.11.0 (unreleased)
   - Upgrade Grape from 0.13.0 to 0.15.0. !4601
   - Trigram indexes for the "ci_runners" table have been removed to speed up UPDATE queries
   - Fix devise deprecation warnings.
+  - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
+  - Fix syntax highlighting in file editor
+  - Support slash commands in issue and merge request descriptions as well as comments. !5021
   - Nokogiri's various parsing methods are now instrumented
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
@@ -98,6 +112,7 @@ v 8.11.0 (unreleased)
   - Add commit stats in commit api. !5517 (dixpac)
   - Add CI configuration button on project page
   - Fix merge request new view not changing code view rendering style
+  - edit_blob_link will use blob passed onto the options parameter
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
   - Fix skip_repo parameter being ignored when destroying a namespace

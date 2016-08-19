@@ -407,4 +407,27 @@ describe API::API, api: true do
       end
     end
   end
+
+  describe 'POST /projects/:id/builds/:build_id/play' do
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/play", user)
+    end
+
+    context 'on an playable build' do
+      let(:build) { create(:ci_build, :manual, project: project, pipeline: pipeline) }
+
+      it 'plays the build' do
+        expect(response).to have_http_status 200
+        expect(json_response['user']['id']).to eq(user.id)
+        expect(json_response['id']).to eq(build.id)
+      end
+    end
+
+    context 'on a non-playable build' do
+      it 'returns a status code 400, Bad Request' do
+        expect(response).to have_http_status 400
+        expect(response.body).to match("Unplayable Build")
+      end
+    end
+  end
 end

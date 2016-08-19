@@ -439,6 +439,32 @@ class MergeRequest < ActiveRecord::Base
     )
   end
 
+  def discussions
+    @discussions ||= self.mr_and_commit_notes.
+      inc_relations_for_view.
+      fresh.
+      discussions
+  end
+
+  def diff_discussions
+    @diff_discussions ||= self.notes.diff_notes.discussions
+  end
+
+  def find_diff_discussion(discussion_id)
+    notes = self.notes.diff_notes.where(discussion_id: discussion_id).fresh.to_a
+    return if notes.empty?
+
+    Discussion.new(notes)
+  end
+
+  def discussions_resolvable?
+    diff_discussions.any?(&:resolvable?)
+  end
+
+  def discussions_resolved?
+    discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
+  end
+
   def hook_attrs
     attrs = {
       source: source_project.try(:hook_attrs),

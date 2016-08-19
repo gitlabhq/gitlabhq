@@ -20,7 +20,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 4.0'
-gem 'doorkeeper',             '~> 4.0'
+gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -82,7 +82,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem 'kaminari', '~> 0.17.0'
 
 # HAML
-gem 'hamlit', '~> 2.5'
+gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 0.10.0'
@@ -211,7 +211,7 @@ gem 'licensee', '~> 8.0.0'
 gem 'rack-attack', '~> 4.3.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 4.0.2'
+gem 'ace-rails-ap', '~> 4.1.0'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
@@ -219,7 +219,8 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-# Parse duration
+# Parse time & duration
+gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
 gem 'sass-rails', '~> 5.0.0'

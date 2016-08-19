@@ -24,10 +24,10 @@ following locations:
 - [License](license.md)
 - [Merge Requests](merge_requests.md)
 - [Milestones](milestones.md)
-- [Open source license templates](licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Open source license templates](licenses.md)
+- [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)

@@ -56,9 +56,13 @@
     position: absolute;
     top: 50%;
     right: 6px;
-    margin-top: -4px;
+    margin-top: -6px;
     color: $dropdown-toggle-icon-color;
     font-size: 10px;
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -8px;
+    }
   }
 
   &:hover, {
@@ -406,6 +410,7 @@
   font-size: 14px;
 
   a {
+    cursor: pointer;
     padding-left: 10px;
   }
 }

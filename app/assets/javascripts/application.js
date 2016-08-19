@@ -27,7 +27,7 @@
 /*= require bootstrap/tooltip */
 /*= require bootstrap/popover */
 /*= require select2 */
-/*= require ace/ace */
+/*= require ace-rails-ap */
 /*= require ace/ext-searchbox */
 /*= require underscore */
 /*= require dropzone */
@@ -42,6 +42,7 @@
 /*= require date.format */
 /*= require_directory ./behaviors */
 /*= require_directory ./blob */
+/*= require_directory ./templates */
 /*= require_directory ./commit */
 /*= require_directory ./extensions */
 /*= require_directory ./lib/utils */
@@ -227,10 +228,13 @@
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
       var $this = $(this);
-      var showComments = $this.hasClass('active');
-
       $this.toggleClass('active');
-      $this.closest(".diff-file").find(".notes_holder").toggle(showComments);
+      var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+      if ($this.hasClass('active')) {
+        notesHolders.show();
+      } else {
+        notesHolders.hide();
+      }
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');
