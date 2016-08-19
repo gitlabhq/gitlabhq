@@ -10,13 +10,12 @@ module Gitlab
 
         if valid_ci_request?(login, password, project)
           result.type = :ci
-        elsif result.user = find_with_user_password(login, password)
-          result.type = :gitlab_or_ldap
-        elsif result.user = oauth_access_token_check(login, password)
-          result.type = :oauth
+        else
+          result = populate_result(login, password)
         end
 
-        rate_limit!(ip, success: !!result.user || (result.type == :ci), login: login)
+        success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
+        rate_limit!(ip, success: success, login: login)
         result
       end
 
@@ -76,10 +75,43 @@ module Gitlab
         end
       end
 
+      def populate_result(login, password)
+        result =
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          personal_access_token_check(login, password)
+
+        if result
+          result.type = nil unless result.user
+
+          if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
+            result.type = :missing_personal_token
+          end
+        end
+
+        result || Result.new
+      end
+
+      def user_with_password_for_git(login, password)
+        user = find_with_user_password(login, password)
+        Result.new(user, :gitlab_or_ldap) if user
+      end
+
       def oauth_access_token_check(login, password)
         if login == "oauth2" && password.present?
           token = Doorkeeper::AccessToken.by_token(password)
-          token && token.accessible? && User.find_by(id: token.resource_owner_id)
+          if token && token.accessible?
+            user = User.find_by(id: token.resource_owner_id)
+            Result.new(user, :oauth)
+          end
+        end
+      end
+
+      def personal_access_token_check(login, password)
+        if login && password
+          user = User.find_by_personal_access_token(password)
+          validation = User.by_login(login)
+          Result.new(user, :personal_token) if user == validation
         end
       end
     end

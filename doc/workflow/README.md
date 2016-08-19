@@ -7,6 +7,7 @@
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
 - [Keyboard shortcuts](shortcuts.md)
+- [Slash commands](slash_commands.md)
 - [File finder](file_finder.md)
 - [Labels](../user/project/labels.md)
 - [Notification emails](notifications.md)

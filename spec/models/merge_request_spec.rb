@@ -784,6 +784,98 @@ describe MergeRequest, models: true do
     end
   end
 
+  context "discussion status" do
+    let(:first_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:second_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+
+    before do
+      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
+    end
+
+    describe "#discussions_resolvable?" do
+      context "when all discussions are unresolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(false)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolvable?).to be false
+        end
+      end
+
+      context "when some discussions are unresolvable and some discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+
+      context "when all discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(true)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+    end
+
+    describe "#discussions_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_resolved?).to be true
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+  end
+
   describe '#conflicts_can_be_resolved_in_ui?' do
     def create_merge_request(source_branch)
       create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|

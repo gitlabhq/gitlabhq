@@ -73,4 +73,29 @@ describe LegacyDiffNote, models: true do
       end
     end
   end
+
+  describe "#discussion_id" do
+    let(:note) { create(:note) }
+
+    context "when it is newly created" do
+      it "has a discussion id" do
+        expect(note.discussion_id).not_to be_nil
+        expect(note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+
+    context "when it didn't store a discussion id before" do
+      before do
+        note.update_column(:discussion_id, nil)
+      end
+
+      it "has a discussion id" do
+        # The discussion_id is set in `after_initialize`, so `reload` won't work
+        reloaded_note = Note.find(note.id)
+
+        expect(reloaded_note.discussion_id).not_to be_nil
+        expect(reloaded_note.discussion_id).to match(/\A\h{40}\z/)
+      end
+    end
+  end
 end

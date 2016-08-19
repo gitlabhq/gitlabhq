@@ -15,6 +15,7 @@
 
     function MergeRequestTabs(opts) {
       this.opts = opts != null ? opts : {};
+      this.opts.setUrl = this.opts.setUrl !== undefined ? this.opts.setUrl : true;
       this.setCurrentAction = bind(this.setCurrentAction, this);
       this.tabShown = bind(this.tabShown, this);
       this.showTab = bind(this.showTab, this);
@@ -58,7 +59,9 @@
       } else {
         this.expandView();
       }
-      return this.setCurrentAction(action);
+      if (this.opts.setUrl) {
+        this.setCurrentAction(action);
+      }
     };
 
     MergeRequestTabs.prototype.scrollToElement = function(container) {
@@ -86,6 +89,7 @@
       if (action === 'show') {
         action = 'notes';
       }
+      this.currentAction = action;
       new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
       if (action !== 'notes') {
         new_state += "/" + action;
@@ -124,6 +128,11 @@
         success: (function(_this) {
           return function(data) {
             $('#diffs').html(data.html);
+
+            if (typeof DiffNotesApp !== 'undefined') {
+              DiffNotesApp.compileComponents();
+            }
+
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
             $('#diffs .diff-file').singleFileDiff();

@@ -66,6 +66,11 @@ module IssuableCollections
     key = 'issuable_sort'
 
     cookies[key] = params[:sort] if params[:sort].present?
+
+    # id_desc and id_asc are old values for these two.
+    cookies[key] = sort_value_recently_created if cookies[key] == 'id_desc'
+    cookies[key] = sort_value_oldest_created if cookies[key] == 'id_asc'
+
     params[:sort] = cookies[key]
   end
 
