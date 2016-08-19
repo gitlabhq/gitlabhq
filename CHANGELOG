@@ -30,6 +30,7 @@ v 8.11.0 (unreleased)
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
+  - Allow merge request diff notes and discussions to be explicitly marked as resolved
   - API: Add deployment endpoints
   - API: Add Play endpoint on Builds
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'

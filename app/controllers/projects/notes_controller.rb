@@ -5,6 +5,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_admin_note!, only: [:update, :destroy]
+  before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
   before_action :find_current_user_notes, only: [:index]
 
   def index
@@ -64,6 +65,33 @@ class Projects::NotesController < Projects::ApplicationController
     respond_to do |format|
       format.js { head :ok }
     end
+  end
+
+  def resolve
+    return render_404 unless note.resolvable?
+
+    note.resolve!(current_user)
+
+    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
+
+    discussion = note.discussion
+
+    render json: {
+      resolved_by: note.resolved_by.try(:name),
+      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+    }
+  end
+
+  def unresolve
+    return render_404 unless note.resolvable?
+
+    note.unresolve!
+
+    discussion = note.discussion
+
+    render json: {
+      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+    }
   end
 
   private
@@ -138,7 +166,7 @@ class Projects::NotesController < Projects::ApplicationController
       }
 
       if note.diff_note?
-        discussion = Discussion.new([note])
+        discussion = note.to_discussion
 
         attrs.merge!(
           diff_discussion_html: diff_discussion_html(discussion),
@@ -173,6 +201,10 @@ class Projects::NotesController < Projects::ApplicationController
 
   def authorize_admin_note!
     return access_denied! unless can?(current_user, :admin_note, note)
+  end
+
+  def authorize_resolve_note!
+    return access_denied! unless can?(current_user, :resolve_note, note)
   end
 
   def note_params

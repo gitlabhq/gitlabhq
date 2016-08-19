@@ -749,6 +749,13 @@ Rails.application.routes.draw do
             get :update_branches
             get :diff_for_path
           end
+
+          resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
+          end
         end
 
         resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
@@ -858,6 +865,8 @@ Rails.application.routes.draw do
           member do
             post :toggle_award_emoji
             delete :delete_attachment
+            post :resolve
+            delete :resolve, action: :unresolve
           end
         end
 
