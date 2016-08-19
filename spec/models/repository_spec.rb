@@ -721,6 +721,30 @@ describe Repository, models: true do
     end
   end
 
+  describe '#ff_merge' do
+    it 'merges the code and return the commit id' do
+      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+      merge_commit_id = repository.ff_merge(user,
+                                            merge_request.diff_head_sha,
+                                            merge_request.target_branch,
+                                            merge_request: merge_request)
+      merge_commit = repository.commit(merge_commit_id)
+
+      expect(merge_commit).to be_present
+      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    end
+
+    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+      merge_commit_id = repository.ff_merge(user,
+                                            merge_request.diff_head_sha,
+                                            merge_request.target_branch,
+                                            merge_request: merge_request)
+
+      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
+  end
+
   describe '#revert' do
     let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
     let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
