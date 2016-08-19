@@ -25,6 +25,8 @@ v 8.11.0 (unreleased)
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
+  - Fix commit mention font inconsistency (ClemMakesApps)
+  - Do not escape URI when extracting path !5878 (winniehell)
   - Fix filter label tooltip HTML rendering (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Expand commit message width in repo view (ClemMakesApps)
