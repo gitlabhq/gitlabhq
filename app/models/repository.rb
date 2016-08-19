@@ -899,7 +899,7 @@ class Repository
     end
   end
 
-  def ff_merge(user, source, target_branch, options = {})
+  def ff_merge(user, source, target_branch, merge_request: nil)
     our_commit = rugged.branches[target_branch].target
     their_commit =
       if source.is_a?(Gitlab::Git::Commit)
@@ -911,7 +911,10 @@ class Repository
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
 
-    commit_with_hooks(user, target_branch) { their_commit.oid }
+    commit_with_hooks(user, target_branch) do
+      merge_request.update(in_progress_merge_commit_sha: their_commit.oid) if merge_request
+      their_commit.oid
+    end
   end
 
   def merge(user, merge_request, options = {})
