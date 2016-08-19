@@ -89,6 +89,7 @@ describe EmailsOnPushWorker do
       before do
         ActionMailer::Base.deliveries.clear
         allow(Notify).to receive(:repository_push_email).and_raise(Net::SMTPFatalError)
+        allow(subject).to receive_message_chain(:logger, :info)
         perform
       end
 
