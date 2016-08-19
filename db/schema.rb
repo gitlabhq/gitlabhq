@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160817154936) do
+ActiveRecord::Schema.define(version: 20160818205718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,8 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.boolean  "domain_blacklist_enabled",              default: false
     t.text     "domain_blacklist"
     t.boolean  "usage_ping_enabled",                    default: true,        null: false
+    t.boolean  "koding_enabled"
+    t.string   "koding_url"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -643,6 +645,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.string   "invite_token"
     t.datetime "invite_accepted_at"
     t.datetime "requested_at"
+    t.date     "expires_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
@@ -892,6 +895,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "group_access", default: 30, null: false
+    t.date     "expires_at"
   end
 
   create_table "project_import_data", force: :cascade do |t|
@@ -1078,6 +1082,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.string   "category",              default: "common", null: false
     t.boolean  "default",               default: false
     t.boolean  "wiki_page_events",      default: true
+    t.boolean  "pipeline_events",       default: false,    null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -1295,6 +1300,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.boolean  "build_events",                         default: false,         null: false
     t.string   "token"
     t.boolean  "wiki_page_events",                     default: false,         null: false
+    t.boolean  "pipeline_events",                      default: false,         null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

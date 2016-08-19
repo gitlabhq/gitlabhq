@@ -4,12 +4,6 @@ feature 'test coverage badge' do
   given!(:user) { create(:user) }
   given!(:project) { create(:project, :private) }
 
-  given!(:pipeline) do
-    create(:ci_pipeline, project: project,
-                         ref: 'master',
-                         sha: project.commit.id)
-  end
-
   context 'when user has access to view badge' do
     background do
       project.team << [user, :developer]
@@ -17,8 +11,10 @@ feature 'test coverage badge' do
     end
 
     scenario 'user requests coverage badge image for pipeline' do
-      create_job(coverage: 100, name: 'test:1')
-      create_job(coverage: 90, name: 'test:2')
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 100, name: 'test:1')
+        create_build(pipeline, coverage: 90, name: 'test:2')
+      end
 
       show_test_coverage_badge
 
@@ -26,9 +22,11 @@ feature 'test coverage badge' do
     end
 
     scenario 'user requests coverage badge for specific job' do
-      create_job(coverage: 50, name: 'test:1')
-      create_job(coverage: 50, name: 'test:2')
-      create_job(coverage: 85, name: 'coverage')
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: 50, name: 'test:1')
+        create_build(pipeline, coverage: 50, name: 'test:2')
+        create_build(pipeline, coverage: 85, name: 'coverage')
+      end
 
       show_test_coverage_badge(job: 'coverage')
 
@@ -36,7 +34,9 @@ feature 'test coverage badge' do
     end
 
     scenario 'user requests coverage badge for pipeline without coverage' do
-      create_job(coverage: nil, name: 'test')
+      create_pipeline do |pipeline|
+        create_build(pipeline, coverage: nil, name: 'test')
+      end
 
       show_test_coverage_badge
 
@@ -54,10 +54,19 @@ feature 'test coverage badge' do
     end
   end
 
-  def create_job(coverage:, name:)
-    create(:ci_build, name: name,
-                      coverage: coverage,
-                      pipeline: pipeline)
+  def create_pipeline
+    opts = { project: project, ref: 'master', sha: project.commit.id }
+
+    create(:ci_pipeline, opts).tap do |pipeline|
+      yield pipeline
+      pipeline.build_updated
+    end
+  end
+
+  def create_build(pipeline, coverage:, name:)
+    opts = { pipeline: pipeline, coverage: coverage, name: name }
+
+    create(:ci_build, :success, opts)
   end
 
   def show_test_coverage_badge(job: nil)

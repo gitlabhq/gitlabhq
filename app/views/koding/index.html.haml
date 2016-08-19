@@ -1,0 +1,9 @@
+.row-content-block.second-block.center
+  %p
+    = icon('circle', class: 'cgreen')
+    Integration is active for
+    = link_to koding_project_url, target: '_blank' do
+      #{current_application_settings.koding_url}
+
+.documentation.wiki
+  = markdown @markdown

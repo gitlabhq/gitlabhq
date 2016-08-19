@@ -54,7 +54,7 @@ describe CampfireService, models: true do
         subdomain: 'project-name',
         room: 'test-room'
       )
-      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       @rooms_url = 'https://verySecret:X@project-name.campfirenow.com/rooms.json'
       @headers = { 'Content-Type' => 'application/json; charset=utf-8' }
     end

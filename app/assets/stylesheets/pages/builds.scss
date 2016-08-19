@@ -168,7 +168,6 @@
       text-overflow: ellipsis;
 
       &:hover {
-        background-color: $row-hover;
         color: $gl-text-color;
       }
     }
@@ -189,6 +188,10 @@
         .fa {
           display: block;
         }
+      }
+
+      &:hover {
+        background-color: $row-hover;
       }
     }
   }

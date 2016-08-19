@@ -55,6 +55,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :koding_url,
+            presence: true,
+            if: :koding_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -157,6 +161,8 @@ class ApplicationSetting < ActiveRecord::Base
       two_factor_grace_period: 48,
       recaptcha_enabled: false,
       akismet_enabled: false,
+      koding_enabled: false,
+      koding_url: nil,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,

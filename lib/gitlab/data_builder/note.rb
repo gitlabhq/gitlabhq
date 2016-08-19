@@ -1,6 +1,8 @@
 module Gitlab
-  class NoteDataBuilder
-    class << self
+  module DataBuilder
+    module Note
+      extend self
+
       # Produce a hash of post-receive data
       #
       # For all notes:

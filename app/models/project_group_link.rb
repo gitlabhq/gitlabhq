@@ -1,4 +1,6 @@
 class ProjectGroupLink < ActiveRecord::Base
+  include Expirable
+
   GUEST     = 10
   REPORTER  = 20
   DEVELOPER = 30
@@ -26,7 +28,7 @@ class ProjectGroupLink < ActiveRecord::Base
     self.class.access_options.key(self.group_access)
   end
 
-  private 
+  private
 
   def different_group
     if self.group && self.project && self.project.group == self.group

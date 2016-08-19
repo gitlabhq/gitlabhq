@@ -217,4 +217,12 @@ module BlobHelper
   def gitlab_ci_ymls
     @gitlab_ci_ymls ||= Gitlab::Template::GitlabCiYmlTemplate.dropdown_names
   end
+
+  def blob_editor_paths
+    {
+      'relative-url-root' => Rails.application.config.relative_url_root,
+      'assets-prefix' => Gitlab::Application.config.assets.prefix,
+      'blob-language' => @blob && @blob.language.try(:ace_mode)
+    }
+  end
 end

@@ -1,6 +1,8 @@
 module Gitlab
-  class BuildDataBuilder
-    class << self
+  module DataBuilder
+    module Build
+      extend self
+
       def build(build)
         project = build.project
         commit = build.pipeline

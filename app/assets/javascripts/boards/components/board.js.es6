@@ -55,7 +55,7 @@
         draggable: '.is-draggable',
         handle: '.js-board-handle',
         onEnd: (e) => {
-          document.body.classList.remove('is-dragging');
+          gl.issueBoards.onEnd();
 
           if (e.newIndex !== undefined && e.oldIndex !== e.newIndex) {
             const order = this.sortable.toArray(),
@@ -71,10 +71,6 @@
           }
         }
       });
-
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-board-drag-handle';
-      }
 
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },

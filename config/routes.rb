@@ -99,6 +99,11 @@ Rails.application.routes.draw do
   get 'help/*path'     => 'help#show', as: :help_page
 
   #
+  # Koding route
+  #
+  get 'koding' => 'koding#index'
+
+  #
   # Global snippets
   #
   resources :snippets do

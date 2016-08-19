@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Ci::Pipeline, models: true do
   let(:project) { FactoryGirl.create :empty_project }
-  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, project: project }
+  let(:pipeline) { FactoryGirl.create :ci_empty_pipeline, status: 'created', project: project }
 
   it { is_expected.to belong_to(:project) }
   it { is_expected.to belong_to(:user) }
@@ -17,6 +17,8 @@ describe Ci::Pipeline, models: true do
   it { is_expected.to respond_to :git_author_name }
   it { is_expected.to respond_to :git_author_email }
   it { is_expected.to respond_to :short_sha }
+
+  it { is_expected.to delegate_method(:stages).to(:statuses) }
 
   describe '#valid_commit_sha' do
     context 'commit.sha can not start with 00000000' do
@@ -122,17 +124,21 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline, started_at: current - 60, finished_at: current }
-    let(:build2) { create :ci_build, name: 'build2', pipeline: pipeline, started_at: current - 60, finished_at: current }
+    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline }
 
     describe '#duration' do
       before do
-        build.skip
-        build2.skip
+        travel_to(current - 120) do
+          pipeline.run
+        end
+
+        travel_to(current) do
+          pipeline.succeed
+        end
       end
 
       it 'matches sum of builds duration' do
-        expect(pipeline.reload.duration).to eq(build.duration + build2.duration)
+        expect(pipeline.reload.duration).to eq(120)
       end
     end
 
@@ -308,6 +314,89 @@ describe Ci::Pipeline, models: true do
       # Since the pipeline already run, so it should not be pending anymore
 
       it { is_expected.to eq('running') }
+    end
+  end
+
+  describe '#execute_hooks' do
+    let!(:build_a) { create_build('a') }
+    let!(:build_b) { create_build('b') }
+
+    let!(:hook) do
+      create(:project_hook, project: project, pipeline_events: enabled)
+    end
+
+    before do
+      ProjectWebHookWorker.drain
+    end
+
+    context 'with pipeline hooks enabled' do
+      let(:enabled) { true }
+
+      before do
+        WebMock.stub_request(:post, hook.url)
+      end
+
+      context 'with multiple builds' do
+        context 'when build is queued' do
+          before do
+            build_a.enqueue
+            build_b.enqueue
+          end
+
+          it 'receive a pending event once' do
+            expect(WebMock).to have_requested_pipeline_hook('pending').once
+          end
+        end
+
+        context 'when build is run' do
+          before do
+            build_a.enqueue
+            build_a.run
+            build_b.enqueue
+            build_b.run
+          end
+
+          it 'receive a running event once' do
+            expect(WebMock).to have_requested_pipeline_hook('running').once
+          end
+        end
+
+        context 'when all builds succeed' do
+          before do
+            build_a.success
+            build_b.success
+          end
+
+          it 'receive a success event once' do
+            expect(WebMock).to have_requested_pipeline_hook('success').once
+          end
+        end
+
+        def have_requested_pipeline_hook(status)
+          have_requested(:post, hook.url).with do |req|
+            json_body = JSON.parse(req.body)
+            json_body['object_attributes']['status'] == status &&
+              json_body['builds'].length == 2
+          end
+        end
+      end
+    end
+
+    context 'with pipeline hooks disabled' do
+      let(:enabled) { false }
+
+      before do
+        build_a.enqueue
+        build_b.enqueue
+      end
+
+      it 'did not execute pipeline_hook after touched' do
+        expect(WebMock).not_to have_requested(:post, hook.url)
+      end
+    end
+
+    def create_build(name)
+      create(:ci_build, :created, pipeline: pipeline, name: name)
     end
   end
 end

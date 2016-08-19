@@ -229,7 +229,7 @@ class Commit
 
   def diff_refs
     Gitlab::Diff::DiffRefs.new(
-      base_sha: self.parent_id || self.sha,
+      base_sha: self.parent_id || Gitlab::Git::BLANK_SHA,
       head_sha: self.sha
     )
   end

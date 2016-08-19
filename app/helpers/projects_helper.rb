@@ -245,6 +245,60 @@ module ProjectsHelper
     )
   end
 
+  def add_koding_stack_path(project)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      '.koding.yml',
+      commit_message: "Add Koding stack script",
+      content: <<-CONTENT.strip_heredoc
+        provider:
+          aws:
+            access_key: '${var.aws_access_key}'
+            secret_key: '${var.aws_secret_key}'
+        resource:
+          aws_instance:
+            #{project.path}-vm:
+              instance_type: t2.nano
+              user_data: |-
+
+                # Created by GitLab UI for :>
+
+                echo _KD_NOTIFY_@Installing Base packages...@
+
+                apt-get update -y
+                apt-get install git -y
+
+                echo _KD_NOTIFY_@Cloning #{project.name}...@
+
+                export KODING_USER=${var.koding_user_username}
+                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
+                export BRANCH=${var.koding_queryString_branch}
+
+                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
+
+                echo _KD_NOTIFY_@#{project.name} cloned.@
+      CONTENT
+    )
+  end
+
+  def koding_project_url(project = nil, branch = nil, sha = nil)
+    if project
+      import_path = "/Home/Stacks/import"
+
+      repo = project.path_with_namespace
+      branch ||= project.default_branch
+      sha ||= project.commit.short_id
+
+      path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
+
+      return URI.join(current_application_settings.koding_url, path).to_s
+    end
+
+    current_application_settings.koding_url
+  end
+
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
       namespace_project_blob_path(

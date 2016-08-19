@@ -719,6 +719,14 @@ describe Repository, models: true do
       expect(merge_commit).to be_present
       expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
     end
+
+    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+      merge_request = create(:merge_request, source_branch: 'feature', target_branch: 'master', source_project: project)
+      merge_commit_id = repository.merge(user, merge_request, commit_options)
+      repository.commit(merge_commit_id)
+
+      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    end
   end
 
   describe '#ff_merge' do

@@ -35,11 +35,6 @@ module Statuseable
       all.pluck(self.status_sql).first
     end
 
-    def duration
-      duration_array = all.map(&:duration).compact
-      duration_array.reduce(:+)
-    end
-
     def started_at
       all.minimum(:started_at)
     end
@@ -84,5 +79,15 @@ module Statuseable
 
   def complete?
     COMPLETED_STATUSES.include?(status)
+  end
+
+  private
+
+  def calculate_duration
+    if started_at && finished_at
+      finished_at - started_at
+    elsif started_at
+      Time.now - started_at
+    end
   end
 end

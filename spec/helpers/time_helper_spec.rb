@@ -19,16 +19,16 @@ describe TimeHelper do
 
   describe "#duration_in_numbers" do
     it "returns minutes and seconds" do
-      duration_in_numbers = {
-        [100, 0] => "01:40",
-        [121, 0] => "02:01",
-        [3721, 0] => "01:02:01",
-        [0, 0] => "00:00",
-        [nil, Time.now.to_i - 42] => "00:42"
+      durations_and_expectations = {
+        100 => "01:40",
+        121 => "02:01",
+        3721 => "01:02:01",
+        0 => "00:00",
+        42 => "00:42"
       }
 
-      duration_in_numbers.each do |interval, expectation|
-        expect(duration_in_numbers(*interval)).to eq(expectation)
+      durations_and_expectations.each do |duration, expectation|
+        expect(duration_in_numbers(duration)).to eq(expectation)
       end
     end
   end

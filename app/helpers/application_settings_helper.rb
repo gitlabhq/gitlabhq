@@ -35,6 +35,10 @@ module ApplicationSettingsHelper
     current_application_settings.akismet_enabled?
   end
 
+  def koding_enabled?
+    current_application_settings.koding_enabled?
+  end
+
   def allowed_protocols_present?
     current_application_settings.enabled_git_access_protocol.present?
   end

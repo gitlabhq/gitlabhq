@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe BroadcastMessage, models: true do
-  include ActiveSupport::Testing::TimeHelpers
-
   subject { create(:broadcast_message) }
 
   it { is_expected.to be_valid }

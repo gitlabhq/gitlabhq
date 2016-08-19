@@ -20,6 +20,9 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
+        case 'projects:boards:show':
+          shortcut_handler = new ShortcutsNavigation();
+          break;
         case 'projects:issues:index':
           Issuable.init();
           new IssuableBulkActions();
@@ -126,10 +129,12 @@
           new NotificationsDropdown();
           break;
         case 'groups:group_members:index':
+          new gl.MemberExpirationDate();
           new GroupMembers();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
+          new gl.MemberExpirationDate();
           new ProjectMembers();
           new UsersSelect();
           break;
@@ -171,6 +176,7 @@
           new BuildArtifacts();
           break;
         case 'projects:group_links:index':
+          new gl.MemberExpirationDate();
           new GroupsSelect();
           break;
         case 'search:show':

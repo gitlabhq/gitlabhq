@@ -1110,8 +1110,8 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
-  def add_user(user, access_level, current_user = nil)
-    team.add_user(user, access_level, current_user)
+  def add_user(user, access_level, current_user: nil, expires_at: nil)
+    team.add_user(user, access_level, current_user: current_user, expires_at: expires_at)
   end
 
   def default_branch

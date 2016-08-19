@@ -19,6 +19,8 @@ module Ci
 
     after_save :keep_around_commits
 
+    delegate :stages, to: :statuses
+
     state_machine :status, initial: :created do
       event :enqueue do
         transition created: :pending
@@ -56,6 +58,10 @@ module Ci
       before_transition do |pipeline|
         pipeline.update_duration
       end
+
+      after_transition do |pipeline, transition|
+        pipeline.execute_hooks unless transition.loopback?
+      end
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
@@ -70,6 +76,10 @@ module Ci
     def self.stages
       # We use pluck here due to problems with MySQL which doesn't allow LIMIT/OFFSET in queries
       CommitStatus.where(pipeline: pluck(:id)).stages
+    end
+
+    def self.total_duration
+      where.not(duration: nil).sum(:duration)
     end
 
     def stages_with_latest_statuses
@@ -138,6 +148,10 @@ module Ci
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
+    end
+
+    def mark_as_processable_after_stage(stage_idx)
+      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
     end
 
     def latest?
@@ -244,10 +258,20 @@ module Ci
     end
 
     def update_duration
-      self.duration = statuses.latest.duration
+      self.duration = calculate_duration
+    end
+
+    def execute_hooks
+      data = pipeline_data
+      project.execute_hooks(data, :pipeline_hooks)
+      project.execute_services(data, :pipeline_hooks)
     end
 
     private
+
+    def pipeline_data
+      Gitlab::DataBuilder::Pipeline.build(self)
+    end
 
     def latest_builds_status
       return 'failed' unless yaml_errors.blank?
