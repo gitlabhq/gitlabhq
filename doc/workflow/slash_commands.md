@@ -7,8 +7,12 @@ in comments. Each command should be on a separate line in order to be properly
 detected and executed. The commands are removed from the issue, merge request or
 comment body before it is saved and will not be visible to anyone else.
 
-Below is a list of all of the available commands and descriptions about what they
-do.
+As these commands are text-based, they are also interpreted when replying by
+email, or when a new issue is [created by email](create_issue_from_email.md).
+This lets you have control over GitLab without even going through the UI.
+
+Below is a list of all of the available commands and descriptions about what
+they do.
 
 | Command                    | Action       |
 |:---------------------------|:-------------|
