@@ -13,7 +13,7 @@
         %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
           {{ list.title }}
           %span.pull-right{ "v-if" => "list.type !== 'blank'" }
-            {{ list.issues.length }}
+            {{ list.issuesSize }}
           - if can?(current_user, :admin_list, @project)
             %board-delete{ "inline-template" => true,
               ":list" => "list",
