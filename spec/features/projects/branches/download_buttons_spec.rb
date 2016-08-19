@@ -9,8 +9,8 @@ feature 'Download buttons in branches page', feature: true do
   given(:pipeline) do
     create(:ci_pipeline,
            project: project,
-           sha: project.commit.sha,
-           ref: project.default_branch,
+           sha: project.commit('binary-encoding').sha,
+           ref: 'binary-encoding', # make sure the branch is in the 1st page!
            status: status)
   end
 
