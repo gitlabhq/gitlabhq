@@ -149,6 +149,7 @@ Issue Board, that is add/remove lists and drag issues around.
 
 A few things to remember:
 
+- The label that corresponds to a list is hidden for issues under that list.
 - Moving an issue between lists removes the label from the list it came from
   and adds the label from the list it goes to.
 - When moving a card to **Done**, the label of the list it came from is removed
