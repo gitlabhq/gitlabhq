@@ -66,6 +66,8 @@
       this.getUsers(query).done((response) => {
         let data = this.consolidateData(response);
         callback(data);
+      }).error(() => {
+        new Flash('Failed to load users.');
       });
     }
 
