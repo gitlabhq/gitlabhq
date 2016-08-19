@@ -8,6 +8,13 @@ feature 'Projected Branches', feature: true, js: true do
 
   before { login_as(user) }
 
+  def set_allowed_to(operation, option = 'Masters')
+    find(".js-allowed-to-#{operation}").click
+    wait_for_ajax
+    click_on option
+    find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
+  end
+
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
@@ -18,6 +25,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "allows creating explicit protected branches" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('some-branch') }
@@ -31,6 +40,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content(commit.id[0..7]) }
@@ -39,6 +50,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "displays an error message if the named branch does not exist" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('branch was removed') }
@@ -49,6 +62,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "allows creating protected branches with a wildcard" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('*-stable') }
@@ -62,6 +77,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content("2 matching branches") }
@@ -74,6 +91,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       visit namespace_project_protected_branches_path(project.namespace, project)
@@ -92,14 +111,8 @@ feature 'Projected Branches', feature: true, js: true do
       it "allows creating protected branches that #{access_type_name} can push to" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
-        within('.new_protected_branch') do
-          allowed_to_push_button = find(".js-allowed-to-push")
-
-          unless allowed_to_push_button.text == access_type_name
-            allowed_to_push_button.click
-            within(".dropdown.open .dropdown-menu") { click_on access_type_name }
-          end
-        end
+        set_allowed_to('merge')
+        set_allowed_to('push', access_type_name)
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
@@ -107,20 +120,23 @@ feature 'Projected Branches', feature: true, js: true do
       end
 
       it "allows updating protected branches so that #{access_type_name} can push to them" do
+        authorized_user = create(:user)
+        project.team << [authorized_user, :developer]
+
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
+        set_allowed_to('merge')
+        set_allowed_to('push', authorized_user.name)
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
 
-        within(".protected-branches-list") { click_on "Settings" }
-
-        within(".allowed-to-push-container") do
-          find(".allowed-to-push").click
-          click_on access_type_name
+        within(".js-protected-branch-edit-form") do
+          set_allowed_to('push', access_type_name)
         end
 
         wait_for_ajax
+
         expect(ProtectedBranch.last.push_access_levels.map(&:access_level)).to include(access_type_id)
       end
     end
@@ -129,32 +145,28 @@ feature 'Projected Branches', feature: true, js: true do
       it "allows creating protected branches that #{access_type_name} can merge to" do
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
-        within('.new_protected_branch') do
-          allowed_to_merge_button = find(".js-allowed-to-merge")
-
-          unless allowed_to_merge_button.text == access_type_name
-            allowed_to_merge_button.click
-            within(".dropdown.open .dropdown-menu") { click_on access_type_name }
-          end
-        end
+        set_allowed_to('push')
+        set_allowed_to('merge', access_type_name)
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
         expect(ProtectedBranch.last.merge_access_levels.map(&:access_level)).to eq([access_type_id])
       end
 
-      it "allows updating protected branches so that #{access_type_name} can merge to them" do
+      it "allows updating protected branches so that #{access_type_name} can merge to them", focus: true do
+        authorized_user = create(:user)
+        project.team << [authorized_user, :developer]
+
         visit namespace_project_protected_branches_path(project.namespace, project)
         set_protected_branch_name('master')
+        set_allowed_to('merge', authorized_user.name)
+        set_allowed_to('push')
         click_on "Protect"
 
         expect(ProtectedBranch.count).to eq(1)
 
-        within(".protected-branches-list") { click_on "Settings" }
-
-        within(".allowed-to-merge-container") do
-          find(".allowed-to-merge").click
-          click_on access_type_name
+        within(".js-protected-branch-edit-form") do
+          set_allowed_to('merge', access_type_name)
         end
 
         wait_for_ajax
@@ -167,38 +179,44 @@ feature 'Projected Branches', feature: true, js: true do
 
       before { project.team << [authorized_user, :developer] }
 
-      ['push', 'merge'].each do |git_operation_type|
+      git_operations = ['push', 'merge']
+
+      git_operations.each_with_index do |git_operation_type, i|
+        alt_git_operation = git_operations[(i +1) %2] # Will return the next or previous operation
+
         it "allows creating protected branches that a specific user can #{git_operation_type} to" do
           visit namespace_project_protected_branches_path(project.namespace, project)
           set_protected_branch_name('master')
           within('.new_protected_branch') do
-            find(".allowed-to-#{git_operation_type}").click
+            find(".js-allowed-to-#{git_operation_type}").click
             click_on authorized_user.name
           end
+          set_allowed_to(alt_git_operation)
+
           perform_enqueued_jobs { click_on "Protect" }
 
-          within(".protected-branches-list") { click_on "Settings" }
-
-          within(".protected-branch-#{git_operation_type}-access-list") do
-            expect(page).to have_content(authorized_user.name)
+          within '.js-protected-branch-edit-form' do
+            find(".js-allowed-to-#{git_operation_type}").click
+            wait_for_ajax
+            expect(page).to have_selector('a.is-active', text: authorized_user.name)
           end
         end
 
         it "allows updating a protected branch so that a specific user can #{git_operation_type} to it" do
           visit namespace_project_protected_branches_path(project.namespace, project)
           set_protected_branch_name('master')
+          set_allowed_to('merge')
+          set_allowed_to('push')
           click_on "Protect"
 
-          within(".protected-branches-list") { click_on "Settings" }
-
-          within(".allowed-to-#{git_operation_type}-container") do
-            find(".allowed-to-#{git_operation_type}").click
-            perform_enqueued_jobs { click_on authorized_user.name }
+          within '.js-protected-branch-edit-form' do
+            set_allowed_to(git_operation_type, authorized_user.name)
           end
 
-          within(".protected-branch-#{git_operation_type}-access-list") do
-            expect(page).to have_content(authorized_user.name)
-          end
+          wait_for_ajax
+
+          access_levels = ProtectedBranch.first.send("#{git_operation_type}_access_levels".to_sym)
+          expect(access_levels.last.user).to eq(authorized_user)
         end
 
         it "allows deleting a user-specific access level" do
@@ -208,32 +226,28 @@ feature 'Projected Branches', feature: true, js: true do
           visit namespace_project_protected_branches_path(project.namespace, project)
           set_protected_branch_name('master')
 
-          # First authorized user has access
           within('.new_protected_branch') do
-            find(".allowed-to-#{git_operation_type}").click
-            click_on authorized_user.name
+            # First authorized user has access
+            set_allowed_to(git_operation_type, authorized_user.name)
+            set_allowed_to(alt_git_operation)
           end
           click_on "Protect"
+          
+          within '.js-protected-branch-edit-form' do
+            # Second authorized user has access
+            set_allowed_to(git_operation_type, other_authorized_user.name)
 
-          within(".protected-branches-list") { click_on "Settings" }
-
-          # Second authorized user has access
-          within(".allowed-to-#{git_operation_type}-container") do
+            # Remove first user's access
             find(".js-allowed-to-#{git_operation_type}").click
-            perform_enqueued_jobs { click_on other_authorized_user.name }
+            wait_for_ajax
+            click_on other_authorized_user.name
+            find(".js-allowed-to-#{git_operation_type}").click # Close to submit the form
           end
-
-          # Remove first user's access
-          within(".protected-branch-#{git_operation_type}-access-list") do
-            perform_enqueued_jobs { click_link "Delete", match: :first }
-          end
-
-          expect(page).to have_content("Successfully deleted.")
 
           access_levels = ProtectedBranch.first.send("#{git_operation_type}_access_levels".to_sym)
 
-          expect(access_levels.count).to eq(1)
-          expect(access_levels.first.user).to eq(other_authorized_user)
+          expect(access_levels.count).to eq(2)
+          expect(access_levels.last.user).to eq(other_authorized_user)
         end
       end
     end
