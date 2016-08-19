@@ -3,9 +3,10 @@
 
   gl.ProtectedBranchAccessDropdown = class {
     constructor(options) {
-      const { $dropdown, onSelect, onHide } = options;
+      const { $dropdown, onSelect, onHide, accessLevel } = options;
       const self = this;
 
+      this.accessLevel = accessLevel;
       this.$dropdown = $dropdown;
       this.$wrap = this.$dropdown.parents().eq(1); // TODO: Find a better way to get the wrap element
       this.usersPath = '/autocomplete/users.json';
@@ -16,7 +17,6 @@
         selectable: true,
         filterable: true,
         filterRemote: true,
-        inputId: $dropdown.data('input-id'),
         data: this.getData.bind(this),
         multiSelect: $dropdown.hasClass('js-multiselect'),
         renderRow: this.renderRow.bind(this),
@@ -39,7 +39,7 @@
           self.inputCount++;
 
           if (onSelect) {
-            onSelect(item, $el);
+            onSelect(item, $el, self);
           } 
         }
       });

@@ -27,13 +27,14 @@
       // Save initial state with existing dropdowns
       this.state = {};
       for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-        this.state[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.getAccessLevelData(ACCESS_LEVEL);
+        this.state[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.getAccessLevelDataFromInputs(ACCESS_LEVEL);
       }
     }
 
     buildDropdowns() {
       // Allowed to merge dropdown
       new gl.allowedToMergeDropdown({
+        accessLevel: ACCESS_LEVELS.MERGE,
         $dropdown: this.$allowedToMergeDropdown,
         onSelect: this.onSelectOption.bind(this),
         onHide: this.onDropdownHide.bind(this),
@@ -41,14 +42,28 @@
 
       // Allowed to push dropdown
       new gl.allowedToPushDropdown({
+        accessLevel: ACCESS_LEVELS.PUSH,
         $dropdown: this.$allowedToPushDropdown,
         onSelect: this.onSelectOption.bind(this),
         onHide: this.onDropdownHide.bind(this)
       });
     }
 
-    onSelectOption(item, $el) {
+    onSelectOption(item, $el, dropdownInstance) {
       this.hasChanges = true;
+      let itemToDestroy;
+      let accessLevelState = this.state[`${dropdownInstance.accessLevel}_attributes`];
+
+      // If we are unselecting an option
+      if (!$el.is('.is-active')) {
+        if (item.type === LEVEL_TYPES.USER) {
+          itemToDestroy = _.findWhere(accessLevelState, { user_id: item.id });
+        } else if (item.type === LEVEL_TYPES.ROLE) {
+          itemToDestroy = _.findWhere(accessLevelState, { access_level: item.id });
+        }
+
+        itemToDestroy['_destroy'] = 1;
+      }
     }
 
     onDropdownHide() {
@@ -116,7 +131,7 @@
       // State takes precedence
       let accessLevel = ACCESS_LEVELS[accessLevelKey];
       let accessLevelData = [];
-      let dataFromInputs = this.getAccessLevelData(accessLevelKey);
+      let dataFromInputs = this.getAccessLevelDataFromInputs(accessLevelKey);
 
       for (let i = 0; i < dataFromInputs.length; i++) {
         let inState;
@@ -146,10 +161,17 @@
         }
       }
 
+      // Items to be deleted
+      this.state[`${accessLevel}_attributes`].forEach((item) => {
+        if (item._destroy) {
+          accessLevelData.push(item);
+        }
+      });
+
       return accessLevelData;
     }
 
-    getAccessLevelData(accessLevelKey) {
+    getAccessLevelDataFromInputs(accessLevelKey) {
       let accessLevels = [];
       let accessLevel = ACCESS_LEVELS[accessLevelKey];
       this.$wraps[accessLevel]
