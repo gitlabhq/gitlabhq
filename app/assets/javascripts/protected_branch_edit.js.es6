@@ -56,14 +56,20 @@
       let itemToDestroy;
       let accessLevelState = this.state[`${dropdownInstance.accessLevel}_attributes`];
 
-      // If we are unselecting an option
+      // If element is not active it means it has been active
       if (!$el.is('.is-active')) {
+        // We need to know if the selected item was already saved
+        // if so we need to append the `_destroy` property
+        // in order to delete it from the database
+
+        // Retrieve the full data of the item we just selected
         if (item.type === LEVEL_TYPES.USER) {
           itemToDestroy = _.findWhere(accessLevelState, { user_id: item.id });
         } else if (item.type === LEVEL_TYPES.ROLE) {
           itemToDestroy = _.findWhere(accessLevelState, { access_level: item.id });
         }
 
+        // State updated by reference
         itemToDestroy['_destroy'] = 1;
       }
     }
@@ -135,11 +141,14 @@
       let accessLevelData = [];
       let dataFromInputs = this.getAccessLevelDataFromInputs(accessLevelKey);
 
+      // Collect and format items that will be sent to the server
       for (let i = 0; i < dataFromInputs.length; i++) {
         let inState;
         let adding;
         var userId = parseInt(dataFromInputs[i].user_id);
 
+        // Inputs give us the *state* of the dropdown on the frontend before it's persisted
+        // so we need to compare them with the persisted state which can be get or set on this.state
         if (userId) {
           adding = LEVEL_TYPES.USER;
           inState = _.findWhere(this.state[`${accessLevel}_attributes`], { user_id: userId });
@@ -149,8 +158,10 @@
         }
 
         if (inState) {
+          // collect item if it's already saved
           accessLevelData.push(inState);
         } else {
+          // format item according the level type
           if (adding === LEVEL_TYPES.USER) {
             accessLevelData.push({
               user_id: parseInt(dataFromInputs[i].user_id)
@@ -163,7 +174,9 @@
         }
       }
 
-      // Items to be deleted
+      // Since we didn't considered inputs that were removed
+      // (because they are not present in the DOM anymore)
+      // We can get them from the state
       this.state[`${accessLevel}_attributes`].forEach((item) => {
         if (item._destroy) {
           accessLevelData.push(item);

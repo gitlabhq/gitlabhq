@@ -113,7 +113,9 @@
     }
 
     renderRow(item, instance) {
-      const isActive = _.findWhere(instance.activeIds, {id: item.id, type: item.type}) ? 'is-active' : '';
+      // Dectect if the current item is already saved so we can add
+      // the `is-active` class so the item looks as marked
+      const isActive = _.findWhere(instance.activeIds, { id: item.id, type: item.type }) ? 'is-active' : '';
       if (item.type === 'user') {
         return this.userRowHtml(item, isActive);
       } else if (item.type === 'role') {
