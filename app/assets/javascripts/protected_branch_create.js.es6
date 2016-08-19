@@ -1,6 +1,11 @@
 (global => {
   global.gl = global.gl || {};
 
+  const ACCESS_LEVELS = {
+    MERGE: 'merge_access_levels',
+    PUSH: 'push_access_levels',
+  };
+
   gl.ProtectedBranchCreate = class {
     constructor() {
       this.$wrap = this.$form = $('#new_protected_branch');
@@ -16,6 +21,7 @@
 
       // Allowed to Merge dropdown
       new gl.AllowedToMergeDropdown({
+        accessLevel: ACCESS_LEVELS.MERGE,
         $dropdown: $allowedToMergeDropdown,
         accessLevelsData: gon.merge_access_levels,
         onSelect: this.onSelectCallback
@@ -23,6 +29,7 @@
 
       // Allowed to Push dropdown
       new gl.AllowedToPushDropdown({
+        accessLevel: ACCESS_LEVELS.PUSH,
         $dropdown: $allowedToPushDropdown,
         accessLevelsData: gon.push_access_levels,
         onSelect: this.onSelectCallback
