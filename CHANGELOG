@@ -164,6 +164,10 @@ v 8.11.0 (unreleased)
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
 
+v 8.10.7
+  - Upgrade Hamlit to 2.6.1. !5873
+  - Upgrade Doorkeeper to 4.2.0. !5881
+
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
   - Restore "Largest repository" sort option on Admin > Projects page. !5797
@@ -386,6 +390,9 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.8
+  - Upgrade Doorkeeper to 4.2.0. !5881
 
 v 8.9.7
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
@@ -655,6 +662,9 @@ v 8.9.0
   - Add left/right arrows horizontal navigation
   - Add tooltip to pin/unpin navbar
   - Add new sub nav style to Wiki and Graphs sub navigation
+
+v 8.8.9
+  - Upgrade Doorkeeper to 4.2.0. !5881
 
 v 8.8.8
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781
