@@ -13,6 +13,8 @@
     document.body.classList.remove('is-dragging');
   };
 
+  gl.issueBoards.touchEnabled = ('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch;
+
   gl.issueBoards.getBoardSortableDefaultOptions = (obj) => {
     let defaultSortOptions = {
       forceFallback: true,
@@ -20,7 +22,8 @@
       fallbackOnBody: true,
       ghostClass: 'is-ghost',
       filter: '.has-tooltip',
-      scrollSensitivity: 100,
+      delay: gl.issueBoards.touchEnabled ? 100 : 0,
+      scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,
       onStart: gl.issueBoards.onStart,
       onEnd: gl.issueBoards.onEnd

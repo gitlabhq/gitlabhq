@@ -72,10 +72,6 @@
         }
       });
 
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-board-drag-handle';
-      }
-
       this.sortable = Sortable.create(this.$el.parentNode, options);
     },
     beforeDestroy () {

@@ -74,10 +74,6 @@
         }
       });
 
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-card-drag-handle';
-      }
-
       this.sortable = Sortable.create(this.$els.list, options);
 
       // Scroll event on list to load more
