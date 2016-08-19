@@ -20,6 +20,8 @@
       .clearable-input
         = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
         %i.clear-icon.js-clear-input
+      .help-block
+        On this date, the user(s) will automatically lose access to this group and all of its projects.
 
   .form-actions
     = f.submit 'Add users to group', class: "btn btn-create"
