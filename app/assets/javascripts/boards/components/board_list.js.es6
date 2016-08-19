@@ -82,18 +82,6 @@
           this.loadNextPage();
         }
       };
-
-      // if (gl.issueBoards.touchEnabled) {
-      //   this.$on('scroll', () => {
-      //     if (!startedDragging) {
-      //       this.sortable.option("disabled", true);
-      //     }
-      //   });
-      //
-      //   this.$on('scrollend', () => {
-      //     this.sortable.option("disabled", false);
-      //   });
-      // }
     }
   });
 })();
