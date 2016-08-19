@@ -604,7 +604,7 @@
       if (this.options.inputId != null) {
         $input.attr('id', this.options.inputId);
       }
-      if (selectedObject.type) {
+      if (selectedObject && selectedObject.type) {
         $input.attr('data-type', selectedObject.type);
       }
       return this.dropdown.before($input);
