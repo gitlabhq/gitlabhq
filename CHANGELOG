@@ -74,6 +74,7 @@ v 8.11.0 (unreleased)
   - Fix devise deprecation warnings.
   - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
+  - Load branches asynchronously in Cherry Pick and Revert dialogs.
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Fix syntax highlighting in file editor
