@@ -139,7 +139,7 @@
         role: 'access_level',
         user: 'user_id',
       };
-      let $input = this.$wrap.find(`input[name$="[${typeToName[selectedItem.type]}]"][value="${selectedItem.id}"]`);
+      let $input = this.$wrap.find(`input[data-type][value="${selectedItem.id}"]`);
 
       if ($input.length) {
         // If input exists return actual name
