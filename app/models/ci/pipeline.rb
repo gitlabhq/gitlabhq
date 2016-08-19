@@ -72,6 +72,10 @@ module Ci
       CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
+    def self.total_duration
+      where.not(duration: nil).sum(:duration)
+    end
+
     def stages_with_latest_statuses
       statuses.latest.order(:stage_idx).group_by(&:stage)
     end
@@ -248,7 +252,7 @@ module Ci
     end
 
     def update_duration
-      self.duration = statuses.latest.duration
+      self.duration = calculate_duration
     end
 
     private
