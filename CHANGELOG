@@ -4,6 +4,7 @@ v 8.11.0 (unreleased)
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
+  - Add Koding (online IDE) integration
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
