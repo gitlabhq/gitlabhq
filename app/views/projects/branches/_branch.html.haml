@@ -5,8 +5,8 @@
 - number_commits_ahead = diverging_commit_counts[:ahead]
 %li(class="js-branch-#{branch.name}")
   %div
-    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name) do
-      %span.item-title.str-truncated= branch.name
+    = link_to namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'item-title str-truncated' do
+      = branch.name
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
