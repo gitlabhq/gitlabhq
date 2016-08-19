@@ -14,9 +14,9 @@
     .checkbox
       = f.label :can_push do
         = f.check_box :can_push
-        %strong Allow write access
+        %strong Write access allowed?
   .form-group
     %p.light.append-bottom-0
-      Can this key be used to push to this repository? Deploy keys always have pull access
+      Allow this key to push to repository as well? (Default only allows pull access.)
 
   = f.submit "Add key", class: "btn-create btn"
