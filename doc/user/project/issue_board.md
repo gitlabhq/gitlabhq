@@ -85,6 +85,24 @@ in the list's heading. A confirmation dialog will appear for you to confirm.
 Deleting a list doesn't have any effect in issues and labels, it's just the
 list view that is removed.
 
+## Searching issues in the Backlog list
+
+The very first time you start using the Issue Board, it is very likely your
+issue tracker is already populated with labels and issues. In that case,
+**Backlog** will have all the issues that don't belong to another list, and
+**Done** will have all the closed ones.
+
+For performance and visibility reasons, each list shows the first 20 issues
+by default. If you have more than 20, you have to start scrolling down for the
+next 20 issues to appear. This can be cumbersome if your issue tracker hosts
+hundreds of issues, and for that reason it is easier to search for issues to
+move from **Backlog** to another list.
+
+Start typing in the search bar under the **Backlog** list and the relevant
+issues will appear.
+
+![Issue Board search Backlog](img/issue_board_search_backlog.png)
+
 ## Filtering issues
 
 You should be able to use the filters on top of your Issue Board to show only
@@ -141,6 +159,9 @@ A few things to remember:
 - Clicking on a label inside a card will quickly filter the entire Issue Board
   and show only the issues from all lists that have that label.
 - Issues inside lists are [ordered by priority](labels.md#prioritize-labels).
+- For performance and visibility reasons, each list shows the first 20 issues
+  by default. If you have more than 20 issues start scrolling down and the next
+  20 will appear.
 
 [ce-5554]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5554
 [labels]: ./labels.md
