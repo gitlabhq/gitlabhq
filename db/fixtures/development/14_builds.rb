@@ -1,9 +1,8 @@
 class Gitlab::Seeder::Builds
-  STAGES = %w[build notify_build test notify_test deploy notify_deploy]
+  STAGES = %w[build test deploy notify]
   BUILDS = [
     { name: 'build:linux', stage: 'build', status: :success },
     { name: 'build:osx', stage: 'build', status: :success },
-    { name: 'slack post build', stage: 'notify_build', status: :success },
     { name: 'rspec:linux', stage: 'test', status: :success },
     { name: 'rspec:windows', stage: 'test', status: :success },
     { name: 'rspec:windows', stage: 'test', status: :success },
@@ -12,9 +11,9 @@ class Gitlab::Seeder::Builds
     { name: 'spinach:osx', stage: 'test', status: :canceled },
     { name: 'cucumber:linux', stage: 'test', status: :running },
     { name: 'cucumber:osx', stage: 'test', status: :failed },
-    { name: 'slack post test', stage: 'notify_test', status: :success },
     { name: 'staging', stage: 'deploy', environment: 'staging', status: :success },
-    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :success },
+    { name: 'production', stage: 'deploy', environment: 'production', when: 'manual', status: :skipped },
+    { name: 'slack', stage: 'notify', when: 'manual', status: :created },
   ]
 
   def initialize(project)
@@ -25,23 +24,43 @@ class Gitlab::Seeder::Builds
     pipelines.each do |pipeline|
       begin
         BUILDS.each { |opts| build_create!(pipeline, opts) }
-        commit_status_create!(pipeline, name: 'jenkins', status: :success)
-
+        commit_status_create!(pipeline, name: 'jenkins', stage: 'test', status: :success)
         print '.'
       rescue ActiveRecord::RecordInvalid
         print 'F'
+      ensure
+        pipeline.build_updated
       end
     end
   end
 
   def pipelines
-    commits = @project.repository.commits('master', limit: 5)
-    commits_sha = commits.map { |commit| commit.raw.id }
-    commits_sha.map do |sha|
-      @project.ensure_pipeline(sha, 'master')
-    end
+    master_pipelines + merge_request_pipelines
+  end
+
+  def master_pipelines
+    create_pipelines_for(@project, 'master')
   rescue
     []
+  end
+
+  def merge_request_pipelines
+    @project.merge_requests.last(5).map do |merge_request|
+      create_pipelines(merge_request.source_project, merge_request.source_branch, merge_request.commits.last(5))
+    end.flatten
+  rescue
+    []
+  end
+
+  def create_pipelines_for(project, ref)
+    commits = project.repository.commits(ref, limit: 5)
+    create_pipelines(project, ref, commits)
+  end
+
+  def create_pipelines(project, ref, commits)
+    commits.map do |commit|
+      project.pipelines.create(sha: commit.id, ref: ref)
+    end
   end
 
   def build_create!(pipeline, opts = {})

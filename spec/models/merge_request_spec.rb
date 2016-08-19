@@ -456,6 +456,20 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
+  describe '#commits_sha' do
+    let(:commit0) { double('commit0', sha: 'sha1') }
+    let(:commit1) { double('commit1', sha: 'sha2') }
+    let(:commit2) { double('commit2', sha: 'sha3') }
+
+    before do
+      allow(subject.merge_request_diff).to receive(:commits).and_return([commit0, commit1, commit2])
+    end
+
+    it 'returns sha of commits' do
+      expect(subject.commits_sha).to contain_exactly('sha1', 'sha2', 'sha3')
+    end
+  end
+
   describe '#pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
@@ -477,6 +491,19 @@ describe MergeRequest, models: true do
 
         expect(subject.pipeline).to be_nil
       end
+    end
+  end
+
+  describe '#all_pipelines' do
+    let!(:pipelines) do
+      subject.merge_request_diff.commits.map do |commit|
+        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+      end
+    end
+
+    it 'returns a pipelines from source projects with proper ordering' do
+      expect(subject.all_pipelines).not_to be_empty
+      expect(subject.all_pipelines).to eq(pipelines.reverse)
     end
   end
 
@@ -754,6 +781,150 @@ describe MergeRequest, models: true do
 
         expect(subject.diff_sha_refs).to eq(expected_diff_refs)
       end
+    end
+  end
+
+  context "discussion status" do
+    let(:first_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:second_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+
+    before do
+      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
+    end
+
+    describe "#discussions_resolvable?" do
+      context "when all discussions are unresolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(false)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolvable?).to be false
+        end
+      end
+
+      context "when some discussions are unresolvable and some discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+
+      context "when all discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(true)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+    end
+
+    describe "#discussions_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_resolved?).to be true
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+  end
+
+  describe '#conflicts_can_be_resolved_in_ui?' do
+    def create_merge_request(source_branch)
+      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
+        mr.mark_as_unmergeable
+      end
+    end
+
+    it 'returns a falsey value when the MR can be merged without conflicts' do
+      merge_request = create_merge_request('master')
+      merge_request.mark_as_mergeable
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the MR does not support new diff notes' do
+      merge_request = create_merge_request('conflict-resolvable')
+      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a large file' do
+      merge_request = create_merge_request('conflict-too-large')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a binary file' do
+      merge_request = create_merge_request('conflict-binary-file')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file with ambiguous conflict markers' do
+      merge_request = create_merge_request('conflict-contains-conflict-markers')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
+      merge_request = create_merge_request('conflict-missing-side')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a truthy value when the conflicts are resolvable in the UI' do
+      merge_request = create_merge_request('conflict-resolvable')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
     end
   end
 end

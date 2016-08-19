@@ -193,7 +193,11 @@ describe "Pipelines" do
     end
 
     context 'playing manual build' do
-      before { click_link('Play') }
+      before do
+        within '.pipeline-holder' do
+          click_link('Play')
+        end
+      end
 
       it { expect(@manual.reload).to be_pending }
     end

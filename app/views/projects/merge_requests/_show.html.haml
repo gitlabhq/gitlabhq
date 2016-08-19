@@ -1,6 +1,8 @@
 - page_title           "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
 - page_description     @merge_request.description
 - page_card_attributes @merge_request.card_attributes
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('diff_notes/diff_notes_bundle.js')
 
 - if diff_view == :parallel
   - fluid_layout true
@@ -45,24 +47,38 @@
     - if @commits_count.nonzero?
       %ul.merge-request-tabs.nav-links.no-top.no-bottom
         %li.notes-tab
-          = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#notes', action: 'notes', toggle: 'tab'} do
+          = link_to namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#notes', action: 'notes', toggle: 'tab' } do
             Discussion
             %span.badge= @merge_request.mr_and_commit_notes.user.count
         %li.commits-tab
-          = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
+          = link_to commits_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
             Commits
             %span.badge= @commits_count
         - if @pipeline
+          %li.pipelines-tab
+            = link_to pipelines_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
+              Pipelines
+              %span.badge= @merge_request.all_pipelines.size
           %li.builds-tab
-            = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: '#builds', action: 'builds', toggle: 'tab'} do
+            = link_to builds_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: '#builds', action: 'builds', toggle: 'tab' } do
               Builds
               %span.badge= @statuses.size
         %li.diffs-tab
-          = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
+          = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
             Changes
             %span.badge= @merge_request.diff_size
+        %li#resolve-count-app.line-resolve-all-container.pull-right.prepend-top-10.hidden-xs{ "v-cloak" => true }
+          %resolve-count{ "inline-template" => true, ":logged-out" => "#{current_user.nil?}"  }
+            .line-resolve-all{ "v-show" => "discussionCount > 0",
+              ":class" => "{ 'has-next-btn': !loggedOut && resolvedDiscussionCount !== discussionCount }" }
+              %span.line-resolve-btn.is-disabled{ type: "button",
+                  ":class" => "{ 'is-active': resolvedDiscussionCount === discussionCount }" }
+                = render "shared/icons/icon_status_success.svg"
+              %span.line-resolve-text
+                {{ resolvedDiscussionCount }}/{{ discussionCount }} {{ discussionCount | pluralize 'discussion' }} resolved
+            = render "discussions/jump_to_next"
 
-      .tab-content
+      .tab-content#diff-notes-app
         #notes.notes.tab-pane.voting_notes
           .content-block.content-block-small.oneline-block
             = render 'award_emoji/awards_block', awardable: @merge_request, inline: true
@@ -75,6 +91,8 @@
         #commits.commits.tab-pane
           - # This tab is always loaded via AJAX
         #builds.builds.tab-pane
+          - # This tab is always loaded via AJAX
+        #pipelines.pipelines.tab-pane
           - # This tab is always loaded via AJAX
         #diffs.diffs.tab-pane
           - # This tab is always loaded via AJAX

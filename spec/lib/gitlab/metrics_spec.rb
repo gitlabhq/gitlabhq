@@ -153,4 +153,28 @@ describe Gitlab::Metrics do
       expect(described_class.series_prefix).to be_an_instance_of(String)
     end
   end
+
+  describe '.add_event' do
+    context 'without a transaction' do
+      it 'does nothing' do
+        expect_any_instance_of(Gitlab::Metrics::Transaction).
+          not_to receive(:add_event)
+
+        Gitlab::Metrics.add_event(:meow)
+      end
+    end
+
+    context 'with a transaction' do
+      it 'adds an event' do
+        transaction = Gitlab::Metrics::Transaction.new
+
+        expect(transaction).to receive(:add_event).with(:meow)
+
+        expect(Gitlab::Metrics).to receive(:current_transaction).
+          and_return(transaction)
+
+        Gitlab::Metrics.add_event(:meow)
+      end
+    end
+  end
 end

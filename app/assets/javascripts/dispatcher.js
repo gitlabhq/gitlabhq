@@ -88,6 +88,8 @@
           new ZenMode();
           new MergedButtons();
           break;
+        case "projects:merge_requests:conflicts":
+          window.mcui = new MergeConflictResolver()
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
           Issuable.init();
@@ -194,6 +196,9 @@
                 case 'edit':
                   new Labels();
               }
+            case 'abuse_reports':
+              new gl.AbuseReports();
+              break;
           }
           break;
         case 'dashboard':

@@ -42,7 +42,7 @@
     - if can_add_template?(issuable)
       %p.help-block
         Add
-        = link_to "issuable templates", help_page_path('workflow/description_templates')
+        = link_to "description templates", help_page_path('user/project/description_templates')
         to help your contributors communicate effectively!
 
 .form-group.detail-page-description
@@ -52,8 +52,9 @@
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'note-textarea',
-                               placeholder: "Write a comment or drag your files here..."
-      = render 'projects/notes/hints'
+                               placeholder: "Write a comment or drag your files here...",
+                               supports_slash_commands: !issuable.persisted?
+      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
       .clearfix
       .error-alert
 

@@ -26,6 +26,7 @@ following locations:
 - [Open source license templates](licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)

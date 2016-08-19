@@ -97,5 +97,14 @@ describe PageLayoutHelper do
         expect(tags).to include %q(<meta property="twitter:data1" content="bar" />)
       end
     end
+
+    it 'escapes content' do
+      allow(helper).to receive(:page_card_attributes)
+        .and_return(foo: %q{foo" http-equiv="refresh}.html_safe)
+
+      tags = helper.page_card_meta_tags
+
+      expect(tags).to include(%q{content="foo&quot; http-equiv=&quot;refresh"})
+    end
   end
 end

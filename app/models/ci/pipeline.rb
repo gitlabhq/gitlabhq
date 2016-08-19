@@ -82,6 +82,10 @@ module Ci
       where.not(duration: nil).sum(:duration)
     end
 
+    def stages_with_latest_statuses
+      statuses.latest.order(:stage_idx).group_by(&:stage)
+    end
+
     def project_id
       project.id
     end
