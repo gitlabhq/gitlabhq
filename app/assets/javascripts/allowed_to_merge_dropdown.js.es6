@@ -30,14 +30,15 @@
     getActiveIds() {
       let selected = [];
 
-      this.$wrap.find('input[name^="protected_branch[merge_access_levels_attributes]"]')
-                        .map((i, el) => {
-                          const $el = $(el);
-                          selected.push({
-                            id: parseInt($el.val()),
-                            type: $el.data('type')
-                          });
-                        });
+      this.$wrap
+          .find('input[name^="protected_branch[merge_access_levels_attributes]"]')
+          .map((i, el) => {
+            const $el = $(el);
+            selected.push({
+              id: parseInt($el.val()),
+              type: $el.data('type')
+            });
+          });
 
       return selected;
     }
