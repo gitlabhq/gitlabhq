@@ -30,6 +30,7 @@ module Gitlab
         signup_enabled: Settings.gitlab['signup_enabled'],
         signin_enabled: Settings.gitlab['signin_enabled'],
         gravatar_enabled: Settings.gravatar['enabled'],
+        koding_enabled: false,
         sign_in_text: nil,
         after_sign_up_text: nil,
         help_page_text: nil,

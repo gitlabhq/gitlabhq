@@ -90,6 +90,8 @@ ActiveRecord::Schema.define(version: 20160818205718) do
     t.string   "enabled_git_access_protocol"
     t.boolean  "domain_blacklist_enabled",              default: false
     t.text     "domain_blacklist"
+    t.boolean  "koding_enabled"
+    t.string   "koding_url"
   end
 
   create_table "audit_events", force: :cascade do |t|
