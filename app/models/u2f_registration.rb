@@ -3,18 +3,19 @@
 class U2fRegistration < ActiveRecord::Base
   belongs_to :user
 
-  def self.register(user, app_id, json_response, challenges)
+  def self.register(user, app_id, params, challenges)
     u2f = U2F::U2F.new(app_id)
     registration = self.new
 
     begin
-      response = U2F::RegisterResponse.load_from_json(json_response)
+      response = U2F::RegisterResponse.load_from_json(params[:device_response])
       registration_data = u2f.register!(challenges, response)
       registration.update(certificate: registration_data.certificate,
                           key_handle: registration_data.key_handle,
                           public_key: registration_data.public_key,
                           counter: registration_data.counter,
-                          user: user)
+                          user: user,
+                          name: params[:name])
     rescue JSON::ParserError, NoMethodError, ArgumentError
       registration.errors.add(:base, 'Your U2F device did not send a valid JSON response.')
     rescue U2F::Error => e

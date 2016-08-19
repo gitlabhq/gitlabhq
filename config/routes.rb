@@ -252,7 +252,11 @@ Rails.application.routes.draw do
     resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
-    resources :spam_logs, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy] do
+      member do
+        post :mark_as_ham
+      end
+    end
 
     resources :applications
 
@@ -371,6 +375,8 @@ Rails.application.routes.draw do
           patch :skip
         end
       end
+
+      resources :u2f_registrations, only: [:destroy]
     end
   end
 
@@ -523,6 +529,11 @@ Rails.application.routes.draw do
         get '/edit/*id', to: 'blob#edit', constraints: { id: /.+/ }, as: 'edit_blob'
         put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
         post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
+
+        #
+        # Templates
+        #
+        get '/templates/:template_type/:key' => 'templates#show', as: :template
 
         scope do
           get(
@@ -718,7 +729,9 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :diffs
+            get :conflicts
             get :builds
+            get :pipelines
             get :merge_check
             post :merge
             post :cancel_merge_when_build_succeeds
@@ -727,6 +740,7 @@ Rails.application.routes.draw do
             post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
+            post :resolve_conflicts
           end
 
           collection do
@@ -734,6 +748,13 @@ Rails.application.routes.draw do
             get :branch_to
             get :update_branches
             get :diff_for_path
+          end
+
+          resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
           end
         end
 
@@ -813,6 +834,7 @@ Rails.application.routes.draw do
           member do
             post :toggle_subscription
             post :toggle_award_emoji
+            post :mark_as_spam
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
@@ -843,6 +865,22 @@ Rails.application.routes.draw do
           member do
             post :toggle_award_emoji
             delete :delete_attachment
+            post :resolve
+            delete :resolve, action: :unresolve
+          end
+        end
+
+        resource :board, only: [:show] do
+          scope module: :boards do
+            resources :issues, only: [:update]
+
+            resources :lists, only: [:index, :create, :update, :destroy] do
+              collection do
+                post :generate
+              end
+
+              resources :issues, only: [:index]
+            end
           end
         end
 
@@ -869,7 +907,10 @@ Rails.application.routes.draw do
         resources :badges, only: [:index] do
           collection do
             scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
-              get :build, constraints: { format: /svg/ }
+              constraints format: /svg/ do
+                get :build
+                get :coverage
+              end
             end
           end
         end

@@ -5,8 +5,17 @@
       = link_to user_path(discussion.author) do
         = image_tag avatar_icon(discussion.author), class: "avatar s40"
     .timeline-content
-      .discussion.js-toggle-container{ class: discussion.id }
+      .discussion.js-toggle-container{ class: discussion.id, data: { discussion_id: discussion.id } }
         .discussion-header
+          .discussion-actions
+            = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
+              - if expanded
+                = icon("chevron-up")
+              - else
+                = icon("chevron-down")
+
+              Toggle discussion
+
           = link_to_member(@project, discussion.author, avatar: false)
 
           .inline.discussion-headline-light
@@ -29,17 +38,11 @@
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
 
-          .discussion-actions
-            = link_to "#", class: "note-action-button discussion-toggle-button js-toggle-button" do
-              - if expanded
-                = icon("chevron-up")
-              - else
-                = icon("chevron-down")
-
-              Toggle discussion
+          = render "discussions/headline", discussion: discussion
 
         .discussion-body.js-toggle-content{ class: ("hide" unless expanded) }
           - if discussion.diff_discussion? && discussion.diff_file
             = render "discussions/diff_with_notes", discussion: discussion
           - else
-            = render "discussions/notes", discussion: discussion
+            .panel.panel-default
+              = render "discussions/notes", discussion: discussion

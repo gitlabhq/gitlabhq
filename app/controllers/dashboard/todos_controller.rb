@@ -6,7 +6,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def destroy
-    TodoService.new.mark_todos_as_done([todo], current_user)
+    TodoService.new.mark_todos_as_done_by_ids([params[:id]], current_user)
 
     respond_to do |format|
       format.html { redirect_to dashboard_todos_path, notice: 'Todo was successfully marked as done.' }
@@ -26,10 +26,6 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   private
-
-  def todo
-    @todo ||= find_todos.find(params[:id])
-  end
 
   def find_todos
     @todos ||= TodosFinder.new(current_user, params).execute

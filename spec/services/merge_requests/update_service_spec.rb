@@ -226,6 +226,11 @@ describe MergeRequests::UpdateService, services: true do
       end
     end
 
+    context 'updating mentions' do
+      let(:mentionable) { merge_request }
+      include_examples 'updating mentions', MergeRequests::UpdateService
+    end
+
     context 'when MergeRequest has tasks' do
       before { update_merge_request({ description: "- [ ] Task 1\n- [ ] Task 2" }) }
 

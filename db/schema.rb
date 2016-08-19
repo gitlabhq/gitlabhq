@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160810142633) do
+ActiveRecord::Schema.define(version: 20160817154936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -116,6 +116,14 @@ ActiveRecord::Schema.define(version: 20160810142633) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
   add_index "award_emoji", ["user_id"], name: "index_award_emoji_on_user_id", using: :btree
+
+  create_table "boards", force: :cascade do |t|
+    t.integer  "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "boards", ["project_id"], name: "index_boards_on_project_id", using: :btree
 
   create_table "broadcast_messages", force: :cascade do |t|
     t.text     "message",    null: false
@@ -534,6 +542,19 @@ ActiveRecord::Schema.define(version: 20160810142633) do
 
   add_index "lfs_objects_projects", ["project_id"], name: "index_lfs_objects_projects_on_project_id", using: :btree
 
+  create_table "lists", force: :cascade do |t|
+    t.integer  "board_id",               null: false
+    t.integer  "label_id"
+    t.integer  "list_type",  default: 1, null: false
+    t.integer  "position"
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
+  add_index "lists", ["board_id"], name: "index_lists_on_board_id", using: :btree
+  add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
+
   create_table "members", force: :cascade do |t|
     t.integer  "access_level",       null: false
     t.integer  "source_id",          null: false
@@ -590,13 +611,13 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.datetime "locked_at"
     t.integer  "updated_by_id"
     t.string   "merge_error"
-    t.text     "merge_params"
     t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.integer  "lock_version",                 default: 0,     null: false
     t.string   "in_progress_merge_commit_sha"
+    t.text     "merge_params"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -665,12 +686,16 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",            default: false, null: false
+    t.boolean  "system",                 default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
     t.string   "type"
     t.text     "position"
     t.text     "original_position"
+    t.datetime "resolved_at"
+    t.integer  "resolved_by_id"
+    t.string   "discussion_id"
+    t.string   "original_discussion_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -899,6 +924,7 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.string   "category",              default: "common", null: false
     t.boolean  "default",               default: false
     t.boolean  "wiki_page_events",      default: true
+    t.boolean  "pipeline_events",       default: false,    null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -928,12 +954,12 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.string   "source_ip"
     t.string   "user_agent"
     t.boolean  "via_api"
-    t.integer  "project_id"
     t.string   "noteable_type"
     t.string   "title"
     t.text     "description"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
+    t.boolean  "submitted_as_ham", default: false, null: false
   end
 
   create_table "subscriptions", force: :cascade do |t|
@@ -996,10 +1022,21 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.integer  "user_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.string   "name"
   end
 
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
+
+  create_table "user_agent_details", force: :cascade do |t|
+    t.string   "user_agent",   null: false
+    t.string   "ip_address",   null: false
+    t.integer  "subject_id",   null: false
+    t.string   "subject_type", null: false
+    t.boolean  "submitted",    default: false, null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                       default: "",    null: false
@@ -1102,10 +1139,14 @@ ActiveRecord::Schema.define(version: 20160810142633) do
     t.boolean  "build_events",                         default: false,         null: false
     t.boolean  "wiki_page_events",                     default: false,         null: false
     t.string   "token"
+    t.boolean  "pipeline_events",                      default: false,         null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
+  add_foreign_key "boards", "projects"
+  add_foreign_key "lists", "boards"
+  add_foreign_key "lists", "labels"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"

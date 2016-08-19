@@ -68,6 +68,7 @@
       $(document).on("click", ".note-edit-cancel", this.cancelEdit);
       $(document).on("click", ".js-comment-button", this.updateCloseButton);
       $(document).on("keyup input", ".js-note-text", this.updateTargetButtons);
+      $(document).on('click', '.js-comment-resolve-button', this.resolveDiscussion);
       $(document).on("click", ".js-note-delete", this.removeNote);
       $(document).on("click", ".js-note-attachment-delete", this.removeAttachment);
       $(document).on("ajax:complete", ".js-main-target-form", this.reenableTargetFormSubmitButton);
@@ -100,6 +101,7 @@
       $(document).off("click", ".js-note-target-close");
       $(document).off("click", ".js-note-discard");
       $(document).off("keydown", ".js-note-text");
+      $(document).off('click', '.js-comment-resolve-button');
       $('.note .js-task-list-container').taskList('disable');
       return $(document).off('tasklist:changed', '.note .js-task-list-container');
     };
@@ -201,7 +203,7 @@
     Increase @pollingInterval up to 120 seconds on every function call,
     if `shouldReset` has a truthy value, 'null' or 'undefined' the variable
     will reset to @basePollingInterval.
-    
+
     Note: this function is used to gradually increase the polling interval
     if there aren't new notes coming from the server
      */
@@ -223,7 +225,7 @@
 
     /*
     Render note in main comments area.
-    
+
     Note: for rendering inline notes use renderDiscussionNote
      */
 
@@ -231,7 +233,13 @@
       var $notesList, votesBlock;
       if (!note.valid) {
         if (note.award) {
-          new Flash('You have already awarded this emoji!', 'alert');
+          new Flash('You have already awarded this emoji!', 'alert', this.parentTimeline);
+        }
+        else {
+          if (note.errors.commands_only) {
+            new Flash(note.errors.commands_only, 'notice', this.parentTimeline);
+            this.refresh();
+          }
         }
         return;
       }
@@ -245,6 +253,7 @@
         $notesList.append(note.html).syntaxHighlight();
         gl.utils.localTimeAgo($notesList.find("#note_" + note.id + " .js-timeago"), false);
         this.initTaskList();
+        this.refresh();
         return this.updateNotesCount(1);
       }
     };
@@ -265,7 +274,7 @@
 
     /*
     Render note in discussion area.
-    
+
     Note: for rendering inline notes use renderDiscussionNote
      */
 
@@ -297,6 +306,11 @@
       } else {
         discussionContainer.append(note_html);
       }
+
+      if (typeof DiffNotesApp !== 'undefined') {
+        DiffNotesApp.compileComponents();
+      }
+
       gl.utils.localTimeAgo($('.js-timeago', note_html), false);
       return this.updateNotesCount(1);
     };
@@ -304,7 +318,7 @@
 
     /*
     Called in response the main target form has been successfully submitted.
-    
+
     Removes any errors.
     Resets text and preview.
     Resets buttons.
@@ -329,7 +343,7 @@
 
     /*
     Shows the main form and does some setup on it.
-    
+
     Sets some hidden fields in the form.
      */
 
@@ -343,13 +357,14 @@
       form.find("#note_line_code").remove();
       form.find("#note_position").remove();
       form.find("#note_type").remove();
+      form.find('.js-comment-resolve-button').closest('comment-and-resolve-btn').remove();
       return this.parentTimeline = form.parents('.timeline');
     };
 
 
     /*
     General note form setup.
-    
+
     deactivates the submit button when text is empty
     hides the preview button when text is empty
     setup GFM auto complete
@@ -366,7 +381,7 @@
 
     /*
     Called in response to the new note form being submitted
-    
+
     Adds new note to list.
      */
 
@@ -381,19 +396,33 @@
 
     /*
     Called in response to the new note form being submitted
-    
+
     Adds new note to list.
      */
 
     Notes.prototype.addDiscussionNote = function(xhr, note, status) {
+      var $form = $(xhr.target);
+
+      if ($form.attr('data-resolve-all') != null) {
+        var namespacePath = $form.attr('data-namespace-path'),
+            projectPath = $form.attr('data-project-path')
+            discussionId = $form.attr('data-discussion-id'),
+            mergeRequestId = $form.attr('data-noteable-iid'),
+            namespace = namespacePath + '/' + projectPath;
+
+        if (ResolveService != null) {
+          ResolveService.toggleResolveForDiscussion(namespace, mergeRequestId, discussionId);
+        }
+      }
+
       this.renderDiscussionNote(note);
-      return this.removeDiscussionNoteForm($(xhr.target));
+      this.removeDiscussionNoteForm($form);
     };
 
 
     /*
     Called in response to the edit note form being submitted
-    
+
     Updates the current note field.
      */
 
@@ -404,13 +433,18 @@
       $html.syntaxHighlight();
       $html.find('.js-task-list-container').taskList('enable');
       $note_li = $('.note-row-' + note.id);
-      return $note_li.replaceWith($html);
+
+      $note_li.replaceWith($html);
+
+      if (typeof DiffNotesApp !== 'undefined') {
+        DiffNotesApp.compileComponents();
+      }
     };
 
 
     /*
     Called in response to clicking the edit note link
-    
+
     Replaces the note text with the note edit form
     Adds a data attribute to the form with the original content of the note for cancellations
      */
@@ -450,7 +484,7 @@
 
     /*
     Called in response to clicking the edit note link
-    
+
     Hides edit form and restores the original note text to the editor textarea.
      */
 
@@ -472,7 +506,7 @@
 
     /*
     Called in response to deleting a note of any kind.
-    
+
     Removes the actual note from view.
     Removes the whole discussion if the last note is being removed.
      */
@@ -485,6 +519,15 @@
           var note, notes;
           note = $(el);
           notes = note.closest(".notes");
+
+          if (typeof DiffNotesApp !== "undefined" && DiffNotesApp !== null) {
+            ref = DiffNotesApp.$refs[noteId];
+
+            if (ref) {
+              ref.$destroy(true);
+            }
+          }
+
           if (notes.find(".note").length === 1) {
             notes.closest(".timeline-entry").remove();
             notes.closest("tr").remove();
@@ -498,7 +541,7 @@
 
     /*
     Called in response to clicking the delete attachment link
-    
+
     Removes the attachment wrapper view, including image tag if it exists
     Resets the note editing form
      */
@@ -515,7 +558,7 @@
 
     /*
     Called when clicking on the "reply" button for a diff line.
-    
+
     Shows the note form below the notes.
      */
 
@@ -523,17 +566,19 @@
       var form, replyLink;
       form = this.formClone.clone();
       replyLink = $(e.target).closest(".js-discussion-reply-button");
-      replyLink.hide();
-      replyLink.after(form);
+      replyLink
+        .closest('.discussion-reply-holder')
+        .hide()
+        .after(form);
       return this.setupDiscussionNoteForm(replyLink, form);
     };
 
 
     /*
     Shows the diff or discussion form and does some setup on it.
-    
+
     Sets some hidden fields in the form.
-    
+
     Note: dataHolder must have the "discussionId", "lineCode", "noteableType"
     and "noteableId" data attributes set.
      */
@@ -549,15 +594,29 @@
       form.find("#note_noteable_type").val(dataHolder.data("noteableType"));
       form.find("#note_noteable_id").val(dataHolder.data("noteableId"));
       form.find('.js-note-discard').show().removeClass('js-note-discard').addClass('js-close-discussion-note-form').text(form.find('.js-close-discussion-note-form').data('cancel-text'));
+      form.find('.js-note-target-close').remove();
       this.setupNoteForm(form);
+
+      if (typeof DiffNotesApp !== 'undefined') {
+        var $commentBtn = form.find('comment-and-resolve-btn');
+        $commentBtn
+          .attr(':discussion-id', "'" + dataHolder.data('discussionId') + "'");
+        DiffNotesApp.$compile($commentBtn.get(0));
+      }
+
       form.find(".js-note-text").focus();
-      return form.removeClass('js-main-target-form').addClass("discussion-form js-discussion-note-form");
+      form
+        .find('.js-comment-resolve-button')
+        .attr('data-discussion-id', dataHolder.data('discussionId'));
+      form
+        .removeClass('js-main-target-form')
+        .addClass("discussion-form js-discussion-note-form");
     };
 
 
     /*
     Called when clicking on the "add a comment" button on the side of a diff line.
-    
+
     Inserts a temporary row for the form below the line.
     Sets up the form and shows it.
      */
@@ -570,16 +629,19 @@
       nextRow = row.next();
       hasNotes = nextRow.is(".notes_holder");
       addForm = false;
-      targetContent = ".notes_content";
-      rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"></td></tr>";
+      notesContentSelector = ".notes_content";
+      rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"><div class=\"content\"></div></td></tr>";
       if (this.isParallelView()) {
         lineType = $link.data("lineType");
-        targetContent += "." + lineType;
-        rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\"></td><td class=\"notes_content parallel old\"></td><td class=\"notes_line\"></td><td class=\"notes_content parallel new\"></td></tr>";
+        notesContentSelector += "." + lineType;
+        rowCssToAdd = "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line old\"></td><td class=\"notes_content parallel old\"><div class=\"content\"></div></td><td class=\"notes_line new\"></td><td class=\"notes_content parallel new\"><div class=\"content\"></div></td></tr>";
       }
+      notesContentSelector += " .content";
       if (hasNotes) {
-        notesContent = nextRow.find(targetContent);
+        nextRow.show();
+        notesContent = nextRow.find(notesContentSelector);
         if (notesContent.length) {
+          notesContent.show();
           replyButton = notesContent.find(".js-discussion-reply-button:visible");
           if (replyButton.length) {
             e.target = replyButton[0];
@@ -593,11 +655,13 @@
         }
       } else {
         row.after(rowCssToAdd);
+        nextRow = row.next();
+        notesContent = nextRow.find(notesContentSelector);
         addForm = true;
       }
       if (addForm) {
         newForm = this.formClone.clone();
-        newForm.appendTo(row.next().find(targetContent));
+        newForm.appendTo(notesContent);
         return this.setupDiscussionNoteForm($link, newForm);
       }
     };
@@ -605,7 +669,7 @@
 
     /*
     Called in response to "cancel" on a diff note form.
-    
+
     Shows the reply button again.
     Removes the form and if necessary it's temporary row.
      */
@@ -616,7 +680,9 @@
       glForm = form.data('gl-form');
       glForm.destroy();
       form.find(".js-note-text").data("autosave").reset();
-      form.prev(".js-discussion-reply-button").show();
+      form
+        .prev('.discussion-reply-holder')
+        .show();
       if (row.is(".js-temp-notes-holder")) {
         return row.remove();
       } else {
@@ -634,7 +700,7 @@
 
     /*
     Called after an attachment file has been selected.
-    
+
     Updates the file name for the selected attachment.
      */
 
@@ -723,6 +789,18 @@
 
     Notes.prototype.updateNotesCount = function(updateCount) {
       return this.notesCountBadge.text(parseInt(this.notesCountBadge.text()) + updateCount);
+    };
+
+    Notes.prototype.resolveDiscussion = function () {
+      var $this = $(this),
+          discussionId = $this.attr('data-discussion-id');
+
+      $this
+        .closest('form')
+        .attr('data-discussion-id', discussionId)
+        .attr('data-resolve-all', 'true')
+        .attr('data-namespace-path', $this.attr('data-namespace-path'))
+        .attr('data-project-path', $this.attr('data-project-path'));
     };
 
     return Notes;

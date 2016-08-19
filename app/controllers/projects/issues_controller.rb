@@ -4,6 +4,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
+  include SpammableActions
 
   before_action :redirect_to_external_issue_tracker, only: [:index, :new]
   before_action :module_enabled
@@ -176,15 +177,12 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @issue ||= begin
-                 @project.issues.find_by!(iid: params[:id])
-               rescue ActiveRecord::RecordNotFound
-                 redirect_old
-               end
+    @noteable = @issue ||= @project.issues.find_by(iid: params[:id]) || redirect_old
   end
   alias_method :subscribable_resource, :issue
   alias_method :issuable, :issue
   alias_method :awardable, :issue
+  alias_method :spammable, :issue
 
   def authorize_read_issue!
     return render_404 unless can?(current_user, :read_issue, @issue)
@@ -224,7 +222,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
     if issue
       redirect_to issue_path(issue)
-      return
     else
       raise ActiveRecord::RecordNotFound.new
     end

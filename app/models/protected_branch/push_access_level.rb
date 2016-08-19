@@ -1,4 +1,6 @@
 class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
+  include ProtectedBranchAccess
+
   belongs_to :protected_branch
   delegate :project, to: :protected_branch
 
@@ -19,9 +21,5 @@ class ProtectedBranch::PushAccessLevel < ActiveRecord::Base
     return true if user.is_admin?
 
     project.team.max_member_access(user.id) >= access_level
-  end
-
-  def humanize
-    self.class.human_access_levels[self.access_level]
   end
 end

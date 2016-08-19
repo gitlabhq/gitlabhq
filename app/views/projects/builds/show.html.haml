@@ -5,26 +5,6 @@
 .build-page
   = render "header"
 
-  - builds = @build.pipeline.builds.latest.to_a
-  - if builds.size > 1
-    %ul.nav-links.no-top.no-bottom
-      - builds.each do |build|
-        %li{class: ('active' if build == @build) }
-          = link_to namespace_project_build_path(@project.namespace, @project, build) do
-            = ci_icon_for_status(build.status)
-            %span
-              - if build.name
-                = build.name
-              - else
-                = build.id
-
-      - if @build.retried?
-        %li.active
-          %a
-            Build ##{@build.id}
-            &middot;
-            %i.fa.fa-warning
-            This build was retried.
   - if @build.stuck?
     - unless @build.any_runners_online?
       .bs-callout.bs-callout-warning
@@ -67,4 +47,10 @@
 = render "sidebar"
 
 :javascript
-  new Build("#{namespace_project_build_url(@project.namespace, @project, @build)}", "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}", "#{@build.status}", "#{trace_with_state[:state]}")
+  new Build({
+    page_url: "#{namespace_project_build_url(@project.namespace, @project, @build)}",
+    build_url: "#{namespace_project_build_url(@project.namespace, @project, @build, :json)}",
+    build_status: "#{@build.status}",
+    build_stage: "#{@build.stage}",
+    state1: "#{trace_with_state[:state]}"
+  })

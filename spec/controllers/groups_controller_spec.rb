@@ -89,12 +89,13 @@ describe GroupsController do
 
     context 'as the group owner' do
       before do
-        Sidekiq::Testing.fake!
         sign_in(user)
       end
 
       it 'schedules a group destroy' do
-        expect { delete :destroy, id: group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
+        Sidekiq::Testing.fake! do
+          expect { delete :destroy, id: group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
+        end
       end
 
       it 'redirects to the root path' do

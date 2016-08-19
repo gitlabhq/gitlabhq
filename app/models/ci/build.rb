@@ -97,7 +97,7 @@ module Ci
     end
 
     def playable?
-      project.builds_enabled? && commands.present? && manual?
+      project.builds_enabled? && commands.present? && manual? && skipped?
     end
 
     def play(current_user = nil)
@@ -344,7 +344,7 @@ module Ci
 
     def execute_hooks
       return unless project
-      build_data = Gitlab::BuildDataBuilder.build(self)
+      build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :build_hooks)
       project.execute_services(build_data.dup, :build_hooks)
       project.running_or_pending_build_count(force: true)

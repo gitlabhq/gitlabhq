@@ -1,0 +1,40 @@
+{
+  "type": "object",
+  "required" : [
+    "iid",
+    "title",
+    "confidential"
+  ],
+  "properties" : {
+    "iid": { "type": "integer" },
+    "title": { "type": "string" },
+    "confidential": { "type": "boolean" },
+    "labels": {
+      "type": ["array"],
+      "required": [
+        "id",
+        "color",
+        "description",
+        "title",
+        "priority"
+      ],
+      "properties": {
+        "id": { "type": "integer" },
+        "color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{3}{1,2}+$"
+        },
+        "description": { "type": ["string", "null"] },
+        "title": { "type": "string" },
+        "priority": { "type": ["integer", "null"] }
+      }
+    },
+    "assignee": {
+      "id": { "type": "integet" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "avatar_url": { "type": "uri" }
+    }
+  },
+  "additionalProperties": false
+}

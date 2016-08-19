@@ -15,11 +15,14 @@ repository and maintained by GitLab UX designers.
 ## Navigation
 
 GitLab's layout contains 2 sections: the left sidebar and the content. The left sidebar contains a static navigation menu.
-This menu will be visible regardless of what page you visit. The left sidebar also contains the GitLab logo
-and the current user's profile picture. The content section contains a header and the content itself.
-The header describes the current GitLab page and what navigation is
-available to user in this area. Depending on the area (project, group, profile setting) the header name and navigation may change. For example when user visits one of the
-project pages the header will contain a project name and navigation for that project. When the user visits a group page it will contain a group name and navigation related to this group.
+This menu will be visible regardless of what page you visit.
+The content section contains a header and the content itself. The header describes the current GitLab page and what navigation is
+available to the user in this area. Depending on the area (project, group, profile setting) the header name and navigation may change. For example, when the user visits one of the
+project pages the header will contain the project's name and navigation for that project. When the user visits a group page it will contain the group's name and navigation related to this group.
+
+You can see a visual representation of the navigation in GitLab in the GitLab Product Map, which is located in the [Design Repository](gitlab-map-graffle)
+along with [PDF](gitlab-map-pdf) and [PNG](gitlab-map-png) exports.
+
 
 ### Adding new tab to header navigation
 
@@ -99,3 +102,6 @@ Do not use both green and blue button in one form.
   display counts in the UI.
 
 [number_with_delimiter]: http://api.rubyonrails.org/classes/ActionView/Helpers/NumberHelper.html#method-i-number_with_delimiter
+[gitlab-map-graffle]: https://gitlab.com/gitlab-org/gitlab-design/blob/master/production/resources/gitlab-map.graffle
+[gitlab-map-pdf]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.pdf
+[gitlab-map-png]: https://gitlab.com/gitlab-org/gitlab-design/raw/master/production/resources/gitlab-map.png
