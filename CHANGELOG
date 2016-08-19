@@ -1,6 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
