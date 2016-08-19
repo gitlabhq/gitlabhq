@@ -1094,8 +1094,11 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def pipeline_for(ref, sha = commit(ref).try(:sha))
+  def pipeline_for(ref, sha = nil)
+    sha ||= commit(ref).try(:sha)
+
     return unless sha
+
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
