@@ -20,6 +20,9 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
+        case 'projects:boards:show':
+          shortcut_handler = new ShortcutsNavigation();
+          break;
         case 'projects:issues:index':
           Issuable.init();
           new IssuableBulkActions();
