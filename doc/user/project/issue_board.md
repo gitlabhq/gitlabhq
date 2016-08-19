@@ -140,6 +140,11 @@ drag it over to the next list, 'Backend', where a backend developer can
 eventually pick it up. Once they’re done, they move it to **Done**, to close the
 issue.
 
+This process can be seen clearly when visiting an issue since with every move
+to another list the label changes and a system not is recorded.
+
+![Issue Board system notes](img/issue_board_system_notes.png)
+
 ## Permissions
 
 [Developers and up](../permissions.md) can use all the functionality of the
