@@ -25,12 +25,8 @@
       delay: gl.issueBoards.touchEnabled ? 100 : 0,
       scrollSensitivity: gl.issueBoards.touchEnabled ? 60 : 100,
       scrollSpeed: 20,
-      onStart () {
-        document.body.classList.add('is-dragging');
-      },
-      onEnd () {
-        document.body.classList.remove('is-dragging');
-      }
+      onStart: gl.issueBoards.onStart,
+      onEnd: gl.issueBoards.onEnd
     }
 
     Object.keys(obj).forEach((key) => { defaultSortOptions[key] = obj[key]; });
