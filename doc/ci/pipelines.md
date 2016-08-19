@@ -67,6 +67,8 @@ use following Markdown code to embed the est coverage report into `README.md`:
 ![coverage](http://gitlab.com/gitlab-org/gitlab-ce/badges/master/coverage.svg?job=coverage)
 ```
 
+The latest successful pipeline will be used to read the test coverage value.
+
 [builds]: #builds
 [jobs]: yaml/README.md#jobs
 [stages]: yaml/README.md#stages
