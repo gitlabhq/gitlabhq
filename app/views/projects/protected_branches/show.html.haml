@@ -6,10 +6,6 @@
       = @protected_branch.name
 
   .col-lg-9.edit_protected_branch
-    = render 'access_settings'
-
-    %hr
-
     %h5 Matching Branches
     - if @matching_branches.present?
       .table-responsive
@@ -27,6 +23,3 @@
     - else
       %p.settings-message.text-center
         Couldn't find any matching branches.
-
-:javascript
-  new ProtectedBranchesAccessSelect($(".edit_protected_branch"), true);
