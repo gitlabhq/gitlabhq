@@ -256,7 +256,7 @@ describe Ci::ProcessPipelineService, services: true do
           expect(builds.pluck(:name))
             .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
 
-          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2'))
+          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2')).success
 
           expect(builds.pluck(:name)).to contain_exactly(
             'build:1', 'build:2', 'test:1', 'test:2', 'test:2', 'deploy:1', 'deploy:2')
