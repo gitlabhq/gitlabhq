@@ -68,12 +68,12 @@ form.edit-issue {
   }
 
   &.closed {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 
   &.merged {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 }

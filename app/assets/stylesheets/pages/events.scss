@@ -60,7 +60,7 @@
 
       pre {
         border: none;
-        background: #f9f9f9;
+        background: $gray-light;
         border-radius: 0;
         color: #777;
         margin: 0 20px;
@@ -92,7 +92,7 @@
     border: 1px solid #eee;
     padding: 5px;
     @include border-radius(5px);
-    background: #f9f9f9;
+    background: $gray-light;
     margin-left: 10px;
     top: -6px;
     img {

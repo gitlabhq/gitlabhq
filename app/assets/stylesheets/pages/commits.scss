@@ -113,10 +113,10 @@
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid #eee;
+    border-left: 1px solid $btn-gray-hover;
     padding: 10px 15px;
     margin: 10px 0;
-    background: #f9f9f9;
+    background: $gray-light;
     display: none;
 
     pre {
