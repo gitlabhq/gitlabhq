@@ -8,6 +8,7 @@ v 8.11.0 (unreleased)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
+  - Fix adding line comments on the initial commit to a repo !5900
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
   - Update to Ruby 2.3.1. !4948
