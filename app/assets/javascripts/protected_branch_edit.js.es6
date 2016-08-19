@@ -19,8 +19,8 @@
       this.$allowedToMergeDropdown = this.$wrap.find('.js-allowed-to-merge');
       this.$allowedToPushDropdown = this.$wrap.find('.js-allowed-to-push');
 
-      this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.parents().eq(1);
-      this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.parents().eq(1);
+      this.$wraps[ACCESS_LEVELS.MERGE] = this.$allowedToMergeDropdown.closest(`.${ACCESS_LEVELS.MERGE}-container`);
+      this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.closest(`.${ACCESS_LEVELS.PUSH}-container`);
 
       this.buildDropdowns();
 

@@ -9,7 +9,7 @@
       this.accessLevel = accessLevel;
       this.accessLevelsData = accessLevelsData;
       this.$dropdown = $dropdown;
-      this.$wrap = this.$dropdown.parents().eq(1); // TODO: Find a better way to get the wrap element
+      this.$wrap = this.$dropdown.closest(`.${this.accessLevel}-container`);
       this.usersPath = '/autocomplete/users.json';
       this.inputCount = 0;
       this.defaultLabel = this.$dropdown.data('defaultLabel');
