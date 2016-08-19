@@ -21,7 +21,12 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    @group.add_users(
+      params[:user_ids].split(','),
+      params[:access_level],
+      current_user: current_user,
+      expires_at: params[:expires_at]
+    )
 
     redirect_to group_group_members_path(@group), notice: 'Users were successfully added.'
   end
@@ -63,7 +68,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   protected
 
   def member_params
-    params.require(:group_member).permit(:access_level, :user_id)
+    params.require(:group_member).permit(:access_level, :user_id, :expires_at)
   end
 
   # MembershipActions concern

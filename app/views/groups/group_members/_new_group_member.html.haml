@@ -14,5 +14,14 @@
         Read more about role permissions
         %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
+  .form-group
+    = f.label :expires_at, 'Access expiration date', class: 'control-label'
+    .col-sm-10
+      .clearable-input
+        = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
+        %i.clear-icon.js-clear-input
+      .help-block
+        On this date, the user(s) will automatically lose access to this group and all of its projects.
+
   .form-actions
     = f.submit 'Add users to group', class: "btn btn-create"

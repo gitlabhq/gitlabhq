@@ -5,9 +5,6 @@
         return $(this).fadeOut();
       });
     }
-
     return ProjectMembers;
-
   })();
-
 }).call(this);
