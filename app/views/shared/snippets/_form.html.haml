@@ -1,3 +1,7 @@
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/ace.js')
+  = page_specific_javascript_tag('snippet/snippet_bundle.js')
+
 .snippet-form-holder
   = form_for @snippet, url: url, html: { class: "form-horizontal snippet-form js-requires-input" } do |f|
     = form_errors(@snippet)
@@ -31,8 +35,3 @@
       - else
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
 
-:javascript
-  var editor = ace.edit("editor");
-  $(".snippet-form-holder form").submit(function(){
-    $(".snippet-file-content").val(editor.getValue());
-  });
