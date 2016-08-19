@@ -107,7 +107,6 @@ For installations from source:
       # encryption: 'AES256'
 ```
 
-
 If you are uploading your backups to S3 you will probably want to create a new
 IAM user with restricted access rights. To give the upload user access only for
 uploading backups create the following IAM profile, replacing `my.s3.bucket`
