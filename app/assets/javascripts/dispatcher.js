@@ -126,12 +126,12 @@
           new NotificationsDropdown();
           break;
         case 'groups:group_members:index':
-          new MemberExpirationDate();
+          new gl.MemberExpirationDate();
           new GroupMembers();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
-          new MemberExpirationDate();
+          new gl.MemberExpirationDate();
           new ProjectMembers();
           new UsersSelect();
           break;
@@ -173,7 +173,7 @@
           new BuildArtifacts();
           break;
         case 'projects:group_links:index':
-          new MemberExpirationDate();
+          new gl.MemberExpirationDate();
           new GroupsSelect();
           break;
         case 'search:show':

@@ -4,14 +4,14 @@
   // `js-clear-input` element, then show that element when there is a value in the
   // datepicker, and make clicking on that element clear the field.
   //
-  this.MemberExpirationDate = function() {
+  gl.MemberExpirationDate = function() {
     $('.js-access-expiration-date').each(function(i, element) {
       var expirationDateInput = $(element);
 
       if (expirationDateInput.hasClass('hasDatepicker')) { return; }
 
       function toggleClearInput() {
-        expirationDateInput.parent().toggleClass('has-value', !!expirationDateInput.val());
+        expirationDateInput.closest('.clearable-input').toggleClass('has-value', expirationDateInput.val() !== '');
       }
 
       expirationDateInput.datepicker({
