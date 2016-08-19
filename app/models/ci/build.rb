@@ -420,7 +420,11 @@ module Ci
     private
 
     def update_artifacts_size
-      ArtifactsSizeWorker.perform_async(id)
+      self.artifacts_size = if artifacts_file.exists?
+                              artifacts_file.size
+                            else
+                              nil
+                            end
     end
 
     def erase_trace!
