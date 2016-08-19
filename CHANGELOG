@@ -107,6 +107,7 @@ v 8.11.0 (unreleased)
   - Fix search for notes which belongs to deleted objects
   - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
+  - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Improve OAuth2 client documentation (muteor)

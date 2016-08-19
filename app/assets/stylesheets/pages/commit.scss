@@ -66,6 +66,26 @@
       margin-left: 8px;
     }
   }
+
+  .ci-status-link {
+    margin-left: 2px;
+
+    svg {
+      vertical-align: middle;
+    }
+
+    .ci-status-label {
+      display: inline-block;
+    }
+
+    &:hover {
+      text-decoration: none;
+
+      .ci-status-label {
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 .ci-status-link {
