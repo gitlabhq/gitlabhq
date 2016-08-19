@@ -8,24 +8,29 @@
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
     %h4.prepend-top-0
-      Private Token
+      Private Tokens
     %p
-      Your private token is used to access application resources without authentication.
+      Your private token is used to access the API and Atom feeds without
+      username/password authentication.
+    %p
+      Your incoming email token is used to create new issues by email, and is
+      included in your project-specific email addresses.
   .col-lg-9
-    = form_for @user, url: reset_private_token_profile_path, method: :put, html: { class: "private-token" } do |f|
-      %p.cgray
-        - if current_user.private_token
-          = label_tag "token", "Private token", class: "label-light"
-          = text_field_tag "token", current_user.private_token, class: "form-control"
-        - else
-          %span You don`t have one yet. Click generate to fix it.
+    %p.cgray
+      - if current_user.private_token
+        = label_tag "token", "Private token", class: "label-light"
+        = text_field_tag "token", current_user.private_token, class: "form-control"
+      - else
+        %span You don`t have one yet. Click generate to fix it.
       %p.help-block
-        It can be used for atom feeds or the API. Keep it secret!
-      .prepend-top-default
-        - if current_user.private_token
-          = f.submit 'Reset private token', data: { confirm: "Are you sure?" }, class: "btn btn-default"
-        - else
-          = f.submit 'Generate', class: "btn btn-default"
+        Keep this token secret, anyone with access to it can interact with the GitLab API as if they were you.
+    .prepend-top-default
+      - if current_user.private_token
+        = link_to 'Reset private token', reset_private_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default"
+      - else
+        = f.submit 'Generate', class: "btn btn-default"
+      = link_to 'Reset incoming email token', reset_incoming_email_token_profile_path, method: :put, data: { confirm: "Are you sure?" }, class: "btn btn-default"
+
 %hr
 .row.prepend-top-default
   .col-lg-3.profile-settings-sidebar
