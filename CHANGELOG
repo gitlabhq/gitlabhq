@@ -18,7 +18,7 @@ v 8.11.0 (unreleased)
   - API: Endpoints for enabling and disabling deploy keys
   - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
   - Use long options for curl examples in documentation !5703 (winniehell)
-	- Added tooltip listing label names to the labels value in the collapsed issuable sidebar
+  - Added tooltip listing label names to the labels value in the collapsed issuable sidebar
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - Fix badge count alignment (ClemMakesApps)
   - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository

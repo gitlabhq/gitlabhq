@@ -5,7 +5,7 @@
       Edit
   .selectbox.hide-collapsed{ style: "display: none;" }
     .dropdown
-      %button.dropdown-menu-toggle.js-label-select.js-multiselect{"data-ability-name" => "issue", "data-field-name" => "issue[label_names][]", "data-issue-update" => "/root/test/issues/2.json", "data-labels" => "/root/test/labels.json", "data-project-id" => "12", "data-show-any" => "true", "data-show-no" => "true", "data-toggle" => "dropdown", :type => "button"}
+      %button.dropdown-menu-toggle.js-label-select.js-multiselect{ type: "button", data: { ability_name: "issue", field_name: "issue[label_names][]", issue_update: "/root/test/issues/2.json", labels: "/root/test/labels.json", project_id: "12", show_any: "true", show_no: "true", toggle: "dropdown" } }
         %span.dropdown-toggle-text
           Label
         %i.fa.fa-chevron-down
