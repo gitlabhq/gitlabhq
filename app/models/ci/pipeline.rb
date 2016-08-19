@@ -140,6 +140,10 @@ module Ci
       end
     end
 
+    def mark_as_processable_after_stage(stage_idx)
+      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
+    end
+
     def latest?
       return false unless ref
       commit = project.commit(ref)

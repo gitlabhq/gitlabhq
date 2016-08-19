@@ -30,6 +30,10 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :skipped] => :pending
     end
 
+    event :process do
+      transition skipped: :created
+    end
+
     event :run do
       transition pending: :running
     end
