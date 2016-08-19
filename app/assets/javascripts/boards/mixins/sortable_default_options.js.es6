@@ -2,6 +2,17 @@
   window.gl = window.gl || {};
   window.gl.issueBoards = window.gl.issueBoards || {};
 
+  gl.issueBoards.onStart = () => {
+    $('.has-tooltip').tooltip('hide')
+      .tooltip('disable');
+    document.body.classList.add('is-dragging');
+  };
+
+  gl.issueBoards.onEnd = () => {
+    $('.has-tooltip').tooltip('enable');
+    document.body.classList.remove('is-dragging');
+  };
+
   gl.issueBoards.getBoardSortableDefaultOptions = (obj) => {
     let defaultSortOptions = {
       forceFallback: true,
@@ -11,12 +22,8 @@
       filter: '.has-tooltip',
       scrollSensitivity: 100,
       scrollSpeed: 20,
-      onStart () {
-        document.body.classList.add('is-dragging');
-      },
-      onEnd () {
-        document.body.classList.remove('is-dragging');
-      }
+      onStart: gl.issueBoards.onStart,
+      onEnd: gl.issueBoards.onEnd
     }
 
     Object.keys(obj).forEach((key) => { defaultSortOptions[key] = obj[key]; });

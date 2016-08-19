@@ -63,6 +63,8 @@
 
           Store.moving.issue = card.issue;
           Store.moving.list = card.list;
+
+          gl.issueBoards.onStart();
         },
         onAdd: (e) => {
           gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
