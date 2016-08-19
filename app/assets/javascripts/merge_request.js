@@ -34,7 +34,7 @@
 
     MergeRequest.prototype.initTabs = function() {
       if (this.opts.action !== 'new') {
-        return new MergeRequestTabs(this.opts);
+        window.mrTabs = new MergeRequestTabs(this.opts);
       } else {
         return $('.merge-request-tabs a[data-toggle="tab"]:first').tab('show');
       }

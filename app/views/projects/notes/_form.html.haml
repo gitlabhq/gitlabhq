@@ -1,4 +1,4 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form" }, authenticity_token: true do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new-note js-new-note-form js-quick-submit common-note-form", "data-noteable-iid" => @note.noteable.try(:iid), }, authenticity_token: true do |f|
   = hidden_field_tag :view, diff_view
   = hidden_field_tag :line_type
   = note_target_fields(@note)
