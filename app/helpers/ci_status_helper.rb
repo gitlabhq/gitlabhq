@@ -39,7 +39,7 @@ module CiStatusHelper
       when 'running'
         'icon_status_running'
       when 'play'
-        return icon('play fw')
+        'icon_play'
       when 'created'
         'icon_status_pending'
       else
