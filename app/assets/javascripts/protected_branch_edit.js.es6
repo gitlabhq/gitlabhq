@@ -141,21 +141,21 @@
         var userId = parseInt(dataFromInputs[i].user_id);
 
         if (userId) {
-          adding = 'user';
+          adding = LEVEL_TYPES.USER;
           inState = _.findWhere(this.state[`${accessLevel}_attributes`], { user_id: userId });
         } else {
-          adding = 'role';
+          adding = LEVEL_TYPES.ROLE;
           inState = _.findWhere(this.state[`${accessLevel}_attributes`], { access_level: parseInt(dataFromInputs[i].access_level) });
         }
 
         if (inState) {
           accessLevelData.push(inState);
         } else {
-          if (adding === 'user') {
+          if (adding === LEVEL_TYPES.USER) {
             accessLevelData.push({
               user_id: parseInt(dataFromInputs[i].user_id)
             });
-          } else if (adding === 'role') {
+          } else if (adding === LEVEL_TYPES.ROLE) {
             accessLevelData.push({
               access_level: parseInt(dataFromInputs[i].access_level)
             });
@@ -185,9 +185,9 @@
           const id = parseInt($el.data('id'));
           let obj = {};
 
-          if (type === 'role') {
+          if (type === LEVEL_TYPES.ROLE) {
             obj.access_level = value
-          } else if (type === 'user') {
+          } else if (type === LEVEL_TYPES.USER) {
             obj.user_id = value;
           }
 
