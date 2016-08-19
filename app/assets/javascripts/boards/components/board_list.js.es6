@@ -74,10 +74,6 @@
         }
       });
 
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-card-drag-handle';
-      }
-
       this.sortable = Sortable.create(this.$els.list, options);
 
       // Scroll event on list to load more
@@ -86,6 +82,18 @@
           this.loadNextPage();
         }
       };
+
+      // if (gl.issueBoards.touchEnabled) {
+      //   this.$on('scroll', () => {
+      //     if (!startedDragging) {
+      //       this.sortable.option("disabled", true);
+      //     }
+      //   });
+      //
+      //   this.$on('scrollend', () => {
+      //     this.sortable.option("disabled", false);
+      //   });
+      // }
     }
   });
 })();

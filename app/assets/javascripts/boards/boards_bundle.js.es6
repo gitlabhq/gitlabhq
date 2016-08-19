@@ -38,7 +38,7 @@ $(() => {
     ready () {
       Store.disabled = this.disabled;
       gl.boardService.all()
-        .then((resp) => {          
+        .then((resp) => {
           resp.json().forEach((board) => {
             const list = Store.addList(board);
 

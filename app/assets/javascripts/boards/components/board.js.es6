@@ -72,11 +72,21 @@
         }
       });
 
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-board-drag-handle';
-      }
-
       this.sortable = Sortable.create(this.$el.parentNode, options);
+
+      // if (gl.issueBoards.touchEnabled) {
+      //   this.$on('scroll', () => {
+      //     if (!startedDragging) {
+      //       this.sortable.option("disabled", true);
+      //     }
+      //     this.$broadcast('scroll');
+      //   });
+      //
+      //   this.$on('scrollend', () => {
+      //     this.sortable.option("disabled", false);
+      //     this.$broadcast('scrollend');
+      //   });
+      // }
     },
     beforeDestroy () {
       Store.state.lists.$remove(this.list);

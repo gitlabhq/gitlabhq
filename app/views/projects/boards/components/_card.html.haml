@@ -9,7 +9,6 @@
   "track-by" => "id" }
   %li.card{ ":class" => "{ 'user-can-drag': !disabled }",
     ":index" => "index" }
-    = icon("align-justify", class: "board-mobile-handle js-card-drag-handle", "v-if" => "!disabled")
     %h4.card-title
       = icon("eye-slash", class: "confidential-icon", "v-if" => "issue.confidential")
       %a{ ":href" => "issueLinkBase + '/' + issue.id",
