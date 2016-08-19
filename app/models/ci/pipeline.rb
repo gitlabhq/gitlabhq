@@ -48,11 +48,11 @@ module Ci
       end
 
       before_transition [:created, :pending] => :running do |pipeline|
-        pipeline.started_at = Gitlab::Utils.now
+        pipeline.started_at = Time.now
       end
 
       before_transition any => [:success, :failed, :canceled] do |pipeline|
-        pipeline.finished_at = Gitlab::Utils.now
+        pipeline.finished_at = Time.now
       end
 
       before_transition do |pipeline|

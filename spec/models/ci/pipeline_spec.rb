@@ -128,11 +128,13 @@ describe Ci::Pipeline, models: true do
 
     describe '#duration' do
       before do
-        allow(Gitlab::Utils).to receive(:now).
-          and_return(current - 120, current)
+        travel_to(current - 120) do
+          pipeline.run
+        end
 
-        pipeline.run
-        pipeline.succeed
+        travel_to(current) do
+          pipeline.succeed
+        end
       end
 
       it 'matches sum of builds duration' do

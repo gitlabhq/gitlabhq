@@ -13,10 +13,5 @@ module Gitlab
     def force_utf8(str)
       str.force_encoding(Encoding::UTF_8)
     end
-
-    # The same as Time.now but using this would make it easier to test
-    def now
-      Time.now
-    end
   end
 end

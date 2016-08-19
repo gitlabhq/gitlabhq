@@ -87,7 +87,7 @@ module Statuseable
     if started_at && finished_at
       finished_at - started_at
     elsif started_at
-      Gitlab::Utils.now - started_at
+      Time.now - started_at
     end
   end
 end
