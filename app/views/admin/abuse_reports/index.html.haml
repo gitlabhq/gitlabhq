@@ -1,17 +1,20 @@
-- page_title "Abuse Reports"
+- page_title 'Abuse Reports'
 %h3.page-title Abuse Reports
 %hr
-- if @abuse_reports.present?
-  .table-holder
-    %table.table
-      %thead
-        %tr
-          %th User
-          %th Reported by
-          %th Message
-          %th Primary action
-          %th
-      = render @abuse_reports
-  = paginate @abuse_reports
-- else
-  %h4 There are no abuse reports
+.abuse-reports
+  - if @abuse_reports.present?
+    .table-holder
+      %table.table
+        %thead.hidden-sm.hidden-xs
+          %tr
+            %th User
+            %th Reported by
+            %th.wide Message
+            %th Action
+        = render @abuse_reports
+  - else
+    .no-reports
+      %span.pull-left
+        There are no abuse reports!
+      .pull-left
+        = emoji_icon 'tada'

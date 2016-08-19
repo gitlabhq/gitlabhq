@@ -149,6 +149,30 @@ describe 'Projects > Issuables > Default sort order', feature: true do
         expect(last_issue).to include(first_created_issuable.title)
       end
     end
+
+    context 'when the sort in the URL is id_desc' do
+      let(:issuable_type) { :issue }
+
+      before { visit_issues(project, sort: 'id_desc') }
+
+      it 'shows the sort order as last created' do
+        expect(find('.issues-other-filters')).to have_content('Last created')
+        expect(first_issue).to include(last_created_issuable.title)
+        expect(last_issue).to include(first_created_issuable.title)
+      end
+    end
+
+    context 'when the sort in the URL is id_asc' do
+      let(:issuable_type) { :issue }
+
+      before { visit_issues(project, sort: 'id_asc') }
+
+      it 'shows the sort order as oldest created' do
+        expect(find('.issues-other-filters')).to have_content('Oldest created')
+        expect(first_issue).to include(first_created_issuable.title)
+        expect(last_issue).to include(last_created_issuable.title)
+      end
+    end
   end
 
   def selected_sort_order

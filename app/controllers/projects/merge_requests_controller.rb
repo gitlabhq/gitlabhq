@@ -216,7 +216,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @base_commit = @merge_request.diff_base_commit
     @diffs = @merge_request.diffs(diff_options) if @merge_request.compare
     @diff_notes_disabled = true
-
     @pipeline = @merge_request.pipeline
     @statuses = @pipeline.statuses.relevant if @pipeline
 
@@ -421,7 +420,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+    @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
@@ -475,12 +474,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   # :show, :diff, :commits, :builds. but not when request the data through AJAX
   def define_discussion_vars
     # Build a note object for comment form
-    @note = @project.notes.new(noteable: @noteable)
+    @note = @project.notes.new(noteable: @merge_request)
 
-    @discussions = @noteable.mr_and_commit_notes.
-      inc_author_project_award_emoji.
-      fresh.
-      discussions
+    @discussions = @merge_request.discussions
 
     preload_noteable_for_regular_notes(@discussions.flat_map(&:notes))
 
@@ -514,7 +510,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     }
 
     @use_legacy_diff_notes = !@merge_request.has_complete_diff_refs?
-    @grouped_diff_discussions = @merge_request.notes.inc_author_project_award_emoji.grouped_diff_discussions
+    @grouped_diff_discussions = @merge_request.notes.inc_relations_for_view.grouped_diff_discussions
 
     Banzai::NoteRenderer.render(
       @grouped_diff_discussions.values.flat_map(&:notes),

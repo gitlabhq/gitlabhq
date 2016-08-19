@@ -291,6 +291,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :push_code,
+        :resolve_note,
         :create_container_image,
         :update_container_image,
         :create_environment,
@@ -481,12 +482,17 @@ class Ability
         rules += [
           :read_note,
           :update_note,
-          :admin_note
+          :admin_note,
+          :resolve_note
         ]
       end
 
       if note.respond_to?(:project) && note.project
         rules += project_abilities(user, note.project)
+      end
+
+      if note.for_merge_request? && note.noteable.author == user
+        rules << :resolve_note
       end
 
       rules

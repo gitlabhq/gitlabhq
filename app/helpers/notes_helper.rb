@@ -49,7 +49,7 @@ module NotesHelper
     }
 
     if use_legacy_diff_note
-      discussion_id = LegacyDiffNote.build_discussion_id(
+      discussion_id = LegacyDiffNote.discussion_id(
         @comments_target[:noteable_type],
         @comments_target[:noteable_id] || @comments_target[:commit_id],
         line_code
@@ -60,7 +60,7 @@ module NotesHelper
         discussion_id: discussion_id
       )
     else
-      discussion_id = DiffNote.build_discussion_id(
+      discussion_id = DiffNote.discussion_id(
         @comments_target[:noteable_type],
         @comments_target[:noteable_id] || @comments_target[:commit_id],
         position
@@ -81,10 +81,8 @@ module NotesHelper
 
     data = discussion.reply_attributes.merge(line_type: line_type)
 
-    content_tag(:div, class: "discussion-reply-holder") do
-      button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
-                             data: data, title: 'Add a reply'
-    end
+    button_tag 'Reply...', class: 'btn btn-text-field js-discussion-reply-button',
+                           data: data, title: 'Add a reply'
   end
 
   def preload_max_access_for_authors(notes, project)

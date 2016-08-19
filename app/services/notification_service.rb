@@ -161,6 +161,14 @@ class NotificationService
     approve_mr_email(merge_request, merge_request.target_project, current_user)
   end
 
+  def resolve_all_discussions(merge_request, current_user)
+    recipients = build_recipients(merge_request, merge_request.target_project, current_user, action: "resolve_all_discussions")
+
+    recipients.each do |recipient|
+      mailer.resolved_all_discussions_email(recipient.id, merge_request.id, current_user.id).deliver_later
+    end
+  end
+
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
