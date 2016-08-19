@@ -1,11 +1,26 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.0 (unreleased)
+  - Allow projects to be moved between repository storages
+  - Add rake task to remove old repository copies from repositories moved to another storage
   - Performance improvement of push rules
+  - Temporary fix for #825 - LDAP sync converts access requests to members. !655
+  - Optimize commit and diff changes access check to reduce git operations
+  - Allow syncing a group against all providers at once
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
-  - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
+  - Allow LDAP `sync_ssh_keys` setting to be set to `true`
+  - Removed unused GitLab GEO database index
+  - Enable monitoring for ES classes
+  - [Elastic] Improve code search
+  - [Elastic] Significant improvement of global search performance
+  - [Fix] Push rules check existing commits in some cases
+  - [ES] Limit amount of retries for sidekiq jobs
 
-v 8.10.5 (unreleased)
+v 8.10.6
+  - Fix race condition with UpdateMirrorWorker Lease. !641
+
+v 8.10.5
+  - Used cached value of project count in `Elastic::RepositoriesSearch` to reduce DB load. !637
 
 v 8.10.4
   - Fix available users in userselect dropdown when there is more than one userselect on the page. !604 (Rik de Groot)
@@ -14,6 +29,7 @@ v 8.10.4
 v 8.10.3
   - Fix regression in Git Annex permission check. !599
   - [Elastic] Fix commit search for some URLs. !605
+  - [Elastic][Fix] Commit search breaks for some URLs on gitlab-ce project
 
 v 8.10.2
   - Fix pagination on search result page when ES search is enabled. !592
@@ -28,6 +44,7 @@ v 8.10.0
   - Rename Git Hooks to Push Rules
   - Fix EE keys fingerprint add index migration if came from CE
   - Add todos for MR approvers !547
+  - Replace LDAP group sync exclusive lease with state machine
   - Prevent the author of an MR from being on the approvers list
   - Isolate EE LDAP library code in EE module (Part 1) !511
   - Make Elasticsearch indexer run as an async task
@@ -35,8 +52,8 @@ v 8.10.0
   - Ticket-based Kerberos authentication (SPNEGO)
   - [Elastic] Suppress ActiveRecord::RecordNotFound error in ElasticIndexWorker
 
-v.8.9.7 (unreleased)
-  - Fix error in admin dashboard when Geo is enabled and current node is nil.
+v 8.9.7
+  - No EE-specific changes
 
 v 8.9.6
   - Avoid adding index for key fingerprint if it already exists. !539
@@ -81,6 +98,9 @@ v 8.9.0
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
   - Fix: Git hooks don't fire when committing from the UI
+
+v 8.8.8
+  - No EE-specific changes
 
 v 8.8.7
   - No EE-specific changes

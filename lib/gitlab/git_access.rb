@@ -17,7 +17,7 @@ module Gitlab
       @user_access = UserAccess.new(user, project: project)
     end
 
-    def check(cmd, changes = nil)
+    def check(cmd, changes)
       return build_status_object(false, "Git access over #{protocol.upcase} is not allowed") unless protocol_allowed?
 
       unless actor
@@ -59,6 +59,10 @@ module Gitlab
     end
 
     def push_access_check(changes)
+      if project.repository_read_only?
+        return build_status_object(false, 'The repository is temporarily read-only. Please try again later.')
+      end
+
       if Gitlab::Geo.secondary?
         return build_status_object(false, "You can't push code on a secondary GitLab Geo node.")
       end
@@ -96,10 +100,10 @@ module Gitlab
         return build_status_object(false, message)
       end
 
-      changes = changes.lines if changes.kind_of?(String)
+      changes_list = Gitlab::ChangesList.new(changes)
 
       # Iterate over all changes to find if user allowed all of them to be applied
-      changes.map(&:strip).reject(&:blank?).each do |change|
+      changes_list.each do |change|
         status = change_access_check(change)
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
@@ -123,73 +127,6 @@ module Gitlab
     end
 
     private
-
-    def commits(newrev, oldrev, project)
-      if oldrev
-        project.repository.commits_between(oldrev, newrev)
-      else
-        project.repository.commits(newrev)
-      end
-    end
-
-    # If commit does not pass push rule validation the whole push should be rejected.
-    # This method should return nil if no error found or status object if there are some errors.
-    # In case of errors - all other checks will be canceled and push will be rejected.
-    def check_commit(commit, push_rule)
-      unless push_rule.commit_message_allowed?(commit.safe_message)
-        return build_status_object(false, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
-      end
-
-      unless push_rule.author_email_allowed?(commit.committer_email)
-        return build_status_object(false, "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'")
-      end
-
-      unless push_rule.author_email_allowed?(commit.author_email)
-        return build_status_object(false, "Author's email '#{commit.author_email}' does not follow the pattern '#{push_rule.author_email_regex}'")
-      end
-
-      # Check whether author is a GitLab member
-      if push_rule.member_check
-        unless User.existing_member?(commit.author_email.downcase)
-          return build_status_object(false, "Author '#{commit.author_email}' is not a member of team")
-        end
-
-        if commit.author_email.casecmp(commit.committer_email) == -1
-          unless User.existing_member?(commit.committer_email.downcase)
-            return build_status_object(false, "Committer '#{commit.committer_email}' is not a member of team")
-          end
-        end
-      end
-
-      if status_object = check_commit_diff(commit, push_rule)
-        return status_object
-      end
-
-      nil
-    end
-
-    def check_commit_diff(commit, push_rule)
-      if push_rule.file_name_regex.present?
-        commit.raw_diffs.each do |diff|
-          if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(push_rule.file_name_regex)
-            return build_status_object(false, "File name #{diff.new_path.inspect} is prohibited by the pattern '#{push_rule.file_name_regex}'")
-          end
-        end
-      end
-
-      if push_rule.max_file_size > 0
-        commit.raw_diffs.each do |diff|
-          next if diff.deleted_file
-
-          blob = project.repository.blob_at(commit.id, diff.new_path)
-          if blob && blob.size && blob.size > push_rule.max_file_size.megabytes
-            return build_status_object(false, "File #{diff.new_path.inspect} is larger than the allowed size of #{push_rule.max_file_size} MB")
-          end
-        end
-      end
-
-      nil
-    end
 
     def protected_branch_action(oldrev, newrev, branch_name)
       # we dont allow force push to protected branch
@@ -247,7 +184,7 @@ module Gitlab
     end
 
     def build_status_object(status, message = '')
-      GitAccessStatus.new(status, message)
+      Gitlab::GitAccessStatus.new(status, message)
     end
 
     def git_annex_access_check(project, changes)

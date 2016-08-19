@@ -145,6 +145,26 @@ if Gitlab::Metrics.enabled?
 
     config.instrument_methods(Rinku)
     config.instrument_instance_methods(Repository)
+
+    config.instrument_methods(Gitlab::Highlight)
+    config.instrument_instance_methods(Gitlab::Highlight)
+
+    config.instrument_instance_methods(Search::GlobalService)
+    config.instrument_instance_methods(Search::ProjectService)
+    config.instrument_instance_methods(Gitlab::Elastic::SearchResults)
+    config.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
+    config.instrument_instance_methods(Elastic::ApplicationSearch)
+    config.instrument_instance_methods(Elastic::IssuesSearch)
+    config.instrument_instance_methods(Elastic::MergeRequestsSearch)
+    config.instrument_instance_methods(Elastic::MilestonesSearch)
+    config.instrument_instance_methods(Elastic::NotesSearch)
+    config.instrument_instance_methods(Elastic::ProjectsSearch)
+    config.instrument_instance_methods(Elastic::RepositoriesSearch)
+    config.instrument_instance_methods(Elastic::SnippetsSearch)
+    config.instrument_instance_methods(Elastic::WikiRepositoriesSearch)
+    
+    # This is a Rails scope so we have to instrument it manually.
+    config.instrument_method(Project, :visible_to_user)
   end
 
   GC::Profiler.enable

@@ -666,7 +666,16 @@ class Repository
     commit(sha)
   end
 
-  def next_branch(name, opts={})
+  # Returns a list of commits that are not present in any reference
+  def new_commits(newrev)
+    args = %W(#{Gitlab.config.git.bin_path} rev-list #{newrev} --not --all)
+
+    Gitlab::Popen.popen(args, path_to_repo).first.split("\n").map do |sha|
+      commit(sha.strip)
+    end
+  end
+
+  def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
       result = n.match(/\A#{name}-([0-9]+)\z/)
@@ -701,9 +710,7 @@ class Repository
   def tags_sorted_by(value)
     case value
     when 'name'
-      # Would be better to use `sort_by` but `version_sorter` only exposes
-      # `sort` and `rsort`
-      VersionSorter.rsort(tag_names).map { |tag_name| find_tag(tag_name) }
+      VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse
     when 'updated_asc'
@@ -1241,14 +1248,14 @@ class Repository
     end
   end
 
+  def head_exists?
+    exists? && !empty? && !rugged.head_unborn?
+  end
+
   private
 
   def cache
     @cache ||= RepositoryCache.new(path_with_namespace, @project.id)
-  end
-
-  def head_exists?
-    exists? && !empty? && !rugged.head_unborn?
   end
 
   def file_on_head(regex)

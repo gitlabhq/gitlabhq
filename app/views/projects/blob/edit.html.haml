@@ -1,5 +1,11 @@
 - page_title "Edit", @blob.path, @ref
 
+- if @conflict
+  .alert.alert-danger
+    Someone edited the file the same time you did. Please check out
+    = link_to "the file", namespace_project_blob_path(@project.namespace, @project, tree_join(@target_branch, @file_path)), target: "_blank"
+    and make sure your changes will not unintentionally remove theirs.
+
 .file-editor
   %ul.nav-links.no-bottom.js-edit-mode
     %li.active
@@ -13,8 +19,7 @@
   = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form') do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
-
-    = hidden_field_tag 'last_commit', @last_commit
+    = hidden_field_tag 'last_commit_sha', @last_commit_sha
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
     = render 'projects/commit_button', ref: @ref, cancel_path: namespace_project_blob_path(@project.namespace, @project, @id)

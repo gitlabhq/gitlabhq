@@ -7,7 +7,6 @@ module Elastic
 
       mappings do
         indexes :id,                  type: :integer
-
         indexes :name,                type: :string,
                                       index_options: 'offsets'
         indexes :path,                type: :string,
@@ -18,9 +17,7 @@ module Elastic
                                       index_options: 'offsets'
         indexes :description,         type: :string,
                                       index_options: 'offsets'
-
         indexes :namespace_id,        type: :integer
-
         indexes :created_at,          type: :date
         indexes :updated_at,          type: :date
         indexes :archived,            type: :boolean
@@ -87,8 +84,8 @@ module Elastic
 
         if options[:pids]
           filters << {
-            ids: {
-              values: options[:pids]
+            bool: {
+              should: project_ids_condition(options[:pids], options[:public_and_internal_projects])
             }
           }
         end

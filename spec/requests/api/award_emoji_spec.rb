@@ -22,7 +22,7 @@ describe API::API, api: true  do
         expect(json_response.first['name']).to eq(award_emoji.name)
       end
 
-      it "should return a 404 error when issue id not found" do
+      it "returns a 404 error when issue id not found" do
         get api("/projects/#{project.id}/issues/12345/award_emoji", user)
 
         expect(response).to have_http_status(404)
@@ -124,13 +124,13 @@ describe API::API, api: true  do
         expect(json_response['user']['username']).to eq(user.username)
       end
 
-      it "should return a 400 bad request error if the name is not given" do
+      it "returns a 400 bad request error if the name is not given" do
         post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user)
 
         expect(response).to have_http_status(400)
       end
 
-      it "should return a 401 unauthorized error if the user is not authenticated" do
+      it "returns a 401 unauthorized error if the user is not authenticated" do
         post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji"), name: 'thumbsup'
 
         expect(response).to have_http_status(401)

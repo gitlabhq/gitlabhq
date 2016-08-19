@@ -5,9 +5,8 @@ module Elastic
     included do
       include ApplicationSearch
 
-      mappings do
+      mappings _parent: { type: 'project' } do
         indexes :id,          type: :integer
-
         indexes :iid,         type: :integer, index: :not_analyzed
         indexes :title,       type: :string,
                               index_options: 'offsets'
@@ -16,11 +15,9 @@ module Elastic
         indexes :created_at,  type: :date
         indexes :updated_at,  type: :date
         indexes :state,       type: :string
-
         indexes :project_id,  type: :integer
         indexes :author_id,   type: :integer
         indexes :assignee_id, type: :integer
-
         indexes :confidential, type: :boolean
       end
 
@@ -36,6 +33,10 @@ module Elastic
         data
       end
 
+      def self.nested?
+        true
+      end
+
       def self.elastic_search(query, options: {})
         if query =~ /#(\d+)\z/
           query_hash = iid_query_hash(query_hash, $1)
@@ -43,7 +44,7 @@ module Elastic
           query_hash = basic_query_hash(%w(title^2 description), query)
         end
 
-        query_hash = project_ids_filter(query_hash, options[:project_ids])
+        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
         query_hash = confidentiality_filter(query_hash, options[:current_user])
 
         self.__elasticsearch__.search(query_hash)

@@ -2,7 +2,22 @@
 
 .form-group
   = f.label :title, class: 'control-label'
-  .col-sm-10
+
+  - issuable_template_names = issuable_templates(issuable)
+
+  - if issuable_template_names.any?
+    .col-sm-3.col-lg-2
+      .js-issuable-selector-wrap{ data: { issuable_type: issuable.class.to_s.underscore.downcase } }
+        - title = selected_template(issuable) || "Choose a template"
+
+        = dropdown_tag(title, options: { toggle_class: 'js-issuable-selector',
+          title: title, filter: true, placeholder: 'Filter', footer_content: true,
+          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: @project.path, namespace_path: @project.namespace.path } } ) do
+          %ul.dropdown-footer-list
+            %li
+              %a.reset-template
+                Reset template
+  %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad', required: true
 
@@ -23,6 +38,13 @@
           to prevent a
           %strong Work In Progress
           merge request from being merged before it's ready.
+
+    - if can_add_template?(issuable)
+      %p.help-block
+        Add
+        = link_to "description templates", help_page_path('user/project/description_templates')
+        to help your contributors communicate effectively!
+
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10

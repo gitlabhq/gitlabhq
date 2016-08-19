@@ -17,7 +17,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "authorized user" do
-      it "should return project push rule" do
+      it "returns project push rule" do
         get api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(200)
 
@@ -27,7 +27,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "unauthorized user" do
-      it "should not access project push rule" do
+      it "does not have access to project push rule" do
         get api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end
@@ -36,7 +36,7 @@ describe API::API, 'ProjectPushRule', api: true  do
 
   describe "POST /projects/:id/push_rule" do
     context "authorized user" do
-      it "should add push rule to project" do
+      it "adds push rule to project" do
         post api("/projects/#{project.id}/push_rule", user),
           deny_delete_tag: true
         expect(response.status).to eq(201)
@@ -48,7 +48,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "unauthorized user" do
-      it "should not add push rule to project" do
+      it "does not add push rule to project" do
         post api("/projects/#{project.id}/push_rule", user3),
           deny_delete_tag: true
         expect(response.status).to eq(403)
@@ -62,7 +62,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "with existing push rule" do
-      it "should not add push rule to project" do
+      it "does not add push rule to project" do
         post api("/projects/#{project.id}/push_rule", user),
           deny_delete_tag: true
         expect(response.status).to eq(422)
@@ -75,7 +75,7 @@ describe API::API, 'ProjectPushRule', api: true  do
       create(:push_rule, project: project)
     end
 
-    it "should update an existing project push rule" do
+    it "updates an existing project push rule" do
       put api("/projects/#{project.id}/push_rule", user),
         deny_delete_tag: false, commit_message_regex: 'Fixes \d+\..*'
       expect(response.status).to eq(200)
@@ -86,13 +86,13 @@ describe API::API, 'ProjectPushRule', api: true  do
   end
 
   describe "PUT /projects/:id/push_rule" do
-    it "should error on non existing project push rule" do
+    it "gets error on non existing project push rule" do
       put api("/projects/#{project.id}/push_rule", user),
         deny_delete_tag: false, commit_message_regex: 'Fixes \d+\..*'
       expect(response.status).to eq(404)
     end
 
-    it "should not update push rule for unauthorized user" do
+    it "does not update push rule for unauthorized user" do
       post api("/projects/#{project.id}/push_rule", user3),
         deny_delete_tag: true
       expect(response.status).to eq(403)
@@ -105,7 +105,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "authorized user" do
-      it "should delete push rule from project" do
+      it "deletes push rule from project" do
         delete api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(200)
 
@@ -114,7 +114,7 @@ describe API::API, 'ProjectPushRule', api: true  do
     end
 
     context "unauthorized user" do
-      it "should return a 403 error" do
+      it "returns a 403 error" do
         delete api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end
@@ -123,7 +123,7 @@ describe API::API, 'ProjectPushRule', api: true  do
 
   describe "DELETE /projects/:id/push_rule" do
     context "for non existing push rule" do
-      it "should delete push rule from project" do
+      it "deletes push rule from project" do
         delete api("/projects/#{project.id}/push_rule", user)
         expect(response.status).to eq(404)
 
@@ -131,7 +131,7 @@ describe API::API, 'ProjectPushRule', api: true  do
         expect(json_response['message']).to eq("404 Not Found")
       end
 
-      it "should return a 403 error if not authorized" do
+      it "returns a 403 error if not authorized" do
         delete api("/projects/#{project.id}/push_rule", user3)
         expect(response.status).to eq(403)
       end

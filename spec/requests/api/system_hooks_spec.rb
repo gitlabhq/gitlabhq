@@ -11,21 +11,21 @@ describe API::API, api: true  do
 
   describe "GET /hooks" do
     context "when no user" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/hooks")
         expect(response).to have_http_status(401)
       end
     end
 
     context "when not an admin" do
-      it "should return forbidden error" do
+      it "returns forbidden error" do
         get api("/hooks", user)
         expect(response).to have_http_status(403)
       end
     end
 
     context "when authenticated as admin" do
-      it "should return an array of hooks" do
+      it "returns an array of hooks" do
         get api("/hooks", admin)
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Array
@@ -35,18 +35,18 @@ describe API::API, api: true  do
   end
 
   describe "POST /hooks" do
-    it "should create new hook" do
+    it "creates new hook" do
       expect do
         post api("/hooks", admin), url: 'http://example.com'
       end.to change { SystemHook.count }.by(1)
     end
 
-    it "should respond with 400 if url not given" do
+    it "responds with 400 if url not given" do
       post api("/hooks", admin)
       expect(response).to have_http_status(400)
     end
 
-    it "should not create new hook without url" do
+    it "does not create new hook without url" do
       expect do
         post api("/hooks", admin)
       end.not_to change { SystemHook.count }
@@ -54,26 +54,26 @@ describe API::API, api: true  do
   end
 
   describe "GET /hooks/:id" do
-    it "should return hook by id" do
+    it "returns hook by id" do
       get api("/hooks/#{hook.id}", admin)
       expect(response).to have_http_status(200)
       expect(json_response['event_name']).to eq('project_create')
     end
 
-    it "should return 404 on failure" do
+    it "returns 404 on failure" do
       get api("/hooks/404", admin)
       expect(response).to have_http_status(404)
     end
   end
 
   describe "DELETE /hooks/:id" do
-    it "should delete a hook" do
+    it "deletes a hook" do
       expect do
         delete api("/hooks/#{hook.id}", admin)
       end.to change { SystemHook.count }.by(-1)
     end
 
-    it "should return success if hook id not found" do
+    it "returns success if hook id not found" do
       delete api("/hooks/12345", admin)
       expect(response).to have_http_status(200)
     end

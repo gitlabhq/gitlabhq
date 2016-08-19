@@ -8,6 +8,7 @@ class ProjectMember < Member
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
   validates_format_of :source_type, with: /\AProject\z/
+  validates :access_level, inclusion: { in: Gitlab::Access.values }
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :in_project, ->(project) { where(source_id: project.id) }
@@ -21,19 +22,19 @@ class ProjectMember < Member
     # or symbol like :master representing role
     #
     # Ex.
-    #   add_users_into_projects(
+    #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
     #     ProjectMember::MASTER
     #   )
     #
-    #   add_users_into_projects(
+    #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
     #     :master
     #   )
     #
-    def add_users_into_projects(project_ids, user_ids, access, current_user = nil)
+    def add_users_to_projects(project_ids, user_ids, access, current_user = nil)
       access_level = if roles_hash.has_key?(access)
                        roles_hash[access]
                      elsif roles_hash.values.include?(access.to_i)

@@ -16,7 +16,7 @@ GitHub will generate an application ID and secret key for you to use.
 1.  Select "Register new application".
 
 1.  Provide the required details.
-    - Application name: This can be anything. Consider something like "\<Organization\>'s GitLab" or "\<Your Name\>'s GitLab" or something else descriptive.
+    - Application name: This can be anything. Consider something like `<Organization>'s GitLab` or `<Your Name>'s GitLab` or something else descriptive.
     - Homepage URL: The URL to your GitLab installation. 'https://gitlab.company.com'
     - Application description: Fill this in if you wish.
     - Authorization callback URL is 'http(s)://${YOUR_DOMAIN}'

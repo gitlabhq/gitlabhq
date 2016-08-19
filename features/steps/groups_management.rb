@@ -8,7 +8,6 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step '"Open" is in group "Sourcing"' do
     @group = Group.find_by(name: "Sourcing")
     @project ||= create(:project, name: "Open", namespace: @group)
-
   end
 
   step '"Mary Jane" has master access for project "Open"' do

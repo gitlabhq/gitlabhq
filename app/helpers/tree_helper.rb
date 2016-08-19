@@ -4,23 +4,11 @@ module TreeHelper
   #
   # contents - A Grit::Tree object for the current tree
   def render_tree(tree)
-    # Render Folders before Files/Submodules
+    # Sort submodules and folders together by name ahead of files
     folders, files, submodules = tree.trees, tree.blobs, tree.submodules
-
     tree = ""
-
-    # Render folders if we have any
-    tree << render(partial: 'projects/tree/tree_item', collection: folders,
-                   locals: { type: 'folder' }) if folders.present?
-
-    # Render files if we have any
-    tree << render(partial: 'projects/tree/blob_item', collection: files,
-                   locals: { type: 'file' }) if files.present?
-
-    # Render submodules if we have any
-    tree << render(partial: 'projects/tree/submodule_item',
-                   collection: submodules) if submodules.present?
-
+    items = (folders + submodules).sort_by(&:name) + files
+    tree << render(partial: "projects/tree/tree_row", collection: items) if items.present?
     tree.html_safe
   end
 

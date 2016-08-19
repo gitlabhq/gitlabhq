@@ -33,11 +33,10 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
     end
 
     context 'when group_base is present' do
-
       context 'and admin_group and external_groups are not present' do
         before { stub_ldap_config(group_base: 'dc=example,dc=com') }
 
-        it 'should call EE::Gitlab::LDAP::Sync::Group#execute' do
+        it 'calls EE::Gitlab::LDAP::Sync::Group#execute' do
           expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute).twice
         end
 
@@ -58,7 +57,7 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
           )
         end
 
-        it 'should call EE::Gitlab::LDAP::Sync::Group#execute' do
+        it 'calls EE::Gitlab::LDAP::Sync::Group#execute' do
           expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute).twice
         end
 
@@ -79,7 +78,7 @@ describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
           )
         end
 
-        it 'should call EE::Gitlab::LDAP::Sync::Group#execute' do
+        it 'calls EE::Gitlab::LDAP::Sync::Group#execute' do
           expect(EE::Gitlab::LDAP::Sync::Group).to receive(:execute).twice
         end
 

@@ -71,7 +71,7 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'user was external, now should not be' do
-          it 'should make user internal' do
+          it 'makes user internal' do
             existing_user.update_attribute('external', true)
             saml_user.save
             expect(gl_user).to be_valid
@@ -100,7 +100,7 @@ describe Gitlab::Saml::User, lib: true do
         end
 
         context 'user was admin, now should not be' do
-          it 'should make user non admin' do
+          it 'makes user non admin' do
             existing_user.update_attribute('admin', true)
             saml_user.save
             expect(gl_user).to be_valid
@@ -127,14 +127,14 @@ describe Gitlab::Saml::User, lib: true do
 
         context 'with allow_single_sign_on default (["saml"])' do
           before { stub_omniauth_config(allow_single_sign_on: ['saml']) }
-          it 'should not throw an error' do
+          it 'does not throw an error' do
             expect{ saml_user.save }.not_to raise_error
           end
         end
 
         context 'with allow_single_sign_on disabled' do
           before { stub_omniauth_config(allow_single_sign_on: false) }
-          it 'should throw an error' do
+          it 'throws an error' do
             expect{ saml_user.save }.to raise_error StandardError
           end
         end
@@ -276,7 +276,7 @@ describe Gitlab::Saml::User, lib: true do
         context 'dont block on create' do
           before { stub_omniauth_config(block_auto_created_users: false) }
 
-          it 'should not block the user' do
+          it 'does not block the user' do
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user).not_to be_blocked
@@ -286,7 +286,7 @@ describe Gitlab::Saml::User, lib: true do
         context 'block on create' do
           before { stub_omniauth_config(block_auto_created_users: true) }
 
-          it 'should block user' do
+          it 'blocks user' do
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user).to be_blocked

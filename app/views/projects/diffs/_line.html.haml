@@ -4,8 +4,7 @@
 %tr.line_holder{ plain ? { class: type} : { class: type, id: line_code } }
   - case type
   - when 'match'
-    = render "projects/diffs/match_line", { line: line.text,
-      line_old: line.old_pos, line_new: line.new_pos, bottom: false, new_file: diff_file.new_file }
+    = diff_match_line line.old_pos, line.new_pos, text: line.text
   - when 'nonewline'
     %td.old_line.diff-line-num
     %td.new_line.diff-line-num

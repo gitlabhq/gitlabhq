@@ -1,4 +1,6 @@
 class Namespace < ActiveRecord::Base
+  acts_as_paranoid
+
   include Sortable
   include Gitlab::ShellAdapter
 

@@ -149,19 +149,19 @@ Style/EmptyLinesAroundAccessModifier:
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around module bodies.
 Style/EmptyLinesAroundModuleBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
-  Enabled: false
+  Enabled: true
 
 # Avoid the use of END blocks.
 Style/EndBlock:
@@ -371,6 +371,10 @@ Style/SpaceAfterNot:
 
 # Use spaces after semicolons.
 Style/SpaceAfterSemicolon:
+  Enabled: true
+
+# Use space around equals in parameter default
+Style/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
 # Use a space around keywords if appropriate.

@@ -166,7 +166,7 @@ time drop.
 1.  Disable refreshing:
 
     ```bash
-    curl -XPUT localhost:9200/_settings -d '{
+    curl --request PUT localhost:9200/_settings --data '{
         "index" : {
             "refresh_interval" : "-1"
         } }'
@@ -175,7 +175,7 @@ time drop.
 1.  (optional) You may want to disable replication and enable it after indexing:
 
     ```bash
-    curl -XPUT localhost:9200/_settings -d '{
+    curl --request PUT localhost:9200/_settings --data '{
         "index" : {
             "number_of_replicas" : 0
         } }'
@@ -187,7 +187,7 @@ time drop.
     the indexing is done and set it to its default value, which is 1:
 
     ```bash
-    curl -XPUT localhost:9200/_settings -d '{
+    curl --request PUT localhost:9200/_settings --data '{
         "index" : {
             "number_of_replicas" : 1
         } }'
@@ -196,7 +196,7 @@ time drop.
 1.  Enable refreshing again (after indexing):
 
     ```bash
-    curl -XPUT localhost:9200/_settings -d '{
+    curl --request PUT localhost:9200/_settings --data '{
         "index" : {
             "refresh_interval" : "1s"
         } }'
@@ -205,7 +205,7 @@ time drop.
 1.  A force merge should be called after enabling the refreshing above:
 
     ```bash
-    curl -XPOST 'http://localhost:9200/_forcemerge?max_num_segments=5'
+    curl --request POST 'http://localhost:9200/_forcemerge?max_num_segments=5'
     ```
 
 To minimize downtime of the search feature we recommend the following:

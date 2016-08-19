@@ -502,6 +502,42 @@ describe TodoService, services: true do
     expect(john_doe.todos_pending_count).to eq(1)
   end
 
+  describe '#mark_todos_as_done' do
+    let(:issue) { create(:issue, project: project, author: author, assignee: john_doe) }
+
+    it 'marks a relation of todos as done' do
+      create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      todos = TodosFinder.new(john_doe, {}).execute
+      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }
+       .to change { john_doe.todos.done.count }.from(0).to(1)
+    end
+
+    it 'marks an array of todos as done' do
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }
+        .to change { todo.reload.state }.from('pending').to('done')
+    end
+
+    it 'returns the number of updated todos' do # Needed on API
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq(1)
+    end
+
+    it 'caches the number of todos of a user', :caching do
+      create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+      TodoService.new.mark_todos_as_done([todo], john_doe)
+
+      expect_any_instance_of(TodosFinder).not_to receive(:execute)
+
+      expect(john_doe.todos_done_count).to eq(1)
+      expect(john_doe.todos_pending_count).to eq(1)
+    end
+  end
+
   def should_create_todo(attributes = {})
     attributes.reverse_merge!(
       project: project,

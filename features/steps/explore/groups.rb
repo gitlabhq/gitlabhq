@@ -62,10 +62,6 @@ class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
     expect(page).to have_content "John Doe"
   end
 
-  step 'I should not see member roles' do
-    expect(body).not_to match(%r{owner|developer|reporter|guest}i)
-  end
-
   protected
 
   def group_has_project(groupname, projectname, visibility_level)

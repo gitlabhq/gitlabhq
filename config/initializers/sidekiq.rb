@@ -1,8 +1,9 @@
+# Custom Redis configuration
+redis_config_hash = Gitlab::Redis.params
+redis_config_hash[:namespace] = Gitlab::Redis::SIDEKIQ_NAMESPACE
+
 Sidekiq.configure_server do |config|
-  config.redis = {
-    url: Gitlab::Redis.url,
-    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
-  }
+  config.redis = redis_config_hash
 
   config.server_middleware do |chain|
     chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
@@ -42,8 +43,5 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq.configure_client do |config|
-  config.redis = {
-    url: Gitlab::Redis.url,
-    namespace: Gitlab::Redis::SIDEKIQ_NAMESPACE
-  }
+  config.redis = redis_config_hash
 end

@@ -1,0 +1,3 @@
+development: unix:/path/to/old/redis.sock
+test: unix:/path/to/old/redis.sock
+production: unix:/path/to/old/redis.sock

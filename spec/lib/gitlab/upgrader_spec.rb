@@ -9,14 +9,14 @@ describe Gitlab::Upgrader, lib: true do
   end
 
   describe 'latest_version?' do
-    it 'should be true if newest version' do
+    it 'is true if newest version' do
       allow(upgrader).to receive(:latest_version_raw).and_return(current_version)
       expect(upgrader.latest_version?).to be_truthy
     end
   end
 
   describe 'latest_version_raw' do
-    it 'should get the latest version from tags' do
+    it 'gets the latest version from tags' do
       allow(upgrader).to receive(:fetch_git_tags).and_return([
         '6f0733310546402c15d3ae6128a95052f6c8ea96  refs/tags/v7.1.1-ee',
         'facfec4b242ce151af224e20715d58e628aa5e74  refs/tags/v7.1.1-ee^{}',

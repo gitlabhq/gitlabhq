@@ -389,7 +389,9 @@
       .col-sm-10
         = f.select :repository_storage, repository_storage_options_for_select, {}, class: 'form-control'
         .help-block
-          You can manage the repository storage paths in your gitlab.yml configuration file
+          Manage repository storage paths. Learn more in the
+          = succeed "." do
+            = link_to "repository storages documentation", help_page_path("administration/repository_storages")
 
   %fieldset
     %legend Repository Checks

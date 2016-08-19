@@ -63,6 +63,7 @@ namespace :gitlab do
       projects.find_each do |project|
         unless project.wiki.empty?
           puts "Indexing wiki of #{project.name_with_namespace}..."
+
           begin
             project.wiki.index_blobs
             puts "Done!".color(:green)
@@ -78,10 +79,13 @@ namespace :gitlab do
       [Project, Issue, MergeRequest, Snippet, Note, Milestone].each do |klass|
         print "Indexing #{klass} records... "
 
-        if klass == Note
-          Note.searchable.import
-        else
+        case klass.to_s
+        when 'Note'
+          Note.searchable.import_with_parent
+        when 'Project', 'Snippet'
           klass.import
+        else
+          klass.import_with_parent
         end
 
         puts "done".color(:green)

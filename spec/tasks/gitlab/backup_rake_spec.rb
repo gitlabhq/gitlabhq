@@ -42,7 +42,7 @@ describe 'gitlab:app namespace rake task' do
       before do
         allow(Dir).to receive(:glob).and_return([])
         allow(Dir).to receive(:chdir)
-        allow(File).to receive(:exists?).and_return(true)
+        allow(File).to receive(:exist?).and_return(true)
         allow(Kernel).to receive(:system).and_return(true)
         allow(FileUtils).to receive(:cp_r).and_return(true)
         allow(FileUtils).to receive(:mv).and_return(true)
@@ -53,7 +53,7 @@ describe 'gitlab:app namespace rake task' do
 
       let(:gitlab_version) { Gitlab::VERSION }
 
-      it 'should fail on mismatch' do
+      it 'fails on mismatch' do
         allow(YAML).to receive(:load_file).
           and_return({ gitlab_version: "not #{gitlab_version}" })
 
@@ -61,7 +61,7 @@ describe 'gitlab:app namespace rake task' do
           to raise_error(SystemExit)
       end
 
-      it 'should invoke restoration on match' do
+      it 'invokes restoration on match' do
         allow(YAML).to receive(:load_file).
           and_return({ gitlab_version: gitlab_version })
         expect(Rake::Task['gitlab:db:drop_tables']).to receive(:invoke)
@@ -108,7 +108,7 @@ describe 'gitlab:app namespace rake task' do
       end
 
       context 'archive file permissions' do
-        it 'should set correct permissions on the tar file' do
+        it 'sets correct permissions on the tar file' do
           expect(File.exist?(@backup_tar)).to be_truthy
           expect(File::Stat.new(@backup_tar).mode.to_s(8)).to eq('100600')
         end
@@ -128,7 +128,7 @@ describe 'gitlab:app namespace rake task' do
         end
       end
 
-      it 'should set correct permissions on the tar contents' do
+      it 'sets correct permissions on the tar contents' do
         tar_contents, exit_status = Gitlab::Popen.popen(
           %W{tar -tvf #{@backup_tar} db uploads.tar.gz repositories builds.tar.gz artifacts.tar.gz pages.tar.gz lfs.tar.gz registry.tar.gz}
         )
@@ -144,7 +144,7 @@ describe 'gitlab:app namespace rake task' do
         expect(tar_contents).not_to match(/^.{4,9}[rwx].* (database.sql.gz|uploads.tar.gz|repositories|builds.tar.gz|pages.tar.gz|artifacts.tar.gz|registry.tar.gz)\/$/)
       end
 
-      it 'should delete temp directories' do
+      it 'deletes temp directories' do
         temp_dirs = Dir.glob(
           File.join(Gitlab.config.backup.path, '{db,repositories,uploads,builds,artifacts,pages,lfs,registry}')
         )
@@ -155,7 +155,7 @@ describe 'gitlab:app namespace rake task' do
       context 'registry disabled' do
         let(:enable_registry) { false }
 
-        it 'should not create registry.tar.gz' do
+        it 'does not create registry.tar.gz' do
           tar_contents, exit_status = Gitlab::Popen.popen(
             %W{tar -tvf #{@backup_tar}}
           )
@@ -193,7 +193,7 @@ describe 'gitlab:app namespace rake task' do
         FileUtils.rm(@backup_tar)
       end
 
-      it 'should include repositories in all repository storages' do
+      it 'includes repositories in all repository storages' do
         tar_contents, exit_status = Gitlab::Popen.popen(
           %W{tar -tvf #{@backup_tar} repositories}
         )

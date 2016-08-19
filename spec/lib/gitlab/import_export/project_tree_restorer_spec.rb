@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
   describe 'restore project tree' do
-
     let(:user) { create(:user) }
     let(:namespace) { create(:namespace, owner: user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
@@ -71,6 +70,28 @@ describe Gitlab::ImportExport::ProjectTreeRestorer, services: true do
         restored_project_json
 
         expect(Milestone.find_by_description('test milestone').issues).not_to be_empty
+      end
+
+      context 'Merge requests' do
+        before do
+          restored_project_json
+        end
+
+        it 'always has the new project as a target' do
+          expect(MergeRequest.find_by_title('MR1').target_project).to eq(project)
+        end
+
+        it 'has the same source project as originally if source/target are the same' do
+          expect(MergeRequest.find_by_title('MR1').source_project).to eq(project)
+        end
+
+        it 'has the new project as target if source/target differ' do
+          expect(MergeRequest.find_by_title('MR2').target_project).to eq(project)
+        end
+
+        it 'has no source if source/target differ' do
+          expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+        end
       end
     end
   end

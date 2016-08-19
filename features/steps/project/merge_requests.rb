@@ -497,6 +497,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click Side-by-side Diff tab' do
     find('a', text: 'Side-by-side').trigger('click')
+
+    # Waits for load
+    expect(page).to have_css('.parallel')
   end
 
   step 'I should see comments on the side-by-side diff page' do
@@ -506,11 +509,13 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill in merge request search with "Fe"' do
+    sleep 1
     fill_in 'issue_search', with: "Fe"
   end
 
   step 'I click the "Target branch" dropdown' do
     sleep 0.5
+    expect(page).to have_content('Target branch')
     first('.target_branch').click
   end
 

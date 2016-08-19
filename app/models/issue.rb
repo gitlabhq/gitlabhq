@@ -8,6 +8,7 @@ class Issue < ActiveRecord::Base
   include Taskable
   include Spammable
   include Elastic::IssuesSearch
+  include FasterCacheKeys
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'
@@ -42,6 +43,9 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
   scope :order_weight_desc, -> { reorder('weight IS NOT NULL, weight DESC') }
   scope :order_weight_asc, -> { reorder('weight ASC') }
+
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
 
   state_machine :state, initial: :opened do
     event :close do
@@ -274,5 +278,10 @@ class Issue < ActiveRecord::Base
 
   def overdue?
     due_date.try(:past?) || false
+  end
+
+  # Only issues on public projects should be checked for spam
+  def check_for_spam?
+    project.public?
   end
 end

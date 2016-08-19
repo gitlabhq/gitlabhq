@@ -61,21 +61,26 @@ module API
           name: @branch.name
         }
 
-        unless developers_can_merge.nil?
-          protected_branch_params.merge!({
-            merge_access_level_attributes: {
-              access_level: developers_can_merge ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-            }
-          })
+        # If `developers_can_merge` is switched off, _all_ `DEVELOPER`
+        # merge_access_levels need to be deleted.
+        if developers_can_merge == false
+          protected_branch.merge_access_levels.where(access_level: Gitlab::Access::DEVELOPER).destroy_all
         end
 
-        unless developers_can_push.nil?
-          protected_branch_params.merge!({
-            push_access_level_attributes: {
-              access_level: developers_can_push ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
-            }
-          })
+        # If `developers_can_push` is switched off, _all_ `DEVELOPER`
+        # push_access_levels need to be deleted.
+        if developers_can_push == false
+          protected_branch.push_access_levels.where(access_level: Gitlab::Access::DEVELOPER).destroy_all
         end
+
+        protected_branch_params.merge!(
+          merge_access_levels_attributes: [{
+            access_level: developers_can_merge ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          }],
+          push_access_levels_attributes: [{
+            access_level: developers_can_push ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          }]
+        )
 
         if protected_branch
           service = ProtectedBranches::UpdateService.new(user_project, current_user, protected_branch_params)

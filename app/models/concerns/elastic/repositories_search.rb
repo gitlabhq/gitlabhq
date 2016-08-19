@@ -12,7 +12,7 @@ module Elastic
       end
 
       def self.repositories_count
-        Project.count
+        Project.cached_count
       end
 
       def client_for_indexing

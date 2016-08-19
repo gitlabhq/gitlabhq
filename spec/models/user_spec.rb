@@ -167,7 +167,7 @@ describe User, models: true do
             allow_any_instance_of(ApplicationSetting).to receive(:domain_whitelist).and_return(['*.example.com'])
           end
 
-          it 'should give priority to whitelist and allow info@test.example.com' do
+          it 'gives priority to whitelist and allow info@test.example.com' do
             user = build(:user, email: 'info@test.example.com')
             expect(user).to be_valid
           end
@@ -318,18 +318,18 @@ describe User, models: true do
   end
 
   describe '#generate_password' do
-    it "should execute callback when force_random_password specified" do
+    it "executes callback when force_random_password specified" do
       user = build(:user, force_random_password: true)
       expect(user).to receive(:generate_password)
       user.save
     end
 
-    it "should not generate password by default" do
+    it "does not generate password by default" do
       user = create(:user, password: 'abcdefghe')
       expect(user.password).to eq('abcdefghe')
     end
 
-    it "should generate password when forcing random password" do
+    it "generates password when forcing random password" do
       allow(Devise).to receive(:friendly_token).and_return('123456789')
       user = create(:user, password: 'abcdefg', force_random_password: true)
       expect(user.password).to eq('12345678')
@@ -337,7 +337,7 @@ describe User, models: true do
   end
 
   describe 'authentication token' do
-    it "should have authentication token" do
+    it "has authentication token" do
       user = create(:user)
       expect(user.authentication_token).not_to be_blank
     end
@@ -444,7 +444,7 @@ describe User, models: true do
   describe 'blocking user' do
     let(:user) { create(:user, name: 'John Smith') }
 
-    it "should block user" do
+    it "blocks user" do
       user.block
       expect(user.blocked?).to be_truthy
     end
@@ -515,7 +515,7 @@ describe User, models: true do
     describe 'with defaults' do
       let(:user) { User.new }
 
-      it "should apply defaults to user" do
+      it "applies defaults to user" do
         expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
         expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
         expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
@@ -526,7 +526,7 @@ describe User, models: true do
     describe 'with default overrides' do
       let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: 1) }
 
-      it "should apply defaults to user" do
+      it "applies defaults to user" do
         expect(user.projects_limit).to eq(123)
         expect(user.can_create_group).to be_falsey
         expect(user.theme_id).to eq(1)
@@ -616,7 +616,7 @@ describe User, models: true do
   describe 'by_username_or_id' do
     let(:user1) { create(:user, username: 'foo') }
 
-    it "should get the correct user" do
+    it "gets the correct user" do
       expect(User.by_username_or_id(user1.id)).to eq(user1)
       expect(User.by_username_or_id('foo')).to eq(user1)
       expect(User.by_username_or_id(-1)).to be_nil
@@ -628,7 +628,7 @@ describe User, models: true do
     let(:username) { 'John' }
     let!(:user) { create(:user, username: username) }
 
-    it 'should get the correct user' do
+    it 'gets the correct user' do
       expect(User.by_login(user.email.upcase)).to eq user
       expect(User.by_login(user.email)).to eq user
       expect(User.by_login(username.downcase)).to eq user
@@ -653,7 +653,7 @@ describe User, models: true do
   describe 'all_ssh_keys' do
     it { is_expected.to have_many(:keys).dependent(:destroy) }
 
-    it "should have all ssh keys" do
+    it "has all ssh keys" do
       user = create :user
       key = create :key, key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD33bWLBxu48Sev9Fert1yzEO4WGcWglWF7K/AwblIUFselOt/QdOL9DSjpQGxLagO1s9wl53STIO8qGS4Ms0EJZyIXOEFMjFJ5xmjSy+S37By4sG7SsltQEHMxtbtFOaW5LV2wCrX+rUsRNqLMamZjgjcPO0/EgGCXIGMAYW4O7cwGZdXWYIhQ1Vwy+CsVMDdPkPgBXqK7nR/ey8KMs8ho5fMNgB5hBw/AL9fNGhRw3QTD6Q12Nkhl4VZES2EsZqlpNnJttnPdp847DUsT6yuLRlfiQfz5Cn9ysHFdXObMN5VYIiPFwHeYCZp1X2S4fDZooRE8uOLTfxWHPXwrhqSH", user_id: user.id
 
@@ -664,12 +664,12 @@ describe User, models: true do
   describe '#avatar_type' do
     let(:user) { create(:user) }
 
-    it "should be true if avatar is image" do
+    it "is true if avatar is image" do
       user.update_attribute(:avatar, 'uploads/avatar.png')
       expect(user.avatar_type).to be_truthy
     end
 
-    it "should be false if avatar is html page" do
+    it "is false if avatar is html page" do
       user.update_attribute(:avatar, 'uploads/avatar.html')
       expect(user.avatar_type).to eq(["only images allowed"])
     end
@@ -930,7 +930,9 @@ describe User, models: true do
     subject { create(:user) }
     let!(:project1) { create(:project) }
     let!(:project2) { create(:project, forked_from_project: project1) }
-    let!(:push_data) { Gitlab::PushDataBuilder.build_sample(project2, subject) }
+    let!(:push_data) do
+      Gitlab::DataBuilder::Push.build_sample(project2, subject)
+    end
     let!(:push_event) { create(:event, action: Event::PUSHED, project: project2, target: project1, author: subject, data: push_data) }
 
     before do
@@ -987,6 +989,53 @@ describe User, models: true do
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
       end
+    end
+  end
+
+  describe '#projects_where_can_admin_issues' do
+    let(:user) { create(:user) }
+
+    it 'includes projects for which the user access level is above or equal to reporter' do
+      create(:project)
+      reporter_project = create(:project)
+      developer_project = create(:project)
+      master_project = create(:project)
+
+      reporter_project.team << [user, :reporter]
+      developer_project.team << [user, :developer]
+      master_project.team << [user, :master]
+
+      expect(user.projects_where_can_admin_issues.to_a).to eq([master_project, developer_project, reporter_project])
+      expect(user.can?(:admin_issue, master_project)).to eq(true)
+      expect(user.can?(:admin_issue, developer_project)).to eq(true)
+      expect(user.can?(:admin_issue, reporter_project)).to eq(true)
+    end
+
+    it 'does not include for which the user access level is below reporter' do
+      project = create(:project)
+      guest_project = create(:project)
+
+      guest_project.team << [user, :guest]
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, guest_project)).to eq(false)
+      expect(user.can?(:admin_issue, project)).to eq(false)
+    end
+
+    it 'does not include archived projects' do
+      project = create(:project)
+      project.update_attributes(archived: true)
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, project)).to eq(false)
+    end
+
+    it 'does not include projects for which issues are disabled' do
+      project = create(:project)
+      project.update_attributes(issues_enabled: false)
+
+      expect(user.projects_where_can_admin_issues.to_a).to be_empty
+      expect(user.can?(:admin_issue, project)).to eq(false)
     end
   end
 

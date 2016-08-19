@@ -88,7 +88,7 @@ describe JenkinsService do
     it 'returns the right status' do
       user = create(:user, username: 'username')
       project = create(:project, name: 'project')
-      push_sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_service = described_class.create(jenkins_params)
       stub_request(:post, jenkins_service.hook_url)
 
@@ -102,7 +102,7 @@ describe JenkinsService do
     it 'adds default web hook headers to the request' do
       user = create(:user, username: 'username')
       project = create(:project, name: 'project')
-      push_sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       jenkins_service = described_class.create(jenkins_params)
       stub_request(:post, jenkins_service.hook_url)
 
@@ -150,7 +150,7 @@ describe JenkinsService do
         expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
       end
 
-      it 'should reset password if url changed, even if setter called multiple times' do
+      it 'resets password if url changed, even if setter called multiple times' do
         @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
         @jenkins_service.jenkins_url = 'http://jenkins1.example.com/'
         @jenkins_service.save
@@ -176,7 +176,6 @@ describe JenkinsService do
         expect(@jenkins_service.password).to eq('password')
         expect(@jenkins_service.jenkins_url).to eq('http://jenkins_edited.example.com/')
       end
-
     end
   end
 end

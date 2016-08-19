@@ -3,10 +3,12 @@ require 'spec_helper'
 describe Gitlab::ClosingIssueExtractor, lib: true do
   let(:project)   { create(:project) }
   let(:project2)   { create(:project) }
+  let(:forked_project) { Projects::ForkService.new(project, project.creator).execute }
   let(:issue)     { create(:issue, project: project) }
   let(:issue2)     { create(:issue, project: project2) }
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
+  let(:fork_cross_reference) { issue.to_reference(forked_project) }
 
   subject { described_class.new(project, project.creator) }
 
@@ -275,6 +277,15 @@ describe Gitlab::ClosingIssueExtractor, lib: true do
       it do
         message = "Closes #{urls.namespace_project_issue_url(issue2.project.namespace, issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
+      end
+    end
+
+    context "with a cross-project fork reference" do
+      subject { described_class.new(forked_project, forked_project.creator) }
+
+      it do
+        message = "Closes #{fork_cross_reference}"
+        expect(subject.closed_by_message(message)).to be_empty
       end
     end
 

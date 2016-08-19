@@ -15,14 +15,14 @@ describe API::API do
 
   describe "GET /ldap/groups" do
     context "when unauthenticated" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/ldap/groups")
         expect(response.status).to eq 401
       end
     end
 
     context "when authenticated as user" do
-      it "should return an array of ldap groups" do
+      it "returns an array of ldap groups" do
         get api("/ldap/groups", user)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array
@@ -34,14 +34,14 @@ describe API::API do
 
   describe "GET /ldap/ldapmain/groups" do
     context "when unauthenticated" do
-      it "should return authentication error" do
+      it "returns authentication error" do
         get api("/ldap/ldapmain/groups")
         expect(response.status).to eq 401
       end
     end
 
     context "when authenticated as user" do
-      it "should return an array of ldap groups" do
+      it "returns an array of ldap groups" do
         get api("/ldap/ldapmain/groups", user)
         expect(response.status).to eq 200
         expect(json_response).to be_an Array

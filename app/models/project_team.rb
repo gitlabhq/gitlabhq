@@ -36,7 +36,7 @@ class ProjectTeam
   def add_users(users, access, current_user = nil)
     return false if group_member_lock
 
-    ProjectMember.add_users_into_projects(
+    ProjectMember.add_users_to_projects(
       [project.id],
       users,
       access,

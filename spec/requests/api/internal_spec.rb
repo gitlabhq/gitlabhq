@@ -323,6 +323,24 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /internal/merge_request_urls' do
+    let(:repo_name) { "#{project.namespace.name}/#{project.path}" }
+    let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
+
+    before do
+      project.team << [user, :developer]
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+    end
+
+    it 'returns link to create new merge request' do
+      expect(json_response).to match [{
+        "branch_name" => "new_branch",
+        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "new_merge_request" => true
+      }]
+    end
+  end
+
   def pull(key, project, protocol = 'ssh')
     post(
       api("/internal/allowed"),

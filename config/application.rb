@@ -110,7 +110,8 @@ module Gitlab
       end
     end
 
-    redis_config_hash = Gitlab::Redis.redis_store_options
+    # Use Redis caching across all environments
+    redis_config_hash = Gitlab::Redis.params
     redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash

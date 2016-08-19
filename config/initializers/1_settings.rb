@@ -166,6 +166,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
     server['external_groups'] = [] if server['external_groups'].nil?
+    server['sync_ssh_keys'] = 'sshPublicKey' if server['sync_ssh_keys'].to_s == 'true'
     Settings.ldap['servers'][key] = server
   end
 end
@@ -374,12 +375,12 @@ Settings.cron_jobs['ldap_group_sync_worker']['job_class'] = 'LdapGroupSyncWorker
 Settings.cron_jobs['geo_bulk_notify_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['geo_bulk_notify_worker']['cron'] ||= '*/10 * * * * *'
 Settings.cron_jobs['geo_bulk_notify_worker']['job_class'] ||= 'GeoBulkNotifyWorker'
-Settings.cron_jobs['gitlab_remove_project_export_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_remove_project_export_worker']['cron'] ||= '0 * * * *'
-Settings.cron_jobs['gitlab_remove_project_export_worker']['job_class'] = 'GitlabRemoveProjectExportWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.send(:cron_random_weekly_time)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
+Settings.cron_jobs['import_export_project_cleanup_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['import_export_project_cleanup_worker']['cron'] ||= '0 * * * *'
+Settings.cron_jobs['import_export_project_cleanup_worker']['job_class'] = 'ImportExportProjectCleanupWorker'
 Settings.cron_jobs['requests_profiles_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['requests_profiles_worker']['cron'] ||= '0 0 * * *'
 Settings.cron_jobs['requests_profiles_worker']['job_class'] = 'RequestsProfilesWorker'

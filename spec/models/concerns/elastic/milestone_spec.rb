@@ -14,14 +14,16 @@ describe Milestone, elastic: true do
   it "searches milestones" do
     project = create :empty_project
 
-    create :milestone, title: 'bla-bla term', project: project
-    create :milestone, description: 'bla-bla term', project: project
-    create :milestone, project: project
+    Sidekiq::Testing.inline! do
+      create :milestone, title: 'bla-bla term', project: project
+      create :milestone, description: 'bla-bla term', project: project
+      create :milestone, project: project
 
-    # The milestone you have no access to
-    create :milestone, title: 'bla-bla term'
+      # The milestone you have no access to
+      create :milestone, title: 'bla-bla term'
 
-    Gitlab::Elastic::Helper.refresh_index
+      Gitlab::Elastic::Helper.refresh_index
+    end
 
     options = { project_ids: [project.id] }
 

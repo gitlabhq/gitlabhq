@@ -17,7 +17,7 @@ feature 'Issue Sidebar', feature: true do
     end
 
     describe 'when clicking on edit labels', js: true do
-      it 'dropdown has an option to create a new label' do
+      it 'shows dropdown option to create a new label' do
         find('.block.labels .edit-link').click
 
         page.within('.block.labels') do
@@ -27,7 +27,7 @@ feature 'Issue Sidebar', feature: true do
     end
 
     context 'creating a new label', js: true do
-      it 'option to crate a new label is present' do
+      it 'shows option to crate a new label is present' do
         page.within('.block.labels') do
           find('.edit-link').click
 
@@ -35,7 +35,7 @@ feature 'Issue Sidebar', feature: true do
         end
       end
 
-      it 'dropdown switches to "create label" section' do
+      it 'shows dropdown switches to "create label" section' do
         page.within('.block.labels') do
           find('.edit-link').click
           click_link 'Create new'
@@ -44,7 +44,7 @@ feature 'Issue Sidebar', feature: true do
         end
       end
 
-      it 'new label is added' do
+      it 'adds new label' do
         page.within('.block.labels') do
           find('.edit-link').click
           sleep 1
@@ -79,7 +79,7 @@ feature 'Issue Sidebar', feature: true do
       visit_issue(project, issue)
     end
 
-    it 'should update weight in sidebar to 1' do
+    it 'updates weight in sidebar to 1' do
       page.within '.weight' do
         click_link 'Edit'
         click_link '1'
@@ -90,7 +90,7 @@ feature 'Issue Sidebar', feature: true do
       end
     end
 
-    it 'should update weight in sidebar to no weight' do
+    it 'updates weight in sidebar to no weight' do
       page.within '.weight' do
         click_link 'Edit'
         click_link 'No Weight'

@@ -45,7 +45,6 @@ feature 'Admin disables Git access protocol', feature: true do
       expect(page).to have_content("git clone #{project.ssh_url_to_repo}")
       expect(page).to have_selector('#clone-dropdown')
     end
-
   end
 
   def visit_project

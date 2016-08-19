@@ -5,23 +5,21 @@ module Elastic
     included do
       include ApplicationSearch
 
-      mappings do
-        indexes :id,            type: :integer
-
-        indexes :iid,           type: :integer
-        indexes :target_branch, type: :string,
-                                index_options: 'offsets'
-        indexes :source_branch, type: :string,
-                                index_options: 'offsets'
-        indexes :title,         type: :string,
-                                index_options: 'offsets'
-        indexes :description,   type: :string,
-                                index_options: 'offsets'
-        indexes :created_at,    type: :date
-        indexes :updated_at,    type: :date
-        indexes :state,         type: :string
-        indexes :merge_status,  type: :string
-
+      mappings _parent: { type: 'project' } do
+        indexes :id,                type: :integer
+        indexes :iid,               type: :integer
+        indexes :target_branch,     type: :string,
+                                    index_options: 'offsets'
+        indexes :source_branch,     type: :string,
+                                    index_options: 'offsets'
+        indexes :title,             type: :string,
+                                    index_options: 'offsets'
+        indexes :description,       type: :string,
+                                    index_options: 'offsets'
+        indexes :created_at,        type: :date
+        indexes :updated_at,        type: :date
+        indexes :state,             type: :string
+        indexes :merge_status,      type: :string
         indexes :source_project_id, type: :integer
         indexes :target_project_id, type: :integer
         indexes :author_id,         type: :integer
@@ -49,8 +47,16 @@ module Elastic
         ].each do |attr|
           data[attr.to_s] = self.send(attr)
         end
-        
+
         data
+      end
+
+      def es_parent
+        target_project_id
+      end
+
+      def self.nested?
+        true
       end
 
       def self.elastic_search(query, options: {})
@@ -60,13 +66,7 @@ module Elastic
           query_hash = basic_query_hash(%w(title^2 description), query)
         end
 
-        if options[:project_ids]
-          query_hash[:query][:bool][:filter] = [{
-            terms: {
-              target_project_id: [options[:project_ids]].flatten
-            }
-          }]
-        end
+        query_hash = project_ids_filter(query_hash, options[:project_ids], options[:public_and_internal_projects])
 
         self.__elasticsearch__.search(query_hash)
       end

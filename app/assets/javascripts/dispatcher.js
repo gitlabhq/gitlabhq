@@ -55,6 +55,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
@@ -62,6 +63,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -180,8 +182,8 @@
           new AdminEmailSelect();
           break;
         case 'projects:protected_branches:index':
-          new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);
-          new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
           break;
       }
       switch (path.first()) {
@@ -193,6 +195,12 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              switch (path[2]) {
+                case 'edit':
+                  new Labels();
+              }
           }
           break;
         case 'dashboard':
@@ -218,6 +226,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();

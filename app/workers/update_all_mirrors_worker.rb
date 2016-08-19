@@ -9,7 +9,7 @@ class UpdateAllMirrorsWorker
     fail_stuck_mirrors!
 
     Project.mirror.find_each(batch_size: 200) do |project|
-      project.update_mirror(delay: rand(30.minutes))
+      RepositoryUpdateMirrorDispatchWorker.perform_in(rand(30.minutes), project.id)
     end
   end
 

@@ -1,6 +1,9 @@
 require 'carrierwave/orm/activerecord'
 
+# Contains methods common to both GitLab CE and EE.
+# All EE methods should be in `EE::Group` only.
 class Group < Namespace
+  include EE::Group
   include Gitlab::ConfigHelper
   include Gitlab::VisibilityLevel
   include AccessRequestable

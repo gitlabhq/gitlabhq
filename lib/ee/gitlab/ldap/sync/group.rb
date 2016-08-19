@@ -5,8 +5,58 @@ module EE
         class Group
           attr_reader :provider, :group, :proxy
 
-          def self.execute(group, proxy)
-            self.new(group, proxy).update_permissions
+          class << self
+            # Sync members across all providers for the given group.
+            def execute_all_providers(group)
+              return unless ldap_sync_ready?(group)
+
+              group.start_ldap_sync
+              Rails.logger.debug { "Started syncing all providers for '#{group.name}' group" }
+
+              # Shuffle providers to prevent a scenario where sync fails after a time
+              # and only the first provider or two get synced. This shuffles the order
+              # so subsequent syncs should eventually get to all providers. Obviously
+              # we should avoid failure, but this is an additional safeguard.
+              ::Gitlab::LDAP::Config.providers.shuffle.each do |provider|
+                Sync::Proxy.open(provider) do |proxy|
+                  new(group, proxy).update_permissions
+                end
+              end
+
+              group.finish_ldap_sync
+              Rails.logger.debug { "Finished syncing all providers for '#{group.name}' group" }
+            end
+
+            # Sync members across a single provider for the given group.
+            def execute(group, proxy)
+              return unless ldap_sync_ready?(group)
+
+              group.start_ldap_sync
+              Rails.logger.debug { "Started syncing '#{proxy.provider}' provider for '#{group.name}' group" }
+
+              sync_group = new(group, proxy)
+              sync_group.update_permissions
+
+              group.finish_ldap_sync
+              Rails.logger.debug { "Finished syncing '#{proxy.provider}' provider for '#{group.name}' group" }
+            end
+
+            def ldap_sync_ready?(group)
+              fail_stuck_group(group)
+
+              return true unless group.ldap_sync_started?
+
+              Rails.logger.warn "Group '#{group.name}' is not ready for LDAP sync. Skipping"
+              false
+            end
+
+            def fail_stuck_group(group)
+              return unless group.ldap_sync_started?
+
+              if group.ldap_sync_last_sync_at < 1.hour.ago
+                group.mark_ldap_sync_as_failed('The sync took too long to complete.')
+              end
+            end
           end
 
           def initialize(group, proxy)
@@ -16,13 +66,10 @@ module EE
           end
 
           def update_permissions
-            lease = ::Gitlab::ExclusiveLease.new(
-              "ldap_group_sync:#{provider}:#{group.id}",
-              timeout: 3600
-            )
-            return unless lease.try_obtain
-
-            logger.debug { "Syncing '#{group.name}' group" }
+            unless group.ldap_sync_started?
+              logger.warn "Group '#{group.name}' LDAP sync status must be 'started' before updating permissions"
+              return
+            end
 
             access_levels = AccessLevels.new
             # Only iterate over group links for the current provider
@@ -37,10 +84,6 @@ module EE
 
             update_existing_group_membership(group, access_levels)
             add_new_members(group, access_levels)
-
-            group.update(last_ldap_sync_at: Time.now)
-
-            logger.debug { "Finished syncing '#{group.name}' group" }
           end
 
           private
@@ -122,9 +165,18 @@ module EE
             if access < ::Gitlab::Access::OWNER && group.last_owner?(user)
               warn_cannot_remove_last_owner(user, group)
             else
-              # If you pass the user object, instead of just user ID,
-              # it saves an extra user database query.
-              group.add_users([user], access, skip_notification: true)
+              # Temporarily handle access requests until
+              # gitlab-org/gitlab-ee#825 is properly resolved.
+              member = group.requesters.find_by(user_id: user.id)
+              if member.present?
+                member.access_level = access
+                member.requested_at = nil
+                member.save
+              else
+                # If you pass the user object, instead of just user ID,
+                # it saves an extra user database query.
+                group.add_users([user], access, skip_notification: true)
+              end
             end
           end
 

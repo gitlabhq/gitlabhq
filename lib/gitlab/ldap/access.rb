@@ -14,7 +14,7 @@ module Gitlab
         end
       end
 
-      def self.allowed?(user, options={})
+      def self.allowed?(user, options = {})
         self.open(user) do |access|
           # Whether user is allowed, or not, we should update
           # permissions to keep things clean
@@ -29,7 +29,7 @@ module Gitlab
         end
       end
 
-      def initialize(user, adapter=nil)
+      def initialize(user, adapter = nil)
         @adapter = adapter
         @user = user
         @provider = user.ldap_identity.provider
