@@ -74,6 +74,10 @@ class Gitlab::Seeder::Pipelines
       .merge(commands: '$ build command')
 
     Ci::Build.create!(attributes).tap do |build|
+      # We need to set build trace and artifacts after saving a build
+      # (id required), that is why we need `#tap` method instead of passing
+      # block directly to `Ci::Build#create!`.
+
       setup_artifacts(build)
       setup_build_log(build)
       build.save
@@ -93,11 +97,6 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_build_log(build)
-    ##
-    # We need to set build trace after saving a build (id required)
-    # That is why we need `#tap` method instead of passing block
-    # directly to `Ci::Build#create!`.
-    #
     if %w(running success failed).include?(build.status)
       build.trace = FFaker::Lorem.paragraphs(6).join("\n\n")
     end
