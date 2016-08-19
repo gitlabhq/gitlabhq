@@ -8,9 +8,13 @@
 }
 
 .is-dragging {
+  // Important because plugin sets inline CSS
+  opacity: 1!important;
+  
   * {
-    cursor: -webkit-grabbing;
-    cursor: grabbing;
+    // !important to make sure no style can override this when dragging
+    cursor: -webkit-grabbing!important;
+    cursor: grabbing!important;
   }
 }
 
@@ -252,11 +256,6 @@
 
 .is-ghost {
   opacity: 0.3;
-}
-
-.is-dragging {
-  // Important because plugin sets inline CSS
-  opacity: 1!important;
 }
 
 .card {

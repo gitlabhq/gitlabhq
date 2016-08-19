@@ -12,9 +12,12 @@
       scrollSensitivity: 100,
       scrollSpeed: 20,
       onStart () {
+        $('.has-tooltip').tooltip('hide')
+          .tooltip('disable');
         document.body.classList.add('is-dragging');
       },
       onEnd () {
+        $('.has-tooltip').tooltip('enable');
         document.body.classList.remove('is-dragging');
       }
     }

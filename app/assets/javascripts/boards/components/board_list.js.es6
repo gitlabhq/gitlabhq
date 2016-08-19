@@ -63,6 +63,10 @@
 
           Store.moving.issue = card.issue;
           Store.moving.list = card.list;
+
+          $('.has-tooltip').tooltip('hide')
+            .tooltip('disable');
+          document.body.classList.add('is-dragging');
         },
         onAdd: (e) => {
           gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
