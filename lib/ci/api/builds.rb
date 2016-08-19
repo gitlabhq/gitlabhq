@@ -101,6 +101,7 @@ module Ci
         #   POST /builds/:id/artifacts/authorize
         post ":id/artifacts/authorize" do
           require_gitlab_workhorse!
+          Gitlab::Workhorse.verify_api_request!(headers)
           not_allowed! unless Gitlab.config.artifacts.enabled
           build = Ci::Build.find_by_id(params[:id])
           not_found! unless build
@@ -113,7 +114,8 @@ module Ci
           end
 
           status 200
-          { TempPath: ArtifactUploader.artifacts_upload_path }
+          content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
+          Gitlab::Workhorse.artifact_upload_ok
         end
 
         # Upload artifacts to build - Runners only

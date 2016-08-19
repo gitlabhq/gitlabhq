@@ -230,7 +230,8 @@ describe Ci::API::API do
       let(:post_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:delete_url) { ci_api("/builds/#{build.id}/artifacts") }
       let(:get_url) { ci_api("/builds/#{build.id}/artifacts") }
-      let(:headers) { { "GitLab-Workhorse" => "1.0" } }
+      let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
+      let(:headers) { { "GitLab-Workhorse" => "1.0", Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
       let(:headers_with_token) { headers.merge(Ci::API::Helpers::BUILD_TOKEN_HEADER => build.token) }
 
       before { build.run! }
@@ -240,13 +241,21 @@ describe Ci::API::API do
           it "using token as parameter" do
             post authorize_url, { token: build.token }, headers
             expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
           end
 
           it "using token as header" do
             post authorize_url, {}, headers_with_token
             expect(response).to have_http_status(200)
+            expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response["TempPath"]).not_to be_nil
+          end
+
+          it "reject requests that did not go through gitlab-workhorse" do
+            headers.delete('Gitlab-Workhorse-Api-Request')
+            post authorize_url, { token: build.token }, headers
+            expect(response).to have_http_status(500)
           end
         end
 
