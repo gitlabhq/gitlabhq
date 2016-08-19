@@ -31,9 +31,8 @@
       this.input
         .on('keydown', function (e) {
           var keyCode = e.which;
-
           if (keyCode === 13) {
-            e.preventDefault()
+            e.preventDefault();
           }
         })
         .on('keyup', function(e) {
@@ -179,7 +178,7 @@
   })();
 
   GitLabDropdown = (function() {
-    var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, currentIndex;
+    var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, currentIndex;
 
     LOADING_CLASS = "is-loading";
 
@@ -219,7 +218,7 @@
       if (this.options.data) {
         if (_.isObject(this.options.data) && !_.isFunction(this.options.data)) {
           this.fullData = this.options.data;
-  	      currentIndex = -1
+          currentIndex = -1;
           this.parseData(this.options.data);
         } else {
           this.remote = new GitLabDropdownRemote(this.options.data, {
@@ -619,7 +618,7 @@
       if ($el.length) {
         $el.first().trigger('click');
         var href = $el.attr('href');
-  	    if (href && href !== '#') Turbolinks.visit(href);
+        if (href && href !== '#') Turbolinks.visit(href);
       }
     };
 
@@ -655,8 +654,6 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
-            e.preventDefault()
-  	        e.stopImmediatePropagation()
             return _this.selectRowAtIndex(currentIndex);
           }
         };
@@ -687,8 +684,8 @@
       listItemBottom = listItemTop + listItemHeight;
       if (!index) {
         $dropdownContent.scrollTop(0)
-	    } else if (index === ($listItems.length - 1)) {
-  	    $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));
+      } else if (index === ($listItems.length - 1)) {
+        $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));
       } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop)) {
         $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom + CURSOR_SELECT_SCROLL_PADDING);
       } else if (listItemTop < (dropdownContentTop + dropdownScrollTop)) {

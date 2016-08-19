@@ -226,11 +226,11 @@
           this.restoreOriginalState();
           break;
         case KEYCODE.ENTER:
-    	    this.disableAutocomplete();
+          this.disableAutocomplete();
           break;
-    	  case KEYCODE.UP:
+        case KEYCODE.UP:
         case KEYCODE.DOWN:
-    	   return;
+          return;
         default:
           if (this.searchInput.val() === '') {
             this.disableAutocomplete();
