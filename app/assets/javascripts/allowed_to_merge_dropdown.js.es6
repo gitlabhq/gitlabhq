@@ -3,7 +3,7 @@
 (global => {
   global.gl = global.gl || {};
 
-  class allowedToMergeDropdown extends gl.ProtectedBranchAccessDropdown {
+  class AllowedToMergeDropdown extends gl.ProtectedBranchAccessDropdown {
     fieldName(selectedItem) {
       let fieldName = '';
       let typeToName = {
@@ -43,6 +43,6 @@
     }
   }
 
-  global.gl.allowedToMergeDropdown = allowedToMergeDropdown;
+  global.gl.AllowedToMergeDropdown = AllowedToMergeDropdown;
 
 })(window);

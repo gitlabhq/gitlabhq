@@ -15,14 +15,14 @@
       this.onSelectCallback = this.onSelect.bind(this);
 
       // Allowed to Merge dropdown
-      new gl.allowedToMergeDropdown({
+      new gl.AllowedToMergeDropdown({
         $dropdown: $allowedToMergeDropdown,
         accessLevelsData: gon.merge_access_levels,
         onSelect: this.onSelectCallback
       });
 
       // Allowed to Push dropdown
-      new gl.allowedToPushDropdown({
+      new gl.AllowedToPushDropdown({
         $dropdown: $allowedToPushDropdown,
         accessLevelsData: gon.push_access_levels,
         onSelect: this.onSelectCallback

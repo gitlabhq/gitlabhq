@@ -33,7 +33,7 @@
 
     buildDropdowns() {
       // Allowed to merge dropdown
-      new gl.allowedToMergeDropdown({
+      new gl.AllowedToMergeDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
         accessLevelsData: gon.merge_access_levels,
         $dropdown: this.$allowedToMergeDropdown,
@@ -42,7 +42,7 @@
       });
 
       // Allowed to push dropdown
-      new gl.allowedToPushDropdown({
+      new gl.AllowedToPushDropdown({
         accessLevel: ACCESS_LEVELS.PUSH,
         accessLevelsData: gon.push_access_levels,
         $dropdown: this.$allowedToPushDropdown,
