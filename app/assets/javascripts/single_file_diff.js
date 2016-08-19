@@ -35,10 +35,16 @@
       this.isOpen = !this.isOpen;
       if (!this.isOpen && !this.hasError) {
         this.content.hide();
-        return this.collapsedContent.show();
+        this.collapsedContent.show();
+        if (typeof DiffNotesApp !== 'undefined') {
+          DiffNotesApp.compileComponents();
+        }
       } else if (this.content) {
         this.collapsedContent.hide();
-        return this.content.show();
+        this.content.show();
+        if (typeof DiffNotesApp !== 'undefined') {
+          DiffNotesApp.compileComponents();
+        }
       } else {
         return this.getContentHTML();
       }
@@ -57,7 +63,11 @@
             _this.hasError = true;
             _this.content = $(ERROR_HTML);
           }
-          return _this.collapsedContent.after(_this.content);
+          _this.collapsedContent.after(_this.content);
+
+          if (typeof DiffNotesApp !== 'undefined') {
+            DiffNotesApp.compileComponents();
+          }
         };
       })(this));
     };

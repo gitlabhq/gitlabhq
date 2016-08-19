@@ -383,3 +383,80 @@ ul.notes {
     color: $gl-link-color;
   }
 }
+
+.line-resolve-all-container {
+  .btn-group {
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+
+  .discussion-next-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.line-resolve-all {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  &.has-next-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .line-resolve-btn {
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+}
+
+.line-resolve-text {
+  vertical-align: middle;
+}
+
+.line-resolve-btn {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: 0;
+
+  &.is-disabled {
+    cursor: default;
+  }
+
+  &:not(.is-disabled):hover,
+  &:not(.is-disabled):focus,
+  &.is-active {
+    color: $gl-text-green;
+
+    svg path {
+      fill: $gl-text-green;
+    }
+  }
+
+  svg {
+    position: relative;
+    color: $notes-action-color;
+
+    path {
+      fill: $notes-action-color;
+    }
+  }
+}
+
+.discussion-next-btn {
+  svg {
+    margin: 0;
+    
+    path {
+      fill: $gray-darkest;
+    }
+  }
+}

@@ -89,6 +89,7 @@
       if (action === 'show') {
         action = 'notes';
       }
+      this.currentAction = action;
       new_state = this._location.pathname.replace(/\/(commits|diffs|builds|pipelines)(\.html)?\/?$/, '');
       if (action !== 'notes') {
         new_state += "/" + action;
@@ -127,6 +128,11 @@
         success: (function(_this) {
           return function(data) {
             $('#diffs').html(data.html);
+
+            if (typeof DiffNotesApp !== 'undefined') {
+              DiffNotesApp.compileComponents();
+            }
+
             gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
             $('#diffs .js-syntax-highlight').syntaxHighlight();
             $('#diffs .diff-file').singleFileDiff();

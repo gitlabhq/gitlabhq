@@ -685,12 +685,16 @@ ActiveRecord::Schema.define(version: 20160818205718) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",            default: false, null: false
+    t.boolean  "system",                 default: false, null: false
     t.text     "st_diff"
     t.integer  "updated_by_id"
     t.string   "type"
     t.text     "position"
     t.text     "original_position"
+    t.datetime "resolved_at"
+    t.integer  "resolved_by_id"
+    t.string   "discussion_id"
+    t.string   "original_discussion_id"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
