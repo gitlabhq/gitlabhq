@@ -101,8 +101,8 @@
 .board {
   display: -webkit-flex;
   display: flex;
-  min-width: calc(100vw - 15px);
-  max-width: calc(100vw - 15px);
+  min-width: calc(85vw - 15px);
+  max-width: calc(85vw - 15px);
   margin-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
@@ -154,14 +154,6 @@
   padding: $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
-
-  .board-mobile-handle {
-    position: relative;
-    left: 0;
-    top: 1px;
-    margin-top: 0;
-    margin-right: 5px;
-  }
 }
 
 .board-search-container {
@@ -269,11 +261,7 @@
   list-style: none;
 
   &.user-can-drag {
-    padding-left: ($gl-padding * 2);
-
-    @media (min-width: $screen-sm-min) {
-      padding-left: $gl-padding;
-    }
+    padding-left: $gl-padding;
   }
 
   &:not(:last-child) {
@@ -291,17 +279,6 @@
 
   .confidential-icon {
     margin-right: 5px;
-  }
-}
-
-.board-mobile-handle {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  margin-top: (-15px / 2);
-
-  @media (min-width: $screen-sm-min) {
-    display: none;
   }
 }
 
