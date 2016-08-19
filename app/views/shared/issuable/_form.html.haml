@@ -121,7 +121,7 @@
     = label_tag :move_to_project_id, 'Move', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id) }
+        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id), page_size: MoveToProjectFinder::PAGE_SIZE }
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }

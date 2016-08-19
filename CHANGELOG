@@ -125,6 +125,7 @@ v 8.11.0 (unreleased)
   - edit_blob_link will use blob passed onto the options parameter
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
+  - Move to project dropdown with infinite scroll for better performance
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Add all builds into stage/job dropdowns on builds page
   - Change requests_profiles resource constraint to catch virtually any file
