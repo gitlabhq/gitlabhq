@@ -909,7 +909,7 @@ GET /projects/:id/merge_requests/:merge_request_id/versions
 | `merge_request_id` | integer | yes | The ID of the merge request |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
 ```
 
 Example response:
@@ -951,7 +951,7 @@ GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
 | `version_id` | integer | yes | The ID of the merge request diff version |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
 ```
 
 Example response:
