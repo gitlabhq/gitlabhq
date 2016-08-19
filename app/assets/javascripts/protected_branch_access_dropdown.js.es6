@@ -46,14 +46,6 @@
       });
     }
 
-    fieldName() {
-      throw new Error('No fieldName method defined');
-    }
-
-    getActiveIds() {
-      throw new Error('No getActiveIds method defined');
-    }
-
     toggleLabel(selectedItem, el) {
       let currentItems = this.$dropdown.siblings('.dropdown-menu').find('.is-active');
       let types = _.groupBy(currentItems, (item) => { return item.dataset.type; });
@@ -139,6 +131,45 @@
 
     roleRowHtml(role, isActive) {
       return `<li><a href='#' class='${isActive ? 'is-active' : ''}' data-type='${role.type}'>${role.text}</a></li>`;
+    }
+
+    fieldName(selectedItem) {
+      let fieldName = '';
+      let typeToName = {
+        role: 'access_level',
+        user: 'user_id',
+      };
+      let $input = this.$wrap.find(`input[name$="[${typeToName[selectedItem.type]}]"][value="${selectedItem.id}"]`);
+
+      if ($input.length) {
+        // If input exists return actual name
+        fieldName = $input.attr('name');
+      } else {
+        // If not suggest a name
+        fieldName = `protected_branch[${this.accessLevel}_attributes][${this.inputCount}][access_level]`; // Role by default
+
+        if (selectedItem.type === 'user') {
+          fieldName = `protected_branch[${this.accessLevel}_attributes][${this.inputCount}][user_id]`;
+        }
+      }
+
+      return fieldName;
+    }
+
+    getActiveIds() {
+      let selected = [];
+      
+      this.$wrap
+          .find('input[data-type]')
+          .map((i, el) => {
+            const $el = $(el);
+            selected.push({
+              id: parseInt($el.val()),
+              type: $el.data('type')
+            });
+          });
+
+      return selected;
     }
   }
 
