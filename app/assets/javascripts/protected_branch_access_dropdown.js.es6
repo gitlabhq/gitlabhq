@@ -54,7 +54,7 @@
       if (_.isEmpty(types)) {
         label.push(this.defaultLabel);
       } else {
-        _.allKeys(types).map((type) => {
+        Object.keys(types).map((type) => {
           label.push(`${types[type].length} ${type}`);
         });
       }
