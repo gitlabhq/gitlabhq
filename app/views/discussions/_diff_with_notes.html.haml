@@ -7,7 +7,7 @@
 
   .diff-content.code.js-syntax-highlight
     %table
-      - discussions = { discussion.line_code => discussion }
+      - discussions = { discussion.original_line_code => discussion }
       = render partial: "projects/diffs/line",
         collection: discussion.truncated_diff_lines,
         as: :line,
