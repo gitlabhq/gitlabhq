@@ -203,7 +203,7 @@ class Ability
         rules -= project_archived_rules
       end
 
-      rules - project_disabled_features_rules(project)
+      (rules - project_disabled_features_rules(project)).uniq
     end
 
     def project_team_rules(team, user)

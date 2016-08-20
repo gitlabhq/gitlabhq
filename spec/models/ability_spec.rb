@@ -191,29 +191,14 @@ describe Ability, lib: true do
         admin = create(:admin)
 
         results = described_class.project_abilities(admin, project)
-        expect(results.count).to eq(90)
+
+        expect(results.count).to eq(68)
       end
 
       it 'returns permissions for an owner' do
         results = described_class.project_abilities(project.owner, project)
 
-        expect(results.count).to eq(90)
-      end
-
-      it 'returns permissions for a guest' do
-        project.team << [user, :guest]
-
-        results = described_class.project_abilities(user, project)
-
-        expect(results.count).to eq(22)
-      end
-
-      it 'returns permissions for a developer' do
-        project.team << [user, :developer]
-
-        results = described_class.project_abilities(user, project)
-
-        expect(results.count).to eq(22)
+        expect(results.count).to eq(68)
       end
 
       it 'returns permissions for a master' do
@@ -221,7 +206,23 @@ describe Ability, lib: true do
 
         results = described_class.project_abilities(user, project)
 
-        expect(results.count).to eq(22)
+        expect(results.count).to eq(60)
+      end
+
+      it 'returns permissions for a developer' do
+        project.team << [user, :developer]
+
+        results = described_class.project_abilities(user, project)
+
+        expect(results.count).to eq(44)
+      end
+
+      it 'returns permissions for a guest' do
+        project.team << [user, :guest]
+
+        results = described_class.project_abilities(user, project)
+
+        expect(results.count).to eq(21)
       end
     end
   end
