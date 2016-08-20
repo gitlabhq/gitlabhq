@@ -26,6 +26,15 @@ describe Projects::UpdateMirrorService do
 
         expect(project.repository.tag_names).to include('new-tag')
       end
+
+      it "only invokes GitTagPushService for tags pointing to commits" do
+        stub_fetch_mirror(project)
+
+        expect(GitTagPushService).to receive(:new).
+          with(project, project.owner, hash_including(ref: 'refs/tags/new-tag')).and_return(double(execute: true))
+
+        described_class.new(project, project.owner).execute
+      end
     end
 
     describe "updating branches" do
@@ -112,5 +121,8 @@ describe Projects::UpdateMirrorService do
 
     # New tag
     rugged.references.create('refs/tags/new-tag', masterrev)
+
+    # New tag that point to a blob
+    rugged.references.create('refs/tags/new-tag-on-blob', 'c74175afd117781cbc983664339a0f599b5bb34e')
   end
 end

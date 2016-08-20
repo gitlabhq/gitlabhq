@@ -62,14 +62,14 @@ module Projects
     end
 
     def update_tags(&block)
-      old_tags = repository.tags.each_with_object({}) { |tag, tags| tags[tag.name] = tag }
+      old_tags = repository_tags_with_target.each_with_object({}) { |tag, tags| tags[tag.name] = tag }
 
       fetch_result = block.call
       return fetch_result unless fetch_result
 
       repository.expire_tags_cache
 
-      tags = repository.tags
+      tags = repository_tags_with_target
 
       tags.each do |tag|
         old_tag = old_tags[tag.name]
@@ -91,6 +91,12 @@ module Projects
       end
 
       fetch_result
+    end
+
+    # In Git is possible to tag blob objects, and those blob objects don't point to a Git commit so those tags
+    # have no target.
+    def repository_tags_with_target
+      repository.tags.select(&:target)
     end
   end
 end
