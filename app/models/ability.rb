@@ -179,40 +179,46 @@ class Ability
     end
 
     def project_abilities(user, project)
-      rules = []
       key = "/user/#{user.id}/project/#{project.id}"
 
-      RequestStore.store[key] ||= begin
-        # Push abilities on the users team role
-        rules.push(*project_team_rules(project.team, user))
-
-        rules << :change_repository_storage if user.admin?
-
-        owner = user.admin? ||
-                project.owner == user ||
-                (project.group && project.group.has_owner?(user))
-
-        if owner
-          rules.push(*project_owner_rules)
-        end
-
-        if project.public? || (project.internal? && !user.external?)
-          rules.push(*public_project_rules)
-
-          # Allow to read builds for internal projects
-          rules << :read_build if project.public_builds?
-
-          unless owner || project.team.member?(user) || project_group_member?(project, user)
-            rules << :request_access if project.request_access_enabled
-          end
-        end
-
-        if project.archived?
-          rules -= project_archived_rules
-        end
-
-        rules - project_disabled_features_rules(project)
+      if RequestStore.active?
+        RequestStore.store[key] ||= uncached_project_abilities(user, project)
+      else
+        uncached_project_abilities(user, project)
       end
+    end
+
+    def uncached_project_abilities(user, project)
+      rules = []
+      # Push abilities on the users team role
+      rules.push(*project_team_rules(project.team, user))
+
+      rules << :change_repository_storage if user.admin?
+
+      owner = user.admin? ||
+              project.owner == user ||
+              (project.group && project.group.has_owner?(user))
+
+      if owner
+        rules.push(*project_owner_rules)
+      end
+
+      if project.public? || (project.internal? && !user.external?)
+        rules.push(*public_project_rules)
+
+        # Allow to read builds for internal projects
+        rules << :read_build if project.public_builds?
+
+        unless owner || project.team.member?(user) || project_group_member?(project, user)
+          rules << :request_access if project.request_access_enabled
+        end
+      end
+
+      if project.archived?
+        rules -= project_archived_rules
+      end
+
+      (rules - project_disabled_features_rules(project)).uniq
     end
 
     def project_team_rules(team, user)
