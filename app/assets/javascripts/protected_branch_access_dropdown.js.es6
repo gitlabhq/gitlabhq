@@ -51,12 +51,14 @@
       let types = _.groupBy(currentItems, (item) => { return item.dataset.type; });
       let label = [];
 
-      if (_.isEmpty(types)) {
-        label.push(this.defaultLabel);
-      } else {
+      if (currentItems.length) {
         Object.keys(types).map((type) => {
-          label.push(`${types[type].length} ${type}`);
+          let numberOfTypes = types[type].length;
+          let text = numberOfTypes === 1 ? type : `${type}s`;
+          label.push(`${numberOfTypes} ${text}`);
         });
+      } else {
+        label.push(this.defaultLabel);
       }
 
       return label.join(' and ');
