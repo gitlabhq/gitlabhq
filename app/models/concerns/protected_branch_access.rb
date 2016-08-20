@@ -2,8 +2,8 @@ module ProtectedBranchAccess
   extend ActiveSupport::Concern
 
   included do
-    validates_uniqueness_of :user_id, scope: :protected_branch, allow_nil: true
-    validates_uniqueness_of :access_level, scope: :protected_branch, unless: :user_id?, conditions: -> { where(user_id: nil) }
+    validates :user_id, uniqueness: { scope: :protected_branch, allow_nil: true }
+    validates :access_level, uniqueness: { scope: :protected_branch, unless: :user_id?, conditions: -> { where(user_id: nil) } }
   end
 
   def type
