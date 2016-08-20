@@ -14,7 +14,7 @@
       - else
         (branch was removed from repository)
 
-  = render partial: 'update_protected_branch', locals: { protected_branch: protected_branch }
+  = render partial: 'protected_branch_access_summary', locals: { protected_branch: protected_branch }
 
   - if can_admin_project
     %td

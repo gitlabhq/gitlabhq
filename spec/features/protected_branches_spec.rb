@@ -9,6 +9,13 @@ feature 'Projected Branches', feature: true, js: true do
 
   before { login_as(user) }
 
+  def set_allowed_to(operation, option = 'Masters')
+    find(".js-allowed-to-#{operation}").click
+    wait_for_ajax
+    click_on option
+    find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
+  end
+
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
@@ -19,6 +26,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "allows creating explicit protected branches" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('some-branch') }
@@ -32,6 +41,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content(commit.id[0..7]) }
@@ -40,6 +51,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "displays an error message if the named branch does not exist" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('some-branch')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('branch was removed') }
@@ -50,6 +63,8 @@ feature 'Projected Branches', feature: true, js: true do
     it "allows creating protected branches with a wildcard" do
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content('*-stable') }
@@ -63,6 +78,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       within(".protected-branches-list") { expect(page).to have_content("2 matching branches") }
@@ -75,6 +92,8 @@ feature 'Projected Branches', feature: true, js: true do
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       set_protected_branch_name('*-stable')
+      set_allowed_to('merge')
+      set_allowed_to('push')
       click_on "Protect"
 
       visit namespace_project_protected_branches_path(project.namespace, project)
@@ -89,6 +108,6 @@ feature 'Projected Branches', feature: true, js: true do
   end
 
   describe "access control" do
-    include_examples "protected branches > access control > CE"
+    include_examples "protected branches > access control > EE"
   end
 end

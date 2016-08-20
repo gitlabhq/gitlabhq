@@ -825,7 +825,13 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :protected_branches, only: [:index, :show, :create, :update, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+        resources :protected_branches, only: [:index, :show, :create, :update, :destroy, :patch], constraints: { id: Gitlab::Regex.git_reference_regex } do
+          scope module: :protected_branches do
+            resources :merge_access_levels, only: [:destroy]
+            resources :push_access_levels, only: [:destroy]
+          end
+        end
+
         resources :variables, only: [:index, :show, :update, :create, :destroy]
         resources :triggers, only: [:index, :create, :destroy]
         resource :mirror, only: [:show, :update] do

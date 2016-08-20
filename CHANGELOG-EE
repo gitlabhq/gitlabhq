@@ -10,6 +10,7 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - Allow LDAP `sync_ssh_keys` setting to be set to `true`
   - Removed unused GitLab GEO database index
+  - Restrict protected branch access to specific users !581
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
   - [Elastic] Significant improvement of global search performance
