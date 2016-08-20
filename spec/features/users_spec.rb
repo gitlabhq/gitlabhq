@@ -50,18 +50,16 @@ feature 'Users', feature: true, js: true do
       @username_field = find '.username'
     end
 
-    scenario 'shows an error icon if the username already exists' do
+    scenario 'shows an error border if the username already exists' do
       fill_in username_input, with: user.username
-      expect(@username_field).to have_css loading_icon
       wait_for_ajax
-      expect(@username_field).to have_css '.fa.error'
+      expect(@username_field).to have_css '.validation-error'
     end
 
-    scenario 'shows a success icon if the username is available' do
+    scenario 'doesn\'t show an error border if the username is available' do
       fill_in username_input, with: 'new-user'
-      expect(@username_field).to have_css loading_icon
       wait_for_ajax
-      expect(@username_field).to have_css '.fa.success'
+      expect(@username_field).not_to have_css '.validation-error'
     end
   end
 

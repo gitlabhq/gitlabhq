@@ -71,12 +71,10 @@
         position: absolute;
         right: 8px;
         top: 12px;
-        &.success {
-          color: $green-normal;
-        }
-        &.error {
-          color: $red-normal;
-        }
+      }
+      .validation-error {
+        border: 1px solid $red-normal;
+        box-shadow: 0 0 3px $red-normal;
       }
     }
   }

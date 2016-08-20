@@ -12,37 +12,27 @@
       this.iconElement  = $('<i></i>');
       this.inputElement.parent().append(this.iconElement);
 
-      let debounceTimeout = _.debounce((username) => {
+      const debounceTimeout = _.debounce((username) => {
         this.validateUsername(username);
       }, debounceTimeoutDuration);
 
       this.inputElement.keyup(() => {
-        this.iconElement.removeClass().tooltip('destroy');
-        let username = this.inputElement.val();
+        this.iconElement.removeClass();
+        const username = this.inputElement.val();
         if (username === '') return;
-        this.iconElement.addClass(loadingIconClasses);
         debounceTimeout(username);
       });
     }
 
     validateUsername(username) {
+      this.iconElement.addClass(loadingIconClasses);
       $.ajax({
         type: 'GET',
         url: `/u/${username}/exists`,
         dataType: 'json',
         success: (res) => {
-          if (res.exists) {
-            this.iconElement
-              .removeClass().addClass(errorIconClasses)
-              .tooltip({
-                title: usernameInUseMessage.replace(/\$1/g, username),
-                placement: tooltipPlacement
-              });
-          } else {
-            this.iconElement
-              .removeClass().addClass(successIconClasses)
-              .tooltip('destroy');
-          }
+          this.iconElement.removeClass();
+          if (res.exists) this.inputElement.addClass('validation-error');
         }
       });
     }
