@@ -1,7 +1,7 @@
 require 'spec_helper'
 require_relative '../email_shared_blocks'
 
-describe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
+xdescribe Gitlab::Email::Handler::CreateIssueHandler, lib: true do
   include_context :email_shared_context
   it_behaves_like :email_shared_examples
 

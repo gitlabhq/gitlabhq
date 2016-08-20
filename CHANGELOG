@@ -88,7 +88,6 @@ v 8.11.0 (unreleased)
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
-  - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Fix filter input alignment (ClemMakesApps)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
