@@ -131,7 +131,7 @@
   }
 
   .build-dropdown {
-    padding: 0 $gl-padding;
+    padding: $gl-padding 0;
 
     .dropdown-menu-toggle {
       margin-top: 8px;
@@ -145,7 +145,6 @@
   }
 
   .builds-container {
-    margin-top: $gl-padding;
     background-color: $white-light;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
