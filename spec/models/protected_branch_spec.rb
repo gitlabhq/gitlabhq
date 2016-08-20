@@ -40,7 +40,6 @@ describe ProtectedBranch, models: true do
         end
       end
 
-
       context "while checking uniqueness of a user-based #{human_association_name}" do
         it "allows a single #{human_association_name} for a user (per protected branch)" do
           first_protected_branch = create(:protected_branch, :remove_default_access_levels)
