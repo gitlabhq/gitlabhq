@@ -6,6 +6,11 @@ The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
 It can be seen like a light version of a [Kanban] or a [Scrum] board.
 
+Other interesting links:
+
+- [GitLab Issue Board landing page on about.gitlab.com][landing]
+- [YouTube video introduction to Issue Boards][youtube]
+
 ## Overview
 
 The Issue Board builds on GitLab's existing issue tracking functionality and
@@ -179,3 +184,5 @@ A few things to remember:
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)
 [create-labels]: ./labels.md#create-new-labels
 [label-priority]: ./labels.md#prioritize-labels
+[landing]: https://about.gitlab.com/solutions/issueboard
+[youtube]: https://www.youtube.com/watch?v=UWsJ8tkHAa8
