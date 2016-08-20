@@ -206,7 +206,7 @@ describe Ability, lib: true do
 
         results = described_class.project_abilities(user, project)
 
-        expect(results.count).to eq(60)
+        expect(results.count).to eq(64)
       end
 
       it 'returns permissions for a developer' do
