@@ -46,6 +46,21 @@ describe AutocompleteController do
         it { expect(body.size).to eq 1 }
         it { expect(body.first["username"]).to eq user.username }
       end
+
+      describe "GET #users that can push code" do
+        let(:reporter_user) { create(:user) }
+
+        before do
+          project.team << [reporter_user, :reporter]
+          get(:users, project_id: project.id, push_code: 'true')
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it { expect(body).to be_kind_of(Array) }
+        it { expect(body.size).to eq 2 }
+        it { expect(body.map { |user| user["username"] }).to match_array([user.username, user2.username]) }
+      end
     end
 
     context 'group members' do
