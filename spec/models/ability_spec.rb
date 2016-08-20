@@ -192,13 +192,13 @@ describe Ability, lib: true do
 
         results = described_class.project_abilities(admin, project)
 
-        expect(results.count).to eq(68)
+        expect(results.count).to eq(74)
       end
 
       it 'returns permissions for an owner' do
         results = described_class.project_abilities(project.owner, project)
 
-        expect(results.count).to eq(68)
+        expect(results.count).to eq(73)
       end
 
       it 'returns permissions for a master' do
