@@ -546,7 +546,7 @@ describe 'Issues', feature: true do
     end
   end
 
-  describe 'new issue by email' do
+  xdescribe 'new issue by email' do
     shared_examples 'show the email in the modal' do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
