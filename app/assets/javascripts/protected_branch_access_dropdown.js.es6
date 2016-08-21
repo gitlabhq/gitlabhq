@@ -10,8 +10,12 @@
         selectable: true,
         inputId: $dropdown.data('input-id'),
         fieldName: $dropdown.data('field-name'),
-        toggleLabel(item) {
-          return item.text;
+        toggleLabel(item, el) {
+          if (el.is('.is-active')) {
+            return item.text;
+          } else {
+            return 'Select';
+          }
         },
         clicked(item, $el, e) {
           e.preventDefault();
