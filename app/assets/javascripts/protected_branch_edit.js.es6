@@ -31,6 +31,9 @@
       const $allowedToMergeInput = this.$wrap.find(`input[name="${this.$allowedToMergeDropdown.data('fieldName')}"]`);
       const $allowedToPushInput = this.$wrap.find(`input[name="${this.$allowedToPushDropdown.data('fieldName')}"]`);
 
+      // Do not update if one dropdown has not selected any option
+      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return; 
+
       $.ajax({
         type: 'POST',
         url: this.$wrap.data('url'),
