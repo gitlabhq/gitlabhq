@@ -57,8 +57,8 @@ describe AutocompleteController do
         let(:body) { JSON.parse(response.body) }
 
         it { expect(body).to be_kind_of(Array) }
-        it { expect(body.size).to eq 2 }
-        it { expect(body.map { |user| user["username"] }).to match_array([user.username, user2.username]) }
+        it { expect(body.size).to eq 1 }
+        it { expect(body.map { |user| user["username"] }).to match_array([user.username]) }
       end
     end
 
