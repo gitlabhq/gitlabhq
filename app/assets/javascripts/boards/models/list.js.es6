@@ -59,7 +59,7 @@ class List {
   }
 
   canSearch () {
-    return this.type === 'backlog';
+    return ['backlog', 'done'].indexOf(this.type) > -1;
   }
 
   getIssues (emptyIssues = true) {

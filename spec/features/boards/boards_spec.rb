@@ -206,6 +206,16 @@ describe 'Issue Boards', feature: true, js: true do
     end
 
     context 'done' do
+      it 'is searchable' do
+        page.within(find('.board:nth-child(4)')) do
+          find('.form-control').set 'testing'
+
+          wait_for_vue_resource(spinner: false)
+
+          expect(page).to have_selector('.card', count: 0)
+        end
+      end
+
       it 'shows list of done issues' do
         expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
       end
