@@ -24,7 +24,8 @@
           .col-md-10
             .merge_access_levels-container
               = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-merge wide',
+                             options: { toggle_class: 'js-allowed-to-merge js-multiselect wide',
+                             dropdown_class: 'dropdown-menu-user dropdown-menu-selectable',
                              data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes' }})
         .form-group
           %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
@@ -32,7 +33,8 @@
           .col-md-10
             .push_access_levels-container
               = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-push wide',
+                             options: { toggle_class: 'js-allowed-to-push js-multiselect wide',
+                             dropdown_class: 'dropdown-menu-user dropdown-menu-selectable',
                              data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
 
     .panel-footer
