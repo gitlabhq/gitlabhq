@@ -17,8 +17,7 @@ feature 'Diff notes', js: true, feature: true do
 
     context 'when hovering over the parallel view diff file' do
       before(:each) do
-        visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-        click_link 'Side-by-side'
+        visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'parallel')
       end
 
       context 'with an old line on the left and no line on the right' do
@@ -74,8 +73,7 @@ feature 'Diff notes', js: true, feature: true do
 
     context 'when hovering over the inline view diff file' do
       before do
-        visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
-        click_link 'Inline'
+        visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'inline')
       end
 
       context 'with a new line' do
@@ -109,7 +107,6 @@ feature 'Diff notes', js: true, feature: true do
       expect(line[:num]).to have_css comment_button_class
 
       comment_on_line(line_holder, line)
-      wait_for_ajax
 
       assert_comment_persistence(line_holder)
     end
@@ -150,6 +147,7 @@ feature 'Diff notes', js: true, feature: true do
 
       notes_holder_input.fill_in 'note[note]', with: test_note_comment
       click_button 'Comment'
+      wait_for_ajax
     end
 
     def assert_comment_persistence(line_holder)
