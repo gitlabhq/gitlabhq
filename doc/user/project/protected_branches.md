@@ -36,7 +36,7 @@ that the `master` branch is protected by default.
 
 ## Using the Allowed to merge and Allowed to push settings
 
-> This feature was [introduced][ce-5081] in GitLab 8.11.
+> [Introduced][ce-5081] in GitLab 8.11.
 
 Since GitLab 8.11, we added another layer of branch protection which provides
 more granular management of protected branches. The "Developers can push"
@@ -81,7 +81,7 @@ Click **Protect** and the branch will appear in the "Protected branch" list.
 
 ## Wildcard protected branches
 
-> This feature was [introduced][ce-4665] in GitLab 8.10.
+> [Introduced][ce-4665] in GitLab 8.10.
 
 You can specify a wildcard protected branch, which will protect all branches
 matching the wildcard. For example:
