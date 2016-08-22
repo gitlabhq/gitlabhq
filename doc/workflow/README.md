@@ -2,7 +2,6 @@
 
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Change your time zone](timezone.md)
-- [Create an issue by email](create_issue_from_email.md)
 - [Description templates](../user/project/description_templates.md)
 - [Feature branch workflow](workflow.md)
 - [GitLab Flow](gitlab_flow.md)

@@ -8,8 +8,7 @@ detected and executed. The commands are removed from the issue, merge request or
 comment body before it is saved and will not be visible to anyone else.
 
 As these commands are text-based, they are also interpreted when replying by
-email, or when a new issue is [created by email](create_issue_from_email.md).
-This lets you have control over GitLab without even going through the UI.
+email.
 
 Below is a list of all of the available commands and descriptions about what
 they do.
