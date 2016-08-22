@@ -93,6 +93,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
+        if @merge_request_diff != @merge_request.merge_request_diff
+          # Disable comments if browsing older version of the diff
+          @diff_notes_disabled = true
+        end
+
         @diffs = @merge_request_diff.diffs(diff_options)
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
