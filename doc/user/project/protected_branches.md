@@ -97,17 +97,20 @@ all matching branches:
 
 ![Protected branch matches](img/protected_branches_matches.png)
 
-## Restrict the creation of protected branches
-
 ## Changelog
+
+**8.11**
+
+- Allow creating protected branches that can't be pushed to [gitlab-org/gitlab-ce!5081][ce-5081]
 
 **8.10**
 
-- Allow specifying protected branches using wildcards [gitlab-org/gitlab-ce!5081][ce-5081]
-- Allow creating protected branches that can't be pushed to [gitlab-org/gitlab-ce!5081][ce-4665]
+- Allow developers to merge into a protected branch without having push access [gitlab-org/gitlab-ce!4892][ce-4892]
+- Allow specifying protected branches using wildcards [gitlab-org/gitlab-ce!4665][ce-4665]
 
 ---
 
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665 "Allow specifying protected branches using wildcards"
+[ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
 [ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
 [ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users
