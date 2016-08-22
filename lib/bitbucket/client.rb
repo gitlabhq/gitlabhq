@@ -4,9 +4,19 @@ module Bitbucket
       @connection = options.fetch(:connection, Connection.new(options))
     end
 
+
+    def repos
+      relative_path = "/repositories/#{user.username}"
+      paginator = Paginator.new(connection, relative_path, :repo)
+
+      Collection.new(paginator)
+    end
+
     def user
-      parsed_response = connection.get('/user')
-      Representation::User.new(parsed_response)
+      @user ||= begin
+        parsed_response = connection.get('/user')
+        Representation::User.new(parsed_response)
+      end
     end
 
     private
