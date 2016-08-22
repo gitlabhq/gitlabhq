@@ -18,7 +18,7 @@ By default, a protected branch does four simple things:
 See the [Changelog](#changelog) section for changes over time.
 
 >
->Added benefits for GitLab Enterprise Edition:
+>Additional functionality for GitLab Enterprise Edition:
 >
 >- Restrict push and merge access to [certain users][ee-restrict]
 
