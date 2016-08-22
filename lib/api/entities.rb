@@ -246,7 +246,7 @@ module API
       expose :commits, using: Entities::RepoCommit
 
       expose :diffs, using: Entities::RepoDiff do |compare, _|
-        compare.diffs(all_diffs: true).to_a
+        compare.raw_diffs(all_diffs: true).to_a
       end
     end
 
