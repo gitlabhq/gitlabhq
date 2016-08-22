@@ -616,9 +616,14 @@
       return this.dropdown.before($input);
     };
 
-    GitLabDropdown.prototype.selectRowAtIndex = function() {
+    GitLabDropdown.prototype.selectRowAtIndex = function(index) {
       var $el, selector;
-      selector = ".dropdown-content .is-focused";
+      // If we pass an option index
+      if (typeof index !== "undefined") {
+        selector = SELECTABLE_CLASSES + ":eq(" + index + ") a";
+      } else {
+        selector = ".dropdown-content .is-focused";
+      }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one " + selector;
       }
