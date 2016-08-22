@@ -4,6 +4,13 @@ module Bitbucket
       @connection = options.fetch(:connection, Connection.new(options))
     end
 
+    def issues(repo)
+      relative_path = "/repositories/#{repo}/issues"
+      paginator = Paginator.new(connection, relative_path, :issue)
+
+      Collection.new(paginator)
+    end
+
 
     def repo(name)
       parsed_response = connection.get("/repositories/#{name}")
