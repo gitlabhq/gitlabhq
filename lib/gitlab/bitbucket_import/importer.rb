@@ -5,18 +5,14 @@ module Gitlab
 
       def initialize(project)
         @project = project
-        @client = Client.from_project(@project)
+        @client = Bitbucket::Client.new(project.import_data.credentials)
         @formatter = Gitlab::ImportFormatter.new
       end
 
       def execute
-        import_issues if has_issues?
+        import_issues
 
         true
-      rescue ActiveRecord::RecordInvalid => e
-        raise Projects::ImportService::Error.new, e.message
-      ensure
-        Gitlab::BitbucketImport::KeyDeleter.new(project).execute
       end
 
       private
@@ -30,44 +26,40 @@ module Gitlab
         end
       end
 
-      def identifier
-        project.import_source
-      end
-
-      def has_issues?
-        client.project(identifier)["has_issues"]
+      def repo
+        @repo ||= client.repo(project.import_source)
       end
 
       def import_issues
-        issues = client.issues(identifier)
+        return unless repo.has_issues?
 
-        issues.each do |issue|
-          body = ''
-          reporter = nil
-          author = 'Anonymous'
+        client.issues(repo).each do |issue|
+          description = @formatter.author_line(issue.author)
+          description += issue.description
 
-          if issue["reported_by"] && issue["reported_by"]["username"]
-            reporter = issue["reported_by"]["username"]
-            author = reporter
-          end
+          issue = project.issues.create(
+            iid: issue.iid,
+            title: issue.title,
+            description: description,
+            state: issue.state,
+            author_id: gl_user_id(project, issue.author),
+            created_at: issue.created_at,
+            updated_at: issue.updated_at
+          )
 
-          body = @formatter.author_line(author)
-          body += issue["content"]
+          if issue.persisted?
+            client.issue_comments(repo, issue.iid).each do |comment|
+              note = @formatter.author_line(comment.author)
+              note += comment.note
 
-          comments = client.issue_comments(identifier, issue["local_id"])
-
-          if comments.any?
-            body += @formatter.comments_header
-          end
-
-          comments.each do |comment|
-            author = 'Anonymous'
-
-            if comment["author_info"] && comment["author_info"]["username"]
-              author = comment["author_info"]["username"]
+              issue.notes.create!(
+                project: project,
+                note: note,
+                author_id: gl_user_id(project, comment.author),
+                created_at: comment.created_at,
+                updated_at: comment.updated_at
+              )
             end
-
-            body += @formatter.comment(author, comment["utc_created_on"], comment["content"])
           end
 
           project.issues.create!(
@@ -77,8 +69,8 @@ module Gitlab
             author_id: gitlab_user_id(project, reporter)
           )
         end
-      rescue ActiveRecord::RecordInvalid => e
-        raise Projects::ImportService::Error, e.message
+      rescue ActiveRecord::RecordInvalid
+        nil
       end
     end
   end
