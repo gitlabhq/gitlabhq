@@ -265,26 +265,27 @@ class MergeRequest < ActiveRecord::Base
     @source_branch_sha || source_branch_head.try(:sha)
   end
 
-  def branch_merge_base_sha
-    branch_merge_base_commit.try(:sha)
+  def diff_refs
+    return unless diff_start_commit || diff_base_commit
+
+    Gitlab::Diff::DiffRefs.new(
+      base_sha:  diff_base_sha,
+      start_sha: diff_start_sha,
+      head_sha:  diff_head_sha
+    )
   end
 
-  def diff_refs
+  # Return diff_refs instance trying to not touch the git repository
+  def diff_sha_refs
     if merge_request_diff && merge_request_diff.diff_refs_by_sha?
       merge_request_diff.diff_refs
     else
-      start_sha = target_branch_sha
-      head_sha = source_branch_sha
-      base_sha = branch_merge_base_sha
-
-      if start_sha || base_sha
-        Gitlab::Diff::DiffRefs.new(
-          base_sha:  base_sha,
-          start_sha: start_sha,
-          head_sha:  head_sha
-        )
-      end
+      diff_refs
     end
+  end
+
+  def branch_merge_base_sha
+    branch_merge_base_commit.try(:sha)
   end
 
   def validate_branches
@@ -748,7 +749,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def has_complete_diff_refs?
-    diff_refs && diff_refs.complete?
+    diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
