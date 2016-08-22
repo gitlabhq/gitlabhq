@@ -13,15 +13,15 @@ module Gitlab
       def execute
         ::Projects::CreateService.new(
           current_user,
-          name: repo["name"],
-          path: repo["slug"],
-          description: repo["description"],
+          name: repo.name,
+          path: repo.slug,
+          description: repo.description,
           namespace_id: namespace.id,
-          visibility_level: repo["is_private"] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
-          import_type: "bitbucket",
-          import_source: "#{repo["owner"]}/#{repo["slug"]}",
-          import_url: "ssh://git@bitbucket.org/#{repo["owner"]}/#{repo["slug"]}.git",
-          import_data: { credentials: { bb_session: session_data } }
+          visibility_level: repo.visibility_level,
+          import_type: 'bitbucket',
+          import_source: repo.full_name,
+          import_url: repo.clone_url(@session_data[:token]),
+          import_data: { credentials: session_data }
         ).execute
       end
     end
