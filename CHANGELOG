@@ -31,6 +31,7 @@ v 8.12.0 (unreleased)
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
   - Replace animateEmoji timeout with eventListener (ClemMakesApps)
+  - Show badges in Milestone tabs. !5946 (Dan Rowden)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
@@ -364,9 +365,6 @@ v 8.10.1
   - Add links to the real markdown.md file for all GFM examples. !5458
 
 v 8.10.0
-  - Show badges in Milestone tabs
-
-v 8.10.0 (unreleased)
   - Fix profile activity heatmap to show correct day name (eanplatter)
   - Speed up ExternalWikiHelper#get_project_wiki_path
   - Expose {should,force}_remove_source_branch (Ben Boeckel)

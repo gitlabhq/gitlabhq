@@ -68,3 +68,14 @@
   border-bottom: 1px solid $border-color;
   padding: 20px 0;
 }
+
+@media (max-width: $screen-sm-min) {
+  .milestone-actions {
+    @include clearfix();
+    padding-top: $gl-vert-padding;
+
+    .btn:first-child {
+      margin-left: 0;
+    }
+  }
+}
