@@ -163,6 +163,7 @@ v 8.11.0 (unreleased)
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+  - Update merge_requests.md with a simpler way to check out a merge request. !5944
 
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
