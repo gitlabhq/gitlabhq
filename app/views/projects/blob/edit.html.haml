@@ -1,4 +1,7 @@
 - page_title "Edit", @blob.path, @ref
+- content_for :page_specific_javascripts do
+  = page_specific_javascript_tag('lib/ace.js')
+  = page_specific_javascript_tag('blob_edit/blob_edit_bundle.js')
 
 - if @conflict
   .alert.alert-danger
@@ -16,14 +19,10 @@
       = link_to '#preview', 'data-preview-url' => namespace_project_preview_blob_path(@project.namespace, @project, @id) do
         = editing_preview_title(@blob.name)
 
-  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form') do
+  = form_tag(namespace_project_update_blob_path(@project.namespace, @project, @id), method: :put, class: 'form-horizontal js-quick-submit js-requires-input js-edit-blob-form', data: blob_editor_paths) do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit_sha', @last_commit_sha
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
     = render 'projects/commit_button', ref: @ref, cancel_path: namespace_project_blob_path(@project.namespace, @project, @id)
-
-:javascript
-  blob = new EditBlob(gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}", "#{@blob.language.try(:ace_mode)}")
-  new NewCommitForm($('.js-edit-blob-form'))

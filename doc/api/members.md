@@ -86,7 +86,8 @@ Example response:
   "name": "Raymond Smith",
   "state": "active",
   "created_at": "2012-10-22T14:13:35Z",
-  "access_level": 30
+  "access_level": 30,
+  "expires_at": null
 }
 ```
 
@@ -106,6 +107,7 @@ POST /projects/:id/members
 | `id`      | integer/string  | yes | The group/project ID or path |
 | `user_id` | integer         | yes | The user ID of the new member |
 | `access_level` | integer | yes | A valid access level |
+| `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id?access_level=30
@@ -141,6 +143,7 @@ PUT /projects/:id/members/:user_id
 | `id`      | integer/string | yes | The group/project ID or path |
 | `user_id` | integer | yes   | The user ID of the member |
 | `access_level` | integer | yes | A valid access level |
+| `expires_at` | string | no | A date string in the format YEAR-MONTH-DAY |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/:id/members/:user_id?access_level=40

@@ -16,6 +16,9 @@
       - if @merge_request.open?
         .pull-right
           - if @merge_request.source_branch_exists?
+            - if koding_enabled? && @repository.koding_yml
+              = link_to koding_project_url(@merge_request.source_project, @merge_request.source_branch, @merge_request.commits.first.short_id), class: "btn inline btn-grouped btn-sm", target: '_blank' do
+                Run in IDE (Koding)
             = link_to "#modal_merge_info", class: "btn inline btn-grouped btn-sm", "data-toggle" => "modal" do
               Check out branch
 

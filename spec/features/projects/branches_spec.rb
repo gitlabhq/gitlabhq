@@ -20,7 +20,7 @@ describe 'Branches', feature: true do
 
   describe 'Find branches' do
     it 'shows filtered branches', js: true do
-      visit namespace_project_branches_path(project.namespace, project, project.id)
+      visit namespace_project_branches_path(project.namespace, project)
 
       fill_in 'branch-search', with: 'fix'
       find('#branch-search').native.send_keys(:enter)

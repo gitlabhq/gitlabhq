@@ -26,8 +26,6 @@
 /*= require bootstrap/tooltip */
 /*= require bootstrap/popover */
 /*= require select2 */
-/*= require ace-rails-ap */
-/*= require ace/ext-searchbox */
 /*= require underscore */
 /*= require dropzone */
 /*= require mousetrap */
@@ -153,7 +151,9 @@
       });
     });
     $('.remove-row').bind('ajax:success', function() {
-      return $(this).closest('li').fadeOut();
+      $(this).tooltip('destroy')
+        .closest('li')
+        .fadeOut();
     });
     $('.js-remove-tr').bind('ajax:before', function() {
       return $(this).hide();

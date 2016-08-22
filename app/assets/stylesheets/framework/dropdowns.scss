@@ -90,6 +90,15 @@
       width: 100%;
     }
   }
+
+  // Allows dynamic-width text in the dropdown toggle.
+  // Resizes to allow long text without overflowing the container.
+  &.dynamic {
+    width: auto;
+    min-width: 160px;
+    max-width: 100%;
+    padding-right: 25px;
+  }
 }
 
 .dropdown-menu,
