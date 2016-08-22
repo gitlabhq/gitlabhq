@@ -8,7 +8,10 @@
   - if show_boards_content
     .issue-board-dropdown-content
       %p
-        Each label that exists in your issue tracker can have its own dedicated list. Select a label below to add a list to your Board and it will automatically be populated with issues that have that label. To create a list for a label that doesn't exist yet, simply create the label below.
+        Each label that exists in your issue tracker can have its own dedicated
+        list. Select a label below to add a list to your Board and it will
+        automatically be populated with issues that have that label. To create
+        a list for a label that doesn't exist yet, simply create the label below.
   = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if @project && show_footer
