@@ -21,6 +21,12 @@ module Bitbucket
       end
     end
 
+    def pull_requests(repo)
+      relative_path = "/repositories/#{repo}/pullrequests"
+      paginator = Paginator.new(connection, relative_path, :pull_request)
+
+      Collection.new(paginator)
+    end
 
     def repo(name)
       parsed_response = connection.get("/repositories/#{name}")
