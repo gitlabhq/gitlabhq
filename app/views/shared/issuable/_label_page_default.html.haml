@@ -12,9 +12,6 @@
         list. Select a label below to add a list to your Board and it will
         automatically be populated with issues that have that label. To create
         a list for a label that doesn't exist yet, simply create the label below.
-        Learn more in the
-        = succeed "." do
-          = link_to "Issue Boards documentation", help_page_path("user/project/issue_board"), class: "underlined-link"
   = dropdown_filter(filter_placeholder)
   = dropdown_content
   - if @project && show_footer
