@@ -21,6 +21,7 @@
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab Pages](pages/README.md) Using GitLab Pages.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
+- [Koding](user/project/koding.md) Learn how to use Koding, the online IDE.
 
 ## Administrator documentation
 
@@ -38,6 +39,7 @@
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
+- [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
