@@ -5,6 +5,11 @@ module Bitbucket
     end
 
 
+    def repo(name)
+      parsed_response = connection.get("/repositories/#{name}")
+      Representation::Repo.new(parsed_response)
+    end
+
     def repos
       relative_path = "/repositories/#{user.username}"
       paginator = Paginator.new(connection, relative_path, :repo)
