@@ -3,7 +3,7 @@ class KodingController < ApplicationController
   layout 'koding'
 
   def index
-    path = File.join(Rails.root, 'doc/integration/koding-usage.md')
+    path = File.join(Rails.root, 'doc/user/project/koding.md')
     @markdown = File.read(path)
   end
 
