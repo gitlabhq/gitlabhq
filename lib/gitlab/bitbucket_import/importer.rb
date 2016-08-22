@@ -11,6 +11,7 @@ module Gitlab
 
       def execute
         import_issues
+        import_pull_requests
 
         true
       end
@@ -71,6 +72,36 @@ module Gitlab
         end
       rescue ActiveRecord::RecordInvalid
         nil
+      end
+
+      def import_pull_requests
+        pull_requests = client.pull_requests(repo)
+
+        pull_requests.each do |pull_request|
+          begin
+            description = @formatter.author_line(pull_request.author)
+            description += pull_request.description
+
+            project.merge_requests.create(
+              iid: pull_request.iid,
+              title: pull_request.title,
+              description: description,
+              source_project: project,
+              source_branch: pull_request.source_branch_name,
+              source_branch_sha: pull_request.source_branch_sha,
+              target_project: project,
+              target_branch: pull_request.target_branch_name,
+              target_branch_sha: pull_request.target_branch_sha,
+              state: pull_request.state,
+              author_id: gl_user_id(project, pull_request.author),
+              assignee_id: nil,
+              created_at: pull_request.created_at,
+              updated_at: pull_request.updated_at
+            )
+          rescue ActiveRecord::RecordInvalid
+            nil
+          end
+        end
       end
     end
   end
