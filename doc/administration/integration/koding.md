@@ -1,5 +1,7 @@
 # Koding & GitLab
 
+> [Introduced][ce-5909] in GitLab 8.11.
+
 This document will guide you through installing and configuring Koding with
 GitLab.
 
@@ -12,9 +14,8 @@ provisioned VMs. This agent is called Klient and it provides Koding to access
 and manage the target machine.
 
 Kontrol and Klient are based on another technology called
-[Kite](github.com/koding/kite), that we have written at Koding. Which is a
+[Kite](https://github.com/koding/kite), that we have written at Koding. Which is a
 microservice framework that allows you to develop microservices easily.
-
 
 ## Requirements
 
@@ -31,20 +32,20 @@ least a `c3.xlarge` instance.
 
 ### Software
 
-  - [git](https://git-scm.com)
-  - [docker](https://www.docker.com)
+  - [Git](https://git-scm.com)
+  - [Docker](https://www.docker.com)
   - [docker-compose](https://www.docker.com/products/docker-compose)
 
 Koding can run on most of the UNIX based operating systems, since it's shipped
 as containerized with Docker support, it can work on any operating system that
 supports Docker.
 
-Required services are;
+Required services are:
 
-  - PostgreSQL # Kontrol and Service DB provider
-  - MongoDB    # Main DB provider the application
-  - Redis      # In memory DB used by both application and services
-  - RabbitMQ   # Message Queue for both application and services
+- **PostgreSQL** - Kontrol and Service DB provider
+- **MongoDB**    - Main DB provider the application
+- **Redis**      - In memory DB used by both application and services
+- **RabbitMQ**   - Message Queue for both application and services
 
 which are also provided as a Docker container by Koding.
 
@@ -237,3 +238,5 @@ login) once you accept you will be redirected to your Koding instance.
 
 From now on you can login by using `SIGN IN WITH GITLAB` button on your Login
 screen in your Koding instance.
+
+[ce-5909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5909
