@@ -1,6 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
+
 v 8.12.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
+
+v 8.11.1 (unreleased)
+  - Fix file links on project page when default view is Files !5933
 
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
@@ -197,8 +201,6 @@ v 8.10.3
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
   - Trim extra displayed carriage returns in diffs and files with CRLFs. !5588
   - Fix label already exist error message in the right sidebar.
-
-v 8.10.3 (unreleased)
 
 v 8.10.2
   - User can now search branches by name. !5144
