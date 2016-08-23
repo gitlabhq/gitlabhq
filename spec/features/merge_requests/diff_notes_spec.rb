@@ -102,7 +102,7 @@ feature 'Diff notes', js: true, feature: true do
 
       context 'with an unfolded line' do
         before(:each) do
-          first('.js-unfold').click
+          find('.js-unfold', match: :first).click
           wait_for_ajax
         end
 
