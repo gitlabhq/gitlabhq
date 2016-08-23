@@ -21,16 +21,16 @@ Add the following alias to your `~/.gitconfig`:
 
 ```
 [alias]
-    mr = !sh -c 'git fetch origin merge-requests/$1/head:mr-$1 && git checkout mr-$1' -
+    mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
 ```
 
-Now you can check out a particular merge request from any repository (it will use the `origin` remote) by:
+Now you can check out a particular merge request from any repository and any remote, e.g. to check out a merge request number 5 as shown in GitLab from the `upstream` remote, do:
 
 ```
-$ git mr 5
+$ git mr upstream 5
 ```
 
-This will fetch the merge request into a local `mr-5` branch and check it out.
+This will fetch the merge request into a local `mr-upstream-5` branch and check it out.
 
 ### By modifying `.git/config` for a given repository
 
