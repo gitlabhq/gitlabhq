@@ -30,6 +30,7 @@ class BasePolicy
   end
 
   def abilities
+    return [] if @user && @user.blocked?
     return anonymous_abilities if @user.nil?
     collect_rules { rules }
   end
