@@ -514,13 +514,12 @@ module API
       expose :duration
     end
 
-    class Environment < Grape::Entity
-      expose :id, :name, :external_url
-      expose :project, using: Entities::Project
-    end
-
     class EnvironmentBasic < Grape::Entity
       expose :id, :name, :external_url
+    end
+
+    class Environment < EnvironmentBasic
+      expose :project, using: Entities::Project
     end
 
     class Deployment < Grape::Entity
