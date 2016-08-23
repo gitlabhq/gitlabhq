@@ -8,6 +8,7 @@ v 8.12.0 (unreleased)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Fix groups sort dropdown alignment (ClemMakesApps)
   - Added tests for diff notes
   - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
   - Reduce number of database queries on builds tab
