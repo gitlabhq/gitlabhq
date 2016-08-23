@@ -918,6 +918,7 @@ Parameters:
   "note_events": true,
   "build_events": true,
   "pipeline_events": true,
+  "wiki_page_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -942,6 +943,7 @@ Parameters:
 - `note_events` - Trigger hook on note events
 - `build_events` - Trigger hook on build events
 - `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Edit project hook
@@ -964,6 +966,7 @@ Parameters:
 - `note_events` - Trigger hook on note events
 - `build_events` - Trigger hook on build events
 - `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Delete project hook
