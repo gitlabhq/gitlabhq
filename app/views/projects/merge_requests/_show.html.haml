@@ -22,7 +22,7 @@
           %span.dropdown.inline.prepend-left-5
             %a.btn.btn-sm.dropdown-toggle{ data: {toggle: :dropdown} }
               Download as
-              %span.caret
+              = icon('caret-down')
             %ul.dropdown-menu.dropdown-menu-align-right
               %li= link_to "Email Patches", merge_request_path(@merge_request, format: :patch)
               %li= link_to "Plain Diff",    merge_request_path(@merge_request, format: :diff)

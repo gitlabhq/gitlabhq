@@ -14,7 +14,7 @@
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span.hidden-xs Options
-        %span.caret.commit-options-dropdown-caret
+        = icon('caret-down', class: ".commit-options-dropdown-caret")
       %ul.dropdown-menu.dropdown-menu-align-right
         %li.visible-xs-block.visible-sm-block
           = link_to namespace_project_tree_path(@project.namespace, @project, @commit) do
