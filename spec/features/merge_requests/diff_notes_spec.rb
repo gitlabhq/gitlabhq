@@ -15,7 +15,7 @@ feature 'Diff notes', js: true, feature: true do
     let(:notes_holder_input_xpath) { './following-sibling::*[contains(concat(" ", @class, " "), " notes_holder ")]' }
     let(:test_note_comment) { 'this is a test note!' }
 
-    context 'when hovering over the parallel view diff file' do
+    context 'when hovering over a parallel view diff file' do
       before(:each) do
         visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'parallel')
       end
@@ -69,9 +69,28 @@ feature 'Diff notes', js: true, feature: true do
           should_not_allow_commenting(find('.match', match: :first).find(:xpath, '..'), 'right')
         end
       end
+
+      context 'with an unfolded line' do
+        before(:each) do
+          find('.js-unfold', match: :first).click
+          wait_for_ajax
+        end
+
+        # The first `.js-unfold` unfolds upwards, therefore the first
+        # `.line_holder` will be an unfolded line.
+        let(:line_holder) { first('.line_holder[id="1"]') }
+
+        it 'should not allow commenting on the left side' do
+          should_not_allow_commenting(line_holder, 'left')
+        end
+
+        it 'should not allow commenting on the right side' do
+          should_not_allow_commenting(line_holder, 'right')
+        end
+      end
     end
 
-    context 'when hovering over the inline view diff file' do
+    context 'when hovering over an inline view diff file' do
       before do
         visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'inline')
       end
@@ -112,6 +131,18 @@ feature 'Diff notes', js: true, feature: true do
 
         it 'should not allow commenting' do
           should_not_allow_commenting line_holder
+        end
+      end
+
+      context 'when hovering over a diff discussion' do
+        before do
+          visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'inline')
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+          visit namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+        end
+
+        it 'should not allow commenting' do
+          should_not_allow_commenting(find('.line_holder', match: :first))
         end
       end
     end
