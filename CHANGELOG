@@ -41,6 +41,7 @@ v 8.12.0 (unreleased)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
   - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
+  - Align add button on repository view (ClemMakesApps)
   - Added tests for diff notes
   - Add a button to download latest successful artifacts for branches and tags !5142
   - Remove redundant pipeline tooltips (ClemMakesApps)
