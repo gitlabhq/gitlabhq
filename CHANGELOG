@@ -2,7 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
 
-v 8.11.0 (unreleased)
+v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
