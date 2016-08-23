@@ -6,6 +6,8 @@ feature 'Pages', feature: true do
   given(:role) { :master }
 
   background do
+    allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
+
     project.team << [user, role]
 
     login_as(user)
