@@ -1,2 +1,7 @@
-= render 'note_message'
-
+%p.details
+  New comment for Commit
+  = @commit.short_id
+  on
+  = render partial: 'note_mr_or_commit_email',
+    locals: { note: @note,
+    discussion: @discussion}
