@@ -914,7 +914,10 @@ Parameters:
   "push_events": true,
   "issues_events": true,
   "merge_requests_events": true,
+  "tag_push_events": true,
   "note_events": true,
+  "build_events": true,
+  "pipeline_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -937,6 +940,8 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Edit project hook
@@ -957,6 +962,8 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Delete project hook
