@@ -25,6 +25,8 @@ class CommitStatus < ActiveRecord::Base
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
+  scope :latest_ci_stages, -> { latest.ordered.includes(project: :namespace) }
+  scope :retried_ci_stages, -> { retried.ordered.includes(project: :namespace) }
 
   state_machine :status do
     event :enqueue do
