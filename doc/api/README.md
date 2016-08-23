@@ -28,6 +28,7 @@ following locations:
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Open source license templates](licenses.md)
+- [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
 - [Project Members](members.md)
@@ -50,7 +51,6 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 - [Builds](ci/builds.md)
 - [Runners](ci/runners.md)
->>>>>>> ce/master
 
 ## Authentication
 

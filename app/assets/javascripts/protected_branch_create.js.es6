@@ -1,6 +1,11 @@
 (global => {
   global.gl = global.gl || {};
 
+  const ACCESS_LEVELS = {
+    MERGE: 'merge_access_levels',
+    PUSH: 'push_access_levels',
+  };
+
   gl.ProtectedBranchCreate = class {
     constructor() {
       this.$wrap = this.$form = $('#new_protected_branch');
@@ -15,41 +20,35 @@
       this.onSelectCallback = this.onSelect.bind(this);
 
       // Allowed to Merge dropdown
-      new gl.ProtectedBranchAccessDropdown({
+      new gl.AllowedToMergeDropdown({
+        accessLevel: ACCESS_LEVELS.MERGE,
         $dropdown: $allowedToMergeDropdown,
-        data: gon.merge_access_levels,
+        accessLevelsData: gon.merge_access_levels,
         onSelect: this.onSelectCallback
       });
 
       // Allowed to Push dropdown
-      new gl.ProtectedBranchAccessDropdown({
+      new gl.AllowedToPushDropdown({
+        accessLevel: ACCESS_LEVELS.PUSH,
         $dropdown: $allowedToPushDropdown,
-        data: gon.push_access_levels,
+        accessLevelsData: gon.push_access_levels,
         onSelect: this.onSelectCallback
       });
 
-      // Select default
-      $allowedToPushDropdown.data('glDropdown').selectRowAtIndex(0);
-      $allowedToMergeDropdown.data('glDropdown').selectRowAtIndex(0);
-
       // Protected branch dropdown
-      new ProtectedBranchDropdown({
+      new gl.ProtectedBranchDropdown({
         $dropdown: this.$wrap.find('.js-protected-branch-select'),
         onSelect: this.onSelectCallback
       });
     }
 
-    // This will run after clicked callback
+    // Enable submit button after selecting an option
     onSelect() {
-
-      // Enable submit button
       const $branchInput = this.$wrap.find('input[name="protected_branch[name]"]');
-      const $allowedToMergeInput = this.$wrap.find('input[name="protected_branch[merge_access_levels_attributes][0][access_level]"]');
-      const $allowedToPushInput = this.$wrap.find('input[name="protected_branch[push_access_levels_attributes][0][access_level]"]');
+      const $allowedToMergeInputs = this.$wrap.find('input[name^="protected_branch[merge_access_levels_attributes]"]');
+      const $allowedToPushInputs = this.$wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]');
 
-      if ($branchInput.val() && $allowedToMergeInput.val() && $allowedToPushInput.val()){
-        this.$form.find('input[type="submit"]').removeAttr('disabled');
-      }
+      this.$form.find('input[type="submit"]').attr('disabled', !($branchInput.val() && $allowedToMergeInputs.length && $allowedToPushInputs.length));
     }
   }
 

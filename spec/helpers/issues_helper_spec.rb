@@ -62,6 +62,32 @@ describe IssuesHelper do
     it { is_expected.to eq("!1, !2, or !3") }
   end
 
+  describe '#award_user_list' do
+    let!(:awards) { build_list(:award_emoji, 15) }
+
+    it "returns a comma seperated list of 1-9 users" do
+      expect(award_user_list(awards.first(9), nil)).to eq(awards.first(9).map { |a| a.user.name }.to_sentence)
+    end
+
+    it "displays the current user's name as 'You'" do
+      expect(award_user_list(awards.first(1), awards[0].user)).to eq('You')
+    end
+
+    it "truncates lists of larger than 9 users" do
+      expect(award_user_list(awards, nil)).to eq(awards.first(9).map { |a| a.user.name }.join(', ') + ", and 6 more.")
+    end
+
+    it "displays the current user in front of 0-9 other users" do
+      expect(award_user_list(awards, awards[0].user)).
+        to eq("You, " + awards[1..9].map { |a| a.user.name }.join(', ') + ", and 5 more.")
+    end
+
+    it "displays the current user in front regardless of position in the list" do
+      expect(award_user_list(awards, awards[12].user)).
+        to eq("You, " + awards[0..8].map { |a| a.user.name }.join(', ') + ", and 5 more.")
+    end
+  end
+
   describe '#award_active_class' do
     let!(:upvote) { create(:award_emoji) }
 

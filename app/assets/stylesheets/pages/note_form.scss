@@ -159,6 +159,32 @@
   }
 }
 
+.discussion-with-resolve-btn {
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  table-layout: auto;
+
+  .btn-group {
+    display: table-cell;
+    float: none;
+    width: 1%;
+
+    &:first-child {
+      width: 100%;
+      padding-right: 5px;
+    }
+
+    &:last-child {
+      padding-left: 5px;
+    }
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
+
 .discussion-notes-count {
   font-size: 16px;
 }

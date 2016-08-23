@@ -10,11 +10,16 @@ v 8.11.0 (unreleased)
   - Change LdapGroupSyncWorker to use new LDAP group sync classes
   - Allow LDAP `sync_ssh_keys` setting to be set to `true`
   - Removed unused GitLab GEO database index
+  - Restrict protected branch access to specific users !581
   - Enable monitoring for ES classes
   - [Elastic] Improve code search
   - [Elastic] Significant improvement of global search performance
   - [Fix] Push rules check existing commits in some cases
   - [ES] Limit amount of retries for sidekiq jobs
+  - Fix Projects::UpdateMirrorService to allow tags pointing to blob objects
+
+v 8.10.7
+  - No EE-specific changes
 
 v 8.10.6
   - Fix race condition with UpdateMirrorWorker Lease. !641
@@ -51,6 +56,9 @@ v 8.10.0
   - Fix of removing wiki data from index when project is deleted
   - Ticket-based Kerberos authentication (SPNEGO)
   - [Elastic] Suppress ActiveRecord::RecordNotFound error in ElasticIndexWorker
+
+v 8.9.8
+  - No EE-specific changes
 
 v 8.9.7
   - No EE-specific changes
@@ -98,6 +106,9 @@ v 8.9.0
   - [Elastic] Project members with guest role can't access confidential issues
   - Ability to lock file or folder in the repository
   - Fix: Git hooks don't fire when committing from the UI
+
+v 8.8.9
+  - No EE-specific changes
 
 v 8.8.8
   - No EE-specific changes

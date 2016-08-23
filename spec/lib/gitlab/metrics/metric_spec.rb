@@ -23,6 +23,24 @@ describe Gitlab::Metrics::Metric do
     it { is_expected.to eq({ host: 'localtoast' }) }
   end
 
+  describe '#type' do
+    subject { metric.type }
+
+    it { is_expected.to eq(:metric) }
+  end
+
+  describe '#event?' do
+    it 'returns false for a regular metric' do
+      expect(metric.event?).to eq(false)
+    end
+
+    it 'returns true for an event metric' do
+      expect(metric).to receive(:type).and_return(:event)
+
+      expect(metric.event?).to eq(true)
+    end
+  end
+
   describe '#to_hash' do
     it 'returns a Hash' do
       expect(metric.to_hash).to be_an_instance_of(Hash)

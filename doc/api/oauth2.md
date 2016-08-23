@@ -90,7 +90,7 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/
 
 ## Deprecation Notice
 
-1. Starting in GitLab 9.0, the Resource Owner Password Credentials will be *disabled* for users with two-factor authentication turned on.
+1. Starting in GitLab 8.11, the Resource Owner Password Credentials has been *disabled* for users with two-factor authentication turned on.
 2. These users can access the API using [personal access tokens] instead.
 
 ---

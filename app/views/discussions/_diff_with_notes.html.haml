@@ -7,8 +7,11 @@
 
   .diff-content.code.js-syntax-highlight
     %table
-      - discussion.truncated_diff_lines.each do |line|
-        = render "projects/diffs/line", line: line, diff_file: diff_file, plain: true
-
-        - if discussion.for_line?(line)
-          = render "discussions/diff_discussion", discussion: discussion
+      - discussions = { discussion.line_code => discussion }
+      = render partial: "projects/diffs/line",
+        collection: discussion.truncated_diff_lines,
+        as: :line,
+        locals: { diff_file: diff_file,
+          discussions: discussions,
+          discussion_expanded: true,
+          plain: true }

@@ -1,7 +1,7 @@
 class Discussion
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
-  attr_reader :first_note, :notes
+  attr_reader :first_note, :last_note, :notes
 
   delegate  :created_at,
             :project,
@@ -18,6 +18,12 @@ class Discussion
 
             to: :first_note
 
+  delegate  :resolved_at,
+            :resolved_by,
+
+            to: :last_resolved_note,
+            allow_nil: true
+
   delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
 
   def self.for_notes(notes)
@@ -30,12 +36,29 @@ class Discussion
 
   def initialize(notes)
     @first_note = notes.first
+    @last_note = notes.last
     @notes = notes
+  end
+
+  def last_resolved_note
+    return unless resolved?
+
+    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last
+  end
+
+  def last_updated_at
+    last_note.created_at
+  end
+
+  def last_updated_by
+    last_note.author
   end
 
   def id
     first_note.discussion_id
   end
+
+  alias_method :to_param, :id
 
   def diff_discussion?
     first_note.diff_note?
@@ -43,6 +66,50 @@ class Discussion
 
   def legacy_diff_discussion?
     notes.any?(&:legacy_diff_note?)
+  end
+
+  def resolvable?
+    return @resolvable if defined?(@resolvable)
+
+    @resolvable = diff_discussion? && notes.any?(&:resolvable?)
+  end
+
+  def resolved?
+    return @resolved if defined?(@resolved)
+
+    @resolved = resolvable? && notes.none?(&:to_be_resolved?)
+  end
+
+  def resolved_notes
+    notes.select(&:resolved?)
+  end
+
+  def to_be_resolved?
+    resolvable? && !resolved?
+  end
+
+  def can_resolve?(current_user)
+    return false unless current_user
+    return false unless resolvable?
+
+    current_user == self.noteable.author ||
+      current_user.can?(:resolve_note, self.project)
+  end
+
+  def resolve!(current_user)
+    return unless resolvable?
+
+    notes.each do |note|
+      note.resolve!(current_user) if note.resolvable?
+    end
+  end
+
+  def unresolve!
+    return unless resolvable?
+
+    notes.each do |note|
+      note.unresolve! if note.resolvable?
+    end
   end
 
   def for_target?(target)
@@ -55,8 +122,20 @@ class Discussion
     @active = first_note.active?
   end
 
+  def collapsed?
+    return false unless diff_discussion?
+
+    if resolvable?
+      # New diff discussions only disappear once they are marked resolved
+      resolved?
+    else
+      # Old diff discussions disappear once they become outdated
+      !active?
+    end
+  end
+
   def expanded?
-    !diff_discussion? || active?
+    !collapsed?
   end
 
   def reply_attributes

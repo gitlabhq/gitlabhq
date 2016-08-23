@@ -1,3 +1,6 @@
+# Create a separate process, which does not load the Rails environment, to index
+# each repository. This prevents memory leaks in the indexer from affecting the
+# rest of the application.
 module Gitlab
   module Elastic
     class Indexer

@@ -52,8 +52,9 @@
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'note-textarea',
-                               placeholder: "Write a comment or drag your files here..."
-      = render 'projects/notes/hints'
+                               placeholder: "Write a comment or drag your files here...",
+                               supports_slash_commands: !issuable.persisted?
+      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
       .clearfix
       .error-alert
 
