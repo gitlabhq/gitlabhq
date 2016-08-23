@@ -69,6 +69,8 @@ the command line via `bundle exec teaspoon`, or via a web browser at
 - Try to match the ordering of tests to the ordering within the class.
 - Try to follow the [Four-Phase Test][four-phase-test] pattern, using newlines
   to separate phases.
+- Use multiline `before` and `after` blocks, regardless of whether the contents
+  are multiline.
 
 [four-phase-test]: https://robots.thoughtbot.com/four-phase-test
 
