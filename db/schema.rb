@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819221833) do
+ActiveRecord::Schema.define(version: 20160823081327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -613,7 +613,7 @@ ActiveRecord::Schema.define(version: 20160819221833) do
     t.integer  "position",                     default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
-    t.string   "merge_error"
+    t.text     "merge_error"
     t.text     "merge_params"
     t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
