@@ -18,14 +18,18 @@ Please note that you need to have builds configured to enable this feature.
 ### By adding a git alias
 
 Add the following alias to your `~/.gitconfig`:
+
 ```
 [alias]
     mr = !sh -c 'git fetch origin merge-requests/$1/head:mr-$1 && git checkout mr-$1' -
 ```
+
 Now you can check out a particular merge request from any repository (it will use the `origin` remote) by:
+
 ```
 $ git mr 5
 ```
+
 This will fetch the merge request into a local `mr-5` branch and check it out.
 
 ### By modifying `.git/config` for a given repository
