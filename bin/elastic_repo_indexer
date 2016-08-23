@@ -6,12 +6,18 @@ require 'json'
 require 'elasticsearch/git'
 require 'active_support'
 require 'active_support/core_ext'
+require 'benchmark'
+
+path_to_log_file = File.expand_path('../../log/es-indexer.log', __FILE__)
+LOGGER = Logger.new(path_to_log_file)
 
 PROJECT_ID = ARGV.shift
 REPO_PATH = ARGV.shift
 FROM_SHA = ENV['FROM_SHA']
 TO_SHA = ENV['TO_SHA']
 RAILS_ENV = ENV['RAILS_ENV']
+
+LOGGER.info("[ES indexer]: Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
 
 elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
 ELASTIC_HOST = elastic_connection_info['host']
@@ -45,9 +51,21 @@ repo = Repository.new
 params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
 
 print "Indexing commits..."
-repo.index_commits(params)
+
+timings = Benchmark.measure do
+  repo.index_commits(params)
+end
+
 puts "Done"
 
+LOGGER.info("[ES indexer]: Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
+
 print "Indexing blobs..."
-repo.index_blobs(params)
+
+timings = Benchmark.measure do
+  repo.index_blobs(params)
+end
+
 puts "Done"
+
+LOGGER.info("[ES indexer]: Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
