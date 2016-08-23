@@ -31,7 +31,7 @@ describe Ci::API::API do
 
     context "with invalid .gitlab_ci.yml content" do
       it "validate content" do
-        post ci_api('/lint'), { private_token: user.private_token, content: 'invalid content'}
+        post ci_api('/lint'), { private_token: user.private_token, content: 'invalid content' }
 
         expect(response).to have_http_status(500)
         expect(json_response['status']).to eq('syntax is incorrect')

@@ -4,7 +4,6 @@ module Ci
       before { authenticate! }
 
       resources :lint do
-
         post do
           begin
             response = {}
@@ -20,7 +19,7 @@ module Ci
                 status: "syntax is correct"
               }
 
-              stage_builds = @stages.each do |stage|
+              @stages.each do |stage|
                 response["#{stage}"] = @builds.select { |build| build[:stage] == stage }
               end
             else
