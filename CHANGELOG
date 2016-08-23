@@ -1,4 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 8.12.0 (unreleased)
+  - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
 
 v 8.11.0 (unreleased)
   - Use test coverage value from the latest successful pipeline in badge. !5862
