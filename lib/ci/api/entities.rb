@@ -59,13 +59,6 @@ module Ci
         expose :id, :variables
         expose :pipeline, using: Commit, as: :commit
       end
-
-      class Lint < Grape::Entity
-        expose :content
-        expose :status
-        expose :builds
-        expose :stages
-      end
     end
   end
 end
