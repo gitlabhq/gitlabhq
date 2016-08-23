@@ -115,6 +115,35 @@ feature 'Project', feature: true do
     end
   end
 
+  describe 'tree view (default view is set to Files)' do
+    let(:user) { create(:user, project_view: 'files') }
+    let(:project) { create(:forked_project_with_submodules) }
+
+    before do
+      project.team << [user, :master]
+      login_as user
+      visit namespace_project_path(project.namespace, project)
+    end
+
+    it 'has working links to files' do
+      click_link('PROCESS.md')
+
+      expect(page.status_code).to eq(200)
+    end
+
+    it 'has working links to directories' do
+      click_link('encoding')
+
+      expect(page.status_code).to eq(200)
+    end
+
+    it 'has working links to submodules' do
+      click_link('645f6c4c')
+
+      expect(page.status_code).to eq(200)
+    end
+  end
+
   def remove_with_confirm(button_text, confirm_with)
     click_button button_text
     fill_in 'confirm_name_input', with: confirm_with
