@@ -29,9 +29,5 @@
       - else
         = diff_line_content(line.text, type)
 
-- discussions = local_assigns.fetch(:discussions, nil)
-- if discussions && !line.meta?
-  - discussion = discussions[line_code]
-  - if discussion
-    - discussion_expanded = local_assigns.fetch(:discussion_expanded, discussion.expanded?)
-    = render "discussions/diff_discussion", discussion: discussion, expanded: discussion_expanded
+    /
+      = "inject discussions #{line_code}"

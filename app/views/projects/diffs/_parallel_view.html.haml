@@ -33,9 +33,8 @@
           %td.old_line.diff-line-num.empty-cell
           %td.line_content.parallel
 
-      - unless @diff_notes_disabled
-        - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
-        - if discussion_left || discussion_right
-          = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
+      - if left_line_code || right_line_code
+        /
+          = "inject discussions #{left_line_code} | #{right_line_code}"
     - if !diff_file.new_file && last_line > 0
       = diff_match_line last_line, last_line, bottom: true, view: :parallel

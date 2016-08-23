@@ -16,4 +16,32 @@
 
         = view_file_btn(diff_commit.id, diff_file.new_path, project)
 
-  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project
+  - cache_key = [diff_file.diff_refs.base_sha, diff_file.diff_refs.start_sha, diff_file.diff_refs.head_sha, diff_file.file_path, diff_view]
+  - content_html = Rails.cache.fetch(cache_key) do
+    - render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project
+
+  - unless @diff_notes_disabled
+    - if discussions = @grouped_diff_discussions
+      - discussions = discussions.values.flatten.group_by { |d| d.diff_file.file_path } if discussions
+      - discussions = discussions[diff_file.file_path] if discussions
+      - if discussions
+        - if diff_view == :inline
+          - discussions.each do |discussion|
+            - discussion_html = render "discussions/diff_discussion", discussion: discussion, expanded: true
+            - content_html.sub!(/<!--\ninject discussions #{discussion.line_code}\n-->/, discussion_html)
+        - elsif diff_view == :parallel
+          - diff_file.parallel_diff_lines.each do |line|
+            - left = line[:left]
+            - right = line[:right]
+            - if left || right
+              - discussions.each do |_discussion|
+                - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
+                - if discussion_left || discussion_right
+                  - # Delete already rendered discussion from the original collection
+                  - @grouped_diff_discussions.delete(discussion_left.try(:line_code))
+                  - @grouped_diff_discussions.delete(discussion_right.try(:line_code))
+                  - discussion_html = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
+                  - content_html.sub!(/<!--\ninject discussions\s#{discussion_left.try(:line_code) || '.*'}\s\|\s#{discussion_right.try(:line_code) || '.*'}\n-->/, discussion_html)
+
+  - content_html.gsub!(/<!--\ninject discussions\s.*\n-->/, '')
+  =raw content_html

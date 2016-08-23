@@ -5,11 +5,10 @@
 
 %table.text-file.code.js-syntax-highlight{ data: diff_view_data, class: too_big ? 'hide' : '' }
   - last_line = 0
-  - discussions = @grouped_diff_discussions unless @diff_notes_disabled
   = render partial: "projects/diffs/line",
     collection: diff_file.highlighted_diff_lines,
     as: :line,
-    locals: { diff_file: diff_file, discussions: discussions }
+    locals: { diff_file: diff_file }
 
   - last_line = diff_file.highlighted_diff_lines.last.new_pos
   - if !diff_file.new_file && last_line > 0
