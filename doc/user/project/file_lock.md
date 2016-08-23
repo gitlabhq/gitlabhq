@@ -17,7 +17,7 @@ works for the default branch you have set in the project's settings** (usually
 
 The file locking feature is useful in situations when:
 
-- Multiple people are working on the same file and you won't to avoid merge
+- Multiple people are working on the same file and you want to avoid merge
   conflicts.
 - Your repository contains binary files in which situation there is no easy
   way to tell the diff between yours and your colleagues' changes.
