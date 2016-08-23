@@ -1,6 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.11.0 (unreleased)
+v 8.11.2 (Unreleased)
+
+v 8.11.1
+  - Additional documentation on protected branches for EE
+  - Change slash commands docs location
+
+v 8.11.0
   - Allow projects to be moved between repository storages
   - Add rake task to remove old repository copies from repositories moved to another storage
   - Performance improvement of push rules
