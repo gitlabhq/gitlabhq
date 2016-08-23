@@ -32,6 +32,21 @@ module API
         end
       end
 
+      # Get a list of visible projects for authenticated user
+      #
+      # Example Request:
+      #   GET /projects/visible
+      get '/visible' do
+        @projects = ProjectsFinder.new.execute(current_user)
+        @projects = filter_projects(@projects)
+        @projects = paginate @projects
+        if params[:simple]
+          present @projects, with: Entities::BasicProjectDetails, user: current_user
+        else
+          present @projects, with: Entities::ProjectWithAccess, user: current_user
+        end
+      end
+
       # Get an owned projects list for authenticated user
       #
       # Example Request:
