@@ -73,6 +73,11 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
     expect(page).to have_content 'Branch already exists'
   end
 
+  step 'I filter for branch improve/awesome' do
+    fill_in 'branch-search', with: 'improve/awesome'
+    find('#branch-search').native.send_keys(:enter)
+  end
+
   step "I click branch 'improve/awesome' delete link" do
     page.within '.js-branch-improve\/awesome' do
       find('.btn-remove').click

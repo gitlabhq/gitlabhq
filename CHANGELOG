@@ -1,6 +1,10 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.11.1 (unreleased)
+v 8.11.2 (unreleased)
+
+v 8.11.1
+  - Fix file links on project page when default view is Files !5933
+  - Fixed enter key in search input not working !5888
 
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
@@ -180,6 +184,7 @@ v 8.10.3
   - Fix importer for GitHub Pull Requests when a branch was removed. !5573
   - Ignore invalid IPs in X-Forwarded-For when trusted proxies are configured. !5584
   - Trim extra displayed carriage returns in diffs and files with CRLFs. !5588
+  - Fix label already exist error message in the right sidebar.
 
 v 8.10.2
   - User can now search branches by name. !5144
