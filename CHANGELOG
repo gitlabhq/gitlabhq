@@ -36,6 +36,7 @@ v 8.12.0 (unreleased)
   - Capitalize mentioned issue timeline notes (ClemMakesApps)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
+  - Fix hover leading space bug in pipeline graph !5980
 
 v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
