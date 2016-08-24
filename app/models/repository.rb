@@ -813,7 +813,7 @@ class Repository
         update: true
       }
 
-      if previous_path
+      unless previous_path == path || previous_path.blank?
         options[:file][:previous_path] = previous_path
         Gitlab::Git::Blob.rename(raw_repository, options)
       else
