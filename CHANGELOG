@@ -1,15 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.11.2 (unreleased)
+v 8.11.3 (unreleased)
 
-v 8.11.1
-v 8.11.2 (unreleased)
-  - Show "Create Merge Request" widget for push events to fork projects on the source project
-
-v 8.11.1 (unreleased)
-  - Does not halt the GitHub import process when an error occurs
+v 8.11.2
+  - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
+  - Use gitlab-workhorse 0.7.11 !5983
+  - Does not halt the GitHub import process when an error occurs. !5763
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
+
+v 8.11.1
+  - Pulled due to packaging error.
 
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
