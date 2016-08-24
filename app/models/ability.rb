@@ -1,49 +1,5 @@
 class Ability
   class << self
-
-    end
-
-    def allowed?(user, action, subject)
-      allowed(user, subject).include?(action)
-    end
-
-    def allowed(user, subject)
-      return uncached_allowed(user, subject) unless RequestStore.active?
-
-      user_key = user ? user.id : 'anonymous'
-      subject_key = subject ? "#{subject.class.name}/#{subject.id}" : 'global'
-      key = "/ability/#{user_key}/#{subject_key}"
-      RequestStore[key] ||= Set.new(uncached_allowed(user, subject)).freeze
-    end
-
-    def uncached_allowed(user, subject)
-      return anonymous_abilities(subject) if user.nil?
-      return [] unless user.is_a?(User)
-      return [] if user.blocked?
-
-      abilities_by_subject_class(user: user, subject: subject)
-    end
-
-    def abilities_by_subject_class(user:, subject:)
-      case subject
-      when CommitStatus then commit_status_abilities(user, subject)
-      when Project then project_abilities(user, subject)
-      when Issue then issue_abilities(user, subject)
-      when Note then note_abilities(user, subject)
-      when ProjectSnippet then project_snippet_abilities(user, subject)
-      when PersonalSnippet then personal_snippet_abilities(user, subject)
-      when MergeRequest then merge_request_abilities(user, subject)
-      when Group then group_abilities(user, subject)
-      when Namespace then namespace_abilities(user, subject)
-      when GroupMember then group_member_abilities(user, subject)
-      when ProjectMember then project_member_abilities(user, subject)
-      when User then user_abilities
-      when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
-      when Ci::Runner then runner_abilities(user, subject)
-      else []
-      end.concat(global_abilities(user))
-    end
-
     # Given a list of users and a project this method returns the users that can
     # read the given project.
     def users_that_can_read_project(users, project)
@@ -74,6 +30,62 @@ class Ability
       return issues if user && user.admin?
 
       issues.select { |issue| issue.visible_to_user?(user) }
+    end
+
+    # TODO: make this private and use the actual abilities stuff for this
+    def can_edit_note?(user, note)
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
+
+      if note.project
+        max_access_level = note.project.team.max_member_access(user.id)
+        max_access_level >= Gitlab::Access::MASTER
+      else
+        false
+      end
+    end
+
+    def allowed?(user, action, subject)
+      allowed(user, subject).include?(action)
+    end
+
+    def allowed(user, subject)
+      return uncached_allowed(user, subject) unless RequestStore.active?
+
+      user_key = user ? user.id : 'anonymous'
+      subject_key = subject ? "#{subject.class.name}/#{subject.id}" : 'global'
+      key = "/ability/#{user_key}/#{subject_key}"
+      RequestStore[key] ||= Set.new(uncached_allowed(user, subject)).freeze
+    end
+
+    private
+
+    def uncached_allowed(user, subject)
+      return anonymous_abilities(subject) if user.nil?
+      return [] unless user.is_a?(User)
+      return [] if user.blocked?
+
+      abilities_by_subject_class(user: user, subject: subject)
+    end
+
+    def abilities_by_subject_class(user:, subject:)
+      case subject
+      when CommitStatus then commit_status_abilities(user, subject)
+      when Project then project_abilities(user, subject)
+      when Issue then issue_abilities(user, subject)
+      when Note then note_abilities(user, subject)
+      when ProjectSnippet then project_snippet_abilities(user, subject)
+      when PersonalSnippet then personal_snippet_abilities(user, subject)
+      when MergeRequest then merge_request_abilities(user, subject)
+      when Group then group_abilities(user, subject)
+      when Namespace then namespace_abilities(user, subject)
+      when GroupMember then group_member_abilities(user, subject)
+      when ProjectMember then project_member_abilities(user, subject)
+      when User then user_abilities
+      when ExternalIssue, Deployment, Environment then project_abilities(user, subject.project)
+      when Ci::Runner then runner_abilities(user, subject)
+      else []
+      end.concat(global_abilities(user))
     end
 
     # List of possible abilities for anonymous user
@@ -420,18 +432,6 @@ class Ability
       GroupProjectsFinder.new(group).execute(user).any?
     end
 
-    def can_edit_note?(user, note)
-      return false if !note.editable? || !user.present?
-      return true if note.author == user || user.admin?
-
-      if note.project
-        max_access_level = note.project.team.max_member_access(user.id)
-        max_access_level >= Gitlab::Access::MASTER
-      else
-        false
-      end
-    end
-
     def namespace_abilities(user, namespace)
       rules = []
 
@@ -596,8 +596,6 @@ class Ability
       warn 'Ability.abilities is deprecated, use Ability.allowed?(user, action, subject) instead'
       self
     end
-
-    private
 
     def restricted_public_level?
       current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
