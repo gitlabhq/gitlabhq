@@ -26,8 +26,7 @@ describe Projects::ArtifactsController do
       latest_succeeded_namespace_project_artifacts_path(
         project.namespace,
         project,
-        ref,
-        path,
+        [ref, path].join('/'),
         job: job)
     end
 
@@ -93,6 +92,25 @@ describe Projects::ArtifactsController do
         end
 
         it_behaves_like 'redirect to the build'
+      end
+
+      context 'with branch name and path containing slashes' do
+        before do
+          pipeline.update(ref: 'improve/awesome',
+                          sha: project.commit('improve/awesome').sha)
+
+          get path_from_ref('improve/awesome', build.name, 'file/README.md')
+        end
+
+        it 'redirects' do
+          path = file_namespace_project_build_artifacts_path(
+            project.namespace,
+            project,
+            build,
+            'README.md')
+
+          expect(response).to redirect_to(path)
+        end
       end
     end
   end

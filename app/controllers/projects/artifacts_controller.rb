@@ -1,4 +1,6 @@
 class Projects::ArtifactsController < Projects::ApplicationController
+  include ExtractsPath
+
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]
@@ -35,7 +37,8 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def latest_succeeded
-    target_path = artifacts_action_path(params[:path], project, build)
+    path = ref_name_and_path.last
+    target_path = artifacts_action_path(path, project, build)
 
     if target_path
       redirect_to(target_path)
@@ -59,11 +62,16 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build_from_ref
-    if params[:ref_name]
-      builds = project.latest_successful_builds_for(params[:ref_name])
+    if params[:ref_name_and_path]
+      ref_name = ref_name_and_path.first
+      builds = project.latest_successful_builds_for(ref_name)
 
       builds.find_by(name: params[:job])
     end
+  end
+
+  def ref_name_and_path
+    @ref_name_and_path ||= extract_ref(params[:ref_name_and_path])
   end
 
   def artifacts_file

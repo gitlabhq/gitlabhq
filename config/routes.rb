@@ -787,9 +787,8 @@ Rails.application.routes.draw do
             resources :artifacts, only: [] do
               collection do
                 get :latest_succeeded,
-                  path: ':ref_name/*path',
-                  format: false,
-                  constraints: { ref_name: /.+/ } # could have /
+                  path: '*ref_name_and_path',
+                  format: false
               end
             end
           end
