@@ -49,6 +49,16 @@ The importer will create any new namespaces if they don't exist or in the
 case the namespace is taken, the project will be imported on the user's
 namespace.
 
+### Note
+
+When we are importing Issues/Pull Requests we try to find the original
+author or assignee using the Github Id, but for this to work the original
+author or assignee should had signed in before on the GitLab instance and
+associated their GitHub account. If we don’t find the user in our database
+we set the project creator (most of the times the current user that started
+the import process) as the author but we keep a reference on the issue
+about the original author.
+
 [gh-import]: ../../integration/github.md "GitHub integration"
 [ee-gh]: http://docs.gitlab.com/ee/integration/github.html "GitHub integration for GitLab EE"
 [new-project]: ../../gitlab-basics/create-project.md "How to create a new project in GitLab"
