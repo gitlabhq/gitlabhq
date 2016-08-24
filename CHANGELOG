@@ -5,6 +5,9 @@ v 8.12.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Added tests for diff notes
 
+v 8.11.2 (unreleased)
+  - Show "Create Merge Request" widget for push events to fork projects on the source project
+
 v 8.11.1 (unreleased)
   - Fix file links on project page when default view is Files !5933
 
