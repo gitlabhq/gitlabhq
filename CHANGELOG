@@ -4,6 +4,7 @@ v 8.12.0 (unreleased)
   - Change merge_error column from string to text type
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Added tests for diff notes
+  - Add a button to download latest successful artifacts for branches and tags !5142
 
 v 8.11.1 (unreleased)
   - Fix file links on project page when default view is Files !5933
@@ -42,7 +43,6 @@ v 8.11.0
   - Do not escape URI when extracting path !5878 (winniehell)
   - Fix filter label tooltip HTML rendering (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
-  - Add a button to download latest successful artifacts for branches and tags
   - Expand commit message width in repo view (ClemMakesApps)
   - Cache highlighted diff lines for merge requests
   - Pre-create all builds for a Pipeline when the new Pipeline is created !5295
