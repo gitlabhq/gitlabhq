@@ -107,6 +107,7 @@ v 8.11.3
   - Fix external issue tracker "Issues" link leading to 404s
   - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Issues filters reset button
 
 v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
