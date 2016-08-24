@@ -110,19 +110,22 @@ describe Gitlab::GithubImport::Importer, lib: true do
       end
 
       it 'stores error messages' do
-        errors = [
-          { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title has already been taken" },
-          { type: :milestone, url: "https://api.github.com/repos/octocat/Hello-World/milestones/1", errors: "Validation failed: Title has already been taken" },
-          { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1347", errors: "Invalid Repository. Use user/repo format." },
-          { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank, Title is too short (minimum is 0 characters)" },
-          { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
-          { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Validation failed: Validate branches Cannot Create: This merge request already exists: [\"New feature\"]" },
-          { type: :wiki, errors: "Gitlab::Shell::Error" }
-        ]
+        error = {
+          message: 'The remote data could not be fully imported.',
+          errors: [
+            { type: :label, url: "https://api.github.com/repos/octocat/Hello-World/labels/bug", errors: "Validation failed: Title has already been taken" },
+            { type: :milestone, url: "https://api.github.com/repos/octocat/Hello-World/milestones/1", errors: "Validation failed: Title has already been taken" },
+            { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1347", errors: "Invalid Repository. Use user/repo format." },
+            { type: :issue, url: "https://api.github.com/repos/octocat/Hello-World/issues/1348", errors: "Validation failed: Title can't be blank, Title is too short (minimum is 0 characters)" },
+            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Invalid Repository. Use user/repo format." },
+            { type: :pull_request, url: "https://api.github.com/repos/octocat/Hello-World/pulls/1347", errors: "Validation failed: Validate branches Cannot Create: This merge request already exists: [\"New feature\"]" },
+            { type: :wiki, errors: "Gitlab::Shell::Error" }
+          ]
+        }
 
         described_class.new(project).execute
 
-        expect(project.import_error).to eq errors.to_json
+        expect(project.import_error).to eq error.to_json
       end
     end
   end
