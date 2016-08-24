@@ -48,6 +48,10 @@ v 8.11.2
 
 v 8.11.1
   - Pulled due to packaging error.
+  - Does not halt the GitHub import process when an error occurs
+  - Fix file links on project page when default view is Files !5933
+  - Change using size to use count and caching it for number of group members
+  - Fix IE11 fork button bug !5982
 
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
