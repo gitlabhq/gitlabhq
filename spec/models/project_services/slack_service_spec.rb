@@ -310,7 +310,7 @@ describe SlackService, models: true do
       end
 
       it 'calls Slack API for pipeline events' do
-        data = Gitlab::DataBuilder::PipelineDataBuilder.build(pipeline)
+        data = Gitlab::DataBuilder::Pipeline.build(pipeline)
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
@@ -328,7 +328,7 @@ describe SlackService, models: true do
 
       context 'with default to notify_only_broken_pipelines' do
         it 'does not call Slack API for pipeline events' do
-          data = Gitlab::DataBuilder::PipelineDataBuilder.build(pipeline)
+          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
           result = slack.execute(data)
 
           expect(result).to be_falsy
