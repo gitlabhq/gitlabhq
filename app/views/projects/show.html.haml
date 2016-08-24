@@ -70,7 +70,7 @@
           = render 'shared/members/access_request_buttons', source: @project
 
         .btn-group.project-repo-btn-group
-          = render "projects/buttons/download"
+          = render 'projects/buttons/download', project: @project, ref: @ref
           = render 'projects/buttons/dropdown'
 
         = render 'shared/notifications/button', notification_setting: @notification_setting

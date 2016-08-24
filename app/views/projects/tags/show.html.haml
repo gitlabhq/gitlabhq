@@ -12,8 +12,7 @@
         = icon('files-o')
       = link_to namespace_project_commits_path(@project.namespace, @project, @tag.name), class: 'btn has-tooltip', title: 'Browse commits' do
         = icon('history')
-      - if can? current_user, :download_code, @project
-        = render 'projects/tags/download', ref: @tag.name, project: @project
+      = render 'projects/buttons/download', project: @project, ref: @tag.name
       - if can?(current_user, :admin_project, @project)
         .pull-right
           = link_to namespace_project_tag_path(@project.namespace, @project, @tag.name), class: 'btn btn-remove remove-row grouped has-tooltip', title: "Delete tag", method: :delete, data: { confirm: "Deleting the '#{@tag.name}' tag cannot be undone. Are you sure?" } do
