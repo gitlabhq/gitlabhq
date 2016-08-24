@@ -233,3 +233,9 @@
   right: 0;
   margin-top: -17px;
 }
+
+@media (min-width: $screen-md-min) {
+  .sub-nav.build {
+    width: calc(100% + #{$gutter_width});
+  }
+}
