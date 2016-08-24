@@ -778,7 +778,7 @@ class MergeRequest < ActiveRecord::Base
 
     begin
       @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
-    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+    rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
       @conflicts_can_be_resolved_in_ui = false
     end
   end
