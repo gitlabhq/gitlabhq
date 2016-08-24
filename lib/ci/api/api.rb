@@ -22,9 +22,9 @@ module Ci
       helpers Gitlab::CurrentSettings
 
       mount ::Ci::API::Builds
+      mount ::Ci::API::Lint
       mount ::Ci::API::Runners
       mount ::Ci::API::Triggers
-      mount ::Ci::API::Lint
     end
   end
 end

@@ -1,35 +1,35 @@
 module Ci
   module API
     class Lint < Grape::API
-      before { authenticate! }
-
-      resources :lint do
+      resource :lint do
         post do
+          status 200
+          params do
+            requires :content, type: String, desc: 'content of .gitlab-ci.yml'
+          end
+
           begin
-            response = {}
-            @content = params[:content]
+            response = {
+              status: '',
+              errors: [],
+              jobs: []
+            }
 
-            if @content
-              @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
-              @stages = @config_processor.stages
-              @builds = @config_processor.builds
+            config_processor = Ci::GitlabCiYamlProcessor.new(params[:content])
 
-              response = {
-                content: @content,
-                status: "syntax is correct"
-              }
-
-              @stages.each do |stage|
-                response["#{stage}"] = @builds.select { |build| build[:stage] == stage }
-              end
-            else
-              render_api_error!("Please provide content of .gitlab-ci.yml", 400)
+            config_processor.builds.each do |build|
+              response[:jobs].push("#{build[:name]}")
+              response[:status] = 'valid'
             end
 
             response
 
           rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-            error!({ content: @content, status: "syntax is incorrect", message: e.message })
+            status 200
+            response[:errors].push(e.message)
+            response[:status] = 'invalid'
+
+            response
           end
         end
       end

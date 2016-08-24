@@ -9,41 +9,32 @@ describe Ci::API::API do
   end
 
   describe 'POST /ci/lint' do
-    context "with valid .gitlab-ci.yaml content" do
-      context "authorized user" do
-        it "validate content" do
-          post ci_api('/lint'), { private_token: user.private_token, content: yaml_content }
-
-          expect(response).to have_http_status(201)
-          expect(json_response).to be_an Hash
-          expect(json_response['status']).to eq('syntax is correct')
-        end
-      end
-
-      context "unauthorized user" do
-        it "does not validate content" do
+    context 'with valid .gitlab-ci.yaml content' do
+      context 'authorized user' do
+        it 'validate content' do
           post ci_api('/lint'), { content: yaml_content }
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_http_status(200)
+          expect(json_response).to be_an Hash
+          expect(json_response['status']).to eq('valid')
         end
       end
     end
 
-    context "with invalid .gitlab_ci.yml content" do
-      it "validate content" do
-        post ci_api('/lint'), { private_token: user.private_token, content: 'invalid content' }
+    context 'with invalid .gitlab_ci.yml content' do
+      it 'validate content' do
+        post ci_api('/lint'), { content: 'invalid content' }
 
-        expect(response).to have_http_status(500)
-        expect(json_response['status']).to eq('syntax is incorrect')
+        expect(response).to have_http_status(200)
+        expect(json_response['status']).to eq('invalid')
       end
     end
 
-    context "no content" do
-      it "shows error message" do
-        post ci_api('/lint'), { private_token: user.private_token }
+    context 'no content parameters' do
+      it 'shows error message' do
+        post ci_api('/lint')
 
         expect(response).to have_http_status(400)
-        expect(json_response['message']).to eq('Please provide content of .gitlab-ci.yml')
       end
     end
   end
