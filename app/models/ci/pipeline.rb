@@ -267,12 +267,6 @@ module Ci
       project.execute_services(data, :pipeline_hooks)
     end
 
-    def execute_hooks
-      data = pipeline_data
-      project.execute_hooks(data, :pipeline_hooks)
-      project.execute_services(data, :pipeline_hooks)
-    end
-
     private
 
     def pipeline_data
