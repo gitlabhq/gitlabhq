@@ -34,6 +34,7 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response.first['note_events']).to eq(true)
         expect(json_response.first['build_events']).to eq(true)
         expect(json_response.first['pipeline_events']).to eq(true)
+        expect(json_response.first['wiki_page_events']).to eq(true)
         expect(json_response.first['enable_ssl_verification']).to eq(true)
       end
     end
@@ -57,6 +58,9 @@ describe API::API, 'ProjectHooks', api: true do
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
         expect(json_response['note_events']).to eq(hook.note_events)
+        expect(json_response['build_events']).to eq(hook.build_events)
+        expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
+        expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
         expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
       end
 
@@ -93,6 +97,7 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['note_events']).to eq(false)
       expect(json_response['build_events']).to eq(false)
       expect(json_response['pipeline_events']).to eq(false)
+      expect(json_response['wiki_page_events']).to eq(false)
       expect(json_response['enable_ssl_verification']).to eq(true)
     end
 
@@ -118,6 +123,9 @@ describe API::API, 'ProjectHooks', api: true do
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
       expect(json_response['note_events']).to eq(hook.note_events)
+      expect(json_response['build_events']).to eq(hook.build_events)
+      expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
+      expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
       expect(json_response['enable_ssl_verification']).to eq(hook.enable_ssl_verification)
     end
 
