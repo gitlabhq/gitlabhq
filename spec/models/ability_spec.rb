@@ -171,6 +171,70 @@ describe Ability, lib: true do
     end
   end
 
+  shared_examples_for ".project_abilities" do |enable_request_store|
+    before do
+      RequestStore.begin! if enable_request_store
+    end
+
+    after do
+      if enable_request_store
+        RequestStore.end!
+        RequestStore.clear!
+      end
+    end
+
+    describe '.project_abilities' do
+      let!(:project) { create(:empty_project, :public) }
+      let!(:user) { create(:user) }
+
+      it 'returns permissions for admin user' do
+        admin = create(:admin)
+
+        results = described_class.project_abilities(admin, project)
+
+        expect(results.count).to eq(74)
+      end
+
+      it 'returns permissions for an owner' do
+        results = described_class.project_abilities(project.owner, project)
+
+        expect(results.count).to eq(73)
+      end
+
+      it 'returns permissions for a master' do
+        project.team << [user, :master]
+
+        results = described_class.project_abilities(user, project)
+
+        expect(results.count).to eq(64)
+      end
+
+      it 'returns permissions for a developer' do
+        project.team << [user, :developer]
+
+        results = described_class.project_abilities(user, project)
+
+        expect(results.count).to eq(44)
+      end
+
+      it 'returns permissions for a guest' do
+        project.team << [user, :guest]
+
+        results = described_class.project_abilities(user, project)
+
+        expect(results.count).to eq(21)
+      end
+    end
+  end
+
+  describe '.project_abilities with RequestStore' do
+    it_behaves_like ".project_abilities", true
+  end
+
+  describe '.project_abilities without RequestStore' do
+    it_behaves_like ".project_abilities", false
+  end
+
   describe '.issues_readable_by_user' do
     context 'with an admin user' do
       it 'returns all given issues' do

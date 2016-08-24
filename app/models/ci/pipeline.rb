@@ -78,6 +78,10 @@ module Ci
       CommitStatus.where(pipeline: pluck(:id)).stages
     end
 
+    def self.total_duration
+      where.not(duration: nil).sum(:duration)
+    end
+
     def stages_with_latest_statuses
       statuses.latest.order(:stage_idx).group_by(&:stage)
     end
@@ -144,6 +148,10 @@ module Ci
       builds.latest.failed.select(&:retryable?).each do |build|
         Ci::Build.retry(build, user)
       end
+    end
+
+    def mark_as_processable_after_stage(stage_idx)
+      builds.skipped.where('stage_idx > ?', stage_idx).find_each(&:process)
     end
 
     def latest?
@@ -250,7 +258,7 @@ module Ci
     end
 
     def update_duration
-      self.duration = statuses.latest.duration
+      self.duration = calculate_duration
     end
 
     def execute_hooks

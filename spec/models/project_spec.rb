@@ -257,7 +257,7 @@ describe Project, models: true do
     end
   end
 
-  describe "#new_issue_address" do
+  xdescribe "#new_issue_address" do
     let(:project) { create(:empty_project, path: "somewhere") }
     let(:user) { create(:user) }
 

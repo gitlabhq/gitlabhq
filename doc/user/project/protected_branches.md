@@ -5,6 +5,8 @@ idea of having read or write permission to the repository and branches. To
 prevent people from messing with history or pushing code without review, we've
 created protected branches.
 
+## Overview
+
 By default, a protected branch does four simple things:
 
 - it prevents its creation, if not already created, from everybody except users
@@ -14,6 +16,11 @@ By default, a protected branch does four simple things:
 - it prevents **anyone** from deleting the branch
 
 See the [Changelog](#changelog) section for changes over time.
+
+>
+>Additional functionality for GitLab Enterprise Edition:
+>
+>- Restrict push and merge access to [certain users][ee-restrict]
 
 ## Configuring protected branches
 
@@ -30,7 +37,7 @@ that the `master` branch is protected by default.
 
     ![Protected branches page](img/protected_branches_page.png)
 
-1. Once done, the protected branch will appear in the "Already protected" list.
+1. Once done, the protected branch will appear in the "Protected branches" list.
 
     ![Protected branches list](img/protected_branches_list.png)
 
@@ -121,3 +128,4 @@ all matching branches:
 [ce-4665]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4665 "Allow specifying protected branches using wildcards"
 [ce-4892]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4892 "Allow developers to merge into a protected branch without having push access"
 [ce-5081]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5081 "Allow creating protected branches that can't be pushed to"
+[ee-restrict]: http://docs.gitlab.com/ee/user/project/protected_branches.html#restricting-push-and-merge-access-to-certain-users

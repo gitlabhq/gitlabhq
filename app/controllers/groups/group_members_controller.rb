@@ -21,10 +21,15 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    access_level = params[:access_level]
     user_ids = params[:user_ids].split(',')
 
-    @group.add_users(user_ids, access_level, current_user)
+    @group.add_users(
+      user_ids,
+      params[:access_level],
+      current_user: current_user,
+      expires_at: params[:expires_at]
+    )
+
     group_members = @group.group_members.where(user_id: user_ids)
 
     group_members.each do |group_member|
@@ -76,7 +81,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   protected
 
   def member_params
-    params.require(:group_member).permit(:access_level, :user_id)
+    params.require(:group_member).permit(:access_level, :user_id, :expires_at)
   end
 
   # MembershipActions concern

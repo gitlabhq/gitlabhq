@@ -1,4 +1,6 @@
 class Todo < ActiveRecord::Base
+  include Sortable
+
   ASSIGNED          = 1
   MENTIONED         = 2
   BUILD_FAILED      = 3
@@ -40,6 +42,23 @@ class Todo < ActiveRecord::Base
   end
 
   after_save :keep_around_commit
+
+  class << self
+    def sort(method)
+      method == "priority" ? order_by_labels_priority : order_by(method)
+    end
+
+    # Order by priority depending on which issue/merge request the Todo belongs to
+    # Todos with highest priority first then oldest todos
+    # Need to order by created_at last because of differences on Mysql and Postgres when joining by type "Merge_request/Issue"
+    def order_by_labels_priority
+      highest_priority = highest_label_priority(["Issue", "MergeRequest"], "todos.target_id").to_sql
+
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
+        order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC')).
+        order('todos.created_at')
+    end
+  end
 
   def build_failed?
     action == BUILD_FAILED

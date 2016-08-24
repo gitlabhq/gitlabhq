@@ -12,7 +12,9 @@ feature 'Projected Branches', feature: true, js: true do
   def set_allowed_to(operation, option = 'Masters')
     find(".js-allowed-to-#{operation}").click
     wait_for_ajax
-    click_on option
+
+    Array(option).each { |opt| click_on(opt) }
+
     find(".js-allowed-to-#{operation}").click # needed to submit form in some cases
   end
 

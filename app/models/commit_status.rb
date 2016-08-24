@@ -21,6 +21,7 @@ class CommitStatus < ActiveRecord::Base
 
     where(id: max_id.group(:name, :commit_id))
   end
+
   scope :retried, -> { where.not(id: latest) }
   scope :ordered, -> { order(:name) }
   scope :ignored, -> { where(allow_failure: true, status: [:failed, :canceled]) }
@@ -28,6 +29,10 @@ class CommitStatus < ActiveRecord::Base
   state_machine :status do
     event :enqueue do
       transition [:created, :skipped] => :pending
+    end
+
+    event :process do
+      transition skipped: :created
     end
 
     event :run do
@@ -107,13 +112,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def duration
-    duration =
-      if started_at && finished_at
-        finished_at - started_at
-      elsif started_at
-        Time.now - started_at
-      end
-    duration
+    calculate_duration
   end
 
   def stuck?

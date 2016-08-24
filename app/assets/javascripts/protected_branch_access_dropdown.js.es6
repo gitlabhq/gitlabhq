@@ -41,7 +41,7 @@
 
           if (onSelect) {
             onSelect(item, $el, self);
-          } 
+          }
         }
       });
     }

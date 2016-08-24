@@ -1,23 +1,23 @@
 - status = pipeline.status
 %tr.commit
   %td.commit-link
-    = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
+    = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
       - if defined?(status_icon_only) && status_icon_only
         = ci_icon_for_status(status)
       - else
         = ci_status_with_icon(status)
   %td
     .branch-commit
-      = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id) do
+      = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id) do
         %span ##{pipeline.id}
       - if pipeline.ref
         - unless defined?(hide_branch) && hide_branch
           .icon-container
             = pipeline.tag? ? icon('tag') : icon('code-fork')
-          = link_to pipeline.ref, namespace_project_commits_path(@project.namespace, @project, pipeline.ref), class: "monospace branch-name"
+          = link_to pipeline.ref, namespace_project_commits_path(pipeline.project.namespace, pipeline.project, pipeline.ref), class: "monospace branch-name"
       .icon-container
         = custom_icon("icon_commit")
-      = link_to pipeline.short_sha, namespace_project_commit_path(@project.namespace, @project, pipeline.sha), class: "commit-id monospace"
+      = link_to pipeline.short_sha, namespace_project_commit_path(pipeline.project.namespace, pipeline.project, pipeline.sha), class: "commit-id monospace"
       - if pipeline.latest?
         %span.label.label-success.has-tooltip{ title: 'Latest build for this branch' } latest
       - if pipeline.triggered?
@@ -30,7 +30,7 @@
       %p.commit-title
         - if commit = pipeline.commit
           = author_avatar(commit, size: 20)
-          = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(@project.namespace, @project, commit.id), class: "commit-row-message"
+          = link_to_gfm truncate(commit.title, length: 60), namespace_project_commit_path(pipeline.project.namespace, pipeline.project, commit.id), class: "commit-row-message"
         - else
           Cant find HEAD commit for this branch
 
@@ -41,17 +41,17 @@
         - status = stages_status[stage]
         - tooltip = "#{stage.titleize}: #{status || 'not found'}"
         - if status
-          = link_to namespace_project_pipeline_path(@project.namespace, @project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
+          = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
             = ci_icon_for_status(status)
         - else
           .light.has-tooltip{ title: tooltip }
             \-
 
   %td
-    - if pipeline.started_at && pipeline.finished_at
+    - if pipeline.duration
       %p.duration
         = custom_icon("icon_timer")
-        = duration_in_numbers(pipeline.finished_at, pipeline.started_at)
+        = duration_in_numbers(pipeline.duration)
     - if pipeline.finished_at
       %p.finished-at
         = icon("calendar")
@@ -71,7 +71,7 @@
               %ul.dropdown-menu.dropdown-menu-align-right
                 - actions.each do |build|
                   %li
-                    = link_to play_namespace_project_build_path(@project.namespace, @project, build), method: :post, rel: 'nofollow' do
+                    = link_to play_namespace_project_build_path(pipeline.project.namespace, pipeline.project, build), method: :post, rel: 'nofollow' do
                       = icon("play")
                       %span= build.name.humanize
           - if artifacts.present?
@@ -82,15 +82,15 @@
               %ul.dropdown-menu.dropdown-menu-align-right
                 - artifacts.each do |build|
                   %li
-                    = link_to download_namespace_project_build_artifacts_path(@project.namespace, @project, build), rel: 'nofollow' do
+                    = link_to download_namespace_project_build_artifacts_path(pipeline.project.namespace, pipeline.project, build), rel: 'nofollow' do
                       = icon("download")
                       %span Download '#{build.name}' artifacts
 
-      - if can?(current_user, :update_pipeline, @project)
+      - if can?(current_user, :update_pipeline, pipeline.project)
         .cancel-retry-btns.inline
           - if pipeline.retryable?
-            = link_to retry_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
+            = link_to retry_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn has-tooltip', title: "Retry", method: :post do
               = icon("repeat")
           - if pipeline.cancelable?
-            = link_to cancel_namespace_project_pipeline_path(@project.namespace, @project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
+            = link_to cancel_namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id), class: 'btn btn-remove has-tooltip', title: "Cancel", method: :post do
               = icon("remove")

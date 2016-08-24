@@ -255,7 +255,6 @@ class NotificationService
       project_member.real_source_type,
       project_member.project.id,
       project_member.invite_email,
-      project_member.access_level,
       project_member.created_by_id
     ).deliver_later
   end
@@ -282,7 +281,6 @@ class NotificationService
       group_member.real_source_type,
       group_member.group.id,
       group_member.invite_email,
-      group_member.access_level,
       group_member.created_by_id
     ).deliver_later
   end

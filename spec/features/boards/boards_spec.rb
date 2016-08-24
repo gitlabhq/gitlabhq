@@ -572,6 +572,18 @@ describe 'Issue Boards', feature: true, js: true do
     end
   end
 
+  context 'keyboard shortcuts' do
+    before do
+      visit namespace_project_board_path(project.namespace, project)
+      wait_for_vue_resource
+    end
+
+    it 'allows user to use keyboard shortcuts' do
+      find('.boards-list').native.send_keys('i')
+      expect(page).to have_content('New Issue')
+    end
+  end
+
   context 'signed out user' do
     before do
       logout

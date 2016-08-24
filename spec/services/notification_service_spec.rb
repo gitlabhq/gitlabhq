@@ -1148,6 +1148,46 @@ describe NotificationService, services: true do
     end
   end
 
+  describe 'GroupMember' do
+    describe '#decline_group_invite' do
+      let(:creator) { create(:user) }
+      let(:group) { create(:group) }
+      let(:member) { create(:user) }
+
+      before(:each) do
+        group.add_owner(creator)
+        group.add_developer(member, creator)
+      end
+
+      it do
+        group_member = group.members.first
+
+        expect do
+          notification.decline_group_invite(group_member)
+        end.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+  end
+
+  describe 'ProjectMember' do
+    describe '#decline_group_invite' do
+      let(:project) { create(:project) }
+      let(:member) { create(:user) }
+
+      before(:each) do
+        project.team << [member, :developer, project.owner]
+      end
+
+      it do
+        project_member = project.members.first
+
+        expect do
+          notification.decline_project_invite(project_member)
+        end.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher               = create_global_setting_for(create(:user), :watch)
     @u_participating         = create_global_setting_for(create(:user), :participating)

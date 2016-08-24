@@ -59,6 +59,7 @@ class Project < ActiveRecord::Base
 
   has_one :push_rule, dependent: :destroy
   has_one :board, dependent: :destroy
+
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
@@ -702,7 +703,10 @@ class Project < ActiveRecord::Base
   end
 
   def new_issue_address(author)
-    if Gitlab::IncomingEmail.enabled? && author
+    # This feature is disabled for the time being.
+    return nil
+
+    if Gitlab::IncomingEmail.enabled? && author # rubocop:disable Lint/UnreachableCode
       Gitlab::IncomingEmail.reply_address(
         "#{path_with_namespace}+#{author.authentication_token}")
     end
@@ -1109,8 +1113,8 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
-  def add_user(user, access_level, current_user = nil)
-    team.add_user(user, access_level, current_user)
+  def add_user(user, access_level, current_user: nil, expires_at: nil)
+    team.add_user(user, access_level, current_user: current_user, expires_at: expires_at)
   end
 
   def default_branch

@@ -65,11 +65,21 @@ describe Member, models: true do
       @master_user = create(:user).tap { |u| project.team << [u, :master] }
       @master = project.members.find_by(user_id: @master_user.id)
 
-      ProjectMember.add_user(project.members, 'toto1@example.com', Gitlab::Access::DEVELOPER, @master_user)
+      Member.add_user(
+        project.members,
+        'toto1@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: @master_user
+      )
       @invited_member = project.members.invite.find_by_invite_email('toto1@example.com')
 
       accepted_invite_user = build(:user)
-      ProjectMember.add_user(project.members, 'toto2@example.com', Gitlab::Access::DEVELOPER, @master_user)
+      Member.add_user(
+        project.members,
+        'toto2@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: @master_user
+      )
       @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }

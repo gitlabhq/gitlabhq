@@ -515,7 +515,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click the "Target branch" dropdown' do
-    sleep 0.5
     expect(page).to have_content('Target branch')
     first('.target_branch').click
   end

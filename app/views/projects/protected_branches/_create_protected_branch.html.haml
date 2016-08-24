@@ -22,17 +22,17 @@
           %label.col-md-2.text-right{ for: 'merge_access_levels_attributes' }
             Allowed to merge:
           .col-md-10
-            .js-allowed-to-merge-container
+            .merge_access_levels-container
               = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-merge wide js-multiselect', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
+                             options: { toggle_class: 'js-allowed-to-merge js-multiselect wide', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
                              data: { input_id: 'merge_access_levels_attributes', default_label: 'Select' } })
         .form-group
           %label.col-md-2.text-right{ for: 'push_access_levels_attributes' }
             Allowed to push:
           .col-md-10
-            .js-allowed-to-push-container
+            .push_access_levels-container
               = dropdown_tag('Select',
-                             options: { toggle_class: 'js-allowed-to-push wide js-multiselect', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
+                             options: { toggle_class: 'js-allowed-to-push js-multiselect wide', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
                              data: { input_id: 'push_access_levels_attributes', default_label: 'Select' } })
 
     .panel-footer

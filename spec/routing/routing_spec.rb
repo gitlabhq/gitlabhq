@@ -116,9 +116,16 @@ describe HelpController, "routing" do
     expect(get(path)).to route_to('help#show',
                                   path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-    
+
     path = '/help/ui'
     expect(get(path)).to route_to('help#ui')
+  end
+end
+
+#                      koding GET    /koding(.:format)                      koding#index
+describe KodingController, "routing" do
+  it "to #index" do
+    expect(get("/koding")).to route_to('koding#index')
   end
 end
 

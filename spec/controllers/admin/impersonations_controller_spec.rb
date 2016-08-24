@@ -77,6 +77,8 @@ describe Admin::ImpersonationsController do
 
           context "when the impersonator is not blocked" do
             it "redirects to the impersonated user's page" do
+              expect(Gitlab::AppLogger).to receive(:info).with("User #{impersonator.username} has stopped impersonating #{user.username}").and_call_original
+
               delete :destroy
 
               expect(response).to redirect_to(admin_user_path(user))

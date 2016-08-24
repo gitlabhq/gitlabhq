@@ -31,8 +31,7 @@
       this.input
         .on('keydown', function (e) {
           var keyCode = e.which;
-
-          if (keyCode === 13) {
+          if (keyCode === 13 && !options.elIsInput) {
             e.preventDefault()
           }
         })
@@ -47,7 +46,7 @@
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.removeClass(HAS_VALUE_CLASS);
           }
-          if (keyCode === 13) {
+          if (keyCode === 13 && !options.elIsInput) {
             return false;
           }
           if (this.options.remote) {
@@ -111,9 +110,9 @@
             matches = fuzzaldrinPlus.match($el.text().trim(), search_text);
             if (!$el.is('.dropdown-header')) {
               if (matches.length) {
-                return $el.show();
+                return $el.show().removeClass('option-hidden');
               } else {
-                return $el.hide();
+                return $el.hide().addClass('option-hidden');
               }
             }
           });
@@ -179,7 +178,7 @@
   })();
 
   GitLabDropdown = (function() {
-    var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, currentIndex;
+    var ACTIVE_CLASS, FILTER_INPUT, INDETERMINATE_CLASS, LOADING_CLASS, PAGE_TWO_CLASS, NON_SELECTABLE_CLASSES, SELECTABLE_CLASSES, currentIndex;
 
     LOADING_CLASS = "is-loading";
 
@@ -190,6 +189,12 @@
     INDETERMINATE_CLASS = "is-indeterminate";
 
     currentIndex = -1;
+
+    NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link, .option-hidden';
+
+    SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ")";
+
+    CURSOR_SELECT_SCROLL_PADDING = 5
 
     FILTER_INPUT = '.dropdown-input .dropdown-input-field';
 
@@ -213,6 +218,7 @@
       if (this.options.data) {
         if (_.isObject(this.options.data) && !_.isFunction(this.options.data)) {
           this.fullData = this.options.data;
+          currentIndex = -1;
           this.parseData(this.options.data);
         } else {
           this.remote = new GitLabDropdownRemote(this.options.data, {
@@ -232,6 +238,7 @@
       }
       if (this.options.filterable) {
         this.filter = new GitLabDropdownFilter(this.filterInput, {
+          elIsInput: $(this.el).is('input'),
           filterInputBlur: this.filterInputBlur,
           filterByText: this.options.filterByText,
           onFilter: this.options.onFilter,
@@ -240,7 +247,7 @@
           keys: searchFields,
           elements: (function(_this) {
             return function() {
-              selector = '.dropdown-content li:not(.divider)';
+              selector = '.dropdown-content li:not(' + NON_SELECTABLE_CLASSES + ')';
               if (_this.dropdown.find('.dropdown-toggle-page').length) {
                 selector = ".dropdown-page-one " + selector;
               }
@@ -256,12 +263,16 @@
             return function(data) {
               _this.parseData(data);
               if (_this.filterInput.val() !== '') {
-                selector = '.dropdown-content li:not(.divider):visible';
+                selector = SELECTABLE_CLASSES;
                 if (_this.dropdown.find('.dropdown-toggle-page').length) {
                   selector = ".dropdown-page-one " + selector;
                 }
-                $(selector, _this.dropdown).first().find('a').addClass('is-focused');
-                return currentIndex = 0;
+                if ($(_this.el).is('input')) {
+                  currentIndex = -1;
+                } else {
+                  $(selector, _this.dropdown).first().find('a').addClass('is-focused');
+                  currentIndex = 0;
+                }
               }
             };
           })(this)
@@ -376,7 +387,7 @@
       var $target;
       if (this.options.multiSelect) {
         $target = $(e.target);
-        if (!$target.hasClass('dropdown-menu-close') && !$target.hasClass('dropdown-menu-close-icon') && !$target.data('is-link')) {
+        if ($target && !$target.hasClass('dropdown-menu-close') && !$target.hasClass('dropdown-menu-close-icon') && !$target.data('is-link')) {
           e.stopPropagation();
           return false;
         } else {
@@ -387,7 +398,7 @@
 
     GitLabDropdown.prototype.opened = function() {
       var contentHtml;
-      currentIndex = -1;
+      this.resetRows();
       this.addArrowKeyEvent();
       if (this.options.setIndeterminateIds) {
         this.options.setIndeterminateIds.call(this);
@@ -410,6 +421,7 @@
 
     GitLabDropdown.prototype.hidden = function(e) {
       var $input;
+      this.resetRows();
       this.removeArrayKeyEvent();
       $input = this.dropdown.find(".dropdown-input-field");
       if (this.options.filterable) {
@@ -463,7 +475,7 @@
         return "<li class='separator'></li>";
       }
       if (data.header != null) {
-        return "<li class='dropdown-header'>" + data.header + "</li>";
+        return _.template('<li class="dropdown-header"><%- header %></li>')({ header: data.header });
       }
       if (this.options.renderRow) {
         html = this.options.renderRow.call(this.options, data, this);
@@ -495,11 +507,16 @@
           text = this.highlightTextMatches(text, this.filterInput.val());
         }
         if (group) {
-          groupAttrs = "data-group='" + group + "' data-index='" + index + "'";
+          groupAttrs = 'data-group=' + group + ' data-index=' + index;
         } else {
           groupAttrs = '';
         }
-        html = "<li> <a href='" + url + "' " + groupAttrs + " class='" + cssClass + "'> " + text + " </a> </li>";
+        html = _.template('<li><a href="<%- url %>" <%- groupAttrs %> class="<%- cssClass %>"><%= text %></a></li>')({
+          url: url,
+          groupAttrs: groupAttrs,
+          cssClass: cssClass,
+          text: text
+        });
       }
       return html;
     };
@@ -519,17 +536,6 @@
     GitLabDropdown.prototype.noResults = function() {
       var html;
       return html = "<li class='dropdown-menu-empty-link'> <a href='#' class='is-focused'> No matching results. </a> </li>";
-    };
-
-    GitLabDropdown.prototype.highlightRow = function(index) {
-      var selector;
-      if (this.filterInput.val() !== "") {
-        selector = '.dropdown-content li:first-child a';
-        if (this.dropdown.find(".dropdown-toggle-page").length) {
-          selector = ".dropdown-page-one .dropdown-content li:first-child a";
-        }
-        return this.getElement(selector).addClass('is-focused');
-      }
     };
 
     GitLabDropdown.prototype.rowClicked = function(el) {
@@ -612,13 +618,23 @@
 
     GitLabDropdown.prototype.selectRowAtIndex = function(index) {
       var $el, selector;
-      selector = ".dropdown-content li:not(.divider,.dropdown-header,.separator):eq(" + index + ") a";
+      // If we pass an option index
+      if (typeof index !== "undefined") {
+        selector = SELECTABLE_CLASSES + ":eq(" + index + ") a";
+      } else {
+        selector = ".dropdown-content .is-focused";
+      }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one " + selector;
       }
       $el = $(selector, this.dropdown);
       if ($el.length) {
-        return $el.first().trigger('click');
+        var href = $el.attr('href');
+        if (href && href !== '#') {
+          Turbolinks.visit(href);
+        } else {
+          $el.first().trigger('click');
+        }
       }
     };
 
@@ -626,7 +642,7 @@
       var $input, ARROW_KEY_CODES, selector;
       ARROW_KEY_CODES = [38, 40];
       $input = this.dropdown.find(".dropdown-input-field");
-      selector = '.dropdown-content li:not(.divider,.dropdown-header,.separator):visible';
+      selector = SELECTABLE_CLASSES;
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         selector = ".dropdown-page-one " + selector;
       }
@@ -654,7 +670,7 @@
             return false;
           }
           if (currentKeyCode === 13 && currentIndex !== -1) {
-            return _this.selectRowAtIndex($('.is-focused', _this.dropdown).closest('li').index() - 1);
+            _this.selectRowAtIndex();
           }
         };
       })(this));
@@ -662,6 +678,11 @@
 
     GitLabDropdown.prototype.removeArrayKeyEvent = function() {
       return $('body').off('keydown');
+    };
+
+    GitLabDropdown.prototype.resetRows = function resetRows() {
+      currentIndex = -1;
+      $('.is-focused', this.dropdown).removeClass('is-focused');
     };
 
     GitLabDropdown.prototype.highlightRowAtIndex = function($listItems, index) {
@@ -677,10 +698,14 @@
       listItemHeight = $listItem.outerHeight();
       listItemTop = $listItem.prop('offsetTop');
       listItemBottom = listItemTop + listItemHeight;
-      if (listItemBottom > dropdownContentBottom + dropdownScrollTop) {
-        return $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom);
-      } else if (listItemTop < dropdownContentTop + dropdownScrollTop) {
-        return $dropdownContent.scrollTop(listItemTop - dropdownContentTop);
+      if (!index) {
+        $dropdownContent.scrollTop(0)
+      } else if (index === ($listItems.length - 1)) {
+        $dropdownContent.scrollTop($dropdownContent.prop('scrollHeight'));
+      } else if (listItemBottom > (dropdownContentBottom + dropdownScrollTop)) {
+        $dropdownContent.scrollTop(listItemBottom - dropdownContentBottom + CURSOR_SELECT_SCROLL_PADDING);
+      } else if (listItemTop < (dropdownContentTop + dropdownScrollTop)) {
+        return $dropdownContent.scrollTop(listItemTop - dropdownContentTop - CURSOR_SELECT_SCROLL_PADDING);
       }
     };
 
