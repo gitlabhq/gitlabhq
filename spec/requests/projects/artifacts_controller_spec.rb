@@ -17,9 +17,7 @@ describe Projects::ArtifactsController do
   describe 'GET /:project/builds/artifacts/:ref_name/browse?job=name' do
     before do
       project.team << [user, :developer]
-    end
 
-    before do
       login_as(user)
     end
 
