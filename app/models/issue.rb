@@ -23,6 +23,8 @@ class Issue < ActiveRecord::Base
 
   has_many :events, as: :target, dependent: :destroy
 
+  has_one :metrics, dependent: :destroy
+
   validates :project, presence: true
 
   scope :cared, ->(user) { where(assignee_id: user) }
@@ -35,6 +37,8 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+
+  after_save :record_metrics
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -269,5 +273,10 @@ class Issue < ActiveRecord::Base
   # Only issues on public projects should be checked for spam
   def check_for_spam?
     project.public?
+  end
+
+  def record_metrics
+    metrics = Metrics.find_or_create_by(issue_id: self.id)
+    metrics.record!
   end
 end
