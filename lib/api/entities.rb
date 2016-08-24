@@ -78,7 +78,7 @@ module API
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :container_registry_enabled
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled
+      expose :shared_runners_enabled, :enable_lfs
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
