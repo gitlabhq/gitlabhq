@@ -275,8 +275,7 @@ describe Ci::Build, models: true do
 
     context 'when yaml_variables are undefined' do
       before do
-        build.update(yaml_variables: nil)
-        build.reload # reload pipeline so that it resets config_processor
+        build.yaml_variables = nil
       end
 
       context 'use from gitlab-ci.yml' do
@@ -902,8 +901,7 @@ describe Ci::Build, models: true do
 
     context 'when `when` is undefined' do
       before do
-        build.update(when: nil)
-        build.reload # reload pipeline so that it resets config_processor
+        build.when = nil
       end
 
       context 'use from gitlab-ci.yml' do
