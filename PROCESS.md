@@ -8,6 +8,8 @@ treatment, etc.). And so that maintainers know what to expect from contributors
 (use the latest version, ensure that the issue is addressed, friendly treatment,
 etc.).
 
+- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+
 ## Common actions
 
 ### Issue team

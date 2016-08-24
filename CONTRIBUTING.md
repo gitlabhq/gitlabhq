@@ -41,6 +41,8 @@ abbreviation.
 If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
+- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+
 ## Contributor license agreement
 
 By submitting code as an individual you agree to the
@@ -334,6 +336,10 @@ request is as follows:
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
 1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
+1. If your merge request adds one or more migrations, make sure to execute all
+   migrations on a fresh database before the MR is reviewed. If the review leads
+   to large changes in the MR, do this again once the review is complete.
+1. For more complex migrations, write tests.
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -381,7 +387,8 @@ description area. Copy-paste it to retain the markdown format.
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
-   exposing a bug in existing code)
+   exposing a bug in existing code). Every new class should have corresponding
+   unit tests, even if the class is exercised at a higher level, such as a feature test.
 1. If you suspect a failing CI build is unrelated to your contribution, you may
    try and restart the failing CI job or ask a developer to fix the
    aforementioned failing test
@@ -459,8 +466,10 @@ merge request:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
+1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
-1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
+1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
@@ -530,6 +539,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
+[newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/

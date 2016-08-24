@@ -15,9 +15,9 @@ class ProjectTeam
     users, access, current_user = *args
 
     if users.respond_to?(:each)
-      add_users(users, access, current_user)
+      add_users(users, access, current_user: current_user)
     else
-      add_user(users, access, current_user)
+      add_user(users, access, current_user: current_user)
     end
   end
 
@@ -33,17 +33,18 @@ class ProjectTeam
     member
   end
 
-  def add_users(users, access, current_user = nil)
-    ProjectMember.add_users_into_projects(
+  def add_users(users, access, current_user: nil, expires_at: nil)
+    ProjectMember.add_users_to_projects(
       [project.id],
       users,
       access,
-      current_user
+      current_user: current_user,
+      expires_at: expires_at
     )
   end
 
-  def add_user(user, access, current_user = nil)
-    add_users([user], access, current_user)
+  def add_user(user, access, current_user: nil, expires_at: nil)
+    add_users([user], access, current_user: current_user, expires_at: expires_at)
   end
 
   # Remove all users from project team
@@ -138,8 +139,13 @@ class ProjectTeam
   def max_member_access_for_user_ids(user_ids)
     user_ids = user_ids.uniq
     key = "max_member_access:#{project.id}"
-    RequestStore.store[key] ||= {}
-    access = RequestStore.store[key]
+
+    access = {}
+
+    if RequestStore.active?
+      RequestStore.store[key] ||= {}
+      access = RequestStore.store[key]
+    end
 
     # Lookup only the IDs we need
     user_ids = user_ids - access.keys

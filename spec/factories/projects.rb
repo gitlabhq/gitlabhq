@@ -83,4 +83,10 @@ FactoryGirl.define do
       )
     end
   end
+
+  factory :project_with_board, parent: :empty_project do
+    after(:create) do |project|
+      project.create_board
+    end
+  end
 end

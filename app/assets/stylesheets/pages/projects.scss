@@ -99,7 +99,7 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 15px;
-    max-width: 480px;
+    max-width: 700px;
 
     > p {
       margin-bottom: 0;
@@ -512,18 +512,12 @@ pre.light-well {
   .project-row {
     border-color: $table-border-color;
 
-    &.no-description {
-      .project {
-        line-height: 40px;
-      }
-    }
-
     .project-full-name {
       @include str-truncated;
     }
 
     .controls {
-      line-height: 40px;
+      line-height: $list-text-height;
 
       a:hover {
         text-decoration: none;
@@ -662,13 +656,9 @@ pre.light-well {
 }
 
 .new_protected_branch {
-  .dropdown {
-    display: inline;
-    margin-left: 15px;
-  }
-
   label {
-    min-width: 120px;
+    margin-top: 6px;
+    font-weight: normal;
   }
 }
 
@@ -682,6 +672,21 @@ pre.light-well {
 
     &.is-active {
       font-weight: 600;
+    }
+  }
+
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
+    border-radius: 1px;
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: solid 1px transparent;
     }
   }
 }
@@ -712,5 +717,31 @@ pre.light-well {
 .compare-form-group {
   .dropdown-menu {
     width: 300px;
+  }
+}
+
+.clearable-input {
+  position: relative;
+
+  .clear-icon {
+    @extend .fa-times;
+    display: none;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    color: $location-icon-color;
+
+    &:before {
+      font-family: FontAwesome;
+      font-weight: normal;
+      font-style: normal;
+    }
+  }
+
+  &.has-value {
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
   }
 }

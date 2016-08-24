@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.7'
+gem 'rails', '4.2.7.1'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -20,7 +20,7 @@ gem 'pg', '~> 0.18.2', group: :postgres
 
 # Authentication libraries
 gem 'devise',                 '~> 4.0'
-gem 'doorkeeper',             '~> 4.0'
+gem 'doorkeeper',             '~> 4.2.0'
 gem 'omniauth',               '~> 1.3.1'
 gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
@@ -53,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.4.2'
+gem 'gitlab_git', '~> 10.4.7'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -69,7 +69,7 @@ gem 'gollum-rugged_adapter', '~> 0.4.2', require: false
 gem 'github-linguist', '~> 4.7.0', require: 'linguist'
 
 # API
-gem 'grape',        '~> 0.13.0'
+gem 'grape',        '~> 0.15.0'
 gem 'grape-entity', '~> 0.4.2'
 gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 
@@ -77,7 +77,7 @@ gem 'rack-cors',    '~> 0.4.0', require: 'rack/cors'
 gem 'kaminari', '~> 0.17.0'
 
 # HAML
-gem 'hamlit', '~> 2.5'
+gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 0.10.0'
@@ -154,7 +154,7 @@ gem 'settingslogic', '~> 2.0.9'
 
 # Misc
 
-gem 'version_sorter', '~> 2.0.0'
+gem 'version_sorter', '~> 2.1.0'
 
 # Cache
 gem 'redis-rails', '~> 4.0.0'
@@ -162,9 +162,6 @@ gem 'redis-rails', '~> 4.0.0'
 # Redis
 gem 'redis', '~> 3.2'
 gem 'connection_pool', '~> 2.0'
-
-# Campfire integration
-gem 'tinder', '~> 1.10.0'
 
 # HipChat integration
 gem 'hipchat', '~> 1.5.0'
@@ -204,7 +201,7 @@ gem 'licensee', '~> 8.0.0'
 gem 'rack-attack', '~> 4.3.1'
 
 # Ace editor
-gem 'ace-rails-ap', '~> 4.0.2'
+gem 'ace-rails-ap', '~> 4.1.0'
 
 # Keyboard shortcuts
 gem 'mousetrap-rails', '~> 1.4.6'
@@ -212,7 +209,8 @@ gem 'mousetrap-rails', '~> 1.4.6'
 # Detect and convert string character encoding
 gem 'charlock_holmes', '~> 0.7.3'
 
-# Parse duration
+# Parse time & duration
+gem 'chronic', '~> 0.10.2'
 gem 'chronic_duration', '~> 0.10.6'
 
 gem 'sass-rails', '~> 5.0.0'
@@ -317,6 +315,7 @@ end
 group :test do
   gem 'shoulda-matchers', '~> 2.8.0', require: false
   gem 'email_spec', '~> 1.6.0'
+  gem 'json-schema', '~> 2.6.2'
   gem 'webmock', '~> 1.21.0'
   gem 'test_after_commit', '~> 0.4.2'
   gem 'sham_rack', '~> 1.3.6'
@@ -326,7 +325,7 @@ group :production do
   gem 'gitlab_meta', '7.0'
 end
 
-gem 'newrelic_rpm', '~> 3.14'
+gem 'newrelic_rpm', '~> 3.16'
 
 gem 'octokit', '~> 4.3.0'
 

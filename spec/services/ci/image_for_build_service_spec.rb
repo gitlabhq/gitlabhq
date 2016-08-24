@@ -5,8 +5,8 @@ module Ci
     let(:service) { ImageForBuildService.new }
     let(:project) { FactoryGirl.create(:empty_project) }
     let(:commit_sha) { '01234567890123456789' }
-    let(:commit) { project.ensure_pipeline(commit_sha, 'master') }
-    let(:build) { FactoryGirl.create(:ci_build, pipeline: commit) }
+    let(:pipeline) { project.ensure_pipeline(commit_sha, 'master') }
+    let(:build) { FactoryGirl.create(:ci_build, pipeline: pipeline) }
 
     describe '#execute' do
       before { build }

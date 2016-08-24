@@ -23,73 +23,36 @@ describe ProjectsFinder do
 
     let(:finder) { described_class.new }
 
-    describe 'without a group' do
-      describe 'without a user' do
-        subject { finder.execute }
+    describe 'without a user' do
+      subject { finder.execute }
 
-        it { is_expected.to eq([public_project]) }
+      it { is_expected.to eq([public_project]) }
+    end
+
+    describe 'with a user' do
+      subject { finder.execute(user) }
+
+      describe 'without private projects' do
+        it { is_expected.to eq([public_project, internal_project]) }
       end
 
-      describe 'with a user' do
-        subject { finder.execute(user) }
-
-        describe 'without private projects' do
-          it { is_expected.to eq([public_project, internal_project]) }
+      describe 'with private projects' do
+        before do
+          private_project.team.add_user(user, Gitlab::Access::MASTER)
         end
 
-        describe 'with private projects' do
-          before do
-            private_project.team.add_user(user, Gitlab::Access::MASTER)
-          end
-
-          it do
-            is_expected.to eq([public_project, internal_project,
-                               private_project])
-          end
+        it do
+          is_expected.to eq([public_project, internal_project, private_project])
         end
       end
     end
 
-    describe 'with a group' do
-      describe 'without a user' do
-        subject { finder.execute(nil, group: group) }
+    describe 'with project_ids_relation' do
+      let(:project_ids_relation) { Project.where(id: internal_project.id) }
 
-        it { is_expected.to eq([public_project]) }
-      end
+      subject { finder.execute(user, project_ids_relation) }
 
-      describe 'with a user' do
-        subject { finder.execute(user, group: group) }
-
-        describe 'without shared projects' do
-          it { is_expected.to eq([public_project, internal_project]) }
-        end
-
-        describe 'with shared projects and group membership' do
-          before do
-            group.add_user(user, Gitlab::Access::DEVELOPER)
-
-            shared_project.project_group_links.
-              create(group_access: Gitlab::Access::MASTER, group: group)
-          end
-
-          it do
-            is_expected.to eq([shared_project, public_project, internal_project])
-          end
-        end
-
-        describe 'with shared projects and project membership' do
-          before do
-            shared_project.team.add_user(user, Gitlab::Access::DEVELOPER)
-
-            shared_project.project_group_links.
-              create(group_access: Gitlab::Access::MASTER, group: group)
-          end
-
-          it do
-            is_expected.to eq([shared_project, public_project, internal_project])
-          end
-        end
-      end
+      it { is_expected.to eq([internal_project]) }
     end
   end
 end

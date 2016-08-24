@@ -7,4 +7,8 @@ class SpamLog < ActiveRecord::Base
     user.block
     user.destroy
   end
+
+  def text
+    [title, description].join("\n")
+  end
 end

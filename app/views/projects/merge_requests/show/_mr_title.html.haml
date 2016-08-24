@@ -14,7 +14,7 @@
   - if can?(current_user, :update_merge_request, @merge_request)
     .issuable-actions
       .clearfix.issue-btn-group.dropdown
-        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ data: { toggle: "dropdown" } }
+        %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
           %span.caret
           Options
         .dropdown-menu.dropdown-menu-align-right.hidden-lg

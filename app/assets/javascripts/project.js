@@ -65,7 +65,8 @@
               url: $dropdown.data('refs-url'),
               data: {
                 ref: $dropdown.data('ref')
-              }
+              },
+              dataType: "json"
             }).done(function(refs) {
               return callback(refs);
             });
@@ -73,7 +74,7 @@
           selectable: true,
           filterable: true,
           filterByText: true,
-          fieldName: 'ref',
+          fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var link;
             if (ref.header != null) {
@@ -89,8 +90,14 @@
           toggleLabel: function(obj, $el) {
             return $el.text().trim();
           },
-          clicked: function(e) {
-            return $dropdown.closest('form').submit();
+          clicked: function(selected, $el, e) {
+            e.preventDefault()
+            if ($('input[name="ref"]').length) {
+              var $form = $dropdown.closest('form'),
+                  action = $form.attr('action'),
+                  divider = action.indexOf('?') < 0 ? '?' : '&';
+              Turbolinks.visit(action + '' + divider + '' + $form.serialize());
+            }
           }
         });
       });

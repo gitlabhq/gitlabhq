@@ -1,8 +1,7 @@
 # GitLab Container Registry
 
-> **Note:**
-This feature was [introduced][ce-4040] in GitLab 8.8. Docker Registry manifest
-v1 support was added in GitLab 8.9 to support Docker versions earlier than 1.10.
+> [Introduced][ce-4040] in GitLab 8.8. Docker Registry manifest
+`v1` support was added in GitLab 8.9 to support Docker versions earlier than 1.10.
 
 > **Note:**
 This document is about the user guide. To learn how to enable GitLab Container
@@ -89,6 +88,10 @@ In order to use a container image from your private project as an `image:` in
 your `.gitlab-ci.yml`, you have to follow the
 [Using a private Docker Registry][private-docker]
 documentation. This workflow will be simplified in the future.
+
+## Troubleshooting
+
+See [the GitLab Docker registry troubleshooting guide](troubleshooting.md).
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/

@@ -69,6 +69,10 @@
 
     &.ci-success {
       color: $gl-success;
+
+      a.environment {
+        color: inherit;
+      }
     }
 
     &.ci-success_with_warnings {
@@ -126,7 +130,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-
     }
 
     p:last-child {
@@ -369,5 +372,12 @@
     &:not(:last-child) {
       margin-right: 10px;
     }
+  }
+}
+
+.merge-request-details {
+
+  .title {
+    margin-bottom: 20px;
   }
 }

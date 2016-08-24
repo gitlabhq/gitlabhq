@@ -43,6 +43,7 @@ $gl-header-color:      $gl-title-color;
 $list-font-size:   $gl-font-size;
 $list-title-color: $gl-title-color;
 $list-text-color:  $gl-text-color;
+$list-text-height: 42px;
 
 /*
  * Markdown
@@ -275,3 +276,5 @@ $personal-access-tokens-disabled-label-color: #bbb;
 
 $ci-output-bg: #1d1f21;
 $ci-text-color: #c5c8c6;
+
+$issue-boards-font-size: 15px;

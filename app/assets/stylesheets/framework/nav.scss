@@ -72,6 +72,7 @@
       font-weight: normal;
       background-color: #eee;
       color: #78a;
+      vertical-align: baseline;
     }
   }
 
@@ -182,7 +183,6 @@
 
     > form {
       display: inline-block;
-      margin-top: -1px;
     }
 
     .icon-label {
@@ -193,7 +193,6 @@
       height: 35px;
       display: inline-block;
       position: relative;
-      top: 2px;
       margin-right: $gl-padding-top;
 
       /* Medium devices (desktops, 992px and up) */

@@ -63,7 +63,7 @@
     - if build.duration
       %p.duration
         = custom_icon("icon_timer")
-        = duration_in_numbers(build.finished_at, build.started_at)
+        = duration_in_numbers(build.duration)
     - if build.finished_at
       %p.finished-at
         = icon("calendar")

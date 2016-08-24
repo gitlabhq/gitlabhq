@@ -14,6 +14,6 @@ class RemoveDevelopersCanMergeFromProtectedBranches < ActiveRecord::Migration
   end
 
   def down
-    add_column_with_default(:protected_branches, :developers_can_merge, :boolean, default: false, null: false)
+    add_column_with_default(:protected_branches, :developers_can_merge, :boolean, default: false, allow_null: false)
   end
 end

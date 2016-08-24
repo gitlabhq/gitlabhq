@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Lfs::Router do
+describe 'Git LFS API and storage' do
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
 
@@ -31,10 +31,11 @@ describe Gitlab::Lfs::Router do
         'operation' => 'upload'
       }
     end
+    let(:authorization) { authorize_user }
 
     before do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
-      post_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+      post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
     end
 
     it 'responds with 501' do
@@ -71,8 +72,9 @@ describe Gitlab::Lfs::Router do
     end
 
     context 'when handling lfs request using deprecated API' do
+      let(:authorization) { authorize_user }
       before do
-        post_json "#{project.http_url_to_repo}/info/lfs/objects", nil, headers
+        post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects", nil, headers
       end
 
       it_behaves_like 'a deprecated'
@@ -118,8 +120,8 @@ describe Gitlab::Lfs::Router do
               project.lfs_objects << lfs_object
             end
 
-            it 'responds with status 403' do
-              expect(response).to have_http_status(403)
+            it 'responds with status 404' do
+              expect(response).to have_http_status(404)
             end
           end
 
@@ -147,8 +149,8 @@ describe Gitlab::Lfs::Router do
       context 'without required headers' do
         let(:authorization) { authorize_user }
 
-        it 'responds with status 403' do
-          expect(response).to have_http_status(403)
+        it 'responds with status 404' do
+          expect(response).to have_http_status(404)
         end
       end
     end
@@ -162,7 +164,7 @@ describe Gitlab::Lfs::Router do
       enable_lfs
       update_lfs_permissions
       update_user_permissions
-      post_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+      post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
     end
 
     describe 'download' do
@@ -304,10 +306,10 @@ describe Gitlab::Lfs::Router do
         end
 
         context 'when user does is not member of the project' do
-          let(:role) { :guest }
+          let(:update_user_permissions) { nil }
 
-          it 'responds with 403' do
-            expect(response).to have_http_status(403)
+          it 'responds with 404' do
+            expect(response).to have_http_status(404)
           end
         end
 
@@ -510,6 +512,7 @@ describe Gitlab::Lfs::Router do
 
     describe 'unsupported' do
       let(:project) { create(:empty_project) }
+      let(:authorization) { authorize_user }
       let(:body) do
         { 'operation' => 'other',
           'objects' => [
@@ -553,11 +556,11 @@ describe Gitlab::Lfs::Router do
 
       context 'and request is sent with a malformed headers' do
         before do
-          put_finalize('cat /etc/passwd')
+          put_finalize('/etc/passwd')
         end
 
         it 'does not recognize it as a valid lfs command' do
-          expect(response).to have_http_status(403)
+          expect(response).to have_http_status(401)
         end
       end
     end
@@ -579,6 +582,16 @@ describe Gitlab::Lfs::Router do
         end
 
         it 'responds with 403' do
+          expect(response).to have_http_status(403)
+        end
+      end
+
+      context 'and request is sent with a malformed headers' do
+        before do
+          put_finalize('/etc/passwd')
+        end
+
+        it 'does not recognize it as a valid lfs command' do
           expect(response).to have_http_status(403)
         end
       end
@@ -624,9 +637,25 @@ describe Gitlab::Lfs::Router do
               expect(lfs_object.projects.pluck(:id)).to include(project.id)
             end
           end
+
+          context 'invalid tempfiles' do
+            it 'rejects slashes in the tempfile name (path traversal' do
+              put_finalize('foo/bar')
+              expect(response).to have_http_status(403)
+            end
+
+            it 'rejects tempfile names that do not start with the oid' do
+              put_finalize("foo#{sample_oid}")
+              expect(response).to have_http_status(403)
+            end
+          end
         end
 
         describe 'and user does not have push access' do
+          before do
+            project.team << [user, :reporter]
+          end
+
           it_behaves_like 'forbidden'
         end
       end
@@ -758,8 +787,8 @@ describe Gitlab::Lfs::Router do
     Projects::ForkService.new(project, user, {}).execute
   end
 
-  def post_json(url, body = nil, headers = nil)
-    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/json'))
+  def post_lfs_json(url, body = nil, headers = nil)
+    post(url, body.try(:to_json), (headers || {}).merge('Content-Type' => 'application/vnd.git-lfs+json'))
   end
 
   def json_response

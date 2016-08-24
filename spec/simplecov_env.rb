@@ -1,4 +1,5 @@
 require 'simplecov'
+require 'active_support/core_ext/numeric/time'
 
 module SimpleCovEnv
   extend self
@@ -48,7 +49,7 @@ module SimpleCovEnv
       add_group 'Uploaders', 'app/uploaders'
       add_group 'Validators', 'app/validators'
 
-      merge_timeout 7200
+      merge_timeout 365.days
     end
   end
 end

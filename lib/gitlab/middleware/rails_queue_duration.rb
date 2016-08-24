@@ -11,7 +11,7 @@ module Gitlab
       
       def call(env)
         trans = Gitlab::Metrics.current_transaction
-        proxy_start = env['HTTP_GITLAB_WORHORSE_PROXY_START'].presence
+        proxy_start = env['HTTP_GITLAB_WORKHORSE_PROXY_START'].presence
         if trans && proxy_start
           # Time in milliseconds since gitlab-workhorse started the request
           trans.set(:rails_queue_duration, Time.now.to_f * 1_000 - proxy_start.to_f / 1_000_000)

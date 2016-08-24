@@ -89,7 +89,7 @@ Feature: Project Merge Requests
     Then The list should be sorted by "Oldest updated"
 
   @javascript
-  Scenario: Visiting Merge Requests from a differente Project after sorting
+  Scenario: Visiting Merge Requests from a different Project after sorting
     Given I visit project "Shop" merge requests page
     And I sort the list by "Oldest updated"
     And I visit dashboard merge requests page
@@ -233,6 +233,15 @@ Feature: Project Merge Requests
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the Changes tab
+    And I unfold diff
+    Then I should see additional file lines
+
+  @javascript
+  Scenario: I unfold diff in Side-by-Side view
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I click on the Changes tab
+    And I click Side-by-side Diff tab
     And I unfold diff
     Then I should see additional file lines
 

@@ -26,8 +26,6 @@
 /*= require bootstrap/tooltip */
 /*= require bootstrap/popover */
 /*= require select2 */
-/*= require ace/ace */
-/*= require ace/ext-searchbox */
 /*= require underscore */
 /*= require dropzone */
 /*= require mousetrap */
@@ -41,6 +39,7 @@
 /*= require date.format */
 /*= require_directory ./behaviors */
 /*= require_directory ./blob */
+/*= require_directory ./templates */
 /*= require_directory ./commit */
 /*= require_directory ./extensions */
 /*= require_directory ./lib/utils */
@@ -152,7 +151,9 @@
       });
     });
     $('.remove-row').bind('ajax:success', function() {
-      return $(this).closest('li').fadeOut();
+      $(this).tooltip('destroy')
+        .closest('li')
+        .fadeOut();
     });
     $('.js-remove-tr').bind('ajax:before', function() {
       return $(this).hide();
@@ -223,8 +224,14 @@
       return $('.navbar-toggle').toggleClass('active');
     });
     $body.on("click", ".js-toggle-diff-comments", function(e) {
-      $(this).toggleClass('active');
-      $(this).closest(".diff-file").find(".notes_holder").toggle();
+      var $this = $(this);
+      $this.toggleClass('active');
+      var notesHolders = $this.closest('.diff-file').find('.notes_holder');
+      if ($this.hasClass('active')) {
+        notesHolders.show();
+      } else {
+        notesHolders.hide();
+      }
       return e.preventDefault();
     });
     $document.off("click", '.js-confirm-danger');
@@ -287,7 +294,7 @@
       $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
       $('.navbar-fixed-top').removeClass('header-pinned-nav');
     }
-    return $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
+    $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
       var $page, $pinBtn, $tooltip, $topNav, doPinNav, tooltipText;
       e.preventDefault();
       $pinBtn = $(e.currentTarget);
@@ -315,6 +322,8 @@
       $tooltip.find('.tooltip-inner').text(tooltipText);
       return $pinBtn.attr('title', tooltipText).tooltip('fixTitle');
     });
-  });
 
+    // Custom time ago
+    gl.utils.shortTimeAgo($('.js-short-timeago'));
+  });
 }).call(this);

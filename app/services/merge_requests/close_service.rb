@@ -1,6 +1,8 @@
 module MergeRequests
   class CloseService < MergeRequests::BaseService
     def execute(merge_request, commit = nil)
+      return merge_request unless can?(current_user, :update_merge_request, merge_request)
+
       # If we close MergeRequest we want to ignore validation
       # so we can close broken one (Ex. fork project removed)
       merge_request.allow_broken = true

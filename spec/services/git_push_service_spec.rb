@@ -227,8 +227,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
-        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -249,8 +249,8 @@ describe GitPushService, services: true do
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
 
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.last.push_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
-        expect(project.protected_branches.last.merge_access_level.access_level).to eq(Gitlab::Access::MASTER)
+        expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
       end
 
       it "when pushing a branch for the first time with default branch protection set to 'developers can merge'" do
@@ -260,8 +260,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, @blankrev, 'newrev', 'refs/heads/master' )
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_level.access_level).to eq(Gitlab::Access::MASTER)
-        expect(project.protected_branches.first.merge_access_level.access_level).to eq(Gitlab::Access::DEVELOPER)
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
       end
 
       it "when pushing new commits to existing branch" do
@@ -420,7 +420,7 @@ describe GitPushService, services: true do
       context "mentioning an issue" do
         let(:message) { "this is some work.\n\nrelated to JIRA-1" }
 
-        it "should initiate one api call to jira server to mention the issue" do
+        it "initiates one api call to jira server to mention the issue" do
           execute_service(project, user, @oldrev, @newrev, @ref )
 
           expect(WebMock).to have_requested(:post, jira_api_comment_url).with(
@@ -432,7 +432,7 @@ describe GitPushService, services: true do
       context "closing an issue" do
         let(:message) { "this is some work.\n\ncloses JIRA-1" }
 
-        it "should initiate one api call to jira server to close the issue" do
+        it "initiates one api call to jira server to close the issue" do
           transition_body = {
             transition: {
               id: '2'
@@ -445,7 +445,7 @@ describe GitPushService, services: true do
           ).once
         end
 
-        it "should initiate one api call to jira server to comment on the issue" do
+        it "initiates one api call to jira server to comment on the issue" do
           comment_body = {
             body: "Issue solved with [#{closing_commit.id}|http://localhost/#{project.path_with_namespace}/commit/#{closing_commit.id}]."
           }.to_json

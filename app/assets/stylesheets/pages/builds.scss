@@ -53,14 +53,6 @@
       left: 70px;
     }
   }
-
-  .nav-links {
-    svg {
-      position: relative;
-      top: 2px;
-      margin-right: 3px;
-    }
-  }
 }
 
 .build-header {
@@ -108,11 +100,14 @@
 }
 
 .right-sidebar.build-sidebar {
-  padding-top: $gl-padding;
-  padding-bottom: $gl-padding;
+  padding: $gl-padding 0;
 
   &.right-sidebar-collapsed {
     display: none;
+  }
+
+  .blocks-container {
+    padding: $gl-padding;
   }
 
   .block {
@@ -120,10 +115,84 @@
   }
 
   .build-sidebar-header {
-    padding-top: 0;
+    padding: 0 $gl-padding $gl-padding;
 
     .gutter-toggle {
       margin-top: 0;
+    }
+  }
+
+  .stage-item {
+    cursor: pointer;
+
+    &:hover {
+      color: $gl-text-color;
+    }
+  }
+
+  .build-dropdown {
+    padding: 0 $gl-padding;
+
+    .dropdown-menu-toggle {
+      margin-top: 8px;
+    }
+
+    .dropdown-menu {
+      right: $gl-padding;
+      left: $gl-padding;
+      width: auto;
+    }
+  }
+
+  .builds-container {
+    margin-top: $gl-padding;
+    background-color: $white-light;
+    border-top: 1px solid $border-color;
+    border-bottom: 1px solid $border-color;
+    max-height: 300px;
+    overflow: scroll;
+
+    svg {
+      position: relative;
+      top: 2px;
+      margin-right: 3px;
+      height: 13px;
+    }
+
+    a {
+      display: block;
+      padding: $gl-padding 10px $gl-padding 40px;
+      width: 270px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+
+      &:hover {
+        color: $gl-text-color;
+      }
+    }
+
+    .build-job {
+      position: relative;
+
+      .fa {
+        position: absolute;
+        left: 15px;
+        top: 20px;
+        display: none;
+      }
+
+      &.active {
+        font-weight: bold;
+
+        .fa {
+          display: block;
+        }
+      }
+
+      &:hover {
+        background-color: $row-hover;
+      }
     }
   }
 }

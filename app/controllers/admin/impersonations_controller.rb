@@ -7,7 +7,7 @@ class Admin::ImpersonationsController < Admin::ApplicationController
 
     warden.set_user(impersonator, scope: :user)
 
-    Gitlab::AppLogger.info("User #{original_user.username} has stopped impersonating #{impersonator.username}")
+    Gitlab::AppLogger.info("User #{impersonator.username} has stopped impersonating #{original_user.username}")
 
     session[:impersonator_id] = nil
 

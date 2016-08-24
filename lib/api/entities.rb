@@ -92,9 +92,21 @@ module API
       end
     end
 
-    class ProjectMember < UserBasic
+    class Member < UserBasic
       expose :access_level do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).access_level
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.access_level
+      end
+      expose :expires_at do |user, options|
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.expires_at
+      end
+    end
+
+    class AccessRequester < UserBasic
+      expose :requested_at do |user, options|
+        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester.requested_at
       end
     end
 
@@ -107,12 +119,6 @@ module API
     class GroupDetail < Group
       expose :projects, using: Entities::Project
       expose :shared_projects, using: Entities::Project
-    end
-
-    class GroupMember < UserBasic
-      expose :access_level do |user, options|
-        options[:group].group_members.find_by(user_id: user.id).access_level
-      end
     end
 
     class RepoBranch < Grape::Entity
@@ -128,12 +134,14 @@ module API
 
       expose :developers_can_push do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.push_access_level.access_level == Gitlab::Access::DEVELOPER }
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:push_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
 
       expose :developers_can_merge do |repo_branch, options|
         project = options[:project]
-        project.protected_branches.matching(repo_branch.name).any? { |protected_branch| protected_branch.merge_access_level.access_level == Gitlab::Access::DEVELOPER }
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:merge_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -225,7 +233,7 @@ module API
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.diffs(all_diffs: true).to_a
+        compare.raw_diffs(all_diffs: true).to_a
       end
     end
 
@@ -326,7 +334,7 @@ module API
       expose :id, :path, :kind
     end
 
-    class Member < Grape::Entity
+    class MemberAccess < Grape::Entity
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
@@ -335,10 +343,10 @@ module API
       end
     end
 
-    class ProjectAccess < Member
+    class ProjectAccess < MemberAccess
     end
 
-    class GroupAccess < Member
+    class GroupAccess < MemberAccess
     end
 
     class ProjectService < Grape::Entity
@@ -498,8 +506,27 @@ module API
       expose :key, :value
     end
 
-    class Environment < Grape::Entity
+    class Pipeline < Grape::Entity
+      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+
+      expose :user, with: Entities::UserBasic
+      expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
+      expose :duration
+    end
+
+    class EnvironmentBasic < Grape::Entity
       expose :id, :name, :external_url
+    end
+
+    class Environment < EnvironmentBasic
+      expose :project, using: Entities::Project
+    end
+
+    class Deployment < Grape::Entity
+      expose :id, :iid, :ref, :sha, :created_at
+      expose :user,        using: Entities::UserBasic
+      expose :environment, using: Entities::EnvironmentBasic
+      expose :deployable,  using: Entities::Build
     end
 
     class RepoLicense < Grape::Entity

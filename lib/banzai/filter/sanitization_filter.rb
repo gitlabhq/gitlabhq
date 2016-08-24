@@ -7,7 +7,7 @@ module Banzai
       UNSAFE_PROTOCOLS = %w(data javascript vbscript).freeze
 
       def whitelist
-        whitelist = super
+        whitelist = super.dup
 
         customize_whitelist(whitelist)
 
@@ -41,6 +41,8 @@ module Banzai
 
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
+
+        whitelist[:transformers] = whitelist[:transformers].dup
 
         # ...but then remove links with unsafe protocols
         whitelist[:transformers].push(remove_unsafe_links)

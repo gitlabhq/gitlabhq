@@ -38,7 +38,7 @@ describe SystemHook, models: true do
     end
 
     it "project_destroy hook" do
-      Projects::DestroyService.new(project, user, {}).pending_delete!
+      Projects::DestroyService.new(project, user, {}).async_execute
 
       expect(WebMock).to have_requested(:post, system_hook.url).with(
         body: /project_destroy/,

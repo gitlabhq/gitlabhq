@@ -20,6 +20,9 @@
       path = page.split(':');
       shortcut_handler = null;
       switch (page) {
+        case 'projects:boards:show':
+          shortcut_handler = new ShortcutsNavigation();
+          break;
         case 'projects:issues:index':
           Issuable.init();
           new IssuableBulkActions();
@@ -55,6 +58,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.issue-form'));
           new IssuableForm($('.issue-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:new':
         case 'projects:merge_requests:edit':
@@ -62,6 +66,7 @@
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'));
           new IssuableForm($('.merge-request-form'));
+          new IssuableTemplateSelectors();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -86,6 +91,8 @@
           new ZenMode();
           new MergedButtons();
           break;
+        case "projects:merge_requests:conflicts":
+          window.mcui = new MergeConflictResolver()
         case 'projects:merge_requests:index':
           shortcut_handler = new ShortcutsNavigation();
           Issuable.init();
@@ -122,10 +129,12 @@
           new NotificationsDropdown();
           break;
         case 'groups:group_members:index':
+          new gl.MemberExpirationDate();
           new GroupMembers();
           new UsersSelect();
           break;
         case 'projects:project_members:index':
+          new gl.MemberExpirationDate();
           new ProjectMembers();
           new UsersSelect();
           break;
@@ -167,14 +176,15 @@
           new BuildArtifacts();
           break;
         case 'projects:group_links:index':
+          new gl.MemberExpirationDate();
           new GroupsSelect();
           break;
         case 'search:show':
           new Search();
           break;
         case 'projects:protected_branches:index':
-          new ProtectedBranchesAccessSelect($(".new_protected_branch"), false, true);
-          new ProtectedBranchesAccessSelect($(".protected-branches-list"), true, false);
+          new gl.ProtectedBranchCreate();
+          new gl.ProtectedBranchEditList();
           break;
       }
       switch (path.first()) {
@@ -186,6 +196,15 @@
               break;
             case 'projects':
               new NamespaceSelects();
+              break;
+            case 'labels':
+              switch (path[2]) {
+                case 'edit':
+                  new Labels();
+              }
+            case 'abuse_reports':
+              new gl.AbuseReports();
+              break;
           }
           break;
         case 'dashboard':
@@ -211,6 +230,7 @@
               new ProjectNew();
               break;
             case 'show':
+              new Star();
               new ProjectNew();
               new ProjectShow();
               new NotificationsDropdown();

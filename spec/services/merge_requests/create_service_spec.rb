@@ -17,7 +17,7 @@ describe MergeRequests::CreateService, services: true do
         }
       end
 
-      let(:service) { MergeRequests::CreateService.new(project, user, opts) }
+      let(:service) { described_class.new(project, user, opts) }
 
       before do
         project.team << [user, :master]
@@ -32,7 +32,7 @@ describe MergeRequests::CreateService, services: true do
       it { expect(@merge_request.assignee).to be_nil }
       it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
 
-      it 'should execute hooks with default action' do
+      it 'executes hooks with default action' do
         expect(service).to have_received(:execute_hooks).with(@merge_request)
       end
 
@@ -72,6 +72,15 @@ describe MergeRequests::CreateService, services: true do
 
           expect(Todo.where(attributes).count).to eq 1
         end
+      end
+    end
+
+    it_behaves_like 'new issuable record that supports slash commands' do
+      let(:default_params) do
+        {
+          source_branch: 'feature',
+          target_branch: 'master'
+        }
       end
     end
   end

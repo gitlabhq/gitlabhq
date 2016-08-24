@@ -1,11 +1,11 @@
+- email = local_assigns.fetch(:email, false)
 - plain = local_assigns.fetch(:plain, false)
 - type = line.type
-- line_code = diff_file.line_code(line) unless plain
+- line_code = diff_file.line_code(line)
 %tr.line_holder{ plain ? { class: type} : { class: type, id: line_code } }
   - case type
   - when 'match'
-    = render "projects/diffs/match_line", { line: line.text,
-      line_old: line.old_pos, line_new: line.new_pos, bottom: false, new_file: diff_file.new_file }
+    = diff_match_line line.old_pos, line.new_pos, text: line.text
   - when 'nonewline'
     %td.old_line.diff-line-num
     %td.new_line.diff-line-num
@@ -23,4 +23,15 @@
         = link_text
       - else
         %a{href: "##{line_code}", data: { linenumber: link_text }}
-    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }= diff_line_content(line.text, type)
+    %td.line_content.noteable_line{ class: type, data: (diff_view_line_data(line_code, diff_file.position(line), type) unless plain) }<
+      - if email
+        %pre= diff_line_content(line.text, type)
+      - else
+        = diff_line_content(line.text, type)
+
+- discussions = local_assigns.fetch(:discussions, nil)
+- if discussions && !line.meta?
+  - discussion = discussions[line_code]
+  - if discussion
+    - discussion_expanded = local_assigns.fetch(:discussion_expanded, discussion.expanded?)
+    = render "discussions/diff_discussion", discussion: discussion, expanded: discussion_expanded

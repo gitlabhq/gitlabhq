@@ -84,14 +84,16 @@ Rails.application.routes.draw do
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
-  # Enable Grack support (for LFS only)
-  mount Grack::AuthSpawner, at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\/(info\/lfs|gitlab-lfs)/.match(request.path_info) }, via: [:get, :post, :put]
-
   # Help
   get 'help'           => 'help#index'
   get 'help/shortcuts' => 'help#shortcuts'
   get 'help/ui'        => 'help#ui'
   get 'help/*path'     => 'help#show', as: :help_page
+
+  #
+  # Koding route
+  #
+  get 'koding' => 'koding#index'
 
   #
   # Global snippets
@@ -255,7 +257,11 @@ Rails.application.routes.draw do
     resource :impersonation, only: :destroy
 
     resources :abuse_reports, only: [:index, :destroy]
-    resources :spam_logs, only: [:index, :destroy]
+    resources :spam_logs, only: [:index, :destroy] do
+      member do
+        post :mark_as_ham
+      end
+    end
 
     resources :applications
 
@@ -374,6 +380,8 @@ Rails.application.routes.draw do
           patch :skip
         end
       end
+
+      resources :u2f_registrations, only: [:destroy]
     end
   end
 
@@ -471,7 +479,7 @@ Rails.application.routes.draw do
         post :unarchive
         post :housekeeping
         post :toggle_star
-        post :markdown_preview
+        post :preview_markdown
         post :export
         post :remove_export
         post :generate_new_export
@@ -482,11 +490,26 @@ Rails.application.routes.draw do
       end
 
       scope module: :projects do
-        # Git HTTP clients ('git clone' etc.)
         scope constraints: { id: /.+\.git/, format: nil } do
+          # Git HTTP clients ('git clone' etc.)
           get '/info/refs', to: 'git_http#info_refs'
           post '/git-upload-pack', to: 'git_http#git_upload_pack'
           post '/git-receive-pack', to: 'git_http#git_receive_pack'
+
+          # Git LFS API (metadata)
+          post '/info/lfs/objects/batch', to: 'lfs_api#batch'
+          post '/info/lfs/objects', to: 'lfs_api#deprecated'
+          get '/info/lfs/objects/*oid', to: 'lfs_api#deprecated'
+
+          # GitLab LFS object storage
+          scope constraints: { oid: /[a-f0-9]{64}/ } do
+            get '/gitlab-lfs/objects/*oid', to: 'lfs_storage#download'
+
+            scope constraints: { size: /[0-9]+/ } do
+              put '/gitlab-lfs/objects/*oid/*size/authorize', to: 'lfs_storage#upload_authorize'
+              put '/gitlab-lfs/objects/*oid/*size', to: 'lfs_storage#upload_finalize'
+            end
+          end
         end
 
         # Allow /info/refs, /info/refs?service=git-upload-pack, and
@@ -511,6 +534,11 @@ Rails.application.routes.draw do
         get '/edit/*id', to: 'blob#edit', constraints: { id: /.+/ }, as: 'edit_blob'
         put '/update/*id', to: 'blob#update', constraints: { id: /.+/ }, as: 'update_blob'
         post '/preview/*id', to: 'blob#preview', constraints: { id: /.+/ }, as: 'preview_blob'
+
+        #
+        # Templates
+        #
+        get '/templates/:template_type/:key' => 'templates#show', as: :template
 
         scope do
           get(
@@ -626,13 +654,17 @@ Rails.application.routes.draw do
 
         get '/compare/:from...:to', to: 'compare#show', as: 'compare', constraints: { from: /.+/, to: /.+/ }
 
-        resources :network, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ }
+        # Don't use format parameter as file extension (old 3.0.x behavior)
+        # See http://guides.rubyonrails.org/routing.html#route-globbing-and-wildcard-segments
+        scope format: false do
+          resources :network, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex }
 
-        resources :graphs, only: [:show], constraints: { id: /(?:[^.]|\.(?!json$))+/, format: /json/ } do
-          member do
-            get :commits
-            get :ci
-            get :languages
+          resources :graphs, only: [:show], constraints: { id: Gitlab::Regex.git_reference_regex } do
+            member do
+              get :commits
+              get :ci
+              get :languages
+            end
           end
         end
 
@@ -656,7 +688,7 @@ Rails.application.routes.draw do
           get '/wikis/*id', to: 'wikis#show', as: 'wiki', constraints: WIKI_SLUG_ID
           delete '/wikis/*id', to: 'wikis#destroy', constraints: WIKI_SLUG_ID
           put '/wikis/*id', to: 'wikis#update', constraints: WIKI_SLUG_ID
-          post '/wikis/*id/markdown_preview', to: 'wikis#markdown_preview', constraints: WIKI_SLUG_ID, as: 'wiki_markdown_preview'
+          post '/wikis/*id/preview_markdown', to: 'wikis#preview_markdown', constraints: WIKI_SLUG_ID, as: 'wiki_preview_markdown'
         end
 
         resource :repository, only: [:create] do
@@ -702,7 +734,9 @@ Rails.application.routes.draw do
           member do
             get :commits
             get :diffs
+            get :conflicts
             get :builds
+            get :pipelines
             get :merge_check
             post :merge
             post :cancel_merge_when_build_succeeds
@@ -711,6 +745,7 @@ Rails.application.routes.draw do
             post :toggle_award_emoji
             post :remove_wip
             get :diff_for_path
+            post :resolve_conflicts
           end
 
           collection do
@@ -718,6 +753,13 @@ Rails.application.routes.draw do
             get :branch_to
             get :update_branches
             get :diff_for_path
+          end
+
+          resources :discussions, only: [], constraints: { id: /\h{40}/ } do
+            member do
+              post :resolve
+              delete :resolve, action: :unresolve
+            end
           end
         end
 
@@ -797,6 +839,7 @@ Rails.application.routes.draw do
           member do
             post :toggle_subscription
             post :toggle_award_emoji
+            post :mark_as_spam
             get :referenced_merge_requests
             get :related_branches
             get :can_create_branch
@@ -827,6 +870,22 @@ Rails.application.routes.draw do
           member do
             post :toggle_award_emoji
             delete :delete_attachment
+            post :resolve
+            delete :resolve, action: :unresolve
+          end
+        end
+
+        resource :board, only: [:show] do
+          scope module: :boards do
+            resources :issues, only: [:update]
+
+            resources :lists, only: [:index, :create, :update, :destroy] do
+              collection do
+                post :generate
+              end
+
+              resources :issues, only: [:index]
+            end
           end
         end
 
@@ -853,7 +912,10 @@ Rails.application.routes.draw do
         resources :badges, only: [:index] do
           collection do
             scope '*ref', constraints: { ref: Gitlab::Regex.git_reference_regex } do
-              get :build, constraints: { format: /svg/ }
+              constraints format: /svg/ do
+                get :build
+                get :coverage
+              end
             end
           end
         end

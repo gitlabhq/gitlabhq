@@ -12,7 +12,7 @@ describe "Search", feature: true  do
     visit search_path
   end
 
-  it 'top right search form is not present' do
+  it 'does not show top right search form' do
     expect(page).not_to have_selector('.search')
   end
 
@@ -71,21 +71,31 @@ describe "Search", feature: true  do
   end
 
   describe 'Right header search field', feature: true do
+    it 'allows enter key to search', js: true do
+      visit namespace_project_path(project.namespace, project)
+      fill_in 'search', with: 'gitlab'
+      find('#search').native.send_keys(:enter)
+
+      page.within '.title' do
+        expect(page).to have_content 'Search'
+      end
+    end
+
     describe 'Search in project page' do
       before do
         visit namespace_project_path(project.namespace, project)
       end
 
-      it 'top right search form is present' do
+      it 'shows top right search form' do
         expect(page).to have_selector('#search')
       end
 
-      it 'top right search form contains location badge' do
+      it 'contains location badge in top right search form' do
         expect(page).to have_selector('.has-location-badge')
       end
 
       context 'clicking the search field', js: true do
-        it 'should show category search dropdown' do
+        it 'shows category search dropdown' do
           page.find('#search').click
 
           expect(page).to have_selector('.dropdown-header', text: /#{project.name}/i)
@@ -97,7 +107,7 @@ describe "Search", feature: true  do
           page.find('#search').click
         end
 
-        it 'should take user to her issues page when issues assigned is clicked' do
+        it 'takes user to her issues page when issues assigned is clicked' do
           find('.dropdown-menu').click_link 'Issues assigned to me'
           sleep 2
 
@@ -105,7 +115,7 @@ describe "Search", feature: true  do
           expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         end
 
-        it 'should take user to her issues page when issues authored is clicked' do
+        it 'takes user to her issues page when issues authored is clicked' do
           find('.dropdown-menu').click_link "Issues I've created"
           sleep 2
 
@@ -113,7 +123,7 @@ describe "Search", feature: true  do
           expect(find('.js-author-search .dropdown-toggle-text')).to have_content(user.name)
         end
 
-        it 'should take user to her MR page when MR assigned is clicked' do
+        it 'takes user to her MR page when MR assigned is clicked' do
           find('.dropdown-menu').click_link 'Merge requests assigned to me'
           sleep 2
 
@@ -121,7 +131,7 @@ describe "Search", feature: true  do
           expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         end
 
-        it 'should take user to her MR page when MR authored is clicked' do
+        it 'takes user to her MR page when MR authored is clicked' do
           find('.dropdown-menu').click_link "Merge requests I've created"
           sleep 2
 
@@ -137,7 +147,7 @@ describe "Search", feature: true  do
           end
         end
 
-        it 'should not display the category search dropdown' do
+        it 'does not display the category search dropdown' do
           expect(page).not_to have_selector('.dropdown-header', text: /#{project.name}/i)
         end
       end
