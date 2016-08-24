@@ -3,6 +3,8 @@ Please view this file on the master branch, on stable branches it's out of date.
 v 8.11.2 (unreleased)
 
 v 8.11.1
+v 8.11.1 (unreleased)
+  - Does not halt the GitHub import process when an error occurs
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
 
