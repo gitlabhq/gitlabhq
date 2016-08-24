@@ -4,7 +4,7 @@
       var _this;
       _this = this;
       $('.js-label-select').each(function(i, dropdown) {
-        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo;
+        var $block, $colorPreview, $dropdown, $form, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, defaultLabel, enableLabelCreateButton, issueURLSplit, issueUpdateURL, labelHTMLTemplate, labelNoneHTMLTemplate, labelUrl, projectId, saveLabelData, selectedLabel, showAny, showNo, $sidebarLabelTooltip;
         $dropdown = $(dropdown);
         projectId = $dropdown.data('project-id');
         labelUrl = $dropdown.data('labels');
@@ -21,6 +21,7 @@
         $block = $selectbox.closest('.block');
         $form = $dropdown.closest('form');
         $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
+        $sidebarLabelTooltip = $block.find('.js-sidebar-labels-tooltip');
         $value = $block.find('.value');
         $loading = $block.find('.block-loading').fadeOut();
         if (issueUpdateURL != null) {
@@ -31,7 +32,11 @@
           labelNoneHTMLTemplate = '<span class="no-value">None</span>';
         }
 
-        new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+        $sidebarLabelTooltip.tooltip();
+
+        if ($dropdown.closest('.dropdown').find('.dropdown-new-label').length) {
+          new gl.CreateLabelDropdown($dropdown.closest('.dropdown').find('.dropdown-new-label'), projectId);
+        }
 
         saveLabelData = function() {
           var data, selected;
@@ -52,7 +57,7 @@
             dataType: 'JSON',
             data: data
           }).done(function(data) {
-            var labelCount, template;
+            var labelCount, template, labelTooltipTitle, labelTitles;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -66,6 +71,27 @@
             }
             $value.removeAttr('style').html(template);
             $sidebarCollapsedValue.text(labelCount);
+
+            if (data.labels.length) {
+              labelTitles = data.labels.map(function(label) {
+                return label.title;
+              });
+
+              if (labelTitles.length > 5) {
+                labelTitles = labelTitles.slice(0, 5);
+                labelTitles.push('and ' + (data.labels.length - 5) + ' more');
+              }
+
+              labelTooltipTitle = labelTitles.join(', ');
+            } else {
+              labelTooltipTitle = '';
+              $sidebarLabelTooltip.tooltip('destroy');
+            }
+
+            $sidebarLabelTooltip
+              .attr('title', labelTooltipTitle)
+              .tooltip('fixTitle');
+
             $('.has-tooltip', $value).tooltip({
               container: 'body'
             });

@@ -9,10 +9,10 @@ RSpec.shared_examples "protected branches > access control > EE" do
       roles = access_level_class.human_access_levels
 
       visit namespace_project_protected_branches_path(project.namespace, project)
-      set_protected_branch_name('master')
 
-      users.each { |user| set_allowed_to(git_operation, user.name) }
-      roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
+      set_protected_branch_name('master')
+      set_allowed_to(git_operation, users.map(&:name))
+      set_allowed_to(git_operation, roles.values)
       set_allowed_to(other_git_operation)
 
       click_on "Protect"
@@ -35,8 +35,8 @@ RSpec.shared_examples "protected branches > access control > EE" do
       click_on "Protect"
 
       within(".js-protected-branch-edit-form") do
-        users.each { |user| set_allowed_to(git_operation, user.name) }
-        roles.each { |(_, access_type_name)| set_allowed_to(git_operation, access_type_name) }
+        set_allowed_to(git_operation, users.map(&:name))
+        set_allowed_to(git_operation, roles.values)
       end
 
       wait_for_ajax

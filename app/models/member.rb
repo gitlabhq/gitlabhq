@@ -1,6 +1,7 @@
 class Member < ActiveRecord::Base
   include Sortable
   include Importable
+  include Expirable
   include Gitlab::Access
 
   attr_accessor :raw_invite_token
@@ -74,7 +75,7 @@ class Member < ActiveRecord::Base
       user
     end
 
-    def add_user(members, user_id, access_level, current_user = nil, skip_notification: false)
+    def add_user(members, user_id, access_level, current_user: nil, skip_notification: false, expires_at: nil)
       user = user_for_id(user_id)
 
       # `user` can be either a User object or an email to be invited
@@ -88,7 +89,7 @@ class Member < ActiveRecord::Base
       if can_update_member?(current_user, member) || project_creator?(member, access_level)
         member.created_by ||= current_user
         member.access_level = access_level
-
+        member.expires_at = expires_at
         member.skip_notification = skip_notification
 
         member.save

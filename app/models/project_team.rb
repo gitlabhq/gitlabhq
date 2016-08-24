@@ -15,9 +15,9 @@ class ProjectTeam
     users, access, current_user = *args
 
     if users.respond_to?(:each)
-      add_users(users, access, current_user)
+      add_users(users, access, current_user: current_user)
     else
-      add_user(users, access, current_user)
+      add_user(users, access, current_user: current_user)
     end
   end
 
@@ -33,19 +33,20 @@ class ProjectTeam
     member
   end
 
-  def add_users(users, access, current_user = nil)
+  def add_users(users, access, current_user: nil, expires_at: nil)
     return false if group_member_lock
 
     ProjectMember.add_users_to_projects(
       [project.id],
       users,
       access,
-      current_user
+      current_user: current_user,
+      expires_at: expires_at
     )
   end
 
-  def add_user(user, access, current_user = nil)
-    add_users([user], access, current_user)
+  def add_user(user, access, current_user: nil, expires_at: nil)
+    add_users([user], access, current_user: current_user, expires_at: expires_at)
   end
 
   # Remove all users from project team

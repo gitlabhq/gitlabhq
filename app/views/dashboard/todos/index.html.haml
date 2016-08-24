@@ -43,6 +43,25 @@
           class: 'select2 trigger-submit', include_blank: true,
           data: {placeholder: 'Action'})
 
+      .pull-right
+        .dropdown.inline.prepend-left-10
+          %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
+            %span.light
+            - if @sort.present?
+              = sort_options_hash[@sort]
+            - else
+              = sort_title_recently_created
+            %b.caret
+          %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-sort
+            %li
+              = link_to todos_filter_path(sort: sort_value_priority) do
+                = sort_title_priority
+              = link_to todos_filter_path(sort: sort_value_recently_created) do
+                = sort_title_recently_created
+              = link_to todos_filter_path(sort: sort_value_oldest_created) do
+                = sort_title_oldest_created
+
+
 .prepend-top-default
   - if @todos.any?
     .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }

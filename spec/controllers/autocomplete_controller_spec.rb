@@ -5,7 +5,7 @@ describe AutocompleteController do
   let!(:user) { create(:user) }
 
   context 'users and members' do
-    let(:user2) { create(:user) }
+    let!(:user2) { create(:user) }
     let!(:non_member) { create(:user) }
 
     context 'project members' do
@@ -24,7 +24,7 @@ describe AutocompleteController do
 
         it { expect(body).to be_kind_of(Array) }
         it { expect(body.size).to eq 2 }
-        it { expect(body.map { |u| u["username"] }).to include(user.username) }
+        it { expect(body.map { |u| u["username"] }).to match_array([user.username, user2.username]) }
       end
 
       describe 'GET #users with unknown project' do

@@ -13,8 +13,7 @@ module Gitlab
           @job = job
 
           @pipeline = @project.pipelines
-            .where(ref: @ref)
-            .where(sha: @project.commit(@ref).try(:sha))
+            .latest_successful_for(@ref)
             .first
         end
 

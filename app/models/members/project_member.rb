@@ -35,7 +35,7 @@ class ProjectMember < Member
     #     :master
     #   )
     #
-    def add_users_to_projects(project_ids, user_ids, access, current_user = nil)
+    def add_users_to_projects(project_ids, user_ids, access, current_user: nil, expires_at: nil)
       access_level = if roles_hash.has_key?(access)
                        roles_hash[access]
                      elsif roles_hash.values.include?(access.to_i)
@@ -51,7 +51,13 @@ class ProjectMember < Member
           project = Project.find(project_id)
 
           users.each do |user|
-            Member.add_user(project.project_members, user, access_level, current_user)
+            Member.add_user(
+              project.project_members,
+              user,
+              access_level,
+              current_user: current_user,
+              expires_at: expires_at
+            )
           end
         end
       end

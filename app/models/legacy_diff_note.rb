@@ -49,6 +49,10 @@ class LegacyDiffNote < Note
     !line.meta? && diff_file.line_code(line) == self.line_code
   end
 
+  def original_line_code
+    self.line_code
+  end
+
   # Check if this note is part of an "active" discussion
   #
   # This will always return true for anything except MergeRequest noteables,

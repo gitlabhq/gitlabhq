@@ -400,7 +400,7 @@ If you are not using Linux you may have to run `gmake` instead of
     cd /home/git
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-workhorse.git
     cd gitlab-workhorse
-    sudo -u git -H git checkout v0.7.8
+    sudo -u git -H git checkout v0.7.10
     sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features

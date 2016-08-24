@@ -4,7 +4,7 @@
   .alert.alert-warning
     Adding new users is disabled at group level
 
-.project-members-page.prepend-top-default
+.project-members-page.js-project-members-page.prepend-top-default
   - if can?(current_user, :admin_project_member, @project) && !membership_locked?
     .panel.panel-default
       .panel-heading

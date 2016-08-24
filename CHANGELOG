@@ -1,12 +1,21 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.11.0 (unreleased)
+v 8.11.2 (unreleased)
+
+v 8.11.1
+  - Fix file links on project page when default view is Files !5933
+  - Fixed enter key in search input not working !5888
+
+v 8.11.0
+  - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
+  - Add Koding (online IDE) integration
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
+  - Fix adding line comments on the initial commit to a repo !5900
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
   - Rename `markdown_preview` routes to `preview_markdown`. (Christopher Bartz)
   - Update to Ruby 2.3.1. !4948
@@ -18,6 +27,7 @@ v 8.11.0 (unreleased)
   - API: Endpoints for enabling and disabling deploy keys
   - API: List access requests, request access, approve, and deny access requests to a project or a group. !4833
   - Use long options for curl examples in documentation !5703 (winniehell)
+  - Added tooltip listing label names to the labels value in the collapsed issuable sidebar
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
   - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
@@ -25,6 +35,8 @@ v 8.11.0 (unreleased)
   - Ignore URLs starting with // in Markdown links !5677 (winniehell)
   - Fix CI status icon link underline (ClemMakesApps)
   - The Repository class is now instrumented
+  - Fix commit mention font inconsistency (ClemMakesApps)
+  - Do not escape URI when extracting path !5878 (winniehell)
   - Fix filter label tooltip HTML rendering (ClemMakesApps)
   - Cache the commit author in RequestStore to avoid extra lookups in PostReceive
   - Expand commit message width in repo view (ClemMakesApps)
@@ -34,9 +46,11 @@ v 8.11.0 (unreleased)
   - API: Add deployment endpoints
   - API: Add Play endpoint on Builds
   - Fix of 'Commits being passed to custom hooks are already reachable when using the UI'
+  - Show wall clock time when showing a pipeline. !5734
   - Show member roles to all users on members page
   - Project.visible_to_user is instrumented again
   - Fix awardable button mutuality loading spinners (ClemMakesApps)
+  - Sort todos by date and priority
   - Add support for using RequestStore within Sidekiq tasks via SIDEKIQ_REQUEST_STORE env variable
   - Optimize maximum user access level lookup in loading of notes
   - Send notification emails to users newly mentioned in issue and MR edits !5800
@@ -79,7 +93,6 @@ v 8.11.0 (unreleased)
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
-  - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
   - Fix filter input alignment (ClemMakesApps)
   - Include old revision in merge request update hooks (Ben Boeckel)
   - Add build event color in HipChat messages (David Eisner)
@@ -124,9 +137,11 @@ v 8.11.0 (unreleased)
   - Change requests_profiles resource constraint to catch virtually any file
   - Bump gitlab_git to lazy load compare commits
   - Reduce number of queries made for merge_requests/:id/diffs
+  - Add the option to set the expiration date for the project membership when giving a user access to a project. !5599 (Adam Niedzielski)
   - Sensible state specific default sort order for issues and merge requests !5453 (tomb0y)
   - Fix bug where destroying a namespace would not always destroy projects
   - Fix RequestProfiler::Middleware error when code is reloaded in development
+  - Allow horizontal scrolling of code blocks in issue body
   - Catch what warden might throw when profiling requests to re-throw it
   - Avoid commit lookup on diff_helper passing existing local variable to the helper method
   - Add description to new_issue email and new_merge_request_email in text/plain content type. !5663 (dixpac)
@@ -141,6 +156,7 @@ v 8.11.0 (unreleased)
   - Each `File::exists?` replaced to `File::exist?` because of deprecate since ruby version 2.2.0
   - Add auto-completition in pipeline (Katarzyna Kobierska Ula Budziszewska)
   - Add pipelines tab to merge requests
+  - Fix notification_service argument error of declined invitation emails
   - Fix a memory leak caused by Banzai::Filter::SanitizationFilter
   - Speed up todos queries by limiting the projects set we join with
   - Ensure file editing in UI does not overwrite commited changes without warning user

@@ -34,6 +34,7 @@ RSpec.configure do |config|
   config.include EmailHelpers
   config.include TestEnv
   config.include ActiveJob::TestHelper
+  config.include ActiveSupport::Testing::TimeHelpers
   config.include StubGitlabCalls
   config.include StubGitlabData
   config.include Rails.application.routes.url_helpers, type: :routing

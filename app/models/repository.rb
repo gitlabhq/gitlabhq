@@ -342,7 +342,7 @@ class Repository
   def cache_keys
     %i(size commit_count
        readme version contribution_guide changelog
-       license_blob license_key gitignore)
+       license_blob license_key gitignore koding_yml)
   end
 
   # Keys for data on branch/tag operations.
@@ -615,6 +615,14 @@ class Repository
 
     cache.fetch(:gitignore) do
       file_on_head(/\A\.gitignore\z/)
+    end
+  end
+
+  def koding_yml
+    return nil unless head_exists?
+
+    cache.fetch(:koding_yml) do
+      file_on_head(/\A\.koding\.yml\z/)
     end
   end
 

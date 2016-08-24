@@ -12,7 +12,7 @@ module Projects
           only: [:iid, :title, :confidential],
           include: {
             assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
-            labels:   { only: [:id, :title, :description, :color, :priority] }
+            labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }
           })
       end
 

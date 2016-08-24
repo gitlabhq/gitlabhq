@@ -23,7 +23,7 @@ module Spammable
 
   def submittable_as_spam?
     if user_agent_detail
-      user_agent_detail.submittable?
+      user_agent_detail.submittable? && current_application_settings.akismet_enabled
     else
       false
     end

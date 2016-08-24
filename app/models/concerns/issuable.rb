@@ -134,7 +134,10 @@ module Issuable
     end
 
     def order_labels_priority(excluded_labels: [])
-      select("#{table_name}.*, (#{highest_label_priority(excluded_labels).to_sql}) AS highest_priority").
+      condition_field = "#{table_name}.id"
+      highest_priority = highest_label_priority(name, condition_field, excluded_labels: excluded_labels).to_sql
+
+      select("#{table_name}.*, (#{highest_priority}) AS highest_priority").
         group(arel_table[:id]).
         reorder(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
     end
@@ -161,20 +164,6 @@ module Issuable
       end
 
       grouping_columns
-    end
-
-    private
-
-    def highest_label_priority(excluded_labels)
-      query = Label.select(Label.arel_table[:priority].minimum).
-        joins(:label_links).
-        where(label_links: { target_type: name }).
-        where("label_links.target_id = #{table_name}.id").
-        reorder(nil)
-
-      query.where.not(title: excluded_labels) if excluded_labels.present?
-
-      query
     end
   end
 

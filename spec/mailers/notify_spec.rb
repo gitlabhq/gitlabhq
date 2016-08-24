@@ -552,7 +552,12 @@ describe Notify do
     end
 
     def invite_to_project(project:, email:, inviter:)
-      ProjectMember.add_user(project.project_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+      Member.add_user(
+        project.project_members,
+        'toto@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: inviter
+      )
 
       project.project_members.invite.last
     end
@@ -799,7 +804,12 @@ describe Notify do
     end
 
     def invite_to_group(group:, email:, inviter:)
-      GroupMember.add_user(group.group_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+      Member.add_user(
+        group.group_members,
+        'toto@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: inviter
+      )
 
       group.group_members.invite.last
     end

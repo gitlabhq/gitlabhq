@@ -113,6 +113,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :sentry_dsn,
       :akismet_enabled,
       :akismet_api_key,
+      :koding_enabled,
+      :koding_url,
       :email_author_in_body,
       :repository_checks_enabled,
       :metrics_packet_size,

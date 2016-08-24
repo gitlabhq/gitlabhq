@@ -9,7 +9,7 @@
     = link_to @pipeline.ref, namespace_project_commits_path(@project.namespace, @project, @pipeline.ref), class: "monospace"
   - if @pipeline.duration
     in
-    = time_interval_in_words @pipeline.duration
+    = time_interval_in_words(@pipeline.duration)
 
   .pull-right
     = link_to namespace_project_pipeline_path(@project.namespace, @project, @pipeline), class: "ci-status ci-#{@pipeline.status}" do

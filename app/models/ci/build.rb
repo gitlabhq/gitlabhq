@@ -62,6 +62,7 @@ module Ci
           status_event: 'enqueue'
         )
         MergeRequests::AddTodoWhenBuildFailsService.new(build.project, nil).close(new_build)
+        build.pipeline.mark_as_processable_after_stage(build.stage_idx)
         new_build
       end
     end

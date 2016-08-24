@@ -28,7 +28,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
 
   step 'I can control user membership' do
     expect(page).to have_link 'Import members'
-    expect(page).to have_selector '#project_member_access_level'
+    expect(page).to have_selector '.project-access-select'
   end
 
   step 'I reload "Open" project members page' do

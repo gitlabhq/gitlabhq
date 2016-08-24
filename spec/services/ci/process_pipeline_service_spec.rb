@@ -3,8 +3,6 @@ require 'spec_helper'
 describe Ci::ProcessPipelineService, services: true do
   let(:pipeline) { create(:ci_pipeline, ref: 'master') }
   let(:user) { create(:user) }
-  let(:all_builds) { pipeline.builds }
-  let(:builds) { all_builds.where.not(status: [:created, :skipped]) }
   let(:config) { nil }
 
   before do
@@ -12,6 +10,14 @@ describe Ci::ProcessPipelineService, services: true do
   end
 
   describe '#execute' do
+    def all_builds
+      pipeline.builds
+    end
+
+    def builds
+      all_builds.where.not(status: [:created, :skipped])
+    end
+
     def create_builds
       described_class.new(pipeline.project, user).execute(pipeline)
     end
@@ -48,7 +54,7 @@ describe Ci::ProcessPipelineService, services: true do
       it 'does not process pipeline if existing stage is running' do
         expect(create_builds).to be_truthy
         expect(builds.pending.count).to eq(2)
-        
+
         expect(create_builds).to be_falsey
         expect(builds.pending.count).to eq(2)
       end
@@ -220,6 +226,40 @@ describe Ci::ProcessPipelineService, services: true do
 
         def manual_actions
           pipeline.manual_actions
+        end
+      end
+    end
+
+    context 'when failed build in the middle stage is retried' do
+      context 'when failed build is the only unsuccessful build in the stage' do
+        before do
+          create(:ci_build, :created, pipeline: pipeline, name: 'build:1', stage_idx: 0)
+          create(:ci_build, :created, pipeline: pipeline, name: 'build:2', stage_idx: 0)
+          create(:ci_build, :created, pipeline: pipeline, name: 'test:1', stage_idx: 1)
+          create(:ci_build, :created, pipeline: pipeline, name: 'test:2', stage_idx: 1)
+          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:1', stage_idx: 2)
+          create(:ci_build, :created, pipeline: pipeline, name: 'deploy:2', stage_idx: 2)
+        end
+
+        it 'does trigger builds in the next stage' do
+          expect(create_builds).to be_truthy
+          expect(builds.pluck(:name)).to contain_exactly('build:1', 'build:2')
+
+          pipeline.builds.running_or_pending.each(&:success)
+
+          expect(builds.pluck(:name))
+            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+
+          pipeline.builds.find_by(name: 'test:1').success
+          pipeline.builds.find_by(name: 'test:2').drop
+
+          expect(builds.pluck(:name))
+            .to contain_exactly('build:1', 'build:2', 'test:1', 'test:2')
+
+          Ci::Build.retry(pipeline.builds.find_by(name: 'test:2')).success
+
+          expect(builds.pluck(:name)).to contain_exactly(
+            'build:1', 'build:2', 'test:1', 'test:2', 'test:2', 'deploy:1', 'deploy:2')
         end
       end
     end

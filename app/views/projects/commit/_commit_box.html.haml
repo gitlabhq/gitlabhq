@@ -56,10 +56,10 @@
     = pluralize(@commit.pipelines.count, 'pipeline')
     = link_to builds_namespace_project_commit_path(@project.namespace, @project, @commit.id), class: "ci-status-link ci-status-icon-#{@commit.status}" do
       = ci_icon_for_status(@commit.status)
-      = ci_label_for_status(@commit.status)
-    - if @commit.pipelines.duration
-      in
-      = time_interval_in_words @commit.pipelines.duration
+      %span.ci-status-label
+        = ci_label_for_status(@commit.status)
+    in
+    = time_interval_in_words @commit.pipelines.total_duration
 
 .commit-box.content-block
   %h3.commit-title

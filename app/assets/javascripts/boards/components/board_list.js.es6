@@ -63,6 +63,8 @@
 
           Store.moving.issue = card.issue;
           Store.moving.list = card.list;
+
+          gl.issueBoards.onStart();
         },
         onAdd: (e) => {
           gl.issueBoards.BoardsStore.moveIssueToList(Store.moving.list, this.list, Store.moving.issue);
@@ -71,10 +73,6 @@
           this.$refs.issue[e.oldIndex].$destroy(true);
         }
       });
-
-      if (bp.getBreakpointSize() === 'xs') {
-        options.handle = '.js-card-drag-handle';
-      }
 
       this.sortable = Sortable.create(this.$els.list, options);
 

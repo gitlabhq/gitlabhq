@@ -6,10 +6,10 @@
     -# the new push and commits, during which it will think the conflicts still exist.
     -# We send this param to get the widget to treat the MR as having no more conflicts.
     - resolved_conflicts = params[:resolved_conflicts]
-    
+
     - if Gitlab::Geo.secondary?
       = render 'projects/merge_requests/widget/open/geo'
-    - elsif @project.archived?
+    - if @project.archived?
       = render 'projects/merge_requests/widget/open/archived'
     - elsif @merge_request.commits.blank?
       = render 'projects/merge_requests/widget/open/nothing'

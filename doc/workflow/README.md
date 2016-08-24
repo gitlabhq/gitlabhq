@@ -7,6 +7,7 @@
 - [GitLab Flow](gitlab_flow.md)
 - [Groups](groups.md)
 - [Importing to GitLab](doc/importing/README.md)
+- [Issue Board](../user/project/issue_board.md)
 - [Keyboard shortcuts](shortcuts.md)
 - [File finder](file_finder.md)
 - [File lock](../user/project/file_lock.md)

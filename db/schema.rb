@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160817154936) do
+ActiveRecord::Schema.define(version: 20160819221833) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,8 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.boolean  "domain_blacklist_enabled",              default: false
     t.text     "domain_blacklist"
     t.boolean  "usage_ping_enabled",                    default: true,        null: false
+    t.boolean  "koding_enabled"
+    t.string   "koding_url"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -643,6 +645,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.string   "invite_token"
     t.datetime "invite_accepted_at"
     t.datetime "requested_at"
+    t.date     "expires_at"
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree
@@ -739,12 +742,12 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.boolean  "share_with_group_lock",               default: false
     t.integer  "visibility_level",                    default: 20,      null: false
     t.boolean  "request_access_enabled",              default: true,    null: false
+    t.datetime "deleted_at"
     t.string   "ldap_sync_status",                    default: "ready", null: false
     t.string   "ldap_sync_error"
     t.datetime "ldap_sync_last_update_at"
     t.datetime "ldap_sync_last_successful_update_at"
     t.datetime "ldap_sync_last_sync_at"
-    t.datetime "deleted_at"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -784,6 +787,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
   add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
   add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
+  add_index "notes", ["discussion_id"], name: "index_notes_on_discussion_id", using: :btree
   add_index "notes", ["line_code"], name: "index_notes_on_line_code", using: :btree
   add_index "notes", ["note"], name: "index_notes_on_note_trigram", using: :gin, opclasses: {"note"=>"gin_trgm_ops"}
   add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
@@ -891,6 +895,7 @@ ActiveRecord::Schema.define(version: 20160817154936) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "group_access", default: 30, null: false
+    t.date     "expires_at"
   end
 
   create_table "project_import_data", force: :cascade do |t|
@@ -1304,11 +1309,11 @@ ActiveRecord::Schema.define(version: 20160817154936) do
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
-  add_foreign_key "path_locks", "projects"
-  add_foreign_key "path_locks", "users"
   add_foreign_key "boards", "projects"
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "path_locks", "projects"
+  add_foreign_key "path_locks", "users"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"

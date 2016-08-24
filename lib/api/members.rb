@@ -49,6 +49,7 @@ module API
         #   id (required) - The group/project ID
         #   user_id (required) - The user ID of the new member
         #   access_level (required) - A valid access level
+        #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
         #
         # Example Request:
         #   POST /groups/:id/members
@@ -72,7 +73,7 @@ module API
           conflict!('Member already exists') if source_type == 'group' && member
 
           unless member
-            source.add_user(params[:user_id], params[:access_level], current_user)
+            source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
             member = source.members.find_by(user_id: params[:user_id])
           end
 
@@ -81,7 +82,7 @@ module API
           else
             # Since `source.add_user` doesn't return a member object, we have to
             # build a new one and populate its errors in order to render them.
-            member = source.members.build(attributes_for_keys([:user_id, :access_level]))
+            member = source.members.build(attributes_for_keys([:user_id, :access_level, :expires_at]))
             member.valid? # populate the errors
 
             # This is to ensure back-compatibility but 400 behavior should be used
@@ -97,6 +98,7 @@ module API
         #   id (required) - The group/project ID
         #   user_id (required) - The user ID of the member
         #   access_level (required) - A valid access level
+        #   expires_at (optional) - Date string in the format YEAR-MONTH-DAY
         #
         # Example Request:
         #   PUT /groups/:id/members/:user_id
@@ -107,8 +109,9 @@ module API
           required_attributes! [:user_id, :access_level]
 
           member = source.members.find_by!(user_id: params[:user_id])
+          attrs = attributes_for_keys [:access_level, :expires_at]
 
-          if member.update_attributes(access_level: params[:access_level])
+          if member.update_attributes(attrs)
             present member.user, with: Entities::Member, member: member
           else
             # This is to ensure back-compatibility but 400 behavior should be used
