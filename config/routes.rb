@@ -81,6 +81,9 @@ Rails.application.routes.draw do
     mount Sidekiq::Web, at: '/admin/sidekiq', as: :sidekiq
   end
 
+  # Lint API
+  resources :lint, only: [:show, :create]
+
   # Health check
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
