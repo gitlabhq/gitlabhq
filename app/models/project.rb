@@ -390,6 +390,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def lfs_enabled?
+    (Gitlab.config.lfs.enabled && enable_lfs) || (enable_lfs.nil? && Gitlab.config.lfs.enabled)
+  end
+
   def repository_storage_path
     Gitlab.config.repositories.storages[repository_storage]
   end

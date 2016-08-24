@@ -73,6 +73,11 @@
             %span.light last commit:
             %strong
               = last_commit(@project)
+
+          %li
+            %span.light LFS status:
+            %strong
+              = project_lfs_status(@project)
         - else
           %li
             %span.light repository:
