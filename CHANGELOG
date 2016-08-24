@@ -4,6 +4,7 @@ v 8.12.0 (unreleased)
   - Change merge_error column from string to text type
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Added tests for diff notes
+  - Add pipeline events to Slack integration !5525
 
 v 8.11.1 (unreleased)
   - Fix file links on project page when default view is Files !5933
@@ -95,8 +96,6 @@ v 8.11.0
   - Fix syntax highlighting in file editor
   - Support slash commands in issue and merge request descriptions as well as comments. !5021
   - Nokogiri's various parsing methods are now instrumented
-  - Add a way to send an email and create an issue based on private personal token. Find the email address from issues page. !3363
-  - Add pipeline events to Slack integration !5525
   - Add archived badge to project list !5798
   - Add simple identifier to public SSH keys (muteor)
   - Admin page now references docs instead of a specific file !5600 (AnAverageHuman)
