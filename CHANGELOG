@@ -12,6 +12,7 @@ v 8.11.2 (unreleased)
   - Show "Create Merge Request" widget for push events to fork projects on the source project
 
 v 8.11.1 (unreleased)
+  - Does not halt the GitHub import process when an error occurs
   - Fix file links on project page when default view is Files !5933
 
 v 8.11.0
