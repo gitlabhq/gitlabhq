@@ -6,6 +6,7 @@ v 8.12.0 (unreleased)
   - Added tests for diff notes
 
 v 8.11.1 (unreleased)
+  - Does not halt the GitHub import process when an error occurs
   - Fix file links on project page when default view is Files !5933
 
 v 8.11.0
