@@ -237,6 +237,56 @@ describe AutocompleteController do
       end
     end
 
+    context 'authorized projects apply limit' do
+      before do
+        authorized_project2 = create(:project)
+        authorized_project3 = create(:project)
+
+        authorized_project.team << [user, :master]
+        authorized_project2.team << [user, :master]
+        authorized_project3.team << [user, :master]
+
+        stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
+      end
+
+      describe 'GET #projects with project ID' do
+        before do
+          get(:projects, project_id: project.id)
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it do
+          expect(body).to be_kind_of(Array)
+          expect(body.size).to eq 3 # Of a total of 4
+        end
+      end
+    end
+
+    context 'authorized projects with offset' do
+      before do
+        authorized_project2 = create(:project)
+        authorized_project3 = create(:project)
+
+        authorized_project.team << [user, :master]
+        authorized_project2.team << [user, :master]
+        authorized_project3.team << [user, :master]
+      end
+
+      describe 'GET #projects with project ID and offset_id' do
+        before do
+          get(:projects, project_id: project.id, offset_id: authorized_project.id)
+        end
+
+        let(:body) { JSON.parse(response.body) }
+
+        it do
+          expect(body.detect { |item| item['id'] == 0 }).to be_nil # 'No project' is not there
+          expect(body.detect { |item| item['id'] == authorized_project.id }).to be_nil # Offset project is not there either
+        end
+      end
+    end
+
     context 'authorized projects without admin_issue ability' do
       before(:each) do
         authorized_project.team << [user, :guest]

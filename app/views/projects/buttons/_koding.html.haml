@@ -1,0 +1,7 @@
+- if koding_enabled? && current_user && can_push_branch?(@project, @project.default_branch)
+  - if @repository.koding_yml
+    = link_to koding_project_url(@project), class: 'btn', target: '_blank' do
+      Run in IDE (Koding)
+  - else
+    = link_to add_koding_stack_path(@project), class: 'btn' do
+      Set Up Koding

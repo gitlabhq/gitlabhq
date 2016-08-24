@@ -125,6 +125,10 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
       end
     end
+
+  rescue ActiveRecord::StaleObjectError
+    @conflict = true
+    render :edit
   end
 
   def referenced_merge_requests
@@ -230,7 +234,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end
 

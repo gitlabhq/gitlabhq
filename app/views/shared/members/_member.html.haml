@@ -16,7 +16,7 @@
           = button_tag icon('pencil'),
                        type: 'button',
                        class: 'btn inline js-toggle-button',
-                       title: 'Edit access level'
+                       title: 'Edit'
 
           - if member.request?
             = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
@@ -59,6 +59,10 @@
           = time_ago_with_tooltip(member.requested_at)
         - else
           Joined #{time_ago_with_tooltip(member.created_at)}
+        - if member.expires?
+          ·
+          %span{ class: ('text-warning' if member.expires_soon?) }
+            Expires in #{distance_of_time_in_words_to_now(member.expires_at)}
 
     - else
       = image_tag avatar_icon(member.invite_email, 40), class: "avatar s40", alt: ''
@@ -73,8 +77,16 @@
   - if show_roles
     .edit-member.hide.js-toggle-content
       %br
-      = form_for member, remote: true do |f|
-        .prepend-top-10
-          = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control'
+      = form_for member, remote: true, html: { class: 'form-horizontal' }  do |f|
+        .form-group
+          = label_tag "member_access_level_#{member.id}", 'Project access', class: 'control-label'
+          .col-sm-10
+            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control', id: "member_access_level_#{member.id}"
+        .form-group
+          = label_tag "member_expires_at_#{member.id}", 'Access expiration date', class: 'control-label'
+          .col-sm-10
+            .clearable-input
+              = f.text_field :expires_at, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date', id: "member_expires_at_#{member.id}"
+              %i.clear-icon.js-clear-input
         .prepend-top-10
           = f.submit 'Save', class: 'btn btn-save btn-sm'

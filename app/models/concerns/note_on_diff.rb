@@ -17,6 +17,10 @@ module NoteOnDiff
     raise NotImplementedError
   end
 
+  def original_line_code
+    raise NotImplementedError
+  end
+
   def diff_attributes
     raise NotImplementedError
   end

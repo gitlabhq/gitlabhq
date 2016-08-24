@@ -65,7 +65,7 @@
             Graphs
 
     - if project_nav_tab? :issues
-      = nav_link(controller: [:issues, :labels, :milestones]) do
+      = nav_link(controller: [:issues, :labels, :milestones, :boards]) do
         = link_to namespace_project_issues_path(@project.namespace, @project), title: 'Issues', class: 'shortcuts-issues' do
           %span
             Issues

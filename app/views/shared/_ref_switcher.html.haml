@@ -6,7 +6,7 @@
   - @options && @options.each do |key, value|
     = hidden_field_tag key, value, id: nil
   .dropdown
-    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_namespace_project_path(@project.namespace, @project) }, { toggle_class: "js-project-refs-dropdown" }
+    = dropdown_toggle dropdown_toggle_text, { toggle: "dropdown", selected: dropdown_toggle_text, ref: @ref, refs_url: refs_namespace_project_path(@project.namespace, @project), field_name: 'ref', submit_form_on_click: true }, { toggle_class: "js-project-refs-dropdown" }
     .dropdown-menu.dropdown-menu-selectable{ class: ("dropdown-menu-align-right" if local_assigns[:align_right]) }
       = dropdown_title "Switch branch/tag"
       = dropdown_filter "Search branches and tags"

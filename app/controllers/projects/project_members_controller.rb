@@ -36,7 +36,12 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def create
-    @project.team.add_users(params[:user_ids].split(','), params[:access_level], current_user)
+    @project.team.add_users(
+      params[:user_ids].split(','),
+      params[:access_level],
+      expires_at: params[:expires_at],
+      current_user: current_user
+    )
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
@@ -94,7 +99,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   protected
 
   def member_params
-    params.require(:project_member).permit(:user_id, :access_level)
+    params.require(:project_member).permit(:user_id, :access_level, :expires_at)
   end
 
   # MembershipActions concern

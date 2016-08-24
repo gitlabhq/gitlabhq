@@ -51,6 +51,28 @@ describe MoveToProjectFinder do
 
         expect(subject.execute(project).to_a).to eq([other_reporter_project])
       end
+
+      it 'returns a page of projects ordered by id in descending order' do
+        stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
+
+        reporter_project.team << [user, :reporter]
+        developer_project.team << [user, :developer]
+        master_project.team << [user, :master]
+
+        expect(subject.execute(project).to_a).to eq([master_project, developer_project])
+      end
+
+      it 'returns projects after the given offset id' do
+        stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
+
+        reporter_project.team << [user, :reporter]
+        developer_project.team << [user, :developer]
+        master_project.team << [user, :master]
+
+        expect(subject.execute(project, search: nil, offset_id: master_project.id).to_a).to eq([developer_project, reporter_project])
+        expect(subject.execute(project, search: nil, offset_id: developer_project.id).to_a).to eq([reporter_project])
+        expect(subject.execute(project, search: nil, offset_id: reporter_project.id).to_a).to be_empty
+      end
     end
 
     context 'search' do

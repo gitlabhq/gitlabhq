@@ -16,6 +16,9 @@ class DiffNote < Note
   after_initialize :ensure_original_discussion_id
   before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code, :set_original_discussion_id
+  # We need to do this again, because it's already in `Note`, but is affected by
+  # `update_position` and needs to run after that.
+  before_validation :set_discussion_id
   after_save :keep_around_commits
 
   class << self
@@ -55,6 +58,10 @@ class DiffNote < Note
 
   def for_line?(line)
     diff_file.position(line) == self.original_position
+  end
+
+  def original_line_code
+    self.diff_file.line_code(self.diff_line)
   end
 
   def active?(diff_refs = nil)

@@ -8,9 +8,13 @@
 }
 
 .is-dragging {
+  // Important because plugin sets inline CSS
+  opacity: 1!important;
+  
   * {
-    cursor: -webkit-grabbing;
-    cursor: grabbing;
+    // !important to make sure no style can override this when dragging
+    cursor: -webkit-grabbing!important;
+    cursor: grabbing!important;
   }
 }
 
@@ -101,8 +105,8 @@
 .board {
   display: -webkit-flex;
   display: flex;
-  min-width: calc(100vw - 15px);
-  max-width: calc(100vw - 15px);
+  min-width: calc(85vw - 15px);
+  max-width: calc(85vw - 15px);
   margin-bottom: 25px;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
@@ -154,14 +158,6 @@
   padding: $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
-
-  .board-mobile-handle {
-    position: relative;
-    left: 0;
-    top: 1px;
-    margin-top: 0;
-    margin-right: 5px;
-  }
 }
 
 .board-search-container {
@@ -254,11 +250,6 @@
   opacity: 0.3;
 }
 
-.is-dragging {
-  // Important because plugin sets inline CSS
-  opacity: 1!important;
-}
-
 .card {
   position: relative;
   width: 100%;
@@ -269,11 +260,7 @@
   list-style: none;
 
   &.user-can-drag {
-    padding-left: ($gl-padding * 2);
-
-    @media (min-width: $screen-sm-min) {
-      padding-left: $gl-padding;
-    }
+    padding-left: $gl-padding;
   }
 
   &:not(:last-child) {
@@ -294,17 +281,6 @@
   }
 }
 
-.board-mobile-handle {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  margin-top: (-15px / 2);
-
-  @media (min-width: $screen-sm-min) {
-    display: none;
-  }
-}
-
 .card-title {
   margin: 0;
   font-size: 1em;
@@ -316,6 +292,7 @@
 
 .card-footer {
   margin-top: 5px;
+  line-height: 25px;
 
   .label {
     margin-right: 4px;

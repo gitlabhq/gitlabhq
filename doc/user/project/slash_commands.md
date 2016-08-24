@@ -26,5 +26,5 @@ do.
 | `/done`                    | Mark todo as done |
 | `/subscribe`               | Subscribe |
 | `/unsubscribe`             | Unsubscribe |
-| `/due <in 2 days | this Friday | December 31st>` | Set due date |
+| `/due <in 2 days or this Friday or December 31st>` | Set due date |
 | `/remove_due_date`          | Remove due date |
