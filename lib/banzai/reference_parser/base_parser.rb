@@ -62,8 +62,7 @@ module Banzai
 
         nodes.select do |node|
           if node.has_attribute?(project_attr)
-            node_id = node.attr(project_attr).to_i
-            can_read_reference?(user, projects[node_id])
+            can_read_reference?(user, projects[node])
           else
             true
           end
@@ -112,12 +111,12 @@ module Banzai
         per_project
       end
 
-      # Returns a Hash containing objects for an attribute grouped per their
-      # IDs.
+      # Returns a Hash containing objects for an attribute grouped per the
+      # nodes that reference them.
       #
       # The returned Hash uses the following format:
       #
-      #     { id value => row }
+      #     { node => row }
       #
       # nodes - An Array of HTML nodes to process.
       #
@@ -131,11 +130,14 @@ module Banzai
       def grouped_objects_for_nodes(nodes, collection, attribute)
         return {} if nodes.empty?
 
-        ids = unique_attribute_values(nodes, attribute)
-        rows = collection_objects_for_ids(collection, ids)
+        ids = unique_attribute_values(nodes, attribute).sort_by(&:to_i)
+        rows = collection_objects_for_ids(collection, ids).sort_by(&:id)
+        objects_by_id = Hash[ids.zip(rows)]
 
-        rows.each_with_object({}) do |row, hash|
-          hash[row.id] = row
+        nodes.each_with_object({}) do |node, hash|
+          if node.has_attribute?(attribute)
+            hash[node] = objects_by_id[node.attr(attribute)]
+          end
         end
       end
 

@@ -58,7 +58,7 @@ module Banzai
     # Returns a Banzai context for the given object and attribute.
     def context_for(object, attribute)
       context = base_context.dup
-      context = context.merge(object.banzai_render_context(attribute))
+      context = context.merge(object.banzai_render_context(attribute)).merge(skip_redaction: true)
       context
     end
 
@@ -70,7 +70,7 @@ module Banzai
         string = Banzai.render_field(object, attribute)
         context = context_for(object, attribute)
 
-        Banzai::Pipeline[:relative_link].to_document(string, context)
+        Banzai::Pipeline[:post_process].to_document(string, context)
       end
     end
 

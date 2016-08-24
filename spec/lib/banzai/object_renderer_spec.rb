@@ -78,6 +78,29 @@ describe Banzai::ObjectRenderer do
       expect(context).to have_key(:foo)
       expect(context[:foo]).to eq(:bar)
     end
+
+    it 'adds the :skip_redaction flag' do
+      context = renderer.context_for(object, :note)
+      expect(context[:skip_redaction]).to eq(true)
+    end
+
+    context 'when the object responds to "author"' do
+      it 'includes the author in the context' do
+        expect(object).to receive(:author).and_return('Alice')
+
+        context = renderer.context_for(object, :note)
+
+        expect(context[:author]).to eq('Alice')
+      end
+    end
+
+    context 'when the object does not respond to "author"' do
+      it 'does not include the author in the context' do
+        context = renderer.context_for(object, :note)
+
+        expect(context.key?(:author)).to eq(false)
+      end
+    end
   end
 
   describe '#render_attributes' do

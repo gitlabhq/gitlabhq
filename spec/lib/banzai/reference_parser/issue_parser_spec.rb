@@ -75,7 +75,7 @@ describe Banzai::ReferenceParser::IssueParser, lib: true do
       link['data-issue'] = issue.id.to_s
       nodes = [link]
 
-      expect(subject.issues_for_nodes(nodes)).to eq({ issue.id => issue })
+      expect(subject.issues_for_nodes(nodes)).to eq({ link => issue })
     end
   end
 end
