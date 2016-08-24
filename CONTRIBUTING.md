@@ -129,7 +129,7 @@ request that potentially fixes it.
 
 ### Feature proposals
 
-To create a feature proposal for CE and CI, open an issue on the
+To create a feature proposal for CE, open an issue on the
 [issue tracker of CE][ce-tracker].
 
 For feature proposals for EE, open an issue on the
@@ -144,16 +144,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-You are encouraged to use the template below for feature proposals.
-
-```
-## Description
-Include problem, use cases, benefits, and/or goals
-
-## Proposal
-
-## Links / references
-```
+Please submit Feature Proposals using the 'Feature Proposal' issue template provided on the issue tracker.
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -166,54 +157,10 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the following template in the issue description area.
+Please submit bugs using the 'Bug' issue template provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
-
-```
-## Summary
-
-(Summarize your issue in one sentence - what goes wrong, what did you expect to happen)
-
-## Steps to reproduce
-
-(How one can reproduce the issue - this is very important)
-
-## Expected behavior
-
-(What you should see instead)
-
-## Relevant logs and/or screenshots
-
-(Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
-
-## Output of checks
-
-### Results of GitLab Application Check
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:check SANITIZE=true)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
-
-(we will only investigate if the tests are passing)
-
-### Results of GitLab Environment Info
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:env:info)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
-
-## Possible fixes
-
-(If you can, link to the line of code that might be responsible for the problem)
-
-```
 
 ### Issue weight
 

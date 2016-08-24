@@ -1,6 +1,6 @@
 ## Summary
 
-(Summarize your issue in one sentence - what goes wrong, what did you expect to happen)
+(Summarize the bug encountered concisely)
 
 ## Steps to reproduce
 
@@ -9,6 +9,10 @@
 ## Expected behavior
 
 (What you should see instead)
+
+## Actual behaviour
+
+(What actually happens)
 
 ## Relevant logs and/or screenshots
 
