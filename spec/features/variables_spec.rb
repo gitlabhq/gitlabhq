@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Project variables', js: true do
   let(:user)     { create(:user) }
   let(:project)  { create(:project) }
-  let(:variable) { create(:ci_variable, key: 'test') }
+  let(:variable) { create(:ci_variable, key: 'test_key', value: 'test value') }
 
   before do
     login_as(user)
@@ -16,16 +16,28 @@ describe 'Project variables', js: true do
   it 'shows list of variables' do
     page.within('.variables-table') do
       expect(page).to have_content(variable.key)
+      expect(page).to have_content(variable.value)
     end
   end
 
   it 'adds new variable' do
-    fill_in('variable_key', with: 'key')
-    fill_in('variable_value', with: 'key value')
+    fill_in('variable_key', with: 'new_key')
+    fill_in('variable_value', with: 'new value')
     click_button('Add new variable')
 
     page.within('.variables-table') do
-      expect(page).to have_content('key')
+      expect(page).to have_content('new_key')
+      expect(page).to have_content('new value')
+    end
+  end
+
+  it 'adds empty variable' do
+    fill_in('variable_key', with: 'new_key')
+    fill_in('variable_value', with: '')
+    click_button('Add new variable')
+
+    page.within('.variables-table') do
+      expect(page).to have_content('new_key')
     end
   end
 
@@ -68,12 +80,30 @@ describe 'Project variables', js: true do
     end
 
     expect(page).to have_content('Update variable')
-    fill_in('variable_key', with: 'key')
-    fill_in('variable_value', with: 'key value')
+    fill_in('variable_key', with: 'new_key')
+    fill_in('variable_value', with: 'new value')
     click_button('Save variable')
 
     page.within('.variables-table') do
-      expect(page).to have_content('key')
+      expect(page).not_to have_content(variable.key)
+      expect(page).not_to have_content(variable.value)
+      expect(page).to have_content('new_key')
+      expect(page).to have_content('new value')
+    end
+  end
+
+  it 'edits variable with empty value' do
+    page.within('.variables-table') do
+      find('.btn-variable-edit').click
+    end
+
+    expect(page).to have_content('Update variable')
+    fill_in('variable_value', with: '')
+    click_button('Save variable')
+
+    page.within('.variables-table') do
+      expect(page).to have_content(variable.key)
+      expect(page).not_to have_content(variable.value)
     end
   end
 end
