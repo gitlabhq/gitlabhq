@@ -38,4 +38,5 @@
             - artifacts.each do |job|
               %li
                 = link_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, ref, 'download', job: job.name), rel: 'nofollow' do
+                  %i.fa.fa-download
                   %span Download '#{job.name}'
