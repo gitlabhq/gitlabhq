@@ -798,8 +798,12 @@ class MergeRequest < ActiveRecord::Base
     return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
 
     begin
-      @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
-    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
+      # ensure that we don't say there are conflicts to resolve when there are no conflict
+      # files.
+      conflicts.files.each(&:lines)
+      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
+    rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
       @conflicts_can_be_resolved_in_ui = false
     end
   end

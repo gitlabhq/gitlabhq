@@ -23,6 +23,10 @@ v 8.11.3 (unreleased)
   - Label list shows all issues (opened or closed) with that label
 
 v 8.11.2
+  - Don't show resolve conflicts link before MR status is updated
+  - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
+
+v 8.11.2 (unreleased)
   - Show "Create Merge Request" widget for push events to fork projects on the source project
 
 v 8.11.1
