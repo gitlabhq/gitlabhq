@@ -387,7 +387,8 @@ description area. Copy-paste it to retain the markdown format.
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
-   exposing a bug in existing code)
+   exposing a bug in existing code). Every new class should have corresponding
+   unit tests, even if the class is exercised at a higher level, such as a feature test.
 1. If you suspect a failing CI build is unrelated to your contribution, you may
    try and restart the failing CI job or ask a developer to fix the
    aforementioned failing test

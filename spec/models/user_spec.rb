@@ -955,6 +955,16 @@ describe User, models: true do
 
       expect(subject.recent_push).to eq(nil)
     end
+
+    it "includes push events on any of the provided projects" do
+      expect(subject.recent_push(project1)).to eq(nil)
+      expect(subject.recent_push(project2)).to eq(push_event)
+
+      push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
+      push_event1 = create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject, data: push_data1)
+
+      expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
+    end
   end
 
   describe '#authorized_groups' do

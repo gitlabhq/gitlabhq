@@ -14,6 +14,8 @@ class RepositoryImportWorker
                               import_url: @project.import_url,
                               path: @project.path_with_namespace)
 
+    project.update_column(:import_error, nil)
+
     result = Projects::ImportService.new(project, current_user).execute
 
     if result[:status] == :error

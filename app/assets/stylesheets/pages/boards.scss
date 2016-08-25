@@ -10,11 +10,11 @@
 .is-dragging {
   // Important because plugin sets inline CSS
   opacity: 1!important;
-
+  
   * {
     // !important to make sure no style can override this when dragging
-    cursor: -webkit-grabbing;
-    cursor: grabbing;
+    cursor: -webkit-grabbing!important;
+    cursor: grabbing!important;
   }
 }
 

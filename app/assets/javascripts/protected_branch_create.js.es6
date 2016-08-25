@@ -48,7 +48,11 @@
       const $allowedToMergeInputs = this.$wrap.find('input[name^="protected_branch[merge_access_levels_attributes]"]');
       const $allowedToPushInputs = this.$wrap.find('input[name^="protected_branch[push_access_levels_attributes]"]');
 
+<<<<<<< HEAD
       this.$form.find('input[type="submit"]').attr('disabled', !($branchInput.val() && $allowedToMergeInputs.length && $allowedToPushInputs.length));
+=======
+      this.$form.find('input[type="submit"]').attr('disabled', !($branchInput.val() && $allowedToMergeInput.length && $allowedToPushInput.length));
+>>>>>>> b2bf01f4c271be66e93ed6f4b48a1da4d50e558d
     }
   }
 

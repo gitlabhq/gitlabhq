@@ -145,4 +145,42 @@ describe ProjectsHelper do
       expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
     end
   end
+
+  describe '#last_push_event' do
+    let(:user) { double(:user, fork_of: nil) }
+    let(:project) { double(:project, id: 1) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      helper.instance_variable_set(:@project, project)
+    end
+
+    context 'when there is no current_user' do
+      let(:user) { nil }
+
+      it 'returns nil' do
+        expect(helper.last_push_event).to eq(nil)
+      end
+    end
+
+    it 'returns recent push on the current project' do
+      event = double(:event)
+      expect(user).to receive(:recent_push).with([project.id]).and_return(event)
+
+      expect(helper.last_push_event).to eq(event)
+    end
+
+    context 'when current user has a fork of the current project' do
+      let(:fork) { double(:fork, id: 2) }
+
+      it 'returns recent push considering fork events' do
+        expect(user).to receive(:fork_of).with(project).and_return(fork)
+
+        event_on_fork = double(:event)
+        expect(user).to receive(:recent_push).with([project.id, fork.id]).and_return(event_on_fork)
+
+        expect(helper.last_push_event).to eq(event_on_fork)
+      end
+    end
+  end
 end

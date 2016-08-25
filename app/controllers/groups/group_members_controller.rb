@@ -21,10 +21,8 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    user_ids = params[:user_ids].split(',')
-
     @group.add_users(
-      user_ids,
+      params[:user_ids].split(','),
       params[:access_level],
       current_user: current_user,
       expires_at: params[:expires_at]
