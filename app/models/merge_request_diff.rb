@@ -65,13 +65,6 @@ class MergeRequestDiff < ActiveRecord::Base
     start_commit_sha || merge_request.target_branch_sha
   end
 
-  # This method will rely on repository branch sha
-  # in case head_commit_sha is nil. Its necesarry for old merge request diff
-  # created before version 8.4 to work
-  def safe_head_commit_sha
-    head_commit_sha || merge_request.source_branch_sha
-  end
-
   def size
     real_size.presence || raw_diffs.size
   end
@@ -82,7 +75,7 @@ class MergeRequestDiff < ActiveRecord::Base
         Gitlab::Git::Compare.new(
           repository.raw_repository,
           safe_start_commit_sha,
-          safe_head_commit_sha).diffs(options)
+          head_commit_sha).diffs(options)
     else
       @raw_diffs ||= {}
       @raw_diffs[options] ||= load_diffs(st_diffs, options)
@@ -148,16 +141,11 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def compare
     @compare ||=
-      begin
-        # Update ref for merge request
-        merge_request.fetch_ref
-
-        Gitlab::Git::Compare.new(
-          repository.raw_repository,
-          safe_start_commit_sha,
-          safe_head_commit_sha
-        )
-      end
+      Gitlab::Git::Compare.new(
+        repository.raw_repository,
+        safe_start_commit_sha,
+        head_commit_sha
+      )
   end
 
   def latest?
