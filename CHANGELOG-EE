@@ -1,4 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 8.11.3
+  - [ES] Add logging to indexer
 
 v 8.11.2 (Unreleased)
 
