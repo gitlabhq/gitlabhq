@@ -1,7 +1,7 @@
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Ci::Model
-    include Statuseable
+    include HasStatus
 
     self.table_name = 'ci_commits'
 

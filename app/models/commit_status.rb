@@ -1,5 +1,5 @@
 class CommitStatus < ActiveRecord::Base
-  include Statuseable
+  include HasStatus
   include Importable
 
   self.table_name = 'ci_builds'
