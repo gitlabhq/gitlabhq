@@ -40,6 +40,28 @@ class CycleAnalytics
         end
       end
 
+      def mr_build_started_at
+        lambda do |data_point|
+          merge_request = data_point[:merge_request]
+          tip = merge_request.commits.first
+          return unless tip
+
+          pipeline = Ci::Pipeline.find_by_sha(tip.sha)
+          pipeline.started_at if pipeline
+        end
+      end
+
+      def mr_build_finished_at
+        lambda do |data_point|
+          merge_request = data_point[:merge_request]
+          tip = merge_request.commits.first
+          return unless tip
+
+          pipeline = Ci::Pipeline.find_by_sha(tip.sha)
+          pipeline.finished_at if pipeline
+        end
+      end
+
       def mr_deployed_to_any_environment_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]

@@ -21,6 +21,13 @@
       = "<Not enough data>"
 
   %li.list-group-item
+    Test:
+    - if test = @cycle_analytics.test.presence
+      = distance_of_time_in_words test
+    - else
+      = "<Not enough data>"
+
+  %li.list-group-item
     Review:
     - if review = @cycle_analytics.review.presence
       = distance_of_time_in_words review

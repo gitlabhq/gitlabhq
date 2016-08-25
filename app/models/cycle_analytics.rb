@@ -17,6 +17,12 @@ class CycleAnalytics
                      Queries::mr_wip_flag_removed_or_assigned_to_user_other_than_author_time)
   end
 
+  def test
+    calculate_metric(Queries::merge_requests_closing_issues,
+                     Queries::mr_build_started_at,
+                     Queries::mr_build_finished_at)
+  end
+
   def review
     calculate_metric(Queries::merge_requests_closing_issues,
                      Queries::mr_wip_flag_removed_or_assigned_to_user_other_than_author_time,
