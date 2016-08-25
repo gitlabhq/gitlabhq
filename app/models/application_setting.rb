@@ -63,6 +63,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
 
+  validates :project_size_limit,
+            presence: true,
+            numericality: { only_integer: true, greater_than: 0 }
+
   validates :container_registry_token_expire_delay,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
