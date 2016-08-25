@@ -1251,21 +1251,21 @@ EOT
       end
     end
 
-    describe "#validate(config)" do
+    describe "#errors(content)" do
       describe "Error handling" do
-        it "returns error to parse YAML" do
-          config = YAML.dump("invalid: yaml: test")
-          expect(GitlabCiYamlProcessor.validate(config)).to eq "Invalid configuration format"
+        it "returns error if parse YAML failed" do
+          content = YAML.dump("invalid: yaml: test")
+          expect(GitlabCiYamlProcessor.errors(content)).to eq "Invalid configuration format"
         end
 
         it "returns errors if tags parameter is invalid" do
-          config = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
-          expect(GitlabCiYamlProcessor.validate(config)).to eq "jobs:rspec tags should be an array of strings"
+          content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
+          expect(GitlabCiYamlProcessor.errors(content)).to eq "jobs:rspec tags should be an array of strings"
         end
 
         it "does not return errors" do
-          config = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-          expect(GitlabCiYamlProcessor.validate(config)).to eq "valid"
+          content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+          expect(GitlabCiYamlProcessor.errors(content)).to eq nil
         end
       end
     end

@@ -11,9 +11,9 @@ module Ci
       if @content.blank?
         @status = false
         @error = "Please provide content of .gitlab-ci.yml"
-      elsif Ci::GitlabCiYamlProcessor.validate(@content) != "valid"
+      elsif Ci::GitlabCiYamlProcessor.errors(@content) != nil
         @status = false
-        @error = Ci::GitlabCiYamlProcessor.validate(@content)
+        @error = Ci::GitlabCiYamlProcessor.errors(@content)
       else
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages

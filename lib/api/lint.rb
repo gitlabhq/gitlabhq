@@ -2,7 +2,7 @@ module API
   class Lint < Grape::API
     resource :lint do
       params do
-        requires :content, type: String, desc: 'content of .gitlab-ci.yml'
+        requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
       end
 
       desc 'Validation of .gitlab-ci.yml content'
@@ -13,9 +13,9 @@ module API
           jobs: []
         }
 
-        if Ci::GitlabCiYamlProcessor.validate(@content) != "valid"
+        if Ci::GitlabCiYamlProcessor.errors(@content) != nil
           status 200
-          response[:errors].push(e.message)
+          response[:errors].push(Ci::GitlabCiYamlProcessor.errors(@content))
           response[:status] = 'invalid'
 
           response
