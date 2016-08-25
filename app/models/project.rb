@@ -1035,6 +1035,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
+    repository.expire_avatar_cache(branch)
     reload_default_branch
   end
 
