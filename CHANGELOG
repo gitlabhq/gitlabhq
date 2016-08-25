@@ -62,6 +62,11 @@ v 8.11.2
   - Does not halt the GitHub import process when an error occurs. !5763
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
+v 8.11.3 (unreleased)
+  - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
+
+v 8.11.2 (unreleased)
+  - Show "Create Merge Request" widget for push events to fork projects on the source project
 
 v 8.11.1
   - Pulled due to packaging error.

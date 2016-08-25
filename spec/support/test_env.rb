@@ -24,11 +24,12 @@ module TestEnv
     'expand-collapse-lines'              => '238e82d',
     'video'                              => '8879059',
     'crlf-diff'                          => '5938907',
-    'conflict-start'                     => '14fa46b',
+    'conflict-start'                     => '75284c7',
     'conflict-resolvable'                => '1450cd6',
     'conflict-binary-file'               => '259a6fb',
     'conflict-contains-conflict-markers' => '5e0964c',
     'conflict-missing-side'              => 'eb227b3',
+    'conflict-non-utf8'                  => 'd0a293c',
     'conflict-too-large'                 => '39fa04f',
   }
 
