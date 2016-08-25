@@ -328,7 +328,7 @@ gem 'mail_room', '~> 0.8'
 
 gem 'email_reply_parser', '~> 0.5.8'
 
-gem 'ruby-prof', '~> 0.15.9'
+gem 'ruby-prof', '~> 0.16.2'
 
 ## CI
 gem 'activerecord-session_store', '~> 1.0.0'
