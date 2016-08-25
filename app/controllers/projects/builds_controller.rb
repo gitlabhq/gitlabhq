@@ -81,7 +81,7 @@ class Projects::BuildsController < Projects::ApplicationController
     if @build.has_trace_file?
       send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
     else
-      render_404
+      render_410
     end
   end
 
