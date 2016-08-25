@@ -1,1 +1,8 @@
-%pre= @metrics
+%ul.list-group
+  %li.list-group-item
+    Issue:
+    = distance_of_time_in_words @cycle_analytics.issue
+
+  %li.list-group-item
+    Plan:
+    = distance_of_time_in_words @cycle_analytics.plan
