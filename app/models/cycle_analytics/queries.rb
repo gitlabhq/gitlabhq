@@ -12,35 +12,35 @@ class CycleAnalytics
         end.flatten
       end
 
-      def issue_first_associated_with_milestone_or_first_added_to_list_label_time
+      def issue_first_associated_with_milestone_at
         lambda do |data_point|
           issue = data_point[:issue]
-          if issue.metrics.present?
-            issue.metrics.first_associated_with_milestone_at.presence ||
-              issue.metrics.first_added_to_board_at.presence
-          end
+          issue.metrics.first_associated_with_milestone_at if issue.metrics.present?
         end
       end
 
-      def mr_first_closed_or_merged_at
+      def issue_first_added_to_list_label_at
+        lambda do |data_point|
+          issue = data_point[:issue]
+          issue.metrics.first_added_to_board_at if issue.metrics.present?
+        end
+      end
+
+      def merge_request_first_closed_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
-          if merge_request.metrics.present?
-            merge_request.metrics.merged_at.presence || merge_request.metrics.first_closed_at.presence
-          end
+          merge_request.metrics.first_closed_at if merge_request.metrics.present?
         end
       end
 
-      def mr_merged_at
+      def merge_request_merged_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
-          if merge_request.metrics.present?
-            merge_request.metrics.merged_at
-          end
+          merge_request.metrics.merged_at if merge_request.metrics.present?
         end
       end
 
-      def mr_build_started_at
+      def merge_request_build_started_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
           tip = merge_request.commits.first
@@ -51,7 +51,7 @@ class CycleAnalytics
         end
       end
 
-      def mr_build_finished_at
+      def merge_request_build_finished_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
           tip = merge_request.commits.first
@@ -62,7 +62,7 @@ class CycleAnalytics
         end
       end
 
-      def mr_deployed_to_any_environment_at
+      def merge_request_deployed_to_any_environment_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
           if merge_request.metrics.present?
@@ -73,7 +73,7 @@ class CycleAnalytics
         end
       end
 
-      def mr_deployed_to_production_at
+      def merge_request_deployed_to_production_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
           if merge_request.metrics.present?
@@ -85,7 +85,7 @@ class CycleAnalytics
         end
       end
 
-      def issue_closing_merge_request_opened_time
+      def issue_closing_merge_request_opened_at
         lambda do |data_point|
           issue = data_point[:issue]
           merge_requests = issue.closed_by_merge_requests(nil, check_if_open: false)
@@ -93,13 +93,17 @@ class CycleAnalytics
         end
       end
 
-      def mr_wip_flag_removed_or_assigned_to_user_other_than_author_time
+      def merge_request_wip_flag_first_removed_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
-          if merge_request.metrics.present?
-            merge_request.metrics.wip_flag_first_removed_at.presence ||
-              merge_request.metrics.first_assigned_to_user_other_than_author.presence
-          end
+          merge_request.metrics.wip_flag_first_removed_at if merge_request.metrics.present?
+        end
+      end
+
+      def merge_request_first_assigned_to_user_other_than_author_at
+        lambda do |data_point|
+          merge_request = data_point[:merge_request]
+          merge_request.metrics.first_assigned_to_user_other_than_author if merge_request.metrics.present?
         end
       end
     end
