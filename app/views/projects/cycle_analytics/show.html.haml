@@ -33,3 +33,10 @@
       = distance_of_time_in_words staging
     - else
       = "<Not enough data>"
+
+  %li.list-group-item
+    Production:
+    - if production = @cycle_analytics.production.presence
+      = distance_of_time_in_words production
+    - else
+      = "<Not enough data>"
