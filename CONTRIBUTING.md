@@ -144,7 +144,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the 'Feature Proposal' issue template provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -157,7 +157,7 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the 'Bug' issue template provided on the issue tracker.
+Please submit bugs using the ['Bug' issue template](.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.

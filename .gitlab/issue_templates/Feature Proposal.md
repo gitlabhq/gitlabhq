@@ -1,6 +1,7 @@
-## Description
-Include problem, use cases, benefits, and/or goals
+### Description
 
-## Proposal
+(Include problem, use cases, benefits, and/or goals)
 
-## Links / references
+### Proposal
+
+### Links / references
