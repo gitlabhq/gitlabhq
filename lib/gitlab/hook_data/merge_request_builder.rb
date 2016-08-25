@@ -43,6 +43,7 @@ module Gitlab
 
       def build
         attrs = {
+          description: MarkdownUtils.absolute_image_urls(issue.description),
           url: Gitlab::UrlBuilder.build(merge_request),
           source: merge_request.source_project.try(:hook_attrs),
           target: merge_request.target_project.hook_attrs,

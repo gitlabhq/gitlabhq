@@ -829,4 +829,12 @@ describe Note do
       note.destroy!
     end
   end
+
+  describe '#hook_attrs' do
+    let(:note) { create(:note, note: 'test![Note_Image](/uploads/abc/Note_Image.png)') }
+
+    it 'adds absolute urls for images in the description' do
+      expect(note.hook_attrs['note']).to eq("test![Note_Image](#{Settings.gitlab.url}/uploads/abc/Note_Image.png)")
+    end
+  end
 end

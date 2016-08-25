@@ -38,6 +38,7 @@ module Gitlab
 
       def build
         attrs = {
+          description: MarkdownUtils.absolute_image_urls(issue.description),
           url: Gitlab::UrlBuilder.build(issue),
           total_time_spent: issue.total_time_spent,
           human_total_time_spent: issue.human_total_time_spent,

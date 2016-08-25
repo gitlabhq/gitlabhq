@@ -202,7 +202,9 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    attributes.merge({
+      "note" => MarkdownUtils.absolute_image_urls(self.note)
+    })
   end
 
   def for_commit?

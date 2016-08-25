@@ -59,7 +59,9 @@ class WikiPage
   attr_accessor :attributes
 
   def hook_attrs
-    attributes
+    attributes.merge({
+      "content" => MarkdownUtils.absolute_image_urls(self.content)
+    })
   end
 
   def initialize(wiki, page = nil, persisted = false)

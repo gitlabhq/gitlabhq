@@ -554,6 +554,18 @@ describe WikiPage do
     end
   end
 
+  describe '#hook_attrs' do
+    before do
+      create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")
+      @page = wiki.wiki.paged("test page")
+      @wiki_page = WikiPage.new(wiki, @page, true)
+    end
+
+    it 'adds absolute urls for images in the content' do
+      expect(@wiki_page.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+    end
+  end
+
   private
 
   def remove_temp_repo(path)
