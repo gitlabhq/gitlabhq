@@ -60,11 +60,6 @@
                     - unless gitlab_import_configured?
                       = render 'gitlab_import_modal'
                 %div
-                  - if gitorious_import_enabled?
-                    = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
-                      %i.icon-gitorious.icon-gitorious-small
-                      Gitorious.org
-                %div
                   - if google_code_import_enabled?
                     = link_to new_import_google_code_path, class: 'btn import_google_code' do
                       = icon('google', text: 'Google Code')

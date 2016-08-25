@@ -115,7 +115,7 @@ In this flow it is not common to have a production branch (or git flow master br
 
 Merge or pull requests are created in a git management application and ask an assigned person to merge two branches.
 Tools such as GitHub and Bitbucket choose the name pull request since the first manual action would be to pull the feature branch.
-Tools such as GitLab and Gitorious choose the name merge request since that is the final action that is requested of the assignee.
+Tools such as GitLab and others choose the name merge request since that is the final action that is requested of the assignee.
 In this article we'll refer to them as merge requests.
 
 If you work on a feature branch for more than a few hours it is good to share the intermediate result with the rest of the team.
