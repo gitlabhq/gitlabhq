@@ -26,3 +26,10 @@
       = distance_of_time_in_words review
     - else
       = "<Not enough data>"
+
+  %li.list-group-item
+    Staging:
+    - if staging = @cycle_analytics.staging.presence
+      = distance_of_time_in_words staging
+    - else
+      = "<Not enough data>"

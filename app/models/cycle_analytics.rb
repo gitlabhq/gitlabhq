@@ -15,16 +15,23 @@ class CycleAnalytics
   def code
     issues = Issue.all.to_a
     start_time_fn = -> (merge_request) { merge_request.created_at }
-    calculate_metric(issues.map { |issue| issue.closed_by_merge_requests(nil, check_if_open: false) }.flatten,
+    calculate_metric(Queries::merge_requests_closing_issues(issues),
                      start_time_fn,
                      Queries::mr_wip_flag_removed_or_assigned_to_user_other_than_author_time)
   end
 
   def review
     issues = Issue.all.to_a
-    calculate_metric(issues.map { |issue| issue.closed_by_merge_requests(nil, check_if_open: false) }.flatten,
+    calculate_metric(Queries::merge_requests_closing_issues(issues),
                      Queries::mr_wip_flag_removed_or_assigned_to_user_other_than_author_time,
                      Queries::mr_first_closed_or_merged_at)
+  end
+
+  def staging
+    issues = Issue.all.to_a
+    calculate_metric(Queries::merge_requests_closing_issues(issues),
+                     Queries::mr_merged_at,
+                     Queries::mr_deployed_to_any_environment_at)
   end
 
   private

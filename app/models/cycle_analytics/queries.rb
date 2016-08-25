@@ -1,6 +1,10 @@
 class CycleAnalytics
   module Queries
     class << self
+      def merge_requests_closing_issues(issues)
+        issues.map { |issue| issue.closed_by_merge_requests(nil, check_if_open: false) }.flatten
+      end
+
       def issue_first_associated_with_milestone_or_first_added_to_list_label_time
         lambda do |issue|
           if issue.metrics.present?
@@ -14,6 +18,24 @@ class CycleAnalytics
         lambda do |merge_request|
           if merge_request.metrics.present?
             merge_request.metrics.merged_at.presence || merge_request.metrics.first_closed_at.presence
+          end
+        end
+      end
+
+      def mr_merged_at
+        lambda do |merge_request|
+          if merge_request.metrics.present?
+            merge_request.metrics.merged_at
+          end
+        end
+      end
+
+      def mr_deployed_to_any_environment_at
+        lambda do |merge_request|
+          if merge_request.metrics.present?
+            deployments = Deployment.where(ref: merge_request.target_branch).where("created_at > ?", merge_request.metrics.merged_at)
+            deployment = deployments.order(:created_at).first
+            deployment.created_at if deployment
           end
         end
       end
