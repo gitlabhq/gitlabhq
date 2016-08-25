@@ -5,6 +5,12 @@ feature 'Group', feature: true do
     login_as(:admin)
   end
 
+  matcher :have_namespace_error_message do
+    match do |page|
+      page.has_content?("Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.', '.git' or '.atom'.")
+    end
+  end
+
   describe 'creating a group with space in group path' do
     it 'renders new group form with validation errors' do
       visit new_group_path
@@ -13,7 +19,31 @@ feature 'Group', feature: true do
       click_button 'Create group'
 
       expect(current_path).to eq(groups_path)
-      expect(page).to have_content("Path can contain only letters, digits, '_', '-' and '.'. Cannot start with '-' or end in '.'.")
+      expect(page).to have_namespace_error_message
+    end
+  end
+  
+  describe 'creating a group with .atom at end of group path' do
+    it 'renders new group form with validation errors' do
+      visit new_group_path
+      fill_in 'Group path', with: 'atom_group.atom'
+
+      click_button 'Create group'
+
+      expect(current_path).to eq(groups_path)
+      expect(page).to have_namespace_error_message
+    end
+  end
+  
+  describe 'creating a group with .git at end of group path' do
+    it 'renders new group form with validation errors' do
+      visit new_group_path
+      fill_in 'Group path', with: 'git_group.git'
+
+      click_button 'Create group'
+
+      expect(current_path).to eq(groups_path)
+      expect(page).to have_namespace_error_message
     end
   end
 
