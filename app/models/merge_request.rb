@@ -13,6 +13,7 @@ class MergeRequest < ActiveRecord::Base
   has_many :merge_request_diffs, dependent: :destroy
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }
+  has_one :metrics, dependent: :destroy
 
   has_many :events, as: :target, dependent: :destroy
 
@@ -30,6 +31,8 @@ class MergeRequest < ActiveRecord::Base
   # Temporary fields to store compare vars
   # when creating new merge request
   attr_accessor :can_be_created, :compare_commits, :compare
+
+  after_save :record_metrics
 
   state_machine :state, initial: :opened do
     event :close do
@@ -806,5 +809,10 @@ class MergeRequest < ActiveRecord::Base
     rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
       @conflicts_can_be_resolved_in_ui = false
     end
+  end
+
+  def record_metrics
+    metrics = Metrics.find_or_create_by(merge_request_id: self.id)
+    metrics.record!
   end
 end

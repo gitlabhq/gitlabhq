@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160824124900) do
+ActiveRecord::Schema.define(version: 20160825052008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -605,6 +605,16 @@ ActiveRecord::Schema.define(version: 20160824124900) do
 
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
+  create_table "merge_request_metrics", force: :cascade do |t|
+    t.integer  "merge_request_id",                         null: false
+    t.datetime "wip_flag_first_removed_at"
+    t.datetime "first_assigned_to_user_other_than_author"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "merge_request_metrics", ["merge_request_id"], name: "index_merge_request_metrics", using: :btree
+
   create_table "merge_requests", force: :cascade do |t|
     t.string   "target_branch",                                null: false
     t.string   "source_branch",                                null: false
@@ -1163,6 +1173,7 @@ ActiveRecord::Schema.define(version: 20160824124900) do
   add_foreign_key "issue_metrics", "issues"
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"
+  add_foreign_key "merge_request_metrics", "merge_requests"
   add_foreign_key "personal_access_tokens", "users"
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"

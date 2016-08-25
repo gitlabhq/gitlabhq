@@ -1,8 +1,21 @@
 %ul.list-group
   %li.list-group-item
     Issue:
-    = distance_of_time_in_words @cycle_analytics.issue
+    - if issue = @cycle_analytics.issue
+      = distance_of_time_in_words issue
+    - else
+      <Not enough data>
 
   %li.list-group-item
     Plan:
-    = distance_of_time_in_words @cycle_analytics.plan
+    - if plan = @cycle_analytics.plan
+      = distance_of_time_in_words plan
+    - else
+      <Not enough data>
+
+  %li.list-group-item
+    Code:
+    - if code = @cycle_analytics.code.presence
+      = distance_of_time_in_words code
+    - else
+      = "<Not enough data>"
