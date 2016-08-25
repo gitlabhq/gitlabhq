@@ -7,10 +7,8 @@
       });
       this.initTabs();
       $('.hide-project-limit-message').on('click', function(e) {
-        var path;
-        path = '/';
         $.cookie('hide_project_limit_message', 'false', {
-          path: path
+          path: gon.relative_url_root || '/'
         });
         $(this).parents('.project-limit-message').remove();
         return e.preventDefault();

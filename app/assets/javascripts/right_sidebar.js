@@ -30,7 +30,7 @@
         }
         if (!triggered) {
           return $.cookie("collapsed_gutter", $('.right-sidebar').hasClass('right-sidebar-collapsed'), {
-            path: '/'
+            path: gon.relative_url_root || '/'
           });
         }
       });
