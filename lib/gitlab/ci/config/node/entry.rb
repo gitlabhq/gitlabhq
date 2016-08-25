@@ -20,6 +20,10 @@ module Gitlab
             @validator.validate(:new)
           end
 
+          def [](key)
+            @entries[key] || Node::Undefined.new
+          end
+
           def compose!(deps = nil)
             return unless valid?
 

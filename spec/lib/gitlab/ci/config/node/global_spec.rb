@@ -253,4 +253,27 @@ describe Gitlab::Ci::Config::Node::Global do
       expect(global.specified?).to be true
     end
   end
+
+  describe '#[]' do
+    before { global.compose! }
+
+    let(:hash) do
+      { cache: { key: 'a' }, rspec: { script: 'ls' } }
+    end
+
+    context 'when node exists' do
+      it 'returns correct entry' do
+        expect(global[:cache])
+          .to be_an_instance_of Gitlab::Ci::Config::Node::Cache
+        expect(global[:jobs][:rspec][:script].value).to eq ['ls']
+      end
+    end
+
+    context 'when node does not exist' do
+      it 'always return unspecified node' do
+        expect(global[:some][:unknown][:node])
+          .not_to be_specified
+      end
+    end
+  end
 end
