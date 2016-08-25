@@ -16,7 +16,6 @@
 
       $dropdown.glDropdown({
         selectable: true,
-<<<<<<< HEAD
         filterable: true,
         filterRemote: true,
         data: this.getData.bind(this),
@@ -35,16 +34,6 @@
         setActiveIds() {
           // Needed for pre select options
           this.activeIds = self.getActiveIds();
-=======
-        inputId: $dropdown.data('input-id'),
-        fieldName: $dropdown.data('field-name'),
-        toggleLabel(item, el) {
-          if (el.is('.is-active')) {
-            return item.text;
-          } else {
-            return 'Select';
-          }
->>>>>>> b2bf01f4c271be66e93ed6f4b48a1da4d50e558d
         },
         clicked(item, $el, e) {
           e.preventDefault();

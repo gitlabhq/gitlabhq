@@ -77,7 +77,6 @@
     onDropdownHide() {
       if (!this.hasChanges) return;
 
-<<<<<<< HEAD
       this.hasChanges = true;
 
       this.updatePermissions();
@@ -91,12 +90,6 @@
       }
 
       return $.ajax({
-=======
-      // Do not update if one dropdown has not selected any option
-      if (!($allowedToMergeInput.length && $allowedToPushInput.length)) return; 
-
-      $.ajax({
->>>>>>> b2bf01f4c271be66e93ed6f4b48a1da4d50e558d
         type: 'POST',
         url: this.$wrap.data('url'),
         dataType: 'json',
