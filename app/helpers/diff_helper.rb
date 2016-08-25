@@ -109,6 +109,23 @@ module DiffHelper
     end
   end
 
+  def diff_file_content_cacheable?(diff_file)
+    diff_file.diff_refs && !diff_file_will_show_discussions(diff_file)
+  end
+
+  def diff_file_will_show_discussions(diff_file)
+    return false if @diff_notes_disabled
+    return false unless @grouped_diff_discussions
+
+    @grouped_diff_discussions_by_file_path ||= @grouped_diff_discussions.values.flatten.group_by { |d| d.diff_file.file_path }
+    @grouped_diff_discussions_by_file_path.key?(diff_file.file_path)
+  end
+  private :diff_file_will_show_discussions
+
+  def diff_file_content_cache_key(diff_file, diff_view)
+    [diff_file.diff_refs.base_sha, diff_file.diff_refs.start_sha, diff_file.diff_refs.head_sha, diff_file.file_path, diff_view]
+  end
+
   def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,

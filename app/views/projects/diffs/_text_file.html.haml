@@ -4,7 +4,6 @@
     %a.show-suppressed-diff.js-show-suppressed-diff Changes suppressed. Click to show.
 
 %table.text-file.code.js-syntax-highlight{ data: diff_view_data, class: too_big ? 'hide' : '' }
-  - last_line = 0
   - discussions = @grouped_diff_discussions unless @diff_notes_disabled
   = render partial: "projects/diffs/line",
     collection: diff_file.highlighted_diff_lines,

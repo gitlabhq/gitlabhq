@@ -13,10 +13,11 @@
       .nothing-here-block.diff-collapsed{data: { diff_for_path: url } }
         This diff is collapsed. Click to expand it.
     - elsif diff_file.diff_lines.length > 0
-      - if diff_view == :parallel
-        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob
-      - else
-        = render "projects/diffs/text_file", diff_file: diff_file
+      = cache_if(diff_file_content_cacheable?(diff_file), diff_file_content_cache_key(diff_file, diff_view), skip_digest: true) do
+        - if diff_view == :parallel
+          = render "projects/diffs/parallel_view", diff_file: diff_file
+        - else
+          = render "projects/diffs/text_file", diff_file: diff_file
     - else
       - if diff_file.mode_changed?
         .nothing-here-block File mode changed
