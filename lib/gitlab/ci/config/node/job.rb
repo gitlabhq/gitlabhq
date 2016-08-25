@@ -82,7 +82,7 @@ module Gitlab
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts
 
-          def compose!(deps)
+          def compose!(deps = nil)
             super do
               if type_defined? && !stage_defined?
                 @entries[:stage] = @entries[:type]

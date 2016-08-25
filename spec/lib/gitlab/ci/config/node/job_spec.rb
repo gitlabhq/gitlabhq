@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
-  before { entry.process! }
+  before { entry.compose! }
 
   describe 'validations' do
     context 'when entry config value is correct' do

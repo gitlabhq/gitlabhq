@@ -27,8 +27,8 @@ describe Gitlab::Ci::Config::Node::Global do
           spinach: { script: 'spinach' } }
       end
 
-      describe '#process!' do
-        before { global.process! }
+      describe '#compose!' do
+        before { global.compose! }
 
         it 'creates nodes hash' do
           expect(global.descendants).to be_an Array
@@ -59,7 +59,7 @@ describe Gitlab::Ci::Config::Node::Global do
         end
       end
 
-      context 'when not processed' do
+      context 'when not composed' do
         describe '#before_script' do
           it 'returns nil' do
             expect(global.before_script).to be nil
@@ -73,8 +73,8 @@ describe Gitlab::Ci::Config::Node::Global do
         end
       end
 
-      context 'when processed' do
-        before { global.process! }
+      context 'when composed' do
+        before { global.compose! }
 
         describe '#before_script' do
           it 'returns correct script' do
@@ -148,8 +148,11 @@ describe Gitlab::Ci::Config::Node::Global do
     end
 
     context 'when most of entires not defined' do
-      let(:hash) { { cache: { key: 'a' }, rspec: { script: %w[ls] } } }
-      before { global.process! }
+      before { global.compose! }
+
+      let(:hash) do
+        { cache: { key: 'a' }, rspec: { script: %w[ls] } }
+      end
 
       describe '#nodes' do
         it 'instantizes all nodes' do
@@ -188,8 +191,11 @@ describe Gitlab::Ci::Config::Node::Global do
     # details.
     #
     context 'when entires specified but not defined' do
-      let(:hash) { { variables: nil, rspec: { script: 'rspec' } } }
-      before { global.process! }
+      before { global.compose! }
+
+      let(:hash) do
+        { variables: nil, rspec: { script: 'rspec' } }
+      end
 
       describe '#variables' do
         it 'undefined entry returns a default value' do
@@ -200,7 +206,7 @@ describe Gitlab::Ci::Config::Node::Global do
   end
 
   context 'when hash is not valid' do
-    before { global.process! }
+    before { global.compose! }
 
     let(:hash) do
       { before_script: 'ls' }

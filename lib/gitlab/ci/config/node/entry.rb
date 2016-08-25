@@ -20,12 +20,6 @@ module Gitlab
             @validator.validate(:new)
           end
 
-          # Temporary method
-          #
-          def process!(deps = nil)
-            compose!(deps)
-          end
-
           def compose!(deps = nil)
             return unless valid?
 

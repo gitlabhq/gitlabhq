@@ -23,7 +23,7 @@ module Gitlab
             end
           end
 
-          def compose!(deps)
+          def compose!(deps = nil)
             return unless valid?
 
             self.class.nodes.each do |key, factory|
