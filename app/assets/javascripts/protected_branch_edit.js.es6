@@ -1,11 +1,6 @@
 (global => {
   global.gl = global.gl || {};
 
-  const LEVEL_TYPES = {
-    USER: 'user',
-    ROLE: 'role',
-  };
-
   const ACCESS_LEVELS = {
     MERGE: 'merge_access_levels',
     PUSH: 'push_access_levels',
@@ -23,17 +18,11 @@
       this.$wraps[ACCESS_LEVELS.PUSH] = this.$allowedToPushDropdown.closest(`.${ACCESS_LEVELS.PUSH}-container`);
 
       this.buildDropdowns();
-
-      // Save initial state with existing dropdowns
-      this.state = {};
-      for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-        this.state[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.getAccessLevelDataFromInputs(ACCESS_LEVEL);
-      }
     }
 
     buildDropdowns() {
       // Allowed to merge dropdown
-      new gl.AllowedToMergeDropdown({
+      this['merge_access_levels_dropdown'] = new gl.ProtectedBranchAccessDropdown({
         accessLevel: ACCESS_LEVELS.MERGE,
         accessLevelsData: gon.merge_access_levels,
         $dropdown: this.$allowedToMergeDropdown,
@@ -42,7 +31,7 @@
       });
 
       // Allowed to push dropdown
-      new gl.AllowedToPushDropdown({
+      this['push_access_levels_dropdown'] = new gl.ProtectedBranchAccessDropdown({
         accessLevel: ACCESS_LEVELS.PUSH,
         accessLevelsData: gon.push_access_levels,
         $dropdown: this.$allowedToPushDropdown,
@@ -53,25 +42,6 @@
 
     onSelectOption(item, $el, dropdownInstance) {
       this.hasChanges = true;
-      let itemToDestroy;
-      let accessLevelState = this.state[`${dropdownInstance.accessLevel}_attributes`];
-
-      // If element is not active it means it has been active
-      if (!$el.is('.is-active')) {
-        // We need to know if the selected item was already saved
-        // if so we need to append the `_destroy` property
-        // in order to delete it from the database
-
-        // Retrieve the full data of the item we just selected
-        if (item.type === LEVEL_TYPES.USER) {
-          itemToDestroy = _.findWhere(accessLevelState, { user_id: item.id });
-        } else if (item.type === LEVEL_TYPES.ROLE) {
-          itemToDestroy = _.findWhere(accessLevelState, { access_level: item.id });
-        }
-
-        // State updated by reference
-        itemToDestroy['_destroy'] = 1;
-      }
     }
 
     onDropdownHide() {
@@ -86,7 +56,9 @@
       let formData = {};
 
       for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-        formData[`${ACCESS_LEVELS[ACCESS_LEVEL]}_attributes`] = this.consolidateAccessLevelData(ACCESS_LEVEL);
+        let accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
+
+        formData[`${accessLevelName}_attributes`] = this[`${accessLevelName}_dropdown`].getInputData(accessLevelName);
       }
 
       return $.ajax({
@@ -102,30 +74,11 @@
           this.$wrap.effect('highlight');
           this.hasChanges = false;
 
-          // Update State
           for (let ACCESS_LEVEL in ACCESS_LEVELS) {
-            let accessLevel = ACCESS_LEVELS[ACCESS_LEVEL];
+            let accessLevelName = ACCESS_LEVELS[ACCESS_LEVEL];
 
-            this.state[`${accessLevel}_attributes`] = [];
-
-            for (let i = 0; i < response[accessLevel].length; i++) {
-              let access = response[accessLevel][i];
-              let accessData = {};
-
-              if (access.user_id) {
-                accessData = {
-                  id: access.id,
-                  user_id: access.user_id,
-                };
-              } else {
-                accessData ={
-                  id: access.id,
-                  access_level: access.access_level,
-                };
-              }
-
-              this.state[`${accessLevel}_attributes`].push(accessData);
-            }
+            // The data coming from server will be the new persisted *state* for each dropdown
+            this.setSelectedItemsToDropdown(response[accessLevelName], `${accessLevelName}_dropdown`);
           }
         },
         error() {
@@ -135,82 +88,41 @@
       });
     }
 
-    consolidateAccessLevelData(accessLevelKey) {
-      // State takes precedence
-      let accessLevel = ACCESS_LEVELS[accessLevelKey];
-      let accessLevelData = [];
-      let dataFromInputs = this.getAccessLevelDataFromInputs(accessLevelKey);
+    setSelectedItemsToDropdown(items = [], dropdownName) {
+      let itemsToAdd = [];
 
-      // Collect and format items that will be sent to the server
-      for (let i = 0; i < dataFromInputs.length; i++) {
-        let inState;
-        let adding;
-        var userId = parseInt(dataFromInputs[i].user_id);
+      for (let i = 0; i < items.length; i++) {
+        let itemToAdd;
+        let currentItem = items[i];
 
-        // Inputs give us the *state* of the dropdown on the frontend before it's persisted
-        // so we need to compare them with the persisted state which can be get or set on this.state
-        if (userId) {
-          adding = LEVEL_TYPES.USER;
-          inState = _.findWhere(this.state[`${accessLevel}_attributes`], { user_id: userId });
+        if (currentItem.user_id) {
+          // Solo haciendo esto solo para usuarios por ahora
+          // obtenemos la data más actual de los items seleccionados
+          let selectedItems = this[dropdownName].getSelectedItems();
+          let currentSelectedItem = _.findWhere(selectedItems, { user_id: currentItem.user_id });
+
+          itemToAdd = {
+            id: currentItem.id,
+            user_id: currentItem.user_id,
+            type: 'user',
+            persisted: true,
+            name: currentSelectedItem.name,
+            username: currentSelectedItem.username,
+            avatar_url: currentSelectedItem.avatar_url
+          }
         } else {
-          adding = LEVEL_TYPES.ROLE;
-          inState = _.findWhere(this.state[`${accessLevel}_attributes`], { access_level: parseInt(dataFromInputs[i].access_level) });
-        }
-
-        if (inState) {
-          // collect item if it's already saved
-          accessLevelData.push(inState);
-        } else {
-          // format item according the level type
-          if (adding === LEVEL_TYPES.USER) {
-            accessLevelData.push({
-              user_id: parseInt(dataFromInputs[i].user_id)
-            });
-          } else if (adding === LEVEL_TYPES.ROLE) {
-            accessLevelData.push({
-              access_level: parseInt(dataFromInputs[i].access_level)
-            });
+          itemToAdd = {
+            id: currentItem.id,
+            access_level: currentItem.access_level,
+            type: 'role',
+            persisted: true
           }
         }
+
+        itemsToAdd.push(itemToAdd);
       }
 
-      // Since we didn't considered inputs that were removed
-      // (because they are not present in the DOM anymore)
-      // We can get them from the state
-      this.state[`${accessLevel}_attributes`].forEach((item) => {
-        if (item._destroy) {
-          accessLevelData.push(item);
-        }
-      });
-
-      return accessLevelData;
-    }
-
-    getAccessLevelDataFromInputs(accessLevelKey) {
-      let accessLevels = [];
-      let accessLevel = ACCESS_LEVELS[accessLevelKey];
-      this.$wraps[accessLevel]
-        .find(`input[name^="protected_branch[${accessLevel}_attributes]"]`)
-        .map((i, el) => {
-          const $el = $(el);
-          const type = $el.data('type');
-          const value = parseInt($el.val());
-          const id = parseInt($el.data('id'));
-          let obj = {};
-
-          if (type === LEVEL_TYPES.ROLE) {
-            obj.access_level = value
-          } else if (type === LEVEL_TYPES.USER) {
-            obj.user_id = value;
-          }
-
-          if (id) obj.id = id;
-
-          accessLevels.push(obj);
-        });
-
-      return accessLevels;
+      this[dropdownName].setSelectedItems(itemsToAdd);
     }
   }
-
 })(window);
