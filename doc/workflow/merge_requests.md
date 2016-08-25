@@ -53,7 +53,7 @@ It should look like this:
   fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
 ```
 
-Now you can fetch all the merge requests requests:
+Now you can fetch all the merge requests:
 
 ```
 $ git fetch origin
