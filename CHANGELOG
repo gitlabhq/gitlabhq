@@ -53,6 +53,13 @@ v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
   - Use gitlab-workhorse 0.7.11 !5983
   - Does not halt the GitHub import process when an error occurs. !5763
+  - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
+
+v 8.11.2 (unreleased)
+  - Show "Create Merge Request" widget for push events to fork projects on the source project
+
+v 8.11.1 (unreleased)
+  - Does not halt the GitHub import process when an error occurs
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
 
@@ -217,7 +224,6 @@ v 8.11.0
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
   - Upgrade Doorkeeper to 4.2.0. !5881
-  - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
 
 v 8.10.6
   - Upgrade Rails to 4.2.7.1 for security fixes. !5781

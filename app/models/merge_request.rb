@@ -309,7 +309,7 @@ class MergeRequest < ActiveRecord::Base
     return true unless fork_missing?
 
     errors.add :validate_fork,
-               'Source project is not a fork of target project'
+               'Source project is not a fork of the target project'
   end
 
   def closed_without_fork?
