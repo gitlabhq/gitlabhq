@@ -103,17 +103,10 @@ class ProjectPolicy < BasePolicy
   def team_access!(user)
     access = project.team.max_member_access(user.id)
 
-    return if access < Gitlab::Access::GUEST
-    guest_access!
-
-    return if access < Gitlab::Access::REPORTER
-    reporter_access!
-
-    return if access < Gitlab::Access::DEVELOPER
-    developer_access!
-
-    return if access < Gitlab::Access::MASTER
-    master_access!
+    guest_access!     if access >= Gitlab::Access::GUEST
+    reporter_access!  if access >= Gitlab::Access::REPORTER
+    developer_access! if access >= Gitlab::Access::DEVELOPER
+    master_access!    if access >= Gitlab::Access::MASTER
   end
 
   def archived_access!
