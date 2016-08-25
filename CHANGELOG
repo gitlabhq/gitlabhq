@@ -11,7 +11,18 @@ v 8.12.0 (unreleased)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Added tests for diff notes
-  - Fix inline emoji text alignment (ClemMakesApps)
+  - Add delimiter to project stars and forks count (ClemMakesApps)
+  - Fix badge count alignment (ClemMakesApps)
+  - Fix branch title trailing space on hover (ClemMakesApps)
+  - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
+  - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
+  - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
+  - Update merge_requests.md with a simpler way to check out a merge request. !5944
+  - Fix button missing type (ClemMakesApps)
+  - Move to project dropdown with infinite scroll for better performance
+  - Load branches asynchronously in Cherry Pick and Revert dialogs.
+  - Add merge request versions !5467
+  - Change using size to use count and caching it for number of group members. !5935
   - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
   - Reduce number of database queries on builds tab
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
@@ -23,29 +34,23 @@ v 8.11.3 (unreleased)
   - Don't show resolve conflicts link before MR status is updated
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
 
-v 8.11.3 (unreleased)
-  - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
-
-v 8.11.2 (unreleased)
 v 8.11.2
-  - Show "Create Merge Request" widget for push events to fork projects on the source project
+  - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
+  - Use gitlab-workhorse 0.7.11 !5983
+  - Does not halt the GitHub import process when an error occurs. !5763
+  - Fix file links on project page when default view is Files !5933
+  - Fixed enter key in search input not working !5888
 
 v 8.11.1
-  - Does not halt the GitHub import process when an error occurs
-  - Fix file links on project page when default view is Files !5933
-  - Change using size to use count and caching it for number of group members
+  - Pulled due to packaging error.
 
 v 8.11.0
-  - Add merge request versions !5467
-
-v 8.11.0 (unreleased)
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
   - Remove the http_parser.rb dependency by removing the tinder gem. !5758 (tbalthazar)
   - Add Koding (online IDE) integration
   - Ability to specify branches for Pivotal Tracker integration (Egor Lynko)
   - Fix don't pass a local variable called `i` to a partial. !20510 (herminiotorres)
-  - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix rename `add_users_into_project` and `projects_ids`. !20512 (herminiotorres)
   - Fix adding line comments on the initial commit to a repo !5900
   - Fix the title of the toggle dropdown button. !5515 (herminiotorres)
@@ -61,7 +66,6 @@ v 8.11.0 (unreleased)
   - Use long options for curl examples in documentation !5703 (winniehell)
   - Added tooltip listing label names to the labels value in the collapsed issuable sidebar
   - Remove magic comments (`# encoding: UTF-8`) from Ruby files. !5456 (winniehell)
-  - Fix badge count alignment (ClemMakesApps)
   - GitLab Performance Monitoring can now track custom events such as the number of tags pushed to a repository
   - Add support for relative links starting with ./ or / to RelativeLinkFilter (winniehell)
   - Allow naming U2F devices !5833
@@ -102,7 +106,6 @@ v 8.11.0 (unreleased)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
-  - Fix branch title trailing space on hover (ClemMakesApps)
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines
@@ -119,7 +122,6 @@ v 8.11.0 (unreleased)
   - Fix devise deprecation warnings.
   - Check for 2FA when using Git over HTTP and only allow PersonalAccessTokens as password in that case !5764
   - Update version_sorter and use new interface for faster tag sorting
-  - Load branches asynchronously in Cherry Pick and Revert dialogs.
   - Optimize checking if a user has read access to a list of issues !5370
   - Store all DB secrets in secrets.yml, under descriptive names !5274
   - Fix syntax highlighting in file editor
@@ -140,8 +142,6 @@ v 8.11.0 (unreleased)
   - Remove `search_id` of labels dropdown filter to fix 'Missleading URI for labels in Merge Requests and Issues view'. !5368 (Scott Le)
   - Load project invited groups and members eagerly in `ProjectTeam#fetch_members`
   - Add pipeline events hook
-  - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
-  - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
   - Bump gitlab_git to speedup DiffCollection iterations
   - Rewrite description of a blocked user in admin settings. (Elias Werberich)
   - Make branches sortable without push permission !5462 (winniehell)
@@ -153,14 +153,12 @@ v 8.11.0 (unreleased)
   - Fix search for notes which belongs to deleted objects
   - Allow Akismet to be trained by submitting issues as spam or ham !5538
   - Add GitLab Workhorse version to admin dashboard (Katarzyna Kobierska Ula Budziszewska)
-  - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
   - Allow branch names ending with .json for graph and network page !5579 (winniehell)
   - Add the `sprockets-es6` gem
   - Improve OAuth2 client documentation (muteor)
   - Fix diff comments inverted toggle bug (ClemMakesApps)
   - Multiple trigger variables show in separate lines (Katarzyna Kobierska Ula Budziszewska)
   - Profile requests when a header is passed
-  - Fix button missing type (ClemMakesApps)
   - Avoid calculation of line_code and position for _line partial when showing diff notes on discussion tab.
   - Speedup DiffNote#active? on discussions, preloading noteables and avoid touching git repository to return diff_refs when possible
   - Add commit stats in commit api. !5517 (dixpac)
@@ -169,7 +167,6 @@ v 8.11.0 (unreleased)
   - edit_blob_link will use blob passed onto the options parameter
   - Make error pages responsive (Takuya Noguchi)
   - The performance of the project dropdown used for moving issues has been improved
-  - Move to project dropdown with infinite scroll for better performance
   - Fix skip_repo parameter being ignored when destroying a namespace
   - Add all builds into stage/job dropdowns on builds page
   - Change requests_profiles resource constraint to catch virtually any file
@@ -201,7 +198,6 @@ v 8.11.0 (unreleased)
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
-  - Update merge_requests.md with a simpler way to check out a merge request. !5944
 
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
