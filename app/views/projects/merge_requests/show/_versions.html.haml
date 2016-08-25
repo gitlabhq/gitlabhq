@@ -22,6 +22,10 @@
                 #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
                 = time_ago_with_tooltip(merge_request_diff.created_at)
 
+    - unless @merge_request_diff.latest?
+      %span.prepend-left-default
+        = icon('info-circle')
+        This version is not the latest one. Comments are disabled
     .pull-right
       %span.monospace
         #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
