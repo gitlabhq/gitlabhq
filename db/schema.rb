@@ -593,7 +593,7 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.string   "start_commit_sha"
   end
 
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
+  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string   "target_branch",                                null: false
@@ -620,7 +620,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.string   "merge_commit_sha"
     t.datetime "deleted_at"
     t.string   "in_progress_merge_commit_sha"
-    t.integer  "lock_version"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
