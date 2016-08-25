@@ -84,7 +84,7 @@
             .form-group
               .checkbox
                 = f.label :enable_lfs do
-                  = f.check_box :enable_lfs, checked: (true if @project.enable_lfs || @project.enable_lfs.nil?)
+                  = f.check_box :enable_lfs, checked: @project.lfs_enabled?
                   %strong LFS
                   %br
                   %span.descr Git Large File Storage
