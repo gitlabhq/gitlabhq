@@ -181,6 +181,17 @@ module Gitlab
           sections: sections
         }
       end
+
+      # Don't try to print merge_request or repository.
+      def inspect
+        instance_variables = [:merge_file_result, :their_path, :our_path, :our_mode].map do |instance_variable|
+          value = instance_variable_get("@#{instance_variable}")
+
+          "#{instance_variable}=\"#{value}\""
+        end
+
+        "#<#{self.class} #{instance_variables.join(' ')}>"
+      end
     end
   end
 end
