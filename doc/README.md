@@ -19,7 +19,6 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
-- [Koding](user/project/koding.md) Learn how to use Koding, the online IDE.
 
 ## Administrator documentation
 
