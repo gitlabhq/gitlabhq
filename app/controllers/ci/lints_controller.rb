@@ -11,7 +11,7 @@ module Ci
       if @content.blank?
         @status = false
         @error = "Please provide content of .gitlab-ci.yml"
-      elsif Ci::GitlabCiYamlProcessor.errors(@content) != nil
+      elsif !Ci::GitlabCiYamlProcessor.errors(@content).nil?
         @status = false
         @error = Ci::GitlabCiYamlProcessor.errors(@content)
       else

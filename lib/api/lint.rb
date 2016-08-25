@@ -13,7 +13,7 @@ module API
           jobs: []
         }
 
-        if Ci::GitlabCiYamlProcessor.errors(@content) != nil
+        if !Ci::GitlabCiYamlProcessor.errors(@content).nil?
           status 200
           response[:errors].push(Ci::GitlabCiYamlProcessor.errors(@content))
           response[:status] = 'invalid'
