@@ -11,15 +11,15 @@ module Ci
       if @content.blank?
         @status = false
         @error = "Please provide content of .gitlab-ci.yml"
+      elsif Ci::GitlabCiYamlProcessor.validate(@content) != "valid"
+        @status = false
+        @error = Ci::GitlabCiYamlProcessor.validate(@content)
       else
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages
         @builds = @config_processor.builds
         @status = true
       end
-    rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
-      @error = e.message
-      @status = false
     rescue
       @error = 'Undefined error'
       @status = false

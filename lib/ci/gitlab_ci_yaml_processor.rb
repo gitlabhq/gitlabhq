@@ -78,6 +78,15 @@ module Ci
       }
     end
 
+    def self.validate(content)
+      begin
+        Ci::GitlabCiYamlProcessor.new(content)
+        "valid"
+      rescue ValidationError, Psych::SyntaxError => e
+        e.message
+      end
+    end
+
     private
 
     def initial_parsing
