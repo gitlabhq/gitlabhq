@@ -890,6 +890,12 @@ describe MergeRequest, models: true do
       expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
     end
 
+    it 'returns a falsey value when the MR is marked as having conflicts, but has none' do
+      merge_request = create_merge_request('master')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
     it 'returns a falsey value when the MR has a missing ref after a force push' do
       merge_request = create_merge_request('conflict-resolvable')
       allow(merge_request.conflicts).to receive(:merge_index).and_raise(Rugged::OdbError)
