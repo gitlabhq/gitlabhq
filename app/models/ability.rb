@@ -192,7 +192,9 @@ class Ability
       rules = []
       # Push abilities on the users team role
       rules.push(*project_team_rules(project.team, user))
-      
+
+      rules << :change_repository_storage if user.admin?
+
       owner = user.admin? ||
               project.owner == user ||
               (project.group && project.group.has_owner?(user))
