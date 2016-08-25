@@ -183,6 +183,11 @@ CONFLICT
         expect { parse_text('a' * 102401) }.
           to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
+
+      it 'raises UnsupportedEncoding when the file contains non-UTF-8 characters' do
+        expect { parse_text("a\xC4\xFC".force_encoding(Encoding::ASCII_8BIT)) }.
+          to raise_error(Gitlab::Conflict::Parser::UnsupportedEncoding)
+      end
     end
   end
 end
