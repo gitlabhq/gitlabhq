@@ -10,6 +10,7 @@ v 8.12.0 (unreleased)
   - Remove Gitorious import
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Fix groups sort dropdown alignment (ClemMakesApps)
   - Added tests for diff notes
   - Fix inline emoji text alignment (ClemMakesApps)
   - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
