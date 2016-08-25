@@ -18,6 +18,26 @@ describe User, 'TokenAuthenticatable' do
     subject { create(:user).send(token_field) }
     it { is_expected.to be_a String }
   end
+
+  describe 'lfs token' do
+    let(:token_field) { :lfs_token }
+    it_behaves_like 'TokenAuthenticatable'
+
+    describe 'ensure it' do
+      subject { create(:user).send(token_field) }
+      it { is_expected.to be_a String }
+    end
+  end
+end
+
+describe DeployKey, 'TokenAuthenticatable' do
+  let(:token_field) { :lfs_token }
+  it_behaves_like 'TokenAuthenticatable'
+
+  describe 'ensures authentication token' do
+    subject { create(:deploy_key).send(token_field) }
+    it { is_expected.to be_a String }
+  end
 end
 
 describe ApplicationSetting, 'TokenAuthenticatable' do

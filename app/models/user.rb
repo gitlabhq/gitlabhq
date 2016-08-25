@@ -13,6 +13,7 @@ class User < ActiveRecord::Base
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
   add_authentication_token_field :authentication_token
+  add_authentication_token_field :lfs_token
 
   default_value_for :admin, false
   default_value_for(:external) { current_application_settings.user_default_external }
@@ -117,7 +118,7 @@ class User < ActiveRecord::Base
   before_validation :set_public_email, if: ->(user) { user.public_email_changed? }
 
   after_update :update_emails_with_primary_email, if: ->(user) { user.email_changed? }
-  before_save :ensure_authentication_token
+  before_save :ensure_authentication_token, :ensure_lfs_token
   before_save :ensure_external_user_rights
   after_save :ensure_namespace_correct
   after_initialize :set_projects_limit

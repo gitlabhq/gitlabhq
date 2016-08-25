@@ -1,6 +1,11 @@
 class DeployKey < Key
+  include TokenAuthenticatable
+  add_authentication_token_field :lfs_token
+
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :projects, through: :deploy_keys_projects
+
+  before_save :ensure_lfs_token
 
   scope :in_projects, ->(projects) { joins(:deploy_keys_projects).where('deploy_keys_projects.project_id in (?)', projects) }
   scope :are_public,  -> { where(public: true) }

@@ -101,12 +101,28 @@ describe API::API, api: true  do
   end
 
   describe "GET /internal/discover" do
-    it do
-      get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+    context 'user key' do
+      it 'returns the correct information about the key' do
+        get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
 
-      expect(response).to have_http_status(200)
+        expect(response).to have_http_status(200)
 
-      expect(json_response['name']).to eq(user.name)
+        expect(json_response['name']).to eq(user.name)
+        expect(json_response['lfs_token']).to eq(user.lfs_token)
+      end
+    end
+
+    context 'deploy key' do
+      let(:key) { create(:deploy_key) }
+
+      it 'returns the correct information about the key' do
+        get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+
+        expect(response).to have_http_status(200)
+
+        expect(json_response['username']).to eq('lfs-deploy-key')
+        expect(json_response['lfs_token']).to eq(key.lfs_token)
+      end
     end
   end
 
@@ -143,6 +159,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["repository_http_path"]).to eq(project.http_url_to_repo)
         end
       end
 
@@ -153,6 +170,7 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
+          expect(json_response["repository_http_path"]).to eq(project.http_url_to_repo)
         end
       end
     end

@@ -4,6 +4,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
+  class MissingPersonalTokenError < StandardError; end
+
   attr_reader :user
 
   # Git clients will not know what authenticity token to send along
@@ -21,18 +23,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
-      auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
-      if auth_result.type == :ci && download_request?
-        @ci = true
-      elsif auth_result.type == :oauth && !download_request?
-        # Not allowed
-      elsif auth_result.type == :missing_personal_token
-        render_missing_personal_token
-        return # Render above denied access, nothing left to do
-      else
-        @user = auth_result.user
-      end
+      handle_authentication(login, password)
 
       if ci? || user
         return # Allow access
@@ -48,6 +40,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
+
+  rescue MissingPersonalTokenError
+    render_missing_personal_token
+    return
   end
 
   def basic_auth_provided?
@@ -116,6 +112,28 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
   def ci?
     @ci.present?
+  end
+
+  def handle_authentication(login, password)
+    auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
+
+    if auth_result.type == :ci && download_request?
+      @ci = true
+    elsif auth_result.type == :oauth && !download_request?
+      # Not allowed
+    elsif auth_result.type == :missing_personal_token
+      raise MissingPersonalTokenError
+    elsif auth_result.type == :lfs_deploy_token && download_request?
+      @lfs_deploy_key = true
+      @user = auth_result.user
+    else
+      @user = auth_result.user
+    end
+  end
+
+  def lfs_deploy_key?
+    key = user
+    @lfs_deploy_key.present? && (key && key.projects.include?(project))
   end
 
   def verify_workhorse_api!

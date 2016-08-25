@@ -23,6 +23,22 @@ describe Gitlab::Auth, lib: true do
       expect(gl_auth.find_for_git_client(user.username, 'password', project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, :gitlab_or_ldap))
     end
 
+    it 'recognizes user lfs tokens' do
+      user = create(:user)
+      ip = 'ip'
+
+      expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: user.username)
+      expect(gl_auth.find_for_git_client(user.username, user.lfs_token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(user, :lfs_token))
+    end
+
+    it 'recognizes deploy key lfs tokens' do
+      key = create(:deploy_key)
+      ip = 'ip'
+
+      expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: 'lfs-deploy-key')
+      expect(gl_auth.find_for_git_client('lfs-deploy-key', key.lfs_token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, :lfs_deploy_token))
+    end
+
     it 'recognizes OAuth tokens' do
       user = create(:user)
       application = Doorkeeper::Application.create!(name: "MyApp", redirect_uri: "https://app.com", owner: user)

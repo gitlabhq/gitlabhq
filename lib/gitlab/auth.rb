@@ -79,12 +79,13 @@ module Gitlab
         result =
           user_with_password_for_git(login, password) ||
           oauth_access_token_check(login, password) ||
+          lfs_token_check(login, password) ||
           personal_access_token_check(login, password)
 
         if result
           result.type = nil unless result.user
 
-          if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
+          if result.user && result.type == :gitlab_or_ldap && result.user.two_factor_enabled?
             result.type = :missing_personal_token
           end
         end
@@ -112,6 +113,16 @@ module Gitlab
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
           Result.new(user, :personal_token) if user == validation
+        end
+      end
+
+      def lfs_token_check(login, password)
+        if login == 'lfs-deploy-key'
+          key = DeployKey.find_by_lfs_token(password)
+          Result.new(key, :lfs_deploy_token) if key
+        else
+          user = User.find_by_lfs_token(password)
+          Result.new(user, :lfs_token) if user && user.username == login
         end
       end
     end

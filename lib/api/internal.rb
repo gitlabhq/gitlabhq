@@ -69,6 +69,10 @@ module API
             else
               project.repository.path_to_repo
             end
+
+          # Return HTTP full path, so that gitlab-shell has this information
+          # ready for git-lfs-authenticate
+          response[:repository_http_path] = project.http_url_to_repo
         end
 
         response
@@ -83,7 +87,14 @@ module API
       #
       get "/discover" do
         key = Key.find(params[:key_id])
-        present key.user, with: Entities::UserSafe
+        user = key.user
+        if user
+          user.ensure_lfs_token!
+          present user, with: Entities::UserSafe
+        else
+          key.ensure_lfs_token!
+          { username: 'lfs-deploy-key', lfs_token: key.lfs_token }
+        end
       end
 
       get "/check" do
