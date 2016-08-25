@@ -1,5 +1,4 @@
 - merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
-- latest_diff = merge_request_diffs.first
 
 - if merge_request_diffs.size > 1
   .mr-version-switch
@@ -7,7 +6,7 @@
     %span.dropdown.inline
       %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
         %strong.monospace<
-          - if latest_diff == @merge_request_diff
+          - if @merge_request_diff.latest?
             #{"latest"}
           - else
             #{@merge_request_diff.head_commit.short_id}

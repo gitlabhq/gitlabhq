@@ -13,6 +13,15 @@ describe MergeRequestDiff, models: true do
     it { expect(subject.start_commit_sha).to eq('0b4bc9a49b562e85de7cc9e834518ea6828729b9') }
   end
 
+  describe '#latest' do
+    let!(:mr) { create(:merge_request, :with_diffs) }
+    let!(:first_diff) { mr.merge_request_diff }
+    let!(:last_diff) { mr.create_merge_request_diff }
+
+    it { expect(last_diff.latest?).to be_truthy }
+    it { expect(first_diff.latest?).to be_falsey }
+  end
+
   describe '#diffs' do
     let(:mr) { create(:merge_request, :with_diffs) }
     let(:mr_diff) { mr.merge_request_diff }

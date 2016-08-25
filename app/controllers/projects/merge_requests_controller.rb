@@ -93,7 +93,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
-        if @merge_request_diff != @merge_request.merge_request_diff
+        unless @merge_request_diff.latest?
           # Disable comments if browsing older version of the diff
           @diff_notes_disabled = true
         end
