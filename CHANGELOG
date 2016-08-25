@@ -10,6 +10,10 @@ v 8.12.0 (unreleased)
   - Added tests for diff notes
   - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
 
+v 8.11.3 (unreleased)
+  - Don't show resolve conflicts link before MR status is updated
+  - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
+
 v 8.11.2 (unreleased)
   - Show "Create Merge Request" widget for push events to fork projects on the source project
 
