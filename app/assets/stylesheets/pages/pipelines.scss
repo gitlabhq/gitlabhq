@@ -370,8 +370,11 @@
     // Connect second build to first build with smaller curved line
     &:nth-child(2) {
       &::after, &::before {
-        height: 45px;
-        top: -26px;
+        height: 29px;
+        top: -10px;
+      }
+      .curve {
+        display: block;
       }
     }
   }
@@ -390,6 +393,12 @@
           border: none;
         }
       }
+      // Remove opposite curve
+      .curve {
+        &::before {
+          display: none;
+        }
+      }
     }
   }
 
@@ -401,6 +410,39 @@
           border: none;
         }
       }
+      // Remove opposite curve
+      .curve {
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Curve first child connecting lines in opposite direction
+  .curve {
+    display: none;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 21px;
+      height: 25px;
+      position: absolute;
+      top: -28.5px;
+      border-top: 2px solid $border-color;
+    }
+
+    &::after {
+      left: -39px;
+      border-right: 2px solid $border-color;
+      border-radius: 0 50% 0;
+    }
+
+    &::before {
+      right: -39px;
+      border-left: 2px solid $border-color;
+      border-radius: 50% 0 0;
     }
   }
 }
