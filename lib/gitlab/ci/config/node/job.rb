@@ -82,6 +82,16 @@ module Gitlab
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts
 
+          def compose!(deps)
+            super do
+              if type_defined? && !stage_defined?
+                @entries[:stage] = @entries[:type]
+              end
+
+              @entries.delete(:type)
+            end
+          end
+
           def name
             @metadata[:name]
           end
@@ -105,16 +115,6 @@ module Gitlab
               variables: variables_defined? ? variables : nil,
               artifacts: artifacts,
               after_script: after_script }
-          end
-
-          def compose!(_deps)
-            super
-
-            if type_defined? && !stage_defined?
-              @entries[:stage] = @entries[:type]
-            end
-
-            @entries.delete(:type)
           end
         end
       end

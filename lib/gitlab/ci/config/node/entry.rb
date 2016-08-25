@@ -20,14 +20,16 @@ module Gitlab
             @validator.validate(:new)
           end
 
+          # Temporary method
+          #
           def process!(deps = nil)
+            compose!(deps)
+          end
+
+          def compose!(deps = nil)
             return unless valid?
 
-            compose!(deps)
-
-            descendants.each do |entry|
-              entry.process!(deps)
-            end
+            yield if block_given?
           end
 
           def leaf?
@@ -75,11 +77,6 @@ module Gitlab
 
           def self.validator
             Validator
-          end
-
-          private
-
-          def compose!(_deps)
           end
         end
       end
