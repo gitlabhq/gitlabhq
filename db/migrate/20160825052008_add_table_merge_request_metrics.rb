@@ -29,6 +29,8 @@ class AddTableMergeRequestMetrics < ActiveRecord::Migration
 
       t.datetime 'wip_flag_first_removed_at'
       t.datetime 'first_assigned_to_user_other_than_author'
+      t.datetime 'merged_at'
+      t.datetime 'first_closed_at'
 
       t.timestamps null: false
     end

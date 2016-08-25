@@ -198,8 +198,8 @@ class Issue < ActiveRecord::Base
 
   # From all notes on this issue, we'll select the system notes about linked
   # merge requests. Of those, the MRs closing `self` are returned.
-  def closed_by_merge_requests(current_user = nil)
-    return [] unless open?
+  def closed_by_merge_requests(current_user = nil, check_if_open: true)
+    return [] if !open? && check_if_open
 
     ext = all_references(current_user)
 
@@ -207,7 +207,11 @@ class Issue < ActiveRecord::Base
       note.all_references(current_user, extractor: ext)
     end
 
-    ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+    if check_if_open
+      ext.merge_requests.select { |mr| mr.open? && mr.closes_issue?(self) }
+    else
+      ext.merge_requests.select { |mr| mr.closes_issue?(self) }
+    end
   end
 
   def moved?

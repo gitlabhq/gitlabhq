@@ -19,3 +19,10 @@
       = distance_of_time_in_words code
     - else
       = "<Not enough data>"
+
+  %li.list-group-item
+    Review:
+    - if review = @cycle_analytics.review.presence
+      = distance_of_time_in_words review
+    - else
+      = "<Not enough data>"

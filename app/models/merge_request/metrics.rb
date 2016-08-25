@@ -10,6 +10,14 @@ class MergeRequest::Metrics < ActiveRecord::Base
       self.first_assigned_to_user_other_than_author = Time.now
     end
 
+    if merge_request.merged? && self.merged_at.blank?
+      self.merged_at = Time.now
+    end
+
+    if merge_request.closed? && self.first_closed_at.blank?
+      self.first_closed_at = Time.now
+    end
+
     self.save if self.changed?
   end
 end

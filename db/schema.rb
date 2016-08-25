@@ -609,6 +609,8 @@ ActiveRecord::Schema.define(version: 20160825052008) do
     t.integer  "merge_request_id",                         null: false
     t.datetime "wip_flag_first_removed_at"
     t.datetime "first_assigned_to_user_other_than_author"
+    t.datetime "merged_at"
+    t.datetime "first_closed_at"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
   end
