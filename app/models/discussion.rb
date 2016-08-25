@@ -25,7 +25,12 @@ class Discussion
             to: :last_resolved_note,
             allow_nil: true
 
-  delegate :blob, :highlighted_diff_lines, to: :diff_file, allow_nil: true
+  delegate  :blob,
+            :highlighted_diff_lines,
+            :text_parsed_diff_lines,
+
+            to: :diff_file,
+            allow_nil: true
 
   def self.for_notes(notes)
     notes.group_by(&:discussion_id).values.map { |notes| new(notes) }
@@ -162,18 +167,15 @@ class Discussion
   def truncated_diff_lines
     prev_lines = []
 
-    highlighted_diff_lines.each do |line|
+    diff_file.diff_lines.each do |line|
       if line.meta?
         prev_lines.clear
       else
         prev_lines << line
-
         break if for_line?(line)
-
         prev_lines.shift if prev_lines.length >= NUMBER_OF_TRUNCATED_DIFF_LINES
       end
     end
-
     prev_lines
   end
 

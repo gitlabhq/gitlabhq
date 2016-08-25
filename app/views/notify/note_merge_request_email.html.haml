@@ -1,7 +1,5 @@
 %p.details
   New comment for Merge Request
   = @merge_request.to_reference
-  on
-  = render partial: 'note_mr_or_commit_email',
-    locals: { note: @note,
-    discussion: @discussion}
+
+  = render 'note_mr_or_commit_email'

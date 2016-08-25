@@ -1,0 +1,4 @@
+<% lines = @discussion.truncated_diff_lines %>
+<% @discussion.text_parsed_diff_lines(lines).each do |line| %>
+  <%= line %>
+<% end %>

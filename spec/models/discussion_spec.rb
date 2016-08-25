@@ -590,4 +590,29 @@ describe Discussion, model: true do
       end
     end
   end
+
+  describe "#truncated_diff_lines" do
+    let(:truncated_lines) { subject.truncated_diff_lines }
+
+    context "when diff is greater than allowed number of truncated diff lines " do
+      let(:initial_line_count) { subject.diff_file.diff_lines.count }
+      let(:truncated_line_count) { truncated_lines.count }
+
+      it "returns fewer lines"  do
+        expect(initial_line_count).to be > described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+
+        expect(truncated_line_count).to be <= described_class::NUMBER_OF_TRUNCATED_DIFF_LINES
+      end
+    end
+
+    context "when some diff lines are meta" do
+      let(:initial_meta_lines?) { subject.diff_file.diff_lines.any?(&:meta?) }
+      let(:truncated_meta_lines?) { truncated_lines.any?(&:meta?) }
+
+      it "returns no meta lines"  do
+        expect(initial_meta_lines?).to be true
+        expect(truncated_meta_lines?).to be false
+      end
+    end
+  end
 end
