@@ -12,6 +12,7 @@ v 8.12.0 (unreleased)
 
 v 8.11.2 (unreleased)
   - Show "Create Merge Request" widget for push events to fork projects on the source project
+  - Reduce number of database queries on builds tab
 
 v 8.11.1 (unreleased)
   - Does not halt the GitHub import process when an error occurs
