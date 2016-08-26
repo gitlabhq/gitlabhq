@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe 'CycleAnalytics#issue', models: true do
   let(:project) { create(:project) }
-  subject { CycleAnalytics.new(project) }
+  let(:from_date) { 10.days.ago }
+  subject { CycleAnalytics.new(project, from: from_date) }
 
   context "when calculating the median of times between:
                start: issue created_at
@@ -25,16 +26,6 @@ describe 'CycleAnalytics#issue', models: true do
 
         median_start_time, median_end_time = start_and_end_times[2]
         expect(subject.issue).to eq(median_end_time - median_start_time)
-      end
-
-      it "does not include issues from other projects" do
-        5.times do
-          milestone = create(:milestone, project: project)
-          issue = create(:issue)
-          issue.update(milestone: milestone)
-        end
-
-        expect(subject.issue).to be_nil
       end
     end
 
@@ -79,6 +70,29 @@ describe 'CycleAnalytics#issue', models: true do
         Timecop.freeze(list_label_add_time) { issue.update(label_ids: [list_label.id]) }
 
         expect(subject.issue).to eq(milestone_add_time - start_time)
+      end
+
+
+      it "does not include issues from other projects" do
+        milestone = create(:milestone, project: project)
+        list_label = create(:label, lists: [create(:list)])
+        issue = create(:issue)
+        issue.update(milestone: milestone)
+        issue.update(label_ids: [list_label.id])
+
+        expect(subject.issue).to be_nil
+      end
+
+      it "excludes issues created before the 'from' date" do
+        before_from_date = from_date - 5.days
+
+        milestone = create(:milestone, project: project)
+        list_label = create(:label, lists: [create(:list)])
+        issue = Timecop.freeze(before_from_date) { create(:issue, project: project)}
+        issue.update(milestone: milestone)
+        issue.update(label_ids: [list_label.id])
+
+        expect(subject.issue).to be_nil
       end
     end
   end

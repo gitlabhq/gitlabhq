@@ -1,12 +1,12 @@
 class CycleAnalytics
   module Queries
     class << self
-      def issues(project)
-        project.issues.map { |issue| { issue: issue } }
+      def issues(project, created_after:)
+        project.issues.where("created_at >= ?", created_after).map { |issue| { issue: issue } }
       end
 
-      def merge_requests_closing_issues(project)
-        issues(project).map do |data_point|
+      def merge_requests_closing_issues(project, options = {})
+        issues(project, options).map do |data_point|
           merge_requests = data_point[:issue].closed_by_merge_requests(nil, check_if_open: false)
           merge_requests.map { |merge_request| { issue: data_point[:issue], merge_request: merge_request } }
         end.flatten
