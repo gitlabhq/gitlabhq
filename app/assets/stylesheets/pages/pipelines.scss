@@ -274,7 +274,7 @@
 .stage-column {
   display: inline-block;
   vertical-align: top;
-  margin-right: 50px;
+  margin-right: 65px;
 
   li {
     list-style: none;
@@ -343,9 +343,9 @@
         content: '';
         position: absolute;
         top: 50%;
-        right: -54px;
+        right: -69px;
         border-top: 2px solid $border-color;
-        width: 54px;
+        width: 69px;
         height: 1px;
       }
     }
@@ -365,22 +365,25 @@
       &::after {
         right: -20px;
         border-right: 2px solid $border-color;
-        border-radius: 0 0 50px;
+        border-radius: 0 0 15px;
       }
 
       // Left connecting curves
       &::before {
         left: -20px;
         border-left: 2px solid $border-color;
-        border-radius: 0 0 0 50px;
+        border-radius: 0 0 0 15px;
       }
     }
 
     // Connect second build to first build with smaller curved line
     &:nth-child(2) {
       &::after, &::before {
-        height: 45px;
-        top: -26px;
+        height: 29px;
+        top: -10px;
+      }
+      .curve {
+        display: block;
       }
     }
   }
@@ -399,6 +402,12 @@
           border: none;
         }
       }
+      // Remove opposite curve
+      .curve {
+        &::before {
+          display: none;
+        }
+      }
     }
   }
 
@@ -410,6 +419,39 @@
           border: none;
         }
       }
+      // Remove opposite curve
+      .curve {
+        &::after {
+          display: none;
+        }
+      }
+    }
+  }
+
+  // Curve first child connecting lines in opposite direction
+  .curve {
+    display: none;
+
+    &::before,
+    &::after {
+      content: '';
+      width: 21px;
+      height: 25px;
+      position: absolute;
+      top: -28.5px;
+      border-top: 2px solid $border-color;
+    }
+
+    &::after {
+      left: -39px;
+      border-right: 2px solid $border-color;
+      border-radius: 0 15px;
+    }
+
+    &::before {
+      right: -39px;
+      border-left: 2px solid $border-color;
+      border-radius: 15px 0 0;
     }
   }
 }
