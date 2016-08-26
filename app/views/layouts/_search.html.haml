@@ -3,10 +3,9 @@
 - if controller.controller_path =~ /^projects/ && @project.persisted?
   - label = 'This project'
 - if @group && @group.persisted? && @group.path
-  - group_data_attrs = { group_path: "#{j(@group.path)}", name: "#{j(@group.name)}", issues_path: "#{issues_group_path(j(@group.path))}", mr_path: "#{merge_requests_group_path(j(@group.path))}" }
+  - group_data_attrs = { group_path: j(@group.path), name: @group.name, issues_path: issues_group_path(j(@group.path)), mr_path: merge_requests_group_path(j(@group.path)) }
 - if @project && @project.persisted?
-  - project_data_attrs = { project_path: "#{j(@project.path)}", name: "#{j(@project.name)}", issues_path: "#{namespace_project_issues_path(@project.namespace, @project)}", mr_path: "#{namespace_project_merge_requests_path(@project.namespace, @project)}" }
-
+  - project_data_attrs = { project_path: j(@project.path), name: j(@project.name), issues_path: namespace_project_issues_path(@project.namespace, @project), mr_path: namespace_project_merge_requests_path(@project.namespace, @project) }
 .search.search-form{class: "#{'has-location-badge' if label.present?}"}
   = form_tag search_path, method: :get, class: 'navbar-form' do |f|
     .search-input-container
@@ -14,7 +13,7 @@
         .location-badge= label
       .search-input-wrap
         .dropdown{ data: { url: search_autocomplete_path } }
-          = search_field_tag "search", nil, placeholder: 'Search', class: "search-input dropdown-menu-toggle js-search-dashboard-options", spellcheck: false, tabindex: "1", autocomplete: 'off', data: { toggle: 'dropdown', issues_path: "#{issues_dashboard_url}", mr_path: "#{merge_requests_dashboard_url}" }
+          = search_field_tag 'search', nil, placeholder: 'Search', class: 'search-input dropdown-menu-toggle js-search-dashboard-options', spellcheck: false, tabindex: '1', autocomplete: 'off', data: { toggle: 'dropdown', issues_path: issues_dashboard_url, mr_path: merge_requests_dashboard_url }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul

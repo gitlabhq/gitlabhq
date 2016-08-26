@@ -368,39 +368,38 @@
   })();
 
   $(function() {
-    if ($('.js-search-project-options').length) {
-      var projectOptionsDataEl = $('.js-search-project-options');
+    var $projectOptionsDataEl = $('.js-search-project-options');
+    var $groupOptionsDataEl = $('.js-search-group-options');
+    var $dashboardOptionsDataEl = $('.js-search-dashboard-options');
 
+    if ($projectOptionsDataEl.length) {
       gl.projectOptions = gl.projectOptions || {};
 
-      var projectPath = projectOptionsDataEl.data('project-path');
+      var projectPath = $projectOptionsDataEl.data('project-path');
 
       gl.projectOptions[projectPath] = {
-        name: projectOptionsDataEl.data('name'),
-        issuesPath: projectOptionsDataEl.data('issues-path'),
-        mrPath: projectOptionsDataEl.data('mr-path')
+        name: $projectOptionsDataEl.data('name'),
+        issuesPath: $projectOptionsDataEl.data('issues-path'),
+        mrPath: $projectOptionsDataEl.data('mr-path')
       };
     }
- 
-    if ($('.js-search-group-options').length) {
-      var groupOptionsDataEl = $('.js-search-group-options');
-   
+
+    if ($groupOptionsDataEl.length) {
       gl.groupOptions = gl.groupOptions || {};
        
-      var groupPath = groupOptionsDataEl.data('group-path');
+      var groupPath = $groupOptionsDataEl.data('group-path');
    
       gl.groupOptions[groupPath] = {
-        name: groupOptionsDataEl.data('name'),
-        issuesPath: groupOptionsDataEl.data('issues-path'),
-        mrPath: groupOptionsDataEl.data('mr-path')
+        name: $groupOptionsDataEl.data('name'),
+        issuesPath: $groupOptionsDataEl.data('issues-path'),
+        mrPath: $groupOptionsDataEl.data('mr-path')
       };
     }
    
-    if ($('.js-search-dashboard-options').length) {
-      var dashboardOptionsDataEl = $('.js-search-dashboard-options');
+    if ($dashboardOptionsDataEl.length) {
       gl.dashboardOptions = {
-        issuesPath: dashboardOptionsDataEl.data('issues-path'),
-        mrPath: dashboardOptionsDataEl.data('mr-path')
+        issuesPath: $dashboardOptionsDataEl.data('issues-path'),
+        mrPath: $dashboardOptionsDataEl.data('mr-path')
       };
     }
   });
