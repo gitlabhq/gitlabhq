@@ -15,8 +15,6 @@ v 8.12.0 (unreleased)
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Added tests for diff notes
   - Add pipeline events to Slack integration !5525
-
-v 8.11.1 (unreleased)
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix badge count alignment (ClemMakesApps)
   - Fix branch title trailing space on hover (ClemMakesApps)
