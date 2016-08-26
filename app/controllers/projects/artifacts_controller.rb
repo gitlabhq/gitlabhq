@@ -4,6 +4,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]
+  before_action :extract_ref_name_and_path
   before_action :validate_artifacts!
 
   def download
@@ -48,6 +49,12 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   private
 
+  def extract_ref_name_and_path
+    return unless params[:ref_name_and_path]
+
+    @ref_name, @path = extract_ref(params[:ref_name_and_path])
+  end
+
   def validate_artifacts!
     render_404 unless build && build.artifacts?
   end
@@ -61,12 +68,10 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def build_from_ref
-    if params[:ref_name_and_path]
-      ref_name, @path = extract_ref(params[:ref_name_and_path])
-      builds = project.latest_successful_builds_for(ref_name)
+    return unless @ref_name
 
-      builds.find_by(name: params[:job])
-    end
+    builds = project.latest_successful_builds_for(@ref_name)
+    builds.find_by(name: params[:job])
   end
 
   def artifacts_file
