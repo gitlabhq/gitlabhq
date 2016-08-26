@@ -265,7 +265,8 @@ class Ability
         :read_container_image,
         :read_pipeline,
         :read_environment,
-        :read_deployment
+        :read_deployment,
+        :read_cycle_analytics
       ]
     end
 
