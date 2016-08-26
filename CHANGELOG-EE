@@ -1,10 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
+v 8.12.0 (Unreleased)
 
-v 8.11.2 (Unreleased)
+v 8.11.3 (Unreleased)
+  - [ES] Add logging to indexer
+  - Set the correct `GL_PROTOCOL` when rebasing !691
 
-v 8.11.1
+v 8.11.2
   - Additional documentation on protected branches for EE
   - Change slash commands docs location
+
+v 8.11.1
+  - Pulled due to packaging error.
 
 v 8.11.0
   - Allow projects to be moved between repository storages
