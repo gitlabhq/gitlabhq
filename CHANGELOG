@@ -1,6 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
-v 8.11.3 (unreleased)
+v 8.11.3
   - Don't show resolve conflicts link before MR status is updated
   - Fix IE11 fork button bug !598
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
