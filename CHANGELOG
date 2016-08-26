@@ -13,6 +13,7 @@ v 8.12.0 (unreleased)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Fix groups sort dropdown alignment (ClemMakesApps)
+  - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Added tests for diff notes
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix badge count alignment (ClemMakesApps)
