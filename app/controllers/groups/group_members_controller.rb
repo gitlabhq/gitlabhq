@@ -28,7 +28,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
       expires_at: params[:expires_at]
     )
 
-    group_members = @group.group_members.where(user_id: user_ids)
+    group_members = @group.group_members.where(user_id: params[:user_ids].split(','))
 
     group_members.each do |group_member|
       log_audit_event(group_member, action: :create)
