@@ -43,7 +43,7 @@
       }
       return newUrl;
     };
-    return w.gl.utils.removeParamQueryString = function(url, param) {
+    w.gl.utils.removeParamQueryString = function(url, param) {
       var urlVariables, variables;
       url = decodeURIComponent(url);
       urlVariables = url.split('&');
@@ -58,6 +58,16 @@
         }
         return results;
       })()).join('&');
+    };
+    w.gl.utils.getLocationHash = function(url) {
+      var hashIndex;
+      if (typeof url === 'undefined') {
+        // Note: We can't use window.location.hash here because it's
+        // not consistent across browsers - Firefox will pre-decode it
+        url = window.location.href;
+      }
+      hashIndex = url.indexOf('#');
+      return hashIndex === -1 ? null : url.substring(hashIndex + 1);
     };
   })(window);
 

@@ -1,7 +1,7 @@
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Ci::Model
-    include Statuseable
+    include HasStatus
 
     self.table_name = 'ci_commits'
 
@@ -83,7 +83,7 @@ module Ci
     end
 
     def stages_with_latest_statuses
-      statuses.latest.order(:stage_idx).group_by(&:stage)
+      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
     end
 
     def project_id

@@ -254,7 +254,6 @@
   width: 100%;
   overflow: auto;
   white-space: nowrap;
-  max-height: 500px;
   transition: max-height 0.3s, padding 0.3s;
 
   &.graph-collapsed {
@@ -265,7 +264,6 @@
 
 .pipeline-visualization {
   position: relative;
-  min-width: 1220px;
 
   ul {
     padding: 0;

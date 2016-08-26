@@ -10,14 +10,16 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_one :merge_request_diff, dependent: :destroy
+  has_many :merge_request_diffs, dependent: :destroy
+  has_one :merge_request_diff,
+    -> { order('merge_request_diffs.id DESC') }
 
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff, unless: :importing?
-  after_update :update_merge_request_diff
+  after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :reload_diff_if_branch_changed
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
 
@@ -170,10 +172,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
-    if self.compare
-      self.compare.diffs(diff_options)
+    if compare
+      compare.diffs(diff_options)
     else
-      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+      merge_request_diff.diffs(diff_options)
     end
   end
 
@@ -184,8 +186,8 @@ class MergeRequest < ActiveRecord::Base
   def diff_base_commit
     if persisted?
       merge_request_diff.base_commit
-    elsif diff_start_commit && diff_head_commit
-      self.target_project.merge_base_commit(diff_start_sha, diff_head_sha)
+    else
+      branch_merge_base_commit
     end
   end
 
@@ -246,6 +248,15 @@ class MergeRequest < ActiveRecord::Base
     target_project.repository.commit(target_branch) if target_branch_ref
   end
 
+  def branch_merge_base_commit
+    start_sha = target_branch_sha
+    head_sha  = source_branch_sha
+
+    if start_sha && head_sha
+      target_project.merge_base_commit(start_sha, head_sha)
+    end
+  end
+
   def target_branch_sha
     @target_branch_sha || target_branch_head.try(:sha)
   end
@@ -267,14 +278,14 @@ class MergeRequest < ActiveRecord::Base
   # Return diff_refs instance trying to not touch the git repository
   def diff_sha_refs
     if merge_request_diff && merge_request_diff.diff_refs_by_sha?
-      return Gitlab::Diff::DiffRefs.new(
-        base_sha:  merge_request_diff.base_commit_sha,
-        start_sha: merge_request_diff.start_commit_sha,
-        head_sha:  merge_request_diff.head_commit_sha
-      )
+      merge_request_diff.diff_refs
     else
       diff_refs
     end
+  end
+
+  def branch_merge_base_sha
+    branch_merge_base_commit.try(:sha)
   end
 
   def validate_branches
@@ -309,21 +320,31 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def update_merge_request_diff
+  def ensure_merge_request_diff
+    merge_request_diff || create_merge_request_diff
+  end
+
+  def create_merge_request_diff
+    merge_request_diffs.create
+    reload_merge_request_diff
+  end
+
+  def reload_merge_request_diff
+    merge_request_diff(true)
+  end
+
+  def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
   def reload_diff
-    return unless merge_request_diff && open?
+    return unless open?
 
     old_diff_refs = self.diff_refs
-
-    merge_request_diff.reload_content
-
+    create_merge_request_diff
     MergeRequests::MergeRequestDiffCacheService.new.execute(self)
-
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
@@ -779,8 +800,12 @@ class MergeRequest < ActiveRecord::Base
     return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
 
     begin
-      @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
-    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
+      # ensure that we don't say there are conflicts to resolve when there are no conflict
+      # files.
+      conflicts.files.each(&:lines)
+      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
+    rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
       @conflicts_can_be_resolved_in_ui = false
     end
   end

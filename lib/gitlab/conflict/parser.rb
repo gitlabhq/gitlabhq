@@ -13,9 +13,18 @@ module Gitlab
       class UnmergeableFile < ParserError
       end
 
+      class UnsupportedEncoding < ParserError
+      end
+
       def parse(text, our_path:, their_path:, parent_file: nil)
         raise UnmergeableFile if text.blank? # Typically a binary file
         raise UnmergeableFile if text.length > 102400
+
+        begin
+          text.to_json
+        rescue Encoding::UndefinedConversionError
+          raise UnsupportedEncoding
+        end
 
         line_obj_index = 0
         line_old = 1

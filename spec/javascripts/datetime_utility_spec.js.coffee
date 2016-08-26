@@ -29,3 +29,22 @@ describe 'Date time utils', ->
     it 'should return Saturday', ->
       day = gl.utils.getDayName(new Date('07/23/2016'))
       expect(day).toBe('Saturday')
+
+  describe 'get day difference', ->
+    it 'should return 7', ->
+      firstDay = new Date('07/01/2016')
+      secondDay = new Date('07/08/2016')
+      difference = gl.utils.getDayDifference(firstDay, secondDay)
+      expect(difference).toBe(7)
+
+    it 'should return 31', ->
+      firstDay = new Date('07/01/2016')
+      secondDay = new Date('08/01/2016')
+      difference = gl.utils.getDayDifference(firstDay, secondDay)
+      expect(difference).toBe(31)
+
+    it 'should return 365', ->
+      firstDay = new Date('07/02/2015')
+      secondDay = new Date('07/01/2016')
+      difference = gl.utils.getDayDifference(firstDay, secondDay)
+      expect(difference).toBe(365)

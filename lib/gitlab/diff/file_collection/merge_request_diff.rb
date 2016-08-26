@@ -1,14 +1,14 @@
 module Gitlab
   module Diff
     module FileCollection
-      class MergeRequest < Base
-        def initialize(merge_request, diff_options:)
-          @merge_request = merge_request
+      class MergeRequestDiff < Base
+        def initialize(merge_request_diff, diff_options:)
+          @merge_request_diff = merge_request_diff
 
-          super(merge_request,
-            project: merge_request.project,
+          super(merge_request_diff,
+            project: merge_request_diff.project,
             diff_options: diff_options,
-            diff_refs: merge_request.diff_refs)
+            diff_refs: merge_request_diff.diff_refs)
         end
 
         def diff_files
@@ -61,11 +61,11 @@ module Gitlab
         end
 
         def cacheable?
-          @merge_request.merge_request_diff.present?
+          @merge_request_diff.present?
         end
 
         def cache_key
-          [@merge_request.merge_request_diff, 'highlighted-diff-files', diff_options]
+          [@merge_request_diff, 'highlighted-diff-files', diff_options]
         end
       end
     end

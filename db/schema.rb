@@ -593,7 +593,7 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.string   "start_commit_sha"
   end
 
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
+  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
 
   create_table "merge_requests", force: :cascade do |t|
     t.string   "target_branch",                                null: false

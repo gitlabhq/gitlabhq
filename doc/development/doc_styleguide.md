@@ -6,7 +6,7 @@ it organized and easy to find.
 ## Location and naming of documents
 
 >**Note:**
-These guidelines derive from the discussion taken place in issue [#3349](ce-3349).
+These guidelines derive from the discussion taken place in issue [#3349][ce-3349].
 
 The documentation hierarchy can be vastly improved by providing a better layout
 and organization of directories.

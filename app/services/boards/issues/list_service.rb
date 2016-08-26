@@ -36,7 +36,12 @@ module Boards
       end
 
       def set_state
-        params[:state] = list.done? ? 'closed' : 'opened'
+        params[:state] =
+          case list.list_type.to_sym
+          when :backlog then 'opened'
+          when :done then 'closed'
+          else 'all'
+          end
       end
 
       def board_label_ids

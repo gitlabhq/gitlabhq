@@ -1,4 +1,4 @@
-module Statuseable
+module HasStatus
   extend ActiveSupport::Concern
 
   AVAILABLE_STATUSES = %w[created pending running success failed canceled skipped]

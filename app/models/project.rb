@@ -471,8 +471,6 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    update(import_error: nil)
-
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if self.import_data
@@ -1037,6 +1035,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
+    repository.expire_avatar_cache(branch)
     reload_default_branch
   end
 

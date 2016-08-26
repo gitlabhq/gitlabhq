@@ -320,6 +320,7 @@
       frequentlyUsedEmojis = this.getFrequentlyUsedEmojis();
       frequentlyUsedEmojis.push(emoji);
       return $.cookie('frequently_used_emojis', frequentlyUsedEmojis.join(','), {
+        path: gon.relative_url_root || '/',
         expires: 365
       });
     };
