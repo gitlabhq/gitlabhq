@@ -17,7 +17,7 @@
     .panel-heading
       %strong #{@group.name}
       group members
-      %span.badge= @members.size
+      %span.badge= @members.total_count
       .controls
         = form_tag group_group_members_path(@group), method: :get, class: 'form-inline member-search-form'  do
           .form-group

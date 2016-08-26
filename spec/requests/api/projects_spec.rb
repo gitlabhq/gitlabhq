@@ -224,7 +224,8 @@ describe API::API, api: true  do
         description: FFaker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
-        wiki_enabled: false
+        wiki_enabled: false,
+        only_allow_merge_if_build_succeeds: false
       })
 
       post api('/projects', user), project
@@ -274,6 +275,18 @@ describe API::API, api: true  do
       post api('/projects', user), project
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
+    end
+
+    it 'sets a project as allowing merge even if build fails' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      post api('/projects', user), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if build succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+      post api('/projects', user), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
     end
 
     context 'when a visibility level is restricted' do
@@ -384,6 +397,18 @@ describe API::API, api: true  do
       expect(json_response['public']).to be_falsey
       expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
+
+    it 'sets a project as allowing merge even if build fails' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: false })
+      post api("/projects/user/#{user.id}", admin), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_falsey
+    end
+
+    it 'sets a project as allowing merge only if build succeeds' do
+      project = attributes_for(:project, { only_allow_merge_if_build_succeeds: true })
+      post api("/projects/user/#{user.id}", admin), project
+      expect(json_response['only_allow_merge_if_build_succeeds']).to be_truthy
+    end
   end
 
   describe "POST /projects/:id/uploads" do
@@ -444,6 +469,7 @@ describe API::API, api: true  do
       expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
       expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
       expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+      expect(json_response['only_allow_merge_if_build_succeeds']).to eq(project.only_allow_merge_if_build_succeeds)
     end
 
     it 'returns a project by path name' do

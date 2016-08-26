@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::Helpers, api: true do
   include API::Helpers
   include ApiHelpers
+  include SentryHelper
 
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -232,6 +233,32 @@ describe API::Helpers, api: true do
       expect(to_boolean('yeah')).to be_nil
       expect(to_boolean('')).to be_nil
       expect(to_boolean(nil)).to be_nil
+    end
+  end
+
+  describe '.handle_api_exception' do
+    before do
+      allow_any_instance_of(self.class).to receive(:sentry_enabled?).and_return(true)
+      allow_any_instance_of(self.class).to receive(:rack_response)
+    end
+
+    it 'does not report a MethodNotAllowed exception to Sentry' do
+      exception = Grape::Exceptions::MethodNotAllowed.new({ 'X-GitLab-Test' => '1' })
+      allow(exception).to receive(:backtrace).and_return(caller)
+
+      expect(Raven).not_to receive(:capture_exception).with(exception)
+
+      handle_api_exception(exception)
+    end
+
+    it 'does report RuntimeError to Sentry' do
+      exception = RuntimeError.new('test error')
+      allow(exception).to receive(:backtrace).and_return(caller)
+
+      expect_any_instance_of(self.class).to receive(:sentry_context)
+      expect(Raven).to receive(:capture_exception).with(exception)
+
+      handle_api_exception(exception)
     end
   end
 end

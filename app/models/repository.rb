@@ -1065,7 +1065,7 @@ class Repository
 
     @avatar ||= cache.fetch(:avatar) do
       AVATAR_FILES.find do |file|
-        blob_at_branch('master', file)
+        blob_at_branch(root_ref, file)
       end
     end
   end

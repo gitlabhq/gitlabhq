@@ -17,6 +17,12 @@
 
 .dropdown {
   position: relative;
+
+  .btn-link {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .open {
