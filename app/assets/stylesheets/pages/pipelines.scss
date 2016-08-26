@@ -273,7 +273,7 @@
 .stage-column {
   display: inline-block;
   vertical-align: top;
-  margin-right: 50px;
+  margin-right: 65px;
 
   li {
     list-style: none;
@@ -334,9 +334,9 @@
         content: '';
         position: absolute;
         top: 50%;
-        right: -54px;
+        right: -69px;
         border-top: 2px solid $border-color;
-        width: 54px;
+        width: 69px;
         height: 1px;
       }
     }
@@ -356,14 +356,14 @@
       &::after {
         right: -20px;
         border-right: 2px solid $border-color;
-        border-radius: 0 0 50px;
+        border-radius: 0 0 15px;
       }
 
       // Left connecting curves
       &::before {
         left: -20px;
         border-left: 2px solid $border-color;
-        border-radius: 0 0 0 50px;
+        border-radius: 0 0 0 15px;
       }
     }
 
@@ -436,13 +436,13 @@
     &::after {
       left: -39px;
       border-right: 2px solid $border-color;
-      border-radius: 0 50%;
+      border-radius: 0 15px;
     }
 
     &::before {
       right: -39px;
       border-left: 2px solid $border-color;
-      border-radius: 50% 0 0;
+      border-radius: 15px 0 0;
     }
   }
 }
