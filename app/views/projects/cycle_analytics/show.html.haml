@@ -4,14 +4,14 @@
     - if issue = @cycle_analytics.issue
       = distance_of_time_in_words issue
     - else
-      <Not enough data>
+      = "<Not enough data>"
 
   %li.list-group-item
     Plan:
     - if plan = @cycle_analytics.plan
       = distance_of_time_in_words plan
     - else
-      <Not enough data>
+      = "<Not enough data>"
 
   %li.list-group-item
     Code:
