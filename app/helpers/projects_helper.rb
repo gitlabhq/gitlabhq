@@ -116,6 +116,17 @@ module ProjectsHelper
     license.nickname || license.name
   end
 
+  def last_push_event
+    return unless current_user
+
+    project_ids = [@project.id]
+    if fork = current_user.fork_of(@project)
+      project_ids << fork.id
+    end
+
+    current_user.recent_push(project_ids)
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -366,16 +377,6 @@ module ProjectsHelper
     ref ||= 'master'
 
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
-  def last_push_event
-    return unless current_user
-
-    if fork = current_user.fork_of(@project)
-      current_user.recent_push(fork.id)
-    else
-      current_user.recent_push(@project.id)
-    end
   end
 
   def readme_cache_key

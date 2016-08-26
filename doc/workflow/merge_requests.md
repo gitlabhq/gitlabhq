@@ -15,6 +15,25 @@ Please note that you need to have builds configured to enable this feature.
 
 ## Checkout merge requests locally
 
+### By adding a git alias
+
+Add the following alias to your `~/.gitconfig`:
+
+```
+[alias]
+    mr = !sh -c 'git fetch $1 merge-requests/$2/head:mr-$1-$2 && git checkout mr-$1-$2' -
+```
+
+Now you can check out a particular merge request from any repository and any remote, e.g. to check out a merge request number 5 as shown in GitLab from the `upstream` remote, do:
+
+```
+$ git mr upstream 5
+```
+
+This will fetch the merge request into a local `mr-upstream-5` branch and check it out.
+
+### By modifying `.git/config` for a given repository
+
 Locate the section for your GitLab remote in the `.git/config` file. It looks like this:
 
 ```
@@ -34,7 +53,7 @@ It should look like this:
   fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
 ```
 
-Now you can fetch all the merge requests requests:
+Now you can fetch all the merge requests:
 
 ```
 $ git fetch origin

@@ -501,8 +501,6 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    update(import_error: nil)
-
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if !mirror? && self.import_data

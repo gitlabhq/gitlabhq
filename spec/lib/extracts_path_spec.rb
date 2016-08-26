@@ -51,6 +51,26 @@ describe ExtractsPath, lib: true do
         expect(@path).to eq(params[:path])
       end
     end
+
+    context 'subclass overrides get_id' do
+      it 'uses ref returned by get_id' do
+        allow_any_instance_of(self.class).to receive(:get_id){ '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+
+        assign_ref_vars
+
+        expect(@id).to eq(get_id)
+      end
+    end
+
+    context 'path contains space' do
+      let(:params) { { path: 'with space', ref: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' } }
+
+      it 'is not converted to %20 in @path' do
+        assign_ref_vars
+
+        expect(@path).to eq(params[:path])
+      end
+    end
   end
 
   describe '#extract_ref' do

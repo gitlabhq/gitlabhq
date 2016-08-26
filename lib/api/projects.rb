@@ -125,7 +125,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :repository_storage]
+                                     :repository_storage,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -176,7 +177,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :repository_storage]
+                                     :repository_storage,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -240,7 +242,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :public_builds,
-                                     :repository_storage]
+                                     :repository_storage,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?

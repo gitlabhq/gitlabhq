@@ -33,6 +33,7 @@ describe API::API, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(3)
         expect(json_response.last['title']).to eq(merge_request.title)
+        expect(json_response.last).to have_key('web_url')
       end
 
       it "returns an array of all merge_requests" do

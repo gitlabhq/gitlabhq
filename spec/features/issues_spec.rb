@@ -122,6 +122,17 @@ describe 'Issues', feature: true do
           expect(page).to have_content date.to_s(:medium)
         end
       end
+
+      it 'warns about version conflict' do
+        issue.update(title: "New title")
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Someone edited the issue the same time you did'
+      end
     end
   end
 

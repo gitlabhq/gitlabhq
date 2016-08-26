@@ -65,7 +65,8 @@
               url: $dropdown.data('refs-url'),
               data: {
                 ref: $dropdown.data('ref')
-              }
+              },
+              dataType: "json"
             }).done(function(refs) {
               return callback(refs);
             });
@@ -73,7 +74,7 @@
           selectable: true,
           filterable: true,
           filterByText: true,
-          fieldName: 'ref',
+          fieldName: $dropdown.data('field-name'),
           renderRow: function(ref) {
             var link;
             if (ref.header != null) {

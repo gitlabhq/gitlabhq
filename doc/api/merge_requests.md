@@ -71,7 +71,8 @@ Parameters:
     "user_notes_count": 1,
     "approvals_before_merge": null
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   }
 ]
 ```
@@ -138,7 +139,8 @@ Parameters:
   "user_notes_count": 1,
   "approvals_before_merge": null
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -242,6 +244,7 @@ Parameters:
   "approvals_before_merge": null,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1",
   "changes": [
     {
     "old_path": "VERSION",
@@ -335,7 +338,8 @@ order for it to take effect:
   "user_notes_count": 0,
   "approvals_before_merge": null
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -410,7 +414,8 @@ Parameters:
   "user_notes_count": 1,
   "approvals_before_merge": null
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -512,7 +517,8 @@ Parameters:
   "user_notes_count": 1,
   "approvals_before_merge": null
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -684,7 +690,8 @@ Parameters:
   "user_notes_count": 1,
   "approvals_before_merge": null
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -1006,7 +1013,8 @@ Example response:
     "subscribed": true,
     "user_notes_count": 7,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",

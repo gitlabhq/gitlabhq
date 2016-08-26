@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SentryHelper
   include WorkhorseHelper
 
   before_action :authenticate_user_from_private_token!
@@ -45,28 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-
-  def sentry_context
-    if Rails.env.production? && current_application_settings.sentry_enabled
-      if current_user
-        Raven.user_context(
-          id: current_user.id,
-          email: current_user.email,
-          username: current_user.username,
-        )
-      end
-
-      Raven.tags_context(program: sentry_program_context)
-    end
-  end
-
-  def sentry_program_context
-    if Sidekiq.server?
-      'sidekiq'
-    else
-      'rails'
-    end
-  end
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!

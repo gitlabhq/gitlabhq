@@ -56,6 +56,10 @@ module Gitlab
         end
       end
 
+      def url
+        raw_data.url
+      end
+
       private
 
       def assigned?

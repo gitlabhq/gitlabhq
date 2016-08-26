@@ -526,10 +526,10 @@ class User < ActiveRecord::Base
     (personal_projects.count.to_f / projects_limit) * 100
   end
 
-  def recent_push(project_id = nil)
+  def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
-    events = events.where(project_id: project_id) if project_id
+    events = events.where(project_id: project_ids) if project_ids
 
     # Use the latest event that has not been pushed or merged recently
     events.recent.find do |event|

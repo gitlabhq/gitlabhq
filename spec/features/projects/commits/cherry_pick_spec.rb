@@ -1,4 +1,5 @@
 require 'spec_helper'
+include WaitForAjax
 
 describe 'Cherry-pick Commits' do
   let(:project) { create(:project) }
@@ -8,12 +9,11 @@ describe 'Cherry-pick Commits' do
   before do
     login_as :user
     project.team << [@user, :master]
-    visit namespace_project_commits_path(project.namespace, project, project.repository.root_ref, { limit: 5 })
+    visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
   end
 
   context "I cherry-pick a commit" do
     it do
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
       expect(page).not_to have_content('v1.0.0') # Only branches, not tags
       page.within('#modal-cherry-pick-commit') do
@@ -26,7 +26,6 @@ describe 'Cherry-pick Commits' do
 
   context "I cherry-pick a merge commit" do
     it do
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_merge.id)
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         uncheck 'create_merge_request'
@@ -38,7 +37,6 @@ describe 'Cherry-pick Commits' do
 
   context "I cherry-pick a commit that was previously cherry-picked" do
     it do
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         uncheck 'create_merge_request'
@@ -56,12 +54,35 @@ describe 'Cherry-pick Commits' do
 
   context "I cherry-pick a commit in a new merge request" do
     it do
-      visit namespace_project_commit_path(project.namespace, project, master_pickable_commit.id)
       find("a[href='#modal-cherry-pick-commit']").click
       page.within('#modal-cherry-pick-commit') do
         click_button 'Cherry-pick'
       end
       expect(page).to have_content('The commit has been successfully cherry-picked. You can now submit a merge request to get this change into the original branch.')
+    end
+  end
+
+  context "I cherry-pick a commit from a different branch", js: true do
+    it do
+      find('.commit-action-buttons a.dropdown-toggle').click
+      find(:css, "a[href='#modal-cherry-pick-commit']").click
+
+      page.within('#modal-cherry-pick-commit') do
+        click_button 'master'
+      end
+
+      wait_for_ajax
+
+      page.within('#modal-cherry-pick-commit .dropdown-menu .dropdown-content') do
+        click_link 'feature'
+      end
+
+      page.within('#modal-cherry-pick-commit') do
+        uncheck 'create_merge_request'
+        click_button 'Cherry-pick'
+      end
+
+      expect(page).to have_content('The commit has been successfully cherry-picked.')
     end
   end
 end

@@ -84,7 +84,8 @@ Parameters:
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false
   },
   {
     "id": 6,
@@ -144,7 +145,8 @@ Parameters:
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false
   }
 ]
 ```
@@ -282,6 +284,7 @@ Parameters:
     }
   ],
   "repository_storage": "default"
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -450,6 +453,7 @@ Parameters:
 - `import_url` (optional)
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 ### Create project for user
 
@@ -476,6 +480,7 @@ Parameters:
 - `import_url` (optional)
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 ### Edit project
 
@@ -503,6 +508,7 @@ Parameters:
 - `visibility_level` (optional)
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
@@ -581,7 +587,8 @@ Example response:
   "forks_count": 0,
   "star_count": 1,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -647,7 +654,8 @@ Example response:
   "forks_count": 0,
   "star_count": 0,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -733,7 +741,8 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -819,7 +828,8 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -918,7 +928,11 @@ Parameters:
   "push_events": true,
   "issues_events": true,
   "merge_requests_events": true,
+  "tag_push_events": true,
   "note_events": true,
+  "build_events": true,
+  "pipeline_events": true,
+  "wiki_page_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -941,6 +955,9 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Edit project hook
@@ -961,6 +978,9 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Delete project hook

@@ -154,7 +154,9 @@
       });
     });
     $('.remove-row').bind('ajax:success', function() {
-      return $(this).closest('li').fadeOut();
+      $(this).tooltip('destroy')
+        .closest('li')
+        .fadeOut();
     });
     $('.js-remove-tr').bind('ajax:before', function() {
       return $(this).hide();

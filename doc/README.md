@@ -2,6 +2,7 @@
 
 ## User documentation
 
+- [Account Security](user/account/security.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [Custom templates for issues and merge requests](customization/issue_and_merge_request_template.md) Pre-fill the description of issues and merge requests to your liking.
@@ -22,6 +23,7 @@
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
+- [Koding](user/project/koding.md) Learn how to use Koding, the online IDE.
 
 ## Administrator documentation
 

@@ -21,16 +21,14 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def create
-    user_ids = params[:user_ids].split(',')
-
     @group.add_users(
-      user_ids,
+      params[:user_ids].split(','),
       params[:access_level],
       current_user: current_user,
       expires_at: params[:expires_at]
     )
 
-    group_members = @group.group_members.where(user_id: user_ids)
+    group_members = @group.group_members.where(user_id: params[:user_ids].split(','))
 
     group_members.each do |group_member|
       log_audit_event(group_member, action: :create)

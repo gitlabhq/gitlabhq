@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819221833) do
+ActiveRecord::Schema.define(version: 20160823081327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -531,6 +531,7 @@ ActiveRecord::Schema.define(version: 20160819221833) do
     t.datetime "deleted_at"
     t.date     "due_date"
     t.integer  "moved_to_id"
+    t.integer  "lock_version"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -687,7 +688,7 @@ ActiveRecord::Schema.define(version: 20160819221833) do
     t.integer  "position",                     default: 0
     t.datetime "locked_at"
     t.integer  "updated_by_id"
-    t.string   "merge_error"
+    t.text     "merge_error"
     t.text     "merge_params"
     t.boolean  "merge_when_build_succeeds",    default: false, null: false
     t.integer  "merge_user_id"
@@ -696,6 +697,7 @@ ActiveRecord::Schema.define(version: 20160819221833) do
     t.integer  "approvals_before_merge"
     t.string   "rebase_commit_sha"
     t.string   "in_progress_merge_commit_sha"
+    t.integer  "lock_version"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
