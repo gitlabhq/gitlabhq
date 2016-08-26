@@ -971,6 +971,7 @@ DEPENDENCIES
   teaspoon-jasmine (~> 2.2.0)
   test_after_commit (~> 0.4.2)
   thin (~> 1.7.0)
+  timecop (~> 0.8.0)
   turbolinks (~> 2.5.0)
   u2f (~> 0.2.1)
   uglifier (~> 2.7.2)
