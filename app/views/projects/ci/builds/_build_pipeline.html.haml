@@ -3,13 +3,13 @@
   .curve
   .build-content
     - if is_playable
-      = render_status_with_link('build', 'play')
       = link_to play_namespace_project_build_path(subject.project.namespace, subject.project, subject, return_to: request.original_url), method: :post, title: 'Play' do
-        = subject.name
+        = render_status_with_link('build', 'play')
+        %span.ci-status-text= subject.name
     - elsif can?(current_user, :read_build, @project)
-      = render_status_with_link('build', subject.status)
       = link_to namespace_project_build_path(subject.project.namespace, subject.project, subject) do
-        = subject.name
+        = render_status_with_link('build', subject.status)
+        %span.ci-status-text= subject.name
     - else
       = render_status_with_link('build', subject.status)
       = ci_icon_for_status(subject.status)
