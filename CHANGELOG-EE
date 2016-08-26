@@ -4,6 +4,7 @@ v 8.12.0 (Unreleased)
 v 8.11.3 (Unreleased)
   - [ES] Add logging to indexer
   - Set the correct `GL_PROTOCOL` when rebasing !691
+  - [ES] Elasticsearch workers checks ES settings before running
 
 v 8.11.2
   - Additional documentation on protected branches for EE

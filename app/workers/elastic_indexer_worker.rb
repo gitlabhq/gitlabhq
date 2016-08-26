@@ -1,12 +1,15 @@
 class ElasticIndexerWorker
   include Sidekiq::Worker
   include Elasticsearch::Model::Client::ClassMethods
+  include Gitlab::CurrentSettings
 
   sidekiq_options queue: :elasticsearch, retry: 2
 
   ISSUE_TRACKED_FIELDS = %w(assignee_id author_id confidential)
 
   def perform(operation, class_name, record_id, options = {})
+    return true unless current_application_settings.elasticsearch_indexing?
+
     klass = class_name.constantize
 
     case operation.to_s
