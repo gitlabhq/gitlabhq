@@ -107,7 +107,7 @@ module MergeRequests
     end
 
     def git_env
-      { 'GL_ID' => Gitlab::GlId.gl_id(current_user) }
+      { 'GL_ID' => Gitlab::GlId.gl_id(current_user), 'GL_PROTOCOL' => 'web' }
     end
   end
 end
