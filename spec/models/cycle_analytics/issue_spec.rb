@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'CycleAnalytics#issue', models: true do
   let(:project) { create(:project) }
-  subject { CycleAnalytics.new }
+  subject { CycleAnalytics.new(project) }
 
   context "when calculating the median of times between:
                start: issue created_at
@@ -26,6 +26,16 @@ describe 'CycleAnalytics#issue', models: true do
         median_start_time, median_end_time = start_and_end_times[2]
         expect(subject.issue).to eq(median_end_time - median_start_time)
       end
+
+      it "does not include issues from other projects" do
+        5.times do
+          milestone = create(:milestone, project: project)
+          issue = create(:issue)
+          issue.update(milestone: milestone)
+        end
+
+        expect(subject.issue).to be_nil
+      end
     end
 
     context "when a label is added to the issue" do
@@ -47,14 +57,9 @@ describe 'CycleAnalytics#issue', models: true do
 
       it "does not make a calculation for regular labels" do
         5.times do
-          start_time = Time.now
-          end_time = rand(1..10).days.from_now
-
           regular_label = create(:label)
-          issue = Timecop.freeze(start_time) { create(:issue, project: project) }
-          Timecop.freeze(end_time) { issue.update(label_ids: [regular_label.id]) }
-
-          [start_time, end_time]
+          issue = create(:issue, project: project)
+          issue.update(label_ids: [regular_label.id])
         end
 
         expect(subject.issue).to be_nil
