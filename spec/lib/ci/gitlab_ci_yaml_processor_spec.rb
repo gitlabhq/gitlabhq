@@ -1251,19 +1251,19 @@ EOT
       end
     end
 
-    describe "#errors(content)" do
+    describe "#errors" do
       describe "Error handling" do
-        it "returns error if parse YAML failed" do
+        it "returns an error if the YAML could not be parsed" do
           content = YAML.dump("invalid: yaml: test")
           expect(GitlabCiYamlProcessor.errors(content)).to eq "Invalid configuration format"
         end
 
-        it "returns errors if tags parameter is invalid" do
+        it "returns an error if the tags parameter is invalid" do
           content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
           expect(GitlabCiYamlProcessor.errors(content)).to eq "jobs:rspec tags should be an array of strings"
         end
 
-        it "does not return errors" do
+        it "does not return any errors when the YAML is valid" do
           content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
           expect(GitlabCiYamlProcessor.errors(content)).to eq nil
         end

@@ -9,23 +9,20 @@ module API
       post do
         response = {
           status: '',
-          errors: [],
+          error: [],
           jobs: []
         }
 
-        if !Ci::GitlabCiYamlProcessor.errors(@content).nil?
-          status 200
-          response[:errors].push(Ci::GitlabCiYamlProcessor.errors(@content))
+        if Ci::GitlabCiYamlProcessor.errors(params[:content]).nil?
+          config_processor = Ci::GitlabCiYamlProcessor.new(params[:content])
+
+          config_processor.builds.each do |build|
+            response[:jobs].push("#{build[:name]}")
+            response[:status] = 'valid'
+          end
+        else
+          response[:error].push(Ci::GitlabCiYamlProcessor.errors(params[:content]))
           response[:status] = 'invalid'
-
-          response
-        end
-
-        config_processor = Ci::GitlabCiYamlProcessor.new(params[:content])
-
-        config_processor.builds.each do |build|
-          response[:jobs].push("#{build[:name]}")
-          response[:status] = 'valid'
         end
 
         status 200
