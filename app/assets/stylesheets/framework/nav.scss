@@ -71,7 +71,7 @@
     .badge {
       font-weight: normal;
       background-color: #eee;
-      color: #78a;
+      color: $btn-transparent-color;
       vertical-align: baseline;
     }
   }
@@ -333,10 +333,6 @@
             fill: $black;
           }
         }
-      }
-
-      .badge {
-        color: $gl-icon-color;
       }
 
       &:hover {
