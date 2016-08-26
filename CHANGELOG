@@ -27,6 +27,7 @@ v 8.12.0 (unreleased)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
   - Added project specific enable/disable setting for LFS !5997
+  - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Added tests for diff notes
   - Add a button to download latest successful artifacts for branches and tags !5142
   - Add delimiter to project stars and forks count (ClemMakesApps)
