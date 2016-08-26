@@ -1,6 +1,11 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.3 (unreleased)
+  - Allow system info page to handle case where info is unavailable
+  - Label list shows all issues (opened or closed) with that label
+  - Don't show resolve conflicts link before MR status is updated
+  - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
+  - Fix external issue tracker "Issues" link leading to 404s
 
 v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
