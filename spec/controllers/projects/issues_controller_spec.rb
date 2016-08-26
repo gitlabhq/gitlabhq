@@ -8,13 +8,13 @@ describe Projects::IssuesController do
   describe "GET #index" do
     context 'external issue tracker' do
       it 'redirects to the external issue tracker' do
-        external = double(issues_url: 'https://example.com/issues')
+        external = double(project_path: 'https://example.com/project')
         allow(project).to receive(:external_issue_tracker).and_return(external)
         controller.instance_variable_set(:@project, project)
 
         get :index, namespace_id: project.namespace.path, project_id: project
 
-        expect(response).to redirect_to('https://example.com/issues')
+        expect(response).to redirect_to('https://example.com/project')
       end
     end
 
