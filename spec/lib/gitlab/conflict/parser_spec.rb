@@ -179,8 +179,8 @@ CONFLICT
           to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
 
-      it 'raises UnmergeableFile when the file is over 100 KB' do
-        expect { parse_text('a' * 102401) }.
+      it 'raises UnmergeableFile when the file is over 200 KB' do
+        expect { parse_text('a' * 204801) }.
           to raise_error(Gitlab::Conflict::Parser::UnmergeableFile)
       end
 

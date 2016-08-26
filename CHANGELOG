@@ -97,6 +97,7 @@ v 8.12.0 (unreleased)
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix member expiration date picker after update
+  - Make merge conflict file size limit 200 KB, to match the docs
   - Fix suggested colors options for new labels in the admin area. !6138
   - Fix GitLab import button
   - Remove gitorious from import_sources
