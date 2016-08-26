@@ -281,19 +281,13 @@ ul.notes {
     font-size: 17px;
   }
 
-  &.js-note-delete {
-    i {
-      &:hover {
-        color: $gl-text-red;
-      }
+  &:hover {
+    .danger-highlight {
+      color: $gl-text-red;
     }
-  }
 
-  &.js-note-edit {
-    i {
-      &:hover {
-        color: $gl-link-color;
-      }
+    .link-highlight {
+      color: $gl-link-color;
     }
   }
 }
