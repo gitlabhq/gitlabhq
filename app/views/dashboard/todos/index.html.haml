@@ -38,14 +38,15 @@
         = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search', title: 'Filter by author', filter: true, filterInput: 'input#search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
           placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author' } })
       .filter-item.inline
-        -# = select_tag('type', todo_types_options,
-        -#   class: 'select2 trigger-submit', include_blank: true,
-        -#   data: {placeholder: 'Type'})
+        - if params[:type].present?
+          = hidden_field_tag(:type, params[:type])
+        = dropdown_tag(params[:type] || 'Type', options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
+          data: { data: todo_types_options, selected: params[:type], field_name: 'type', default_label: 'Type' } })
       .filter-item.inline.actions-filter
-        -# = select_tag('action_id', todo_actions_options,
-        -#   class: 'select2 trigger-submit', include_blank: true,
-        -#   data: {placeholder: 'Action'})
-
+        - if params[:action_id].present?
+          = hidden_field_tag(:action_id, params[:action_id])
+        = dropdown_tag(params[:action_id] || 'Action', options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
+          data: { data: todo_actions_options, selected: params[:action_id], field_name: 'action_id', default_label: 'Action' } })
       .pull-right
         .dropdown.inline.prepend-left-10
           %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
@@ -91,8 +92,31 @@
     data: $projectDropdown.data('data'),
     clicked: function() {
       if ($projectDropdown.hasClass('js-filter-submit')) {
-        console.log('booM!');
         return $projectDropdown.closest('form').submit();
+      }
+    }
+  });
+
+  $typeDropdown = $('.js-type-search');
+  $typeDropdown.glDropdown({
+    selectable: true,
+    fieldName: 'type_id',
+    data: $typeDropdown.data('data'),
+    clicked: function() {
+      if ($typeDropdown.hasClass('js-filter-submit')) {
+        return $typeDropdown.closest('form').submit();
+      }
+    }
+  });
+
+  $actionDropdown = $('.js-action-search');
+  $actionDropdown.glDropdown({
+    selectable: true,
+    fieldName: 'action_id',
+    data: $actionDropdown.data('data'),
+    clicked: function() {
+      if ($actionDropdown.hasClass('js-filter-submit')) {
+        return $actionDropdown.closest('form').submit();
       }
     }
   });
