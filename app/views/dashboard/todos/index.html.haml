@@ -28,20 +28,23 @@
   .row-content-block.second-block
     = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
       .filter-item.inline
-        = select_tag('project_id', todo_projects_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Project'})
+        - if params[:project_id].present?
+          = hidden_field_tag(:project_id, params[:project_id])
+        = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+          placeholder: 'Search projects', data: { data: todo_projects_options, selected: params[:project_id], field_name: 'project_id', default_label: 'Project' } })
       .filter-item.inline
-        = users_select_tag(:author_id, selected: params[:author_id],
-          placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
+        - if params[:author_id].present?
+          = hidden_field_tag(:author_id, params[:author_id])
+        = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search', title: 'Filter by author', filter: true, filterInput: 'input#search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
+          placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author' } })
       .filter-item.inline
-        = select_tag('type', todo_types_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Type'})
+        -# = select_tag('type', todo_types_options,
+        -#   class: 'select2 trigger-submit', include_blank: true,
+        -#   data: {placeholder: 'Type'})
       .filter-item.inline.actions-filter
-        = select_tag('action_id', todo_actions_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Action'})
+        -# = select_tag('action_id', todo_actions_options,
+        -#   class: 'select2 trigger-submit', include_blank: true,
+        -#   data: {placeholder: 'Action'})
 
       .pull-right
         .dropdown.inline.prepend-left-10
@@ -79,6 +82,14 @@
 
 :javascript
   new UsersSelect();
+
+  $projectDropdown = $('.js-project-search');
+  $projectDropdown.glDropdown({
+    filterable: true,
+    selectable: true,
+    fieldName: 'project_id',
+    data: $projectDropdown.data('data')
+  });
 
   $('form.filter-form').on('submit', function (event) {
     event.preventDefault();
