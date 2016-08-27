@@ -121,11 +121,11 @@ class Repository
   end
 
   def find_branch(name)
-    raw_repository.branches.find { |branch| branch.name == name }
+    raw_repository.branches[name]
   end
 
   def find_tag(name)
-    tags.find { |tag| tag.name == name }
+    tags[name]
   end
 
   def add_branch(user, branch_name, target)

@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
   - Add two-factor recovery endpoint to internal API !5510
+  - Speed up Repository#find_branch and Repository#find_tag by doing a direct lookup
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
