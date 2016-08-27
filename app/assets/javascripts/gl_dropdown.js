@@ -202,7 +202,6 @@
       var ref, ref1, ref2, ref3, searchFields, selector, self;
       this.el = el1;
       this.options = options;
-      console.log(this.options);
       this.updateLabel = bind(this.updateLabel, this);
       this.hidden = bind(this.hidden, this);
       this.opened = bind(this.opened, this);
