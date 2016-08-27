@@ -10,7 +10,7 @@ variables:
   MYSQL_ALLOW_EMPTY_PASSWORD: "1"
   # retry tests only in CI environment
   RSPEC_RETRY_RETRY_COUNT: "3"
-  ELASTIC_HOST: "registry.gitlab.com__gitlab-org__test-elastic-image"
+  ELASTIC_HOST: "registry.gitlab.com-gitlab-org-test-elastic-image"
   RAILS_ENV: "test"
   SIMPLECOV: "true"
   USE_DB: "true"
