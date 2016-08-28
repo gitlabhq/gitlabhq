@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(version: 20160830232601) do
     t.text     "domain_blacklist"
     t.boolean  "koding_enabled"
     t.string   "koding_url"
-    t.integer  "project_size_limit",                    default: 0
+    t.integer  "repository_size_limit",                 default: 0
   end
 
   create_table "audit_events", force: :cascade do |t|

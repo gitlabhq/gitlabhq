@@ -1286,6 +1286,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def above_size_limit?
+    return false if current_application_settings.repository_size_limit == 0
+    repository_size >= current_application_settings.repository_size_limit
+  end
+
+  def size_to_remove
+    return repository_size - current_application_settings.repository_size_limit
+  end
+
   private
 
   def default_branch_protected?

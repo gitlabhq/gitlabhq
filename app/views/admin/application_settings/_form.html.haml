@@ -89,9 +89,10 @@
       .col-sm-10
         = f.number_field :max_attachment_size, class: 'form-control'
     .form-group
-      = f.label :project_size_limit, 'Project size limit (MB)', class: 'control-label col-sm-2'
+      = f.label :repository_size_limit, 'Repository size limit (MB)', class: 'control-label col-sm-2'
       .col-sm-10
-        = f.number_field :project_size_limit, class: 'form-control'
+        = f.number_field :repository_size_limit, class: 'form-control'
+        %span.help-block#repository_size_limit_help_block This limit is per repository. This includes LFS storage. 0 for unlimited
     .form-group
       = f.label :session_expire_delay, 'Session duration (minutes)', class: 'control-label col-sm-2'
       .col-sm-10
