@@ -98,10 +98,20 @@ module TodosHelper
 
   def todo_types_options
     [
-      { text: 'Any Type', id: '' },
-      { text: 'Issue', id: 'Issue' },
-      { text: 'Merge Request', id: 'MergeRequest' }
+      { id: '', text: 'Any Type' },
+      { id: 'Issue', text: 'Issue' },
+      { id: 'MergeRequest', text: 'Merge Request' }
     ]
+  end
+
+  def todo_actions_dropdown_label(selected_action_id, default_action)
+    selected_action = todo_actions_options.find { |action| action[:id] == selected_action_id.to_i}
+    selected_action ? selected_action[:text] : default_action
+  end
+
+  def todo_types_dropdown_label(selected_type, default_type)
+    selected_type = todo_types_options.find { |type| type[:id] == selected_type && type[:id] != '' }
+    selected_type ? selected_type[:text] : default_type
   end
 
   private

@@ -13,6 +13,7 @@
       this.perPage = this.el.data('perPage');
       this.clearListeners();
       this.initBtnListeners();
+      this.initFilters();
     }
 
     Todos.prototype.clearListeners = function() {
@@ -25,6 +26,61 @@
       $('.done-todo').on('click', this.doneClicked);
       $('.js-todos-mark-all').on('click', this.allDoneClicked);
       return $('.todo').on('click', this.goToTodoUrl);
+    };
+
+    Todos.prototype.initFilters = function() {
+      new UsersSelect();
+      this.initProjectFilterDropdown();
+      this.initTypeFilterDropdown();
+      this.initActionFilterDropdown();
+
+      $('form.filter-form').on('submit', function (event) {
+        event.preventDefault();
+        Turbolinks.visit(this.action + '&' + $(this).serialize());
+      });
+    };
+
+    Todos.prototype.initProjectFilterDropdown = function() {
+      $projectDropdown = $('.js-project-search');
+      $projectDropdown.glDropdown({
+        filterable: true,
+        selectable: true,
+        fieldName: 'project_id',
+        data: $projectDropdown.data('data'),
+        clicked: function() {
+          if ($projectDropdown.hasClass('js-filter-submit')) {
+            return $projectDropdown.closest('form.filter-form').submit();
+          }
+        }
+      });
+    };
+
+    Todos.prototype.initTypeFilterDropdown = function() {
+      $typeDropdown = $('.js-type-search');
+      $typeDropdown.glDropdown({
+        selectable: true,
+        fieldName: 'type',
+        data: $typeDropdown.data('data'),
+        clicked: function() {
+          if ($typeDropdown.hasClass('js-filter-submit')) {
+            return $typeDropdown.closest('form.filter-form').submit();
+          }
+        }
+      });
+    };
+
+    Todos.prototype.initActionFilterDropdown = function() {
+      $actionDropdown = $('.js-action-search');
+      $actionDropdown.glDropdown({
+        selectable: true,
+        fieldName: 'action_id',
+        data: $actionDropdown.data('data'),
+        clicked: function() {
+          if ($actionDropdown.hasClass('js-filter-submit')) {
+            return $actionDropdown.closest('form.filter-form').submit();
+          }
+        }
+      });
     };
 
     Todos.prototype.doneClicked = function(e) {
