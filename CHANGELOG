@@ -26,6 +26,7 @@ v 8.12.0 (unreleased)
   - Update merge_requests.md with a simpler way to check out a merge request. !5944
   - Fix button missing type (ClemMakesApps)
   - Move to project dropdown with infinite scroll for better performance
+  - Fix leaking of submit buttons outside the width of a main container !18731 (originally by @pavelloz)
   - Load branches asynchronously in Cherry Pick and Revert dialogs.
   - Add merge request versions !5467
   - Change using size to use count and caching it for number of group members. !5935
