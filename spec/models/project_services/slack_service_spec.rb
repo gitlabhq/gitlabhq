@@ -289,12 +289,12 @@ describe SlackService, models: true do
   describe 'Pipeline events' do
     let(:user) { create(:user) }
     let(:project) { create(:project) }
+
     let(:pipeline) do
       create(:ci_pipeline,
              project: project, status: status,
              sha: project.commit.sha, ref: project.default_branch)
     end
-    let(:status) { raise NotImplementedError }
 
     before do
       allow(slack).to receive_messages(
