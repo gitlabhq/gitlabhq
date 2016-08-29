@@ -117,7 +117,7 @@
             }
           });
         } else {
-          return elements.show();
+          return elements.show().removeClass('option-hidden');
         }
       }
     };
@@ -190,9 +190,9 @@
 
     currentIndex = -1;
 
-    NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link, .option-hidden';
+    NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
 
-    SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ")";
+    SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ", .option-hidden)";
 
     CURSOR_SELECT_SCROLL_PADDING = 5
 
