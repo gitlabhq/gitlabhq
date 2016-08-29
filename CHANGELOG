@@ -15,6 +15,7 @@ v 8.13.0 (unreleased)
   - Avoid database queries on Banzai::ReferenceParser::BaseParser for nodes without references
   - Simplify Mentionable concern instance methods
   - Fix permission for setting an issue's due date
+  - API: Multi-file commit !6096 (mahcsig)
   - Expose expires_at field when sharing project on API
   - Fix VueJS template tags being rendered in code comments
   - Fix issue with page scrolling to top when closing or pinning sidebar (lukehowell)
