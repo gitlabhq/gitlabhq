@@ -222,12 +222,12 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
-   A quick way to find them is to use `grep`. First go to the root directory
+   A quick way to find them is to use `git grep`. First go to the root directory
    where you cloned the `gitlab-ce` repository and then do:
 
     ```
-    grep -nR "workflow/lfs/lfs_administration" app/ doc/ spec/
-    grep -nR "lfs/lfs_administration" app/ doc/ spec/
+    git grep -n "workflow/lfs/lfs_administration"
+    git grep -n "lfs/lfs_administration"
     ```
 
 Things to note:
@@ -235,13 +235,13 @@ Things to note:
 - Since we also use inline documentation, except for the documentation itself,
   the document might also be referenced in the views of GitLab (`app/`) which will
   render when visiting `/help`, and sometimes in the testing suite (`spec/`).
-- The above `grep` command will search in the `app/`, `doc/` and `spec/`
-  directories for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
-  recursively and will print the file and the line where this file is mentioned.
+- The above `git grep` command will search recursively in the directory you run
+  it in for `workflow/lfs/lfs_administration` and `lfs/lfs_administration`
+  and will print the file and the line where this file is mentioned.
   You may ask why the two greps. Since we use relative paths to link to
   documentation, sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
-  built-in help page, that's why we omit it in `grep`.
+  built-in help page, that's why we omit it in `git grep`.
 
 ## Configuration documentation for source and Omnibus installations
 
