@@ -29,6 +29,10 @@ module Gitlab
         return build_status_object(false, 'The project you were looking for could not be found.')
       end
 
+      if project.above_size_limit?
+        return build_status_object(false, render_above_size_limit_message)
+      end
+
       case cmd
       when *DOWNLOAD_COMMANDS
         download_access_check
@@ -99,6 +103,18 @@ module Gitlab
     end
 
     private
+
+    def render_above_size_limit_message
+      repository_size_limit = Gitlab::CurrentSettings.current_application_settings.repository_size_limit
+
+      [
+        "GitLab: ---",
+        "GitLab: This repository's size (#{project.repository_size}MB) exceeds the limit of #{repository_size_limit}MB by",
+        "GitLab: #{project.size_to_remove}MB and as a result you are unable to push to it.",
+        "GitLab: Please contact your Gitlab administrator for more information.",
+        "GitLab: ---"
+      ].join("\n") + "\n"
+    end
 
     def matching_merge_request?(newrev, branch_name)
       Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
