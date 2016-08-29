@@ -36,6 +36,7 @@ v 8.12.0 (unreleased)
   - Adds response mime type to transaction metric action when it's not HTML
 
 v 8.11.3 (unreleased)
+  - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
