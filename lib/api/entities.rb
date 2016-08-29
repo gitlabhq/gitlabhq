@@ -1,7 +1,7 @@
 module API
   module Entities
     class UserSafe < Grape::Entity
-      expose :name, :username, :lfs_token
+      expose :name, :username
     end
 
     class UserBasic < UserSafe

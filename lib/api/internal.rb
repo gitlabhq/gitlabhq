@@ -88,12 +88,13 @@ module API
       get "/discover" do
         key = Key.find(params[:key_id])
         user = key.user
+
         if user
-          user.ensure_lfs_token!
-          present user, with: Entities::UserSafe
+          token = Gitlab::LfsToken.new(user).set_token
+          { name: user.name, username: user.username, lfs_token: token }
         else
-          key.ensure_lfs_token!
-          { username: 'lfs-deploy-key', lfs_token: key.lfs_token }
+          token = Gitlab::LfsToken.new(key).set_token
+          { username: "lfs-deploy-key-#{key.id}", lfs_token: token }
         end
       end
 
