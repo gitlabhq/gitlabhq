@@ -12,6 +12,7 @@ v 8.12.0 (unreleased)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
+  - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Fix groups sort dropdown alignment (ClemMakesApps)
