@@ -124,17 +124,22 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline }
+    let(:build) { create_build('build1', current - 60) }
+    let(:another_build) { create_build('build2', current + 20) }
 
     describe '#duration' do
       before do
-        travel_to(current - 120) do
-          pipeline.run
-        end
+        pipeline.run
 
         travel_to(current) do
-          pipeline.succeed
+          build.success
         end
+
+        travel_to(current + 80) do
+          another_build.drop
+        end
+
+        pipeline.drop
       end
 
       it 'matches sum of builds duration' do
@@ -168,6 +173,13 @@ describe Ci::Pipeline, models: true do
 
         expect(pipeline.reload.finished_at).to be_nil
       end
+    end
+
+    def create_build(name, started_at = current)
+      create(:ci_build,
+             name: name,
+             pipeline: pipeline,
+             started_at: started_at)
     end
   end
 
