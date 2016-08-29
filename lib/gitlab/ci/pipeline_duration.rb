@@ -12,7 +12,7 @@ module Gitlab
         now = Time.now
 
         segments = builds.map do |b|
-          Segment.new(b.started_at, b.finished_at || now)
+          Segment.new(b.started_at || now, b.finished_at || now)
         end
 
         new(segments)
