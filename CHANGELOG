@@ -36,6 +36,9 @@ v 8.12.0 (unreleased)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
 
+v 8.11.4 (unreleased)
+  - Fix resolving conflicts on forks
+
 v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
