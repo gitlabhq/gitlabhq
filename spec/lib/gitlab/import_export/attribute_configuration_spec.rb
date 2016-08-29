@@ -23,7 +23,7 @@ describe 'Attribute configuration', lib: true do
       'Milestone' => %w[id title project_id description due_date created_at updated_at state iid],
       'ProjectSnippet' => %w[id title content author_id project_id created_at updated_at file_name type visibility_level],
       'Release' => %w[id tag description project_id created_at updated_at],
-      'ProjectMember' => %w[id access_level source_id source_type user_id notification_level type created_at updated_at created_by_id invite_email invite_token invite_accepted_at requested_at],
+      'ProjectMember' => %w[id access_level source_id source_type user_id notification_level type created_at updated_at created_by_id invite_email invite_token invite_accepted_at requested_at expires_at],
       'User' => %w[id username email],
       'MergeRequest' => %w[id target_branch source_branch source_project_id author_id assignee_id title created_at updated_at state merge_status target_project_id iid description position locked_at updated_by_id merge_error merge_params merge_when_build_succeeds merge_user_id merge_commit_sha deleted_at in_progress_merge_commit_sha lock_version milestone_id approvals_before_merge rebase_commit_sha],
       'MergeRequestDiff' => %w[id state st_commits merge_request_id created_at updated_at base_commit_sha real_size head_commit_sha start_commit_sha],
