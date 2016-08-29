@@ -9,7 +9,6 @@ module Gitlab
           include Validatable
 
           validations do
-            validates :config, type: Hash
             validates :config, presence: true
           end
 
