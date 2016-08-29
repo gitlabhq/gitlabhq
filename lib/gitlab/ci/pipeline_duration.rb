@@ -82,6 +82,8 @@ module Gitlab
       end
 
       def process_pending_duration(segments, duration)
+        return 0 if segments.empty?
+
         total = segments.last.last - segments.first.first
         total - duration
       end
