@@ -30,9 +30,9 @@
 
     Todos.prototype.initFilters = function() {
       new UsersSelect();
-      this.initProjectFilterDropdown();
-      this.initTypeFilterDropdown();
-      this.initActionFilterDropdown();
+      this.initFilterDropdown($('.js-project-search'), 'project_id', true);
+      this.initFilterDropdown($('.js-type-search'), 'type');
+      this.initFilterDropdown($('.js-action-search'), 'action_id');
 
       $('form.filter-form').on('submit', function (event) {
         event.preventDefault();
@@ -40,47 +40,16 @@
       });
     };
 
-    Todos.prototype.initProjectFilterDropdown = function() {
-      $projectDropdown = $('.js-project-search');
-      $projectDropdown.glDropdown({
-        filterable: true,
+    Todos.prototype.initFilterDropdown = function($dropdown, fieldName, isFilterable) {
+      $dropdown.glDropdown({
         selectable: true,
-        fieldName: 'project_id',
-        data: $projectDropdown.data('data'),
+        filterable: isFilterable,
+        fieldName: fieldName,
+        data: $dropdown.data('data'),
         clicked: function() {
-          if ($projectDropdown.hasClass('js-filter-submit')) {
-            return $projectDropdown.closest('form.filter-form').submit();
-          }
+          return $dropdown.closest('form.filter-form').submit();
         }
-      });
-    };
-
-    Todos.prototype.initTypeFilterDropdown = function() {
-      $typeDropdown = $('.js-type-search');
-      $typeDropdown.glDropdown({
-        selectable: true,
-        fieldName: 'type',
-        data: $typeDropdown.data('data'),
-        clicked: function() {
-          if ($typeDropdown.hasClass('js-filter-submit')) {
-            return $typeDropdown.closest('form.filter-form').submit();
-          }
-        }
-      });
-    };
-
-    Todos.prototype.initActionFilterDropdown = function() {
-      $actionDropdown = $('.js-action-search');
-      $actionDropdown.glDropdown({
-        selectable: true,
-        fieldName: 'action_id',
-        data: $actionDropdown.data('data'),
-        clicked: function() {
-          if ($actionDropdown.hasClass('js-filter-submit')) {
-            return $actionDropdown.closest('form.filter-form').submit();
-          }
-        }
-      });
+      })
     };
 
     Todos.prototype.doneClicked = function(e) {
