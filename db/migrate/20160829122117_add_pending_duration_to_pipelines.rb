@@ -1,5 +1,4 @@
 class AddPendingDurationToPipelines < ActiveRecord::Migration
-
   DOWNTIME = false
 
   def change
