@@ -22,6 +22,7 @@ v 8.13.0 (unreleased)
   - Added soft wrap button to repository file/blob editor
   - Add word-wrap to issue title on issue and milestone boards (ClemMakesApps)
   - Fix todos page mobile viewport layout (ClemMakesApps)
+  - Fix inconsistent highlighting of already selected activity nav-links (ClemMakesApps)
   - Fix robots.txt disallowing access to groups starting with "s" (Matt Harrison)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Fix that manual jobs would no longer block jobs in the next stage. !6604
