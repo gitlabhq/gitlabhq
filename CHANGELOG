@@ -54,13 +54,11 @@ v 8.12.0 (unreleased)
 v 8.11.4 (unreleased)
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
   - Creating an issue through our API now emails label subscribers !5720
+  - Block concurrent updates for Pipeline
   - Fix resolving conflicts on forks
   - Fix diff commenting on merge requests created prior to 8.10
-
-v 8.11.4 (unreleased)
   - Fix issue boards leak private label names and descriptions
 
-v 8.11.3 (unreleased)
 v 8.11.3
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
