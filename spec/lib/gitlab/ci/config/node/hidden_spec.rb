@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Config::Node::HiddenJob do
+describe Gitlab::Ci::Config::Node::Hidden do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
