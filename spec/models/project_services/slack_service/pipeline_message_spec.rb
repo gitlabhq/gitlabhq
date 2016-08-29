@@ -14,7 +14,7 @@ describe SlackService::PipelineMessage do
         duration: duration
       },
       project: { path_with_namespace: 'project_name',
-                 web_url: 'somewhere.com' },
+                 web_url: 'example.gitlab.com' },
       commit: { author_name: 'hacker' }
     }
   end
@@ -25,7 +25,7 @@ describe SlackService::PipelineMessage do
     let(:duration) { 10 }
 
     it 'returns a message with information about succeeded build' do
-      message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker passed in 10 seconds'
+      message = '<example.gitlab.com|project_name>: Pipeline <example.gitlab.com/pipelines/123|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker passed in 10 seconds'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
@@ -39,7 +39,7 @@ describe SlackService::PipelineMessage do
     let(:duration) { 10 }
 
     it 'returns a message with information about failed build' do
-      message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 10 seconds'
+      message = '<example.gitlab.com|project_name>: Pipeline <example.gitlab.com/pipelines/123|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker failed in 10 seconds'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
@@ -53,7 +53,7 @@ describe SlackService::PipelineMessage do
     let(:duration) { 1 }
 
     it 'returns seconds as singular when there is only one' do
-      message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 1 second'
+      message = '<example.gitlab.com|project_name>: Pipeline <example.gitlab.com/pipelines/123|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker failed in 1 second'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)

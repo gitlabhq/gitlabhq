@@ -10,7 +10,7 @@ describe SlackService::BuildMessage do
       tag: false,
 
       project_name: 'project_name',
-      project_url: 'somewhere.com',
+      project_url: 'example.gitlab.com',
 
       commit: {
         status: status,
@@ -26,7 +26,7 @@ describe SlackService::BuildMessage do
     let(:duration) { 10 }
 
     it 'returns a message with information about succeeded build' do
-      message = '<somewhere.com|project_name>: Commit <somewhere.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker passed in 10 seconds'
+      message = '<example.gitlab.com|project_name>: Commit <example.gitlab.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker passed in 10 seconds'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
@@ -40,7 +40,7 @@ describe SlackService::BuildMessage do
     let(:duration) { 10 }
 
     it 'returns a message with information about failed build' do
-      message = '<somewhere.com|project_name>: Commit <somewhere.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 10 seconds'
+      message = '<example.gitlab.com|project_name>: Commit <example.gitlab.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker failed in 10 seconds'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
@@ -54,7 +54,7 @@ describe SlackService::BuildMessage do
     let(:duration) { 1 }
 
     it 'returns seconds as singular when there is only one' do
-      message = '<somewhere.com|project_name>: Commit <somewhere.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 1 second'
+      message = '<example.gitlab.com|project_name>: Commit <example.gitlab.com/commit/97de212e80737a608d939f648d959671fb0a0142/builds|97de212e> of <example.gitlab.com/commits/develop|develop> branch by hacker failed in 1 second'
 
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
