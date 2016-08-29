@@ -78,12 +78,16 @@ module Ci
       }
     end
 
-    def self.errors(content)
-      begin
-        Ci::GitlabCiYamlProcessor.new(content)
-        nil
-      rescue ValidationError, Psych::SyntaxError => e
-        e.message
+    def self.validation_message(content)
+      if content.blank?
+        'Please provide content of .gitlab-ci.yml'
+      else
+        begin
+          Ci::GitlabCiYamlProcessor.new(content)
+          nil
+        rescue ValidationError, Psych::SyntaxError => e
+          e.message
+        end
       end
     end
 

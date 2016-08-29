@@ -7,13 +7,10 @@ module Ci
 
     def create
       @content = params[:content]
+      @error = Ci::GitlabCiYamlProcessor.validation_message(@content)
 
-      if @content.blank?
-        @status = false
-        @error = "Please provide content of .gitlab-ci.yml"
-      elsif !Ci::GitlabCiYamlProcessor.errors(@content).nil?
-        @status = false
-        @error = Ci::GitlabCiYamlProcessor.errors(@content)
+      unless @error.blank?
+        @status = @error.blank?
       else
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages
