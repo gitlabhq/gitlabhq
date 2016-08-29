@@ -2,7 +2,7 @@ module Awardable
   extend ActiveSupport::Concern
 
   included do
-    has_many :award_emoji, -> { includes(:user) }, as: :awardable, dependent: :destroy
+    has_many :award_emoji, -> { includes(:user).order(:id) }, as: :awardable, dependent: :destroy
 
     if self < Participable
       # By default we always load award_emoji user association

@@ -45,4 +45,14 @@ describe Issue, "Awardable" do
       expect { issue.toggle_award_emoji("thumbsdown", award_emoji.user) }.to change { AwardEmoji.count }.by(-1)
     end
   end
+
+  describe 'querying award_emoji on an Awardable' do
+    let(:issue) { create(:issue) }
+
+    it 'sorts in ascending fashion' do
+      create_list(:award_emoji, 3, awardable: issue)
+
+      expect(issue.award_emoji).to eq issue.award_emoji.sort_by(&:id)
+    end
+  end
 end
