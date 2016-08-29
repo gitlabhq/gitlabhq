@@ -60,7 +60,7 @@ module Ci
         #  - before script behaves differently than after script
         #  - after script returns an array of commands
         #  - before script should be a concatenated command
-        commands: [job[:before_script] || @before_script, job[:script]].flatten.compact.join("\n"),
+        commands: [job[:before_script], job[:script]].flatten.compact.join("\n"),
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
@@ -68,12 +68,12 @@ module Ci
         environment: job[:environment],
         yaml_variables: yaml_variables(name),
         options: {
-          image: job[:image] || @image,
-          services: job[:services] || @services,
+          image: job[:image],
+          services: job[:services],
           artifacts: job[:artifacts],
-          cache: job[:cache] || @cache,
+          cache: job[:cache],
           dependencies: job[:dependencies],
-          after_script: job[:after_script] || @after_script,
+          after_script: job[:after_script],
         }.compact
       }
     end
