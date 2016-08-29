@@ -14,7 +14,7 @@ describe Gitlab::Ci::Config::Node::Global do
   end
 
   context 'when hash is valid' do
-    context 'when all entries defined' do
+    context 'when some entries defined' do
       let(:hash) do
         { before_script: ['ls', 'pwd'],
           image: 'ruby:2.2',
@@ -24,7 +24,7 @@ describe Gitlab::Ci::Config::Node::Global do
           stages: ['build', 'pages'],
           cache: { key: 'k', untracked: true, paths: ['public/'] },
           rspec: { script: %w[rspec ls] },
-          spinach: { script: 'spinach' } }
+          spinach: { before_script: [], variables: {}, script: 'spinach' } }
       end
 
       describe '#compose!' do
@@ -75,6 +75,12 @@ describe Gitlab::Ci::Config::Node::Global do
 
       context 'when composed' do
         before { global.compose! }
+
+        describe '#errors' do
+          it 'has no errors' do
+            expect(global.errors).to be_empty
+          end
+        end
 
         describe '#before_script' do
           it 'returns correct script' do
@@ -135,12 +141,24 @@ describe Gitlab::Ci::Config::Node::Global do
         describe '#jobs' do
           it 'returns jobs configuration' do
             expect(global.jobs).to eq(
-              rspec: { name: :rspec,
-                       script: %w[rspec ls],
-                       stage: 'test' },
+              rspec: { script: %w[rspec ls],
+                       name: :rspec,
+                       before_script: ['ls', 'pwd'],
+                       image: 'ruby:2.2',
+                       services: ['postgres:9.1', 'mysql:5.5'],
+                       stage: 'test',
+                       cache: { key: 'k', untracked: true, paths: ['public/'] },
+                       variables: { VAR: 'value' },
+                       after_script: ['make clean'] },
               spinach: { name: :spinach,
                          script: %w[spinach],
-                         stage: 'test' }
+                         before_script: [],
+                         image: 'ruby:2.2',
+                         services: ['postgres:9.1', 'mysql:5.5'],
+                         stage: 'test',
+                         cache: { key: 'k', untracked: true, paths: ['public/'] },
+                         variables: {},
+                         after_script: ['make clean'] },
             )
           end
         end

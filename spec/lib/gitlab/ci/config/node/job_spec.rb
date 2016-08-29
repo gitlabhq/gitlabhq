@@ -3,9 +3,9 @@ require 'spec_helper'
 describe Gitlab::Ci::Config::Node::Job do
   let(:entry) { described_class.new(config, name: :rspec) }
 
-  before { entry.compose! }
-
   describe 'validations' do
+    before { entry.compose! }
+
     context 'when entry config value is correct' do
       let(:config) { { script: 'rspec' } }
 
@@ -60,6 +60,8 @@ describe Gitlab::Ci::Config::Node::Job do
   end
 
   describe '#value' do
+    before { entry.compose! }
+
     context 'when entry is correct' do
       let(:config) do
         { before_script: %w[ls pwd],
@@ -81,6 +83,43 @@ describe Gitlab::Ci::Config::Node::Job do
   describe '#relevant?' do
     it 'is a relevant entry' do
       expect(entry).to be_relevant
+    end
+  end
+
+  describe '#compose!' do
+    let(:unspecified) { double('unspecified', 'specified?' => false) }
+
+    let(:specified) do
+      double('specified', 'specified?' => true, value: 'specified')
+    end
+
+    let(:deps) { spy('deps', '[]' => unspecified) }
+
+    context 'when job config overrides global config' do
+      before { entry.compose!(deps) }
+
+      let(:config) do
+        { image: 'some_image', cache: { key: 'test' } }
+      end
+
+      it 'overrides global config' do
+        expect(entry[:image].value).to eq 'some_image'
+        expect(entry[:cache].value).to eq(key: 'test')
+      end
+    end
+
+    context 'when job config does not override global config' do
+      before do
+        allow(deps).to receive('[]').with(:image).and_return(specified)
+        entry.compose!(deps)
+      end
+
+      let(:config) { { script: 'ls', cache: { key: 'test' } } }
+
+      it 'uses config from global entry' do
+        expect(entry[:image].value).to eq 'specified'
+        expect(entry[:cache].value).to eq(key: 'test')
+      end
     end
   end
 end

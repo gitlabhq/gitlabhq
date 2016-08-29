@@ -90,6 +90,8 @@ module Gitlab
 
               @entries.delete(:type)
             end
+
+            inherit!(deps)
           end
 
           def name
@@ -101,6 +103,19 @@ module Gitlab
           end
 
           private
+
+          def inherit!(deps)
+            return unless deps
+
+            self.class.nodes.each_key do |key|
+              global_entry = deps[key]
+              job_entry = @entries[key]
+
+              if global_entry.specified? && !job_entry.specified?
+                @entries[key] = global_entry
+              end
+            end
+          end
 
           def to_hash
             { name: name,
