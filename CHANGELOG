@@ -20,6 +20,7 @@ v 8.13.0 (unreleased)
   - Close open merge request without source project (Katarzyna Kobierska Ula Budziszewska)
   - Use a ConnectionPool for Rails.cache on Sidekiq servers
   - Replace `alias_method_chain` with `Module#prepend`
+  - Enable GitLab Import/Export for non-admin users.
   - Preserve label filters when sorting !6136 (Joseph Frazier)
   - Only update issuable labels if they have been changed
   - Take filters in account in issuable counters. !6496
