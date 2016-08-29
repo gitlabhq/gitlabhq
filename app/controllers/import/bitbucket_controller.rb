@@ -35,15 +35,10 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def create
-    @repo_id = params[:repo_id] || ""
-    repo = client.project(@repo_id.gsub("___", "/"))
-    @project_name = repo["slug"]
-
-    repo_owner = repo["owner"]
-    repo_owner = current_user.username if repo_owner == client.user["user"]["username"]
-    @target_namespace = params[:new_namespace].presence || repo_owner
-
-    namespace = get_or_create_namespace || (render and return)
+    @repo_id = params[:repo_id].to_s
+    repo = client.project(@repo_id.gsub('___', '/'))
+    @project_name = repo['slug']
+    namespace = find_or_create_namespace(repo['owner'], client.user['user']['username']) || (render and return)
 
     unless Gitlab::BitbucketImport::KeyAdder.new(repo, current_user, access_params).execute
       @access_denied = true

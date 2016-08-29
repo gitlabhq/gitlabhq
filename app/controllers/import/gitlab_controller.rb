@@ -26,13 +26,8 @@ class Import::GitlabController < Import::BaseController
   def create
     @repo_id = params[:repo_id].to_i
     repo = client.project(@repo_id)
-    @project_name = repo["name"]
-
-    repo_owner = repo["namespace"]["path"]
-    repo_owner = current_user.username if repo_owner == client.user["username"]
-    @target_namespace = params[:new_namespace].presence || repo_owner
-
-    namespace = get_or_create_namespace || (render and return)
+    @project_name = repo['name']
+    namespace = find_or_create_namespace(repo['namespace']['path'], client.user['username']) || (render and return)
 
     @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
   end

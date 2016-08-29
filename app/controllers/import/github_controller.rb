@@ -41,12 +41,7 @@ class Import::GithubController < Import::BaseController
     @repo_id = params[:repo_id].to_i
     repo = client.repo(@repo_id)
     @project_name = repo.name
-
-    repo_owner = repo.owner.login
-    repo_owner = current_user.username if repo_owner == client.user.login
-    @target_namespace = params[:new_namespace].presence || repo_owner
-
-    namespace = get_or_create_namespace || (render and return)
+    namespace = find_or_create_namespace(repo.owner.login, client.user.login) || (render and return)
 
     @project = Gitlab::GithubImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
   end
