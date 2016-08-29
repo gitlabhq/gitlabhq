@@ -11,12 +11,12 @@ describe Issues::ReopenService, services: true do
         project.team << [guest, :guest]
 
         perform_enqueued_jobs do
-          @issue = described_class.new(project, guest).execute(issue)
+          described_class.new(project, guest).execute(issue)
         end
       end
 
       it 'does not reopen the issue' do
-        expect(@issue).to be_closed
+        expect(issue).to be_closed
       end
     end
 
