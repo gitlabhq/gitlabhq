@@ -258,7 +258,13 @@ module Ci
     end
 
     def update_duration
-      self.duration = calculate_duration
+      calculated_status = %w[success failed running canceled]
+      calculated_builds = builds.latest.where(status: calculated_status)
+      calculator = PipelineDuration.from_builds(calculated_builds)
+
+      self.duration = calculator.duration
+      self.pending_duration =
+        started_at - created_at + calculator.pending_duration
     end
 
     def execute_hooks
