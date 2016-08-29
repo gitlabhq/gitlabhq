@@ -22,7 +22,7 @@ require 'spec_helper'
 
 describe SlackService, models: true do
   let(:slack) { SlackService.new }
-  let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
+  let(:webhook_url) { 'https://example.gitlab.com/' }
 
   describe "Associations" do
     it { is_expected.to belong_to :project }
