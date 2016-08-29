@@ -7,6 +7,10 @@
   var INVALID_URL = 'http://goesnowhere.nothing/whereami';
   var $boxClosed, $boxOpen, $btnClose, $btnReopen;
 
+  fixture.preload('issues/closed-issue.html');
+  fixture.preload('issues/issue-with-task-list.html');
+  fixture.preload('issues/open-issue.html');
+
   function expectErrorMessage() {
     var $flashMessage = $('div.flash-alert');
     expect($flashMessage).toExist();
@@ -55,33 +59,33 @@
   }
 
   describe('Issue', function() {
-    return describe('task lists', function() {
-      fixture.preload('issues_show.html');
+    describe('task lists', function() {
+      fixture.load('issues/issue-with-task-list.html');
       beforeEach(function() {
-        fixture.load('issues_show.html');
-        return this.issue = new Issue();
+        this.issue = new Issue();
       });
+
       it('modifies the Markdown field', function() {
         spyOn(jQuery, 'ajax').and.stub();
         $('input[type=checkbox]').attr('checked', true).trigger('change');
-        return expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
+        expect($('.js-task-list-field').val()).toBe('- [x] Task List Item');
       });
-      return it('submits an ajax request on tasklist:changed', function() {
+      
+      it('submits an ajax request on tasklist:changed', function() {
         spyOn(jQuery, 'ajax').and.callFake(function(req) {
           expect(req.type).toBe('PATCH');
-          expect(req.url).toBe('/foo');
-          return expect(req.data.issue.description).not.toBe(null);
+          expect(req.url).toBe('https://fixture.invalid/namespace3/project3/issues/1.json');
+          expect(req.data.issue.description).not.toBe(null);
         });
-        return $('.js-task-list-field').trigger('tasklist:changed');
+
+        $('.js-task-list-field').trigger('tasklist:changed');
       });
     });
   });
 
   describe('close issue', function() {
-    fixture.preload('issues_show.html');
-
     beforeEach(function() {
-      fixture.load('issues_show.html');
+      fixture.load('issues/open-issue.html');
       findElements();
       this.issue = new Issue();
 
@@ -134,15 +138,12 @@
   });
 
   describe('reopen issue', function() {
-    fixture.preload('issues_show.html');
-
     beforeEach(function() {
-      fixture.load('issues_show.html');
+      fixture.load('issues/closed-issue.html');
       findElements();
       this.issue = new Issue();
 
-      // TODO: fixture is an open issue, we should replace it by a closed issue
-      expectIssueState(true);
+      expectIssueState(false);
     });
 
     it('reopens an issue', function() {
