@@ -58,7 +58,7 @@ describe SlackService::PipelineMessage do
     end
   end
 
-  def build_message(status_text=status)
+  def build_message(status_text = status)
     "<example.gitlab.com|project_name>:" \
     " Pipeline <example.gitlab.com/pipelines/123|97de212e>" \
     " of <example.gitlab.com/commits/develop|develop> branch" \

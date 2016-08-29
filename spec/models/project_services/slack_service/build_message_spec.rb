@@ -59,7 +59,7 @@ describe SlackService::BuildMessage do
     end
   end
 
-  def build_message(status_text=status)
+  def build_message(status_text = status)
     "<example.gitlab.com|project_name>:" \
     " Commit <example.gitlab.com/commit/" \
     "97de212e80737a608d939f648d959671fb0a0142/builds|97de212e>" \
