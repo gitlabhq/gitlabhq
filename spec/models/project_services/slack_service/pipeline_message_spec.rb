@@ -26,6 +26,7 @@ describe SlackService::PipelineMessage do
 
     it 'returns a message with information about succeeded build' do
       message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker passed in 10 seconds'
+
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
       expect(subject.attachments).to eq([text: message, color: color])
@@ -39,6 +40,7 @@ describe SlackService::PipelineMessage do
 
     it 'returns a message with information about failed build' do
       message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 10 seconds'
+
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
       expect(subject.attachments).to eq([text: message, color: color])
@@ -52,6 +54,7 @@ describe SlackService::PipelineMessage do
 
     it 'returns seconds as singular when there is only one' do
       message = '<somewhere.com|project_name>: Pipeline <somewhere.com/pipelines/123|97de212e> of <somewhere.com/commits/develop|develop> branch by hacker failed in 1 second'
+
       expect(subject.pretext).to be_empty
       expect(subject.fallback).to eq(message)
       expect(subject.attachments).to eq([text: message, color: color])
