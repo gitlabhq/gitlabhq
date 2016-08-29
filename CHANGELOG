@@ -18,6 +18,7 @@ v 8.12.0 (unreleased)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
   - Fix inconsistent background color for filter input field (ClemMakesApps)
+  - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
