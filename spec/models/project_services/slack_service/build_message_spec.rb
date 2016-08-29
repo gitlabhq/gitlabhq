@@ -22,7 +22,7 @@ describe SlackService::BuildMessage do
 
   let(:message) { build_message }
 
-  context 'succeeded' do
+  context 'build succeeded' do
     let(:status) { 'success' }
     let(:color) { 'good' }
     let(:duration) { 10 }
@@ -35,7 +35,7 @@ describe SlackService::BuildMessage do
     end
   end
 
-  context 'failed' do
+  context 'build failed' do
     let(:status) { 'failed' }
     let(:color) { 'danger' }
     let(:duration) { 10 }
