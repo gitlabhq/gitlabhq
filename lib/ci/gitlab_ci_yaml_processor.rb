@@ -55,12 +55,7 @@ module Ci
       {
         stage_idx: @stages.index(job[:stage]),
         stage: job[:stage],
-        ##
-        # Refactoring note:
-        #  - before script behaves differently than after script
-        #  - after script returns an array of commands
-        #  - before script should be a concatenated command
-        commands: [job[:before_script], job[:script]].flatten.compact.join("\n"),
+        commands: job[:commands],
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,

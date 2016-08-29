@@ -80,7 +80,7 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts
+                  :artifacts, :commands
 
           def compose!(deps = nil)
             super do
@@ -102,6 +102,10 @@ module Gitlab
             @config.merge(to_hash.compact)
           end
 
+          def commands
+            (before_script_value.to_a + script_value.to_a).join("\n")
+          end
+
           private
 
           def inherit!(deps)
@@ -121,6 +125,7 @@ module Gitlab
             { name: name,
               before_script: before_script,
               script: script,
+              commands: commands,
               image: image,
               services: services,
               stage: stage,

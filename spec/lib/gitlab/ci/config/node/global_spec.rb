@@ -141,9 +141,10 @@ describe Gitlab::Ci::Config::Node::Global do
         describe '#jobs' do
           it 'returns jobs configuration' do
             expect(global.jobs).to eq(
-              rspec: { script: %w[rspec ls],
-                       name: :rspec,
+              rspec: { name: :rspec,
+                       script: %w[rspec ls],
                        before_script: ['ls', 'pwd'],
+                       commands: "ls\npwd\nrspec\nls",
                        image: 'ruby:2.2',
                        services: ['postgres:9.1', 'mysql:5.5'],
                        stage: 'test',
@@ -151,8 +152,9 @@ describe Gitlab::Ci::Config::Node::Global do
                        variables: { VAR: 'value' },
                        after_script: ['make clean'] },
               spinach: { name: :spinach,
-                         script: %w[spinach],
                          before_script: [],
+                         script: %w[spinach],
+                         commands: 'spinach',
                          image: 'ruby:2.2',
                          services: ['postgres:9.1', 'mysql:5.5'],
                          stage: 'test',

@@ -61,9 +61,11 @@ describe Gitlab::Ci::Config::Node::Jobs do
         expect(entry.value).to eq(
           rspec: { name: :rspec,
                    script: %w[rspec],
+                   commands: 'rspec',
                    stage: 'test' },
           spinach: { name: :spinach,
                      script: %w[spinach],
+                     commands: 'spinach',
                      stage: 'test' })
       end
     end
