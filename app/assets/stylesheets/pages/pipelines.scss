@@ -321,6 +321,14 @@
 
       a {
         color: $layout-link-gray;
+        text-decoration: none;
+
+        &:hover {
+          .ci-status-text {
+            text-decoration: underline;
+          }
+        }
+
       }
     }
 
