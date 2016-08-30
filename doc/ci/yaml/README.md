@@ -39,7 +39,7 @@ If you want a quick introduction to GitLab CI, follow our
     - [before_script and after_script](#before_script-and-after_script)
 - [Git Strategy](#git-strategy)
 - [Shallow cloning](#shallow-cloning)
-- [Hidden jobs](#hidden-jobs)
+- [Hidden keys](#hidden-keys)
 - [Special YAML features](#special-yaml-features)
     - [Anchors](#anchors)
 - [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
@@ -934,23 +934,26 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-## Hidden jobs
+## Hidden keys
 
 >**Note:**
 Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-Jobs that start with a dot (`.`) will be not processed by GitLab CI. You can
+Keys that start with a dot (`.`) will be not processed by GitLab CI. You can
 use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden jobs
+[special YAML features](#special-yaml-features) and transform the hidden keys
 into templates.
 
-In the following example, `.job_name` will be ignored:
+In the following example, `.key_name` will be ignored:
 
 ```yaml
-.job_name:
+.key_name:
   script:
     - rake spec
 ```
+
+Hidden keys can be hashes like normal CI jobs, but you are also allowed to use
+different types of structures to leverage special YAML features.
 
 ## Special YAML features
 
@@ -967,7 +970,7 @@ Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
 YAML also has a handy feature called 'anchors', which let you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden jobs](#hidden-jobs)
+properties, and is a perfect example to be used with [hidden keys](#hidden-keys)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,
@@ -975,7 +978,7 @@ The following example uses anchors and map merging. It will create two jobs,
 having their own custom `script` defined:
 
 ```yaml
-.job_template: &job_definition  # Hidden job that defines an anchor named 'job_definition'
+.job_template: &job_definition  # Hidden key that defines an anchor named 'job_definition'
   image: ruby:2.1
   services:
     - postgres
@@ -1081,7 +1084,7 @@ test:mysql:
     - ruby
 ```
 
-You can see that the hidden jobs are conveniently used as templates.
+You can see that the hidden keys are conveniently used as templates.
 
 ## Validate the .gitlab-ci.yml
 
