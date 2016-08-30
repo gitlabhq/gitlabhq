@@ -29,7 +29,7 @@ module MergeRequests
         merge_request.errors.add(:base, message) unless message.nil?
       end
 
-      return build_failed(merge_request) if invalid?(merge_request)
+      return build_failed(merge_request) unless merge_request.valid?
 
       compare = CompareService.new.execute(
         merge_request.source_project,
@@ -99,12 +99,6 @@ module MergeRequests
       end
 
       merge_request
-    end
-
-    def invalid?(merge_request)
-      merge_request.target_project.above_size_limit? ||
-        merge_request.target_project.blank? ||
-        merge_request.source_branch.blank?
     end
 
     def build_failed(merge_request)

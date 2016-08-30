@@ -34,6 +34,14 @@ module Files
       error(ex.message)
     end
 
+    def repository_size_limit
+      Gitlab::CurrentSettings.current_application_settings.repository_size_limit
+    end
+
+    def size_limit_error_message
+      "Your changes could not be committed, because the repository's size (#{project.repository_size}MB) has exceeded its size limit of #{repository_size_limit}MB by #{project.size_to_remove}MB"
+    end
+
     private
 
     def different_branch?

@@ -29,10 +29,6 @@ module Gitlab
         return build_status_object(false, 'The project you were looking for could not be found.')
       end
 
-      if project.above_size_limit?
-        return build_status_object(false, render_above_size_limit_message)
-      end
-
       case cmd
       when *DOWNLOAD_COMMANDS
         download_access_check
@@ -79,6 +75,8 @@ module Gitlab
       unless project.repository.exists?
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
+
+      return build_status_object(false, render_above_size_limit_message) if project.above_size_limit?
 
       changes_list = Gitlab::ChangesList.new(changes)
 
