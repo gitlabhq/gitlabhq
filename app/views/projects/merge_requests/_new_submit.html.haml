@@ -18,6 +18,7 @@
   = f.hidden_field :target_branch
 
 .mr-compare.merge-request
+<<<<<<< 4a8cb230c6ba28ccdcd6da91855005e4fa0c46bf
   - if @commits.empty?
     .commits-empty
       %h4
@@ -30,6 +31,10 @@
           Commits
           %span.badge= @commits.size
       - if @pipeline
+        %li.builds-tab
+          = link_to url_for(params), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
+            Pipelines
+            %span.badge= @statuses.size
         %li.builds-tab
           = link_to url_for(params), data: {target: 'div#builds', action: 'builds', toggle: 'tab'} do
             Builds
@@ -47,6 +52,8 @@
       - if @pipeline
         #builds.builds.tab-pane
           = render "projects/merge_requests/show/builds"
+        #pipelines.pipelines.tab-pane
+          = render "projects/merge_requests/show/pipelines"
 
   .mr-loading-status
     = spinner
