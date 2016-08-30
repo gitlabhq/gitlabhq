@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
+
   let(:user)        { create(:user) }
   let(:user2)       { create(:user) }
   let(:non_member)  { create(:user) }
@@ -478,6 +479,18 @@ describe API::API, api: true  do
       expect(json_response['labels']).to eq(['label', 'label2'])
     end
 
+    it "sends notifications for subscribers of newly added labels" do
+      label = project.labels.first
+      label.toggle_subscription(user2)
+
+      perform_enqueued_jobs do
+        post api("/projects/#{project.id}/issues", user),
+          title: 'new issue', labels: label.title
+      end
+
+      should_email(user2)
+    end
+
     it "returns a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
       expect(response).to have_http_status(400)
@@ -631,6 +644,18 @@ describe API::API, api: true  do
           title: 'updated title'
       expect(response).to have_http_status(200)
       expect(json_response['labels']).to eq([label.title])
+    end
+
+    it "sends notifications for subscribers of newly added labels when issue is updated" do
+      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
+      label.toggle_subscription(user2)
+
+      perform_enqueued_jobs do
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title', labels: label.title
+      end
+
+      should_email(user2)
     end
 
     it 'removes all labels' do

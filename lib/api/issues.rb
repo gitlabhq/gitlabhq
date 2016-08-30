@@ -154,21 +154,15 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
-        project = user_project
+        attrs[:labels] = params[:labels] if params[:labels]
 
-        issue = ::Issues::CreateService.new(project, current_user, attrs.merge(request: request, api: true)).execute
+        issue = ::Issues::CreateService.new(user_project, current_user, attrs.merge(request: request, api: true)).execute
 
         if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
 
         if issue.valid?
-          # Find or create labels and attach to issue. Labels are valid because
-          # we already checked its name, so there can't be an error here
-          if params[:labels].present?
-            issue.add_labels_by_names(params[:labels].split(','))
-          end
-
           present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
@@ -202,17 +196,11 @@ module API
           render_api_error!({ labels: errors }, 400)
         end
 
+        attrs[:labels] = params[:labels] if params[:labels]
+
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 
         if issue.valid?
-          # Find or create labels and attach to issue. Labels are valid because
-          # we already checked its name, so there can't be an error here
-          if params[:labels] && can?(current_user, :admin_issue, user_project)
-            issue.remove_labels
-            # Create and add labels to the new created issue
-            issue.add_labels_by_names(params[:labels].split(','))
-          end
-
           present issue, with: Entities::Issue, current_user: current_user
         else
           render_validation_error!(issue)
