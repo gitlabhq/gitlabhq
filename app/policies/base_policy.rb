@@ -59,7 +59,7 @@ class BasePolicy
       begin
         policy_class = "#{klass.name}Policy".constantize
 
-        # NB: the < operator here tests whether policy_class
+        # NOTE: the < operator here tests whether policy_class
         # inherits from BasePolicy
         return policy_class if policy_class < BasePolicy
       rescue NameError
