@@ -91,13 +91,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: [:allow_broken, :importing?]
-  validate :validate_fork
+  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
+  validate :validate_fork, unless: :closed_without_fork?
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -305,19 +305,22 @@ class MergeRequest < ActiveRecord::Base
 
   def validate_fork
     return true unless target_project && source_project
+    return true if target_project == source_project
+    return true unless forked_source_project_missing?
 
-    if target_project == source_project
-      true
-    else
-      # If source and target projects are different
-      # we should check if source project is actually a fork of target project
-      if source_project.forked_from?(target_project)
-        true
-      else
-        errors.add :validate_fork,
-                   'Source project is not a fork of target project'
-      end
-    end
+    errors.add :validate_fork,
+               'Source project is not a fork of the target project'
+  end
+
+  def closed_without_fork?
+    closed? && forked_source_project_missing?
+  end
+
+  def forked_source_project_missing?
+    return false unless for_fork?
+    return true unless source_project
+
+    !source_project.forked_from?(target_project)
   end
 
   def ensure_merge_request_diff
