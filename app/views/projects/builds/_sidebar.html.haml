@@ -94,8 +94,9 @@
 
 
           - @build.trigger_request.variables.each do |key, value|
-            .hide.js-build-variable #{key} 
-            .hide.js-build-value  #{value}
+            .hide.js-build
+              .js-build-variable= key 
+              .js-build-value= value
 
     .block
       .title

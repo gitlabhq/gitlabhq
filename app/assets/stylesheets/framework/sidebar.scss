@@ -228,14 +228,12 @@ header.header-pinned-nav {
 }
 
 .js-build-variable {
-  color: #c7254e;
-  font-size: 100%;
-  border-radius: 5px;
+  color: $code-color;
 }
 
 .js-build-value {
   padding: 2px 4px;
   font-size: 100%;
-  color: #000;
-  background-color: #fff;
+  color: $black;
+  background-color: $white-light;
 }

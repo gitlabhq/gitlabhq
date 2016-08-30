@@ -88,6 +88,7 @@ v 8.12.0 (unreleased)
   - Fixed invisible scroll controls on build page on iPhone
   - Fix error on raw build trace download for old builds stored in database !4822
   - Refactor the triggers page and documentation !6217
+  - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
@@ -130,9 +131,6 @@ v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
   - Use gitlab-workhorse 0.7.11 !5983
   - Does not halt the GitHub import process when an error occurs. !5763
-  - Show value variables onclick (Katarzyna Kobierska Ula Budziszewska)
-
-v 8.11.1 (unreleased)
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
 
