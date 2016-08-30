@@ -565,10 +565,6 @@
         } else {
           field.remove();
         }
-        if (this.options.toggleLabel) {
-          this.updateLabel(selectedObject, el, this);
-        }
-        return selectedObject;
       } else if (el.hasClass(INDETERMINATE_CLASS)) {
         el.addClass(ACTIVE_CLASS);
         el.removeClass(INDETERMINATE_CLASS);
@@ -578,7 +574,6 @@
         if (!field.length && fieldName) {
           this.addInput(fieldName, value, selectedObject);
         }
-        return selectedObject;
       } else {
         if (!this.options.multiSelect || el.hasClass('dropdown-clear-active')) {
           this.dropdown.find("." + ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
@@ -590,9 +585,6 @@
           field.remove();
         }
         el.addClass(ACTIVE_CLASS);
-        if (this.options.toggleLabel) {
-          this.updateLabel(selectedObject, el, this);
-        }
         if (value != null) {
           if (!field.length && fieldName) {
             this.addInput(fieldName, value, selectedObject);
@@ -600,8 +592,14 @@
             field.val(value).trigger('change');
           }
         }
-        return selectedObject;
       }
+
+      // Update label right after input has been added
+      if (this.options.toggleLabel) {
+        this.updateLabel(selectedObject, el, this);
+      }
+
+      return selectedObject;
     };
 
     GitLabDropdown.prototype.addInput = function(fieldName, value, selectedObject) {
