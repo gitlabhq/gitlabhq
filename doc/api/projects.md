@@ -452,7 +452,7 @@ Parameters:
 - `import_url` (optional)
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
-- `enable_lfs` (optional)
+- `lfs_enabled` (optional)
 
 ### Create project for user
 
@@ -479,7 +479,7 @@ Parameters:
 - `import_url` (optional)
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
-- `enable_lfs` (optional)
+- `lfs_enabled` (optional)
 
 ### Edit project
 
@@ -507,7 +507,7 @@ Parameters:
 - `visibility_level` (optional)
 - `public_builds` (optional)
 - `only_allow_merge_if_build_succeeds` (optional)
-- `enable_lfs` (optional)
+- `lfs_enabled` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.

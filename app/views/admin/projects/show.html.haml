@@ -75,9 +75,10 @@
               = last_commit(@project)
 
           %li
-            %span.light LFS status:
+            %span.light Git LFS status:
             %strong
               = project_lfs_status(@project)
+              = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
         - else
           %li
             %span.light repository:

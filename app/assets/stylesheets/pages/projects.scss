@@ -311,6 +311,14 @@ a.deploy-project-label {
   color: $gl-success;
 }
 
+.lfs-enabled {
+  color: $gl-success;
+}
+
+.lfs-disabled {
+  color: $gl-warning;
+}
+
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   background: transparent;

@@ -69,7 +69,7 @@ describe 'Git LFS API and storage' do
 
       describe 'LFS disabled in project' do
         before do
-          project.update_attribute(:enable_lfs, false)
+          project.update_attribute(:lfs_enabled, false)
         end
 
         it 'responds with a 501 message on upload' do
@@ -87,7 +87,7 @@ describe 'Git LFS API and storage' do
 
       describe 'LFS enabled in project' do
         before do
-          project.update_attribute(:enable_lfs, true)
+          project.update_attribute(:lfs_enabled, true)
         end
 
         it 'responds with a 501 message on upload' do
@@ -112,7 +112,7 @@ describe 'Git LFS API and storage' do
 
       describe 'LFS disabled in project' do
         before do
-          project.update_attribute(:enable_lfs, false)
+          project.update_attribute(:lfs_enabled, false)
         end
 
         it 'responds with a 403 message on upload' do
@@ -132,7 +132,7 @@ describe 'Git LFS API and storage' do
 
       describe 'LFS enabled in project' do
         before do
-          project.update_attribute(:enable_lfs, true)
+          project.update_attribute(:lfs_enabled, true)
         end
 
         it 'responds with a 200 message on upload' do

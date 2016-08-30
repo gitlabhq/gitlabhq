@@ -189,11 +189,11 @@ module ProjectsHelper
 
   def project_lfs_status(project)
     if project.lfs_enabled?
-      content_tag(:span, class: 'vs-private') do
+      content_tag(:span, class: 'lfs-enabled') do
         'Enabled'
       end
     else
-      content_tag(:span, class: 'vs-internal') do
+      content_tag(:span, class: 'lfs-disabled') do
         'Disabled'
       end
     end
