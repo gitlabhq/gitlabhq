@@ -55,7 +55,7 @@ class Ability
       user_key = user ? user.id : 'anonymous'
       subject_key = subject ? "#{subject.class.name}/#{subject.id}" : 'global'
       key = "/ability/#{user_key}/#{subject_key}"
-      RequestStore[key] ||= Set.new(uncached_allowed(user, subject)).freeze
+      RequestStore[key] ||= uncached_allowed(user, subject).freeze
     end
 
     private

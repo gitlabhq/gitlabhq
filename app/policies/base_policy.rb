@@ -1,4 +1,47 @@
 class BasePolicy
+  class RuleSet
+    attr_reader :can_set, :cannot_set
+    def initialize(can_set, cannot_set)
+      @can_set = can_set
+      @cannot_set = cannot_set
+    end
+
+    def self.empty
+      new(Set.new, Set.new)
+    end
+
+    def can?(ability)
+      @can_set.include?(ability) && !@cannot_set.include?(ability)
+    end
+
+    def include?(ability)
+      can?(ability)
+    end
+
+    def to_set
+      @can_set - @cannot_set
+    end
+
+    def merge(other)
+      @can_set.merge(other.can_set)
+      @cannot_set.merge(other.cannot_set)
+    end
+
+    def can!(*abilities)
+      @can_set.merge(abilities)
+    end
+
+    def cannot!(*abilities)
+      @cannot_set.merge(abilities)
+    end
+
+    def freeze
+      @can_set.freeze
+      @cannot_set.freeze
+      super
+    end
+  end
+
   def self.abilities(user, subject)
     new(user, subject).abilities
   end
@@ -30,7 +73,7 @@ class BasePolicy
   end
 
   def abilities
-    return [] if @user && @user.blocked?
+    return RuleSet.empty if @user && @user.blocked?
     return anonymous_abilities if @user.nil?
     collect_rules { rules }
   end
@@ -44,27 +87,26 @@ class BasePolicy
   end
 
   def delegate!(new_subject)
-    @can.merge(Ability.allowed(@user, new_subject))
+    @rule_set.merge(Ability.allowed(@user, new_subject))
   end
 
   def can?(rule)
-    @can.include?(rule) && !@cannot.include?(rule)
+    @rule_set.can?(rule)
   end
 
   def can!(*rules)
-    @can.merge(rules)
+    @rule_set.can!(*rules)
   end
 
   def cannot!(*rules)
-    @cannot.merge(rules)
+    @rule_set.cannot!(*rules)
   end
 
   private
 
   def collect_rules(&b)
-    @can = Set.new
-    @cannot = Set.new
+    @rule_set = RuleSet.empty
     yield
-    @can - @cannot
+    @rule_set
   end
 end
