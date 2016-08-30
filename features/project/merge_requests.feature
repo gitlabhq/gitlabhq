@@ -24,7 +24,7 @@ Feature: Project Merge Requests
   Scenario: I should see target branch when it is different from default
     Given project "Shop" have "Bug NS-06" open merge request
     When I visit project "Shop" merge requests page
-    Then I should see "other_branch" branch
+    Then I should see "feature_conflict" branch
 
   Scenario: I should not see the numbers of diverged commits if the branch is rebased on the target
     Given project "Shop" have "Bug NS-07" open merge request with rebased branch

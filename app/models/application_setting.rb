@@ -154,7 +154,7 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
-      import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
+      import_sources: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,

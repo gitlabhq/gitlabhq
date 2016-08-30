@@ -5,7 +5,7 @@ Introduced in GitLab 8.8.
 
 ## Pipelines
 
-A pipeline is a group of [builds] that get executed in [stages] (batches). All
+A pipeline is a group of [builds] that get executed in [stages] \(batches). All
 of the builds in a stage are executed in parallel (if there are enough
 concurrent [runners]), and if they all succeed, the pipeline moves on to the
 next stage. If one of the builds fails, the next stage is not (usually)

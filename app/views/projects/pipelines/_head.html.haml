@@ -1,19 +1,21 @@
-.nav-links.sub-nav
-  %ul{ class: (container_class) }
-    - if project_nav_tab? :pipelines
-      = nav_link(controller: :pipelines) do
-        = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
-          %span
-            Pipelines
+.scrolling-tabs-container.sub-nav-scroll
+  = render 'shared/nav_scroll'
+  .nav-links.sub-nav.scrolling-tabs
+    %ul{ class: (container_class) }
+      - if project_nav_tab? :pipelines
+        = nav_link(controller: :pipelines) do
+          = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
+            %span
+              Pipelines
 
-    - if project_nav_tab? :builds
-      = nav_link(controller: %w(builds)) do
-        = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
-          %span
-            Builds
+      - if project_nav_tab? :builds
+        = nav_link(controller: %w(builds)) do
+          = link_to project_builds_path(@project), title: 'Builds', class: 'shortcuts-builds' do
+            %span
+              Builds
 
-    - if project_nav_tab? :environments
-      = nav_link(controller: %w(environments)) do
-        = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
-          %span
-            Environments
+      - if project_nav_tab? :environments
+        = nav_link(controller: %w(environments)) do
+          = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
+            %span
+              Environments

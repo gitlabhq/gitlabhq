@@ -84,12 +84,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     apply_diff_view_cookie!
 
-    @merge_request_diff = @merge_request.merge_request_diff
+    @merge_request_diff =
+      if params[:diff_id]
+        @merge_request.merge_request_diffs.find(params[:diff_id])
+      else
+        @merge_request.merge_request_diff
+      end
 
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
-        @diffs = @merge_request.diffs(diff_options)
+        unless @merge_request_diff.latest?
+          # Disable comments if browsing older version of the diff
+          @diff_notes_disabled = true
+        end
+
+        @diffs = @merge_request_diff.diffs(diff_options)
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
       end

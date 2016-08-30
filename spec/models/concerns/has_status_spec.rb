@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Statuseable do
+describe HasStatus do
   before do
     @object = Object.new
-    @object.extend(Statuseable::ClassMethods)
+    @object.extend(HasStatus::ClassMethods)
   end
 
   describe '.status' do
@@ -12,7 +12,7 @@ describe Statuseable do
     end
 
     subject { @object.status }
-    
+
     shared_examples 'build status summary' do
       context 'all successful' do
         let(:statuses) { Array.new(2) { create(type, status: :success) } }

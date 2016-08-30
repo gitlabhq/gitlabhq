@@ -34,7 +34,7 @@ module Ci
     end
 
     def process_build(build, current_status)
-      return false unless Statuseable::COMPLETED_STATUSES.include?(current_status)
+      return false unless HasStatus::COMPLETED_STATUSES.include?(current_status)
 
       if valid_statuses_for_when(build.when).include?(current_status)
         build.enqueue

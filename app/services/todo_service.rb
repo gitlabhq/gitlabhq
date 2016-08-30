@@ -156,7 +156,8 @@ class TodoService
   def mark_todos_as_done_by_ids(ids, current_user)
     todos = current_user.todos.where(id: ids)
 
-    marked_todos = todos.update_all(state: :done)
+    # Only return those that are not really on that state
+    marked_todos = todos.where.not(state: :done).update_all(state: :done)
     current_user.update_todos_count_cache
     marked_todos
   end

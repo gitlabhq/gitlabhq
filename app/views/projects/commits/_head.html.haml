@@ -1,8 +1,5 @@
 .scrolling-tabs-container.sub-nav-scroll
-  .fade-left
-    = icon('angle-left')
-  .fade-right
-    = icon('angle-right')
+  = render 'shared/nav_scroll'
   .nav-links.sub-nav.scrolling-tabs
     %ul{ class: (container_class) }
       = nav_link(controller: %w(tree blob blame edit_tree new_tree find_file)) do

@@ -1640,4 +1640,35 @@ describe Project, models: true do
       expect { project.change_repository_storage('c') }.to raise_error
     end
   end
+
+  describe 'change_head' do
+    let(:project) { create(:project) }
+
+    it 'calls the before_change_head method' do
+      expect(project.repository).to receive(:before_change_head)
+      project.change_head(project.default_branch)
+    end
+
+    it 'creates the new reference with rugged' do
+      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
+                                                                            "refs/heads/#{project.default_branch}",
+                                                                            force: true)
+      project.change_head(project.default_branch)
+    end
+
+    it 'copies the gitattributes' do
+      expect(project.repository).to receive(:copy_gitattributes).with(project.default_branch)
+      project.change_head(project.default_branch)
+    end
+
+    it 'expires the avatar cache' do
+      expect(project.repository).to receive(:expire_avatar_cache).with(project.default_branch)
+      project.change_head(project.default_branch)
+    end
+
+    it 'reloads the default branch' do
+      expect(project).to receive(:reload_default_branch)
+      project.change_head(project.default_branch)
+    end
+  end
 end

@@ -9,12 +9,20 @@
       .light-well
         %h4 CPU
         .data
-          %h1= "#{@cpus} cores"
+          - if @cpus
+            %h1= "#{@cpus.length} cores"
+          - else
+            = icon('warning', class: 'text-warning')
+            Unable to collect CPU info
     .col-sm-4
       .light-well
         %h4 Memory
         .data
-          %h1= "#{number_to_human_size(@mem_used)} / #{number_to_human_size(@mem_total)}"
+          - if @memory
+            %h1= "#{number_to_human_size(@memory.active_bytes)} / #{number_to_human_size(@memory.total_bytes)}"
+          - else
+            = icon('warning', class: 'text-warning')
+            Unable to collect memory info
     .col-sm-4
       .light-well
         %h4 Disks

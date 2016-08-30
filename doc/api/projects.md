@@ -492,7 +492,7 @@ PUT /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `name` (optional) - project name
 - `path` (optional) - repository name for project
 - `description` (optional) - short project description
@@ -523,7 +523,7 @@ POST /projects/fork/:id
 
 Parameters:
 
-- `id` (required) - The ID of the project to be forked
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 
 ### Star a project
 
@@ -536,7 +536,7 @@ POST /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -603,7 +603,7 @@ DELETE /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -674,7 +674,7 @@ POST /projects/:id/archive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
@@ -761,7 +761,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project |
+| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
@@ -843,7 +843,7 @@ DELETE /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 
 ## Uploads
 
@@ -857,7 +857,7 @@ POST /projects/:id/uploads
 
 Parameters:
 
-- `id` (required) - The ID of the project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 - `file` (required) - The file to be uploaded
 
 ```json
@@ -886,7 +886,7 @@ POST /projects/:id/share
 
 Parameters:
 
-- `id` (required) - The ID of a project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 - `group_id` (required) - The ID of a group
 - `group_access` (required) - Level of permissions for sharing
 
@@ -1118,7 +1118,7 @@ POST /projects/:id/fork/:forked_from_id
 
 Parameters:
 
-- `id` (required) - The ID of the project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 - `forked_from_id:` (required) - The ID of the project that was forked from
 
 ### Delete an existing forked from relationship
@@ -1129,7 +1129,7 @@ DELETE /projects/:id/fork
 
 Parameter:
 
-- `id` (required) - The ID of the project
+- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
 
 ## Search for projects by name
 

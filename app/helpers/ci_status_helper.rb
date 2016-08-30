@@ -66,10 +66,10 @@ module CiStatusHelper
       Ci::Runner.shared.blank?
   end
 
-  def render_status_with_link(type, status, path = nil, tooltip_placement: 'auto left', cssclass: '')
+  def render_status_with_link(type, status, path = nil, tooltip_placement: 'auto left', cssclass: '', container: 'body')
     klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
-    data = { toggle: 'tooltip', placement: tooltip_placement }
+    data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
 
     if path
       link_to ci_icon_for_status(status), path,
