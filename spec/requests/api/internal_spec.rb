@@ -100,15 +100,20 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /internal/discover" do
+  describe "POST /internal/lfs_authenticate" do
+    before do
+      project.team << [user, :developer]
+    end
+
     context 'user key' do
       it 'returns the correct information about the key' do
-        get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+        lfs_auth(key, project)
 
         expect(response).to have_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(user).value)
 
-        expect(json_response['name']).to eq(user.name)
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(user).get_value)
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
     end
 
@@ -116,13 +121,23 @@ describe API::API, api: true  do
       let(:key) { create(:deploy_key) }
 
       it 'returns the correct information about the key' do
-        get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+        lfs_auth(key, project)
 
         expect(response).to have_http_status(200)
-
         expect(json_response['username']).to eq("lfs-deploy-key-#{key.id}")
-        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).get_value)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(key).value)
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
+    end
+  end
+
+  describe "GET /internal/discover" do
+    it do
+      get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+
+      expect(response).to have_http_status(200)
+
+      expect(json_response['name']).to eq(user.name)
     end
   end
 
@@ -159,7 +174,6 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["repository_http_path"]).to eq(project.http_url_to_repo)
         end
       end
 
@@ -170,7 +184,6 @@ describe API::API, api: true  do
           expect(response).to have_http_status(200)
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq(project.repository.path_to_repo)
-          expect(json_response["repository_http_path"]).to eq(project.http_url_to_repo)
         end
       end
     end
@@ -405,6 +418,15 @@ describe API::API, api: true  do
       action: 'git-upload-archive',
       secret_token: secret_token,
       protocol: 'ssh'
+    )
+  end
+
+  def lfs_auth(key, project)
+    post(
+      api("/internal/lfs_authenticate"),
+      key_id: key.id,
+      secret_token: secret_token,
+      project: project.path_with_namespace
     )
   end
 end

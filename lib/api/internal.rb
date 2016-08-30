@@ -69,12 +69,26 @@ module API
             else
               project.repository.path_to_repo
             end
-
-          # Return HTTP full path, so that gitlab-shell has this information
-          # ready for git-lfs-authenticate
-          response[:repository_http_path] = project.http_url_to_repo
         end
 
+        response
+      end
+
+      post "/lfs_authenticate" do
+        status 200
+
+        key = Key.find(params[:key_id])
+        user = key.user
+
+        if user
+          token = Gitlab::LfsToken.new(user).generate
+          response = { username: user.username, lfs_token: token }
+        else
+          token = Gitlab::LfsToken.new(key).generate
+          response = { username: "lfs-deploy-key-#{key.id}", lfs_token: token }
+        end
+
+        response[:repository_http_path] = project.http_url_to_repo
         response
       end
 
@@ -87,15 +101,7 @@ module API
       #
       get "/discover" do
         key = Key.find(params[:key_id])
-        user = key.user
-
-        if user
-          token = Gitlab::LfsToken.new(user).set_token
-          { name: user.name, username: user.username, lfs_token: token }
-        else
-          token = Gitlab::LfsToken.new(key).set_token
-          { username: "lfs-deploy-key-#{key.id}", lfs_token: token }
-        end
+        present key.user, with: Entities::UserSafe
       end
 
       get "/check" do

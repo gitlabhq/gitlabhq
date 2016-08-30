@@ -917,7 +917,7 @@ describe 'Git LFS API and storage' do
   end
 
   def authorize_deploy_key
-    ActionController::HttpAuthentication::Basic.encode_credentials("lfs-deploy-key-#{key.id}", Gitlab::LfsToken.new(key).set_token)
+    ActionController::HttpAuthentication::Basic.encode_credentials("lfs-deploy-key-#{key.id}", Gitlab::LfsToken.new(key).generate)
   end
 
   def fork_project(project, user, object = nil)

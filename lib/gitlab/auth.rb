@@ -119,11 +119,11 @@ module Gitlab
       def lfs_token_check(login, password)
         if login.include?('lfs-deploy-key')
           key = DeployKey.find(login.gsub('lfs-deploy-key-', ''))
-          token = Gitlab::LfsToken.new(key).get_value
+          token = Gitlab::LfsToken.new(key).value
           Result.new(key, :lfs_deploy_token) if key && token == password
         else
           user = User.by_login(login)
-          token = Gitlab::LfsToken.new(user).get_value
+          token = Gitlab::LfsToken.new(user).value
           Result.new(user, :lfs_token) if user && token == password
         end
       end

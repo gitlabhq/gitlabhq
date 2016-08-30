@@ -6,15 +6,17 @@ module Gitlab
       @actor = actor
     end
 
-    def set_token
+    def generate
       token = Devise.friendly_token(50)
+
       Gitlab::Redis.with do |redis|
-        redis.set(redis_key, token, ex: 3600)
+        redis.set(redis_key, token, ex: 600)
       end
+
       token
     end
 
-    def get_value
+    def value
       Gitlab::Redis.with do |redis|
         redis.get(redis_key)
       end
