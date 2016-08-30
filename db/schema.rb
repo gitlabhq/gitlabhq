@@ -825,6 +825,7 @@ ActiveRecord::Schema.define(version: 20160827011312) do
     t.string   "repository_storage",                 default: "default", null: false
     t.boolean  "request_access_enabled",             default: true,      null: false
     t.boolean  "has_external_wiki"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

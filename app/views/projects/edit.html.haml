@@ -80,6 +80,16 @@
                 %strong Snippets
                 %br
                 %span.descr Share code pastes with others out of git repository
+          - if Gitlab.config.lfs.enabled && current_user.admin?
+            .form-group
+              .checkbox
+                = f.label :lfs_enabled do
+                  = f.check_box :lfs_enabled, checked: @project.lfs_enabled?
+                  %strong LFS
+                  %br
+                  %span.descr
+                    Git Large File Storage
+                    = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
           - if Gitlab.config.registry.enabled
             .form-group
               .checkbox

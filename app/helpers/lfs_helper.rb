@@ -23,10 +23,14 @@ module LfsHelper
   end
 
   def lfs_download_access?
+    return false unless project.lfs_enabled?
+
     project.public? || ci? || (user && user.can?(:download_code, project))
   end
 
   def lfs_upload_access?
+    return false unless project.lfs_enabled?
+
     user && user.can?(:push_code, project)
   end
 
