@@ -34,6 +34,7 @@ class Service < ActiveRecord::Base
   scope :push_hooks, -> { where(push_events: true, active: true) }
   scope :tag_push_hooks, -> { where(tag_push_events: true, active: true) }
   scope :issue_hooks, -> { where(issues_events: true, active: true) }
+  scope :confidential_issue_hooks, -> { where(confidential_issues_events: true, active: true) }
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }

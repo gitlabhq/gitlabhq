@@ -73,11 +73,20 @@ describe Issues::CreateService, services: true do
         end
       end
 
-      it 'does not execute hooks when issue is confidential' do
+      it 'executes issue hooks when issue is not confidential' do
+        opts = { title: 'Title', description: 'Description', confidential: false }
+
+        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :issue_hooks)
+        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :issue_hooks)
+
+        described_class.new(project, user, opts).execute
+      end
+
+      it 'executes confidential issue hooks when issue is confidential' do
         opts = { title: 'Title', description: 'Description', confidential: true }
 
-        expect(project).not_to receive(:execute_hooks)
-        expect(project).not_to receive(:execute_services)
+        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         described_class.new(project, user, opts).execute
       end

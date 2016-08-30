@@ -105,9 +105,9 @@ describe Issues::UpdateService, services: true do
         expect(note.note).to eq 'Made the issue confidential'
       end
 
-      it 'does not execute hooks' do
-        expect(project).not_to receive(:execute_hooks)
-        expect(project).not_to receive(:execute_services)
+      it 'executes confidential issue hooks' do
+        expect(project).to receive(:execute_hooks).with(an_instance_of(Hash), :confidential_issue_hooks)
+        expect(project).to receive(:execute_services).with(an_instance_of(Hash), :confidential_issue_hooks)
 
         update_issue(confidential: true)
       end
