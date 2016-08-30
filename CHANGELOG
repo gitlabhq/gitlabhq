@@ -55,11 +55,9 @@ v 8.11.4 (unreleased)
   - Creating an issue through our API now emails label subscribers !5720
   - Fix resolving conflicts on forks
   - Fix diff commenting on merge requests created prior to 8.10
-
-v 8.11.4 (unreleased)
+  - Don't create groups for unallowed users when importing projects
   - Fix issue boards leak private label names and descriptions
 
-v 8.11.3 (unreleased)
 v 8.11.3
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
