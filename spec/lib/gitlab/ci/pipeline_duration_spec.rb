@@ -85,6 +85,34 @@ describe Gitlab::Ci::PipelineDuration do
     it_behaves_like 'calculating duration'
   end
 
+  context 'test sample F' do
+    let(:data) do
+      [[1, 3],
+       [2, 4],
+       [2, 4],
+       [2, 4],
+       [5, 8]]
+    end
+
+    let(:duration) { 6 }
+    let(:pending_duration) { 1 }
+
+    it_behaves_like 'calculating duration'
+  end
+
+  context 'test sample G' do
+    let(:data) do
+      [[1, 3],
+       [2, 4],
+       [6, 7]]
+    end
+
+    let(:duration) { 4 }
+    let(:pending_duration) { 2 }
+
+    it_behaves_like 'calculating duration'
+  end
+
   def create_calculator(data)
     segments = data.shuffle.map do |(first, last)|
       Gitlab::Ci::PipelineDuration::Period.new(first, last)
