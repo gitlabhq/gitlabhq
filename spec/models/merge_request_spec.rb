@@ -477,8 +477,8 @@ describe MergeRequest, models: true do
 
         allow(subject).to receive(:diff_head_sha).and_return('123abc')
 
-        expect(subject.source_project).to receive(:pipeline).
-          with('123abc', 'master').
+        expect(subject.source_project).to receive(:pipeline_for).
+          with('master', '123abc').
           and_return(pipeline)
 
         expect(subject.pipeline).to eq(pipeline)

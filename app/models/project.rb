@@ -436,7 +436,7 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
-    latest_pipeline = pipelines.latest_successful_for(ref).first
+    latest_pipeline = pipelines.latest_successful_for(ref)
 
     if latest_pipeline
       latest_pipeline.builds.latest.with_artifacts
@@ -1100,12 +1100,17 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def pipeline(sha, ref)
+  def pipeline_for(ref, sha = nil)
+    sha ||= commit(ref).try(:sha)
+
+    return unless sha
+
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref, current_user = nil)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
+  def ensure_pipeline(ref, sha, current_user = nil)
+    pipeline_for(ref, sha) ||
+      pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
