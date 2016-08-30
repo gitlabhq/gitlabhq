@@ -10,7 +10,7 @@
 .is-dragging {
   // Important because plugin sets inline CSS
   opacity: 1!important;
-  
+
   * {
     // !important to make sure no style can override this when dragging
     cursor: -webkit-grabbing!important;
@@ -160,40 +160,6 @@
   border-bottom: 1px solid $border-color;
 }
 
-.board-search-container {
-  position: relative;
-  background-color: #fff;
-
-  .form-control {
-    padding-right: 30px;
-  }
-}
-
-.board-search-icon,
-.board-search-clear-btn {
-  position: absolute;
-  right: $gl-padding + 10px;
-  top: 50%;
-  margin-top: -7px;
-  font-size: 14px;
-}
-
-.board-search-icon {
-  color: $gl-placeholder-color;
-}
-
-.board-search-clear-btn {
-  padding: 0;
-  line-height: 1;
-  background: transparent;
-  border: 0;
-  outline: 0;
-
-  &:hover {
-    color: $gl-link-color;
-  }
-}
-
 .board-delete {
   margin-right: 10px;
   padding: 0;
@@ -303,4 +269,13 @@
 .card-number {
   margin-right: 8px;
   font-weight: 500;
+}
+
+.issue-boards-search {
+  width: 335px;
+
+  .form-control {
+    display: inline-block;
+    width: 210px;
+  }
 }

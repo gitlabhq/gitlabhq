@@ -21,15 +21,10 @@
     },
     data () {
       return {
-        query: '',
         filters: Store.state.filters
       };
     },
     watch: {
-      query () {
-        this.list.filters = this.getFilterData();
-        this.list.getIssues(true);
-      },
       filters: {
         handler () {
           this.list.page = 1;
@@ -40,10 +35,7 @@
     },
     methods: {
       getFilterData () {
-        const filters = this.filters;
-        let queryData = { search: this.query };
-
-        Object.keys(filters).forEach((key) => { queryData[key] = filters[key]; });
+        Object.keys(this.filters).forEach((key) => { queryData[key] = this.filters[key]; });
 
         return queryData;
       }
