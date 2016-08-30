@@ -87,7 +87,7 @@ describe Gitlab::Ci::PipelineDuration do
 
   def create_calculator(data)
     segments = data.shuffle.map do |(first, last)|
-      Gitlab::Ci::PipelineDuration::Segment.new(first, last)
+      Gitlab::Ci::PipelineDuration::Period.new(first, last)
     end
 
     Gitlab::Ci::PipelineDuration.new(segments)

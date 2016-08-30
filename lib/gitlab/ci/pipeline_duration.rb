@@ -1,8 +1,8 @@
 module Gitlab
   module Ci
     class PipelineDuration
-      SegmentStruct = Struct.new(:first, :last)
-      class Segment < SegmentStruct
+      PeriodStruct = Struct.new(:first, :last)
+      class Period < SegmentStruct
         def duration
           last - first
         end
@@ -11,34 +11,34 @@ module Gitlab
       def self.from_builds(builds)
         now = Time.now
 
-        segments = builds.map do |b|
-          Segment.new(b.started_at || now, b.finished_at || now)
+        periods = builds.map do |b|
+          Period.new(b.started_at || now, b.finished_at || now)
         end
 
-        new(segments)
+        new(periods)
       end
 
       attr_reader :duration, :pending_duration
 
-      def initialize(segments)
-        process(segments.sort_by(&:first))
+      def initialize(periods)
+        process(periods.sort_by(&:first))
       end
 
       private
 
-      def process(segments)
-        merged = process_segments(segments)
+      def process(periods)
+        merged = process_periods(periods)
 
         @duration = process_duration(merged)
         @pending_duration = process_pending_duration(merged, @duration)
       end
 
-      def process_segments(segments)
-        if segments.empty?
-          segments
+      def process_periods(periods)
+        if periods.empty?
+          periods
         else
-          segments.drop(1).inject([segments.first]) do |result, current|
-            merged = try_merge_segment(result.last, current)
+          periods.drop(1).inject([periods.first]) do |result, current|
+            merged = try_merge_period(result.last, current)
 
             if merged
               result[-1] = merged
@@ -50,22 +50,22 @@ module Gitlab
         end
       end
 
-      def try_merge_segment(previous, current)
+      def try_merge_period(previous, current)
         if current.first <= previous.last
-          Segment.new(previous.first, [previous.last, current.last].max)
+          Period.new(previous.first, [previous.last, current.last].max)
         end
       end
 
-      def process_duration(segments)
-        segments.inject(0) do |result, seg|
-          result + seg.duration
+      def process_duration(periods)
+        periods.inject(0) do |result, per|
+          result + per.duration
         end
       end
 
-      def process_pending_duration(segments, duration)
-        return 0 if segments.empty?
+      def process_pending_duration(periods, duration)
+        return 0 if periods.empty?
 
-        total = segments.last.last - segments.first.first
+        total = periods.last.last - periods.first.first
         total - duration
       end
     end
