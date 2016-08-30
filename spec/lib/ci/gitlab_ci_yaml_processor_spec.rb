@@ -1251,7 +1251,7 @@ EOT
       end
     end
 
-    describe "#errors" do
+    describe "#validation_message" do
       context "when the YAML could not be parsed" do
         it "returns an error about invalid configutaion" do
           content = YAML.dump("invalid: yaml: test")

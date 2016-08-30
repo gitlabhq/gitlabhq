@@ -8,14 +8,12 @@ module Ci
     def create
       @content = params[:content]
       @error = Ci::GitlabCiYamlProcessor.validation_message(@content)
+      @status = @error.blank?
 
-      unless @error.blank?
-        @status = @error.blank?
-      else
+      if @error.blank?
         @config_processor = Ci::GitlabCiYamlProcessor.new(@content)
         @stages = @config_processor.stages
         @builds = @config_processor.builds
-        @status = true
       end
     rescue
       @error = 'Undefined error'

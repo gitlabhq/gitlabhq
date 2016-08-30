@@ -80,6 +80,7 @@ module Ci
 
     def self.validation_message(content)
       return 'Please provide content of .gitlab-ci.yml' if content.blank?
+
       begin
         Ci::GitlabCiYamlProcessor.new(content)
         nil

@@ -5,7 +5,7 @@ module API
       requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
     end
 
-    namespace 'ci' do
+    namespace :ci do
       post '/lint' do
         errors = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
 

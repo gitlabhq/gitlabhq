@@ -4,11 +4,11 @@ describe API::Lint, api: true do
   include ApiHelpers
 
   describe 'POST /ci/lint' do
-    let(:yaml_content) do
-      File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
-    end
-
     context 'with valid .gitlab-ci.yaml content' do
+      let(:yaml_content) do
+        File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+      end
+
       it 'passes validation' do
         post api('/ci/lint'), { content: yaml_content }
 
