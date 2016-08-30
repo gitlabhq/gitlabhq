@@ -38,6 +38,68 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /internal/two_factor_recovery_codes' do
+    it 'returns an error message when the key does not exist' do
+      post api('/internal/two_factor_recovery_codes'),
+           secret_token: secret_token,
+           key_id: 12345
+
+      expect(response).to have_http_status(404)
+      expect(json_response['message']).to eq('404 Not found')
+    end
+
+    it 'returns an error message when the key is a deploy key' do
+      deploy_key = create(:deploy_key)
+
+      post api('/internal/two_factor_recovery_codes'),
+           secret_token: secret_token,
+           key_id: deploy_key.id
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Deploy keys cannot be used to retrieve recovery codes')
+    end
+
+    it 'returns an error message when the user does not exist' do
+      key_without_user = create(:key, user: nil)
+
+      post api('/internal/two_factor_recovery_codes'),
+           secret_token: secret_token,
+           key_id: key_without_user.id
+
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Could not find a user for the given key')
+      expect(json_response['recovery_codes']).to be_nil
+    end
+
+    context 'when two-factor is enabled' do
+      it 'returns new recovery codes when the user exists' do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(true)
+        allow_any_instance_of(User)
+          .to receive(:generate_otp_backup_codes!).and_return(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+
+        post api('/internal/two_factor_recovery_codes'),
+             secret_token: secret_token,
+             key_id: key.id
+
+        expect(json_response['success']).to be_truthy
+        expect(json_response['recovery_codes']).to match_array(%w(119135e5a3ebce8e 34bd7b74adbc8861))
+      end
+    end
+
+    context 'when two-factor is not enabled' do
+      it 'returns an error message' do
+        allow_any_instance_of(User).to receive(:two_factor_enabled?).and_return(false)
+
+        post api('/internal/two_factor_recovery_codes'),
+             secret_token: secret_token,
+             key_id: key.id
+
+        expect(json_response['success']).to be_falsey
+        expect(json_response['recovery_codes']).to be_nil
+      end
+    end
+  end
+
   describe "GET /internal/discover" do
     it do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
@@ -272,6 +334,24 @@ describe API::API, api: true  do
         expect(response.status).to eq(200)
         expect(json_response['status']).to be_truthy
       end
+    end
+  end
+
+  describe 'GET /internal/merge_request_urls' do
+    let(:repo_name) { "#{project.namespace.name}/#{project.path}" }
+    let(:changes) { URI.escape("#{Gitlab::Git::BLANK_SHA} 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/new_branch") }
+
+    before do
+      project.team << [user, :developer]
+      get api("/internal/merge_request_urls?project=#{repo_name}&changes=#{changes}"), secret_token: secret_token
+    end
+
+    it 'returns link to create new merge request' do
+      expect(json_response).to match [{
+        "branch_name" => "new_branch",
+        "url" => "http://localhost/#{project.namespace.name}/#{project.path}/merge_requests/new?merge_request%5Bsource_branch%5D=new_branch",
+        "new_merge_request" => true
+      }]
     end
   end
 

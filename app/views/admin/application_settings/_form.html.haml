@@ -228,6 +228,9 @@
       = f.label :max_artifacts_size, 'Maximum artifacts size (MB)', class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :max_artifacts_size, class: 'form-control'
+        .help-block
+          Set the maximum file size each build's artifacts can have
+          = link_to "(?)", help_page_path("user/admin_area/settings/continuous_integration", anchor: "maximum-artifacts-size")
 
   - if Gitlab.config.registry.enabled
     %fieldset
@@ -363,7 +366,9 @@
       .col-sm-10
         = f.select :repository_storage, repository_storage_options_for_select, {}, class: 'form-control'
         .help-block
-          You can manage the repository storage paths in your gitlab.yml configuration file
+          Manage repository storage paths. Learn more in the
+          = succeed "." do
+            = link_to "repository storages documentation", help_page_path("administration/repository_storages")
 
   %fieldset
     %legend Repository Checks
@@ -382,6 +387,25 @@
         = link_to 'Clear all repository checks', clear_repository_check_states_admin_application_settings_path, data: { confirm: 'This will clear repository check states for ALL projects in the database. This cannot be undone. Are you sure?' }, method: :put, class: "btn btn-sm btn-remove"
         .help-block
           If you got a lot of false alarms from repository checks you can choose to clear all repository check information from the database.
+
+  %fieldset
+    %legend Koding
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :koding_enabled do
+            = f.check_box :koding_enabled
+            Enable Koding
+    .form-group
+      = f.label :koding_url, 'Koding URL', class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.text_field :koding_url, class: 'form-control', placeholder: 'http://gitlab.your-koding-instance.com:8090'
+        .help-block
+          Koding has integration enabled out of the box for the
+          %strong gitlab
+          team, and you need to provide that team's URL here. Learn more in the
+          = succeed "." do
+            = link_to "Koding administration documentation", help_page_path("administration/integration/koding")
 
 
   .form-actions

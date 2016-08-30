@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SentryHelper
   include WorkhorseHelper
 
   before_action :authenticate_user_from_private_token!
@@ -24,7 +25,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   helper_method :abilities, :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -45,28 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-
-  def sentry_context
-    if Rails.env.production? && current_application_settings.sentry_enabled
-      if current_user
-        Raven.user_context(
-          id: current_user.id,
-          email: current_user.email,
-          username: current_user.username,
-        )
-      end
-
-      Raven.tags_context(program: sentry_program_context)
-    end
-  end
-
-  def sentry_program_context
-    if Sidekiq.server?
-      'sidekiq'
-    else
-      'rails'
-    end
-  end
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
@@ -243,42 +222,6 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_filters_params
-    set_default_sort
-
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-
-    @sort = params[:sort]
-    @filter_params = params.dup
-
-    if @project
-      @filter_params[:project_id] = @project.id
-    elsif @group
-      @filter_params[:group_id] = @group.id
-    else
-      # TODO: this filter ignore issues/mr created in public or
-      # internal repos where you are not a member. Enable this filter
-      # or improve current implementation to filter only issues you
-      # created or assigned or mentioned
-      # @filter_params[:authorized_only] = true
-    end
-
-    @filter_params
-  end
-
-  def get_issues_collection
-    set_filters_params
-    @issuable_finder = IssuesFinder.new(current_user, @filter_params)
-    @issuable_finder.execute
-  end
-
-  def get_merge_requests_collection
-    set_filters_params
-    @issuable_finder = MergeRequestsFinder.new(current_user, @filter_params)
-    @issuable_finder.execute
-  end
-
   def import_sources_enabled?
     !current_application_settings.import_sources.empty?
   end
@@ -305,10 +248,6 @@ class ApplicationController < ActionController::Base
 
   def bitbucket_import_configured?
     Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
-  end
-
-  def gitorious_import_enabled?
-    current_application_settings.import_sources.include?('gitorious')
   end
 
   def google_code_import_enabled?
@@ -362,25 +301,5 @@ class ApplicationController < ActionController::Base
   # https://developers.yubico.com/U2F/App_ID.html
   def u2f_app_id
     request.base_url
-  end
-
-  private
-
-  def set_default_sort
-    key = if is_a_listing_page_for?('issues') || is_a_listing_page_for?('merge_requests')
-            'issuable_sort'
-          end
-
-    cookies[key]  = params[:sort] if key && params[:sort].present?
-    params[:sort] = cookies[key] if key
-    params[:sort] ||= 'id_desc'
-  end
-
-  def is_a_listing_page_for?(page_type)
-    controller_name, action_name = params.values_at(:controller, :action)
-
-    (controller_name == "projects/#{page_type}" && action_name == 'index') ||
-    (controller_name == 'groups' && action_name == page_type) ||
-    (controller_name == 'dashboard' && action_name == page_type)
   end
 end

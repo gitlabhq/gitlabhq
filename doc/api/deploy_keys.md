@@ -9,7 +9,7 @@ GET /deploy_keys
 ```
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/deploy_keys"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/deploy_keys"
 ```
 
 Example response:
@@ -44,7 +44,7 @@ GET /projects/:id/deploy_keys
 | `id` | integer | yes | The ID of the project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys"
 ```
 
 Example response:
@@ -82,7 +82,7 @@ Parameters:
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/11"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/11"
 ```
 
 Example response:
@@ -114,7 +114,7 @@ POST /projects/:id/deploy_keys
 | `key`   | string  | yes | New deploy key |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" -H "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/deploy_keys/"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"title": "My deploy key", "key": "ssh-rsa AAAA..."}' "https://gitlab.example.com/api/v3/projects/5/deploy_keys/"
 ```
 
 Example response:
@@ -142,7 +142,7 @@ DELETE /projects/:id/deploy_keys/:key_id
 | `key_id`  | integer | yes | The ID of the deploy key |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/13"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/deploy_keys/13"
 ```
 
 Example response:
@@ -157,5 +157,53 @@ Example response:
    "created_at" : "2015-08-29T12:50:57.259Z",
    "fingerprint" : "6a:33:1f:74:51:c0:39:81:79:ec:7a:31:f8:40:20:43",
    "id" : 13
+}
+```
+
+## Enable a deploy key
+
+Enables a deploy key for a project so this can be used. Returns the enabled key, with a status code 201 when successful.
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/enable
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+| `key_id`  | integer | yes | The ID of the deploy key |
+
+Example response:
+
+```json
+{
+   "key" : "ssh-rsa AAAA...",
+   "id" : 12,
+   "title" : "My deploy key",
+   "created_at" : "2015-08-29T12:44:31.550Z"
+}
+```
+
+## Disable a deploy key
+
+Disable a deploy key for a project. Returns the disabled key.
+
+```bash
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/deploy_keys/13/disable
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`      | integer | yes | The ID of the project |
+| `key_id`  | integer | yes | The ID of the deploy key |
+
+Example response:
+
+```json
+{
+   "key" : "ssh-rsa AAAA...",
+   "id" : 12,
+   "title" : "My deploy key",
+   "created_at" : "2015-08-29T12:44:31.550Z"
 }
 ```

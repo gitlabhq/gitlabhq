@@ -4,8 +4,8 @@
   %ul.unstyled-list
     - @related_branches.each do |branch|
       %li
-        - sha = @project.repository.find_branch(branch).target
-        - pipeline = @project.pipeline(sha, branch) if sha
+        - target = @project.repository.find_branch(branch).target
+        - pipeline = @project.pipeline(target.sha, branch) if target
         - if pipeline
           %span.related-branch-ci-status
             = render_pipeline_status(pipeline)

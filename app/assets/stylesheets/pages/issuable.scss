@@ -395,3 +395,12 @@
   display: inline-block;
   line-height: 18px;
 }
+
+.js-issuable-selector-wrap {
+  .js-issuable-selector {
+    width: 100%;
+  }
+  @media (max-width: $screen-sm-max) {
+    margin-bottom: $gl-padding;
+  }
+}

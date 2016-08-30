@@ -1,0 +1,21 @@
+- expanded = discussion_left.try(:expanded?) || discussion_right.try(:expanded?)
+%tr.notes_holder{class: ('hide' unless expanded)}
+  - if discussion_left
+    %td.notes_line.old
+    %td.notes_content.parallel.old
+      .content{class: ('hide' unless discussion_left.expanded?)}
+        = render "discussions/notes", discussion: discussion_left, line_type: 'old'
+  - else
+    %td.notes_line.old= ""
+    %td.notes_content.parallel.old
+      .content
+
+  - if discussion_right
+    %td.notes_line.new
+    %td.notes_content.parallel.new
+      .content{class: ('hide' unless discussion_right.expanded?)}
+        = render "discussions/notes", discussion: discussion_right, line_type: 'new'
+  - else
+    %td.notes_line.new= ""
+    %td.notes_content.parallel.new
+      .content

@@ -70,7 +70,8 @@ Parameters:
     "subscribed" : false,
     "user_notes_count": 1,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   }
 ]
 ```
@@ -136,7 +137,8 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -239,6 +241,7 @@ Parameters:
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1",
   "changes": [
     {
     "old_path": "VERSION",
@@ -276,6 +279,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -320,7 +324,8 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 0,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -350,6 +355,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "project_id": 3,
   "title": "test1",
@@ -393,7 +399,8 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -416,7 +423,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id
 | `merge_request_id` | integer | yes | The ID of a project's merge request |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/merge_request/85
 ```
 
 ## Accept MR
@@ -449,6 +456,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -493,7 +501,8 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -517,6 +526,7 @@ Parameters:
 ```json
 {
   "id": 1,
+  "iid": 1,
   "target_branch": "master",
   "source_branch": "test1",
   "project_id": 3,
@@ -561,7 +571,8 @@ Parameters:
   "subscribed" : true,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
-  "force_remove_source_branch": false
+  "force_remove_source_branch": false,
+  "web_url": "http://example.com/example/example/merge_requests/1"
 }
 ```
 
@@ -583,7 +594,7 @@ GET /projects/:id/merge_requests/:merge_request_id/closes_issues
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/76/merge_requests/1/closes_issues
 ```
 
 Example response when the GitLab issue tracker is used:
@@ -661,7 +672,7 @@ POST /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
 ```
 
 Example response:
@@ -735,7 +746,7 @@ DELETE /projects/:id/merge_requests/:merge_request_id/subscription
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/17/subscription
 ```
 
 Example response:
@@ -808,7 +819,7 @@ POST /projects/:id/merge_requests/:merge_request_id/todo
 | `merge_request_id` | integer | yes   | The ID of the merge request |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/27/todo
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/merge_requests/27/todo
 ```
 
 Example response:
@@ -882,11 +893,121 @@ Example response:
     "subscribed": true,
     "user_notes_count": 7,
     "should_remove_source_branch": true,
-    "force_remove_source_branch": false
+    "force_remove_source_branch": false,
+    "web_url": "http://example.com/example/example/merge_requests/1"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/merge_requests/7",
   "body": "Et voluptas laudantium minus nihil recusandae ut accusamus earum aut non.",
   "state": "pending",
   "created_at": "2016-07-01T11:14:15.530Z"
+}
+```
+
+## Get MR diff versions
+
+Get a list of merge request diff versions.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/versions
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | String  | yes      | The ID of the project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions
+```
+
+Example response:
+
+```json
+[{
+  "id": 110,
+  "head_commit_sha": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-26T14:44:48.926Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1"
+}, {
+  "id": 108,
+  "head_commit_sha": "3eed087b29835c48015768f839d76e5ea8f07a24",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-25T14:21:33.028Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1"
+}]
+```
+
+## Get a single MR diff version
+
+Get a single merge request diff version.
+
+```
+GET /projects/:id/merge_requests/:merge_request_id/versions/:version_id
+```
+
+| Attribute | Type    | Required | Description           |
+| --------- | ------- | -------- | --------------------- |
+| `id`      | String  | yes      | The ID of the project |
+| `merge_request_id` | integer | yes | The ID of the merge request |
+| `version_id` | integer | yes | The ID of the merge request diff version |
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/1/merge_requests/1/versions/1
+```
+
+Example response:
+
+```json
+{
+  "id": 110,
+  "head_commit_sha": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+  "base_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "start_commit_sha": "eeb57dffe83deb686a60a71c16c32f71046868fd",
+  "created_at": "2016-07-26T14:44:48.926Z",
+  "merge_request_id": 105,
+  "state": "collected",
+  "real_size": "1",
+  "commits": [{
+    "id": "33e2ee8579fda5bc36accc9c6fbd0b4fefda9e30",
+    "short_id": "33e2ee85",
+    "title": "Change year to 2018",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-26T17:44:29.000+03:00",
+    "message": "Change year to 2018"
+  }, {
+    "id": "aa24655de48b36335556ac8a3cd8bb521f977cbd",
+    "short_id": "aa24655d",
+    "title": "Update LICENSE",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-25T17:21:53.000+03:00",
+    "message": "Update LICENSE"
+  }, {
+    "id": "3eed087b29835c48015768f839d76e5ea8f07a24",
+    "short_id": "3eed087b",
+    "title": "Add license",
+    "author_name": "Administrator",
+    "author_email": "admin@example.com",
+    "created_at": "2016-07-25T17:21:20.000+03:00",
+    "message": "Add license"
+  }],
+  "diffs": [{
+    "old_path": "LICENSE",
+    "new_path": "LICENSE",
+    "a_mode": "0",
+    "b_mode": "100644",
+    "diff": "--- /dev/null\n+++ b/LICENSE\n@@ -0,0 +1,21 @@\n+The MIT License (MIT)\n+\n+Copyright (c) 2018 Administrator\n+\n+Permission is hereby granted, free of charge, to any person obtaining a copy\n+of this software and associated documentation files (the \"Software\"), to deal\n+in the Software without restriction, including without limitation the rights\n+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n+copies of the Software, and to permit persons to whom the Software is\n+furnished to do so, subject to the following conditions:\n+\n+The above copyright notice and this permission notice shall be included in all\n+copies or substantial portions of the Software.\n+\n+THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n+SOFTWARE.\n",
+    "new_file": true,
+    "renamed_file": false,
+    "deleted_file": false
+  }]
 }
 ```

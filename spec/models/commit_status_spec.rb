@@ -133,7 +133,7 @@ describe CommitStatus, models: true do
       @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'success'
     end
 
-    it 'return unique statuses' do
+    it 'returns unique statuses' do
       is_expected.to eq([@commit4, @commit5])
     end
   end
@@ -149,7 +149,7 @@ describe CommitStatus, models: true do
       @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'ee', ref: nil, status: 'canceled'
     end
 
-    it 'return statuses that are running or pending' do
+    it 'returns statuses that are running or pending' do
       is_expected.to eq([@commit1, @commit2])
     end
   end
@@ -160,7 +160,7 @@ describe CommitStatus, models: true do
     context 'when no before_sha is set for pipeline' do
       before { pipeline.before_sha = nil }
 
-      it 'return blank sha' do
+      it 'returns blank sha' do
         is_expected.to eq(Gitlab::Git::BLANK_SHA)
       end
     end
@@ -169,7 +169,7 @@ describe CommitStatus, models: true do
       let(:value) { '1234' }
       before { pipeline.before_sha = value }
 
-      it 'return the set value' do
+      it 'returns the set value' do
         is_expected.to eq(value)
       end
     end
@@ -186,7 +186,7 @@ describe CommitStatus, models: true do
     context 'stages list' do
       subject { CommitStatus.where(pipeline: pipeline).stages }
 
-      it 'return ordered list of stages' do
+      it 'returns ordered list of stages' do
         is_expected.to eq(%w(build test deploy))
       end
     end
@@ -194,7 +194,7 @@ describe CommitStatus, models: true do
     context 'stages with statuses' do
       subject { CommitStatus.where(pipeline: pipeline).latest.stages_status }
 
-      it 'return list of stages with statuses' do
+      it 'returns list of stages with statuses' do
         is_expected.to eq({
           'build' => 'failed',
           'test' => 'success',

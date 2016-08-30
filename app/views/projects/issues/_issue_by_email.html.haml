@@ -1,0 +1,27 @@
+.issues-footer.text-center
+  %button.issue-email-modal-btn{ type: "button", data: { toggle: "modal", target: "#issue-email-modal" } }
+    Email a new issue to this project
+
+#issue-email-modal.modal.fade{ tabindex: "-1", role: "dialog" }
+  .modal-dialog{ role: "document" }
+    .modal-content
+      .modal-header
+        %button.close{ type: "button", data: { dismiss: "modal" }, aria: { label: "close" } }
+          %span{ aria: { hidden: "true" } }= icon("times")
+        %h4.modal-title
+          Create new issue by email
+      .modal-body
+        %p
+          Write an email to the below email address. (This is a private email address, so keep it secret.)
+        .email-modal-input-group.input-group
+          = text_field_tag :issue_email, email, class: "monospace js-select-on-focus form-control", readonly: true
+          .input-group-btn
+            = clipboard_button(clipboard_target: '#issue_email')
+        %p
+          Send an email to this address to create an issue.
+        %p
+          Use the subject line as the title of your issue.
+        %p
+          Use the message as the body of your issue (feel free to include some nice
+          = succeed ")." do
+            = link_to "Markdown", help_page_path('markdown', 'markdown')

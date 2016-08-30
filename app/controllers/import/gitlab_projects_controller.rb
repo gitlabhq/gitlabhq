@@ -1,5 +1,6 @@
 class Import::GitlabProjectsController < Import::BaseController
   before_action :verify_gitlab_project_import_enabled
+  before_action :authenticate_admin!
 
   def new
     @namespace_id = project_params[:namespace_id]
@@ -12,13 +13,14 @@ class Import::GitlabProjectsController < Import::BaseController
       return redirect_back_or_default(options: { alert: "You need to upload a GitLab project export archive." })
     end
 
-    imported_file = project_params[:file].path + "-import"
+    import_upload_path = Gitlab::ImportExport.import_upload_path(filename: project_params[:file].original_filename)
 
-    FileUtils.copy_entry(project_params[:file].path, imported_file)
+    FileUtils.mkdir_p(File.dirname(import_upload_path))
+    FileUtils.copy_entry(project_params[:file].path, import_upload_path)
 
     @project = Gitlab::ImportExport::ProjectCreator.new(project_params[:namespace_id],
                                                         current_user,
-                                                        File.expand_path(imported_file),
+                                                        import_upload_path,
                                                         project_params[:path]).execute
 
     if @project.saved?
@@ -45,5 +47,9 @@ class Import::GitlabProjectsController < Import::BaseController
     params.permit(
       :path, :namespace_id, :file
     )
+  end
+
+  def authenticate_admin!
+    render_404 unless current_user.is_admin?
   end
 end

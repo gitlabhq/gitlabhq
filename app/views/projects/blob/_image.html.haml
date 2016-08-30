@@ -1,9 +1,15 @@
 .file-content.image_file
   - if blob.svg?
-    - # We need to scrub SVG but we cannot do so in the RawController: it would
-    - # be wrong/strange if RawController modified the data.
-    - blob.load_all_data!(@repository)
-    - blob = sanitize_svg(blob)
-    %img{src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
+    - if blob.size_within_svg_limits?
+      - # We need to scrub SVG but we cannot do so in the RawController: it would
+      - # be wrong/strange if RawController modified the data.
+      - blob.load_all_data!(@repository)
+      - blob = sanitize_svg(blob)
+      %img{src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"}
+    - else
+      .nothing-here-block
+        The SVG could not be displayed as it is too large, you can
+        #{link_to('view the raw file', namespace_project_raw_path(@project.namespace, @project, @id), target: '_blank')}
+        instead.
   - else
     %img{src: namespace_project_raw_path(@project.namespace, @project, tree_join(@commit.id, blob.path))}

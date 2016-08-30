@@ -20,3 +20,8 @@
     .turn-off { display: block; }
   }
 }
+
+// Hide element if Vue is still working on rendering it fully.
+[v-cloak="true"] {
+  display: none !important;
+}

@@ -110,18 +110,14 @@ describe MergeRequests::MergeWhenBuildSucceedsService do
 
     context 'properly handles multiple stages' do
       let(:ref) { mr_merge_if_green_enabled.source_branch }
-      let(:build) { create(:ci_build, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
-      let(:test) { create(:ci_build, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
+      let!(:build) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'build', stage: 'build') }
+      let!(:test) { create(:ci_build, :created, pipeline: pipeline, ref: ref, name: 'test', stage: 'test') }
+      let(:pipeline) { create(:ci_empty_pipeline, ref: mr_merge_if_green_enabled.source_branch, project: project) }
 
       before do
         # This behavior of MergeRequest: we instantiate a new object
         allow_any_instance_of(MergeRequest).to receive(:pipeline).and_wrap_original do
           Ci::Pipeline.find(pipeline.id)
-        end
-
-        # We create test after the build
-        allow(pipeline).to receive(:create_next_builds).and_wrap_original do
-          test
         end
       end
 

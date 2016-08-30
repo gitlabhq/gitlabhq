@@ -13,7 +13,7 @@ describe API::API, api: true  do
   let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
   describe "GET /projects/:id/repository/branches" do
-    it "should return an array of project branches" do
+    it "returns an array of project branches" do
       project.repository.expire_cache
 
       get api("/projects/#{project.id}/repository/branches", user)
@@ -25,7 +25,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/repository/branches/:branch" do
-    it "should return the branch information for a single branch" do
+    it "returns the branch information for a single branch" do
       get api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       expect(response).to have_http_status(200)
 
@@ -36,12 +36,12 @@ describe API::API, api: true  do
       expect(json_response['developers_can_merge']).to eq(false)
     end
 
-    it "should return a 403 error if guest" do
+    it "returns a 403 error if guest" do
       get api("/projects/#{project.id}/repository/branches", user2)
       expect(response).to have_http_status(403)
     end
 
-    it "should return a 404 error if branch is not available" do
+    it "returns a 404 error if branch is not available" do
       get api("/projects/#{project.id}/repository/branches/unknown", user)
       expect(response).to have_http_status(404)
     end
@@ -112,7 +112,7 @@ describe API::API, api: true  do
 
       before do
         project.repository.add_branch(user, protected_branch, 'master')
-        create(:protected_branch, project: project, name: protected_branch, developers_can_push: true, developers_can_merge: true)
+        create(:protected_branch, :developers_can_push, :developers_can_merge, project: project, name: protected_branch)
       end
 
       it 'updates that a developer can push' do
@@ -138,17 +138,17 @@ describe API::API, api: true  do
       end
     end
 
-    it "should return a 404 error if branch not found" do
+    it "returns a 404 error if branch not found" do
       put api("/projects/#{project.id}/repository/branches/unknown/protect", user)
       expect(response).to have_http_status(404)
     end
 
-    it "should return a 403 error if guest" do
+    it "returns a 403 error if guest" do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user2)
       expect(response).to have_http_status(403)
     end
 
-    it "should return success when protect branch again" do
+    it "returns success when protect branch again" do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
       expect(response).to have_http_status(200)
@@ -156,7 +156,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
-    it "should unprotect a single branch" do
+    it "unprotects a single branch" do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
       expect(response).to have_http_status(200)
 
@@ -165,12 +165,12 @@ describe API::API, api: true  do
       expect(json_response['protected']).to eq(false)
     end
 
-    it "should return success when unprotect branch" do
+    it "returns success when unprotect branch" do
       put api("/projects/#{project.id}/repository/branches/unknown/unprotect", user)
       expect(response).to have_http_status(404)
     end
 
-    it "should return success when unprotect branch again" do
+    it "returns success when unprotect branch again" do
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
       put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
       expect(response).to have_http_status(200)
@@ -178,7 +178,7 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/repository/branches" do
-    it "should create a new branch" do
+    it "creates a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
            branch_name: 'feature1',
            ref: branch_sha
@@ -189,14 +189,14 @@ describe API::API, api: true  do
       expect(json_response['commit']['id']).to eq(branch_sha)
     end
 
-    it "should deny for user without push access" do
+    it "denies for user without push access" do
       post api("/projects/#{project.id}/repository/branches", user2),
            branch_name: branch_name,
            ref: branch_sha
       expect(response).to have_http_status(403)
     end
 
-    it 'should return 400 if branch name is invalid' do
+    it 'returns 400 if branch name is invalid' do
       post api("/projects/#{project.id}/repository/branches", user),
            branch_name: 'new design',
            ref: branch_sha
@@ -204,7 +204,7 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('Branch name is invalid')
     end
 
-    it 'should return 400 if branch already exists' do
+    it 'returns 400 if branch already exists' do
       post api("/projects/#{project.id}/repository/branches", user),
            branch_name: 'new_design1',
            ref: branch_sha
@@ -217,7 +217,7 @@ describe API::API, api: true  do
       expect(json_response['message']).to eq('Branch already exists')
     end
 
-    it 'should return 400 if ref name is invalid' do
+    it 'returns 400 if ref name is invalid' do
       post api("/projects/#{project.id}/repository/branches", user),
            branch_name: 'new_design3',
            ref: 'foo'
@@ -231,25 +231,25 @@ describe API::API, api: true  do
       allow_any_instance_of(Repository).to receive(:rm_branch).and_return(true)
     end
 
-    it "should remove branch" do
+    it "removes branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       expect(response).to have_http_status(200)
       expect(json_response['branch_name']).to eq(branch_name)
     end
 
-    it 'should return 404 if branch not exists' do
+    it 'returns 404 if branch not exists' do
       delete api("/projects/#{project.id}/repository/branches/foobar", user)
       expect(response).to have_http_status(404)
     end
 
-    it "should remove protected branch" do
-      project.protected_branches.create(name: branch_name)
+    it "removes protected branch" do
+      create(:protected_branch, project: project, name: branch_name)
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('Protected branch cant be removed')
     end
 
-    it "should not remove HEAD branch" do
+    it "does not remove HEAD branch" do
       delete api("/projects/#{project.id}/repository/branches/master", user)
       expect(response).to have_http_status(405)
       expect(json_response['message']).to eq('Cannot remove HEAD branch')

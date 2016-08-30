@@ -97,7 +97,7 @@ class ProjectsController < Projects::ApplicationController
     end
 
     if @project.pending_delete?
-      flash[:alert] = "Project queued for delete."
+      flash[:alert] = "Project #{@project.name} queued for deletion."
     end
 
     respond_to do |format|
@@ -125,7 +125,7 @@ class ProjectsController < Projects::ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, @project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).pending_delete!
+    ::Projects::DestroyService.new(@project, current_user, {}).async_execute
     flash[:alert] = "Project '#{@project.name}' will be deleted."
 
     redirect_to dashboard_projects_path
@@ -134,10 +134,22 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def autocomplete_sources
-    note_type = params['type']
-    note_id = params['type_id']
+    noteable =
+      case params[:type]
+      when 'Issue'
+        IssuesFinder.new(current_user, project_id: @project.id, state: 'all').
+          execute.find_by(iid: params[:type_id])
+      when 'MergeRequest'
+        MergeRequestsFinder.new(current_user, project_id: @project.id, state: 'all').
+          execute.find_by(iid: params[:type_id])
+      when 'Commit'
+        @project.commit(params[:type_id])
+      else
+        nil
+      end
+
     autocomplete = ::Projects::AutocompleteService.new(@project, current_user)
-    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(note_type, note_id)
+    participants = ::Projects::ParticipantsService.new(@project, current_user).execute(noteable)
 
     @suggestions = {
       emojis: Gitlab::AwardEmoji.urls,
@@ -145,7 +157,8 @@ class ProjectsController < Projects::ApplicationController
       milestones: autocomplete.milestones,
       mergerequests: autocomplete.merge_requests,
       labels: autocomplete.labels,
-      members: participants
+      members: participants,
+      commands: autocomplete.commands(noteable, params[:type])
     }
 
     respond_to do |format|
@@ -238,7 +251,7 @@ class ProjectsController < Projects::ApplicationController
     }
   end
 
-  def markdown_preview
+  def preview_markdown
     text = params[:text]
 
     ext = Gitlab::ReferenceExtractor.new(@project, current_user)

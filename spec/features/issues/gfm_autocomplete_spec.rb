@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', feature: true, js: true do
+  include WaitForAjax
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
   let(:issue)   { create(:issue, project: project) }
@@ -10,7 +11,7 @@ feature 'GFM autocomplete', feature: true, js: true do
     login_as(user)
     visit namespace_project_issue_path(project.namespace, project, issue)
 
-    sleep 2
+    wait_for_ajax
   end
 
   it 'opens autocomplete menu when field starts with text' do

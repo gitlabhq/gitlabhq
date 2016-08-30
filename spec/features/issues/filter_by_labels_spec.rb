@@ -37,25 +37,25 @@ feature 'Issue filtering by Labels', feature: true do
       wait_for_ajax
     end
 
-    it 'should show issue "Bugfix1" and "Bugfix2" in issues list' do
+    it 'shows issue "Bugfix1" and "Bugfix2" in issues list' do
       expect(page).to have_content "Bugfix1"
       expect(page).to have_content "Bugfix2"
     end
 
-    it 'should not show "Feature1" in issues list' do
+    it 'does not show "Feature1" in issues list' do
       expect(page).not_to have_content "Feature1"
     end
 
-    it 'should show label "bug" in filtered-labels' do
+    it 'shows label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "bug"
     end
 
-    it 'should not show label "feature" and "enhancement" in filtered-labels' do
+    it 'does not show label "feature" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "feature"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
 
-    it 'should remove label "bug"' do
+    it 'removes label "bug"' do
       find('.js-label-filter-remove').click
       wait_for_ajax
       expect(find('.filtered-labels', visible: false)).to have_no_content "bug"
@@ -71,20 +71,20 @@ feature 'Issue filtering by Labels', feature: true do
       wait_for_ajax
     end
 
-    it 'should show issue "Feature1" in issues list' do
+    it 'shows issue "Feature1" in issues list' do
       expect(page).to have_content "Feature1"
     end
 
-    it 'should not show "Bugfix1" and "Bugfix2" in issues list' do
+    it 'does not show "Bugfix1" and "Bugfix2" in issues list' do
       expect(page).not_to have_content "Bugfix2"
       expect(page).not_to have_content "Bugfix1"
     end
 
-    it 'should show label "feature" in filtered-labels' do
+    it 'shows label "feature" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "feature"
     end
 
-    it 'should not show label "bug" and "enhancement" in filtered-labels' do
+    it 'does not show label "bug" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
       expect(find('.filtered-labels')).not_to have_content "enhancement"
     end
@@ -99,20 +99,20 @@ feature 'Issue filtering by Labels', feature: true do
       wait_for_ajax
     end
 
-    it 'should show issue "Bugfix2" in issues list' do
+    it 'shows issue "Bugfix2" in issues list' do
       expect(page).to have_content "Bugfix2"
     end
 
-    it 'should not show "Feature1" and "Bugfix1" in issues list' do
+    it 'does not show "Feature1" and "Bugfix1" in issues list' do
       expect(page).not_to have_content "Feature1"
       expect(page).not_to have_content "Bugfix1"
     end
 
-    it 'should show label "enhancement" in filtered-labels' do
+    it 'shows label "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "enhancement"
     end
 
-    it 'should not show label "feature" and "bug" in filtered-labels' do
+    it 'does not show label "feature" and "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
       expect(find('.filtered-labels')).not_to have_content "feature"
     end
@@ -128,21 +128,21 @@ feature 'Issue filtering by Labels', feature: true do
       wait_for_ajax
     end
 
-    it 'should not show "Bugfix1" or "Feature1" in issues list' do
+    it 'does not show "Bugfix1" or "Feature1" in issues list' do
       expect(page).not_to have_content "Bugfix1"
       expect(page).not_to have_content "Feature1"
     end
 
-    it 'should show label "enhancement" and "feature" in filtered-labels' do
+    it 'shows label "enhancement" and "feature" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "enhancement"
       expect(find('.filtered-labels')).to have_content "feature"
     end
 
-    it 'should not show label "bug" in filtered-labels' do
+    it 'does not show label "bug" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "bug"
     end
 
-    it 'should remove label "enhancement"' do
+    it 'removes label "enhancement"' do
       find('.js-label-filter-remove', match: :first).click
       wait_for_ajax
       expect(find('.filtered-labels')).to have_no_content "enhancement"
@@ -159,20 +159,20 @@ feature 'Issue filtering by Labels', feature: true do
       wait_for_ajax
     end
 
-    it 'should show issue "Bugfix2" in issues list' do
+    it 'shows issue "Bugfix2" in issues list' do
       expect(page).to have_content "Bugfix2"
     end
 
-    it 'should not show "Feature1"' do
+    it 'does not show "Feature1"' do
       expect(page).not_to have_content "Feature1"
     end
 
-    it 'should show label "bug" and "enhancement" in filtered-labels' do
+    it 'shows label "bug" and "enhancement" in filtered-labels' do
       expect(find('.filtered-labels')).to have_content "bug"
       expect(find('.filtered-labels')).to have_content "enhancement"
     end
 
-    it 'should not show label "feature" in filtered-labels' do
+    it 'does not show label "feature" in filtered-labels' do
       expect(find('.filtered-labels')).not_to have_content "feature"
     end
   end
@@ -191,7 +191,7 @@ feature 'Issue filtering by Labels', feature: true do
       end
     end
 
-    it 'should allow user to remove filtered labels' do
+    it 'allows user to remove filtered labels' do
       first('.js-label-filter-remove').click
       wait_for_ajax
 
@@ -201,11 +201,11 @@ feature 'Issue filtering by Labels', feature: true do
   end
 
   context 'dropdown filtering', js: true do
-    it 'should filter by label name' do
+    it 'filters by label name' do
       page.within '.labels-filter' do
         click_button 'Label'
         wait_for_ajax
-        fill_in 'label-name', with: 'bug'
+        find('.dropdown-input input').set 'bug'
 
         page.within '.dropdown-content' do
           expect(page).not_to have_content 'enhancement'

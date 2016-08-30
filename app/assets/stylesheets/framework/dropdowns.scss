@@ -17,6 +17,12 @@
 
 .dropdown {
   position: relative;
+
+  .btn-link {
+    &:hover {
+      cursor: pointer;
+    }
+  }
 }
 
 .open {
@@ -56,9 +62,13 @@
     position: absolute;
     top: 50%;
     right: 6px;
-    margin-top: -4px;
+    margin-top: -6px;
     color: $dropdown-toggle-icon-color;
     font-size: 10px;
+    &.fa-spinner {
+      font-size: 16px;
+      margin-top: -8px;
+    }
   }
 
   &:hover, {
@@ -71,6 +81,23 @@
 
   &.large {
     width: 200px;
+  }
+
+  &.wide {
+    width: 100%;
+
+    + .dropdown-select {
+      width: 100%;
+    }
+  }
+
+  // Allows dynamic-width text in the dropdown toggle.
+  // Resizes to allow long text without overflowing the container.
+  &.dynamic {
+    width: auto;
+    min-width: 160px;
+    max-width: 100%;
+    padding-right: 25px;
   }
 }
 
@@ -350,6 +377,7 @@
 
 .dropdown-input-field, .default-dropdown-input {
   width: 100%;
+  min-height: 30px;
   padding: 0 7px;
   color: $dropdown-input-color;
   line-height: 30px;
@@ -397,6 +425,7 @@
   font-size: 14px;
 
   a {
+    cursor: pointer;
     padding-left: 10px;
   }
 }

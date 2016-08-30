@@ -1,12 +1,16 @@
 %div.branch-commit
   - if deployment.ref
-    = link_to deployment.ref, namespace_project_commits_path(@project.namespace, @project, deployment.ref), class: "monospace"
-    &middot;
+    .icon-container
+      = deployment.tag? ? icon('tag') : icon('code-fork')
+    = link_to deployment.ref, namespace_project_commits_path(@project.namespace, @project, deployment.ref), class: "monospace branch-name"
+  .icon-container
+    = custom_icon("icon_commit")
   = link_to deployment.short_sha, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-id monospace"
 
   %p.commit-title
     %span
       - if commit_title = deployment.commit_title
+        = author_avatar(deployment.commit, size: 20)
         = link_to_gfm commit_title, namespace_project_commit_path(@project.namespace, @project, deployment.sha), class: "commit-row-message"
       - else
         Cant find HEAD commit for this branch

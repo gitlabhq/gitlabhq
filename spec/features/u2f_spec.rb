@@ -1,13 +1,23 @@
 require 'spec_helper'
 
 feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: true, js: true do
+  include WaitForAjax
+
   before { allow_any_instance_of(U2fHelper).to receive(:inject_u2f_api?).and_return(true) }
 
+  def manage_two_factor_authentication
+    click_on 'Manage Two-Factor Authentication'
+    expect(page).to have_content("Setup New U2F Device")
+    wait_for_ajax
+  end
+
   def register_u2f_device(u2f_device = nil)
-    u2f_device ||= FakeU2fDevice.new(page)
+    name = FFaker::Name.first_name
+    u2f_device ||= FakeU2fDevice.new(page, name)
     u2f_device.respond_to_u2f_registration
     click_on 'Setup New U2F Device'
     expect(page).to have_content('Your device was successfully set up')
+    fill_in "Pick a name", with: name
     click_on 'Register U2F Device'
     u2f_device
   end
@@ -32,13 +42,14 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
     end
 
     describe 'when 2FA via OTP is enabled' do
-      it 'allows registering a new device' do
+      it 'allows registering a new device with a name' do
         visit profile_account_path
-        click_on 'Manage Two-Factor Authentication'
+        manage_two_factor_authentication
         expect(page.body).to match("You've already enabled two-factor authentication using mobile")
 
-        register_u2f_device
+        u2f_device = register_u2f_device
 
+        expect(page.body).to match(u2f_device.name)
         expect(page.body).to match('Your U2F device was registered')
       end
 
@@ -46,23 +57,39 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         visit profile_account_path
 
         # First device
-        click_on 'Manage Two-Factor Authentication'
-        register_u2f_device
+        manage_two_factor_authentication
+        first_device = register_u2f_device
         expect(page.body).to match('Your U2F device was registered')
 
         # Second device
-        click_on 'Manage Two-Factor Authentication'
-        register_u2f_device
+        second_device = register_u2f_device
         expect(page.body).to match('Your U2F device was registered')
-        click_on 'Manage Two-Factor Authentication'
-        expect(page.body).to match('You have 2 U2F devices registered')
+
+        expect(page.body).to match(first_device.name)
+        expect(page.body).to match(second_device.name)
+        expect(U2fRegistration.count).to eq(2)
+      end
+
+      it 'allows deleting a device' do
+        visit profile_account_path
+        manage_two_factor_authentication
+        expect(page.body).to match("You've already enabled two-factor authentication using mobile")
+
+        first_u2f_device = register_u2f_device
+        second_u2f_device = register_u2f_device
+
+        click_on "Delete", match: :first
+
+        expect(page.body).to match('Successfully deleted')
+        expect(page.body).not_to match(first_u2f_device.name)
+        expect(page.body).to match(second_u2f_device.name)
       end
     end
 
     it 'allows the same device to be registered for multiple users' do
       # First user
       visit profile_account_path
-      click_on 'Manage Two-Factor Authentication'
+      manage_two_factor_authentication
       u2f_device = register_u2f_device
       expect(page.body).to match('Your U2F device was registered')
       logout
@@ -71,7 +98,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
       user = login_as(:user)
       user.update_attribute(:otp_required_for_login, true)
       visit profile_account_path
-      click_on 'Manage Two-Factor Authentication'
+      manage_two_factor_authentication
       register_u2f_device(u2f_device)
       expect(page.body).to match('Your U2F device was registered')
 
@@ -81,7 +108,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
     context "when there are form errors" do
       it "doesn't register the device if there are errors" do
         visit profile_account_path
-        click_on 'Manage Two-Factor Authentication'
+        manage_two_factor_authentication
 
         # Have the "u2f device" respond with bad data
         page.execute_script("u2f.register = function(_,_,_,callback) { callback('bad response'); };")
@@ -96,7 +123,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
 
       it "allows retrying registration" do
         visit profile_account_path
-        click_on 'Manage Two-Factor Authentication'
+        manage_two_factor_authentication
 
         # Failed registration
         page.execute_script("u2f.register = function(_,_,_,callback) { callback('bad response'); };")
@@ -122,7 +149,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
       login_as(user)
       user.update_attribute(:otp_required_for_login, true)
       visit profile_account_path
-      click_on 'Manage Two-Factor Authentication'
+      manage_two_factor_authentication
       @u2f_device = register_u2f_device
       logout
     end
@@ -161,7 +188,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
           current_user = login_as(:user)
           current_user.update_attribute(:otp_required_for_login, true)
           visit profile_account_path
-          click_on 'Manage Two-Factor Authentication'
+          manage_two_factor_authentication
           register_u2f_device
           logout
 
@@ -182,7 +209,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
           current_user = login_as(:user)
           current_user.update_attribute(:otp_required_for_login, true)
           visit profile_account_path
-          click_on 'Manage Two-Factor Authentication'
+          manage_two_factor_authentication
           register_u2f_device(@u2f_device)
           logout
 
@@ -200,7 +227,7 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
 
     describe "when a given U2F device has not been registered" do
       it "does not allow logging in with that particular device" do
-        unregistered_device = FakeU2fDevice.new(page)
+        unregistered_device = FakeU2fDevice.new(page, FFaker::Name.first_name)
         login_as(user)
         unregistered_device.respond_to_u2f_authentication
         click_on "Login Via U2F Device"
@@ -248,12 +275,13 @@ feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', feature: 
         user = login_as(:user)
         user.update_attribute(:otp_required_for_login, true)
         visit profile_account_path
-        click_on 'Manage Two-Factor Authentication'
+        manage_two_factor_authentication
         expect(page).to have_content("Your U2F device needs to be set up.")
         register_u2f_device
       end
 
       it "deletes u2f registrations" do
+        visit profile_account_path
         expect { click_on "Disable" }.to change { U2fRegistration.count }.by(-1)
       end
     end

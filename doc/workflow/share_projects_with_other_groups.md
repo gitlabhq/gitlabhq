@@ -1,22 +1,24 @@
 # Share Projects with other Groups
 
-In GitLab Enterprise Edition you can share projects with other groups.
-This makes it possible to add a group of users to a project with a single action.
+You can share projects with other groups. This makes it possible to add a group of users
+to a project with a single action.
 
 ## Groups as collections of users
 
-In GitLab Community Edition groups are used primarily to [create collections of projects](groups.md).
-In GitLab Enterprise Edition you can also take advantage of the fact that groups define collections of _users_, namely the group members.
+Groups are used primarily to [create collections of projects](groups.md), but you can also
+take advantage of the fact that groups define collections of _users_, namely the group
+members.
 
 ## Sharing a project with a group of users
 
-The primary mechanism to give a group of users, say 'Engineering', access to a project, say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project Acme'.
-But what if 'Project Acme' already belongs to another group, say 'Open Source'?
-This is where the (Enterprise Edition only) group sharing feature can be of use.
+The primary mechanism to give a group of users, say 'Engineering', access to a project,
+say 'Project Acme', in GitLab is to make the 'Engineering' group the owner of 'Project
+Acme'.  But what if 'Project Acme' already belongs to another group, say 'Open Source'?
+This is where the group sharing feature can be of use.
 
 To share 'Project Acme' with the 'Engineering' group, go to the project settings page for 'Project Acme' and use the left navigation menu to go to the 'Groups' section.
 
-![The 'Groups' section in the project settings screen (Enterprise Edition only)](groups/share_project_with_groups.png)
+![The 'Groups' section in the project settings screen](groups/share_project_with_groups.png)
 
 Now you can add the 'Engineering' group with the maximum access level of your choice.
 After sharing 'Project Acme' with 'Engineering', the project is listed on the group dashboard.
