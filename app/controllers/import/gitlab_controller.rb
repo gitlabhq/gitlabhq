@@ -27,9 +27,13 @@ class Import::GitlabController < Import::BaseController
     @repo_id = params[:repo_id].to_i
     repo = client.project(@repo_id)
     @project_name = repo['name']
-    namespace = find_or_create_namespace(repo['namespace']['path'], client.user['username']) || (render and return)
+    @target_namespace = find_or_create_namespace(repo['namespace']['path'], client.user['username'])
 
-    @project = Gitlab::GitlabImport::ProjectCreator.new(repo, namespace, current_user, access_params).execute
+    if current_user.can?(:create_projects, @target_namespace)
+      @project = Gitlab::GitlabImport::ProjectCreator.new(repo, @target_namespace, current_user, access_params).execute
+    else
+      render 'unauthorized'
+    end
   end
 
   private
