@@ -1,4 +1,31 @@
 class ProjectPolicy < BasePolicy
+  def rules
+    team_access!(user)
+
+    owner = user.admin? ||
+            project.owner == user ||
+            (project.group && project.group.has_owner?(user))
+
+    owner_access! if owner
+
+    if project.public? || (project.internal? && !user.external?)
+      guest_access!
+      public_access!
+
+      # Allow to read builds for internal projects
+      can! :read_build if project.public_builds?
+
+      if project.request_access_enabled &&
+         !(owner || project.team.member?(user) || project_group_member?(user))
+        can! :request_access
+      end
+    end
+
+    archived_access! if project.archived?
+
+    disabled_features!
+  end
+
   def project
     @subject
   end
@@ -156,33 +183,6 @@ class ProjectPolicy < BasePolicy
     unless project.container_registry_enabled
       cannot!(*named_abilities(:container_image))
     end
-  end
-
-  def rules
-    team_access!(user)
-
-    owner = user.admin? ||
-            project.owner == user ||
-            (project.group && project.group.has_owner?(user))
-
-    owner_access! if owner
-
-    if project.public? || (project.internal? && !user.external?)
-      guest_access!
-      public_access!
-
-      # Allow to read builds for internal projects
-      can! :read_build if project.public_builds?
-
-      if project.request_access_enabled &&
-         !(owner || project.team.member?(user) || project_group_member?(user))
-        can! :request_access
-      end
-    end
-
-    archived_access! if project.archived?
-
-    disabled_features!
   end
 
   def anonymous_rules
