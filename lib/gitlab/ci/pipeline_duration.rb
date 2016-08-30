@@ -37,41 +37,22 @@ module Gitlab
         if segments.empty?
           segments
         else
-          segments[1..-1].inject([segments.first]) do |current, target|
-            left, result = insert_segment(current, target)
+          segments.drop(1).inject([segments.first]) do |result, current|
+            merged = try_merge_segment(result.last, current)
 
-            if left # left is the latest one
-              result << left
-            else
+            if merged
+              result[-1] = merged
               result
+            else
+              result << current
             end
           end
         end
       end
 
-      def insert_segment(segments, init)
-        segments.inject([init, []]) do |target_result, member|
-          target, result = target_result
-
-          if target.nil? # done
-            result << member
-            [nil, result]
-          elsif merged = try_merge_segment(target, member) # overlapped
-            [merged, result] # merge and keep finding the hole
-          elsif target.last < member.first # found the hole
-            result << target << member
-            [nil, result]
-          else
-            result << member
-            target_result
-          end
-        end
-      end
-
-      def try_merge_segment(target, member)
-        if target.first <= member.last && target.last >= member.first
-          Segment.new([target.first, member.first].min,
-                      [target.last, member.last].max)
+      def try_merge_segment(previous, current)
+        if current.first <= previous.last
+          Segment.new(previous.first, [previous.last, current.last].max)
         end
       end
 
