@@ -25,18 +25,40 @@ describe ExtractsPath, lib: true do
       @project = create(:project)
     end
 
-    it "log tree path should have no escape sequences" do
+    it "log tree path has no escape sequences" do
       assign_ref_vars
       expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
     end
 
-    context 'escaped sequences in ref' do
-      let(:ref) { "improve%2Fawesome" }
+    context 'ref contains %20' do
+      let(:ref) { 'foo%20bar' }
 
-      it "id should have no escape sequences" do
+      it 'is not converted to a space in @id' do
+        @project.repository.add_branch(@project.owner, 'foo%20bar', 'master')
+
         assign_ref_vars
-        expect(@ref).to eq('improve/awesome')
-        expect(@logs_path).to eq("/#{@project.path_with_namespace}/refs/#{ref}/logs_tree/files/ruby/popen.rb")
+
+        expect(@id).to start_with('foo%20bar/')
+      end
+    end
+
+    context 'path contains space' do
+      let(:params) { { path: 'with space', ref: '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' } }
+
+      it 'is not converted to %20 in @path' do
+        assign_ref_vars
+
+        expect(@path).to eq(params[:path])
+      end
+    end
+
+    context 'subclass overrides get_id' do
+      it 'uses ref returned by get_id' do
+        allow_any_instance_of(self.class).to receive(:get_id){ '38008cb17ce1466d8fec2dfa6f6ab8dcfe5cf49e' }
+
+        assign_ref_vars
+
+        expect(@id).to eq(get_id)
       end
     end
   end

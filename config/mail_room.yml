@@ -1,47 +1,36 @@
+# If you change this file in a Merge Request, please also create
+# a Merge Request on https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests
+#
 :mailboxes:
-<%
-require "yaml"
-require "json"
-require_relative "lib/gitlab/redis" unless defined?(Gitlab::Redis)
+  <%
+    require_relative "lib/gitlab/mail_room" unless defined?(Gitlab::MailRoom)
+    config = Gitlab::MailRoom.config
 
-rails_env = ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
-
-config_file = ENV["MAIL_ROOM_GITLAB_CONFIG_FILE"] || "config/gitlab.yml"
-if File.exists?(config_file)
-  all_config = YAML.load_file(config_file)[rails_env]
-
-  config = all_config["incoming_email"] || {}
-  config['enabled']    = false    if config['enabled'].nil?
-  config['port']       = 143      if config['port'].nil?
-  config['ssl']        = false    if config['ssl'].nil?
-  config['start_tls']  = false    if config['start_tls'].nil?
-  config['mailbox']    = "inbox"  if config['mailbox'].nil?
-
-  if config['enabled'] && config['address']
-    redis_url = Gitlab::Redis.new(rails_env).url
-    %>
+    if Gitlab::MailRoom.enabled?
+  %>
     -
-      :host: <%= config['host'].to_json %>
-      :port: <%= config['port'].to_json %>
-      :ssl: <%= config['ssl'].to_json %>
-      :start_tls: <%= config['start_tls'].to_json %>
-      :email: <%= config['user'].to_json %>
-      :password: <%= config['password'].to_json %>
+      :host: <%= config[:host].to_json %>
+      :port: <%= config[:port].to_json %>
+      :ssl: <%= config[:ssl].to_json %>
+      :start_tls: <%= config[:start_tls].to_json %>
+      :email: <%= config[:user].to_json %>
+      :password: <%= config[:password].to_json %>
+      :idle_timeout: 60
 
-      :name: <%= config['mailbox'].to_json %>
+      :name: <%= config[:mailbox].to_json %>
 
       :delete_after_delivery: true
 
       :delivery_method: sidekiq
       :delivery_options:
-        :redis_url: <%= redis_url.to_json %>
-        :namespace: resque:gitlab
+        :redis_url: <%= config[:redis_url].to_json %>
+        :namespace: <%= Gitlab::Redis::SIDEKIQ_NAMESPACE %>
         :queue: incoming_email
         :worker: EmailReceiverWorker
 
       :arbitration_method: redis
       :arbitration_options:
-        :redis_url: <%= redis_url.to_json %>
-        :namespace: mail_room:gitlab
+        :redis_url: <%= config[:redis_url].to_json %>
+        :namespace: <%= Gitlab::Redis::MAILROOM_NAMESPACE %>
+
   <% end %>
-<% end %>

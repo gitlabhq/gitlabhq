@@ -99,7 +99,7 @@
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 15px;
-    max-width: 480px;
+    max-width: 700px;
 
     > p {
       margin-bottom: 0;
@@ -127,6 +127,17 @@
 
     .fa {
       color: $layout-link-gray;
+    }
+
+    svg {
+
+      path {
+        fill: $layout-link-gray;
+      }
+
+      use {
+        stroke: $layout-link-gray;
+      }
     }
 
     .fa-caret-down {
@@ -322,41 +333,83 @@ a.deploy-project-label {
 }
 
 .fork-namespaces {
-  .fork-thumbnail {
-    text-align: center;
-    margin-bottom: $gl-padding;
+  .row {
+    -webkit-flex-wrap: wrap;
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 
-    .caption {
-      padding: $gl-padding 0;
-      min-height: 30px;
-    }
+    .fork-thumbnail {
+      @include border-radius($border-radius-base);
+      background-color: $white-light;
+      border: 1px solid $border-white-light;
+      height: 202px;
+      margin: $gl-padding;
+      text-align: center;
+      width: 169px;
+      &:hover, &.forked {
+        background-color: $row-hover;
+        border-color: $row-hover-border;
+      }
+      .no-avatar {
+        width: 100px;
+        height: 100px;
+        background-color: $gray-light;
+        border: 1px solid $gray-dark;
+        margin: 0 auto;
+        @include border-radius(50%);
+        i {
+          font-size: 100px;
+          color: $gray-dark;
+        }
+      }
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        padding-top: $gl-padding;
+        color: $gl-gray;
+        .caption {
+          min-height: 30px;
+          padding: $gl-padding 0;
+        }
+      }
 
-    img {
-      @include border-radius(50%);
-      max-width: 100px;
+      img {
+        @include border-radius(50%);
+        max-width: 100px;
+      }
     }
   }
 }
 
 .project-import {
   .form-group {
-    margin-bottom: 0;
+    margin-bottom: 5px;
   }
+
   .import-buttons {
     padding-left: 0;
     display: -webkit-flex;
     display: flex;
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
+
     .btn {
-      margin-right: 10px;
-      padding: 8px 12px;
+      margin: 0 10px 10px 0;
+      padding: 8px;
     }
-    &> div {
-      margin-bottom: 14px;
+
+    > div {
       padding-left: 0;
+
       &:last-child {
         margin-bottom: 0;
+
+        .btn {
+          margin-right: 0;
+        }
       }
     }
   }
@@ -459,21 +512,24 @@ pre.light-well {
   .project-row {
     border-color: $table-border-color;
 
-    &.no-description {
-      .project {
-        line-height: 40px;
-      }
-    }
-
     .project-full-name {
       @include str-truncated;
     }
 
     .controls {
-      line-height: 40px;
+      line-height: $list-text-height;
 
       a:hover {
         text-decoration: none;
+      }
+
+      > span {
+        margin-left: 10px;
+      }
+
+      svg {
+        position: relative;
+        top: 2px;
       }
     }
   }
@@ -599,13 +655,38 @@ pre.light-well {
   }
 }
 
+.new_protected_branch {
+  label {
+    margin-top: 6px;
+    font-weight: normal;
+  }
+}
+
 .protected-branches-list {
   a {
     color: $gl-gray;
-    font-weight: 600;
 
     &:hover {
       color: $gl-link-color;
+    }
+
+    &.is-active {
+      font-weight: 600;
+    }
+  }
+
+  .settings-message {
+    margin: 0;
+    border-radius: 0 0 1px 1px;
+    padding: 20px 0;
+    border: none;
+  }
+
+  .table-bordered {
+    border-radius: 1px;
+
+    th:not(:last-child), td:not(:last-child) {
+      border-right: solid 1px transparent;
     }
   }
 }
@@ -630,5 +711,37 @@ pre.light-well {
 .project-refs-form {
   .dropdown-menu {
     width: 300px;
+  }
+}
+
+.compare-form-group {
+  .dropdown-menu {
+    width: 300px;
+  }
+}
+
+.clearable-input {
+  position: relative;
+
+  .clear-icon {
+    @extend .fa-times;
+    display: none;
+    position: absolute;
+    right: 7px;
+    top: 7px;
+    color: $location-icon-color;
+
+    &:before {
+      font-family: FontAwesome;
+      font-weight: normal;
+      font-style: normal;
+    }
+  }
+
+  &.has-value {
+    .clear-icon {
+      cursor: pointer;
+      display: block;
+    }
   }
 }

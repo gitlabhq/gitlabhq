@@ -1,8 +1,6 @@
 .commits-compare-switch {
   @include btn-default;
   @include btn-white;
-  background: image-url("switch_icon.png") no-repeat center center;
-  text-indent: -9999px;
   float: left;
   margin-right: 9px;
 }
@@ -61,7 +59,11 @@
     font-size: 0;
   }
 
-  .btn-transparent {
+  .ci-status-link {
+    display: inline-block;
+  }
+
+  .btn-clipboard, .btn-transparent {
     padding-left: 0;
     padding-right: 0;
   }

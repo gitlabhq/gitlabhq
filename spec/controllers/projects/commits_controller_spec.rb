@@ -11,7 +11,7 @@ describe Projects::CommitsController do
 
   describe "GET show" do
     context "as atom feed" do
-      it "should render as atom" do
+      it "renders as atom" do
         get(:show,
             namespace_id: project.namespace.to_param,
             project_id: project.to_param,

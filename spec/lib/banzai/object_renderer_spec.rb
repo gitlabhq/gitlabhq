@@ -17,6 +17,7 @@ describe Banzai::ObjectRenderer do
         and_call_original
 
       expect(object).to receive(:note_html=).with('<p>hello</p>')
+      expect(object).to receive(:user_visible_reference_count=).with(0)
 
       renderer.render([object], :note)
     end
@@ -25,9 +26,10 @@ describe Banzai::ObjectRenderer do
   describe '#render_objects' do
     it 'renders an Array of objects' do
       object = double(:object, note: 'hello')
+
       renderer = described_class.new(project, user)
 
-      expect(renderer).to receive(:render_attribute).with(object, :note).
+      expect(renderer).to receive(:render_attributes).with([object], :note).
         and_call_original
 
       rendered = renderer.render_objects([object], :note)
@@ -38,7 +40,7 @@ describe Banzai::ObjectRenderer do
   end
 
   describe '#redact_documents' do
-    it 'redacts a set of documents and returns them as an Array of Strings' do
+    it 'redacts a set of documents and returns them as an Array of Hashes' do
       doc = Nokogiri::HTML.fragment('<p>hello</p>')
       renderer = described_class.new(project, user)
 
@@ -48,7 +50,9 @@ describe Banzai::ObjectRenderer do
 
       redacted = renderer.redact_documents([doc])
 
-      expect(redacted).to eq(['<p>hello</p>'])
+      expect(redacted.count).to eq(1)
+      expect(redacted.first[:visible_reference_count]).to eq(0)
+      expect(redacted.first[:document].to_html).to eq('<p>hello</p>')
     end
   end
 
@@ -85,14 +89,36 @@ describe Banzai::ObjectRenderer do
     end
   end
 
-  describe '#render_attribute' do
-    it 'renders the attribute of an object' do
-      object = double(:doc, note: 'hello')
+  describe '#render_attributes' do
+    it 'renders the attribute of a list of objects' do
+      objects = [double(:doc, note: 'hello'), double(:doc, note: 'bye')]
       renderer = described_class.new(project, user, pipeline: :note)
-      doc = renderer.render_attribute(object, :note)
 
-      expect(doc).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
-      expect(doc.to_html).to eq('<p>hello</p>')
+      expect(Banzai).to receive(:cache_collection_render).
+        with([
+          { text: 'hello', context: renderer.context_for(objects[0], :note) },
+          { text: 'bye', context: renderer.context_for(objects[1], :note) }
+        ]).
+        and_call_original
+
+      docs = renderer.render_attributes(objects, :note)
+
+      expect(docs[0]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
+      expect(docs[0].to_html).to eq('<p>hello</p>')
+
+      expect(docs[1]).to be_an_instance_of(Nokogiri::HTML::DocumentFragment)
+      expect(docs[1].to_html).to eq('<p>bye</p>')
+    end
+
+    it 'returns when no objects to render' do
+      objects = []
+      renderer = described_class.new(project, user, pipeline: :note)
+
+      expect(Banzai).to receive(:cache_collection_render).
+        with([]).
+        and_call_original
+
+      expect(renderer.render_attributes(objects, :note)).to eq([])
     end
   end
 

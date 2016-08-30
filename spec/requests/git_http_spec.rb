@@ -75,9 +75,9 @@ describe 'Git HTTP requests', lib: true do
       context "with correct credentials" do
         let(:env) { { user: user.username, password: user.password } }
 
-        it "uploads get status 200 (because Git hooks do the real check)" do
+        it "uploads get status 403" do
           upload(path, env) do |response|
-            expect(response).to have_http_status(200)
+            expect(response).to have_http_status(403)
           end
         end
 
@@ -86,7 +86,7 @@ describe 'Git HTTP requests', lib: true do
             allow(Gitlab.config.gitlab_shell).to receive(:receive_pack).and_return(false)
 
             upload(path, env) do |response|
-              expect(response).to have_http_status(404)
+              expect(response).to have_http_status(403)
             end
           end
         end
@@ -198,6 +198,45 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
+            context 'when user has 2FA enabled' do
+              let(:user) { create(:user, :two_factor) }
+              let(:access_token) { create(:personal_access_token, user: user) }
+
+              before do
+                project.team << [user, :master]
+              end
+
+              context 'when username and password are provided' do
+                it 'rejects the clone attempt' do
+                  download("#{project.path_with_namespace}.git", user: user.username, password: user.password) do |response|
+                    expect(response).to have_http_status(401)
+                    expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+                  end
+                end
+
+                it 'rejects the push attempt' do
+                  upload("#{project.path_with_namespace}.git", user: user.username, password: user.password) do |response|
+                    expect(response).to have_http_status(401)
+                    expect(response.body).to include('You have 2FA enabled, please use a personal access token for Git over HTTP')
+                  end
+                end
+              end
+
+              context 'when username and personal access token are provided' do
+                it 'allows clones' do
+                  download("#{project.path_with_namespace}.git", user: user.username, password: access_token.token) do |response|
+                    expect(response).to have_http_status(200)
+                  end
+                end
+
+                it 'allows pushes' do
+                  upload("#{project.path_with_namespace}.git", user: user.username, password: access_token.token) do |response|
+                    expect(response).to have_http_status(200)
+                  end
+                end
+              end
+            end
+
             context "when blank password attempts follow a valid login" do
               def attempt_login(include_password)
                 password = include_password ? user.password : ""
@@ -236,9 +275,9 @@ describe 'Git HTTP requests', lib: true do
               end
             end
 
-            it "uploads get status 200 (because Git hooks do the real check)" do
+            it "uploads get status 404" do
               upload(path, user: user.username, password: user.password) do |response|
-                expect(response).to have_http_status(200)
+                expect(response).to have_http_status(404)
               end
             end
           end
@@ -349,19 +388,19 @@ describe 'Git HTTP requests', lib: true do
     end
   end
 
-  def clone_get(project, options={})
+  def clone_get(project, options = {})
     get "/#{project}/info/refs", { service: 'git-upload-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def clone_post(project, options={})
+  def clone_post(project, options = {})
     post "/#{project}/git-upload-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_get(project, options={})
+  def push_get(project, options = {})
     get "/#{project}/info/refs", { service: 'git-receive-pack' }, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 
-  def push_post(project, options={})
+  def push_post(project, options = {})
     post "/#{project}/git-receive-pack", {}, auth_env(*options.values_at(:user, :password, :spnego_request_token))
   end
 

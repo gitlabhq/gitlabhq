@@ -14,9 +14,9 @@ describe Projects::UploadsController do
 
     context "without params['file']" do
       it "returns an error" do
-        post :create, 
+        post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param, 
+          project_id: project.to_param,
           format: :json
         expect(response).to have_http_status(422)
       end
@@ -34,23 +34,21 @@ describe Projects::UploadsController do
       it 'returns a content with original filename, new link, and correct type.' do
         expect(response.body).to match '\"alt\":\"rails_sample\"'
         expect(response.body).to match "\"url\":\"/uploads"
-        expect(response.body).to match '\"is_image\":true'
       end
     end
 
     context 'with valid non-image file' do
       before do
-        post :create, 
+        post :create,
           namespace_id: project.namespace.to_param,
-          project_id: project.to_param, 
-          file: txt, 
+          project_id: project.to_param,
+          file: txt,
           format: :json
       end
 
       it 'returns a content with original filename, new link, and correct type.' do
         expect(response.body).to match '\"alt\":\"doc_sample.txt\"'
         expect(response.body).to match "\"url\":\"/uploads"
-        expect(response.body).to match '\"is_image\":false'
       end
     end
   end

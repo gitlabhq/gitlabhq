@@ -14,7 +14,7 @@
       %span It's you!
     .user-email
       = mail_to user.email, user.email
-  .controls.pull-right
+  .controls
     = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: 'btn'
     - unless user == current_user
       .dropdown.inline

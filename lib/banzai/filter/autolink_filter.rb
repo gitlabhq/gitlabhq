@@ -31,6 +31,14 @@ module Banzai
       # Text matching LINK_PATTERN inside these elements will not be linked
       IGNORE_PARENTS = %w(a code kbd pre script style).to_set
 
+      # The XPath query to use for finding text nodes to parse.
+      TEXT_QUERY = %Q(descendant-or-self::text()[
+        not(#{IGNORE_PARENTS.map { |p| "ancestor::#{p}" }.join(' or ')})
+        and contains(., '://')
+        and not(starts-with(., 'http'))
+        and not(starts-with(., 'ftp'))
+      ])
+
       def call
         return doc if context[:autolink] == false
 
@@ -56,6 +64,8 @@ module Banzai
         # period (e.g., http://localhost:3000/)
         rinku = Rinku.auto_link(html, :urls, options, IGNORE_PARENTS.to_a, 1)
 
+        return if rinku == html
+
         # Rinku returns a String, so parse it back to a Nokogiri::XML::Document
         # for further processing.
         @doc = parse_html(rinku)
@@ -64,15 +74,10 @@ module Banzai
       # Autolinks any text matching LINK_PATTERN that Rinku didn't already
       # replace
       def text_parse
-        search_text_nodes(doc).each do |node|
+        doc.xpath(TEXT_QUERY).each do |node|
           content = node.to_html
 
-          next if has_ancestor?(node, IGNORE_PARENTS)
           next unless content.match(LINK_PATTERN)
-
-          # If Rinku didn't link this, there's probably a good reason, so we'll
-          # skip it too
-          next if content.start_with?(*%w(http https ftp))
 
           html = autolink_filter(content)
 

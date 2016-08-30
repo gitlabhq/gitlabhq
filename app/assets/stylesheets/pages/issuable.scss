@@ -122,7 +122,8 @@
 
     button {
       float: right;
-      padding: 3px 5px;
+      padding: 1px 5px;
+      background-color: $gray-light;
     }
   }
 
@@ -268,7 +269,7 @@
   .issuable-header-btn {
     background: $gray-normal;
     border: 1px solid $border-gray-normal;
-    
+
     &:hover {
       background: $gray-dark;
       border: 1px solid $border-gray-dark;
@@ -393,4 +394,13 @@
 .issuable-meta {
   display: inline-block;
   line-height: 18px;
+}
+
+.js-issuable-selector-wrap {
+  .js-issuable-selector {
+    width: 100%;
+  }
+  @media (max-width: $screen-sm-max) {
+    margin-bottom: $gl-padding;
+  }
 }

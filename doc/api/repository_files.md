@@ -12,6 +12,10 @@ Allows you to receive information about file in repository like name, size, cont
 GET /projects/:id/repository/files
 ```
 
+```bash
+curl --request GET --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/models/key.rb&ref=master'
+```
+
 Example response:
 
 ```json
@@ -39,6 +43,10 @@ Parameters:
 POST /projects/:id/repository/files
 ```
 
+```bash
+curl --request POST --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&content=some%20content&commit_message=create%20a%20new%20file'
+```
+
 Example response:
 
 ```json
@@ -60,6 +68,10 @@ Parameters:
 
 ```
 PUT /projects/:id/repository/files
+```
+
+```bash
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&content=some%20other%20content&commit_message=update%20file'
 ```
 
 Example response:
@@ -92,6 +104,10 @@ Currently gitlab-shell has a boolean return code, preventing GitLab from specify
 
 ```
 DELETE /projects/:id/repository/files
+```
+
+```bash
+curl --request PUT --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v3/projects/13083/repository/files?file_path=app/project.rb&branch_name=master&commit_message=delete%20file'
 ```
 
 Example response:

@@ -94,7 +94,7 @@ module ExtractsPath
     @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
     @options = HashWithIndifferentAccess.new(@options)
 
-    @id = Addressable::URI.unescape(get_id)
+    @id = get_id
     @ref, @path = extract_ref(@id)
     @repo = @project.repository
     if @options[:extended_sha1].blank?
@@ -119,6 +119,7 @@ module ExtractsPath
 
   private
 
+  # overriden in subclasses, do not remove
   def get_id
     id = params[:id] || params[:ref]
     id += "/" + params[:path] unless params[:path].blank?

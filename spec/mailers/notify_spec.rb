@@ -12,7 +12,7 @@ describe Notify do
   context 'for a project' do
     describe 'items that are assignable, the email' do
       let(:current_user) { create(:user, email: "current@email.com") }
-      let(:assignee) { create(:user, email: 'assignee@example.com') }
+      let(:assignee) { create(:user, email: 'assignee@example.com', name: 'John Doe') }
       let(:previous_assignee) { create(:user, name: 'Previous Assignee') }
 
       shared_examples 'an assignee email' do
@@ -493,7 +493,12 @@ describe Notify do
     end
 
     def invite_to_project(project:, email:, inviter:)
-      ProjectMember.add_user(project.project_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+      Member.add_user(
+        project.project_members,
+        'toto@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: inviter
+      )
 
       project.project_members.invite.last
     end
@@ -591,7 +596,7 @@ describe Notify do
           is_expected.to have_body_text /#{note.note}/
         end
 
-        it 'not contains note author' do
+        it 'does not contain note author' do
           is_expected.not_to have_body_text /wrote\:/
         end
 
@@ -740,7 +745,12 @@ describe Notify do
     end
 
     def invite_to_group(group:, email:, inviter:)
-      GroupMember.add_user(group.group_members, 'toto@example.com', Gitlab::Access::DEVELOPER, inviter)
+      Member.add_user(
+        group.group_members,
+        'toto@example.com',
+        Gitlab::Access::DEVELOPER,
+        current_user: inviter
+      )
 
       group.group_members.invite.last
     end
@@ -944,8 +954,9 @@ describe Notify do
   describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits, nil) }
+    let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
+    let(:compare) { Compare.decorate(raw_compare, project) }
+    let(:commits) { compare.commits }
     let(:diff_path) { namespace_project_compare_path(project.namespace, project, from: Commit.new(compare.base, project), to: Commit.new(compare.head, project)) }
     let(:send_from_committer_email) { false }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
@@ -1046,8 +1057,9 @@ describe Notify do
   describe 'email on push with a single commit' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
-    let(:commits) { Commit.decorate(compare.commits, nil) }
+    let(:raw_compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
+    let(:compare) { Compare.decorate(raw_compare, project) }
+    let(:commits) { compare.commits }
     let(:diff_path) { namespace_project_commit_path(project.namespace, project, commits.first) }
     let(:diff_refs) { Gitlab::Diff::DiffRefs.new(base_sha: project.merge_base_commit(sample_image_commit.id, sample_commit.id).id, head_sha: sample_commit.id) }
 

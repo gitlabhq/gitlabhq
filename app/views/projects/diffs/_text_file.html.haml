@@ -3,18 +3,14 @@
   .suppressed-container
     %a.show-suppressed-diff.js-show-suppressed-diff Changes suppressed. Click to show.
 
-%table.text-file.code.js-syntax-highlight{ class: too_big ? 'hide' : '' }
+%table.text-file.code.js-syntax-highlight{ data: diff_view_data, class: too_big ? 'hide' : '' }
   - last_line = 0
-  - diff_file.highlighted_diff_lines.each do |line|
-    - last_line = line.new_pos
-    = render "projects/diffs/line", line: line, diff_file: diff_file
+  - discussions = @grouped_diff_discussions unless @diff_notes_disabled
+  = render partial: "projects/diffs/line",
+    collection: diff_file.highlighted_diff_lines,
+    as: :line,
+    locals: { diff_file: diff_file, discussions: discussions }
 
-    - unless @diff_notes_disabled
-      - line_code = diff_file.line_code(line)
-      - diff_notes = @grouped_diff_notes[line_code] if line_code
-      - if diff_notes
-        = render "projects/notes/diff_notes_with_reply", notes: diff_notes
-
-  - if last_line > 0
-    = render "projects/diffs/match_line", { line: "",
-      line_old: last_line, line_new: last_line, bottom: true, new_file: diff_file.new_file }
+  - last_line = diff_file.highlighted_diff_lines.last.new_pos
+  - if !diff_file.new_file && last_line > 0
+    = diff_match_line last_line, last_line, bottom: true

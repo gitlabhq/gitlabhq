@@ -10,15 +10,20 @@
           All
           %span.badge.js-totalbuilds-count= @all_builds.count(:id)
 
+      %li{class: ('active' if @scope == 'pending')}
+        = link_to admin_builds_path(scope: :pending) do
+          Pending
+          %span.badge= number_with_delimiter(@all_builds.pending.count(:id))
+
       %li{class: ('active' if @scope == 'running')}
         = link_to admin_builds_path(scope: :running) do
           Running
-          %span.badge.js-running-count= number_with_delimiter(@all_builds.running_or_pending.count(:id))
+          %span.badge= number_with_delimiter(@all_builds.running.count(:id))
 
       %li{class: ('active' if @scope == 'finished')}
         = link_to admin_builds_path(scope: :finished) do
           Finished
-          %span.badge.js-running-count= number_with_delimiter(@all_builds.finished.count(:id))
+          %span.badge= number_with_delimiter(@all_builds.finished.count(:id))
 
     .nav-controls
       - if @all_builds.running_or_pending.any?
@@ -27,7 +32,7 @@
   .row-content-block.second-block
     #{(@scope || 'all').capitalize} builds
 
-  %ul.content-list
+  %ul.content-list.builds-content-list
     - if @builds.blank?
       %li
         .nothing-here-block No builds to show
@@ -37,15 +42,11 @@
           %thead
             %tr
               %th Status
-              %th Build ID
-              %th Project
               %th Commit
-              %th Ref
+              %th Project
               %th Runner
               %th Name
-              %th Tags
-              %th Duration
-              %th Finished at
+              %th
               %th
 
           - @builds.each do |build|

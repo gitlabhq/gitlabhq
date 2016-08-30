@@ -20,9 +20,12 @@
 
 .blank-state-icon {
   padding-bottom: 20px;
+  color: $gray-darkest;
+  font-size: 56px;
 
-  path {
-    fill: $gray-darkest;
+  path,
+  polygon {
+    fill: currentColor;
   }
 }
 
@@ -37,6 +40,10 @@
   margin-top: 0;
   margin-bottom: $gl-padding;
   font-size: 15px;
+
+  > strong {
+    font-weight: 600;
+  }
 }
 
 .blank-state-welcome-title {

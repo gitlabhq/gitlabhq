@@ -38,7 +38,7 @@ Forking a project is in most cases a two-step process.
     ---
 
 After the forking is done, you can start working on the newly created
-repository. There, you will have full [Owner](../permissions/permissions.md)
+repository. There, you will have full [Owner](../user/permissions.md)
 access, so you can set it up as you please.
 
 ## Merging upstream

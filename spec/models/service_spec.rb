@@ -22,11 +22,11 @@ describe Service, models: true do
         @testable = @service.can_test?
       end
 
-      describe :can_test do
+      describe '#can_test?' do
         it { expect(@testable).to eq(true) }
       end
 
-      describe :test do
+      describe '#test' do
         let(:data) { 'test' }
 
         it 'test runs execute' do
@@ -45,7 +45,7 @@ describe Service, models: true do
         @testable = @service.can_test?
       end
 
-      describe :can_test do
+      describe '#can_test?' do
         it { expect(@testable).to eq(true) }
       end
     end
@@ -65,13 +65,13 @@ describe Service, models: true do
       end
       let(:project) { create(:project) }
 
-      describe 'should be prefilled for projects pushover service' do
+      describe 'is prefilled for projects pushover service' do
         before do
           service_template
           project.build_missing_services
         end
 
-        it "should have all fields prefilled" do
+        it "has all fields prefilled" do
           service = project.pushover_service
           expect(service.template).to eq(false)
           expect(service.device).to eq('MyDevice')

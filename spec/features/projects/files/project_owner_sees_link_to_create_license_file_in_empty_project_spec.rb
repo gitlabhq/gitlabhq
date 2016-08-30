@@ -14,6 +14,7 @@ feature 'project owner sees a link to create a license file in empty project', f
     visit namespace_project_path(project.namespace, project)
     click_link 'Create empty bare repository'
     click_on 'LICENSE'
+    expect(page).to have_content('New File')
 
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))
@@ -22,7 +23,7 @@ feature 'project owner sees a link to create a license file in empty project', f
 
     select_template('MIT License')
 
-    file_content = find('.file-content')
+    file_content = first('.file-editor')
     expect(file_content).to have_content('The MIT License (MIT)')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 

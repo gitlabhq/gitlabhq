@@ -32,4 +32,14 @@ class Deployment < ActiveRecord::Base
   def keep_around_commit
     project.repository.keep_around(self.sha)
   end
+
+  def manual_actions
+    deployable.try(:other_actions)
+  end
+
+  def includes_commit?(commit)
+    return false unless commit
+
+    project.repository.is_ancestor?(commit.id, sha)
+  end
 end

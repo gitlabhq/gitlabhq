@@ -77,24 +77,47 @@ describe ContainerRegistry::Tag do
       end
 
       context 'config processing' do
-        before do
-          stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac').
-            with(headers: { 'Accept' => 'application/octet-stream' }).
-            to_return(
-              status: 200,
-              body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
+        shared_examples 'a processable' do
+          context '#config' do
+            subject { tag.config }
+
+            it { is_expected.not_to be_nil }
+          end
+
+          context '#created_at' do
+            subject { tag.created_at }
+
+            it { is_expected.not_to be_nil }
+          end
         end
 
-        context '#config' do
-          subject { tag.config }
+        context 'when locally stored' do
+          before do
+            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac').
+              with(headers: { 'Accept' => 'application/octet-stream' }).
+              to_return(
+                status: 200,
+                body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
+          end
 
-          it { is_expected.not_to be_nil }
+          it_behaves_like 'a processable'
         end
 
-        context '#created_at' do
-          subject { tag.created_at }
+        context 'when externally stored' do
+          before do
+            stub_request(:get, 'http://example.com/v2/group/test/blobs/sha256:d7a513a663c1a6dcdba9ed832ca53c02ac2af0c333322cd6ca92936d1d9917ac').
+              with(headers: { 'Accept' => 'application/octet-stream' }).
+              to_return(
+                status: 307,
+                headers: { 'Location' => 'http://external.com/blob/file' })
 
-          it { is_expected.not_to be_nil }
+            stub_request(:get, 'http://external.com/blob/file').
+              to_return(
+                status: 200,
+                body: File.read(Rails.root + 'spec/fixtures/container_registry/config_blob.json'))
+          end
+
+          it_behaves_like 'a processable'
         end
       end
     end

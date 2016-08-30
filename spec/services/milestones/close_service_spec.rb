@@ -9,7 +9,7 @@ describe Milestones::CloseService, services: true do
     project.team << [user, :master]
   end
 
-  describe :execute do
+  describe '#execute' do
     before do
       Milestones::CloseService.new(project, user, {}).execute(milestone)
     end

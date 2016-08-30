@@ -1,118 +1,106 @@
 require 'spec_helper'
 
 describe Issues::BulkUpdateService, services: true do
-  let(:user) { create(:user) }
-  let(:project) { Projects::CreateService.new(user, namespace: user.namespace, name: 'test').execute }
+  let(:user)    { create(:user) }
+  let(:project) { create(:empty_project, namespace: user.namespace) }
 
-  let!(:result) { Issues::BulkUpdateService.new(project, user, params).execute }
+  def bulk_update(issues, extra_params = {})
+    bulk_update_params = extra_params
+      .reverse_merge(issues_ids: Array(issues).map(&:id).join(','))
 
-  describe :close_issue do
-    let(:issues) { create_list(:issue, 5, project: project) }
-    let(:params) do
-      {
-        state_event: 'close',
-        issues_ids: issues.map(&:id).join(',')
-      }
-    end
+    Issues::BulkUpdateService.new(project, user, bulk_update_params).execute
+  end
+
+  describe 'close issues' do
+    let(:issues) { create_list(:issue, 2, project: project) }
 
     it 'succeeds and returns the correct number of issues updated' do
+      result = bulk_update(issues, state_event: 'close')
+
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(issues.count)
     end
 
     it 'closes all the issues passed' do
+      bulk_update(issues, state_event: 'close')
+
       expect(project.issues.opened).to be_empty
       expect(project.issues.closed).not_to be_empty
     end
   end
 
-  describe :reopen_issues do
-    let(:issues) { create_list(:closed_issue, 5, project: project) }
-    let(:params) do
-      {
-        state_event: 'reopen',
-        issues_ids: issues.map(&:id).join(',')
-      }
-    end
+  describe 'reopen issues' do
+    let(:issues) { create_list(:closed_issue, 2, project: project) }
 
     it 'succeeds and returns the correct number of issues updated' do
+      result = bulk_update(issues, state_event: 'reopen')
+
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(issues.count)
     end
 
     it 'reopens all the issues passed' do
+      bulk_update(issues, state_event: 'reopen')
+
       expect(project.issues.closed).to be_empty
       expect(project.issues.opened).not_to be_empty
     end
   end
 
   describe 'updating assignee' do
-    let(:issue) do
-      create(:issue, project: project) { |issue| issue.update_attributes(assignee: user) }
-    end
-
-    let(:params) do
-      {
-        assignee_id: assignee_id,
-        issues_ids: issue.id.to_s
-      }
-    end
+    let(:issue) { create(:issue, project: project, assignee: user) }
 
     context 'when the new assignee ID is a valid user' do
-      let(:new_assignee) { create(:user) }
-      let(:assignee_id) { new_assignee.id }
-
       it 'succeeds' do
+        result = bulk_update(issue, assignee_id: create(:user).id)
+
         expect(result[:success]).to be_truthy
         expect(result[:count]).to eq(1)
       end
 
       it 'updates the assignee to the use ID passed' do
-        expect(issue.reload.assignee).to eq(new_assignee)
+        assignee = create(:user)
+
+        expect { bulk_update(issue, assignee_id: assignee.id) }
+          .to change { issue.reload.assignee }.from(user).to(assignee)
       end
     end
 
     context 'when the new assignee ID is -1' do
-      let(:assignee_id) { -1 }
-
       it 'unassigns the issues' do
-        expect(issue.reload.assignee).to be_nil
+        expect { bulk_update(issue, assignee_id: -1) }
+          .to change { issue.reload.assignee }.to(nil)
       end
     end
 
     context 'when the new assignee ID is not present' do
-      let(:assignee_id) { nil }
-
       it 'does not unassign' do
-        expect(issue.reload.assignee).to eq(user)
+        expect { bulk_update(issue, assignee_id: nil) }
+          .not_to change { issue.reload.assignee }
       end
     end
   end
 
   describe 'updating milestones' do
-    let(:issue) { create(:issue, project: project) }
+    let(:issue)     { create(:issue, project: project) }
     let(:milestone) { create(:milestone, project: project) }
 
-    let(:params) do
-      {
-        issues_ids: issue.id.to_s,
-        milestone_id: milestone.id
-      }
-    end
-
     it 'succeeds' do
+      result = bulk_update(issue, milestone_id: milestone.id)
+
       expect(result[:success]).to be_truthy
       expect(result[:count]).to eq(1)
     end
 
     it 'updates the issue milestone' do
-      expect(project.issues.first.milestone).to eq(milestone)
+      expect { bulk_update(issue, milestone_id: milestone.id) }
+        .to change { issue.reload.milestone }.from(nil).to(milestone)
     end
   end
 
   describe 'updating labels' do
     def create_issue_with_labels(labels)
-      create(:issue, project: project) { |issue| issue.update_attributes(labels: labels) }
+      create(:labeled_issue, project: project, labels: labels)
     end
 
     let(:bug) { create(:label, project: project) }
@@ -129,13 +117,16 @@ describe Issues::BulkUpdateService, services: true do
     let(:add_labels) { [] }
     let(:remove_labels) { [] }
 
-    let(:params) do
+    let(:bulk_update_params) do
       {
-        label_ids: labels.map(&:id),
-        add_label_ids: add_labels.map(&:id),
+        label_ids:        labels.map(&:id),
+        add_label_ids:    add_labels.map(&:id),
         remove_label_ids: remove_labels.map(&:id),
-        issues_ids: issues.map(&:id).join(',')
       }
+    end
+
+    before do
+      bulk_update(issues, bulk_update_params)
     end
 
     context 'when label_ids are passed' do
@@ -226,7 +217,7 @@ describe Issues::BulkUpdateService, services: true do
       let(:labels) { [merge_requests] }
       let(:remove_labels) { [regression] }
 
-      it 'remove the label IDs from all issues passed' do
+      it 'removes the label IDs from all issues passed' do
         expect(issues.map(&:reload).map(&:label_ids).flatten).not_to include(regression.id)
       end
 
@@ -259,6 +250,32 @@ describe Issues::BulkUpdateService, services: true do
 
       it 'does not update issues not passed in' do
         expect(issue_bug_and_regression.label_ids).to contain_exactly(bug.id, regression.id)
+      end
+    end
+  end
+
+  describe 'subscribe to issues' do
+    let(:issues) { create_list(:issue, 2, project: project) }
+
+    it 'subscribes the given user' do
+      bulk_update(issues, subscription_event: 'subscribe')
+
+      expect(issues).to all(be_subscribed(user))
+    end
+  end
+
+  describe 'unsubscribe from issues' do
+    let(:issues) do
+      create_list(:closed_issue, 2, project: project) do |issue|
+        issue.subscriptions.create(user: user, subscribed: true)
+      end
+    end
+
+    it 'unsubscribes the given user' do
+      bulk_update(issues, subscription_event: 'unsubscribe')
+
+      issues.each do |issue|
+        expect(issue).not_to be_subscribed(user)
       end
     end
   end

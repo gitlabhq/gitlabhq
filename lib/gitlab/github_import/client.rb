@@ -78,10 +78,21 @@ module Gitlab
 
       def rate_limit
         api.rate_limit!
+      # GitHub Rate Limit API returns 404 when the rate limit is
+      # disabled. In this case we just want to return gracefully
+      # instead of spitting out an error.
+      rescue Octokit::NotFound
+        nil
+      end
+
+      def has_rate_limit?
+        return @has_rate_limit if defined?(@has_rate_limit)
+
+        @has_rate_limit = rate_limit.present?
       end
 
       def rate_limit_exceed?
-        rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
+        has_rate_limit? && rate_limit.remaining <= GITHUB_SAFE_REMAINING_REQUESTS
       end
 
       def rate_limit_sleep_time

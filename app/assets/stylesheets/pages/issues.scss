@@ -63,8 +63,8 @@ form.edit-issue {
 .merge-request,
 .issue {
   &.today {
-    background: #efe;
-    border-color: #cec;
+    background: #f3fff2;
+    border-color: #e1e8d5;
   }
 
   &.closed {
@@ -75,6 +75,14 @@ form.edit-issue {
   &.merged {
     background: #f9f9f9;
     border-color: #e5e5e5;
+  }
+}
+
+.merge-request-ci-status {
+  svg {
+    margin-right: 4px;
+    position: relative;
+    top: 1px;
   }
 }
 
@@ -90,4 +98,34 @@ form.edit-issue {
 
 .issue-form .select2-container {
   width: 250px !important;
+}
+
+.issues-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
+}
+
+.issue-email-modal-btn {
+  padding: 0;
+  color: $gl-link-color;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.email-modal-input-group {
+  margin-bottom: 10px;
+
+  .form-control {
+    background-color: $white-light;
+  }
+
+  .btn {
+    background-color: $background-color;
+    border: 1px solid $border-gray-light;
+  }
 }

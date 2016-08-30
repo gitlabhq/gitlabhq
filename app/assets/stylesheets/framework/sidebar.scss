@@ -3,6 +3,12 @@
   padding-bottom: 25px;
   transition: padding $sidebar-transition-duration;
 
+  &.page-sidebar-pinned {
+    .sidebar-wrapper {
+      @include box-shadow(none);
+    }
+  }
+
   .sidebar-wrapper {
     position: fixed;
     top: 0;
@@ -11,6 +17,7 @@
     height: 100%;
     overflow: hidden;
     transition: width $sidebar-transition-duration;
+    @include box-shadow(2px 0 16px 0 $black-transparent);
   }
 }
 
@@ -48,10 +55,6 @@
   overflow-y: auto;
   overflow-x: hidden;
 
-  @media (min-width: $sidebar-breakpoint) {
-    bottom: 50px;
-  }
-
   &.navbar-collapse {
     padding: 0 !important;
   }
@@ -69,7 +72,7 @@
     }
 
     a {
-      padding: 7px 15px 7px 12px;
+      padding: 7px $gl-sidebar-padding;
       font-size: $gl-font-size;
       line-height: 24px;
       display: block;
@@ -101,7 +104,7 @@
   }
 }
 
-.toggle-nav-collapse {
+.sidebar-action-buttons {
   width: $sidebar_width;
   position: absolute;
   top: 0;
@@ -110,41 +113,42 @@
   padding: 5px 0;
   font-size: 18px;
   line-height: 30px;
+
+  .toggle-nav-collapse {
+    left: 0;
+  }
+
+  .pin-nav-btn {
+    right: 0;
+    display: none;
+
+    @media (min-width: $sidebar-breakpoint) {
+      display: block;
+    }
+
+    .fa {
+      transition: transform .15s;
+    }
+
+    &.is-active {
+      .fa {
+        transform: rotate(90deg);
+      }
+    }
+  }
 }
 
 .nav-header-btn {
-  padding: 10px 5px;
+  padding: 10px $gl-sidebar-padding;
   color: inherit;
   transition-duration: .3s;
+  position: absolute;
+  top: 0;
 
   &:hover,
   &:focus {
     color: $white-light;
     text-decoration: none;
-  }
-}
-
-.pin-nav-btn {
-  display: none;
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 50px;
-  width: $sidebar_width;
-  line-height: 30px;
-
-  @media (min-width: $sidebar-breakpoint) {
-    display: block;
-  }
-
-  .fa {
-    transition: transform .15s;
-  }
-
-  &.is-active {
-    .fa {
-      transform: rotate(90deg);
-    }
   }
 }
 
@@ -194,6 +198,10 @@ header.header-pinned-nav {
 
   .sidebar-collapsed-icon {
     cursor: pointer;
+
+    .btn {
+      background-color: $gray-light;
+    }
   }
 }
 
@@ -213,4 +221,8 @@ header.header-pinned-nav {
   &.with-overlay {
     padding-right: $sidebar_collapsed_width;
   }
+}
+
+.right-sidebar {
+  border-left: 1px solid $border-color;
 }

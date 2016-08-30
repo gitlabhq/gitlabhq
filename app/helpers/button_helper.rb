@@ -15,29 +15,13 @@ module ButtonHelper
   #
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
+    data = { toggle: 'tooltip', placement: 'bottom', container: 'body' }.merge(data)
     content_tag :button,
       icon('clipboard'),
       class: "btn btn-clipboard",
       data: data,
-      type: :button
-  end
-
-  # Output a "Copy to Clipboard" button with a custom CSS class
-  #
-  # data - Data attributes passed to `content_tag`
-  # css_class - Class passed to the `content_tag`
-  #
-  # Examples:
-  # 
-  #   # Define the target element
-  #   clipboard_button_with_class({clipboard_target: "div#foo"}, css_class: "btn-clipboard")
-  #   # => "<button class='btn btn-clipboard' data-clipboard-target='div#foo'>...</button>"
-  def clipboard_button_with_class(data = {}, css_class: 'btn-clipboard')
-    content_tag :button,
-      icon('clipboard'),
-      class: "btn #{css_class}",
-      data: data,
-      type: :button
+      type: :button,
+      title: "Copy to Clipboard"
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)

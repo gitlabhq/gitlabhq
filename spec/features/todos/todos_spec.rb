@@ -24,7 +24,7 @@ describe 'Dashboard Todos', feature: true do
         visit dashboard_todos_path
       end
 
-      it 'todo is present' do
+      it 'has todo present' do
         expect(page).to have_selector('.todos-list .todo', count: 1)
       end
 
@@ -39,6 +39,27 @@ describe 'Dashboard Todos', feature: true do
 
         it 'shows "All done" message' do
           expect(page).to have_content("You're all done!")
+        end
+      end
+
+      context 'todo is stale on the page' do
+        before do
+          todos = TodosFinder.new(user, state: :pending).execute
+          TodoService.new.mark_todos_as_done(todos, user)
+        end
+
+        describe 'deleting the todo' do
+          before do
+            first('.done-todo').click
+          end
+
+          it 'is removed from the list' do
+            expect(page).not_to have_selector('.todos-list .todo')
+          end
+
+          it 'shows "All done" message' do
+            expect(page).to have_content("You're all done!")
+          end
         end
       end
     end

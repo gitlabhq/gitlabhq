@@ -4,7 +4,9 @@
       = icon('code-fork')
       = ref
     %span.editor-file-name
-      = @path
+      - if current_action?(:edit) || current_action?(:update)
+        = text_field_tag 'file_path', (params[:file_path] || @path),
+                                      class: 'form-control new-file-path'
 
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name
@@ -22,7 +24,7 @@
       .encoding-selector
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'select2'
 
-  .file-content.code
+  .file-editor.code
     %pre.js-edit-mode-pane#editor #{params[:content] || local_assigns[:blob_data]}
     - if local_assigns[:path]
       .js-edit-mode-pane#preview.hide

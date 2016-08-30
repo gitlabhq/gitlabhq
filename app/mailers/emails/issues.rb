@@ -6,6 +6,11 @@ module Emails
       mail_new_thread(@issue, issue_thread_options(@issue.author_id, recipient_id))
     end
 
+    def new_mention_in_issue_email(recipient_id, issue_id, updated_by_user_id)
+      setup_issue_mail(issue_id, recipient_id)
+      mail_answer_thread(@issue, issue_thread_options(updated_by_user_id, recipient_id))
+    end
+
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id, updated_by_user_id)
       setup_issue_mail(issue_id, recipient_id)
 

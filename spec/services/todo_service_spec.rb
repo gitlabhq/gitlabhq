@@ -35,8 +35,11 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.new_issue(unassigned_issue, author) }
       end
 
-      it 'does not create a todo if assignee is the current user' do
-        should_not_create_any_todo { service.new_issue(unassigned_issue, john_doe) }
+      it 'creates a todo if assignee is the current user' do
+        unassigned_issue.update_attribute(:assignee, john_doe)
+        service.new_issue(unassigned_issue, john_doe)
+
+        should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
       end
 
       it 'creates a todo for each valid mentioned user' do
@@ -44,7 +47,7 @@ describe TodoService, services: true do
 
         should_create_todo(user: member, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
       end
@@ -57,7 +60,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
 
       context 'when a private group is mentioned' do
@@ -87,7 +90,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: issue, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: issue, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: issue, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: issue, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: issue, action: Todo::MENTIONED)
       end
 
@@ -105,7 +108,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
-        should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
+        should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED)
       end
 
       context 'issues with a task list' do
@@ -156,10 +159,11 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.reassigned_issue(issue, author) }
       end
 
-      it 'does not create a todo if new assignee is the current user' do
+      it 'creates a todo if new assignee is the current user' do
         unassigned_issue.update_attribute(:assignee, john_doe)
+        service.reassigned_issue(unassigned_issue, john_doe)
 
-        should_not_create_any_todo { service.reassigned_issue(unassigned_issue, john_doe) }
+        should_create_todo(user: john_doe, target: unassigned_issue, author: john_doe, action: Todo::ASSIGNED)
       end
     end
 
@@ -190,12 +194,12 @@ describe TodoService, services: true do
       end
     end
 
-    describe '#mark_todos_as_done' do
-      it 'marks related todos for the user as done' do
-        first_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
-        second_todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
+    shared_examples 'marking todos as done' do |meth|
+      let!(:first_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
+      let!(:second_todo) { create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author) }
 
-        service.mark_todos_as_done([first_todo, second_todo], john_doe)
+      it 'marks related todos for the user as done' do
+        service.send(meth, collection, john_doe)
 
         expect(first_todo.reload).to be_done
         expect(second_todo.reload).to be_done
@@ -203,17 +207,27 @@ describe TodoService, services: true do
 
       describe 'cached counts' do
         it 'updates when todos change' do
-          todo = create(:todo, :assigned, user: john_doe, project: project, target: issue, author: author)
-
           expect(john_doe.todos_done_count).to eq(0)
-          expect(john_doe.todos_pending_count).to eq(1)
+          expect(john_doe.todos_pending_count).to eq(2)
           expect(john_doe).to receive(:update_todos_count_cache).and_call_original
 
-          service.mark_todos_as_done([todo], john_doe)
+          service.send(meth, collection, john_doe)
 
-          expect(john_doe.todos_done_count).to eq(1)
+          expect(john_doe.todos_done_count).to eq(2)
           expect(john_doe.todos_pending_count).to eq(0)
         end
+      end
+    end
+
+    describe '#mark_todos_as_done' do
+      it_behaves_like 'marking todos as done', :mark_todos_as_done do
+        let(:collection) { [first_todo, second_todo] }
+      end
+    end
+
+    describe '#mark_todos_as_done_by_ids' do
+      it_behaves_like 'marking todos as done', :mark_todos_as_done_by_ids do
+        let(:collection) { [first_todo, second_todo].map(&:id) }
       end
     end
 
@@ -250,7 +264,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_create_todo(user: guest, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_create_todo(user: author, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
-        should_not_create_todo(user: john_doe, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
+        should_create_todo(user: john_doe, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
         should_not_create_todo(user: non_member, target: issue, author: john_doe, action: Todo::MENTIONED, note: note)
       end
 
@@ -262,7 +276,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_create_todo(user: admin, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
         should_not_create_todo(user: guest, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
-        should_not_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
+        should_create_todo(user: john_doe, target: confidential_issue, author: john_doe, action: Todo::MENTIONED, note: note_on_confidential_issue)
       end
 
       it 'creates a todo for each valid mentioned user when leaving a note on commit' do
@@ -270,7 +284,7 @@ describe TodoService, services: true do
 
         should_create_todo(user: member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
         should_create_todo(user: author, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
-        should_not_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
+        should_create_todo(user: john_doe, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
         should_not_create_todo(user: non_member, target_id: nil, target_type: 'Commit', commit_id: note_on_commit.commit_id, author: john_doe, action: Todo::MENTIONED, note: note_on_commit)
       end
 
@@ -284,6 +298,18 @@ describe TodoService, services: true do
         service.mark_todo(unassigned_issue, author)
 
         should_create_todo(user: author, target: unassigned_issue, action: Todo::MARKED)
+      end
+    end
+
+    describe '#todo_exists?' do
+      it 'returns false when no todo exist for the given issuable' do
+        expect(service.todo_exist?(unassigned_issue, author)).to be_falsy
+      end
+
+      it 'returns true when a todo exist for the given issuable' do
+        service.mark_todo(unassigned_issue, author)
+
+        expect(service.todo_exist?(unassigned_issue, author)).to be_truthy
       end
     end
   end
@@ -312,7 +338,7 @@ describe TodoService, services: true do
 
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
       end
@@ -325,7 +351,7 @@ describe TodoService, services: true do
         should_create_todo(user: member, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: guest, target: mr_assigned, action: Todo::MENTIONED)
         should_create_todo(user: john_doe, target: mr_assigned, action: Todo::MENTIONED)
-        should_not_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
+        should_create_todo(user: author, target: mr_assigned, action: Todo::MENTIONED)
         should_not_create_todo(user: non_member, target: mr_assigned, action: Todo::MENTIONED)
       end
 
@@ -382,10 +408,11 @@ describe TodoService, services: true do
         should_not_create_any_todo { service.reassigned_merge_request(mr_assigned, author) }
       end
 
-      it 'does not create a todo if new assignee is the current user' do
+      it 'creates a todo if new assignee is the current user' do
         mr_assigned.update_attribute(:assignee, john_doe)
+        service.reassigned_merge_request(mr_assigned, john_doe)
 
-        should_not_create_any_todo { service.reassigned_merge_request(mr_assigned, john_doe) }
+        should_create_todo(user: john_doe, target: mr_assigned, author: john_doe, action: Todo::ASSIGNED)
       end
     end
 
@@ -435,6 +462,24 @@ describe TodoService, services: true do
         should_create_todo(user: author, target: mr_unassigned, action: Todo::MARKED)
       end
     end
+
+    describe '#new_note' do
+      let(:mention) { john_doe.to_reference }
+      let(:diff_note_on_merge_request) { create(:diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
+      let(:legacy_diff_note_on_merge_request) { create(:legacy_diff_note_on_merge_request, project: project, noteable: mr_unassigned, author: author, note: "Hey #{mention}") }
+
+      it 'creates a todo for mentioned user on new diff note' do
+        service.new_note(diff_note_on_merge_request, author)
+
+        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: diff_note_on_merge_request)
+      end
+
+      it 'creates a todo for mentioned user on legacy diff note' do
+        service.new_note(legacy_diff_note_on_merge_request, author)
+
+        should_create_todo(user: john_doe, target: mr_unassigned, author: author, action: Todo::MENTIONED, note: legacy_diff_note_on_merge_request)
+      end
+    end
   end
 
   it 'updates cached counts when a todo is created' do
@@ -447,6 +492,63 @@ describe TodoService, services: true do
 
     expect(Todo.where(user_id: john_doe.id, state: :pending).count).to eq 1
     expect(john_doe.todos_pending_count).to eq(1)
+  end
+
+  describe '#mark_todos_as_done' do
+    let(:issue) { create(:issue, project: project, author: author, assignee: john_doe) }
+    let(:another_issue) { create(:issue, project: project, author: author, assignee: john_doe) }
+
+    it 'marks a relation of todos as done' do
+      create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      todos = TodosFinder.new(john_doe, {}).execute
+      expect { TodoService.new.mark_todos_as_done(todos, john_doe) }
+       .to change { john_doe.todos.done.count }.from(0).to(1)
+    end
+
+    it 'marks an array of todos as done' do
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      expect { TodoService.new.mark_todos_as_done([todo], john_doe) }
+        .to change { todo.reload.state }.from('pending').to('done')
+    end
+
+    it 'returns the number of updated todos' do # Needed on API
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+
+      expect(TodoService.new.mark_todos_as_done([todo], john_doe)).to eq(1)
+    end
+
+    context 'when some of the todos are done already' do
+      before do
+        create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+        create(:todo, :mentioned, user: john_doe, target: another_issue, project: project)
+      end
+
+      it 'returns the number of those still pending' do
+        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
+
+        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq(1)
+      end
+
+      it 'returns 0 if all are done' do
+        TodoService.new.mark_pending_todos_as_done(issue, john_doe)
+        TodoService.new.mark_pending_todos_as_done(another_issue, john_doe)
+
+        expect(TodoService.new.mark_todos_as_done(Todo.all, john_doe)).to eq(0)
+      end
+    end
+
+    it 'caches the number of todos of a user', :caching do
+      create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+      todo = create(:todo, :mentioned, user: john_doe, target: issue, project: project)
+      TodoService.new.mark_todos_as_done([todo], john_doe)
+
+      expect_any_instance_of(TodosFinder).not_to receive(:execute)
+
+      expect(john_doe.todos_done_count).to eq(1)
+      expect(john_doe.todos_pending_count).to eq(1)
+    end
   end
 
   def should_create_todo(attributes = {})

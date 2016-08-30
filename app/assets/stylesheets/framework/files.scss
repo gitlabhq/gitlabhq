@@ -63,14 +63,15 @@
     &.image_file {
       background: #eee;
       text-align: center;
+      
       img {
-        padding: 100px;
-        max-width: 50%;
+        padding: 20px;
+        max-width: 80%;
       }
     }
 
     &.wiki {
-      padding: $gl-padding;
+      padding: 30px $gl-padding;
 
       .highlight {
         margin-bottom: 9px;

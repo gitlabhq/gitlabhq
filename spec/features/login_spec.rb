@@ -28,17 +28,17 @@ feature 'Login', feature: true do
   end
 
   describe 'with two-factor authentication' do
+    def enter_code(code)
+      fill_in 'Two-Factor Authentication code', with: code
+      click_button 'Verify code'
+    end
+
     context 'with valid username/password' do
       let(:user) { create(:user, :two_factor) }
 
       before do
         login_with(user, remember: true)
         expect(page).to have_content('Two-Factor Authentication')
-      end
-
-      def enter_code(code)
-        fill_in 'Two-Factor Authentication code', with: code
-        click_button 'Verify code'
       end
 
       it 'does not show a "You are already signed in." error message' do
@@ -106,6 +106,39 @@ feature 'Login', feature: true do
             expect(page).to have_content('Invalid two-factor code.')
           end
         end
+      end
+    end
+
+    context 'logging in via OAuth' do
+      def saml_config
+        OpenStruct.new(name: 'saml', label: 'saml', args: {
+          assertion_consumer_service_url: 'https://localhost:3443/users/auth/saml/callback',
+          idp_cert_fingerprint: '26:43:2C:47:AF:F0:6B:D0:07:9C:AD:A3:74:FE:5D:94:5F:4E:9E:52',
+          idp_sso_target_url: 'https://idp.example.com/sso/saml',
+          issuer: 'https://localhost:3443/',
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        })
+      end
+
+      def stub_omniauth_config(messages)
+        Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
+        Rails.application.routes.disable_clear_and_finalize = true
+        Rails.application.routes.draw do
+          post '/users/auth/saml' => 'omniauth_callbacks#saml'
+        end
+        allow(Gitlab::OAuth::Provider).to receive_messages(providers: [:saml], config_for: saml_config)
+        allow(Gitlab.config.omniauth).to receive_messages(messages)
+        expect_any_instance_of(Object).to receive(:omniauth_authorize_path).with(:user, "saml").and_return('/users/auth/saml')
+      end
+
+      it 'shows 2FA prompt after OAuth login' do
+        stub_omniauth_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [saml_config])
+        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
+        login_via('saml', user, 'my-uid')
+
+        expect(page).to have_content('Two-Factor Authentication')
+        enter_code(user.current_otp)
+        expect(current_path).to eq root_path
       end
     end
   end

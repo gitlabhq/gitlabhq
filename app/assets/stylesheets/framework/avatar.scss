@@ -5,6 +5,7 @@
   height: 40px;
   padding: 0;
   @include border-radius($avatar_radius);
+  border: 1px solid rgba(0, 0, 0, .1);
 
   &.avatar-inline {
     float: none;
@@ -15,11 +16,13 @@
     &.s24 { margin-right: 4px; }
   }
 
-  &.group-avatar, &.project-avatar, &.avatar-tile {
+  &.avatar-tile {
     @include border-radius(0);
+    border: none;
   }
 
   &.s16 { width: 16px; height: 16px; margin-right: 6px; }
+  &.s20 { width: 20px; height: 20px; margin-right: 7px; }
   &.s24 { width: 24px; height: 24px; margin-right: 8px; }
   &.s26 { width: 26px; height: 26px; margin-right: 8px; }
   &.s32 { width: 32px; height: 32px; margin-right: 10px; }
@@ -42,12 +45,12 @@
   &.s16 { font-size: 12px; line-height: 1.33; }
   &.s24 { font-size: 14px; line-height: 1.8; }
   &.s26 { font-size: 20px; line-height: 1.33; }
-  &.s32 { font-size: 20px; line-height: 32px; }
-  &.s40 { font-size: 16px; line-height: 40px; }
-  &.s60 { font-size: 32px; line-height: 60px; }
-  &.s70 { font-size: 34px; line-height: 70px; }
-  &.s90 { font-size: 36px; line-height: 90px; }
-  &.s110 { font-size: 40px; line-height: 112px; font-weight: 300; }
-  &.s140 { font-size: 72px; line-height: 140px; }
-  &.s160 { font-size: 96px; line-height: 160px; }
+  &.s32 { font-size: 20px; line-height: 30px; }
+  &.s40 { font-size: 16px; line-height: 38px; }
+  &.s60 { font-size: 32px; line-height: 58px; }
+  &.s70 { font-size: 34px; line-height: 68px; }
+  &.s90 { font-size: 36px; line-height: 88px; }
+  &.s110 { font-size: 40px; line-height: 108px; font-weight: 300; }
+  &.s140 { font-size: 72px; line-height: 138px; }
+  &.s160 { font-size: 96px; line-height: 158px; }
 }

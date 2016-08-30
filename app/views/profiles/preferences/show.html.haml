@@ -43,12 +43,12 @@
     .form-group
       = f.label :dashboard, class: 'label-light' do
         Default Dashboard
-        = link_to('(?)', help_page_path('profile', 'preferences') + '#default-dashboard', target: '_blank')
+        = link_to('(?)', help_page_path('profile/preferences') + '#default-dashboard', target: '_blank')
       = f.select :dashboard, dashboard_choices, {}, class: 'form-control'
     .form-group
       = f.label :project_view, class: 'label-light' do
         Project view
-        = link_to('(?)', help_page_path('profile', 'preferences') + '#default-project-view', target: '_blank')
+        = link_to('(?)', help_page_path('profile/preferences') + '#default-project-view', target: '_blank')
       = f.select :project_view, project_view_choices, {}, class: 'form-control'
       .help-block
         Choose what content you want to see on a project's home page.

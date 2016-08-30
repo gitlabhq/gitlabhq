@@ -4,6 +4,7 @@
       %h4.prepend-top-0
         Project settings
     .col-lg-9
+      .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset.append-bottom-0
           .form-group
@@ -23,7 +24,7 @@
         .form-group.project-visibility-level-holder
           = f.label :visibility_level, class: 'label-light' do
             Visibility Level
-            = link_to "(?)", help_page_path("public_access", "public_access")
+            = link_to "(?)", help_page_path("public_access/public_access")
           - if can_change_visibility_level?(@project, current_user)
             = render('shared/visibility_radios', model_method: :visibility_level, form: f, selected_level: @project.visibility_level, form_model: @project)
           - else
@@ -32,6 +33,10 @@
               %strong
                 = visibility_level_label(@project.visibility_level)
               .light= visibility_level_description(@project.visibility_level, @project)
+
+        .form-group
+          = render 'shared/allow_request_access', form: f
+
         .form-group
           = f.label :tag_list, "Tags", class: 'label-light'
           = f.text_field :tag_list, value: @project.tag_list.to_s, maxlength: 2000, class: "form-control"
@@ -85,8 +90,6 @@
                   %span.descr Enable Container Registry for this repository
         %hr
         = render 'merge_request_settings', f: f
-        %hr
-        = render 'builds_settings', f: f
         %hr
         %fieldset.features.append-bottom-default
           %h5.prepend-top-0
@@ -188,6 +191,7 @@
       %h4.prepend-top-0.warning-title
         Rename repository
     .col-lg-9
+      = render 'projects/errors'
       = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
         .form-group.project_name_holder
           = f.label :name, class: 'label-light' do

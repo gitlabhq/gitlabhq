@@ -8,38 +8,47 @@ module DiffHelper
     [marked_old_line, marked_new_line]
   end
 
-  def diff_view
-    diff_views = %w(inline parallel)
-
-    if diff_views.include?(cookies[:diff_view])
-      cookies[:diff_view]
-    else
-      diff_views.first
-    end
+  def expand_all_diffs?
+    params[:expand_all_diffs].present?
   end
 
-  def diff_hard_limit_enabled?
-    params[:force_show_diff].present?
+  def diff_view
+    @diff_view ||= begin
+      diff_views = %w(inline parallel)
+      diff_view = cookies[:diff_view]
+      diff_view = diff_views.first unless diff_views.include?(diff_view)
+      diff_view.to_sym
+    end
   end
 
   def diff_options
-    options = { ignore_whitespace_change: hide_whitespace? }
-    if diff_hard_limit_enabled?
-      options.merge!(Commit.max_diff_options)
+    options = { ignore_whitespace_change: hide_whitespace?, no_collapse: expand_all_diffs? }
+
+    if action_name == 'diff_for_path'
+      options[:no_collapse] = true
+      options[:paths] = params.values_at(:old_path, :new_path)
     end
+
     options
   end
 
-  def safe_diff_files(diffs, diff_refs: nil, repository: nil)
-    diffs.decorate! { |diff| Gitlab::Diff::File.new(diff, diff_refs: diff_refs, repository: repository) }
-  end
+  def diff_match_line(old_pos, new_pos, text: '', view: :inline, bottom: false)
+    content = content_tag :td, text, class: "line_content match #{view == :inline ? '' : view}"
+    cls = ['diff-line-num', 'unfold', 'js-unfold']
+    cls << 'js-unfold-bottom' if bottom
 
-  def unfold_bottom_class(bottom)
-    bottom ? 'js-unfold-bottom' : ''
-  end
+    html = ''
+    if old_pos
+      html << content_tag(:td, '...', class: cls + ['old_line'], data: { linenumber: old_pos })
+      html << content unless view == :inline
+    end
 
-  def unfold_class(unfold)
-    unfold ? 'unfold js-unfold' : ''
+    if new_pos
+      html << content_tag(:td, '...', class: cls + ['new_line'], data: { linenumber: new_pos })
+      html << content
+    end
+
+    html.html_safe
   end
 
   def diff_line_content(line, line_type = nil)
@@ -51,26 +60,28 @@ module DiffHelper
     end
   end
 
-  def organize_comments(left, right)
-    notes_left = notes_right = nil
+  def parallel_diff_discussions(left, right, diff_file)
+    discussion_left = discussion_right = nil
 
-    unless left[:type].nil? && right[:type] == 'new'
-      notes_left = @grouped_diff_notes[left[:line_code]]
+    if left && (left.unchanged? || left.removed?)
+      line_code = diff_file.line_code(left)
+      discussion_left = @grouped_diff_discussions[line_code]
     end
 
-    unless left[:type].nil? && right[:type].nil?
-      notes_right = @grouped_diff_notes[right[:line_code]]
+    if right && right.added?
+      line_code = diff_file.line_code(right)
+      discussion_right = @grouped_diff_discussions[line_code]
     end
 
-    [notes_left, notes_right]
+    [discussion_left, discussion_right]
   end
 
   def inline_diff_btn
-    diff_btn('Inline', 'inline', diff_view == 'inline')
+    diff_btn('Inline', 'inline', diff_view == :inline)
   end
 
   def parallel_diff_btn
-    diff_btn('Side-by-side', 'parallel', diff_view == 'parallel')
+    diff_btn('Side-by-side', 'parallel', diff_view == :parallel)
   end
 
   def submodule_link(blob, ref, repository = @repository)
@@ -90,7 +101,7 @@ module DiffHelper
 
   def commit_for_diff(diff_file)
     return diff_file.content_commit if diff_file.content_commit
-    
+
     if diff_file.deleted_file
       @base_commit || @commit.parent || @commit
     else
@@ -98,11 +109,11 @@ module DiffHelper
     end
   end
 
-  def diff_file_html_data(project, diff_file)
-    commit = commit_for_diff(diff_file)
+  def diff_file_html_data(project, diff_file_path, diff_commit_id)
     {
       blob_diff_path: namespace_project_blob_diff_path(project.namespace, project,
-                                                       tree_join(commit.id, diff_file.file_path))
+                                                       tree_join(diff_commit_id, diff_file_path)),
+      view: diff_view
     }
   end
 
@@ -138,8 +149,6 @@ module DiffHelper
     url = namespace_project_compare_path(project.namespace, project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
   end
-
-  private
 
   def hide_whitespace?
     params[:w] == '1'

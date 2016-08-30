@@ -1,6 +1,13 @@
 .page-with-sidebar{ class: "#{page_sidebar_class} #{page_gutter_class}" }
   .sidebar-wrapper.nicescroll{ class: nav_sidebar_class }
-    = render partial: 'layouts/collapse_button'
+    .sidebar-action-buttons
+      = link_to '#', class: 'nav-header-btn toggle-nav-collapse', title: "Open/Close" do
+        %span.sr-only Toggle navigation
+        = icon('bars')
+      = link_to '#', class: "nav-header-btn pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: {placement: 'right', container: 'body'} do
+        %span.sr-only Toggle navigation pinning
+        = icon('fw thumb-tack')
+
     - if defined?(sidebar) && sidebar
       = render "layouts/nav/#{sidebar}"
     - elsif current_user
@@ -8,9 +15,6 @@
     - else
       = render 'layouts/nav/explore'
 
-    = link_to '#', class: "nav-header-btn text-center pin-nav-btn has-tooltip #{'is-active' if pinned_nav?} js-nav-pin", title: pinned_nav? ? "Unpin navigation" : "Pin Navigation", data: {placement: 'right', container: 'body'} do
-      %span.sr-only Toggle navigation pinning
-      = icon('thumb-tack')
   - if defined?(nav) && nav
     .layout-nav
       .container-fluid
@@ -19,7 +23,6 @@
     = render "layouts/broadcast"
     = render "layouts/flash"
     = yield :flash_message
-    %div{ class: (container_class unless @no_container) }
+    %div{ class: "#{(container_class unless @no_container)} #{@content_class}" }
       .content
-        .clearfix
-          = yield
+        = yield

@@ -91,33 +91,10 @@ ul.notes {
         // Reset ul style types since we're nested inside a ul already
         @include bulleted-list;
 
-        // On diffs code should wrap nicely and not overflow
-        code {
-          white-space: pre-wrap;
-        }
-
         ul.task-list {
           ul:not(.task-list) {
             padding-left: 1.3em;
           }
-        }
-
-        hr {
-          // Darken 'whitesmoke' a bit to make it more visible in note bodies
-          border-color: darken(#f5f5f5, 8%);
-          margin: 10px 0;
-        }
-
-        code {
-          word-break: keep-all;
-        }
-
-        // Border around images in issue and MR comments.
-        img:not(.emoji) {
-          border: 1px solid $table-border-gray;
-          padding: 5px;
-          margin: 5px 0;
-          max-height: calc(100vh - 100px);
         }
       }
     }
@@ -304,19 +281,13 @@ ul.notes {
     font-size: 17px;
   }
 
-  &.js-note-delete {
-    i {
-      &:hover {
-        color: $gl-text-red;
-      }
+  &:hover {
+    .danger-highlight {
+      color: $gl-text-red;
     }
-  }
 
-  &.js-note-edit {
-    i {
-      &:hover {
-        color: $gl-link-color;
-      }
+    .link-highlight {
+      color: $gl-link-color;
     }
   }
 }
@@ -404,5 +375,82 @@ ul.notes {
 
   a {
     color: $gl-link-color;
+  }
+}
+
+.line-resolve-all-container {
+  .btn-group {
+    margin-top: -1px;
+    margin-left: -4px;
+  }
+
+  .discussion-next-btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+.line-resolve-all {
+  display: inline-block;
+  padding: 5px 10px;
+  background-color: $background-color;
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+
+  &.has-next-btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .line-resolve-btn {
+    vertical-align: middle;
+    margin-right: 5px;
+  }
+}
+
+.line-resolve-text {
+  vertical-align: middle;
+}
+
+.line-resolve-btn {
+  display: inline-block;
+  position: relative;
+  top: 2px;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  outline: 0;
+
+  &.is-disabled {
+    cursor: default;
+  }
+
+  &:not(.is-disabled):hover,
+  &:not(.is-disabled):focus,
+  &.is-active {
+    color: $gl-text-green;
+
+    svg path {
+      fill: $gl-text-green;
+    }
+  }
+
+  svg {
+    position: relative;
+    color: $notes-action-color;
+
+    path {
+      fill: $notes-action-color;
+    }
+  }
+}
+
+.discussion-next-btn {
+  svg {
+    margin: 0;
+    
+    path {
+      fill: $gray-darkest;
+    }
   }
 }

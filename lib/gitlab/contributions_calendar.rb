@@ -23,7 +23,6 @@ module Gitlab
 
       dates.each do |date|
         date_id = date.to_time.to_i.to_s
-        @timestamps[date_id] = 0
         day_events = events.find { |day_events| day_events["date"] == date }
 
         if day_events

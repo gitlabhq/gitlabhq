@@ -1,0 +1,6 @@
+- expanded = local_assigns.fetch(:expanded, true)
+%tr.notes_holder{class: ('hide' unless expanded)}
+  %td.notes_line{ colspan: 2 }
+  %td.notes_content
+    .content
+      = render "discussions/notes", discussion: discussion

@@ -19,7 +19,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name" }
+    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -33,7 +33,8 @@ module ProjectsHelper
     if opts[:by_username]
       author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
     else
-      author_html << content_tag(:span, sanitize(author.name), class: opts[:author_class]) if opts[:name]
+      tooltip_data = { placement: 'top' }
+      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
     end
 
     author_html << capture(&block) if block
@@ -60,7 +61,7 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe
@@ -113,6 +114,17 @@ module ProjectsHelper
     license = Licensee::License.new(project.repository.license_key)
 
     license.nickname || license.name
+  end
+
+  def last_push_event
+    return unless current_user
+
+    project_ids = [@project.id]
+    if fork = current_user.fork_of(@project)
+      project_ids << fork.id
+    end
+
+    current_user.recent_push(project_ids)
   end
 
   private
@@ -235,6 +247,60 @@ module ProjectsHelper
     )
   end
 
+  def add_koding_stack_path(project)
+    namespace_project_new_blob_path(
+      project.namespace,
+      project,
+      project.default_branch || 'master',
+      file_name:      '.koding.yml',
+      commit_message: "Add Koding stack script",
+      content: <<-CONTENT.strip_heredoc
+        provider:
+          aws:
+            access_key: '${var.aws_access_key}'
+            secret_key: '${var.aws_secret_key}'
+        resource:
+          aws_instance:
+            #{project.path}-vm:
+              instance_type: t2.nano
+              user_data: |-
+
+                # Created by GitLab UI for :>
+
+                echo _KD_NOTIFY_@Installing Base packages...@
+
+                apt-get update -y
+                apt-get install git -y
+
+                echo _KD_NOTIFY_@Cloning #{project.name}...@
+
+                export KODING_USER=${var.koding_user_username}
+                export REPO_URL=#{root_url}${var.koding_queryString_repo}.git
+                export BRANCH=${var.koding_queryString_branch}
+
+                sudo -i -u $KODING_USER git clone $REPO_URL -b $BRANCH
+
+                echo _KD_NOTIFY_@#{project.name} cloned.@
+      CONTENT
+    )
+  end
+
+  def koding_project_url(project = nil, branch = nil, sha = nil)
+    if project
+      import_path = "/Home/Stacks/import"
+
+      repo = project.path_with_namespace
+      branch ||= project.default_branch
+      sha ||= project.commit.short_id
+
+      path = "#{import_path}?repo=#{repo}&branch=#{branch}&sha=#{sha}"
+
+      return URI.join(current_application_settings.koding_url, path).to_s
+    end
+
+    current_application_settings.koding_url
+  end
+
   def contribution_guide_path(project)
     if project && contribution_guide = project.repository.contribution_guide
       namespace_project_blob_path(
@@ -260,6 +326,10 @@ module ProjectsHelper
 
   def version_path(project)
     filename_path(project, :version)
+  end
+
+  def ci_configuration_path(project)
+    filename_path(project, :gitlab_ci_yml)
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
@@ -290,16 +360,6 @@ module ProjectsHelper
     ref ||= 'master'
 
     namespace_project_new_blob_path(@project.namespace, @project, tree_join(ref), file_name: 'LICENSE')
-  end
-
-  def last_push_event
-    return unless current_user
-
-    if fork = current_user.fork_of(@project)
-      current_user.recent_push(fork.id)
-    else
-      current_user.recent_push(@project.id)
-    end
   end
 
   def readme_cache_key

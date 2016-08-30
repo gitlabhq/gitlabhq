@@ -98,7 +98,7 @@ describe SnippetsController, "routing" do
 end
 
 #            help GET /help(.:format)                 help#index
-#       help_page GET /help/:category/:file(.:format) help#show {:category=>/.*/, :file=>/[^\/\.]+/}
+#       help_page GET /help/*path(.:format)           help#show
 #  help_shortcuts GET /help/shortcuts(.:format)       help#shortcuts
 #         help_ui GET /help/ui(.:format)              help#ui
 describe HelpController, "routing" do
@@ -107,25 +107,25 @@ describe HelpController, "routing" do
   end
 
   it 'to #show' do
-    path = '/help/markdown/markdown.md'
+    path = '/help/user/markdown.md'
     expect(get(path)).to route_to('help#show',
-                                  category: 'markdown',
-                                  file: 'markdown',
+                                  path: 'user/markdown',
                                   format: 'md')
 
     path = '/help/workflow/protected_branches/protected_branches1.png'
     expect(get(path)).to route_to('help#show',
-                                  category: 'workflow/protected_branches',
-                                  file: 'protected_branches1',
+                                  path: 'workflow/protected_branches/protected_branches1',
                                   format: 'png')
-  end
 
-  it 'to #shortcuts' do
-    expect(get('/help/shortcuts')).to route_to('help#shortcuts')
+    path = '/help/ui'
+    expect(get(path)).to route_to('help#ui')
   end
+end
 
-  it 'to #ui' do
-    expect(get('/help/ui')).to route_to('help#ui')
+#                      koding GET    /koding(.:format)                      koding#index
+describe KodingController, "routing" do
+  it "to #index" do
+    expect(get("/koding")).to route_to('koding#index')
   end
 end
 
@@ -183,16 +183,8 @@ describe Profiles::KeysController, "routing" do
     expect(post("/profile/keys")).to route_to('profiles/keys#create')
   end
 
-  it "to #edit" do
-    expect(get("/profile/keys/1/edit")).to route_to('profiles/keys#edit', id: '1')
-  end
-
   it "to #show" do
     expect(get("/profile/keys/1")).to route_to('profiles/keys#show', id: '1')
-  end
-
-  it "to #update" do
-    expect(put("/profile/keys/1")).to route_to('profiles/keys#update', id: '1')
   end
 
   it "to #destroy" do

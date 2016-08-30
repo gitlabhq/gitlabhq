@@ -42,12 +42,38 @@ class BuildsEmailService < Service
     end
   end
 
+  def can_test?
+    project.builds.count > 0
+  end
+
+  def disabled_title
+    "Please setup a build on your repository."
+  end
+
+  def test_data(project = nil, user = nil)
+    Gitlab::DataBuilder::Build.build(project.builds.last)
+  end
+
   def fields
     [
       { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by comma' },
       { type: 'checkbox', name: 'add_pusher', label: 'Add pusher to recipients list' },
       { type: 'checkbox', name: 'notify_only_broken_builds' },
     ]
+  end
+
+  def test(data)
+    begin
+      # bypass build status verification when testing
+      data[:build_status] = "failed"
+      data[:build_allow_failure] = false
+
+      result = execute(data)
+    rescue StandardError => error
+      return { success: false, result: error }
+    end
+
+    { success: true, result: result }
   end
 
   def should_build_be_notified?(data)

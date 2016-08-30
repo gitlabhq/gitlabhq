@@ -48,7 +48,7 @@ describe Notify do
       it_behaves_like 'it should not have Gmail Actions links'
       it_behaves_like 'a user cannot unsubscribe through footer link'
 
-      it 'should not contain the new user\'s password' do
+      it 'does not contain the new user\'s password' do
         is_expected.not_to have_body_text /password/
       end
     end

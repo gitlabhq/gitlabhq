@@ -63,10 +63,19 @@ module API
         if access_status.status
           # Return the repository full path so that gitlab-shell has it when
           # handling ssh commands
-          response[:repository_path] = project.repository.path_to_repo
+          response[:repository_path] =
+            if wiki?
+              project.wiki.repository.path_to_repo
+            else
+              project.repository.path_to_repo
+            end
         end
 
         response
+      end
+
+      get "/merge_request_urls" do
+        ::MergeRequests::GetUrlsService.new(project).execute(params[:changes])
       end
 
       #
@@ -91,6 +100,31 @@ module API
         else
           {}
         end
+      end
+
+      post '/two_factor_recovery_codes' do
+        status 200
+
+        key = Key.find(params[:key_id])
+        user = key.user
+
+        # Make sure this isn't a deploy key
+        unless key.type.nil?
+          return { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
+        end
+
+        unless user.present?
+          return { success: false, message: 'Could not find a user for the given key' }
+        end
+
+        unless user.two_factor_enabled?
+          return { success: false, message: 'Two-factor authentication is not enabled for this user' }
+        end
+
+        codes = user.generate_otp_backup_codes!
+        user.save!
+
+        { success: true, recovery_codes: codes }
       end
     end
   end

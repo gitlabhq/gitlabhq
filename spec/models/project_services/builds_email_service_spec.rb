@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe BuildsEmailService do
-  let(:data) { Gitlab::BuildDataBuilder.build(create(:ci_build)) }
+  let(:data) do
+    Gitlab::DataBuilder::Build.build(create(:ci_build))
+  end
 
   describe 'Validations' do
     context 'when service is active' do
@@ -20,6 +22,44 @@ describe BuildsEmailService do
       before { subject.active = false }
 
       it { is_expected.not_to validate_presence_of(:recipients) }
+    end
+  end
+
+  describe '#test_data' do
+    let(:build)   { create(:ci_build) }
+    let(:project) { build.project }
+    let(:user)    { create(:user) }
+
+    before { project.team << [user, :developer] }
+
+    it 'builds test data' do
+      data = subject.test_data(project)
+
+      expect(data[:object_kind]).to eq("build")
+    end
+  end
+
+  describe '#test' do
+    it 'sends email' do
+      data = Gitlab::DataBuilder::Build.build(create(:ci_build))
+      subject.recipients = 'test@gitlab.com'
+
+      expect(BuildEmailWorker).to receive(:perform_async)
+
+      subject.test(data)
+    end
+
+    context 'notify only failed builds is true' do
+      it 'sends email' do
+        data = Gitlab::DataBuilder::Build.build(create(:ci_build))
+        data[:build_status] = "success"
+        subject.recipients = 'test@gitlab.com'
+
+        expect(subject).not_to receive(:notify_only_broken_builds)
+        expect(BuildEmailWorker).to receive(:perform_async)
+
+        subject.test(data)
+      end
     end
   end
 

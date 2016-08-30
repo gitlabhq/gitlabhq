@@ -2,23 +2,82 @@ require 'spec_helper'
 
 describe EmailsOnPushWorker do
   include RepoHelpers
+  include EmailSpec::Matchers
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
-  let(:data) { Gitlab::PushDataBuilder.build_sample(project, user) }
+  let(:data) { Gitlab::DataBuilder::Push.build_sample(project, user) }
   let(:recipients) { user.email }
   let(:perform) { subject.perform(project.id, recipients, data.stringify_keys) }
+  let(:email) { ActionMailer::Base.deliveries.last }
 
   subject { EmailsOnPushWorker.new }
 
   describe "#perform" do
-    context "when there are no errors in sending" do
-      let(:email) { ActionMailer::Base.deliveries.last }
+    context "when push is a new branch" do
+      before do
+        data_new_branch = data.stringify_keys.merge("before" => Gitlab::Git::BLANK_SHA)
 
+        subject.perform(project.id, recipients, data_new_branch)
+      end
+
+      it "sends a mail with the correct subject" do
+        expect(email.subject).to include("Pushed new branch")
+      end
+
+      it "sends the mail to the correct recipient" do
+        expect(email.to).to eq([user.email])
+      end
+    end
+
+    context "when push is a deleted branch" do
+      before do
+        data_deleted_branch = data.stringify_keys.merge("after" => Gitlab::Git::BLANK_SHA)
+
+        subject.perform(project.id, recipients, data_deleted_branch)
+      end
+
+      it "sends a mail with the correct subject" do
+        expect(email.subject).to include("Deleted branch")
+      end
+
+      it "sends the mail to the correct recipient" do
+        expect(email.to).to eq([user.email])
+      end
+    end
+
+    context "when push is a force push to delete commits" do
+      before do
+        data_force_push = data.stringify_keys.merge(
+          "after"  => data[:before],
+          "before" => data[:after]
+        )
+
+        subject.perform(project.id, recipients, data_force_push)
+      end
+
+      it "sends a mail with the correct subject" do
+        expect(email.subject).to include('Change some files')
+      end
+
+      it "mentions force pushing in the body" do
+        expect(email).to have_body_text("force push")
+      end
+
+      it "sends the mail to the correct recipient" do
+        expect(email.to).to eq([user.email])
+      end
+    end
+
+    context "when there are no errors in sending" do
       before { perform }
 
       it "sends a mail with the correct subject" do
         expect(email.subject).to include('Change some files')
+      end
+
+      it "does not mention force pushing in the body" do
+        expect(email).not_to have_body_text("force push")
       end
 
       it "sends the mail to the correct recipient" do
@@ -30,6 +89,7 @@ describe EmailsOnPushWorker do
       before do
         ActionMailer::Base.deliveries.clear
         allow(Notify).to receive(:repository_push_email).and_raise(Net::SMTPFatalError)
+        allow(subject).to receive_message_chain(:logger, :info)
         perform
       end
 

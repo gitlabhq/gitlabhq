@@ -15,7 +15,8 @@
       border-color: $gl-danger;
     }
 
-    &.ci-success {
+    &.ci-success,
+    &.ci-success_with_warnings {
       color: $gl-success;
       border-color: $gl-success;
     }
@@ -32,10 +33,23 @@
       border-color: $gl-gray;
     }
 
-    &.ci-pending,
-    &.ci-running {
+    &.ci-pending {
       color: $gl-warning;
       border-color: $gl-warning;
+    }
+
+    &.ci-running {
+      color: $blue-normal;
+      border-color: $blue-normal;
+    }
+
+    svg {
+      height: 13px;
+      width: 13px;
+      position: relative;
+      top: 1px;
+      margin: 0 3px;
+      overflow: visible;
     }
   }
 
@@ -45,14 +59,27 @@
   .ci-status-icon-failed {
     color: $gl-danger;
   }
-  .ci-status-icon-running,
-  .ci-status-icon-pending {
+
+  .ci-status-icon-pending,
+  .ci-status-icon-success_with_warning {
     color: $gl-warning;
+  }
+  
+  .ci-status-icon-running {
+    color: $blue-normal;
   }
   .ci-status-icon-canceled,
   .ci-status-icon-disabled,
   .ci-status-icon-not-found,
   .ci-status-icon-skipped {
     color: $gl-gray;
+  }
+}
+
+.visible-xs-inline {
+  .ci-status-link {
+    position: relative;
+    top: 2px;
+    left: 5px;
   }
 }

@@ -9,7 +9,7 @@ describe Ci::Variable, models: true do
     subject.value = secret_value
   end
 
-  describe :value do
+  describe '#value' do
     it 'stores the encrypted value' do
       expect(subject.encrypted_value).not_to be_nil
     end

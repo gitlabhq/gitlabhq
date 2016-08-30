@@ -2,6 +2,8 @@
   = render "projects/notes/notes"
 %ul.notes.notes-form.timeline
   %li.timeline-entry
+    .flash-container.timeline-content
+
     - if can? current_user, :create_note, @project
       .timeline-icon.hidden-xs.hidden-sm
         %a.author_link{ href: user_path(current_user) }
@@ -12,9 +14,9 @@
       .disabled-comment.text-center
         .disabled-comment-text.inline
           Please
-          = link_to "register",new_user_session_path
+          = link_to "register", new_session_path(:user, redirect_to_referer: 'yes')
           or
-          = link_to "login",new_user_session_path
+          = link_to "login", new_session_path(:user, redirect_to_referer: 'yes')
           to post a comment
 
 :javascript

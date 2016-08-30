@@ -9,7 +9,7 @@ describe MergeRequest, models: true do
     it { is_expected.to belong_to(:target_project).with_foreign_key(:target_project_id).class_name('Project') }
     it { is_expected.to belong_to(:source_project).with_foreign_key(:source_project_id).class_name('Project') }
     it { is_expected.to belong_to(:merge_user).class_name("User") }
-    it { is_expected.to have_one(:merge_request_diff).dependent(:destroy) }
+    it { is_expected.to have_many(:merge_request_diffs).dependent(:destroy) }
   end
 
   describe 'modules' do
@@ -65,11 +65,11 @@ describe MergeRequest, models: true do
   end
 
   describe '#target_branch_sha' do
-    context 'when the target branch does not exist anymore' do
-      let(:project) { create(:project) }
+    let(:project) { create(:project) }
 
-      subject { create(:merge_request, source_project: project, target_project: project) }
+    subject { create(:merge_request, source_project: project, target_project: project) }
 
+    context 'when the target branch does not exist' do
       before do
         project.repository.raw_repository.delete_branch(subject.target_branch)
       end
@@ -77,6 +77,12 @@ describe MergeRequest, models: true do
       it 'returns nil' do
         expect(subject.target_branch_sha).to be_nil
       end
+    end
+
+    it 'returns memoized value' do
+      subject.target_branch_sha = '8ffb3c15a5475e59ae909384297fede4badcb4c7'
+
+      expect(subject.target_branch_sha).to eq '8ffb3c15a5475e59ae909384297fede4badcb4c7'
     end
   end
 
@@ -103,6 +109,12 @@ describe MergeRequest, models: true do
         expect(subject.source_branch_sha).to be_nil
       end
     end
+
+    it 'returns memoized value' do
+      subject.source_branch_sha = '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+
+      expect(subject.source_branch_sha).to eq '2e5d3239642f9161dcbbc4b70a211a68e5e45e2b'
+    end
   end
 
   describe '#to_reference' do
@@ -116,6 +128,56 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#raw_diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.merge_request_diff = MergeRequestDiff.new
+
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:raw_diffs).with(options)
+
+        merge_request.raw_diffs(options)
+      end
+    end
+  end
+
+  describe '#diffs' do
+    let(:merge_request) { build(:merge_request) }
+    let(:options) { { paths: ['a/b', 'b/a', 'c/*'] } }
+
+    context 'when there are MR diffs' do
+      it 'delegates to the MR diffs' do
+        merge_request.save
+
+        expect(merge_request.merge_request_diff).to receive(:raw_diffs).with(hash_including(options))
+
+        merge_request.diffs(options)
+      end
+    end
+
+    context 'when there are no MR diffs' do
+      it 'delegates to the compare object' do
+        merge_request.compare = double(:compare)
+
+        expect(merge_request.compare).to receive(:diffs).with(options)
+
+        merge_request.diffs(options)
+      end
+    end
+  end
+
   describe "#mr_and_commit_notes" do
     let!(:merge_request) { create(:merge_request) }
 
@@ -126,12 +188,12 @@ describe MergeRequest, models: true do
       create(:note, noteable: merge_request, project: merge_request.project)
     end
 
-    it "should include notes for commits" do
+    it "includes notes for commits" do
       expect(merge_request.commits).not_to be_empty
       expect(merge_request.mr_and_commit_notes.count).to eq(2)
     end
 
-    it "should include notes for commits from target project as well" do
+    it "includes notes for commits from target project as well" do
       create(:note_on_commit, commit_id: merge_request.commits.first.id,
                               project: merge_request.target_project)
 
@@ -242,7 +304,7 @@ describe MergeRequest, models: true do
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
-    it "cant remove a root ref" do
+    it "can't remove a root ref" do
       subject.source_branch = "master"
       subject.target_branch = "feature"
 
@@ -254,7 +316,7 @@ describe MergeRequest, models: true do
     end
 
     it "can be removed if the last commit is the head of the source branch" do
-      allow(subject.source_project).to receive(:commit).and_return(subject.diff_head_commit)
+      allow(subject).to receive(:source_branch_head).and_return(subject.diff_head_commit)
 
       expect(subject.can_remove_source_branch?(user)).to be_truthy
     end
@@ -394,6 +456,20 @@ describe MergeRequest, models: true do
     subject { create :merge_request, :simple }
   end
 
+  describe '#commits_sha' do
+    let(:commit0) { double('commit0', sha: 'sha1') }
+    let(:commit1) { double('commit1', sha: 'sha2') }
+    let(:commit2) { double('commit2', sha: 'sha3') }
+
+    before do
+      allow(subject.merge_request_diff).to receive(:commits).and_return([commit0, commit1, commit2])
+    end
+
+    it 'returns sha of commits' do
+      expect(subject.commits_sha).to contain_exactly('sha1', 'sha2', 'sha3')
+    end
+  end
+
   describe '#pipeline' do
     describe 'when the source project exists' do
       it 'returns the latest pipeline' do
@@ -415,6 +491,19 @@ describe MergeRequest, models: true do
 
         expect(subject.pipeline).to be_nil
       end
+    end
+  end
+
+  describe '#all_pipelines' do
+    let!(:pipelines) do
+      subject.merge_request_diff.commits.map do |commit|
+        create(:ci_empty_pipeline, project: subject.source_project, sha: commit.id, ref: subject.source_branch)
+      end
+    end
+
+    it 'returns a pipelines from source projects with proper ordering' do
+      expect(subject.all_pipelines).not_to be_empty
+      expect(subject.all_pipelines).to eq(pipelines.reverse)
     end
   end
 
@@ -612,13 +701,37 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe "#environments" do
+    let(:project)       { create(:project) }
+    let!(:environment)  { create(:environment, project: project) }
+    let!(:environment1) { create(:environment, project: project) }
+    let!(:environment2) { create(:environment, project: project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    it 'selects deployed environments' do
+      create(:deployment, environment: environment, sha: project.commit('master').id)
+      create(:deployment, environment: environment1, sha: project.commit('feature').id)
+
+      expect(merge_request.environments).to eq [environment]
+    end
+  end
+
   describe "#reload_diff" do
     let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
 
     let(:commit) { subject.project.commit(sample_commit.id) }
 
-    it "reloads the diff content" do
-      expect(subject.merge_request_diff).to receive(:reload_content)
+    it "does not change existing merge request diff" do
+      expect(subject.merge_request_diff).not_to receive(:save_git_content)
+      subject.reload_diff
+    end
+
+    it "creates new merge request diff" do
+      expect { subject.reload_diff }.to change { subject.merge_request_diffs.count }.by(1)
+    end
+
+    it "executs diff cache service" do
+      expect_any_instance_of(MergeRequests::MergeRequestDiffCacheService).to receive(:execute).with(subject)
 
       subject.reload_diff
     end
@@ -626,13 +739,15 @@ describe MergeRequest, models: true do
     it "updates diff note positions" do
       old_diff_refs = subject.diff_refs
 
-      merge_request_diff = subject.merge_request_diff
-
       # Update merge_request_diff so that #diff_refs will return commit.diff_refs
-      allow(merge_request_diff).to receive(:reload_content) do
-        merge_request_diff.base_commit_sha = commit.parent_id
-        merge_request_diff.start_commit_sha = commit.parent_id
-        merge_request_diff.head_commit_sha = commit.sha
+      allow(subject).to receive(:create_merge_request_diff) do
+        subject.merge_request_diffs.create(
+          base_commit_sha: commit.parent_id,
+          start_commit_sha: commit.parent_id,
+          head_commit_sha: commit.sha
+        )
+
+        subject.merge_request_diff(true)
       end
 
       expect(Notes::DiffPositionUpdateService).to receive(:new).with(
@@ -642,11 +757,209 @@ describe MergeRequest, models: true do
         new_diff_refs: commit.diff_refs,
         paths: note.position.paths
       ).and_call_original
-      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
 
+      expect_any_instance_of(Notes::DiffPositionUpdateService).to receive(:execute).with(note)
       expect_any_instance_of(DiffNote).to receive(:save).once
 
       subject.reload_diff
+    end
+  end
+
+  describe '#branch_merge_base_commit' do
+    context 'source and target branch exist' do
+      it { expect(subject.branch_merge_base_commit.sha).to eq('ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }
+      it { expect(subject.branch_merge_base_commit).to be_a(Commit) }
+    end
+
+    context 'when the target branch does not exist' do
+      before do
+        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+      end
+
+      it 'returns nil' do
+        expect(subject.branch_merge_base_commit).to be_nil
+      end
+    end
+  end
+
+  describe "#diff_sha_refs" do
+    context "with diffs" do
+      subject { create(:merge_request, :with_diffs) }
+
+      it "does not touch the repository" do
+        subject # Instantiate the object
+
+        expect_any_instance_of(Repository).not_to receive(:commit)
+
+        subject.diff_sha_refs
+      end
+
+      it "returns expected diff_refs" do
+        expected_diff_refs = Gitlab::Diff::DiffRefs.new(
+          base_sha:  subject.merge_request_diff.base_commit_sha,
+          start_sha: subject.merge_request_diff.start_commit_sha,
+          head_sha:  subject.merge_request_diff.head_commit_sha
+        )
+
+        expect(subject.diff_sha_refs).to eq(expected_diff_refs)
+      end
+    end
+  end
+
+  context "discussion status" do
+    let(:first_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:second_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+    let(:third_discussion) { Discussion.new([create(:diff_note_on_merge_request)]) }
+
+    before do
+      allow(subject).to receive(:diff_discussions).and_return([first_discussion, second_discussion, third_discussion])
+    end
+
+    describe "#discussions_resolvable?" do
+      context "when all discussions are unresolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(false)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolvable?).to be false
+        end
+      end
+
+      context "when some discussions are unresolvable and some discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+
+      context "when all discussions are resolvable" do
+        before do
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(true)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        it "returns true" do
+          expect(subject.discussions_resolvable?).to be true
+        end
+      end
+    end
+
+    describe "#discussions_resolved?" do
+      context "when discussions are not resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(false)
+        end
+
+        it "returns false" do
+          expect(subject.discussions_resolved?).to be false
+        end
+      end
+
+      context "when discussions are resolvable" do
+        before do
+          allow(subject).to receive(:discussions_resolvable?).and_return(true)
+
+          allow(first_discussion).to receive(:resolvable?).and_return(true)
+          allow(second_discussion).to receive(:resolvable?).and_return(false)
+          allow(third_discussion).to receive(:resolvable?).and_return(true)
+        end
+
+        context "when all resolvable discussions are resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(true)
+          end
+
+          it "returns true" do
+            expect(subject.discussions_resolved?).to be true
+          end
+        end
+
+        context "when some resolvable discussions are not resolved" do
+          before do
+            allow(first_discussion).to receive(:resolved?).and_return(true)
+            allow(third_discussion).to receive(:resolved?).and_return(false)
+          end
+
+          it "returns false" do
+            expect(subject.discussions_resolved?).to be false
+          end
+        end
+      end
+    end
+  end
+
+  describe '#conflicts_can_be_resolved_in_ui?' do
+    def create_merge_request(source_branch)
+      create(:merge_request, source_branch: source_branch, target_branch: 'conflict-start') do |mr|
+        mr.mark_as_unmergeable
+      end
+    end
+
+    it 'returns a falsey value when the MR can be merged without conflicts' do
+      merge_request = create_merge_request('master')
+      merge_request.mark_as_mergeable
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the MR is marked as having conflicts, but has none' do
+      merge_request = create_merge_request('master')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the MR has a missing ref after a force push' do
+      merge_request = create_merge_request('conflict-resolvable')
+      allow(merge_request.conflicts).to receive(:merge_index).and_raise(Rugged::OdbError)
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the MR does not support new diff notes' do
+      merge_request = create_merge_request('conflict-resolvable')
+      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a large file' do
+      merge_request = create_merge_request('conflict-too-large')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a binary file' do
+      merge_request = create_merge_request('conflict-binary-file')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file with ambiguous conflict markers' do
+      merge_request = create_merge_request('conflict-contains-conflict-markers')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a falsey value when the conflicts contain a file edited in one branch and deleted in another' do
+      merge_request = create_merge_request('conflict-missing-side')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_falsey
+    end
+
+    it 'returns a truthy value when the conflicts are resolvable in the UI' do
+      merge_request = create_merge_request('conflict-resolvable')
+
+      expect(merge_request.conflicts_can_be_resolved_in_ui?).to be_truthy
     end
   end
 end

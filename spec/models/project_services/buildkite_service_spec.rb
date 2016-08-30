@@ -57,7 +57,7 @@ describe BuildkiteService, models: true do
       )
     end
 
-    describe :webhook_url do
+    describe '#webhook_url' do
       it 'returns the webhook url' do
         expect(@service.webhook_url).to eq(
           'https://webhook.buildkite.com/deliver/secret-sauce-webhook-token'
@@ -65,7 +65,7 @@ describe BuildkiteService, models: true do
       end
     end
 
-    describe :commit_status_path do
+    describe '#commit_status_path' do
       it 'returns the correct status page' do
         expect(@service.commit_status_path('2ab7834c')).to eq(
           'https://gitlab.buildkite.com/status/secret-sauce-status-token.json?commit=2ab7834c'
@@ -73,7 +73,7 @@ describe BuildkiteService, models: true do
       end
     end
 
-    describe :build_page do
+    describe '#build_page' do
       it 'returns the correct build page' do
         expect(@service.build_page('2ab7834c', nil)).to eq(
           'https://buildkite.com/account-name/example-project/builds?commit=2ab7834c'

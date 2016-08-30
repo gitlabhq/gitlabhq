@@ -2,8 +2,12 @@
 
 %tr.environment
   %td
-    %strong
-      = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
+    = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment)
+
+  %td
+    - if last_deployment
+      = user_avatar(user: last_deployment.user, size: 20)
+      %strong ##{last_deployment.id}
 
   %td
     - if last_deployment
@@ -15,3 +19,6 @@
   %td
     - if last_deployment
       #{time_ago_with_tooltip(last_deployment.created_at)}
+
+  %td
+    = render 'projects/deployments/actions', deployment: last_deployment

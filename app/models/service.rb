@@ -17,6 +17,7 @@ class Service < ActiveRecord::Base
 
   after_commit :reset_updated_properties
   after_commit :cache_project_has_external_issue_tracker
+  after_commit :cache_project_has_external_wiki
 
   belongs_to :project, inverse_of: :services
   has_one :service_hook
@@ -25,6 +26,7 @@ class Service < ActiveRecord::Base
 
   scope :visible, -> { where.not(type: ['GitlabIssueTrackerService', 'GitlabCiService']) }
   scope :issue_trackers, -> { where(category: 'issue_tracker') }
+  scope :external_wikis, -> { where(type: 'ExternalWikiService').active }
   scope :active, -> { where(active: true) }
   scope :without_defaults, -> { where(default: false) }
 
@@ -34,6 +36,7 @@ class Service < ActiveRecord::Base
   scope :merge_request_hooks, -> { where(merge_requests_events: true, active: true) }
   scope :note_hooks, -> { where(note_events: true, active: true) }
   scope :build_hooks, -> { where(build_events: true, active: true) }
+  scope :pipeline_hooks, -> { where(pipeline_events: true, active: true) }
   scope :wiki_page_hooks, -> { where(wiki_page_events: true, active: true) }
   scope :external_issue_trackers, -> { issue_trackers.active.without_defaults }
 
@@ -76,6 +79,26 @@ class Service < ActiveRecord::Base
     []
   end
 
+  def test_data(project, user)
+    Gitlab::DataBuilder::Push.build_sample(project, user)
+  end
+
+  def event_channel_names
+    []
+  end
+
+  def event_names
+    supported_events.map { |event| "#{event}_events" }
+  end
+
+  def event_field(event)
+    nil
+  end
+
+  def global_fields
+    fields
+  end
+
   def supported_events
     %w(push tag_push issue merge_request wiki_page)
   end
@@ -92,6 +115,11 @@ class Service < ActiveRecord::Base
 
   def can_test?
     !project.empty_repo?
+  end
+
+  # reason why service cannot be tested
+  def disabled_title
+    "Please setup a project repository."
   end
 
   # Provide convenient accessor methods
@@ -201,6 +229,12 @@ class Service < ActiveRecord::Base
   def cache_project_has_external_issue_tracker
     if project && !project.destroyed?
       project.cache_has_external_issue_tracker
+    end
+  end
+
+  def cache_project_has_external_wiki
+    if project && !project.destroyed?
+      project.cache_has_external_wiki
     end
   end
 end

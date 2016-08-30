@@ -1,4 +1,5 @@
 class Spinach::Features::EventFilters < Spinach::FeatureSteps
+  include WaitForAjax
   include SharedAuthentication
   include SharedPaths
   include SharedProject
@@ -72,14 +73,20 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
   end
 
   When 'I click "push" event filter' do
-    click_link("push_event_filter")
+    wait_for_ajax
+    click_link("Push events")
+    wait_for_ajax
   end
 
   When 'I click "team" event filter' do
-    click_link("team_event_filter")
+    wait_for_ajax
+    click_link("Team")
+    wait_for_ajax
   end
 
   When 'I click "merge" event filter' do
-    click_link("merged_event_filter")
+    wait_for_ajax
+    click_link("Merge events")
+    wait_for_ajax
   end
 end

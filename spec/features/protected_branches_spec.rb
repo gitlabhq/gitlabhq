@@ -1,6 +1,9 @@
 require 'spec_helper'
+Dir["./spec/features/protected_branches/*.rb"].sort.each { |f| require f }
 
 feature 'Projected Branches', feature: true, js: true do
+  include WaitForAjax
+
   let(:user) { create(:user, :admin) }
   let(:project) { create(:project) }
 
@@ -9,7 +12,7 @@ feature 'Projected Branches', feature: true, js: true do
   def set_protected_branch_name(branch_name)
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
-    click_on "Create Protected Branch: #{branch_name}"
+    click_on("Create wildcard #{branch_name}")
   end
 
   describe "explicit protected branches" do
@@ -69,7 +72,10 @@ feature 'Projected Branches', feature: true, js: true do
       project.repository.add_branch(user, 'production-stable', 'master')
       project.repository.add_branch(user, 'staging-stable', 'master')
       project.repository.add_branch(user, 'development', 'master')
-      create(:protected_branch, project: project, name: "*-stable")
+
+      visit namespace_project_protected_branches_path(project.namespace, project)
+      set_protected_branch_name('*-stable')
+      click_on "Protect"
 
       visit namespace_project_protected_branches_path(project.namespace, project)
       click_on "2 matching branches"
@@ -80,5 +86,9 @@ feature 'Projected Branches', feature: true, js: true do
         expect(page).not_to have_content("development")
       end
     end
+  end
+
+  describe "access control" do
+    include_examples "protected branches > access control > CE"
   end
 end

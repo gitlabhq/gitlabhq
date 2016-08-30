@@ -23,7 +23,7 @@ want to add.
 
 ---
 
-Select the user and the [permission level](../../permissions/permissions.md)
+Select the user and the [permission level](../../user/permissions.md)
 that you'd like to give the user. Note that you can select more than one user.
 
 ![Give user permissions](img/add_user_give_permissions.png)
@@ -89,6 +89,9 @@ Once the user accepts the invitation, they will be prompted to create a new
 GitLab account using the same e-mail address the invitation was sent to.
 
 ## Request access to a project
+
+As a project owner you can enable or disable non members to request access to
+your project. Go to the project settings and click on **Allow users to request access**.
 
 As a user, you can request to be a member of a project. Go to the project you'd
 like to be a member of, and click the **Request Access** button on the right

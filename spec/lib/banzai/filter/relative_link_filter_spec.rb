@@ -1,11 +1,9 @@
-# encoding: UTF-8
-
 require 'spec_helper'
 
 describe Banzai::Filter::RelativeLinkFilter, lib: true do
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
-      commit:         project.commit,
+      commit:         commit,
       project:        project,
       project_wiki:   project_wiki,
       ref:            ref,
@@ -19,6 +17,10 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     %(<img src="#{path}" />)
   end
 
+  def video(path)
+    %(<video src="#{path}"></video>)
+  end
+
   def link(path)
     %(<a href="#{path}">#{path}</a>)
   end
@@ -26,6 +28,7 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
   let(:project)        { create(:project) }
   let(:project_path)   { project.path_with_namespace }
   let(:ref)            { 'markdown' }
+  let(:commit)         { project.commit(ref) }
   let(:project_wiki)   { nil }
   let(:requested_path) { '/' }
 
@@ -38,6 +41,12 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     it 'does not modify any relative URL in image' do
       doc = filter(image('files/images/logo-black.png'))
       expect(doc.at_css('img')['src']).to eq 'files/images/logo-black.png'
+    end
+
+    it 'does not modify any relative URL in video' do
+      doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
+
+      expect(doc.at_css('video')['src']).to eq 'files/videos/intro.mp4'
     end
   end
 
@@ -69,9 +78,32 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     expect { filter(act) }.not_to raise_error
   end
 
-  context 'with a valid repository' do
+  it 'ignores ref if commit is passed' do
+    doc = filter(link('non/existent.file'), commit: project.commit('empty-branch') )
+    expect(doc.at_css('a')['href']).
+      to eq "/#{project_path}/#{ref}/non/existent.file" # non-existent files have no leading blob/raw/tree
+  end
+
+  shared_examples :valid_repository do
+    it 'rebuilds absolute URL for a file in the repo' do
+      doc = filter(link('/doc/api/README.md'))
+      expect(doc.at_css('a')['href']).
+        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+    end
+
+    it 'ignores absolute URLs with two leading slashes' do
+      doc = filter(link('//doc/api/README.md'))
+      expect(doc.at_css('a')['href']).to eq '//doc/api/README.md'
+    end
+
     it 'rebuilds relative URL for a file in the repo' do
       doc = filter(link('doc/api/README.md'))
+      expect(doc.at_css('a')['href']).
+        to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
+    end
+
+    it 'rebuilds relative URL for a file in the repo with leading ./' do
+      doc = filter(link('./doc/api/README.md'))
       expect(doc.at_css('a')['href']).
         to eq "/#{project_path}/blob/#{ref}/doc/api/README.md"
     end
@@ -113,9 +145,24 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
     end
 
     it 'rebuilds relative URL for an image in the repo' do
+      doc = filter(image('files/images/logo-black.png'))
+
+      expect(doc.at_css('img')['src']).
+        to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+    end
+
+    it 'rebuilds relative URL for link to an image in the repo' do
       doc = filter(link('files/images/logo-black.png'))
+
       expect(doc.at_css('a')['href']).
         to eq "/#{project_path}/raw/#{ref}/files/images/logo-black.png"
+    end
+
+    it 'rebuilds relative URL for a video in the repo' do
+      doc = filter(video('files/videos/intro.mp4'), commit: project.commit('video'), ref: 'video')
+
+      expect(doc.at_css('video')['src']).
+        to eq "/#{project_path}/raw/video/files/videos/intro.mp4"
     end
 
     it 'does not modify relative URL with an anchor only' do
@@ -148,5 +195,14 @@ describe Banzai::Filter::RelativeLinkFilter, lib: true do
       let(:requested_path) { 'doc/api' }
       include_examples :relative_to_requested
     end
+  end
+
+  context 'with a valid commit' do
+    include_examples :valid_repository
+  end
+
+  context 'with a valid ref' do
+    let(:commit) { nil } # force filter to use ref instead of commit
+    include_examples :valid_repository
   end
 end

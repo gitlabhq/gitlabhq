@@ -11,7 +11,7 @@ class GitTagPushService < BaseService
     SystemHooksService.new.execute_hooks(build_system_push_data.dup, :tag_push_hooks)
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
-    CreateCommitBuildsService.new.execute(project, current_user, @push_data)
+    Ci::CreatePipelineService.new(project, current_user, @push_data).execute
     ProjectCacheWorker.perform_async(project.id)
 
     true
@@ -26,20 +26,32 @@ class GitTagPushService < BaseService
     unless Gitlab::Git.blank_ref?(params[:newrev])
       tag_name = Gitlab::Git.ref_name(params[:ref])
       tag = project.repository.find_tag(tag_name)
-      
-      if tag && tag.target == params[:newrev]
+
+      if tag && tag.object_sha == params[:newrev]
         commit = project.commit(tag.target)
         commits = [commit].compact
         message = tag.message
       end
     end
 
-    Gitlab::PushDataBuilder.
-      build(project, current_user, params[:oldrev], params[:newrev], params[:ref], commits, message)
+    Gitlab::DataBuilder::Push.build(
+      project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      commits,
+      message)
   end
 
   def build_system_push_data
-    Gitlab::PushDataBuilder.
-      build(project, current_user, params[:oldrev], params[:newrev], params[:ref], [], '')
+    Gitlab::DataBuilder::Push.build(
+      project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      [],
+      '')
   end
 end

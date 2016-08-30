@@ -60,12 +60,27 @@
   .ci_widget {
     border-bottom: 1px solid #eef0f2;
 
-    i {
+    svg {
       margin-right: 4px;
+      position: relative;
+      top: 1px;
+      overflow: visible;
     }
 
     &.ci-success {
       color: $gl-success;
+
+      a.environment {
+        color: inherit;
+      }
+    }
+
+    &.ci-success_with_warnings {
+      color: $gl-success;
+
+      i {
+        color: $gl-warning;
+      }
     }
 
     &.ci-skipped {
@@ -73,9 +88,12 @@
       color: #888;
     }
 
-    &.ci-pending,
-    &.ci-running {
+    &.ci-pending {
       color: $gl-warning;
+    }
+
+    &.ci-running {
+      color: $blue-normal;
     }
 
     &.ci-failed,
@@ -112,7 +130,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-
     }
 
     p:last-child {
@@ -193,6 +210,21 @@
 
     .merge-request-title {
       margin-bottom: 2px;
+
+      .ci-status-link {
+
+        svg {
+          height: 16px;
+          width: 16px;
+          position: relative;
+          top: 3px;
+        }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
+      }
     }
   }
 
@@ -237,7 +269,7 @@
 
 .builds {
   .table-holder {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
 }
 
@@ -267,7 +299,7 @@
 
     .item-title {
       @media (min-width: $screen-sm-min) {
-        width: 49%;
+        width: 45%;
       }
     }
 
@@ -340,5 +372,22 @@
     &:not(:last-child) {
       margin-right: 10px;
     }
+  }
+}
+
+.mr-version-switch {
+  background: $background-color;
+  padding: $gl-btn-padding;
+  color: $gl-placeholder-color;
+
+  a.btn-link {
+    color: $gl-dark-link-color;
+  }
+}
+
+.merge-request-details {
+
+  .title {
+    margin-bottom: 20px;
   }
 }

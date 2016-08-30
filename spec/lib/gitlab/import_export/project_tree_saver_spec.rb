@@ -31,10 +31,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json).to include({ "visibility_level" => 20 })
       end
 
-      it 'has events' do
-        expect(saved_project_json['milestones'].first['events']).not_to be_empty
-      end
-
       it 'has milestones' do
         expect(saved_project_json['milestones']).not_to be_empty
       end
@@ -43,8 +39,12 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['merge_requests']).not_to be_empty
       end
 
-      it 'has labels' do
-        expect(saved_project_json['labels']).not_to be_empty
+      it 'has merge request\'s milestones' do
+        expect(saved_project_json['merge_requests'].first['milestone']).not_to be_empty
+      end
+
+      it 'has events' do
+        expect(saved_project_json['merge_requests'].first['milestone']['events']).not_to be_empty
       end
 
       it 'has snippets' do
@@ -102,25 +102,38 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
       it 'has ci pipeline notes' do
         expect(saved_project_json['pipelines'].first['notes']).not_to be_empty
       end
+
+      it 'has labels with no associations' do
+        expect(saved_project_json['labels']).not_to be_empty
+      end
+
+      it 'has labels associated to records' do
+        expect(saved_project_json['issues'].first['label_links'].first['label']).not_to be_empty
+      end
+
+      it 'does not complain about non UTF-8 characters in MR diffs' do
+        ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
+
+        expect(project_tree_saver.save).to be true
+      end
     end
   end
 
   def setup_project
     issue = create(:issue, assignee: user)
-    merge_request = create(:merge_request)
-    label = create(:label)
     snippet = create(:project_snippet)
     release = create(:release)
 
     project = create(:project,
                      :public,
                      issues: [issue],
-                     merge_requests: [merge_request],
-                     labels: [label],
                      snippets: [snippet],
                      releases: [release]
                     )
-
+    label = create(:label, project: project)
+    create(:label_link, label: label, target: issue)
+    milestone = create(:milestone, project: project)
+    merge_request = create(:merge_request, source_project: project, milestone: milestone)
     commit_status = create(:commit_status, project: project)
 
     ci_pipeline = create(:ci_pipeline,
@@ -130,7 +143,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                        statuses: [commit_status])
 
     create(:ci_build, pipeline: ci_pipeline, project: project)
-    milestone = create(:milestone, project: project)
+    create(:milestone, project: project)
     create(:note, noteable: issue, project: project)
     create(:note, noteable: merge_request, project: project)
     create(:note, noteable: snippet, project: project)

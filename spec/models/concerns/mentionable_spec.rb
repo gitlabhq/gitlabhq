@@ -7,7 +7,7 @@ describe Mentionable do
     nil
   end
 
-  describe :references do
+  describe 'references' do
     let(:project) { create(:project) }
 
     it 'excludes JIRA references' do
@@ -68,7 +68,7 @@ describe Issue, "Mentionable" do
 
   describe '#create_cross_references!' do
     let(:project) { create(:project) }
-    let(:author)  { double('author') }
+    let(:author)  { build(:user) }
     let(:commit)  { project.commit }
     let(:commit2) { project.commit }
 
@@ -87,6 +87,10 @@ describe Issue, "Mentionable" do
     let(:project) { create(:project) }
     let(:author)  { create(:author) }
     let(:issues)  { create_list(:issue, 2, project: project, author: author) }
+
+    before do
+      project.team << [author, Gitlab::Access::DEVELOPER]
+    end
 
     context 'before changes are persisted' do
       it 'ignores pre-existing references' do

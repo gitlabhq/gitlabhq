@@ -3,8 +3,6 @@ module API
   class Issues < Grape::API
     before { authenticate! }
 
-    helpers ::Gitlab::AkismetHelper
-
     helpers do
       def filter_issues_state(issues, state)
         case state
@@ -20,17 +18,6 @@ module API
 
       def filter_issues_milestone(issues, milestone)
         issues.includes(:milestone).where('milestones.title' => milestone)
-      end
-
-      def create_spam_log(project, current_user, attrs)
-        params = attrs.merge({
-          source_ip: client_ip(env),
-          user_agent: user_agent(env),
-          noteable_type: 'Issue',
-          via_api: true
-        })
-
-        ::CreateSpamLogService.new(project, current_user, params).execute
       end
     end
 
@@ -152,12 +139,13 @@ module API
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional)       - The labels of an issue
       #   created_at (optional)   - Date time string, ISO 8601 formatted
+      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
       # Example Request:
       #   POST /projects/:id/issues
-      post ":id/issues" do
+      post ':id/issues' do
         required_attributes! [:title]
 
-        keys = [:title, :description, :assignee_id, :milestone_id]
+        keys = [:title, :description, :assignee_id, :milestone_id, :due_date]
         keys << :created_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 
@@ -167,14 +155,12 @@ module API
         end
 
         project = user_project
-        text = [attrs[:title], attrs[:description]].reject(&:blank?).join("\n")
 
-        if check_for_spam?(project, current_user) && is_spam?(env, current_user, text)
-          create_spam_log(project, current_user, attrs)
+        issue = ::Issues::CreateService.new(project, current_user, attrs.merge(request: request, api: true)).execute
+
+        if issue.spam?
           render_api_error!({ error: 'Spam detected' }, 400)
         end
-
-        issue = ::Issues::CreateService.new(project, current_user, attrs).execute
 
         if issue.valid?
           # Find or create labels and attach to issue. Labels are valid because
@@ -201,12 +187,13 @@ module API
       #   labels (optional) - The labels of an issue
       #   state_event (optional) - The state event of an issue (close|reopen)
       #   updated_at (optional) - Date time string, ISO 8601 formatted
+      #   due_date (optional)     - Date time string in the format YEAR-MONTH-DAY
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
-      put ":id/issues/:issue_id" do
+      put ':id/issues/:issue_id' do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :update_issue, issue
-        keys = [:title, :description, :assignee_id, :milestone_id, :state_event]
+        keys = [:title, :description, :assignee_id, :milestone_id, :state_event, :due_date]
         keys << :updated_at if current_user.admin? || user_project.owner == current_user
         attrs = attributes_for_keys(keys)
 

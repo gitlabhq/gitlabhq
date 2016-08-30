@@ -13,7 +13,7 @@ module Ci
       specific_runner.assign_to(project)
     end
 
-    describe :execute do
+    describe '#execute' do
       context 'runner follow tag list' do
         it "picks build with the same tag" do
           pending_build.tag_list = ["linux"]

@@ -1,4 +1,3 @@
-# encoding: utf-8
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -14,16 +13,6 @@ module CommitsHelper
   # Just like #author_link but for the committer.
   def commit_committer_link(commit, options = {})
     commit_person_link(commit, options.merge(source: :committer))
-  end
-
-  def commit_author_avatar(commit, options = {})
-    options = options.merge(source: :author)
-    user = commit.send(options[:source])
-
-    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
-    person_email = user.try(:email) || source_email
-
-    image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]} hidden-xs", width: options[:size], alt: "")
   end
 
   def image_diff_class(diff)
@@ -109,28 +98,31 @@ module CommitsHelper
   end
 
   def link_to_browse_code(project, commit)
-    if current_controller?(:projects, :commits)
-      if @repo.blob_at(commit.id, @path)
-        return link_to(
-          "Browse File",
-          namespace_project_blob_path(project.namespace, project,
-                                      tree_join(commit.id, @path)),
-          class: "btn btn-default"
-        )
-      elsif @path.present?
-        return link_to(
-          "Browse Directory",
-          namespace_project_tree_path(project.namespace, project,
-                                      tree_join(commit.id, @path)),
-          class: "btn btn-default"
-        )
-      end
+    if @path.blank?
+      return link_to(
+        "Browse Files",
+        namespace_project_tree_path(project.namespace, project, commit),
+        class: "btn btn-default"
+      )
     end
-    link_to(
-      "Browse Files",
-      namespace_project_tree_path(project.namespace, project, commit),
-      class: "btn btn-default"
-    )
+
+    return unless current_controller?(:projects, :commits)
+
+    if @repo.blob_at(commit.id, @path)
+      return link_to(
+        "Browse File",
+        namespace_project_blob_path(project.namespace, project,
+                                    tree_join(commit.id, @path)),
+        class: "btn btn-default"
+      )
+    elsif @path.present?
+      return link_to(
+        "Browse Directory",
+        namespace_project_tree_path(project.namespace, project,
+                                    tree_join(commit.id, @path)),
+        class: "btn btn-default"
+      )
+    end
   end
 
   def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)
@@ -217,10 +209,10 @@ module CommitsHelper
     end
   end
 
-  def view_file_btn(commit_sha, diff, project)
+  def view_file_btn(commit_sha, diff_new_path, project)
     link_to(
       namespace_project_blob_path(project.namespace, project,
-                                  tree_join(commit_sha, diff.new_path)),
+                                  tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file btn-file-option'
     ) do
       raw('View file @') + content_tag(:span, commit_sha[0..6],

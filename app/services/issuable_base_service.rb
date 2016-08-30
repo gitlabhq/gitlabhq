@@ -69,14 +69,9 @@ class IssuableBaseService < BaseService
   end
 
   def filter_labels
-    if params[:add_label_ids].present? || params[:remove_label_ids].present?
-      params.delete(:label_ids)
-
-      filter_labels_in_param(:add_label_ids)
-      filter_labels_in_param(:remove_label_ids)
-    else
-      filter_labels_in_param(:label_ids)
-    end
+    filter_labels_in_param(:add_label_ids)
+    filter_labels_in_param(:remove_label_ids)
+    filter_labels_in_param(:label_ids)
   end
 
   def filter_labels_in_param(key)
@@ -85,29 +80,90 @@ class IssuableBaseService < BaseService
     params[key] = project.labels.where(id: params[key]).pluck(:id)
   end
 
+  def process_label_ids(attributes, existing_label_ids: nil)
+    label_ids = attributes.delete(:label_ids)
+    add_label_ids = attributes.delete(:add_label_ids)
+    remove_label_ids = attributes.delete(:remove_label_ids)
+
+    new_label_ids = existing_label_ids || label_ids || []
+
+    if add_label_ids.blank? && remove_label_ids.blank?
+      new_label_ids = label_ids if label_ids
+    else
+      new_label_ids |= add_label_ids if add_label_ids
+      new_label_ids -= remove_label_ids if remove_label_ids
+    end
+
+    new_label_ids
+  end
+
+  def merge_slash_commands_into_params!(issuable)
+    description, command_params =
+      SlashCommands::InterpretService.new(project, current_user).
+      execute(params[:description], issuable)
+
+    params[:description] = description
+
+    params.merge!(command_params)
+  end
+
+  def create_issuable(issuable, attributes, label_ids:)
+    issuable.with_transaction_returning_status do
+      if issuable.save
+        issuable.update_attributes(label_ids: label_ids)
+      end
+    end
+  end
+
+  def create(issuable)
+    merge_slash_commands_into_params!(issuable)
+    filter_params
+
+    params.delete(:state_event)
+    params[:author] ||= current_user
+    label_ids = process_label_ids(params)
+
+    issuable.assign_attributes(params)
+
+    before_create(issuable)
+
+    if params.present? && create_issuable(issuable, params, label_ids: label_ids)
+      after_create(issuable)
+      issuable.create_cross_references!(current_user)
+      execute_hooks(issuable)
+    end
+
+    issuable
+  end
+
+  def before_create(issuable)
+    # To be overridden by subclasses
+  end
+
+  def after_create(issuable)
+    # To be overridden by subclasses
+  end
+
   def update_issuable(issuable, attributes)
     issuable.with_transaction_returning_status do
-      add_label_ids = attributes.delete(:add_label_ids)
-      remove_label_ids = attributes.delete(:remove_label_ids)
-
-      issuable.label_ids |= add_label_ids if add_label_ids
-      issuable.label_ids -= remove_label_ids if remove_label_ids
-
-      issuable.assign_attributes(attributes.merge(updated_by: current_user))
-
-      issuable.save
+      issuable.update(attributes.merge(updated_by: current_user))
     end
   end
 
   def update(issuable)
     change_state(issuable)
+    change_subscription(issuable)
+    change_todo(issuable)
     filter_params
     old_labels = issuable.labels.to_a
+    old_mentioned_users = issuable.mentioned_users.to_a
+
+    params[:label_ids] = process_label_ids(params, existing_label_ids: issuable.label_ids)
 
     if params.present? && update_issuable(issuable, params)
       issuable.reset_events_cache
       handle_common_system_notes(issuable, old_labels: old_labels)
-      handle_changes(issuable, old_labels: old_labels)
+      handle_changes(issuable, old_labels: old_labels, old_mentioned_users: old_mentioned_users)
       issuable.create_new_cross_references!(current_user)
       execute_hooks(issuable, 'update')
     end
@@ -121,6 +177,25 @@ class IssuableBaseService < BaseService
       reopen_service.new(project, current_user, {}).execute(issuable)
     when 'close'
       close_service.new(project, current_user, {}).execute(issuable)
+    end
+  end
+
+  def change_subscription(issuable)
+    case params.delete(:subscription_event)
+    when 'subscribe'
+      issuable.subscribe(current_user)
+    when 'unsubscribe'
+      issuable.unsubscribe(current_user)
+    end
+  end
+
+  def change_todo(issuable)
+    case params.delete(:todo_event)
+    when 'add'
+      todo_service.mark_todo(issuable, current_user)
+    when 'done'
+      todo = TodosFinder.new(current_user).execute.find_by(target: issuable)
+      todo_service.mark_todos_as_done([todo], current_user) if todo
     end
   end
 

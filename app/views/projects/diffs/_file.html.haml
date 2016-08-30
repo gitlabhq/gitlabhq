@@ -1,6 +1,6 @@
-.diff-file.file-holder{id: "diff-#{i}", data: diff_file_html_data(project, diff_file)}
+.diff-file.file-holder{id: "diff-#{index}", data: diff_file_html_data(project, diff_file.file_path, diff_commit.id)}
   .file-title{id: "file-path-#{hexdigest(diff_file.file_path)}"}
-    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{i}"
+    = render "projects/diffs/file_header", diff_file: diff_file, blob: blob, diff_commit: diff_commit, project: project, url: "#diff-#{index}"
 
     - unless diff_file.submodule?
       .file-actions.hidden-xs
@@ -9,35 +9,11 @@
             = icon('comment')
           \
 
-        - if editable_diff?(diff_file)
-          = edit_blob_link(@merge_request.source_project,
-              @merge_request.source_branch, diff_file.new_path,
-              from_merge_request_id: @merge_request.id)
+          - if editable_diff?(diff_file)
+            - link_opts = @merge_request.id ? { from_merge_request_id: @merge_request.id } : {}
+            = edit_blob_link(@merge_request.source_project, @merge_request.source_branch, diff_file.new_path,
+                             blob: blob, link_opts: link_opts)
 
-        = view_file_btn(diff_commit.id, diff_file, project)
+        = view_file_btn(diff_commit.id, diff_file.new_path, project)
 
-  .diff-content.diff-wrap-lines
-    - # Skip all non non-supported blobs
-    - return unless blob.respond_to?(:text?)
-    - if diff_file.too_large?
-      .nothing-here-block This diff could not be displayed because it is too large.
-    - elsif blob.only_display_raw?
-      .nothing-here-block This file is too large to display.
-    - elsif blob_text_viewable?(blob)
-      - if !project.repository.diffable?(blob)
-        .nothing-here-block This diff was suppressed by a .gitattributes entry.
-      - elsif diff_file.diff_lines.length > 0
-        - if diff_view == 'parallel'
-          = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
-        - else
-          = render "projects/diffs/text_file", diff_file: diff_file, index: i
-      - else
-        - if diff_file.mode_changed?
-          .nothing-here-block File mode changed
-        - elsif diff_file.renamed_file
-          .nothing-here-block File moved
-    - elsif blob.image?
-      - old_blob = diff_file.old_blob(diff_commit)
-      = render "projects/diffs/image", diff_file: diff_file, old_file: old_blob, file: blob, index: i
-    - else
-      .nothing-here-block No preview for this file type
+  = render 'projects/diffs/content', diff_file: diff_file, diff_commit: diff_commit, blob: blob, project: project

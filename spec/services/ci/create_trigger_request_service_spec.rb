@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreateTriggerRequestService, services: true do
-  let(:service) { Ci::CreateTriggerRequestService.new }
+  let(:service) { described_class.new }
   let(:project) { create(:project) }
   let(:trigger) { create(:ci_trigger, project: project) }
 
@@ -9,7 +9,7 @@ describe Ci::CreateTriggerRequestService, services: true do
     stub_ci_pipeline_to_return_yaml_file
   end
 
-  describe :execute do
+  describe '#execute' do
     context 'valid params' do
       subject { service.execute(project, trigger, 'master') }
 
@@ -27,8 +27,7 @@ describe Ci::CreateTriggerRequestService, services: true do
       subject { service.execute(project, trigger, 'master') }
 
       before do
-        stub_ci_pipeline_yaml_file('{}')
-        FactoryGirl.create :ci_pipeline, project: project
+        stub_ci_pipeline_yaml_file('script: { only: [develop], script: hello World }')
       end
 
       it { expect(subject).to be_nil }

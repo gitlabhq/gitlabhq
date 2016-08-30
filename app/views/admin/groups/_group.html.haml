@@ -1,20 +1,26 @@
-- css_class = '' unless local_assigns[:css_class]
+- css_class = 'no-description' if group.description.blank?
 
-%li.group-row.group-admin{ class: css_class }
-  .group-avatar
-    = image_tag group_icon(group), class: 'avatar hidden-xs'
-  .group-details
-    .title
-      = link_to [:admin, group], class: 'group-name' do
-        = group.name
-    .group-stats
-      %span>= pluralize(number_with_delimiter(group.projects.count), 'project')
-      ,
-      %span= pluralize(number_with_delimiter(group.users.count), 'member')
-
-    - if group.description.present?
-      .description
-        = markdown(group.description, pipeline: :description)
-  .group-controls.hidden-xs
+%li.group-row{ class: css_class }
+  .controls
     = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: 'btn'
     = link_to 'Delete', [:admin, group], data: { confirm: "Are you sure you want to remove #{group.name}?" }, method: :delete, class: 'btn btn-remove'
+  .stats
+    %span
+      = icon('bookmark')
+      = number_with_delimiter(group.projects.count)
+
+    %span
+      = icon('users')
+      = number_with_delimiter(group.users.count)
+
+    %span.visibility-icon.has-tooltip{data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group)}
+      = visibility_level_icon(group.visibility_level, fw: false)
+
+  = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+  .title
+    = link_to [:admin, group], class: 'group-name' do
+      = group.name
+
+  - if group.description.present?
+    .description
+      = markdown(group.description, pipeline: :description)

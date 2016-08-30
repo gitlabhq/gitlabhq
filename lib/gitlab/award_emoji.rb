@@ -1,24 +1,14 @@
 module Gitlab
   class AwardEmoji
     CATEGORIES = {
-      other: "Other",
       objects: "Objects",
-      places: "Places",
-      travel_places: "Travel",
-      emoticons: "Emoticons",
-      objects_symbols: "Symbols",
+      travel: "Travel",
+      symbols: "Symbols",
       nature: "Nature",
-      celebration: "Celebration",
       people: "People",
       activity: "Activity",
       flags: "Flags",
-      food_drink: "Food"
-    }.with_indifferent_access
-
-    CATEGORY_ALIASES = {
-      symbols: "objects_symbols",
-      foods: "food_drink",
-      travel: "travel_places"
+      food: "Food"
     }.with_indifferent_access
 
     def self.normalize_emoji_name(name)
@@ -35,7 +25,7 @@ module Gitlab
           # Skip Fitzpatrick(tone) modifiers
           next if data["category"] == "modifier"
 
-          category = CATEGORY_ALIASES[data["category"]] || data["category"]
+          category = data["category"]
 
           @emoji_by_category[category] << data
         end
@@ -57,9 +47,9 @@ module Gitlab
     def self.aliases
       @aliases ||=
         begin
-         json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json' )
-         JSON.parse(File.read(json_path))
-       end
+          json_path = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
+          JSON.parse(File.read(json_path))
+        end
     end
 
     # Returns an Array of Emoji names and their asset URLs.

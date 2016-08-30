@@ -3,18 +3,27 @@ class Projects::BadgesController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:index]
   before_action :no_cache_headers, except: [:index]
 
-  def index
-    @ref = params[:ref] || @project.default_branch || 'master'
-    @build_badge = Gitlab::Badge::Build.new(@project, @ref)
+  def build
+    build_status = Gitlab::Badge::Build::Status
+      .new(project, params[:ref])
+
+    render_badge build_status
   end
 
-  def build
-    badge = Gitlab::Badge::Build.new(project, params[:ref])
+  def coverage
+    coverage_report = Gitlab::Badge::Coverage::Report
+      .new(project, params[:ref], params[:job])
 
+    render_badge coverage_report
+  end
+
+  private
+
+  def render_badge(badge)
     respond_to do |format|
       format.html { render_404 }
       format.svg do
-        send_data(badge.data, type: badge.type, disposition: 'inline')
+        render 'badge', locals: { badge: badge.template }
       end
     end
   end

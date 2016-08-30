@@ -11,7 +11,7 @@ describe HelpController do
     context 'for Markdown formats' do
       context 'when requested file exists' do
         before do
-          get :show, category: 'ssh', file: 'README', format: :md
+          get :show, path: 'ssh/README', format: :md
         end
 
         it 'assigns to @markdown' do
@@ -26,7 +26,7 @@ describe HelpController do
 
       context 'when requested file is missing' do
         it 'renders not found' do
-          get :show, category: 'foo', file: 'bar', format: :md
+          get :show, path: 'foo/bar', format: :md
           expect(response).to be_not_found
         end
       end
@@ -36,8 +36,7 @@ describe HelpController do
       context 'when requested file exists' do
         it 'renders the raw file' do
           get :show,
-              category: 'workflow/protected_branches',
-              file: 'protected_branches1',
+              path: 'user/project/img/labels_filter',
               format: :png
           expect(response).to be_success
           expect(response.content_type).to eq 'image/png'
@@ -48,8 +47,7 @@ describe HelpController do
       context 'when requested file is missing' do
         it 'renders not found' do
           get :show,
-              category: 'foo',
-              file: 'bar',
+              path: 'foo/bar',
               format: :png
           expect(response).to be_not_found
         end
@@ -59,10 +57,18 @@ describe HelpController do
     context 'for other formats' do
       it 'always renders not found' do
         get :show,
-            category: 'ssh',
-            file: 'README',
+            path: 'ssh/README',
             format: :foo
         expect(response).to be_not_found
+      end
+    end
+  end
+
+  describe 'GET #ui' do
+    context 'for UI Development Kit' do
+      it 'renders found' do
+        get :ui
+        expect(response).to have_http_status(200)
       end
     end
   end

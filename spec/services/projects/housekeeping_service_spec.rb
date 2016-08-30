@@ -12,18 +12,28 @@ describe Projects::HousekeepingService do
 
     it 'enqueues a sidekiq job' do
       expect(subject).to receive(:try_obtain_lease).and_return(true)
-      expect(GitlabShellOneShotWorker).to receive(:perform_async).with(:gc, project.repository_storage_path, project.path_with_namespace)
+      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id)
 
       subject.execute
-      expect(project.pushes_since_gc).to eq(0)
+      expect(project.reload.pushes_since_gc).to eq(0)
     end
 
-    it 'does not enqueue a job when no lease can be obtained' do
-      expect(subject).to receive(:try_obtain_lease).and_return(false)
-      expect(GitlabShellOneShotWorker).not_to receive(:perform_async)
+    context 'when no lease can be obtained' do
+      before(:each) do
+        expect(subject).to receive(:try_obtain_lease).and_return(false)
+      end
 
-      expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
-      expect(project.pushes_since_gc).to eq(0)
+      it 'does not enqueue a job' do
+        expect(GitGarbageCollectWorker).not_to receive(:perform_async)
+
+        expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
+      end
+
+      it 'does not reset pushes_since_gc' do
+        expect do
+          expect { subject.execute }.to raise_error(Projects::HousekeepingService::LeaseTaken)
+        end.not_to change { project.pushes_since_gc }.from(3)
+      end
     end
   end
 
@@ -39,10 +49,24 @@ describe Projects::HousekeepingService do
   end
 
   describe 'increment!' do
+    let(:lease_key) { "project_housekeeping:increment!:#{project.id}" }
+
     it 'increments the pushes_since_gc counter' do
-      expect(project.pushes_since_gc).to eq(0)
-      subject.increment!
-      expect(project.pushes_since_gc).to eq(1)
+      lease = double(:lease, try_obtain: true)
+      expect(Gitlab::ExclusiveLease).to receive(:new).with(lease_key, anything).and_return(lease)
+
+      expect do
+        subject.increment!
+      end.to change { project.pushes_since_gc }.from(0).to(1)
+    end
+
+    it 'does not increment when no lease can be obtained' do
+      lease = double(:lease, try_obtain: false)
+      expect(Gitlab::ExclusiveLease).to receive(:new).with(lease_key, anything).and_return(lease)
+
+      expect do
+        subject.increment!
+      end.not_to change { project.pushes_since_gc }
     end
   end
 end

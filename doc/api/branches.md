@@ -13,7 +13,7 @@ GET /projects/:id/repository/branches
 | `id` | integer | yes | The ID of a project |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches
 ```
 
 Example response:
@@ -23,6 +23,8 @@ Example response:
   {
     "name": "master",
     "protected": true,
+    "developers_can_push": false,
+    "developers_can_merge": false,
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -55,7 +57,7 @@ GET /projects/:id/repository/branches/:branch
 | `branch` | string | yes | The name of the branch |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master
 ```
 
 Example response:
@@ -64,6 +66,8 @@ Example response:
 {
   "name": "master",
   "protected": true,
+  "developers_can_push": false,
+  "developers_can_merge": false,
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -91,13 +95,15 @@ PUT /projects/:id/repository/branches/:branch/protect
 ```
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/protect?developers_can_push=true&developers_can_merge=true
 ```
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer | yes | The ID of a project |
 | `branch` | string | yes | The name of the branch |
+| `developers_can_push` | boolean | no | Flag if developers can push to the branch |
+| `developers_can_merge` | boolean | no | Flag if developers can merge to the branch |
 
 Example response:
 
@@ -117,7 +123,9 @@ Example response:
     ]
   },
   "name": "master",
-  "protected": true
+  "protected": true,
+  "developers_can_push": true,
+  "developers_can_merge": true
 }
 ```
 
@@ -132,7 +140,7 @@ PUT /projects/:id/repository/branches/:branch/unprotect
 ```
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/unprotect
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/repository/branches/master/unprotect
 ```
 
 | Attribute | Type | Required | Description |
@@ -158,7 +166,9 @@ Example response:
     ]
   },
   "name": "master",
-  "protected": false
+  "protected": false,
+  "developers_can_push": false,
+  "developers_can_merge": false
 }
 ```
 
@@ -175,7 +185,7 @@ POST /projects/:id/repository/branches
 | `ref`         | string  | yes | The branch name or commit SHA to create branch from |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches?branch_name=newbranch&ref=master"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches?branch_name=newbranch&ref=master"
 ```
 
 Example response:
@@ -196,7 +206,9 @@ Example response:
     ]
   },
   "name": "newbranch",
-  "protected": false
+  "protected": false,
+  "developers_can_push": false,
+  "developers_can_merge": false
 }
 ```
 
@@ -218,7 +230,7 @@ It returns `200` if it succeeds, `404` if the branch to be deleted does not exis
 or `400` for other reasons. In case of an error, an explaining message is provided.
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/repository/branches/newbranch"
 ```
 
 Example response:

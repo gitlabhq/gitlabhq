@@ -5,10 +5,10 @@ describe Gitlab::Diff::Parser, lib: true do
 
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diff) { commit.diffs.first }
+  let(:diff) { commit.raw_diffs.first }
   let(:parser) { Gitlab::Diff::Parser.new }
 
-  describe :parse do
+  describe '#parse' do
     let(:diff) do
       <<eos
 --- a/files/ruby/popen.rb

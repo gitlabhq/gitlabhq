@@ -1,8 +1,30 @@
 = form_errors(issuable)
 
+- if @conflict
+  .alert.alert-danger
+    Someone edited the #{issuable.class.model_name.human.downcase} the same time you did.
+    Please check out
+    = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank"
+    and make sure your changes will not unintentionally remove theirs
+
 .form-group
   = f.label :title, class: 'control-label'
-  .col-sm-10
+
+  - issuable_template_names = issuable_templates(issuable)
+
+  - if issuable_template_names.any?
+    .col-sm-3.col-lg-2
+      .js-issuable-selector-wrap{ data: { issuable_type: issuable.class.to_s.underscore.downcase } }
+        - title = selected_template(issuable) || "Choose a template"
+
+        = dropdown_tag(title, options: { toggle_class: 'js-issuable-selector',
+          title: title, filter: true, placeholder: 'Filter', footer_content: true,
+          data: { data: issuable_template_names, field_name: 'issuable_template', selected: selected_template(issuable), project_path: @project.path, namespace_path: @project.namespace.path } } ) do
+          %ul.dropdown-footer-list
+            %li
+              %a.reset-template
+                Reset template
+  %div{ class: issuable_template_names.any? ? 'col-sm-7 col-lg-8' : 'col-sm-10' }
     = f.text_field :title, maxlength: 255, autofocus: true, autocomplete: 'off',
         class: 'form-control pad', required: true
 
@@ -23,6 +45,13 @@
           to prevent a
           %strong Work In Progress
           merge request from being merged before it's ready.
+
+    - if can_add_template?(issuable)
+      %p.help-block
+        Add
+        = link_to "description templates", help_page_path('user/project/description_templates'), tabindex: -1
+        to help your contributors communicate effectively!
+
 .form-group.detail-page-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
@@ -30,8 +59,9 @@
     = render layout: 'projects/md_preview', locals: { preview_class: "md-preview", referenced_users: true } do
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'note-textarea',
-                               placeholder: "Write a comment or drag your files here..."
-      = render 'projects/notes/hints'
+                               placeholder: "Write a comment or drag your files here...",
+                               supports_slash_commands: !issuable.persisted?
+      = render 'projects/notes/hints', supports_slash_commands: !issuable.persisted?
       .clearfix
       .error-alert
 
@@ -98,7 +128,7 @@
     = label_tag :move_to_project_id, 'Move', class: 'control-label'
     .col-sm-10
       .issuable-form-select-holder
-        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id) }
+        = hidden_field_tag :move_to_project_id, nil, class: 'js-move-dropdown', data: { placeholder: 'Select project', projects_url: autocomplete_projects_path(project_id: @project.id), page_size: MoveToProjectFinder::PAGE_SIZE }
       &nbsp;
       %span{ data: { toggle: 'tooltip', placement: 'auto top' }, style: 'cursor: default',
       title: 'Moving an issue will copy the discussion to a different project and close it here. All participants will be notified of the new location.' }
@@ -149,3 +179,5 @@
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'
+
+= f.hidden_field :lock_version

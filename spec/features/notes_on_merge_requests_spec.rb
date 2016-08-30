@@ -23,7 +23,7 @@ describe 'Comments', feature: true do
     subject { page }
 
     describe 'the note form' do
-      it 'should be valid' do
+      it 'is valid' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
         expect(find('.js-main-target-form input[type=submit]').value).
           to eq('Comment')
@@ -39,7 +39,7 @@ describe 'Comments', feature: true do
           end
         end
 
-        it 'should have enable submit button and preview button' do
+        it 'has enable submit button and preview button' do
           page.within('.js-main-target-form') do
             expect(page).not_to have_css('.js-comment-button[disabled]')
             expect(page).to have_css('.js-md-preview-button', visible: true)
@@ -57,7 +57,7 @@ describe 'Comments', feature: true do
         end
       end
 
-      it 'should be added and form reset' do
+      it 'is added and form reset' do
         is_expected.to have_content('This is awsome!')
         page.within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
@@ -70,7 +70,7 @@ describe 'Comments', feature: true do
     end
 
     describe 'when editing a note', js: true do
-      it 'should contain the hidden edit form' do
+      it 'contains the hidden edit form' do
         page.within("#note_#{note.id}") do
           is_expected.to have_css('.note-edit-form', visible: false)
         end
@@ -82,7 +82,7 @@ describe 'Comments', feature: true do
           find(".js-note-edit").click
         end
 
-        it 'should show the note edit form and hide the note body' do
+        it 'shows the note edit form and hide the note body' do
           page.within("#note_#{note.id}") do
             expect(find('.current-note-edit-form', visible: true)).to be_visible
             expect(find('.note-edit-form', visible: true)).to be_visible
@@ -132,6 +132,28 @@ describe 'Comments', feature: true do
           wait_for_ajax
         end
       end
+    end
+  end
+
+  describe 'Handles cross-project system notes', js: true, feature: true do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :public) }
+    let(:project2) { create(:project, :private) }
+    let(:issue) { create(:issue, project: project2) }
+    let(:merge_request) { create(:merge_request, source_project: project, source_branch: 'markdown') }
+    let!(:note) { create(:note_on_merge_request, :system, noteable: merge_request, project: project, note: "Mentioned in #{issue.to_reference(project)}") }
+
+    it 'shows the system note' do
+      login_as :admin
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).to have_css('.system-note')
+    end
+
+    it 'hides redacted system note' do
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
+
+      expect(page).not_to have_css('.system-note')
     end
   end
 
@@ -212,7 +234,7 @@ describe 'Comments', feature: true do
           end
         end
 
-        it 'should be added as discussion' do
+        it 'adds as discussion' do
           is_expected.to have_content('Another comment on line 10')
           is_expected.to have_css('.notes_holder')
           is_expected.to have_css('.notes_holder .note', count: 1)
@@ -231,6 +253,7 @@ describe 'Comments', feature: true do
   end
 
   def click_diff_line(data = line_code)
-    execute_script("$('button[data-line-code=\"#{data}\"]').click()")
+    find(".line_holder[id='#{data}'] td.line_content").hover
+    find(".line_holder[id='#{data}'] button").trigger('click')
   end
 end

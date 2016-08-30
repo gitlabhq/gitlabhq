@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 class LfsObjectUploader < CarrierWave::Uploader::Base
   storage :file
 

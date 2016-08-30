@@ -17,15 +17,17 @@
         Environments are places where code gets deployed, such as staging or production.
         %br
         = succeed "." do
-          = link_to "Read more about environments", help_page_path("ci", "environments")
+          = link_to "Read more about environments", help_page_path("ci/environments")
       - if can?(current_user, :create_environment, @project)
         = link_to new_namespace_project_environment_path(@project.namespace, @project), class: 'btn btn-create' do
           New environment
   - else
     .table-holder
-      %table.table.environments
+      %table.table.builds.environments
         %tbody
           %th Environment
-          %th Last deployment
-          %th Date
+          %th Last Deployment
+          %th Commit
+          %th
+          %th
         = render @environments

@@ -19,16 +19,15 @@
       border-top: 1px solid $table-border-gray;
 
       td, th {
-        line-height: 23px;
+        line-height: 21px;
       }
 
       &:hover {
-        cursor: pointer;
-
         td {
           background-color: $row-hover;
           border-top: 1px solid $row-hover-border;
           border-bottom: 1px solid $row-hover-border;
+          cursor: pointer;
         }
       }
 
@@ -59,6 +58,10 @@
 
     .tree_commit {
       max-width: 320px;
+
+      .str-truncated {
+        max-width: 100%;
+      }
     }
 
     .tree_time_ago {

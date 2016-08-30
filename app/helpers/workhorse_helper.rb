@@ -28,4 +28,10 @@ module WorkhorseHelper
     headers.store(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
     head :ok
   end
+
+  # Send an entry from artifacts through Workhorse
+  def send_artifacts_entry(build, entry)
+    headers.store(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
+    head :ok
+  end
 end

@@ -69,7 +69,7 @@ class GitPushService < BaseService
     SystemHooksService.new.execute_hooks(build_push_data_system_hook.dup, :push_hooks)
     @project.execute_hooks(build_push_data.dup, :push_hooks)
     @project.execute_services(build_push_data.dup, :push_hooks)
-    CreateCommitBuildsService.new.execute(@project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute
     ProjectCacheWorker.perform_async(@project.id)
   end
 
@@ -88,8 +88,18 @@ class GitPushService < BaseService
 
     # Set protection on the default branch if configured
     if current_application_settings.default_branch_protection != PROTECTION_NONE
-      developers_can_push = current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? true : false
-      @project.protected_branches.create({ name: @project.default_branch, developers_can_push: developers_can_push })
+
+      params = {
+        name: @project.default_branch,
+        push_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }],
+        merge_access_levels_attributes: [{
+          access_level: current_application_settings.default_branch_protection == PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+        }]
+      }
+
+      ProtectedBranches::CreateService.new(@project, current_user, params).execute
     end
   end
 
@@ -128,13 +138,23 @@ class GitPushService < BaseService
   end
 
   def build_push_data
-    @push_data ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], push_commits)
+    @push_data ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      push_commits)
   end
 
   def build_push_data_system_hook
-    @push_data_system ||= Gitlab::PushDataBuilder.
-      build(@project, current_user, params[:oldrev], params[:newrev], params[:ref], [])
+    @push_data_system ||= Gitlab::DataBuilder::Push.build(
+      @project,
+      current_user,
+      params[:oldrev],
+      params[:newrev],
+      params[:ref],
+      [])
   end
 
   def push_to_existing_branch?

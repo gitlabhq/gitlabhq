@@ -8,7 +8,7 @@ module API
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
           if publik.present? && !attrs[:visibility_level].present?
-            publik = parse_boolean(publik)
+            publik = to_boolean(publik)
             # Since setting the public attribute to private could mean either
             # private or internal, use the more conservative option, private.
             attrs[:visibility_level] = (publik == true) ? Gitlab::VisibilityLevel::PUBLIC : Gitlab::VisibilityLevel::PRIVATE
@@ -25,7 +25,11 @@ module API
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::ProjectWithAccess, user: current_user
+        if params[:simple]
+          present @projects, with: Entities::BasicProjectDetails, user: current_user
+        else
+          present @projects, with: Entities::ProjectWithAccess, user: current_user
+        end
       end
 
       # Get an owned projects list for authenticated user
@@ -119,7 +123,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -168,7 +173,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -230,7 +236,8 @@ module API
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -319,7 +326,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).pending_delete!
+        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
       end
 
       # Mark this project as forked from another

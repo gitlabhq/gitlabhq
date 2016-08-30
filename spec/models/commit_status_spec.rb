@@ -24,14 +24,14 @@ describe CommitStatus, models: true do
   it { is_expected.to respond_to :running? }
   it { is_expected.to respond_to :pending? }
 
-  describe :author do
+  describe '#author' do
     subject { commit_status.author }
     before { commit_status.author = User.new }
 
     it { is_expected.to eq(commit_status.user) }
   end
 
-  describe :started? do
+  describe '#started?' do
     subject { commit_status.started? }
 
     context 'without started_at' do
@@ -57,7 +57,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :active? do
+  describe '#active?' do
     subject { commit_status.active? }
 
     %w(pending running).each do |state|
@@ -77,7 +77,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :complete? do
+  describe '#complete?' do
     subject { commit_status.complete? }
 
     %w(success failed canceled).each do |state|
@@ -97,7 +97,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :duration do
+  describe '#duration' do
     subject { commit_status.duration }
 
     it { is_expected.to eq(120.0) }
@@ -122,7 +122,7 @@ describe CommitStatus, models: true do
     end
   end
 
-  describe :latest do
+  describe '.latest' do
     subject { CommitStatus.latest.order(:id) }
 
     before do
@@ -133,12 +133,12 @@ describe CommitStatus, models: true do
       @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'aa', ref: 'bb', status: 'success'
     end
 
-    it 'return unique statuses' do
+    it 'returns unique statuses' do
       is_expected.to eq([@commit4, @commit5])
     end
   end
 
-  describe :running_or_pending do
+  describe '.running_or_pending' do
     subject { CommitStatus.running_or_pending.order(:id) }
 
     before do
@@ -149,7 +149,7 @@ describe CommitStatus, models: true do
       @commit5 = FactoryGirl.create :commit_status, pipeline: pipeline, name: 'ee', ref: nil, status: 'canceled'
     end
 
-    it 'return statuses that are running or pending' do
+    it 'returns statuses that are running or pending' do
       is_expected.to eq([@commit1, @commit2])
     end
   end
@@ -160,7 +160,7 @@ describe CommitStatus, models: true do
     context 'when no before_sha is set for pipeline' do
       before { pipeline.before_sha = nil }
 
-      it 'return blank sha' do
+      it 'returns blank sha' do
         is_expected.to eq(Gitlab::Git::BLANK_SHA)
       end
     end
@@ -169,7 +169,7 @@ describe CommitStatus, models: true do
       let(:value) { '1234' }
       before { pipeline.before_sha = value }
 
-      it 'return the set value' do
+      it 'returns the set value' do
         is_expected.to eq(value)
       end
     end
@@ -177,29 +177,43 @@ describe CommitStatus, models: true do
 
   describe '#stages' do
     before do
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'success'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'build', stage_idx: 0, status: 'failed'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'deploy', stage_idx: 2, status: 'running'
-      FactoryGirl.create :commit_status, pipeline: pipeline, stage: 'test', stage_idx: 1, status: 'success'
+      create :commit_status, pipeline: pipeline, stage: 'build', name: 'linux', stage_idx: 0, status: 'success'
+      create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'failed'
+      create :commit_status, pipeline: pipeline, stage: 'deploy', name: 'staging', stage_idx: 2, status: 'running'
+      create :commit_status, pipeline: pipeline, stage: 'test', name: 'rspec', stage_idx: 1, status: 'success'
     end
 
     context 'stages list' do
       subject { CommitStatus.where(pipeline: pipeline).stages }
 
-      it 'return ordered list of stages' do
+      it 'returns ordered list of stages' do
         is_expected.to eq(%w(build test deploy))
       end
     end
 
     context 'stages with statuses' do
-      subject { CommitStatus.where(pipeline: pipeline).stages_status }
+      subject { CommitStatus.where(pipeline: pipeline).latest.stages_status }
 
-      it 'return list of stages with statuses' do
+      it 'returns list of stages with statuses' do
         is_expected.to eq({
           'build' => 'failed',
           'test' => 'success',
           'deploy' => 'running'
         })
+      end
+
+      context 'when build is retried' do
+        before do
+          create :commit_status, pipeline: pipeline, stage: 'build', name: 'mac', stage_idx: 0, status: 'success'
+        end
+
+        it 'ignores a previous state' do
+          is_expected.to eq({
+            'build' => 'success',
+            'test' => 'success',
+            'deploy' => 'running'
+          })
+        end
       end
     end
   end

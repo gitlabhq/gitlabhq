@@ -1,0 +1,12 @@
+%p
+  You have been mentioned in an issue.
+
+- if current_application_settings.email_author_in_body
+  %div
+    #{link_to @issue.author_name, user_url(@issue.author)} wrote:
+-if @issue.description
+  = markdown(@issue.description, pipeline: :email, author: @issue.author)
+
+- if @issue.assignee_id.present?
+  %p
+    Assignee: #{@issue.assignee_name}

@@ -25,7 +25,7 @@ describe Gitlab::LDAP::User, lib: true do
     OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info_upper_case)
   end
 
-  describe :changed? do
+  describe '#changed?' do
     it "marks existing ldap user as changed" do
       create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
       expect(ldap_user.changed?).to be_truthy
@@ -36,7 +36,7 @@ describe Gitlab::LDAP::User, lib: true do
       expect(ldap_user.changed?).to be_truthy
     end
 
-    it "dont marks existing ldap user as changed" do
+    it "does not mark existing ldap user as changed" do
       create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain', ldap_email: true)
       expect(ldap_user.changed?).to be_falsey
     end

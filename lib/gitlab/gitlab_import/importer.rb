@@ -15,31 +15,35 @@ module Gitlab
       end
 
       def execute
-        project_identifier = CGI.escape(project.import_source)
+        ActiveRecord::Base.no_touching do
+          project_identifier = CGI.escape(project.import_source)
 
-        # Issues && Comments
-        issues = client.issues(project_identifier)
+          # Issues && Comments
+          issues = client.issues(project_identifier)
 
-        issues.each do |issue|
-          body = @formatter.author_line(issue["author"]["name"])
-          body += issue["description"]
+          issues.each do |issue|
+            body = @formatter.author_line(issue["author"]["name"])
+            body += issue["description"]
 
-          comments = client.issue_comments(project_identifier, issue["id"])
+            comments = client.issue_comments(project_identifier, issue["id"])
 
-          if comments.any?
-            body += @formatter.comments_header
+            if comments.any?
+              body += @formatter.comments_header
+            end
+
+            comments.each do |comment|
+              body += @formatter.comment(comment["author"]["name"], comment["created_at"], comment["body"])
+            end
+
+            project.issues.create!(
+              iid: issue["iid"],
+              description: body,
+              title: issue["title"],
+              state: issue["state"],
+              updated_at: issue["updated_at"],
+              author_id: gl_user_id(project, issue["author"]["id"])
+            )
           end
-
-          comments.each do |comment|
-            body += @formatter.comment(comment["author"]["name"], comment["created_at"], comment["body"])
-          end
-
-          project.issues.create!(
-            description: body,
-            title: issue["title"],
-            state: issue["state"],
-            author_id: gl_user_id(project, issue["author"]["id"])
-          )
         end
 
         true

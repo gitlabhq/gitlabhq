@@ -19,7 +19,7 @@ describe Gitlab::Metrics::RackMiddleware do
     end
 
     it 'tags a transaction with the name and action of a controller' do
-      klass      = double(:klass, name: 'TestController')
+      klass      = double(:klass, name: 'TestController', content_type: 'text/html')
       controller = double(:controller, class: klass, action_name: 'show')
 
       env['action_controller.instance'] = controller
@@ -32,7 +32,7 @@ describe Gitlab::Metrics::RackMiddleware do
       middleware.call(env)
     end
 
-    it 'tags a transaction with the method andpath of the route in the grape endpoint' do
+    it 'tags a transaction with the method and path of the route in the grape endpoint' do
       route    = double(:route, route_method: "GET", route_path: "/:version/projects/:id/archive(.:format)")
       endpoint = double(:endpoint, route: route)
 
@@ -44,6 +44,15 @@ describe Gitlab::Metrics::RackMiddleware do
         with(an_instance_of(Gitlab::Metrics::Transaction), env)
 
       middleware.call(env)
+    end
+
+    it 'tracks any raised exceptions' do
+      expect(app).to receive(:call).with(env).and_raise(RuntimeError)
+
+      expect_any_instance_of(Gitlab::Metrics::Transaction).
+        to receive(:add_event).with(:rails_exception)
+
+      expect { middleware.call(env) }.to raise_error(RuntimeError)
     end
   end
 
@@ -78,16 +87,29 @@ describe Gitlab::Metrics::RackMiddleware do
 
   describe '#tag_controller' do
     let(:transaction) { middleware.transaction_from_env(env) }
+    let(:content_type) { 'text/html' }
 
-    it 'tags a transaction with the name and action of a controller' do
+    before do
       klass      = double(:klass, name: 'TestController')
-      controller = double(:controller, class: klass, action_name: 'show')
+      controller = double(:controller, class: klass, action_name: 'show', content_type: content_type)
 
       env['action_controller.instance'] = controller
+    end
 
+    it 'tags a transaction with the name and action of a controller' do
       middleware.tag_controller(transaction, env)
 
       expect(transaction.action).to eq('TestController#show')
+    end
+
+    context 'when the response content type is not :html' do
+      let(:content_type) { 'application/json' }
+
+      it 'appends the mime type to the transaction action' do
+        middleware.tag_controller(transaction, env)
+
+        expect(transaction.action).to eq('TestController#show.json')
+      end
     end
   end
 

@@ -5,7 +5,7 @@ describe Gitlab::Diff::Highlight, lib: true do
 
   let(:project) { create(:project) }
   let(:commit) { project.commit(sample_commit.id) }
-  let(:diff) { commit.diffs.first }
+  let(:diff) { commit.raw_diffs.first }
   let(:diff_file) { Gitlab::Diff::File.new(diff, diff_refs: commit.diff_refs, repository: project.repository) }
 
   describe '#highlight' do
@@ -28,13 +28,13 @@ describe Gitlab::Diff::Highlight, lib: true do
       end
 
       it 'highlights and marks removed lines' do
-        code = %Q{-<span id="LC9" class="line">      <span class="k">raise</span> <span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>\n}
+        code = %Q{-<span id="LC9" class="line">      <span class="k">raise</span> <span class="s2">"System commands must be given as an array of strings"</span></span>\n}
 
         expect(subject[4].text).to eq(code)
       end
 
       it 'highlights and marks added lines' do
-        code = %Q{+<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff left'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span><span class='idiff right'> </span><span class="s2">&quot;System commands must be given as an array of strings&quot;</span></span>\n}
+        code = %Q{+<span id="LC9" class="line">      <span class="k">raise</span> <span class="no"><span class='idiff left'>RuntimeError</span></span><span class="p"><span class='idiff'>,</span></span><span class='idiff right'> </span><span class="s2">"System commands must be given as an array of strings"</span></span>\n}
 
         expect(subject[5].text).to eq(code)
       end

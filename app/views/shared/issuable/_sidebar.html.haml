@@ -19,7 +19,7 @@
 
     = form_for [@project.namespace.becomes(Namespace), @project, issuable], remote: true, format: :json, html: {class: 'issuable-context-form inline-update js-issuable-update'} do |f|
       .block.assignee
-        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.to_reference if issuable.assignee)}
+        .sidebar-collapsed-icon.sidebar-collapsed-user{data: {toggle: "tooltip", placement: "left", container: "body"}, title: (issuable.assignee.name if issuable.assignee)}
           - if issuable.assignee
             = link_to_member(@project, issuable.assignee, size: 24)
           - else
@@ -109,7 +109,7 @@
 
       - if issuable.project.labels.any?
         .block.labels
-          .sidebar-collapsed-icon
+          .sidebar-collapsed-icon.js-sidebar-labels-tooltip{ title: issuable_labels_tooltip(issuable.labels_array), data: { placement: "left", container: "body" } }
             = icon('tags')
             %span
               = issuable.labels_array.size
@@ -156,7 +156,7 @@
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference
-        .sidebar-collapsed-icon
+        .sidebar-collapsed-icon.dont-change-state
           = clipboard_button(clipboard_text: project_ref)
         .cross-project-reference.hide-collapsed
           %span

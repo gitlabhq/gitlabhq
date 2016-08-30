@@ -28,7 +28,8 @@ GitLab supports two ways of adding a new OAuth2 application to an instance. You
 can either add an application as a regular user or add it in the admin area.
 What this means is that GitLab can actually have instance-wide and a user-wide
 applications. There is no difference between them except for the different
-permission levels they are set (user/admin).
+permission levels they are set (user/admin). The default callback URL is 
+`http://your-gitlab.example.com/users/auth/gitlab/callback`
 
 ## Adding an application through the profile
 

@@ -66,7 +66,7 @@
       %ul.projects-list.content-list
         - @projects.each_with_index do |project|
           %li.project-row
-            .controls.pull-right
+            .controls
               - if project.archived
                 %span.label.label-warning archived
               %span.label.label-gray

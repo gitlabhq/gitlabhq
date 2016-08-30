@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe BroadcastMessage, models: true do
-  include ActiveSupport::Testing::TimeHelpers
-
   subject { create(:broadcast_message) }
 
   it { is_expected.to be_valid }
@@ -23,19 +21,19 @@ describe BroadcastMessage, models: true do
   end
 
   describe '.current' do
-    it "should return last message if time match" do
+    it "returns last message if time match" do
       message = create(:broadcast_message)
 
       expect(BroadcastMessage.current).to eq message
     end
 
-    it "should return nil if time not come" do
+    it "returns nil if time not come" do
       create(:broadcast_message, :future)
 
       expect(BroadcastMessage.current).to be_nil
     end
 
-    it "should return nil if time has passed" do
+    it "returns nil if time has passed" do
       create(:broadcast_message, :expired)
 
       expect(BroadcastMessage.current).to be_nil

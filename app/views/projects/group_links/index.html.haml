@@ -17,6 +17,13 @@
         .select-wrapper
           = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control select-control"
           %span.caret
+      .form-group
+        = label_tag :expires_at, 'Access expiration date', class: 'label-light'
+        .clearable-input
+          = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Select access expiration date'
+          %i.clear-icon.js-clear-input
+        .help-block
+          On this date, all users in the group will automatically lose access to this project.
       = submit_tag "Share", class: "btn btn-create"
   .col-lg-9.col-lg-offset-3
     %hr
@@ -35,6 +42,10 @@
                 = group.name
               %br
               up to #{group_link.human_access}
+              - if group_link.expires?
+                ·
+                %span{ class: ('text-warning' if group_link.expires_soon?) }
+                  expires in #{distance_of_time_in_words_to_now(group_link.expires_at)}
             .pull-right
               = link_to namespace_project_group_link_path(@project.namespace, @project, group_link), method: :delete, class: "btn btn-transparent" do
                 %span.sr-only disable sharing

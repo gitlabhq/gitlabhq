@@ -41,6 +41,8 @@ abbreviation.
 If you have read this guide and want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
+- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+
 ## Contributor license agreement
 
 By submitting code as an individual you agree to the
@@ -127,7 +129,7 @@ request that potentially fixes it.
 
 ### Feature proposals
 
-To create a feature proposal for CE and CI, open an issue on the
+To create a feature proposal for CE, open an issue on the
 [issue tracker of CE][ce-tracker].
 
 For feature proposals for EE, open an issue on the
@@ -142,15 +144,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-You are encouraged to use the template below for feature proposals.
-
-```
-## Description including problem, use cases, benefits, and/or goals
-
-## Proposal
-
-## Links / references
-```
+Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
 For changes in the interface, it can be helpful to create a mockup first.
 If you want to create something yourself, consider opening an issue first to
@@ -163,54 +157,10 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the following template in the issue description area.
+Please submit bugs using the ['Bug' issue template](.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
-
-```
-## Summary
-
-(Summarize your issue in one sentence - what goes wrong, what did you expect to happen)
-
-## Steps to reproduce
-
-(How one can reproduce the issue - this is very important)
-
-## Expected behavior
-
-(What you should see instead)
-
-## Relevant logs and/or screenshots
-
-(Paste any relevant logs - please use code blocks (```) to format console output,
-logs, and code as it's very hard to read otherwise.)
-
-## Output of checks
-
-### Results of GitLab Application Check
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:check SANITIZE=true)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true)
-
-(we will only investigate if the tests are passing)
-
-### Results of GitLab Environment Info
-
-(For installations with omnibus-gitlab package run and paste the output of:
-sudo gitlab-rake gitlab:env:info)
-
-(For installations from source run and paste the output of:
-sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production)
-
-## Possible fixes
-
-(If you can, link to the line of code that might be responsible for the problem)
-
-```
 
 ### Issue weight
 
@@ -333,6 +283,10 @@ request is as follows:
 1. If your code creates new files on disk please read the
    [shared files guidelines](doc/development/shared_files.md).
 1. When writing commit messages please follow [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html) [guidelines](http://chris.beams.io/posts/git-commit/).
+1. If your merge request adds one or more migrations, make sure to execute all
+   migrations on a fresh database before the MR is reviewed. If the review leads
+   to large changes in the MR, do this again once the review is complete.
+1. For more complex migrations, write tests.
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get
@@ -380,7 +334,8 @@ description area. Copy-paste it to retain the markdown format.
 
 1. The change is as small as possible
 1. Include proper tests and make all tests pass (unless it contains a test
-   exposing a bug in existing code)
+   exposing a bug in existing code). Every new class should have corresponding
+   unit tests, even if the class is exercised at a higher level, such as a feature test.
 1. If you suspect a failing CI build is unrelated to your contribution, you may
    try and restart the failing CI job or ask a developer to fix the
    aforementioned failing test
@@ -458,8 +413,10 @@ merge request:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
+1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
-1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style/coffeescript)
+1.  [JavaScript (ES6)](https://github.com/airbnb/javascript)
+1.  [JavaScript (ES5)](https://github.com/airbnb/javascript/tree/master/es5)
 1.  [SCSS styleguide][scss-styleguide]
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
     contributors to enhance security
@@ -529,6 +486,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
 [doc-styleguide]: doc/development/doc_styleguide.md "Documentation styleguide"
 [scss-styleguide]: doc/development/scss_styleguide.md "SCSS styleguide"
+[newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
 [gitlab-design]: https://gitlab.com/gitlab-org/gitlab-design
 [free Antetype viewer (Mac OSX only)]: https://itunes.apple.com/us/app/antetype-viewer/id824152298?mt=12
 [`gitlab8.atype` file]: https://gitlab.com/gitlab-org/gitlab-design/tree/master/current/

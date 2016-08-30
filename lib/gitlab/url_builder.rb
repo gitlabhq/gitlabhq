@@ -22,6 +22,8 @@ module Gitlab
         note_url
       when WikiPage
         wiki_page_url
+      when ProjectSnippet
+        project_snippet_url(object)
       else
         raise NotImplementedError.new("No URL builder defined for #{object.class}")
       end

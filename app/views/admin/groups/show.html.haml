@@ -79,7 +79,7 @@
         .panel-body.form-holder
           %p.light
             Read more about project permissions
-            %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+            %strong= link_to "here", help_page_path("user/permissions"), class: "vlink"
 
           = form_tag members_update_admin_group_path(@group), id: "new_project_member", class: "bulk_import", method: :put  do
             %div

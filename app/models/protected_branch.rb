@@ -5,6 +5,15 @@ class ProtectedBranch < ActiveRecord::Base
   validates :name, presence: true
   validates :project, presence: true
 
+  has_many :merge_access_levels, dependent: :destroy
+  has_many :push_access_levels, dependent: :destroy
+
+  validates_length_of :merge_access_levels, is: 1, message: "are restricted to a single instance per protected branch."
+  validates_length_of :push_access_levels, is: 1, message: "are restricted to a single instance per protected branch."
+
+  accepts_nested_attributes_for :push_access_levels
+  accepts_nested_attributes_for :merge_access_levels
+
   def commit
     project.commit(self.name)
   end

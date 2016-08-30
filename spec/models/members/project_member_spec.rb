@@ -27,6 +27,7 @@ describe ProjectMember, models: true do
   describe 'validations' do
     it { is_expected.to allow_value('Project').for(:source_type) }
     it { is_expected.not_to allow_value('project').for(:source_type) }
+    it { is_expected.to validate_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
 
   describe 'modules' do
@@ -40,7 +41,7 @@ describe ProjectMember, models: true do
   end
 
   describe "#destroy" do
-    let(:owner)   { create(:project_member, access_level: ProjectMember::OWNER) }
+    let(:owner)   { create(:project_member, access_level: ProjectMember::MASTER) }
     let(:project) { owner.project }
     let(:master)  { create(:project_member, project: project) }
 
@@ -52,7 +53,7 @@ describe ProjectMember, models: true do
       master_todos
     end
 
-    it "destroy itself and delete associated todos" do
+    it "destroys itself and delete associated todos" do
       expect(owner.user.todos.size).to eq(2)
       expect(master.user.todos.size).to eq(3)
       expect(Todo.count).to eq(5)
@@ -101,7 +102,7 @@ describe ProjectMember, models: true do
     end
   end
 
-  describe :add_users_into_projects do
+  describe '.add_users_to_projects' do
     before do
       @project_1 = create :project
       @project_2 = create :project
@@ -109,7 +110,7 @@ describe ProjectMember, models: true do
       @user_1 = create :user
       @user_2 = create :user
 
-      ProjectMember.add_users_into_projects(
+      ProjectMember.add_users_to_projects(
         [@project_1.id, @project_2.id],
         [@user_1.id, @user_2.id],
         ProjectMember::MASTER
@@ -123,7 +124,7 @@ describe ProjectMember, models: true do
     it { expect(@project_2.users).to include(@user_2) }
   end
 
-  describe :truncate_teams do
+  describe '.truncate_teams' do
     before do
       @project_1 = create :project
       @project_2 = create :project

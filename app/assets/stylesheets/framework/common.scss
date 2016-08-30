@@ -248,7 +248,7 @@ li.note {
 
 img.emoji {
   height: 20px;
-  vertical-align: middle;
+  vertical-align: top;
   width: 20px;
 }
 
@@ -268,21 +268,6 @@ table {
     background: #d9edf7 !important;
     text-align: center;
   }
-}
-
-.dashboard-intro-icon {
-  float: left;
-  text-align: center;
-  font-size: 32px;
-  color: #aaa;
-  width: 60px;
-}
-
-.dashboard-intro-text {
-  display: inline-block;
-  margin-left: -60px;
-  padding-left: 60px;
-  width: 100%;
 }
 
 .btn-sign-in {

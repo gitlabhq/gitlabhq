@@ -20,7 +20,7 @@
 .mr-compare.merge-request
   %ul.merge-request-tabs.nav-links.no-top.no-bottom
     %li.commits-tab
-      = link_to url_for(params), data: {target: 'div#commits', action: 'commits', toggle: 'tab'} do
+      = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
         Commits
         %span.badge= @commits.size
     - if @pipeline
@@ -42,7 +42,7 @@
           %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
           %p To preserve performance the line changes are not shown.
       - else
-        = render "projects/diffs/diffs", diffs: @diffs, project: @project, diff_refs: @merge_request.diff_refs, show_whitespace_toggle: false
+        = render "projects/diffs/diffs", diffs: @diffs, show_whitespace_toggle: false
     - if @pipeline
       #builds.builds.tab-pane
         = render "projects/merge_requests/show/builds"
@@ -52,11 +52,8 @@
     $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
-
 :javascript
-  var merge_request
-  merge_request = new MergeRequest({
-    action: 'new',
-    diffs_loaded: true,
-    commits_loaded: true
+  var merge_request = new MergeRequest({
+    action: "#{(@show_changes_tab ? 'diffs' : 'new')}",
+    setUrl: false
   });

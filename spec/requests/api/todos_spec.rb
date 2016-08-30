@@ -117,6 +117,12 @@ describe API::Todos, api: true do
         expect(response.status).to eq(200)
         expect(pending_1.reload).to be_done
       end
+
+      it 'updates todos cache' do
+        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+
+        delete api("/todos/#{pending_1.id}", john_doe)
+      end
     end
   end
 
@@ -134,11 +140,16 @@ describe API::Todos, api: true do
         delete api('/todos', john_doe)
 
         expect(response.status).to eq(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(response.body).to eq('3')
         expect(pending_1.reload).to be_done
         expect(pending_2.reload).to be_done
         expect(pending_3.reload).to be_done
+      end
+
+      it 'updates todos cache' do
+        expect_any_instance_of(User).to receive(:update_todos_count_cache).and_call_original
+
+        delete api("/todos", john_doe)
       end
     end
   end

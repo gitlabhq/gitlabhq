@@ -17,16 +17,19 @@ module MergeRequests
       end
     end
 
-    def hook_data(merge_request, action)
+    def hook_data(merge_request, action, oldrev = nil)
       hook_data = merge_request.to_hook_data(current_user)
       hook_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(merge_request)
       hook_data[:object_attributes][:action] = action
+      if oldrev && !Gitlab::Git.blank_ref?(oldrev)
+        hook_data[:object_attributes][:oldrev] = oldrev
+      end
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open')
+    def execute_hooks(merge_request, action = 'open', oldrev = nil)
       if merge_request.project
-        merge_data = hook_data(merge_request, action)
+        merge_data = hook_data(merge_request, action, oldrev)
         merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end
