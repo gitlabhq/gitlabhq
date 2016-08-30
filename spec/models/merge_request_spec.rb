@@ -963,7 +963,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#fork_missing?" do
+  describe "#forked_source_project_missing?" do
     let(:project)      { create(:project) }
     let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
@@ -976,13 +976,13 @@ describe MergeRequest, models: true do
           target_project: project)
       end
 
-      it { expect(merge_request.fork_missing?).to be_falsey }
+      it { expect(merge_request.forked_source_project_missing?).to be_falsey }
     end
 
     context "when the source project is the same as the target project" do
       let(:merge_request) { create(:merge_request, source_project: project) }
 
-      it { expect(merge_request.fork_missing?).to be_falsey }
+      it { expect(merge_request.forked_source_project_missing?).to be_falsey }
     end
 
     context "when the fork does not exist" do
@@ -996,7 +996,7 @@ describe MergeRequest, models: true do
         unlink_project.execute
         merge_request.reload
 
-        expect(merge_request.fork_missing?).to be_truthy
+        expect(merge_request.forked_source_project_missing?).to be_truthy
       end
     end
   end
