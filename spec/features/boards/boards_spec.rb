@@ -110,6 +110,45 @@ describe 'Issue Boards', feature: true, js: true do
       end
     end
 
+    it 'search backlog list' do
+      page.within('#js-boards-seach') do
+        find('.form-control').set(issue1.title)
+      end
+
+      wait_for_vue_resource
+
+      expect(find('.board:nth-child(1)')).to have_selector('.card', count: 1)
+      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 0)
+    end
+
+    it 'search done list' do
+      page.within('#js-boards-seach') do
+        find('.form-control').set(issue8.title)
+      end
+
+      wait_for_vue_resource
+
+      expect(find('.board:nth-child(1)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 1)
+    end
+
+    it 'search list' do
+      page.within('#js-boards-seach') do
+        find('.form-control').set(issue5.title)
+      end
+
+      wait_for_vue_resource
+
+      expect(find('.board:nth-child(1)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(2)')).to have_selector('.card', count: 1)
+      expect(find('.board:nth-child(3)')).to have_selector('.card', count: 0)
+      expect(find('.board:nth-child(4)')).to have_selector('.card', count: 0)
+    end
+
     it 'allows user to delete board' do
       page.within(find('.board:nth-child(2)')) do
         find('.board-delete').click
@@ -165,32 +204,6 @@ describe 'Issue Boards', feature: true, js: true do
       it 'shows issues in backlog with no labels' do
         page.within(find('.board', match: :first)) do
           expect(page.find('.board-header')).to have_content('6')
-          expect(page).to have_selector('.card', count: 6)
-        end
-      end
-
-      it 'is searchable' do
-        page.within(find('.board', match: :first)) do
-          find('.form-control').set issue1.title
-
-          wait_for_vue_resource(spinner: false)
-
-          expect(page).to have_selector('.card', count: 1)
-        end
-      end
-
-      it 'clears search' do
-        page.within(find('.board', match: :first)) do
-          find('.form-control').set issue1.title
-
-          expect(page).to have_selector('.card', count: 1)
-
-          find('.board-search-clear-btn').click
-        end
-
-        wait_for_vue_resource
-
-        page.within(find('.board', match: :first)) do
           expect(page).to have_selector('.card', count: 6)
         end
       end

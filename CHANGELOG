@@ -15,6 +15,53 @@ v 8.11.4
   - Fix pipelines tab layout regression. !5952
   - Fix "Wiki" link not appearing in navigation for projects with external wiki. !6057
   - Do not enforce using hash with hidden key in CI configuration. !6079
+v 8.12.0 (unreleased)
+  - Make push events have equal vertical spacing.
+  - Add two-factor recovery endpoint to internal API !5510
+  - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
+  - Add font color contrast to external label in admin area (ClemMakesApps)
+  - Change logo animation to CSS (ClemMakesApps)
+  - Change merge_error column from string to text type
+  - Reduce contributions calendar data payload (ClemMakesApps)
+  - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
+  - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
+  - Shorten task status phrase (ClemMakesApps)
+  - Add hover color to emoji icon (ClemMakesApps)
+  - Fix branches page dropdown sort alignment (ClemMakesApps)
+  - Add white background for no readme container (ClemMakesApps)
+  - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
+  - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
+  - Remove Gitorious import
+  - Fix inconsistent background color for filter input field (ClemMakesApps)
+  - Add Sentry logging to API calls
+  - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Remove unused mixins (ClemMakesApps)
+  - Add search to all issue board lists
+  - Fix groups sort dropdown alignment (ClemMakesApps)
+  - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
+  - Fix markdown help references (ClemMakesApps)
+  - Add last commit time to repo view (ClemMakesApps)
+  - Added project specific enable/disable setting for LFS !5997
+  - Added tests for diff notes
+  - Add a button to download latest successful artifacts for branches and tags !5142
+  - Add delimiter to project stars and forks count (ClemMakesApps)
+  - Fix badge count alignment (ClemMakesApps)
+  - Fix branch title trailing space on hover (ClemMakesApps)
+  - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
+  - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
+  - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
+  - Update merge_requests.md with a simpler way to check out a merge request. !5944
+  - Fix button missing type (ClemMakesApps)
+  - Move to project dropdown with infinite scroll for better performance
+  - Fix leaking of submit buttons outside the width of a main container !18731 (originally by @pavelloz)
+  - Load branches asynchronously in Cherry Pick and Revert dialogs.
+  - Add merge request versions !5467
+  - Change using size to use count and caching it for number of group members. !5935
+  - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
+  - Reduce number of database queries on builds tab
+  - Capitalize mentioned issue timeline notes (ClemMakesApps)
+  - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
+  - Adds response mime type to transaction metric action when it's not HTML
   - Fix hover leading space bug in pipeline graph !5980
   - Fix sorting issues by "last updated" doesn't work after import from GitHub
   - GitHub importer use default project visibility for non-private projects

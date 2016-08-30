@@ -59,10 +59,6 @@ class List {
     }
   }
 
-  canSearch () {
-    return this.type === 'backlog';
-  }
-
   getIssues (emptyIssues = true) {
     const filters = this.filters;
     let data = { page: this.page };
