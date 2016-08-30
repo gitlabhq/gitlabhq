@@ -41,7 +41,7 @@ module CiStatusHelper
       when 'play'
         'icon_play'
       when 'created'
-        'icon_status_pending'
+        'icon_status_created'
       else
         'icon_status_cancel'
       end
