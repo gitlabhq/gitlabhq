@@ -51,6 +51,7 @@ v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
+  - Fix "Wiki" link not appearing in navigation for projects with external wiki
   - Fix IE11 fork button bug !598
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
   - Fix external issue tracker "Issues" link leading to 404s
