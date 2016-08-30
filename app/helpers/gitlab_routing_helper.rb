@@ -149,4 +149,20 @@ module GitlabRoutingHelper
   def resend_invite_group_member_path(group_member, *args)
     resend_invite_group_group_member_path(group_member.source, group_member)
   end
+
+  # Artifacts
+
+  def artifacts_action_path(path, project, build)
+    action, path_params = path.split('/', 2)
+    args = [project.namespace, project, build, path_params]
+
+    case action
+    when 'download'
+      download_namespace_project_build_artifacts_path(*args)
+    when 'browse'
+      browse_namespace_project_build_artifacts_path(*args)
+    when 'file'
+      file_namespace_project_build_artifacts_path(*args)
+    end
+  end
 end
