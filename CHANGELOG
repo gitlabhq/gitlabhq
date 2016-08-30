@@ -158,6 +158,9 @@ v 8.11.6
   - Restore SSH Key title auto-population behavior. !6186
   - Fix DB schema to match latest migration. !6256
   - Exclude some pending or inactivated rows in Member scopes.
+  - Fix Import/Export issues importing protected branches and some specific models
+
+v 8.11.6 (unreleased)
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087

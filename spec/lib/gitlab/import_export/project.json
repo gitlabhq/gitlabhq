@@ -24,7 +24,7 @@
       "test_ee_field": "test",
       "milestone": {
         "id": 1,
-        "title": "v0.0",
+        "title": "test milestone",
         "project_id": 8,
         "description": "test milestone",
         "due_date": null,
@@ -51,7 +51,7 @@
         {
           "id": 2,
           "label_id": 2,
-          "target_id": 3,
+          "target_id": 40,
           "target_type": "Issue",
           "created_at": "2016-07-22T08:57:02.840Z",
           "updated_at": "2016-07-22T08:57:02.840Z",
@@ -281,6 +281,31 @@
       "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
+      "milestone": {
+        "id": 1,
+        "title": "test milestone",
+        "project_id": 8,
+        "description": "test milestone",
+        "due_date": null,
+        "created_at": "2016-06-14T15:02:04.415Z",
+        "updated_at": "2016-06-14T15:02:04.415Z",
+        "state": "active",
+        "iid": 1,
+        "events": [
+          {
+            "id": 487,
+            "target_type": "Milestone",
+            "target_id": 1,
+            "title": null,
+            "data": null,
+            "project_id": 46,
+            "created_at": "2016-06-14T15:02:04.418Z",
+            "updated_at": "2016-06-14T15:02:04.418Z",
+            "action": 1,
+            "author_id": 18
+          }
+        ]
+      },
       "notes": [
         {
           "id": 359,
@@ -494,6 +519,27 @@
       "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
+      "label_links": [
+        {
+          "id": 99,
+          "label_id": 2,
+          "target_id": 38,
+          "target_type": "Issue",
+          "created_at": "2016-07-22T08:57:02.840Z",
+          "updated_at": "2016-07-22T08:57:02.840Z",
+          "label": {
+            "id": 2,
+            "title": "test2",
+            "color": "#428bca",
+            "project_id": 8,
+            "created_at": "2016-07-22T08:55:44.161Z",
+            "updated_at": "2016-07-22T08:55:44.161Z",
+            "template": false,
+            "description": "",
+            "priority": null
+          }
+        }
+      ],
       "notes": [
         {
           "id": 367,
@@ -6478,7 +6524,7 @@
     {
       "id": 37,
       "project_id": 5,
-      "ref": "master",
+      "ref": null,
       "sha": "048721d90c449b244b7b4c53a9186b04330174ec",
       "before_sha": null,
       "push_data": null,
@@ -7301,6 +7347,30 @@
 
   ],
   "protected_branches": [
-
+    {
+      "id": 1,
+      "project_id": 9,
+      "name": "master",
+      "created_at": "2016-08-30T07:32:52.426Z",
+      "updated_at": "2016-08-30T07:32:52.426Z",
+      "merge_access_levels": [
+        {
+          "id": 1,
+          "protected_branch_id": 1,
+          "access_level": 40,
+          "created_at": "2016-08-30T07:32:52.458Z",
+          "updated_at": "2016-08-30T07:32:52.458Z"
+        }
+      ],
+      "push_access_levels": [
+        {
+          "id": 1,
+          "protected_branch_id": 1,
+          "access_level": 40,
+          "created_at": "2016-08-30T07:32:52.490Z",
+          "updated_at": "2016-08-30T07:32:52.490Z"
+        }
+      ]
+    }
   ]
 }
