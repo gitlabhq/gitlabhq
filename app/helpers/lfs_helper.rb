@@ -25,9 +25,7 @@ module LfsHelper
   def lfs_download_access?
     return false unless project.lfs_enabled?
 
-    return true if project.public?
-    return true if ci?
-    return true if lfs_deploy_key?
+    return true if project.public? || ci? || lfs_deploy_key?
 
     (user && user.can?(:download_code, project))
   end

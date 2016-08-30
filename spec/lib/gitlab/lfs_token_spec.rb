@@ -23,6 +23,14 @@ describe Gitlab::LfsToken, lib: true do
       let(:handler) { described_class.new(actor) }
 
       it_behaves_like 'an LFS token generator'
+
+      it 'returns the correct username' do
+        expect(handler.actor_name).to eq(actor.username)
+      end
+
+      it 'returns the correct token type' do
+        expect(handler.type).to eq(:lfs_token)
+      end
     end
 
     context 'when the actor is a deploy key' do
@@ -30,6 +38,14 @@ describe Gitlab::LfsToken, lib: true do
       let(:handler) { described_class.new(actor) }
 
       it_behaves_like 'an LFS token generator'
+
+      it 'returns the correct username' do
+        expect(handler.actor_name).to eq("lfs-deploy-key-#{actor.id}")
+      end
+
+      it 'returns the correct token type' do
+        expect(handler.type).to eq(:lfs_deploy_token)
+      end
     end
   end
 end

@@ -80,16 +80,18 @@ module API
         key = Key.find(params[:key_id])
         user = key.user
 
-        if user
-          token = Gitlab::LfsToken.new(user).generate
-          response = { username: user.username, lfs_token: token }
-        else
-          token = Gitlab::LfsToken.new(key).generate
-          response = { username: "lfs-deploy-key-#{key.id}", lfs_token: token }
-        end
+        token_handler =
+          if user
+            Gitlab::LfsToken.new(user)
+          else
+            Gitlab::LfsToken.new(key)
+          end
 
-        response[:repository_http_path] = project.http_url_to_repo
-        response
+        {
+          username: token_handler.actor_name,
+          lfs_token: token_handler.generate,
+          repository_http_path: project.http_url_to_repo
+        }
       end
 
       get "/merge_request_urls" do
