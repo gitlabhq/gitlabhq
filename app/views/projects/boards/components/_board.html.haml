@@ -21,11 +21,6 @@
               %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
                 = icon("trash")
           = icon("spinner spin", class: "board-header-loading-spinner pull-right", "v-show" => "list.loadingMore")
-      .board-inner-container.board-search-container{ "v-if" => "list.canSearch()" }
-        %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
-        = icon("search", class: "board-search-icon", "v-show" => "!query")
-        %button.board-search-clear-btn{ type: "button", role: "button", "aria-label" => "Clear search", "@click" => "query = ''", "v-show" => "query" }
-          = icon("times", class: "board-search-clear")
       %board-list{ "inline-template" => true,
         "v-if" => "list.type !== 'blank'",
         ":list" => "list",
