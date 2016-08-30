@@ -55,7 +55,7 @@ module Backup
         bk_repos_path = File.join(path, '..', 'repositories.old.' + Time.now.to_i.to_s)
         FileUtils.mv(path, bk_repos_path)
         # This is expected from gitlab:check
-        FileUtils.mkdir_p(path, mode: 2770)
+        FileUtils.mkdir_p(path, mode: 02770)
       end
 
       Project.find_each(batch_size: 1000) do |project|
