@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     class PipelineDuration
       PeriodStruct = Struct.new(:first, :last)
-      class Period < SegmentStruct
+      class Period < PeriodStruct
         def duration
           last - first
         end
