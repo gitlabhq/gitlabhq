@@ -25,7 +25,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step 'project "Shop" has protected branches' do
     project = Project.find_by(name: "Shop")
-    project.protected_branches.create(name: "stable")
+    create(:protected_branch, project: project, name: "stable")
   end
 
   step 'I click new branch link' do
@@ -71,6 +71,11 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
 
   step 'I should see new an error that branch already exists' do
     expect(page).to have_content 'Branch already exists'
+  end
+
+  step 'I filter for branch improve/awesome' do
+    fill_in 'branch-search', with: 'improve/awesome'
+    find('#branch-search').native.send_keys(:enter)
   end
 
   step "I click branch 'improve/awesome' delete link" do

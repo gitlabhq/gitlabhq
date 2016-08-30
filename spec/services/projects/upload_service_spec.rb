@@ -15,9 +15,7 @@ describe Projects::UploadService, services: true do
 
       it { expect(@link_to_file).to have_key(:alt) }
       it { expect(@link_to_file).to have_key(:url) }
-      it { expect(@link_to_file).to have_key(:is_image) }
       it { expect(@link_to_file).to have_value('banana_sample') }
-      it { expect(@link_to_file[:is_image]).to equal(true) }
       it { expect(@link_to_file[:url]).to match('banana_sample.gif') }
     end
 
@@ -31,8 +29,6 @@ describe Projects::UploadService, services: true do
       it { expect(@link_to_file).to have_key(:alt) }
       it { expect(@link_to_file).to have_key(:url) }
       it { expect(@link_to_file).to have_value('dk') }
-      it { expect(@link_to_file).to have_key(:is_image) }
-      it { expect(@link_to_file[:is_image]).to equal(true) }
       it { expect(@link_to_file[:url]).to match('dk.png') }
     end
 
@@ -44,9 +40,7 @@ describe Projects::UploadService, services: true do
 
       it { expect(@link_to_file).to have_key(:alt) }
       it { expect(@link_to_file).to have_key(:url) }
-      it { expect(@link_to_file).to have_key(:is_image) }
       it { expect(@link_to_file).to have_value('rails_sample') }
-      it { expect(@link_to_file[:is_image]).to equal(true) }
       it { expect(@link_to_file[:url]).to match('rails_sample.jpg') }
     end
 
@@ -58,9 +52,7 @@ describe Projects::UploadService, services: true do
 
       it { expect(@link_to_file).to have_key(:alt) }
       it { expect(@link_to_file).to have_key(:url) }
-      it { expect(@link_to_file).to have_key(:is_image) }
       it { expect(@link_to_file).to have_value('doc_sample.txt') }
-      it { expect(@link_to_file[:is_image]).to equal(false) }
       it { expect(@link_to_file[:url]).to match('doc_sample.txt') }
     end
 

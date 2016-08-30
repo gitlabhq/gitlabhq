@@ -20,10 +20,11 @@ if [ -f /.dockerenv ] || [ -f ./dockerinit ]; then
 
     # Install phantomjs package
     pushd vendor/apt
-    if [ ! -e phantomjs_1.9.8-0jessie_amd64.deb ]; then
-        wget -q https://gitlab.com/axil/phantomjs-debian/raw/master/phantomjs_1.9.8-0jessie_amd64.deb
+    PHANTOMJS_FILE="phantomjs-$PHANTOMJS_VERSION-linux-x86_64"
+    if [ ! -d "$PHANTOMJS_FILE" ]; then
+        curl -q -L "https://s3.amazonaws.com/gitlab-build-helpers/$PHANTOMJS_FILE.tar.bz2" | tar jx
     fi
-    dpkg -i phantomjs_1.9.8-0jessie_amd64.deb
+    cp "$PHANTOMJS_FILE/bin/phantomjs" "/usr/bin/"
     popd
 
     # Try to install packages

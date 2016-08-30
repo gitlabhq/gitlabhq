@@ -59,6 +59,10 @@
     var container = $(selector).parent();
     var generateChart = function() {
       selector.attr('width', $(container).width());
+      if (window.innerWidth < 768) {
+        // Scale fonts if window width lower than 768px (iPad portrait)
+        options.scaleFontSize = 8
+      }
       return new Chart(ctx).Bar(data, options);
     };
     // enabling auto-resizing

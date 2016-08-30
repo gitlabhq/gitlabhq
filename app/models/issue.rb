@@ -6,6 +6,8 @@ class Issue < ActiveRecord::Base
   include Referable
   include Sortable
   include Taskable
+  include Spammable
+  include FasterCacheKeys
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -34,6 +36,9 @@ class Issue < ActiveRecord::Base
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
 
+  attr_spammable :title, spam_title: true
+  attr_spammable :description, spam_description: true
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -52,9 +57,49 @@ class Issue < ActiveRecord::Base
     attributes
   end
 
+  class << self
+    private
+
+    # Returns the project that the current scope belongs to if any, nil otherwise.
+    #
+    # Examples:
+    # - my_project.issues.without_due_date.owner_project => my_project
+    # - Issue.all.owner_project => nil
+    def owner_project
+      # No owner if we're not being called from an association
+      return unless all.respond_to?(:proxy_association)
+
+      owner = all.proxy_association.owner
+
+      # Check if the association is or belongs to a project
+      if owner.is_a?(Project)
+        owner
+      else
+        begin
+          owner.association(:project).target
+        rescue ActiveRecord::AssociationNotFoundError
+          nil
+        end
+      end
+    end
+  end
+
   def self.visible_to_user(user)
     return where('issues.confidential IS NULL OR issues.confidential IS FALSE') if user.blank?
     return all if user.admin?
+
+    # Check if we are scoped to a specific project's issues
+    if owner_project
+      if owner_project.authorized_for_user?(user, Gitlab::Access::REPORTER)
+        # If the project is authorized for the user, they can see all issues in the project
+        return all
+      else
+        # else only non confidential and authored/assigned to them
+        return where('issues.confidential IS NULL OR issues.confidential IS FALSE
+          OR issues.author_id = :user_id OR issues.assignee_id = :user_id',
+          user_id: user.id)
+      end
+    end
 
     where('
       issues.confidential IS NULL
@@ -189,7 +234,40 @@ class Issue < ActiveRecord::Base
       self.closed_by_merge_requests(current_user).empty?
   end
 
+  # Returns `true` if the current issue can be viewed by either a logged in User
+  # or an anonymous user.
+  def visible_to_user?(user = nil)
+    user ? readable_by?(user) : publicly_visible?
+  end
+
+  # Returns `true` if the given User can read the current Issue.
+  def readable_by?(user)
+    if user.admin?
+      true
+    elsif project.owner == user
+      true
+    elsif confidential?
+      author == user ||
+        assignee == user ||
+        project.team.member?(user, Gitlab::Access::REPORTER)
+    else
+      project.public? ||
+        project.internal? && !user.external? ||
+        project.team.member?(user)
+    end
+  end
+
+  # Returns `true` if this Issue is visible to everybody.
+  def publicly_visible?
+    project.public? && !confidential?
+  end
+
   def overdue?
     due_date.try(:past?) || false
+  end
+
+  # Only issues on public projects should be checked for spam
+  def check_for_spam?
+    project.public?
   end
 end

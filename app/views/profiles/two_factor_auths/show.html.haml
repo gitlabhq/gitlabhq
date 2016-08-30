@@ -60,12 +60,37 @@
       two-factor authentication app before a U2F device. That way you'll always be able to
       log in - even when you're using an unsupported browser.
   .col-lg-9
-    %p
-      - if @registration_key_handles.present?
-        = icon "check inverse", base: "circle", class: "text-success", text: "You have #{pluralize(@registration_key_handles.size, 'U2F device')} registered with GitLab."
     - if @u2f_registration.errors.present?
       = form_errors(@u2f_registration)
     = render "u2f/register"
+
+    %hr
+
+    %h5 U2F Devices (#{@u2f_registrations.length})
+
+    - if @u2f_registrations.present?
+      .table-responsive
+        %table.table.table-bordered.u2f-registrations
+          %colgroup
+            %col{ width: "50%" }
+            %col{ width: "30%" }
+            %col{ width: "20%" }
+          %thead
+            %tr
+              %th Name
+              %th Registered On
+              %th
+          %tbody
+            - @u2f_registrations.each do |registration|
+              %tr
+                %td= registration.name.presence || "<no name set>"
+                %td= registration.created_at.to_date.to_s(:medium)
+                %td= link_to "Delete", profile_u2f_registration_path(registration), method: :delete, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to delete this device? This action cannot be undone." }
+
+    - else
+      .settings-message.text-center
+        You don't have any U2F devices registered yet.
+
 
 - if two_factor_skippable?
   :javascript

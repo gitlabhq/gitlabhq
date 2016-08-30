@@ -84,7 +84,8 @@ Parameters:
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false
   },
   {
     "id": 6,
@@ -144,7 +145,8 @@ Parameters:
     "star_count": 0,
     "runners_token": "b8547b1dc37721d05889db52fa2f02",
     "public_builds": true,
-    "shared_with_groups": []
+    "shared_with_groups": [],
+    "only_allow_merge_if_build_succeeds": false
   }
 ]
 ```
@@ -280,7 +282,8 @@ Parameters:
       "group_name": "Gitlab Org",
       "group_access_level": 10
     }
-  ]
+  ],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -448,6 +451,7 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 - `public_builds` (optional)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 ### Create project for user
 
@@ -473,6 +477,7 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 - `public_builds` (optional)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 ### Edit project
 
@@ -499,6 +504,7 @@ Parameters:
 - `public` (optional) - if `true` same as setting visibility_level = 20
 - `visibility_level` (optional)
 - `public_builds` (optional)
+- `only_allow_merge_if_build_succeeds` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
@@ -529,7 +535,7 @@ POST /projects/:id/star
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -577,7 +583,8 @@ Example response:
   "forks_count": 0,
   "star_count": 1,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -595,7 +602,7 @@ DELETE /projects/:id/star
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
 ```
 
 Example response:
@@ -643,7 +650,8 @@ Example response:
   "forks_count": 0,
   "star_count": 0,
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -665,7 +673,7 @@ POST /projects/:id/archive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
 ```
 
 Example response:
@@ -729,7 +737,8 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -751,7 +760,7 @@ POST /projects/:id/unarchive
 | `id`      | integer | yes | The ID of the project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
 ```
 
 Example response:
@@ -815,7 +824,8 @@ Example response:
   "star_count": 0,
   "runners_token": "b8bc4a7a29eb76ea83cf79e4908c2b",
   "public_builds": true,
-  "shared_with_groups": []
+  "shared_with_groups": [],
+  "only_allow_merge_if_build_succeeds": false
 }
 ```
 
@@ -850,7 +860,6 @@ Parameters:
 {
   "alt": "dk",
   "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
-  "is_image": true,
   "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
 }
 ```
@@ -859,95 +868,9 @@ Parameters:
 In Markdown contexts, the link is automatically expanded when the format in `markdown` is used.
 
 
-## Team members
+## Project members
 
-### List project team members
-
-Get a list of a project's team members.
-
-```
-GET /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `query` (optional) - Query string to search for members
-
-### Get project team member
-
-Gets a project team member.
-
-```
-GET /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user
-
-```json
-{
-  "id": 1,
-  "username": "john_smith",
-  "email": "john@example.com",
-  "name": "John Smith",
-  "state": "active",
-  "created_at": "2012-05-23T08:00:58Z",
-  "access_level": 40
-}
-```
-
-### Add project team member
-
-Adds a user to a project team. This is an idempotent method and can be called multiple times
-with the same parameters. Adding team membership to a user that is already a member does not
-affect the existing membership.
-
-```
-POST /projects/:id/members
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a user to add
-- `access_level` (required) - Project access level
-
-### Edit project team member
-
-Updates a project team member to a specified access level.
-
-```
-PUT /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-- `access_level` (required) - Project access level
-
-### Remove project team member
-
-Removes a user from a project team.
-
-```
-DELETE /projects/:id/members/:user_id
-```
-
-Parameters:
-
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-- `user_id` (required) - The ID of a team member
-
-This method removes the project member if the user has the proper access rights to do so.
-It returns a status code 403 if the member does not have the proper rights to perform this action.
-In all other cases this method is idempotent and revoking team membership for a user who is not
-currently a team member is considered success.
-Please note that the returned JSON currently differs slightly. Thus you should not
-rely on the returned JSON structure.
+Please consult the [Project Members](members.md) documentation.
 
 ### Share project with group
 
@@ -1001,7 +924,11 @@ Parameters:
   "push_events": true,
   "issues_events": true,
   "merge_requests_events": true,
+  "tag_push_events": true,
   "note_events": true,
+  "build_events": true,
+  "pipeline_events": true,
+  "wiki_page_events": true,
   "enable_ssl_verification": true,
   "created_at": "2012-10-12T17:04:47Z"
 }
@@ -1024,6 +951,9 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Edit project hook
@@ -1044,6 +974,9 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
+- `build_events` - Trigger hook on build events
+- `pipeline_events` - Trigger hook on pipeline events
+- `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
 
 ### Delete project hook

@@ -39,12 +39,12 @@ describe AssemblaService, models: true do
         token: 'verySecret',
         subdomain: 'project_name'
       )
-      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
+      @sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
       @api_url = 'https://atlas.assembla.com/spaces/project_name/github_tool?secret_key=verySecret'
       WebMock.stub_request(:post, @api_url)
     end
 
-    it "should call Assembla API" do
+    it "calls Assembla API" do
       @assembla_service.execute(@sample_data)
       expect(WebMock).to have_requested(:post, @api_url).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/

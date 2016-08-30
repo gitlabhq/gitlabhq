@@ -1,4 +1,3 @@
-# encoding: utf-8
 class FileUploader < CarrierWave::Uploader::Base
   include UploaderHelper
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
@@ -33,16 +32,15 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def to_h
-    filename = image? ? self.file.basename : self.file.filename
+    filename = image_or_video? ? self.file.basename : self.file.filename
     escaped_filename = filename.gsub("]", "\\]")
 
     markdown = "[#{escaped_filename}](#{self.secure_url})"
-    markdown.prepend("!") if image?
+    markdown.prepend("!") if image_or_video?
 
     {
       alt:      filename,
       url:      self.secure_url,
-      is_image: image?,
       markdown: markdown
     }
   end

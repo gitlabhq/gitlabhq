@@ -39,7 +39,7 @@ describe Admin::UsersController do
         user.ldap_block
       end
 
-      it 'will not unblock user' do
+      it 'does not unblock user' do
         put :unblock, id: user.username
         user.reload
         expect(user.blocked?).to be_truthy

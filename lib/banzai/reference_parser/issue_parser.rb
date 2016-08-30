@@ -9,10 +9,11 @@ module Banzai
 
         issues = issues_for_nodes(nodes)
 
-        nodes.select do |node|
-          issue = issue_for_node(issues, node)
+        readable_issues = Ability.
+          issues_readable_by_user(issues.values, user).to_set
 
-          issue ? can?(user, :read_issue, issue) : false
+        nodes.select do |node|
+          readable_issues.include?(issue_for_node(issues, node))
         end
       end
 

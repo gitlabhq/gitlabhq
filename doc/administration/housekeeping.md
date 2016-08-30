@@ -1,6 +1,6 @@
 # Housekeeping
 
-_**Note:** This feature was [introduced][ce-2371] in GitLab 8.4_
+> [Introduced][ce-2371] in GitLab 8.4.
 
 ---
 

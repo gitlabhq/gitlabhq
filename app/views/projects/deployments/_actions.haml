@@ -2,9 +2,9 @@
   .pull-right
     - actions = deployment.manual_actions
     - if actions.present?
-      .btn-group.inline
-        .btn-group
-          %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
+      .inline
+        .dropdown
+          %a.dropdown-new.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
             = icon("play")
             %b.caret
           %ul.dropdown-menu.dropdown-menu-align-right
@@ -17,6 +17,6 @@
     - if local_assigns.fetch(:allow_rollback, false)
       = link_to [:retry, @project.namespace.becomes(Namespace), @project, deployment.deployable], method: :post, class: 'btn btn-build' do
         - if deployment.last?
-          Retry
+          Re-deploy
         - else
           Rollback

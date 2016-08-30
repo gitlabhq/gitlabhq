@@ -75,4 +75,34 @@ describe GroupsController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    context 'as another user' do
+      it 'returns 404' do
+        sign_in(create(:user))
+
+        delete :destroy, id: group.path
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'as the group owner' do
+      before do
+        sign_in(user)
+      end
+
+      it 'schedules a group destroy' do
+        Sidekiq::Testing.fake! do
+          expect { delete :destroy, id: group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
+        end
+      end
+
+      it 'redirects to the root path' do
+        delete :destroy, id: group.path
+
+        expect(response).to redirect_to(root_path)
+      end
+    end
+  end
 end

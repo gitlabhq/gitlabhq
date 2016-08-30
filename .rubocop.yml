@@ -149,19 +149,19 @@ Style/EmptyLinesAroundAccessModifier:
 
 # Keeps track of empty lines around block bodies.
 Style/EmptyLinesAroundBlockBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around class bodies.
 Style/EmptyLinesAroundClassBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around module bodies.
 Style/EmptyLinesAroundModuleBody:
-  Enabled: false
+  Enabled: true
 
 # Keeps track of empty lines around method bodies.
 Style/EmptyLinesAroundMethodBody:
-  Enabled: false
+  Enabled: true
 
 # Avoid the use of END blocks.
 Style/EndBlock:
@@ -291,6 +291,10 @@ Style/MultilineMethodDefinitionBraceLayout:
 Style/MultilineOperationIndentation:
   Enabled: false
 
+# Avoid multi-line `? :` (the ternary operator), use if/unless instead.
+Style/MultilineTernaryOperator:
+  Enabled: true
+
 # Favor unless over if for negative conditions (or control flow or).
 Style/NegatedIf:
   Enabled: true
@@ -367,6 +371,10 @@ Style/SpaceAfterNot:
 
 # Use spaces after semicolons.
 Style/SpaceAfterSemicolon:
+  Enabled: true
+
+# Use space around equals in parameter default
+Style/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
 # Use a space around keywords if appropriate.
@@ -505,6 +513,15 @@ Metrics/PerceivedComplexity:
 
 
 #################### Lint ################################
+
+# Checks for useless access modifiers.
+Lint/UselessAccessModifier:
+  Enabled: true
+
+# Checks for attempts to use `private` or `protected` to set the visibility
+# of a class method, which does not work.
+Lint/IneffectiveAccessModifier:
+  Enabled: false
 
 # Checks for ambiguous operators in the first argument of a method invocation
 # without parentheses.

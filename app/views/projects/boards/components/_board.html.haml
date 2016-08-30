@@ -1,0 +1,43 @@
+%board{ "inline-template" => true,
+  "v-cloak" => true,
+  "v-for" => "list in state.lists | orderBy 'position'",
+  "v-ref:board" => true,
+  ":list" => "list",
+  ":disabled" => "disabled",
+  ":issue-link-base" => "issueLinkBase",
+  "track-by" => "_uid" }
+  .board{ ":class" => "{ 'is-draggable': !list.preset }",
+    ":data-id" => "list.id" }
+    .board-inner
+      %header.board-header{ ":class" => "{ 'has-border': list.label }", ":style" => "{ borderTopColor: (list.label ? list.label.color : null) }" }
+        %h3.board-title.js-board-handle{ ":class" => "{ 'user-can-drag': (!disabled && !list.preset) }" }
+          {{ list.title }}
+          %span.pull-right{ "v-if" => "list.type !== 'blank'" }
+            {{ list.issues.length }}
+          - if can?(current_user, :admin_list, @project)
+            %board-delete{ "inline-template" => true,
+              ":list" => "list",
+              "v-if" => "!list.preset && list.id" }
+              %button.board-delete.has-tooltip.pull-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+                = icon("trash")
+          = icon("spinner spin", class: "board-header-loading-spinner pull-right", "v-show" => "list.loadingMore")
+      .board-inner-container.board-search-container{ "v-if" => "list.canSearch()" }
+        %input.form-control{ type: "text", placeholder: "Search issues", "v-model" => "query", "debounce" => "250" }
+        = icon("search", class: "board-search-icon", "v-show" => "!query")
+        %button.board-search-clear-btn{ type: "button", role: "button", "aria-label" => "Clear search", "@click" => "query = ''", "v-show" => "query" }
+          = icon("times", class: "board-search-clear")
+      %board-list{ "inline-template" => true,
+        "v-if" => "list.type !== 'blank'",
+        ":list" => "list",
+        ":issues" => "list.issues",
+        ":loading" => "list.loading",
+        ":disabled" => "disabled",
+        ":issue-link-base" => "issueLinkBase" }
+        .board-list-loading.text-center{ "v-if" => "loading" }
+          = icon("spinner spin")
+        %ul.board-list{ "v-el:list" => true,
+          "v-show" => "!loading",
+          ":data-board" => "list.id" }
+          = render "projects/boards/components/card"
+      - if can?(current_user, :admin_list, @project)
+        = render "projects/boards/components/blank_state"

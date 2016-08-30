@@ -1,36 +1,41 @@
 / Side-by-side diff view
 %div.text-file.diff-wrap-lines.code.file-content.js-syntax-highlight{ data: diff_view_data }
   %table
+    - last_line = 0
     - diff_file.parallel_diff_lines.each do |line|
       - left = line[:left]
       - right = line[:right]
+      - last_line = right.new_pos if right
       %tr.line_holder.parallel
-        - if left[:type] == 'match'
-          = render "projects/diffs/match_line_parallel", { line: left[:text] }
-        - elsif left[:type] == 'nonewline'
-          %td.old_line.diff-line-num.empty-cell
-          %td.line_content.parallel.match= left[:text]
-          %td.new_line.diff-line-num.empty-cell
-          %td.line_content.parallel.match= left[:text]
-        - else
-          %td.old_line.diff-line-num{id: left[:line_code], class: [left[:type], ('empty-cell' unless left[:number])], data: { linenumber: left[:number] }}
-            %a{href: "##{left[:line_code]}" }= raw(left[:number])
-          %td.line_content.parallel.noteable_line{class: [left[:type], ('empty-cell' if left[:text].empty?)], data: diff_view_line_data(left[:line_code], left[:position], 'old')}= diff_line_content(left[:text])
-
-          - if right[:type] == 'new'
-            - new_line_type = 'new'
-            - new_line_code = right[:line_code]
-            - new_position = right[:position]
+        - if left
+          - if left.meta?
+            = diff_match_line left.old_pos, nil, text: left.text, view: :parallel
           - else
-            - new_line_type = nil
-            - new_line_code = left[:line_code]
-            - new_position = left[:position]
+            - left_line_code = diff_file.line_code(left)
+            - left_position = diff_file.position(left)
+            %td.old_line.diff-line-num{id: left_line_code, class: left.type, data: { linenumber: left.old_pos }}
+              %a{href: "##{left_line_code}" }= raw(left.old_pos)
+            %td.line_content.parallel.noteable_line{class: left.type, data: diff_view_line_data(left_line_code, left_position, 'old')}= diff_line_content(left.text)
+        - else
+          %td.old_line.diff-line-num.empty-cell
+          %td.line_content.parallel
 
-          %td.new_line.diff-line-num{id: new_line_code, class: [new_line_type, ('empty-cell' unless right[:number])], data: { linenumber: right[:number] }}
-            %a{href: "##{new_line_code}" }= raw(right[:number])
-          %td.line_content.parallel.noteable_line{class: [new_line_type, ('empty-cell' if right[:text].empty?)], data: diff_view_line_data(new_line_code, new_position, 'new')}= diff_line_content(right[:text])
+        - if right
+          - if right.meta?
+            = diff_match_line nil, right.new_pos, text: left.text, view: :parallel
+          - else
+            - right_line_code = diff_file.line_code(right)
+            - right_position = diff_file.position(right)
+            %td.new_line.diff-line-num{id: right_line_code, class: right.type, data: { linenumber: right.new_pos }}
+              %a{href: "##{right_line_code}" }= raw(right.new_pos)
+            %td.line_content.parallel.noteable_line{class: right.type, data: diff_view_line_data(right_line_code, right_position, 'new')}= diff_line_content(right.text)
+        - else
+          %td.old_line.diff-line-num.empty-cell
+          %td.line_content.parallel
 
       - unless @diff_notes_disabled
-        - notes_left, notes_right = organize_comments(left, right)
-        - if notes_left.present? || notes_right.present?
-          = render "projects/notes/diff_notes_with_reply_parallel", notes_left: notes_left, notes_right: notes_right
+        - discussion_left, discussion_right = parallel_diff_discussions(left, right, diff_file)
+        - if discussion_left || discussion_right
+          = render "discussions/parallel_diff_discussion", discussion_left: discussion_left, discussion_right: discussion_right
+    - if !diff_file.new_file && last_line > 0
+      = diff_match_line last_line, last_line, bottom: true, view: :parallel

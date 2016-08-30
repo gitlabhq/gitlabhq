@@ -2,6 +2,7 @@
 
 ## User documentation
 
+- [Account Security](user/account/security.md) Securing your account via two-factor authentication, etc.
 - [API](api/README.md) Automate GitLab via a simple and powerful API.
 - [CI/CD](ci/README.md) GitLab Continuous Integration (CI) and Continuous Delivery (CD) getting started, `.gitlab-ci.yml` options, and examples.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
@@ -9,7 +10,7 @@
 - [GitLab Basics](gitlab-basics/README.md) Find step by step how to start working on your commandline and on GitLab.
 - [Importing to GitLab](workflow/importing/README.md).
 - [Importing and exporting projects between instances](user/project/settings/import_export.md).
-- [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
+- [Markdown](user/markdown.md) GitLab's advanced formatting system.
 - [Migrating from SVN](workflow/importing/migrating_from_svn.md) Convert a SVN repository to Git and GitLab.
 - [Permissions](user/permissions.md) Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
 - [Profile Settings](profile/README.md)
@@ -21,7 +22,7 @@
 
 ## Administrator documentation
 
-- [Access restrictions](administration/access_restrictions.md) Define which Git access protocols can be used to talk to GitLab
+- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
   external authentication with LDAP, SAML, CAS and additional Omniauth providers.
 - [Custom Git hooks](administration/custom_hooks.md) Custom Git hooks (on the filesystem) for when webhooks aren't enough.
@@ -29,6 +30,7 @@
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, Twitter.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
+- [Koding](administration/integration/koding.md) Set up Koding to use with GitLab.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Log system](administration/logs.md) Log system.
 - [Environment Variables](administration/environment_variables.md) to configure GitLab.
@@ -50,10 +52,9 @@
 - [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md) Debug when Sidekiq appears hung and is not processing jobs.
 - [High Availability](administration/high_availability/README.md) Configure multiple servers for scaling or high availability.
 - [Container Registry](administration/container_registry.md) Configure Docker Registry with GitLab.
+- [Multiple mountpoints for the repositories storage](administration/repository_storages.md) Define multiple repository storage paths to distribute the storage load.
 
 ## Contributor documentation
 
-- [Documentation styleguide](development/doc_styleguide.md) Use this styleguide if you are
-  contributing to documentation.
-- [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
+- [Development](development/README.md) All styleguides and explanations how to contribute.
 - [Legal](legal/README.md) Contributor license agreements.

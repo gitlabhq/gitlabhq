@@ -222,3 +222,7 @@ header.header-pinned-nav {
     padding-right: $sidebar_collapsed_width;
   }
 }
+
+.right-sidebar {
+  border-left: 1px solid $border-color;
+}

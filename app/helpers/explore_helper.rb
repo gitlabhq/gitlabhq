@@ -1,5 +1,5 @@
 module ExploreHelper
-  def filter_projects_path(options={})
+  def filter_projects_path(options = {})
     exist_opts = {
       sort: params[:sort],
       scope: params[:scope],

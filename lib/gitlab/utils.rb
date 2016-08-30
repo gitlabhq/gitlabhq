@@ -7,7 +7,7 @@ module Gitlab
     # @param  cmd [Array<String>]
     # @return [Boolean]
     def system_silent(cmd)
-      Popen::popen(cmd).last.zero?
+      Popen.popen(cmd).last.zero?
     end
 
     def force_utf8(str)

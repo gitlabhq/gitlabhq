@@ -46,7 +46,7 @@ namespace :gitlab do
       }
 
       correct_options = options.map do |name, value|
-        run(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
+        run_command(%W(#{Gitlab.config.git.bin_path} config --global --get #{name})).try(:squish) == value
       end
 
       if correct_options.all?
@@ -64,7 +64,7 @@ namespace :gitlab do
           for_more_information(
             see_installation_guide_section "GitLab"
           )
-       end
+        end
       end
     end
 
@@ -73,7 +73,7 @@ namespace :gitlab do
 
       database_config_file = Rails.root.join("config", "database.yml")
 
-      if File.exists?(database_config_file)
+      if File.exist?(database_config_file)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -94,7 +94,7 @@ namespace :gitlab do
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
 
-      if File.exists?(gitlab_config_file)
+      if File.exist?(gitlab_config_file)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -113,7 +113,7 @@ namespace :gitlab do
       print "GitLab config outdated? ... "
 
       gitlab_config_file = Rails.root.join("config", "gitlab.yml")
-      unless File.exists?(gitlab_config_file)
+      unless File.exist?(gitlab_config_file)
         puts "can't check because of previous errors".color(:magenta)
       end
 
@@ -144,7 +144,7 @@ namespace :gitlab do
 
       script_path = "/etc/init.d/gitlab"
 
-      if File.exists?(script_path)
+      if File.exist?(script_path)
         puts "yes".color(:green)
       else
         puts "no".color(:red)
@@ -169,7 +169,7 @@ namespace :gitlab do
       recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
       script_path = "/etc/init.d/gitlab"
 
-      unless File.exists?(script_path)
+      unless File.exist?(script_path)
         puts "can't check because of previous errors".color(:magenta)
         return
       end
@@ -316,7 +316,7 @@ namespace :gitlab do
       min_redis_version = "2.8.0"
       print "Redis version >= #{min_redis_version}? ... "
 
-      redis_version = run(%W(redis-cli --version))
+      redis_version = run_command(%W(redis-cli --version))
       redis_version = redis_version.try(:match, /redis-cli (\d+\.\d+\.\d+)/)
       if redis_version &&
           (Gem::Version.new(redis_version[1]) > Gem::Version.new(min_redis_version))
@@ -361,7 +361,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        if File.exists?(repo_base_path)
+        if File.exist?(repo_base_path)
           puts "yes".color(:green)
         else
           puts "no".color(:red)
@@ -385,7 +385,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end
@@ -408,7 +408,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end
@@ -438,7 +438,7 @@ namespace :gitlab do
       Gitlab.config.repositories.storages.each do |name, repo_base_path|
         print "#{name}... "
 
-        unless File.exists?(repo_base_path)
+        unless File.exist?(repo_base_path)
           puts "can't check because of previous errors".color(:magenta)
           return
         end
@@ -784,7 +784,7 @@ namespace :gitlab do
       servers.each do |server|
         puts "Server: #{server}"
         Gitlab::LDAP::Adapter.open(server) do |adapter|
-          users = adapter.users(adapter.config.uid, '*', 100)
+          users = adapter.users(adapter.config.uid, '*', limit)
           users.each do |user|
             puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
           end
@@ -893,7 +893,7 @@ namespace :gitlab do
 
   def check_ruby_version
     required_version = Gitlab::VersionInfo.new(2, 1, 0)
-    current_version = Gitlab::VersionInfo.parse(run(%W(ruby --version)))
+    current_version = Gitlab::VersionInfo.parse(run_command(%W(ruby --version)))
 
     print "Ruby version >= #{required_version} ? ... "
 
@@ -910,7 +910,7 @@ namespace :gitlab do
 
   def check_git_version
     required_version = Gitlab::VersionInfo.new(2, 7, 3)
-    current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
+    current_version = Gitlab::VersionInfo.parse(run_command(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "

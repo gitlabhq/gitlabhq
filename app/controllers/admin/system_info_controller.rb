@@ -29,7 +29,8 @@ class Admin::SystemInfoController < Admin::ApplicationController
   ]
 
   def show
-    system_info = Vmstat.snapshot
+    @cpus = Vmstat.cpu rescue nil
+    @memory = Vmstat.memory rescue nil
     mounts = Sys::Filesystem.mounts
 
     @disks = []
@@ -50,10 +51,5 @@ class Admin::SystemInfoController < Admin::ApplicationController
       rescue Sys::Filesystem::Error
       end
     end
-
-    @cpus = system_info.cpus.length
-
-    @mem_used = system_info.memory.active_bytes
-    @mem_total = system_info.memory.total_bytes
   end
 end

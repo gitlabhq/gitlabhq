@@ -2,8 +2,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_update_environment!, only: [:destroy]
-  before_action :environment, only: [:show, :destroy]
+  before_action :authorize_update_environment!, only: [:edit, :update, :destroy]
+  before_action :environment, only: [:show, :edit, :update, :destroy]
 
   def index
     @environments = project.environments
@@ -17,13 +17,24 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     @environment = project.environments.new
   end
 
+  def edit
+  end
+
   def create
-    @environment = project.environments.create(create_params)
+    @environment = project.environments.create(environment_params)
 
     if @environment.persisted?
       redirect_to namespace_project_environment_path(project.namespace, project, @environment)
     else
-      render 'new'
+      render :new
+    end
+  end
+
+  def update
+    if @environment.update(environment_params)
+      redirect_to namespace_project_environment_path(project.namespace, project, @environment)
+    else
+      render :edit
     end
   end
 
@@ -39,8 +50,8 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   private
 
-  def create_params
-    params.require(:environment).permit(:name)
+  def environment_params
+    params.require(:environment).permit(:name, :external_url)
   end
 
   def environment

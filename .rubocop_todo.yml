@@ -19,10 +19,6 @@ Lint/AssignmentInCondition:
 Lint/HandleExceptions:
   Enabled: false
 
-# Offense count: 21
-Lint/IneffectiveAccessModifier:
-  Enabled: false
-
 # Offense count: 2
 Lint/Loop:
   Enabled: false
@@ -46,10 +42,6 @@ Lint/UnusedBlockArgument:
 # Cop supports --auto-correct.
 # Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.
 Lint/UnusedMethodArgument:
-  Enabled: false
-
-# Offense count: 11
-Lint/UselessAccessModifier:
   Enabled: false
 
 # Offense count: 12
@@ -226,10 +218,6 @@ Style/LineEndConcatenation:
 Style/MethodCallParentheses:
   Enabled: false
 
-# Offense count: 3
-Style/MultilineTernaryOperator:
-  Enabled: false
-
 # Offense count: 62
 # Cop supports --auto-correct.
 Style/MutableConstant:
@@ -349,13 +337,6 @@ Style/SingleLineBlockParams:
 # Cop supports --auto-correct.
 # Configuration parameters: AllowIfMethodIsEmpty.
 Style/SingleLineMethods:
-  Enabled: false
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceAroundEqualsInParameterDefault:
   Enabled: false
 
 # Offense count: 119

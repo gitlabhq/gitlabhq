@@ -87,9 +87,9 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    DestroyGroupService.new(@group, current_user).execute
+    DestroyGroupService.new(@group, current_user).async_execute
 
-    redirect_to root_path, alert: "Group '#{@group.name}' was successfully deleted."
+    redirect_to root_path, alert: "Group '#{@group.name}' was scheduled for deletion."
   end
 
   protected
@@ -121,7 +121,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level, :share_with_group_lock)
+    params.require(:group).permit(:name, :description, :path, :avatar, :public, :visibility_level, :share_with_group_lock, :request_access_enabled)
   end
 
   def load_events

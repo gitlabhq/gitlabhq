@@ -23,7 +23,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     select_template('MIT License')
 
-    file_content = find('.file-content')
+    file_content = first('.file-editor')
     expect(file_content).to have_content('The MIT License (MIT)')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 
@@ -39,6 +39,7 @@ feature 'project owner creates a license file', feature: true, js: true do
   scenario 'project master creates a license file from the "Add license" link' do
     click_link 'Add License'
 
+    expect(page).to have_content('New File')
     expect(current_path).to eq(
       namespace_project_new_blob_path(project.namespace, project, 'master'))
     expect(find('#file_name').value).to eq('LICENSE')
@@ -46,7 +47,7 @@ feature 'project owner creates a license file', feature: true, js: true do
 
     select_template('MIT License')
 
-    file_content = find('.file-content')
+    file_content = first('.file-editor')
     expect(file_content).to have_content('The MIT License (MIT)')
     expect(file_content).to have_content("Copyright (c) #{Time.now.year} #{project.namespace.human_name}")
 

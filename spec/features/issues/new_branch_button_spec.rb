@@ -20,7 +20,7 @@ feature 'Start new branch from an issue', feature: true do
     context "when there is a referenced merge request" do
       let(:note) do
         create(:note, :on_issue, :system, project: project,
-                                          note: "mentioned in !#{referenced_mr.iid}")
+                                          note: "Mentioned in !#{referenced_mr.iid}")
       end
       let(:referenced_mr) do
         create(:merge_request, :simple, source_project: project, target_project: project,
@@ -41,7 +41,7 @@ feature 'Start new branch from an issue', feature: true do
   end
 
   context "for visiters" do
-    it 'no button is shown', js: true do
+    it 'shows no buttons', js: true do
       visit namespace_project_issue_path(project.namespace, project, issue)
 
       expect(page).not_to have_css('#new-branch')

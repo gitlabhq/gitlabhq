@@ -1,3 +1,4 @@
+- finder = controller.controller_name == 'issues' ? issues_finder : merge_requests_finder
 .issues-filters
   .issues-details-filters.row-content-block.second-block
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search]), method: :get, class: 'filter-form js-filter-form' do
@@ -21,13 +22,23 @@
             placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: current_user.try(:username), null_user: true, current_user: true, project_id: @project.try(:id), selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown", selected: @issuable_finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true
+          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true
 
         .filter-item.inline.labels-filter
-          = render "shared/issuable/label_dropdown", selected: @issuable_finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
+          = render "shared/issuable/label_dropdown", selected: finder.labels.select(:title).uniq, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
         .pull-right
-          = render 'shared/sort_dropdown'
+          - if controller.controller_name == 'boards' && can?(current_user, :admin_list, @project)
+            .dropdown
+              %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
+                Create new list
+              .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
+                - if can?(current_user, :admin_label, @project)
+                  = render partial: "shared/issuable/label_page_create"
+                = dropdown_loading
+          - else
+            = render 'shared/sort_dropdown'
 
     - if controller.controller_name == 'issues'
       .issues_bulk_update.hide
@@ -45,7 +56,7 @@
           .filter-item.inline
             = dropdown_tag("Milestone", options: { title: "Assign milestone", toggle_class: 'js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update', filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: "Search milestones", data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, milestones: namespace_project_milestones_path(@project.namespace, @project, :json), use_id: true } })
           .filter-item.inline.labels-filter
-            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], show_create: false, show_footer: false, extra_options: false, filter_submit: false, show_footer: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
+            = render "shared/issuable/label_dropdown", classes: ['js-filter-bulk-update', 'js-multiselect'], show_create: false, show_footer: false, extra_options: false, filter_submit: false, data_options: { persist_when_hide: "true", field_name: "update[label_ids][]", show_no: false, show_any: false, use_id: true }
           .filter-item.inline
             = dropdown_tag("Subscription", options: { toggle_class: "js-subscription-event", title: "Change subscription", dropdown_class: "dropdown-menu-selectable", data: { field_name: "update[subscription_event]" } } ) do
               %ul

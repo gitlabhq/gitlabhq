@@ -55,11 +55,11 @@ module Gitlab
       end
     end
 
-    private
-
     def self.connection
       ActiveRecord::Base.connection
     end
+
+    private_class_method :connection
 
     def self.database_version
       row = connection.execute("SELECT VERSION()").first
@@ -70,5 +70,7 @@ module Gitlab
         row.first
       end
     end
+
+    private_class_method :database_version
   end
 end

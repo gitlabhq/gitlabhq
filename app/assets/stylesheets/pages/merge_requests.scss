@@ -64,10 +64,23 @@
       margin-right: 4px;
       position: relative;
       top: 1px;
+      overflow: visible;
     }
 
     &.ci-success {
       color: $gl-success;
+
+      a.environment {
+        color: inherit;
+      }
+    }
+
+    &.ci-success_with_warnings {
+      color: $gl-success;
+
+      i {
+        color: $gl-warning;
+      }
     }
 
     &.ci-skipped {
@@ -117,7 +130,6 @@
       &.has-conflicts .fa-exclamation-triangle {
         color: $gl-warning;
       }
-
     }
 
     p:last-child {
@@ -207,6 +219,11 @@
           position: relative;
           top: 3px;
         }
+
+        &:hover,
+        &:focus {
+          text-decoration: none;
+        }
       }
     }
   }
@@ -252,7 +269,7 @@
 
 .builds {
   .table-holder {
-    overflow-x: scroll;
+    overflow-x: auto;
   }
 }
 
@@ -359,5 +376,22 @@
     &:not(:last-child) {
       margin-right: 10px;
     }
+  }
+}
+
+.mr-version-switch {
+  background: $background-color;
+  padding: $gl-btn-padding;
+  color: $gl-placeholder-color;
+
+  a.btn-link {
+    color: $gl-dark-link-color;
+  }
+}
+
+.merge-request-details {
+
+  .title {
+    margin-bottom: 20px;
   }
 }

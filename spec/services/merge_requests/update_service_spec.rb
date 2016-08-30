@@ -64,12 +64,12 @@ describe MergeRequests::UpdateService, services: true do
       it { expect(@merge_request.target_branch).to eq('target') }
       it { expect(@merge_request.merge_params['force_remove_source_branch']).to eq('1') }
 
-      it 'should execute hooks with update action' do
+      it 'executes hooks with update action' do
         expect(service).to have_received(:execute_hooks).
                                with(@merge_request, 'update')
       end
 
-      it 'should send email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
+      it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
         deliveries = ActionMailer::Base.deliveries
         email = deliveries.last
         recipients = deliveries.last(2).map(&:to).flatten
@@ -77,14 +77,14 @@ describe MergeRequests::UpdateService, services: true do
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'should create system note about merge_request reassign' do
+      it 'creates system note about merge_request reassign' do
         note = find_note('Reassigned to')
 
         expect(note).not_to be_nil
         expect(note.note).to include "Reassigned to \@#{user2.username}"
       end
 
-      it 'should create system note about merge_request label edit' do
+      it 'creates system note about merge_request label edit' do
         note = find_note('Added ~')
 
         expect(note).not_to be_nil
@@ -224,6 +224,11 @@ describe MergeRequests::UpdateService, services: true do
           should_not_email(non_subscriber)
         end
       end
+    end
+
+    context 'updating mentions' do
+      let(:mentionable) { merge_request }
+      include_examples 'updating mentions', MergeRequests::UpdateService
     end
 
     context 'when MergeRequest has tasks' do

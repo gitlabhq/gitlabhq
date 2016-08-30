@@ -43,6 +43,10 @@
       %li
         = link_to 'Contribution guide', contribution_guide_path(@project)
 
+    - if @repository.gitlab_ci_yml
+      %li
+        = link_to 'CI configuration', ci_configuration_path(@project)
+
     - if current_user && can_push_branch?(@project, @project.default_branch)
       - unless @repository.changelog
         %li.missing
@@ -60,10 +64,12 @@
         %li.missing
           = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
             Set Up CI
+
     %li.project-repo-buttons-right
       .project-repo-buttons.project-right-buttons
         - if current_user
           = render 'shared/members/access_request_buttons', source: @project
+          = render "projects/buttons/koding"
 
         .btn-group.project-repo-btn-group
           = render "projects/buttons/download"

@@ -8,7 +8,7 @@ module Gitlab
     let(:html) { 'H<sub>2</sub>O' }
 
     context "without project" do
-      it "should convert the input using Asciidoctor and default options" do
+      it "converts the input using Asciidoctor and default options" do
         expected_asciidoc_opts = {
             safe: :secure,
             backend: :html5,
@@ -24,7 +24,7 @@ module Gitlab
       context "with asciidoc_opts" do
         let(:asciidoc_opts) { { safe: :safe, attributes: ['foo'] } }
 
-        it "should merge the options with default ones" do
+        it "merges the options with default ones" do
           expected_asciidoc_opts = {
               safe: :safe,
               backend: :html5,

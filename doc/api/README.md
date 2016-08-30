@@ -16,6 +16,8 @@ following locations:
 - [Commits](commits.md)
 - [Deploy Keys](deploy_keys.md)
 - [Groups](groups.md)
+- [Group Access Requests](access_requests.md)
+- [Group Members](members.md)
 - [Issues](issues.md)
 - [Keys](keys.md)
 - [Labels](labels.md)
@@ -24,7 +26,10 @@ following locations:
 - [Open source license templates](licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
+- [Project Access Requests](access_requests.md)
+- [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
@@ -74,14 +79,14 @@ You can use an OAuth 2 token to authenticate with the API by passing it either i
 Example of using the OAuth2 token in the header:
 
 ```shell
-curl -H "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
+curl --header "Authorization: Bearer OAUTH-TOKEN" https://gitlab.example.com/api/v3/projects
 ```
 
 Read more about [GitLab as an OAuth2 client](oauth2.md).
 
 ### Personal Access Tokens
 
-> **Note:** This feature was [introduced][ce-3749] in GitLab 8.8
+> [Introduced][ce-3749] in GitLab 8.8.
 
 You can create as many personal access tokens as you like from your GitLab
 profile (`/profile/personal_access_tokens`); perhaps one for each application
@@ -154,7 +159,7 @@ be returned with status code `403`:
 
 ```json
 {
-  "message": "403 Forbidden: Must be admin to use sudo"
+  "message": "403 Forbidden - Must be admin to use sudo"
 }
 ```
 
@@ -204,7 +209,7 @@ resources you can pass the following parameters:
 In the example below, we list 50 [namespaces](namespaces.md) per page.
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/namespaces?per_page=50
 ```
 
 ### Pagination Link header
@@ -218,7 +223,7 @@ and we request the second page (`page=2`) of [comments](notes.md) of the issue
 with ID `8` which belongs to the project with ID `8`:
 
 ```bash
-curl -I -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
+curl --head --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/8/issues/8/notes?per_page=3&page=2
 ```
 
 The response will then be:

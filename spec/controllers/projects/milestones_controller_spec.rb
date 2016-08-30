@@ -14,7 +14,7 @@ describe Projects::MilestonesController do
   end
 
   describe "#destroy" do
-    it "should remove milestone" do
+    it "removes milestone" do
       expect(issue.milestone_id).to eq(milestone.id)
 
       delete :destroy, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid, format: :js

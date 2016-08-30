@@ -48,7 +48,8 @@ module API
 
     class ProjectHook < Hook
       expose :project_id, :push_events
-      expose :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
+      expose :issues_events, :merge_requests_events, :tag_push_events
+      expose :note_events, :build_events, :pipeline_events, :wiki_page_events
       expose :enable_ssl_verification
     end
 
@@ -89,11 +90,24 @@ module API
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links.all, options)
       end
+      expose :only_allow_merge_if_build_succeeds
     end
 
-    class ProjectMember < UserBasic
+    class Member < UserBasic
       expose :access_level do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).access_level
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.access_level
+      end
+      expose :expires_at do |user, options|
+        member = options[:member] || options[:members].find { |m| m.user_id == user.id }
+        member.expires_at
+      end
+    end
+
+    class AccessRequester < UserBasic
+      expose :requested_at do |user, options|
+        access_requester = options[:access_requester] || options[:access_requesters].find { |m| m.user_id == user.id }
+        access_requester.requested_at
       end
     end
 
@@ -108,12 +122,6 @@ module API
       expose :shared_projects, using: Entities::Project
     end
 
-    class GroupMember < UserBasic
-      expose :access_level do |user, options|
-        options[:group].group_members.find_by(user_id: user.id).access_level
-      end
-    end
-
     class RepoBranch < Grape::Entity
       expose :name
 
@@ -126,11 +134,15 @@ module API
       end
 
       expose :developers_can_push do |repo_branch, options|
-        options[:project].developers_can_push_to_protected_branch? repo_branch.name
+        project = options[:project]
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:push_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
 
       expose :developers_can_merge do |repo_branch, options|
-        options[:project].developers_can_merge_to_protected_branch? repo_branch.name
+        project = options[:project]
+        access_levels = project.protected_branches.matching(repo_branch.name).map(&:merge_access_levels).flatten
+        access_levels.any? { |access_level| access_level.access_level == Gitlab::Access::DEVELOPER }
       end
     end
 
@@ -149,8 +161,13 @@ module API
       expose :safe_message, as: :message
     end
 
+    class RepoCommitStats < Grape::Entity
+      expose :additions, :deletions, :total
+    end
+
     class RepoCommitDetail < RepoCommit
       expose :parent_ids, :committed_date, :authored_date
+      expose :stats, using: Entities::RepoCommitStats
       expose :status
     end
 
@@ -161,6 +178,10 @@ module API
 
       # TODO (rspeicher): Deprecated; remove in 9.0
       expose(:expires_at) { |snippet| nil }
+
+      expose :web_url do |snippet, options|
+        Gitlab::UrlBuilder.build(snippet)
+      end
     end
 
     class ProjectEntity < Grape::Entity
@@ -190,6 +211,10 @@ module API
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
+
+      expose :web_url do |issue, options|
+        Gitlab::UrlBuilder.build(issue)
+      end
     end
 
     class ExternalIssue < Grape::Entity
@@ -213,11 +238,28 @@ module API
       expose :user_notes_count
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
+
+      expose :web_url do |merge_request, options|
+        Gitlab::UrlBuilder.build(merge_request)
+      end
     end
 
     class MergeRequestChanges < MergeRequest
       expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
-        compare.diffs(all_diffs: true).to_a
+        compare.raw_diffs(all_diffs: true).to_a
+      end
+    end
+
+    class MergeRequestDiff < Grape::Entity
+      expose :id, :head_commit_sha, :base_commit_sha, :start_commit_sha,
+        :created_at, :merge_request_id, :state, :real_size
+    end
+
+    class MergeRequestDiffFull < MergeRequestDiff
+      expose :commits, using: Entities::RepoCommit
+
+      expose :diffs, using: Entities::RepoDiff do |compare, _|
+        compare.raw_diffs(all_diffs: true).to_a
       end
     end
 
@@ -318,7 +360,7 @@ module API
       expose :id, :path, :kind
     end
 
-    class Member < Grape::Entity
+    class MemberAccess < Grape::Entity
       expose :access_level
       expose :notification_level do |member, options|
         if member.notification_setting
@@ -327,15 +369,16 @@ module API
       end
     end
 
-    class ProjectAccess < Member
+    class ProjectAccess < MemberAccess
     end
 
-    class GroupAccess < Member
+    class GroupAccess < MemberAccess
     end
 
     class ProjectService < Grape::Entity
       expose :id, :title, :created_at, :updated_at, :active
-      expose :push_events, :issues_events, :merge_requests_events, :tag_push_events, :note_events, :build_events
+      expose :push_events, :issues_events, :merge_requests_events
+      expose :tag_push_events, :note_events, :build_events, :pipeline_events
       # Expose serialized properties
       expose :properties do |service, options|
         field_names = service.fields.
@@ -414,7 +457,9 @@ module API
       expose :default_project_visibility
       expose :default_snippet_visibility
       expose :default_group_visibility
-      expose :restricted_signup_domains
+      expose :domain_whitelist
+      expose :domain_blacklist_enabled
+      expose :domain_blacklist
       expose :user_oauth_applications
       expose :after_sign_out_path
       expose :container_registry_token_expire_delay
@@ -485,6 +530,29 @@ module API
 
     class Variable < Grape::Entity
       expose :key, :value
+    end
+
+    class Pipeline < Grape::Entity
+      expose :id, :status, :ref, :sha, :before_sha, :tag, :yaml_errors
+
+      expose :user, with: Entities::UserBasic
+      expose :created_at, :updated_at, :started_at, :finished_at, :committed_at
+      expose :duration
+    end
+
+    class EnvironmentBasic < Grape::Entity
+      expose :id, :name, :external_url
+    end
+
+    class Environment < EnvironmentBasic
+      expose :project, using: Entities::Project
+    end
+
+    class Deployment < Grape::Entity
+      expose :id, :iid, :ref, :sha, :created_at
+      expose :user,        using: Entities::UserBasic
+      expose :environment, using: Entities::EnvironmentBasic
+      expose :deployable,  using: Entities::Build
     end
 
     class RepoLicense < Grape::Entity

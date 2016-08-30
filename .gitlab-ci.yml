@@ -1,11 +1,7 @@
-image: "ruby:2.1"
-
-services:
-  - mysql:latest
-  - redis:alpine
+image: "ruby:2.3.1"
 
 cache:
-  key: "ruby21"
+  key: "ruby-231"
   paths:
   - vendor/apt
   - vendor/ruby
@@ -19,6 +15,7 @@ variables:
   USE_DB: "true"
   USE_BUNDLE_INSTALL: "true"
   GIT_DEPTH: "20"
+  PHANTOMJS_VERSION: "2.1.1"
 
 before_script:
   - source ./scripts/prepare_build.sh
@@ -32,9 +29,9 @@ stages:
 - prepare
 - test
 - post-test
+- pages
 
 # Prepare and merge knapsack tests
-
 .knapsack-state: &knapsack-state
   services: []
   variables:
@@ -45,6 +42,7 @@ stages:
     paths:
     - knapsack/
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
 
@@ -68,8 +66,14 @@ update-knapsack:
 
 # Execute all testing suites
 
+.use-db: &use-db
+  services:
+    - mysql:latest
+    - redis:alpine
+
 .rspec-knapsack: &rspec-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -80,11 +84,14 @@ update-knapsack:
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack rspec
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
+    - coverage/
 
 .spinach-knapsack: &spinach-knapsack
   stage: test
+  <<: *use-db
   script:
     - bundle exec rake assets:precompile 2>/dev/null
     - JOB_NAME=( $CI_BUILD_NAME )
@@ -95,8 +102,10 @@ update-knapsack:
     - cp knapsack/spinach_report.json ${KNAPSACK_REPORT_PATH}
     - knapsack spinach "-r rerun" || retry '[ ! -e tmp/spinach-rerun.txt ] || bundle exec spinach -r rerun $(cat tmp/spinach-rerun.txt)'
   artifacts:
+    expire_in: 31d
     paths:
     - knapsack/
+    - coverage/
 
 rspec 0 20: *rspec-knapsack
 rspec 1 20: *rspec-knapsack
@@ -130,84 +139,138 @@ spinach 7 10: *spinach-knapsack
 spinach 8 10: *spinach-knapsack
 spinach 9 10: *spinach-knapsack
 
-# Execute all testing suites against Ruby 2.3
-.ruby-23: &ruby-23
-  image: "ruby:2.3"
+# Execute all testing suites against Ruby 2.1
+.ruby-21: &ruby-21
+  image: "ruby:2.1"
+  <<: *use-db
   only:
     - master
   cache:
-    key: "ruby-23"
+    key: "ruby21"
     paths:
       - vendor/apt
       - vendor/ruby
 
-.rspec-knapsack-ruby23: &rspec-knapsack-ruby23
+.rspec-knapsack-ruby21: &rspec-knapsack-ruby21
   <<: *rspec-knapsack
-  <<: *ruby-23
+  <<: *ruby-21
 
-.spinach-knapsack-ruby23: &spinach-knapsack-ruby23
+.spinach-knapsack-ruby21: &spinach-knapsack-ruby21
   <<: *spinach-knapsack
-  <<: *ruby-23
-  
-rspec 0 20 ruby23: *rspec-knapsack-ruby23
-rspec 1 20 ruby23: *rspec-knapsack-ruby23
-rspec 2 20 ruby23: *rspec-knapsack-ruby23
-rspec 3 20 ruby23: *rspec-knapsack-ruby23
-rspec 4 20 ruby23: *rspec-knapsack-ruby23
-rspec 5 20 ruby23: *rspec-knapsack-ruby23
-rspec 6 20 ruby23: *rspec-knapsack-ruby23
-rspec 7 20 ruby23: *rspec-knapsack-ruby23
-rspec 8 20 ruby23: *rspec-knapsack-ruby23
-rspec 9 20 ruby23: *rspec-knapsack-ruby23
-rspec 10 20 ruby23: *rspec-knapsack-ruby23
-rspec 11 20 ruby23: *rspec-knapsack-ruby23
-rspec 12 20 ruby23: *rspec-knapsack-ruby23
-rspec 13 20 ruby23: *rspec-knapsack-ruby23
-rspec 14 20 ruby23: *rspec-knapsack-ruby23
-rspec 15 20 ruby23: *rspec-knapsack-ruby23
-rspec 16 20 ruby23: *rspec-knapsack-ruby23
-rspec 17 20 ruby23: *rspec-knapsack-ruby23
-rspec 18 20 ruby23: *rspec-knapsack-ruby23
-rspec 19 20 ruby23: *rspec-knapsack-ruby23
+  <<: *ruby-21
 
-spinach 0 10 ruby23: *spinach-knapsack-ruby23
-spinach 1 10 ruby23: *spinach-knapsack-ruby23
-spinach 2 10 ruby23: *spinach-knapsack-ruby23
-spinach 3 10 ruby23: *spinach-knapsack-ruby23
-spinach 4 10 ruby23: *spinach-knapsack-ruby23
-spinach 5 10 ruby23: *spinach-knapsack-ruby23
-spinach 6 10 ruby23: *spinach-knapsack-ruby23
-spinach 7 10 ruby23: *spinach-knapsack-ruby23
-spinach 8 10 ruby23: *spinach-knapsack-ruby23
-spinach 9 10 ruby23: *spinach-knapsack-ruby23
+rspec 0 20 ruby21: *rspec-knapsack-ruby21
+rspec 1 20 ruby21: *rspec-knapsack-ruby21
+rspec 2 20 ruby21: *rspec-knapsack-ruby21
+rspec 3 20 ruby21: *rspec-knapsack-ruby21
+rspec 4 20 ruby21: *rspec-knapsack-ruby21
+rspec 5 20 ruby21: *rspec-knapsack-ruby21
+rspec 6 20 ruby21: *rspec-knapsack-ruby21
+rspec 7 20 ruby21: *rspec-knapsack-ruby21
+rspec 8 20 ruby21: *rspec-knapsack-ruby21
+rspec 9 20 ruby21: *rspec-knapsack-ruby21
+rspec 10 20 ruby21: *rspec-knapsack-ruby21
+rspec 11 20 ruby21: *rspec-knapsack-ruby21
+rspec 12 20 ruby21: *rspec-knapsack-ruby21
+rspec 13 20 ruby21: *rspec-knapsack-ruby21
+rspec 14 20 ruby21: *rspec-knapsack-ruby21
+rspec 15 20 ruby21: *rspec-knapsack-ruby21
+rspec 16 20 ruby21: *rspec-knapsack-ruby21
+rspec 17 20 ruby21: *rspec-knapsack-ruby21
+rspec 18 20 ruby21: *rspec-knapsack-ruby21
+rspec 19 20 ruby21: *rspec-knapsack-ruby21
+
+spinach 0 10 ruby21: *spinach-knapsack-ruby21
+spinach 1 10 ruby21: *spinach-knapsack-ruby21
+spinach 2 10 ruby21: *spinach-knapsack-ruby21
+spinach 3 10 ruby21: *spinach-knapsack-ruby21
+spinach 4 10 ruby21: *spinach-knapsack-ruby21
+spinach 5 10 ruby21: *spinach-knapsack-ruby21
+spinach 6 10 ruby21: *spinach-knapsack-ruby21
+spinach 7 10 ruby21: *spinach-knapsack-ruby21
+spinach 8 10 ruby21: *spinach-knapsack-ruby21
+spinach 9 10 ruby21: *spinach-knapsack-ruby21
 
 # Other generic tests
 
+.ruby-static-analysis: &ruby-static-analysis
+  variables:
+    SIMPLECOV: "false"
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+
 .exec: &exec
+  <<: *ruby-static-analysis
   stage: test
   script:
     - bundle exec $CI_BUILD_NAME
 
-teaspoon: *exec
 rubocop: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
 rake flog: *exec
 rake flay: *exec
-rake db:migrate:reset: *exec
 license_finder: *exec
+rake downtime_check: *exec
+
+rake db:migrate:reset:
+  stage: test
+  <<: *use-db
+  script:
+    - rake db:migrate:reset
+
+teaspoon:
+  stage: test
+  <<: *use-db
+  script:
+    - curl --silent --location https://deb.nodesource.com/setup_6.x | bash -
+    - apt-get install --assume-yes nodejs
+    - npm install --global istanbul
+    - teaspoon
+  artifacts:
+    name: coverage-javascript
+    expire_in: 31d
+    paths:
+    - coverage-javascript/default/
+
+lint-doc:
+  stage: test
+  image: "phusion/baseimage:latest"
+  before_script: []
+  script:
+    - scripts/lint-doc.sh
 
 bundler:audit:
   stage: test
+  <<: *ruby-static-analysis
   only:
     - master
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+coverage:
+  stage: post-test
+  services: []
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "true"
+  script:
+    - bundle exec scripts/merge-simplecov
+  artifacts:
+    name: coverage
+    expire_in: 31d
+    paths:
+    - coverage/index.html
+    - coverage/assets/
+
+
 # Notify slack in the end
 
 notify:slack:
   stage: post-test
+  variables:
+    USE_DB: "false"
+    USE_BUNDLE_INSTALL: "false"
   script:
     - ./scripts/notify_slack.sh "#builds" "Build on \`$CI_BUILD_REF_NAME\` failed! Commit \`$(git log -1 --oneline)\` See <https://gitlab.com/gitlab-org/$(basename "$PWD")/commit/"$CI_BUILD_REF"/builds>"
   when: on_failure
@@ -216,3 +279,20 @@ notify:slack:
     - tags@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
     - tags@gitlab-org/gitlab-ee
+
+pages:
+  before_script: []
+  stage: pages
+  dependencies:
+    - coverage
+    - teaspoon
+  script:
+    - mv public/ .public/
+    - mkdir public/
+    - mv coverage public/coverage-ruby
+    - mv coverage-javascript/default/ public/coverage-javascript/
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
