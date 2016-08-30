@@ -117,10 +117,6 @@ class ApplicationController < ActionController::Base
     render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
-  def render_410
-    render file: Rails.root.join("public", "410"), layout: false, status: "410"
-  end
-
   def no_cache_headers
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"

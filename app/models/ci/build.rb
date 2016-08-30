@@ -217,7 +217,7 @@ module Ci
     end
 
     def raw_trace
-      if File.file?(path_to_trace)
+      if File.exist?(path_to_trace)
         File.read(path_to_trace)
       elsif has_old_trace_file?
         # Temporary fix for build trace data integrity
@@ -271,6 +271,14 @@ module Ci
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
+      end
+    end
+
+    def trace_file_path
+      if has_old_trace_file?
+        old_path_to_trace
+      else
+        path_to_trace
       end
     end
 
