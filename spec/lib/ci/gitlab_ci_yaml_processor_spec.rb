@@ -1256,7 +1256,8 @@ EOT
         it "returns an error about invalid configutaion" do
           content = YAML.dump("invalid: yaml: test")
 
-          expect(GitlabCiYamlProcessor.validation_message(content)).to eq "Invalid configuration format"
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "Invalid configuration format"
         end
       end
 
@@ -1264,13 +1265,15 @@ EOT
         it "returns an error about invalid tags" do
           content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
 
-          expect(GitlabCiYamlProcessor.validation_message(content)).to eq "jobs:rspec tags should be an array of strings"
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "jobs:rspec tags should be an array of strings"
         end
       end
 
       context "when YMAL content is empty" do
         it "returns an error about missing content" do
-          expect(GitlabCiYamlProcessor.validation_message('')).to eq "Please provide content of .gitlab-ci.yml"
+          expect(GitlabCiYamlProcessor.validation_message(''))
+            .to eq "Please provide content of .gitlab-ci.yml"
         end
       end
 

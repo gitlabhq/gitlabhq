@@ -5,22 +5,18 @@ module API
       requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
     end
 
-    post 'ci/lint' do
-      error = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
-      response = {
-        status: '',
-        error: ''
-      }
+    namespace 'ci' do
+      post '/lint' do
+        errors = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
 
-      if error.blank?
-        response[:status] = 'valid'
-      else
-        response[:error] = error
-        response[:status] = 'invalid'
+        status 200
+
+        if errors.blank?
+          { status: 'valid', errors: [] }
+        else
+          { status: 'invalid', errors: [errors] }
+        end
       end
-
-      status 200
-      response
     end
   end
 end

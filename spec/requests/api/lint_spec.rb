@@ -15,7 +15,7 @@ describe API::Lint, api: true do
         expect(response).to have_http_status(200)
         expect(json_response).to be_an Hash
         expect(json_response['status']).to eq('valid')
-        expect(json_response['error']).to eq('')
+        expect(json_response['errors']).to eq([])
       end
     end
 
@@ -25,7 +25,7 @@ describe API::Lint, api: true do
 
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq('invalid')
-        expect(json_response['error']).to eq('Invalid configuration format')
+        expect(json_response['errors']).to eq(['Invalid configuration format'])
       end
 
       it "responds with errors about invalid configuration" do
@@ -33,7 +33,7 @@ describe API::Lint, api: true do
 
         expect(response).to have_http_status(200)
         expect(json_response['status']).to eq('invalid')
-        expect(json_response['error']).to eq('jobs config should contain at least one visible job')
+        expect(json_response['errors']).to eq(['jobs config should contain at least one visible job'])
       end
     end
 
