@@ -22,6 +22,7 @@ class IssuePolicy < IssuablePolicy
     return true if @subject.author == @user
     return true if @subject.assignee == @user
     return true if @subject.project.team.member?(@user, Gitlab::Access::REPORTER)
+
     false
   end
 end
