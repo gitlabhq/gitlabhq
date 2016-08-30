@@ -53,10 +53,6 @@ class LegacyDiffNote < Note
     self.line_code
   end
 
-  def to_discussion
-    Discussion.new([self])
-  end
-
   # Check if this note is part of an "active" discussion
   #
   # This will always return true for anything except MergeRequest noteables,
