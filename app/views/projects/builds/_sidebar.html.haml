@@ -135,11 +135,5 @@
                 = build.name
               - else
                 = build.id
-
-      - if @build.retried?
-        %li.active
-          %a
-            Build ##{@build.id}
-            &middot;
-            %i.fa.fa-warning
-            This build was retried.
+            - if @build.retried?
+              %i.fa.fa-warning.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'This build was retried'}
