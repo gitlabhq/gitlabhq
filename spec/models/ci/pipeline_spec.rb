@@ -195,6 +195,36 @@ describe Ci::Pipeline, models: true do
     end
   end
 
+  context 'with non-empty project' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             ref: project.default_branch,
+             sha: project.commit.sha)
+    end
+
+    describe '#latest?' do
+      context 'with latest sha' do
+        it 'returns true' do
+          expect(pipeline).to be_latest
+        end
+      end
+
+      context 'with not latest sha' do
+        before do
+          pipeline.update(
+            sha: project.commit("#{project.default_branch}~1").sha)
+        end
+
+        it 'returns false' do
+          expect(pipeline).not_to be_latest
+        end
+      end
+    end
+  end
+
   describe '#manual_actions' do
     subject { pipeline.manual_actions }
 

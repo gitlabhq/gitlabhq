@@ -948,15 +948,17 @@ describe Ci::Build, models: true do
       before { build.run! }
 
       it 'returns false' do
-        expect(build.retryable?).to be false
+        expect(build).not_to be_retryable
       end
     end
 
     context 'when build is finished' do
-      before { build.success! }
+      before do
+        build.success!
+      end
 
       it 'returns true' do
-        expect(build.retryable?).to be true
+        expect(build).to be_retryable
       end
     end
   end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823081327) do
+ActiveRecord::Schema.define(version: 20160827011312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -295,16 +295,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
-  create_table "ci_services", force: :cascade do |t|
-    t.string   "type"
-    t.string   "title"
-    t.integer  "project_id",                 null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",     default: false, null: false
-    t.text     "properties"
-  end
-
   create_table "ci_sessions", force: :cascade do |t|
     t.string   "session_id", null: false
     t.text     "data"
@@ -359,13 +349,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   end
 
   add_index "ci_variables", ["gl_project_id"], name: "index_ci_variables_on_gl_project_id", using: :btree
-
-  create_table "ci_web_hooks", force: :cascade do |t|
-    t.string   "url",        null: false
-    t.integer  "project_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer  "deploy_key_id", null: false

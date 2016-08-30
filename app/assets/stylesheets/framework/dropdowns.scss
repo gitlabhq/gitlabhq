@@ -195,6 +195,12 @@
   .separator + .dropdown-header {
     padding-top: 2px;
   }
+
+  .unclickable {
+    cursor: not-allowed;
+    padding: 5px 8px;
+    color: $dropdown-header-color;
+  }
 }
 
 .dropdown-menu-large {
