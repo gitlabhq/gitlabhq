@@ -49,6 +49,9 @@ v 8.11.4 (unreleased)
 v 8.11.4 (unreleased)
   - Fix resolving conflicts on forks
 
+v 8.11.4 (unreleased)
+  - Fix diff commenting on merge requests created prior to 8.10
+
 v 8.11.3 (unreleased)
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
