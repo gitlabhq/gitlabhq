@@ -30,7 +30,7 @@ module Gitlab
         merged = process_periods(periods)
 
         @duration = process_duration(merged)
-        @pending_duration = process_pending_duration(merged, @duration)
+        @pending_duration = process_pending_duration(merged)
       end
 
       def process_periods(periods)
@@ -62,7 +62,7 @@ module Gitlab
         end
       end
 
-      def process_pending_duration(periods, duration)
+      def process_pending_duration(periods)
         return 0 if periods.empty?
 
         total = periods.last.last - periods.first.first
