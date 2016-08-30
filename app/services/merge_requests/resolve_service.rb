@@ -38,8 +38,13 @@ module MergeRequests
     def fetch_their_commit!
       return if rugged.include?(conflicts.their_commit.oid)
 
-      remote = rugged.remotes.create_anonymous(merge_request.target_project.repository.path_to_repo)
-      remote.fetch(merge_request.target_branch)
+      random_string = SecureRandom.hex
+
+      project.repository.fetch_ref(
+        merge_request.target_project.repository.path_to_repo,
+        "refs/heads/#{merge_request.target_branch}",
+        "refs/tmp/#{random_string}/head"
+      )
     end
   end
 end
