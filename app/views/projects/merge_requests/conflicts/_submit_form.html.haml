@@ -1,0 +1,15 @@
+.content-block.oneline-block.files-changed
+  %strong.resolved-count {{resolvedCount}}
+  of
+  %strong.total-count {{conflictsCount}}
+  conflicts have been resolved
+
+  .commit-message-container.form-group
+    .max-width-marker
+    %textarea.form-control.js-commit-message{"v-model" => "conflictsData.commitMessage"}
+      {{{conflictsData.commitMessage}}}
+
+  %button{type: "button", class: "btn btn-success js-submit-button", ":disabled" => "!readyToCommit", "@click" => "commit()"}
+    %span {{commitButtonText}}
+
+  = link_to "Cancel", namespace_project_merge_request_path(@merge_request.project.namespace, @merge_request.project, @merge_request), class: "btn btn-cancel"

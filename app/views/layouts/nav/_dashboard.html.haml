@@ -12,6 +12,11 @@
     = link_to activity_dashboard_path, class: 'dashboard-shortcuts-activity', title: 'Activity' do
       %span
         Activity
+  - if koding_enabled?
+    = nav_link(controller: :koding) do
+      = link_to koding_path, title: 'Koding' do
+        %span
+          Koding
   = nav_link(controller: [:groups, 'groups/milestones', 'groups/group_members']) do
     = link_to dashboard_groups_path, title: 'Groups' do
       %span
@@ -30,7 +35,7 @@
       %span
         Merge Requests
         %span.count= number_with_delimiter(current_user.assigned_merge_requests.opened.count)
-  = nav_link(controller: :snippets) do
+  = nav_link(controller: 'dashboard/snippets') do
     = link_to dashboard_snippets_path, title: 'Snippets' do
       %span
         Snippets

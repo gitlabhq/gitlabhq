@@ -4,7 +4,10 @@ module Gitlab
     class Transaction
       THREAD_KEY = :_gitlab_metrics_transaction
 
-      attr_reader :tags, :values, :methods
+      # The series to store events (e.g. Git pushes) in.
+      EVENT_SERIES = 'events'
+
+      attr_reader :tags, :values, :method, :metrics
 
       attr_accessor :action
 
@@ -52,23 +55,30 @@ module Gitlab
       end
 
       def add_metric(series, values, tags = {})
-        @metrics << Metric.new("#{series_prefix}#{series}", values, tags)
+        @metrics << Metric.new("#{Metrics.series_prefix}#{series}", values, tags)
       end
 
-      # Measures the time it takes to execute a method.
+      # Tracks a business level event
       #
-      # Multiple calls to the same method add up to the total runtime of the
-      # method.
+      # Business level events including events such as Git pushes, Emails being
+      # sent, etc.
       #
-      # name - The full name of the method to measure (e.g. `User#sign_in`).
-      def measure_method(name, &block)
-        unless @methods[name]
-          series = "#{series_prefix}#{Instrumentation::SERIES}"
+      # event_name - The name of the event (e.g. "git_push").
+      # tags - A set of tags to attach to the event.
+      def add_event(event_name, tags = {})
+        @metrics << Metric.new(EVENT_SERIES,
+                               { count: 1 },
+                               { event: event_name }.merge(tags),
+                               :event)
+      end
 
-          @methods[name] = MethodCall.new(name, series)
+      # Returns a MethodCall object for the given name.
+      def method_call_for(name)
+        unless method = @methods[name]
+          @methods[name] = method = MethodCall.new(name, Instrumentation.series)
         end
 
-        @methods[name].measure(&block)
+        method
       end
 
       def increment(name, value)
@@ -108,20 +118,12 @@ module Gitlab
         submit_hashes = submit.map do |metric|
           hash = metric.to_hash
 
-          hash[:tags][:action] ||= @action if @action
+          hash[:tags][:action] ||= @action if @action && !metric.event?
 
           hash
         end
 
         Metrics.submit_metrics(submit_hashes)
-      end
-
-      def sidekiq?
-        Sidekiq.server?
-      end
-
-      def series_prefix
-        sidekiq? ? 'sidekiq_' : 'rails_'
       end
     end
   end

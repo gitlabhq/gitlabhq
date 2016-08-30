@@ -38,6 +38,11 @@ module Banzai
         end
       end
 
+      # Build a regexp that matches all valid :emoji: names.
+      def self.emoji_pattern
+        @emoji_pattern ||= /:(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):/
+      end
+
       private
 
       def emoji_url(name)
@@ -57,11 +62,6 @@ module Banzai
 
       def url_to_image(image)
         ActionController::Base.helpers.url_to_image(image)
-      end
-
-      # Build a regexp that matches all valid :emoji: names.
-      def self.emoji_pattern
-        @emoji_pattern ||= /:(#{Gitlab::Emoji.emojis_names.map { |name| Regexp.escape(name) }.join('|')}):/
       end
 
       def emoji_pattern

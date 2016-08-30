@@ -11,8 +11,8 @@ module Gitlab
       def initialize(name, series)
         @name = name
         @series = series
-        @real_time = 0.0
-        @cpu_time = 0.0
+        @real_time = 0
+        @cpu_time = 0
         @call_count = 0
       end
 

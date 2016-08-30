@@ -33,7 +33,7 @@ GET /issues?labels=foo,bar&state=opened
 | `sort`    | string  | no    | Return requests sorted in `asc` or `desc` order. Default is `desc`  |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/issues
 ```
 
 Example response:
@@ -79,7 +79,8 @@ Example response:
       "labels" : [],
       "subscribed" : false,
       "user_notes_count": 1,
-      "due_date": "2016-07-22"
+      "due_date": "2016-07-22",
+      "web_url": "http://example.com/example/example/issues/6"
    }
 ]
 ```
@@ -110,7 +111,7 @@ GET /groups/:id/issues?milestone=1.0.0&state=opened
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/groups/4/issues
 ```
 
 Example response:
@@ -156,7 +157,8 @@ Example response:
       "created_at" : "2016-01-04T15:31:46.176Z",
       "subscribed" : false,
       "user_notes_count": 1,
-      "due_date": null
+      "due_date": null,
+      "web_url": "http://example.com/example/example/issues/1"
    }
 ]
 ```
@@ -189,7 +191,7 @@ GET /projects/:id/issues?iid=42
 
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues
 ```
 
 Example response:
@@ -235,7 +237,8 @@ Example response:
       "created_at" : "2016-01-04T15:31:46.176Z",
       "subscribed" : false,
       "user_notes_count": 1,
-      "due_date": "2016-07-22"
+      "due_date": "2016-07-22",
+      "web_url": "http://example.com/example/example/issues/1"
    }
 ]
 ```
@@ -254,7 +257,7 @@ GET /projects/:id/issues/:issue_id
 | `issue_id`| integer | yes   | The ID of a project's issue |
 
 ```bash
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/41
 ```
 
 Example response:
@@ -299,7 +302,8 @@ Example response:
    "created_at" : "2016-01-04T15:31:46.176Z",
    "subscribed": false,
    "user_notes_count": 1,
-   "due_date": null
+   "due_date": null,
+   "web_url": "http://example.com/example/example/issues/1"
 }
 ```
 
@@ -323,11 +327,11 @@ POST /projects/:id/issues
 | `assignee_id`   | integer | no  | The ID of a user to assign issue |
 | `milestone_id`  | integer | no  | The ID of a milestone to assign issue |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
-| `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
-| `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `created_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues?title=Issues%20with%20auth&labels=bug
 ```
 
 Example response:
@@ -357,7 +361,8 @@ Example response:
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
-   "due_date": null
+   "due_date": null,
+   "web_url": "http://example.com/example/example/issues/14"
 }
 ```
 
@@ -384,11 +389,11 @@ PUT /projects/:id/issues/:issue_id
 | `milestone_id`  | integer | no  | The ID of a milestone to assign the issue to |
 | `labels`        | string  | no  | Comma-separated label names for an issue  |
 | `state_event`   | string  | no  | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it |
-| `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` |
-| `due_date`      | string  | no   | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `updated_at`    | string  | no  | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `due_date`      | string  | no  | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
 
 ```bash
-curl -X PUT -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85?state_event=close
 ```
 
 Example response:
@@ -418,7 +423,8 @@ Example response:
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
-   "due_date": "2016-07-22"
+   "due_date": "2016-07-22",
+   "web_url": "http://example.com/example/example/issues/15"
 }
 ```
 
@@ -438,7 +444,7 @@ DELETE /projects/:id/issues/:issue_id
 | `issue_id`      | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85
 ```
 
 ## Move an issue
@@ -463,7 +469,7 @@ POST /projects/:id/issues/:issue_id/move
 | `to_project_id` | integer | yes | The ID of the new project |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/4/issues/85/move
 ```
 
 Example response:
@@ -496,7 +502,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/u/solon.cremin"
   },
-  "due_date": null
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/11"
 }
 ```
 
@@ -518,7 +525,7 @@ POST /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
@@ -551,7 +558,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/7a190fecbaa68212a4b68aeb6e3acd10?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/u/solon.cremin"
   },
-  "due_date": null
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/11"
 }
 ```
 
@@ -573,7 +581,7 @@ DELETE /projects/:id/issues/:issue_id/subscription
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X DELETE -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
+curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/subscription
 ```
 
 Example response:
@@ -607,7 +615,8 @@ Example response:
     "web_url": "https://gitlab.example.com/u/orville"
   },
   "subscribed": false,
-  "due_date": null
+  "due_date": null,
+  "web_url": "http://example.com/example/example/issues/12"
 }
 ```
 
@@ -628,7 +637,7 @@ POST /projects/:id/issues/:issue_id/todo
 | `issue_id` | integer | yes | The ID of a project's issue |
 
 ```bash
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/todo
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v3/projects/5/issues/93/todo
 ```
 
 Example response:
@@ -693,7 +702,9 @@ Example response:
     "subscribed": true,
     "user_notes_count": 7,
     "upvotes": 0,
-    "downvotes": 0
+    "downvotes": 0,
+    "due_date": null,
+    "web_url": "http://example.com/example/example/issues/110"
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",
   "body": "Vel voluptas atque dicta mollitia adipisci qui at.",

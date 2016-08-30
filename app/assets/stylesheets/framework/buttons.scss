@@ -135,6 +135,15 @@
     @include btn-green;
   }
 
+  &.btn-inverted {
+    &.btn-success,
+    &.btn-new,
+    &.btn-create,
+    &.btn-save {
+      @include btn-outline($white-light, $green-normal, $green-normal, $green-light, $white-light, $green-light);
+    }
+  }
+
   &.btn-gray {
     @include btn-gray;
   }
@@ -153,6 +162,10 @@
 
   &.btn-close {
     @include btn-outline($white-light, $orange-normal, $orange-normal, $orange-light, $white-light, $orange-light);
+  }
+
+  &.btn-spam {
+    @include btn-outline($white-light, $red-normal, $red-normal, $red-light, $white-light, $red-light);
   }
 
   &.btn-danger,
@@ -187,9 +200,13 @@
 
   svg {
     height: 15px;
-    width: auto;
+    width: 15px;
     position: relative;
     top: 2px;
+  }
+
+  svg, .fa {
+    margin-right: 3px;
   }
 }
 

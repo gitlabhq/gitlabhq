@@ -1,8 +1,8 @@
 # Labels
 
 Labels provide an easy way to categorize the issues or merge requests based on
-descriptive titles like `bug`, `documentation` or any other text you feel like
-it. They can have different colors, a description, and are visible throughout
+descriptive titles like `bug`, `documentation` or any other text you feel like.
+They can have different colors, a description, and are visible throughout
 the issue tracker or inside each issue individually.
 
 With labels, you can navigate the issue tracker and filter any bloated
@@ -22,19 +22,6 @@ created yet.
 
 ![Generate new labels](img/labels_generate.png)
 
----
-
-You can skip that and create a new label or click that link and GitLab will
-generate a set of predefined labels for you. There 8 default generated labels
-in total and you can see them in the screenshot below.
-
-![Default generated labels](img/labels_default.png)
-
----
-
-You can see that from the labels page you can have an overview of the number of
-issues and merge requests assigned to each label.
-
 Creating a new label from scratch is as easy as pressing the **New label**
 button. From there on you can choose the name, give it an optional description,
 a color and you are set.
@@ -43,13 +30,39 @@ When you are ready press the **Create label** button to create the new label.
 
 ![New label](img/labels_new_label.png)
 
+---
+
+## Default Labels
+
+It's possible to populate the labels for your project from a set of predefined labels.
+
+### Generate GitLab's predefined label set
+
+![Generate new labels](img/labels_generate.png)
+
+Click the link to 'Generate a default set of labels' and GitLab will
+generate a set of predefined labels for you. There are 8 default generated labels
+in total and you can see them in the screenshot below.
+
+![Default generated labels](img/labels_default.png)
+
+---
+
+## Labels Overview
+
+![Default generated labels](img/labels_default.png)
+
+You can see that from the labels page you can have an overview of the number of
+issues and merge requests assigned to each label.
+
 ## Prioritize labels
 
 >**Notes:**
- - This feature was introduced in GitLab 8.9.
- - Priority sorting is based on the highest priority label only. This might
-   change in the future, follow the discussion in
-   https://gitlab.com/gitlab-org/gitlab-ce/issues/18554.
+>
+> - Introduced in GitLab 8.9.
+> - Priority sorting is based on the highest priority label only. This might
+>   change in the future, follow the discussion in
+>   https://gitlab.com/gitlab-org/gitlab-ce/issues/18554.
 
 Prioritized labels are like any other label, but sorted by priority. This allows
 you to sort issues and merge requests by priority.
@@ -87,8 +100,7 @@ important.
 
 ## Create a new label right from the issue tracker
 
->**Note:**
-This feature was introduced in GitLab 8.6.
+> Introduced in GitLab 8.6.
 
 There are times when you are already in the issue tracker searching for a
 label, only to realize it doesn't exist. Instead of going to the **Labels**

@@ -35,7 +35,7 @@ describe API::Runners, api: true  do
 
   describe 'GET /runners' do
     context 'authorized user' do
-      it 'should return user available runners' do
+      it 'returns user available runners' do
         get api('/runners', user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
@@ -44,7 +44,7 @@ describe API::Runners, api: true  do
         expect(shared).to be_falsey
       end
 
-      it 'should filter runners by scope' do
+      it 'filters runners by scope' do
         get api('/runners?scope=active', user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
@@ -53,14 +53,14 @@ describe API::Runners, api: true  do
         expect(shared).to be_falsey
       end
 
-      it 'should avoid filtering if scope is invalid' do
+      it 'avoids filtering if scope is invalid' do
         get api('/runners?scope=unknown', user)
         expect(response).to have_http_status(400)
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return runners' do
+      it 'does not return runners' do
         get api('/runners')
 
         expect(response).to have_http_status(401)
@@ -71,7 +71,7 @@ describe API::Runners, api: true  do
   describe 'GET /runners/all' do
     context 'authorized user' do
       context 'with admin privileges' do
-        it 'should return all runners' do
+        it 'returns all runners' do
           get api('/runners/all', admin)
           shared = json_response.any?{ |r| r['is_shared'] }
 
@@ -82,14 +82,14 @@ describe API::Runners, api: true  do
       end
 
       context 'without admin privileges' do
-        it 'should not return runners list' do
+        it 'does not return runners list' do
           get api('/runners/all', user)
 
           expect(response).to have_http_status(403)
         end
       end
 
-      it 'should filter runners by scope' do
+      it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
         shared = json_response.any?{ |r| r['is_shared'] }
 
@@ -98,14 +98,14 @@ describe API::Runners, api: true  do
         expect(shared).to be_falsey
       end
 
-      it 'should avoid filtering if scope is invalid' do
+      it 'avoids filtering if scope is invalid' do
         get api('/runners?scope=unknown', admin)
         expect(response).to have_http_status(400)
       end
     end
 
     context 'unauthorized user' do
-      it 'should not return runners' do
+      it 'does not return runners' do
         get api('/runners')
 
         expect(response).to have_http_status(401)
@@ -116,7 +116,7 @@ describe API::Runners, api: true  do
   describe 'GET /runners/:id' do
     context 'admin user' do
       context 'when runner is shared' do
-        it "should return runner's details" do
+        it "returns runner's details" do
           get api("/runners/#{shared_runner.id}", admin)
 
           expect(response).to have_http_status(200)
@@ -125,7 +125,7 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner is not shared' do
-        it "should return runner's details" do
+        it "returns runner's details" do
           get api("/runners/#{specific_runner.id}", admin)
 
           expect(response).to have_http_status(200)
@@ -133,7 +133,7 @@ describe API::Runners, api: true  do
         end
       end
 
-      it 'should return 404 if runner does not exists' do
+      it 'returns 404 if runner does not exists' do
         get api('/runners/9999', admin)
 
         expect(response).to have_http_status(404)
@@ -142,7 +142,7 @@ describe API::Runners, api: true  do
 
     context "runner project's administrative user" do
       context 'when runner is not shared' do
-        it "should return runner's details" do
+        it "returns runner's details" do
           get api("/runners/#{specific_runner.id}", user)
 
           expect(response).to have_http_status(200)
@@ -151,7 +151,7 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner is shared' do
-        it "should return runner's details" do
+        it "returns runner's details" do
           get api("/runners/#{shared_runner.id}", user)
 
           expect(response).to have_http_status(200)
@@ -161,7 +161,7 @@ describe API::Runners, api: true  do
     end
 
     context 'other authorized user' do
-      it "should not return runner's details" do
+      it "does not return runner's details" do
         get api("/runners/#{specific_runner.id}", user2)
 
         expect(response).to have_http_status(403)
@@ -169,7 +169,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it "should not return runner's details" do
+      it "does not return runner's details" do
         get api("/runners/#{specific_runner.id}")
 
         expect(response).to have_http_status(401)
@@ -180,7 +180,7 @@ describe API::Runners, api: true  do
   describe 'PUT /runners/:id' do
     context 'admin user' do
       context 'when runner is shared' do
-        it 'should update runner' do
+        it 'updates runner' do
           description = shared_runner.description
           active = shared_runner.active
 
@@ -201,7 +201,7 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner is not shared' do
-        it 'should update runner' do
+        it 'updates runner' do
           description = specific_runner.description
           update_runner(specific_runner.id, admin, description: 'test')
           specific_runner.reload
@@ -212,7 +212,7 @@ describe API::Runners, api: true  do
         end
       end
 
-      it 'should return 404 if runner does not exists' do
+      it 'returns 404 if runner does not exists' do
         update_runner(9999, admin, description: 'test')
 
         expect(response).to have_http_status(404)
@@ -225,7 +225,7 @@ describe API::Runners, api: true  do
 
     context 'authorized user' do
       context 'when runner is shared' do
-        it 'should not update runner' do
+        it 'does not update runner' do
           put api("/runners/#{shared_runner.id}", user)
 
           expect(response).to have_http_status(403)
@@ -233,13 +233,13 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner is not shared' do
-        it 'should not update runner without access to it' do
+        it 'does not update runner without access to it' do
           put api("/runners/#{specific_runner.id}", user2)
 
           expect(response).to have_http_status(403)
         end
 
-        it 'should update runner with access to it' do
+        it 'updates runner with access to it' do
           description = specific_runner.description
           put api("/runners/#{specific_runner.id}", admin), description: 'test'
           specific_runner.reload
@@ -252,7 +252,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it 'should not delete runner' do
+      it 'does not delete runner' do
         put api("/runners/#{specific_runner.id}")
 
         expect(response).to have_http_status(401)
@@ -263,7 +263,7 @@ describe API::Runners, api: true  do
   describe 'DELETE /runners/:id' do
     context 'admin user' do
       context 'when runner is shared' do
-        it 'should delete runner' do
+        it 'deletes runner' do
           expect do
             delete api("/runners/#{shared_runner.id}", admin)
           end.to change{ Ci::Runner.shared.count }.by(-1)
@@ -272,14 +272,14 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner is not shared' do
-        it 'should delete unused runner' do
+        it 'deletes unused runner' do
           expect do
             delete api("/runners/#{unused_specific_runner.id}", admin)
           end.to change{ Ci::Runner.specific.count }.by(-1)
           expect(response).to have_http_status(200)
         end
 
-        it 'should delete used runner' do
+        it 'deletes used runner' do
           expect do
             delete api("/runners/#{specific_runner.id}", admin)
           end.to change{ Ci::Runner.specific.count }.by(-1)
@@ -287,7 +287,7 @@ describe API::Runners, api: true  do
         end
       end
 
-      it 'should return 404 if runner does not exists' do
+      it 'returns 404 if runner does not exists' do
         delete api('/runners/9999', admin)
 
         expect(response).to have_http_status(404)
@@ -296,24 +296,24 @@ describe API::Runners, api: true  do
 
     context 'authorized user' do
       context 'when runner is shared' do
-        it 'should not delete runner' do
+        it 'does not delete runner' do
           delete api("/runners/#{shared_runner.id}", user)
           expect(response).to have_http_status(403)
         end
       end
 
       context 'when runner is not shared' do
-        it 'should not delete runner without access to it' do
+        it 'does not delete runner without access to it' do
           delete api("/runners/#{specific_runner.id}", user2)
           expect(response).to have_http_status(403)
         end
 
-        it 'should not delete runner with more than one associated project' do
+        it 'does not delete runner with more than one associated project' do
           delete api("/runners/#{two_projects_runner.id}", user)
           expect(response).to have_http_status(403)
         end
 
-        it 'should delete runner for one owned project' do
+        it 'deletes runner for one owned project' do
           expect do
             delete api("/runners/#{specific_runner.id}", user)
           end.to change{ Ci::Runner.specific.count }.by(-1)
@@ -323,7 +323,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it 'should not delete runner' do
+      it 'does not delete runner' do
         delete api("/runners/#{specific_runner.id}")
 
         expect(response).to have_http_status(401)
@@ -333,7 +333,7 @@ describe API::Runners, api: true  do
 
   describe 'GET /projects/:id/runners' do
     context 'authorized user with master privileges' do
-      it "should return project's runners" do
+      it "returns project's runners" do
         get api("/projects/#{project.id}/runners", user)
         shared = json_response.any?{ |r| r['is_shared'] }
 
@@ -344,7 +344,7 @@ describe API::Runners, api: true  do
     end
 
     context 'authorized user without master privileges' do
-      it "should not return project's runners" do
+      it "does not return project's runners" do
         get api("/projects/#{project.id}/runners", user2)
 
         expect(response).to have_http_status(403)
@@ -352,7 +352,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it "should not return project's runners" do
+      it "does not return project's runners" do
         get api("/projects/#{project.id}/runners")
 
         expect(response).to have_http_status(401)
@@ -368,21 +368,21 @@ describe API::Runners, api: true  do
         end
       end
 
-      it 'should enable specific runner' do
+      it 'enables specific runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner2.id
         end.to change{ project.runners.count }.by(+1)
         expect(response).to have_http_status(201)
       end
 
-      it 'should avoid changes when enabling already enabled runner' do
+      it 'avoids changes when enabling already enabled runner' do
         expect do
           post api("/projects/#{project.id}/runners", user), runner_id: specific_runner.id
         end.to change{ project.runners.count }.by(0)
         expect(response).to have_http_status(409)
       end
 
-      it 'should not enable locked runner' do
+      it 'does not enable locked runner' do
         specific_runner2.update(locked: true)
 
         expect do
@@ -392,14 +392,14 @@ describe API::Runners, api: true  do
         expect(response).to have_http_status(403)
       end
 
-      it 'should not enable shared runner' do
+      it 'does not enable shared runner' do
         post api("/projects/#{project.id}/runners", user), runner_id: shared_runner.id
 
         expect(response).to have_http_status(403)
       end
 
       context 'user is admin' do
-        it 'should enable any specific runner' do
+        it 'enables any specific runner' do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
           end.to change{ project.runners.count }.by(+1)
@@ -408,14 +408,14 @@ describe API::Runners, api: true  do
       end
 
       context 'user is not admin' do
-        it 'should not enable runner without access to' do
+        it 'does not enable runner without access to' do
           post api("/projects/#{project.id}/runners", user), runner_id: unused_specific_runner.id
 
           expect(response).to have_http_status(403)
         end
       end
 
-      it 'should raise an error when no runner_id param is provided' do
+      it 'raises an error when no runner_id param is provided' do
         post api("/projects/#{project.id}/runners", admin)
 
         expect(response).to have_http_status(400)
@@ -423,7 +423,7 @@ describe API::Runners, api: true  do
     end
 
     context 'authorized user without permissions' do
-      it 'should not enable runner' do
+      it 'does not enable runner' do
         post api("/projects/#{project.id}/runners", user2)
 
         expect(response).to have_http_status(403)
@@ -431,7 +431,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it 'should not enable runner' do
+      it 'does not enable runner' do
         post api("/projects/#{project.id}/runners")
 
         expect(response).to have_http_status(401)
@@ -442,7 +442,7 @@ describe API::Runners, api: true  do
   describe 'DELETE /projects/:id/runners/:runner_id' do
     context 'authorized user' do
       context 'when runner have more than one associated projects' do
-        it "should disable project's runner" do
+        it "disables project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
           end.to change{ project.runners.count }.by(-1)
@@ -451,7 +451,7 @@ describe API::Runners, api: true  do
       end
 
       context 'when runner have one associated projects' do
-        it "should not disable project's runner" do
+        it "does not disable project's runner" do
           expect do
             delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
           end.to change{ project.runners.count }.by(0)
@@ -459,7 +459,7 @@ describe API::Runners, api: true  do
         end
       end
 
-      it 'should return 404 is runner is not found' do
+      it 'returns 404 is runner is not found' do
         delete api("/projects/#{project.id}/runners/9999", user)
 
         expect(response).to have_http_status(404)
@@ -467,7 +467,7 @@ describe API::Runners, api: true  do
     end
 
     context 'authorized user without permissions' do
-      it "should not disable project's runner" do
+      it "does not disable project's runner" do
         delete api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
 
         expect(response).to have_http_status(403)
@@ -475,7 +475,7 @@ describe API::Runners, api: true  do
     end
 
     context 'unauthorized user' do
-      it "should not disable project's runner" do
+      it "does not disable project's runner" do
         delete api("/projects/#{project.id}/runners/#{specific_runner.id}")
 
         expect(response).to have_http_status(401)

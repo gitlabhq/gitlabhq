@@ -5,7 +5,9 @@ describe Ci::Build, models: true do
 
   let(:pipeline) do
     create(:ci_pipeline, project: project,
-                         sha: project.commit.id)
+                         sha: project.commit.id,
+                         ref: project.default_branch,
+                         status: 'success')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline) }
@@ -30,7 +32,7 @@ describe Ci::Build, models: true do
     end
     let(:create_from_build) { Ci::Build.create_from build }
 
-    it 'there should be a pending task' do
+    it 'exists a pending task' do
       expect(Ci::Build.pending.count(:all)).to eq 0
       create_from_build
       expect(Ci::Build.pending.count(:all)).to be > 0
@@ -40,7 +42,7 @@ describe Ci::Build, models: true do
   describe '#ignored?' do
     subject { build.ignored? }
 
-    context 'if build is not allowed to fail' do
+    context 'when build is not allowed to fail' do
       before do
         build.allow_failure = false
       end
@@ -62,7 +64,7 @@ describe Ci::Build, models: true do
       end
     end
 
-    context 'if build is allowed to fail' do
+    context 'when build is allowed to fail' do
       before do
         build.allow_failure = true
       end
@@ -90,7 +92,7 @@ describe Ci::Build, models: true do
 
     it { is_expected.to be_empty }
 
-    context 'if build.trace contains text' do
+    context 'when build.trace contains text' do
       let(:text) { 'example output' }
       before do
         build.trace = text
@@ -100,7 +102,7 @@ describe Ci::Build, models: true do
       it { expect(subject.length).to be >= text.length }
     end
 
-    context 'if build.trace hides token' do
+    context 'when build.trace hides token' do
       let(:token) { 'my_secret_token' }
 
       before do
@@ -257,7 +259,7 @@ describe Ci::Build, models: true do
       let(:trigger) { create(:ci_trigger, project: project) }
       let(:trigger_request) { create(:ci_trigger_request_with_variables, pipeline: pipeline, trigger: trigger) }
       let(:user_trigger_variable) do
-        { key: :TRIGGER_KEY, value: 'TRIGGER_VALUE', public: false }
+        { key: :TRIGGER_KEY_1, value: 'TRIGGER_VALUE_1', public: false }
       end
       let(:predefined_trigger_variable) do
         { key: 'CI_BUILD_TRIGGERED', value: 'true', public: true }
@@ -281,13 +283,13 @@ describe Ci::Build, models: true do
           stub_ci_pipeline_yaml_file(config)
         end
 
-        context 'if config is not found' do
+        context 'when config is not found' do
           let(:config) { nil }
 
           it { is_expected.to eq(predefined_variables) }
         end
 
-        context 'if config does not have a questioned job' do
+        context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
               test_other: {
@@ -299,7 +301,7 @@ describe Ci::Build, models: true do
           it { is_expected.to eq(predefined_variables) }
         end
 
-        context 'if config has variables' do
+        context 'when config has variables' do
           let(:config) do
             YAML.dump({
               test: {
@@ -391,7 +393,7 @@ describe Ci::Build, models: true do
       it { is_expected.to be_falsey }
     end
 
-    context 'if there are runner' do
+    context 'when there are runners' do
       let(:runner) { create(:ci_runner) }
 
       before do
@@ -421,29 +423,27 @@ describe Ci::Build, models: true do
   describe '#stuck?' do
     subject { build.stuck? }
 
-    %w(pending).each do |state|
-      context "if commit_status.status is #{state}" do
+    context "when commit_status.status is pending" do
+      before do
+        build.status = 'pending'
+      end
+
+      it { is_expected.to be_truthy }
+
+      context "and there are specific runner" do
+        let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
+
         before do
-          build.status = state
+          build.project.runners << runner
+          runner.save
         end
 
-        it { is_expected.to be_truthy }
-
-        context "and there are specific runner" do
-          let(:runner) { create(:ci_runner, contacted_at: 1.second.ago) }
-
-          before do
-            build.project.runners << runner
-            runner.save
-          end
-
-          it { is_expected.to be_falsey }
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
-    %w(success failed canceled running).each do |state|
-      context "if commit_status.status is #{state}" do
+    %w[success failed canceled running].each do |state|
+      context "when commit_status.status is #{state}" do
         before do
           build.status = state
         end
@@ -571,19 +571,19 @@ describe Ci::Build, models: true do
     let!(:rubocop_test) { create(:ci_build, pipeline: pipeline, name: 'rubocop', stage_idx: 1, stage: 'test') }
     let!(:staging) { create(:ci_build, pipeline: pipeline, name: 'staging', stage_idx: 2, stage: 'deploy') }
 
-    it 'to have no dependents if this is first build' do
+    it 'expects to have no dependents if this is first build' do
       expect(build.depends_on_builds).to be_empty
     end
 
-    it 'to have one dependent if this is test' do
+    it 'expects to have one dependent if this is test' do
       expect(rspec_test.depends_on_builds.map(&:id)).to contain_exactly(build.id)
     end
 
-    it 'to have all builds from build and test stage if this is last' do
+    it 'expects to have all builds from build and test stage if this is last' do
       expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, rspec_test.id, rubocop_test.id)
     end
 
-    it 'to have retried builds instead the original ones' do
+    it 'expects to have retried builds instead the original ones' do
       retried_rspec = Ci::Build.retry(rspec_test)
       expect(staging.depends_on_builds.map(&:id)).to contain_exactly(build.id, retried_rspec.id, rubocop_test.id)
     end
@@ -653,23 +653,23 @@ describe Ci::Build, models: true do
 
   describe 'build erasable' do
     shared_examples 'erasable' do
-      it 'should remove artifact file' do
+      it 'removes artifact file' do
         expect(build.artifacts_file.exists?).to be_falsy
       end
 
-      it 'should remove artifact metadata file' do
+      it 'removes artifact metadata file' do
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
-      it 'should erase build trace in trace file' do
+      it 'erases build trace in trace file' do
         expect(build.trace).to be_empty
       end
 
-      it 'should set erased to true' do
+      it 'sets erased to true' do
         expect(build.erased?).to be true
       end
 
-      it 'should set erase date' do
+      it 'sets erase date' do
         expect(build.erased_at).not_to be_falsy
       end
     end
@@ -702,7 +702,7 @@ describe Ci::Build, models: true do
 
           include_examples 'erasable'
 
-          it 'should record user who erased a build' do
+          it 'records user who erased a build' do
             expect(build.erased_by).to eq user
           end
         end
@@ -712,7 +712,7 @@ describe Ci::Build, models: true do
 
           include_examples 'erasable'
 
-          it 'should not set user who erased a build' do
+          it 'does not set user who erased a build' do
             expect(build.erased_by).to be_nil
           end
         end
@@ -720,7 +720,7 @@ describe Ci::Build, models: true do
 
       describe '#erasable?' do
         subject { build.erasable? }
-        it { is_expected.to eq true }
+        it { is_expected.to be_truthy }
       end
 
       describe '#erased?' do
@@ -728,7 +728,7 @@ describe Ci::Build, models: true do
         subject { build.erased? }
 
         context 'build has not been erased' do
-          it { is_expected.to be false }
+          it { is_expected.to be_falsey }
         end
 
         context 'build has been erased' do
@@ -736,18 +736,19 @@ describe Ci::Build, models: true do
             build.erase
           end
 
-          it { is_expected.to be true }
+          it { is_expected.to be_truthy }
         end
       end
 
       context 'metadata and build trace are not available' do
         let!(:build) { create(:ci_build, :success, :artifacts) }
+
         before do
           build.remove_artifacts_metadata!
         end
 
         describe '#erase' do
-          it 'should not raise error' do
+          it 'does not raise error' do
             expect { build.erase }.not_to raise_error
           end
         end
@@ -761,21 +762,68 @@ describe Ci::Build, models: true do
     end
   end
 
+  describe '#when' do
+    subject { build.when }
+
+    context 'when `when` is undefined' do
+      before do
+        build.when = nil
+      end
+
+      context 'use from gitlab-ci.yml' do
+        before do
+          stub_ci_pipeline_yaml_file(config)
+        end
+
+        context 'when config is not found' do
+          let(:config) { nil }
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'when config does not have a questioned job' do
+          let(:config) do
+            YAML.dump({
+                        test_other: {
+                          script: 'Hello World'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('on_success') }
+        end
+
+        context 'when config has `when`' do
+          let(:config) do
+            YAML.dump({
+                        test: {
+                          script: 'Hello World',
+                          when: 'always'
+                        }
+                      })
+          end
+
+          it { is_expected.to eq('always') }
+        end
+      end
+    end
+  end
+
   describe '#retryable?' do
     context 'when build is running' do
-      before { build.run! }
-
-      it 'should return false' do
-        expect(build.retryable?).to be false
+      before do
+        build.run!
       end
+
+      it { expect(build).not_to be_retryable }
     end
 
     context 'when build is finished' do
-      before { build.success! }
-
-      it 'should return true' do
-        expect(build.retryable?).to be true
+      before do
+        build.success!
       end
+
+      it { expect(build).to be_retryable }
     end
   end
 
@@ -831,13 +879,15 @@ describe Ci::Build, models: true do
 
     subject { build.play }
 
-    it 'enques a build' do
+    it 'enqueues a build' do
       is_expected.to be_pending
       is_expected.to eq(build)
     end
 
-    context 'for success build' do
-      before { build.queue }
+    context 'for successful build' do
+      before do
+        build.update(status: 'success')
+      end
 
       it 'creates a new build' do
         is_expected.to be_pending
@@ -849,7 +899,7 @@ describe Ci::Build, models: true do
   describe '#when' do
     subject { build.when }
 
-    context 'if is undefined' do
+    context 'when `when` is undefined' do
       before do
         build.when = nil
       end
@@ -859,13 +909,13 @@ describe Ci::Build, models: true do
           stub_ci_pipeline_yaml_file(config)
         end
 
-        context 'if config is not found' do
+        context 'when config is not found' do
           let(:config) { nil }
 
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config does not have a questioned job' do
+        context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
                         test_other: {
@@ -877,7 +927,7 @@ describe Ci::Build, models: true do
           it { is_expected.to eq('on_success') }
         end
 
-        context 'if config has when' do
+        context 'when config has when' do
           let(:config) do
             YAML.dump({
                         test: {
@@ -897,7 +947,7 @@ describe Ci::Build, models: true do
     context 'when build is running' do
       before { build.run! }
 
-      it 'should return false' do
+      it 'returns false' do
         expect(build.retryable?).to be false
       end
     end
@@ -905,7 +955,7 @@ describe Ci::Build, models: true do
     context 'when build is finished' do
       before { build.success! }
 
-      it 'should return true' do
+      it 'returns true' do
         expect(build.retryable?).to be true
       end
     end

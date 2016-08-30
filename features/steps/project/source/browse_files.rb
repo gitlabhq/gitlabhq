@@ -44,7 +44,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content with new lines preserved at end of file' do
-    expect(evaluate_script('blob.editor.getValue()')).to eq "Sample\n\n\n"
+    expect(evaluate_script('ace.edit("editor").getValue()')).to eq "Sample\n\n\n"
   end
 
   step 'I click link "Raw"' do
@@ -65,15 +65,16 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I can edit code' do
     set_new_content
-    expect(evaluate_script('blob.editor.getValue()')).to eq new_gitignore_content
+    expect(evaluate_script('ace.edit("editor").getValue()')).to eq new_gitignore_content
   end
 
   step 'I edit code' do
+    expect(page).to have_selector('.file-editor')
     set_new_content
   end
 
   step 'I edit code with new lines at end of file' do
-    execute_script('blob.editor.setValue("Sample\n\n\n")')
+    execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
   end
 
   step 'I fill the new file name' do
@@ -131,6 +132,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   step 'I click on "New file" link in repo' do
     find('.add-to-tree').click
     click_link 'New file'
+    expect(page).to have_selector('.file-editor')
   end
 
   step 'I click on "Upload file" link in repo' do
@@ -293,7 +295,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     first('.js-project-refs-dropdown').click
 
     page.within '.project-refs-form' do
-      click_link 'test'
+      click_link "'test'"
     end
   end
 
@@ -376,7 +378,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   private
 
   def set_new_content
-    execute_script("blob.editor.setValue('#{new_gitignore_content}')")
+    execute_script("ace.edit('editor').setValue('#{new_gitignore_content}')")
   end
 
   # Content of the gitignore file on the seed repository.

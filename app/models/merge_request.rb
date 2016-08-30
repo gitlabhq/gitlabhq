@@ -10,14 +10,16 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_one :merge_request_diff, dependent: :destroy
+  has_many :merge_request_diffs, dependent: :destroy
+  has_one :merge_request_diff,
+    -> { order('merge_request_diffs.id DESC') }
 
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff, unless: :importing?
-  after_update :update_merge_request_diff
+  after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :reload_diff_if_branch_changed
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
 
@@ -104,6 +106,7 @@ class MergeRequest < ActiveRecord::Base
   scope :from_project, ->(project) { where(source_project_id: project.id) }
   scope :merged, -> { with_state(:merged) }
   scope :closed_and_merged, -> { with_states(:closed, :merged) }
+  scope :from_source_branches, ->(branches) { where(source_branch: branches) }
 
   scope :join_project, -> { joins(:target_project) }
   scope :references_project, -> { references(:target_project) }
@@ -164,8 +167,16 @@ class MergeRequest < ActiveRecord::Base
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
 
-  def diffs(*args)
-    merge_request_diff ? merge_request_diff.diffs(*args) : compare.diffs(*args)
+  def raw_diffs(*args)
+    merge_request_diff ? merge_request_diff.raw_diffs(*args) : compare.raw_diffs(*args)
+  end
+
+  def diffs(diff_options = nil)
+    if compare
+      compare.diffs(diff_options)
+    else
+      merge_request_diff.diffs(diff_options)
+    end
   end
 
   def diff_size
@@ -175,8 +186,8 @@ class MergeRequest < ActiveRecord::Base
   def diff_base_commit
     if persisted?
       merge_request_diff.base_commit
-    elsif diff_start_commit && diff_head_commit
-      self.target_project.merge_base_commit(diff_start_sha, diff_head_sha)
+    else
+      branch_merge_base_commit
     end
   end
 
@@ -237,12 +248,21 @@ class MergeRequest < ActiveRecord::Base
     target_project.repository.commit(target_branch) if target_branch_ref
   end
 
+  def branch_merge_base_commit
+    start_sha = target_branch_sha
+    head_sha  = source_branch_sha
+
+    if start_sha && head_sha
+      target_project.merge_base_commit(start_sha, head_sha)
+    end
+  end
+
   def target_branch_sha
-    target_branch_head.try(:sha)
+    @target_branch_sha || target_branch_head.try(:sha)
   end
 
   def source_branch_sha
-    source_branch_head.try(:sha)
+    @source_branch_sha || source_branch_head.try(:sha)
   end
 
   def diff_refs
@@ -253,6 +273,19 @@ class MergeRequest < ActiveRecord::Base
       start_sha: diff_start_sha,
       head_sha:  diff_head_sha
     )
+  end
+
+  # Return diff_refs instance trying to not touch the git repository
+  def diff_sha_refs
+    if merge_request_diff && merge_request_diff.diff_refs_by_sha?
+      merge_request_diff.diff_refs
+    else
+      diff_refs
+    end
+  end
+
+  def branch_merge_base_sha
+    branch_merge_base_commit.try(:sha)
   end
 
   def validate_branches
@@ -287,19 +320,31 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def update_merge_request_diff
+  def ensure_merge_request_diff
+    merge_request_diff || create_merge_request_diff
+  end
+
+  def create_merge_request_diff
+    merge_request_diffs.create
+    reload_merge_request_diff
+  end
+
+  def reload_merge_request_diff
+    merge_request_diff(true)
+  end
+
+  def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
   def reload_diff
-    return unless merge_request_diff && open?
+    return unless open?
 
     old_diff_refs = self.diff_refs
-
-    merge_request_diff.reload_content
-
+    create_merge_request_diff
+    MergeRequests::MergeRequestDiffCacheService.new.execute(self)
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
@@ -392,6 +437,32 @@ class MergeRequest < ActiveRecord::Base
       target_project_id: target_project_id,
       source_project_id: source_project_id
     )
+  end
+
+  def discussions
+    @discussions ||= self.mr_and_commit_notes.
+      inc_relations_for_view.
+      fresh.
+      discussions
+  end
+
+  def diff_discussions
+    @diff_discussions ||= self.notes.diff_notes.discussions
+  end
+
+  def find_diff_discussion(discussion_id)
+    notes = self.notes.diff_notes.where(discussion_id: discussion_id).fresh.to_a
+    return if notes.empty?
+
+    Discussion.new(notes)
+  end
+
+  def discussions_resolvable?
+    diff_discussions.any?(&:resolvable?)
+  end
+
+  def discussions_resolved?
+    discussions_resolvable? && diff_discussions.none?(&:to_be_resolved?)
   end
 
   def hook_attrs
@@ -567,6 +638,14 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
+  def environments
+    return unless diff_head_commit
+
+    target_project.environments.select do |environment|
+      environment.includes_commit?(diff_head_commit)
+    end
+  end
+
   def state_human_name
     if merged?
       "Merged"
@@ -642,8 +721,19 @@ class MergeRequest < ActiveRecord::Base
     diverged_commits_count > 0
   end
 
+  def commits_sha
+    commits.map(&:sha)
+  end
+
   def pipeline
     @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+  end
+
+  def all_pipelines
+    @all_pipelines ||=
+      if diff_head_sha && source_project
+        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
+      end
   end
 
   def merge_commit
@@ -658,12 +748,12 @@ class MergeRequest < ActiveRecord::Base
     merge_commit
   end
 
-  def support_new_diff_notes?
-    diff_refs && diff_refs.complete?
+  def has_complete_diff_refs?
+    diff_sha_refs && diff_sha_refs.complete?
   end
 
   def update_diff_notes_positions(old_diff_refs:, new_diff_refs:)
-    return unless support_new_diff_notes?
+    return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
 
     active_diff_notes = self.notes.diff_notes.select do |note|
@@ -690,5 +780,31 @@ class MergeRequest < ActiveRecord::Base
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
+  end
+
+  def conflicts
+    @conflicts ||= Gitlab::Conflict::FileCollection.new(self)
+  end
+
+  def conflicts_can_be_resolved_by?(user)
+    access = ::Gitlab::UserAccess.new(user, project: source_project)
+    access.can_push_to_branch?(source_branch)
+  end
+
+  def conflicts_can_be_resolved_in_ui?
+    return @conflicts_can_be_resolved_in_ui if defined?(@conflicts_can_be_resolved_in_ui)
+
+    return @conflicts_can_be_resolved_in_ui = false unless cannot_be_merged?
+    return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
+
+    begin
+      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
+      # ensure that we don't say there are conflicts to resolve when there are no conflict
+      # files.
+      conflicts.files.each(&:lines)
+      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
+    rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      @conflicts_can_be_resolved_in_ui = false
+    end
   end
 end

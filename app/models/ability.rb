@@ -6,6 +6,10 @@ class Ability
       return [] unless user.is_a?(User)
       return [] if user.blocked?
 
+      abilities_by_subject_class(user: user, subject: subject)
+    end
+
+    def abilities_by_subject_class(user:, subject:)
       case subject
       when CommitStatus then commit_status_abilities(user, subject)
       when Project then project_abilities(user, subject)
@@ -47,6 +51,16 @@ class Ability
       end
     end
 
+    # Returns an Array of Issues that can be read by the given user.
+    #
+    # issues - The issues to reduce down to those readable by the user.
+    # user - The User for which to check the issues
+    def issues_readable_by_user(issues, user = nil)
+      return issues if user && user.admin?
+
+      issues.select { |issue| issue.visible_to_user?(user) }
+    end
+
     # List of possible abilities for anonymous user
     def anonymous_abilities(user, subject)
       if subject.is_a?(PersonalSnippet)
@@ -76,6 +90,8 @@ class Ability
       if project && project.public?
         rules = [
           :read_project,
+          :read_board,
+          :read_list,
           :read_wiki,
           :read_label,
           :read_milestone,
@@ -150,38 +166,44 @@ class Ability
     end
 
     def project_abilities(user, project)
-      rules = []
       key = "/user/#{user.id}/project/#{project.id}"
 
-      RequestStore.store[key] ||= begin
-        # Push abilities on the users team role
-        rules.push(*project_team_rules(project.team, user))
-
-        owner = user.admin? ||
-                project.owner == user ||
-                (project.group && project.group.has_owner?(user))
-
-        if owner
-          rules.push(*project_owner_rules)
-        end
-
-        if project.public? || (project.internal? && !user.external?)
-          rules.push(*public_project_rules)
-
-          # Allow to read builds for internal projects
-          rules << :read_build if project.public_builds?
-
-          unless owner || project.team.member?(user) || project_group_member?(project, user)
-            rules << :request_access if project.request_access_enabled
-          end
-        end
-
-        if project.archived?
-          rules -= project_archived_rules
-        end
-
-        rules - project_disabled_features_rules(project)
+      if RequestStore.active?
+        RequestStore.store[key] ||= uncached_project_abilities(user, project)
+      else
+        uncached_project_abilities(user, project)
       end
+    end
+
+    def uncached_project_abilities(user, project)
+      rules = []
+      # Push abilities on the users team role
+      rules.push(*project_team_rules(project.team, user))
+
+      owner = user.admin? ||
+              project.owner == user ||
+              (project.group && project.group.has_owner?(user))
+
+      if owner
+        rules.push(*project_owner_rules)
+      end
+
+      if project.public? || (project.internal? && !user.external?)
+        rules.push(*public_project_rules)
+
+        # Allow to read builds for internal projects
+        rules << :read_build if project.public_builds?
+
+        unless owner || project.team.member?(user) || project_group_member?(project, user)
+          rules << :request_access if project.request_access_enabled
+        end
+      end
+
+      if project.archived?
+        rules -= project_archived_rules
+      end
+
+      (rules - project_disabled_features_rules(project)).uniq
     end
 
     def project_team_rules(team, user)
@@ -214,6 +236,8 @@ class Ability
         :read_project,
         :read_wiki,
         :read_issue,
+        :read_board,
+        :read_list,
         :read_label,
         :read_milestone,
         :read_project_snippet,
@@ -235,6 +259,7 @@ class Ability
         :update_issue,
         :admin_issue,
         :admin_label,
+        :admin_list,
         :read_commit_status,
         :read_build,
         :read_container_image,
@@ -257,6 +282,7 @@ class Ability
         :create_merge_request,
         :create_wiki,
         :push_code,
+        :resolve_note,
         :create_container_image,
         :update_container_image,
         :create_environment,
@@ -388,6 +414,18 @@ class Ability
       GroupProjectsFinder.new(group).execute(user).any?
     end
 
+    def can_edit_note?(user, note)
+      return false if !note.editable? || !user.present?
+      return true if note.author == user || user.admin?
+
+      if note.project
+        max_access_level = note.project.team.max_member_access(user.id)
+        max_access_level >= Gitlab::Access::MASTER
+      else
+        false
+      end
+    end
+
     def namespace_abilities(user, namespace)
       rules = []
 
@@ -426,12 +464,17 @@ class Ability
         rules += [
           :read_note,
           :update_note,
-          :admin_note
+          :admin_note,
+          :resolve_note
         ]
       end
 
       if note.respond_to?(:project) && note.project
         rules += project_abilities(user, note.project)
+      end
+
+      if note.for_merge_request? && note.noteable.author == user
+        rules << :resolve_note
       end
 
       rules

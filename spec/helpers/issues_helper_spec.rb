@@ -5,69 +5,24 @@ describe IssuesHelper do
   let(:issue) { create :issue, project: project }
   let(:ext_project) { create :redmine_project }
 
-  describe "url_for_project_issues" do
-    let(:project_url) { ext_project.external_issue_tracker.project_url }
-    let(:ext_expected) { project_url.gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { polymorphic_path([@project.namespace, project]) }
-
-    it "should return internal path if used internal tracker" do
-      @project = project
-      expect(url_for_project_issues).to match(int_expected)
-    end
-
-    it "should return path to external tracker" do
-      @project = ext_project
-
-      expect(url_for_project_issues).to match(ext_expected)
-    end
-
-    it "should return empty string if project nil" do
-      @project = nil
-
-      expect(url_for_project_issues).to eq ""
-    end
-
-    it 'returns an empty string if project_url is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.project_url') { 'javascript:alert("foo");' }
-
-      expect(url_for_project_issues(project)).to eq ''
-    end
-
-    it 'returns an empty string if project_path is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.project_path') { 'javascript:alert("foo");' }
-
-      expect(url_for_project_issues(project, only_path: true)).to eq ''
-    end
-
-    describe "when external tracker was enabled and then config removed" do
-      before do
-        @project = ext_project
-        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
-      end
-
-      it "should return path to external tracker" do
-        expect(url_for_project_issues).to match(ext_expected)
-      end
-    end
-  end
-
   describe "url_for_issue" do
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) { issues_url.gsub(':id', issue.iid.to_s).gsub(':project_id', ext_project.id.to_s) }
     let(:int_expected) { polymorphic_path([@project.namespace, project, issue]) }
 
-    it "should return internal path if used internal tracker" do
+    it "returns internal path if used internal tracker" do
       @project = project
+
       expect(url_for_issue(issue.iid)).to match(int_expected)
     end
 
-    it "should return path to external tracker" do
+    it "returns path to external tracker" do
       @project = ext_project
 
       expect(url_for_issue(issue.iid)).to match(ext_expected)
     end
 
-    it "should return empty string if project nil" do
+    it "returns empty string if project nil" do
       @project = nil
 
       expect(url_for_issue(issue.iid)).to eq ""
@@ -91,54 +46,8 @@ describe IssuesHelper do
         allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
-      it "should return external path" do
+      it "returns external path" do
         expect(url_for_issue(issue.iid)).to match(ext_expected)
-      end
-    end
-  end
-
-  describe 'url_for_new_issue' do
-    let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
-    let(:ext_expected) { issues_url.gsub(':project_id', ext_project.id.to_s) }
-    let(:int_expected) { new_namespace_project_issue_path(project.namespace, project) }
-
-    it "should return internal path if used internal tracker" do
-      @project = project
-      expect(url_for_new_issue).to match(int_expected)
-    end
-
-    it "should return path to external tracker" do
-      @project = ext_project
-
-      expect(url_for_new_issue).to match(ext_expected)
-    end
-
-    it "should return empty string if project nil" do
-      @project = nil
-
-      expect(url_for_new_issue).to eq ""
-    end
-
-    it 'returns an empty string if issue_url is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.new_issue_url') { 'javascript:alert("foo");' }
-
-      expect(url_for_new_issue(project)).to eq ''
-    end
-
-    it 'returns an empty string if issue_path is invalid' do
-      expect(project).to receive_message_chain('issues_tracker.new_issue_path') { 'javascript:alert("foo");' }
-
-      expect(url_for_new_issue(project, only_path: true)).to eq ''
-    end
-
-    describe "when external tracker was enabled and then config removed" do
-      before do
-        @project = ext_project
-        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
-      end
-
-      it "should return internal path" do
-        expect(url_for_new_issue).to match(ext_expected)
       end
     end
   end
@@ -151,6 +60,32 @@ describe IssuesHelper do
     end
 
     it { is_expected.to eq("!1, !2, or !3") }
+  end
+
+  describe '#award_user_list' do
+    let!(:awards) { build_list(:award_emoji, 15) }
+
+    it "returns a comma seperated list of 1-9 users" do
+      expect(award_user_list(awards.first(9), nil)).to eq(awards.first(9).map { |a| a.user.name }.to_sentence)
+    end
+
+    it "displays the current user's name as 'You'" do
+      expect(award_user_list(awards.first(1), awards[0].user)).to eq('You')
+    end
+
+    it "truncates lists of larger than 9 users" do
+      expect(award_user_list(awards, nil)).to eq(awards.first(9).map { |a| a.user.name }.join(', ') + ", and 6 more.")
+    end
+
+    it "displays the current user in front of 0-9 other users" do
+      expect(award_user_list(awards, awards[0].user)).
+        to eq("You, " + awards[1..9].map { |a| a.user.name }.join(', ') + ", and 5 more.")
+    end
+
+    it "displays the current user in front regardless of position in the list" do
+      expect(award_user_list(awards, awards[12].user)).
+        to eq("You, " + awards[0..8].map { |a| a.user.name }.join(', ') + ", and 5 more.")
+    end
   end
 
   describe '#award_active_class' do

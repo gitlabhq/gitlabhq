@@ -85,6 +85,11 @@ module Gitlab
     config.assets.precompile << "users/users_bundle.js"
     config.assets.precompile << "network/network_bundle.js"
     config.assets.precompile << "profile/profile_bundle.js"
+    config.assets.precompile << "diff_notes/diff_notes_bundle.js"
+    config.assets.precompile << "boards/boards_bundle.js"
+    config.assets.precompile << "boards/test_utils/simulate_drag.js"
+    config.assets.precompile << "blob_edit/blob_edit_bundle.js"
+    config.assets.precompile << "snippet/snippet_bundle.js"
     config.assets.precompile << "lib/utils/*.js"
     config.assets.precompile << "lib/*.js"
     config.assets.precompile << "u2f.js"
@@ -107,7 +112,8 @@ module Gitlab
       end
     end
 
-    redis_config_hash = Gitlab::Redis.redis_store_options
+    # Use Redis caching across all environments
+    redis_config_hash = Gitlab::Redis.params
     redis_config_hash[:namespace] = Gitlab::Redis::CACHE_NAMESPACE
     redis_config_hash[:expires_in] = 2.weeks # Cache should not grow forever
     config.cache_store = :redis_store, redis_config_hash

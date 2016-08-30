@@ -13,34 +13,36 @@ If you want a quick introduction to GitLab CI, follow our
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [.gitlab-ci.yml](#gitlab-ci-yml)
-  - [image and services](#image-and-services)
-  - [before_script](#before_script)
-  - [after_script](#after_script)
-  - [stages](#stages)
-  - [types](#types)
-  - [variables](#variables)
-  - [cache](#cache)
-    - [cache:key](#cache-key)
+    - [image and services](#image-and-services)
+    - [before_script](#before_script)
+    - [after_script](#after_script)
+    - [stages](#stages)
+    - [types](#types)
+    - [variables](#variables)
+    - [cache](#cache)
+        - [cache:key](#cache-key)
 - [Jobs](#jobs)
-  - [script](#script)
-  - [stage](#stage)
-  - [only and except](#only-and-except)
-  - [job variables](#job-variables)
-  - [tags](#tags)
-  - [when](#when)
-  - [environment](#environment)
-  - [artifacts](#artifacts)
-    - [artifacts:name](#artifactsname)
-    - [artifacts:when](#artifactswhen)
-    - [artifacts:expire_in](#artifactsexpire_in)
-  - [dependencies](#dependencies)
-  - [before_script and after_script](#before_script-and-after_script)
+    - [script](#script)
+    - [stage](#stage)
+    - [only and except](#only-and-except)
+    - [job variables](#job-variables)
+    - [tags](#tags)
+    - [allow_failure](#allow_failure)
+    - [when](#when)
+        - [Manual actions](#manual-actions)
+    - [environment](#environment)
+    - [artifacts](#artifacts)
+        - [artifacts:name](#artifacts-name)
+        - [artifacts:when](#artifacts-when)
+        - [artifacts:expire_in](#artifacts-expire_in)
+    - [dependencies](#dependencies)
+    - [before_script and after_script](#before_script-and-after_script)
 - [Git Strategy](#git-strategy)
 - [Shallow cloning](#shallow-cloning)
 - [Hidden jobs](#hidden-jobs)
 - [Special YAML features](#special-yaml-features)
-  - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ciyml)
+    - [Anchors](#anchors)
+- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
 - [Skipping builds](#skipping-builds)
 - [Examples](#examples)
 
@@ -351,7 +353,7 @@ job_name:
 | except        | no | Defines a list of git refs for which build is not created |
 | tags          | no | Defines a list of tags which are used to select Runner |
 | allow_failure | no | Allow build to fail. Failed build doesn't contribute to commit status |
-| when          | no | Define when to run build. Can be `on_success`, `on_failure` or `always` |
+| when          | no | Define when to run build. Can be `on_success`, `on_failure`, `always` or `manual` |
 | dependencies  | no | Define other builds that a build depends on so that you can pass artifacts between them|
 | artifacts     | no | Define list of build artifacts |
 | cache         | no | Define list of files that should be cached between subsequent runs |
@@ -376,6 +378,8 @@ job:
     - uname -a
     - bundle exec rspec
 ```
+
+Sometimes, `script` commands will need to be wrapped in single or double quotes. For example, commands that contain a colon (`:`) need to be wrapped in quotes so that the YAML parser knows to interpret the whole thing as a string rather than a "key: value" pair. Be careful when using special characters (`:`, `{`, `}`, `[`, `]`, `,`, `&`, `*`, `#`, `?`, `|`, `-`, `<`, `>`, `=`, `!`, `%`, `@`, `` ` ``).
 
 ### stage
 
@@ -472,6 +476,39 @@ job:
 
 The specification above, will make sure that `job` is built by a Runner that
 has both `ruby` AND `postgres` tags defined.
+
+### allow_failure
+
+`allow_failure` is used when you want to allow a build to fail without impacting
+the rest of the CI suite. Failed builds don't contribute to the commit status.
+
+When enabled and the build fails, the pipeline will be successful/green for all
+intents and purposes, but a "CI build passed with warnings" message  will be
+displayed on the merge request or commit or build page. This is to be used by
+builds that are allowed to fail, but where failure indicates some other (manual)
+steps should be taken elsewhere.
+
+In the example below, `job1` and `job2` will run in parallel, but if `job1`
+fails, it will not stop the next stage from running, since it's marked with
+`allow_failure: true`:
+
+```yaml
+job1:
+  stage: test
+  script:
+  - execute_script_that_will_fail
+  allow_failure: true
+
+job2:
+  stage: test
+  script:
+  - execute_script_that_will_succeed
+
+job3:
+  stage: deploy
+  script:
+  - deploy_to_staging
+```
 
 ### when
 

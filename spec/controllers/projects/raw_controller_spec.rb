@@ -24,7 +24,7 @@ describe Projects::RawController do
     context 'image header' do
       let(:id) { 'master/files/images/6049019_460s.jpg' }
 
-      it 'set image content type header' do
+      it 'sets image content type header' do
         get(:show,
             namespace_id: public_project.namespace.to_param,
             project_id: public_project.to_param,

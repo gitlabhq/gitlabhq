@@ -123,7 +123,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -172,7 +173,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :import_url,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -234,7 +236,8 @@ module API
                                      :shared_runners_enabled,
                                      :public,
                                      :visibility_level,
-                                     :public_builds]
+                                     :public_builds,
+                                     :only_allow_merge_if_build_succeeds]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -323,7 +326,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(user_project, current_user, {}).pending_delete!
+        ::Projects::DestroyService.new(user_project, current_user, {}).async_execute
       end
 
       # Mark this project as forked from another

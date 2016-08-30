@@ -26,17 +26,17 @@ describe 'Filter issues', feature: true do
     end
 
     context 'assignee', js: true do
-      it 'should update to current user' do
+      it 'updates to current user' do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
       end
 
-      it 'should not change when closed link is clicked' do
+      it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
       end
 
-      it 'should not change when all link is clicked' do
+      it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
@@ -56,17 +56,17 @@ describe 'Filter issues', feature: true do
     end
 
     context 'milestone', js: true do
-      it 'should update to current milestone' do
+      it 'updates to current milestone' do
         expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
       end
 
-      it 'should not change when closed link is clicked' do
+      it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
         expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
       end
 
-      it 'should not change when all link is clicked' do
+      it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
         expect(find('.js-milestone-select .dropdown-toggle-text')).to have_content(milestone.title)
@@ -81,7 +81,7 @@ describe 'Filter issues', feature: true do
       wait_for_ajax
     end
 
-    it 'should filter by any label' do
+    it 'filters by any label' do
       find('.dropdown-menu-labels a', text: 'Any Label').click
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
       wait_for_ajax
@@ -89,7 +89,7 @@ describe 'Filter issues', feature: true do
       expect(find('.labels-filter')).to have_content 'Label'
     end
 
-    it 'should filter by no label' do
+    it 'filters by no label' do
       find('.dropdown-menu-labels a', text: 'No Label').click
       page.first('.labels-filter .dropdown-title .dropdown-menu-close-icon').click
       wait_for_ajax
@@ -100,7 +100,7 @@ describe 'Filter issues', feature: true do
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content('No Label')
     end
 
-    it 'should filter by no label' do
+    it 'filters by no label' do
       find('.dropdown-menu-labels a', text: label.title).click
       page.within '.labels-filter' do
         expect(page).to have_content label.title
@@ -117,7 +117,7 @@ describe 'Filter issues', feature: true do
 
       find('.dropdown-menu-user-link', text: user.username).click
 
-      wait_for_ajax
+      expect(page).not_to have_selector('.issues-list .issue')
 
       find('.js-label-select').click
 
@@ -128,19 +128,19 @@ describe 'Filter issues', feature: true do
     end
 
     context 'assignee and label', js: true do
-      it 'should update to current assignee and label' do
+      it 'updates to current assignee and label' do
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
       end
 
-      it 'should not change when closed link is clicked' do
+      it 'does not change when closed link is clicked' do
         find('.issues-state-filters a', text: "Closed").click
 
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
         expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
       end
 
-      it 'should not change when all link is clicked' do
+      it 'does not change when all link is clicked' do
         find('.issues-state-filters a', text: "All").click
 
         expect(find('.js-assignee-search .dropdown-toggle-text')).to have_content(user.name)
@@ -168,7 +168,7 @@ describe 'Filter issues', feature: true do
     end
 
     context 'only text', js: true do
-      it 'should filter issues by searched text' do
+      it 'filters issues by searched text' do
         fill_in 'issue_search', with: 'Bug'
 
         page.within '.issues-list' do
@@ -176,7 +176,7 @@ describe 'Filter issues', feature: true do
         end
       end
 
-      it 'should not show any issues' do
+      it 'does not show any issues' do
         fill_in 'issue_search', with: 'testing'
 
         page.within '.issues-list' do
@@ -186,7 +186,7 @@ describe 'Filter issues', feature: true do
     end
 
     context 'text and dropdown options', js: true do
-      it 'should filter by text and label' do
+      it 'filters by text and label' do
         fill_in 'issue_search', with: 'Bug'
 
         page.within '.issues-list' do
@@ -204,7 +204,7 @@ describe 'Filter issues', feature: true do
         end
       end
 
-      it 'should filter by text and milestone' do
+      it 'filters by text and milestone' do
         fill_in 'issue_search', with: 'Bug'
 
         page.within '.issues-list' do
@@ -221,7 +221,7 @@ describe 'Filter issues', feature: true do
         end
       end
 
-      it 'should filter by text and assignee' do
+      it 'filters by text and assignee' do
         fill_in 'issue_search', with: 'Bug'
 
         page.within '.issues-list' do
@@ -238,7 +238,7 @@ describe 'Filter issues', feature: true do
         end
       end
 
-      it 'should filter by text and author' do
+      it 'filters by text and author' do
         fill_in 'issue_search', with: 'Bug'
 
         page.within '.issues-list' do
@@ -269,7 +269,7 @@ describe 'Filter issues', feature: true do
       visit namespace_project_issues_path(project.namespace, project)
     end
 
-    it 'should be able to filter and sort issues' do
+    it 'is able to filter and sort issues' do
       click_button 'Label'
       wait_for_ajax
       page.within '.labels-filter' do

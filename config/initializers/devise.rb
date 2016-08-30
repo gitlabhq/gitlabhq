@@ -100,6 +100,9 @@ Devise.setup do |config|
   # secure: true in order to force SSL only cookies.
   # config.cookie_options = {}
 
+  # Send a notification email when the user's password is changed
+  config.send_password_change_notification = true
+
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
   config.password_length = 8..128

@@ -6,44 +6,15 @@
       = page_title
     %p Keep stable branches secure and force developers to use merge requests.
     %p.prepend-top-20
-      Protected branches are designed to:
+      By default, protected branches are designed to:
       %ul
-        %li prevent pushes from everybody except #{link_to "masters", help_page_path("user/permissions"), class: "vlink"}
-        %li prevent anyone from force pushing to the branch
-        %li prevent anyone from deleting the branch
-      %p.append-bottom-0 Read more about #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}
+        %li prevent their creation, if not already created, from everybody except Masters
+        %li prevent pushes from everybody except Masters
+        %li prevent <strong>anyone</strong> from force pushing to the branch
+        %li prevent <strong>anyone</strong> from deleting the branch
+      %p.append-bottom-0 Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
   .col-lg-9
-    %h5.prepend-top-0
-      Protect a branch
     - if can? current_user, :admin_project, @project
-      = form_for [@project.namespace.becomes(Namespace), @project, @protected_branch] do |f|
-        = form_errors(@protected_branch)
+      = render 'create_protected_branch'
 
-        .form-group
-          = f.label :name, "Branch", class: "label-light"
-          = render partial: "dropdown", locals: { f: f }
-          %p.help-block
-            = link_to "Wildcards", help_page_path('workflow/protected_branches', anchor: "wildcard-protected-branches")
-            such as
-            %code *-stable
-            or
-            %code production/*
-            are supported.
-
-        .form-group
-          = f.check_box :developers_can_push, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_push, "Developers can push", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to push to this branch
-
-        .form-group
-          = f.check_box :developers_can_merge, class: "pull-left"
-          .prepend-left-20
-            = f.label :developers_can_merge, "Developers can merge", class: "label-light append-bottom-0"
-            %p.light.append-bottom-0
-              Allow developers to accept merge requests to this branch
-        = f.submit "Protect", class: "btn-create btn protect-branch-btn", disabled: true
-
-    %hr
     = render "branches_list"

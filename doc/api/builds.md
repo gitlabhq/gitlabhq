@@ -14,7 +14,7 @@ GET /projects/:id/builds
 | `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds"
 ```
 
 Example of response
@@ -123,7 +123,7 @@ GET /projects/:id/repository/commits/:sha/builds
 | `scope`   | string **or** array of strings | no | The scope of builds to show, one or array of: `pending`, `running`, `failed`, `success`, `canceled`; showing all builds if none provided |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/repository/commits/0ff3ae198f8601a285adcf5c0fff204ee6fba5fd/builds"
 ```
 
 Example of response
@@ -209,7 +209,7 @@ GET /projects/:id/builds/:build_id
 | `build_id` | integer | yes      | The ID of a build   |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8"
 ```
 
 Example of response
@@ -271,7 +271,7 @@ GET /projects/:id/builds/:build_id/artifacts
 | `build_id` | integer | yes      | The ID of a build   |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/artifacts"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/artifacts"
 ```
 
 Response:
@@ -282,6 +282,40 @@ Response:
 | 404       | Build not found or no artifacts |
 
 [ce-2893]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2893
+
+## Download the artifacts file
+
+> [Introduced][ce-5347] in GitLab 8.10.
+
+Download the artifacts file from the given reference name and job provided the
+build finished successfully.
+
+```
+GET /projects/:id/builds/artifacts/:ref_name/download?job=name
+```
+
+Parameters
+
+| Attribute   | Type    | Required | Description               |
+|-------------|---------|----------|-------------------------- |
+| `id`        | integer | yes      | The ID of a project       |
+| `ref_name`  | string  | yes      | The ref from a repository |
+| `job`       | string  | yes      | The name of the job       |
+
+Example request:
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/artifacts/master/download?job=test"
+```
+
+Example response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 200       | Serves the artifacts file       |
+| 404       | Build not found or no artifacts |
+
+[ce-5347]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5347
 
 ## Get a trace file
 
@@ -297,7 +331,7 @@ GET /projects/:id/builds/:build_id/trace
 | build_id   | integer | yes      | The ID of a build   |
 
 ```
-curl -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/trace"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/8/trace"
 ```
 
 Response:
@@ -321,7 +355,7 @@ POST /projects/:id/builds/:build_id/cancel
 | `build_id` | integer | yes      | The ID of a build   |
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/cancel"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/cancel"
 ```
 
 Example of response
@@ -367,7 +401,7 @@ POST /projects/:id/builds/:build_id/retry
 | `build_id` | integer | yes      | The ID of a build   |
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/retry"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/retry"
 ```
 
 Example of response
@@ -409,7 +443,7 @@ POST /projects/:id/builds/:build_id/erase
 
 Parameters
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `build_id`  | integer | yes      | The ID of a build   |
@@ -417,7 +451,7 @@ Parameters
 Example of request
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/erase"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/erase"
 ```
 
 Example of response
@@ -459,7 +493,7 @@ POST /projects/:id/builds/:build_id/artifacts/keep
 
 Parameters
 
-| Attribute   | Type    | required | Description         |
+| Attribute   | Type    | Required | Description         |
 |-------------|---------|----------|---------------------|
 | `id`        | integer | yes      | The ID of a project |
 | `build_id`  | integer | yes      | The ID of a build   |
@@ -467,7 +501,7 @@ Parameters
 Example request:
 
 ```
-curl -X POST -H "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/artifacts/keep"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/artifacts/keep"
 ```
 
 Example response:
@@ -494,6 +528,52 @@ Example response:
   "started_at": "2016-01-11T10:13:33.506Z",
   "finished_at": "2016-01-11T10:15:10.506Z",
   "status": "failed",
+  "tag": false,
+  "user": null
+}
+```
+
+## Play a build
+
+Triggers a manual action to start a build.
+
+```
+POST /projects/:id/builds/:build_id/play
+```
+
+| Attribute  | Type    | Required | Description         |
+|------------|---------|----------|---------------------|
+| `id`       | integer | yes      | The ID of a project |
+| `build_id` | integer | yes      | The ID of a build   |
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/1/builds/1/play"
+```
+
+Example of response
+
+```json
+{
+  "commit": {
+    "author_email": "admin@example.com",
+    "author_name": "Administrator",
+    "created_at": "2015-12-24T16:51:14.000+01:00",
+    "id": "0ff3ae198f8601a285adcf5c0fff204ee6fba5fd",
+    "message": "Test the CI integration.",
+    "short_id": "0ff3ae19",
+    "title": "Test the CI integration."
+  },
+  "coverage": null,
+  "created_at": "2016-01-11T10:13:33.506Z",
+  "artifacts_file": null,
+  "finished_at": null,
+  "id": 69,
+  "name": "rubocop",
+  "ref": "master",
+  "runner": null,
+  "stage": "test",
+  "started_at": null,
+  "status": "started",
   "tag": false,
   "user": null
 }

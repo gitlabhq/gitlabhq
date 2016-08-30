@@ -42,3 +42,16 @@
     .ci_widget.ci-error{style: "display:none"}
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
+
+- @merge_request.environments.each do |environment|
+  .mr-widget-heading
+    .ci_widget.ci-success
+      = ci_icon_for_status("success")
+      %span.hidden-sm
+        Deployed to
+        = succeed '.' do
+          = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment), class: 'environment'
+        - external_url = environment.external_url
+        - if external_url
+          = link_to external_url, target: '_blank' do
+            = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)

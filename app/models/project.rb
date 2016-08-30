@@ -62,6 +62,8 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
+  has_one :board, dependent: :destroy
+
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
@@ -196,6 +198,8 @@ class Project < ActiveRecord::Base
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
+
+  scope :excluding_project, ->(project) { where.not(id: project) }
 
   state_machine :import_status, initial: :none do
     event :import_start do
@@ -379,9 +383,10 @@ class Project < ActiveRecord::Base
       joins(join_body).reorder('join_note_counts.amount DESC')
     end
 
-    # Deletes gitlab project export files older than 24 hours
-    def remove_gitlab_exports!
-      Gitlab::Popen.popen(%W(find #{Gitlab::ImportExport.storage_path} -not -path #{Gitlab::ImportExport.storage_path} -mmin +1440 -delete))
+    def cached_count
+      Rails.cache.fetch('total_project_count', expires_in: 5.minutes) do
+        Project.count
+      end
     end
   end
 
@@ -429,6 +434,17 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  # ref can't be HEAD, can only be branch/tag name or SHA
+  def latest_successful_builds_for(ref = default_branch)
+    latest_pipeline = pipelines.latest_successful_for(ref).first
+
+    if latest_pipeline
+      latest_pipeline.builds.latest.with_artifacts
+    else
+      builds.none
+    end
+  end
+
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
     repository.commit(sha) if sha
@@ -440,7 +456,9 @@ class Project < ActiveRecord::Base
 
   def add_import_job
     if forked?
-      job_id = RepositoryForkWorker.perform_async(self.id, forked_from_project.path_with_namespace, self.namespace.path)
+      job_id = RepositoryForkWorker.perform_async(id, forked_from_project.repository_storage_path,
+                                                  forked_from_project.path_with_namespace,
+                                                  self.namespace.path)
     else
       job_id = RepositoryImportWorker.perform_async(self.id)
     end
@@ -453,8 +471,6 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    update(import_error: nil)
-
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if self.import_data
@@ -573,7 +589,11 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    path
+    if persisted? && errors.include?(:path)
+      path_was
+    else
+      path
+    end
   end
 
   def to_reference(_from_project = nil)
@@ -586,6 +606,16 @@ class Project < ActiveRecord::Base
 
   def web_url_without_protocol
     web_url.split('://')[1]
+  end
+
+  def new_issue_address(author)
+    # This feature is disabled for the time being.
+    return nil
+
+    if Gitlab::IncomingEmail.enabled? && author # rubocop:disable Lint/UnreachableCode
+      Gitlab::IncomingEmail.reply_address(
+        "#{path_with_namespace}+#{author.authentication_token}")
+    end
   end
 
   def build_commit_note(commit)
@@ -846,16 +876,14 @@ class Project < ActiveRecord::Base
 
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
+    return true if empty_repo? && default_branch_protected?
+
     @protected_branches ||= self.protected_branches.to_a
     ProtectedBranch.matching(branch_name, protected_branches: @protected_branches).present?
   end
 
-  def developers_can_push_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_push)
-  end
-
-  def developers_can_merge_to_protected_branch?(branch_name)
-    protected_branches.matching(branch_name).any?(&:developers_can_merge)
+  def user_can_push_to_empty_repo?(user)
+    !default_branch_protected? || team.max_member_access(user.id) > Gitlab::Access::DEVELOPER
   end
 
   def forked?
@@ -871,9 +899,13 @@ class Project < ActiveRecord::Base
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
+    Rails.logger.error "Attempting to rename #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
     expire_caches_before_rename(old_path_with_namespace)
 
     if has_container_registry_tags?
+      Rails.logger.error "Project #{old_path_with_namespace} cannot be renamed because container registry tags are present"
+
       # we currently doesn't support renaming repository if it contains tags in container registry
       raise Exception.new('Project cannot be renamed, because tags are present in its container registry')
     end
@@ -892,16 +924,21 @@ class Project < ActiveRecord::Base
         SystemHooksService.new.execute_hooks_for(self, :rename)
 
         @repository = nil
-      rescue
+      rescue => e
+        Rails.logger.error "Exception renaming #{old_path_with_namespace} -> #{new_path_with_namespace}: #{e}"
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end
     else
+      Rails.logger.error "Repository could not be renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
+
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+
+    Gitlab::AppLogger.info "Project was renamed: #{old_path_with_namespace} -> #{new_path_with_namespace}"
 
     Gitlab::UploadsTransfer.new.rename_project(path_was, path, namespace.path)
   end
@@ -967,6 +1004,10 @@ class Project < ActiveRecord::Base
     project_members.find_by(user_id: user)
   end
 
+  def add_user(user, access_level, current_user: nil, expires_at: nil)
+    team.add_user(user, access_level, current_user: current_user, expires_at: expires_at)
+  end
+
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
   end
@@ -994,6 +1035,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
+    repository.expire_avatar_cache(branch)
     reload_default_branch
   end
 
@@ -1129,13 +1171,6 @@ class Project < ActiveRecord::Base
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
-  def schedule_delete!(user_id, params)
-    # Queue this task for after the commit, so once we mark pending_delete it will run
-    run_after_commit { ProjectDestroyWorker.perform_async(id, user_id, params) }
-
-    update_attribute(:pending_delete, true)
-  end
-
   def running_or_pending_build_count(force: false)
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
@@ -1225,7 +1260,22 @@ class Project < ActiveRecord::Base
       authorized_for_user_by_shared_projects?(user, min_access_level)
   end
 
+  def append_or_update_attribute(name, value)
+    old_values = public_send(name.to_s)
+
+    if Project.reflect_on_association(name).try(:macro) == :has_many && old_values.any?
+      update_attribute(name, old_values + value)
+    else
+      update_attribute(name, value)
+    end
+  end
+
   private
+
+  def default_branch_protected?
+    current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||
+      current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE
+  end
 
   def authorized_for_user_by_group?(user, min_access_level)
     member = user.group_members.find_by(source_id: group)

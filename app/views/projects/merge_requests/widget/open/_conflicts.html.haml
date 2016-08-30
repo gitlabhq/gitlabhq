@@ -3,7 +3,18 @@
   This merge request contains merge conflicts
 
 %p
-  Please resolve these conflicts or
+  Please
+  - if @merge_request.conflicts_can_be_resolved_by?(current_user)
+    - if @merge_request.conflicts_can_be_resolved_in_ui?
+      = link_to "resolve these conflicts", conflicts_namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+    - else
+      %span.has-tooltip{title: "These conflicts cannot be resolved through GitLab"}
+        resolve these conflicts locally
+  - else
+    resolve these conflicts
+
+  or
+
   - if @merge_request.can_be_merged_via_command_line_by?(current_user)
     #{link_to "merge this request manually", "#modal_merge_info", class: "how_to_merge_link vlink", "data-toggle" => "modal"}.
   - else

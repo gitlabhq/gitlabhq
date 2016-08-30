@@ -55,6 +55,10 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             if: :akismet_enabled
 
+  validates :koding_url,
+            presence: true,
+            if: :koding_enabled
+
   validates :max_attachment_size,
             presence: true,
             numericality: { only_integer: true, greater_than: 0 }
@@ -142,13 +146,15 @@ class ApplicationSetting < ActiveRecord::Base
       default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
       domain_whitelist: Settings.gitlab['domain_whitelist'],
-      import_sources: %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project],
+      import_sources: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       max_artifacts_size: Settings.artifacts['max_size'],
       require_two_factor_authentication: false,
       two_factor_grace_period: 48,
       recaptcha_enabled: false,
       akismet_enabled: false,
+      koding_enabled: false,
+      koding_url: nil,
       repository_checks_enabled: true,
       disabled_oauth_sign_in_sources: [],
       send_user_confirmation_email: false,

@@ -18,13 +18,13 @@ describe MergeRequestsFinder do
   end
 
   describe "#execute" do
-    it 'should filter by scope' do
+    it 'filters by scope' do
       params = { scope: 'authored', state: 'opened' }
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(2)
     end
 
-    it 'should filter by project' do
+    it 'filters by project' do
       params = { project_id: project1.id, scope: 'authored', state: 'opened' }
       merge_requests = MergeRequestsFinder.new(user, params).execute
       expect(merge_requests.size).to eq(1)

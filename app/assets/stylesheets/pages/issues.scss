@@ -99,3 +99,33 @@ form.edit-issue {
 .issue-form .select2-container {
   width: 250px !important;
 }
+
+.issues-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
+}
+
+.issue-email-modal-btn {
+  padding: 0;
+  color: $gl-link-color;
+  background-color: transparent;
+  border: 0;
+  outline: 0;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.email-modal-input-group {
+  margin-bottom: 10px;
+
+  .form-control {
+    background-color: $white-light;
+  }
+
+  .btn {
+    background-color: $background-color;
+    border: 1px solid $border-gray-light;
+  }
+}

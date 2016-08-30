@@ -228,3 +228,9 @@
     }
   }
 }
+
+table.u2f-registrations {
+  th:not(:last-child), td:not(:last-child) {
+    border-right: solid 1px transparent;
+  }
+}

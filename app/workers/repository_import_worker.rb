@@ -10,6 +10,12 @@ class RepositoryImportWorker
     @project = Project.find(project_id)
     @current_user = @project.creator
 
+    Gitlab::Metrics.add_event(:import_repository,
+                              import_url: @project.import_url,
+                              path: @project.path_with_namespace)
+
+    project.update_column(:import_error, nil)
+
     result = Projects::ImportService.new(project, current_user).execute
 
     if result[:status] == :error

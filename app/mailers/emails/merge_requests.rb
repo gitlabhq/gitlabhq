@@ -6,6 +6,11 @@ module Emails
       mail_new_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, recipient_id))
     end
 
+    def new_mention_in_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id))
+    end
+
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
@@ -40,6 +45,13 @@ module Emails
       @mr_status = status
       @updated_by = User.find(updated_by_user_id)
       mail_answer_thread(@merge_request, merge_request_thread_options(updated_by_user_id, recipient_id))
+    end
+
+    def resolved_all_discussions_email(recipient_id, merge_request_id, resolved_by_user_id)
+      setup_merge_request_mail(merge_request_id, recipient_id)
+
+      @resolved_by = User.find(resolved_by_user_id)
+      mail_answer_thread(@merge_request, merge_request_thread_options(resolved_by_user_id, recipient_id))
     end
 
     private

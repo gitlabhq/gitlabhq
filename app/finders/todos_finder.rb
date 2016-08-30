@@ -17,7 +17,7 @@ class TodosFinder
 
   attr_accessor :current_user, :params
 
-  def initialize(current_user, params)
+  def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
   end
@@ -27,11 +27,13 @@ class TodosFinder
     items = by_action_id(items)
     items = by_action(items)
     items = by_author(items)
-    items = by_project(items)
     items = by_state(items)
     items = by_type(items)
+    # Filtering by project HAS TO be the last because we use
+    # the project IDs yielded by the todos query thus far
+    items = by_project(items)
 
-    items.reorder(id: :desc)
+    sort(items)
   end
 
   private
@@ -91,14 +93,9 @@ class TodosFinder
     @project
   end
 
-  def projects
-    return @projects if defined?(@projects)
-
-    if project?
-      @projects = project
-    else
-      @projects = ProjectsFinder.new.execute(current_user)
-    end
+  def projects(items)
+    item_project_ids = items.reorder(nil).select(:project_id)
+    ProjectsFinder.new.execute(current_user, item_project_ids)
   end
 
   def type?
@@ -107,6 +104,10 @@ class TodosFinder
 
   def type
     params[:type]
+  end
+
+  def sort(items)
+    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
   end
 
   def by_action(items)
@@ -136,8 +137,9 @@ class TodosFinder
   def by_project(items)
     if project?
       items = items.where(project: project)
-    elsif projects
-      items = items.merge(projects).joins(:project)
+    else
+      item_projects = projects(items)
+      items = items.merge(item_projects).joins(:project)
     end
 
     items

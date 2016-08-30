@@ -67,7 +67,7 @@ In all of the below cases, the notification will be sent to:
 - Participants:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
-  - anyone mentioned by `@username` in the issue/merge request description
+  - anyone mentioned by `@username` in the issue/merge request title or description
   - anyone mentioned by `@username` in any of the comments on the issue/merge request
 
     ...with notification level "Participating" or higher
@@ -88,6 +88,11 @@ In all of the below cases, the notification will be sent to:
 | Reopen merge request   | |
 | Merge merge request    | |
 | New comment            | The above, plus anyone mentioned by `@username` in the comment, with notification level "Mention" or higher |
+
+
+In addition, if the title or description of an Issue or Merge Request is
+changed, notifications will be sent to any **new** mentions by `@username` as
+if they had been mentioned in the original text.
 
 You won't receive notifications for Issues, Merge Requests or Milestones
 created by yourself. You will only receive automatic notifications when

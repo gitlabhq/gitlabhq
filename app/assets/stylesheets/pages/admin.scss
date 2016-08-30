@@ -72,7 +72,6 @@
   margin-bottom: 20px;
 }
 
-
 // Users List
 
 .users-list {
@@ -95,6 +94,51 @@
     .btn-block {
       margin-bottom: 0;
       line-height: inherit;
+    }
+  }
+
+  .label-default {
+    color: $btn-transparent-color;
+  }
+}
+
+.abuse-reports {
+  .table {
+    table-layout: fixed;
+  }
+  .subheading {
+    padding-bottom: $gl-padding;
+  }
+  .message {
+    word-wrap: break-word;
+  }
+  .btn {
+    white-space: normal;
+    padding: $gl-btn-padding;
+  }
+  th {
+    width: 15%;
+    &.wide {
+      width: 55%;
+    }
+  }
+  @media (max-width: $screen-sm-max) {
+    th {
+      width: 100%;
+    }
+    td {
+      width: 100%;
+      float: left;
+    }
+  }
+
+  .no-reports {
+    .emoji-icon {
+      margin-left: $btn-side-margin;
+      margin-top: 3px;
+    }
+    span {
+      font-size: 19px;
     }
   }
 }

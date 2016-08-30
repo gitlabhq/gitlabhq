@@ -10,7 +10,18 @@ module Gitlab
 
           def initialize(node)
             @node = node
+            @metadata = {}
             @attributes = {}
+          end
+
+          def value(value)
+            @value = value
+            self
+          end
+
+          def metadata(metadata)
+            @metadata.merge!(metadata)
+            self
           end
 
           def with(attributes)
@@ -19,26 +30,40 @@ module Gitlab
           end
 
           def create!
-            raise InvalidFactory unless @attributes.has_key?(:value)
+            raise InvalidFactory unless defined?(@value)
 
-            fabricate.tap do |entry|
-              entry.key = @attributes[:key]
-              entry.parent = @attributes[:parent]
-              entry.description = @attributes[:description]
+            ##
+            # We assume that unspecified entry is undefined.
+            # See issue #18775.
+            #
+            if @value.nil?
+              Node::Undefined.new(
+                fabricate_undefined
+              )
+            else
+              fabricate(@node, @value)
             end
           end
 
           private
 
-          def fabricate
+          def fabricate_undefined
             ##
-            # We assume that unspecified entry is undefined.
-            # See issue #18775.
+            # If node has a default value we fabricate concrete node
+            # with default value.
             #
-            if @attributes[:value].nil?
-              Node::Undefined.new(@node)
+            if @node.default.nil?
+              fabricate(Node::Null)
             else
-              @node.new(@attributes[:value])
+              fabricate(@node, @node.default)
+            end
+          end
+
+          def fabricate(node, value = nil)
+            node.new(value, @metadata).tap do |entry|
+              entry.key = @attributes[:key]
+              entry.parent = @attributes[:parent]
+              entry.description = @attributes[:description]
             end
           end
         end

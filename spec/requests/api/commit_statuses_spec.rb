@@ -99,7 +99,7 @@ describe API::CommitStatuses, api: true do
     context "guest user" do
       before { get api(get_url, guest) }
 
-      it "should not return project commits" do
+      it "does not return project commits" do
         expect(response).to have_http_status(403)
       end
     end
@@ -107,7 +107,7 @@ describe API::CommitStatuses, api: true do
     context "unauthorized user" do
       before { get api(get_url) }
 
-      it "should not return project commits" do
+      it "does not return project commits" do
         expect(response).to have_http_status(401)
       end
     end
@@ -179,7 +179,7 @@ describe API::CommitStatuses, api: true do
     context 'reporter user' do
       before { post api(post_url, reporter) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(403)
       end
     end
@@ -187,7 +187,7 @@ describe API::CommitStatuses, api: true do
     context 'guest user' do
       before { post api(post_url, guest) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(403)
       end
     end
@@ -195,7 +195,7 @@ describe API::CommitStatuses, api: true do
     context 'unauthorized user' do
       before { post api(post_url) }
 
-      it 'should not create commit status' do
+      it 'does not create commit status' do
         expect(response).to have_http_status(401)
       end
     end

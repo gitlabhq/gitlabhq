@@ -142,16 +142,26 @@ class TodoService
 
   # When user marks some todos as done
   def mark_todos_as_done(todos, current_user)
-    todos = current_user.todos.where(id: todos.map(&:id)) unless todos.respond_to?(:update_all)
+    mark_todos_as_done_by_ids(todos.select(&:id), current_user)
+  end
 
-    todos.update_all(state: :done)
+  def mark_todos_as_done_by_ids(ids, current_user)
+    todos = current_user.todos.where(id: ids)
+
+    # Only return those that are not really on that state
+    marked_todos = todos.where.not(state: :done).update_all(state: :done)
     current_user.update_todos_count_cache
+    marked_todos
   end
 
   # When user marks an issue as todo
   def mark_todo(issuable, current_user)
     attributes = attributes_for_todo(issuable.project, issuable, current_user, Todo::MARKED)
     create_todos(current_user, attributes)
+  end
+
+  def todo_exist?(issuable, current_user)
+    TodosFinder.new(current_user).execute.exists?(target: issuable)
   end
 
   private

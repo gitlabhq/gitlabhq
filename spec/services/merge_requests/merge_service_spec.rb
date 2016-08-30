@@ -26,13 +26,13 @@ describe MergeRequests::MergeService, services: true do
       it { expect(merge_request).to be_valid }
       it { expect(merge_request).to be_merged }
 
-      it 'should send email to user2 about merge of new merge_request' do
+      it 'sends email to user2 about merge of new merge_request' do
         email = ActionMailer::Base.deliveries.last
         expect(email.to.first).to eq(user2.email)
         expect(email.subject).to include(merge_request.title)
       end
 
-      it 'should create system note about merge_request merge' do
+      it 'creates system note about merge_request merge' do
         note = merge_request.notes.last
         expect(note.note).to include 'Status changed to merged'
       end
@@ -74,6 +74,17 @@ describe MergeRequests::MergeService, services: true do
         service.execute(merge_request)
 
         expect(merge_request.merge_error).to eq("error")
+      end
+
+      it 'aborts if there is a merge conflict' do
+        allow_any_instance_of(Repository).to receive(:merge).and_return(false)
+        allow(service).to receive(:execute_hooks)
+
+        service.execute(merge_request)
+
+        expect(merge_request.open?).to be_truthy
+        expect(merge_request.merge_commit_sha).to be_nil
+        expect(merge_request.merge_error).to eq("Conflicts detected during merge")
       end
     end
   end
