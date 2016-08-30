@@ -46,6 +46,9 @@ v 8.12.0 (unreleased)
 v 8.11.4 (unreleased)
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
 
+v 8.11.4 (unreleased)
+  - Fix resolving conflicts on forks
+
 v 8.11.3 (unreleased)
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
