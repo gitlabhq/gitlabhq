@@ -1,17 +1,17 @@
 - if current_user
-  - can_admin_projects = can?(current_user, :admin_group, @group)
+  - can_admin_group = can?(current_user, :admin_group, @group)
   - can_edit = can?(current_user, :admin_group, @group)
   - member = @group.members.find_by(user_id: current_user.id)
   - can_leave = member && can?(current_user, :destroy_group_member, member)
 
-  - if can_admin_projects || can_edit || can_leave
+  - if can_admin_group || can_edit || can_leave
     .controls
       .dropdown.group-settings-dropdown
         %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
           = icon('cog')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right
-          - if can_admin_projects
+          - if can_admin_group
             = nav_link(path: 'groups#projects') do
               = link_to 'Projects', projects_group_path(@group), title: 'Projects'
           - if can_edit || can_leave
