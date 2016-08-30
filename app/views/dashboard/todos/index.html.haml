@@ -66,7 +66,7 @@
   - if @todos.any?
     .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }
     - @todos.group_by(&:project).each do |group|
-      .panel.panel-default.panel-small.js-todos-list
+      .panel.panel-default.panel-small
         - project = group[0]
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
