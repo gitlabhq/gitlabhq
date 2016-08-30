@@ -212,21 +212,24 @@
           },
           selectable: true,
           filterable: true,
+          selected: $dropdown.data('selected') || [],
           toggleLabel: function(selected, el) {
-            var selected_labels;
-            selected_labels = $('.js-label-select').siblings('.dropdown-menu-labels').find('.is-active');
-            if (selected && (selected.title != null)) {
-              if (selected_labels.length > 1) {
-                return selected.title + " +" + (selected_labels.length - 1) + " more";
-              } else {
-                return selected.title;
-              }
-            } else if (!selected && selected_labels.length !== 0) {
-              if (selected_labels.length > 1) {
-                return ($(selected_labels[0]).text()) + " +" + (selected_labels.length - 1) + " more";
-              } else if (selected_labels.length === 1) {
-                return $(selected_labels).text();
-              }
+            var isSelected = el !== null ? el.hasClass('is-active') : false,
+                title = selected.title;
+
+            if (isSelected) {
+              this.selected.push(title);
+            } else {
+              var index = this.selected.indexOf(title);
+              this.selected.splice(index, 1);
+            }
+
+            var selectedLabels = this.selected;
+
+            if (selectedLabels.length === 1) {
+              return selectedLabels;
+            } else if (selectedLabels.length > 1) {
+              return selectedLabels[0] + " +" + (selectedLabels.length - 1) + " more";
             } else {
               return defaultLabel;
             }
