@@ -16,6 +16,13 @@ v 8.11.4
   - Fix issue boards leak private label names and descriptions
 
 v 8.11.3
+
+v 8.11.4 (unreleased)
+  - Fix issue boards leak private label names and descriptions
+
+v 8.11.3 (unreleased)
+  - Allow system info page to handle case where info is unavailable
+  - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
   - Fix IE11 fork button bug !5982
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
