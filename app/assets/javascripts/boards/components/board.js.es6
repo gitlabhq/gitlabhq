@@ -33,13 +33,6 @@
         deep: true
       }
     },
-    methods: {
-      getFilterData () {
-        Object.keys(this.filters).forEach((key) => { queryData[key] = this.filters[key]; });
-
-        return queryData;
-      }
-    },
     ready () {
       const options = gl.issueBoards.getBoardSortableDefaultOptions({
         disabled: this.disabled,
