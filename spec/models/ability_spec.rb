@@ -282,4 +282,17 @@ describe Ability, lib: true do
       end
     end
   end
+
+  describe '.project_disabled_features_rules' do
+    let(:project) { build(:project) }
+
+    subject { described_class.project_disabled_features_rules(project) }
+
+    context 'wiki named abilities' do
+      it 'disables wiki abilities if the project has no wiki' do
+        expect(project).to receive(:has_wiki?).and_return(false)
+        expect(subject).to include(:read_wiki, :create_wiki, :update_wiki, :admin_wiki)
+      end
+    end
+  end
 end
