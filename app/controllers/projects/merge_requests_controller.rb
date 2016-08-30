@@ -295,6 +295,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def merge
     return access_denied! unless @merge_request.can_be_merged_by?(current_user)
 
+    # user is not able to merge if project is above size limit
+    if @merge_request.target_project.above_size_limit?
+      @status = :size_limit_reached
+      return
+    end
+
     # Disable the CI check if merge_when_build_succeeds is enabled since we have
     # to wait until CI completes to know
     unless @merge_request.mergeable?(skip_ci_check: merge_when_build_succeeds_active?)

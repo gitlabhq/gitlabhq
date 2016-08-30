@@ -35,6 +35,12 @@ module MergeRequests
       end
     end
 
+    def render_size_limit_message(project_size, project_size_remaining)
+      repository_size_limit = Gitlab::CurrentSettings.current_application_settings.repository_size_limit
+
+      "The target's repository size (#{project_size}MB) exceeds the limit of #{repository_size_limit}MB by #{project_size_remaining}MB"
+    end
+
     private
 
     def filter_params
