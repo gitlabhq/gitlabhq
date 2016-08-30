@@ -901,19 +901,20 @@ ActiveRecord::Schema.define(version: 20160830232601) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.boolean  "active",                     default: false,    null: false
     t.text     "properties"
-    t.boolean  "template",              default: false
-    t.boolean  "push_events",           default: true
-    t.boolean  "issues_events",         default: true
-    t.boolean  "merge_requests_events", default: true
-    t.boolean  "tag_push_events",       default: true
-    t.boolean  "note_events",           default: true,     null: false
-    t.boolean  "build_events",          default: false,    null: false
-    t.string   "category",              default: "common", null: false
-    t.boolean  "default",               default: false
-    t.boolean  "wiki_page_events",      default: true
-    t.boolean  "pipeline_events",       default: false,    null: false
+    t.boolean  "template",                   default: false
+    t.boolean  "push_events",                default: true
+    t.boolean  "issues_events",              default: true
+    t.boolean  "merge_requests_events",      default: true
+    t.boolean  "tag_push_events",            default: true
+    t.boolean  "note_events",                default: true,     null: false
+    t.boolean  "build_events",               default: false,    null: false
+    t.string   "category",                   default: "common", null: false
+    t.boolean  "default",                    default: false
+    t.boolean  "wiki_page_events",           default: true
+    t.boolean  "pipeline_events",            default: false,    null: false
+    t.boolean  "confidential_issues_events", default: true,     null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree

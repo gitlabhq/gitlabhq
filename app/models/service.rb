@@ -7,6 +7,7 @@ class Service < ActiveRecord::Base
   default_value_for :active, false
   default_value_for :push_events, true
   default_value_for :issues_events, true
+  default_value_for :confidential_issues_events, true
   default_value_for :merge_requests_events, true
   default_value_for :tag_push_events, true
   default_value_for :note_events, true
@@ -100,7 +101,7 @@ class Service < ActiveRecord::Base
   end
 
   def supported_events
-    %w(push tag_push issue merge_request wiki_page)
+    %w(push tag_push issue confidential_issue merge_request wiki_page)
   end
 
   def execute(data)
