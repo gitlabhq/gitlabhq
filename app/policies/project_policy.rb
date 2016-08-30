@@ -153,7 +153,7 @@ class ProjectPolicy < BasePolicy
       cannot!(*named_abilities(:merge_request))
     end
 
-    unless project.issues_enabled or project.merge_requests_enabled
+    unless project.issues_enabled || project.merge_requests_enabled
       cannot!(*named_abilities(:label))
       cannot!(*named_abilities(:milestone))
     end
