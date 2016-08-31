@@ -11,16 +11,6 @@
     }
   }
 
-  .last-commit {
-    max-width: 506px;
-
-    .last-commit-content {
-      @include str-truncated;
-      width: calc(100% - 140px);
-      margin-left: 3px;
-    }
-  }
-
   .tree-table {
     margin-bottom: 0;
 
