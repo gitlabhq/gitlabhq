@@ -192,7 +192,7 @@ class Service < ActiveRecord::Base
   end
 
   def self.available_services_names
-    %w(
+    %w[
       asana
       assembla
       bamboo
@@ -215,7 +215,7 @@ class Service < ActiveRecord::Base
       redmine
       slack
       teamcity
-    )
+    ]
   end
 
   def self.create_from_template(project_id, template)
