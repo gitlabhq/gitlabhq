@@ -26,28 +26,32 @@
       Compared with:
       %span.dropdown.inline
         %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
-          %strong.monospace base
+          %strong.monospace<
+            - if params[:start_sha].present?
+              #{params[:start_sha][0...8]}
+            - else
+              #{"base"}
           %span.caret
         %ul.dropdown-menu.dropdown-menu-selectable
           - merge_request_diffs.each do |merge_request_diff|
             - next if merge_request_diff.id >= @merge_request_diff.id
             %li
-              = link_to compare_versions_path(@project, @merge_request_diff, merge_request_diff), class: ('is-active' if merge_request_diff == @base_version), target: '_blank' do
+              = link_to mr_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff.head_commit_sha == params[:start_sha]) do
                 %strong.monospace
                   #{merge_request_diff.head_commit.short_id}
                 %br
                 %small
                   = time_ago_with_tooltip(merge_request_diff.created_at)
           %li
-            = link_to '#', class: 'is-active' do
+            = link_to mr_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless params[:start_sha].present?) do
               %strong.monospace
                 base
 
-    - unless @merge_request_diff.latest?
-      %span.prepend-left-default
-        = icon('info-circle')
-        This version is not the latest one. Comments are disabled
 
-    .pull-right
-      %span.monospace
-        #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
+    - unless @merge_request_diff.latest? && params[:start_sha].blank?
+      .pull-right
+        = icon('info-circle')
+        - if params[:start_sha].present?
+          Comments are disabled when compare with version different from base
+        - else
+          This version is not the latest one. Comments are disabled

@@ -101,7 +101,9 @@ module MergeRequestsHelper
     return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
 
-  def compare_versions_path(project, version, base_version)
-    namespace_project_compare_path(project.namespace, project, base_version.head_commit_sha, version.head_commit_sha)
+  def mr_version_path(project, merge_request, merge_request_diff, start_sha = nil)
+    diffs_namespace_project_merge_request_path(
+      project.namespace, project, merge_request,
+      diff_id: merge_request_diff.id, start_sha: start_sha)
   end
 end

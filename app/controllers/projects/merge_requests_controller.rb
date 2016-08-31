@@ -98,7 +98,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           @diff_notes_disabled = true
         end
 
-        @diffs = @merge_request_diff.diffs(diff_options)
+        if params[:start_sha].present?
+          compare_diff_version
+        else
+          @diffs = @merge_request_diff.diffs(diff_options)
+        end
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
       end
@@ -528,5 +532,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+  end
+
+  def compare_diff_version
+    @compare = CompareService.new.execute(@project, @merge_request_diff.head_commit_sha, @project, params[:start_sha])
+
+    if @compare
+      @commits = @compare.commits
+      @commit = @compare.commit
+      @diffs = @compare.diffs(diff_options)
+      @diff_notes_disabled = true
+    end
   end
 end
