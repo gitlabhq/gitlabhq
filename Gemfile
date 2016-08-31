@@ -102,9 +102,6 @@ gem 'fog-rackspace', '~> 0.1.1'
 # for aws storage
 gem 'unf', '~> 0.1.4'
 
-# Authorization
-gem 'six', '~> 0.2.0'
-
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
 
