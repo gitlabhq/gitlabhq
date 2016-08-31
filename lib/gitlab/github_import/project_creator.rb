@@ -17,7 +17,7 @@ module Gitlab
           path: repo.name,
           description: repo.description,
           namespace_id: namespace.id,
-          visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC,
+          visibility_level: repo.private ? Gitlab::VisibilityLevel::PRIVATE : ApplicationSetting.current.default_project_visibility,
           import_type: "github",
           import_source: repo.full_name,
           import_url: repo.clone_url.sub("https://", "https://#{@session_data[:github_access_token]}@"),
