@@ -32,4 +32,12 @@ Snippets are little bits of code or text.
 
 This is a nice place to put code or text that is used semi-regularly within the project, but does not belong in source control.
 
-For example, a specific config file that is used by > the team that is only valid for the people that work on the code.
+For example, a specific config file that is used by the team that is only valid for the people that work on the code.
+
+## Git LFS
+
+>**Note:** Project-specific LFS setting was added on 8.12 and is available only to admins.
+
+Git Large File Storage allows you to easily manage large binary files with Git.
+With this setting admins can better control which projects are allowed to use 
+LFS. 

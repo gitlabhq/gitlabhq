@@ -21,10 +21,12 @@ v 8.12.0 (unreleased)
   - Add Sentry logging to API calls
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
+  - Add search to all issue board lists
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
+  - Added project specific enable/disable setting for LFS !5997
   - Added tests for diff notes
   - Add a button to download latest successful artifacts for branches and tags !5142
   - Add delimiter to project stars and forks count (ClemMakesApps)
@@ -78,6 +80,8 @@ v 8.11.2
 v 8.11.1
   - Pulled due to packaging error.
 
+v 8.11.0 (unreleased)
+  - Fix pipelines tab layout regression (brycepj)
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708

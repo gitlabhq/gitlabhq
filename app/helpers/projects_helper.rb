@@ -187,6 +187,18 @@ module ProjectsHelper
     nav_tabs.flatten
   end
 
+  def project_lfs_status(project)
+    if project.lfs_enabled?
+      content_tag(:span, class: 'lfs-enabled') do
+        'Enabled'
+      end
+    else
+      content_tag(:span, class: 'lfs-disabled') do
+        'Disabled'
+      end
+    end
+  end
+
   def git_user_name
     if current_user
       current_user.name

@@ -477,3 +477,10 @@
     width: 60px;
   }
 }
+
+.ci-status-icon-created {
+
+  svg {
+    fill: $table-text-gray;
+  }
+}
