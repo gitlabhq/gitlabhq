@@ -10,21 +10,24 @@
     ImporterStatus.prototype.initStatusPage = function() {
       $('.js-add-to-import').off('click').on('click', (function(_this) {
         return function(e) {
-          var $btn, $namespace_input, $target_field, $tr, id, new_namespace;
+          var $btn, $namespace_input, $target_field, $tr, id, target_namespace;
           $btn = $(e.currentTarget);
           $tr = $btn.closest('tr');
           $target_field = $tr.find('.import-target');
           $namespace_input = $target_field.find('input');
           id = $tr.attr('id').replace('repo_', '');
-          new_namespace = null;
+          target_namespace = null;
+
           if ($namespace_input.length > 0) {
-            new_namespace = $namespace_input.prop('value');
-            $target_field.empty().append(new_namespace + "/" + ($target_field.data('project_name')));
+            target_namespace = $namespace_input.prop('value');
+            $target_field.empty().append(target_namespace + "/" + ($target_field.data('project_name')));
           }
+
           $btn.disable().addClass('is-loading');
+
           return $.post(_this.import_url, {
             repo_id: id,
-            new_namespace: new_namespace
+            target_namespace: target_namespace
           }, {
             dataType: 'script'
           });
@@ -70,7 +73,7 @@
     if ($('.js-importer-status').length) {
       var jobsImportPath = $('.js-importer-status').data('jobs-import-path');
       var importPath = $('.js-importer-status').data('import-path');
-      
+
       new ImporterStatus(jobsImportPath, importPath);
     }
   });
