@@ -52,6 +52,7 @@ v 8.12.0 (unreleased)
   - Adds response mime type to transaction metric action when it's not HTML
   - Fix hover leading space bug in pipeline graph !5980
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
+  - Fix repository page ui issues
 
 v 8.11.4 (unreleased)
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
