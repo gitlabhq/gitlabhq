@@ -556,7 +556,7 @@
       if (isInput) {
         field = $(this.el);
       } else {
-        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value + "']");
+        field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + escape(value) + "']");
       }
       if (el.hasClass(ACTIVE_CLASS)) {
         el.removeClass(ACTIVE_CLASS);
