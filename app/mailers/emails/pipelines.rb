@@ -1,11 +1,11 @@
 module Emails
   module Pipelines
     def pipeline_succeeded_email(params, to)
-      pipeline_mail(params, to, 'succeeded') # TODO: missing template
+      pipeline_mail(params, to, 'succeeded')
     end
 
     def pipeline_failed_email(params, to)
-      pipeline_mail(params, to, 'failed') # TODO: missing template
+      pipeline_mail(params, to, 'failed')
     end
 
     private
