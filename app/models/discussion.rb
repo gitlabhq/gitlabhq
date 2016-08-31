@@ -27,7 +27,7 @@ class Discussion
 
   delegate  :blob,
             :highlighted_diff_lines,
-            :text_parsed_diff_lines,
+            :diff_lines,
 
             to: :diff_file,
             allow_nil: true
@@ -164,10 +164,11 @@ class Discussion
   end
 
   # Returns an array of at most 16 highlighted lines above a diff note
-  def truncated_diff_lines
+  def truncated_diff_lines(highlight: true)
+    initial_lines = highlight ? highlighted_diff_lines : diff_lines
     prev_lines = []
 
-    diff_file.diff_lines.each do |line|
+    initial_lines.each do |line|
       if line.meta?
         prev_lines.clear
       else

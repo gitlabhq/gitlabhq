@@ -697,7 +697,7 @@ describe Notify do
         let(:note) { create(model, project: project, author: note_author) }
 
         it "includes diffs with character-level highlighting" do
-          is_expected.to have_body_text /\<span class='idiff left right'>vars = {<\/span>/
+          is_expected.to have_body_text /<span class=\"p\">}<\/span><\/span>/
         end
 
         it 'contains a link to the diff file' do
@@ -743,9 +743,6 @@ describe Notify do
         subject { Notify.note_commit_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email on a diff', :diff_note_on_commit
-        # it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-        #   let(:model) { commit }
-        # end
         it_behaves_like 'it should show Gmail Actions View Commit link'
         it_behaves_like 'a user cannot unsubscribe through footer link'
       end
@@ -757,9 +754,6 @@ describe Notify do
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
 
         it_behaves_like 'a note email on a diff', :diff_note_on_merge_request
-        # it_behaves_like 'an answer to an existing thread with reply-by-email enabled' do
-        #   let(:model) { merge_request }
-        # end
         it_behaves_like 'it should show Gmail Actions View Merge request link'
         it_behaves_like 'an unsubscribeable thread'
       end

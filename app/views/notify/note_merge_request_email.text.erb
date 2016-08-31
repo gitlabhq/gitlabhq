@@ -1,11 +1,4 @@
-New comment for Merge Request <%= @merge_request.to_reference %>
+<% url = url_for(namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")) %>
 
-<%= url_for(namespace_project_merge_request_url(@merge_request.target_project.namespace, @merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")) %>
-
-<%= render 'simple_diff' if @discussion %>
-
-<% if current_application_settings.email_author_in_body %>
-  <%= @note.author_name %> wrote:
-<% end %>
-
-<%= @note.note %>
+New comment for Merge Request <%= @merge_request.to_reference -%>
+<%= render partial: 'note_mr_or_commit_email', locals: { url: url }%>
