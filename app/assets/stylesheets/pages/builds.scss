@@ -36,6 +36,7 @@
     &.affix {
       right: 30px;
       bottom: 15px;
+      z-index: 1;
 
       @media (min-width: $screen-md-min) {
         right: 26%;
