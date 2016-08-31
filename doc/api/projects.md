@@ -535,7 +535,7 @@ POST /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -602,7 +602,7 @@ DELETE /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -673,7 +673,7 @@ POST /projects/:id/archive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
@@ -760,7 +760,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
