@@ -139,5 +139,8 @@
 
   $('.import_git').click(function( event ) {
     $projectImportUrl = $('#project_import_url')
+    $projectMirror = $('#project_mirror')
+
     $projectImportUrl.attr('disabled', !$projectImportUrl.attr('disabled'))
+    $projectMirror.attr('disabled', !$projectMirror.attr('disabled'))
   });

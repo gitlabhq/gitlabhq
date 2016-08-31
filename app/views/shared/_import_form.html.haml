@@ -19,7 +19,7 @@
   .col-sm-offset-2.col-sm-10
     .checkbox
       = f.label :mirror do
-        = f.check_box :mirror
+        = f.check_box :mirror, disabled: true
         %strong
           Mirror repository
       .help-block
