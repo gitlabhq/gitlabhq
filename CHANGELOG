@@ -58,6 +58,7 @@ v 8.12.0 (unreleased)
 
 v 8.11.4 (unreleased)
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+  - Fix sorting issues by "last updated" doesn't work after import from GitHub
   - Creating an issue through our API now emails label subscribers !5720
   - Block concurrent updates for Pipeline
   - Fix resolving conflicts on forks
