@@ -405,6 +405,7 @@ describe API::API, api: true  do
       expect(json_response['milestone']).to be_a Hash
       expect(json_response['assignee']).to be_a Hash
       expect(json_response['author']).to be_a Hash
+      expect(json_response['confidential']).to be_falsy
     end
 
     it "returns a project issue by id" do
@@ -470,13 +471,51 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/issues" do
-    it "creates a new project issue" do
+    it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2'
+
       expect(response).to have_http_status(201)
       expect(json_response['title']).to eq('new issue')
       expect(json_response['description']).to be_nil
       expect(json_response['labels']).to eq(['label', 'label2'])
+      expect(json_response['confidential']).to be_falsy
+    end
+
+    it 'creates a new confidential project issue' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: true
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_truthy
+    end
+
+    it 'creates a new confidential project issue with a different param' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: 'y'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_truthy
+    end
+
+    it 'creates a public issue when confidential param is false' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: false
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_falsy
+    end
+
+    it 'creates a public issue when confidential param is invalid' do
+      post api("/projects/#{project.id}/issues", user),
+        title: 'new issue', confidential: 'foo'
+
+      expect(response).to have_http_status(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['confidential']).to be_falsy
     end
 
     it "sends notifications for subscribers of newly added labels" do
@@ -631,6 +670,30 @@ describe API::API, api: true  do
           title: 'updated title'
         expect(response).to have_http_status(200)
         expect(json_response['title']).to eq('updated title')
+      end
+
+      it 'sets an issue to confidential' do
+        put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          confidential: true
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_truthy
+      end
+
+      it 'makes a confidential issue public' do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
+          confidential: false
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_falsy
+      end
+
+      it 'does not update a confidential issue with wrong confidential flag' do
+        put api("/projects/#{project.id}/issues/#{confidential_issue.id}", user),
+          confidential: 'foo'
+
+        expect(response).to have_http_status(200)
+        expect(json_response['confidential']).to be_truthy
       end
     end
   end

@@ -211,6 +211,7 @@ module API
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
+      expose :confidential
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
