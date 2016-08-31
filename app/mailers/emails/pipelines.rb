@@ -11,28 +11,27 @@ module Emails
     private
 
     def pipeline_mail(params, to, status)
-      @params = params
+      @project = params.project
+      @pipeline = params.pipeline
       add_headers
 
       mail(to: to, subject: pipeline_subject(status))
     end
 
     def add_headers
-      @project = @params.project # `add_project_headers` needs this
       add_project_headers
-      add_pipeline_headers(@params.pipeline)
+      add_pipeline_headers
     end
 
-    def add_pipeline_headers(pipeline)
-      headers['X-GitLab-Pipeline-Id'] = pipeline.id
-      headers['X-GitLab-Pipeline-Ref'] = pipeline.ref
-      headers['X-GitLab-Pipeline-Status'] = pipeline.status
+    def add_pipeline_headers
+      headers['X-GitLab-Pipeline-Id'] = @pipeline.id
+      headers['X-GitLab-Pipeline-Ref'] = @pipeline.ref
+      headers['X-GitLab-Pipeline-Status'] = @pipeline.status
     end
 
     def pipeline_subject(status)
       subject(
-        "Pipeline #{status} for #{@params.project.name}",
-        @params.pipeline.short_sha)
+        "Pipeline #{status} for #{@project.name}", @pipeline.short_sha)
     end
   end
 end

@@ -1,0 +1,26 @@
+.p
+  Project:
+  = @project.path_with_namespace
+.p
+  Branch:
+  = @pipeline.ref
+.p
+  Commit:
+  = @pipeline.short_sha
+  (
+  = @pipeline.sha
+  )
+.p
+  Commit Message:
+  = @pipeline.git_commit_message
+.p
+  Commit Author:
+  = @pipeline.git_author_name
+.p
+  Pusher:
+  = @pipeline.user.try(:name)
+- failed = @pipeline.statuses.latest.failed
+.p
+  Pipeline #
+  = @pipeline.id
+  had succeeded.

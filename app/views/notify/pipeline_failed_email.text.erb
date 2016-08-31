@@ -1,0 +1,15 @@
+Project: <%= @project.path_with_namespace %>
+Branch: <%= @pipeline.ref %>
+Commit: <%= @pipeline.short_sha %> (<%= @pipeline.sha %>)
+Commit Message: <%= @pipeline.git_commit_message %>
+Commit Author: <%= @pipeline.git_author_name %>
+Pusher: <%= @pipeline.user.try(:name) %>
+<% failed = @pipeline.statuses.latest.failed %>
+Pipeline #<%= @pipeline.id %> had <%= failed.size %> failed <%= 'job'.plural(failed.size) %>.
+
+<% failed.each do |job| %>
+ID: <%= job.id %>
+Stage: <%= job.stage %>
+Name: <%= job.name %>
+Trace: <%= job.trace_with_state[:html] %>
+<% end %>
