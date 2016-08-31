@@ -6,6 +6,7 @@ v 8.12.0 (unreleased)
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
+  - Instructions for enabling Git packfile bitmaps !6104
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)

@@ -331,6 +331,9 @@ sudo usermod -aG redis git
     # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
     sudo -u git -H git config --global gc.auto 0
 
+    # Enable packfile bitmaps
+    sudo -u git -H git config --global repack.writeBitmaps true
+
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
