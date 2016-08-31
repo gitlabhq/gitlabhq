@@ -10,7 +10,7 @@ describe 'Attribute configuration', lib: true do
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
   let(:relation_names) do
     names = config_hash['project_tree'].to_s.gsub(/[\[{}\]=>\"\:]/, ',').split(',').delete_if(&:blank?)
-    names.uniq - ['author', 'milestones', 'labels'] + ['project'] # Remove duplicated or add missing models
+    names.uniq - ['milestones', 'labels'] + ['project'] # Remove duplicated or add missing models
   end
 
   let(:safe_model_attributes) do
@@ -35,7 +35,8 @@ describe 'Attribute configuration', lib: true do
       'Service' => %w[id type title project_id created_at updated_at active properties template push_events issues_events merge_requests_events tag_push_events note_events pipeline_events build_events category default wiki_page_events],
       'ProjectHook' => %w[id url project_id created_at updated_at type service_id push_events issues_events merge_requests_events tag_push_events note_events pipeline_events enable_ssl_verification build_events wiki_page_events token group_id],
       'ProtectedBranch' => %w[id project_id name created_at updated_at],
-      'Project' => %w[description issues_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived]
+      'Project' => %w[description issues_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived],
+      'Author' => %w[name]
     }
   end
 
@@ -43,7 +44,7 @@ describe 'Attribute configuration', lib: true do
     relation_names.each do |relation_name|
       relation_class = relation_class_for_name(relation_name)
 
-      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil
+      expect(safe_model_attributes[relation_class.to_s]).not_to be_nil, "Expected exported class #{relation_class.to_s} to exist in safe_model_attributes"
 
       current_attributes = parsed_attributes(relation_name, relation_class.attribute_names)
       safe_attributes = safe_model_attributes[relation_class.to_s]
@@ -79,5 +80,8 @@ describe 'Attribute configuration', lib: true do
     attributes = attributes & JSON[included_attributes.to_json] if included_attributes
 
     attributes
+  end
+
+  class Author < User
   end
 end
