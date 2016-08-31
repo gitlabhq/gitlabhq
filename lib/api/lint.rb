@@ -7,14 +7,14 @@ module API
 
     namespace :ci do
       post '/lint' do
-        errors = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
+        error = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
 
         status 200
 
-        if errors.blank?
+        if error.blank?
           { status: 'valid', errors: [] }
         else
-          { status: 'invalid', errors: [errors] }
+          { status: 'invalid', errors: [error] }
         end
       end
     end
