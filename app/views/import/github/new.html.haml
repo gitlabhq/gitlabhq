@@ -1,43 +1,62 @@
 - page_title "GitHub Import"
 - header_title "Projects", root_path
 
-%h3.page-title
-  = icon 'github', text: 'Import Projects from GitHub'
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      = icon 'github', text: 'Import Projects from GitHub'
+    %p
+      Welcome to the GitHub importer!
+    %p.prepend-top-20
+      From here you will able to import all your GitHub repositories including
+      their issues, pull requests, milestones and labels.
 
-- if github_import_configured?
-  %p
-    To import a GitHub project, you first need to authorize GitLab to access
-    the list of your GitHub repositories:
+    %p.append-bottom-0
+      Read more on
+      = succeed '.' do
+        = link_to 'how the GitHub importing works', help_page_path('workflow/importing/import_projects_from_github')
 
-  = link_to 'List Your GitHub Repositories', status_import_github_path, class: 'btn btn-success'
+  .col-lg-9
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title
+          Authorize access to your GitHub repositories
+      .panel-body
+        - if github_import_configured?
+          %p
+            = link_to 'GitHub integration', help_page_path('integration/github')
+            is enabled. To import a GitHub project, you first need to authorize GitLab to access
+            the list of your GitHub repositories.
 
-  %hr
+          = link_to 'List your GitHub repositories', status_import_github_path, class: 'btn btn-success'
 
-%p
-  - if github_import_configured?
-    Alternatively,
-  - else
-    To import a GitHub project,
-  you can use a
-  = succeed '.' do
-    = link_to 'Personal Access Token', 'https://github.com/settings/tokens'
-  When you create your Personal Access Token,
-  you will need to select the <code>repo</code> scope, so we can display a
-  list of your public and private repositories which are available for import.
+          %hr
 
-= form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
-  .form-group
-    = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal Access Token", size: 40
-    = submit_tag 'List Your GitHub Repositories', class: 'btn btn-success'
+        %p
+          - if github_import_configured?
+            Alternatively,
+          - else
+            GitHub integration is not enabled. To import a GitHub repository,
+          you can use a
+          = succeed '.' do
+            = link_to 'personal access token', 'https://github.com/settings/tokens', target: "_blank"
+          When you create your personal access token,
+          you will need to select the <code>repo</code> scope, so we can display a
+          list of your public and private repositories which are available for import.
 
-- unless github_import_configured?
-  %hr
-  %p
-    Note:
-    - if current_user.admin?
-      As an administrator you may like to configure
-    - else
-      Consider asking your GitLab administrator to configure
-    = link_to 'GitHub integration', help_page_path("integration/github")
-    which will allow login via GitHub and allow importing projects without
-    generating a Personal Access Token.
+        = form_tag personal_access_token_import_github_path, method: :post, class: 'form-inline' do
+          .form-group
+            = text_field_tag :personal_access_token, '', class: 'form-control', placeholder: "Personal access token", size: 40
+            = submit_tag 'List your GitHub repositories', class: 'btn btn-success'
+
+      - unless github_import_configured?
+        .panel-footer
+          %p.settings-message.text-center
+            = icon 'exclamation-circle'
+            - if current_user.admin?
+              As an administrator, you may like to configure
+            - else
+              Consider asking your GitLab administrator to configure
+            = link_to 'GitHub integration', help_page_path("integration/github")
+            which will allow login via GitHub and allow importing projects without
+            generating a personal access token.
