@@ -51,6 +51,8 @@ module Gitlab
 
     def push_access_check(changes)
       if user
+        return build_status_object(false, render_above_size_limit_message) if project.above_size_limit?
+
         user_push_access_check(changes)
       elsif deploy_key
         build_status_object(false, "Deploy keys are not allowed to push code.")
@@ -75,8 +77,6 @@ module Gitlab
       unless project.repository.exists?
         return build_status_object(false, "A repository for this project does not exist yet.")
       end
-
-      return build_status_object(false, render_above_size_limit_message) if project.above_size_limit?
 
       changes_list = Gitlab::ChangesList.new(changes)
 
