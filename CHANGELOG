@@ -8,6 +8,8 @@ v 8.11.4
   - Fix "Wiki" link not appearing in navigation for projects with external wiki. !6057
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Fix hover leading space bug in pipeline graph !5980
+  - Fix sorting issues by "last updated" doesn't work after import from GitHub
+  - Creating an issue through our API now emails label subscribers !5720
   - Block concurrent updates for Pipeline
   - Fix issue boards leak private label names and descriptions
 
