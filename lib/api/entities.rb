@@ -575,5 +575,10 @@ module API
     class Template < Grape::Entity
       expose :name, :content
     end
+
+    class BroadcastMessage < Grape::Entity
+      expose :id, :message, :starts_at, :ends_at, :color, :font
+      expose :active?, as: :active
+    end
   end
 end
