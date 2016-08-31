@@ -3,6 +3,16 @@ module TagsHelper
     "/tags/#{tag}"
   end
 
+  def filter_tags_path(options = {})
+    exist_opts = {
+      search: params[:search],
+      sort: params[:sort]
+    }
+
+    options = exist_opts.merge(options)
+    namespace_project_tags_path(@project.namespace, @project, @id, options)
+  end
+
   def tag_list(project)
     html = ''
     project.tag_list.each do |tag|
