@@ -14,7 +14,7 @@ module Emails
       @params = params
       add_headers
 
-      mail(to: to, subject: pipeline_subject('failed'))
+      mail(to: to, subject: pipeline_subject(status))
     end
 
     def add_headers
