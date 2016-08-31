@@ -353,7 +353,7 @@ module Ci
     end
 
     def artifacts?
-      !artifacts_expired? && self[:artifacts_file].present?
+      !artifacts_expired? && artifacts_file.exists?
     end
 
     def artifacts_metadata?
