@@ -284,7 +284,7 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def valid?
+  def is_valid?
     !(target_project.above_size_limit? || target_project.blank? || source_branch.blank?)
   end
 

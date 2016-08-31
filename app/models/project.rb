@@ -1292,7 +1292,7 @@ class Project < ActiveRecord::Base
   end
 
   def size_to_remove
-    return repository_size - current_application_settings.repository_size_limit
+    repository_size - current_application_settings.repository_size_limit
   end
 
   private
