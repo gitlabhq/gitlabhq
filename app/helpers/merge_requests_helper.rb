@@ -100,4 +100,8 @@ module MergeRequestsHelper
   def merge_request_button_visibility(merge_request, closed)
     return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
+
+  def compare_versions_path(project, version, base_version)
+    namespace_project_compare_path(project.namespace, project, base_version.head_commit_sha, version.head_commit_sha)
+  end
 end

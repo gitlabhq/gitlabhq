@@ -22,10 +22,32 @@
                 #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
                 = time_ago_with_tooltip(merge_request_diff.created_at)
 
+    %span.prepend-left-default
+      Compared with:
+      %span.dropdown.inline
+        %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
+          %strong.monospace base
+          %span.caret
+        %ul.dropdown-menu.dropdown-menu-selectable
+          - merge_request_diffs.each do |merge_request_diff|
+            - next if merge_request_diff.id >= @merge_request_diff.id
+            %li
+              = link_to compare_versions_path(@project, @merge_request_diff, merge_request_diff), class: ('is-active' if merge_request_diff == @base_version), target: '_blank' do
+                %strong.monospace
+                  #{merge_request_diff.head_commit.short_id}
+                %br
+                %small
+                  = time_ago_with_tooltip(merge_request_diff.created_at)
+          %li
+            = link_to '#', class: 'is-active' do
+              %strong.monospace
+                base
+
     - unless @merge_request_diff.latest?
       %span.prepend-left-default
         = icon('info-circle')
         This version is not the latest one. Comments are disabled
+
     .pull-right
       %span.monospace
         #{@merge_request_diff.base_commit.short_id}..#{@merge_request_diff.head_commit.short_id}
