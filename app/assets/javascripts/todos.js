@@ -30,7 +30,7 @@
 
     Todos.prototype.initFilters = function() {
       new UsersSelect();
-      this.initFilterDropdown($('.js-project-search'), 'project_id', true);
+      this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
       this.initFilterDropdown($('.js-type-search'), 'type');
       this.initFilterDropdown($('.js-action-search'), 'action_id');
 
@@ -40,11 +40,12 @@
       });
     };
 
-    Todos.prototype.initFilterDropdown = function($dropdown, fieldName, isFilterable) {
+    Todos.prototype.initFilterDropdown = function($dropdown, fieldName, searchFields) {
       $dropdown.glDropdown({
         selectable: true,
-        filterable: isFilterable,
+        filterable: searchFields ? true : false,
         fieldName: fieldName,
+        search: { fields: searchFields },
         data: $dropdown.data('data'),
         clicked: function() {
           return $dropdown.closest('form.filter-form').submit();
