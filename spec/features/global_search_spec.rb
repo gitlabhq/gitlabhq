@@ -34,4 +34,41 @@ feature 'Global elastic search', feature: true do
       expect(page).to have_selector('.gl-pagination .page', count: 2)
     end
   end
+
+  describe 'I search through the blobs' do
+    before do
+      project.repository.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it "finds files" do
+      visit dashboard_projects_path
+
+      fill_in "search", with: "def"
+      click_button "Go"
+
+      select_filter("Code")
+
+      expect(page).to have_selector('.file-content .code')
+    end
+  end
+
+  describe 'I search through the commits' do
+    before do
+      project.repository.index_commits
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it "finds commits" do
+      visit dashboard_projects_path
+
+      fill_in "search", with: "add"
+      click_button "Go"
+
+      select_filter("Commits")
+
+      expect(page).to have_selector('.commit-row-description')
+    end
+  end
 end

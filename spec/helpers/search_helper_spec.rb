@@ -6,6 +6,71 @@ describe SearchHelper do
     str
   end
 
+  describe 'parsing result' do
+    let(:project) { create(:project) }
+    let(:repository) { project.repository }
+    let(:results) { repository.search_files('feature', 'master') }
+    let(:search_result) { results.first }
+
+    subject { helper.parse_search_result(search_result) }
+
+    it "returns a valid OpenStruct object" do
+      is_expected.to be_an OpenStruct
+      expect(subject.filename).to eq('CHANGELOG')
+      expect(subject.basename).to eq('CHANGELOG')
+      expect(subject.ref).to eq('master')
+      expect(subject.startline).to eq(186)
+      expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n")
+    end
+
+    context "when filename has extension" do
+      let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
+
+      it { expect(subject.filename).to eq('CONTRIBUTE.md') }
+      it { expect(subject.basename).to eq('CONTRIBUTE') }
+    end
+
+    context "when file under directory" do
+      let(:search_result) { "master:a/b/c.md:5:a b c\n" }
+
+      it { expect(subject.filename).to eq('a/b/c.md') }
+      it { expect(subject.basename).to eq('a/b/c') }
+    end
+  end
+
+  describe '#parse_search_result_from_elastic' do
+    before do
+      stub_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+      Gitlab::Elastic::Helper.create_empty_index
+    end
+
+    after do
+      Gitlab::Elastic::Helper.delete_index
+      stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
+    end
+
+    it "returns parsed result" do
+      project = create :project
+
+      project.repository.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+
+      result = project.repository.search(
+        'def popen',
+        type: :blob,
+        options: { highlight: true }
+      )[:blobs][:results][0]
+
+      parsed_result = helper.parse_search_result_from_elastic(result)
+
+      expect(parsed_result.ref). to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+      expect(parsed_result.filename).to eq('files/ruby/popen.rb')
+      expect(parsed_result.startline).to eq(2)
+      expect(parsed_result.data).to include("Popen")
+    end
+  end
+
   describe 'search_autocomplete_source' do
     context "with no current user" do
       before do

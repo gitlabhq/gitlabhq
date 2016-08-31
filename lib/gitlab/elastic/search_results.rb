@@ -24,17 +24,25 @@ module Gitlab
           merge_requests.page(page).per(per_page).records
         when 'milestones'
           milestones.page(page).per(per_page).records
+        when 'blobs'
+          blobs.page(page).per(per_page)
+        when 'commits'
+          commits(page: page, per_page: per_page)
         else
           Kaminari.paginate_array([])
         end
       end
 
-      def total_count
-        @total_count ||= projects_count + issues_count + merge_requests_count + milestones_count
-      end
-
       def projects_count
         @projects_count ||= projects.total_count
+      end
+
+      def blobs_count
+        @blobs_count ||= blobs.total_count
+      end
+
+      def commits_count
+        @commits_count ||= commits.total_count
       end
 
       def issues_count
@@ -47,10 +55,6 @@ module Gitlab
 
       def milestones_count
         @milestones_count ||= milestones.total_count
-      end
-
-      def empty?
-        total_count.zero?
       end
 
       private
@@ -90,6 +94,64 @@ module Gitlab
         }
 
         MergeRequest.elastic_search(query, options: opt)
+      end
+
+      def blobs
+        if query.blank?
+          Kaminari.paginate_array([])
+        else
+          opt = {
+            additional_filter: build_filter_by_project(limit_project_ids, @public_and_internal_projects)
+          }
+
+          Repository.search(
+            query,
+            type: :blob,
+            options: opt.merge({ highlight: true })
+          )[:blobs][:results].response
+        end
+      end
+
+      def commits(page: 1, per_page: 20)
+        if query.blank?
+          Kaminari.paginate_array([])
+        else
+          options = {
+            additional_filter: build_filter_by_project(limit_project_ids, @public_and_internal_projects)
+          }
+
+          Repository.find_commits_by_message_with_elastic(
+            query,
+            page: (page || 1).to_i,
+            per_page: per_page,
+            options: options
+          )
+        end
+      end
+
+      def build_filter_by_project(project_ids, public_and_internal_projects)
+        conditions = [{ terms: { id: project_ids } }]
+
+        if public_and_internal_projects
+          conditions << {
+            term: { visibility_level: Project::PUBLIC }
+          }
+
+          conditions << {
+            term: { visibility_level: Project::INTERNAL }
+          }
+        end
+
+        {
+          has_parent: {
+            parent_type: 'project',
+            query: {
+              bool: {
+                should: conditions
+              }
+            }
+          }
+        }
       end
 
       def default_scope

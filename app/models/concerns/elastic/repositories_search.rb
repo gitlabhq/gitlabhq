@@ -11,8 +11,8 @@ module Elastic
         project.id
       end
 
-      def self.repositories_count
-        Project.cached_count
+      def project_id
+        project.id
       end
 
       def client_for_indexing
@@ -26,6 +26,40 @@ module Elastic
             project.repository.index_blobs
           end
         end
+      end
+
+      def find_commits_by_message_with_elastic(query, page: 1, per_page: 20)
+        response = project.repository.search(query, type: :commit, page: page, per: per_page)[:commits][:results]
+
+        commits = response.map do |result|
+          commit result["_source"]["commit"]["sha"]
+        end
+
+        # Before "map" we had a paginated array so we need to recover it
+        offset = per_page * ((page || 1) - 1)
+        Kaminari.paginate_array(commits, total_count: response.total_count, limit: per_page, offset: offset)
+      end
+    end
+
+    class_methods do
+      def find_commits_by_message_with_elastic(query, page: 1, per_page: 20, options: {})
+        response = Repository.search(
+          query,
+          type: :commit,
+          page: page,
+          per: per_page,
+          options: options
+        )[:commits][:results]
+
+        commits = response.map do |result|
+          sha = result["_source"]["commit"]["sha"]
+          project = Project.find(result["_source"]["commit"]["rid"])
+          project.commit(sha)
+        end
+
+        # Before "map" we had a paginated array so we need to recover it
+        offset = per_page * ((page || 1) - 1)
+        Kaminari.paginate_array(commits, total_count: response.total_count, limit: per_page, offset: offset)
       end
     end
   end
