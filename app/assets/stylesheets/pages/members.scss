@@ -1,0 +1,22 @@
+.project-members-new {
+  > h5 {
+    font-weight: normal;
+  }
+}
+
+.member {
+  .controls {
+    display: flex;
+    width: 400px;
+  }
+
+  .form-horizontal {
+    display: flex;
+    flex: 1;
+    margin-top: 3px;
+  }
+
+  .member-form-control {
+    width: 50%;
+  }
+}

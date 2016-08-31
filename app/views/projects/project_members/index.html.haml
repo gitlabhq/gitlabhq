@@ -1,20 +1,21 @@
 - page_title "Members"
 
 .project-members-page.js-project-members-page.prepend-top-default
+  %h4
+    Members
+  %hr
   - if can?(current_user, :admin_project_member, @project)
-    .panel.panel-default
-      .panel-heading
-        Add new user to project
-        .controls
-          = link_to import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-grouped", title: "Import members from another project" do
-            Import members
-      .panel-body
-        %p.light
-          Users with access to this project are listed below.
-        = render "new_project_member"
+    .project-members-new.append-bottom-default
+      %h5.clearfix
+        Add new user to
+        %strong= @project.name
+        -# = link_to "Import", import_namespace_project_project_members_path(@project.namespace, @project), class: "btn btn-default pull-right", title: "Import members from another project"
+      = render "new_project_member"
 
-    = render 'shared/members/requests', membership_source: @project, requesters: @requesters
+      = render 'shared/members/requests', membership_source: @project, requesters: @requesters
 
+  %h5.append-bottom-default
+    Existing users and groups
   = render 'team', members: @project_members
 
   - if @group

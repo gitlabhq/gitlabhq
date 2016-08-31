@@ -86,7 +86,7 @@
     background: none;
 
     .select2-search-field input {
-      padding: $gl-padding / 2;
+      padding: 5px $gl-padding / 2;
       font-size: 13px;
       height: auto;
       font-family: inherit;
@@ -190,6 +190,10 @@
 
   &.input-clamp {
     max-width: 100%;
+  }
+
+  &.input-full {
+    width: 100%;
   }
 }
 
