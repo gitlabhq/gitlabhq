@@ -73,5 +73,6 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::MergeRequestDiffs
   end
 end

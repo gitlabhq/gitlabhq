@@ -269,11 +269,11 @@ module SystemNoteService
   #
   # Example Note text:
   #
-  #   "mentioned in #1"
+  #   "Mentioned in #1"
   #
-  #   "mentioned in !2"
+  #   "Mentioned in !2"
   #
-  #   "mentioned in 54f7727c"
+  #   "Mentioned in 54f7727c"
   #
   # See cross_reference_note_content.
   #
@@ -308,7 +308,7 @@ module SystemNoteService
 
   # Check if a cross-reference is disallowed
   #
-  # This method prevents adding a "mentioned in !1" note on every single commit
+  # This method prevents adding a "Mentioned in !1" note on every single commit
   # in a merge request. Additionally, it prevents the creation of references to
   # external issues (which would fail).
   #
@@ -433,7 +433,7 @@ module SystemNoteService
   end
 
   def cross_reference_note_prefix
-    'mentioned in '
+    'Mentioned in '
   end
 
   def cross_reference_note_content(gfm_reference)

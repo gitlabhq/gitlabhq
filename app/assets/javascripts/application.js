@@ -294,7 +294,7 @@
     new Aside();
     if ($window.width() < 1024 && $.cookie('pin_nav') === 'true') {
       $.cookie('pin_nav', 'false', {
-        path: '/',
+        path: gon.relative_url_root || '/',
         expires: 365 * 10
       });
       $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
@@ -319,7 +319,7 @@
         $topNav.removeClass('header-pinned-nav').toggleClass('header-collapsed header-expanded');
       }
       $.cookie('pin_nav', doPinNav, {
-        path: '/',
+        path: gon.relative_url_root || '/',
         expires: 365 * 10
       });
       if ($.cookie('pin_nav') === 'true' || doPinNav) {

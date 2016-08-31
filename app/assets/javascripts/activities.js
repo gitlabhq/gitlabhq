@@ -26,7 +26,7 @@
       event_filters = $.cookie("event_filter");
       filter = sender.attr("id").split("_")[0];
       $.cookie("event_filter", (event_filters !== filter ? filter : ""), {
-        path: '/'
+        path: gon.relative_url_root || '/'
       });
       if (event_filters !== filter) {
         return sender.closest('li').toggleClass("active");

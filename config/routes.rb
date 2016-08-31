@@ -165,12 +165,6 @@ Rails.application.routes.draw do
       get :jobs
     end
 
-    resource :gitorious, only: [:create, :new], controller: :gitorious do
-      get :status
-      get :callback
-      get :jobs
-    end
-
     resource :google_code, only: [:create, :new], controller: :google_code do
       get :status
       post :callback

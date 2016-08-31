@@ -18,7 +18,6 @@ class Spinach::Features::NewProject < Spinach::FeatureSteps
     expect(page).to have_link('GitHub')
     expect(page).to have_link('Bitbucket')
     expect(page).to have_link('GitLab.com')
-    expect(page).to have_link('Gitorious.org')
     expect(page).to have_link('Google Code')
     expect(page).to have_link('Repo by URL')
   end

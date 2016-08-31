@@ -150,7 +150,7 @@
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
-    overflow: scroll;
+    overflow: auto;
 
     svg {
       position: relative;

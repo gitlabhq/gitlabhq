@@ -17,7 +17,7 @@ See the documentation below for details on how to configure these services.
 - [Gmail actions buttons](gmail_action_buttons_for_gitlab.md) Adds GitLab actions to messages
 - [reCAPTCHA](recaptcha.md) Configure GitLab to use Google reCAPTCHA for new users
 - [Akismet](akismet.md) Configure Akismet to stop spam
-- [Koding](koding.md) Configure Koding to use IDE integration
+- [Koding](../administration/integration/koding.md) Configure Koding to use IDE integration
 
 GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 
