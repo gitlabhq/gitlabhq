@@ -54,6 +54,7 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     page.within('.todos-pending-count') { expect(page).to have_content '0' }
     expect(page).to have_content 'To do 0'
     expect(page).to have_content 'Done 4'
+    expect(page).to have_content "You're all done!"
     expect(page).not_to have_link project.name_with_namespace
     should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
     should_not_see_todo "John Doe mentioned you on issue #{issue.to_reference}"
