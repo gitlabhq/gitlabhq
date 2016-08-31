@@ -132,18 +132,16 @@ module Gitlab
       end
 
       def process_periods(periods)
-        if periods.empty?
-          periods
-        else
-          periods.drop(1).inject([periods.first]) do |result, current|
-            merged = try_merge_period(result.last, current)
+        return periods if periods.empty?
 
-            if merged
-              result[-1] = merged
-              result
-            else
-              result << current
-            end
+        periods.drop(1).inject([periods.first]) do |result, current|
+          merged = try_merge_period(result.last, current)
+
+          if merged
+            result[-1] = merged
+            result
+          else
+            result << current
           end
         end
       end
