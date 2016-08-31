@@ -240,7 +240,7 @@ In a CI strategy you can merge in master at the start of the day to prevent pain
 In a synchronization point strategy you only merge in from well defined points in time, for example a tagged release.
 This strategy is [advocated by Linus Torvalds](https://www.mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html) because the state of the code at these points is better known.
 
-GitLab Enterprise Edition offers a way to rebase before merging a merge request. You can configure this per project bassis by navigating to the project settings page and selecting `Merge Requests Rebase` checkbox.
+GitLab Enterprise Edition offers a way to rebase before merging a merge request. You can configure this per project basis by navigating to the project settings page and selecting `Merge Requests Rebase` checkbox.
 
 ![Merge request settings](merge_request_settings.png)
 
