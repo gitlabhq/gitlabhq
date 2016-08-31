@@ -118,8 +118,8 @@ module Gitlab
 
       def lfs_token_check(login, password)
         actor =
-          if login.include?('lfs-deploy-key')
-            DeployKey.find(login.gsub('lfs-deploy-key-', ''))
+          if login.start_with?('lfs-deploy-key')
+            DeployKey.find(login.sub('lfs-deploy-key-', ''))
           else
             User.by_login(login)
           end
