@@ -1,5 +1,6 @@
 class Projects::TagsController < Projects::ApplicationController
   include SortingHelper
+
   # Authorize
   before_action :require_non_empty_project
   before_action :authorize_download_code!
@@ -7,7 +8,9 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :authorize_admin_project!, only: [:destroy]
 
   def index
-    @sort = params[:sort] || 'name'
+    params[:sort] = params[:sort].presence || 'name'
+
+    @sort = params[:sort]
     @tags = TagsFinder.new(@repository, params).execute
     @tags = Kaminari.paginate_array(@tags).page(params[:page])
 
