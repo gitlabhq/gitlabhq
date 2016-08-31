@@ -432,14 +432,12 @@
       var $form = $(xhr.target);
 
       if ($form.attr('data-resolve-all') != null) {
-        var namespacePath = $form.attr('data-namespace-path'),
-            projectPath = $form.attr('data-project-path')
+        var projectPath = $form.attr('data-project-path')
             discussionId = $form.attr('data-discussion-id'),
-            mergeRequestId = $form.attr('data-noteable-iid'),
-            namespace = namespacePath + '/' + projectPath;
+            mergeRequestId = $form.attr('data-noteable-iid');
 
         if (ResolveService != null) {
-          ResolveService.toggleResolveForDiscussion(namespace, mergeRequestId, discussionId);
+          ResolveService.toggleResolveForDiscussion(projectPath, mergeRequestId, discussionId);
         }
       }
 
@@ -854,7 +852,6 @@
         .closest('form')
         .attr('data-discussion-id', discussionId)
         .attr('data-resolve-all', 'true')
-        .attr('data-namespace-path', $this.attr('data-namespace-path'))
         .attr('data-project-path', $this.attr('data-project-path'));
     };
 
