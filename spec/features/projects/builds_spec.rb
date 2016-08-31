@@ -286,8 +286,8 @@ describe "Builds" do
     end
 
     context 'storage form' do
-      let (:existing_file) { Tempfile.new('existing-trace-file').path }
-      let (:non_existing_file) do
+      let(:existing_file) { Tempfile.new('existing-trace-file').path }
+      let(:non_existing_file) do
         file = Tempfile.new('non-existing-trace-file')
         path = file.path
         file.unlink
