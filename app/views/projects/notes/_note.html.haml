@@ -24,9 +24,7 @@
 
             - if note.resolvable?
               - can_resolve = can?(current_user, :resolve_note, note)
-
-              %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
-                  ":project-path" => "'#{note.project.path}'",
+              %resolve-btn{ ":project-path" => "'#{project_path(note.project)}'",
                   ":discussion-id" => "'#{note.discussion_id}'",
                   ":note-id" => note.id,
                   ":resolved" => note.resolved?,
