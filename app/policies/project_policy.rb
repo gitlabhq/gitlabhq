@@ -23,6 +23,9 @@ class ProjectPolicy < BasePolicy
 
     archived_access! if project.archived?
 
+    # EE-only
+    can! :change_repository_storage if user.admin?
+
     disabled_features!
   end
 
@@ -101,6 +104,12 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+
+    # EE-only
+    can! :admin_path_locks
+    can! :admin_pages
+    can! :read_pages
+    can! :update_pages
   end
 
   def public_access!
@@ -124,6 +133,9 @@ class ProjectPolicy < BasePolicy
     can! :remove_fork_project
     can! :destroy_merge_request
     can! :destroy_issue
+
+    # EE-only
+    can! :remove_pages
   end
 
   # Push abilities on the users team role
@@ -175,6 +187,14 @@ class ProjectPolicy < BasePolicy
 
     unless project.container_registry_enabled
       cannot!(*named_abilities(:container_image))
+    end
+
+    # EE-only
+    if defined?(License) && License.block_changes?
+      cannot! :create_issue
+      cannot! :create_merge_request
+      cannot! :push_code
+      cannot! :push_code_to_protected_branches
     end
   end
 

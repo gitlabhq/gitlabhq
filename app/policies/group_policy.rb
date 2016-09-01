@@ -32,6 +32,9 @@ class GroupPolicy < BasePolicy
     if globally_viewable && @subject.request_access_enabled && !member
       can! :request_access
     end
+
+    # EE-only
+    cannot! :admin_group_member if @subject.ldap_synced?
   end
 
   def can_read_group?
