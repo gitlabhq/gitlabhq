@@ -570,7 +570,7 @@ describe Projects::MergeRequestsController do
     context 'when the conflicts cannot be resolved in the UI' do
       before do
         allow_any_instance_of(Gitlab::Conflict::Parser).
-          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnexpectedDelimiter)
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
 
         get :conflicts,
             namespace_id: merge_request_with_conflicts.project.namespace.to_param,
@@ -655,6 +655,61 @@ describe Projects::MergeRequestsController do
            id: merge_request.iid
 
       expect(merge_request.reload.title).to eq(merge_request.wipless_title)
+  end
+
+  describe 'GET conflict_for_path' do
+    let(:json_response) { JSON.parse(response.body) }
+
+    def conflict_for_path(path)
+      get :conflict_for_path,
+          namespace_id: merge_request_with_conflicts.project.namespace.to_param,
+          project_id: merge_request_with_conflicts.project.to_param,
+          id: merge_request_with_conflicts.iid,
+          old_path: path,
+          new_path: path,
+          format: 'json'
+    end
+
+    context 'when the conflicts cannot be resolved in the UI' do
+      before do
+        allow_any_instance_of(Gitlab::Conflict::Parser).
+          to receive(:parse).and_raise(Gitlab::Conflict::Parser::UnmergeableFile)
+
+        conflict_for_path('files/ruby/regex.rb')
+      end
+
+
+      it 'returns a 404 status code' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when the file does not exist cannot be resolved in the UI' do
+      before { conflict_for_path('files/ruby/regexp.rb') }
+
+      it 'returns a 404 status code' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'with an existing file' do
+      let(:path) { 'files/ruby/regex.rb' }
+
+      before { conflict_for_path(path) }
+
+      it 'returns a 200 status code' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns the file in JSON format' do
+        content = merge_request_with_conflicts.conflicts.file_for_path(path, path).content
+
+        expect(json_response).to include('old_path' => path,
+                                         'new_path' => path,
+                                         'blob_icon' => 'file-text-o',
+                                         'blob_path' => a_string_ending_with(path),
+                                         'content' => content)
+      end
     end
   end
 
@@ -662,22 +717,37 @@ describe Projects::MergeRequestsController do
     let(:json_response) { JSON.parse(response.body) }
     let!(:original_head_sha) { merge_request_with_conflicts.diff_head_sha }
 
-    def resolve_conflicts(sections)
+    def resolve_conflicts(files)
       post :resolve_conflicts,
            namespace_id: merge_request_with_conflicts.project.namespace.to_param,
            project_id: merge_request_with_conflicts.project.to_param,
            id: merge_request_with_conflicts.iid,
            format: 'json',
-           sections: sections,
+           files: files,
            commit_message: 'Commit message'
     end
 
     context 'with valid params' do
       before do
-        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
-                          '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin')
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'sections' => {
+              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
+            }
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
       end
 
       it 'creates a new commit on the branch' do
@@ -692,7 +762,23 @@ describe Projects::MergeRequestsController do
 
     context 'when sections are missing' do
       before do
-        resolve_conflicts('2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head')
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'sections' => {
+              '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_14_14' => 'head'
+            }
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
       end
 
       it 'returns a 400 error' do
@@ -700,7 +786,71 @@ describe Projects::MergeRequestsController do
       end
 
       it 'has a message with the name of the first missing section' do
-        expect(json_response['message']).to include('6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9')
+        expect(json_response['message']).to include('6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
+    context 'when files are missing' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the name of the missing file' do
+        expect(json_response['message']).to include('files/ruby/popen.rb')
+      end
+
+      it 'does not create a new commit' do
+        expect(original_head_sha).to eq(merge_request_with_conflicts.source_branch_head.sha)
+      end
+    end
+
+    context 'when a file has identical content to the conflict' do
+      before do
+        resolved_files = [
+          {
+            'new_path' => 'files/ruby/popen.rb',
+            'old_path' => 'files/ruby/popen.rb',
+            'content' => merge_request_with_conflicts.conflicts.file_for_path('files/ruby/popen.rb', 'files/ruby/popen.rb').content
+          }, {
+            'new_path' => 'files/ruby/regex.rb',
+            'old_path' => 'files/ruby/regex.rb',
+            'sections' => {
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_9_9' => 'head',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_21_21' => 'origin',
+              '6eb14e00385d2fb284765eb1cd8d420d33d63fc9_49_49' => 'origin'
+            }
+          }
+        ]
+
+        resolve_conflicts(resolved_files)
+      end
+
+      it 'returns a 400 error' do
+        expect(response).to have_http_status(:bad_request)
+      end
+
+      it 'has a message with the path of the problem file' do
+        expect(json_response['message']).to include('files/ruby/popen.rb')
       end
 
       it 'does not create a new commit' do

@@ -4,12 +4,12 @@ module Gitlab
       include Gitlab::Routing.url_helpers
       include IconsHelper
 
-      class MissingResolution < StandardError
+      class MissingResolution < ResolutionError
       end
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository
+      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository, :type
 
       def initialize(merge_file_result, conflict, merge_request:)
         @merge_file_result = merge_file_result
@@ -21,12 +21,24 @@ module Gitlab
         @match_line_headers = {}
       end
 
+      def content
+        merge_file_result[:data]
+      end
+
       # Array of Gitlab::Diff::Line objects
       def lines
-        @lines ||= Gitlab::Conflict::Parser.new.parse(merge_file_result[:data],
+        return @lines if defined?(@lines)
+
+        begin
+          @type = 'text'
+          @lines = Gitlab::Conflict::Parser.new.parse(content,
                                                       our_path: our_path,
                                                       their_path: their_path,
                                                       parent_file: self)
+        rescue Gitlab::Conflict::Parser::ParserError
+          @type = 'text-editor'
+          @lines = nil
+        end
       end
 
       def resolve_lines(resolution)
@@ -51,6 +63,14 @@ module Gitlab
 
           line
         end.compact
+      end
+
+      def resolve_content(resolution)
+        if resolution == content
+          raise MissingResolution, "Resolved content has no changes for file #{our_path}"
+        end
+
+        resolution
       end
 
       def highlight_lines!
@@ -170,21 +190,36 @@ module Gitlab
         match_line.text = "@@ -#{match_line.old_pos},#{line.old_pos} +#{match_line.new_pos},#{line.new_pos} @@#{header}"
       end
 
-      def as_json(opts = nil)
-        {
+      def as_json(opts = {})
+        json_hash = {
           old_path: their_path,
           new_path: our_path,
           blob_icon: file_type_icon_class('file', our_mode, our_path),
           blob_path: namespace_project_blob_path(merge_request.project.namespace,
                                                  merge_request.project,
-                                                 ::File.join(merge_request.diff_refs.head_sha, our_path)),
-          sections: sections
+                                                 ::File.join(merge_request.diff_refs.head_sha, our_path))
         }
+
+        if opts[:full_content]
+          json_hash.merge(content: content)
+        else
+          json_hash.merge!(sections: sections) if type == 'text'
+
+          json_hash.merge(type: type, content_path: content_path)
+        end
+      end
+
+      def content_path
+        conflict_for_path_namespace_project_merge_request_path(merge_request.project.namespace,
+                                                               merge_request.project,
+                                                               merge_request,
+                                                               old_path: their_path,
+                                                               new_path: our_path)
       end
 
       # Don't try to print merge_request or repository.
       def inspect
-        instance_variables = [:merge_file_result, :their_path, :our_path, :our_mode].map do |instance_variable|
+        instance_variables = [:merge_file_result, :their_path, :our_path, :our_mode, :type].map do |instance_variable|
           value = instance_variable_get("@#{instance_variable}")
 
           "#{instance_variable}=\"#{value}\""
