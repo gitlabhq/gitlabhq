@@ -15,25 +15,9 @@ v 8.11.4
   - Don't create groups for unallowed users when importing projects
   - Fix issue boards leak private label names and descriptions
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+  - Remove gitorious. !5866
 
 v 8.11.3
-v 8.12.0 (unreleased)
-  - Add two-factor recovery endpoint to internal API !5510
-  - Change merge_error column from string to text type
-  - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
-  - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
-  - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
-  - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
-  - Remove Gitorious import
-  - Add Sentry logging to API calls
-  - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
-  - Added tests for diff notes
-  - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
-  - Reduce number of database queries on builds tab
-  - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
-  - Adds response mime type to transaction metric action when it's not HTML
-
-v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
