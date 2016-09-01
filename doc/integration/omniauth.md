@@ -19,17 +19,18 @@ This is a list of the current supported OmniAuth providers. Before proceeding
 on each provider's documentation, make sure to first read this document as it
 contains some settings that are common for all providers.
 
-- [GitHub](github.md)
-- [Bitbucket](bitbucket.md)
-- [GitLab.com](gitlab.md)
-- [Google](google.md)
-- [Facebook](facebook.md)
-- [Twitter](twitter.md)
-- [Shibboleth](shibboleth.md)
-- [SAML](saml.md)
-- [Crowd](crowd.md)
-- [Azure](azure.md)
 - [Auth0](auth0.md)
+- [Azure](azure.md)
+- [CAS](cas.md)
+- [Crowd](crowd.md)
+- [Bitbucket](bitbucket.md)
+- [Facebook](facebook.md)
+- [GitLab.com](gitlab.md)
+- [GitHub](github.md)
+- [Google](google.md)
+- [SAML](saml.md)
+- [Shibboleth](shibboleth.md)
+- [Twitter](twitter.md)
 
 ## Initial OmniAuth Configuration
 
