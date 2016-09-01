@@ -15,9 +15,10 @@
           %th Name
           %th
           %th
-          - unless admin
-            - if project.build_coverage_enabled?
-              %th Coverage
+            - unless admin
+              - if project.build_coverage_enabled?
+                Coverage
+          %th
 
 
       - if admin
