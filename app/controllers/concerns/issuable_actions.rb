@@ -8,6 +8,8 @@ module IssuableActions
 
   def destroy
     issuable.destroy
+    destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
+    TodoService.new.public_send(destroy_method, issuable, current_user)
 
     name = issuable.class.name.titleize.downcase
     flash[:notice] = "The #{name} was successfully deleted."
