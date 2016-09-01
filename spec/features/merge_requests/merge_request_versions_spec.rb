@@ -12,7 +12,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
   it 'show the latest version of the diff' do
     page.within '.mr-version-dropdown' do
-      expect(page).to have_content 'Version: latest'
+      expect(page).to have_content 'Latest: 5937ac0a'
     end
 
     expect(page).to have_content '8 changed files'
@@ -33,6 +33,10 @@ feature 'Merge Request versions', js: true, feature: true do
 
       expect(page).to have_content '5 changed files'
     end
+
+    it 'show the message about disabled comments' do
+      expect(page).to have_content 'Comments are disabled'
+    end
   end
 
   describe 'compare with older version' do
@@ -43,12 +47,22 @@ feature 'Merge Request versions', js: true, feature: true do
       end
     end
 
-    it 'should show older version' do
+    it 'should has correct value in the compare dropdown' do
       page.within '.mr-version-compare-dropdown' do
         expect(page).to have_content '6f6d7e7e'
       end
+    end
 
-      expect(page).to have_content '5 changed files'
+    it 'show the message about disabled comments' do
+      expect(page).to have_content 'Comments are disabled'
+    end
+
+    it 'show diff between new and old version' do
+      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
+    end
+
+    it 'show diff between new and old version' do
+      expect(page).to have_content '4 changed files with 15 additions and 6 deletions'
     end
   end
 end
