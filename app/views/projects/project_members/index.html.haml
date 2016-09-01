@@ -14,12 +14,16 @@
 
       = render 'shared/members/requests', membership_source: @project, requesters: @requesters
 
-  %h5.append-bottom-default
-    Existing users and groups
+  .append-bottom-default.clearfix
+    %h5.pull-left
+      Existing users and groups
+    = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form pull-right hidden-xs hidden-sm'  do
+      .form-group
+        = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
+        = icon("search")
+  - if @grups
+    = render 'groups', groups: @groups
   = render 'team', members: @project_members
 
   - if @group
     = render "group_members", members: @group_members
-
-  - if @project_group_links.any? && @project.allowed_to_share_with_group?
-    = render "shared_group_members"

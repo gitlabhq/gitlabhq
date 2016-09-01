@@ -164,6 +164,14 @@ ul.content-list {
       }
     }
 
+    .member-controls {
+      float: none;
+      
+      @media (min-width: $screen-md-min) {
+        float: right;
+      }
+    }
+
     // When dragging a list item
     &.ui-sortable-helper {
       border-bottom: none;

@@ -3,43 +3,6 @@
 - user = member.user
 
 %li.member{ class: dom_class(member), id: dom_id(member) }
-  - if show_roles
-    .controls
-      - if show_controls
-        - if @project.owner != user
-          = form_for member, remote: true, html: { class: 'form-horizontal' } do |f|
-            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
-            .prepend-left-5.append-right-10.clearable-input.member-form-control
-              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
-              %i.clear-icon.js-clear-input
-          - if !user && can?(current_user, action_member_permission(:admin, member), member.source)
-            = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
-                      method: :post,
-                      class: 'btn'
-        - else
-          Owner
-
-        - if member.request? && can?(current_user, action_member_permission(:update, member), member)
-          = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
-                    method: :post,
-                    class: 'btn btn-success',
-                    title: 'Grant access'
-
-        - if can?(current_user, action_member_permission(:destroy, member), member)
-          - if current_user == user
-            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
-                      method: :delete,
-                      data: { confirm: leave_confirmation_message(member.source) },
-                      class: 'btn btn-remove'
-          - else
-            = link_to icon('trash'), member,
-                      remote: true,
-                      method: :delete,
-                      data: { confirm: remove_member_message(member) },
-                      class: 'btn btn-remove',
-                      title: remove_member_title(member)
-
-
   %span{ class: ("list-item-name" if show_controls) }
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
@@ -74,3 +37,35 @@
           by
           = link_to member.created_by.name, user_path(member.created_by)
         = time_ago_with_tooltip(member.created_at)
+  - if show_roles
+    .controls.member-controls
+      - if show_controls
+        = form_for member, remote: true, html: { class: 'form-horizontal' } do |f|
+          = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
+          .prepend-left-5.append-right-10.clearable-input.member-form-control
+            = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
+            %i.clear-icon.js-clear-input
+        - if !user && can?(current_user, action_member_permission(:admin, member), member.source)
+          = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
+                    method: :post,
+                    class: 'btn'
+
+        - if member.request? && can?(current_user, action_member_permission(:update, member), member)
+          = link_to icon('check inverse'), polymorphic_path([:approve_access_request, member]),
+                    method: :post,
+                    class: 'btn btn-success',
+                    title: 'Grant access'
+
+        - if can?(current_user, action_member_permission(:destroy, member), member)
+          - if current_user == user
+            = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
+                      method: :delete,
+                      data: { confirm: leave_confirmation_message(member.source) },
+                      class: 'btn btn-remove'
+          - else
+            = link_to icon('trash'), member,
+                      remote: true,
+                      method: :delete,
+                      data: { confirm: remove_member_message(member) },
+                      class: 'btn btn-remove',
+                      title: remove_member_title(member)

@@ -5,6 +5,15 @@
 }
 
 .member {
+  .list-item-name {
+    float: none;
+
+    @media (min-width: $screen-md-min) {
+      float: left;
+      width: 50%;
+    }
+  }
+
   .controls {
     display: flex;
     width: 400px;

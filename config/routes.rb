@@ -867,7 +867,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :group_links, only: [:index, :create, :destroy], constraints: { id: /\d+/ }
+        resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
 
         resources :notes, only: [:index, :create, :destroy, :update], constraints: { id: /\d+/ } do
           member do
