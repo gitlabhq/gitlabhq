@@ -2,12 +2,12 @@
   global.User = class {
     constructor(opts) {
       this.opts = opts;
-      this.placeTop();
+      this.placeProfileAvatarsToTop();
       this.initTabs();
       this.hideProjectLimitMessage();
     }
 
-    placeTop() {
+    placeProfileAvatarsToTop() {
       $('.profile-groups-avatars').tooltip({
         placement: 'top'
       });
@@ -28,7 +28,6 @@
           path: path
         });
         $(this).parents('.project-limit-message').remove();
-        return;
       });
     }
   }
