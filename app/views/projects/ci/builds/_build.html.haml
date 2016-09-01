@@ -52,12 +52,11 @@
       - else
         .light none
 
-  - if defined?(stage) && stage
-    %td
-      = build.stage
+  %td
+    #{build.stage}
 
   %td
-    = build.name
+    #{build.name}
 
   %td
     - if build.duration

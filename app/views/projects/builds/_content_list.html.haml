@@ -1,43 +1,29 @@
-- if project.nil?
-  - if builds.blank?
-    %li
-      .nothing-here-block No builds to show
-  - else
-    .table-holder
-      %table.table.builds
-        %thead
-          %tr
-            %th Status
-            %th Commit
+- if builds.blank?
+  %li
+    .nothing-here-block No builds to show
+- else
+  .table-holder
+    %table.table.builds
+      %thead
+        %tr
+          %th Status
+          %th Commit
+          - if project.nil?
             %th Project
             %th Runner
-            %th Name
-            %th
-            %th
+          %th Stage
+          %th Name
+          %th
+          %th
+          - if project.present?
+            - if @project.build_coverage_enabled?
+              %th Coverage
 
+
+      - if project.nil?
         - builds.each do |build|
           = render "admin/builds/build", build: build
-
-    = paginate builds, theme: 'gitlab'
-
-- if project.present?
-  - if builds.blank?
-    %li
-      .nothing-here-block No builds to show
-  - else
-    .table-holder
-      %table.table.builds
-        %thead
-          %tr
-            %th Status
-            %th Commit
-            %th Stage
-            %th Name
-            %th
-            - if project.build_coverage_enabled?
-              %th Coverage
-            %th
-
+      - else
         = render builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled?
 
-    = paginate builds, theme: 'gitlab'
+  = paginate builds, theme: 'gitlab'

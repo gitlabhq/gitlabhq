@@ -45,7 +45,10 @@
       .light none
 
   %td
-    #{build.stage} / #{build.name}
+    #{build.stage}
+
+  %td
+    #{build.name}
 
   %td
     - if build.duration
@@ -58,8 +61,8 @@
         = icon("calendar")
         %span #{time_ago_with_tooltip(build.finished_at)}
 
-  - if defined?(coverage) && coverage
-    %td.coverage
+  %td.coverage
+    - if defined?(coverage) && coverage
       - if build.try(:coverage)
         #{build.coverage}%
 
