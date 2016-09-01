@@ -1,4 +1,6 @@
 module ExportFileHelper
+  IGNORED_ATTRIBUTES = %w[created_at updated_at url group_id]
+
   def setup_project
     project = create(:project, :public)
 
@@ -53,22 +55,28 @@ module ExportFileHelper
   end
 
   # Recursively finds key/values including +key+ as part of the key, inside a nested hash
-  def deep_find_with_parent(key, object, found = nil)
-    if object.respond_to?(:key?) && object.keys.any? { |k| k.include?(key) }
-      [object[key], object] if object[key]
-    elsif object.is_a? Enumerable
-      object.find { |*a| found, object = deep_find_with_parent(key, a.last, found) }
+  def deep_find_with_parent(sensitive_key_word, object, found = nil)
+    # Returns the parent object and the object found containing a sensitive word as part of the key
+    if object_contains_key?(object, sensitive_key_word)
+      [object[sensitive_key_word], object] if object[sensitive_key_word]
+    elsif object.is_a?(Enumerable)
+      # Recursively lookup for keys containing sensitive words in a Hash or Array
+      object.find { |*hash_or_array| found, object = deep_find_with_parent(sensitive_key_word, hash_or_array.last, found) }
       [found, object] if found
     end
+  end
+
+  #Return true if the hash has a key containing a sensitive word
+  def object_contains_key?(object, sensitive_key_word)
+    object.is_a?(Hash) && object.keys.any? { |key| key.include?(sensitive_key_word) }
   end
 
   # Returns true if a sensitive word is found inside a hash, excluding safe hashes
   def has_sensitive_attributes?(sensitive_word, project_hash)
     loop do
       object, parent = deep_find_with_parent(sensitive_word, project_hash)
-      parent.except!('created_at', 'updated_at', 'url', 'group_id') if parent
 
-      if object && safe_hashes[sensitive_word.to_sym].include?(parent)
+      if object && is_safe_hash?(parent, sensitive_word)
         # It's in the safe list, remove hash and keep looking
         parent.delete(object)
       elsif object
@@ -77,5 +85,19 @@ module ExportFileHelper
         return false
       end
     end
+  end
+
+  # Returns true if it's one of the excluded models in +safe_models+
+  def is_safe_hash?(parent, sensitive_word)
+    return false unless parent
+
+    # Extra attributes that appear in a model but not in the exported hash.
+    excluded_attributes = ['type']
+
+    safe_models[sensitive_word.to_sym].each do |safe_model|
+      return true if (safe_model.attribute_names - parent.keys - excluded_attributes).empty?
+    end
+
+    false
   end
 end

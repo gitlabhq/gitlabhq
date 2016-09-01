@@ -8,32 +8,9 @@ feature 'project export', feature: true, js: true do
   let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
 
   let(:sensitive_words) { %w[pass secret token key] }
-  let(:safe_hashes) do
+  let(:safe_models) do
     {
-      token: [
-        { # Triggers
-          "id" => 1,
-          "token" => "token",
-          "project_id" => nil,
-          "deleted_at" => nil,
-          "gl_project_id" => project.id
-        },
-        { # Project hooks
-          "id" => 1,
-          "project_id" => project.id,
-          "service_id" => nil,
-          "push_events" => true,
-          "issues_events" => false,
-          "merge_requests_events" => false,
-          "tag_push_events" => false,
-          "note_events" => false,
-          "enable_ssl_verification" => true,
-          "build_events" => false,
-          "wiki_page_events" => false,
-          "pipeline_events" => false,
-          "token" => "token"
-        }
-      ]
+      token: [ProjectHook, Ci::Trigger]
     }
   end
 

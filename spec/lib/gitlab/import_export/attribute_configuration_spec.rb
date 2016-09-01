@@ -9,8 +9,12 @@ require 'spec_helper'
 describe 'Attribute configuration', lib: true do
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
   let(:relation_names) do
-    names = config_hash['project_tree'].to_s.gsub(/[\[{}\]=>\"\:]/, ',').split(',').delete_if(&:blank?)
-    names.uniq - ['milestones', 'labels'] + ['project'] # Remove duplicated or add missing models
+    names = names_from_tree(config_hash['project_tree'])
+
+    # Remove duplicated or add missing models
+    # - project is not part of the tree, so it has to be added manually.
+    # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
+    names.flatten.uniq - ['milestones', 'labels'] + ['project']
   end
 
   let(:safe_model_attributes) do
@@ -51,6 +55,15 @@ describe 'Attribute configuration', lib: true do
       new_attributes = current_attributes - safe_attributes
 
       expect(new_attributes).to be_empty, failure_message(relation_class.to_s, new_attributes)
+    end
+  end
+
+  # Returns a list of models from hashes/arrays contained in +project_tree+
+  def names_from_tree(project_tree)
+    project_tree.map do |branch_or_model|
+      branch_or_model =  branch_or_model.to_s if branch_or_model.is_a?(Symbol)
+
+      branch_or_model.is_a?(String) ? branch_or_model : names_from_tree(branch_or_model)
     end
   end
 
