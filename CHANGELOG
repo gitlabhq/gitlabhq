@@ -31,6 +31,7 @@ v 8.12.0 (unreleased)
   - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
   - Add textarea autoresize after comment (ClemMakesApps)
+  - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Add white background for no readme container (ClemMakesApps)
   - API: Expose issue confidentiality flag. (Robert Schilling)
