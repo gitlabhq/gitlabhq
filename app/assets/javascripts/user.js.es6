@@ -9,7 +9,7 @@
 
     placeTop() {
       $('.profile-groups-avatars').tooltip({
-        "placement": "top"
+        'placement': 'top'
       });
     }
 
