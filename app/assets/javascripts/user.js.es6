@@ -22,12 +22,12 @@
 
     hideProjectLimitMessage() {
       $('.hide-project-limit-message').on('click', e => {
-        const path = '/';
+        e.preventDefault();
+        const path = gon.relative_url_root || '/';
         $.cookie('hide_project_limit_message', 'false', {
           path: path
         });
         $(this).parents('.project-limit-message').remove();
-        e.preventDefault();
         return;
       });
     }
