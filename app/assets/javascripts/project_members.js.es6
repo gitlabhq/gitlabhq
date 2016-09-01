@@ -29,7 +29,6 @@
       const $target = $(e.target);
 
       if ($target.hasClass('btn-remove')) {
-        console.log('a');
         $target.closest('.member').fadeOut();
       }
     }

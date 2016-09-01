@@ -21,7 +21,7 @@
         = link_to member.group, class: "member-group-link prepend-left-5" do
           = "· #{member.group.name}"
 
-      .cgray
+      .hidden-xs.cgray
         - if member.request?
           Requested
           = time_ago_with_tooltip(member.requested_at)
