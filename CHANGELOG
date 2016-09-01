@@ -1,7 +1,6 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.4
-  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
   - Fix resolving conflicts on forks. !6082
   - Fix diff commenting on merge requests created prior to 8.10. !6029
   - Fix pipelines tab layout regression. !5952
@@ -23,10 +22,8 @@ v 8.11.3
   - Don't show resolve conflicts link before MR status is updated
   - Fix IE11 fork button bug !5982
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
-  - Allow system info page to handle case where info is unavailable
   - Fix external issue tracker "Issues" link leading to 404s
   - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
-  - Label list shows all issues (opened or closed) with that label
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
 
 v 8.11.2
@@ -194,8 +191,15 @@ v 8.11.0
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
 
-v 8.10.6 (unreleased)
-  - Fix import/export configuration missing some included attributes
+v 8.10.7
+  - Upgrade Hamlit to 2.6.1. !5873
+  - Upgrade Doorkeeper to 4.2.0. !5881
+
+v 8.10.6
+  - Upgrade Rails to 4.2.7.1 for security fixes. !5781
+  - Restore "Largest repository" sort option on Admin > Projects page. !5797
+  - Fix privilege escalation via project export.
+  - Require administrator privileges to perform a project import.
 
 v 8.10.5
   - Add a data migration to fix some missing timestamps in the members table. !5670
