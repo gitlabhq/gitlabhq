@@ -56,6 +56,7 @@ v 8.11.4 (unreleased)
   - Fix resolving conflicts on forks
   - Fix diff commenting on merge requests created prior to 8.10
   - Don't create groups for unallowed users when importing projects
+  - Scope webhooks/services that will run for confidential issues
   - Fix issue boards leak private label names and descriptions
 
 v 8.11.3
