@@ -143,14 +143,21 @@ describe 'Issue Boards', feature: true, js: true do
       wait_for_vue_resource
 
       page.within(find('.board', match: :first)) do
-        expect(page.find('.board-header')).to have_content('20')
+        expect(page.find('.board-header')).to have_content('56')
         expect(page).to have_selector('.card', count: 20)
+        expect(page).to have_content('Showing 20 of 56 issues')
 
         evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
         wait_for_vue_resource(spinner: false)
 
-        expect(page.find('.board-header')).to have_content('40')
         expect(page).to have_selector('.card', count: 40)
+        expect(page).to have_content('Showing 40 of 56 issues')
+
+        evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+        wait_for_vue_resource(spinner: false)
+
+        expect(page).to have_selector('.card', count: 56)
+        expect(page).to have_content('Showing all issues')
       end
     end
 
@@ -466,13 +473,19 @@ describe 'Issue Boards', feature: true, js: true do
         wait_for_vue_resource
 
         page.within(find('.board', match: :first)) do
-          expect(page.find('.board-header')).to have_content('20')
+          expect(page.find('.board-header')).to have_content('51')
           expect(page).to have_selector('.card', count: 20)
+          expect(page).to have_content('Showing 20 of 51 issues')
 
           evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
 
-          expect(page.find('.board-header')).to have_content('40')
           expect(page).to have_selector('.card', count: 40)
+          expect(page).to have_content('Showing 40 of 51 issues')
+
+          evaluate_script("document.querySelectorAll('.board .board-list')[0].scrollTop = document.querySelectorAll('.board .board-list')[0].scrollHeight")
+
+          expect(page).to have_selector('.card', count: 51)
+          expect(page).to have_content('Showing all issues')
         end
       end
 

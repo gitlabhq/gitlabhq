@@ -142,11 +142,6 @@
   }
 }
 
-.board-header-loading-spinner {
-  margin-right: 10px;
-  color: $gray-darkest;
-}
-
 .board-inner-container {
   border-bottom: 1px solid $border-color;
   padding: $gl-padding;
@@ -303,4 +298,23 @@
 .card-number {
   margin-right: 8px;
   font-weight: 500;
+}
+
+.issue-boards-search {
+  width: 335px;
+
+  .form-control {
+    display: inline-block;
+    width: 210px;
+  }
+}
+
+.board-list-count {
+  padding: 10px 0;
+  color: $gl-placeholder-color;
+  font-size: 13px;
+
+  > .fa {
+    margin-right: 5px;
+  }
 }
