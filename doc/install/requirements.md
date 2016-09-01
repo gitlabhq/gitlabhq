@@ -114,7 +114,7 @@ For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
 
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
-If you have a 1GB machine we recommend to configure only two Unicorn worker to prevent excessive swapping.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
 
 To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
