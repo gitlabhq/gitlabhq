@@ -64,7 +64,7 @@ module ExportFileHelper
     end
   end
 
-  #Return true if the hash has a key containing a sensitive word
+  # Return true if the hash has a key containing a sensitive word
   def object_contains_key?(object, sensitive_key_word)
     object.is_a?(Hash) && object.keys.any? { |key| key.include?(sensitive_key_word) }
   end
