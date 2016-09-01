@@ -60,6 +60,7 @@ v 8.12.0 (unreleased)
   - Fix hover leading space bug in pipeline graph !5980
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
   - Fixed invisible scroll controls on build page on iPhone
+  - Fix error on raw build trace download for old builds stored in database !4822
 
 v 8.11.4 (unreleased)
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
@@ -74,9 +75,6 @@ v 8.11.4 (unreleased)
 
 v 8.11.3
   - Do not enforce using hash with hidden key in CI configuration. !6079
-  - Fix error on raw build trace download for old builds stored in database !4822
-
-v 8.11.3 (unreleased)
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
