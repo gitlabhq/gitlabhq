@@ -1,4 +1,4 @@
-# Validate the .gitlab-ci.yaml
+# Validate the .gitlab-ci.yml
 
 Check whether your .gitlab-ci.yml file is valid.
 

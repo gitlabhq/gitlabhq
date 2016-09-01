@@ -22,4 +22,3 @@ GET /ci/api/v1/builds/:id/artifacts
 
 - [Builds](builds.md)
 - [Runners](runners.md)
-- [Validate the .gitlab-ci.yaml](ci_lint.md)

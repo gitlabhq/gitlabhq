@@ -43,6 +43,7 @@ following locations:
 - [Tags](tags.md)
 - [Todos](todos.md)
 - [Users](users.md)
+- [Validate CI configuration](ci/lint.md)
 
 ### Internal CI API
 
@@ -50,7 +51,6 @@ The following documentation is for the [internal CI API](ci/README.md):
 
 - [Builds](ci/builds.md)
 - [Runners](ci/runners.md)
-- [Validate the .gitlab-ci.yaml](ci/ci_lint.md)
 
 ## Authentication
 
