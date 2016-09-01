@@ -23,4 +23,9 @@ module GroupsHelper
       full_title
     end
   end
+
+  def projects_with_lfs_enabled(group)
+    total = group.projects.size
+    "#{total - group.projects.select{ |p| !p.lfs_enabled? }.size}/#{total} projects have it enabled"
+  end
 end

@@ -13,6 +13,8 @@
     .col-sm-offset-2.col-sm-10
       = render 'shared/allow_request_access', form: f
 
+  = render 'shared/groups/group_lfs_settings', f: f
+
   - if @group.new_record?
     .form-group
       .col-sm-offset-2.col-sm-10

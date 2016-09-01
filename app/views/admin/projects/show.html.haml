@@ -77,7 +77,7 @@
           %li
             %span.light Git LFS status:
             %strong
-              = project_lfs_status(@project)
+              = lfs_status_helper(@project)
               = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
         - else
           %li

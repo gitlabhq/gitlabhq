@@ -120,7 +120,7 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :description, :visibility_level
+      expose :id, :name, :path, :description, :visibility_level, :lfs_enabled
       expose :avatar_url
       expose :web_url
     end

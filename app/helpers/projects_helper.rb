@@ -202,8 +202,8 @@ module ProjectsHelper
     nav_tabs.flatten
   end
 
-  def project_lfs_status(project)
-    if project.lfs_enabled?
+  def lfs_status_helper(subject)
+    if subject.lfs_enabled?
       content_tag(:span, class: 'lfs-enabled') do
         'Enabled'
       end
