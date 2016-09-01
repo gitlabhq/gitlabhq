@@ -1,6 +1,4 @@
 module ExportFileHelper
-  IGNORED_ATTRIBUTES = %w[created_at updated_at url group_id]
-
   def setup_project
     project = create(:project, :public)
 
