@@ -1,7 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.0 (Unreleased)
 
-v 8.11.3 (Unreleased)
+v 8.11.3
   - [ES] Add logging to indexer
   - Fix missing EE-specific service parameters for Jenkins CI
   - Set the correct `GL_PROTOCOL` when rebasing !691
