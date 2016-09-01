@@ -474,12 +474,16 @@
 .pipelines.tab-pane {
 
   .content-list.pipelines {
-    overflow: scroll;
+    overflow: auto;
   }
 
   .stage {
-    max-width: 60px;
-    width: 60px;
+    max-width: 100px;
+    width: 100px;
+  }
+
+  .pipeline-actions {
+    min-width: initial;
   }
 }
 
