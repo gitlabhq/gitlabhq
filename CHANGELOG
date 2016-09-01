@@ -105,6 +105,7 @@ v 8.11.4 (unreleased)
   - Fix sorting issues by "last updated" doesn't work after import from GitHub
   - GitHub importer use default project visibility for non-private projects
   - Creating an issue through our API now emails label subscribers !5720
+  - Fix suggested colors options for new labels in the admin area
   - Block concurrent updates for Pipeline
   - Don't create groups for unallowed users when importing projects
   - Scope webhooks/services that will run for confidential issues
