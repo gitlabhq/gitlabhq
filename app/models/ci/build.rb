@@ -217,11 +217,8 @@ module Ci
     end
 
     def raw_trace
-      if File.exist?(path_to_trace)
-        File.read(path_to_trace)
-      elsif has_old_trace_file?
-        # Temporary fix for build trace data integrity
-        File.read(old_path_to_trace)
+      if File.exist?(trace_file_path)
+        File.read(trace_file_path)
       else
         # backward compatibility
         read_attribute :trace
