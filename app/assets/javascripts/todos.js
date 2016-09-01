@@ -66,7 +66,7 @@
         success: (function(_this) {
           return function(data) {
             $this.remove();
-            $('.js-todos-list').remove();
+            $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
             return _this.updateBadges(data);
           };
         })(this)

@@ -83,7 +83,7 @@ class TodosFinder
     if project?
       @project = Project.find(params[:project_id])
 
-      unless Ability.abilities.allowed?(current_user, :read_project, @project)
+      unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil
       end
     else

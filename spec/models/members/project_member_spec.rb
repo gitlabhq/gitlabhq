@@ -71,9 +71,6 @@ describe ProjectMember, models: true do
 
   describe :import_team do
     before do
-      @abilities = Six.new
-      @abilities << Ability
-
       @project_1 = create :project
       @project_2 = create :project
 
@@ -92,8 +89,8 @@ describe ProjectMember, models: true do
       it { expect(@project_2.users).to include(@user_1) }
       it { expect(@project_2.users).to include(@user_2) }
 
-      it { expect(@abilities.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
-      it { expect(@abilities.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
+      it { expect(Ability.allowed?(@user_1, :create_project, @project_2)).to be_truthy }
+      it { expect(Ability.allowed?(@user_2, :read_project, @project_2)).to be_truthy }
     end
 
     describe 'project 1 should not be changed' do

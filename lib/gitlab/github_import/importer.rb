@@ -152,12 +152,14 @@ module Gitlab
       end
 
       def create_comments(issuable, comments)
-        comments.each do |raw|
-          begin
-            comment = CommentFormatter.new(project, raw)
-            issuable.notes.create!(comment.attributes)
-          rescue => e
-            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+        ActiveRecord::Base.no_touching do
+          comments.each do |raw|
+            begin
+              comment = CommentFormatter.new(project, raw)
+              issuable.notes.create!(comment.attributes)
+            rescue => e
+              errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+            end
           end
         end
       end

@@ -211,6 +211,7 @@ module API
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
+      expose :confidential
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -573,6 +574,11 @@ module API
 
     class Template < Grape::Entity
       expose :name, :content
+    end
+
+    class BroadcastMessage < Grape::Entity
+      expose :id, :message, :starts_at, :ends_at, :color, :font
+      expose :active?, as: :active
     end
   end
 end
