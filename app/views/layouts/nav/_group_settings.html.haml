@@ -1,35 +1,37 @@
 - if current_user
+  - can_admin_group = can?(current_user, :admin_group, @group)
   - can_edit = can?(current_user, :admin_group, @group)
   - member = @group.members.find_by(user_id: current_user.id)
   - can_leave = member && can?(current_user, :destroy_group_member, member)
 
-  .controls
-    .dropdown.group-settings-dropdown
-      %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
-        = icon('cog')
-        = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
-        = nav_link(path: 'groups#projects') do
-          = link_to 'Projects', projects_group_path(@group), title: 'Projects'
-        %li.divider
-        - if can_edit
-          - if ldap_enabled?
-            = nav_link(controller: :ldap_group_links) do
-              = link_to group_ldap_group_links_path(@group), title: "LDAP Groups" do
+  - if can_admin_group || can_edit || can_leave
+    .controls
+      .dropdown.group-settings-dropdown
+        %a.dropdown-new.btn.btn-default#group-settings-button{href: '#', 'data-toggle' => 'dropdown'}
+          = icon('cog')
+          = icon('caret-down')
+        %ul.dropdown-menu.dropdown-menu-align-right
+          = nav_link(path: 'groups#projects') do
+            = link_to 'Projects', projects_group_path(@group), title: 'Projects'
+          %li.divider
+          - if can_edit
+            - if ldap_enabled?
+              = nav_link(controller: :ldap_group_links) do
+                = link_to group_ldap_group_links_path(@group), title: "LDAP Groups" do
+                  %span
+                    LDAP Groups
+            = nav_link(controller: :hooks) do
+              = link_to group_hooks_path(@group), title: "Webhooks" do
                 %span
-                  LDAP Groups
-          = nav_link(controller: :hooks) do
-            = link_to group_hooks_path(@group), title: "Webhooks" do
-              %span
-                Webhooks
-          = nav_link(controller: :audit_events) do
-            = link_to group_audit_events_path(@group), title: "Audit Events" do
-              %span
-                Audit Events
-          %li
-            = link_to 'Edit Group', edit_group_path(@group)
-        - if can_leave
-          %li
-            = link_to polymorphic_path([:leave, @group, :members]),
-              data: { confirm: leave_confirmation_message(@group) }, method: :delete, title: 'Leave group' do
-              Leave Group
+                  Webhooks
+            = nav_link(controller: :audit_events) do
+              = link_to group_audit_events_path(@group), title: "Audit Events" do
+                %span
+                  Audit Events
+            %li
+              = link_to 'Edit Group', edit_group_path(@group)
+          - if can_leave
+            %li
+              = link_to polymorphic_path([:leave, @group, :members]),
+                data: { confirm: leave_confirmation_message(@group) }, method: :delete, title: 'Leave group' do
+                Leave Group
