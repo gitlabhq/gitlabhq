@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160819221833) do
+ActiveRecord::Schema.define(version: 20160901141443) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -915,19 +915,20 @@ ActiveRecord::Schema.define(version: 20160819221833) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                default: false,    null: false
+    t.boolean  "active",                     default: false,    null: false
     t.text     "properties"
-    t.boolean  "template",              default: false
-    t.boolean  "push_events",           default: true
-    t.boolean  "issues_events",         default: true
-    t.boolean  "merge_requests_events", default: true
-    t.boolean  "tag_push_events",       default: true
-    t.boolean  "note_events",           default: true,     null: false
-    t.boolean  "build_events",          default: false,    null: false
-    t.string   "category",              default: "common", null: false
-    t.boolean  "default",               default: false
-    t.boolean  "wiki_page_events",      default: true
-    t.boolean  "pipeline_events",       default: false,    null: false
+    t.boolean  "template",                   default: false
+    t.boolean  "push_events",                default: true
+    t.boolean  "issues_events",              default: true
+    t.boolean  "merge_requests_events",      default: true
+    t.boolean  "tag_push_events",            default: true
+    t.boolean  "note_events",                default: true,     null: false
+    t.boolean  "build_events",               default: false,    null: false
+    t.string   "category",                   default: "common", null: false
+    t.boolean  "default",                    default: false
+    t.boolean  "wiki_page_events",           default: true
+    t.boolean  "pipeline_events",            default: false,    null: false
+    t.boolean  "confidential_issues_events", default: true,     null: false
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -1127,22 +1128,23 @@ ActiveRecord::Schema.define(version: 20160819221833) do
   add_index "users_star_projects", ["user_id"], name: "index_users_star_projects_on_user_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
-    t.string   "url",                     limit: 2000
+    t.string   "url",                        limit: 2000
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "type",                                 default: "ProjectHook"
+    t.string   "type",                                    default: "ProjectHook"
     t.integer  "service_id"
-    t.boolean  "push_events",                          default: true,          null: false
-    t.boolean  "issues_events",                        default: false,         null: false
-    t.boolean  "merge_requests_events",                default: false,         null: false
-    t.boolean  "tag_push_events",                      default: false
-    t.boolean  "note_events",                          default: false,         null: false
-    t.boolean  "enable_ssl_verification",              default: true
-    t.boolean  "build_events",                         default: false,         null: false
-    t.boolean  "wiki_page_events",                     default: false,         null: false
+    t.boolean  "push_events",                             default: true,          null: false
+    t.boolean  "issues_events",                           default: false,         null: false
+    t.boolean  "merge_requests_events",                   default: false,         null: false
+    t.boolean  "tag_push_events",                         default: false
+    t.boolean  "note_events",                             default: false,         null: false
+    t.boolean  "enable_ssl_verification",                 default: true
+    t.boolean  "build_events",                            default: false,         null: false
+    t.boolean  "wiki_page_events",                        default: false,         null: false
     t.string   "token"
-    t.boolean  "pipeline_events",                      default: false,         null: false
+    t.boolean  "pipeline_events",                         default: false,         null: false
+    t.boolean  "confidential_issues_events",              default: false,         null: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
