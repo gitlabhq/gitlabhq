@@ -119,10 +119,10 @@ class ApplicationController < ActionController::Base
 
   def render_404
     respond_to do |format|
-      format.json { head :not_found }
-      format.any do
+      format.html do
         render file: Rails.root.join("public", "404"), layout: false, status: "404"
       end
+      format.any { head :not_found }
     end
   end
 
