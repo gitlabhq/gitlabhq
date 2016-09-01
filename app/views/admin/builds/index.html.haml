@@ -15,4 +15,4 @@
     #{(@scope || 'all').capitalize} builds
 
   %ul.content-list.builds-content-list
-    = render "projects/builds/content_list", builds: @builds, project: nil
+    = render "projects/builds/table", builds: @builds, project: nil, admin: true

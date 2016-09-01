@@ -8,19 +8,19 @@
         %tr
           %th Status
           %th Commit
-          - if project.nil?
+          - if admin
             %th Project
             %th Runner
           %th Stage
           %th Name
           %th
           %th
-          - if project.present?
-            - if @project.build_coverage_enabled?
+          - unless admin
+            - if project.build_coverage_enabled?
               %th Coverage
 
 
-      - if project.nil?
+      - if admin
         - builds.each do |build|
           = render "admin/builds/build", build: build
       - else
