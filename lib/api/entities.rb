@@ -233,6 +233,8 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
       expose :merge_status
+      expose :diff_head_sha, as: :sha
+      expose :merge_commit_sha
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
