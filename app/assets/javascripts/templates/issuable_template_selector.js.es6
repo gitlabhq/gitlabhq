@@ -38,12 +38,12 @@
       // separated by a blank line if the previous value is non-empty.
       if (this.titleInput.val() === '') {
         // If the title has not yet been set, focus the title input and
-        // skip focusing the description input by setting `true` as the 2nd
-        // argument to `requestFileSuccess`.
-        this.requestFileSuccess(this.currentTemplate, true, append);
+        // skip focusing the description input by setting `true` as the
+        // `skipFocus` option to `requestFileSuccess`.
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: true, append});
         this.titleInput.focus();
       } else {
-        this.requestFileSuccess(this.currentTemplate, false, append);
+        this.requestFileSuccess(this.currentTemplate, {skipFocus: false, append});
       }
       return;
     }
