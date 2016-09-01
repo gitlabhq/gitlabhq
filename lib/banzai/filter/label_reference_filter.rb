@@ -70,6 +70,11 @@ module Banzai
       def unescape_html_entities(text)
         CGI.unescapeHTML(text.to_s)
       end
+
+      def object_link_title(object)
+        # use title of wrapped element instead
+        nil
+      end
     end
   end
 end
