@@ -31,6 +31,7 @@ v 8.12.0 (unreleased)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
+  - Fix accessibility and visibility of project list dropdown button !6140
   - Added project specific enable/disable setting for LFS !5997
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
