@@ -6,15 +6,16 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @groups = @project.project_group_links.all
-    @project_members = @project.project_members
+    @project_members = @project.team.members.all
+    @project_members_size = @project_members.size
+    @group_members = @project.group.group_members
     @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
-      users = @project.users.search(params[:search]).to_a
-      @project_members = @project_members.where(user_id: users)
+      @project_members = @project_members.search(params[:search])
     end
 
-    @project_members = @project_members.order('access_level DESC')
+    @project_members = @project_members.page(params[:page])
 
     @requesters = @project.requesters if can?(current_user, :admin_project, @project)
 

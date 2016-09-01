@@ -25,3 +25,4 @@
     = render 'groups', groups: @groups
 
   = render 'team', members: @project_members
+  = paginate @project_members, theme: "gitlab"

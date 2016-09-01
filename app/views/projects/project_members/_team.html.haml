@@ -2,6 +2,8 @@
   .panel-heading
     Users with access to
     %strong #{@project.name}
-    %span.badge= members.size
+    %span.badge= @project_members_size
   %ul.content-list
-    = render partial: 'shared/members/member', collection: members, as: :member
+    - members.each do |user|
+      - member = @project.team.find_member(user.id)
+      = render 'shared/members/member', member: member

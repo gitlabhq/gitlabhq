@@ -8,12 +8,12 @@
     }
 
     removeListeners() {
-      $('.project_member').off('ajax:success');
+      $('.project_member, .group_member').off('ajax:success');
       $('.js-member-update-control').off('change');
     }
 
     addListeners() {
-      $('.project_member').on('ajax:success', this.removeRow);
+      $('.project_member, .group_member').on('ajax:success', this.removeRow);
       $('.js-member-update-control').on('change', function () {
         $(this).closest('form')
           .trigger("submit.rails");
@@ -24,7 +24,8 @@
       const $target = $(e.target);
 
       if ($target.hasClass('btn-remove')) {
-        $target.fadeOut();
+        console.log('a');
+        $target.closest('.member').fadeOut();
       }
     }
 
