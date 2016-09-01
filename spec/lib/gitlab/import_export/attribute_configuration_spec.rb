@@ -7,6 +7,8 @@ require 'spec_helper'
 # Likewise, new models added to import_export.yml, will need to be added with their correspondent attributes
 # to this spec.
 describe 'Attribute configuration', lib: true do
+  include ConfigurationHelper
+
   let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
   let(:relation_names) do
     names = names_from_tree(config_hash['project_tree'])
@@ -56,20 +58,6 @@ describe 'Attribute configuration', lib: true do
 
       expect(new_attributes).to be_empty, failure_message(relation_class.to_s, new_attributes)
     end
-  end
-
-  # Returns a list of models from hashes/arrays contained in +project_tree+
-  def names_from_tree(project_tree)
-    project_tree.map do |branch_or_model|
-      branch_or_model =  branch_or_model.to_s if branch_or_model.is_a?(Symbol)
-
-      branch_or_model.is_a?(String) ? branch_or_model : names_from_tree(branch_or_model)
-    end
-  end
-
-  def relation_class_for_name(relation_name)
-    relation_name = Gitlab::ImportExport::RelationFactory::OVERRIDES[relation_name.to_sym] || relation_name
-    relation_name.to_s.classify.constantize
   end
 
   def failure_message(relation_class, new_attributes)

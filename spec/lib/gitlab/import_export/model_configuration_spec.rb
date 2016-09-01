@@ -1,0 +1,58 @@
+require 'spec_helper'
+
+# Finds if a new model has been added that can potentially be part of the Import/Export
+# If it finds a new model, it will show a +failure_message+ with the options available.
+describe 'Model configuration', lib: true do
+  include ConfigurationHelper
+
+  let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
+  let(:relation_names) do
+    names = names_from_tree(config_hash['project_tree'])
+
+    # Remove duplicated or add missing models
+    # - project is not part of the tree, so it has to be added manually.
+    # - milestone, labels have both singular and plural versions in the tree, so remove the duplicates.
+    # - User, Author... Models we don not care about for checking relations
+    names.flatten.uniq - ['milestones', 'labels', 'user', 'author'] + ['project']
+  end
+
+  let(:all_models_json) { 'spec/lib/gitlab/import_export/all_models.json' }
+  let(:all_models) { JSON.parse(File.read(all_models_json)) }
+  let(:current_models) { setup_models }
+
+  it 'has no new models' do
+    relation_names.each do |relation_name|
+      new_models = current_models[relation_name] - all_models[relation_name]
+      expect(new_models).to be_empty, failure_message(relation_name.classify, new_models)
+    end
+  end
+
+  # List of current relations between models, in the format of
+  # {model: [model_2, model3], ...}
+  def setup_models
+    all_models_hash = {}
+
+    relation_names.each do |relation_name|
+      relation_class = relation_class_for_name(relation_name)
+
+      all_models_hash[relation_name] = relation_class.reflect_on_all_associations.map do |association|
+        association.name.to_s
+      end
+    end
+
+    all_models_hash
+  end
+
+  def failure_message(relation_name, new_models)
+    <<-MSG
+      New model(s) <#{new_models.join(',')}> have been added, related to #{relation_name}, which is exported by
+      the Import/Export feature.
+
+      If you don't think this should be exported, please add it to MODELS_JSON, inside the #{relation_name} hash.
+      If you think we should export this new model, please add it to IMPORT_EXPORT_CONFIG.
+
+      MODELS_JSON: #{File.expand_path(all_models_json)}
+      IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
+    MSG
+  end
+end
