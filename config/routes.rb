@@ -729,6 +729,7 @@ Rails.application.routes.draw do
             get :commits
             get :diffs
             get :conflicts
+            get :conflict_for_path
             get :builds
             get :pipelines
             get :merge_check
