@@ -659,7 +659,6 @@ describe Projects::MergeRequestsController do
         conflict_for_path('files/ruby/regex.rb')
       end
 
-
       it 'returns a 404 status code' do
         expect(response).to have_http_status(:not_found)
       end
