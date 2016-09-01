@@ -73,27 +73,33 @@ v 8.12.0 (unreleased)
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
+  - Fix suggested colors options for new labels in the admin area. !6138
 
-v 8.11.4 (unreleased)
-  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+v 8.11.4
+  - Fix resolving conflicts on forks. !6082
+  - Fix diff commenting on merge requests created prior to 8.10. !6029
+  - Fix pipelines tab layout regression. !5952
+  - Fix "Wiki" link not appearing in navigation for projects with external wiki. !6057
+  - Do not enforce using hash with hidden key in CI configuration. !6079
+  - Fix hover leading space bug in pipeline graph !5980
   - Fix sorting issues by "last updated" doesn't work after import from GitHub
   - GitHub importer use default project visibility for non-private projects
   - Creating an issue through our API now emails label subscribers !5720
-  - Fix suggested colors options for new labels in the admin area
   - Block concurrent updates for Pipeline
-  - Fix resolving conflicts on forks
-  - Fix diff commenting on merge requests created prior to 8.10
+  - Don't create groups for unallowed users when importing projects
   - Fix issue boards leak private label names and descriptions
+  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+  - Remove gitorious. !5866
 
 v 8.11.3
-  - Do not enforce using hash with hidden key in CI configuration. !6079
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
-  - Fix "Wiki" link not appearing in navigation for projects with external wiki
-  - Fix IE11 fork button bug !598
+  - Fix IE11 fork button bug !5982
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
   - Fix external issue tracker "Issues" link leading to 404s
+  - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
+  - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
 
 v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
@@ -105,8 +111,6 @@ v 8.11.2
 v 8.11.1
   - Pulled due to packaging error.
 
-v 8.11.0 (unreleased)
-  - Fix pipelines tab layout regression (brycepj)
 v 8.11.0
   - Use test coverage value from the latest successful pipeline in badge. !5862
   - Add test coverage report badge. !5708
