@@ -5,10 +5,8 @@ trackers and external authentication.
 
 See the documentation below for details on how to configure these services.
 
-- [Jira](../project_services/jira.md) Integrate with the JIRA issue tracker
-- [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
-- [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
+- [OmniAuth](omniauth.md) Sign in via CAS, Twitter, GitHub, GitLab.com, Google, Bitbucket, Facebook, Shibboleth, SAML, Crowd and Azure
 - [SAML](saml.md) Configure GitLab as a SAML 2.0 Service Provider
 - [CAS](cas.md) Configure GitLab to sign in using CAS
 - [OAuth2 provider](oauth_provider.md) OAuth2 application creation
@@ -27,7 +25,7 @@ GitLab Enterprise Edition contains [advanced Jenkins support][jenkins].
 Integration with services such as Campfire, Flowdock, Gemnasium, HipChat,
 Pivotal Tracker, and Slack are available in the form of a [Project Service][].
 
-[Project Service]: ../project_services/project_services.md
+[Project Service]: ../../user/project/services.md
 
 ## SSL certificate errors
 

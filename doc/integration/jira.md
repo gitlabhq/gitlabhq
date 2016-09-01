@@ -1,3 +1,1 @@
-# GitLab JIRA integration
-
-This document was moved under [project_services/jira](../project_services/jira.md).
+This document was moved to [user/project/services/jira](../user/project/services/jira.md).

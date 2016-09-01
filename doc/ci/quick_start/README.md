@@ -216,7 +216,7 @@ builds, you should explicitly enable the **Builds Emails** service under your
 project's settings.
 
 For more information read the
-[Builds emails service documentation](../../project_services/builds_emails.md).
+[Builds emails service documentation](../../user/project/services/builds_emails.md).
 
 ## Examples
 
