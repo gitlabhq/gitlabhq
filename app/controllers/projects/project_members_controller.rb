@@ -16,20 +16,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     @project_members = @project_members.order('access_level DESC')
 
-    @group = @project.group
-
-    if @group
-      @group_members = @group.group_members
-      @group_members = @group_members.non_invite unless can?(current_user, :admin_group, @group)
-
-      if params[:search].present?
-        users = @group.users.search(params[:search]).to_a
-        @group_members = @group_members.where(user_id: users)
-      end
-
-      @group_members = @group_members.order('access_level DESC')
-    end
-
     @requesters = @project.requesters if can?(current_user, :admin_project, @project)
 
     @project_member = @project.project_members.new
