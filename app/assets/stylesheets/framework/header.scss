@@ -150,7 +150,11 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (max-width: $screen-sm-max) {
+      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+        max-width: 300px;
+      }
+
+      @media (max-width: $screen-xs-max) {
         max-width: 190px;
       }
 
