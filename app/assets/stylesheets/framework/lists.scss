@@ -128,6 +128,10 @@ ul.content-list {
       color: $gl-dark-link-color;
     }
 
+    .member-group-link {
+      color: $blue-normal;
+    }
+
     .description {
       p {
         @include str-truncated;
@@ -166,8 +170,8 @@ ul.content-list {
 
     .member-controls {
       float: none;
-      
-      @media (min-width: $screen-md-min) {
+
+      @media (min-width: $screen-sm-min) {
         float: right;
       }
     }

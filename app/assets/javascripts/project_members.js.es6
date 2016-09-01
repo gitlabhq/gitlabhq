@@ -1,5 +1,5 @@
 ((w) => {
-  window.gl = window.gl || {};
+  w.gl = w.gl || {};
 
   class ProjectMembers {
     constructor() {
@@ -10,6 +10,7 @@
     removeListeners() {
       $('.project_member, .group_member').off('ajax:success');
       $('.js-member-update-control').off('change');
+      $('.js-edit-member-form').off('ajax:success');
     }
 
     addListeners() {
@@ -17,6 +18,10 @@
       $('.js-member-update-control').on('change', function () {
         $(this).closest('form')
           .trigger("submit.rails");
+        $(this).disable();
+      });
+      $('.js-edit-member-form').on('ajax:success', function () {
+        $(this).find('.js-member-update-control').enable();
       });
     }
 

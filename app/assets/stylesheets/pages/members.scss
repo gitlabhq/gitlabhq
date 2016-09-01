@@ -8,24 +8,52 @@
   .list-item-name {
     float: none;
 
-    @media (min-width: $screen-md-min) {
+    @media (min-width: $screen-sm-min) {
       float: left;
       width: 50%;
     }
   }
 
   .controls {
-    display: flex;
-    width: 400px;
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+      width: 400px;
+      max-width: 50%;
+    }
   }
 
   .form-horizontal {
-    display: flex;
-    flex: 1;
-    margin-top: 3px;
+    margin-top: 5px;
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+      flex: 1;
+      margin-top: 3px;
+    }
   }
 
-  .member-form-control {
+  .btn-remove {
+    width: 100%;
+
+    @media (min-width: $screen-sm-min) {
+      width: auto;
+    }
+  }
+}
+
+.member-form-control {
+  @media (max-width: $screen-xs-max) {
+    padding: 5px 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  @media (min-width: $screen-sm-min) {
     width: 50%;
   }
+}
+
+.member-access-text {
+  margin-left: auto;
+  line-height: 43px;
 }

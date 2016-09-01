@@ -1,6 +1,6 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
 - show_controls = local_assigns.fetch(:show_controls, true)
-- user = member.user
+- user = local_assigns.fetch(:user, member.user)
 
 %li.member{ class: dom_class(member), id: dom_id(member) }
   %span{ class: ("list-item-name" if show_controls) }
@@ -11,11 +11,15 @@
       %span.cgray= user.to_reference
 
       - if user == current_user
-        %span.label.label-success It's you
+        %span.label.label-success.prepend-left-5 It's you
 
       - if user.blocked?
         %label.label.label-danger
           %strong Blocked
+
+      - if member.respond_to?(:group) && !@group
+        = link_to member.group, class: "member-group-link prepend-left-5" do
+          = "· #{member.group.name}"
 
       .cgray
         - if member.request?
@@ -40,11 +44,14 @@
   - if show_roles
     .controls.member-controls
       - if show_controls
-        = form_for member, remote: true, html: { class: 'form-horizontal' } do |f|
-          = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
-          .prepend-left-5.append-right-10.clearable-input.member-form-control
-            = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
-            %i.clear-icon.js-clear-input
+        - if user != current_user
+          = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
+            = f.select :access_level, options_for_select(member.class.access_level_roles, member.access_level), {}, class: 'form-control member-form-control append-right-5 js-member-update-control', id: "member_access_level_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
+            .prepend-left-5.append-right-10.clearable-input.member-form-control
+              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can?(current_user, action_member_permission(:update, member), member)
+              %i.clear-icon.js-clear-input
+        - else
+          %span.member-access-text= member.human_access
         - if !user && can?(current_user, action_member_permission(:admin, member), member.source)
           = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
                     method: :post,
@@ -63,9 +70,12 @@
                       data: { confirm: leave_confirmation_message(member.source) },
                       class: 'btn btn-remove'
           - else
-            = link_to icon('trash'), member,
+            = link_to member,
                       remote: true,
                       method: :delete,
                       data: { confirm: remove_member_message(member) },
                       class: 'btn btn-remove',
-                      title: remove_member_title(member)
+                      title: remove_member_title(member) do
+              %span.visible-xs-block
+                Delete
+              = icon('trash', class: 'hidden-xs')
