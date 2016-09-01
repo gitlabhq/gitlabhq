@@ -51,7 +51,7 @@ module API
         @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::Project, user: current_user
       end
 
       # Get all projects for admin user

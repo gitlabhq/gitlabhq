@@ -168,7 +168,7 @@ module Gitlab
         unless project.wiki_enabled?
           wiki = WikiFormatter.new(project)
           gitlab_shell.import_repository(project.repository_storage_path, wiki.path_with_namespace, wiki.import_url)
-          project.update_attribute(:wiki_enabled, true)
+          project.project.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
         end
       rescue Gitlab::Shell::Error => e
         # GitHub error message when the wiki repo has not been created,

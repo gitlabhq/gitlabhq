@@ -7,7 +7,8 @@ describe Gitlab::Auth, lib: true do
     it 'recognizes CI' do
       token = '123'
       project = create(:empty_project)
-      project.update_attributes(runners_token: token, builds_enabled: true)
+      project.update_attributes(runners_token: token)
+
       ip = 'ip'
 
       expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: 'gitlab-ci-token')
