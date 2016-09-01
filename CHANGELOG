@@ -96,6 +96,12 @@ v 8.11.4
   - Fix "Wiki" link not appearing in navigation for projects with external wiki. !6057
   - Do not enforce using hash with hidden key in CI configuration. !6079
   - Fix hover leading space bug in pipeline graph !5980
+
+v 8.11.5 (unreleased)
+  - Optimize branch lookups and force a repository reload for Repository#find_branch
+
+v 8.11.4 (unreleased)
+  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
   - Fix sorting issues by "last updated" doesn't work after import from GitHub
   - GitHub importer use default project visibility for non-private projects
   - Creating an issue through our API now emails label subscribers !5720
