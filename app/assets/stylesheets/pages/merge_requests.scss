@@ -375,13 +375,17 @@
   }
 }
 
-.mr-version-switch {
+.mr-version-controls {
   background: $background-color;
   padding: $gl-btn-padding;
   color: $gl-placeholder-color;
 
   a.btn-link {
     color: $gl-dark-link-color;
+  }
+
+  .compare-dots {
+    margin: 0 $btn-side-margin;
   }
 }
 
