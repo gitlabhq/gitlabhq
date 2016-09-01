@@ -15,7 +15,8 @@
     addListeners() {
       $('.project_member').on('ajax:success', this.removeRow);
       $('.js-member-update-control').on('change', function () {
-        console.log($(this).val());
+        $(this).closest('form')
+          .trigger("submit.rails");
       });
     }
 
@@ -28,7 +29,7 @@
     }
 
     submitForm() {
-      
+
     }
   }
 
