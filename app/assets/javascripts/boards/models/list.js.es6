@@ -52,7 +52,7 @@ class List {
   }
 
   nextPage () {
-    if (Math.floor(this.issues.length / 20) === this.page) {
+    if (this.issuesSize > this.issues.length) {
       this.page++;
 
       return this.getIssues(false);
@@ -94,15 +94,20 @@ class List {
   }
 
   addIssue (issue, listFrom) {
-    this.issues.push(issue);
+    if (!this.findIssue(issue.id)) {
+      this.issues.push(issue);
 
-    if (this.label) {
-      issue.addLabel(this.label);
-    }
+      if (this.label) {
+        issue.addLabel(this.label);
+      }
 
-    if (listFrom) {
-      this.issuesSize++;
-      gl.boardService.moveIssue(issue.id, listFrom.id, this.id);
+      if (listFrom) {
+        this.issuesSize++;
+        gl.boardService.moveIssue(issue.id, listFrom.id, this.id)
+          .then(() => {
+            listFrom.getIssues(false);
+          });
+      }
     }
   }
 
