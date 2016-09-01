@@ -1,58 +1,55 @@
-- merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
-- compareable_diffs = merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
-
-- if merge_request_diffs.size > 1
+- if @merge_request_diffs.size > 1
   .mr-version-controls
     Version
     %span.dropdown.inline.mr-version-dropdown
       %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
         %strong.monospace<
           - if @merge_request_diff.latest?
-            Latest: #{short_sha(@merge_request_diff.head_commit_sha)}
-          - else
-            #{short_sha(@merge_request_diff.head_commit_sha)}
+            Latest:&nbsp;
+          #{short_sha(@merge_request_diff.head_commit_sha)}
         %span.caret
       %ul.dropdown-menu.dropdown-menu-selectable
-        - merge_request_diffs.each_with_index do |merge_request_diff, i|
+        - @merge_request_diffs.each_with_index do |merge_request_diff, i|
           %li
-            = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, diff_id: merge_request_diff.id), class: ('is-active' if merge_request_diff == @merge_request_diff) do
+            = link_to mr_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
               %strong.monospace
                 - if i.zero?
                   Latest:
                 - else
-                  #{merge_request_diffs.size - i}.
-                #{merge_request_diff.head_commit.short_id}
+                  #{@merge_request_diffs.size - i}.
+                #{short_sha(merge_request_diff.head_commit_sha)}
               %br
               %small
                 #{number_with_delimiter(merge_request_diff.commits.count)} #{'commit'.pluralize(merge_request_diff.commits.count)},
                 = time_ago_with_tooltip(merge_request_diff.created_at)
 
-    %span.compare-dots ...
+    - if @merge_request_diff.base_commit_sha
+      %span.compare-dots ...
 
-    Compared with
-    %span.dropdown.inline.mr-version-compare-dropdown
-      %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
-        %strong.monospace<
-          - if params[:start_sha].present?
-            #{short_sha(params[:start_sha])}
-          - else
-            Base: #{short_sha(@merge_request_diff.base_commit_sha)}
-        %span.caret
-      %ul.dropdown-menu.dropdown-menu-selectable
-        - compareable_diffs.each_with_index do |merge_request_diff, i|
-          %li
-            = link_to mr_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff.head_commit_sha == params[:start_sha]) do
-              %strong.monospace
-                #{compareable_diffs.size - i}. #{short_sha(merge_request_diff.head_commit_sha)}
-              %br
-              %small
-                = time_ago_with_tooltip(merge_request_diff.created_at)
-        %li
-          = link_to mr_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless params[:start_sha].present?) do
-            %strong.monospace
+      Compared with
+      %span.dropdown.inline.mr-version-compare-dropdown
+        %a.btn-link.dropdown-toggle{ data: {toggle: :dropdown} }
+          %strong.monospace<
+            - if @start_sha
+              #{short_sha(@start_sha)}
+            - else
               Base: #{short_sha(@merge_request_diff.base_commit_sha)}
+          %span.caret
+        %ul.dropdown-menu.dropdown-menu-selectable
+          - @comparable_diffs.each_with_index do |merge_request_diff, i|
+            %li
+              = link_to mr_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff.head_commit_sha == @start_sha) do
+                %strong.monospace
+                  #{@comparable_diffs.size - i}. #{short_sha(merge_request_diff.head_commit_sha)}
+                %br
+                %small
+                  = time_ago_with_tooltip(merge_request_diff.created_at)
+          %li
+            = link_to mr_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
+              %strong.monospace
+                Base: #{short_sha(@merge_request_diff.base_commit_sha)}
 
-    - unless @merge_request_diff.latest? && params[:start_sha].blank?
+    - unless @merge_request_diff.latest? && !@start_sha
       .prepend-top-10
         = icon('info-circle')
         Comments are disabled while viewing outdated merge versions or comparing to versions other than base.

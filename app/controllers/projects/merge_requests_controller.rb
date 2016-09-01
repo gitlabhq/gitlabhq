@@ -90,18 +90,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @merge_request.merge_request_diff
       end
 
+    @merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+    @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
+
+    if params[:start_sha].present?
+      @start_sha = params[:start_sha]
+      validate_start_sha
+    end
+
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
-        unless @merge_request_diff.latest?
-          # Disable comments if browsing older version of the diff
-          @diff_notes_disabled = true
-        end
-
-        if params[:start_sha].present?
-          compare_diff_version
+        if @start_sha
+          compared_diff_version
         else
-          @diffs = @merge_request_diff.diffs(diff_options)
+          original_diff_version
         end
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
@@ -534,14 +537,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
   end
 
-  def compare_diff_version
-    @compare = CompareService.new.execute(@project, @merge_request_diff.head_commit_sha, @project, params[:start_sha])
+  def compared_diff_version
+    compare = CompareService.new.execute(@project, @merge_request_diff.head_commit_sha, @project, @start_sha)
 
-    if @compare
-      @commits = @compare.commits
-      @commit = @compare.commit
-      @diffs = @compare.diffs(diff_options)
+    if compare
+      @diffs = compare.diffs(diff_options)
       @diff_notes_disabled = true
+    end
+  end
+
+  def original_diff_version
+    unless @merge_request_diff.latest?
+      # Disable comments if browsing older version of the diff
+      @diff_notes_disabled = true
+    end
+
+    @diffs = @merge_request_diff.diffs(diff_options)
+  end
+
+  def validate_start_sha
+    unless @comparable_diffs.map(&:head_commit_sha).include?(@start_sha)
+      render_404
     end
   end
 end
