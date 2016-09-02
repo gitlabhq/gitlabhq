@@ -192,10 +192,12 @@ describe ProjectsController do
       end
 
       it "closes all related merge requests" do
-        fork_project.destroy
+        project.merge_requests << merge_request
+        sign_in(admin)
 
-        expect(fork_project.destroyed?).to be_truthy
-        expect(merge_request.state).to eq('closed')
+        delete :destroy, namespace_id: fork_project.namespace.path, id: fork_project.path
+
+        expect(merge_request.reload.state).to eq('closed')
       end
     end
   end

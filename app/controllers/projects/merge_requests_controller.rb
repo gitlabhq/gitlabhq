@@ -429,7 +429,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def validates_merge_request
     # If source project was removed (Ex. mr from fork to origin)
-    return invalid_mr unless @merge_request.source_project
+    # return invalid_mr unless @merge_request.source_project
 
     # Show git not found page
     # if there is no saved commits between source & target branch
@@ -438,7 +438,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return invalid_mr unless @merge_request.target_branch_exists?
 
       # or if source branch doesn't exist
-      return invalid_mr unless @merge_request.source_branch_exists?
+      # return invalid_mr unless @merge_request.source_branch_exists?
     end
   end
 
