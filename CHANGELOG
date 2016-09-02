@@ -73,6 +73,7 @@ v 8.12.0 (unreleased)
   - Fix hover leading space bug in pipeline graph !5980
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
   - Fixed invisible scroll controls on build page on iPhone
+  - Fix error on raw build trace download for old builds stored in database !4822
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
