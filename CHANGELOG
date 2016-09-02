@@ -77,6 +77,7 @@ v 8.12.0 (unreleased)
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix suggested colors options for new labels in the admin area. !6138
+  - Fix GitLab import button
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
