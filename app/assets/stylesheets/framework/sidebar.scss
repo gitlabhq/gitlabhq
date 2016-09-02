@@ -128,10 +128,8 @@
 
     .fa {
       transition: transform .15s;
-    }
 
-    &.is-active {
-      .fa {
+      .page-sidebar-pinned & {
         transform: rotate(90deg);
       }
     }

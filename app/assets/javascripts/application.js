@@ -174,9 +174,7 @@
     $body.tooltip({
       selector: '.has-tooltip, [data-toggle="tooltip"]',
       placement: function(_, el) {
-        var $el;
-        $el = $(el);
-        return $el.data('placement') || 'bottom';
+        return $(el).data('placement') || 'bottom';
       }
     });
     $('.trigger-submit').on('change', function() {
@@ -286,42 +284,9 @@
     gl.awardsHandler = new AwardsHandler();
     checkInitialSidebarSize();
     new Aside();
-    if ($window.width() < 1024 && $.cookie('pin_nav') === 'true') {
-      $.cookie('pin_nav', 'false', {
-        path: gon.relative_url_root || '/',
-        expires: 365 * 10
-      });
-      $('.page-with-sidebar').toggleClass('page-sidebar-collapsed page-sidebar-expanded').removeClass('page-sidebar-pinned');
-      $('.navbar-fixed-top').removeClass('header-pinned-nav');
-    }
-    $document.off('click', '.js-nav-pin').on('click', '.js-nav-pin', function(e) {
-      var $page, $pinBtn, $tooltip, $topNav, doPinNav, tooltipText;
-      e.preventDefault();
-      $pinBtn = $(e.currentTarget);
-      $page = $('.page-with-sidebar');
-      $topNav = $('.navbar-fixed-top');
-      $tooltip = $("#" + ($pinBtn.attr('aria-describedby')));
-      doPinNav = !$page.is('.page-sidebar-pinned');
-      tooltipText = 'Pin navigation';
-      $(this).toggleClass('is-active');
-      if (doPinNav) {
-        $page.addClass('page-sidebar-pinned');
-        $topNav.addClass('header-pinned-nav');
-      } else {
-        $tooltip.remove();
-        $page.removeClass('page-sidebar-pinned').toggleClass('page-sidebar-collapsed page-sidebar-expanded');
-        $topNav.removeClass('header-pinned-nav').toggleClass('header-collapsed header-expanded');
-      }
-      $.cookie('pin_nav', doPinNav, {
-        path: gon.relative_url_root || '/',
-        expires: 365 * 10
-      });
-      if ($.cookie('pin_nav') === 'true' || doPinNav) {
-        tooltipText = 'Unpin navigation';
-      }
-      $tooltip.find('.tooltip-inner').text(tooltipText);
-      return $pinBtn.attr('title', tooltipText).tooltip('fixTitle');
-    });
+
+    // bind sidebar events
+    new gl.Sidebar();
 
     // Custom time ago
     gl.utils.shortTimeAgo($('.js-short-timeago'));
