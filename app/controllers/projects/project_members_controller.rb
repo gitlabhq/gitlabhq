@@ -5,11 +5,9 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   before_action :authorize_admin_project_member!, except: [:index, :leave, :request_access]
 
   def index
-    @groups = @project.project_group_links.all
-    @project_members = @project.team.members.all
+    @groups = @project.project_group_links
+    @project_members = @project.team.members(can?(current_user, :admin_project, @project))
     @project_members_size = @project_members.size
-    @group_members = @project.group.group_members
-    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
     if params[:search].present?
       @project_members = @project_members.search(params[:search])
@@ -20,7 +18,6 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     @requesters = @project.requesters if can?(current_user, :admin_project, @project)
 
     @project_member = @project.project_members.new
-    @project_group_links = @project.project_group_links
   end
 
   def create

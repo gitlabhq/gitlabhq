@@ -29,7 +29,10 @@
       const $target = $(e.target);
 
       if ($target.hasClass('btn-remove')) {
-        $target.closest('.member').fadeOut();
+        $target.closest('.member')
+          .fadeOut(function () {
+            $(this).remove();
+          });
       }
     }
 

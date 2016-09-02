@@ -1,8 +1,8 @@
 - if requesters.any?
   .panel.panel-default
     .panel-heading
+      Users requesting access to
       %strong= membership_source.name
-      access requests
       %span.badge= requesters.size
     %ul.content-list
       = render partial: 'shared/members/member', collection: requesters, as: :member
