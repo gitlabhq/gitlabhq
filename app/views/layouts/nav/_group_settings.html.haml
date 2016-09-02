@@ -11,7 +11,6 @@
           = icon('cog')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-align-right
-<<<<<<< HEAD
           = nav_link(path: 'groups#projects') do
             = link_to 'Projects', projects_group_path(@group), title: 'Projects'
           %li.divider
@@ -29,14 +28,6 @@
               = link_to group_audit_events_path(@group), title: "Audit Events" do
                 %span
                   Audit Events
-=======
-          - if can_admin_group
-            = nav_link(path: 'groups#projects') do
-              = link_to 'Projects', projects_group_path(@group), title: 'Projects'
-          - if can_edit || can_leave
-            %li.divider
-          - if can_edit
->>>>>>> fd1741b47970fc52d994367ba38b5d1353d94725
             %li
               = link_to 'Edit Group', edit_group_path(@group)
           - if can_leave
