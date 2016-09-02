@@ -7,7 +7,11 @@ class DropGitoriousFieldFromApplicationSettings < ActiveRecord::Migration
   def up
     require 'yaml'
 
-    yaml = connection.execute('SELECT import_sources FROM application_settings;').values[0][0]
+    yaml =  if Gitlab::Database.postgresql?
+              connection.execute('SELECT import_sources FROM application_settings;').values[0][0]
+            else
+              connection.execute('SELECT import_sources FROM application_settings;').first[0]
+            end
     yaml = YAML.safe_load(yaml)
     yaml.delete 'gitorious'
 
