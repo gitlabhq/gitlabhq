@@ -31,9 +31,10 @@ module AppearancesHelper
     end
   end
 
-  def custom_icon(icon_name, size: 16)
+  def custom_icon(icon_name, opts = {})
+    opts[:size] = 16 unless opts[:size]
     # We can't simply do the below, because there are some .erb SVGs.
     #  File.read(Rails.root.join("app/views/shared/icons/_#{icon_name}.svg")).html_safe
-    render "shared/icons/#{icon_name}.svg", size: size
+    render "shared/icons/#{icon_name}.svg", opts
   end
 end
