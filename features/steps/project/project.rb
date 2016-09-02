@@ -15,8 +15,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'I should see project with new settings' do
     expect(find_field('project_name').value).to eq 'NewName'
-    expect(find('#project_issues_enabled')).not_to be_checked
-    expect(find('#project_merge_requests_enabled')).to be_checked
   end
 
   step 'change project path settings' do
@@ -165,19 +163,19 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I enable project issues' do
-    check 'project_issues_enabled'
+    page.select 'Only team members', :from => 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I disable project issues' do
-    uncheck 'project_issues_enabled'
+    page.select 'Disabled', :from => 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I should not see the issues settings' do
-    expect(find('.issues-feature')).not_to be_visible
+    expect(find('.issue-feature')).not_to be_visible
   end
 
   step 'I should see the issues settings' do
-    expect(find('.issues-feature')).to be_visible
+    expect(find('.issue-feature')).to be_visible
   end
 
   step 'I create bare repo' do

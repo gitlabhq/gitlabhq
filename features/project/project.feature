@@ -19,12 +19,6 @@ Feature: Project
     And I should not see the "Remove avatar" button
 
   @javascript
-  Scenario: I disable issues
-    Given I visit edit project "Shop" page
-    When I disable project issues
-    Then I should not see the issues settings
-
-  @javascript
   Scenario: I enable issues
     Given I visit edit project "Shop" page
     When I enable project issues
