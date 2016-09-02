@@ -25,6 +25,29 @@ When you are satisfied with your new file, click **Commit Changes** at the botto
 
 ![Create file editor](img/web_editor_new_file_editor.png)
 
+### Template dropdowns
+
+When starting a new project, there are some common files which the new project
+might need too. Therefore a message will be displayed by GitLab to make this
+easy for you.
+
+![First file for your project](img/web_editor_template_dropdown_first_file.png)
+
+When clicking on either `LICENSE` or `.gitignore`, a dropdown will be displayed
+to provide you with a template which might be suitable for your project.
+
+![MIT license selected](img/web_editor_template_dropdown_mit_license.png)
+
+The license, changelog, contribution guide, or `.gitlab-ci.yml` file could also
+be added through a button on the project page. In the example below the license
+has already been created, which creates a link to the license itself.
+
+![New file button](img/web_editor_template_dropdown_buttons.png)
+
+>**Note:**
+The **Set up CI** button will not appear on an empty repository. You have to at
+least add a file in order for the button to show up.
+
 ## Upload a file
 
 The ability to create a file is great when the content is text. However, this
@@ -147,5 +170,6 @@ you commit the changes you will be taken to a new merge request form.
 
 ![Start a new merge request with these changes](img/web_editor_start_new_merge_request.png)
 
+![New file button](basicsimages/file_button.png)
 [ce-2808]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/2808
 [issue closing pattern]: ../customization/issue_closing.md
