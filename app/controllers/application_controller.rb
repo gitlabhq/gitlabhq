@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?, :current_application_settings
+  helper_method :can?, :current_application_settings
   helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
@@ -101,12 +101,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can?(object, action, subject)
-    abilities.allowed?(object, action, subject)
+    Ability.allowed?(object, action, subject)
   end
 
   def access_denied!

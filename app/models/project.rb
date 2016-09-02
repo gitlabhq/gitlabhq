@@ -772,6 +772,10 @@ class Project < ActiveRecord::Base
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
   end
 
+  def has_wiki?
+    wiki_enabled? || has_external_wiki?
+  end
+
   def external_wiki
     if has_external_wiki.nil?
       cache_has_external_wiki # Populate

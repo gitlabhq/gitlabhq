@@ -23,8 +23,8 @@ describe Projects::BoardsController do
 
     context 'with unauthorized user' do
       before do
-        allow(Ability.abilities).to receive(:allowed?).with(user, :read_project, project).and_return(true)
-        allow(Ability.abilities).to receive(:allowed?).with(user, :read_board, project).and_return(false)
+        allow(Ability).to receive(:allowed?).with(user, :read_project, project).and_return(true)
+        allow(Ability).to receive(:allowed?).with(user, :read_board, project).and_return(false)
       end
 
       it 'returns a successful 404 response' do

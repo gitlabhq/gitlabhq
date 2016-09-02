@@ -32,7 +32,7 @@ module API
       # Example Request:
       #   POST /groups
       post do
-        authorize! :create_group, current_user
+        authorize! :create_group
         required_attributes! [:name, :path]
 
         attrs = attributes_for_keys [:name, :path, :description, :visibility_level, :membership_lock, :share_with_group_lock]
