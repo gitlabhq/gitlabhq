@@ -42,11 +42,12 @@ v 8.13.0 (unreleased)
   - Notify the Merger about merge after successful build (Dimitris Karakasilis)
   - Fix broken repository 500 errors in project list
   - Close todos when accepting merge requests via the API !6486 (tonygambone)
-  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer) 
+  - Changed Slack service user referencing from full name to username (Sebastian Poxhofer)
   - Add Container Registry on/off status to Admin Area !6638 (the-undefined)
 
 v 8.12.4 (unreleased)
   - Fix issues importing services via Import/Export
+  - Restrict failed login attempts for users with 2FA enabled
   - Fix "Copy to clipboard" tooltip to say "Copied!" when clipboard button is clicked. (lukehowell)
 
 v 8.12.3
