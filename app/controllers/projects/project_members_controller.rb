@@ -10,20 +10,29 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     members = []
     project_members = @project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, @project)
+
+    if params[:search].present?
+      users = @project.users.search(params[:search]).to_a
+      project_members = project_members.where(user_id: users)
+    end
+
     members << project_members.pluck(:id)
 
-    if @project.group
-      group_members = @project.group.group_members
+    @group = @project.group
+    if @group
+      group_members = @group.group_members
       group_members = group_members.non_invite unless can?(current_user, :admin_project, @project)
+
+      if params[:search].present?
+        users = @group.users.search(params[:search]).to_a
+        group_members = group_members.where(user_id: users)
+      end
+
       members << group_members.pluck(:id)
     end
 
     @project_members = Member.where(id: members)
     @project_members_size = @project_members.size
-
-    if params[:search].present?
-      @project_members = @project_members.search(params[:search])
-    end
 
     @project_members = @project_members.page(params[:page])
 
