@@ -156,7 +156,7 @@ describe Ci::Pipeline, models: true do
         pipeline.reload
 
         expect(pipeline.duration).to eq(40)
-        expect(pipeline.pending_duration).to eq(25)
+        expect(pipeline.pending_duration).to eq(45)
       end
     end
 

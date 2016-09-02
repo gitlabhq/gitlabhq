@@ -107,19 +107,20 @@ module Gitlab
       end
 
       def self.from_pipeline(pipeline)
+        now = Time.now
         status = %w[success failed running canceled]
         builds = pipeline.builds.latest.where(status: status)
 
-        running = from_builds(builds, :started_at, :finished_at).duration
-        total = from_builds(builds, :queued_at, :finished_at).duration
+        running = from_builds(builds, :started_at, :finished_at, now).duration
         pending = pipeline.started_at - pipeline.created_at
+        queuing = builds.inject(0) do |result, job|
+          result + ((job.started_at || now) - (job.queued_at || now))
+        end
 
-        [running, pending + total - running]
+        [running, pending + queuing]
       end
 
-      def self.from_builds(builds, from, to)
-        now = Time.now
-
+      def self.from_builds(builds, from, to, now = Time.now)
         periods = builds.map do |b|
           Period.new(b.public_send(from) || now, b.public_send(to) || now)
         end
