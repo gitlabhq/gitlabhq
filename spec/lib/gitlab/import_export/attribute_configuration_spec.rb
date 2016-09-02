@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+
+# Part of the Import/Export feature security testing
 # Checks whether there are new attributes in models that are currently being exported as part of the
 # project Import/Export feature.
 # If there are new attributes, these will have to either be added to this spec in case we want them
@@ -71,16 +73,6 @@ describe 'Attribute configuration', lib: true do
       CURRENT_SPEC: #{__FILE__}
       IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
     MSG
-  end
-
-  def parsed_attributes(relation_name, attributes)
-    excluded_attributes = config_hash['excluded_attributes'][relation_name]
-    included_attributes = config_hash['included_attributes'][relation_name]
-
-    attributes = attributes - JSON[excluded_attributes.to_json] if excluded_attributes
-    attributes = attributes & JSON[included_attributes.to_json] if included_attributes
-
-    attributes
   end
 
   class Author < User

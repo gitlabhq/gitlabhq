@@ -12,4 +12,14 @@ module ConfigurationHelper
     relation_name = Gitlab::ImportExport::RelationFactory::OVERRIDES[relation_name.to_sym] || relation_name
     relation_name.to_s.classify.constantize
   end
+
+  def parsed_attributes(relation_name, attributes)
+    excluded_attributes = config_hash['excluded_attributes'][relation_name]
+    included_attributes = config_hash['included_attributes'][relation_name]
+
+    attributes = attributes - JSON[excluded_attributes.to_json] if excluded_attributes
+    attributes = attributes & JSON[included_attributes.to_json] if included_attributes
+
+    attributes
+  end
 end

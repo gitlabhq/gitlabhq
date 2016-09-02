@@ -1,18 +1,25 @@
 require 'spec_helper'
 
+# Integration test that exports a file using the Import/EXport feature
+# It looks up for any sensitive word inside the JSON, so if a sensitive word is found
+# we''l have to either include it adding the model containing it to the +safe_list+
+# or make sure the attribute is blacklisted in the +import_export.yml+ configuration
 feature 'project export', feature: true, js: true do
   include Select2Helper
   include ExportFileHelper
 
   let(:user) { create(:admin) }
   let(:export_path) { "#{Dir::tmpdir}/import_file_spec" }
+  let(:config_hash) { YAML.load_file(Gitlab::ImportExport.config_file).deep_stringify_keys }
 
   let(:sensitive_words) { %w[pass secret token key] }
-  let(:safe_models) do
+  let(:safe_list) do
     {
-      token: [ProjectHook, Ci::Trigger]
+      token: [ProjectHook, Ci::Trigger],
+      key: [Project, Ci::Variable, :yaml_variables]
     }
   end
+  let(:safe_hashes) { { yaml_variables: %w[key value public] } }
 
   let(:project) { setup_project }
 
@@ -49,7 +56,9 @@ feature 'project export', feature: true, js: true do
         project_hash = JSON.parse(IO.read(project_json_path))
 
         sensitive_words.each do |sensitive_word|
-          expect(has_sensitive_attributes?(sensitive_word, project_hash)).to be false
+          found = find_sensitive_attributes(sensitive_word, project_hash)
+
+          expect(found).to be_nil, "Found a new sensitive word <#{found.try(:key_found)}>, which is part of the hash #{found.try(:parent)}"
         end
       end
     end
