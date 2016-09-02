@@ -15,11 +15,9 @@
           %th Name
           %th
           %th
-            - unless admin
-              - if project.build_coverage_enabled?
-                Coverage
+            - if !admin && project.build_coverage_enabled?
+              Coverage
           %th
-
 
       - if admin
         - builds.each do |build|

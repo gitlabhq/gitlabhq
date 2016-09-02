@@ -124,6 +124,7 @@ v 8.12.0 (unreleased)
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
   - Add notification_settings API calls !5632 (mahcsig)
+  - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.11.6 (unreleased)
 
