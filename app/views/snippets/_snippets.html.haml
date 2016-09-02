@@ -1,7 +1,11 @@
-%ul.content-list
-  = render partial: 'shared/snippets/snippet', collection: @snippets
-  - if @snippets.empty?
-    %li
-      .nothing-here-block Nothing here.
+.snippets-list-holder
+  %ul.content-list
+    = render partial: 'shared/snippets/snippet', collection: @snippets
+    - if @snippets.empty?
+      %li
+        .nothing-here-block Nothing here.
 
-= paginate @snippets, theme: 'gitlab'
+  = paginate @snippets, theme: 'gitlab', remote: true
+
+:javascript
+  gl.SnippetsList();
