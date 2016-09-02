@@ -221,13 +221,13 @@ class Repository
     # (and have!) accidentally reset the ref to an earlier state, clobbering
     # commits. See also https://github.com/libgit2/libgit2/issues/1534.
     command = %w[git update-ref --stdin -z]
-    output, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
+    _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
       stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
     end
 
     return if status.zero?
 
-    raise CommitError.new("error updating ref #{name} #{oldrev}->#{newrev}\n#{output}")
+    raise CommitError.new("Could not update branch #{name.sub('refs/heads/', '')}. Please refresh and try again.")
   end
 
   # Makes sure a commit is kept around when Git garbage collection runs.
