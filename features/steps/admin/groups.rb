@@ -105,7 +105,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
       select "Developer", from: "access_level"
     end
 
-    click_button "Add users to group"
+    click_button "Add to group"
   end
 
   step 'I should see current user as "Developer"' do

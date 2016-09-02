@@ -109,7 +109,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
   step 'I search for \'Mary\' member' do
     page.within '.member-search-form' do
       fill_in 'search', with: 'Mary'
-      click_button 'Search'
+      find('.member-search-btn').click
     end
   end
 
