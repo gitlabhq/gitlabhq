@@ -163,11 +163,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I enable project issues' do
-    page.select 'Only team members', :from => 'project_project_feature_attributes_issues_access_level'
+    page.select 'Only team members', from: 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I disable project issues' do
-    page.select 'Disabled', :from => 'project_project_feature_attributes_issues_access_level'
+    page.select 'Disabled', from: 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I should not see the issues settings' do
