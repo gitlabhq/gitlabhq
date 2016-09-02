@@ -52,7 +52,7 @@ class ProjectTeam
     ProjectMember.truncate_team(project)
   end
 
-  def members(non_invite)
+  def members(non_invite = false)
     @members ||= fetch_members(nil, non_invite)
   end
   alias_method :users, :members
@@ -236,7 +236,7 @@ class ProjectTeam
     end
 
     user_ids = project_members.pluck(:user_id)
-    user_ids.push(*invited_members.map(&:user_id)) if invited_members.any? && !non_invite
+    user_ids.push(*invited_members.map(&:user_id)) if invited_members.any? && non_invite
     user_ids.push(*group_members.pluck(:user_id)) if group
 
     User.where(id: user_ids)

@@ -6,7 +6,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @groups = @project.project_group_links
-    @project_members = @project.team.members(can?(current_user, :admin_project, @project))
+    @project_members = @project.team.members(!can?(current_user, :admin_project, @project))
     @project_members_size = @project_members.size
 
     if params[:search].present?
