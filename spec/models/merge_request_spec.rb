@@ -1010,6 +1010,22 @@ describe MergeRequest, models: true do
               expect(merge_request.can_approve?(nil)).to be_falsey
             end
           end
+
+          context 'when more than the number of approvers have approved the MR' do
+            before do
+              create(:approval, user: approver, merge_request: merge_request)
+              create(:approval, user: approver_2, merge_request: merge_request)
+              create(:approval, user: developer, merge_request: merge_request)
+            end
+
+            it 'marks the MR as approved' do
+              expect(merge_request).to be_approved
+            end
+
+            it 'clamps the approvals left at zero' do
+              expect(merge_request.approvals_left).to eq(0)
+            end
+          end
         end
 
         context 'when the approvers do not contain the MR author' do

@@ -644,7 +644,10 @@ class MergeRequest < ActiveRecord::Base
   # choose the lower so the MR doesn't get 'stuck' in a state where it can't be approved.
   #
   def approvals_left
-    [approvals_required - approvals.count, number_of_potential_approvers].min
+    [
+      [approvals_required - approvals.count, number_of_potential_approvers].min,
+      0
+    ].max
   end
 
   def approvals_required
