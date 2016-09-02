@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe EE::Gitlab::LDAP::Group, lib: true do
+  include LdapHelpers
+
+  let(:adapter) { ldap_adapter }
+
   describe '#member_dns' do
     def ldif
       Net::LDAP::Entry.from_single_ldif_string(
@@ -15,10 +19,6 @@ describe EE::Gitlab::LDAP::Group, lib: true do
           objectclass: groupOfNames
         EOS
       )
-    end
-
-    def adapter
-      @adapter ||= Gitlab::LDAP::Adapter.new('ldapmain')
     end
 
     let(:group) { described_class.new(ldif, adapter) }

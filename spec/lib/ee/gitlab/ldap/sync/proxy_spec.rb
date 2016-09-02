@@ -4,6 +4,7 @@ require 'net/ldap/dn'
 describe EE::Gitlab::LDAP::Sync::Proxy, lib: true do
   include LdapHelpers
 
+  let(:adapter) { ldap_adapter }
   let(:sync_proxy) { EE::Gitlab::LDAP::Sync::Proxy.new('ldapmain', adapter) }
 
   before do

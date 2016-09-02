@@ -29,31 +29,7 @@ module Gitlab
       end
 
       def users(field, value, limit = nil)
-        if field.to_sym == :dn
-          options = {
-            base: value,
-            scope: Net::LDAP::SearchScope_BaseObject
-          }
-        else
-          options = {
-            base: config.base,
-            filter: Net::LDAP::Filter.eq(field, value)
-          }
-        end
-
-        if config.user_filter.present?
-          user_filter = Net::LDAP::Filter.construct(config.user_filter)
-
-          options[:filter] = if options[:filter]
-                               Net::LDAP::Filter.join(options[:filter], user_filter)
-                             else
-                               user_filter
-                             end
-        end
-
-        if limit.present?
-          options.merge!(size: limit)
-        end
+        options = user_options(field, value, limit)
 
         entries = ldap_search(options).select do |entry|
           entry.respond_to? config.uid
@@ -68,13 +44,11 @@ module Gitlab
         users(*args).first
       end
 
-      def dns_for_filter(filter)
-        ldap_search(
-          base: config.base,
-          filter: filter,
-          scope: Net::LDAP::SearchScope_WholeSubtree,
-          attributes: %w{dn}
-        ).map(&:dn)
+      def dn_matches_filter?(dn, filter)
+        ldap_search(base: dn,
+                    filter: filter,
+                    scope: Net::LDAP::SearchScope_BaseObject,
+                    attributes: %w{dn}).any?
       end
 
       def ldap_search(*args)
@@ -97,6 +71,38 @@ module Gitlab
       rescue Timeout::Error
         Rails.logger.warn("LDAP search timed out after #{config.timeout} seconds")
         []
+      end
+
+      private
+
+      def user_options(field, value, limit)
+        options = { attributes: %W(#{config.uid} cn mail dn) }
+        options[:size] = limit if limit
+
+        if field.to_sym == :dn
+          options[:base] = value
+          options[:scope] = Net::LDAP::SearchScope_BaseObject
+          options[:filter] = user_filter
+        else
+          options[:base] = config.base
+          options[:filter] = user_filter(Net::LDAP::Filter.eq(field, value))
+        end
+
+        options
+      end
+
+      def user_filter(filter = nil)
+        if config.user_filter.present?
+          user_filter = Net::LDAP::Filter.construct(config.user_filter)
+        end
+
+        if user_filter && filter
+          Net::LDAP::Filter.join(filter, user_filter)
+        elsif user_filter
+          user_filter
+        else
+          filter
+        end
       end
     end
   end
