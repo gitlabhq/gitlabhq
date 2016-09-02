@@ -28,6 +28,7 @@ v 8.12.0 (unreleased)
   - Fix inconsistent background color for filter input field (ClemMakesApps)
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
+  - Fix shortTimeAgo util to update every minute !5726
   - Add BroadcastMessage API
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
