@@ -29,12 +29,16 @@ describe MergeRequests::ApprovalService, services: true do
 
     context 'with valid approval' do
       it 'creates an approval note' do
+        allow(merge_request).to receive(:approvals_left).and_return(1)
+
         expect(SystemNoteService).to receive(:approve_mr).with(merge_request, user)
 
         service.execute(merge_request)
       end
 
       it 'marks pending todos as done' do
+        allow(merge_request).to receive(:approvals_left).and_return(1)
+
         service.execute(merge_request)
 
         expect(todo.reload).to be_done
