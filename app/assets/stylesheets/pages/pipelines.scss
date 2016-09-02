@@ -161,6 +161,7 @@
   .finished-at {
     color: $table-text-gray;
     margin: 4px 0;
+    white-space: nowrap;
 
     .fa {
       font-size: 12px;
