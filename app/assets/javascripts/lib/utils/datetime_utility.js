@@ -36,7 +36,7 @@
     };
 
     w.gl.utils.shortTimeAgo = function($els) {
-      clearInterval(window.refreshIntervalId);
+      clearInterval(w.gl.shortTimeagoIntervalId);
 
       if (!$els.length) {
         return;
@@ -91,7 +91,7 @@
 
       updateShortTimeago($els);
 
-      window.refreshIntervalId = setInterval(function () {
+      w.gl.shortTimeagoIntervalId = setInterval(function () {
         updateShortTimeago($els);
       }, 60000);
     };
