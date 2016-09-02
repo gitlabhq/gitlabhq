@@ -110,10 +110,11 @@ module Gitlab
         status = %w[success failed running canceled]
         builds = pipeline.builds.latest.where(status: status)
 
-        duration = from_builds(builds, :started_at, :finished_at).duration
-        queued = from_builds(builds, :queued_at, :started_at).duration
+        running = from_builds(builds, :started_at, :finished_at).duration
+        total = from_builds(builds, :queued_at, :finished_at).duration
+        pending = pipeline.started_at - pipeline.created_at
 
-        [duration, pipeline.started_at - pipeline.created_at + queued]
+        [running, pending + total - running]
       end
 
       def self.from_builds(builds, from, to)
