@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(version: 20160831223750) do
     t.datetime "finished_at"
     t.integer  "duration"
     t.integer  "user_id"
+    t.integer  "pending_duration"
   end
 
   add_index "ci_commits", ["gl_project_id", "sha"], name: "index_ci_commits_on_gl_project_id_and_sha", using: :btree
