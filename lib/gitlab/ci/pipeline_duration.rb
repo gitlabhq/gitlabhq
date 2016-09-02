@@ -106,17 +106,27 @@ module Gitlab
         end
       end
 
-      def self.from_builds(builds)
+      def self.from_pipeline(pipeline)
+        status = %w[success failed running canceled]
+        builds = pipeline.builds.latest.where(status: status)
+
+        duration = from_builds(builds, :started_at, :finished_at).duration
+        queued = from_builds(builds, :queued_at, :started_at).duration
+
+        [duration, pipeline.started_at - pipeline.created_at + queued]
+      end
+
+      def self.from_builds(builds, from, to)
         now = Time.now
 
         periods = builds.map do |b|
-          Period.new(b.started_at || now, b.finished_at || now)
+          Period.new(b.public_send(from) || now, b.public_send(to) || now)
         end
 
         new(periods)
       end
 
-      attr_reader :duration, :pending_duration
+      attr_reader :duration
 
       def initialize(periods)
         process(periods.sort_by(&:first))
@@ -125,10 +135,7 @@ module Gitlab
       private
 
       def process(periods)
-        merged = process_periods(periods)
-
-        @duration = process_duration(merged)
-        @pending_duration = process_pending_duration(merged)
+        @duration = process_duration(process_periods(periods))
       end
 
       def process_periods(periods)
@@ -156,13 +163,6 @@ module Gitlab
         periods.inject(0) do |result, per|
           result + per.duration
         end
-      end
-
-      def process_pending_duration(periods)
-        return 0 if periods.empty?
-
-        total = periods.last.last - periods.first.first
-        total - duration
       end
     end
   end

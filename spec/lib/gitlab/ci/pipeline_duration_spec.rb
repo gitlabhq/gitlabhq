@@ -6,7 +6,6 @@ describe Gitlab::Ci::PipelineDuration do
   shared_examples 'calculating duration' do
     it do
       expect(calculator.duration).to eq(duration)
-      expect(calculator.pending_duration).to eq(pending_duration)
     end
   end
 
@@ -19,7 +18,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 4 }
-    let(:pending_duration) { 2 }
 
     it_behaves_like 'calculating duration'
   end
@@ -34,7 +32,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 4 }
-    let(:pending_duration) { 0 }
 
     it_behaves_like 'calculating duration'
   end
@@ -48,7 +45,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 8 }
-    let(:pending_duration) { 1 }
 
     it_behaves_like 'calculating duration'
   end
@@ -62,7 +58,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 4 }
-    let(:pending_duration) { 3 }
 
     it_behaves_like 'calculating duration'
   end
@@ -80,7 +75,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 7 }
-    let(:pending_duration) { 2 }
 
     it_behaves_like 'calculating duration'
   end
@@ -95,7 +89,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 6 }
-    let(:pending_duration) { 1 }
 
     it_behaves_like 'calculating duration'
   end
@@ -108,7 +101,6 @@ describe Gitlab::Ci::PipelineDuration do
     end
 
     let(:duration) { 4 }
-    let(:pending_duration) { 2 }
 
     it_behaves_like 'calculating duration'
   end

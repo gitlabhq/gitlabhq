@@ -260,13 +260,8 @@ module Ci
     def update_duration
       return unless started_at
 
-      calculated_status = %w[success failed running canceled]
-      calculated_builds = builds.latest.where(status: calculated_status)
-      calculator = Gitlab::Ci::PipelineDuration.from_builds(calculated_builds)
-
-      self.duration = calculator.duration
-      self.pending_duration =
-        started_at - created_at + calculator.pending_duration
+      self.duration, self.pending_duration =
+        Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def execute_hooks
