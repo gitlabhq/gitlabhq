@@ -20,7 +20,7 @@ describe Banzai::Filter::MilestoneReferenceFilter, lib: true do
 
   it 'includes default classes' do
     doc = reference_filter("Milestone #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-milestone'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-milestone has-tooltip'
   end
 
   it 'includes a data-project attribute' do

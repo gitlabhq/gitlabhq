@@ -229,6 +229,10 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def user_authored?(user)
+    user == author
+  end
+
   def award_emoji?
     can_be_award_emoji? && contains_emoji_only?
   end

@@ -89,4 +89,4 @@
               = icon('repeat')
           - elsif build.playable?
             = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
-              = icon('play')
+              = custom_icon('icon_play')

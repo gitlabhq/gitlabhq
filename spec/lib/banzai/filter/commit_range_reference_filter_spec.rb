@@ -65,14 +65,14 @@ describe Banzai::Filter::CommitRangeReferenceFilter, lib: true do
       expect(reference_filter(act).to_html).to eq exp
     end
 
-    it 'includes a title attribute' do
+    it 'includes no title attribute' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq range.reference_title
+      expect(doc.css('a').first.attr('title')).to eq ""
     end
 
     it 'includes default classes' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit_range'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit_range has-tooltip'
     end
 
     it 'includes a data-project attribute' do

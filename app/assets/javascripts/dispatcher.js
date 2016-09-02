@@ -206,6 +206,7 @@
               break;
             case 'labels':
               switch (path[2]) {
+                case 'new':
                 case 'edit':
                   new Labels();
               }

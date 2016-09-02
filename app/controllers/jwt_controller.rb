@@ -37,7 +37,7 @@ class JwtController < ApplicationController
 
   def authenticate_project(login, password)
     if login == 'gitlab-ci-token'
-      Project.find_by(builds_enabled: true, runners_token: password)
+      Project.with_builds_enabled.find_by(runners_token: password)
     end
   end
 

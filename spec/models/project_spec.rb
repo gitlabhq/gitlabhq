@@ -518,7 +518,7 @@ describe Project, models: true do
 
   describe '#has_wiki?' do
     let(:no_wiki_project) { build(:project, wiki_enabled: false, has_external_wiki: false) }
-    let(:wiki_enabled_project) { build(:project, wiki_enabled: true) }
+    let(:wiki_enabled_project) { build(:project) }
     let(:external_wiki_project) { build(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
@@ -742,25 +742,44 @@ describe Project, models: true do
     let(:pipeline) { create :ci_pipeline, project: project, ref: 'master' }
 
     subject { project.pipeline(pipeline.sha, 'master') }
+  end
 
-    it { is_expected.to eq(pipeline) }
+  describe '#pipeline_for' do
+    let(:project) { create(:project) }
+    let!(:pipeline) { create_pipeline }
 
-    context 'return latest' do
-      let(:pipeline2) { create :ci_pipeline, project: project, ref: 'master' }
+    shared_examples 'giving the correct pipeline' do
+      it { is_expected.to eq(pipeline) }
 
-      before do
-        pipeline
-        pipeline2
+      context 'return latest' do
+        let!(:pipeline2) { create_pipeline }
+
+        it { is_expected.to eq(pipeline2) }
       end
+    end
 
-      it { is_expected.to eq(pipeline2) }
+    context 'with explicit sha' do
+      subject { project.pipeline_for('master', pipeline.sha) }
+
+      it_behaves_like 'giving the correct pipeline'
+    end
+
+    context 'with implicit sha' do
+      subject { project.pipeline_for('master') }
+
+      it_behaves_like 'giving the correct pipeline'
+    end
+
+    def create_pipeline
+      create(:ci_pipeline,
+             project: project,
+             ref: 'master',
+             sha: project.commit('master').sha)
     end
   end
 
   describe '#builds_enabled' do
     let(:project) { create :project }
-
-    before { project.builds_enabled = true }
 
     subject { project.builds_enabled }
 

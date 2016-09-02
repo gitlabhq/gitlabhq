@@ -31,6 +31,7 @@ module API
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
     mount ::API::Branches
+    mount ::API::BroadcastMessages
     mount ::API::Builds
     mount ::API::CommitStatuses
     mount ::API::Commits

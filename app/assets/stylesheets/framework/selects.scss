@@ -151,7 +151,7 @@
   background-position: right 0 bottom 6px;
   border: 1px solid $input-border;
   @include border-radius($border-radius-default);
-  @include transition(border-color ease-in-out .15s, box-shadow ease-in-out .15s);
+  transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
   &:focus {
     border-color: $input-border-focus;

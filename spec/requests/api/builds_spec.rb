@@ -15,7 +15,9 @@ describe API::API, api: true do
   describe 'GET /projects/:id/builds ' do
     let(:query) { '' }
 
-    before { get api("/projects/#{project.id}/builds?#{query}", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds?#{query}", api_user)
+    end
 
     context 'authorized user' do
       it 'returns project builds' do
@@ -122,7 +124,9 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds/#{build.id}", api_user)
+    end
 
     context 'authorized user' do
       it 'returns specific build data' do
@@ -141,7 +145,9 @@ describe API::API, api: true do
   end
 
   describe 'GET /projects/:id/builds/:build_id/artifacts' do
-    before { get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user) }
+    before do
+      get api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+    end
 
     context 'build with artifacts' do
       let(:build) { create(:ci_build, :artifacts, pipeline: pipeline) }
@@ -292,7 +298,9 @@ describe API::API, api: true do
   end
 
   describe 'POST /projects/:id/builds/:build_id/cancel' do
-    before { post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user) }
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/cancel", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build persmission' do
@@ -323,7 +331,9 @@ describe API::API, api: true do
   describe 'POST /projects/:id/builds/:build_id/retry' do
     let(:build) { create(:ci_build, :canceled, pipeline: pipeline) }
 
-    before { post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user) }
+    before do
+      post api("/projects/#{project.id}/builds/#{build.id}/retry", api_user)
+    end
 
     context 'authorized user' do
       context 'user with :update_build permission' do

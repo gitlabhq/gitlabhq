@@ -84,7 +84,7 @@ header {
     .side-nav-toggle {
       position: absolute;
       left: -10px;
-      margin: 6px 0;
+      margin: 7px 0;
       font-size: 18px;
       padding: 6px 10px;
       border: none;
@@ -136,6 +136,8 @@ header {
     }
 
     .title {
+      position: relative;
+      padding-right: 20px;
       margin: 0;
       font-size: 19px;
       max-width: 400px;
@@ -148,7 +150,11 @@ header {
       vertical-align: top;
       white-space: nowrap;
 
-      @media (max-width: $screen-sm-max) {
+      @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+        max-width: 300px;
+      }
+
+      @media (max-width: $screen-xs-max) {
         max-width: 190px;
       }
 
@@ -160,11 +166,15 @@ header {
       }
 
       .dropdown-toggle-caret {
-        position: relative;
-        top: -2px;
+        color: $gl-text-color;
+        border: transparent;
+        background: transparent;
+        position: absolute;
+        right: 3px;
         width: 12px;
-        line-height: 12px;
-        margin-left: 5px;
+        line-height: 19px;
+        margin-top: (($header-height - 19) / 2);
+        padding: 0;
         font-size: 10px;
         text-align: center;
         cursor: pointer;

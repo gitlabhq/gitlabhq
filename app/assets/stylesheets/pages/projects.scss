@@ -311,6 +311,14 @@ a.deploy-project-label {
   color: $gl-success;
 }
 
+.lfs-enabled {
+  color: $gl-success;
+}
+
+.lfs-disabled {
+  color: $gl-warning;
+}
+
 .breadcrumb.repo-breadcrumb {
   padding: 0;
   background: transparent;
@@ -600,18 +608,25 @@ pre.light-well {
   }
 }
 
-.project-show-readme .readme-holder {
-  padding: $gl-padding 0;
-  border-top: 0;
-
-  .edit-project-readme {
-    z-index: 2;
-    position: relative;
+.project-show-readme {
+  .row-content-block {
+    background-color: inherit;
+    border: none;
   }
 
-  .wiki h1 {
-    border-bottom: none;
-    padding: 0;
+  .readme-holder {
+    padding: $gl-padding 0;
+    border-top: 0;
+
+    .edit-project-readme {
+      z-index: 2;
+      position: relative;
+    }
+
+    .wiki h1 {
+      border-bottom: none;
+      padding: 0;
+    }
   }
 }
 

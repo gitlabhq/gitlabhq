@@ -94,13 +94,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: [:allow_broken, :importing?]
-  validate :validate_fork
+  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
+  validate :validate_fork, unless: :closed_without_fork?
   validate :validate_approvals_before_merge
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -245,12 +245,12 @@ class MergeRequest < ActiveRecord::Base
 
   def source_branch_head
     source_branch_ref = @source_branch_sha || source_branch
-    source_project.repository.commit(source_branch) if source_branch_ref
+    source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
 
   def target_branch_head
     target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch) if target_branch_ref
+    target_project.repository.commit(target_branch_ref) if target_branch_ref
   end
 
   def branch_merge_base_commit
@@ -310,19 +310,22 @@ class MergeRequest < ActiveRecord::Base
 
   def validate_fork
     return true unless target_project && source_project
+    return true if target_project == source_project
+    return true unless forked_source_project_missing?
 
-    if target_project == source_project
-      true
-    else
-      # If source and target projects are different
-      # we should check if source project is actually a fork of target project
-      if source_project.forked_from?(target_project)
-        true
-      else
-        errors.add :validate_fork,
-                   'Source project is not a fork of target project'
-      end
-    end
+    errors.add :validate_fork,
+               'Source project is not a fork of the target project'
+  end
+
+  def closed_without_fork?
+    closed? && forked_source_project_missing?
+  end
+
+  def forked_source_project_missing?
+    return false unless for_fork?
+    return true unless source_project
+
+    !source_project.forked_from?(target_project)
   end
 
   def validate_approvals_before_merge
@@ -853,7 +856,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def pipeline
-    @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+    return unless diff_head_sha && source_project
+
+    @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def all_pipelines

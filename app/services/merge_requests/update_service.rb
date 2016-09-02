@@ -11,6 +11,10 @@ module MergeRequests
       params.except!(:target_project_id)
       params.except!(:source_branch)
 
+      if merge_request.closed_without_fork?
+        params.except!(:target_branch, :force_remove_source_branch)
+      end
+
       merge_request.merge_params['force_remove_source_branch'] = params.delete(:force_remove_source_branch)
       old_approvers = merge_request.overall_approvers.to_a
 

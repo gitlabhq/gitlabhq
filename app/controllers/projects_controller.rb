@@ -304,13 +304,23 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def project_params
+    project_feature_attributes =
+      {
+        project_feature_attributes:
+          [
+            :issues_access_level, :builds_access_level,
+            :wiki_access_level, :merge_requests_access_level, :snippets_access_level
+          ]
+      }
+
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :tag_list, :runners_token,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :container_registry_enabled,
+      :container_registry_enabled,
       :issues_tracker_id, :default_branch,
-      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
-      :builds_enabled, :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
+      :visibility_level, :import_url, :last_activity_at, :namespace_id, :avatar,
+      :build_allow_git_fetch, :build_timeout_in_minutes, :build_coverage_regex,
       :public_builds, :only_allow_merge_if_build_succeeds, :request_access_enabled,
+      :lfs_enabled, project_feature_attributes,
 
       # EE-only
       :approvals_before_merge,

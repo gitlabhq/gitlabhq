@@ -2,6 +2,7 @@
   .stage {
     max-width: 90px;
     width: 90px;
+    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -146,16 +147,13 @@
   }
 
   .stage-cell {
+    text-align: center;
 
     svg {
       height: 18px;
       width: 18px;
       vertical-align: middle;
       overflow: visible;
-    }
-
-    .light {
-      width: 3px;
     }
   }
 
@@ -213,6 +211,13 @@
         .btn-default {
           background-color: $white-normal;
           border-color: $border-white-normal;
+        }
+      }
+
+      .btn {
+        .icon-play {
+          height: 13px;
+          width: 12px;
         }
       }
     }
@@ -469,11 +474,22 @@
 .pipelines.tab-pane {
 
   .content-list.pipelines {
-    overflow: scroll;
+    overflow: auto;
   }
 
   .stage {
-    max-width: 60px;
-    width: 60px;
+    max-width: 100px;
+    width: 100px;
+  }
+
+  .pipeline-actions {
+    min-width: initial;
+  }
+}
+
+.ci-status-icon-created {
+
+  svg {
+    fill: $table-text-gray;
   }
 }

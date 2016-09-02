@@ -382,6 +382,24 @@ describe Repository, models: true do
     end
   end
 
+  describe '#find_branch' do
+    it 'loads a branch with a fresh repo' do
+      expect(Gitlab::Git::Repository).to receive(:new).twice.and_call_original
+
+      2.times do
+        expect(repository.find_branch('feature')).not_to be_nil
+      end
+    end
+
+    it 'loads a branch with a cached repo' do
+      expect(Gitlab::Git::Repository).to receive(:new).once.and_call_original
+
+      2.times do
+        expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
+      end
+    end
+  end
+
   describe '#rm_branch' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:blank_sha) { '0000000000000000000000000000000000000000' }

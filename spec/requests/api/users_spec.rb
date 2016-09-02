@@ -617,6 +617,7 @@ describe API::API, api: true  do
       expect(json_response['can_create_project']).to eq(user.can_create_project?)
       expect(json_response['can_create_group']).to eq(user.can_create_group?)
       expect(json_response['projects_limit']).to eq(user.projects_limit)
+      expect(json_response['private_token']).to be_blank
     end
 
     it "returns 401 error if user is unauthenticated" do

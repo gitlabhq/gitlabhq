@@ -268,9 +268,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-11-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 8-12-stable gitlab
 
-**Note:** You can change `8-11-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `8-12-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -333,6 +333,9 @@ sudo usermod -aG redis git
 
     # Disable 'git gc --auto' because GitLab already runs 'git gc' when needed
     sudo -u git -H git config --global gc.auto 0
+
+    # Enable packfile bitmaps
+    sudo -u git -H git config --global repack.writeBitmaps true
 
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml

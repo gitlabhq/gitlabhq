@@ -137,8 +137,21 @@ class Repository
     end
   end
 
-  def find_branch(name)
-    raw_repository.branches.find { |branch| branch.name == name }
+  def find_branch(name, fresh_repo: true)
+    # Since the Repository object may have in-memory index changes, invalidating the memoized Repository object may
+    # cause unintended side effects. Because finding a branch is a read-only operation, we can safely instantiate
+    # a new repo here to ensure a consistent state to avoid a libgit2 bug where concurrent access (e.g. via git gc)
+    # may cause the branch to "disappear" erroneously or have the wrong SHA.
+    #
+    # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
+    raw_repo =
+      if fresh_repo
+        Gitlab::Git::Repository.new(path_to_repo)
+      else
+        raw_repository
+      end
+
+    raw_repo.find_branch(name)
   end
 
   def find_tag(name)

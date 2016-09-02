@@ -9,7 +9,7 @@ describe API::API, api: true  do
   let!(:project)    { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
-  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds) }
+  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
   let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   let(:milestone)   { create(:milestone, title: '1.0.0', project: project) }
@@ -34,6 +34,13 @@ describe API::API, api: true  do
         expect(json_response.length).to eq(3)
         expect(json_response.last['title']).to eq(merge_request.title)
         expect(json_response.last).to have_key('web_url')
+        expect(json_response.last['sha']).to eq(merge_request.diff_head_sha)
+        expect(json_response.last['merge_commit_sha']).to be_nil
+        expect(json_response.last['merge_commit_sha']).to eq(merge_request.merge_commit_sha)
+        expect(json_response.first['title']).to eq(merge_request_merged.title)
+        expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
+        expect(json_response.first['merge_commit_sha']).not_to be_nil
+        expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
       end
 
       it "returns an array of all merge_requests" do

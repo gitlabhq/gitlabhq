@@ -28,4 +28,8 @@ module NoteOnDiff
   def can_be_award_emoji?
     false
   end
+
+  def to_discussion
+    Discussion.new([self])
+  end
 end

@@ -207,7 +207,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled && @project.default_issues_tracker?
+    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
 
   def redirect_to_external_issue_tracker

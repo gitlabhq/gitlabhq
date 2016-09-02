@@ -377,7 +377,8 @@ describe 'Git HTTP requests', lib: true do
         let(:project) { FactoryGirl.create :empty_project }
 
         before do
-          project.update_attributes(runners_token: token, builds_enabled: true)
+          project.update_attributes(runners_token: token)
+          project.project_feature.update_attributes(builds_access_level: ProjectFeature::ENABLED)
         end
 
         it "downloads get status 200" do
