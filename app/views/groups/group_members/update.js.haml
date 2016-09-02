@@ -1,3 +1,3 @@
 :plain
   $("##{dom_id(@group_member)}").replaceWith('#{escape_javascript(render('shared/members/member', member: @group_member))}');
-  new MemberExpirationDate();
+  new gl.MemberExpirationDate();
