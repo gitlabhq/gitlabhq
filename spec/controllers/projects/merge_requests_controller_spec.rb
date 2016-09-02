@@ -597,6 +597,10 @@ describe Projects::MergeRequestsController do
             format: 'json'
       end
 
+      it 'matches the schema' do
+        expect(response).to match_response_schema('conflicts')
+      end
+
       it 'includes meta info about the MR' do
         expect(json_response['commit_message']).to include('Merge branch')
         expect(json_response['commit_sha']).to match(/\h{40}/)
