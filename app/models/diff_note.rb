@@ -13,6 +13,11 @@ class DiffNote < Note
   validate :positions_complete
   validate :verify_supported
 
+  # Keep this scope in sync with the logic in `#resolvable?`
+  scope :resolvable, -> { user.where(noteable_type: 'MergeRequest') }
+  scope :resolved, -> { resolvable.where.not(resolved_at: nil) }
+  scope :unresolved, -> { resolvable.where(resolved_at: nil) }
+
   after_initialize :ensure_original_discussion_id
   before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code, :set_original_discussion_id
@@ -24,6 +29,16 @@ class DiffNote < Note
   class << self
     def build_discussion_id(noteable_type, noteable_id, position)
       [super(noteable_type, noteable_id), *position.key].join("-")
+    end
+
+    # This method must be kept in sync with `#resolve!`
+    def resolve!(current_user)
+      unresolved.update_all(resolved_at: Time.now, resolved_by_id: current_user.id)
+    end
+
+    # This method must be kept in sync with `#unresolve!`
+    def unresolve!
+      resolved.update_all(resolved_at: nil, resolved_by_id: nil)
     end
   end
 
@@ -73,6 +88,7 @@ class DiffNote < Note
     self.position.diff_refs == diff_refs
   end
 
+  # If you update this method remember to also update the scope `resolvable`
   def resolvable?
     !system? && for_merge_request?
   end
@@ -83,6 +99,7 @@ class DiffNote < Note
     self.resolved_at.present?
   end
 
+  # If you update this method remember to also update `.resolve!`
   def resolve!(current_user)
     return unless resolvable?
     return if resolved?
@@ -92,6 +109,7 @@ class DiffNote < Note
     save!
   end
 
+  # If you update this method remember to also update `.unresolve!`
   def unresolve!
     return unless resolvable?
     return unless resolved?

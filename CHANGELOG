@@ -94,6 +94,7 @@ v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix member expiration date picker after update
   - Fix suggested colors options for new labels in the admin area. !6138
+  - Optimize discussion notes resolving and unresolving
   - Fix GitLab import button
   - Remove gitorious from import_sources
 
