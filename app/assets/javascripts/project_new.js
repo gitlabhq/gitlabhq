@@ -15,18 +15,18 @@
     }
 
     ProjectNew.prototype.toggleSettings = function() {
-      this._showOrHide('#project_builds_enabled', '.builds-feature');
-      return this._showOrHide('#project_merge_requests_enabled', '.merge-requests-feature');
+      this._showOrHide('#project_project_feature_attributes_builds_access_level', '.builds-feature');
+      this._showOrHide('#project_project_feature_attributes_merge_requests_access_level', '.merge-requests-feature');
     };
 
     ProjectNew.prototype.toggleSettingsOnclick = function() {
-      return $('#project_builds_enabled, #project_merge_requests_enabled').on('click', this.toggleSettings);
+      $('#project_project_feature_attributes_builds_access_level, #project_project_feature_attributes_merge_requests_access_level').on('change', this.toggleSettings);
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {
       var $container;
       $container = $(container);
-      if ($(checkElement).prop('checked')) {
+      if ($(checkElement).val() !== '0') {
         return $container.show();
       } else {
         return $container.hide();
