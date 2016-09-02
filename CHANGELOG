@@ -47,6 +47,7 @@ v 8.12.0 (unreleased)
   - Expire commit info views after one day, instead of two weeks, to allow for user email updates
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix badge count alignment (ClemMakesApps)
+  - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
@@ -126,7 +127,6 @@ v 8.11.0
   - Add Issues Board !5548
   - Allow resolving merge conflicts in the UI !5479
   - Improve diff performance by eliminating redundant checks for text blobs
-  - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Ensure that branch names containing escapable characters (e.g. %20) aren't unescaped indiscriminately. !5770 (ewiltshi)
   - Convert switch icon into icon font (ClemMakesApps)
   - API: Endpoints for enabling and disabling deploy keys
