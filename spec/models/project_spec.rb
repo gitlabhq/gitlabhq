@@ -508,7 +508,7 @@ describe Project, models: true do
 
   describe '#has_wiki?' do
     let(:no_wiki_project) { build(:project, wiki_enabled: false, has_external_wiki: false) }
-    let(:wiki_enabled_project) { build(:project, wiki_enabled: true) }
+    let(:wiki_enabled_project) { build(:project) }
     let(:external_wiki_project) { build(:project, has_external_wiki: true) }
 
     it 'returns true if project is wiki enabled or has external wiki' do
@@ -733,8 +733,6 @@ describe Project, models: true do
 
   describe '#builds_enabled' do
     let(:project) { create :project }
-
-    before { project.builds_enabled = true }
 
     subject { project.builds_enabled }
 

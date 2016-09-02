@@ -151,6 +151,25 @@ module Ci
           it { expect(build.runner).to eq(specific_runner) }
         end
       end
+
+      context 'disallow when builds are disabled' do
+        before do
+          project.update(shared_runners_enabled: true)
+          project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
+        end
+
+        context 'and uses shared runner' do
+          let(:build) { service.execute(shared_runner) }
+
+          it { expect(build).to be_nil }
+        end
+
+        context 'and uses specific runner' do
+          let(:build) { service.execute(specific_runner) }
+
+          it { expect(build).to be_nil }
+        end
+      end
     end
   end
 end

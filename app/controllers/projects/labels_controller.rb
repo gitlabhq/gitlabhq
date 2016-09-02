@@ -99,7 +99,7 @@ class Projects::LabelsController < Projects::ApplicationController
   protected
 
   def module_enabled
-    unless @project.issues_enabled || @project.merge_requests_enabled
+    unless @project.feature_available?(:issues, current_user) || @project.feature_available?(:merge_requests, current_user)
       return render_404
     end
   end
