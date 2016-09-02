@@ -88,6 +88,6 @@ class Projects::ApplicationController < ApplicationController
   end
 
   def builds_enabled
-    return render_404 unless @project.builds_enabled?
+    return render_404 unless @project.feature_available?(:builds, current_user)
   end
 end

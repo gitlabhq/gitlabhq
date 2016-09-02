@@ -118,6 +118,20 @@ describe 'Dashboard Todos', feature: true do
           expect(page).to have_css("#todo_#{Todo.first.id}")
         end
       end
+
+      describe 'mark all as done', js: true do
+        before do
+          visit dashboard_todos_path
+          click_link('Mark all as done')
+        end
+
+        it 'shows "All done" message!' do
+          within('.todos-pending-count') { expect(page).to have_content '0' }
+          expect(page).to have_content 'To do 0'
+          expect(page).to have_content "You're all done!"
+          expect(page).not_to have_selector('.gl-pagination')
+        end
+      end
     end
 
     context 'User has a Todo in a project pending deletion' do

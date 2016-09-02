@@ -74,7 +74,7 @@ describe Gitlab::Ci::Config::Node::Jobs do
         expect(entry.descendants.first(2))
           .to all(be_an_instance_of(Gitlab::Ci::Config::Node::Job))
         expect(entry.descendants.last)
-          .to be_an_instance_of(Gitlab::Ci::Config::Node::HiddenJob)
+          .to be_an_instance_of(Gitlab::Ci::Config::Node::Hidden)
       end
     end
 

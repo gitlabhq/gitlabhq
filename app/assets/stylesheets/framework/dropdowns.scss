@@ -183,6 +183,13 @@
     &.dropdown-menu-user-link {
       line-height: 16px;
     }
+
+    .icon-play {
+      fill: $table-text-gray;
+      margin-right: 6px;
+      height: 12px;
+      width: 11px;
+    }
   }
 
   .dropdown-header {
@@ -194,6 +201,12 @@
 
   .separator + .dropdown-header {
     padding-top: 2px;
+  }
+
+  .unclickable {
+    cursor: not-allowed;
+    padding: 5px 8px;
+    color: $dropdown-header-color;
   }
 }
 

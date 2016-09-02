@@ -1,3 +1,7 @@
+- if @merge_request.closed_without_fork?
+  .alert.alert-danger
+    %p The source project of this merge request has been removed.
+
 .clearfix.detail-page-header
   .issuable-header
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }

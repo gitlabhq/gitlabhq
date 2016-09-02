@@ -12,7 +12,6 @@ describe 'Awards Emoji', feature: true do
   describe 'Click award emoji from issue#show' do
     let!(:issue) do
       create(:issue,
-             author: @user,
              assignee: @user,
              project: project)
     end

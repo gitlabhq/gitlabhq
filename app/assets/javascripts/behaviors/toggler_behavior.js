@@ -1,6 +1,6 @@
 (function(w) {
   $(function() {
-    $('.js-toggle-button').on('click', function(e) {
+    $('body').on('click', '.js-toggle-button', function(e) {
       e.preventDefault();
       $(this)
         .find('.fa')

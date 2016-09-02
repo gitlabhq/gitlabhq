@@ -5,11 +5,10 @@ module Gitlab
         ##
         # Entry that represents a hidden CI/CD job.
         #
-        class HiddenJob < Entry
+        class Hidden < Entry
           include Validatable
 
           validations do
-            validates :config, type: Hash
             validates :config, presence: true
           end
 

@@ -62,8 +62,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
     end
 
     context 'when pull request is closed' do
-      let(:closed_at) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(base_data.merge(state: 'closed', closed_at: closed_at)) }
+      let(:raw_data) { double(base_data.merge(state: 'closed')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -81,7 +80,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: closed_at
+          updated_at: updated_at
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -108,7 +107,7 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: merged_at
+          updated_at: updated_at
         }
 
         expect(pull_request.attributes).to eq(expected)

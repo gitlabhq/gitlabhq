@@ -8,6 +8,7 @@ describe 'Filter issues', feature: true do
   let!(:milestone) { create(:milestone, project: project) }
   let!(:label)     { create(:label, project: project) }
   let!(:issue1)    { create(:issue, project: project) }
+  let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
 
   before do
     project.team << [user, :master]
@@ -106,6 +107,15 @@ describe 'Filter issues', feature: true do
         expect(page).to have_content label.title
       end
       expect(find('.js-label-select .dropdown-toggle-text')).to have_content(label.title)
+    end
+
+    it 'filters by wont fix labels' do
+      find('.dropdown-menu-labels a', text: label.title).click
+      page.within '.labels-filter' do
+        expect(page).to have_content wontfix.title
+        click_link wontfix.title
+      end
+      expect(find('.js-label-select .dropdown-toggle-text')).to have_content(wontfix.title)
     end
   end
 

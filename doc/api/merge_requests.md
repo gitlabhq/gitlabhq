@@ -68,6 +68,8 @@ Parameters:
     "merge_when_build_succeeds": true,
     "merge_status": "can_be_merged",
     "subscribed" : false,
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
     "user_notes_count": 1,
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
@@ -135,6 +137,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -238,6 +242,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -322,6 +328,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 0,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -397,6 +405,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -499,6 +509,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -569,6 +581,8 @@ Parameters:
   "merge_when_build_succeeds": true,
   "merge_status": "can_be_merged",
   "subscribed" : true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null,
   "user_notes_count": 1,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
@@ -724,7 +738,9 @@ Example response:
   },
   "merge_when_build_succeeds": false,
   "merge_status": "cannot_be_merged",
-  "subscribed": true
+  "subscribed": true,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null
 }
 ```
 
@@ -798,7 +814,9 @@ Example response:
   },
   "merge_when_build_succeeds": false,
   "merge_status": "cannot_be_merged",
-  "subscribed": false
+  "subscribed": false,
+  "sha": "8888888888888888888888888888888888888888",
+  "merge_commit_sha": null
 }
 ```
 
@@ -891,6 +909,8 @@ Example response:
     "merge_when_build_succeeds": false,
     "merge_status": "unchecked",
     "subscribed": true,
+    "sha": "8888888888888888888888888888888888888888",
+    "merge_commit_sha": null,
     "user_notes_count": 7,
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,

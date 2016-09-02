@@ -2,7 +2,7 @@
 
 This style guide recommends best practices for newlines in Ruby code.
 
-## Rule: separate code with newlines only when it makes sense from logic perspectice
+## Rule: separate code with newlines only to group together related logic
 
 ```ruby
 # bad
