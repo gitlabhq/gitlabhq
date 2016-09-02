@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 
-# Part of the Import/Export feature security testing
+# Part of the test security suite for the Import/Export feature
 # Checks whether there are new attributes in models that are currently being exported as part of the
 # project Import/Export feature.
 # If there are new attributes, these will have to either be added to this spec in case we want them

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-# Part of the Import/Export feature security testing
+# Part of the test security suite for the Import/Export feature
 # Finds if a new model has been added that can potentially be part of the Import/Export
 # If it finds a new model, it will show a +failure_message+ with the options available.
 describe 'Model configuration', lib: true do
