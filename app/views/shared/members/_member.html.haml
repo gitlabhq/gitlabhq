@@ -79,3 +79,5 @@
               %span.visible-xs-block
                 Delete
               = icon('trash', class: 'hidden-xs')
+      - else
+        %span.member-access-text= member.human_access

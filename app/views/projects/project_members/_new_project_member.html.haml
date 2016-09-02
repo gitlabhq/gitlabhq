@@ -1,4 +1,4 @@
-= form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project) do |f|
+= form_for @project_member, as: :project_member, url: namespace_project_project_members_path(@project.namespace, @project), html: { class: 'users-project-form' } do |f|
   .row
     .col-md-4.col-lg-6
       = users_select_tag(:user_ids, multiple: true, class: "input-full", scope: :all, email_user: true)

@@ -1,4 +1,5 @@
 class Spinach::Features::GroupMembers < Spinach::FeatureSteps
+  include WaitForAjax
   include SharedAuthentication
   include SharedPaths
   include SharedGroup
@@ -116,9 +117,8 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     member = mary_jane_member
 
     page.within "#group_member_#{member.id}" do
-      click_button 'Edit'
       select 'Developer', from: "member_access_level_#{member.id}"
-      click_on 'Save'
+      wait_for_ajax
     end
   end
 
