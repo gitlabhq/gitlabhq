@@ -57,3 +57,39 @@
   margin-left: auto;
   line-height: 43px;
 }
+
+.member.existing-title {
+  @media (min-width: $screen-sm-min) {
+    float: left;
+  }
+}
+
+.member-search-form {
+  position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    float: right;
+  }
+
+  .form-control {
+    width: 100%;
+    padding-right: 35px;
+
+    @media (min-width: $screen-sm-min) {
+      width: 350px;
+    }
+  }
+}
+
+.member-search-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 35px;
+  padding-left: 10px;
+  padding-right: 10px;
+  color: $gray-darkest;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}

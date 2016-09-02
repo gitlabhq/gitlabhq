@@ -15,12 +15,13 @@
       = render 'shared/members/requests', membership_source: @project, requesters: @requesters
 
   .append-bottom-default.clearfix
-    %h5.pull-left
+    %h5.member.existing-title
       Existing users and groups
-    = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form pull-right hidden-xs hidden-sm'  do
+    = form_tag namespace_project_project_members_path(@project.namespace, @project), method: :get, class: 'form-inline member-search-form'  do
       .form-group
         = search_field_tag :search, params[:search], { placeholder: 'Find existing members by name', class: 'form-control', spellcheck: false }
-        = icon("search")
+        %button.member-search-btn{ type: "submit", "aria-label" => "Submit search" }
+          = icon("search")
   - if @groups.size > 0
     = render 'groups', groups: @groups
 
