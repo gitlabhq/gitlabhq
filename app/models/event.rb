@@ -65,7 +65,7 @@ class Event < ActiveRecord::Base
     elsif created_project?
       true
     elsif issue? || issue_note?
-      Ability.abilities.allowed?(user, :read_issue, note? ? note_target : target)
+      Ability.allowed?(user, :read_issue, note? ? note_target : target)
     else
       ((merge_request? || note?) && target.present?) || milestone?
     end

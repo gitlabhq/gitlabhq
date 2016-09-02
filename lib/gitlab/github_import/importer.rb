@@ -152,12 +152,14 @@ module Gitlab
       end
 
       def create_comments(issuable, comments)
-        comments.each do |raw|
-          begin
-            comment = CommentFormatter.new(project, raw)
-            issuable.notes.create!(comment.attributes)
-          rescue => e
-            errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+        ActiveRecord::Base.no_touching do
+          comments.each do |raw|
+            begin
+              comment = CommentFormatter.new(project, raw)
+              issuable.notes.create!(comment.attributes)
+            rescue => e
+              errors << { type: :comment, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+            end
           end
         end
       end
@@ -166,7 +168,7 @@ module Gitlab
         unless project.wiki_enabled?
           wiki = WikiFormatter.new(project)
           gitlab_shell.import_repository(project.repository_storage_path, wiki.path_with_namespace, wiki.import_url)
-          project.update_attribute(:wiki_enabled, true)
+          project.project.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
         end
       rescue Gitlab::Shell::Error => e
         # GitHub error message when the wiki repo has not been created,

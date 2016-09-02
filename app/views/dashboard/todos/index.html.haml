@@ -28,21 +28,25 @@
   .row-content-block.second-block
     = form_tag todos_filter_path(without: [:project_id, :author_id, :type, :action_id]), method: :get, class: 'filter-form' do
       .filter-item.inline
-        = select_tag('project_id', todo_projects_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Project'})
+        - if params[:project_id].present?
+          = hidden_field_tag(:project_id, params[:project_id])
+        = dropdown_tag(project_dropdown_label(params[:project_id], 'Project'), options: { toggle_class: 'js-project-search js-filter-submit', title: 'Filter by project', filter: true, filterInput: 'input#project-search', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+          placeholder: 'Search projects', data: { data: todo_projects_options } })
       .filter-item.inline
-        = users_select_tag(:author_id, selected: params[:author_id],
-          placeholder: 'Author', class: 'trigger-submit', any_user: "Any Author", first_user: true, current_user: true)
+        - if params[:author_id].present?
+          = hidden_field_tag(:author_id, params[:author_id])
+        = dropdown_tag(user_dropdown_label(params[:author_id], 'Author'), options: { toggle_class: 'js-user-search js-filter-submit js-author-search', title: 'Filter by author', filter: true, filterInput: 'input#author-search', dropdown_class: 'dropdown-menu-user dropdown-menu-selectable dropdown-menu-author js-filter-submit',
+          placeholder: 'Search authors', data: { any_user: 'Any Author', first_user: (current_user.username if current_user), current_user: true, project_id: (@project.id if @project), selected: params[:author_id], field_name: 'author_id', default_label: 'Author' } })
       .filter-item.inline
-        = select_tag('type', todo_types_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Type'})
+        - if params[:type].present?
+          = hidden_field_tag(:type, params[:type])
+        = dropdown_tag(todo_types_dropdown_label(params[:type], 'Type'), options: { toggle_class: 'js-type-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-type js-filter-submit',
+          data: { data: todo_types_options } })
       .filter-item.inline.actions-filter
-        = select_tag('action_id', todo_actions_options,
-          class: 'select2 trigger-submit', include_blank: true,
-          data: {placeholder: 'Action'})
-
+        - if params[:action_id].present?
+          = hidden_field_tag(:action_id, params[:action_id])
+        = dropdown_tag(todo_actions_dropdown_label(params[:action_id], 'Action'), options: { toggle_class: 'js-action-search js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-action js-filter-submit',
+          data: { data: todo_actions_options }})
       .pull-right
         .dropdown.inline.prepend-left-10
           %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
@@ -66,7 +70,7 @@
   - if @todos.any?
     .js-todos-options{ data: {per_page: @todos.limit_value, current_page: @todos.current_page, total_pages: @todos.total_pages} }
     - @todos.group_by(&:project).each do |group|
-      .panel.panel-default.panel-small.js-todos-list
+      .panel.panel-default.panel-small
         - project = group[0]
         .panel-heading
           = link_to project.name_with_namespace, namespace_project_path(project.namespace, project)
@@ -76,11 +80,3 @@
     = paginate @todos, theme: "gitlab"
   - else
     .nothing-here-block You're all done!
-
-:javascript
-  new UsersSelect();
-
-  $('form.filter-form').on('submit', function (event) {
-    event.preventDefault();
-    Turbolinks.visit(this.action + '&' + $(this).serialize());
-  });

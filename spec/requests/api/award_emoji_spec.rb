@@ -4,7 +4,7 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user)            { create(:user) }
   let!(:project)        { create(:project) }
-  let(:issue)           { create(:issue, project: project, author: user) }
+  let(:issue)           { create(:issue, project: project) }
   let!(:award_emoji)    { create(:award_emoji, awardable: issue, user: user) }
   let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
   let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
@@ -115,6 +115,8 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/award_emoji" do
+    let(:issue2)  { create(:issue, project: project, author: user) }
+
     context "on an issue" do
       it "creates a new award emoji" do
         post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user), name: 'blowfish'
@@ -136,6 +138,12 @@ describe API::API, api: true  do
         expect(response).to have_http_status(401)
       end
 
+      it "returns a 404 error if the user authored issue" do
+        post api("/projects/#{project.id}/issues/#{issue2.id}/award_emoji", user), name: 'thumbsup'
+
+        expect(response).to have_http_status(404)
+      end
+
       it "normalizes +1 as thumbsup award" do
         post api("/projects/#{project.id}/issues/#{issue.id}/award_emoji", user), name: '+1'
 
@@ -155,6 +163,8 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji" do
+    let(:note2)  { create(:note, project: project, noteable: issue, author: user) }
+
     it 'creates a new award emoji' do
       expect do
         post api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note.id}/award_emoji", user), name: 'rocket'
@@ -162,6 +172,12 @@ describe API::API, api: true  do
 
       expect(response).to have_http_status(201)
       expect(json_response['user']['username']).to eq(user.username)
+    end
+
+    it "it returns 404 error when user authored note" do
+      post api("/projects/#{project.id}/issues/#{issue.id}/notes/#{note2.id}/award_emoji", user), name: 'thumbsup'
+
+      expect(response).to have_http_status(404)
     end
 
     it "normalizes +1 as thumbsup award" do

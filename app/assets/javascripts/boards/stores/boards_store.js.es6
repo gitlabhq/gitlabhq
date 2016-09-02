@@ -15,7 +15,8 @@
         author_id: gl.utils.getParameterValues('author_id')[0],
         assignee_id: gl.utils.getParameterValues('assignee_id')[0],
         milestone_title: gl.utils.getParameterValues('milestone_title')[0],
-        label_name: gl.utils.getParameterValues('label_name[]')
+        label_name: gl.utils.getParameterValues('label_name[]'),
+        search: ''
       };
     },
     addList (listObj) {

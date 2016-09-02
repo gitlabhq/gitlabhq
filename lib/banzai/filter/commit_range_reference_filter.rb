@@ -35,7 +35,7 @@ module Banzai
       end
 
       def object_link_title(range)
-        range.reference_title
+        nil
       end
     end
   end

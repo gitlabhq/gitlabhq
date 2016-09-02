@@ -4,12 +4,10 @@
 #
 #   range = CommitRange.new('f3f85602...e86e1013', project)
 #   range.exclude_start?  # => false
-#   range.reference_title # => "Commits f3f85602 through e86e1013"
 #   range.to_s            # => "f3f85602...e86e1013"
 #
 #   range = CommitRange.new('f3f856029bc5f966c5a7ee24cf7efefdd20e6019..e86e1013709735be5bb767e2b228930c543f25ae', project)
 #   range.exclude_start?  # => true
-#   range.reference_title # => "Commits f3f85602^ through e86e1013"
 #   range.to_param        # => {from: "f3f856029bc5f966c5a7ee24cf7efefdd20e6019^", to: "e86e1013709735be5bb767e2b228930c543f25ae"}
 #   range.to_s            # => "f3f85602..e86e1013"
 #
@@ -107,11 +105,6 @@ class CommitRange
     end
 
     reference
-  end
-
-  # Returns a String for use in a link's title attribute
-  def reference_title
-    "Commits #{sha_start} through #{sha_to}"
   end
 
   # Return a Hash of parameters for passing to a URL helper

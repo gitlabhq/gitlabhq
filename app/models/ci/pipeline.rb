@@ -65,8 +65,8 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_successful_for, ->(ref = default_branch) do
-      where(ref: ref).success.order(id: :desc).limit(1)
+    def self.latest_successful_for(ref)
+      where(ref: ref).order(id: :desc).success.first
     end
 
     def self.truncate_sha(sha)

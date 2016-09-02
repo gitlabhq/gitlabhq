@@ -9,42 +9,10 @@
   border-radius: $radius;
 }
 
-@mixin border-radius-left($radius) {
-  @include border-radius($radius 0 0 $radius)
-}
-
-@mixin border-radius-right($radius) {
-  @include border-radius(0 0 $radius $radius)
-}
-
-@mixin linear-gradient($from, $to) {
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
-  background-image: -webkit-linear-gradient($from, $to);
-  background-image: -moz-linear-gradient($from, $to);
-  background-image: -ms-linear-gradient($from, $to);
-  background-image: -o-linear-gradient($from, $to);
-}
-
-@mixin transition($transition) {
-  -webkit-transition: $transition;
-  -moz-transition: $transition;
-  -ms-transition: $transition;
-  -o-transition: $transition;
-  transition: $transition;
-}
-
 /**
  * Prefilled mixins
  * Mixins with fixed values
  */
-
-@mixin shade {
-  @include box-shadow(0 0 3px #ddd);
-}
-
-@mixin solid-shade {
-  @include box-shadow(0 0 0 3px #f1f1f1);
-}
 
 @mixin str-truncated($max_width: 82%) {
   display: inline-block;
@@ -94,23 +62,6 @@
   }
 }
 
-@mixin input-big {
-  height: 36px;
-  padding: 5px 10px;
-  font-size: 16px;
-  line-height: 24px;
-  color: #7f8fa4;
-  background-color: #fff;
-  border-color: #e7e9ed;
-}
-
-@mixin btn-big {
-  height: 36px;
-  padding: 5px 10px;
-  font-size: 16px;
-  line-height: 24px;
-}
-
 @mixin bulleted-list {
   > ul {
     list-style-type: disc;
@@ -128,4 +79,9 @@
 @mixin dark-diff-match-line {
   color: rgba(255, 255, 255, 0.3);
   background: rgba(255, 255, 255, 0.1);
+}
+
+@mixin webkit-prefix($property, $value) {
+  #{'-webkit-' + $property}: $value;
+  #{$property}: $value;
 }

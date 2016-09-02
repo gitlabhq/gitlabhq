@@ -18,6 +18,7 @@ if Rails.env.production?
       
       # Sanitize fields based on those sanitized from Rails.
       config.sanitize_fields = Rails.application.config.filter_parameters.map(&:to_s)
+      config.tags = { program: Gitlab::Sentry.program_context }
     end
   end
 end

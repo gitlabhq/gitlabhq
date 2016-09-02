@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::GithubImport::Importer, lib: true do
   describe '#execute' do
     context 'when an error occurs' do
-      let(:project) { create(:project, import_url: 'https://github.com/octocat/Hello-World.git', wiki_enabled: false) }
+      let(:project) { create(:project, import_url: 'https://github.com/octocat/Hello-World.git', wiki_access_level: ProjectFeature::DISABLED) }
       let(:octocat) { double(id: 123456, login: 'octocat') }
       let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
       let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }

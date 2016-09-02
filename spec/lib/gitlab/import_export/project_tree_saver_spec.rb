@@ -111,6 +111,14 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
         expect(saved_project_json['issues'].first['label_links'].first['label']).not_to be_empty
       end
 
+      it 'has project feature' do
+        project_feature = saved_project_json['project_feature']
+        expect(project_feature).not_to be_empty
+        expect(project_feature["issues_access_level"]).to eq(ProjectFeature::DISABLED)
+        expect(project_feature["wiki_access_level"]).to eq(ProjectFeature::ENABLED)
+        expect(project_feature["builds_access_level"]).to eq(ProjectFeature::PRIVATE)
+      end
+
       it 'does not complain about non UTF-8 characters in MR diffs' do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
@@ -153,6 +161,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
            commit_id: ci_pipeline.sha)
 
     create(:event, target: milestone, project: project, action: Event::CREATED, author: user)
+
+    project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
+    project.project_feature.update_attribute(:wiki_access_level, ProjectFeature::ENABLED)
+    project.project_feature.update_attribute(:builds_access_level, ProjectFeature::PRIVATE)
 
     project
   end

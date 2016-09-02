@@ -51,7 +51,7 @@ module API
         @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::Project, user: current_user
       end
 
       # Get all projects for admin user
@@ -105,6 +105,7 @@ module API
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   POST /projects
       post do
@@ -124,7 +125,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -156,6 +158,7 @@ module API
       #   visibility_level (optional)
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -174,7 +177,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -220,6 +224,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -237,7 +242,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
