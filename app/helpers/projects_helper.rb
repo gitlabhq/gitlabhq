@@ -431,6 +431,6 @@ module ProjectsHelper
     options.delete('Everyone with access') if @project.private? && level != ProjectFeature::ENABLED
 
     options = options_for_select(options, selected: @project.project_feature.public_send(field) || ProjectFeature::ENABLED)
-    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control").html_safe
+    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control", data: { field: field }).html_safe
   end
 end
