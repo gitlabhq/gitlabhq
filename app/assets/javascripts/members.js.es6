@@ -1,7 +1,7 @@
 ((w) => {
   w.gl = w.gl || {};
 
-  class ProjectMembers {
+  class Members {
     constructor() {
       this.removeListeners();
       this.addListeners();
@@ -41,5 +41,5 @@
     }
   }
 
-  gl.ProjectMembers = ProjectMembers;
+  gl.Members = Members;
 })(window);
