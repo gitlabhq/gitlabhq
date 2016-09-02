@@ -14,8 +14,6 @@ module NavHelper
   def page_sidebar_class
     if pinned_nav?
       "page-sidebar-expanded page-sidebar-pinned"
-    else
-      "page-sidebar-collapsed"
     end
   end
 
@@ -43,9 +41,7 @@ module NavHelper
     class_name << " with-horizontal-nav" if defined?(nav) && nav
 
     if pinned_nav?
-      class_name << " header-expanded header-pinned-nav"
-    else
-      class_name << " header-collapsed"
+      class_name << " header-sidebar-expanded header-sidebar-pinned"
     end
 
     class_name

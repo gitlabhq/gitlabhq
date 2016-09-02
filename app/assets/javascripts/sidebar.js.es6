@@ -14,11 +14,9 @@
 
   const pinnedPageClass = 'page-sidebar-pinned';
   const expandedPageClass = 'page-sidebar-expanded';
-  const collapsedPageClass = 'page-sidebar-collapsed';
 
-  const pinnedNavbarClass = 'header-pinned-nav';
-  const expandedNavbarClass = 'header-expanded';
-  const collapsedNavbarClass = 'header-collapsed';
+  const pinnedNavbarClass = 'header-sidebar-pinned';
+  const expandedNavbarClass = 'header-sidebar-expanded';
 
   class Sidebar {
     constructor() {
@@ -75,12 +73,10 @@
     renderState() {
       $(pageSelector)
         .toggleClass(pinnedPageClass, this.isPinned && this.isExpanded)
-        .toggleClass(expandedPageClass, this.isExpanded)
-        .toggleClass(collapsedPageClass, !this.isExpanded);
+        .toggleClass(expandedPageClass, this.isExpanded);
       $(navbarSelector)
         .toggleClass(pinnedNavbarClass, this.isPinned && this.isExpanded)
-        .toggleClass(expandedNavbarClass, this.isExpanded)
-        .toggleClass(collapsedNavbarClass, !this.isExpanded);
+        .toggleClass(expandedNavbarClass, this.isExpanded);
 
       const $pinnedToggle = $(pinnedToggleSelector);
       const tooltipText = this.isPinned ? 'Unpin navigation' : 'Pin navigation';
