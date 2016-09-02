@@ -15,13 +15,13 @@ class CycleAnalytics
   def plan
     calculate_metric(Queries::issues(@project, created_after: @from),
                      [Queries::issue_first_associated_with_milestone_at, Queries::issue_first_added_to_list_label_at],
-                     Queries::issue_closing_merge_request_opened_at)
+                     Queries::issue_first_mentioned_in_commit_at)
   end
 
   def code
     calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
-                     -> (data_point) { data_point[:merge_request].created_at },
-                     [Queries::merge_request_first_assigned_to_user_other_than_author_at, Queries::merge_request_wip_flag_first_removed_at])
+                     Queries::issue_first_mentioned_in_commit_at,
+                     -> (data_point) { data_point[:merge_request].created_at })
   end
 
   def test
@@ -32,14 +32,14 @@ class CycleAnalytics
 
   def review
     calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
-                     [Queries::merge_request_first_assigned_to_user_other_than_author_at, Queries::merge_request_wip_flag_first_removed_at],
-                     [Queries::merge_request_first_closed_at, Queries::merge_request_merged_at])
+                     -> (data_point) { data_point[:merge_request].created_at },
+                     Queries::merge_request_merged_at)
   end
 
   def staging
     calculate_metric(Queries::merge_requests_closing_issues(@project, created_after: @from),
                      Queries::merge_request_merged_at,
-                     Queries::merge_request_deployed_to_any_environment_at)
+                     Queries::merge_request_deployed_to_production_at)
   end
 
   def production
@@ -55,12 +55,12 @@ class CycleAnalytics
       start_time = Array.wrap(start_time_fns).map { |fn| fn[data_point] }.compact.first
       end_time = Array.wrap(end_time_fns).map { |fn| fn[data_point] }.compact.first
 
-      if start_time.present? && end_time.present?
+      if start_time.present? && end_time.present? && end_time >= start_time
         end_time - start_time
       end
     end
 
-    median(times.compact)
+    median(times.compact.sort)
   end
 
   def median(coll)

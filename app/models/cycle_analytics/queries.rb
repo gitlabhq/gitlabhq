@@ -26,6 +26,14 @@ class CycleAnalytics
         end
       end
 
+      def issue_first_mentioned_in_commit_at
+        lambda do |data_point|
+          issue = data_point[:issue]
+          commits_mentioning_issue = issue.notes.system.map { |note| note.all_references.commits }.flatten
+          commits_mentioning_issue.map(&:committed_date).min if commits_mentioning_issue.present?
+        end
+      end
+
       def merge_request_first_closed_at
         lambda do |data_point|
           merge_request = data_point[:merge_request]
