@@ -4,6 +4,8 @@
   this.ProjectNew = (function() {
     function ProjectNew() {
       this.toggleSettings = bind(this.toggleSettings, this);
+      this.$selects = $('.features select');
+
       $('.project-edit-container').on('ajax:before', (function(_this) {
         return function() {
           $('.project-edit-container').hide();
@@ -15,17 +17,23 @@
     }
 
     ProjectNew.prototype.toggleSettings = function() {
-      this._showOrHide('#project_project_feature_attributes_builds_access_level', '.builds-feature');
-      this._showOrHide('#project_project_feature_attributes_merge_requests_access_level', '.merge-requests-feature');
+      var self = this;
+
+      this.$selects.each(function () {
+        var $select = $(this),
+            className = $select.data('field').replace(/_/g, '-')
+              .replace('access-level', 'feature');
+        self._showOrHide($select, '.' + className);
+      });
     };
 
     ProjectNew.prototype.toggleSettingsOnclick = function() {
-      $('#project_project_feature_attributes_builds_access_level, #project_project_feature_attributes_merge_requests_access_level').on('change', this.toggleSettings);
+      this.$selects.on('change', this.toggleSettings);
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {
-      var $container;
-      $container = $(container);
+      var $container = $(container);
+
       if ($(checkElement).val() !== '0') {
         return $container.show();
       } else {
