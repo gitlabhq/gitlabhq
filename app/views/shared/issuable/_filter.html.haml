@@ -39,15 +39,18 @@
                       = weight
 
         .pull-right
-          - if controller.controller_name == 'boards' && can?(current_user, :admin_list, @project)
-            .dropdown
-              %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
-                Create new list
-              .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
-                = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
-                - if can?(current_user, :admin_label, @project)
-                  = render partial: "shared/issuable/label_page_create"
-                = dropdown_loading
+          - if controller.controller_name == 'boards'
+            #js-boards-seach.issue-boards-search
+              %input.pull-left.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
+              - if can?(current_user, :admin_list, @project)
+                .dropdown.pull-right
+                  %button.btn.btn-create.js-new-board-list{ type: "button", data: { toggle: "dropdown", labels: labels_filter_path, project_id: @project.try(:id) } }
+                    Create new list
+                  .dropdown-menu.dropdown-menu-paging.dropdown-menu-align-right.dropdown-menu-issues-board-new.dropdown-menu-selectable
+                    = render partial: "shared/issuable/label_page_default", locals: { show_footer: true, show_create: true, show_boards_content: true, title: "Create a new list" }
+                    - if can?(current_user, :admin_label, @project)
+                      = render partial: "shared/issuable/label_page_create"
+                    = dropdown_loading
           - else
             = render 'shared/sort_dropdown', type: local_assigns[:type]
 

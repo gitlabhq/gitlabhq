@@ -50,7 +50,7 @@ describe MergeRequests::GetUrlsService do
       let(:changes) { new_branch_changes }
 
       before do
-        project.merge_requests_enabled = false
+        project.project_feature.update_attribute(:merge_requests_access_level, ProjectFeature::DISABLED)
       end
 
       it_behaves_like 'no_merge_request_url'

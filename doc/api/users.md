@@ -312,8 +312,7 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false,
-  "private_token": "dd34asd13as"
+  "external": false
 }
 ```
 

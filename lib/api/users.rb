@@ -329,7 +329,7 @@ module API
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::UserLogin
+        present @current_user, with: Entities::UserFull
       end
 
       # Get currently authenticated user's keys

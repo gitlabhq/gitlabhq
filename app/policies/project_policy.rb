@@ -157,28 +157,28 @@ class ProjectPolicy < BasePolicy
   end
 
   def disabled_features!
-    unless project.issues_enabled
+    unless project.feature_available?(:issues, user)
       cannot!(*named_abilities(:issue))
     end
 
-    unless project.merge_requests_enabled
+    unless project.feature_available?(:merge_requests, user)
       cannot!(*named_abilities(:merge_request))
     end
 
-    unless project.issues_enabled || project.merge_requests_enabled
+    unless project.feature_available?(:issues, user) || project.feature_available?(:merge_requests, user)
       cannot!(*named_abilities(:label))
       cannot!(*named_abilities(:milestone))
     end
 
-    unless project.snippets_enabled
+    unless project.feature_available?(:snippets, user)
       cannot!(*named_abilities(:project_snippet))
     end
 
-    unless project.has_wiki?
+    unless project.feature_available?(:wiki, user) || project.has_external_wiki?
       cannot!(*named_abilities(:wiki))
     end
 
-    unless project.builds_enabled
+    unless project.feature_available?(:builds, user)
       cannot!(*named_abilities(:build))
       cannot!(*named_abilities(:pipeline))
       cannot!(*named_abilities(:environment))

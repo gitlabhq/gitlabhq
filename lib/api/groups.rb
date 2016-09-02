@@ -111,7 +111,7 @@ module API
         group = find_group(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = paginate projects
-        present projects, with: Entities::Project
+        present projects, with: Entities::Project, user: current_user
       end
 
       # Transfer a project to the Group namespace

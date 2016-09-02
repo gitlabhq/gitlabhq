@@ -6,7 +6,7 @@ module TestEnv
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'empty-branch'                       => '7efb185',
-    'ends-with.json'                     => '98b0d8b3',
+    'ends-with.json'                     => '98b0d8b',
     'flatten-dir'                        => 'e56497b',
     'feature'                            => '0b4bc9a',
     'feature_conflict'                   => 'bb5206f',
@@ -38,9 +38,10 @@ module TestEnv
   # need to keep all the branches in sync.
   # We currently only need a subset of the branches
   FORKED_BRANCH_SHA = {
-    'add-submodule-version-bump' => '3f547c08',
-    'master' => '5937ac0',
-    'remove-submodule' => '2a33e0c0'
+    'add-submodule-version-bump' => '3f547c0',
+    'master'                     => '5937ac0',
+    'remove-submodule'           => '2a33e0c',
+    'conflict-resolvable-fork'   => '404fa3f'
   }
 
   # Test environment
@@ -118,22 +119,7 @@ module TestEnv
       system(*%W(#{Gitlab.config.git.bin_path} clone -q #{clone_url} #{repo_path}))
     end
 
-    Dir.chdir(repo_path) do
-      branch_sha.each do |branch, sha|
-        # Try to reset without fetching to avoid using the network.
-        reset = %W(#{Gitlab.config.git.bin_path} update-ref refs/heads/#{branch} #{sha})
-        unless system(*reset)
-          if system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
-            unless system(*reset)
-              raise 'The fetched test seed '\
-              'does not contain the required revision.'
-            end
-          else
-            raise 'Could not fetch test seed repository.'
-          end
-        end
-      end
-    end
+    set_repo_refs(repo_path, branch_sha)
 
     # We must copy bare repositories because we will push to them.
     system(git_env, *%W(#{Gitlab.config.git.bin_path} clone -q --bare #{repo_path} #{repo_path_bare}))
@@ -145,6 +131,7 @@ module TestEnv
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
+    set_repo_refs(target_repo_path, BRANCH_SHA)
   end
 
   def repos_path
@@ -161,6 +148,7 @@ module TestEnv
     FileUtils.mkdir_p(target_repo_path)
     FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
+    set_repo_refs(target_repo_path, FORKED_BRANCH_SHA)
   end
 
   # When no cached assets exist, manually hit the root path to create them
@@ -209,5 +197,24 @@ module TestEnv
   # repositories
   def git_env
     { 'GIT_TEMPLATE_DIR' => '' }
+  end
+
+  def set_repo_refs(repo_path, branch_sha)
+    Dir.chdir(repo_path) do
+      branch_sha.each do |branch, sha|
+        # Try to reset without fetching to avoid using the network.
+        reset = %W(#{Gitlab.config.git.bin_path} update-ref refs/heads/#{branch} #{sha})
+        unless system(*reset)
+          if system(*%W(#{Gitlab.config.git.bin_path} fetch origin))
+            unless system(*reset)
+              raise 'The fetched test seed '\
+              'does not contain the required revision.'
+            end
+          else
+            raise 'Could not fetch test seed repository.'
+          end
+        end
+      end
+    end
   end
 end

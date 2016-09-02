@@ -20,7 +20,8 @@
     data () {
       return {
         scrollOffset: 250,
-        filters: Store.state.filters
+        filters: Store.state.filters,
+        showCount: false
       };
     },
     watch: {
@@ -30,6 +31,15 @@
           this.$els.list.scrollTop = 0;
         },
         deep: true
+      },
+      issues () {
+        this.$nextTick(() => {
+          if (this.scrollHeight() > this.listHeight()) {
+            this.showCount = true;
+          } else {
+            this.showCount = false;
+          }
+        });
       }
     },
     methods: {
@@ -58,6 +68,7 @@
         group: 'issues',
         sort: false,
         disabled: this.disabled,
+        filter: '.board-list-count',
         onStart: (e) => {
           const card = this.$refs.issue[e.oldIndex];
 

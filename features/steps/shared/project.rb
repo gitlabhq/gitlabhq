@@ -21,7 +21,7 @@ module SharedProject
   # Create a specific project called "Shop"
   step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, name: "Shop", namespace: @user.namespace, snippets_enabled: true, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
+    @project ||= create(:project, name: "Shop", namespace: @user.namespace, issues_template: "This issue should contain the following.", merge_requests_template: "This merge request should contain the following.")
     @project.team << [@user, :master]
   end
 
@@ -47,6 +47,8 @@ module SharedProject
   step 'I own project "Forum"' do
     @project = Project.find_by(name: "Forum")
     @project ||= create(:project, name: "Forum", namespace: @user.namespace, path: 'forum_project')
+    @project.build_project_feature
+    @project.project_feature.save
     @project.team << [@user, :master]
   end
 
@@ -101,7 +103,7 @@ module SharedProject
   step 'I should see project settings' do
     expect(current_path).to eq edit_namespace_project_path(@project.namespace, @project)
     expect(page).to have_content("Project name")
-    expect(page).to have_content("Features")
+    expect(page).to have_content("Feature Visibility")
   end
 
   def current_project

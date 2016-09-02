@@ -39,7 +39,7 @@ describe Projects::Boards::ListsController do
         allow(Ability).to receive(:allowed?).with(user, :read_list, project).and_return(false)
       end
 
-      it 'returns a successful 403 response' do
+      it 'returns a forbidden 403 response' do
         read_board_list user: user
 
         expect(response).to have_http_status(403)
@@ -56,9 +56,9 @@ describe Projects::Boards::ListsController do
   end
 
   describe 'POST create' do
-    let(:label) { create(:label, project: project, name: 'Development') }
-
     context 'with valid params' do
+      let(:label) { create(:label, project: project, name: 'Development') }
+
       it 'returns a successful 200 response' do
         create_board_list user: user, label_id: label.id
 
@@ -73,20 +73,29 @@ describe Projects::Boards::ListsController do
     end
 
     context 'with invalid params' do
-      it 'returns an error' do
-        create_board_list user: user, label_id: nil
+      context 'when label is nil' do
+        it 'returns a not found 404 response' do
+          create_board_list user: user, label_id: nil
 
-        parsed_response = JSON.parse(response.body)
+          expect(response).to have_http_status(404)
+        end
+      end
 
-        expect(parsed_response['label']).to contain_exactly "can't be blank"
-        expect(response).to have_http_status(422)
+      context 'when label that does not belongs to project' do
+        it 'returns a not found 404 response' do
+          label = create(:label, name: 'Development')
+
+          create_board_list user: user, label_id: label.id
+
+          expect(response).to have_http_status(404)
+        end
       end
     end
 
     context 'with unauthorized user' do
-      let(:label) { create(:label, project: project, name: 'Development') }
+      it 'returns a forbidden 403 response' do
+        label = create(:label, project: project, name: 'Development')
 
-      it 'returns a successful 403 response' do
         create_board_list user: guest, label_id: label.id
 
         expect(response).to have_http_status(403)
@@ -122,7 +131,7 @@ describe Projects::Boards::ListsController do
     end
 
     context 'with invalid position' do
-      it 'returns a unprocessable entity 422 response' do
+      it 'returns an unprocessable entity 422 response' do
         move user: user, list: planning, position: 6
 
         expect(response).to have_http_status(422)
@@ -138,7 +147,7 @@ describe Projects::Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      it 'returns a successful 403 response' do
+      it 'returns a forbidden 403 response' do
         move user: guest, list: planning, position: 6
 
         expect(response).to have_http_status(403)
@@ -180,7 +189,7 @@ describe Projects::Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      it 'returns a successful 403 response' do
+      it 'returns a forbidden 403 response' do
         remove_board_list user: guest, list: planning
 
         expect(response).to have_http_status(403)
@@ -213,7 +222,7 @@ describe Projects::Boards::ListsController do
     end
 
     context 'when board lists is not empty' do
-      it 'returns a unprocessable entity 422 response' do
+      it 'returns an unprocessable entity 422 response' do
         create(:list, board: board)
 
         generate_default_board_lists user: user
@@ -223,7 +232,7 @@ describe Projects::Boards::ListsController do
     end
 
     context 'with unauthorized user' do
-      it 'returns a successful 403 response' do
+      it 'returns a forbidden 403 response' do
         generate_default_board_lists user: guest
 
         expect(response).to have_http_status(403)

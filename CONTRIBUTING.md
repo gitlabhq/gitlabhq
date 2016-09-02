@@ -287,6 +287,8 @@ request is as follows:
    migrations on a fresh database before the MR is reviewed. If the review leads
    to large changes in the MR, do this again once the review is complete.
 1. For more complex migrations, write tests.
+1. Merge requests **must** adhere to the [merge request performance
+   guidelines](doc/development/merge_request_performance_guidelines.md).
 
 The **official merge window** is in the beginning of the month from the 1st to
 the 7th day of the month. This is the best time to submit an MR and get

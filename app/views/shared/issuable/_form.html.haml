@@ -190,6 +190,7 @@
             Suggested approvers:
             = raw @suggested_approvers.map{|approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")
 
+- if issuable.is_a?(MergeRequest) && !issuable.closed_without_fork?
   %hr
   - if @merge_request.new_record?
     .form-group
@@ -230,7 +231,7 @@
     = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
   - else
     .pull-right
-      - if current_user.can?(:"destroy_#{issuable.to_ability_name}", @project)
+      - if can?(current_user, :"destroy_#{issuable.to_ability_name}", @project)
         = link_to 'Delete', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), data: { confirm: "#{issuable.class.name.titleize} will be removed! Are you sure?" },
                                                                                                   method: :delete, class: 'btn btn-danger btn-grouped'
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), class: 'btn btn-grouped btn-cancel'

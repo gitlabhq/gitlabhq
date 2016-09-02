@@ -8,7 +8,6 @@ FactoryGirl.define do
     path { name.downcase.gsub(/\s/, '_') }
     namespace
     creator
-    snippets_enabled true
 
     trait :public do
       visibility_level Gitlab::VisibilityLevel::PUBLIC
@@ -47,6 +46,26 @@ FactoryGirl.define do
 
     trait :read_only_repository do
       repository_read_only true
+    end
+
+    # Nest Project Feature attributes
+    transient do
+      wiki_access_level ProjectFeature::ENABLED
+      builds_access_level ProjectFeature::ENABLED
+      snippets_access_level ProjectFeature::ENABLED
+      issues_access_level ProjectFeature::ENABLED
+      merge_requests_access_level ProjectFeature::ENABLED
+    end
+
+    after(:create) do |project, evaluator|
+      project.project_feature.
+        update_attributes(
+          wiki_access_level: evaluator.wiki_access_level,
+          builds_access_level: evaluator.builds_access_level,
+          snippets_access_level: evaluator.snippets_access_level,
+          issues_access_level: evaluator.issues_access_level,
+          merge_requests_access_level: evaluator.merge_requests_access_level,
+        )
     end
   end
 

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::SnippetsController do
-  let(:project) { create(:project_empty_repo, :public, snippets_enabled: true) }
+  let(:project) { create(:project_empty_repo, :public) }
   let(:user)    { create(:user) }
   let(:user2)   { create(:user) }
 

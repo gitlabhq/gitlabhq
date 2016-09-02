@@ -64,7 +64,7 @@ module API
           ref = branches.first
         end
 
-        pipeline = @project.ensure_pipeline(commit.sha, ref, current_user)
+        pipeline = @project.ensure_pipeline(ref, commit.sha, current_user)
 
         name = params[:name] || params[:context]
         status = GenericCommitStatus.running_or_pending.find_by(pipeline: pipeline, name: name, ref: params[:ref])

@@ -33,6 +33,8 @@
         = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default', method: :post, title: "Compare" do
           Compare
 
+      = render 'projects/buttons/download', project: @project, ref: branch.name
+
       - if can_remove_branch?(@project, branch.name)
         = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do
           = icon("trash-o")

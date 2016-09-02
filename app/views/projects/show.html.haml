@@ -72,7 +72,7 @@
           = render "projects/buttons/koding"
 
         .btn-group.project-repo-btn-group
-          = render "projects/buttons/download"
+          = render 'projects/buttons/download', project: @project, ref: @ref
           = render 'projects/buttons/dropdown'
 
         = render 'shared/notifications/button', notification_setting: @notification_setting

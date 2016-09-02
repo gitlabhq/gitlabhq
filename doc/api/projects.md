@@ -454,6 +454,7 @@ Parameters:
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
 - `only_allow_merge_if_build_succeeds` (optional)
+- `lfs_enabled` (optional)
 
 ### Create project for user
 
@@ -481,6 +482,7 @@ Parameters:
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
 - `only_allow_merge_if_build_succeeds` (optional)
+- `lfs_enabled` (optional)
 
 ### Edit project
 
@@ -509,6 +511,7 @@ Parameters:
 - `public_builds` (optional)
 - `repository_storage` (optional, available only for admins)
 - `only_allow_merge_if_build_succeeds` (optional)
+- `lfs_enabled` (optional)
 
 On success, method returns 200 with the updated project. If parameters are
 invalid, 400 is returned.
@@ -536,7 +539,7 @@ POST /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -603,7 +606,7 @@ DELETE /projects/:id/star
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/5/star"
@@ -674,7 +677,7 @@ POST /projects/:id/archive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/archive"
@@ -761,7 +764,7 @@ POST /projects/:id/unarchive
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `id`      | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/projects/unarchive"
@@ -1002,6 +1005,8 @@ is available before it is returned in the JSON response or an empty response is 
 
 ## Branches
 
+For more information please consult the [Branches](branches.md) documentation.
+
 ### List branches
 
 Lists all branches of a project.
@@ -1020,56 +1025,46 @@ Parameters:
     "name": "async",
     "commit": {
       "id": "a2b702edecdf41f07b42653eb1abe30ce98b9fca",
-      "parents": [
-        {
-          "id": "3f94fc7c85061973edc9906ae170cc269b07ca55"
-        }
+      "parent_ids": [
+        "3f94fc7c85061973edc9906ae170cc269b07ca55"
       ],
-      "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
       "message": "give Caolan credit where it's due (up top)",
-      "author": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
-      "committer": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
+      "author_name": "Jeremy Ashkenas",
+      "author_email": "jashkenas@example.com",
       "authored_date": "2010-12-08T21:28:50+00:00",
+      "committer_name": "Jeremy Ashkenas",
+      "committer_email": "jashkenas@example.com",
       "committed_date": "2010-12-08T21:28:50+00:00"
     },
-    "protected": false
+    "protected": false,
+    "developers_can_push": false,
+    "developers_can_merge": false
   },
   {
     "name": "gh-pages",
     "commit": {
       "id": "101c10a60019fe870d21868835f65c25d64968fc",
-      "parents": [
-        {
-          "id": "9c15d2e26945a665131af5d7b6d30a06ba338aaa"
-        }
+      "parent_ids": [
+          "9c15d2e26945a665131af5d7b6d30a06ba338aaa"
       ],
-      "tree": "fb5cc9d45da3014b17a876ad539976a0fb9b352a",
       "message": "Underscore.js 1.5.2",
-      "author": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
-      "committer": {
-        "name": "Jeremy Ashkenas",
-        "email": "jashkenas@example.com"
-      },
+      "author_name": "Jeremy Ashkenas",
+      "author_email": "jashkenas@example.com",
       "authored_date": "2013-09-07T12:58:21+00:00",
+      "committer_name": "Jeremy Ashkenas",
+      "committer_email": "jashkenas@example.com",
       "committed_date": "2013-09-07T12:58:21+00:00"
     },
-    "protected": false
+    "protected": false,
+    "developers_can_push": false,
+    "developers_can_merge": false
   }
 ]
 ```
 
-### List single branch
+### Single branch
 
-Lists a specific branch of a project.
+A specific branch of a project.
 
 ```
 GET /projects/:id/repository/branches/:branch
@@ -1079,6 +1074,8 @@ Parameters:
 
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 - `branch` (required) - The name of the branch.
+- `developers_can_push` - Flag if developers can push to the branch.
+- `developers_can_merge` - Flag if developers can merge to the branch.
 
 ### Protect single branch
 

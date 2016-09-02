@@ -107,6 +107,15 @@ will find the option to flag the user as external.
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
 
+## Project features
+
+Project features like wiki and issues can be hidden from users depending on
+which visibility level you select on project settings.
+
+- Disabled: disabled for everyone
+- Only team members: only team members will see even if your project is public or internal
+- Everyone with access: everyone can see depending on your project visibility level
+
 ## GitLab CI
 
 GitLab CI permissions rely on the role the user has in GitLab. There are four

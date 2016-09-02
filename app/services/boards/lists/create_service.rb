@@ -3,7 +3,10 @@ module Boards
     class CreateService < Boards::BaseService
       def execute
         List.transaction do
-          create_list_at(next_position)
+          label    = project.labels.find(params[:label_id])
+          position = next_position
+
+          create_list(label, position)
         end
       end
 
@@ -14,8 +17,8 @@ module Boards
         max_position.nil? ? 0 : max_position.succ
       end
 
-      def create_list_at(position)
-        board.lists.create(params.merge(list_type: :label, position: position))
+      def create_list(label, position)
+        board.lists.create(label: label, list_type: :label, position: position)
       end
     end
   end

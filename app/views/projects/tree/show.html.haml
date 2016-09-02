@@ -10,8 +10,7 @@
 %div{ class: container_class }
   .tree-controls
     = render 'projects/find_file_link'
-    - if can? current_user, :download_code, @project
-      = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'hidden-xs hidden-sm btn-grouped', split_button: true
+    = render 'projects/buttons/download', project: @project, ref: @ref
 
   #tree-holder.tree-holder.clearfix
     .nav-block

@@ -60,15 +60,6 @@ describe('List model', () => {
     }, 0);
   });
 
-  it('can\'t search when not backlog', () => {
-    expect(list.canSearch()).toBe(false);
-  });
-
-  it('can search when backlog', () => {
-    list.type = 'backlog';
-    expect(list.canSearch()).toBe(true);
-  });
-
   it('gets issue from list', (done) => {
     setTimeout(() => {
       const issue = list.findIssue(1);

@@ -81,15 +81,23 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :builds_enabled, :snippets_enabled, :container_registry_enabled
+      expose :container_registry_enabled
+
+      # Expose old field names with the new permissions methods to keep API compatible
+      expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:user]) }
+      expose(:merge_requests_enabled) { |project, options| project.feature_available?(:merge_requests, options[:user]) }
+      expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:user]) }
+      expose(:builds_enabled) { |project, options| project.feature_available?(:builds, options[:user]) }
+      expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:user]) }
+
       expose :created_at, :last_activity_at
-      expose :shared_runners_enabled
+      expose :shared_runners_enabled, :lfs_enabled
       expose :creator_id
       expose :namespace
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda{ |project, options| project.forked? }
       expose :avatar_url
       expose :star_count, :forks_count
-      expose :open_issues_count, if: lambda { |project, options| project.issues_enabled? && project.default_issues_tracker? }
+      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:user]) && project.default_issues_tracker? }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds
       expose :shared_with_groups do |project, options|
@@ -227,6 +235,7 @@ module API
       expose :user_notes_count
       expose :upvotes, :downvotes
       expose :due_date
+      expose :confidential
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -248,6 +257,8 @@ module API
       expose :milestone, using: Entities::Milestone
       expose :merge_when_build_succeeds
       expose :merge_status
+      expose :diff_head_sha, as: :sha
+      expose :merge_commit_sha
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user])
       end
@@ -617,6 +628,11 @@ module API
 
     class Template < Grape::Entity
       expose :name, :content
+    end
+
+    class BroadcastMessage < Grape::Entity
+      expose :id, :message, :starts_at, :ends_at, :color, :font
+      expose :active?, as: :active
     end
   end
 end

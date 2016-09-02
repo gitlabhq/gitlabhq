@@ -25,6 +25,11 @@ module CiStatusHelper
     end
   end
 
+  def ci_status_for_statuseable(subject)
+    status = subject.try(:status) || 'not found'
+    status.humanize
+  end
+
   def ci_icon_for_status(status)
     icon_name =
       case status
@@ -41,7 +46,7 @@ module CiStatusHelper
       when 'play'
         'icon_play'
       when 'created'
-        'icon_status_pending'
+        'icon_status_created'
       else
         'icon_status_cancel'
       end

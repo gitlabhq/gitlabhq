@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160823081327) do
+ActiveRecord::Schema.define(version: 20160831223750) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -321,16 +321,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   add_index "ci_runners", ["locked"], name: "index_ci_runners_on_locked", using: :btree
   add_index "ci_runners", ["token"], name: "index_ci_runners_on_token", using: :btree
 
-  create_table "ci_services", force: :cascade do |t|
-    t.string   "type"
-    t.string   "title"
-    t.integer  "project_id",                 null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",     default: false, null: false
-    t.text     "properties"
-  end
-
   create_table "ci_sessions", force: :cascade do |t|
     t.string   "session_id", null: false
     t.text     "data"
@@ -385,13 +375,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   end
 
   add_index "ci_variables", ["gl_project_id"], name: "index_ci_variables_on_gl_project_id", using: :btree
-
-  create_table "ci_web_hooks", force: :cascade do |t|
-    t.string   "url",        null: false
-    t.integer  "project_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer  "deploy_key_id", null: false
@@ -891,6 +874,19 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
+  create_table "project_features", force: :cascade do |t|
+    t.integer  "project_id"
+    t.integer  "merge_requests_access_level"
+    t.integer  "issues_access_level"
+    t.integer  "wiki_access_level"
+    t.integer  "snippets_access_level"
+    t.integer  "builds_access_level"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "project_features", ["project_id"], name: "index_project_features_on_project_id", using: :btree
+
   create_table "project_group_links", force: :cascade do |t|
     t.integer  "project_id",                null: false
     t.integer  "group_id",                  null: false
@@ -915,12 +911,7 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",                     default: true,      null: false
-    t.boolean  "wall_enabled",                       default: true,      null: false
-    t.boolean  "merge_requests_enabled",             default: true,      null: false
-    t.boolean  "wiki_enabled",                       default: true,      null: false
     t.integer  "namespace_id"
-    t.boolean  "snippets_enabled",                   default: true,      null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
     t.integer  "visibility_level",                   default: 0,         null: false
@@ -944,7 +935,6 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.integer  "mirror_user_id"
     t.text     "import_error"
     t.integer  "ci_id"
-    t.boolean  "builds_enabled",                     default: true,      null: false
     t.boolean  "shared_runners_enabled",             default: true,      null: false
     t.string   "runners_token"
     t.string   "build_coverage_regex"
@@ -963,6 +953,7 @@ ActiveRecord::Schema.define(version: 20160823081327) do
     t.boolean  "request_access_enabled",             default: true,      null: false
     t.boolean  "has_external_wiki"
     t.boolean  "repository_read_only"
+    t.boolean  "lfs_enabled"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1320,7 +1311,7 @@ ActiveRecord::Schema.define(version: 20160823081327) do
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches"
   add_foreign_key "protected_branch_merge_access_levels", "users"
   add_foreign_key "protected_branch_push_access_levels", "protected_branches"
-  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "protected_branch_push_access_levels", "users"
+  add_foreign_key "remote_mirrors", "projects"
   add_foreign_key "u2f_registrations", "users"
 end

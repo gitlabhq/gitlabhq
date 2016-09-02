@@ -12,7 +12,7 @@ module Gitlab
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data.created_at,
-          updated_at: updated_at
+          updated_at: raw_data.updated_at
         }
       end
 
@@ -68,10 +68,6 @@ module Gitlab
 
       def state
         raw_data.state == 'closed' ? 'closed' : 'opened'
-      end
-
-      def updated_at
-        state == 'closed' ? raw_data.closed_at : raw_data.updated_at
       end
     end
   end

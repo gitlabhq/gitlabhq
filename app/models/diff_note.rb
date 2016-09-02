@@ -107,10 +107,6 @@ class DiffNote < Note
     self.noteable.find_diff_discussion(self.discussion_id)
   end
 
-  def to_discussion
-    Discussion.new([self])
-  end
-
   private
 
   def supported?

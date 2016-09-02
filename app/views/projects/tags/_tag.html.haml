@@ -11,8 +11,7 @@
       = strip_gpg_signature(tag.message)
 
     .controls
-      - if can?(current_user, :download_code, @project)
-        = render 'projects/tags/download', ref: tag.name, project: @project
+      = render 'projects/buttons/download', project: @project, ref: tag.name
 
       - if can?(current_user, :push_code, @project)
         = link_to edit_namespace_project_tag_release_path(@project.namespace, @project, tag.name), class: 'btn has-tooltip', title: "Edit release notes", data: { container: "body" } do

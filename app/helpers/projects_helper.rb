@@ -61,7 +61,9 @@ module ProjectsHelper
     project_link = link_to simple_sanitize(project.name), project_path(project), { class: "project-item-select-holder" }
 
     if current_user
-      project_link << icon("chevron-down", class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" })
+      project_link << button_tag(type: 'button', class: "dropdown-toggle-caret js-projects-dropdown-toggle", aria: { label: "Toggle switch project dropdown" }, data: { target: ".js-dropdown-menu-projects", toggle: "dropdown" }) do
+        icon("chevron-down")
+      end
     end
 
     full_title = "#{namespace_link} / #{project_link}".html_safe
@@ -185,6 +187,18 @@ module ProjectsHelper
     end
 
     nav_tabs.flatten
+  end
+
+  def project_lfs_status(project)
+    if project.lfs_enabled?
+      content_tag(:span, class: 'lfs-enabled') do
+        'Enabled'
+      end
+    else
+      content_tag(:span, class: 'lfs-disabled') do
+        'Disabled'
+      end
+    end
   end
 
   def git_user_name
@@ -416,5 +430,24 @@ module ProjectsHelper
     return '' unless message.present?
 
     message.strip.gsub(project.repository_storage_path.chomp('/'), "[REPOS PATH]")
+  end
+
+  def project_feature_options
+    {
+      'Disabled' => ProjectFeature::DISABLED,
+      'Only team members' => ProjectFeature::PRIVATE,
+      'Everyone with access' => ProjectFeature::ENABLED
+    }
+  end
+
+  def project_feature_access_select(field)
+    # Don't show option "everyone with access" if project is private
+    options = project_feature_options
+    level = @project.project_feature.public_send(field)
+
+    options.delete('Everyone with access') if @project.private? && level != ProjectFeature::ENABLED
+
+    options = options_for_select(options, selected: @project.project_feature.public_send(field) || ProjectFeature::ENABLED)
+    content_tag(:select, options, name: "project[project_feature_attributes][#{field.to_s}]", id: "project_project_feature_attributes_#{field.to_s}", class: "pull-right form-control").html_safe
   end
 end

@@ -26,12 +26,15 @@ const listObjDuplicate = {
 
 const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/lists{/id}/issues': [{
-      title: 'Testing',
-      iid: 1,
-      confidential: false,
-      labels: []
-    }]
+    '/test/issue-boards/board/lists{/id}/issues': {
+      issues: [{
+        title: 'Testing',
+        iid: 1,
+        confidential: false,
+        labels: []
+      }],
+      size: 1
+    }
   },
   'POST': {
     '/test/issue-boards/board/lists{/id}': listObj

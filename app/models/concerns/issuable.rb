@@ -199,6 +199,10 @@ module Issuable
     end
   end
 
+  def user_authored?(user)
+    user == author
+  end
+
   def subscribed_without_subscriptions?(user)
     participants(user).include?(user)
   end

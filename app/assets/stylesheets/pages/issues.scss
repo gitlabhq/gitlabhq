@@ -12,6 +12,10 @@
       padding-right: 8px;
       margin-bottom: 10px;
       min-width: 15px;
+
+      .selected_issue {
+        vertical-align: text-top;
+      }
     }
 
     .issue-labels {

@@ -26,9 +26,9 @@ RSpec.configure do |config|
   config.verbose_retry = true
   config.display_try_failure_messages = true
 
-  config.include Devise::TestHelpers, type: :controller
-  config.include LoginHelpers,        type: :feature
-  config.include LoginHelpers,        type: :request
+  config.include Devise::TestHelpers,   type: :controller
+  config.include Warden::Test::Helpers, type: :request
+  config.include LoginHelpers,          type: :feature
   config.include SearchHelpers,       type: :feature
   config.include StubConfiguration
   config.include EmailHelpers
