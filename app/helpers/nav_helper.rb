@@ -1,16 +1,4 @@
 module NavHelper
-  def nav_menu_collapsed?
-    cookies[:collapsed_nav] == 'true'
-  end
-
-  def nav_sidebar_class
-    if nav_menu_collapsed?
-      "sidebar-collapsed"
-    else
-      "sidebar-expanded"
-    end
-  end
-
   def page_sidebar_class
     if pinned_nav?
       "page-sidebar-expanded page-sidebar-pinned"
@@ -24,7 +12,6 @@ module NavHelper
       current_path?('merge_requests#builds') ||
       current_path?('merge_requests#conflicts') ||
       current_path?('merge_requests#pipelines') ||
-      
       current_path?('issues#show')
       if cookies[:collapsed_gutter] == 'true'
         "page-gutter right-sidebar-collapsed"
