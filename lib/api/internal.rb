@@ -117,15 +117,19 @@ module API
       post '/two_factor_recovery_codes' do
         status 200
 
-        key = Key.find(params[:key_id])
-        user = key.user
+        key = Key.find_by(id: params[:key_id])
 
-        # Make sure this isn't a deploy key
-        unless key.type.nil?
+        unless key
+          return { 'success' => false, 'message' => 'Could not find the given key' }
+        end
+
+        if key.is_a?(DeployKey)
           return { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
         end
 
-        unless user.present?
+        user = key.user
+
+        unless user
           return { success: false, message: 'Could not find a user for the given key' }
         end
 

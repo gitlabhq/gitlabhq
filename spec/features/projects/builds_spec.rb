@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'tempfile'
 
 describe "Builds" do
   let(:artifacts_file) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
@@ -6,7 +7,7 @@ describe "Builds" do
   before do
     login_as(:user)
     @commit = FactoryGirl.create :ci_pipeline
-    @build = FactoryGirl.create :ci_build, pipeline: @commit
+    @build = FactoryGirl.create :ci_build, :trace, pipeline: @commit
     @build2 = FactoryGirl.create :ci_build
     @project = @commit.project
     @project.team << [@user, :developer]
@@ -156,7 +157,6 @@ describe "Builds" do
     context 'Build raw trace' do
       before do
         @build.run!
-        @build.trace = 'BUILD TRACE'
         visit namespace_project_build_path(@project.namespace, @project, @build)
       end
 
@@ -255,35 +255,101 @@ describe "Builds" do
     end
   end
 
-  describe "GET /:project/builds/:id/raw" do
-    context "Build from project" do
-      before do
-        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-        @build.run!
-        @build.trace = 'BUILD TRACE'
-        visit namespace_project_build_path(@project.namespace, @project, @build)
-        page.within('.js-build-sidebar') { click_link 'Raw' }
+  describe 'GET /:project/builds/:id/raw' do
+    context 'access source' do
+      context 'build from project' do
+        before do
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          @build.run!
+          visit namespace_project_build_path(@project.namespace, @project, @build)
+          page.within('.js-build-sidebar') { click_link 'Raw' }
+        end
+
+        it 'sends the right headers' do
+          expect(page.status_code).to eq(200)
+          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(page.response_headers['X-Sendfile']).to eq(@build.path_to_trace)
+        end
       end
 
-      it 'sends the right headers' do
-        expect(page.status_code).to eq(200)
-        expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-        expect(page.response_headers['X-Sendfile']).to eq(@build.path_to_trace)
+      context 'build from other project' do
+        before do
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          @build2.run!
+          visit raw_namespace_project_build_path(@project.namespace, @project, @build2)
+        end
+
+        it 'sends the right headers' do
+          expect(page.status_code).to eq(404)
+        end
       end
     end
 
-    context "Build from other project" do
-      before do
-        Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
-        @build2.run!
-        @build2.trace = 'BUILD TRACE'
-        visit raw_namespace_project_build_path(@project.namespace, @project, @build2)
-        puts page.status_code
-        puts current_url
+    context 'storage form' do
+      let(:existing_file) { Tempfile.new('existing-trace-file').path }
+      let(:non_existing_file) do
+        file = Tempfile.new('non-existing-trace-file')
+        path = file.path
+        file.unlink
+        path
       end
 
-      it 'sends the right headers' do
-        expect(page.status_code).to eq(404)
+      context 'when build has trace in file' do
+        before do
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          @build.run!
+          visit namespace_project_build_path(@project.namespace, @project, @build)
+
+          allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
+          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(existing_file)
+          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(non_existing_file)
+
+          page.within('.js-build-sidebar') { click_link 'Raw' }
+        end
+
+        it 'sends the right headers' do
+          expect(page.status_code).to eq(200)
+          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+        end
+      end
+
+      context 'when build has trace in old file' do
+        before do
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          @build.run!
+          visit namespace_project_build_path(@project.namespace, @project, @build)
+
+          allow_any_instance_of(Project).to receive(:ci_id).and_return(999)
+          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
+          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(existing_file)
+
+          page.within('.js-build-sidebar') { click_link 'Raw' }
+        end
+
+        it 'sends the right headers' do
+          expect(page.status_code).to eq(200)
+          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+        end
+      end
+
+      context 'when build has trace in DB' do
+        before do
+          Capybara.current_session.driver.header('X-Sendfile-Type', 'X-Sendfile')
+          @build.run!
+          visit namespace_project_build_path(@project.namespace, @project, @build)
+
+          allow_any_instance_of(Project).to receive(:ci_id).and_return(nil)
+          allow_any_instance_of(Ci::Build).to receive(:path_to_trace).and_return(non_existing_file)
+          allow_any_instance_of(Ci::Build).to receive(:old_path_to_trace).and_return(non_existing_file)
+
+          page.within('.js-build-sidebar') { click_link 'Raw' }
+        end
+
+        it 'sends the right headers' do
+          expect(page.status_code).to eq(404)
+        end
       end
     end
   end

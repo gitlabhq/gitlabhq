@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 %fieldset.merge-request-feature.append-bottom-default
   %h5.prepend-top-0
     Merge requests
@@ -89,3 +90,19 @@
 
 :javascript
   new UsersSelect();
+=======
+.merge-requests-feature
+  %fieldset.builds-feature
+    %hr
+    %h5.prepend-top-0
+      Merge Requests
+    .form-group
+      .checkbox
+        = f.label :only_allow_merge_if_build_succeeds do
+          = f.check_box :only_allow_merge_if_build_succeeds
+          %strong Only allow merge requests to be merged if the build succeeds
+          %br
+          %span.descr
+            Builds need to be configured to enable this feature.
+            = link_to icon('question-circle'), help_page_path('workflow/merge_requests', anchor: 'only-allow-merge-requests-to-be-merged-if-the-build-succeeds')
+>>>>>>> ce/master
