@@ -39,8 +39,8 @@ describe 'Attribute configuration', lib: true do
       'Ci::Variable' => %w[id project_id key value encrypted_value encrypted_value_salt encrypted_value_iv gl_project_id],
       'Ci::Trigger' => %w[id token project_id deleted_at created_at updated_at gl_project_id],
       'DeployKey' => %w[id user_id created_at updated_at key title type fingerprint public],
-      'Service' => %w[id type title project_id created_at updated_at active properties template push_events issues_events merge_requests_events tag_push_events note_events pipeline_events build_events category default wiki_page_events],
-      'ProjectHook' => %w[id url project_id created_at updated_at type service_id push_events issues_events merge_requests_events tag_push_events note_events pipeline_events enable_ssl_verification build_events wiki_page_events token group_id],
+      'Service' => %w[id type title project_id created_at updated_at active properties template push_events issues_events merge_requests_events tag_push_events note_events pipeline_events build_events category default wiki_page_events confidential_issues_events],
+      'ProjectHook' => %w[id url project_id created_at updated_at type service_id push_events issues_events merge_requests_events tag_push_events note_events pipeline_events enable_ssl_verification build_events wiki_page_events token group_id confidential_issues_events],
       'ProtectedBranch' => %w[id project_id name created_at updated_at],
       'Project' => %w[description issues_enabled merge_requests_enabled wiki_enabled snippets_enabled visibility_level archived],
       'Author' => %w[name]
