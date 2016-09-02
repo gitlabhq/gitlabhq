@@ -12,7 +12,7 @@ module Elastic
       end
 
       def self.repositories_count
-        Project.where(wiki_enabled: true).count
+        Project.with_wiki_enabled.count
       end
 
       def client_for_indexing
@@ -20,7 +20,7 @@ module Elastic
       end
 
       def self.import
-        Project.where(wiki_enabled: true).find_each do |project|
+        Project.with_wiki_enabled.find_each do |project|
           unless project.wiki.empty?
             project.wiki.index_blobs
           end
