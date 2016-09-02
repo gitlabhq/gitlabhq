@@ -110,7 +110,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   step 'I click link "Import team from another project"' do
-    click_link "Import members from another project"
+    click_link "Import"
   end
 
   When 'I submit "Website" project for import team' do
