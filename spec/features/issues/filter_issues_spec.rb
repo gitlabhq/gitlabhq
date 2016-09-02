@@ -110,7 +110,6 @@ describe 'Filter issues', feature: true do
     end
 
     it 'filters by wont fix labels' do
-      find('.dropdown-menu-labels a', text: label.title).click
       page.within '.labels-filter' do
         expect(page).to have_content wontfix.title
         click_link wontfix.title
