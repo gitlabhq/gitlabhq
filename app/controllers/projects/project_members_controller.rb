@@ -6,7 +6,19 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
   def index
     @groups = @project.project_group_links
-    @project_members = @project.team.members(!can?(current_user, :admin_project, @project))
+
+    members = []
+    project_members = @project.project_members
+    project_members = project_members.non_invite unless can?(current_user, :admin_project, @project)
+    members << project_members.pluck(:id)
+
+    if @project.group
+      group_members = @project.group.group_members
+      group_members = group_members.non_invite unless can?(current_user, :admin_project, @project)
+      members << group_members.pluck(:id)
+    end
+
+    @project_members = Member.where(id: members)
     @project_members_size = @project_members.size
 
     if params[:search].present?

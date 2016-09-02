@@ -4,6 +4,5 @@
     %strong #{@project.name}
     %span.badge= @project_members_size
   %ul.content-list
-    - members.each do |user|
-      - member = @project.team.find_member(user.id)
-      = render 'shared/members/member', member: member, user: user
+    - members.each do |member|
+      = render 'shared/members/member', member: member
