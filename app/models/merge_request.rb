@@ -313,7 +313,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def closed_without_fork?
-    closed? && (forked_source_project_missing? || !source_project)
+    closed? && forked_source_project_missing?
+  end
+
+  def closed_without_source_project?
+    closed? && !source_project
   end
 
   def forked_source_project_missing?

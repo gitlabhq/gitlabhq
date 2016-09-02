@@ -186,9 +186,9 @@ describe ProjectsController do
       let(:project)      { create(:project) }
       let(:fork_project) { create(:project, forked_from_project: project) }
       let(:merge_request) do
-               create(:merge_request,
-                 source_project: fork_project,
-                 target_project: project)
+        create(:merge_request,
+          source_project: fork_project,
+          target_project: project)
       end
 
       it "closes all related merge requests" do
