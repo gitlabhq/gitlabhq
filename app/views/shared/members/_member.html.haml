@@ -1,6 +1,7 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
 - show_controls = local_assigns.fetch(:show_controls, true)
 - user = local_assigns.fetch(:user, member.user)
+- source = member.source
 
 %li.member{ class: dom_class(member), id: dom_id(member) }
   %span{ class: ("list-item-name" if show_controls) }
@@ -17,9 +18,9 @@
         %label.label.label-danger
           %strong Blocked
 
-      - if member.respond_to?(:group) && !@group
-        = link_to member.group, class: "member-group-link prepend-left-5" do
-          = "· #{member.group.name}"
+      - if source.instance_of?(Group) && !@group
+        = link_to source, class: "member-group-link prepend-left-5" do
+          = "· #{source.name}"
 
       .hidden-xs.cgray
         - if member.request?

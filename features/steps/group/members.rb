@@ -14,7 +14,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
       select "Reporter", from: "access_level"
     end
 
-    click_button "Add users to group"
+    click_button "Add to group"
   end
 
   step 'I select "Mike" as "Master"' do
@@ -25,7 +25,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
       select "Master", from: "access_level"
     end
 
-    click_button "Add users to group"
+    click_button "Add to group"
   end
 
   step 'I should see "Mike" in team list as "Reporter"' do
@@ -48,7 +48,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
       select "Reporter", from: "access_level"
     end
 
-    click_button "Add users to group"
+    click_button "Add to group"
   end
 
   step 'I should see "sjobs@apple.com" in team list as invited "Reporter"' do
@@ -67,7 +67,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
       select "Reporter", from: "access_level"
     end
 
-    click_button "Add users to group"
+    click_button "Add to group"
   end
 
   step 'I should see user "John Doe" in team list' do
