@@ -72,7 +72,7 @@ describe Gitlab::Ci::Config::Node::Job do
       double('specified', 'specified?' => true, value: 'specified')
     end
 
-    let(:deps) { spy('deps', '[]' => unspecified) }
+    let(:deps) { double('deps', '[]' => unspecified) }
 
     context 'when job config overrides global config' do
       before { entry.compose!(deps) }
