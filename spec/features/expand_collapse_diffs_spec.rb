@@ -68,7 +68,7 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
     context 'expanding a diff for a renamed file' do
       before do
-        large_diff_renamed.find('.nothing-here-block').click
+        large_diff_renamed.find('.click-to-expand').click
         wait_for_ajax
       end
 
@@ -87,7 +87,10 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
     context 'expanding a large diff' do
       before do
-        click_link('large_diff.md')
+        # Wait for diffs
+        find('.file-title', match: :first)
+        # Click `large_diff.md` title
+        all('.file-title')[1].click
         wait_for_ajax
       end
 
@@ -128,7 +131,10 @@ feature 'Expand and collapse diffs', js: true, feature: true do
 
           context 'expanding the diff' do
             before do
-              click_link('large_diff.md')
+              # Wait for diffs
+              find('.file-title', match: :first)
+              # Click `large_diff.md` title
+              all('.file-title')[1].click
               wait_for_ajax
             end
 
@@ -146,7 +152,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     end
 
     context 'collapsing an expanded diff' do
-      before { click_link('small_diff.md') }
+      before do
+        # Wait for diffs
+        find('.file-title', match: :first)
+        # Click `small_diff.md` title
+        all('.file-title')[3].click
+      end
 
       it 'hides the diff content' do
         expect(small_diff).not_to have_selector('.code')
@@ -154,7 +165,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       end
 
       context 're-expanding the same diff' do
-        before { click_link('small_diff.md') }
+        before do
+          # Wait for diffs
+          find('.file-title', match: :first)
+          # Click `small_diff.md` title
+          all('.file-title')[3].click
+        end
 
         it 'shows the diff content' do
           expect(small_diff).to have_selector('.code')
@@ -224,7 +240,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
     end
 
     context 'collapsing an expanded diff' do
-      before { click_link('small_diff.md') }
+      before do
+        # Wait for diffs
+        find('.file-title', match: :first)
+        # Click `small_diff.md` title
+        all('.file-title')[3].click
+      end
 
       it 'hides the diff content' do
         expect(small_diff).not_to have_selector('.code')
@@ -232,7 +253,12 @@ feature 'Expand and collapse diffs', js: true, feature: true do
       end
 
       context 're-expanding the same diff' do
-        before { click_link('small_diff.md') }
+        before do
+          # Wait for diffs
+          find('.file-title', match: :first)
+          # Click `small_diff.md` title
+          all('.file-title')[3].click
+        end
 
         it 'shows the diff content' do
           expect(small_diff).to have_selector('.code')
