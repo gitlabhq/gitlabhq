@@ -693,7 +693,7 @@ describe Notify do
         allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
-      shared_examples 'a note email on a diff' do  | model |
+      shared_examples 'a note email on a diff' do  |model|
         let(:note) { create(model, project: project, author: note_author) }
 
         it "includes diffs with character-level highlighting" do
