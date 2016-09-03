@@ -23,8 +23,6 @@
       if (!singleton) {
         singleton = this;
         singleton.init();
-      } else {
-        singleton.renderState();
       }
       return singleton;
     }
@@ -38,7 +36,8 @@
       $(document)
         .on('click', sidebarToggleSelector, () => this.toggleSidebar())
         .on('click', pinnedToggleSelector, () => this.togglePinnedState())
-        .on('click', 'html, body', (e) => this.handleClickEvent(e));
+        .on('click', 'html, body', (e) => this.handleClickEvent(e))
+        .on('page:change', () => this.renderState());
       this.renderState();
     }
 
