@@ -1,4 +1,3 @@
-window.gl = window.gl || {};
 ((global) => {
   const MAX_MESSAGE_LENGTH = 500;
   const MESSAGE_CELL_SELECTOR = '.abuse-reports .message';
@@ -36,4 +35,4 @@ window.gl = window.gl || {};
   }
 
   global.AbuseReports = AbuseReports;
-})(window.gl);
+})(window.gl || (window.gl = {}));

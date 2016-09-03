@@ -54,7 +54,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     it 'includes a title attribute' do
       doc = reference_filter("Issue #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq "Issue: #{issue.title}"
+      expect(doc.css('a').first.attr('title')).to eq issue.title
     end
 
     it 'escapes the title attribute' do
@@ -66,7 +66,7 @@ describe Banzai::Filter::IssueReferenceFilter, lib: true do
 
     it 'includes default classes' do
       doc = reference_filter("Issue #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
 
     it 'includes a data-project attribute' do

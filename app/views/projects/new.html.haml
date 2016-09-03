@@ -55,15 +55,10 @@
                       = render 'bitbucket_import_modal'
                 %div
                   - if gitlab_import_enabled?
-                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless bitbucket_import_configured?}" do
+                    = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}" do
                       = icon('gitlab', text: 'GitLab.com')
                     - unless gitlab_import_configured?
                       = render 'gitlab_import_modal'
-                %div
-                  - if gitorious_import_enabled?
-                    = link_to new_import_gitorious_path, class: 'btn import_gitorious' do
-                      %i.icon-gitorious.icon-gitorious-small
-                      Gitorious.org
                 %div
                   - if google_code_import_enabled?
                     = link_to new_import_google_code_path, class: 'btn import_google_code' do

@@ -10,14 +10,16 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
   belongs_to :merge_user, class_name: "User"
 
-  has_one :merge_request_diff, dependent: :destroy
+  has_many :merge_request_diffs, dependent: :destroy
+  has_one :merge_request_diff,
+    -> { order('merge_request_diffs.id DESC') }
 
   has_many :events, as: :target, dependent: :destroy
 
   serialize :merge_params, Hash
 
-  after_create :create_merge_request_diff, unless: :importing?
-  after_update :update_merge_request_diff
+  after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :reload_diff_if_branch_changed
 
   delegate :commits, :real_size, to: :merge_request_diff, prefix: nil
 
@@ -89,13 +91,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  validates :source_project, presence: true, unless: [:allow_broken, :importing?]
+  validates :source_project, presence: true, unless: [:allow_broken, :importing?, :closed_without_fork?]
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validates :merge_user, presence: true, if: :merge_when_build_succeeds?
-  validate :validate_branches, unless: [:allow_broken, :importing?]
-  validate :validate_fork
+  validate :validate_branches, unless: [:allow_broken, :importing?, :closed_without_fork?]
+  validate :validate_fork, unless: :closed_without_fork?
 
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -170,10 +172,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
-    if self.compare
-      self.compare.diffs(diff_options)
+    if compare
+      compare.diffs(diff_options)
     else
-      Gitlab::Diff::FileCollection::MergeRequest.new(self, diff_options: diff_options)
+      merge_request_diff.diffs(diff_options)
     end
   end
 
@@ -184,8 +186,8 @@ class MergeRequest < ActiveRecord::Base
   def diff_base_commit
     if persisted?
       merge_request_diff.base_commit
-    elsif diff_start_commit && diff_head_commit
-      self.target_project.merge_base_commit(diff_start_sha, diff_head_sha)
+    else
+      branch_merge_base_commit
     end
   end
 
@@ -238,12 +240,21 @@ class MergeRequest < ActiveRecord::Base
 
   def source_branch_head
     source_branch_ref = @source_branch_sha || source_branch
-    source_project.repository.commit(source_branch) if source_branch_ref
+    source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
 
   def target_branch_head
     target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch) if target_branch_ref
+    target_project.repository.commit(target_branch_ref) if target_branch_ref
+  end
+
+  def branch_merge_base_commit
+    start_sha = target_branch_sha
+    head_sha  = source_branch_sha
+
+    if start_sha && head_sha
+      target_project.merge_base_commit(start_sha, head_sha)
+    end
   end
 
   def target_branch_sha
@@ -267,14 +278,14 @@ class MergeRequest < ActiveRecord::Base
   # Return diff_refs instance trying to not touch the git repository
   def diff_sha_refs
     if merge_request_diff && merge_request_diff.diff_refs_by_sha?
-      return Gitlab::Diff::DiffRefs.new(
-        base_sha:  merge_request_diff.base_commit_sha,
-        start_sha: merge_request_diff.start_commit_sha,
-        head_sha:  merge_request_diff.head_commit_sha
-      )
+      merge_request_diff.diff_refs
     else
       diff_refs
     end
+  end
+
+  def branch_merge_base_sha
+    branch_merge_base_commit.try(:sha)
   end
 
   def validate_branches
@@ -294,36 +305,49 @@ class MergeRequest < ActiveRecord::Base
 
   def validate_fork
     return true unless target_project && source_project
+    return true if target_project == source_project
+    return true unless forked_source_project_missing?
 
-    if target_project == source_project
-      true
-    else
-      # If source and target projects are different
-      # we should check if source project is actually a fork of target project
-      if source_project.forked_from?(target_project)
-        true
-      else
-        errors.add :validate_fork,
-                   'Source project is not a fork of target project'
-      end
-    end
+    errors.add :validate_fork,
+               'Source project is not a fork of the target project'
   end
 
-  def update_merge_request_diff
+  def closed_without_fork?
+    closed? && forked_source_project_missing?
+  end
+
+  def forked_source_project_missing?
+    return false unless for_fork?
+    return true unless source_project
+
+    !source_project.forked_from?(target_project)
+  end
+
+  def ensure_merge_request_diff
+    merge_request_diff || create_merge_request_diff
+  end
+
+  def create_merge_request_diff
+    merge_request_diffs.create
+    reload_merge_request_diff
+  end
+
+  def reload_merge_request_diff
+    merge_request_diff(true)
+  end
+
+  def reload_diff_if_branch_changed
     if source_branch_changed? || target_branch_changed?
       reload_diff
     end
   end
 
   def reload_diff
-    return unless merge_request_diff && open?
+    return unless open?
 
     old_diff_refs = self.diff_refs
-
-    merge_request_diff.reload_content
-
+    create_merge_request_diff
     MergeRequests::MergeRequestDiffCacheService.new.execute(self)
-
     new_diff_refs = self.diff_refs
 
     update_diff_notes_positions(
@@ -387,7 +411,7 @@ class MergeRequest < ActiveRecord::Base
   def can_remove_source_branch?(current_user)
     !source_project.protected_branch?(source_branch) &&
       !source_project.root_ref?(source_branch) &&
-      Ability.abilities.allowed?(current_user, :push_code, source_project) &&
+      Ability.allowed?(current_user, :push_code, source_project) &&
       diff_head_commit == source_branch_head
   end
 
@@ -705,7 +729,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def pipeline
-    @pipeline ||= source_project.pipeline(diff_head_sha, source_branch) if diff_head_sha && source_project
+    return unless diff_head_sha && source_project
+
+    @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
   def all_pipelines
@@ -777,8 +803,12 @@ class MergeRequest < ActiveRecord::Base
     return @conflicts_can_be_resolved_in_ui = false unless has_complete_diff_refs?
 
     begin
-      @conflicts_can_be_resolved_in_ui = conflicts.files.each(&:lines)
-    rescue Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
+      # Try to parse each conflict. If the MR's mergeable status hasn't been updated,
+      # ensure that we don't say there are conflicts to resolve when there are no conflict
+      # files.
+      conflicts.files.each(&:lines)
+      @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
+    rescue Rugged::OdbError, Gitlab::Conflict::Parser::ParserError, Gitlab::Conflict::FileCollection::ConflictSideMissing
       @conflicts_can_be_resolved_in_ui = false
     end
   end

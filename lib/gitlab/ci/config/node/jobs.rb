@@ -29,7 +29,7 @@ module Gitlab
           def compose!(deps = nil)
             super do
               @config.each do |name, config|
-                node = hidden?(name) ? Node::HiddenJob : Node::Job
+                node = hidden?(name) ? Node::Hidden : Node::Job
 
                 factory = Node::Factory.new(node)
                   .value(config || {})

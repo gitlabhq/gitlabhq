@@ -73,7 +73,7 @@ describe API::API, api: true  do
       end
 
       it 'does not include open_issues_count' do
-        project.update_attributes( { issues_enabled: false } )
+        project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
 
         get api('/projects', user)
         expect(response.status).to eq 200
@@ -231,8 +231,15 @@ describe API::API, api: true  do
       post api('/projects', user), project
 
       project.each_pair do |k, v|
+        next if %i{ issues_enabled merge_requests_enabled wiki_enabled }.include?(k)
         expect(json_response[k.to_s]).to eq(v)
       end
+
+      # Check feature permissions attributes
+      project = Project.find_by_path(project[:path])
+      expect(project.project_feature.issues_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::DISABLED)
+      expect(project.project_feature.wiki_access_level).to eq(ProjectFeature::DISABLED)
     end
 
     it 'sets a project as public' do

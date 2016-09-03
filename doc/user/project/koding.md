@@ -68,7 +68,7 @@ GitLab instance. For details about what's next you can follow
 [this guide](https://www.koding.com/docs/creating-an-aws-stack) from step 8.
 
 Once stack initialized you will see the `README.md` content from your project
-in `Stack Build` wizard, this wizard will let you to build the stack and import
+in `Stack Build` wizard, this wizard will let you build the stack and import
 your project into it. **Once it's completed it will automatically open the
 related vm instead of importing from scratch**.
 

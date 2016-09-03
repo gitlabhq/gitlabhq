@@ -44,7 +44,7 @@ module SearchHelper
   def help_autocomplete
     [
       { category: "Help", label: "API Help",           url: help_page_path("api/README") },
-      { category: "Help", label: "Markdown Help",      url: help_page_path("markdown/markdown") },
+      { category: "Help", label: "Markdown Help",      url: help_page_path("user/markdown") },
       { category: "Help", label: "Permissions Help",   url: help_page_path("user/permissions") },
       { category: "Help", label: "Public Access Help", url: help_page_path("public_access/public_access") },
       { category: "Help", label: "Rake Tasks Help",    url: help_page_path("raketasks/README") },

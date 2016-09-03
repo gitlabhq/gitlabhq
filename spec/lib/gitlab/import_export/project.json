@@ -1,9 +1,5 @@
 {
   "description": "Nisi et repellendus ut enim quo accusamus vel magnam.",
-  "issues_enabled": true,
-  "merge_requests_enabled": true,
-  "wiki_enabled": true,
-  "snippets_enabled": false,
   "visibility_level": 10,
   "archived": false,
   "issues": [

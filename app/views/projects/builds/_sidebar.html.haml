@@ -1,3 +1,6 @@
+- builds = @build.pipeline.builds.latest.to_a
+- statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
+
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar
   .block.build-sidebar-header.visible-xs-block.visible-sm-block.append-bottom-default
     Build
@@ -10,40 +13,6 @@
         Test coverage
       %p.build-detail-row
         #{@build.coverage}%
-
-  - builds = @build.pipeline.builds.latest.to_a
-  - statuses = ["failed", "pending", "running", "canceled", "success", "skipped"]
-  - if builds.size > 1
-    .dropdown.build-dropdown
-      .build-light-text Stage
-      %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
-        %span.stage-selection More
-        = icon('caret-down')
-      %ul.dropdown-menu
-        - builds.map(&:stage).uniq.each do |stage|
-          %li
-            %a.stage-item= stage
-
-    .builds-container
-      - statuses.each do |build_status|
-        - builds.select{|build| build.status == build_status}.each do |build|
-          .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
-            = link_to namespace_project_build_path(@project.namespace, @project, build) do
-              = icon('check')
-              = ci_icon_for_status(build.status)
-              %span
-                - if build.name
-                  = build.name
-                - else
-                  = build.id
-
-        - if @build.retried?
-          %li.active
-            %a
-              Build ##{@build.id}
-              &middot;
-              %i.fa.fa-warning
-              This build was retried.
 
   .blocks-container
     - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
@@ -76,7 +45,7 @@
       .title
         Build details
         - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right', method: :post
+          = link_to "Retry", retry_namespace_project_build_path(@project.namespace, @project, @build), class: 'pull-right retry-link', method: :post
       - if @build.merge_request
         %p.build-detail-row
           %span.build-light-text Merge Request:
@@ -100,7 +69,7 @@
         - elsif @build.runner
           \##{@build.runner.id}
       .btn-group.btn-group-justified{ role: :group }
-        - if @build.has_trace?
+        - if @build.has_trace_file?
           = link_to 'Raw', raw_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default'
         - if @build.active?
           = link_to "Cancel", cancel_namespace_project_build_path(@project.namespace, @project, @build), class: 'btn btn-sm btn-default', method: :post
@@ -141,3 +110,35 @@
         - @build.tag_list.each do |tag|
           %span.label.label-primary
             = tag
+
+    - if builds.size > 1
+      .dropdown.build-dropdown
+        .title Stage
+        %button.dropdown-menu-toggle{type: 'button', 'data-toggle' => 'dropdown'}
+          %span.stage-selection More
+          = icon('caret-down')
+        %ul.dropdown-menu
+          - builds.map(&:stage).uniq.each do |stage|
+            %li
+              %a.stage-item= stage
+
+  .builds-container
+    - statuses.each do |build_status|
+      - builds.select{|build| build.status == build_status}.each do |build|
+        .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
+          = link_to namespace_project_build_path(@project.namespace, @project, build) do
+            = icon('check')
+            = ci_icon_for_status(build.status)
+            %span
+              - if build.name
+                = build.name
+              - else
+                = build.id
+
+      - if @build.retried?
+        %li.active
+          %a
+            Build ##{@build.id}
+            &middot;
+            %i.fa.fa-warning
+            This build was retried.

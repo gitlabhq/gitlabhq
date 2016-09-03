@@ -38,6 +38,6 @@ class Projects::DiscussionsController < Projects::ApplicationController
   end
 
   def module_enabled
-    render_404 unless @project.merge_requests_enabled
+    render_404 unless @project.feature_available?(:merge_requests, current_user)
   end
 end
