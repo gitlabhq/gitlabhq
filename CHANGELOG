@@ -41,6 +41,7 @@ v 8.12.0 (unreleased)
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
+  - Added horizontal padding on build page sidebar on code coverage block. !6196 (Vitaly Baev)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Replace contributions calendar timezone payload with dates (ClemMakesApps)
