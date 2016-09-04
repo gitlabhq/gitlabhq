@@ -1,0 +1,908 @@
+                                                          Prefix Verb     URI Pattern                                                                                   Controller#Action
+                                                        teaspoon          /teaspoon                                                                                     Teaspoon::Engine
+                                               letter_opener_web          /rails/letter_opener                                                                          LetterOpenerWeb::Engine
+                                                   ci_ci_api_api          /ci/api                                                                                       Ci::API::API
+                                                         ci_lint POST     /ci/lint(.:format)                                                                            ci/lints#create
+                                                                 GET      /ci/lint(.:format)                                                                            ci/lints#show
+                                               status_ci_project GET      /ci/projects/:id/status(.:format)                                                             ci/projects#badge
+                                                     ci_projects GET      /ci/projects(.:format)                                                                        ci/projects#index
+                                                      ci_project GET      /ci/projects/:id(.:format)                                                                    ci/projects#show
+                                                         ci_root GET      /ci(.:format)                                                                                 ci/projects#index
+                                                                 GET      /oauth/authorize/:code(.:format)                                                              oauth/authorizations#show
+                                             oauth_authorization GET      /oauth/authorize(.:format)                                                                    oauth/authorizations#new
+                                                                 POST     /oauth/authorize(.:format)                                                                    oauth/authorizations#create
+                                                                 DELETE   /oauth/authorize(.:format)                                                                    oauth/authorizations#destroy
+                                                     oauth_token POST     /oauth/token(.:format)                                                                        doorkeeper/tokens#create
+                                                    oauth_revoke POST     /oauth/revoke(.:format)                                                                       doorkeeper/tokens#revoke
+                                              oauth_applications GET      /oauth/applications(.:format)                                                                 oauth/applications#index
+                                                                 POST     /oauth/applications(.:format)                                                                 oauth/applications#create
+                                           new_oauth_application GET      /oauth/applications/new(.:format)                                                             oauth/applications#new
+                                          edit_oauth_application GET      /oauth/applications/:id/edit(.:format)                                                        oauth/applications#edit
+                                               oauth_application GET      /oauth/applications/:id(.:format)                                                             oauth/applications#show
+                                                                 PATCH    /oauth/applications/:id(.:format)                                                             oauth/applications#update
+                                                                 PUT      /oauth/applications/:id(.:format)                                                             oauth/applications#update
+                                                                 DELETE   /oauth/applications/:id(.:format)                                                             oauth/applications#destroy
+                                   oauth_authorized_applications GET      /oauth/authorized_applications(.:format)                                                      oauth/authorized_applications#index
+                                    oauth_authorized_application DELETE   /oauth/authorized_applications/:id(.:format)                                                  oauth/authorized_applications#destroy
+                                                oauth_token_info GET      /oauth/token/info(.:format)                                                                   doorkeeper/token_info#show
+                                              autocomplete_users GET      /autocomplete/users(.:format)                                                                 autocomplete#users
+                                                                 GET      /autocomplete/users/:id(.:format)                                                             autocomplete#user
+                                           autocomplete_projects GET      /autocomplete/projects(.:format)                                                              autocomplete#projects
+                                                          emojis GET      /emojis(.:format)                                                                             emojis#index
+                                                          search GET      /search(.:format)                                                                             search#show
+                                             search_autocomplete GET      /search/autocomplete(.:format)                                                                search#autocomplete
+                                                        jwt_auth GET      /jwt/auth(.:format)                                                                           jwt#auth
+                                                         api_api          /api                                                                                          API::API
+                                                         sidekiq          /admin/sidekiq                                                                                Sidekiq::Web
+                                                    health_check GET      /health_check(/:checks)(.:format)                                                             health_check#index
+                                                            help GET      /help(.:format)                                                                               help#index
+                                                  help_shortcuts GET      /help/shortcuts(.:format)                                                                     help#shortcuts
+                                                         help_ui GET      /help/ui(.:format)                                                                            help#ui
+                                                       help_page GET      /help/*path(.:format)                                                                         help#show
+                                                          koding GET      /koding(.:format)                                                                             koding#index
+                                                     raw_snippet GET      /snippets/:id/raw(.:format)                                                                   snippets#raw
+                                      toggle_award_emoji_snippet POST     /snippets/:id/toggle_award_emoji(.:format)                                                    snippets#toggle_award_emoji
+                                                        snippets GET      /snippets(.:format)                                                                           snippets#index
+                                                                 POST     /snippets(.:format)                                                                           snippets#create
+                                                     new_snippet GET      /snippets/new(.:format)                                                                       snippets#new
+                                                    edit_snippet GET      /snippets/:id/edit(.:format)                                                                  snippets#edit
+                                                         snippet GET      /snippets/:id(.:format)                                                                       snippets#show
+                                                                 PATCH    /snippets/:id(.:format)                                                                       snippets#update
+                                                                 PUT      /snippets/:id(.:format)                                                                       snippets#update
+                                                                 DELETE   /snippets/:id(.:format)                                                                       snippets#destroy
+                                                                 GET      /s/:username(.:format)                                                                        redirect(301, /u/%{username}/snippets) {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                   accept_invite POST     /invites/:id/accept(.:format)                                                                 invites#accept {:id=>/[A-Za-z0-9_-]+/}
+                                                  decline_invite GET|POST /invites/:id/decline(.:format)                                                                invites#decline {:id=>/[A-Za-z0-9_-]+/}
+                                                          invite GET      /invites/:id(.:format)                                                                        invites#show {:id=>/[A-Za-z0-9_-]+/}
+                                   unsubscribe_sent_notification GET      /sent_notifications/:id/unsubscribe(.:format)                                                 sent_notifications#unsubscribe {:id=>/\h{32}/}
+                                                   abuse_reports POST     /abuse_reports(.:format)                                                                      abuse_reports#create
+                                                new_abuse_report GET      /abuse_reports/new(.:format)                                                                  abuse_reports#new
+                                           notification_settings POST     /notification_settings(.:format)                                                              notification_settings#create
+                                            notification_setting PATCH    /notification_settings/:id(.:format)                                                          notification_settings#update
+                                                                 PUT      /notification_settings/:id(.:format)                                                          notification_settings#update
+                             personal_access_token_import_github POST     /import/github/personal_access_token(.:format)                                                import/github#personal_access_token
+                                            status_import_github GET      /import/github/status(.:format)                                                               import/github#status
+                                          callback_import_github GET      /import/github/callback(.:format)                                                             import/github#callback
+                                              jobs_import_github GET      /import/github/jobs(.:format)                                                                 import/github#jobs
+                                                   import_github POST     /import/github(.:format)                                                                      import/github#create
+                                               new_import_github GET      /import/github/new(.:format)                                                                  import/github#new
+                                            status_import_gitlab GET      /import/gitlab/status(.:format)                                                               import/gitlab#status
+                                          callback_import_gitlab GET      /import/gitlab/callback(.:format)                                                             import/gitlab#callback
+                                              jobs_import_gitlab GET      /import/gitlab/jobs(.:format)                                                                 import/gitlab#jobs
+                                                   import_gitlab POST     /import/gitlab(.:format)                                                                      import/gitlab#create
+                                         status_import_bitbucket GET      /import/bitbucket/status(.:format)                                                            import/bitbucket#status
+                                       callback_import_bitbucket GET      /import/bitbucket/callback(.:format)                                                          import/bitbucket#callback
+                                           jobs_import_bitbucket GET      /import/bitbucket/jobs(.:format)                                                              import/bitbucket#jobs
+                                                import_bitbucket POST     /import/bitbucket(.:format)                                                                   import/bitbucket#create
+                                       status_import_google_code GET      /import/google_code/status(.:format)                                                          import/google_code#status
+                                     callback_import_google_code POST     /import/google_code/callback(.:format)                                                        import/google_code#callback
+                                         jobs_import_google_code GET      /import/google_code/jobs(.:format)                                                            import/google_code#jobs
+                                 new_user_map_import_google_code GET      /import/google_code/user_map(.:format)                                                        import/google_code#new_user_map
+                              create_user_map_import_google_code POST     /import/google_code/user_map(.:format)                                                        import/google_code#create_user_map
+                                              import_google_code POST     /import/google_code(.:format)                                                                 import/google_code#create
+                                          new_import_google_code GET      /import/google_code/new(.:format)                                                             import/google_code#new
+                                           status_import_fogbugz GET      /import/fogbugz/status(.:format)                                                              import/fogbugz#status
+                                         callback_import_fogbugz POST     /import/fogbugz/callback(.:format)                                                            import/fogbugz#callback
+                                             jobs_import_fogbugz GET      /import/fogbugz/jobs(.:format)                                                                import/fogbugz#jobs
+                                     new_user_map_import_fogbugz GET      /import/fogbugz/user_map(.:format)                                                            import/fogbugz#new_user_map
+                                  create_user_map_import_fogbugz POST     /import/fogbugz/user_map(.:format)                                                            import/fogbugz#create_user_map
+                                                  import_fogbugz POST     /import/fogbugz(.:format)                                                                     import/fogbugz#create
+                                              new_import_fogbugz GET      /import/fogbugz/new(.:format)                                                                 import/fogbugz#new
+                                           import_gitlab_project POST     /import/gitlab_project(.:format)                                                              import/gitlab_projects#create
+                                                                 POST     /import/gitlab_project(.:format)                                                              import/gitlab_projects#create
+                                       new_import_gitlab_project GET      /import/gitlab_project/new(.:format)                                                          import/gitlab_projects#new
+                                                                 GET      /uploads/:model/:mounted_as/:id/:filename(.:format)                                           uploads#show {:model=>/note|user|group|project/, :mounted_as=>/avatar|attachment/, :filename=>/[^\/]+/}
+                                                                 GET      /uploads/:model/:mounted_as/:id/:filename(.:format)                                           uploads#show {:model=>/appearance/, :mounted_as=>/logo|header_logo/, :filename=>/.+/}
+                                                                 GET      /uploads/:namespace_id/:project_id/:secret/:filename(.:format)                                projects/uploads#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+/, :filename=>/[^\/]+/}
+                                                                 GET      /files/note/:id/:filename(.:format)                                                           redirect(301, uploads/note/attachment/%{id}/%{filename}) {:filename=>/[^\/]+/}
+                                       trending_explore_projects GET      /explore/projects/trending(.:format)                                                          explore/projects#trending
+                                        starred_explore_projects GET      /explore/projects/starred(.:format)                                                           explore/projects#starred
+                                                explore_projects GET      /explore/projects(.:format)                                                                   explore/projects#index
+                                                  explore_groups GET      /explore/groups(.:format)                                                                     explore/groups#index
+                                                explore_snippets GET      /explore/snippets(.:format)                                                                   explore/snippets#index
+                                                    explore_root GET      /explore(.:format)                                                                            explore/projects#trending
+                                                          public GET      /public(.:format)                                                                             explore/projects#index
+                                                 public_projects GET      /public/projects(.:format)                                                                    explore/projects#index
+                                                  admin_user_key GET      /admin/users/:user_id/keys/:id(.:format)                                                      admin/keys#show {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 DELETE   /admin/users/:user_id/keys/:id(.:format)                                                      admin/keys#destroy {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                           admin_user_identities GET      /admin/users/:user_id/identities(.:format)                                                    admin/identities#index {:user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 POST     /admin/users/:user_id/identities(.:format)                                                    admin/identities#create {:user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                         new_admin_user_identity GET      /admin/users/:user_id/identities/new(.:format)                                                admin/identities#new {:user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                        edit_admin_user_identity GET      /admin/users/:user_id/identities/:id/edit(.:format)                                           admin/identities#edit {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                             admin_user_identity PATCH    /admin/users/:user_id/identities/:id(.:format)                                                admin/identities#update {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 PUT      /admin/users/:user_id/identities/:id(.:format)                                                admin/identities#update {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 DELETE   /admin/users/:user_id/identities/:id(.:format)                                                admin/identities#destroy {:id=>/[a-zA-Z.\/0-9_\-]+/, :user_id=>/[a-zA-Z.\/0-9_\-]+/}
+                                             projects_admin_user GET      /admin/users/:id/projects(.:format)                                                           admin/users#projects {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                 keys_admin_user GET      /admin/users/:id/keys(.:format)                                                               admin/users#keys {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                               groups_admin_user GET      /admin/users/:id/groups(.:format)                                                             admin/users#groups {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                block_admin_user PUT      /admin/users/:id/block(.:format)                                                              admin/users#block {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                              unblock_admin_user PUT      /admin/users/:id/unblock(.:format)                                                            admin/users#unblock {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                               unlock_admin_user PUT      /admin/users/:id/unlock(.:format)                                                             admin/users#unlock {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                              confirm_admin_user PUT      /admin/users/:id/confirm(.:format)                                                            admin/users#confirm {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                          impersonate_admin_user POST     /admin/users/:id/impersonate(.:format)                                                        admin/users#impersonate {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                   disable_two_factor_admin_user PATCH    /admin/users/:id/disable_two_factor(.:format)                                                 admin/users#disable_two_factor {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                         remove_email_admin_user DELETE   /admin/users/:id/remove/:email_id(.:format)                                                   admin/users#remove_email {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                     admin_users GET      /admin/users(.:format)                                                                        admin/users#index
+                                                                 POST     /admin/users(.:format)                                                                        admin/users#create
+                                                  new_admin_user GET      /admin/users/new(.:format)                                                                    admin/users#new
+                                                 edit_admin_user GET      /admin/users/:id/edit(.:format)                                                               admin/users#edit {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                      admin_user GET      /admin/users/:id(.:format)                                                                    admin/users#show {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 PATCH    /admin/users/:id(.:format)                                                                    admin/users#update {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 PUT      /admin/users/:id(.:format)                                                                    admin/users#update {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                                                 DELETE   /admin/users/:id(.:format)                                                                    admin/users#destroy {:id=>/[a-zA-Z.\/0-9_\-]+/}
+                                             admin_impersonation DELETE   /admin/impersonation(.:format)                                                                admin/impersonations#destroy
+                                             admin_abuse_reports GET      /admin/abuse_reports(.:format)                                                                admin/abuse_reports#index
+                                              admin_abuse_report DELETE   /admin/abuse_reports/:id(.:format)                                                            admin/abuse_reports#destroy
+                                      mark_as_ham_admin_spam_log POST     /admin/spam_logs/:id/mark_as_ham(.:format)                                                    admin/spam_logs#mark_as_ham
+                                                 admin_spam_logs GET      /admin/spam_logs(.:format)                                                                    admin/spam_logs#index
+                                                  admin_spam_log DELETE   /admin/spam_logs/:id(.:format)                                                                admin/spam_logs#destroy
+                                              admin_applications GET      /admin/applications(.:format)                                                                 admin/applications#index
+                                                                 POST     /admin/applications(.:format)                                                                 admin/applications#create
+                                           new_admin_application GET      /admin/applications/new(.:format)                                                             admin/applications#new
+                                          edit_admin_application GET      /admin/applications/:id/edit(.:format)                                                        admin/applications#edit
+                                               admin_application GET      /admin/applications/:id(.:format)                                                             admin/applications#show
+                                                                 PATCH    /admin/applications/:id(.:format)                                                             admin/applications#update
+                                                                 PUT      /admin/applications/:id(.:format)                                                             admin/applications#update
+                                                                 DELETE   /admin/applications/:id(.:format)                                                             admin/applications#destroy
+                                      members_update_admin_group PUT      /admin/groups/:id/members_update(.:format)                                                    admin/groups#members_update {:id=>/[^\/]+/}
+                                                    admin_groups GET      /admin/groups(.:format)                                                                       admin/groups#index
+                                                                 POST     /admin/groups(.:format)                                                                       admin/groups#create
+                                                 new_admin_group GET      /admin/groups/new(.:format)                                                                   admin/groups#new
+                                                edit_admin_group GET      /admin/groups/:id/edit(.:format)                                                              admin/groups#edit {:id=>/[^\/]+/}
+                                                     admin_group GET      /admin/groups/:id(.:format)                                                                   admin/groups#show {:id=>/[^\/]+/}
+                                                                 PATCH    /admin/groups/:id(.:format)                                                                   admin/groups#update {:id=>/[^\/]+/}
+                                                                 PUT      /admin/groups/:id(.:format)                                                                   admin/groups#update {:id=>/[^\/]+/}
+                                                                 DELETE   /admin/groups/:id(.:format)                                                                   admin/groups#destroy {:id=>/[^\/]+/}
+                                               admin_deploy_keys GET      /admin/deploy_keys(.:format)                                                                  admin/deploy_keys#index
+                                                                 POST     /admin/deploy_keys(.:format)                                                                  admin/deploy_keys#create
+                                            new_admin_deploy_key GET      /admin/deploy_keys/new(.:format)                                                              admin/deploy_keys#new
+                                                admin_deploy_key DELETE   /admin/deploy_keys/:id(.:format)                                                              admin/deploy_keys#destroy
+                                                 admin_hook_test GET      /admin/hooks/:hook_id/test(.:format)                                                          admin/hooks#test
+                                                     admin_hooks GET      /admin/hooks(.:format)                                                                        admin/hooks#index
+                                                                 POST     /admin/hooks(.:format)                                                                        admin/hooks#create
+                                                      admin_hook DELETE   /admin/hooks/:id(.:format)                                                                    admin/hooks#destroy
+                                preview_admin_broadcast_messages POST     /admin/broadcast_messages/preview(.:format)                                                   admin/broadcast_messages#preview
+                                        admin_broadcast_messages GET      /admin/broadcast_messages(.:format)                                                           admin/broadcast_messages#index
+                                                                 POST     /admin/broadcast_messages(.:format)                                                           admin/broadcast_messages#create
+                                    edit_admin_broadcast_message GET      /admin/broadcast_messages/:id/edit(.:format)                                                  admin/broadcast_messages#edit
+                                         admin_broadcast_message PATCH    /admin/broadcast_messages/:id(.:format)                                                       admin/broadcast_messages#update
+                                                                 PUT      /admin/broadcast_messages/:id(.:format)                                                       admin/broadcast_messages#update
+                                                                 DELETE   /admin/broadcast_messages/:id(.:format)                                                       admin/broadcast_messages#destroy
+                                                      admin_logs GET      /admin/logs(.:format)                                                                         admin/logs#show
+                                              admin_health_check GET      /admin/health_check(.:format)                                                                 admin/health_check#show
+                                           admin_background_jobs GET      /admin/background_jobs(.:format)                                                              admin/background_jobs#show
+                                               admin_system_info GET      /admin/system_info(.:format)                                                                  admin/system_info#show
+                                         admin_requests_profiles GET      /admin/requests_profiles(.:format)                                                            admin/requests_profiles#index
+                                          admin_requests_profile GET      /admin/requests_profiles/:name(.:format)                                                      admin/requests_profiles#show {:name=>/.+\.html/}
+                                       admin_namespaces_projects GET      /admin/projects(.:format)                                                                     admin/projects#index
+                                   admin_namespace_projects_root GET      /admin/projects/:namespace_id(.:format)                                                       admin/projects#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                transfer_admin_namespace_project PUT      /admin/projects/:namespace_id/:id/transfer(.:format)                                          admin/projects#transfer {:id=>/[a-zA-Z.0-9_\-]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                        repository_check_admin_namespace_project POST     /admin/projects/:namespace_id/:id/repository_check(.:format)                                  admin/projects#repository_check {:id=>/[a-zA-Z.0-9_\-]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                         admin_namespace_project_runner_projects POST     /admin/projects/:namespace_id/:project_id/runner_projects(.:format)                           admin/runner_projects#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+/}
+                          admin_namespace_project_runner_project DELETE   /admin/projects/:namespace_id/:project_id/runner_projects/:id(.:format)                       admin/runner_projects#destroy {:id=>/[a-zA-Z.0-9_\-]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+/}
+                                        admin_namespace_projects GET      /admin/projects/:namespace_id(.:format)                                                       admin/projects#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                         admin_namespace_project GET      /admin/projects/:namespace_id/:id(.:format)                                                   admin/projects#show {:id=>/[a-zA-Z.0-9_\-]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                       preview_admin_appearances GET      /admin/appearance/preview(.:format)                                                           admin/appearances#preview
+                                          logo_admin_appearances DELETE   /admin/appearance/logo(.:format)                                                              admin/appearances#logo
+                                  header_logos_admin_appearances DELETE   /admin/appearance/header_logos(.:format)                                                      admin/appearances#header_logos
+                                               admin_appearances POST     /admin/appearance(.:format)                                                                   admin/appearances#create
+                                                                 GET      /admin/appearance(.:format)                                                                   admin/appearances#show
+                                                                 PATCH    /admin/appearance(.:format)                                                                   admin/appearances#update
+                                                                 PUT      /admin/appearance(.:format)                                                                   admin/appearances#update
+                             admin_application_settings_services GET      /admin/application_settings/services(.:format)                                                admin/services#index
+                         edit_admin_application_settings_service GET      /admin/application_settings/services/:id/edit(.:format)                                       admin/services#edit
+                              admin_application_settings_service PATCH    /admin/application_settings/services/:id(.:format)                                            admin/services#update
+                                                                 PUT      /admin/application_settings/services/:id(.:format)                                            admin/services#update
+                  reset_runners_token_admin_application_settings PUT      /admin/application_settings/reset_runners_token(.:format)                                     admin/application_settings#reset_runners_token
+             reset_health_check_token_admin_application_settings PUT      /admin/application_settings/reset_health_check_token(.:format)                                admin/application_settings#reset_health_check_token
+        clear_repository_check_states_admin_application_settings PUT      /admin/application_settings/clear_repository_check_states(.:format)                           admin/application_settings#clear_repository_check_states
+                                      admin_application_settings GET      /admin/application_settings(.:format)                                                         admin/application_settings#show
+                                                                 PATCH    /admin/application_settings(.:format)                                                         admin/application_settings#update
+                                                                 PUT      /admin/application_settings(.:format)                                                         admin/application_settings#update
+                                                    admin_labels GET      /admin/labels(.:format)                                                                       admin/labels#index
+                                                                 POST     /admin/labels(.:format)                                                                       admin/labels#create
+                                                 new_admin_label GET      /admin/labels/new(.:format)                                                                   admin/labels#new
+                                                edit_admin_label GET      /admin/labels/:id/edit(.:format)                                                              admin/labels#edit
+                                                     admin_label GET      /admin/labels/:id(.:format)                                                                   admin/labels#show
+                                                                 PATCH    /admin/labels/:id(.:format)                                                                   admin/labels#update
+                                                                 PUT      /admin/labels/:id(.:format)                                                                   admin/labels#update
+                                                                 DELETE   /admin/labels/:id(.:format)                                                                   admin/labels#destroy
+                                             resume_admin_runner GET      /admin/runners/:id/resume(.:format)                                                           admin/runners#resume
+                                              pause_admin_runner GET      /admin/runners/:id/pause(.:format)                                                            admin/runners#pause
+                                                   admin_runners GET      /admin/runners(.:format)                                                                      admin/runners#index
+                                                    admin_runner GET      /admin/runners/:id(.:format)                                                                  admin/runners#show
+                                                                 PATCH    /admin/runners/:id(.:format)                                                                  admin/runners#update
+                                                                 PUT      /admin/runners/:id(.:format)                                                                  admin/runners#update
+                                                                 DELETE   /admin/runners/:id(.:format)                                                                  admin/runners#destroy
+                                         cancel_all_admin_builds POST     /admin/builds/cancel_all(.:format)                                                            admin/builds#cancel_all
+                                                    admin_builds GET      /admin/builds(.:format)                                                                       admin/builds#index
+                                                      admin_root GET      /admin(.:format)                                                                              admin/dashboard#index
+                                               audit_log_profile GET      /profile/audit_log(.:format)                                                                  profiles#audit_log
+                                            applications_profile GET      /profile/applications(.:format)                                                               oauth/applications#index
+                                     reset_private_token_profile PUT      /profile/reset_private_token(.:format)                                                        profiles#reset_private_token
+                                         update_username_profile PUT      /profile/update_username(.:format)                                                            profiles#update_username
+                                          unlink_profile_account DELETE   /profile/account/unlink(.:format)                                                             profiles/accounts#unlink
+                                                 profile_account GET      /profile/account(.:format)                                                                    profiles/accounts#show
+                                           profile_notifications GET      /profile/notifications(.:format)                                                              profiles/notifications#show
+                                                                 PATCH    /profile/notifications(.:format)                                                              profiles/notifications#update
+                                                                 PUT      /profile/notifications(.:format)                                                              profiles/notifications#update
+                                          reset_profile_password PUT      /profile/password/reset(.:format)                                                             profiles/passwords#reset
+                                                profile_password POST     /profile/password(.:format)                                                                   profiles/passwords#create
+                                            new_profile_password GET      /profile/password/new(.:format)                                                               profiles/passwords#new
+                                           edit_profile_password GET      /profile/password/edit(.:format)                                                              profiles/passwords#edit
+                                                                 PATCH    /profile/password(.:format)                                                                   profiles/passwords#update
+                                                                 PUT      /profile/password(.:format)                                                                   profiles/passwords#update
+                                             profile_preferences GET      /profile/preferences(.:format)                                                                profiles/preferences#show
+                                                                 PATCH    /profile/preferences(.:format)                                                                profiles/preferences#update
+                                                                 PUT      /profile/preferences(.:format)                                                                profiles/preferences#update
+                                                    profile_keys GET      /profile/keys(.:format)                                                                       profiles/keys#index
+                                                                 POST     /profile/keys(.:format)                                                                       profiles/keys#create
+                                                 new_profile_key GET      /profile/keys/new(.:format)                                                                   profiles/keys#new
+                                                     profile_key GET      /profile/keys/:id(.:format)                                                                   profiles/keys#show
+                                                                 DELETE   /profile/keys/:id(.:format)                                                                   profiles/keys#destroy
+                                                  profile_emails GET      /profile/emails(.:format)                                                                     profiles/emails#index
+                                                                 POST     /profile/emails(.:format)                                                                     profiles/emails#create
+                                                   profile_email DELETE   /profile/emails/:id(.:format)                                                                 profiles/emails#destroy
+                                                  profile_avatar DELETE   /profile/avatar(.:format)                                                                     profiles/avatars#destroy
+                            revoke_profile_personal_access_token PUT      /profile/personal_access_tokens/:id/revoke(.:format)                                          profiles/personal_access_tokens#revoke
+                                  profile_personal_access_tokens GET      /profile/personal_access_tokens(.:format)                                                     profiles/personal_access_tokens#index
+                                                                 POST     /profile/personal_access_tokens(.:format)                                                     profiles/personal_access_tokens#create
+                              create_u2f_profile_two_factor_auth POST     /profile/two_factor_auth/create_u2f(.:format)                                                 profiles/two_factor_auths#create_u2f
+                                   codes_profile_two_factor_auth POST     /profile/two_factor_auth/codes(.:format)                                                      profiles/two_factor_auths#codes
+                                    skip_profile_two_factor_auth PATCH    /profile/two_factor_auth/skip(.:format)                                                       profiles/two_factor_auths#skip
+                                         profile_two_factor_auth POST     /profile/two_factor_auth(.:format)                                                            profiles/two_factor_auths#create
+                                                                 GET      /profile/two_factor_auth(.:format)                                                            profiles/two_factor_auths#show
+                                                                 DELETE   /profile/two_factor_auth(.:format)                                                            profiles/two_factor_auths#destroy
+                                        profile_u2f_registration DELETE   /profile/u2f_registrations/:id(.:format)                                                      profiles/u2f_registrations#destroy
+                                                         profile GET      /profile(.:format)                                                                            profiles#show
+                                                                 PATCH    /profile(.:format)                                                                            profiles#update
+                                                                 PUT      /profile(.:format)                                                                            profiles#update
+                                                   user_calendar GET      /u/:username/calendar(.:format)                                                               users#calendar {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        user_calendar_activities GET      /u/:username/calendar_activities(.:format)                                                    users#calendar_activities {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                     user_groups GET      /u/:username/groups(.:format)                                                                 users#groups {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                   user_projects GET      /u/:username/projects(.:format)                                                               users#projects {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       user_contributed_projects GET      /u/:username/contributed(.:format)                                                            users#contributed {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                   user_snippets GET      /u/:username/snippets(.:format)                                                               users#snippets {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                            user GET      /u/:username(.:format)                                                                        users#show {:username=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                issues_dashboard GET      /dashboard/issues(.:format)                                                                   dashboard#issues
+                                        merge_requests_dashboard GET      /dashboard/merge_requests(.:format)                                                           dashboard#merge_requests
+                                              activity_dashboard GET      /dashboard/activity(.:format)                                                                 dashboard#activity
+                                            dashboard_milestones GET      /dashboard/milestones(.:format)                                                               dashboard/milestones#index
+                                             dashboard_milestone GET      /dashboard/milestones/:id(.:format)                                                           dashboard/milestones#show
+                                                dashboard_labels GET      /dashboard/labels(.:format)                                                                   dashboard/labels#index
+                                                dashboard_groups GET      /dashboard/groups(.:format)                                                                   dashboard/groups#index
+                                              dashboard_snippets GET      /dashboard/snippets(.:format)                                                                 dashboard/snippets#index
+                                     destroy_all_dashboard_todos DELETE   /dashboard/todos/destroy_all(.:format)                                                        dashboard/todos#destroy_all
+                                                 dashboard_todos GET      /dashboard/todos(.:format)                                                                    dashboard/todos#index
+                                                  dashboard_todo DELETE   /dashboard/todos/:id(.:format)                                                                dashboard/todos#destroy
+                                      starred_dashboard_projects GET      /dashboard/projects/starred(.:format)                                                         dashboard/projects#starred
+                                              dashboard_projects GET      /dashboard/projects(.:format)                                                                 dashboard/projects#index
+                                                  root_dashboard GET      /dashboard(.:format)                                                                          dashboard/projects#index
+                                                    issues_group GET      /groups/:id/issues(.:format)                                                                  groups#issues {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                            merge_requests_group GET      /groups/:id/merge_requests(.:format)                                                          groups#merge_requests {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                  projects_group GET      /groups/:id/projects(.:format)                                                                groups#projects {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                  activity_group GET      /groups/:id/activity(.:format)                                                                groups#activity {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                resend_invite_group_group_member POST     /groups/:group_id/group_members/:id/resend_invite(.:format)                                   groups/group_members#resend_invite {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       leave_group_group_members DELETE   /groups/:group_id/group_members/leave(.:format)                                               groups/group_members#leave {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                              request_access_group_group_members POST     /groups/:group_id/group_members/request_access(.:format)                                      groups/group_members#request_access {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       approve_access_request_group_group_member POST     /groups/:group_id/group_members/:id/approve_access_request(.:format)                          groups/group_members#approve_access_request {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                             group_group_members GET      /groups/:group_id/group_members(.:format)                                                     groups/group_members#index {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /groups/:group_id/group_members(.:format)                                                     groups/group_members#create {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                              group_group_member PATCH    /groups/:group_id/group_members/:id(.:format)                                                 groups/group_members#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /groups/:group_id/group_members/:id(.:format)                                                 groups/group_members#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /groups/:group_id/group_members/:id(.:format)                                                 groups/group_members#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                    group_avatar DELETE   /groups/:group_id/avatar(.:format)                                                            groups/avatars#destroy {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                group_milestones GET      /groups/:group_id/milestones(.:format)                                                        groups/milestones#index {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /groups/:group_id/milestones(.:format)                                                        groups/milestones#create {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                             new_group_milestone GET      /groups/:group_id/milestones/new(.:format)                                                    groups/milestones#new {:group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                 group_milestone GET      /groups/:group_id/milestones/:id(.:format)                                                    groups/milestones#show {:id=>/[^\/]+/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /groups/:group_id/milestones/:id(.:format)                                                    groups/milestones#update {:id=>/[^\/]+/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /groups/:group_id/milestones/:id(.:format)                                                    groups/milestones#update {:id=>/[^\/]+/, :group_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                          groups GET      /groups(.:format)                                                                             groups#index
+                                                                 POST     /groups(.:format)                                                                             groups#create
+                                                       new_group GET      /groups/new(.:format)                                                                         groups#new
+                                                      edit_group GET      /groups/:id/edit(.:format)                                                                    groups#edit {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                           group GET      /groups/:id(.:format)                                                                         groups#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /groups/:id(.:format)                                                                         groups#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /groups/:id(.:format)                                                                         groups#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /groups/:id(.:format)                                                                         groups#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                        projects GET      /projects(.:format)                                                                           projects#index
+                                                                 POST     /projects(.:format)                                                                           projects#create
+                                                     new_project GET      /projects/new(.:format)                                                                       projects#new
+                                                new_user_session GET      /users/sign_in(.:format)                                                                      sessions#new
+                                                    user_session POST     /users/sign_in(.:format)                                                                      sessions#create
+                                            destroy_user_session DELETE   /users/sign_out(.:format)                                                                     sessions#destroy
+                                                   user_password POST     /users/password(.:format)                                                                     passwords#create
+                                               new_user_password GET      /users/password/new(.:format)                                                                 passwords#new
+                                              edit_user_password GET      /users/password/edit(.:format)                                                                passwords#edit
+                                                                 PATCH    /users/password(.:format)                                                                     passwords#update
+                                                                 PUT      /users/password(.:format)                                                                     passwords#update
+                                        cancel_user_registration GET      /users/cancel(.:format)                                                                       registrations#cancel
+                                               user_registration POST     /users(.:format)                                                                              registrations#create
+                                           new_user_registration GET      /users/sign_up(.:format)                                                                      registrations#new
+                                          edit_user_registration GET      /users/edit(.:format)                                                                         registrations#edit
+                                                                 PATCH    /users(.:format)                                                                              registrations#update
+                                                                 PUT      /users(.:format)                                                                              registrations#update
+                                                                 DELETE   /users(.:format)                                                                              registrations#destroy
+                                               user_confirmation POST     /users/confirmation(.:format)                                                                 confirmations#create
+                                           new_user_confirmation GET      /users/confirmation/new(.:format)                                                             confirmations#new
+                                                                 GET      /users/confirmation(.:format)                                                                 confirmations#show
+                                                     user_unlock POST     /users/unlock(.:format)                                                                       devise/unlocks#create
+                                                 new_user_unlock GET      /users/unlock/new(.:format)                                                                   devise/unlocks#new
+                                                                 GET      /users/unlock(.:format)                                                                       devise/unlocks#show
+                                                  omniauth_error GET      /users/auth/:provider/omniauth_error(.:format)                                                omniauth_callbacks#omniauth_error
+                                              users_almost_there GET      /users/almost_there(.:format)                                                                 confirmations#almost_there
+                                                            root GET      /                                                                                             root#index
+                                      transfer_namespace_project PUT      /:namespace_id/:id/transfer(.:format)                                                         projects#transfer {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                   remove_fork_namespace_project DELETE   /:namespace_id/:id/remove_fork(.:format)                                                      projects#remove_fork {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                       archive_namespace_project POST     /:namespace_id/:id/archive(.:format)                                                          projects#archive {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                     unarchive_namespace_project POST     /:namespace_id/:id/unarchive(.:format)                                                        projects#unarchive {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                  housekeeping_namespace_project POST     /:namespace_id/:id/housekeeping(.:format)                                                     projects#housekeeping {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                   toggle_star_namespace_project POST     /:namespace_id/:id/toggle_star(.:format)                                                      projects#toggle_star {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                              preview_markdown_namespace_project POST     /:namespace_id/:id/preview_markdown(.:format)                                                 projects#preview_markdown {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                        export_namespace_project POST     /:namespace_id/:id/export(.:format)                                                           projects#export {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                 remove_export_namespace_project POST     /:namespace_id/:id/remove_export(.:format)                                                    projects#remove_export {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                           generate_new_export_namespace_project POST     /:namespace_id/:id/generate_new_export(.:format)                                              projects#generate_new_export {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                               download_export_namespace_project GET      /:namespace_id/:id/download_export(.:format)                                                  projects#download_export {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                          autocomplete_sources_namespace_project GET      /:namespace_id/:id/autocomplete_sources(.:format)                                             projects#autocomplete_sources {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                      activity_namespace_project GET      /:namespace_id/:id/activity(.:format)                                                         projects#activity {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                          refs_namespace_project GET      /:namespace_id/:id/refs(.:format)                                                             projects#refs {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                     namespace_project_info_refs GET      /:namespace_id/:project_id/info/refs(.:format)                                                projects/git_http#info_refs {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                               namespace_project_git_upload_pack POST     /:namespace_id/:project_id/git-upload-pack(.:format)                                          projects/git_http#git_upload_pack {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                              namespace_project_git_receive_pack POST     /:namespace_id/:project_id/git-receive-pack(.:format)                                         projects/git_http#git_receive_pack {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                        namespace_project_info_lfs_objects_batch POST     /:namespace_id/:project_id/info/lfs/objects/batch(.:format)                                   projects/lfs_api#batch {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                              namespace_project_info_lfs_objects POST     /:namespace_id/:project_id/info/lfs/objects(.:format)                                         projects/lfs_api#deprecated {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                                                                 GET      /:namespace_id/:project_id/info/lfs/objects/*oid(.:format)                                    projects/lfs_api#deprecated {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                                                                 GET      /:namespace_id/:project_id/gitlab-lfs/objects/*oid(.:format)                                  projects/lfs_storage#download {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                                                                 PUT      /:namespace_id/:project_id/gitlab-lfs/objects/*oid/*size/authorize(.:format)                  projects/lfs_storage#upload_authorize {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                                                                 PUT      /:namespace_id/:project_id/gitlab-lfs/objects/*oid/*size(.:format)                            projects/lfs_storage#upload_finalize {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :format=>nil, :project_id=>/.+\.git/}
+                                                                 GET      /:namespace_id/:project_id/info/refs(.:format)                                                redirect(301) {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_new_blob GET      /:namespace_id/:project_id/new/*id(.:format)                                                  projects/blob#new {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_create_blob POST     /:namespace_id/:project_id/create/*id(.:format)                                               projects/blob#create {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_edit_blob GET      /:namespace_id/:project_id/edit/*id(.:format)                                                 projects/blob#edit {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_update_blob PUT      /:namespace_id/:project_id/update/*id(.:format)                                               projects/blob#update {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  namespace_project_preview_blob POST     /:namespace_id/:project_id/preview/*id(.:format)                                              projects/blob#preview {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_template GET      /:namespace_id/:project_id/templates/:template_type/:key(.:format)                            projects/templates#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_blob_diff GET      /:namespace_id/:project_id/blob/*id/diff(.:format)                                            projects/blob#diff {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>false}
+                                          namespace_project_blob GET      /:namespace_id/:project_id/blob/*id(.:format)                                                 projects/blob#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>false}
+                                                                 DELETE   /:namespace_id/:project_id/blob/*id(.:format)                                                 projects/blob#destroy {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>false}
+                                                                 PUT      /:namespace_id/:project_id/blob/*id(.:format)                                                 projects/blob#update {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>false}
+                                                                 POST     /:namespace_id/:project_id/blob/*id(.:format)                                                 projects/blob#create {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>false}
+                                           namespace_project_raw GET      /:namespace_id/:project_id/raw/*id(.:format)                                                  projects/raw#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/(html|js)/}
+                                          namespace_project_tree GET      /:namespace_id/:project_id/tree/*id(.:format)                                                 projects/tree#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/(html|js)/}
+                                     namespace_project_find_file GET      /:namespace_id/:project_id/find_file/*id(.:format)                                            projects/find_file#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/html/}
+                                         namespace_project_files GET      /:namespace_id/:project_id/files/*id(.:format)                                                projects/find_file#list {:id=>/(?:[^.]|\.(?!json$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/json/}
+                                    namespace_project_create_dir POST     /:namespace_id/:project_id/create_dir/*id(.:format)                                           projects/tree#create_dir {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_blame GET      /:namespace_id/:project_id/blame/*id(.:format)                                                projects/blame#show {:id=>/.+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/(html|js)/}
+                                       namespace_project_commits GET      /:namespace_id/:project_id/commits/*id(.:format)                                              projects/commits#show {:id=>/(?:[^.]|\.(?!atom$))+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/atom/}
+                                        namespace_project_avatar GET      /:namespace_id/:project_id/avatar(.:format)                                                   projects/avatars#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/avatar(.:format)                                                   projects/avatars#destroy {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               branches_namespace_project_commit GET      /:namespace_id/:project_id/commit/:id/branches(.:format)                                      projects/commit#branches {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 builds_namespace_project_commit GET      /:namespace_id/:project_id/commit/:id/builds(.:format)                                        projects/commit#builds {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                          cancel_builds_namespace_project_commit POST     /:namespace_id/:project_id/commit/:id/cancel_builds(.:format)                                 projects/commit#cancel_builds {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                           retry_builds_namespace_project_commit POST     /:namespace_id/:project_id/commit/:id/retry_builds(.:format)                                  projects/commit#retry_builds {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 revert_namespace_project_commit POST     /:namespace_id/:project_id/commit/:id/revert(.:format)                                        projects/commit#revert {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            cherry_pick_namespace_project_commit POST     /:namespace_id/:project_id/commit/:id/cherry_pick(.:format)                                   projects/commit#cherry_pick {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                          diff_for_path_namespace_project_commit GET      /:namespace_id/:project_id/commit/:id/diff_for_path(.:format)                                 projects/commit#diff_for_path {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_commit GET      /:namespace_id/:project_id/commit/:id(.:format)                                               projects/commit#show {:id=>/\h{7,40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                   diff_for_path_namespace_project_compare_index GET      /:namespace_id/:project_id/compare/diff_for_path(.:format)                                    projects/compare#diff_for_path {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 namespace_project_compare_index GET      /:namespace_id/:project_id/compare(.:format)                                                  projects/compare#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/compare(.:format)                                                  projects/compare#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       namespace_project_compare GET      /:namespace_id/:project_id/compare/:from...:to(.:format)                                      projects/compare#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :from=>/.+/, :to=>/.+/}
+                                       namespace_project_network GET      /:namespace_id/:project_id/network/:id                                                        projects/network#show {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 commits_namespace_project_graph GET      /:namespace_id/:project_id/graphs/:id/commits                                                 projects/graphs#commits {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      ci_namespace_project_graph GET      /:namespace_id/:project_id/graphs/:id/ci                                                      projects/graphs#ci {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               languages_namespace_project_graph GET      /:namespace_id/:project_id/graphs/:id/languages                                               projects/graphs#languages {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_graph GET      /:namespace_id/:project_id/graphs/:id                                                         projects/graphs#show {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   raw_namespace_project_snippet GET      /:namespace_id/:project_id/snippets/:id/raw(.:format)                                         projects/snippets#raw {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                    toggle_award_emoji_namespace_project_snippet POST     /:namespace_id/:project_id/snippets/:id/toggle_award_emoji(.:format)                          projects/snippets#toggle_award_emoji {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_snippets GET      /:namespace_id/:project_id/snippets(.:format)                                                 projects/snippets#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/snippets(.:format)                                                 projects/snippets#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   new_namespace_project_snippet GET      /:namespace_id/:project_id/snippets/new(.:format)                                             projects/snippets#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  edit_namespace_project_snippet GET      /:namespace_id/:project_id/snippets/:id/edit(.:format)                                        projects/snippets#edit {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       namespace_project_snippet GET      /:namespace_id/:project_id/snippets/:id(.:format)                                             projects/snippets#show {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/snippets/:id(.:format)                                             projects/snippets#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/snippets/:id(.:format)                                             projects/snippets#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/snippets/:id(.:format)                                             projects/snippets#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                              namespace_project_wikis_git_access GET      /:namespace_id/:project_id/wikis/git_access(.:format)                                         projects/wikis#git_access {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    namespace_project_wiki_pages GET      /:namespace_id/:project_id/wikis/pages(.:format)                                              projects/wikis#pages {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_wikis POST     /:namespace_id/:project_id/wikis(.:format)                                                    projects/wikis#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  namespace_project_wiki_history GET      /:namespace_id/:project_id/wikis/*id/history(.:format)                                        projects/wikis#history {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_wiki_edit GET      /:namespace_id/:project_id/wikis/*id/edit(.:format)                                           projects/wikis#edit {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                          namespace_project_wiki GET      /:namespace_id/:project_id/wikis/*id(.:format)                                                projects/wikis#show {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/wikis/*id(.:format)                                                projects/wikis#destroy {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/wikis/*id(.:format)                                                projects/wikis#update {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                         namespace_project_wiki_preview_markdown POST     /:namespace_id/:project_id/wikis/*id/preview_markdown(.:format)                               projects/wikis#preview_markdown {:id=>/\S+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            archive_namespace_project_repository GET      /:namespace_id/:project_id/repository/archive(.:format)                                       projects/repositories#archive {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/}
+                                    namespace_project_repository POST     /:namespace_id/:project_id/repository(.:format)                                               projects/repositories#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  test_namespace_project_service GET      /:namespace_id/:project_id/services/:id/test(.:format)                                        projects/services#test {:id=>/[^\/]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_services GET      /:namespace_id/:project_id/services(.:format)                                                 projects/services#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  edit_namespace_project_service GET      /:namespace_id/:project_id/services/:id/edit(.:format)                                        projects/services#edit {:id=>/[^\/]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       namespace_project_service PATCH    /:namespace_id/:project_id/services/:id(.:format)                                             projects/services#update {:id=>/[^\/]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/services/:id(.:format)                                             projects/services#update {:id=>/[^\/]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                             enable_namespace_project_deploy_key PUT      /:namespace_id/:project_id/deploy_keys/:id/enable(.:format)                                   projects/deploy_keys#enable {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            disable_namespace_project_deploy_key PUT      /:namespace_id/:project_id/deploy_keys/:id/disable(.:format)                                  projects/deploy_keys#disable {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_deploy_keys GET      /:namespace_id/:project_id/deploy_keys(.:format)                                              projects/deploy_keys#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/deploy_keys(.:format)                                              projects/deploy_keys#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                new_namespace_project_deploy_key GET      /:namespace_id/:project_id/deploy_keys/new(.:format)                                          projects/deploy_keys#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_forks GET      /:namespace_id/:project_id/forks(.:format)                                                    projects/forks#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/forks(.:format)                                                    projects/forks#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      new_namespace_project_fork GET      /:namespace_id/:project_id/forks/new(.:format)                                                projects/forks#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_import POST     /:namespace_id/:project_id/import(.:format)                                                   projects/imports#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    new_namespace_project_import GET      /:namespace_id/:project_id/import/new(.:format)                                               projects/imports#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 GET      /:namespace_id/:project_id/import(.:format)                                                   projects/imports#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   switch_namespace_project_refs GET      /:namespace_id/:project_id/refs/switch(.:format)                                              projects/refs#switch {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 logs_tree_namespace_project_ref GET      /:namespace_id/:project_id/refs/:id/logs_tree(.:format)                                       projects/refs#logs_tree {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 logs_file_namespace_project_ref GET      /:namespace_id/:project_id/refs/:id/logs_tree/*path(.:format)                                 projects/refs#logs_tree {:id=>/.*/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :path=>/.*/}
+                         commits_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/commits(.:format)                               projects/merge_requests#commits {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                           diffs_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/diffs(.:format)                                 projects/merge_requests#diffs {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       conflicts_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/conflicts(.:format)                             projects/merge_requests#conflicts {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                          builds_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/builds(.:format)                                projects/merge_requests#builds {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       pipelines_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/pipelines(.:format)                             projects/merge_requests#pipelines {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                     merge_check_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/merge_check(.:format)                           projects/merge_requests#merge_check {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                           merge_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/merge(.:format)                                 projects/merge_requests#merge {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+cancel_merge_when_build_succeeds_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/cancel_merge_when_build_succeeds(.:format)      projects/merge_requests#cancel_merge_when_build_succeeds {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       ci_status_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/ci_status(.:format)                             projects/merge_requests#ci_status {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+             toggle_subscription_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/toggle_subscription(.:format)                   projects/merge_requests#toggle_subscription {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+              toggle_award_emoji_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/toggle_award_emoji(.:format)                    projects/merge_requests#toggle_award_emoji {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                      remove_wip_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/remove_wip(.:format)                            projects/merge_requests#remove_wip {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                   diff_for_path_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/diff_for_path(.:format)                         projects/merge_requests#diff_for_path {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+               resolve_conflicts_namespace_project_merge_request POST     /:namespace_id/:project_id/merge_requests/:id/resolve_conflicts(.:format)                     projects/merge_requests#resolve_conflicts {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                    branch_from_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_from(.:format)                               projects/merge_requests#branch_from {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                      branch_to_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/branch_to(.:format)                                 projects/merge_requests#branch_to {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                update_branches_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/update_branches(.:format)                           projects/merge_requests#update_branches {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                  diff_for_path_namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests/diff_for_path(.:format)                             projects/merge_requests#diff_for_path {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+              resolve_namespace_project_merge_request_discussion POST     /:namespace_id/:project_id/merge_requests/:merge_request_id/discussions/:id/resolve(.:format) projects/discussions#resolve {:id=>/\h{40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :merge_request_id=>/\d+/}
+                                                                 DELETE   /:namespace_id/:project_id/merge_requests/:merge_request_id/discussions/:id/resolve(.:format) projects/discussions#unresolve {:id=>/\h{40}/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :merge_request_id=>/\d+/}
+                                namespace_project_merge_requests GET      /:namespace_id/:project_id/merge_requests(.:format)                                           projects/merge_requests#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/merge_requests(.:format)                                           projects/merge_requests#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                             new_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/new(.:format)                                       projects/merge_requests#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            edit_namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id/edit(.:format)                                  projects/merge_requests#edit {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 namespace_project_merge_request GET      /:namespace_id/:project_id/merge_requests/:id(.:format)                                       projects/merge_requests#show {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/merge_requests/:id(.:format)                                       projects/merge_requests#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/merge_requests/:id(.:format)                                       projects/merge_requests#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/merge_requests/:id(.:format)                                       projects/merge_requests#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_branches GET      /:namespace_id/:project_id/branches(.:format)                                                 projects/branches#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/branches(.:format)                                                 projects/branches#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    new_namespace_project_branch GET      /:namespace_id/:project_id/branches/new(.:format)                                             projects/branches#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_branch DELETE   /:namespace_id/:project_id/branches/:id(.:format)                                             projects/branches#destroy {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                              edit_namespace_project_tag_release GET      /:namespace_id/:project_id/tags/:tag_id/release/edit(.:format)                                projects/releases#edit {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :tag_id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x}
+                                   namespace_project_tag_release PATCH    /:namespace_id/:project_id/tags/:tag_id/release(.:format)                                     projects/releases#update {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :tag_id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x}
+                                                                 PUT      /:namespace_id/:project_id/tags/:tag_id/release(.:format)                                     projects/releases#update {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :tag_id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x}
+                                          namespace_project_tags GET      /:namespace_id/:project_id/tags(.:format)                                                     projects/tags#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/tags(.:format)                                                     projects/tags#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       new_namespace_project_tag GET      /:namespace_id/:project_id/tags/new(.:format)                                                 projects/tags#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                           namespace_project_tag GET      /:namespace_id/:project_id/tags/:id(.:format)                                                 projects/tags#show {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/tags/:id(.:format)                                                 projects/tags#destroy {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            namespace_project_protected_branches GET      /:namespace_id/:project_id/protected_branches(.:format)                                       projects/protected_branches#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/protected_branches(.:format)                                       projects/protected_branches#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                              namespace_project_protected_branch GET      /:namespace_id/:project_id/protected_branches/:id(.:format)                                   projects/protected_branches#show {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/protected_branches/:id(.:format)                                   projects/protected_branches#update {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/protected_branches/:id(.:format)                                   projects/protected_branches#update {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/protected_branches/:id(.:format)                                   projects/protected_branches#destroy {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_variables GET      /:namespace_id/:project_id/variables(.:format)                                                projects/variables#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/variables(.:format)                                                projects/variables#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_variable GET      /:namespace_id/:project_id/variables/:id(.:format)                                            projects/variables#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/variables/:id(.:format)                                            projects/variables#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/variables/:id(.:format)                                            projects/variables#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/variables/:id(.:format)                                            projects/variables#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_triggers GET      /:namespace_id/:project_id/triggers(.:format)                                                 projects/triggers#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/triggers(.:format)                                                 projects/triggers#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       namespace_project_trigger DELETE   /:namespace_id/:project_id/triggers/:id(.:format)                                             projects/triggers#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            namespace_project_pipelines_settings GET      /:namespace_id/:project_id/pipelines/settings(.:format)                                       projects/pipelines_settings#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/pipelines/settings(.:format)                                       projects/pipelines_settings#update {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/pipelines/settings(.:format)                                       projects/pipelines_settings#update {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               cancel_namespace_project_pipeline POST     /:namespace_id/:project_id/pipelines/:id/cancel(.:format)                                     projects/pipelines#cancel {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                retry_namespace_project_pipeline POST     /:namespace_id/:project_id/pipelines/:id/retry(.:format)                                      projects/pipelines#retry {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_pipelines GET      /:namespace_id/:project_id/pipelines(.:format)                                                projects/pipelines#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/pipelines(.:format)                                                projects/pipelines#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  new_namespace_project_pipeline GET      /:namespace_id/:project_id/pipelines/new(.:format)                                            projects/pipelines#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                      namespace_project_pipeline GET      /:namespace_id/:project_id/pipelines/:id(.:format)                                            projects/pipelines#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  namespace_project_environments GET      /:namespace_id/:project_id/environments(.:format)                                             projects/environments#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/environments(.:format)                                             projects/environments#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               new_namespace_project_environment GET      /:namespace_id/:project_id/environments/new(.:format)                                         projects/environments#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                              edit_namespace_project_environment GET      /:namespace_id/:project_id/environments/:id/edit(.:format)                                    projects/environments#edit {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_environment GET      /:namespace_id/:project_id/environments/:id(.:format)                                         projects/environments#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/environments/:id(.:format)                                         projects/environments#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/environments/:id(.:format)                                         projects/environments#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/environments/:id(.:format)                                         projects/environments#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                             cancel_all_namespace_project_builds POST     /:namespace_id/:project_id/builds/cancel_all(.:format)                                        projects/builds#cancel_all {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                    latest_succeeded_namespace_project_artifacts GET      /:namespace_id/:project_id/builds/artifacts/*ref_name_and_path                                projects/artifacts#latest_succeeded {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  status_namespace_project_build GET      /:namespace_id/:project_id/builds/:id/status(.:format)                                        projects/builds#status {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  cancel_namespace_project_build POST     /:namespace_id/:project_id/builds/:id/cancel(.:format)                                        projects/builds#cancel {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   retry_namespace_project_build POST     /:namespace_id/:project_id/builds/:id/retry(.:format)                                         projects/builds#retry {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    play_namespace_project_build POST     /:namespace_id/:project_id/builds/:id/play(.:format)                                          projects/builds#play {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   erase_namespace_project_build POST     /:namespace_id/:project_id/builds/:id/erase(.:format)                                         projects/builds#erase {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   trace_namespace_project_build GET      /:namespace_id/:project_id/builds/:id/trace(.:format)                                         projects/builds#trace {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     raw_namespace_project_build GET      /:namespace_id/:project_id/builds/:id/raw(.:format)                                           projects/builds#raw {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                      download_namespace_project_build_artifacts GET      /:namespace_id/:project_id/builds/:build_id/artifacts/download(.:format)                      projects/artifacts#download {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :build_id=>/\d+/}
+                        browse_namespace_project_build_artifacts GET      /:namespace_id/:project_id/builds/:build_id/artifacts/browse(/*path)                          projects/artifacts#browse {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :build_id=>/\d+/}
+                          file_namespace_project_build_artifacts GET      /:namespace_id/:project_id/builds/:build_id/artifacts/file/*path                              projects/artifacts#file {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :build_id=>/\d+/}
+                          keep_namespace_project_build_artifacts POST     /:namespace_id/:project_id/builds/:build_id/artifacts/keep(.:format)                          projects/artifacts#keep {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :build_id=>/\d+/}
+                                        namespace_project_builds GET      /:namespace_id/:project_id/builds(.:format)                                                   projects/builds#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_build GET      /:namespace_id/:project_id/builds/:id(.:format)                                               projects/builds#show {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     test_namespace_project_hook GET      /:namespace_id/:project_id/hooks/:id/test(.:format)                                           projects/hooks#test {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_hooks GET      /:namespace_id/:project_id/hooks(.:format)                                                    projects/hooks#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/hooks(.:format)                                                    projects/hooks#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                          namespace_project_hook DELETE   /:namespace_id/:project_id/hooks/:id(.:format)                                                projects/hooks#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                      namespace_project_container_registry_index GET      /:namespace_id/:project_id/container_registry(.:format)                                       projects/container_registry#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            namespace_project_container_registry DELETE   /:namespace_id/:project_id/container_registry/:id(.:format)                                   projects/container_registry#destroy {:id=>/
+        (?!
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
+           .*(?:
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
+           )
+        )
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
+      /x, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                         sort_issues_namespace_project_milestone PUT      /:namespace_id/:project_id/milestones/:id/sort_issues(.:format)                               projects/milestones#sort_issues {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                 sort_merge_requests_namespace_project_milestone PUT      /:namespace_id/:project_id/milestones/:id/sort_merge_requests(.:format)                       projects/milestones#sort_merge_requests {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    namespace_project_milestones GET      /:namespace_id/:project_id/milestones(.:format)                                               projects/milestones#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/milestones(.:format)                                               projects/milestones#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 new_namespace_project_milestone GET      /:namespace_id/:project_id/milestones/new(.:format)                                           projects/milestones#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                edit_namespace_project_milestone GET      /:namespace_id/:project_id/milestones/:id/edit(.:format)                                      projects/milestones#edit {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     namespace_project_milestone GET      /:namespace_id/:project_id/milestones/:id(.:format)                                           projects/milestones#show {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/milestones/:id(.:format)                                           projects/milestones#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/milestones/:id(.:format)                                           projects/milestones#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/milestones/:id(.:format)                                           projects/milestones#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               generate_namespace_project_labels POST     /:namespace_id/:project_id/labels/generate(.:format)                                          projects/labels#generate {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                         set_priorities_namespace_project_labels POST     /:namespace_id/:project_id/labels/set_priorities(.:format)                                    projects/labels#set_priorities {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                     toggle_subscription_namespace_project_label POST     /:namespace_id/:project_id/labels/:id/toggle_subscription(.:format)                           projects/labels#toggle_subscription {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                         remove_priority_namespace_project_label DELETE   /:namespace_id/:project_id/labels/:id/remove_priority(.:format)                               projects/labels#remove_priority {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_labels GET      /:namespace_id/:project_id/labels(.:format)                                                   projects/labels#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/labels(.:format)                                                   projects/labels#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     new_namespace_project_label GET      /:namespace_id/:project_id/labels/new(.:format)                                               projects/labels#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    edit_namespace_project_label GET      /:namespace_id/:project_id/labels/:id/edit(.:format)                                          projects/labels#edit {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_label PATCH    /:namespace_id/:project_id/labels/:id(.:format)                                               projects/labels#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/labels/:id(.:format)                                               projects/labels#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/labels/:id(.:format)                                               projects/labels#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                     toggle_subscription_namespace_project_issue POST     /:namespace_id/:project_id/issues/:id/toggle_subscription(.:format)                           projects/issues#toggle_subscription {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                      toggle_award_emoji_namespace_project_issue POST     /:namespace_id/:project_id/issues/:id/toggle_award_emoji(.:format)                            projects/issues#toggle_award_emoji {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            mark_as_spam_namespace_project_issue POST     /:namespace_id/:project_id/issues/:id/mark_as_spam(.:format)                                  projects/issues#mark_as_spam {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+               referenced_merge_requests_namespace_project_issue GET      /:namespace_id/:project_id/issues/:id/referenced_merge_requests(.:format)                     projects/issues#referenced_merge_requests {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                        related_branches_namespace_project_issue GET      /:namespace_id/:project_id/issues/:id/related_branches(.:format)                              projects/issues#related_branches {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       can_create_branch_namespace_project_issue GET      /:namespace_id/:project_id/issues/:id/can_create_branch(.:format)                             projects/issues#can_create_branch {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                            bulk_update_namespace_project_issues POST     /:namespace_id/:project_id/issues/bulk_update(.:format)                                       projects/issues#bulk_update {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_issues GET      /:namespace_id/:project_id/issues(.:format)                                                   projects/issues#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/issues(.:format)                                                   projects/issues#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                     new_namespace_project_issue GET      /:namespace_id/:project_id/issues/new(.:format)                                               projects/issues#new {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    edit_namespace_project_issue GET      /:namespace_id/:project_id/issues/:id/edit(.:format)                                          projects/issues#edit {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_issue GET      /:namespace_id/:project_id/issues/:id(.:format)                                               projects/issues#show {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/issues/:id(.:format)                                               projects/issues#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/issues/:id(.:format)                                               projects/issues#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/issues/:id(.:format)                                               projects/issues#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                         leave_namespace_project_project_members DELETE   /:namespace_id/:project_id/project_members/leave(.:format)                                    projects/project_members#leave {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                        import_namespace_project_project_members GET      /:namespace_id/:project_id/project_members/import(.:format)                                   projects/project_members#import {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                  apply_import_namespace_project_project_members POST     /:namespace_id/:project_id/project_members/apply_import(.:format)                             projects/project_members#apply_import {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                  resend_invite_namespace_project_project_member POST     /:namespace_id/:project_id/project_members/:id/resend_invite(.:format)                        projects/project_members#resend_invite {:id=>/[a-zA-Z.\/0-9_\-#%+]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                request_access_namespace_project_project_members POST     /:namespace_id/:project_id/project_members/request_access(.:format)                           projects/project_members#request_access {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+         approve_access_request_namespace_project_project_member POST     /:namespace_id/:project_id/project_members/:id/approve_access_request(.:format)               projects/project_members#approve_access_request {:id=>/[a-zA-Z.\/0-9_\-#%+]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               namespace_project_project_members GET      /:namespace_id/:project_id/project_members(.:format)                                          projects/project_members#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/project_members(.:format)                                          projects/project_members#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                namespace_project_project_member PATCH    /:namespace_id/:project_id/project_members/:id(.:format)                                      projects/project_members#update {:id=>/[a-zA-Z.\/0-9_\-#%+]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/project_members/:id(.:format)                                      projects/project_members#update {:id=>/[a-zA-Z.\/0-9_\-#%+]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/project_members/:id(.:format)                                      projects/project_members#destroy {:id=>/[a-zA-Z.\/0-9_\-#%+]+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_group_links GET      /:namespace_id/:project_id/group_links(.:format)                                              projects/group_links#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/group_links(.:format)                                              projects/group_links#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    namespace_project_group_link DELETE   /:namespace_id/:project_id/group_links/:id(.:format)                                          projects/group_links#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                       toggle_award_emoji_namespace_project_note POST     /:namespace_id/:project_id/notes/:id/toggle_award_emoji(.:format)                             projects/notes#toggle_award_emoji {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                        delete_attachment_namespace_project_note DELETE   /:namespace_id/:project_id/notes/:id/delete_attachment(.:format)                              projects/notes#delete_attachment {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  resolve_namespace_project_note POST     /:namespace_id/:project_id/notes/:id/resolve(.:format)                                        projects/notes#resolve {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/notes/:id/resolve(.:format)                                        projects/notes#unresolve {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_notes GET      /:namespace_id/:project_id/notes(.:format)                                                    projects/notes#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/notes(.:format)                                                    projects/notes#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                          namespace_project_note PATCH    /:namespace_id/:project_id/notes/:id(.:format)                                                projects/notes#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/notes/:id(.:format)                                                projects/notes#update {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/notes/:id(.:format)                                                projects/notes#destroy {:id=>/\d+/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_board_issue PATCH    /:namespace_id/:project_id/board/issues/:id(.:format)                                         projects/boards/issues#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/board/issues/:id(.:format)                                         projects/boards/issues#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                          generate_namespace_project_board_lists POST     /:namespace_id/:project_id/board/lists/generate(.:format)                                     projects/boards/lists#generate {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                             namespace_project_board_list_issues GET      /:namespace_id/:project_id/board/lists/:list_id/issues(.:format)                              projects/boards/issues#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :list_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   namespace_project_board_lists GET      /:namespace_id/:project_id/board/lists(.:format)                                              projects/boards/lists#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 POST     /:namespace_id/:project_id/board/lists(.:format)                                              projects/boards/lists#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                    namespace_project_board_list PATCH    /:namespace_id/:project_id/board/lists/:id(.:format)                                          projects/boards/lists#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/board/lists/:id(.:format)                                          projects/boards/lists#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/board/lists/:id(.:format)                                          projects/boards/lists#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_board GET      /:namespace_id/:project_id/board(.:format)                                                    projects/boards#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                         namespace_project_todos POST     /:namespace_id/:project_id/todos(.:format)                                                    projects/todos#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  show_namespace_project_uploads GET      /:namespace_id/:project_id/uploads/:secret/:filename(.:format)                                projects/uploads#show {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :filename=>/[^\/]+/}
+                                       namespace_project_uploads POST     /:namespace_id/:project_id/uploads(.:format)                                                  projects/uploads#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                 resume_namespace_project_runner GET      /:namespace_id/:project_id/runners/:id/resume(.:format)                                       projects/runners#resume {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  pause_namespace_project_runner GET      /:namespace_id/:project_id/runners/:id/pause(.:format)                                        projects/runners#pause {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                 toggle_shared_runners_namespace_project_runners POST     /:namespace_id/:project_id/runners/toggle_shared_runners(.:format)                            projects/runners#toggle_shared_runners {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                       namespace_project_runners GET      /:namespace_id/:project_id/runners(.:format)                                                  projects/runners#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                   edit_namespace_project_runner GET      /:namespace_id/:project_id/runners/:id/edit(.:format)                                         projects/runners#edit {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                        namespace_project_runner GET      /:namespace_id/:project_id/runners/:id(.:format)                                              projects/runners#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PATCH    /:namespace_id/:project_id/runners/:id(.:format)                                              projects/runners#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 PUT      /:namespace_id/:project_id/runners/:id(.:format)                                              projects/runners#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                                                 DELETE   /:namespace_id/:project_id/runners/:id(.:format)                                              projects/runners#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                               namespace_project_runner_projects POST     /:namespace_id/:project_id/runner_projects(.:format)                                          projects/runner_projects#create {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                namespace_project_runner_project DELETE   /:namespace_id/:project_id/runner_projects/:id(.:format)                                      projects/runner_projects#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                  build_namespace_project_badges GET      /:namespace_id/:project_id/badges/*ref/build(.:format)                                        projects/badges#build {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/svg/}
+                               coverage_namespace_project_badges GET      /:namespace_id/:project_id/badges/*ref/coverage(.:format)                                     projects/badges#coverage {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :format=>/svg/}
+                                        namespace_project_badges GET      /:namespace_id/:project_id/badges(.:format)                                                   projects/badges#index {:namespace_id=>/[a-zA-Z.0-9_\-]+/, :project_id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/}
+                                          edit_namespace_project GET      /:namespace_id/:id/edit(.:format)                                                             projects#edit {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                               namespace_project GET      /:namespace_id/:id(.:format)                                                                  projects#show {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                                                 PATCH    /:namespace_id/:id(.:format)                                                                  projects#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                                                 PUT      /:namespace_id/:id(.:format)                                                                  projects#update {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                                                 DELETE   /:namespace_id/:id(.:format)                                                                  projects#destroy {:id=>/[a-zA-Z.0-9_\-]+(?<!\.atom)/, :namespace_id=>/[a-zA-Z.0-9_\-]+/}
+                                                                 GET      /:username.keys(.:format)                                                                     profiles/keys#get_keys {:username=>/.*/}
+                                                                 GET      /:id(.:format)                                                                                namespaces#show {:id=>/(?:[^.]|\.(?!atom$))+/, :format=>/atom/}
+                                                                 GET      /health_check(/:checks)(.:format)                                                             health_check/health_check#index
+
+Routes for Teaspoon::Engine:
+   root GET  /                             teaspoon/suite#index
+fixture GET  /fixtures/*filename(.:format) teaspoon/suite#fixtures
+  suite GET  /:suite(.:format)             teaspoon/suite#show {:suite=>"default"}
+        POST /:suite/:hook(.:format)       teaspoon/suite#hook {:suite=>"default", :hook=>"default"}
+
+Routes for LetterOpenerWeb::Engine:
+clear_letters DELETE /clear(.:format)                 letter_opener_web/letters#clear
+delete_letter DELETE /:id(.:format)                   letter_opener_web/letters#destroy
+      letters GET    /                                letter_opener_web/letters#index
+       letter GET    /:id(/:style)(.:format)          letter_opener_web/letters#show
+              GET    /:id/attachments/:file(.:format) letter_opener_web/letters#attachment

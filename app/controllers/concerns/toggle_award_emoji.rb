@@ -10,7 +10,7 @@ module ToggleAwardEmoji
 
     if awardable.user_can_award?(current_user, name)
       awardable.toggle_award_emoji(name, current_user)
-      
+
       todoable = to_todoable(awardable)
       TodoService.new.new_award_emoji(todoable, current_user) if todoable
 
