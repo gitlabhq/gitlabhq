@@ -49,4 +49,20 @@ describe Projects::ServicesController do
       let!(:referrer) { nil }
     end
   end
+
+  describe 'PUT #update' do
+    context 'on successful update' do
+      it 'sets the flash' do
+        expect(service).to receive(:to_param).and_return('hipchat')
+
+        put :update,
+          namespace_id: project.namespace.id,
+          project_id: project.id,
+          id: service.id,
+          service: { active: false }
+
+        expect(flash[:notice]).to eq 'Successfully updated.'
+      end
+    end
+  end
 end
