@@ -47,8 +47,9 @@
             Note that pushing to GitLab requires write access to this repository.
         %p
           %strong Tip:
-          You can also checkout merge requests locally by
-          %a{href: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/workflow/merge_requests.md#checkout-merge-requests-locally', target: '_blank'} following these guidelines
+          = succeed '.' do
+            You can also checkout merge requests locally by
+            = link_to 'following these guidelines', help_page_path('user/project/merge_requests.md', anchor: "checkout-merge-requests-locally"), target: '_blank'
 
 :javascript
   $(function(){
