@@ -33,9 +33,10 @@
     formSubmit() {
       const $this = $(this);
 
-      $this.disable()
-        .closest('form')
+      $this.closest('form')
         .trigger("submit.rails");
+
+      $this.disable();
     }
 
     formSuccess() {
