@@ -4,9 +4,9 @@ module LabelsHelper
   # Link to a Label
   #
   # label   - Label object to link to
-  # project - Project object which will be used as the context for the label's
-  #           link. If omitted, defaults to `@project`, or the label's own
-  #           project.
+  # subject - Project/Group object which will be used as the context for the
+  #           label's link. If omitted, defaults to `@subject`, or the label's
+  #           own subject.
   # type    - The type of item the link will point to (:issue or
   #           :merge_request). If omitted, defaults to :issue.
   # block   - An optional block that will be passed to `link_to`, forming the
@@ -23,7 +23,7 @@ module LabelsHelper
   #   link_to_label(label)
   #
   #   # Force the generated link to use a provided project
-  #   link_to_label(label, project: Project.last)
+  #   link_to_label(label, subject: Project.last)
   #
   #   # Force the generated link to point to merge requests instead of issues
   #   link_to_label(label, type: :merge_request)
@@ -33,7 +33,7 @@ module LabelsHelper
   #
   # Returns a String
   def link_to_label(label, project: nil, type: :issue, tooltip: true, css_class: nil, &block)
-    project ||= @project || label.project
+    project ||= @project || label.subject
     link = label_filter_path(project, label, type: type)
 
     if block_given?
@@ -69,7 +69,7 @@ module LabelsHelper
   end
 
   def render_colored_cross_project_label(label, tooltip: true)
-    label_suffix = label.project.name_with_namespace
+    label_suffix = label.subject.name_with_namespace
     label_suffix = " <i>in #{escape_once(label_suffix)}</i>"
     render_colored_label(label, label_suffix, tooltip: tooltip)
   end
