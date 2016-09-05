@@ -257,6 +257,13 @@ module Ci
       ]
     end
 
+    def queued_duration
+      return unless started_at
+
+      seconds = (started_at - created_at).to_i
+      seconds unless seconds.zero?
+    end
+
     def update_duration
       return unless started_at
 
