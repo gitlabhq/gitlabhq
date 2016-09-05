@@ -89,6 +89,7 @@ v 8.12.0 (unreleased)
   - Fix error on raw build trace download for old builds stored in database !4822
   - Refactor the triggers page and documentation !6217
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
+  - Use default clone protocol on "check out, review, and merge locally" help page URL
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
