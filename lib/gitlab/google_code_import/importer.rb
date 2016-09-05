@@ -237,7 +237,7 @@ module Gitlab
 
       def create_label(name)
         color = nice_label_color(name)
-        Label.create!(project_id: project.id, name: name, color: color)
+        Label.create!(subject: project, name: name, color: color)
       end
 
       def format_content(raw_content)
