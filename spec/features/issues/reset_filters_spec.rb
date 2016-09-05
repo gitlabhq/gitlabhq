@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-feature 'Filter Resetter', feature: true do
+feature 'Issues filter resetter', feature: true, js: true do
   include WaitForAjax
 
   let(:project)    { create(:project, :public) }
   let(:milestone)  { create(:milestone, project: project) }
 
-  context 'resets the milestone filter', js: true do
+  context 'resets the milestone filter' do
     it 'shows all issues when reset' do
       create(:issue, project: project, milestone: milestone)
       create(:issue, project: project)
@@ -21,7 +21,7 @@ feature 'Filter Resetter', feature: true do
     end
   end
 
-  context 'resets labels filter', js: true do
+  context 'resets labels filter' do
     it 'shows all issues when reset' do
       bug = create(:label, project: project, title: 'bug')
       issue1 = create(:issue, title: 'Bugfix1', project: project)
@@ -39,7 +39,7 @@ feature 'Filter Resetter', feature: true do
     end
   end
 
-  context 'resets text filter', js: true do
+  context 'resets text filter' do
     it 'shows all issues when reset' do
       create(:issue, title: 'Bugfix1', project: project)
       create(:issue, title: 'Feature', project: project)
@@ -54,7 +54,7 @@ feature 'Filter Resetter', feature: true do
     end
   end
 
-  context 'resets label and text dually applied', js: true do
+  context 'resets label and text dually applied' do
     it 'shows all issues when reset' do
       bug = create(:label, project: project, title: 'bug')
       issue1 = create(:issue, title: 'Bugfix1', project: project)
