@@ -25,7 +25,26 @@ module GroupsHelper
   end
 
   def projects_with_lfs_enabled(group)
-    total = group.projects.size
-    "#{total - group.projects.select{ |p| !p.lfs_enabled? }.size}/#{total} projects have it enabled"
+    lfs_enabled = group.projects.select(&:lfs_enabled?).size
+    size = group.projects.size
+
+    if lfs_enabled == size || lfs_enabled == 0
+      ' on all projects'
+    else
+      " on #{lfs_enabled}/#{size} projects"
+    end
+  end
+
+  def group_lfs_status(group)
+    if group.lfs_enabled?
+      output = content_tag(:span, class: 'lfs-enabled') do
+        'Enabled'
+      end
+    else
+      output = content_tag(:span, class: 'lfs-disabled') do
+        'Disabled'
+      end
+    end
+    output << projects_with_lfs_enabled(group)
   end
 end

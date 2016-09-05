@@ -393,10 +393,6 @@ class Project < ActiveRecord::Base
   end
 
   def lfs_enabled?
-    # Specifically check is lfs_enabled is false
-    return false if self[:lfs_enabled] == false
-
-    # Should only fallback to the namespace value if no value is set for the project
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
     self[:lfs_enabled] && Gitlab.config.lfs.enabled
