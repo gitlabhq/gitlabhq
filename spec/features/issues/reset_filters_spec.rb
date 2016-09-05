@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'Issues filter resetter', feature: true, js: true do
+feature 'Issues filter reset button', feature: true, js: true do
   include WaitForAjax
 
   let(:project)    { create(:project, :public) }
   let(:milestone)  { create(:milestone, project: project) }
 
-  context 'resets the milestone filter' do
-    it 'shows all issues when reset' do
+  context 'when a milestone filter has been applied' do
+    it 'resets the milestone filter' do
       create(:issue, project: project, milestone: milestone)
       create(:issue, project: project)
 
@@ -21,8 +21,8 @@ feature 'Issues filter resetter', feature: true, js: true do
     end
   end
 
-  context 'resets labels filter' do
-    it 'shows all issues when reset' do
+  context 'when a label filter has been applied' do
+    it 'resets the label filter' do
       bug = create(:label, project: project, title: 'bug')
       issue1 = create(:issue, title: 'Bugfix1', project: project)
       issue1.labels << bug
@@ -39,8 +39,8 @@ feature 'Issues filter resetter', feature: true, js: true do
     end
   end
 
-  context 'resets text filter' do
-    it 'shows all issues when reset' do
+  context 'when a text search has been conducted' do
+    it 'resets the text search filter' do
       create(:issue, title: 'Bugfix1', project: project)
       create(:issue, title: 'Feature', project: project)
 
@@ -54,8 +54,8 @@ feature 'Issues filter resetter', feature: true, js: true do
     end
   end
 
-  context 'resets label and text dually applied' do
-    it 'shows all issues when reset' do
+  context 'when label and text filters have been dually applied' do
+    it 'resets both filters' do
       bug = create(:label, project: project, title: 'bug')
       issue1 = create(:issue, title: 'Bugfix1', project: project)
       issue1.labels << bug
