@@ -101,7 +101,7 @@ class Project < ActiveRecord::Base
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: 'source_project_id', class_name: MergeRequest
   has_many :issues,             dependent: :destroy
-  has_many :labels,             dependent: :destroy
+  has_many :labels,             dependent: :destroy, as: :subject
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -733,7 +733,7 @@ class Project < ActiveRecord::Base
     Label.templates.each do |label|
       label = label.dup
       label.template = nil
-      label.project_id = self.id
+      label.subject = self
       label.save
     end
   end

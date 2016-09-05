@@ -12,7 +12,7 @@ class Label < ActiveRecord::Base
 
   default_value_for :color, DEFAULT_COLOR
 
-  belongs_to :project
+  belongs_to :subject, polymorphic: true
 
   has_many :lists, dependent: :destroy
   has_many :label_links, dependent: :destroy
@@ -20,13 +20,13 @@ class Label < ActiveRecord::Base
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :project, presence: true, unless: Proc.new { |service| service.template? }
+  validates :subject, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow ',' for label titles
   validates :title,
             presence: true,
             format: { with: /\A[^,]+\z/ },
-            uniqueness: { scope: :project_id }
+            uniqueness: { scope: :subject_id }
 
   before_save :nullify_priority
 
@@ -92,7 +92,7 @@ class Label < ActiveRecord::Base
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if cross_project_reference?(from_project)
-      project.to_reference + reference
+      subject.to_reference + reference
     else
       reference
     end
@@ -123,6 +123,14 @@ class Label < ActiveRecord::Base
   end
 
   private
+
+  def cross_project_reference?(from_project)
+    if self.is_a?(Project)
+      self != from_project
+    else
+      from_project && self.subject && self.subject != from_project
+    end
+  end
 
   def label_format_reference(format = :id)
     raise StandardError, 'Unknown format' unless [:id, :name].include?(format)

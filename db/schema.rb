@@ -497,16 +497,18 @@ ActiveRecord::Schema.define(version: 20160913212128) do
   create_table "labels", force: :cascade do |t|
     t.string   "title"
     t.string   "color"
-    t.integer  "project_id"
+    t.integer  "subject_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "template",    default: false
+    t.boolean  "template",     default: false
     t.string   "description"
     t.integer  "priority"
+    t.string   "subject_type"
   end
 
   add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
-  add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+  add_index "labels", ["subject_id"], name: "index_labels_on_subject_id", using: :btree
+  add_index "labels", ["subject_type"], name: "index_labels_on_subject_type", using: :btree
 
   create_table "lfs_objects", force: :cascade do |t|
     t.string   "oid",                  null: false

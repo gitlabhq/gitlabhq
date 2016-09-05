@@ -256,7 +256,7 @@ describe Issue, "Issuable" do
 
   describe '#labels_array' do
     let(:project) { create(:project) }
-    let(:bug) { create(:label, project: project, title: 'bug') }
+    let(:bug) { create(:label, subject: project, title: 'bug') }
     let(:issue) { create(:issue, project: project) }
 
     before(:each) do
@@ -300,9 +300,9 @@ describe Issue, "Issuable" do
 
   describe ".with_label" do
     let(:project) { create(:project, :public) }
-    let(:bug) { create(:label, project: project, title: 'bug') }
-    let(:feature) { create(:label, project: project, title: 'feature') }
-    let(:enhancement) { create(:label, project: project, title: 'enhancement') }
+    let(:bug) { create(:label, subject: project, title: 'bug') }
+    let(:feature) { create(:label, subject: project, title: 'feature') }
+    let(:enhancement) { create(:label, subject: project, title: 'enhancement') }
     let(:issue1) { create(:issue, title: "Bugfix1", project: project) }
     let(:issue2) { create(:issue, title: "Bugfix2", project: project) }
     let(:issue3) { create(:issue, title: "Feature1", project: project) }
