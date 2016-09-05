@@ -161,7 +161,7 @@ module Gitlab
         # Otherwise always create the record, skipping the extra SELECT clause.
         @existing_or_new_object ||= begin
           if EXISTING_OBJECT_CHECK.include?(@relation_name)
-            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id'))
+            existing_object = relation_class.find_or_initialize_by(parsed_relation_hash.slice('title', 'project_id', 'subject_id', 'subject_type'))
             existing_object.assign_attributes(parsed_relation_hash)
             existing_object
           else

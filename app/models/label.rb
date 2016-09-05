@@ -20,7 +20,7 @@ class Label < ActiveRecord::Base
   has_many :merge_requests, through: :label_links, source: :target, source_type: 'MergeRequest'
 
   validates :color, color: true, allow_blank: false
-  validates :subject, presence: true, unless: Proc.new { |service| service.template? }
+  validates :subject_id, :subject_type, presence: true, unless: Proc.new { |service| service.template? }
 
   # Don't allow ',' for label titles
   validates :title,

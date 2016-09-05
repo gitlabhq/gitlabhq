@@ -18,7 +18,8 @@ describe Label, models: true do
   end
 
   describe 'validation' do
-    it { is_expected.to validate_presence_of(:subject) }
+    it { is_expected.to validate_presence_of(:subject_id) }
+    it { is_expected.to validate_presence_of(:subject_type) }
 
     it 'validates color code' do
       expect(label).not_to allow_value('G-ITLAB').for(:color)
