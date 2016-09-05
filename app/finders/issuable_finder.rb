@@ -128,7 +128,7 @@ class IssuableFinder
       @labels = Label.where(title: label_names)
 
       if projects
-        @labels = @labels.where(project: projects)
+        @labels = @labels.where(subject: projects)
       end
     else
       @labels = Label.none
@@ -273,7 +273,7 @@ class IssuableFinder
       else
         items = items.with_label(label_names, params[:sort])
         if projects
-          items = items.where(labels: { project_id: projects })
+          items = items.where(labels: { subject: projects })
         end
       end
     end
