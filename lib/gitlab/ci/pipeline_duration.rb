@@ -1,11 +1,14 @@
 module Gitlab
   module Ci
+    # # Introduction - total running time
+    #
     # The problem this class is trying to solve is finding the total running
     # time amongst all the jobs, excluding retries and pending (queue) time.
     # We could reduce this problem down to finding the union of periods.
     #
     # So each job would be represented as a `Period`, which consists of
-    # `Period#first` and `Period#last`. A simple example here would be:
+    # `Period#first` as when the job started and `Period#last` as when the
+    # job was finished. A simple example here would be:
     #
     # * A (1, 3)
     # * B (2, 4)
@@ -24,22 +27,7 @@ module Gitlab
     #
     #     (4 - 1) + (7 - 6) => 4
     #
-    # And the pending (queue) time would be (4, 6) like this: (marked as X)
-    #
-    #     0  1  2  3  4  5  6  7
-    #        AAAAAAA
-    #           BBBBBBB
-    #                       CCCC
-    #                  XXXXX
-    #
-    # Which could be calculated by having (1, 7) as total time, minus
-    # the running time we have above, 4. The full calculation would be:
-    #
-    #     total = (7 - 1)
-    #     duration = (4 - 1) + (7 - 6)
-    #     pending = total - duration # 6 - 4 => 2
-    #
-    # Which the answer to pending would be 2 in this example.
+    # # The Algorithm
     #
     # The algorithm used here for union would be described as follow.
     # First we make sure that all periods are sorted by `Period#first`.
@@ -82,22 +70,12 @@ module Gitlab
     # `C.first <= D.last` is `false`. Therefore we need to keep both C
     # and D. The example would end here because there are no more jobs.
     #
-    # After having the union of all periods, the rest is simple and
-    # described in the beginning. To summarise:
+    # After having the union of all periods, we just need to sum the length
+    # of all periods to get total time.
     #
-    #     duration = (4 - 1) + (7 - 6)
-    #     total = (7 - 1)
-    #     pending = total - duration # 6 - 4 => 2
+    #     (4 - 1) + (7 - 6) => 4
     #
-    # Note that the pending time is actually not the final pending time
-    # for pipelines, because we still need to accumulate the pending time
-    # before the first job (A in this example) even started! That is:
-    #
-    #     total_pending = pipeline.started_at - pipeline.created_at + pending
-    #
-    # Would be the final answer. We deal with that in pipeline itself
-    # but not here because here we try not to be depending on pipeline
-    # and it's trivial enough to get that information.
+    # That is 4 is the answer in the example.
     class PipelineDuration
       PeriodStruct = Struct.new(:first, :last)
       class Period < PeriodStruct
@@ -107,17 +85,10 @@ module Gitlab
       end
 
       def self.from_pipeline(pipeline)
-        now = Time.now
         status = %w[success failed running canceled]
         builds = pipeline.builds.latest.where(status: status)
 
-        running = from_builds(builds, :started_at, :finished_at, now).duration
-        pending = pipeline.started_at - pipeline.created_at
-        queuing = builds.inject(0) do |result, job|
-          result + ((job.started_at || now) - (job.queued_at || now))
-        end
-
-        [running, pending + queuing]
+        from_builds(builds, :started_at, :finished_at).duration
       end
 
       def self.from_builds(builds, from, to, now = Time.now)
