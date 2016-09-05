@@ -37,7 +37,7 @@
 
       - note_count = merge_request.mr_and_commit_notes.user.count
       %li
-        = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('merge-request-no-comments' if note_count.zero?) do
+        = link_to merge_request_path(merge_request, anchor: 'notes'), class: ('no-comments' if note_count.zero?) do
           = icon('comments')
           = note_count
 
