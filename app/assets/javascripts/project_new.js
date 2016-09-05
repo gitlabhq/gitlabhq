@@ -17,15 +17,6 @@
     }
 
     ProjectNew.prototype.toggleSettings = function() {
-<<<<<<< HEAD
-      this._showOrHide('#project_builds_enabled', '.builds-feature');
-      this._showOrHide('#project_merge_requests_enabled', '.merge-requests-feature');
-      return this._showOrHide('#project_issues_enabled', '.issues-feature');
-    };
-
-    ProjectNew.prototype.toggleSettingsOnclick = function() {
-      return $('#project_builds_enabled, #project_merge_requests_enabled, #project_issues_enabled').on('click', this.toggleSettings);
-=======
       var self = this;
 
       this.$selects.each(function () {
@@ -38,7 +29,6 @@
 
     ProjectNew.prototype.toggleSettingsOnclick = function() {
       this.$selects.on('change', this.toggleSettings);
->>>>>>> ce/master
     };
 
     ProjectNew.prototype._showOrHide = function(checkElement, container) {
