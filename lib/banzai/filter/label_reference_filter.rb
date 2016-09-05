@@ -60,7 +60,7 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        if context[:project] == object.project
+        if context[:project] == object.subject
           LabelsHelper.render_colored_label(object)
         else
           LabelsHelper.render_colored_cross_project_label(object)
