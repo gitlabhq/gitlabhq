@@ -15,14 +15,8 @@
 
     addListeners() {
       $('.project_member, .group_member').on('ajax:success', this.removeRow);
-      $('.js-member-update-control').on('change', function () {
-        $(this).closest('form')
-          .trigger("submit.rails");
-        $(this).disable();
-      });
-      $('.js-edit-member-form').on('ajax:success', function () {
-        $(this).find('.js-member-update-control').enable();
-      });
+      $('.js-member-update-control').on('change', this.formSubmit);
+      $('.js-edit-member-form').on('ajax:success', this.formSuccess);
     }
 
     removeRow(e) {
@@ -36,8 +30,16 @@
       }
     }
 
-    submitForm() {
+    formSubmit() {
+      const $this = $(this);
 
+      $this.disable()
+        .closest('form')
+        .trigger("submit.rails");
+    }
+
+    formSuccess() {
+      $(this).find('.js-member-update-control').enable();
     }
   }
 
