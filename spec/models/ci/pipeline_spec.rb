@@ -128,7 +128,7 @@ describe Ci::Pipeline, models: true do
     let(:build_b) { create_build('build2', current, 20) }
     let(:build_c) { create_build('build3', current + 50, 10) }
 
-    describe '#duration and #pending_duration' do
+    describe '#duration' do
       before do
         pipeline.update(created_at: current)
 
@@ -156,7 +156,6 @@ describe Ci::Pipeline, models: true do
         pipeline.reload
 
         expect(pipeline.duration).to eq(40)
-        expect(pipeline.pending_duration).to eq(45)
       end
     end
 
