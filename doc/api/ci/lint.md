@@ -2,7 +2,7 @@
 
 > [Introduced][ce-5953] in GitLab 8.12.
 
-Check whether your .gitlab-ci.yml file is valid.
+Checks if your .gitlab-ci.yml file is valid.
 
 ```
 POST ci/lint
@@ -53,7 +53,7 @@ curl --request POST "https://gitlab.example.com/api/v3/ci/lint?content={
 }"
 ```
 
-Be sure to copy paste the exact contents of `.gitlab-ci.yml` as YAML is very picky with indentation and spaces.
+Be sure to copy paste the exact contents of `.gitlab-ci.yml` as YAML is very picky about indentation and spaces.
 
 Example responses:
 
