@@ -73,8 +73,4 @@ It is also working on commits compare view.
 
 ## Merge Requests versions
 
-Every time you push to merge request branch, a new version of merge request diff
-is created. When you visit the merge request page you see latest version of changes.
-However you can select an older one from version dropdown
-
-![Merge Request Versions](merge_requests/img/versions.png)
+Select an older revision to from the version dropdown.
