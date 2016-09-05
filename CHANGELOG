@@ -88,6 +88,7 @@ v 8.11.5 (unreleased)
   - Fix suggested colors options for new labels in the admin area. !6138
   - Fix GitLab import button
   - Fix confidential issues being exposed as public using gitlab.com export
+  - Remove gitorious from import_sources
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
