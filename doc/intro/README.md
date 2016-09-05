@@ -25,7 +25,7 @@ Create merge requests and review code.
 - [Automatically close issues from merge requests](../customization/issue_closing.md)
 - [Automatically merge when your builds succeed](../user/project/merge_requests/merge_when_build_succeeds.md)
 - [Revert any commit](../workflow/revert_changes.md)
-- [Cherry-pick any commit](../workflow/cherry_pick_changes.md)
+- [Cherry-pick any commit](../user/project/merge_requests/cherry_pick_changes.md)
 
 ## Test and Deploy
 
