@@ -26,3 +26,21 @@ When the builds are retried and succeed on the second try, the merge request
 will automatically be merged after all. When the merge request is updated with
 new commits, the automatic merge is automatically canceled to allow the new
 changes to be reviewed.
+
+## Only allow merge requests to be merged if the build succeeds
+
+> **Note:**
+You need to have builds configured to enable this feature.
+
+You can prevent merge requests from being merged if their build did not succeed.
+
+Navigate to your project's settings page, select the
+**Only allow merge requests to be merged if the build succeeds** check box and
+hit **Save** for the changes to take effect.
+
+![Only allow merge if build succeeds settings](img/merge_when_build_succeeds_only_if_succeeds_settings.png)
+
+From now on, every time the build fails you will not be able to merge the merge
+request from the UI, until you make the build pass.
+
+![Only allow merge if build succeeds msg](img/merge_when_build_succeeds_only_if_succeeds_msg.png)

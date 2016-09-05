@@ -1,17 +1,7 @@
 # Merge Requests
 
-Merge requests allow you to exchange changes you made to source code
-
-## Only allow merge requests to be merged if the build succeeds
-
-You can prevent merge requests from being merged if their build did not succeed
-in the project settings page.
-
-![only_allow_merge_if_build_succeeds](merge_requests/img/only_allow_merge_if_build_succeeds.png)
-
-Navigate to project settings page and select the `Only allow merge requests to be merged if the build succeeds` check box.
-
-Please note that you need to have builds configured to enable this feature.
+Merge requests allow you to exchange changes you made to source code and
+collaborate with other people on the same project.
 
 ## Checkout merge requests locally
 
