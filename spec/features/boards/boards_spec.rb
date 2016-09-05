@@ -467,6 +467,25 @@ describe 'Issue Boards', feature: true, js: true do
         end
       end
 
+      it 'removes filtered labels' do
+        page.within '.labels-filter' do
+          click_button('Label')
+          wait_for_ajax
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+          end
+
+          expect(page).to have_css('input[name="label_name[]"]', visible: false)
+
+          page.within '.dropdown-menu-labels' do
+            click_link(testing.title)
+          end
+
+          expect(page).not_to have_css('input[name="label_name[]"]', visible: false)
+        end
+      end
+
       it 'infinite scrolls list with label filter' do
         50.times do
           create(:labeled_issue, project: project, labels: [testing])
