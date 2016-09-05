@@ -2,14 +2,14 @@
 
 This guide covers the building dependencies of a PHP project while compiling assets via a NPM script.
 
-While is possible to create your own image with custom PHP and Node JS versione, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
+While is possible to create your own image with custom PHP and Node JS version, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
 
 
 ```yaml
 image: tetraweb/php
 ```
 
-The next step is to install zip/unzip packages and make composer available. We will place these on `before_scripts` section:
+The next step is to install zip/unzip packages and make composer available. We will place these in the `before_scripts` section:
 
 ```yaml
 before_script:
@@ -30,21 +30,21 @@ before_script:
   - npm run deploy
 ```
 
-In this particular case, the `npm deploy` script is a Gulp script that do the following:
+In this particular case, the `npm deploy` script is a Gulp script that does the following:
 
 1. Compile CSS & JS
 2. Create sprites
 3. Copy various assets (images, fonts) around
-4. Replaces some strings
+4. Replace some strings
 
 All these operations will put all files into a `build` folder, which is ready to be deployed to a live server.
 
-### How to transfer files on a live server?
+### How to transfer files to a live server?
 
-You have multiple options: rsync, scp, sftp and so on. For now, we will use scp. To make this work, you need to add a gitlab Secret Variable (accessible on _gitlab.com/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
+You have multiple options: rsync, scp, sftp and so on. For now, we will use scp. To make this work, you need to add a GitLab Secret Variable (accessible on _gitlab.com/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
 
 #### Security tip
-Create an user that have access **only** to the folder that need to be updated!
+Create an user that has access **only** to the folder that need to be updated!
 
 After you create that variable, you need to make sure that key will be added to the docker container on run:
 
@@ -64,7 +64,7 @@ In order, this means that:
 3. we make sure we're running bash;
 4. we disable host checking (we don't ask for user accept when we first connect to a server; and since every build will equal a first connect, we kind of need this)
 
-And this is basically al you need on `before_script` section.
+And this is basically all you need on `before_script` section.
 
 ## How to deploy things?
 
@@ -94,7 +94,7 @@ stage_deploy:
 5. We will connect again to `ssh` and move the `live` folder to an `_old` folder, then move `_tmp` to `live`.
 6. We connect to ssh and remove the `_old` folder
 
-What's the deal with the artifacts? We just tell Gitlab CI to keep the `build` directory (later on, you can download that as needed).
+What's the deal with the artifacts? We just tell GitLab CI to keep the `build` directory (later on, you can download that as needed).
 
 #### Why we do it this way?
 If you're using this only for stage server, you could do this in two steps:
@@ -113,7 +113,7 @@ Since this was a WordPress project, I gave real life code snippets. Some ideas y
 
 - Having a slightly different script for `master` branch will allow you to deploy to a production server from that branch and to a stage server from any other branches;
 - Instead of pushing it live, you can push it to WordPress official repo (with creating a SVN commit & stuff);
-- You could generate i18n text domains on the fly;
+- You could generate i18n text domains on the fly.
 
 ---
 
@@ -148,3 +148,4 @@ stage_deploy:
     - scp -P22 -r build/* server_user@server_host:htdocs/wp-content/themes/_tmp
     - ssh -p22 server_user@server_host "mv htdocs/wp-content/themes/live htdocs/wp-content/themes/_old && mv htdocs/wp-content/themes/_tmp htdocs/wp-content/themes/live"
     - ssh -p22 server_user@server_host "rm -rf htdocs/wp-content/themes/_old"
+```
