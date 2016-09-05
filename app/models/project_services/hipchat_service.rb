@@ -39,7 +39,7 @@ class HipchatService < Service
   end
 
   def supported_events
-    %w(push issue merge_request note tag_push build)
+    %w(push issue confidential_issue merge_request note tag_push build)
   end
 
   def execute(data)

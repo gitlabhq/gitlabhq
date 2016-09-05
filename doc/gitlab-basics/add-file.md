@@ -25,7 +25,3 @@ Add all the information that you'd like to include in your file:
 Add a commit message based on what you just added and then click on "commit changes":
 
 ![Commit changes](basicsimages/commit_changes.png)
-
-### Note
-Besides its regular files, every directory needs a README.md or README.html file which works like an index, telling
-what the directory is about. It's the first document you'll find when you open a directory.
