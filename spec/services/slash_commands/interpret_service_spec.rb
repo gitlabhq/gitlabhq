@@ -5,8 +5,8 @@ describe SlashCommands::InterpretService, services: true do
   let(:user) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
-  let(:inprogress) { create(:label, project: project, title: 'In Progress') }
-  let(:bug) { create(:label, project: project, title: 'Bug') }
+  let(:inprogress) { create(:label, subject: project, title: 'In Progress') }
+  let(:bug) { create(:label, subject: project, title: 'Bug') }
 
   before do
     project.team << [user, :developer]

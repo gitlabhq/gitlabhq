@@ -11,7 +11,7 @@ describe Projects::LabelsController do
 
   describe 'GET #index' do
     def create_label(attributes)
-      create(:label, attributes.merge(project: project))
+      create(:label, attributes.merge(subject: project))
     end
 
     before do

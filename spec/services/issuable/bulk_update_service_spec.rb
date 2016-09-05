@@ -103,9 +103,9 @@ describe Issuable::BulkUpdateService, services: true do
       create(:labeled_issue, project: project, labels: labels)
     end
 
-    let(:bug) { create(:label, project: project) }
-    let(:regression) { create(:label, project: project) }
-    let(:merge_requests) { create(:label, project: project) }
+    let(:bug) { create(:label, subject: project) }
+    let(:regression) { create(:label, subject: project) }
+    let(:merge_requests) { create(:label, subject: project) }
 
     let(:issue_all_labels) { create_issue_with_labels([bug, regression, merge_requests]) }
     let(:issue_bug_and_regression) { create_issue_with_labels([bug, regression]) }

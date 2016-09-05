@@ -220,9 +220,9 @@ module SharedProject
 
   step 'project "Shop" has labels: "bug", "feature", "enhancement"' do
     project = Project.find_by(name: "Shop")
-    create(:label, project: project, title: 'bug')
-    create(:label, project: project, title: 'feature')
-    create(:label, project: project, title: 'enhancement')
+    create(:label, subject: project, title: 'bug')
+    create(:label, subject: project, title: 'feature')
+    create(:label, subject: project, title: 'enhancement')
   end
 
   step 'project "Shop" has issue: "bug report"' do

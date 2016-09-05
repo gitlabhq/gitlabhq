@@ -6,7 +6,7 @@ shared_examples 'new issuable record that supports slash commands' do
   let(:user) { create(:user).tap { |u| project.team << [u, :master] } }
   let(:assignee) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
-  let!(:labels) { create_list(:label, 3, project: project) }
+  let!(:labels) { create_list(:label, 3, subject: project) }
   let(:base_params) { { title: FFaker::Lorem.sentence(3) } }
   let(:params) { base_params.merge(defined?(default_params) ? default_params : {}).merge(example_params) }
   let(:issuable) { described_class.new(project, user, params).execute }

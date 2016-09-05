@@ -10,8 +10,8 @@ shared_examples 'issuable record that supports slash commands in its description
   let(:guest) { create(:user) }
   let(:project) { create(:project, :public) }
   let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
-  let!(:label_bug) { create(:label, project: project, title: 'bug') }
-  let!(:label_feature) { create(:label, project: project, title: 'feature') }
+  let!(:label_bug) { create(:label, subject: project, title: 'bug') }
+  let!(:label_feature) { create(:label, subject: project, title: 'feature') }
   let(:new_url_opts) { {} }
 
   before do

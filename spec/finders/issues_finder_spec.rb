@@ -6,7 +6,7 @@ describe IssuesFinder do
   let(:project1) { create(:empty_project) }
   let(:project2) { create(:empty_project) }
   let(:milestone) { create(:milestone, project: project1) }
-  let(:label) { create(:label, project: project2) }
+  let(:label) { create(:label, subject: project2) }
   let(:issue1) { create(:issue, author: user, assignee: user, project: project1, milestone: milestone) }
   let(:issue2) { create(:issue, author: user, assignee: user, project: project2) }
   let(:issue3) { create(:issue, author: user2, assignee: user2, project: project2) }
@@ -110,7 +110,7 @@ describe IssuesFinder do
 
       context 'filtering by multiple labels' do
         let(:params) { { label_name: [label.title, label2.title].join(',') } }
-        let(:label2) { create(:label, project: project2) }
+        let(:label2) { create(:label, subject: project2) }
 
         before { create(:label_link, label: label2, target: issue2) }
 

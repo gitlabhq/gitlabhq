@@ -5,11 +5,11 @@ feature 'Issue prioritization', feature: true do
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
   # Labels
-  let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
-  let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
-  let(:label_3) { create(:label, title: 'label_3', project: project, priority: 3) }
-  let(:label_4) { create(:label, title: 'label_4', project: project, priority: 4) }
-  let(:label_5) { create(:label, title: 'label_5', project: project) } # no priority
+  let(:label_1) { create(:label, title: 'label_1', subject: project, priority: 1) }
+  let(:label_2) { create(:label, title: 'label_2', subject: project, priority: 2) }
+  let(:label_3) { create(:label, title: 'label_3', subject: project, priority: 3) }
+  let(:label_4) { create(:label, title: 'label_4', subject: project, priority: 4) }
+  let(:label_5) { create(:label, title: 'label_5', subject: project) } # no priority
 
   # According to https://gitlab.com/gitlab-org/gitlab-ce/issues/14189#note_4360653
   context 'when issues have one label' do

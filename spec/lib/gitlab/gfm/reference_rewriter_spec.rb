@@ -63,7 +63,7 @@ describe Gitlab::Gfm::ReferenceRewriter do
         end
 
         context 'description with labels' do
-          let!(:label) { create(:label, id: 123, name: 'test', project: old_project) }
+          let!(:label) { create(:label, id: 123, name: 'test', subject: old_project) }
           let(:project_ref) { old_project.to_reference }
 
           context 'label referenced by id' do

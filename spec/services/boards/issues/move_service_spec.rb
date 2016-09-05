@@ -6,9 +6,9 @@ describe Boards::Issues::MoveService, services: true do
     let(:project) { create(:project_with_board) }
     let(:board)   { project.board }
 
-    let(:bug) { create(:label, project: project, name: 'Bug') }
-    let(:development) { create(:label, project: project, name: 'Development') }
-    let(:testing)  { create(:label, project: project, name: 'Testing') }
+    let(:bug) { create(:label, subject: project, name: 'Bug') }
+    let(:development) { create(:label, subject: project, name: 'Development') }
+    let(:testing)  { create(:label, subject: project, name: 'Testing') }
 
     let!(:backlog) { create(:backlog_list, board: board) }
     let!(:list1)   { create(:list, board: board, label: development, position: 0) }

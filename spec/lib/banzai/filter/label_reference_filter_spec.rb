@@ -5,7 +5,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   include FilterSpecHelper
 
   let(:project)   { create(:empty_project, :public) }
-  let(:label)     { create(:label, project: project) }
+  let(:label)     { create(:label, subject: project) }
   let(:reference) { label.to_reference }
 
   it 'requires project context' do
@@ -81,7 +81,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based single-word references' do
-    let(:label)     { create(:label, name: 'gfm', project: project) }
+    let(:label)     { create(:label, name: 'gfm', subject: project) }
     let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
     it 'links to a valid reference' do
@@ -105,7 +105,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based single-word references that begin with a digit' do
-    let(:label)     { create(:label, name: '2fa', project: project) }
+    let(:label)     { create(:label, name: '2fa', subject: project) }
     let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
     it 'links to a valid reference' do
@@ -129,7 +129,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based single-word references with special characters' do
-    let(:label)     { create(:label, name: '?g.fm&', project: project) }
+    let(:label)     { create(:label, name: '?g.fm&', subject: project) }
     let(:reference) { "#{Label.reference_prefix}#{label.name}" }
 
     it 'links to a valid reference' do
@@ -154,7 +154,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based multi-word references in quotes' do
-    let(:label)     { create(:label, name: 'gfm references', project: project) }
+    let(:label)     { create(:label, name: 'gfm references', subject: project) }
     let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
@@ -178,7 +178,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based multi-word references that begin with a digit' do
-    let(:label)     { create(:label, name: '2 factor authentication', project: project) }
+    let(:label)     { create(:label, name: '2 factor authentication', subject: project) }
     let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
@@ -202,7 +202,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   context 'String-based multi-word references with special characters in quotes' do
-    let(:label)     { create(:label, name: 'g.fm & references?', project: project) }
+    let(:label)     { create(:label, name: 'g.fm & references?', subject: project) }
     let(:reference) { label.to_reference(format: :name) }
 
     it 'links to a valid reference' do
@@ -227,9 +227,9 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
   end
 
   describe 'consecutive references' do
-    let(:bug) { create(:label, name: 'bug', project: project) }
-    let(:feature_proposal) { create(:label, name: 'feature proposal', project: project) }
-    let(:technical_debt) { create(:label, name: 'technical debt', project: project) }
+    let(:bug) { create(:label, name: 'bug', subject: project) }
+    let(:feature_proposal) { create(:label, name: 'feature proposal', subject: project) }
+    let(:technical_debt) { create(:label, name: 'technical debt', subject: project) }
 
     let(:bug_reference) { "#{Label.reference_prefix}#{bug.name}" }
     let(:feature_proposal_reference) { feature_proposal.to_reference(format: :name) }
@@ -309,7 +309,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
     context 'valid project referenced' do
       let(:another_project)  { create(:empty_project, :public) }
       let(:project_name) { another_project.name_with_namespace }
-      let(:label) { create(:label, project: another_project, color: '#00ff00') }
+      let(:label) { create(:label, subject: another_project, color: '#00ff00') }
       let(:reference) { label.to_reference(project) }
 
       let!(:result) { reference_filter("See #{reference}") }

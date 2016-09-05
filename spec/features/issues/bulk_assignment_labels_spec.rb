@@ -7,8 +7,8 @@ feature 'Issues > Labels bulk assignment', feature: true do
   let!(:project)  { create(:project) }
   let!(:issue1)   { create(:issue, project: project, title: "Issue 1") }
   let!(:issue2)   { create(:issue, project: project, title: "Issue 2") }
-  let!(:bug)      { create(:label, project: project, title: 'bug') }
-  let!(:feature)  { create(:label, project: project, title: 'feature') }
+  let!(:bug)      { create(:label, subject: project, title: 'bug') }
+  let!(:feature)  { create(:label, subject: project, title: 'feature') }
 
   context 'as an allowed user', js: true do
     before do

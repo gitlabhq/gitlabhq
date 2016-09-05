@@ -107,8 +107,8 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
       project = create :project, path: path, group: group
       milestone = create :milestone, title: "Version 7.2", project: project
 
-      create(:label, project: project, title: 'bug')
-      create(:label, project: project, title: 'feature')
+      create(:label, subject: project, title: 'bug')
+      create(:label, subject: project, title: 'feature')
 
       create :issue,
         project: project,

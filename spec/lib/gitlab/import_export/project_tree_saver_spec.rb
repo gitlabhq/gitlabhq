@@ -138,7 +138,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver, services: true do
                      snippets: [snippet],
                      releases: [release]
                     )
-    label = create(:label, project: project)
+    label = create(:label, subject: project)
     create(:label_link, label: label, target: issue)
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone)

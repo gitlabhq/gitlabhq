@@ -59,8 +59,8 @@ describe Gitlab::ReferenceExtractor, lib: true do
   end
 
   it 'accesses valid labels' do
-    @l0 = create(:label, title: 'one', project: project)
-    @l1 = create(:label, title: 'two', project: project)
+    @l0 = create(:label, title: 'one', subject: project)
+    @l1 = create(:label, title: 'two', subject: project)
     @l2 = create(:label)
 
     subject.analyze("~#{@l0.id}, ~999, ~#{@l2.id}, ~#{@l1.id}")
@@ -128,7 +128,7 @@ describe Gitlab::ReferenceExtractor, lib: true do
 
   describe '#all' do
     let(:issue) { create(:issue, project: project) }
-    let(:label) { create(:label, project: project) }
+    let(:label) { create(:label, subject: project) }
     let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
 
     before do

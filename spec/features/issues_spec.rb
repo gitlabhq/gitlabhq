@@ -252,7 +252,7 @@ describe 'Issues', feature: true do
       end
 
       context 'with a filter on labels' do
-        let(:label) { create(:label, project: project) }
+        let(:label) { create(:label, subject: project) }
         before { create(:label_link, label: label, target: foo) }
 
         it 'sorts by least recently due date by excluding nil due dates' do

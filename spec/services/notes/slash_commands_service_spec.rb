@@ -49,7 +49,7 @@ describe Notes::SlashCommandsService, services: true do
     end
 
     let!(:milestone) { create(:milestone, project: project) }
-    let!(:labels) { create_pair(:label, project: project) }
+    let!(:labels) { create_pair(:label, subject: project) }
 
     describe 'note with only command' do
       describe '/close, /label, /assign & /milestone' do

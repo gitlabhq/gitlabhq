@@ -40,7 +40,7 @@ describe API::API, api: true  do
            updated_at: 1.hour.ago
   end
   let!(:label) do
-    create(:label, title: 'label', color: '#FFAABB', project: project)
+    create(:label, title: 'label', color: '#FFAABB', subject: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
   let!(:milestone) { create(:milestone, title: '1.0.0', project: project) }
@@ -209,7 +209,7 @@ describe API::API, api: true  do
              updated_at: 1.hour.ago
     end
     let!(:group_label) do
-      create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
+      create(:label, title: 'group_lbl', color: '#FFAABB', subject: group_project)
     end
     let!(:group_label_link) { create(:label_link, label: group_label, target: group_issue) }
     let!(:group_milestone) { create(:milestone, title: '3.0.0', project: group_project) }
@@ -816,7 +816,7 @@ describe API::API, api: true  do
   end
 
   describe 'PUT /projects/:id/issues/:issue_id to update labels' do
-    let!(:label) { create(:label, title: 'dummy', project: project) }
+    let!(:label) { create(:label, title: 'dummy', subject: project) }
     let!(:label_link) { create(:label_link, label: label, target: issue) }
 
     it 'does not update labels if not present' do
@@ -827,7 +827,7 @@ describe API::API, api: true  do
     end
 
     it "sends notifications for subscribers of newly added labels when issue is updated" do
-      label = create(:label, title: 'foo', color: '#FFAABB', project: project)
+      label = create(:label, title: 'foo', color: '#FFAABB', subject: project)
       label.toggle_subscription(user2)
 
       perform_enqueued_jobs do

@@ -98,7 +98,7 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
   end
 
   it 'filters on one label and sorts by due soon' do
-    label = create(:label, project: project)
+    label = create(:label, subject: project)
     create(:label_link, label: label, target: @fix)
 
     visit_merge_requests(project, label_name: [label.name],
@@ -109,8 +109,8 @@ describe 'Projects > Merge requests > User lists merge requests', feature: true 
   end
 
   context 'while filtering on two labels' do
-    let(:label) { create(:label, project: project) }
-    let(:label2) { create(:label, project: project) }
+    let(:label) { create(:label, subject: project) }
+    let(:label2) { create(:label, subject: project) }
 
     before do
       create(:label_link, label: label, target: @fix)

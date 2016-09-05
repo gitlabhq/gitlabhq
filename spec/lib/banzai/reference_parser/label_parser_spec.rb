@@ -5,7 +5,7 @@ describe Banzai::ReferenceParser::LabelParser, lib: true do
 
   let(:project) { create(:empty_project, :public) }
   let(:user) { create(:user) }
-  let(:label) { create(:label, project: project) }
+  let(:label) { create(:label, subject: project) }
   subject { described_class.new(project, user) }
   let(:link) { empty_html_link }
 

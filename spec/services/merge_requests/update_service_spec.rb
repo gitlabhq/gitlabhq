@@ -5,7 +5,7 @@ describe MergeRequests::UpdateService, services: true do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
-  let(:label) { create(:label, project: project) }
+  let(:label) { create(:label, subject: project) }
   let(:label2) { create(:label) }
 
   let(:merge_request) do

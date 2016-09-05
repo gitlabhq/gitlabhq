@@ -56,12 +56,12 @@ describe 'Issue Boards', feature: true, js: true do
   context 'with lists' do
     let(:milestone) { create(:milestone, project: project) }
 
-    let(:planning)    { create(:label, project: project, name: 'Planning') }
-    let(:development) { create(:label, project: project, name: 'Development') }
-    let(:testing)     { create(:label, project: project, name: 'Testing') }
-    let(:bug)         { create(:label, project: project, name: 'Bug') }
-    let!(:backlog)    { create(:label, project: project, name: 'Backlog') }
-    let!(:done)       { create(:label, project: project, name: 'Done') }
+    let(:planning)    { create(:label, subject: project, name: 'Planning') }
+    let(:development) { create(:label, subject: project, name: 'Development') }
+    let(:testing)     { create(:label, subject: project, name: 'Testing') }
+    let(:bug)         { create(:label, subject: project, name: 'Bug') }
+    let!(:backlog)    { create(:label, subject: project, name: 'Backlog') }
+    let!(:done)       { create(:label, subject: project, name: 'Done') }
 
     let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
     let!(:list2) { create(:list, board: project.board, label: development, position: 1) }

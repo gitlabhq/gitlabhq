@@ -6,7 +6,7 @@ feature 'Issue Sidebar', feature: true do
   let!(:user) { create(:user)}
 
   before do
-    create(:label, project: project, title: 'bug')
+    create(:label, subject: project, title: 'bug')
     login_as(user)
   end
 

@@ -6,7 +6,7 @@ describe Issues::UpdateService, services: true do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:project) { create(:empty_project) }
-  let(:label) { create(:label, project: project) }
+  let(:label) { create(:label, subject: project) }
   let(:label2) { create(:label) }
 
   let(:issue) do
@@ -297,7 +297,7 @@ describe Issues::UpdateService, services: true do
     end
 
     context 'updating labels' do
-      let(:label3) { create(:label, project: project) }
+      let(:label3) { create(:label, subject: project) }
       let(:result) { described_class.new(project, user, params).execute(issue).reload }
 
       context 'when add_label_ids and label_ids are passed' do

@@ -32,9 +32,9 @@ describe TodosFinder do
       end
 
       it "sorts by priority" do
-        label_1         = create(:label, title: 'label_1', project: project, priority: 1)
-        label_2         = create(:label, title: 'label_2', project: project, priority: 2)
-        label_3         = create(:label, title: 'label_3', project: project, priority: 3)
+        label_1         = create(:label, title: 'label_1', subject: project, priority: 1)
+        label_2         = create(:label, title: 'label_2', subject: project, priority: 2)
+        label_3         = create(:label, title: 'label_3', subject: project, priority: 3)
 
         issue_1         = create(:issue, title: 'issue_1', project: project)
         issue_2         = create(:issue, title: 'issue_2', project: project)

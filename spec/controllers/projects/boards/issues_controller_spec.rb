@@ -4,8 +4,8 @@ describe Projects::Boards::IssuesController do
   let(:project) { create(:project_with_board) }
   let(:user)    { create(:user) }
 
-  let(:planning)    { create(:label, project: project, name: 'Planning') }
-  let(:development) { create(:label, project: project, name: 'Development') }
+  let(:planning)    { create(:label, subject: project, name: 'Planning') }
+  let(:development) { create(:label, subject: project, name: 'Development') }
 
   let!(:list1) { create(:list, board: project.board, label: planning, position: 0) }
   let!(:list2) { create(:list, board: project.board, label: development, position: 1) }

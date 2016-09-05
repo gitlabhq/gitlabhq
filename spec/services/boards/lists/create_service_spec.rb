@@ -5,7 +5,7 @@ describe Boards::Lists::CreateService, services: true do
     let(:project) { create(:project_with_board) }
     let(:board)   { project.board }
     let(:user)    { create(:user) }
-    let(:label)   { create(:label, project: project, name: 'in-progress') }
+    let(:label)   { create(:label, subject: project, name: 'in-progress') }
 
     subject(:service) { described_class.new(project, user, label_id: label.id) }
 

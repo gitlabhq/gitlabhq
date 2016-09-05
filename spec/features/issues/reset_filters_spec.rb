@@ -5,9 +5,9 @@ feature 'Issues filter reset button', feature: true, js: true do
   include IssueHelpers
 
   let!(:project)    { create(:project, :public) }
-  let!(:user)        { create(:user)}
+  let!(:user)       { create(:user)}
   let!(:milestone)  { create(:milestone, project: project) }
-  let!(:bug)        { create(:label, project: project, name: 'bug')}
+  let!(:bug)        { create(:label, subject: project, name: 'bug')}
   let!(:issue1)     { create(:issue, project: project, milestone: milestone, author: user, assignee: user, title: 'Feature')}
   let!(:issue2)     { create(:labeled_issue, project: project, labels: [bug], title: 'Bugfix1')}
 

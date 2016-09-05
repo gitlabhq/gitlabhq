@@ -4,9 +4,9 @@ describe "Dashboard > User sorts todos", feature: true do
   let(:user)    { create(:user) }
   let(:project) { create(:empty_project) }
 
-  let(:label_1) { create(:label, title: 'label_1', project: project, priority: 1) }
-  let(:label_2) { create(:label, title: 'label_2', project: project, priority: 2) }
-  let(:label_3) { create(:label, title: 'label_3', project: project, priority: 3) }
+  let(:label_1) { create(:label, title: 'label_1', subject: project, priority: 1) }
+  let(:label_2) { create(:label, title: 'label_2', subject: project, priority: 2) }
+  let(:label_3) { create(:label, title: 'label_3', subject: project, priority: 3) }
 
   let(:issue_1) { create(:issue, title: 'issue_1', project: project) }
   let(:issue_2) { create(:issue, title: 'issue_2', project: project) }

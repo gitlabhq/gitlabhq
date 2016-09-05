@@ -10,7 +10,7 @@ describe Issues::CreateService, services: true do
     context 'when params are valid' do
       let(:assignee) { create(:user) }
       let(:milestone) { create(:milestone, project: project) }
-      let(:labels) { create_pair(:label, project: project) }
+      let(:labels) { create_pair(:label, subject: project) }
 
       before do
         project.team << [user, :master]

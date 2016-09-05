@@ -30,8 +30,8 @@ describe Boards::Lists::GenerateService, services: true do
 
     context 'when project labels contains some of list label' do
       it 'creates the missing labels' do
-        create(:label, project: project, name: 'Development')
-        create(:label, project: project, name: 'Ready')
+        create(:label, subject: project, name: 'Development')
+        create(:label, subject: project, name: 'Ready')
 
         expect { service.execute }.to change(project.labels, :count).by(2)
       end

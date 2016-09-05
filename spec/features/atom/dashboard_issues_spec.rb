@@ -38,7 +38,7 @@ describe "Dashboard Issues Feed", feature: true  do
 
       context "issue with label and milestone" do
         let!(:milestone1) { create(:milestone, project: project1, title: 'v1') }
-        let!(:label1)     { create(:label, project: project1, title: 'label1') }
+        let!(:label1)     { create(:label, subject: project1, title: 'label1') }
         let!(:issue1)     { create(:issue, author: user, assignee: user, project: project1, milestone: milestone1) }
 
         before do

@@ -6,9 +6,9 @@ describe 'Filter issues', feature: true do
   let!(:project)   { create(:project) }
   let!(:user)      { create(:user)}
   let!(:milestone) { create(:milestone, project: project) }
-  let!(:label)     { create(:label, project: project) }
+  let!(:label)     { create(:label, subject: project) }
   let!(:issue1)    { create(:issue, project: project) }
-  let!(:wontfix)   { create(:label, project: project, title: "Won't fix") }
+  let!(:wontfix)   { create(:label, subject: project, title: "Won't fix") }
 
   before do
     project.team << [user, :master]
@@ -163,7 +163,7 @@ describe 'Filter issues', feature: true do
     before do
       create(:issue, title: "Bug", project: project)
 
-      bug_label = create(:label, project: project, title: 'bug')
+      bug_label = create(:label, subject: project, title: 'bug')
       milestone = create(:milestone, title: "8", project: project)
 
       issue = create(:issue,
@@ -269,7 +269,7 @@ describe 'Filter issues', feature: true do
 
   describe 'filter issues and sort', js: true do
     before do
-      bug_label = create(:label, project: project, title: 'bug')
+      bug_label = create(:label, subject: project, title: 'bug')
       bug_one = create(:issue, title: "Frontend", project: project)
       bug_two = create(:issue, title: "Bug 2", project: project)
 

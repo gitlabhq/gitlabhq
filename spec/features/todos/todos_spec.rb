@@ -66,12 +66,12 @@ describe 'Dashboard Todos', feature: true do
 
     context 'User has Todos with labels spanning multiple projects' do
       before do
-        label1 = create(:label, project: project)
+        label1 = create(:label, subject: project)
         note1 = create(:note_on_issue, note: "Hello #{label1.to_reference(format: :name)}", noteable_id: issue.id, noteable_type: 'Issue', project: issue.project)
         create(:todo, :mentioned, project: project, target: issue, user: user, note_id: note1.id)
 
         project2 = create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-        label2 = create(:label, project: project2)
+        label2 = create(:label, subject: project2)
         issue2 = create(:issue, project: project2)
         note2 = create(:note_on_issue, note: "Test #{label2.to_reference(format: :name)}", noteable_id: issue2.id, noteable_type: 'Issue', project: project2)
         create(:todo, :mentioned, project: project2, target: issue2, user: user, note_id: note2.id)

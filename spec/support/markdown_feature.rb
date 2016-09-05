@@ -60,11 +60,11 @@ class MarkdownFeature
   end
 
   def simple_label
-    @simple_label ||= create(:label, name: 'gfm', project: project)
+    @simple_label ||= create(:label, name: 'gfm', subject: project)
   end
 
   def label
-    @label ||= create(:label, name: 'awaiting feedback', project: project)
+    @label ||= create(:label, name: 'awaiting feedback', subject: project)
   end
 
   def simple_milestone

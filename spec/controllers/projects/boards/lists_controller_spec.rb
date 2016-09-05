@@ -57,7 +57,7 @@ describe Projects::Boards::ListsController do
 
   describe 'POST create' do
     context 'with valid params' do
-      let(:label) { create(:label, project: project, name: 'Development') }
+      let(:label) { create(:label, subject: project, name: 'Development') }
 
       it 'returns a successful 200 response' do
         create_board_list user: user, label_id: label.id
@@ -94,7 +94,7 @@ describe Projects::Boards::ListsController do
 
     context 'with unauthorized user' do
       it 'returns a forbidden 403 response' do
-        label = create(:label, project: project, name: 'Development')
+        label = create(:label, subject: project, name: 'Development')
 
         create_board_list user: guest, label_id: label.id
 
