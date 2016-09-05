@@ -35,8 +35,6 @@
   - [Merge requests versions](../user/project/merge_requests/versions.md)
   - ["Work In Progress" merge requests](../user/project/merge_requests/work_in_progress_merge_requests.md)
   - (EE) [Merge Request Approvals](../user/project/merge_requests/merge_request_approvals.md)
-  - (EE) [Fast-forward merge](ff_merge.md)
-  - (EE) [Rebase before merge](rebase_before_merge.md)
 - [Repository Mirroring](repository_mirroring.md)
 - [Manage large binaries with Git LFS](lfs/manage_large_binaries_with_git_lfs.md)
 - [Importing from SVN, GitHub, BitBucket, etc](importing/README.md)
