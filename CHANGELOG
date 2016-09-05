@@ -31,6 +31,7 @@ v 8.12.0 (unreleased)
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
+  - Use 'git update-ref' for safer web commits !6130
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
