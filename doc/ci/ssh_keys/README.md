@@ -31,7 +31,7 @@ This is the universal solution which works with any type of executor
 
 You will first need to create an SSH key pair. For more information, follow the
 instructions to [generate an SSH key](../../ssh/README.md). Do not add a comment
-to the ssh key, or the `before_script` will prompt for a passphrase.
+to the SSH key, or the `before_script` will prompt for a passphrase.
 
 Then, create a new **Secret Variable** in your project settings on GitLab
 following **Settings > Variables**. As **Key** add the name `SSH_PRIVATE_KEY`
