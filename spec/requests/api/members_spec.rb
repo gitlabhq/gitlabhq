@@ -162,6 +162,23 @@ describe API::Members, api: true  do
     end
   end
 
+  ## EE specific
+  shared_examples 'POST /projects/:id/members with the project group membership locked' do
+    context 'project in a group' do
+      it 'returns a 405 method not allowed error when group membership lock is enabled' do
+        group_with_membership_locked = create(:group, membership_lock: true)
+        project = create(:project, group: group_with_membership_locked)
+        project.group.add_owner(master)
+
+        post api("/projects/#{project.id}/members", master),
+             user_id: developer.id, access_level: Member::MASTER
+
+        expect(response.status).to eq 405
+      end
+    end
+  end
+  ## EE specific
+
   shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
     context "with :sources == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
@@ -291,6 +308,10 @@ describe API::Members, api: true  do
   it_behaves_like 'POST /:sources/:id/members', 'project' do
     let(:source) { project }
   end
+
+  ## EE specific
+  it_behaves_like 'POST /projects/:id/members with the project group membership locked'
+  ## EE specific
 
   it_behaves_like 'POST /:sources/:id/members', 'group' do
     let(:source) { group }
