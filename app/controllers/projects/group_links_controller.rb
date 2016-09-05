@@ -21,7 +21,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def update
     @group_link = @project.project_group_links.find(params[:id])
-    return render_403 unless can?(current_user, :admin_group, @group_link.group)
+    return render_403 unless can?(current_user, :admin_project_member, @project)
 
     @group_link.update_attributes(group_link_params)
   end
