@@ -1,4 +1,4 @@
-# Merge Request Approvals
+# Merge request approvals
 
 > Introduced in GitLab Enterprise Edition 7.13.
 

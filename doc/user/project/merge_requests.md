@@ -67,6 +67,15 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](merge_requests/work_in_progress_merge_requests.md)
 
+## Merge request approvals
+
+If you want to make sure every merge request is approved by one or more people,
+you can enforce this workflow by using merge request approvals. Merge request
+approvals allow you to set the number of necessary approvals and predefine a
+list of approvers that will need to approve every merge request in a project.
+
+[Read more about merge request approvals.](merge_requests/merge_request_approvals.md)
+
 ## Ignore whitespace changes in Merge Request diff view
 
 If you click the **Hide whitespace changes** button, you can see the diff
