@@ -9,7 +9,7 @@ describe Gitlab::GithubImport::LabelFormatter, lib: true do
   describe '#attributes' do
     it 'returns formatted attributes' do
       expect(subject.attributes).to eq({
-        project: project,
+        subject: project,
         title: 'improvements',
         color: '#e6e6e6'
       })

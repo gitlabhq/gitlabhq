@@ -3,7 +3,7 @@ module Gitlab
     class LabelFormatter < BaseFormatter
       def attributes
         {
-          project: project,
+          subject: project,
           title: title,
           color: color
         }
