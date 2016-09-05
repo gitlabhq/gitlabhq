@@ -159,25 +159,18 @@
     position: relative;
 
     a.anchor {
-      // Setting `display: none` would prevent the anchor being scrolled to, so
-      // instead we set the height to 0 and it gets updated on hover.
-      height: 0;
+      left: -16px;
+      position: absolute;
+      text-decoration: none;
+
+      &:after {
+        content: url('icon_anchor.svg');
+        visibility: hidden;
+      }
     }
 
-    &:hover > a.anchor {
-      $size: 14px;
-      position: absolute;
-      right: 100%;
-      top: 50%;
-      margin-top: -11px;
-      margin-right: 0;
-      padding-right: 15px;
-      display: inline-block;
-      width: $size;
-      height: $size;
-      background-image: image-url("icon-link.png");
-      background-size: contain;
-      background-repeat: no-repeat;
+    &:hover > a.anchor:after {
+      visibility: visible;
     }
   }
 }

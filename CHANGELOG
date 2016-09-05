@@ -17,11 +17,13 @@ v 8.12.0 (unreleased)
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Center build stage columns in pipeline overview (ClemMakesApps)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
+  - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
   - Add hover color to emoji icon (ClemMakesApps)
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Add white background for no readme container (ClemMakesApps)
   - API: Expose issue confidentiality flag. (Robert Schilling)
+  - Fix markdown anchor icon interaction (ClemMakesApps)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
@@ -43,6 +45,7 @@ v 8.12.0 (unreleased)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
   - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
+  - Align add button on repository view (ClemMakesApps)
   - Added tests for diff notes
   - Add a button to download latest successful artifacts for branches and tags !5142
   - Remove redundant pipeline tooltips (ClemMakesApps)
@@ -61,6 +64,7 @@ v 8.12.0 (unreleased)
   - Move to project dropdown with infinite scroll for better performance
   - Fix leaking of submit buttons outside the width of a main container !18731 (originally by @pavelloz)
   - Load branches asynchronously in Cherry Pick and Revert dialogs.
+  - Convert datetime coffeescript spec to ES6 (ClemMakesApps)
   - Add merge request versions !5467
   - Change using size to use count and caching it for number of group members. !5935
   - Replace play icon font with svg (ClemMakesApps)
@@ -178,6 +182,7 @@ v 8.11.0
   - Get issue and merge request description templates from repositories
   - Add hover state to todos !5361 (winniehell)
   - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Fix alignment of icon buttons !5887 (winniehell)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs
