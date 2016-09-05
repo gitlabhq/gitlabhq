@@ -21,7 +21,7 @@
 - [Web Editor](web_editor.md)
 - [Releases](releases.md)
 - [Milestones](milestones.md)
-- [Merge Requests](merge_requests.md)
+- [Merge Requests](../user/project/merge_requests.md)
 - [Revert changes](revert_changes.md)
 - [Cherry-pick changes](cherry_pick_changes.md)
 - ["Work In Progress" Merge Requests](wip_merge_requests.md)
