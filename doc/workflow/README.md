@@ -18,7 +18,7 @@
 - [Slash commands](../user/project/slash_commands.md)
 - [Sharing a project with a group](share_with_group.md)
 - [Share projects with other groups](share_projects_with_other_groups.md)
-- [Web Editor](web_editor.md)
+- [Web Editor](../user/project/repository/web_editor.md)
 - [Releases](releases.md)
 - [Milestones](milestones.md)
 - [Merge Requests](merge_requests.md)
