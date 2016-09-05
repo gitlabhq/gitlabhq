@@ -3,14 +3,14 @@ module Gitlab
     class MilestoneFormatter < BaseFormatter
       def attributes
         {
-          iid: number,
+          iid: raw_data.number,
           project: project,
-          title: title,
-          description: description,
-          due_date: due_date,
+          title: raw_data.title,
+          description: raw_data.description,
+          due_date: raw_data.due_on,
           state: state,
-          created_at: created_at,
-          updated_at: updated_at
+          created_at: raw_data.created_at,
+          updated_at: raw_data.updated_at
         }
       end
 
@@ -20,32 +20,8 @@ module Gitlab
 
       private
 
-      def number
-        raw_data.number
-      end
-
-      def title
-        raw_data.title
-      end
-
-      def description
-        raw_data.description
-      end
-
-      def due_date
-        raw_data.due_on
-      end
-
       def state
         raw_data.state == 'closed' ? 'closed' : 'active'
-      end
-
-      def created_at
-        raw_data.created_at
-      end
-
-      def updated_at
-        state == 'closed' ? raw_data.closed_at : raw_data.updated_at
       end
     end
   end

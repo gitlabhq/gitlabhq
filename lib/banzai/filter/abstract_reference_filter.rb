@@ -18,10 +18,6 @@ module Banzai
         @object_sym ||= object_name.to_sym
       end
 
-      def self.object_class_title
-        @object_title ||= object_class.name.titleize
-      end
-
       # Public: Find references in text (like `!123` for merge requests)
       #
       #   AnyReferenceFilter.references_in(text) do |match, id, project_ref, matches|
@@ -47,10 +43,6 @@ module Banzai
 
       def object_sym
         self.class.object_sym
-      end
-
-      def object_class_title
-        self.class.object_class_title
       end
 
       def references_in(*args, &block)
@@ -198,7 +190,7 @@ module Banzai
       end
 
       def object_link_title(object)
-        "#{object_class_title}: #{object.title}"
+        object.title
       end
 
       def object_link_text(object, matches)

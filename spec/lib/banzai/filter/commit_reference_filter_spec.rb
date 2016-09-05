@@ -55,7 +55,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
     it 'includes a title attribute' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq commit.link_title
+      expect(doc.css('a').first.attr('title')).to eq commit.title
     end
 
     it 'escapes the title attribute' do
@@ -67,7 +67,7 @@ describe Banzai::Filter::CommitReferenceFilter, lib: true do
 
     it 'includes default classes' do
       doc = reference_filter("See #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-commit has-tooltip'
     end
 
     it 'includes a data-project attribute' do

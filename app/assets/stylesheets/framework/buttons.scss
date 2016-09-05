@@ -206,7 +206,9 @@
   }
 
   svg, .fa {
-    margin-right: 3px;
+    &:not(:last-child) {
+      margin-right: 3px;
+    }
   }
 }
 

@@ -3,7 +3,6 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedUser
-  include Select2Helper
 
   step '"John Doe" is a developer of project "Shop"' do
     project.team << [john_doe, :developer]
@@ -54,7 +53,8 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
     page.within('.todos-pending-count') { expect(page).to have_content '0' }
     expect(page).to have_content 'To do 0'
     expect(page).to have_content 'Done 4'
-    expect(page).not_to have_link project.name_with_namespace
+    expect(page).to have_content "You're all done!"
+    expect('.prepend-top-default').not_to have_link project.name_with_namespace
     should_not_see_todo "John Doe assigned you merge request #{merge_request.to_reference}"
     should_not_see_todo "John Doe mentioned you on issue #{issue.to_reference}"
     should_not_see_todo "John Doe assigned you issue #{issue.to_reference}"
@@ -79,19 +79,31 @@ class Spinach::Features::DashboardTodos < Spinach::FeatureSteps
   end
 
   step 'I filter by "Enterprise"' do
-    select2(enterprise.id, from: "#project_id")
+    click_button 'Project'
+    page.within '.dropdown-menu-project' do
+      click_link enterprise.name_with_namespace
+    end
   end
 
   step 'I filter by "John Doe"' do
-    select2(john_doe.id, from: "#author_id")
+    click_button 'Author'
+    page.within '.dropdown-menu-author' do
+      click_link john_doe.username
+    end
   end
 
   step 'I filter by "Issue"' do
-    select2('Issue', from: "#type")
+    click_button 'Type'
+    page.within '.dropdown-menu-type' do
+      click_link 'Issue'
+    end
   end
 
   step 'I filter by "Mentioned"' do
-    select2("#{Todo::MENTIONED}", from: '#action_id')
+    click_button 'Action'
+    page.within '.dropdown-menu-action' do
+      click_link 'Mentioned'
+    end
   end
 
   step 'I should not see todos' do

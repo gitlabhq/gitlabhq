@@ -66,13 +66,13 @@
           - if actions.any?
             .btn-group
               %a.dropdown-toggle.btn.btn-default{type: 'button', 'data-toggle' => 'dropdown'}
-                = icon("play")
+                = custom_icon('icon_play')
                 %b.caret
               %ul.dropdown-menu.dropdown-menu-align-right
                 - actions.each do |build|
                   %li
                     = link_to play_namespace_project_build_path(pipeline.project.namespace, pipeline.project, build), method: :post, rel: 'nofollow' do
-                      = icon("play")
+                      = custom_icon('icon_play')
                       %span= build.name.humanize
           - if artifacts.present?
             .btn-group

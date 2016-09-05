@@ -433,7 +433,7 @@ class User < ActiveRecord::Base
   #
   # This logic is duplicated from `Ability#project_abilities` into a SQL form.
   def projects_where_can_admin_issues
-    authorized_projects(Gitlab::Access::REPORTER).non_archived.where.not(issues_enabled: false)
+    authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
   def is_admin?
@@ -460,16 +460,12 @@ class User < ActiveRecord::Base
     can?(:create_group, nil)
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can_select_namespace?
     several_namespaces? || admin
   end
 
   def can?(action, subject)
-    abilities.allowed?(self, action, subject)
+    Ability.allowed?(self, action, subject)
   end
 
   def first_name

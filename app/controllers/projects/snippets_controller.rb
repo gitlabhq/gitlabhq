@@ -94,7 +94,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.snippets_enabled
+    return render_404 unless @project.feature_available?(:snippets, current_user)
   end
 
   def snippet_params

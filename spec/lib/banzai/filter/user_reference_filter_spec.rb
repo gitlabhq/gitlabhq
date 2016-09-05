@@ -104,7 +104,7 @@ describe Banzai::Filter::UserReferenceFilter, lib: true do
 
   it 'includes default classes' do
     doc = reference_filter("Hey #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-project_member has-tooltip'
   end
 
   it 'supports an :only_path context' do

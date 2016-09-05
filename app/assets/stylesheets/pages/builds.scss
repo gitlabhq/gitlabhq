@@ -36,6 +36,7 @@
     &.affix {
       right: 30px;
       bottom: 15px;
+      z-index: 1;
 
       @media (min-width: $screen-md-min) {
         right: 26%;
@@ -107,7 +108,7 @@
   }
 
   .blocks-container {
-    padding: $gl-padding;
+    padding: 0 $gl-padding;
   }
 
   .block {
@@ -122,6 +123,13 @@
     }
   }
 
+  .retry-link {
+    color: $gl-link-color;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .stage-item {
     cursor: pointer;
 
@@ -131,7 +139,7 @@
   }
 
   .build-dropdown {
-    padding: 0 $gl-padding;
+    padding: $gl-padding 0;
 
     .dropdown-menu-toggle {
       margin-top: 8px;
@@ -145,7 +153,6 @@
   }
 
   .builds-container {
-    margin-top: $gl-padding;
     background-color: $white-light;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;

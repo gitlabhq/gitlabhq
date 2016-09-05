@@ -8,10 +8,7 @@
   height: 30px;
   transition-duration: .3s;
   -webkit-transform: translateZ(0);
-  background: -webkit-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -o-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: -moz-linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
-  background: linear-gradient($gradient-direction, rgba($gradient-color, 0.4), $gradient-color 45%);
+  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
 
   &.scrolling {
     visibility: visible;
@@ -208,12 +205,6 @@
 
         /* Large devices (large desktops, 1200px and up) */
         @media (min-width: $screen-lg-min) { width: 210px; }
-      }
-    }
-
-    .project-filter-form {
-      input {
-        background-color: $background-color;
       }
     }
 

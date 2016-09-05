@@ -9,7 +9,7 @@ class BaseMailer < ActionMailer::Base
   default reply_to: Proc.new { default_reply_to_address.format }
 
   def can?
-    Ability.abilities.allowed?(current_user, action, subject)
+    Ability.allowed?(current_user, action, subject)
   end
 
   private
