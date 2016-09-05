@@ -7,7 +7,7 @@
   %hr
   - if can?(current_user, :admin_project_member, @project)
     .project-members-new.append-bottom-default
-      %h5.clearfix
+      %p.clearfix
         Add new user to
         %strong= @project.name
       = render "new_project_member"
