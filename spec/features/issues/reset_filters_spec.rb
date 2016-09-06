@@ -11,6 +11,7 @@ feature 'Issues filter reset button', feature: true, js: true do
   let!(:issue2)     { create(:labeled_issue, project: project, labels: [bug], title: 'Bugfix1')}
 
   before do
+    project.team << [user, :developer]
     visit_issues(project)
   end
 
