@@ -55,15 +55,17 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       current_user: current_user
     )
 
-    group_ids = params[:group_ids].split(',')
-    groups = Group.where(id: group_ids)
+    if params[:group_ids].present?
+      group_ids = params[:group_ids].split(',')
+      groups = Group.where(id: group_ids)
 
-    groups.each do |group|
-      project.project_group_links.create(
-        group: group,
-        group_access: params[:access_level],
-        expires_at: params[:expires_at]
-      )
+      groups.each do |group|
+        project.project_group_links.create(
+          group: group,
+          group_access: params[:access_level],
+          expires_at: params[:expires_at]
+        )
+      end
     end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
