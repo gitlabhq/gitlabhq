@@ -854,6 +854,7 @@ Rails.application.routes.draw do
 
         resources :project_members, except: [:show, :new, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }, concerns: :access_requestable do
           collection do
+            get :options
             delete :leave
 
             # Used for import team

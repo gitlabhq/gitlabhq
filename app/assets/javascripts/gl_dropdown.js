@@ -524,8 +524,7 @@
         return _.template('<li class="dropdown-header"><%- header %></li>')({ header: data.header });
       }
       if (this.options.renderRow) {
-        // Call the render function
-        html = this.options.renderRow.call(this.options, data, this);
+        html = this.options.renderRow.call(this.options, data, group, index, this);
       } else {
         if (!selected) {
           value = this.options.id ? this.options.id(data) : data.id;
@@ -607,7 +606,7 @@
       } else {
         field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + escape(value) + "']");
       }
-      if (el.hasClass(ACTIVE_CLASS)) {
+      if (el.hasClass(ACTIVE_CLASS) && !(isInput && this.options.multiSelect)) {
         el.removeClass(ACTIVE_CLASS);
         if (isInput) {
           field.val('');
@@ -633,8 +632,11 @@
         if (value == null) {
           field.remove();
         }
-        // Toggle active class for the tick mark
-        el.addClass(ACTIVE_CLASS);
+        if (el.hasClass(ACTIVE_CLASS) && isInput && this.options.multiSelect) {
+          el.removeClass(ACTIVE_CLASS);
+        } else {
+          el.addClass(ACTIVE_CLASS);
+        }
         if (value != null) {
           if (!field.length && fieldName) {
             this.addInput(fieldName, value, selectedObject);
