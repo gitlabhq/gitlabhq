@@ -1076,4 +1076,17 @@ describe MergeRequest, models: true do
       end
     end
   end
+
+  describe '#can_reopen?' do
+    it "returns true" do
+      subject.close
+      binding.pry
+
+      expect(subject.can_reopen?).to be_truthy
+    end
+
+    it "returns false" do
+      expect(subject.can_reopen?).to be_falsey
+    end
+  end
 end
