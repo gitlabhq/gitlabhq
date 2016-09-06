@@ -16,7 +16,7 @@
 - [Profile Settings](profile/README.md)
 - [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
-- [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
+- [SSH keys](user/profile/ssh_keys.md) Setup your SSH keys for secure access to your projects.
 - [Webhooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 
