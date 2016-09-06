@@ -442,6 +442,16 @@ Rails.application.routes.draw do
 
       resource :avatar, only: [:destroy]
       resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :update, :new, :create]
+
+      resources :labels, except: [:show], constraints: { id: /\d+/ } do
+        collection do
+          post :generate
+        end
+
+        member do
+          post :toggle_subscription
+        end
+      end
     end
   end
 

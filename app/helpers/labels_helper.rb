@@ -32,9 +32,9 @@ module LabelsHelper
   #   link_to_label(label) { "My Custom Label Text" }
   #
   # Returns a String
-  def link_to_label(label, project: nil, type: :issue, tooltip: true, css_class: nil, &block)
-    project ||= @project || label.subject
-    link = label_filter_path(project, label, type: type)
+  def link_to_label(label, subject: nil, type: :issue, tooltip: true, css_class: nil, &block)
+    subject ||= @subject || label.subject
+    link = label_filter_path(subject, label, type: type)
 
     if block_given?
       link_to link, class: css_class, &block
@@ -43,11 +43,17 @@ module LabelsHelper
     end
   end
 
-  def label_filter_path(project, label, type: issue)
-    send("namespace_project_#{type.to_s.pluralize}_path",
-                project.namespace,
-                project,
-                label_name: [label.name])
+  def label_filter_path(subject, label, type: issue)
+    if subject.is_a?(Project)
+      send("namespace_project_#{type.to_s.pluralize}_path",
+                  subject.namespace,
+                  subject,
+                  label_name: [label.name])
+    else
+      send("#{type.to_s.pluralize}_group_path",
+                  subject,
+                  label_name: [label.name])
+    end
   end
 
   def project_label_names

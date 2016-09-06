@@ -154,6 +154,8 @@
           shortcut_handler = new ShortcutsNavigation();
           new ShortcutsBlob(true);
           break;
+        case 'groups:labels:new':
+        case 'groups:labels:edit':
         case 'projects:labels:new':
         case 'projects:labels:edit':
           new Labels();
