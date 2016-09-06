@@ -468,6 +468,8 @@ describe 'Issue Boards', feature: true, js: true do
       end
 
       it 'removes filtered labels' do
+        wait_for_vue_resource
+        
         page.within '.labels-filter' do
           click_button('Label')
           wait_for_ajax
