@@ -28,14 +28,9 @@
               %th COMMAND
             %tbody
               - @sidekiq_processes.each do |process|
-                - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
-                - data = process.strip.split(' ')
-                %tr
-                  %td= gitlab_config.user
-                  - 5.times do
-                    %td= data.shift
-                  %td= data.join(' ')
-
+                %td= gitlab_config.user
+                -parse_sidekiq_ps(process).each do |value|
+                  %td= value
         .clearfix
           %p
             %i.fa.fa-exclamation-circle
