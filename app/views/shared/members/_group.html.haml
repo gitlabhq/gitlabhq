@@ -1,6 +1,6 @@
 - group = local_assigns[:group]
 - group_link = local_assigns[:group_link]
-%li.member{ class: dom_class(group), id: dom_id(group) }
+%li.member.group_member{ id: "group_member_#{group_link.id}" }
   %span{ class: "list-item-name" }
     = image_tag group_icon(group), class: "avatar s40", alt: ''
     %strong
@@ -21,6 +21,7 @@
       = link_to namespace_project_group_link_path(@project.namespace, @project, group_link),
         remote: true,
         method: :delete,
+        data: { confirm: "Are you sure you want to remove #{group.name}?" },
         class: 'btn btn-remove prepend-left-10' do
         %span.visible-xs-block
           Delete

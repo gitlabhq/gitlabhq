@@ -34,4 +34,13 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
       expect(page).to have_content('Expires in')
     end
   end
+
+  it 'deletes group link' do
+    page.within(first('.group_member')) do
+      find('.btn-remove').click
+    end
+    wait_for_ajax
+
+    expect(page).not_to have_selector('.group_member')
+  end
 end

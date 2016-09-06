@@ -29,7 +29,12 @@ class Projects::GroupLinksController < Projects::ApplicationController
   def destroy
     project.project_group_links.find(params[:id]).destroy
 
-    redirect_to namespace_project_group_links_path(project.namespace, project)
+    respond_to do |format|
+      format.html do
+        redirect_to namespace_project_group_links_path(project.namespace, project)
+      end
+      format.js { head :ok }
+    end
   end
 
   protected
