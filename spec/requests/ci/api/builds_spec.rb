@@ -159,7 +159,7 @@ describe Ci::API::API do
       end
 
       def register_builds(token = runner.token, **params)
-        post ci_api("/builds/register"), params.merge(token: token), {'User-Agent' => user_agent}
+        post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
       end
     end
 
