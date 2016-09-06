@@ -91,12 +91,14 @@ module Gitlab
         builds = pipeline.builds.latest.
           where(status: status).where.not(started_at: nil).order(:started_at)
 
-        from_builds(builds, :started_at, :finished_at)
+        from_builds(builds)
       end
 
-      def from_builds(builds, from, to, now = Time.now)
+      def from_builds(builds)
+        now = Time.now
+
         periods = builds.map do |b|
-          Period.new(b.public_send(from) || now, b.public_send(to) || now)
+          Period.new(b.started_at, b.finished_at || now)
         end
 
         from_periods(periods)
