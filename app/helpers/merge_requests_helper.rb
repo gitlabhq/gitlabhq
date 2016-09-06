@@ -106,4 +106,8 @@ module MergeRequestsHelper
       project.namespace, project, merge_request,
       diff_id: merge_request_diff.id, start_sha: start_sha)
   end
+
+  def version_index(merge_request_diff)
+    @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
+  end
 end

@@ -95,7 +95,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if params[:start_sha].present?
       @start_sha = params[:start_sha]
-      validate_start_sha
+      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
+
+      unless @start_version
+        render_404
+      end
     end
 
     respond_to do |format|
@@ -553,11 +557,5 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     @diffs = @merge_request_diff.diffs(diff_options)
-  end
-
-  def validate_start_sha
-    unless @comparable_diffs.map(&:head_commit_sha).include?(@start_sha)
-      render_404
-    end
   end
 end

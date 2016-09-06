@@ -12,7 +12,7 @@ feature 'Merge Request versions', js: true, feature: true do
 
   it 'show the latest version of the diff' do
     page.within '.mr-version-dropdown' do
-      expect(page).to have_content 'Latest: 5937ac0a'
+      expect(page).to have_content 'latest version'
     end
 
     expect(page).to have_content '8 changed files'
@@ -22,13 +22,13 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-dropdown' do
         find('.btn-link').click
-        click_link '6f6d7e7e'
+        click_link 'version 1'
       end
     end
 
     it 'should show older version' do
       page.within '.mr-version-dropdown' do
-        expect(page).to have_content '6f6d7e7e'
+        expect(page).to have_content 'version 1'
       end
 
       expect(page).to have_content '5 changed files'
@@ -43,13 +43,13 @@ feature 'Merge Request versions', js: true, feature: true do
     before do
       page.within '.mr-version-compare-dropdown' do
         find('.btn-link').click
-        click_link '6f6d7e7e'
+        click_link 'version 1'
       end
     end
 
     it 'should has correct value in the compare dropdown' do
       page.within '.mr-version-compare-dropdown' do
-        expect(page).to have_content '6f6d7e7e'
+        expect(page).to have_content 'version 1'
       end
     end
 

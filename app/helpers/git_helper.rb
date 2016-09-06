@@ -4,6 +4,6 @@ module GitHelper
   end
 
   def short_sha(text)
-    text[0...8]
+    Commit.truncate_sha(text)
   end
 end
