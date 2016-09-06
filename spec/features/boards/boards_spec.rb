@@ -474,12 +474,14 @@ describe 'Issue Boards', feature: true, js: true do
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
+            wait_for_vue_resource(spinner: false)
           end
 
           expect(page).to have_css('input[name="label_name[]"]', visible: false)
 
           page.within '.dropdown-menu-labels' do
             click_link(testing.title)
+            wait_for_vue_resource(spinner: false)
           end
 
           expect(page).not_to have_css('input[name="label_name[]"]', visible: false)
