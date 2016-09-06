@@ -31,7 +31,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     wait_for_ajax
 
     page.within(first('li.member')) do
-      expect(page).to have_content('Expires in 3 days')
+      expect(page).to have_content('Expires in')
     end
   end
 end
