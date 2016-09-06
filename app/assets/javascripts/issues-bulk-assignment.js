@@ -5,7 +5,7 @@
       if (opts == null) {
         opts = {};
       }
-      this.container = (ref = opts.container) != null ? ref : $('.content'), this.form = (ref1 = opts.form) != null ? ref1 : this.getElement('.bulk-update'), this.issues = (ref2 = opts.issues) != null ? ref2 : this.getElement('.issues-list .issue');
+      this.container = (ref = opts.container) != null ? ref : $('.content'), this.form = (ref1 = opts.form) != null ? ref1 : this.getElement('.bulk-update'), this.issues = (ref2 = opts.issues) != null ? ref2 : this.getElement('.issuable-list > li');
       this.form.data('bulkActions', this);
       this.willUpdateLabels = false;
       this.bindEvents();
@@ -106,7 +106,7 @@
           state_event: this.form.find('input[name="update[state_event]"]').val(),
           assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
           milestone_id: this.form.find('input[name="update[milestone_id]"]').val(),
-          issues_ids: this.form.find('input[name="update[issues_ids]"]').val(),
+          issuable_ids: this.form.find('input[name="update[issuable_ids]"]').val(),
           subscription_event: this.form.find('input[name="update[subscription_event]"]').val(),
           add_label_ids: [],
           remove_label_ids: []

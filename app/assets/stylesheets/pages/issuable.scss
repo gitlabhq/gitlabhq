@@ -404,3 +404,18 @@
     margin-bottom: $gl-padding;
   }
 }
+
+.issuable-list {
+  li {
+    .issue-check {
+      float: left;
+      padding-right: 16px;
+      margin-bottom: 10px;
+      min-width: 15px;
+
+      .selected_issue {
+        vertical-align: text-top;
+      }
+    }
+  }
+}
