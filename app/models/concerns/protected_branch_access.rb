@@ -8,6 +8,9 @@ module ProtectedBranchAccess
                             scope: :protected_branch,
                             unless: Proc.new { |access_level| access_level.user_id? || access_level.group_id? },
                             conditions: -> { where(user_id: nil, group_id: nil) }
+
+    scope :master, -> () { where(access_level: Gitlab::Access::MASTER) }
+    scope :developer, -> () { where(access_level: Gitlab::Access::DEVELOPER) }
   end
 
   def type
