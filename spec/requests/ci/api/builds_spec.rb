@@ -253,7 +253,7 @@ describe Ci::API::API do
           end
 
           it "reject requests that did not go through gitlab-workhorse" do
-            headers.delete('Gitlab-Workhorse-Api-Request')
+            headers.delete(Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER)
             post authorize_url, { token: build.token }, headers
             expect(response).to have_http_status(500)
           end

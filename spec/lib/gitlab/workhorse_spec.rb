@@ -63,7 +63,7 @@ describe Gitlab::Workhorse, lib: true do
   end
 
   describe '#verify_api_request!' do
-    let(:header_key) { described_class.const_get('INTERNAL_API_REQUEST_HEADER') }
+    let(:header_key) { described_class::INTERNAL_API_REQUEST_HEADER }
     let(:payload) { { 'iss' => 'gitlab-workhorse' } }
 
     it 'accepts a correct header' do
