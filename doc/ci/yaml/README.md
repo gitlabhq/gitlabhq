@@ -1044,6 +1044,13 @@ test:mysql:
 
 You can see that the hidden keys are conveniently used as templates.
 
+## Triggers
+
+Triggers can be used to force a rebuild of a specific branch, tag or commit,
+with an API call.
+
+[Read more in the triggers documentation.](../triggers/README.md)
+
 ## Validate the .gitlab-ci.yml
 
 Each instance of GitLab CI has an embedded debug tool called Lint.
