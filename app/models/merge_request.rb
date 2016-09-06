@@ -677,7 +677,10 @@ class MergeRequest < ActiveRecord::Base
       wheres << "id IN (#{project.group.members.where(has_access).select(:user_id).to_sql})"
     end
 
-    User.where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}").count
+    User.
+      active.
+      where("(#{wheres.join(' OR ')}) AND id NOT IN (#{approvals.select(:user_id).to_sql}) AND id != #{author.id}").
+      count
   end
 
   # Users in the list of approvers who have not already approved this MR.
