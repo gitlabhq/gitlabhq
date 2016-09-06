@@ -20,10 +20,6 @@ module Gitlab
       end
     end
 
-    def total_count
-      @total_count ||= snippet_titles_count + snippet_blobs_count
-    end
-
     def snippet_titles_count
       @snippet_titles_count ||= snippet_titles.count
     end
