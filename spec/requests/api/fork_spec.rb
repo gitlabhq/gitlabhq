@@ -3,10 +3,10 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)  { create(:user) }
-  let(:user2) { create(:user, username: 'user2_name') }
+  let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let(:group) { create(:group, name: 'group_name') }
+  let(:group) { create(:group) }
   let(:group2) do
     group = create(:group, name: 'group2_name')
     group.add_owner(user2)
@@ -94,7 +94,7 @@ describe API::API, api: true  do
       it 'fails if trying to fork to another user when not admin' do
         post api("/projects/fork/#{project.id}", user2), namespace: admin.namespace.id
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(409)
       end
 
       it 'fails if trying to fork to non-existent namespace' do
@@ -114,7 +114,7 @@ describe API::API, api: true  do
       it 'fails to fork to not owned group' do
         post api("/projects/fork/#{project.id}", user2), namespace: group.name
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_http_status(409)
       end
 
       it 'forks to not owned group when admin' do

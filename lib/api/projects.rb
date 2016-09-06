@@ -204,7 +204,6 @@ module API
           namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
 
           not_found!('Target Namespace') unless namespace
-          authorize! :create_projects, namespace
 
           attrs[:namespace] = namespace
         end
