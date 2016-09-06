@@ -139,7 +139,7 @@ Alias for [stages](#stages).
 Introduced in GitLab Runner v0.5.0.
 
 GitLab CI allows you to add variables to `.gitlab-ci.yml` that are set in the
-build environment. The variables are stored in the git repository and are meant
+build environment. The variables are stored in the Git repository and are meant
 to store non-sensitive project configuration, for example:
 
 ```yaml
@@ -153,6 +153,8 @@ The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
 
 Variables can be also defined on [job level](#job-variables).
+
+[Learn more about variables.](../variables/README.md)
 
 ### cache
 
