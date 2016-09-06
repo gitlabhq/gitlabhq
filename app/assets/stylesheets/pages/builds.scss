@@ -115,6 +115,16 @@
     width: 100%;
   }
 
+  .js-build-variable {
+    color: $code-color;
+  }
+
+  .js-build-value {
+    padding: 2px 4px;
+    color: $black;
+    background-color: $white-light;
+  }
+
   .build-sidebar-header {
     padding: 0 $gl-padding $gl-padding;
 
