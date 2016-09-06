@@ -51,7 +51,7 @@
           %td
             = link_to "#{repo["owner"]}/#{repo["slug"]}", "https://bitbucket.org/#{repo["owner"]}/#{repo["slug"]}", target: "_blank"
           %td.import-target
-            = "#{repo["owner"]}/#{repo["slug"]}"
+            = import_project_target(repo['owner'], repo['slug'])
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               Import

@@ -40,8 +40,7 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
     end
 
     context 'when milestone is closed' do
-      let(:closed_at) { DateTime.strptime('2011-01-28T19:01:12Z') }
-      let(:raw_data) { double(base_data.merge(state: 'closed', closed_at: closed_at)) }
+      let(:raw_data) { double(base_data.merge(state: 'closed')) }
 
       it 'returns formatted attributes' do
         expected = {
@@ -52,7 +51,7 @@ describe Gitlab::GithubImport::MilestoneFormatter, lib: true do
           state: 'closed',
           due_date: nil,
           created_at: created_at,
-          updated_at: closed_at
+          updated_at: updated_at
         }
 
         expect(formatter.attributes).to eq(expected)

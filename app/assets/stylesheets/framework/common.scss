@@ -53,7 +53,7 @@ pre {
 
   &.well-pre {
     border: 1px solid #eee;
-    background: #f9f9f9;
+    background: $gray-light;
     border-radius: 0;
     color: #555;
   }
@@ -225,7 +225,7 @@ li.note {
 
 .milestone {
   &.milestone-closed {
-    background: #f9f9f9;
+    background: $gray-light;
   }
   .progress {
     margin-bottom: 0;
@@ -248,7 +248,7 @@ li.note {
 
 img.emoji {
   height: 20px;
-  vertical-align: middle;
+  vertical-align: top;
   width: 20px;
 }
 

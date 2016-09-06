@@ -3,7 +3,6 @@
 
   this.Calendar = (function() {
     function Calendar(timestamps, calendar_activities_path) {
-      var group, i;
       this.calendar_activities_path = calendar_activities_path;
       this.clickDay = bind(this.clickDay, this);
       this.currentSelectedDate = '';
@@ -13,26 +12,36 @@
       this.monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       this.months = [];
       this.timestampsTmp = [];
-      i = 0;
-      group = 0;
-      _.each(timestamps, (function(_this) {
-        return function(count, date) {
-          var day, innerArray, newDate;
-          newDate = new Date(parseInt(date) * 1000);
-          day = newDate.getDay();
-          if ((day === 0 && i !== 0) || i === 0) {
-            _this.timestampsTmp.push([]);
-            group++;
-          }
-          innerArray = _this.timestampsTmp[group - 1];
-          innerArray.push({
-            count: count,
-            date: newDate,
-            day: day
-          });
-          return i++;
-        };
-      })(this));
+      var group = 0;
+
+      var today = new Date()
+      today.setHours(0, 0, 0, 0, 0);
+
+      var oneYearAgo = new Date(today);
+      oneYearAgo.setFullYear(today.getFullYear() - 1);
+
+      var days = gl.utils.getDayDifference(oneYearAgo, today);
+
+      for(var i = 0; i <= days; i++) {
+        var date = new Date(oneYearAgo);
+        date.setDate(date.getDate() + i);
+
+        var day = date.getDay();
+        var count = timestamps[date.getTime() * 0.001];
+
+        if ((day === 0 && i !== 0) || i === 0) {
+          this.timestampsTmp.push([]);
+          group++;
+        }
+
+        var innerArray = this.timestampsTmp[group - 1];
+        innerArray.push({
+          count: count || 0,
+          date: date,
+          day: day
+        });
+      }
+
       this.colorKey = this.initColorKey();
       this.color = this.initColor();
       this.renderSvg(group);

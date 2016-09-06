@@ -7,7 +7,9 @@
     KEYCODE = {
       ESCAPE: 27,
       BACKSPACE: 8,
-      ENTER: 13
+      ENTER: 13,
+      UP: 38,
+      DOWN: 40
     };
 
     function SearchAutocomplete(opts) {
@@ -223,6 +225,12 @@
         case KEYCODE.ESCAPE:
           this.restoreOriginalState();
           break;
+        case KEYCODE.ENTER:
+          this.disableAutocomplete();
+          break;
+        case KEYCODE.UP:
+        case KEYCODE.DOWN:
+          return;
         default:
           if (this.searchInput.val() === '') {
             this.disableAutocomplete();
@@ -319,9 +327,11 @@
     };
 
     SearchAutocomplete.prototype.disableAutocomplete = function() {
-      this.searchInput.addClass('disabled');
-      this.dropdown.removeClass('open');
-      return this.restoreMenu();
+      if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
+        this.searchInput.addClass('disabled');
+        this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
+        this.restoreMenu();
+      }
     };
 
     SearchAutocomplete.prototype.restoreMenu = function() {

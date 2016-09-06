@@ -920,6 +920,16 @@ describe User, models: true do
 
       expect(subject.recent_push).to eq(nil)
     end
+
+    it "includes push events on any of the provided projects" do
+      expect(subject.recent_push(project1)).to eq(nil)
+      expect(subject.recent_push(project2)).to eq(push_event)
+
+      push_data1 = Gitlab::DataBuilder::Push.build_sample(project1, subject)
+      push_event1 = create(:event, action: Event::PUSHED, project: project1, target: project1, author: subject, data: push_data1)
+
+      expect(subject.recent_push([project1, project2])).to eq(push_event1) # Newest
+    end
   end
 
   describe '#authorized_groups' do
@@ -996,8 +1006,7 @@ describe User, models: true do
     end
 
     it 'does not include projects for which issues are disabled' do
-      project = create(:project)
-      project.update_attributes(issues_enabled: false)
+      project = create(:project, issues_access_level: ProjectFeature::DISABLED)
 
       expect(user.projects_where_can_admin_issues.to_a).to be_empty
       expect(user.can?(:admin_issue, project)).to eq(false)

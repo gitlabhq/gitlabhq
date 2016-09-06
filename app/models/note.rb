@@ -223,6 +223,10 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def user_authored?(user)
+    user == author
+  end
+
   def award_emoji?
     can_be_award_emoji? && contains_emoji_only?
   end
@@ -259,6 +263,8 @@ class Note < ActiveRecord::Base
 
   def ensure_discussion_id
     return unless self.persisted?
+    # Needed in case the SELECT statement doesn't ask for `discussion_id`
+    return unless self.has_attribute?(:discussion_id)
     return if self.discussion_id
 
     set_discussion_id

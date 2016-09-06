@@ -11,24 +11,23 @@ class Project < ActiveRecord::Base
   include AfterCommitQueue
   include CaseSensitivity
   include TokenAuthenticatable
+  include ProjectFeaturesCompatibility
 
   extend Gitlab::ConfigHelper
 
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
 
+  delegate :feature_available?, :builds_enabled?, :wiki_enabled?, :merge_requests_enabled?, to: :project_feature, allow_nil: true
+
   default_value_for :archived, false
   default_value_for :visibility_level, gitlab_config_features.visibility_level
-  default_value_for :issues_enabled, gitlab_config_features.issues
-  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
-  default_value_for :builds_enabled, gitlab_config_features.builds
-  default_value_for :wiki_enabled, gitlab_config_features.wiki
-  default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :container_registry_enabled, gitlab_config_features.container_registry
   default_value_for(:repository_storage) { current_application_settings.repository_storage }
   default_value_for(:shared_runners_enabled) { current_application_settings.shared_runners_enabled }
 
   after_create :ensure_dir_exist
   after_save :ensure_dir_exist, if: :namespace_id_changed?
+  after_initialize :setup_project_feature
 
   # set last_activity_at to the same as created_at
   after_create :set_last_activity_at
@@ -62,9 +61,9 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
-  has_one :board, dependent: :destroy
-
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
+
+  has_one :board, dependent: :destroy
 
   # Project services
   has_many :services
@@ -130,6 +129,7 @@ class Project < ActiveRecord::Base
   has_many :notification_settings, dependent: :destroy, as: :source
 
   has_one :import_data, dependent: :destroy, class_name: "ProjectImportData"
+  has_one :project_feature, dependent: :destroy
 
   has_many :commit_statuses, dependent: :destroy, class_name: 'CommitStatus', foreign_key: :gl_project_id
   has_many :pipelines, dependent: :destroy, class_name: 'Ci::Pipeline', foreign_key: :gl_project_id
@@ -142,6 +142,7 @@ class Project < ActiveRecord::Base
   has_many :deployments, dependent: :destroy
 
   accepts_nested_attributes_for :variables, allow_destroy: true
+  accepts_nested_attributes_for :project_feature
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -159,8 +160,6 @@ class Project < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.project_path_regex,
               message: Gitlab::Regex.project_path_regex_message }
-  validates :issues_enabled, :merge_requests_enabled,
-            :wiki_enabled, inclusion: { in: [true, false] }
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
@@ -195,6 +194,9 @@ class Project < ActiveRecord::Base
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+
+  scope :with_builds_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0') }
+  scope :with_issues_enabled, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id').where('project_features.issues_access_level IS NULL or project_features.issues_access_level > 0') }
 
   scope :active, -> { joins(:issues, :notes, :merge_requests).order('issues.created_at, notes.created_at, merge_requests.created_at DESC') }
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
@@ -390,6 +392,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def lfs_enabled?
+    return false unless Gitlab.config.lfs.enabled
+    return Gitlab.config.lfs.enabled if self[:lfs_enabled].nil?
+
+    self[:lfs_enabled]
+  end
+
   def repository_storage_path
     Gitlab.config.repositories.storages[repository_storage]
   end
@@ -436,7 +445,7 @@ class Project < ActiveRecord::Base
 
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
-    latest_pipeline = pipelines.latest_successful_for(ref).first
+    latest_pipeline = pipelines.latest_successful_for(ref)
 
     if latest_pipeline
       latest_pipeline.builds.latest.with_artifacts
@@ -471,8 +480,6 @@ class Project < ActiveRecord::Base
   end
 
   def reset_cache_and_import_attrs
-    update(import_error: nil)
-
     ProjectCacheWorker.perform_async(self.id)
 
     self.import_data.destroy if self.import_data
@@ -611,7 +618,10 @@ class Project < ActiveRecord::Base
   end
 
   def new_issue_address(author)
-    if Gitlab::IncomingEmail.enabled? && author
+    # This feature is disabled for the time being.
+    return nil
+
+    if Gitlab::IncomingEmail.enabled? && author # rubocop:disable Lint/UnreachableCode
       Gitlab::IncomingEmail.reply_address(
         "#{path_with_namespace}+#{author.authentication_token}")
     end
@@ -677,6 +687,10 @@ class Project < ActiveRecord::Base
 
   def cache_has_external_issue_tracker
     update_column(:has_external_issue_tracker, services.external_issue_trackers.any?)
+  end
+
+  def has_wiki?
+    wiki_enabled? || has_external_wiki?
   end
 
   def external_wiki
@@ -1034,6 +1048,7 @@ class Project < ActiveRecord::Base
                                         "refs/heads/#{branch}",
                                         force: true)
     repository.copy_gitattributes(branch)
+    repository.expire_avatar_cache(branch)
     reload_default_branch
   end
 
@@ -1094,16 +1109,21 @@ class Project < ActiveRecord::Base
     !namespace.share_with_group_lock
   end
 
-  def pipeline(sha, ref)
+  def pipeline_for(ref, sha = nil)
+    sha ||= commit(ref).try(:sha)
+
+    return unless sha
+
     pipelines.order(id: :desc).find_by(sha: sha, ref: ref)
   end
 
-  def ensure_pipeline(sha, ref, current_user = nil)
-    pipeline(sha, ref) || pipelines.create(sha: sha, ref: ref, user: current_user)
+  def ensure_pipeline(ref, sha, current_user = nil)
+    pipeline_for(ref, sha) ||
+      pipelines.create(sha: sha, ref: ref, user: current_user)
   end
 
   def enable_ci
-    self.builds_enabled = true
+    project_feature.update_attribute(:builds_access_level, ProjectFeature::ENABLED)
   end
 
   def any_runners?(&block)
@@ -1269,6 +1289,11 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  # Prevents the creation of project_feature record for every project
+  def setup_project_feature
+    build_project_feature unless project_feature
+  end
 
   def default_branch_protected?
     current_application_settings.default_branch_protection == Gitlab::Access::PROTECTION_FULL ||

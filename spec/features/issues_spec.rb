@@ -122,6 +122,17 @@ describe 'Issues', feature: true do
           expect(page).to have_content date.to_s(:medium)
         end
       end
+
+      it 'warns about version conflict' do
+        issue.update(title: "New title")
+
+        fill_in 'issue_title', with: 'bug 345'
+        fill_in 'issue_description', with: 'bug description'
+
+        click_button 'Save changes'
+
+        expect(page).to have_content 'Someone edited the issue the same time you did'
+      end
     end
   end
 
@@ -525,7 +536,7 @@ describe 'Issues', feature: true do
     end
   end
 
-  describe 'new issue by email' do
+  xdescribe 'new issue by email' do
     shared_examples 'show the email in the modal' do
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")

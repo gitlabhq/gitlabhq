@@ -129,7 +129,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize!(action, subject)
+    def authorize!(action, subject = nil)
       forbidden! unless can?(current_user, action, subject)
     end
 
@@ -148,7 +148,7 @@ module API
     end
 
     def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
+      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -279,6 +279,24 @@ module API
       error!({ 'message' => message }, status)
     end
 
+    def handle_api_exception(exception)
+      if sentry_enabled? && report_exception?(exception)
+        define_params_for_grape_middleware
+        sentry_context
+        Raven.capture_exception(exception)
+      end
+
+      # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
+      trace = exception.backtrace
+
+      message = "\n#{exception.class} (#{exception.message}):\n"
+      message << exception.annoted_source_code.to_s if exception.respond_to?(:annoted_source_code)
+      message << "  " << trace.join("\n  ")
+
+      API.logger.add Logger::FATAL, message
+      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+    end
+
     # Projects helpers
 
     def filter_projects(projects)
@@ -390,14 +408,6 @@ module API
       links.join(', ')
     end
 
-    def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
-    end
-
     def secret_token
       File.read(Gitlab.config.gitlab_shell.secret_file).chomp
     end
@@ -418,6 +428,20 @@ module API
       else
         Entities::Issue
       end
+    end
+
+    # The Grape Error Middleware only has access to env but no params. We workaround this by
+    # defining a method that returns the right value.
+    def define_params_for_grape_middleware
+      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+    end
+
+    # We could get a Grape or a standard Ruby exception. We should only report anything that
+    # is clearly an error.
+    def report_exception?(exception)
+      return true unless exception.respond_to?(:status)
+
+      exception.status == 500
     end
   end
 end

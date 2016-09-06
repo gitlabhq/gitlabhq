@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   include Gitlab::GonHelper
   include GitlabRoutingHelper
   include PageLayoutHelper
+  include SentryHelper
   include WorkhorseHelper
 
   before_action :authenticate_user_from_private_token!
@@ -23,8 +24,8 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?, :current_application_settings
-  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :gitorious_import_enabled?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :can?, :current_application_settings
+  helper_method :import_sources_enabled?, :github_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -45,28 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   protected
-
-  def sentry_context
-    if Rails.env.production? && current_application_settings.sentry_enabled
-      if current_user
-        Raven.user_context(
-          id: current_user.id,
-          email: current_user.email,
-          username: current_user.username,
-        )
-      end
-
-      Raven.tags_context(program: sentry_program_context)
-    end
-  end
-
-  def sentry_program_context
-    if Sidekiq.server?
-      'sidekiq'
-    else
-      'rails'
-    end
-  end
 
   # This filter handles both private tokens and personal access tokens
   def authenticate_user_from_private_token!
@@ -118,12 +97,8 @@ class ApplicationController < ActionController::Base
     current_application_settings.after_sign_out_path.presence || new_user_session_path
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can?(object, action, subject)
-    abilities.allowed?(object, action, subject)
+    Ability.allowed?(object, action, subject)
   end
 
   def access_denied!
@@ -269,10 +244,6 @@ class ApplicationController < ActionController::Base
 
   def bitbucket_import_configured?
     Gitlab::OAuth::Provider.enabled?(:bitbucket) && Gitlab::BitbucketImport.public_key.present?
-  end
-
-  def gitorious_import_enabled?
-    current_application_settings.import_sources.include?('gitorious')
   end
 
   def google_code_import_enabled?

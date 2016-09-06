@@ -11,6 +11,10 @@
     }
   }
 
+  .add-to-tree {
+    vertical-align: top;
+  }
+
   .tree-table {
     margin-bottom: 0;
 
@@ -20,6 +24,15 @@
 
       td, th {
         line-height: 21px;
+      }
+
+      .last-commit {
+        @include str-truncated(60%);
+      }
+
+      .commit-history-link-spacer {
+        margin: 0 10px;
+        color: $table-border-color;
       }
 
       &:hover {
@@ -77,11 +90,17 @@
     }
   }
 
-  .tree_commit {
-    color: $gl-gray;
+  .tree-time-ago {
+    min-width: 135px;
+    color: $gl-gray-light;
+  }
+
+  .tree-commit {
+    max-width: 320px;
+    color: $gl-gray-light;
 
     .tree-commit-link {
-      color: $gl-gray;
+      color: $gl-gray-light;
 
       &:hover {
         text-decoration: underline;

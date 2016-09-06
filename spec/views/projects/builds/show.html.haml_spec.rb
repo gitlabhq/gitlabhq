@@ -59,14 +59,10 @@ describe 'projects/builds/show' do
     end
 
     it 'shows trigger variables in separate lines' do
-      expect(rendered).to have_css('code', text: variable_regexp('TRIGGER_KEY_1', 'TRIGGER_VALUE_1'))
-      expect(rendered).to have_css('code', text: variable_regexp('TRIGGER_KEY_2', 'TRIGGER_VALUE_2'))
+      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_1')
+      expect(rendered).to have_css('.js-build-variable', visible: false, text: 'TRIGGER_KEY_2')
+      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_1')
+      expect(rendered).to have_css('.js-build-value', visible: false, text: 'TRIGGER_VALUE_2')
     end
-  end
-
-  private
-
-  def variable_regexp(key, value)
-    /\A#{Regexp.escape("#{key}=#{value}")}\Z/
   end
 end

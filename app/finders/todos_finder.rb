@@ -33,7 +33,7 @@ class TodosFinder
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
 
-    items.reorder(id: :desc)
+    sort(items)
   end
 
   private
@@ -83,7 +83,7 @@ class TodosFinder
     if project?
       @project = Project.find(params[:project_id])
 
-      unless Ability.abilities.allowed?(current_user, :read_project, @project)
+      unless Ability.allowed?(current_user, :read_project, @project)
         @project = nil
       end
     else
@@ -104,6 +104,10 @@ class TodosFinder
 
   def type
     params[:type]
+  end
+
+  def sort(items)
+    params[:sort] ? items.sort(params[:sort]) : items.reorder(id: :desc)
   end
 
   def by_action(items)

@@ -21,7 +21,7 @@ describe Banzai::Filter::LabelReferenceFilter, lib: true do
 
   it 'includes default classes' do
     doc = reference_filter("Label #{reference}")
-    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label'
+    expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-label has-tooltip'
   end
 
   it 'includes a data-project attribute' do

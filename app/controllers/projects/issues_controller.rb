@@ -125,6 +125,10 @@ class Projects::IssuesController < Projects::ApplicationController
         render json: @issue.to_json(include: { milestone: {}, assignee: { methods: :avatar_url }, labels: { methods: :text_color } })
       end
     end
+
+  rescue ActiveRecord::StaleObjectError
+    @conflict = true
+    render :edit
   end
 
   def referenced_merge_requests
@@ -197,7 +201,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled && @project.default_issues_tracker?
+    return render_404 unless @project.feature_available?(:issues, current_user) && @project.default_issues_tracker?
   end
 
   def redirect_to_external_issue_tracker
@@ -208,7 +212,7 @@ class Projects::IssuesController < Projects::ApplicationController
     if action_name == 'new'
       redirect_to external.new_issue_path
     else
-      redirect_to external.issues_url
+      redirect_to external.project_path
     end
   end
 
@@ -230,7 +234,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue_params
     params.require(:issue).permit(
       :title, :assignee_id, :position, :description, :confidential,
-      :milestone_id, :due_date, :state_event, :task_num, label_ids: []
+      :milestone_id, :due_date, :state_event, :task_num, :lock_version, label_ids: []
     )
   end
 

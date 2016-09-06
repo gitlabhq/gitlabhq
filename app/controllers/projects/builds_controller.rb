@@ -78,8 +78,8 @@ class Projects::BuildsController < Projects::ApplicationController
   end
 
   def raw
-    if @build.has_trace?
-      send_file @build.path_to_trace, type: 'text/plain; charset=utf-8', disposition: 'inline'
+    if @build.has_trace_file?
+      send_file @build.trace_file_path, type: 'text/plain; charset=utf-8', disposition: 'inline'
     else
       render_404
     end

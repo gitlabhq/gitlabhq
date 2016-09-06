@@ -18,27 +18,20 @@ module API
     end
 
     rescue_from :all do |exception|
-      # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
-      # why is this not wrapped in something reusable?
-      trace = exception.backtrace
-
-      message = "\n#{exception.class} (#{exception.message}):\n"
-      message << exception.annoted_source_code.to_s if exception.respond_to?(:annoted_source_code)
-      message << "  " << trace.join("\n  ")
-
-      API.logger.add Logger::FATAL, message
-      rack_response({ 'message' => '500 Internal Server Error' }.to_json, 500)
+      handle_api_exception(exception)
     end
 
     format :json
     content_type :txt, "text/plain"
 
     # Ensure the namespace is right, otherwise we might load Grape::API::Helpers
+    helpers ::SentryHelper
     helpers ::API::Helpers
 
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
     mount ::API::Branches
+    mount ::API::BroadcastMessages
     mount ::API::Builds
     mount ::API::CommitStatuses
     mount ::API::Commits
@@ -75,5 +68,6 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
+    mount ::API::MergeRequestDiffs
   end
 end

@@ -53,7 +53,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.4.7'
+gem 'gitlab_git', '~> 10.5'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
@@ -96,9 +96,6 @@ gem 'fog-rackspace', '~> 0.1.1'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
-
-# Authorization
-gem 'six', '~> 0.2.0'
 
 # Seed data
 gem 'seed-fu', '~> 2.3.5'
@@ -349,5 +346,5 @@ gem 'paranoia', '~> 2.0'
 gem 'health_check', '~> 2.1.0'
 
 # System information
-gem 'vmstat', '~> 2.1.1'
+gem 'vmstat', '~> 2.2'
 gem 'sys-filesystem', '~> 1.1.6'

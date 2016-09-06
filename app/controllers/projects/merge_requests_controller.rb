@@ -83,12 +83,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def diffs
     apply_diff_view_cookie!
 
-    @merge_request_diff = @merge_request.merge_request_diff
+    @merge_request_diff =
+      if params[:diff_id]
+        @merge_request.merge_request_diffs.find(params[:diff_id])
+      else
+        @merge_request.merge_request_diff
+      end
 
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
-        @diffs = @merge_request.diffs(diff_options)
+        unless @merge_request_diff.latest?
+          # Disable comments if browsing older version of the diff
+          @diff_notes_disabled = true
+        end
+
+        @diffs = @merge_request_diff.diffs(diff_options)
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
       end
@@ -258,6 +268,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       render "edit"
     end
+  rescue ActiveRecord::StaleObjectError
+    @conflict = true
+    render :edit
   end
 
   def remove_wip
@@ -400,7 +413,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.merge_requests_enabled
+    return render_404 unless @project.feature_available?(:merge_requests, current_user)
   end
 
   def validates_merge_request
@@ -493,7 +506,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
       :state_event, :description, :task_num, :force_remove_source_branch,
-      label_ids: []
+      :lock_version, label_ids: []
     )
   end
 

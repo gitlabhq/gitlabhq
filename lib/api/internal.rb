@@ -101,6 +101,35 @@ module API
           {}
         end
       end
+
+      post '/two_factor_recovery_codes' do
+        status 200
+
+        key = Key.find_by(id: params[:key_id])
+
+        unless key
+          return { 'success' => false, 'message' => 'Could not find the given key' }
+        end
+
+        if key.is_a?(DeployKey)
+          return { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
+        end
+
+        user = key.user
+
+        unless user
+          return { success: false, message: 'Could not find a user for the given key' }
+        end
+
+        unless user.two_factor_enabled?
+          return { success: false, message: 'Two-factor authentication is not enabled for this user' }
+        end
+
+        codes = user.generate_otp_backup_codes!
+        user.save!
+
+        { success: true, recovery_codes: codes }
+      end
     end
   end
 end

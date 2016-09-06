@@ -80,7 +80,7 @@
 
     .search-icon {
       @extend .fa-search;
-      @include transition(color .15s);
+      transition: color 0.15s;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -125,7 +125,7 @@
     }
 
     .location-badge {
-      @include transition(all .15s);
+      transition: all 0.15s;
       background-color: $location-badge-active-bg;
       color: $white-light;
     }

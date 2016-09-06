@@ -433,7 +433,7 @@ class User < ActiveRecord::Base
   #
   # This logic is duplicated from `Ability#project_abilities` into a SQL form.
   def projects_where_can_admin_issues
-    authorized_projects(Gitlab::Access::REPORTER).non_archived.where.not(issues_enabled: false)
+    authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
   end
 
   def is_admin?
@@ -460,16 +460,12 @@ class User < ActiveRecord::Base
     can?(:create_group, nil)
   end
 
-  def abilities
-    Ability.abilities
-  end
-
   def can_select_namespace?
     several_namespaces? || admin
   end
 
   def can?(action, subject)
-    abilities.allowed?(self, action, subject)
+    Ability.allowed?(self, action, subject)
   end
 
   def first_name
@@ -489,10 +485,10 @@ class User < ActiveRecord::Base
     (personal_projects.count.to_f / projects_limit) * 100
   end
 
-  def recent_push(project_id = nil)
+  def recent_push(project_ids = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
-    events = events.where(project_id: project_id) if project_id
+    events = events.where(project_id: project_ids) if project_ids
 
     # Use the latest event that has not been pushed or merged recently
     events.recent.find do |event|

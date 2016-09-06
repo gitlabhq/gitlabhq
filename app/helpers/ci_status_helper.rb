@@ -25,6 +25,11 @@ module CiStatusHelper
     end
   end
 
+  def ci_status_for_statuseable(subject)
+    status = subject.try(:status) || 'not found'
+    status.humanize
+  end
+
   def ci_icon_for_status(status)
     icon_name =
       case status
@@ -41,7 +46,7 @@ module CiStatusHelper
       when 'play'
         'icon_play'
       when 'created'
-        'icon_status_pending'
+        'icon_status_created'
       else
         'icon_status_cancel'
       end
@@ -66,10 +71,10 @@ module CiStatusHelper
       Ci::Runner.shared.blank?
   end
 
-  def render_status_with_link(type, status, path = nil, tooltip_placement: 'auto left', cssclass: '')
+  def render_status_with_link(type, status, path = nil, tooltip_placement: 'auto left', cssclass: '', container: 'body')
     klass = "ci-status-link ci-status-icon-#{status.dasherize} #{cssclass}"
     title = "#{type.titleize}: #{ci_label_for_status(status)}"
-    data = { toggle: 'tooltip', placement: tooltip_placement }
+    data = { toggle: 'tooltip', placement: tooltip_placement, container: container }
 
     if path
       link_to ci_icon_for_status(status), path,

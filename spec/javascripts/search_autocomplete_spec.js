@@ -105,13 +105,13 @@
     a3 = "a[href='" + mrsAssignedToMeLink + "']";
     a4 = "a[href='" + mrsIHaveCreatedLink + "']";
     expect(list.find(a1).length).toBe(1);
-    expect(list.find(a1).text()).toBe(' Issues assigned to me ');
+    expect(list.find(a1).text()).toBe('Issues assigned to me');
     expect(list.find(a2).length).toBe(1);
-    expect(list.find(a2).text()).toBe(" Issues I've created ");
+    expect(list.find(a2).text()).toBe("Issues I've created");
     expect(list.find(a3).length).toBe(1);
-    expect(list.find(a3).text()).toBe(' Merge requests assigned to me ');
+    expect(list.find(a3).text()).toBe('Merge requests assigned to me');
     expect(list.find(a4).length).toBe(1);
-    return expect(list.find(a4).text()).toBe(" Merge requests I've created ");
+    return expect(list.find(a4).text()).toBe("Merge requests I've created");
   };
 
   describe('Search autocomplete dropdown', function() {

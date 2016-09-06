@@ -26,6 +26,7 @@ this is similar to performing `git checkout feature; git merge master` locally.
 GitLab allows resolving conflicts in a file where all of the below are true:
 
 - The file is text, not binary
+- The file is in a UTF-8 compatible encoding
 - The file does not already contain conflict markers
 - The file, with conflict markers added, is not over 200 KB in size
 - The file exists under the same path in both branches

@@ -45,7 +45,7 @@
           %td
             = github_project_link(repo.full_name)
           %td.import-target
-            = repo.full_name
+            = import_project_target(repo.owner.login, repo.name)
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
               Import

@@ -91,6 +91,11 @@ Rails.application.routes.draw do
   get 'help/*path'     => 'help#show', as: :help_page
 
   #
+  # Koding route
+  #
+  get 'koding' => 'koding#index'
+
+  #
   # Global snippets
   #
   resources :snippets do
@@ -147,12 +152,6 @@ Rails.application.routes.draw do
     end
 
     resource :bitbucket, only: [:create], controller: :bitbucket do
-      get :status
-      get :callback
-      get :jobs
-    end
-
-    resource :gitorious, only: [:create, :new], controller: :gitorious do
       get :status
       get :callback
       get :jobs
@@ -783,6 +782,14 @@ Rails.application.routes.draw do
         resources :builds, only: [:index, :show], constraints: { id: /\d+/ } do
           collection do
             post :cancel_all
+
+            resources :artifacts, only: [] do
+              collection do
+                get :latest_succeeded,
+                  path: '*ref_name_and_path',
+                  format: false
+              end
+            end
           end
 
           member do

@@ -71,6 +71,16 @@ describe "Search", feature: true  do
   end
 
   describe 'Right header search field', feature: true do
+    it 'allows enter key to search', js: true do
+      visit namespace_project_path(project.namespace, project)
+      fill_in 'search', with: 'gitlab'
+      find('#search').native.send_keys(:enter)
+
+      page.within '.title' do
+        expect(page).to have_content 'Search'
+      end
+    end
+
     describe 'Search in project page' do
       before do
         visit namespace_project_path(project.namespace, project)

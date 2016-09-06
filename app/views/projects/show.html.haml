@@ -64,13 +64,15 @@
         %li.missing
           = link_to add_special_file_path(@project, file_name: '.gitlab-ci.yml') do
             Set Up CI
+
     %li.project-repo-buttons-right
       .project-repo-buttons.project-right-buttons
         - if current_user
           = render 'shared/members/access_request_buttons', source: @project
+          = render "projects/buttons/koding"
 
         .btn-group.project-repo-btn-group
-          = render "projects/buttons/download"
+          = render 'projects/buttons/download', project: @project, ref: @ref
           = render 'projects/buttons/dropdown'
 
         = render 'shared/notifications/button', notification_setting: @notification_setting

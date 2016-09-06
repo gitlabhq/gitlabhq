@@ -16,6 +16,9 @@ class DiffNote < Note
   after_initialize :ensure_original_discussion_id
   before_validation :set_original_position, :update_position, on: :create
   before_validation :set_line_code, :set_original_discussion_id
+  # We need to do this again, because it's already in `Note`, but is affected by
+  # `update_position` and needs to run after that.
+  before_validation :set_discussion_id
   after_save :keep_around_commits
 
   class << self
@@ -102,10 +105,6 @@ class DiffNote < Note
     return unless resolvable?
 
     self.noteable.find_diff_discussion(self.discussion_id)
-  end
-
-  def to_discussion
-    Discussion.new([self])
   end
 
   private
