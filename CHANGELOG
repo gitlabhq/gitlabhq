@@ -31,15 +31,20 @@ v 8.12.0 (unreleased)
   - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
+  - Use 'git update-ref' for safer web commits !6130
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
   - Fix groups sort dropdown alignment (ClemMakesApps)
   - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
   - Use JavaScript tooltips for mentions !5301 (winniehell)
+  - Add hover state to todos !5361 (winniehell)
+  - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Fix alignment of icon buttons !5887 (winniehell)
   - Fix markdown help references (ClemMakesApps)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140
+  - Fix missing flash messages on service edit page (airatshigapov)
   - Added project specific enable/disable setting for LFS !5997
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
   - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
@@ -85,6 +90,7 @@ v 8.11.5 (unreleased)
   - Fix member expiration date picker after update
   - Fix suggested colors options for new labels in the admin area. !6138
   - Fix GitLab import button
+  - Remove gitorious from import_sources
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
@@ -98,6 +104,10 @@ v 8.11.4
   - Creating an issue through our API now emails label subscribers !5720
   - Block concurrent updates for Pipeline
   - Don't create groups for unallowed users when importing projects
+  - Fix resolving conflicts on forks
+  - Fix diff commenting on merge requests created prior to 8.10
+  - Don't create groups for unallowed users when importing projects
+  - Scope webhooks/services that will run for confidential issues
   - Fix issue boards leak private label names and descriptions
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
   - Remove gitorious. !5866
@@ -180,9 +190,6 @@ v 8.11.0
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Get issue and merge request description templates from repositories
-  - Add hover state to todos !5361 (winniehell)
-  - Fix icon alignment of star and fork buttons !5451 (winniehell)
-  - Fix alignment of icon buttons !5887 (winniehell)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs

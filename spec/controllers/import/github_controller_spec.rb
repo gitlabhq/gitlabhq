@@ -181,21 +181,42 @@ describe Import::GithubController do
       end
 
       context "when a namespace with the GitHub user's username doesn't exist" do
-        it "creates the namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).and_return(double(execute: true))
+        context "when current user can create namespaces" do
+          it "creates the namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).and_return(double(execute: true))
 
-          post :create, format: :js
+            expect { post :create, format: :js }.to change(Namespace, :count).by(1)
+          end
 
-          expect(Namespace.where(name: other_username).first).not_to be_nil
+          it "takes the new namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).with(github_repo, an_instance_of(Group), user, access_params).
+              and_return(double(execute: true))
+
+            post :create, format: :js
+          end
         end
 
-        it "takes the new namespace" do
-          expect(Gitlab::GithubImport::ProjectCreator).
-            to receive(:new).with(github_repo, an_instance_of(Group), user, access_params).
-            and_return(double(execute: true))
+        context "when current user can't create namespaces" do
+          before do
+            user.update_attribute(:can_create_group, false)
+          end
 
-          post :create, format: :js
+          it "doesn't create the namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).and_return(double(execute: true))
+
+            expect { post :create, format: :js }.not_to change(Namespace, :count)
+          end
+
+          it "takes the current user's namespace" do
+            expect(Gitlab::GithubImport::ProjectCreator).
+              to receive(:new).with(github_repo, user.namespace, user, access_params).
+              and_return(double(execute: true))
+
+            post :create, format: :js
+          end
         end
       end
     end
