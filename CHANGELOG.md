@@ -355,6 +355,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Fix inconsistent checkbox alignment (ClemMakesApps)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
+  - Fix branch protection API !6215
   - Fix hover leading space bug in pipeline graph !5980
   - Avoid conflict with admin labels when importing GitHub labels
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
