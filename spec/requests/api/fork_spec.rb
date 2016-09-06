@@ -3,9 +3,15 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)  { create(:user) }
-  let(:user2) { create(:user) }
+  let(:user2) { create(:user, username: 'user2_name') }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
+  let(:group) { create(:group, name: 'group_name') }
+  let(:group2) do
+    group = create(:group, name: 'group2_name')
+    group.add_owner(user2)
+    group
+  end
 
   let(:project) do
     create(:project, creator_id: user.id, namespace: user.namespace)
@@ -57,6 +63,52 @@ describe API::API, api: true  do
         post api('/projects/fork/424242', user)
         expect(response).to have_http_status(404)
         expect(json_response['message']).to eq('404 Project Not Found')
+      end
+
+      it 'forks with explicit own user namespace id' do
+        post api("/projects/fork/#{project.id}?namespace=#{user2.namespace.id}", user2)
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'forks with explicit own user name as namespace' do
+        post api("/projects/fork/#{project.id}?namespace=#{user2.username}", user2)
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'forks to another user when admin' do
+        post api("/projects/fork/#{project.id}?namespace=#{user2.username}", admin)
+        expect(response).to have_http_status(201)
+        expect(json_response['owner']['id']).to eq(user2.id)
+      end
+
+      it 'fails if trying to fork to another user when not admin' do
+        post api("/projects/fork/#{project.id}?namespace=#{admin.namespace.id}", user2)
+        expect(response).to have_http_status(403)
+      end
+
+      it 'fails if trying to fork to non-existent namespace' do
+        post api("/projects/fork/#{project.id}?namespace=42424242", user2)
+        expect(response).to have_http_status(404)
+        expect(json_response['message']).to eq('404 Target Namespace Not Found')
+      end
+
+      it 'forks to owned group' do
+        post api("/projects/fork/#{project.id}?namespace=#{group2.name}", user2)
+        expect(response).to have_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group2.name)
+      end
+
+      it 'fails to fork to not owned group' do
+        post api("/projects/fork/#{project.id}?namespace=#{group.name}", user2)
+        expect(response).to have_http_status(403)
+      end
+
+      it 'forks to not owned group when admin' do
+        post api("/projects/fork/#{project.id}?namespace=#{group.name}", admin)
+        expect(response).to have_http_status(201)
+        expect(json_response['namespace']['name']).to eq(group.name)
       end
     end
 

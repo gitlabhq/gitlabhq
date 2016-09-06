@@ -514,7 +514,7 @@ invalid, 400 is returned.
 
 ### Fork project
 
-Forks a project into the user namespace of the authenticated user.
+Forks a project into the user namespace of the authenticated user or the one provided.
 
 ```
 POST /projects/fork/:id
@@ -523,6 +523,7 @@ POST /projects/fork/:id
 Parameters:
 
 - `id` (required) - The ID or NAMESPACE/PROJECT_NAME of the project to be forked
+- `namespace` (optional) - The ID or path of the namespace that the project will be forked to
 
 ### Star a project
 
