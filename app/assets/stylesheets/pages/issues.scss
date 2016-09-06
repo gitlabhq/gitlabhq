@@ -12,6 +12,10 @@
       padding-right: 8px;
       margin-bottom: 10px;
       min-width: 15px;
+
+      .selected_issue {
+        vertical-align: text-top;
+      }
     }
 
     .issue-labels {
@@ -68,12 +72,12 @@ form.edit-issue {
   }
 
   &.closed {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 
   &.merged {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 }

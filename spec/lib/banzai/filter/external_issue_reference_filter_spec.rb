@@ -64,7 +64,7 @@ describe Banzai::Filter::ExternalIssueReferenceFilter, lib: true do
 
     it 'includes default classes' do
       doc = filter("Issue #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
 
     it 'supports an :only_path context' do

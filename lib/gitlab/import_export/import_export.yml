@@ -39,15 +39,12 @@ project_tree:
   - :labels
   - milestones:
     - :events
+  - :project_feature
 
 # Only include the following attributes for the models specified.
 included_attributes:
   project:
     - :description
-    - :issues_enabled
-    - :merge_requests_enabled
-    - :wiki_enabled
-    - :snippets_enabled
     - :visibility_level
     - :archived
   user:

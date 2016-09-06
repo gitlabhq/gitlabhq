@@ -200,13 +200,15 @@
 
   svg {
     height: 15px;
-    width: auto;
+    width: 15px;
     position: relative;
     top: 2px;
   }
 
   svg, .fa {
-    margin-right: 3px;
+    &:not(:last-child) {
+      margin-right: 3px;
+    }
   }
 }
 

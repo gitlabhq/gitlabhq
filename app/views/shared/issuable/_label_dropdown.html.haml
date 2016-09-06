@@ -12,7 +12,7 @@
 - if params[:label_name].present?
   - if params[:label_name].respond_to?('any?')
     - params[:label_name].each do |label|
-      = hidden_field_tag "label_name[]", label, id: nil
+      = hidden_field_tag "label_name[]", u(label), id: nil
 .dropdown
   %button.dropdown-menu-toggle.js-label-select.js-multiselect{class: classes.join(' '), type: "button", data: dropdown_data}
     %span.dropdown-toggle-text

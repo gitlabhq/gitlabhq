@@ -1,13 +1,15 @@
-.nav-links.sub-nav
-  %ul{ class: (container_class) }
-    = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
-      = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
+.scrolling-tabs-container.sub-nav-scroll
+  = render 'shared/nav_scroll'
+  .nav-links.sub-nav.scrolling-tabs
+    %ul{ class: (container_class) }
+      = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
+        = link_to 'Home', namespace_project_wiki_path(@project.namespace, @project, :home)
 
-    = nav_link(path: 'wikis#pages') do
-      = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
+      = nav_link(path: 'wikis#pages') do
+        = link_to 'Pages', namespace_project_wiki_pages_path(@project.namespace, @project)
 
-    = nav_link(path: 'wikis#git_access') do
-      = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
-        Git Access
+      = nav_link(path: 'wikis#git_access') do
+        = link_to namespace_project_wikis_git_access_path(@project.namespace, @project) do
+          Git Access
 
-  = render 'projects/wikis/new'
+    = render 'projects/wikis/new'

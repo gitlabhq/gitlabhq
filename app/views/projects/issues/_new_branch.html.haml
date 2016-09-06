@@ -1,13 +1,12 @@
 - if can?(current_user, :push_code, @project)
   .pull-right
     #new-branch{'data-path' => can_create_branch_namespace_project_issue_path(@project.namespace, @project, @issue)}
+      = link_to '#', class: 'checking btn btn-grouped', disabled: 'disabled' do
+        = icon('spinner spin')
+        Checking branches
       = link_to namespace_project_branches_path(@project.namespace, @project, branch_name: @issue.to_branch_name, issue_iid: @issue.iid),
-        method: :post, class: 'btn btn-new btn-inverted has-tooltip', title: @issue.to_branch_name, disabled: 'disabled' do
-        .checking
-          = icon('spinner spin')
-          Checking branches
-        .available.hide
-          New branch
-        .unavailable.hide
-          = icon('exclamation-triangle')
-          New branch unavailable
+        method: :post, class: 'btn btn-new btn-inverted btn-grouped has-tooltip available hide', title: @issue.to_branch_name do
+        New branch
+      = link_to '#', class: 'unavailable btn btn-grouped hide', disabled: 'disabled' do
+        = icon('exclamation-triangle')
+        New branch unavailable

@@ -13,7 +13,7 @@ module ServiceParams
                     # `issue_events` and `merge_request_events` (singular!)
                     # See app/helpers/services_helper.rb for how we
                     # make those event names plural as special case.
-                    :issues_events, :merge_requests_events,
+                    :issues_events, :confidential_issues_events, :merge_requests_events,
                     :notify_only_broken_builds, :notify_only_broken_pipelines,
                     :add_pusher, :send_from_committer_email, :disable_diffs,
                     :external_wiki_url, :notify, :color,
