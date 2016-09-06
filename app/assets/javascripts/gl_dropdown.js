@@ -322,7 +322,13 @@
           if (self.options.clicked) {
             self.options.clicked(selected, $el, e);
           }
-          return $el.trigger('blur');
+
+          // Update label right after all modifications in dropdown has been done
+          if (self.options.toggleLabel) {
+            self.updateLabel(selected, $el, self);
+          }
+
+          $el.trigger('blur');
         });
       }
     }
@@ -592,11 +598,6 @@
             field.val(value).trigger('change');
           }
         }
-      }
-
-      // Update label right after input has been added
-      if (this.options.toggleLabel) {
-        this.updateLabel(selectedObject, el, this);
       }
 
       return selectedObject;
