@@ -37,12 +37,9 @@
             e.preventDefault()
           }
         })
-        .on('keyup', function(e) {
+        .on('input', function(e) {
           var keyCode;
           keyCode = e.which;
-          if (ARROW_KEY_CODES.indexOf(keyCode) >= 0) {
-            return;
-          }
           if (this.input.val() !== "" && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.addClass(HAS_VALUE_CLASS);
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
@@ -500,14 +497,17 @@
 
     // Render the full menu
     GitLabDropdown.prototype.renderMenu = function(html) {
-      var menu_html;
-      menu_html = "";
       if (this.options.renderMenu) {
-        menu_html = this.options.renderMenu(html);
+        return this.options.renderMenu(html);
       } else {
-        menu_html = $('<ul />').append(html);
+        var ul = document.createElement('ul');
+
+        for (var i = 0; i < html.length; i++) {
+          ul.appendChild(html[i]);
+        }
+
+        return ul;
       }
-      return menu_html;
     };
 
     // Append the menu into the dropdown
@@ -521,7 +521,7 @@
     };
 
     GitLabDropdown.prototype.renderItem = function(data, group, index) {
-      var cssClass, field, fieldName, groupAttrs, html, selected, text, url, value;
+      var field, fieldName, html, selected, text, url, value;
       if (group == null) {
         group = false;
       }
@@ -529,18 +529,16 @@
         // Render the row
         index = false;
       }
-      html = "";
-      // Divider
-      if (data === "divider") {
-        return "<li class='divider'></li>";
-      }
-      // Separator is a full-width divider
-      if (data === "separator") {
-        return "<li class='separator'></li>";
+      html = document.createElement('li');
+      if (data === 'divider' || data === 'separator') {
+        html.className = data;
+        return html;
       }
       // Header
       if (data.header != null) {
-        return _.template('<li class="dropdown-header"><%- header %></li>')({ header: data.header });
+        html.className = 'dropdown-header';
+        html.innerHTML = data.header;
+        return html;
       }
       if (this.options.renderRow) {
         // Call the render function
@@ -567,24 +565,25 @@
         } else {
           text = data.text != null ? data.text : '';
         }
-        cssClass = "";
-        if (selected) {
-          cssClass = "is-active";
-        }
         if (this.highlight) {
           text = this.highlightTextMatches(text, this.filterInput.val());
         }
-        if (group) {
-          groupAttrs = 'data-group=' + group + ' data-index=' + index;
-        } else {
-          groupAttrs = '';
+        // Create the list item & the link
+        var link = document.createElement('a');
+
+        link.href = url;
+        link.innerHTML = text;
+
+        if (selected) {
+          link.className = 'is-active';
         }
-        html = _.template('<li><a href="<%- url %>" <%- groupAttrs %> class="<%- cssClass %>"><%= text %></a></li>')({
-          url: url,
-          groupAttrs: groupAttrs,
-          cssClass: cssClass,
-          text: text
-        });
+
+        if (group) {
+          link.dataset.group = group;
+          link.dataset.index = index;
+        }
+
+        html.appendChild(link);
       }
       return html;
     };
