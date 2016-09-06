@@ -88,7 +88,8 @@ module Gitlab
 
       def from_pipeline(pipeline)
         status = %w[success failed running canceled]
-        builds = pipeline.builds.latest.where(status: status)
+        builds = pipeline.builds.latest.
+          where(status: status).where.not(started_at: nil).order(:started_at)
 
         from_builds(builds, :started_at, :finished_at)
       end
@@ -101,8 +102,9 @@ module Gitlab
         from_periods(periods)
       end
 
+      # periods should be sorted by `first`
       def from_periods(periods)
-        process_duration(process_periods(periods.sort_by(&:first)))
+        process_duration(process_periods(periods))
       end
 
       private

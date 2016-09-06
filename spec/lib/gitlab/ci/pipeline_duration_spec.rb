@@ -110,6 +110,6 @@ describe Gitlab::Ci::PipelineDuration do
       Gitlab::Ci::PipelineDuration::Period.new(first, last)
     end
 
-    Gitlab::Ci::PipelineDuration.from_periods(periods)
+    Gitlab::Ci::PipelineDuration.from_periods(periods.sort_by(&:first))
   end
 end
