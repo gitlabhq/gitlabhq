@@ -88,6 +88,7 @@ v 8.12.0 (unreleased)
   - Fixed invisible scroll controls on build page on iPhone
   - Fix error on raw build trace download for old builds stored in database !4822
   - Refactor the triggers page and documentation !6217
+  - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch

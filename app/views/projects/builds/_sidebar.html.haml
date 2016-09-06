@@ -90,12 +90,13 @@
 
         - if @build.trigger_request.variables
           %p
-            %span.build-light-text Variables:
+            %button.btn.group.btn-group-justified.reveal-variables Reveal Variables
 
 
           - @build.trigger_request.variables.each do |key, value|
-            %code
-              #{key}=#{value}
+            .hide.js-build
+              .js-build-variable= key 
+              .js-build-value= value
 
     .block
       .title
