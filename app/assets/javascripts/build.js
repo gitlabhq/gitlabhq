@@ -54,12 +54,14 @@
     }
 
     Build.prototype.getInitialBuildTrace = function() {
+      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
+
       return $.ajax({
         url: this.build_url,
         dataType: 'json',
         success: function(build_data) {
           $('.js-build-output').html(build_data.trace_html);
-          if (build_data.status === 'success' || build_data.status === 'failed') {
+          if (removeRefreshStatuses.indexOf(build_data.status) >= 0) {
             return $('.js-build-refresh').remove();
           }
         }

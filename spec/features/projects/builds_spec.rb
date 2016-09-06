@@ -164,6 +164,26 @@ describe "Builds" do
         expect(page).to have_link 'Raw'
       end
     end
+
+    describe 'Variables' do
+      before do
+        @trigger_request = create :ci_trigger_request_with_variables 
+        @build = create :ci_build, pipeline: @commit, trigger_request: @trigger_request
+        visit namespace_project_build_path(@project.namespace, @project, @build)
+      end
+
+      it 'shows variable key and value after click', js: true do
+        expect(page).to have_css('.reveal-variables')
+        expect(page).not_to have_css('.js-build-variable')
+        expect(page).not_to have_css('.js-build-value')
+     
+        click_button 'Reveal Variables'
+
+        expect(page).not_to have_css('.reveal-variables')
+        expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
+        expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
+      end
+    end    
   end
 
   describe "POST /:project/builds/:id/cancel" do

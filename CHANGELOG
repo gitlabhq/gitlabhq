@@ -2,6 +2,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
   - Add ability to fork to a specific namespace using API. (ritave)
+  - Cleanup misalignments in Issue list view !6206
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Filter tags by name !6121
   - Make push events have equal vertical spacing.
@@ -10,6 +11,7 @@ v 8.12.0 (unreleased)
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
+  - Fix pagination on user snippets page
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
@@ -25,6 +27,7 @@ v 8.12.0 (unreleased)
   - Add white background for no readme container (ClemMakesApps)
   - API: Expose issue confidentiality flag. (Robert Schilling)
   - Fix markdown anchor icon interaction (ClemMakesApps)
+  - Test migration paths from 8.5 until current release !4874
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
@@ -83,14 +86,19 @@ v 8.12.0 (unreleased)
   - Adds response mime type to transaction metric action when it's not HTML
   - Fix hover leading space bug in pipeline graph !5980
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
+  - Fix repository page ui issues
   - Fixed invisible scroll controls on build page on iPhone
   - Fix error on raw build trace download for old builds stored in database !4822
+  - Refactor the triggers page and documentation !6217
+  - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
+  - Use default clone protocol on "check out, review, and merge locally" help page URL
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix member expiration date picker after update
   - Fix suggested colors options for new labels in the admin area. !6138
   - Fix GitLab import button
+  - Remove gitorious from import_sources
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
