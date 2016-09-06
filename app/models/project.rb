@@ -58,7 +58,7 @@ class Project < ActiveRecord::Base
 
   # Relations
   belongs_to :creator, foreign_key: 'creator_id', class_name: 'User'
-  belongs_to :group, -> { where(type: Group) }, foreign_key: 'namespace_id'
+  belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
