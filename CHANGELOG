@@ -83,6 +83,7 @@ v 8.12.0 (unreleased)
   - Adds response mime type to transaction metric action when it's not HTML
   - Fix hover leading space bug in pipeline graph !5980
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
+  - Fix repository page ui issues
   - Fixed invisible scroll controls on build page on iPhone
   - Fix error on raw build trace download for old builds stored in database !4822
   - Refactor the triggers page and documentation !6217
