@@ -46,15 +46,22 @@
       const $userInput = $('#js-member-user-ids'),
             $groupInput = $('#js-member-group-ids'),
             self = this;
+      let selected = [],
+          user_ids = [],
+          group_ids = [];
+
+      const updateIdInputs = () => {
+        $userInput.val(user_ids.join(','));
+        $groupInput.val(group_ids.join(','));
+      };
 
       $('.js-member-dropdown').each(function () {
-        const $this = $(this),
-              selected = [],
-              user_ids = [],
-              group_ids = [];
+        const $this = $(this);
 
         $this.glDropdown({
           data(term, callback) {
+            term = term.split(',');
+            term = term[term.length - 1];
             term = term.replace(selected.join(','), '');
 
             if (term.match(/^[^@]+@[^@]+$/)) {
@@ -94,8 +101,7 @@
               }
             }
 
-            $userInput.val(user_ids.join(','));
-            $groupInput.val(group_ids.join(','));
+            updateIdInputs();
 
             return selected;
           },
@@ -126,7 +132,7 @@
                 link.dataset.index = index;
               }
 
-              if (selected.indexOf(item.name) > -1) {
+              if (selected.indexOf(item.id) > -1) {
                 link.className = 'is-active';
               }
 
@@ -137,6 +143,39 @@
             listItem.appendChild(link);
 
             return listItem;
+          }
+        }).on('input', function () {
+          const $this = $(this),
+                val = $this.val().split(','),
+                data = $this.data('glDropdown').fullData;
+
+          if (data) {
+            // Reset the selected data
+            user_ids = [];
+            group_ids = [];
+            selected = [];
+
+            // Loop through the rendered data
+            // This gets rid of any objects that have been removed when the user deletes in the field
+            for (const group in data) {
+              const groupData = data[group];
+
+              for (let i = 0, groupDataLength = groupData.length; i < groupDataLength; i++) {
+                const item = groupData[i];
+
+                if (val.indexOf(item.name) > -1) {
+                  selected.push(item.name);
+
+                  if (group === 'Groups') {
+                    group_ids.push(item.id);
+                  } else {
+                    user_ids.push(item.id);
+                  }
+                }
+              }
+            }
+
+            updateIdInputs();
           }
         });
       });

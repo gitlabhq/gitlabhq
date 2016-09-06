@@ -5,7 +5,7 @@
         %input{ type: "hidden", name: "user_ids", id: "js-member-user-ids" }
         %input{ type: "hidden", name: "group_ids", id: "js-member-group-ids" }
         %input.form-control.js-member-dropdown{ type: "text", placeholder: "Search for users or groups", data: { toggle: "dropdown", url: options_namespace_project_project_members_path(@project.namespace, @project, :json) } }
-        .dropdown-menu.dropdown-menu-full-width.dropdown-menu-selectable
+        .dropdown-menu.dropdown-menu-full-width.dropdown-menu-selectable.dropdown-members
           .dropdown-content
           = dropdown_loading
       .help-block.append-bottom-10
