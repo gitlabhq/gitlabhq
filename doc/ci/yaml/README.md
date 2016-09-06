@@ -6,50 +6,6 @@ GitLab Runner to manage your project's builds.
 If you want a quick introduction to GitLab CI, follow our
 [quick start guide](../quick_start/README.md).
 
----
-
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
-
-- [.gitlab-ci.yml](#gitlab-ci-yml)
-    - [image and services](#image-and-services)
-    - [before_script](#before_script)
-    - [after_script](#after_script)
-    - [stages](#stages)
-    - [types](#types)
-    - [variables](#variables)
-    - [cache](#cache)
-        - [cache:key](#cache-key)
-- [Jobs](#jobs)
-    - [script](#script)
-    - [stage](#stage)
-    - [only and except](#only-and-except)
-    - [job variables](#job-variables)
-    - [tags](#tags)
-    - [allow_failure](#allow_failure)
-    - [when](#when)
-        - [Manual actions](#manual-actions)
-    - [environment](#environment)
-    - [artifacts](#artifacts)
-        - [artifacts:name](#artifacts-name)
-        - [artifacts:when](#artifacts-when)
-        - [artifacts:expire_in](#artifacts-expire_in)
-    - [dependencies](#dependencies)
-    - [before_script and after_script](#before_script-and-after_script)
-- [Git Strategy](#git-strategy)
-- [Shallow cloning](#shallow-cloning)
-- [Hidden keys](#hidden-keys)
-- [Special YAML features](#special-yaml-features)
-    - [Anchors](#anchors)
-- [Validate the .gitlab-ci.yml](#validate-the-gitlab-ci-yml)
-- [Skipping builds](#skipping-builds)
-- [Examples](#examples)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
----
-
 ## .gitlab-ci.yml
 
 From version 7.12, GitLab CI uses a [YAML](https://en.wikipedia.org/wiki/YAML)
