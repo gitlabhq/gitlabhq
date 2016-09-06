@@ -43,4 +43,24 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
 
     expect(page).not_to have_selector('.group_member')
   end
+
+  context 'search' do
+    it 'finds no results' do
+      page.within '.member-search-form' do
+        fill_in 'search', with: 'testing 123'
+        find('.member-search-btn').click
+      end
+
+      expect(page).not_to have_selector('.group_member')
+    end
+
+    it 'finds results' do
+      page.within '.member-search-form' do
+        fill_in 'search', with: group.name
+        find('.member-search-btn').click
+      end
+
+      expect(page).to have_selector('.group_member', count: 1)
+    end
+  end
 end

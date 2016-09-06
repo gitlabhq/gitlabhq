@@ -10,23 +10,30 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     project_members = @project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, @project)
 
+    group = @project.group
+
+    if group
+      group_members = group.group_members
+      group_members = group_members.non_invite unless can?(current_user, :admin_project, @project)
+    end
+
     if params[:search].present?
+      groups_id = @groups.pluck(:group_id)
+      groups = Group.where(id: groups_id).search(params[:search]).to_a
+      @groups = @project.project_group_links.where(group_id: groups)
+
       users = @project.users.search(params[:search]).to_a
       project_members = project_members.where(user_id: users)
+
+      if group_members
+        users = group.users.search(params[:search]).to_a
+        group_members = group_members.where(user_id: users)
+      end
     end
 
     members_ids = project_members.pluck(:id)
 
-    group = @project.group
-    if group
-      group_members = group.group_members
-      group_members = group_members.non_invite unless can?(current_user, :admin_project, @project)
-
-      if params[:search].present?
-        users = group.users.search(params[:search]).to_a
-        group_members = group_members.where(user_id: users)
-      end
-
+    if group_members
       members_ids << group_members.pluck(:id)
     end
 
@@ -47,6 +54,17 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       expires_at: params[:expires_at],
       current_user: current_user
     )
+
+    group_ids = params[:group_ids].split(',')
+    groups = Group.where(id: group_ids)
+
+    groups.each do |group|
+      project.project_group_links.create(
+        group: group,
+        group_access: params[:access_level],
+        expires_at: params[:expires_at]
+      )
+    end
 
     redirect_to namespace_project_project_members_path(@project.namespace, @project)
   end
@@ -99,6 +117,21 @@ class Projects::ProjectMembersController < Projects::ApplicationController
 
     redirect_to(namespace_project_project_members_path(project.namespace, project),
                 notice: notice)
+  end
+
+  def options
+    users = User.all
+    users = users.search(params[:search]) if params[:search].present?
+    users = users.page(1)
+
+    groups = Group.all
+    groups = groups.search(params[:search]) if params[:search].present?
+    groups = groups.page(1)
+
+    render json: {
+      Groups: groups.as_json(only: [:id, :name], methods: [:avatar_url]),
+      Users: users.as_json(only: [:id, :name, :username], methods: [:avatar_url]),
+    }
   end
 
   protected
