@@ -503,7 +503,13 @@
         var ul = document.createElement('ul');
 
         for (var i = 0; i < html.length; i++) {
-          ul.appendChild(html[i]);
+          var el = html[i];
+
+          if (typeof el === 'string') {
+            ul.innerHTML += el;
+          } else {
+            ul.appendChild(el);
+          }
         }
 
         return ul;
