@@ -46,18 +46,6 @@ describe SlackService::PipelineMessage do
     end
   end
 
-  describe '#seconds_name' do
-    let(:status) { 'failed' }
-    let(:color) { 'danger' }
-    let(:duration) { 1 }
-
-    it 'returns seconds as singular when there is only one' do
-      expect(subject.pretext).to be_empty
-      expect(subject.fallback).to eq(message)
-      expect(subject.attachments).to eq([text: message, color: color])
-    end
-  end
-
   def build_message(status_text = status)
     "<example.gitlab.com|project_name>:" \
     " Pipeline <example.gitlab.com/pipelines/123|97de212e>" \
