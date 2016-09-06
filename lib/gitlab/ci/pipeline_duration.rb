@@ -133,9 +133,7 @@ module Gitlab
       end
 
       def process_duration(periods)
-        periods.inject(0) do |result, per|
-          result + per.duration
-        end
+        periods.sum(&:duration)
       end
     end
   end
