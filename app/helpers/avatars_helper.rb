@@ -14,7 +14,8 @@ module AvatarsHelper
       avatar_icon(options[:user] || options[:user_email], avatar_size),
       class: "avatar has-tooltip hidden-xs s#{avatar_size}",
       alt: "#{user_name}'s avatar",
-      title: user_name
+      title: user_name,
+      data: { container: 'body' }
     )
 
     if options[:user]
