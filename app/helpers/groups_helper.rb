@@ -24,19 +24,20 @@ module GroupsHelper
     end
   end
 
-  def projects_with_lfs_enabled(group, status)
-    if status
-      lfs_status = group.projects.select(&:lfs_enabled?).size
-    else
-      lfs_status = group.projects.select{ |p| !p.lfs_enabled? }.size
-    end
+  def projects_lfs_status(group)
+    lfs_status =
+      if group.lfs_enabled?
+        group.projects.select(&:lfs_enabled?).size
+      else
+        group.projects.reject(&:lfs_enabled?).size
+      end
 
     size = group.projects.size
 
-    if lfs_status == size || lfs_status == 0
-      'on all projects'
+    if lfs_status == size
+      'for all projects'
     else
-      "on #{lfs_status} out of #{size} projects"
+      "for #{lfs_status} out of #{pluralize(size, 'project')}"
     end
   end
 
@@ -44,7 +45,7 @@ module GroupsHelper
     status = group.lfs_enabled? ? 'enabled' : 'disabled'
 
     content_tag(:span, class: "lfs-#{status}") do
-      "#{status.humanize} #{projects_with_lfs_enabled(group, group.lfs_enabled?)}"
+      "#{status.humanize} #{projects_lfs_status(group)}"
     end
   end
 end

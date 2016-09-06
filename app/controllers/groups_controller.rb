@@ -122,15 +122,15 @@ class GroupsController < Groups::ApplicationController
 
   def group_params
     params.require(:group).permit(
-      :name,
-      :description,
-      :path,
       :avatar,
+      :description,
+      :lfs_enabled,
+      :name,
+      :path,
       :public,
-      :visibility_level,
-      :share_with_group_lock,
       :request_access_enabled,
-      :lfs_enabled
+      :share_with_group_lock,
+      :visibility_level
     )
   end
 

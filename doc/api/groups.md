@@ -288,7 +288,7 @@ Parameters:
 - `path` (required) - The path of the group
 - `description` (optional) - The group's description
 - `visibility_level` (optional) - The group's visibility. 0 for private, 10 for internal, 20 for public.
-- `lfs_enabled` (optional)      - Enable/disable LFS for the projects in this group
+- `lfs_enabled` (optional)      - Enable/disable Large File Storage (LFS) for the projects in this group
 
 ## Transfer project to group
 
@@ -318,7 +318,7 @@ PUT /groups/:id
 | `path` | string | no | The path of the group |
 | `description` | string | no | The description of the group |
 | `visibility_level` | integer | no | The visibility level of the group. 0 for private, 10 for internal, 20 for public. |
-| `lfs_enabled` (optional) | boolean | no | Enable/disable LFS for the projects in this group |
+| `lfs_enabled` (optional) | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v3/groups/5?name=Experimental"

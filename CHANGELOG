@@ -75,7 +75,6 @@ v 8.12.0 (unreleased)
   - Add last commit time to repo view (ClemMakesApps)
   - Fix accessibility and visibility of project list dropdown button !6140
   - Fix missing flash messages on service edit page (airatshigapov)
-  - Added project specific enable/disable setting for LFS !5997
   - Added project-specific enable/disable setting for LFS !5997
   - Added group-specific enable/disable setting for LFS !6164
   - Don't expose a user's token in the `/api/v3/user` API (!6047)
