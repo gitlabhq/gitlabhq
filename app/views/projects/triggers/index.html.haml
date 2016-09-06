@@ -48,7 +48,7 @@
     %pre
       :plain
         trigger:
-          type: deploy
+          stage: deploy
           script:
             - "curl -X POST -F token=TOKEN -F ref=REF_NAME #{builds_trigger_url(@project.id)}"
     %h5.prepend-top-default
