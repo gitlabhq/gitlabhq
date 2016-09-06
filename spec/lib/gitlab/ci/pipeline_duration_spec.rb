@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::PipelineDuration do
-  let(:calculator) { create_calculator(data) }
+  let(:calculated_duration) { calculate(data) }
 
   shared_examples 'calculating duration' do
     it do
-      expect(calculator.duration).to eq(duration)
+      expect(calculated_duration).to eq(duration)
     end
   end
 
@@ -105,11 +105,11 @@ describe Gitlab::Ci::PipelineDuration do
     it_behaves_like 'calculating duration'
   end
 
-  def create_calculator(data)
+  def calculate(data)
     periods = data.shuffle.map do |(first, last)|
       Gitlab::Ci::PipelineDuration::Period.new(first, last)
     end
 
-    Gitlab::Ci::PipelineDuration.new(periods)
+    Gitlab::Ci::PipelineDuration.from_periods(periods)
   end
 end

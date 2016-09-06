@@ -2,7 +2,7 @@ module Gitlab
   module Ci
     # # Introduction - total running time
     #
-    # The problem this class is trying to solve is finding the total running
+    # The problem this module is trying to solve is finding the total running
     # time amongst all the jobs, excluding retries and pending (queue) time.
     # We could reduce this problem down to finding the union of periods.
     #
@@ -76,7 +76,9 @@ module Gitlab
     #     (4 - 1) + (7 - 6) => 4
     #
     # That is 4 is the answer in the example.
-    class PipelineDuration
+    module PipelineDuration
+      extend self
+
       PeriodStruct = Struct.new(:first, :last)
       class Period < PeriodStruct
         def duration
@@ -84,32 +86,26 @@ module Gitlab
         end
       end
 
-      def self.from_pipeline(pipeline)
+      def from_pipeline(pipeline)
         status = %w[success failed running canceled]
         builds = pipeline.builds.latest.where(status: status)
 
-        from_builds(builds, :started_at, :finished_at).duration
+        from_builds(builds, :started_at, :finished_at)
       end
 
-      def self.from_builds(builds, from, to, now = Time.now)
+      def from_builds(builds, from, to, now = Time.now)
         periods = builds.map do |b|
           Period.new(b.public_send(from) || now, b.public_send(to) || now)
         end
 
-        new(periods)
+        from_periods(periods)
       end
 
-      attr_reader :duration
-
-      def initialize(periods)
-        process(periods.sort_by(&:first))
+      def from_periods(periods)
+        process_duration(process_periods(periods.sort_by(&:first)))
       end
 
       private
-
-      def process(periods)
-        @duration = process_duration(process_periods(periods))
-      end
 
       def process_periods(periods)
         return periods if periods.empty?
