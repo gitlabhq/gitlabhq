@@ -2,21 +2,13 @@ module Gitlab
   module Auth
     Result = Struct.new(:user, :type)
 
+    class MissingPersonalTokenError < StandardError; end
+
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        result = Result.new
-
-        if valid_ci_request?(login, password, project)
-          result.type = :ci
-        else
-          result = populate_result(login, password)
-        end
-
-        success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
-        rate_limit!(ip, success: success, login: login)
-        result
+        populate_result(login, password, project, ip)
       end
 
       def find_with_user_password(login, password)
@@ -75,20 +67,25 @@ module Gitlab
         end
       end
 
-      def populate_result(login, password)
-        result =
+      def populate_result(login, password, project, ip)
+        result = Result.new(nil, :ci) if valid_ci_request?(login, password, project)
+
+        result ||=
           user_with_password_for_git(login, password) ||
           oauth_access_token_check(login, password) ||
           lfs_token_check(login, password) ||
           personal_access_token_check(login, password)
 
-        if result
+        if result && result.type != :ci
           result.type = nil unless result.user
 
           if result.user && result.type == :gitlab_or_ldap && result.user.two_factor_enabled?
-            result.type = :missing_personal_token
+            raise Gitlab::Auth::MissingPersonalTokenError
           end
         end
+
+        success = result ? result.user.present? || [:ci].include?(result.type) : false
+        rate_limit!(ip, success: success, login: login)
 
         result || Result.new
       end
@@ -118,15 +115,17 @@ module Gitlab
 
       def lfs_token_check(login, password)
         actor =
-          if login.start_with?('lfs-deploy-key')
-            DeployKey.find(login.sub('lfs-deploy-key-', ''))
+          if login =~ /\Alfs-deploy-key-\d+\Z/
+            /\d+\Z/.match(login) do |id|
+              DeployKey.find(id[0])
+            end
           else
             User.by_login(login)
           end
 
         token_handler = Gitlab::LfsToken.new(actor)
 
-        Result.new(actor, token_handler.type) if actor && token_handler.value == password
+        Result.new(actor, token_handler.type) if actor && Devise.secure_compare(token_handler.value, password)
       end
     end
   end

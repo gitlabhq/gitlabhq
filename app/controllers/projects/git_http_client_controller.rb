@@ -4,8 +4,6 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  class MissingPersonalTokenError < StandardError; end
-
   attr_reader :user
 
   # Git clients will not know what authenticity token to send along
@@ -40,10 +38,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
-
-  rescue MissingPersonalTokenError
+  rescue Gitlab::Auth::MissingPersonalTokenError
     render_missing_personal_token
-    return
   end
 
   def basic_auth_provided?
@@ -117,17 +113,20 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def handle_authentication(login, password)
     auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
-    if auth_result.type == :ci && download_request?
-      @ci = true
-    elsif auth_result.type == :oauth && !download_request?
-      # Not allowed
-    elsif auth_result.type == :missing_personal_token
-      raise MissingPersonalTokenError
-    elsif auth_result.type == :lfs_deploy_token && download_request?
-      @lfs_deploy_key = true
+    case auth_result.type
+    when :ci
+      @ci = true if download_request?
+    when :oauth
+      @user = auth_result.user if download_request?
+    when :lfs_deploy_token
+      if download_request?
+        @lfs_deploy_key = true
+        @user = auth_result.user
+      end
+    when :lfs_token, :personal_token, :gitlab_or_ldap
       @user = auth_result.user
     else
-      @user = auth_result.user
+      # Not allowed
     end
   end
 

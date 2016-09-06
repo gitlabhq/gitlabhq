@@ -27,7 +27,7 @@ module LfsHelper
 
     return true if project.public? || ci? || lfs_deploy_key?
 
-    (user && user.can?(:download_code, project))
+    user && user.can?(:download_code, project)
   end
 
   def lfs_upload_access?

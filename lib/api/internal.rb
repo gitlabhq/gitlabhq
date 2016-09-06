@@ -78,14 +78,7 @@ module API
         status 200
 
         key = Key.find(params[:key_id])
-        user = key.user
-
-        token_handler =
-          if user
-            Gitlab::LfsToken.new(user)
-          else
-            Gitlab::LfsToken.new(key)
-          end
+        token_handler = Gitlab::LfsToken.new(key)
 
         {
           username: token_handler.actor_name,

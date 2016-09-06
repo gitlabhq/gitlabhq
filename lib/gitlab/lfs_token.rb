@@ -2,15 +2,18 @@ module Gitlab
   class LfsToken
     attr_accessor :actor
 
+    TOKEN_LENGTH = 50
+    EXPIRY_TIME = 1800
+
     def initialize(actor)
-      @actor = actor
+      set_actor(actor)
     end
 
     def generate
-      token = Devise.friendly_token(50)
+      token = Devise.friendly_token(TOKEN_LENGTH)
 
       Gitlab::Redis.with do |redis|
-        redis.set(redis_key, token, ex: 600)
+        redis.set(redis_key, token, ex: EXPIRY_TIME)
       end
 
       token
@@ -34,6 +37,18 @@ module Gitlab
 
     def redis_key
       "gitlab:lfs_token:#{actor.class.name.underscore}_#{actor.id}" if actor
+    end
+
+    def set_actor(actor)
+      @actor =
+        case actor
+        when DeployKey, User
+          actor
+        when Key
+          actor.user
+        else
+          #
+        end
     end
   end
 end
