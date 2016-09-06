@@ -177,7 +177,7 @@ describe "Builds" do
         expect(page).not_to have_css('.js-build-variable')
         expect(page).not_to have_css('.js-build-value')
      
-        find('.reveal-variables').click
+        click_button 'Reveal Variables'
 
         expect(page).not_to have_css('.reveal-variables')
         expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
