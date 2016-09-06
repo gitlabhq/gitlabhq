@@ -11,7 +11,7 @@
       %ul.dropdown-menu.dropdown-menu-selectable
         - @merge_request_diffs.each_with_index do |merge_request_diff, i|
           %li
-            = link_to mr_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
+            = link_to merge_request_version_path(@project, @merge_request, merge_request_diff), class: ('is-active' if merge_request_diff == @merge_request_diff) do
               %strong.monospace
                 - if i.zero?
                   Latest:
@@ -38,14 +38,14 @@
         %ul.dropdown-menu.dropdown-menu-selectable
           - @comparable_diffs.each_with_index do |merge_request_diff, i|
             %li
-              = link_to mr_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff.head_commit_sha == @start_sha) do
+              = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff, merge_request_diff.head_commit_sha), class: ('is-active' if merge_request_diff.head_commit_sha == @start_sha) do
                 %strong.monospace
                   #{@comparable_diffs.size - i}. #{short_sha(merge_request_diff.head_commit_sha)}
                 %br
                 %small
                   = time_ago_with_tooltip(merge_request_diff.created_at)
           %li
-            = link_to mr_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
+            = link_to merge_request_version_path(@project, @merge_request, @merge_request_diff), class: ('is-active' unless @start_sha) do
               %strong.monospace
                 Base: #{short_sha(@merge_request_diff.base_commit_sha)}
 
