@@ -111,4 +111,12 @@ module IssuablesHelper
       issuable.open? ? :opened : :closed
     end
   end
+
+  def issuable_bulk_update_path(type)
+    if type == "issue"
+      bulk_update_namespace_project_issues_path(@project.namespace, @project)
+    else
+      bulk_update_namespace_project_merge_requests_path(@project.namespace, @project)
+    end
+  end
 end

@@ -49,7 +49,7 @@
 
     - if @bulk_edit
       .issues_bulk_update.hide
-        = form_tag bulk_update_namespace_project_issues_path(@project.namespace, @project), method: :post, class: 'bulk-update'  do
+        = form_tag issuable_bulk_update_path(type), method: :post, class: 'bulk-update'  do
           .filter-item.inline
             = dropdown_tag("Status", options: { toggle_class: "js-issue-status", title: "Change status", dropdown_class: "dropdown-menu-status dropdown-menu-selectable", data: { field_name: "update[state_event]" } } ) do
               %ul
