@@ -41,8 +41,9 @@ following locations:
 - [Sidekiq metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
-- [Users](users.md)
 - [Todos](todos.md)
+- [Users](users.md)
+- [Validate CI configuration](ci/lint.md)
 
 ### Internal CI API
 
