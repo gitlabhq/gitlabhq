@@ -12,6 +12,7 @@ v 8.12.0 (unreleased)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
+  - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)

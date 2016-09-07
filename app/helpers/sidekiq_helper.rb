@@ -6,7 +6,7 @@ module SidekiqHelper
     if match
       match[1..6]
     else
-      %w{? ? ? ? ? ?}
+      %w[? ? ? ? ? ?]
     end
   end
 end
