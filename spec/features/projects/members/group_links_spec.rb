@@ -30,7 +30,7 @@ feature 'Projects > Members > Anonymous user sees members', feature: true, js: t
     fill_in "member_expires_at_#{group.id}", with: tomorrow.strftime("%F")
     wait_for_ajax
 
-    page.within(first('li.member')) do
+    page.within(find('li.group_member')) do
       expect(page).to have_content('Expires in')
     end
   end
