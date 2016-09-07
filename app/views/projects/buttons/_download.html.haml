@@ -1,4 +1,42 @@
-- unless @project.empty_repo?
-  - if can? current_user, :download_code, @project
-    = link_to archive_namespace_project_repository_path(@project.namespace, @project, ref: @ref, format: 'zip'), class: 'btn has-tooltip', data: {container: "body"}, rel: 'nofollow', title: "Download ZIP" do
-      = icon('download')
+- if !project.empty_repo? && can?(current_user, :download_code, project)
+  %span.btn-group{class: 'hidden-xs hidden-sm btn-grouped'}
+    .dropdown.inline
+      %button.btn{ 'data-toggle' => 'dropdown' }
+        = icon('download')
+        %span.caret
+        %span.sr-only
+          Select Archive Format
+      %ul.dropdown-menu.dropdown-menu-align-right{ role: 'menu' }
+        %li.dropdown-header Source code
+        %li
+          = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'zip'), rel: 'nofollow' do
+            %i.fa.fa-download
+            %span Download zip
+        %li
+          = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
+            %i.fa.fa-download
+            %span Download tar.gz
+        %li
+          = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar.bz2'), rel: 'nofollow' do
+            %i.fa.fa-download
+            %span Download tar.bz2
+        %li
+          = link_to archive_namespace_project_repository_path(project.namespace, project, ref: ref, format: 'tar'), rel: 'nofollow' do
+            %i.fa.fa-download
+            %span Download tar
+
+        - pipeline = project.pipelines.latest_successful_for(ref)
+        - if pipeline
+          - artifacts = pipeline.builds.latest.with_artifacts
+          - if artifacts.any?
+            %li.dropdown-header Artifacts
+            - unless pipeline.latest?
+              - latest_pipeline = project.pipeline_for(ref)
+              %li
+                .unclickable= ci_status_for_statuseable(latest_pipeline)
+              %li.dropdown-header Previous Artifacts
+            - artifacts.each do |job|
+              %li
+                = link_to latest_succeeded_namespace_project_artifacts_path(project.namespace, project, ref, 'download', job: job.name), rel: 'nofollow' do
+                  %i.fa.fa-download
+                  %span Download '#{job.name}'

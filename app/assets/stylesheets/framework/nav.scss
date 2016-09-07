@@ -1,4 +1,4 @@
-@mixin fade($gradient-direction, $rgba, $gradient-color) {
+@mixin fade($gradient-direction, $gradient-color) {
   visibility: hidden;
   opacity: 0;
   z-index: 2;
@@ -8,10 +8,7 @@
   height: 30px;
   transition-duration: .3s;
   -webkit-transform: translateZ(0);
-  background: -webkit-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
-  background: -o-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
-  background: -moz-linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
-  background: linear-gradient($gradient-direction, $rgba, $gradient-color 45%);
+  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
 
   &.scrolling {
     visibility: visible;
@@ -71,7 +68,7 @@
     .badge {
       font-weight: normal;
       background-color: #eee;
-      color: #78a;
+      color: $btn-transparent-color;
       vertical-align: baseline;
     }
   }
@@ -141,7 +138,7 @@
     }
 
     li a {
-      padding: 16px 10px 11px;
+      padding: 16px 15px 11px;
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
@@ -161,6 +158,7 @@
     > .dropdown {
       margin-right: $gl-padding-top;
       display: inline-block;
+      vertical-align: top;
 
       &:last-child {
         margin-right: 0;
@@ -207,12 +205,6 @@
 
         /* Large devices (large desktops, 1200px and up) */
         @media (min-width: $screen-lg-min) { width: 210px; }
-      }
-    }
-
-    .project-filter-form {
-      input {
-        background-color: $background-color;
       }
     }
 
@@ -335,10 +327,6 @@
         }
       }
 
-      .badge {
-        color: $gl-icon-color;
-      }
-
       &:hover {
         a, i {
           color: $black;
@@ -356,7 +344,7 @@
   }
 
   .fade-right {
-    @include fade(left, rgba(255, 255, 255, 0.4), $background-color);
+    @include fade(left, $background-color);
     right: -5px;
 
     .fa {
@@ -365,7 +353,7 @@
   }
 
   .fade-left {
-    @include fade(right, rgba(255, 255, 255, 0.4), $background-color);
+    @include fade(right, $background-color);
     left: -5px;
 
     .fa {
@@ -376,6 +364,7 @@
   &.sub-nav-scroll {
 
     .fade-right {
+      @include fade(left, $dark-background-color);
       right: 0;
 
       .fa {
@@ -384,6 +373,7 @@
     }
 
     .fade-left {
+      @include fade(right, $dark-background-color);
       left: 0;
 
       .fa {
@@ -400,7 +390,7 @@
     @include scrolling-links();
 
     .fade-right {
-      @include fade(left, rgba(255, 255, 255, 0.4), $white-light);
+      @include fade(left, $white-light);
       right: -5px;
 
       .fa {
@@ -409,7 +399,7 @@
     }
 
     .fade-left {
-      @include fade(right, rgba(255, 255, 255, 0.4), $white-light);
+      @include fade(right, $white-light);
       left: -5px;
 
       .fa {

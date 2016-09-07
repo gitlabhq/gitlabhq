@@ -63,24 +63,24 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 ### Memory
 
-You need at least 2GB of addressable memory (RAM + swap) to install and use GitLab!
+You need at least 4GB of addressable memory (RAM + swap) to install and use GitLab!
 The operating system and any other running applications will also be using memory
-so keep in mind that you need at least 2GB available before running GitLab. With
+so keep in mind that you need at least 4GB available before running GitLab. With
 less memory GitLab will give strange errors during the reconfigure run and 500
 errors during usage.
 
-- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
-- 1GB RAM + 1GB swap supports up to 100 users but it will be very slow
-- **2GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
-- 4GB RAM supports up to 1,000 users
-- 8GB RAM supports up to 2,000 users
-- 16GB RAM supports up to 4,000 users
-- 32GB RAM supports up to 8,000 users
-- 64GB RAM supports up to 16,000 users
-- 128GB RAM supports up to 32,000 users
+- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advice.
+- 2GB RAM + 2GB swap supports up to 100 users but it will be very slow
+- **4GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
+- 8GB RAM supports up to 1,000 users
+- 16GB RAM supports up to 2,000 users
+- 32GB RAM supports up to 4,000 users
+- 64GB RAM supports up to 8,000 users
+- 128GB RAM supports up to 16,000 users
+- 256GB RAM supports up to 32,000 users
 - More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
 
-We recommend having at least 1GB of swap on your server, even if you currently have
+We recommend having at least 2GB of swap on your server, even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
 if your available memory changes.
 
@@ -113,10 +113,8 @@ It's possible to increase the amount of unicorn workers and this will usually he
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
 
-For all machines that have 1GB and up we recommend a minimum of three unicorn workers.
-If you have a 512MB machine with a magnetic (non-SSD) swap drive we recommend to configure only one Unicorn worker to prevent excessive swapping.
-With one Unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
-If you have a 512MB machine with a SSD drive you can use two Unicorn workers, this will allow HTTP access although it will be slow due to swapping.
+For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
+If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
 
 To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 

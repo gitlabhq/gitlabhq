@@ -30,7 +30,7 @@ module API
       # Example Request:
       #   POST /groups
       post do
-        authorize! :create_group, current_user
+        authorize! :create_group
         required_attributes! [:name, :path]
 
         attrs = attributes_for_keys [:name, :path, :description, :visibility_level]
@@ -97,7 +97,7 @@ module API
         group = find_group(params[:id])
         projects = GroupProjectsFinder.new(group).execute(current_user)
         projects = paginate projects
-        present projects, with: Entities::Project
+        present projects, with: Entities::Project, user: current_user
       end
 
       # Transfer a project to the Group namespace

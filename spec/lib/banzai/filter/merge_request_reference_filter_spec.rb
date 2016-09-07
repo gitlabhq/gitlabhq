@@ -46,7 +46,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
 
     it 'includes a title attribute' do
       doc = reference_filter("Merge #{reference}")
-      expect(doc.css('a').first.attr('title')).to eq "Merge Request: #{merge.title}"
+      expect(doc.css('a').first.attr('title')).to eq merge.title
     end
 
     it 'escapes the title attribute' do
@@ -58,7 +58,7 @@ describe Banzai::Filter::MergeRequestReferenceFilter, lib: true do
 
     it 'includes default classes' do
       doc = reference_filter("Merge #{reference}")
-      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request'
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-merge_request has-tooltip'
     end
 
     it 'includes a data-project attribute' do

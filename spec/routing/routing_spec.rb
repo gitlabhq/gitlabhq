@@ -107,9 +107,9 @@ describe HelpController, "routing" do
   end
 
   it 'to #show' do
-    path = '/help/markdown/markdown.md'
+    path = '/help/user/markdown.md'
     expect(get(path)).to route_to('help#show',
-                                  path: 'markdown/markdown',
+                                  path: 'user/markdown',
                                   format: 'md')
 
     path = '/help/workflow/protected_branches/protected_branches1.png'

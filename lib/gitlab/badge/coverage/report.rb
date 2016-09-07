@@ -12,9 +12,7 @@ module Gitlab
           @ref = ref
           @job = job
 
-          @pipeline = @project.pipelines
-            .latest_successful_for(@ref)
-            .first
+          @pipeline = @project.pipelines.latest_successful_for(@ref)
         end
 
         def entity

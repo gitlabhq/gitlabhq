@@ -20,7 +20,7 @@ module Gitlab
           author_id: author_id,
           assignee_id: assignee_id,
           created_at: raw_data.created_at,
-          updated_at: updated_at
+          updated_at: raw_data.updated_at
         }
       end
 
@@ -102,15 +102,6 @@ module Gitlab
                    else
                      'opened'
                    end
-      end
-
-      def updated_at
-        case state
-        when 'merged' then raw_data.merged_at
-        when 'closed' then raw_data.closed_at
-        else
-          raw_data.updated_at
-        end
       end
     end
   end

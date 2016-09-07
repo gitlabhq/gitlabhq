@@ -5,7 +5,7 @@
     - @related_branches.each do |branch|
       %li
         - target = @project.repository.find_branch(branch).target
-        - pipeline = @project.pipeline(target.sha, branch) if target
+        - pipeline = @project.pipeline_for(branch, target.sha) if target
         - if pipeline
           %span.related-branch-ci-status
             = render_pipeline_status(pipeline)

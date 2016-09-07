@@ -382,6 +382,24 @@ describe Repository, models: true do
     end
   end
 
+  describe '#find_branch' do
+    it 'loads a branch with a fresh repo' do
+      expect(Gitlab::Git::Repository).to receive(:new).twice.and_call_original
+
+      2.times do
+        expect(repository.find_branch('feature')).not_to be_nil
+      end
+    end
+
+    it 'loads a branch with a cached repo' do
+      expect(Gitlab::Git::Repository).to receive(:new).once.and_call_original
+
+      2.times do
+        expect(repository.find_branch('feature', fresh_repo: false)).not_to be_nil
+      end
+    end
+  end
+
   describe '#rm_branch' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:blank_sha) { '0000000000000000000000000000000000000000' }
@@ -425,31 +443,32 @@ describe Repository, models: true do
 
   describe '#commit_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
+    let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
 
     context 'when pre hooks were successful' do
       before do
         expect_any_instance_of(GitHooksService).to receive(:execute).
-          with(user, repository.path_to_repo, old_rev, sample_commit.id, 'refs/heads/feature').
+          with(user, repository.path_to_repo, old_rev, new_rev, 'refs/heads/feature').
           and_yield.and_return(true)
       end
 
       it 'runs without errors' do
         expect do
-          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+          repository.commit_with_hooks(user, 'feature') { new_rev }
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
         expect(repository).to receive(:update_autocrlf_option)
 
-        repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+        repository.commit_with_hooks(user, 'feature') { new_rev }
       end
 
       context "when the branch wasn't empty" do
         it 'updates the head' do
           expect(repository.find_branch('feature').target.id).to eq(old_rev)
-          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
-          expect(repository.find_branch('feature').target.id).to eq(sample_commit.id)
+          repository.commit_with_hooks(user, 'feature') { new_rev }
+          expect(repository.find_branch('feature').target.id).to eq(new_rev)
         end
       end
     end
@@ -459,7 +478,7 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          repository.commit_with_hooks(user, 'feature') { sample_commit.id }
+          repository.commit_with_hooks(user, 'feature') { new_rev }
         end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
@@ -467,6 +486,7 @@ describe Repository, models: true do
     context 'when target branch is different from source branch' do
       before do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, ''])
+        allow(repository).to receive(:update_ref!)
       end
 
       it 'expires branch cache' do
@@ -477,7 +497,7 @@ describe Repository, models: true do
         expect(repository).to     receive(:expire_has_visible_content_cache)
         expect(repository).to     receive(:expire_branch_count_cache)
 
-        repository.commit_with_hooks(user, 'new-feature') { sample_commit.id }
+        repository.commit_with_hooks(user, 'new-feature') { new_rev }
       end
     end
 
@@ -1248,6 +1268,20 @@ describe Repository, models: true do
       expect(repository.kept_around?(sample_commit.id)).to be_falsey
 
       File.delete(path)
+    end
+  end
+
+  describe '#update_ref!' do
+    it 'can create a ref' do
+      repository.update_ref!('refs/heads/foobar', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+
+      expect(repository.find_branch('foobar')).not_to be_nil
+    end
+
+    it 'raises CommitError when the ref update fails' do
+      expect do
+        repository.update_ref!('refs/heads/master', 'refs/heads/master', Gitlab::Git::BLANK_SHA)
+      end.to raise_error(Repository::CommitError)
     end
   end
 end

@@ -1,43 +1,134 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
+  - Add ability to fork to a specific namespace using API. (ritave)
+  - Cleanup misalignments in Issue list view !6206
+  - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
+  - Filter tags by name !6121
+  - Make push events have equal vertical spacing.
   - Add two-factor recovery endpoint to internal API !5510
+  - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
+  - Add font color contrast to external label in admin area (ClemMakesApps)
+  - Change logo animation to CSS (ClemMakesApps)
+  - Instructions for enabling Git packfile bitmaps !6104
+  - Fix pagination on user snippets page
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
+  - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
+  - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
+  - Center build stage columns in pipeline overview (ClemMakesApps)
+  - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
+  - Remove suggested colors hover underline (ClemMakesApps)
+  - Shorten task status phrase (ClemMakesApps)
   - Add hover color to emoji icon (ClemMakesApps)
+  - Fix branches page dropdown sort alignment (ClemMakesApps)
+  - Add white background for no readme container (ClemMakesApps)
+  - API: Expose issue confidentiality flag. (Robert Schilling)
+  - Fix markdown anchor icon interaction (ClemMakesApps)
+  - Test migration paths from 8.5 until current release !4874
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
+  - Fix inconsistent background color for filter input field (ClemMakesApps)
+  - Remove prefixes from transition CSS property (ClemMakesApps)
   - Add Sentry logging to API calls
+  - Add BroadcastMessage API
+  - Use 'git update-ref' for safer web commits !6130
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Remove unused mixins (ClemMakesApps)
+  - Add search to all issue board lists
   - Fix groups sort dropdown alignment (ClemMakesApps)
+  - Add horizontal scrolling to all sub-navs on mobile viewports (ClemMakesApps)
+  - Use JavaScript tooltips for mentions !5301 (winniehell)
+  - Add hover state to todos !5361 (winniehell)
+  - Fix icon alignment of star and fork buttons !5451 (winniehell)
+  - Fix alignment of icon buttons !5887 (winniehell)
+  - Fix markdown help references (ClemMakesApps)
+  - Add last commit time to repo view (ClemMakesApps)
+  - Fix accessibility and visibility of project list dropdown button !6140
+  - Fix missing flash messages on service edit page (airatshigapov)
+  - Added project specific enable/disable setting for LFS !5997
+  - Don't expose a user's token in the `/api/v3/user` API (!6047)
+  - Remove redundant js-timeago-pending from user activity log (ClemMakesApps)
+  - Ability to manage project issues, snippets, wiki, merge requests and builds access level
+  - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
+  - Align add button on repository view (ClemMakesApps)
   - Added tests for diff notes
+  - Add a button to download latest successful artifacts for branches and tags !5142
+  - Remove redundant pipeline tooltips (ClemMakesApps)
+  - Expire commit info views after one day, instead of two weeks, to allow for user email updates
   - Add delimiter to project stars and forks count (ClemMakesApps)
   - Fix badge count alignment (ClemMakesApps)
+  - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
+  - Fix repo title alignment (ClemMakesApps)
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
   - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
+  - Order award emoji tooltips in order they were added (EspadaV8)
   - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
   - Update merge_requests.md with a simpler way to check out a merge request. !5944
   - Fix button missing type (ClemMakesApps)
   - Move to project dropdown with infinite scroll for better performance
+  - Fix leaking of submit buttons outside the width of a main container !18731 (originally by @pavelloz)
   - Load branches asynchronously in Cherry Pick and Revert dialogs.
+  - Convert datetime coffeescript spec to ES6 (ClemMakesApps)
   - Add merge request versions !5467
   - Change using size to use count and caching it for number of group members. !5935
+  - Replace play icon font with svg (ClemMakesApps)
   - Added 'only_allow_merge_if_build_succeeds' project setting in the API. !5930 (Duck)
   - Reduce number of database queries on builds tab
+  - Wrap text in commit message containers
   - Capitalize mentioned issue timeline notes (ClemMakesApps)
+  - Fix inconsistent checkbox alignment (ClemMakesApps)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
+  - Fix hover leading space bug in pipeline graph !5980
+  - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
+  - Fix repository page ui issues
+  - Fixed invisible scroll controls on build page on iPhone
+  - Fix error on raw build trace download for old builds stored in database !4822
+  - Refactor the triggers page and documentation !6217
+  - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
+  - Use default clone protocol on "check out, review, and merge locally" help page URL
 
-v 8.11.3 (unreleased)
+v 8.11.5 (unreleased)
+  - Optimize branch lookups and force a repository reload for Repository#find_branch
+  - Fix member expiration date picker after update
+  - Fix suggested colors options for new labels in the admin area. !6138
+  - Fix GitLab import button
+  - Remove gitorious from import_sources
+
+v 8.11.4
+  - Fix resolving conflicts on forks. !6082
+  - Fix diff commenting on merge requests created prior to 8.10. !6029
+  - Fix pipelines tab layout regression. !5952
+  - Fix "Wiki" link not appearing in navigation for projects with external wiki. !6057
+  - Do not enforce using hash with hidden key in CI configuration. !6079
+  - Fix hover leading space bug in pipeline graph !5980
+  - Fix sorting issues by "last updated" doesn't work after import from GitHub
+  - GitHub importer use default project visibility for non-private projects
+  - Creating an issue through our API now emails label subscribers !5720
+  - Block concurrent updates for Pipeline
+  - Don't create groups for unallowed users when importing projects
+  - Fix resolving conflicts on forks
+  - Fix diff commenting on merge requests created prior to 8.10
+  - Don't create groups for unallowed users when importing projects
+  - Scope webhooks/services that will run for confidential issues
+  - Fix issue boards leak private label names and descriptions
+  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+  - Remove gitorious. !5866
+
+v 8.11.3
   - Allow system info page to handle case where info is unavailable
   - Label list shows all issues (opened or closed) with that label
   - Don't show resolve conflicts link before MR status is updated
+  - Fix IE11 fork button bug !5982
   - Don't prevent viewing the MR when git refs for conflicts can't be found on disk
   - Fix external issue tracker "Issues" link leading to 404s
+  - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
+  - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
 
 v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978
@@ -106,8 +197,6 @@ v 8.11.0
   - Update `timeago` plugin to use multiple string/locale settings
   - Remove unused images (ClemMakesApps)
   - Get issue and merge request description templates from repositories
-  - Add hover state to todos !5361 (winniehell)
-  - Fix icon alignment of star and fork buttons !5451 (winniehell)
   - Enforce 2FA restrictions on API authentication endpoints !5820
   - Limit git rev-list output count to one in forced push check
   - Show deployment status on merge requests with external URLs

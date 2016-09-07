@@ -12,7 +12,7 @@
         %pre.dark#merge-info-1
           - if @merge_request.for_fork?
             :preserve
-              git fetch #{h @merge_request.source_project.http_url_to_repo} #{h @merge_request.source_branch}
+              git fetch #{h default_url_to_repo(@merge_request.source_project)} #{h @merge_request.source_branch}
               git checkout -b #{h @merge_request.source_project_path}-#{h @merge_request.source_branch} FETCH_HEAD
           - else
             :preserve
@@ -47,8 +47,9 @@
             Note that pushing to GitLab requires write access to this repository.
         %p
           %strong Tip:
-          You can also checkout merge requests locally by
-          %a{href: 'https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/workflow/merge_requests.md#checkout-merge-requests-locally', target: '_blank'} following these guidelines
+          = succeed '.' do
+            You can also checkout merge requests locally by
+            = link_to 'following these guidelines', help_page_path('user/project/merge_requests.md', anchor: "checkout-merge-requests-locally"), target: '_blank'
 
 :javascript
   $(function(){

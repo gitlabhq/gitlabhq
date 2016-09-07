@@ -54,7 +54,7 @@ module API
           post endpoint do
             required_attributes! [:name]
 
-            not_found!('Award Emoji') unless can_read_awardable?
+            not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
 
             award = awardable.create_award_emoji(params[:name], current_user)
 
@@ -90,6 +90,10 @@ module API
         ability = "read_#{awardable.class.to_s.underscore}".to_sym
 
         can?(current_user, ability, awardable)
+      end
+
+      def can_award_awardable?
+        awardable.user_can_award?(current_user, params[:name])
       end
 
       def awardable

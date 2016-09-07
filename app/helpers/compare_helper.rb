@@ -3,7 +3,7 @@ module CompareHelper
     from.present? &&
       to.present? &&
       from != to &&
-      project.merge_requests_enabled &&
+      project.feature_available?(:merge_requests, current_user) &&
       project.repository.branch_names.include?(from) &&
       project.repository.branch_names.include?(to)
   end

@@ -49,7 +49,10 @@
             %th Commit
             - stages.each do |stage|
               %th.stage
-                %span.has-tooltip{ title: "#{stage.titleize}" }
+                - if stage.titleize.length > 12
+                  %span.has-tooltip{ title: "#{stage.titleize}" }
+                    = stage.titleize
+                - else
                   = stage.titleize
             %th
             %th

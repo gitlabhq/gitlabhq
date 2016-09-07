@@ -208,20 +208,29 @@ module Ci
       end
     end
 
+    def has_trace_file?
+      File.exist?(path_to_trace) || has_old_trace_file?
+    end
+
     def has_trace?
       raw_trace.present?
     end
 
     def raw_trace
-      if File.file?(path_to_trace)
-        File.read(path_to_trace)
-      elsif project.ci_id && File.file?(old_path_to_trace)
-        # Temporary fix for build trace data integrity
-        File.read(old_path_to_trace)
+      if File.exist?(trace_file_path)
+        File.read(trace_file_path)
       else
         # backward compatibility
         read_attribute :trace
       end
+    end
+
+    ##
+    # Deprecated
+    #
+    # This is a hotfix for CI build data integrity, see #4246
+    def has_old_trace_file?
+      project.ci_id && File.exist?(old_path_to_trace)
     end
 
     def trace
@@ -259,6 +268,14 @@ module Ci
       File.truncate(path_to_trace, offset) if File.exist?(path_to_trace)
       File.open(path_to_trace, 'ab') do |f|
         f.write(trace_part)
+      end
+    end
+
+    def trace_file_path
+      if has_old_trace_file?
+        old_path_to_trace
+      else
+        path_to_trace
       end
     end
 
