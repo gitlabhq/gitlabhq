@@ -80,6 +80,27 @@ module CycleAnalyticsHelpers
               expect(subject.send(phase)).to be_nil
             end
           end
+
+          context "when the end condition happens before the start condition" do
+            it 'returns nil' do
+              data = data_fn[self]
+              start_time = Time.now
+              end_time = start_time + rand(1..5).days
+
+              # Run `before_end_fn` at the midpoint between `start_time` and `end_time`
+              Timecop.freeze(start_time + (end_time - start_time)/2) { before_end_fn[self, data] } if before_end_fn
+
+              end_time_conditions.each do |condition_name, condition_fn|
+                Timecop.freeze(start_time) { condition_fn[self, data] }
+              end
+
+              start_time_conditions.each do |condition_name, condition_fn|
+                Timecop.freeze(end_time) { condition_fn[self, data] }
+              end
+
+              expect(subject.send(phase)).to be_nil
+            end
+          end
         end
       end
 
