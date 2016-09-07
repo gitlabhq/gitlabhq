@@ -1,0 +1,12 @@
+%li.build
+  .curve
+  .build-content
+    - group_status = CommitStatus.where(id: subject).status
+    = render_status_with_link('build', group_status)
+    %span.ci-status-text
+      = name
+      = subject.length
+
+    // Access all other grouped statuses
+    //- subject.each do |status|
+    //  = render "projects/#{status.to_partial_path}_pipeline", subject: status

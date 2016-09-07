@@ -39,8 +39,13 @@
               = stage.titleize
           .builds-container
             %ul
-              - statuses.each do |status|
-                = render "projects/#{status.to_partial_path}_pipeline", subject: status
+              - status_groups = statuses.group_by(&:group_name)
+              - status_groups.each do |group_name, grouped_statuses|
+                - if grouped_statuses.one?
+                  - status = grouped_statuses.first
+                  = render "projects/#{status.to_partial_path}_pipeline", subject: status
+                - else
+                  = render "projects/commit/pipeline_grouped_status", name: group_name, subject: grouped_statuses
 
 
 - if pipeline.yaml_errors.present?
