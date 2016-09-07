@@ -9,7 +9,7 @@ module Gitlab
 
       CONTEXT_LINES = 3
 
-      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository, :type
+      attr_reader :merge_file_result, :their_path, :our_path, :our_mode, :merge_request, :repository
 
       def initialize(merge_file_result, conflict, merge_request:)
         @merge_file_result = merge_file_result
@@ -23,6 +23,12 @@ module Gitlab
 
       def content
         merge_file_result[:data]
+      end
+
+      def type
+        lines unless @type
+
+        @type.inquiry
       end
 
       # Array of Gitlab::Diff::Line objects
@@ -200,12 +206,14 @@ module Gitlab
                                                  ::File.join(merge_request.diff_refs.head_sha, our_path))
         }
 
-        if opts[:full_content]
-          json_hash.merge(content: content)
-        else
-          json_hash.merge!(sections: sections) if type == 'text'
-
-          json_hash.merge(type: type, content_path: content_path)
+        json_hash.tap do |json_hash|
+          if opts[:full_content]
+            json_hash[:content] = content
+          else
+            json_hash[:sections] = sections if type.text?
+            json_hash[:type] = type
+            json_hash[:content_path] = content_path
+          end
         end
       end
 
