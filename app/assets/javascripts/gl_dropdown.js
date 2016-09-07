@@ -25,7 +25,7 @@
         return function(e) {
           e.preventDefault();
           e.stopPropagation();
-          return _this.input.val('').trigger('keyup').focus();
+          return _this.input.val('').trigger('input').focus();
         };
       })(this));
       // Key events
@@ -38,8 +38,6 @@
           }
         })
         .on('input', function(e) {
-          var keyCode;
-          keyCode = e.which;
           if (this.input.val() !== "" && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.addClass(HAS_VALUE_CLASS);
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
@@ -252,7 +250,7 @@
                 _this.fullData = data;
                 _this.parseData(_this.fullData);
                 if (_this.options.filterable && _this.filter && _this.filter.input) {
-                  return _this.filter.input.trigger('keyup');
+                  return _this.filter.input.trigger('input');
                 }
               };
             // Remote data
@@ -484,7 +482,7 @@
       // Triggering 'keyup' will re-render the dropdown which is not always required
       // specially if we want to keep the state of the dropdown needed for bulk-assignment
       if (!this.options.persistWhenHide) {
-        $input.trigger("keyup");
+        $input.trigger("input");
       }
       if (this.dropdown.find(".dropdown-toggle-page").length) {
         $('.dropdown-menu', this.dropdown).removeClass(PAGE_TWO_CLASS);
