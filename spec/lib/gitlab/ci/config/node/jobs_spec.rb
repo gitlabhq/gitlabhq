@@ -4,7 +4,7 @@ describe Gitlab::Ci::Config::Node::Jobs do
   let(:entry) { described_class.new(config) }
 
   describe 'validations' do
-    before { entry.process! }
+    before { entry.compose! }
 
     context 'when entry config value is correct' do
       let(:config) { { rspec: { script: 'rspec' } } }
@@ -47,8 +47,8 @@ describe Gitlab::Ci::Config::Node::Jobs do
     end
   end
 
-  context 'when valid job entries processed' do
-    before { entry.process! }
+  context 'when valid job entries composed' do
+    before { entry.compose! }
 
     let(:config) do
       { rspec: { script: 'rspec' },
@@ -61,9 +61,11 @@ describe Gitlab::Ci::Config::Node::Jobs do
         expect(entry.value).to eq(
           rspec: { name: :rspec,
                    script: %w[rspec],
+                   commands: 'rspec',
                    stage: 'test' },
           spinach: { name: :spinach,
                      script: %w[spinach],
+                     commands: 'spinach',
                      stage: 'test' })
       end
     end
