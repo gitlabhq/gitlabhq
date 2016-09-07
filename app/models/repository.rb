@@ -1040,7 +1040,11 @@ class Repository
       raise CommitError.new('Failed to create commit')
     end
 
-    oldrev = rugged.lookup(newrev).parent_ids.first || Gitlab::Git::BLANK_SHA
+    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
+      oldrev = Gitlab::Git::BLANK_SHA
+    else
+      oldrev = rugged.merge_base(newrev, target_branch.target.sha)
+    end
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)

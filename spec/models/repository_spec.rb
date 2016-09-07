@@ -473,6 +473,25 @@ describe Repository, models: true do
       end
     end
 
+    context 'when the update adds more than one commit' do
+      it 'runs without errors' do
+        old_rev = '33f3729a45c02fc67d00adb1b8bca394b0e761d9' # ancestor of new_rev by more than one commit
+        branch = 'feature-ff-target'
+        repository.add_branch(user, branch, old_rev)
+
+        expect { repository.commit_with_hooks(user, branch) { new_rev } }.not_to raise_error
+      end
+    end
+
+    context 'when the update would remove commits from the target branch' do
+      it 'raises an exception' do
+        # We use the fact that 'master' has diverged from 'feature' (new_rev):
+        # updating 'master' to new_rev would make us lose commits, which should
+        # not happen.
+        expect { repository.commit_with_hooks(user, 'master') { new_rev } }.to raise_error(Repository::CommitError)
+      end
+    end
+
     context 'when pre hooks failed' do
       it 'gets an error' do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
