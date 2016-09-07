@@ -23,9 +23,7 @@ module ConfigurationHelper
     attributes
   end
 
-  def associations_for(model_class)
-    model_class.reflect_on_all_associations.map do |association|
-      association.name.to_s
-    end
+  def associations_for(safe_model)
+    safe_model.reflect_on_all_associations.map { |assoc| assoc.name.to_s }
   end
 end

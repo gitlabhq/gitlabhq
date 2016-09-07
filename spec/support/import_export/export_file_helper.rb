@@ -120,10 +120,6 @@ module ExportFileHelper
     false
   end
 
-  def associations_for(safe_model)
-    safe_model.reflect_on_all_associations.map { |assoc| assoc.name.to_s }
-  end
-
   # Compares model attributes with those those found in the hash
   # and returns true if there is a match, ignoring some excluded attributes.
   def safe_model?(model, excluded_attributes, parent)

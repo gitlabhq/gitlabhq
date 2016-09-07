@@ -23,7 +23,7 @@ describe 'Import/Export model configuration', lib: true do
 
   it 'has no new models' do
     model_names.each do |model_name|
-      new_models = current_models[model_name] - all_models[model_name]
+      new_models = Array(current_models[model_name]) - Array(all_models[model_name])
       expect(new_models).to be_empty, failure_message(model_name.classify, new_models)
     end
   end
@@ -36,7 +36,7 @@ describe 'Import/Export model configuration', lib: true do
     model_names.each do |model_name|
       model_class = relation_class_for_name(model_name)
 
-      all_models_hash[model_name] = associations_for(model_class)
+      all_models_hash[model_name] = associations_for(model_class) - ['project']
     end
 
     all_models_hash
