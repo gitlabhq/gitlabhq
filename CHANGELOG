@@ -10,6 +10,7 @@ v 8.12.0 (unreleased)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Fix pagination on user snippets page
+  - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
