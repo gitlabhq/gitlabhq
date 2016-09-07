@@ -37,7 +37,7 @@
             e.preventDefault()
           }
         })
-        .on('input', function(e) {
+        .on('input', function() {
           if (this.input.val() !== "" && !$inputContainer.hasClass(HAS_VALUE_CLASS)) {
             $inputContainer.addClass(HAS_VALUE_CLASS);
           } else if (this.input.val() === "" && $inputContainer.hasClass(HAS_VALUE_CLASS)) {
@@ -50,10 +50,6 @@
           if (this.options.remote) {
             clearTimeout(timeout);
             return timeout = setTimeout(function() {
-              var blurField = this.shouldBlur(keyCode);
-              if (blurField && this.filterInputBlur) {
-                this.input.blur();
-              }
               return this.options.query(this.input.val(), function(data) {
                 return this.options.callback(data);
               }.bind(this));
