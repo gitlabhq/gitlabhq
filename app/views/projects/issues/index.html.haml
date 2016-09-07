@@ -31,7 +31,7 @@
             New Issue
     = render 'shared/issuable/filter', type: :issues
 
-    .issues-holder.issuable-list
+    .issues-holder
       = render 'issues'
       - if new_issue_email
         = render 'issue_by_email', email: new_issue_email
