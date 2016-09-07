@@ -430,7 +430,7 @@ module API
       get "/search/:query" do
         ids = current_user.authorized_projects.map(&:id)
         visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
-        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
+        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (LOWER(name) LIKE LOWER((?)))", ids, visibility_levels, "%#{params[:query]}%")
         sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         projects = case params["order_by"]
