@@ -1,6 +1,6 @@
 # Award Emoji
 
-> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.11
+> [Introduced][ce-4575] in GitLab 8.9, Snippet support in 8.12
 
 
 An awarded emoji tells a thousand words, and can be awarded on issues, merge
@@ -76,7 +76,7 @@ Gets a single award emoji from an issue, snippet, or merge request.
 ```
 GET /projects/:id/issues/:issue_id/award_emoji/:award_id
 GET /projects/:id/merge_requests/:merge_request_id/award_emoji/:award_id
-GET /projects/:id/snippets/:snippets_id/award_emoji/:award_id
+GET /projects/:id/snippets/:snippet_id/award_emoji/:award_id
 ```
 
 Parameters:
@@ -119,7 +119,7 @@ This end point creates an award emoji on the specified resource
 ```
 POST /projects/:id/issues/:issue_id/award_emoji
 POST /projects/:id/merge_requests/:merge_request_id/award_emoji
-POST /projects/:id/snippets/:snippets_id/award_emoji
+POST /projects/:id/snippets/:snippet_id/award_emoji
 ```
 
 Parameters:

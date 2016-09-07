@@ -42,6 +42,7 @@ v 8.12.0 (unreleased)
   - Move parsing of sidekiq ps into helper !6245 (pascalbetz)
   - Added go to issue boards keyboard shortcut
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
+  - Emoji can be awarded on Snippets !4456
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
   - Fix blame table layout width
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
@@ -281,7 +282,6 @@ v 8.11.0
   - Clean up unused routes (Josef Strzibny)
   - Fix issue on empty project to allow developers to only push to protected branches if given permission
   - API: Add enpoints for pipelines
-  - Emoji can be awarded on Snippets !4456
   - Add green outline to New Branch button. !5447 (winniehell)
   - Optimize generating of cache keys for issues and notes
   - Fix repository push email formatting in Outlook

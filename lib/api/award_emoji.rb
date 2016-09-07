@@ -1,12 +1,12 @@
 module API
   class AwardEmoji < Grape::API
     before { authenticate! }
-    AWARDABLES = [Issue, MergeRequest, Snippet]
+    AWARDABLES = %w[issue merge_request snippet]
 
     resource :projects do
       AWARDABLES.each do |awardable_type|
-        awardable_string = awardable_type.to_s.underscore.pluralize
-        awardable_id_string = "#{awardable_type.to_s.underscore}_id"
+        awardable_string = awardable_type.pluralize
+        awardable_id_string = "#{awardable_type}_id"
 
         [ ":id/#{awardable_string}/:#{awardable_id_string}/award_emoji",
           ":id/#{awardable_string}/:#{awardable_id_string}/notes/:note_id/award_emoji"
@@ -87,7 +87,7 @@ module API
 
     helpers do
       def can_read_awardable?
-        can?(current_user, ability_name(awardable), awardable)
+        can?(current_user, read_ability(awardable), awardable)
       end
 
       def can_award_awardable?
@@ -98,8 +98,7 @@ module API
         @awardable ||=
           begin
             if params.include?(:note_id)
-              note_id = params[:note_id]
-              params.delete(:note_id)
+              note_id = params.delete(:note_id)
 
               awardable.notes.find(note_id)
             elsif params.include?(:issue_id)
@@ -112,16 +111,12 @@ module API
           end
       end
 
-      def ability_name(awardable)
+      def read_ability(awardable)
         case awardable
         when Note
-          ability_name(awardable.noteable)
-        when Snippet
-          :read_project_snippet
-        when MergeRequest
-          :read_merge_request
-        when Issue
-          :read_issue
+          read_ability(awardable.noteable)
+        else
+          :"read_#{awardable.class.to_s.underscore}"
         end
       end
     end

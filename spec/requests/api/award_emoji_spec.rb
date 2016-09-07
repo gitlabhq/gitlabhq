@@ -3,8 +3,8 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
   let(:user)            { create(:user) }
-  let!(:project)        { create(:project) }
-  let(:issue)           { create(:issue, project: project, author: user) }
+  let!(:project)        { create(:empty_project) }
+  let(:issue)           { create(:issue, project: project) }
   let!(:award_emoji)    { create(:award_emoji, awardable: issue, user: user) }
   let!(:merge_request)  { create(:merge_request, source_project: project, target_project: project) }
   let!(:downvote)       { create(:award_emoji, :downvote, awardable: merge_request, user: user) }
