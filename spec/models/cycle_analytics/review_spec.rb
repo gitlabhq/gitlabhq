@@ -7,9 +7,9 @@ describe 'CycleAnalytics#review', feature: true do
   subject { CycleAnalytics.new(project, from: from_date) }
 
   def create_merge_request_closing_issue(issue)
-    source_branch = FFaker::Product.brand
+    source_branch = random_git_name
     project.repository.add_branch(user, source_branch, 'master')
-    sha = project.repository.commit_file(user, FFaker::Product.brand, "content", "commit message", source_branch, false)
+    sha = project.repository.commit_file(user, random_git_name, "content", "commit message", source_branch, false)
     project.repository.commit(sha)
 
     opts = {
@@ -21,7 +21,6 @@ describe 'CycleAnalytics#review', feature: true do
 
     MergeRequests::CreateService.new(project, user, opts).execute
   end
-
 
   def merge_merge_requests_closing_issue(issue)
     merge_requests = issue.closed_by_merge_requests

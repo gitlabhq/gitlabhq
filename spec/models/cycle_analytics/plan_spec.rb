@@ -7,7 +7,7 @@ describe 'CycleAnalytics#plan', feature: true do
   subject { CycleAnalytics.new(project, from: from_date) }
 
   def create_commit_referencing_issue(issue)
-    sha = project.repository.commit_file(user, FFaker::Product.brand, "content", "Commit for ##{issue.iid}", "master", false)
+    sha = project.repository.commit_file(user, random_git_name, "content", "Commit for ##{issue.iid}", "master", false)
     commit = project.repository.commit(sha)
     commit.create_cross_references!
   end

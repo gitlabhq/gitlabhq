@@ -7,13 +7,13 @@ describe 'CycleAnalytics#code', feature: true do
   subject { CycleAnalytics.new(project, from: from_date) }
 
   def create_commit_referencing_issue(issue)
-    sha = project.repository.commit_file(user, FFaker::Product.brand, "content", "Commit for ##{issue.iid}", "master", false)
+    sha = project.repository.commit_file(user, random_git_name, "content", "Commit for ##{issue.iid}", "master", false)
     commit = project.repository.commit(sha)
     commit.create_cross_references!(user)
   end
 
   def create_merge_request_closing_issue(issue, message: nil)
-    source_branch = FFaker::Product.brand
+    source_branch = random_git_name
     project.repository.add_branch(user, source_branch, 'master')
 
     opts = {
