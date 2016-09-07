@@ -475,7 +475,14 @@ describe Repository, models: true do
 
     context 'when the update adds more than one commit' do
       it 'runs without errors' do
-        old_rev = '33f3729a45c02fc67d00adb1b8bca394b0e761d9' # ancestor of new_rev by more than one commit
+        old_rev = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+
+        # old_rev is an ancestor of new_rev
+        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+
+        # old_rev is not a direct ancestor (parent) of new_rev
+        expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
+
         branch = 'feature-ff-target'
         repository.add_branch(user, branch, old_rev)
 
@@ -485,10 +492,17 @@ describe Repository, models: true do
 
     context 'when the update would remove commits from the target branch' do
       it 'raises an exception' do
-        # We use the fact that 'master' has diverged from 'feature' (new_rev):
-        # updating 'master' to new_rev would make us lose commits, which should
-        # not happen.
-        expect { repository.update_branch_with_hooks(user, 'master') { new_rev } }.to raise_error(Repository::CommitError)
+        branch = 'master'
+        old_rev = repository.find_branch(branch).target.sha
+
+        # The 'master' branch is NOT an ancestor of new_rev.
+        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+
+        # Updating 'master' to new_rev would lose the commits on 'master' that
+        # are not contained in new_rev. This should not be allowed.
+        expect do
+          repository.update_branch_with_hooks(user, branch) { new_rev }
+        end.to raise_error(Repository::CommitError)
       end
     end
 
