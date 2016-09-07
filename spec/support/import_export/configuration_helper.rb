@@ -22,4 +22,10 @@ module ConfigurationHelper
 
     attributes
   end
+
+  def associations_for(model_class)
+    model_class.reflect_on_all_associations.map do |association|
+      association.name.to_s
+    end
+  end
 end

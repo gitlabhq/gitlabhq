@@ -4,7 +4,7 @@ require 'spec_helper'
 # It looks up for any sensitive word inside the JSON, so if a sensitive word is found
 # we''l have to either include it adding the model that includes it to the +safe_list+
 # or make sure the attribute is blacklisted in the +import_export.yml+ configuration
-feature 'project export', feature: true, js: true do
+feature 'Import/Export - project export integration test', feature: true, js: true do
   include Select2Helper
   include ExportFileHelper
 
@@ -58,9 +58,23 @@ feature 'project export', feature: true, js: true do
         sensitive_words.each do |sensitive_word|
           found = find_sensitive_attributes(sensitive_word, project_hash)
 
-          expect(found).to be_nil, "Found a new sensitive word <#{found.try(:key_found)}>, which is part of the hash #{found.try(:parent)}"
+          expect(found).to be_nil, failure_message(found.try(:key_found), found.try(:parent), sensitive_word)
         end
       end
+    end
+
+    def failure_message(key_found, parent, sensitive_word)
+      <<-MSG
+        Found a new sensitive word <#{key_found}>, which is part of the hash #{parent.inspect}
+
+        If you think this information shouldn't get exported, please exclude the model or attribute in IMPORT_EXPORT_CONFIG.
+
+        Otherwise, please add the exception to +safe_list+ in CURRENT_SPEC using #{sensitive_word} as the key and the
+        correspondent hash or model as the value.
+
+        IMPORT_EXPORT_CONFIG: #{Gitlab::ImportExport.config_file}
+        CURRENT_SPEC: #{__FILE__}
+      MSG
     end
   end
 end
