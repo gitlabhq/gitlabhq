@@ -14,7 +14,7 @@ module ProtectedBranches
       @protected_branch = protected_branch
 
       protected_branch.transaction do
-        delete_redundant_access_levels
+        delete_redundant_ee_access_levels
 
         case @developers_can_push
         when true
@@ -44,6 +44,27 @@ module ProtectedBranches
 
       if @developers_can_push || @developers_can_push == false
         @protected_branch.push_access_levels.destroy_all
+      end
+    end
+
+    # If a protected branch can have more than one access level (EE), only
+    # remove the relevant access levels. If we don't do this, we'll have a
+    # failed validation.
+    def delete_redundant_ee_access_levels
+      case @developers_can_merge
+      when true
+        @protected_branch.merge_access_levels.developer.destroy_all
+      when false
+        @protected_branch.merge_access_levels.developer.destroy_all
+        @protected_branch.merge_access_levels.master.destroy_all
+      end
+
+      case @developers_can_push
+      when true
+        @protected_branch.push_access_levels.developer.destroy_all
+      when false
+        @protected_branch.push_access_levels.developer.destroy_all
+        @protected_branch.push_access_levels.master.destroy_all
       end
     end
   end
