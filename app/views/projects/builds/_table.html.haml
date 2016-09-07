@@ -1,3 +1,4 @@
+- admin = false unless admin
 - if builds.blank?
   %li
     .nothing-here-block No builds to show
@@ -20,9 +21,8 @@
           %th
 
       - if admin
-        - builds.each do |build|
-          = render "admin/builds/build", build: build
+        = render partial: "shared/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, admin: true }
       - else
-        = render builds, commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled?
+        = render partial: "shared/builds/build", collection: builds, as: :build, locals: {commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled? }
 
   = paginate builds, theme: 'gitlab'

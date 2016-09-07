@@ -1,3 +1,7 @@
+- admin = false unless admin
+- if admin
+  - project = build.project
+
 %tr.build.commit
   %td.status
     - if can?(current_user, :read_build, build)
@@ -9,9 +13,9 @@
     .branch-commit
       - if can?(current_user, :read_build, build)
         = link_to namespace_project_build_url(build.project.namespace, build.project, build) do
-          %span ##{build.id}
+          %span.build-link ##{build.id}
       - else
-        %span ##{build.id}
+        %span.build-link ##{build.id}
 
       - if defined?(ref) && ref
         - if build.ref
@@ -45,6 +49,11 @@
         - if build.manual?
           %span.label.label-info manual
 
+  - if admin
+    %td
+      - if project
+        = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project)
+
   - if defined?(runner) && runner
     %td
       - if build.try(:runner)
@@ -53,8 +62,7 @@
         .light none
 
   %td
-    - if defined?(stage) && stage
-      = build.stage
+    = build.stage
 
   %td
     = build.name
@@ -64,13 +72,14 @@
       %p.duration
         = custom_icon("icon_timer")
         = duration_in_numbers(build.duration)
+
     - if build.finished_at
       %p.finished-at
         = icon("calendar")
         %span #{time_ago_with_tooltip(build.finished_at)}
 
-  - if defined?(coverage) && coverage
-    %td.coverage
+  %td.coverage
+    - if defined?(coverage) && coverage
       - if build.try(:coverage)
         #{build.coverage}%
 
@@ -87,6 +96,6 @@
           - if build.retryable?
             = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
               = icon('repeat')
-          - elsif build.playable?
+          - elsif build.playable? && !admin
             = link_to play_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Play', class: 'btn btn-build' do
               = custom_icon('icon_play')

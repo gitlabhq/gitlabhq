@@ -5,7 +5,7 @@
 
   .top-area
     - build_path = ->(scope) { admin_builds_path(scope: scope) }
-    = render "shared/builds_tabs", build_path: build_path, all_builds: @all_builds, scope: @scope
+    = render "shared/builds/tabs", build_path: build_path, all_builds: @all_builds, scope: @scope
 
     .nav-controls
       - if @all_builds.running_or_pending.any?

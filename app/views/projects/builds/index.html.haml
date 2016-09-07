@@ -5,7 +5,7 @@
 %div{ class: container_class }
   .top-area
     - build_path = ->(scope) { project_builds_path(@project, scope: scope) }
-    = render "shared/builds_tabs", build_path: build_path, all_builds: @all_builds, scope: @scope
+    = render "shared/builds/tabs", build_path: build_path, all_builds: @all_builds, scope: @scope
 
     .nav-controls
       - if can?(current_user, :update_build, @project)
@@ -20,4 +20,4 @@
           %span CI Lint
 
   %ul.content-list.builds-content-list
-    = render "table", builds: @builds, project: @project, admin: false
+    = render "table", builds: @builds, project: @project
