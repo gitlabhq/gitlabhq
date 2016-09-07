@@ -250,6 +250,21 @@ bundler:audit:
   script:
     - "bundle exec bundle-audit check --update --ignore OSVDB-115941"
 
+migration paths:
+  stage: test
+  <<: *use-db
+  only:
+    - master@gitlab-org/gitlab-ce
+  script:
+    - git checkout HEAD .
+    - git fetch --tags
+    - git checkout v8.5.9
+    - 'echo test: unix:/var/opt/gitlab/redis/redis.socket > config/resque.yml'
+    - bundle install --without postgres production --jobs $(nproc) "${FLAGS[@]}" --retry=3
+    - rake db:drop db:create db:schema:load db:seed_fu
+    - git checkout $CI_BUILD_REF
+    - rake db:migrate
+
 coverage:
   stage: post-test
   services: []
@@ -264,7 +279,6 @@ coverage:
     paths:
     - coverage/index.html
     - coverage/assets/
-
 
 # Notify slack in the end
 
