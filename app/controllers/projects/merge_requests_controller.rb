@@ -542,7 +542,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def compared_diff_version
-    compare = CompareService.new.execute(@project, @merge_request_diff.head_commit_sha, @project, @start_sha)
+    compare = @merge_request_diff.compare_with(@start_sha)
 
     if compare
       @diffs = compare.diffs(diff_options)
@@ -551,11 +551,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def original_diff_version
-    unless @merge_request_diff.latest?
-      # Disable comments if browsing older version of the diff
-      @diff_notes_disabled = true
-    end
-
+    @diff_notes_disabled = !@merge_request_diff.latest?
     @diffs = @merge_request_diff.diffs(diff_options)
   end
 end
