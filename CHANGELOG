@@ -4,6 +4,7 @@ v 8.12.0 (unreleased)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
   - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
+  - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Filter tags by name !6121
   - Make push events have equal vertical spacing.
