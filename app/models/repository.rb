@@ -757,7 +757,7 @@ class Repository
   end
 
   def commit_dir(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -774,7 +774,7 @@ class Repository
   end
 
   def commit_file(user, path, content, message, branch, update)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -796,7 +796,7 @@ class Repository
   end
 
   def update_file(user, path, content, branch:, previous_path:, message:)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -823,7 +823,7 @@ class Repository
   end
 
   def remove_file(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -871,7 +871,7 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    commit_with_hooks(user, merge_request.target_branch) do
+    update_branch_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -889,7 +889,7 @@ class Repository
 
     return false unless revert_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
@@ -906,7 +906,7 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.message,
@@ -922,7 +922,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch, params)
-    commit_with_hooks(user, branch) do
+    update_branch_with_hooks(user, branch) do
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
@@ -1026,7 +1026,7 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
-  def commit_with_hooks(current_user, branch)
+  def update_branch_with_hooks(current_user, branch)
     update_autocrlf_option
 
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
