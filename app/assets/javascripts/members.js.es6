@@ -31,12 +31,10 @@
     }
 
     formSubmit() {
-      const $this = $(this);
-
-      $this.closest('form')
-        .trigger("submit.rails");
-
-      $this.disable();
+      $(this).closest('form')
+        .trigger("submit.rails")
+        .end()
+        .disable();
     }
 
     formSuccess() {
