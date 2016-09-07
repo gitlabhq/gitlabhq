@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'Issue Boards shortcut', feature: true, js: true do
+  include WaitForVueResource
+
   let(:project) { create(:empty_project) }
 
   before do
@@ -16,5 +18,7 @@ describe 'Issue Boards shortcut', feature: true, js: true do
   it 'takes user to issue board index' do
     find('body').native.send_keys('gl')
     expect(page).to have_selector('.boards-list')
+
+    wait_for_vue_resource
   end
 end
