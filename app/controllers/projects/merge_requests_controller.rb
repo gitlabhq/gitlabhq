@@ -542,12 +542,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def compared_diff_version
-    compare = @merge_request_diff.compare_with(@start_sha)
-
-    if compare
-      @diffs = compare.diffs(diff_options)
-      @diff_notes_disabled = true
-    end
+    @diff_notes_disabled = true
+    @diffs = @merge_request_diff.compare_with(@start_sha).diffs(diff_options)
   end
 
   def original_diff_version
