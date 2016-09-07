@@ -505,6 +505,10 @@
         for (var i = 0; i < html.length; i++) {
           var el = html[i];
 
+          if (el instanceof jQuery) {
+            el = el.get(0);
+          }
+
           if (typeof el === 'string') {
             ul.innerHTML += el;
           } else {
