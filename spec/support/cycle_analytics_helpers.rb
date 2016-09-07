@@ -16,8 +16,9 @@ module CycleAnalyticsHelpers
   #    end_time_conditions: An array of `conditions`. Each condition is an tuple of `condition_name` and `condition_fn`. `condition_fn` is called with
   #                         `context` (no lexical scope, so need to do `context.create` for factories, for example) and `data` (from the `data_fn`).
   #                         Each `condition_fn` is expected to implement a case which consitutes the end of the given cycle analytics phase.
+  #          before_end_fn: This function is run before calling the end time conditions. Used for setup that needs to be run between the start and end conditions.
 
-  def generate_cycle_analytics_spec(phase:, data_fn:, start_time_conditions:, end_time_conditions:)
+  def generate_cycle_analytics_spec(phase:, data_fn:, start_time_conditions:, end_time_conditions:, before_end_fn: nil)
     combinations_of_start_time_conditions = (1..start_time_conditions.size).flat_map { |size| start_time_conditions.combination(size).to_a }
     combinations_of_end_time_conditions = (1..end_time_conditions.size).flat_map { |size| end_time_conditions.combination(size).to_a }
 
@@ -34,6 +35,9 @@ module CycleAnalyticsHelpers
               start_time_conditions.each do |condition_name, condition_fn|
                 Timecop.freeze(start_time) { condition_fn[self, data] }
               end
+
+              # Run `before_end_fn` at the midpoint between `start_time` and `end_time`
+              Timecop.freeze(start_time + (end_time - start_time)/2) { before_end_fn[self, data] } if before_end_fn
 
               end_time_conditions.each do |condition_name, condition_fn|
                 Timecop.freeze(end_time) { condition_fn[self, data] }
