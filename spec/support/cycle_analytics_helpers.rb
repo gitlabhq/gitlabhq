@@ -26,10 +26,10 @@ module CycleAnalyticsHelpers
       context "start condition: #{start_time_conditions.map(&:first).to_sentence}" do
         context "end condition: #{end_time_conditions.map(&:first).to_sentence}" do
           it "finds the median of available durations between the two conditions" do
-            time_differences = Array.new(5) do
+            time_differences = Array.new(5) do |index|
               data = data_fn[self]
-              start_time = Time.now
-              end_time = rand(1..10).days.from_now
+              start_time = (index * 10).days.from_now
+              end_time = start_time + rand(1..5).days
 
               start_time_conditions.each do |condition_name, condition_fn|
                 Timecop.freeze(start_time) { condition_fn[self, data] }
@@ -43,7 +43,7 @@ module CycleAnalyticsHelpers
             end
 
             median_time_difference = time_differences.sort[2]
-            expect(subject.send(phase)).to be_within(2).of(median_time_difference)
+            expect(subject.send(phase)).to be_within(5).of(median_time_difference)
           end
 
           context "when the data belongs to another project" do

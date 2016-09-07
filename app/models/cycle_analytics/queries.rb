@@ -85,6 +85,8 @@ class CycleAnalytics
         lambda do |data_point|
           merge_request = data_point[:merge_request]
           if merge_request.metrics.present?
+            # The first production deploy to the target branch that occurs after the merge request has been merged in.
+            # TODO: Does this need to account for reverts?
             deployments = Deployment.joins(:environment).where(ref: merge_request.target_branch, "environments.name" => "production").
                           where("deployments.created_at > ?", merge_request.metrics.merged_at)
             deployment = deployments.order(:created_at).first
