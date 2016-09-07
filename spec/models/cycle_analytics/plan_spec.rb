@@ -6,12 +6,6 @@ describe 'CycleAnalytics#plan', feature: true do
   let(:user) { create(:user, :admin) }
   subject { CycleAnalytics.new(project, from: from_date) }
 
-  def create_commit_referencing_issue(issue)
-    sha = project.repository.commit_file(user, random_git_name, "content", "Commit for ##{issue.iid}", "master", false)
-    commit = project.repository.commit(sha)
-    commit.create_cross_references!
-  end
-
   generate_cycle_analytics_spec(phase: :plan,
                                 data_fn: -> (context) { { issue: context.create(:issue, project: context.project) } },
                                 start_time_conditions: [["issue associated with a milestone", -> (context, data) { data[:issue].update(milestone: context.create(:milestone, project: context.project)) }],
