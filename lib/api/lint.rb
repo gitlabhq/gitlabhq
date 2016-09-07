@@ -1,12 +1,10 @@
 module API
   class Lint < Grape::API
-
     namespace :ci do
       desc 'Validation of .gitlab-ci.yml content'
       params do
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
       end
-
       post '/lint' do
         error = Ci::GitlabCiYamlProcessor.validation_message(params[:content])
 
