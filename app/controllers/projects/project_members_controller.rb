@@ -10,32 +10,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     project_members = @project.project_members
     project_members = project_members.non_invite unless can?(current_user, :admin_project, @project)
 
-    group = @project.group
-
-    if group
-      group_members = group.group_members
-      group_members = group_members.non_invite unless can?(current_user, :admin_project, @project)
-    end
-
-    if params[:search].present?
-      groups_id = @groups.pluck(:group_id)
-      groups = Group.where(id: groups_id).search(params[:search]).to_a
-      @groups = @project.project_group_links.where(group_id: groups)
-
-      users = @project.users.search(params[:search]).to_a
-      project_members = project_members.where(user_id: users)
-
-      if group_members
-        users = group.users.search(params[:search]).to_a
-        group_members = group_members.where(user_id: users)
-      end
-    end
-
     members_ids = project_members.pluck(:id)
-
-    if group_members
-      members_ids << group_members.pluck(:id)
-    end
 
     @members = Member.where(id: members_ids.flatten)
     @members_size = @members.size
