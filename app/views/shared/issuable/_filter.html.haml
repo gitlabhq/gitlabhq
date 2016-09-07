@@ -26,6 +26,9 @@
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown"
 
+        .filter-item.inline.reset-filters
+          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search])} Reset filters
+
         .pull-right
           - if controller.controller_name == 'boards'
             #js-boards-seach.issue-boards-search
