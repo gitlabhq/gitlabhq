@@ -1,12 +1,10 @@
 require 'spec_helper'
 
 describe 'GFM autocomplete loading', feature: true, js: true do
-  let(:user)      { create(:user) }
   let(:project)   { create(:project) }
 
   before do
-    project.team << [user, :master]
-    login_as user
+    login_as :admin
 
     visit namespace_project_path(project.namespace, project)
   end
