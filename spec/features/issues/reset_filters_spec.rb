@@ -6,7 +6,7 @@ feature 'Issues filter reset button', feature: true, js: true do
   let!(:project)    { create(:project, :public) }
   let!(:user)        { create(:user)}
   let!(:milestone)  { create(:milestone, project: project) }
-  let!(:bug)        { create(:label, project: project, name: 'bug')} # maybe switch back to title
+  let!(:bug)        { create(:label, project: project, name: 'bug')}
   let!(:issue1)     { create(:issue, project: project, milestone: milestone, author: user, assignee: user, title: 'Feature')}
   let!(:issue2)     { create(:labeled_issue, project: project, labels: [bug], title: 'Bugfix1')}
 
@@ -66,14 +66,19 @@ feature 'Issues filter reset button', feature: true, js: true do
     end
   end
 
-  context 'when label and text filters have been dually applied' do
-    it 'resets both filters' do
-      fill_in 'issue_search', with: 'Feat'
-      expect(page).to have_css('.issue', count: 1)
+  context 'when all filters have been applied' do
+    it 'resets all filters' do
 
       wait_for_ajax
 
-      filter_by_label(bug.title)
+      filter_by_milestone(milestone.title)
+
+      wait_for_ajax
+
+      filter_by_author(user.username)
+
+      wait_for_ajax
+
       expect(page).to have_css('.issue', count: 0)
 
       reset_filters
