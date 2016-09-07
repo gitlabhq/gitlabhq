@@ -19,7 +19,7 @@ module Gitlab
 
       EXISTING_OBJECT_CHECK = %i[milestone milestones label labels].freeze
 
-      FINDER_ATTRIBUTES = %w[title color project_id].freeze
+      FINDER_ATTRIBUTES = %w[title project_id].freeze
 
       def self.create(*args)
         new(*args).create
