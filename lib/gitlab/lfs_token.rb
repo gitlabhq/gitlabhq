@@ -30,7 +30,7 @@ module Gitlab
     end
 
     def actor_name
-      actor.is_a?(User) ? actor.username : "lfs-deploy-key-#{actor.id}"
+      actor.is_a?(User) ? actor.username : "lfs+deploy-key-#{actor.id}"
     end
 
     private

@@ -22,7 +22,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
 
-      handle_authentication(login, password)
+      handle_basic_authentication(login, password)
 
       if ci? || user
         return # Allow access
@@ -110,7 +110,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     @ci.present?
   end
 
-  def handle_authentication(login, password)
+  def handle_basic_authentication(login, password)
     auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
     case auth_result.type

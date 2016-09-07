@@ -115,7 +115,7 @@ module Gitlab
 
       def lfs_token_check(login, password)
         actor =
-          if login =~ /\Alfs-deploy-key-\d+\Z/
+          if login =~ /\Alfs\+deploy-key-\d+\Z/
             /\d+\Z/.match(login) do |id|
               DeployKey.find(id[0])
             end

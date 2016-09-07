@@ -40,7 +40,7 @@ describe Gitlab::LfsToken, lib: true do
       it_behaves_like 'an LFS token generator'
 
       it 'returns the correct username' do
-        expect(handler.actor_name).to eq("lfs-deploy-key-#{actor.id}")
+        expect(handler.actor_name).to eq("lfs+deploy-key-#{actor.id}")
       end
 
       it 'returns the correct token type' do

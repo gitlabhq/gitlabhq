@@ -37,8 +37,8 @@ describe Gitlab::Auth, lib: true do
       ip = 'ip'
       token = Gitlab::LfsToken.new(key).generate
 
-      expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: "lfs-deploy-key-#{key.id}")
-      expect(gl_auth.find_for_git_client("lfs-deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, :lfs_deploy_token))
+      expect(gl_auth).to receive(:rate_limit!).with(ip, success: true, login: "lfs+deploy-key-#{key.id}")
+      expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, ip: ip)).to eq(Gitlab::Auth::Result.new(key, :lfs_deploy_token))
     end
 
     it 'recognizes OAuth tokens' do
