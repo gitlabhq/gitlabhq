@@ -1270,7 +1270,7 @@ EOT
         end
       end
 
-      context "when YMAL content is empty" do
+      context "when YAML content is empty" do
         it "returns an error about missing content" do
           expect(GitlabCiYamlProcessor.validation_message(''))
             .to eq "Please provide content of .gitlab-ci.yml"
