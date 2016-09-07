@@ -23,6 +23,7 @@ v 8.12.0 (unreleased)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
+  - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
   - Add textarea autoresize after comment (ClemMakesApps)
   - Fix branches page dropdown sort alignment (ClemMakesApps)
