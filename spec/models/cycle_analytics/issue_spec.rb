@@ -22,17 +22,4 @@ describe 'CycleAnalytics#issue', models: true do
       expect(subject.issue).to be_nil
     end
   end
-
-  context "when the issue belongs to a different project" do
-    it 'returns nil' do
-      other_project = create(:project)
-
-      5.times do
-        issue = create(:issue, project: other_project)
-        issue.update(milestone: create(:milestone, project: other_project))
-      end
-
-      expect(subject.issue).to be_nil
-    end
-  end
 end

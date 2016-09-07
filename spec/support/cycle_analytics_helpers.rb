@@ -45,6 +45,37 @@ module CycleAnalyticsHelpers
             median_time_difference = time_differences.sort[2]
             expect(subject.send(phase)).to be_within(2).of(median_time_difference)
           end
+
+          context "when the data belongs to another project" do
+            let(:other_project) { create(:project) }
+
+            it "returns nil" do
+              # Use a stub to "trick" the data/condition functions
+              # into using another project. This saves us from having to
+              # define separate data/condition functions for this particular
+              # test case.
+              allow(self).to receive(:project) { other_project }
+
+              5.times do
+                data = data_fn[self]
+                start_time = Time.now
+                end_time = rand(1..10).days.from_now
+
+                start_time_conditions.each do |condition_name, condition_fn|
+                  Timecop.freeze(start_time) { condition_fn[self, data] }
+                end
+
+                end_time_conditions.each do |condition_name, condition_fn|
+                  Timecop.freeze(end_time) { condition_fn[self, data] }
+                end
+              end
+
+              # Turn off the stub before checking assertions
+              allow(self).to receive(:project).and_call_original
+
+              expect(subject.send(phase)).to be_nil
+            end
+          end
         end
       end
 

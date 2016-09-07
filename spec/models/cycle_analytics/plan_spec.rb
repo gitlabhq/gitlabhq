@@ -28,16 +28,4 @@ describe 'CycleAnalytics#plan', feature: true do
       expect(subject.issue).to be_nil
     end
   end
-
-  it "does not include issues from other projects" do
-    other_project = create(:project)
-
-    list_label = create(:label, lists: [create(:list)])
-    issue = create(:issue, project: other_project)
-    issue.update(milestone: create(:milestone))
-    issue.update(label_ids: [list_label.id])
-    create_commit_referencing_issue(issue)
-
-    expect(subject.issue).to be_nil
-  end
 end
