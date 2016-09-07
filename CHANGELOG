@@ -103,6 +103,7 @@ v 8.12.0 (unreleased)
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
+  - Allow bulk update merge requests from merge requests index page
 
 v 8.11.5 (unreleased)
   - Optimize branch lookups and force a repository reload for Repository#find_branch
