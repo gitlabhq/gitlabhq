@@ -8,12 +8,11 @@ class DropGitoriousFieldFromApplicationSettings < ActiveRecord::Migration
     require 'yaml'
 
     import_sources = connection.execute('SELECT import_sources FROM application_settings;')
+    return unless import_sources.first # support empty databases
 
     yaml = if Gitlab::Database.postgresql?
              import_sources.values[0][0]
            else
-             return unless import_sources.first
-
              import_sources.first[0]
            end
 
