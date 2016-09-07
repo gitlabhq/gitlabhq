@@ -54,7 +54,7 @@ class CycleAnalytics
           tip = merge_request.commits.first
           return unless tip
 
-          pipeline = Ci::Pipeline.find_by_sha(tip.sha)
+          pipeline = Ci::Pipeline.success.find_by_sha(tip.sha)
           pipeline.started_at if pipeline
         end
       end
@@ -65,7 +65,7 @@ class CycleAnalytics
           tip = merge_request.commits.first
           return unless tip
 
-          pipeline = Ci::Pipeline.find_by_sha(tip.sha)
+          pipeline = Ci::Pipeline.success.find_by_sha(tip.sha)
           pipeline.finished_at if pipeline
         end
       end
