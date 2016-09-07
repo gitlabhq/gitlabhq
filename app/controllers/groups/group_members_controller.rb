@@ -65,6 +65,14 @@ class Groups::GroupMembersController < Groups::ApplicationController
     end
   end
 
+  def options
+    users = User.all
+    users = users.search(params[:search]) if params[:search].present?
+    users = users.page(1)
+
+    render json: users.as_json(only: [:id, :name, :username], methods: [:avatar_url])
+  end
+
   protected
 
   def member_params

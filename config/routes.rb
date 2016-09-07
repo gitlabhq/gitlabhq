@@ -438,6 +438,7 @@ Rails.application.routes.draw do
       resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
         post :resend_invite, on: :member
         delete :leave, on: :collection
+        get :options, on: :collection
       end
 
       resource :avatar, only: [:destroy]

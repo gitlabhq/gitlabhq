@@ -1,7 +1,12 @@
 = form_for @group_member, url: group_group_members_path(@group), html: { class: 'users-project-form users-group-form' } do |f|
   .row
     .col-md-4.col-lg-6
-      = users_select_tag(:user_ids, multiple: true, class: 'input-clamp', scope: :all, email_user: true)
+      .dropdown
+        %input{ type: "hidden", name: "user_ids", id: "js-member-user-ids" }
+        %input.form-control.js-member-dropdown{ type: "text", placeholder: "Search for users or groups", data: { toggle: "dropdown", url: options_group_group_members_path(@group, :json) } }
+        .dropdown-menu.dropdown-menu-full-width.dropdown-menu-selectable.dropdown-members
+          .dropdown-content
+          = dropdown_loading
       .help-block.append-bottom-10
         Search for users by name, username, or email, or invite new ones using their email address.
 
