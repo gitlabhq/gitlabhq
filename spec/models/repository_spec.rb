@@ -1434,7 +1434,6 @@ describe Repository, models: true do
     end
   end
 
-
   def create_remote_branch(remote_name, branch_name, target)
     rugged = repository.rugged
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
