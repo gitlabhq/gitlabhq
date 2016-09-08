@@ -8,7 +8,14 @@
 
 = render "projects/issues/head"
 
-= render 'shared/issuable/filter', type: :boards
+%div{ class: fluid_layout ? "container-fluid" : "container-fluid" }
+  .top-area
+    = render 'shared/issuable/nav', type: :issues
+    .nav-controls
+      #js-boards-seach.issue-boards-search
+        %input.input-short.form-control{ type: "search", placeholder: "Filter by name...", "v-model" => "filters.search", "debounce" => "250" }
+
+  = render 'shared/issuable/filter', type: :boards
 
 .boards-list#board-app{ "v-cloak" => true,
   "data-endpoint" => "#{namespace_project_board_path(@project.namespace, @project)}",

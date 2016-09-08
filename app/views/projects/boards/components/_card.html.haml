@@ -14,6 +14,9 @@
       %a{ ":href" => "issueLinkBase + '/' + issue.id",
         ":title" => "issue.title" }
         {{ issue.title }}
+      %i.issue-state-closed.has-tooltip{ "v-if" => "issue.state === 'closed'",
+        title: "This issue is closed.",
+        data: { container: "body" } }
     .card-footer
       %span.card-number
         = precede '#' do

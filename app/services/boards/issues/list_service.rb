@@ -40,7 +40,7 @@ module Boards
           case list.list_type.to_sym
           when :backlog then 'opened'
           when :done then 'closed'
-          else 'all'
+          else params[:state]
           end
       end
 

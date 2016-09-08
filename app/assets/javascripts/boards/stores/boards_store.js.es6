@@ -12,6 +12,7 @@
     create () {
       this.state.lists = [];
       this.state.filters = {
+        state: gl.utils.getParameterValues('state')[0] || 'opened',
         author_id: gl.utils.getParameterValues('author_id')[0],
         assignee_id: gl.utils.getParameterValues('assignee_id')[0],
         milestone_title: gl.utils.getParameterValues('milestone_title')[0],

@@ -10,7 +10,7 @@ module Projects
 
         render json: {
           issues: issues.as_json(
-            only: [:iid, :title, :confidential],
+            only: [:iid, :title, :confidential, :state],
             include: {
               assignee: { only: [:id, :name, :username], methods: [:avatar_url] },
               labels:   { only: [:id, :title, :description, :color, :priority], methods: [:text_color] }

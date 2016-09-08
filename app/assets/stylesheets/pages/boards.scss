@@ -192,6 +192,7 @@ lex
 }
 
 .card-title {
+  position: relative;
   margin: 0;
   font-size: 1em;
 
@@ -216,11 +217,8 @@ lex
 }
 
 .issue-boards-search {
-  width: 335px;
-
-  .form-control {
-    display: inline-block;
-    width: 210px;
+  .form-control.input-short {
+    margin-right: 0;
   }
 }
 
@@ -232,4 +230,14 @@ lex
   > .fa {
     margin-right: 5px;
   }
+}
+
+.issue-state-closed {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  width: 7px;
+  height: 7px;
+  background-color: $gl-danger;
+  border-radius: 50%;
 }

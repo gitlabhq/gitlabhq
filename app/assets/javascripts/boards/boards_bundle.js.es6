@@ -61,4 +61,23 @@ $(() => {
       filters: Store.state.filters
     }
   });
+
+  $('.issues-state-filters a').off('click.boards')
+    .on('click.boards', function (e) {
+      const $this = $(this);
+
+      e.preventDefault();
+
+      if (!$this.parent().hasClass('active')) {
+        gl.issueBoards.BoardsStore.state.filters.state = $(this).data('state');
+        gl.issueBoards.BoardsStore.updateFiltersUrl();
+
+        $this.closest('.nav-links')
+          .find('.active')
+          .removeClass('active')
+          .end().end()
+          .parent()
+          .addClass('active');
+      }
+    });
 });

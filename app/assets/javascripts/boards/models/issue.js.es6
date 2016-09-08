@@ -2,6 +2,7 @@ class ListIssue {
   constructor (obj) {
     this.id = obj.iid;
     this.title = obj.title;
+    this.state = obj.state;
     this.confidential = obj.confidential;
     this.labels = [];
 
