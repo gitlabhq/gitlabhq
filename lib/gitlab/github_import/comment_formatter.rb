@@ -21,7 +21,7 @@ module Gitlab
       end
 
       def author_id
-        gl_user_id(raw_data.user.id) || project.creator_id
+        gitlab_user_id(raw_data.user.id) || project.creator_id
       end
 
       def body

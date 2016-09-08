@@ -15,7 +15,7 @@ module Gitlab
 
       private
 
-      def gl_user_id(github_id)
+      def gitlab_user_id(github_id)
         User.joins(:identities).
           find_by("identities.extern_uid = ? AND identities.provider = 'github'", github_id.to_s).
           try(:id)
