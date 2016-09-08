@@ -2,6 +2,8 @@
 # It takes a `issuable_type`, and expect an `issuable`.
 
 shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
+  include WaitForAjax
+
   let(:master) { create(:user) }
   let(:assignee) { create(:user, username: 'bob') }
   let(:guest) { create(:user) }
@@ -16,6 +18,11 @@ shared_examples 'issuable record that supports slash commands in its description
     project.team << [assignee, :developer]
     project.team << [guest, :guest]
     login_with(master)
+  end
+
+  after do
+    # Ensure all outstanding Ajax requests are complete to avoid database deadlocks
+    wait_for_ajax
   end
 
   def write_note(text)
