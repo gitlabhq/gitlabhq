@@ -1,8 +1,8 @@
 ## Running Composer and NPM scripts with deployment via SCP
 
-This guide covers the building dependencies of a PHP project while compiling assets via a NPM script.
+This guide covers the building dependencies of a PHP project while compiling assets via an NPM script.
 
-While is possible to create your own image with custom PHP and Node JS version, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
+While is possible to create your own image with custom PHP and Node JS versions, for brevity, we will use an existing [Docker image](https://hub.docker.com/r/tetraweb/php/) that contains both PHP and NodeJS installed.
 
 
 ```yaml
@@ -20,7 +20,7 @@ before_script:
   - php -r "unlink('composer-setup.php');"
 ```
 
-This will make sure we will have all required stuff ready to use. Next, we want to run `composer update` to fetch all PHP dependencies  and `npm install` to load node packages then run the `npm` script. We need to append them  into `before_script` section:
+This will make sure we have all requirements ready. Next, we want to run `composer update` to fetch all PHP dependencies  and `npm install` to load node packages, then run the `npm` script. We need to append them  into `before_script` section:
 
 ```yaml
 before_script:
@@ -44,7 +44,7 @@ All these operations will put all files into a `build` folder, which is ready to
 You have multiple options: rsync, scp, sftp and so on. For now, we will use scp. To make this work, you need to add a GitLab Secret Variable (accessible on _gitlab.com/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
 
 #### Security tip
-Create an user that has access **only** to the folder that need to be updated!
+Create a user that has access **only** to the folder that need to be updated!
 
 After you create that variable, you need to make sure that key will be added to the docker container on run:
 

@@ -14,7 +14,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Test a Phoenix application](test-phoenix-application.md)
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [Example project that shows how to use Review Apps](https://gitlab.com/gitlab-examples/review-apps-nginx/)
-- [Run PHP Composer & NPM scripts then deploy them to a stage server](deployment/composer-npm-deploy.md)
+- [Run PHP Composer & NPM scripts then deploy them to a staging server](deployment/composer-npm-deploy.md)
 - Help your favorite programming language and GitLab by sending a merge request
   with a guide for that language.
 
