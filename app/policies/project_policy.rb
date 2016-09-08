@@ -101,6 +101,7 @@ class ProjectPolicy < BasePolicy
     can! :admin_pipeline
     can! :admin_environment
     can! :admin_deployment
+    can! :read_cycle_analytics
   end
 
   def public_access!

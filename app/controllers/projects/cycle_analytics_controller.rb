@@ -3,6 +3,11 @@ class Projects::CycleAnalyticsController < Projects::ApplicationController
 
   def show
     @cycle_analytics = CycleAnalytics.new(@project, from: parse_start_date)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @cycle_analytics }
+    end
   end
 
   private

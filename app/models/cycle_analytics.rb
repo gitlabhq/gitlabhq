@@ -6,6 +6,13 @@ class CycleAnalytics
     @from = from
   end
 
+  def as_json(options = {})
+    {
+      issue: issue, plan: plan, code: code, test: test,
+      review: review, staging: staging, production: production
+    }
+  end
+
   def issue
     calculate_metric(Queries::issues(@project, created_after: @from),
                      -> (data_point) { data_point[:issue].created_at },
