@@ -1,6 +1,4 @@
 - admin = false unless admin
-- if admin
-  - project = build.project
 
 %tr.build.commit
   %td.status
@@ -51,8 +49,8 @@
 
   - if admin
     %td
-      - if project
-        = link_to project.name_with_namespace, admin_namespace_project_path(project.namespace, project)
+      - if build.project
+        = link_to build.project.name_with_namespace, admin_namespace_project_path(build.project.namespace, build.project)
 
   - if defined?(runner) && runner
     %td
@@ -61,8 +59,9 @@
       - else
         .light none
 
-  %td
-    = build.stage
+  - if defined?(stage) && stage
+    %td
+      = build.stage
 
   %td
     = build.name
