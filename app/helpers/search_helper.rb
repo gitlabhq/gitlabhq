@@ -7,8 +7,10 @@ module SearchHelper
       projects_autocomplete(term)
     ].flatten
 
+    search_pattern = Regexp.new(Regexp.escape(term), "i")
+
     generic_results = project_autocomplete + default_autocomplete + help_autocomplete
-    generic_results.select! { |result| result[:label] =~ Regexp.new(term, "i") }
+    generic_results.select! { |result| result[:label] =~ search_pattern }
 
     [
       resources_results,

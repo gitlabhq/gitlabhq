@@ -1,32 +1,41 @@
 require 'spec_helper'
 
 describe Gitlab::Ci::Config::Node::Undefined do
-  let(:undefined) { described_class.new(entry) }
-  let(:entry) { spy('Entry') }
+  let(:entry) { described_class.new }
+
+  describe '#leaf?' do
+    it 'is leaf node' do
+      expect(entry).to be_leaf
+    end
+  end
 
   describe '#valid?' do
-    it 'delegates method to entry' do
-      expect(undefined.valid).to eq entry
+    it 'is always valid' do
+      expect(entry).to be_valid
     end
   end
 
   describe '#errors' do
-    it 'delegates method to entry' do
-      expect(undefined.errors).to eq entry
+    it 'is does not contain errors' do
+      expect(entry.errors).to be_empty
     end
   end
 
   describe '#value' do
-    it 'delegates method to entry' do
-      expect(undefined.value).to eq entry
+    it 'returns nil' do
+      expect(entry.value).to eq nil
+    end
+  end
+
+  describe '#relevant?' do
+    it 'is not relevant' do
+      expect(entry.relevant?).to eq false
     end
   end
 
   describe '#specified?' do
-    it 'is always false' do
-      allow(entry).to receive(:specified?).and_return(true)
-
-      expect(undefined.specified?).to be false
+    it 'is not defined' do
+      expect(entry.specified?).to eq false
     end
   end
 end

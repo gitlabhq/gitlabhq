@@ -331,7 +331,12 @@
       form.find(".js-md-write-button").click();
       form.find(".js-note-text").val("").trigger("input");
       form.find(".js-note-text").data("autosave").reset();
-      return this.updateTargetButtons(e);
+
+      var event = document.createEvent('Event');
+      event.initEvent('autosize:update', true, false);
+      form.find('.js-autosize')[0].dispatchEvent(event);
+
+      this.updateTargetButtons(e);
     };
 
     Notes.prototype.reenableTargetFormSubmitButton = function() {

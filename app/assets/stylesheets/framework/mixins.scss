@@ -85,3 +85,13 @@
   #{'-webkit-' + $property}: $value;
   #{$property}: $value;
 }
+
+@mixin keyframes($animation-name) {
+  @-webkit-keyframes #{$animation-name} {
+    @content;
+  }
+
+  @keyframes #{$animation-name} {
+    @content;
+  }
+}

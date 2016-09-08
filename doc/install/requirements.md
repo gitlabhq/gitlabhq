@@ -86,7 +86,7 @@ if your available memory changes.
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
 
-## Gitlab Runner
+## GitLab Runner
 
 We strongly advise against installing GitLab Runner on the same machine you plan
 to install GitLab on. Depending on how you decide to configure GitLab Runner and

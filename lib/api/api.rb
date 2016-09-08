@@ -49,6 +49,7 @@ module API
     mount ::API::LicenseTemplates
     mount ::API::Ldap
     mount ::API::LdapGroupLinks
+    mount ::API::Lint
     mount ::API::Members
     mount ::API::MergeRequests
     mount ::API::Milestones

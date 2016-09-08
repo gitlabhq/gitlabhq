@@ -238,27 +238,19 @@ describe Discussion, model: true do
 
     context "when resolvable" do
       let(:user) { create(:user) }
+      let(:second_note) { create(:diff_note_on_commit) } # unresolvable
 
       before do
         allow(subject).to receive(:resolvable?).and_return(true)
-
-        allow(first_note).to receive(:resolvable?).and_return(true)
-        allow(second_note).to receive(:resolvable?).and_return(false)
-        allow(third_note).to receive(:resolvable?).and_return(true)
       end
 
       context "when all resolvable notes are resolved" do
         before do
           first_note.resolve!(user)
           third_note.resolve!(user)
-        end
 
-        it "calls resolve! on every resolvable note" do
-          expect(first_note).to receive(:resolve!).with(current_user)
-          expect(second_note).not_to receive(:resolve!)
-          expect(third_note).to receive(:resolve!).with(current_user)
-
-          subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
         end
 
         it "doesn't change resolved_at on the resolved notes" do
@@ -309,46 +301,44 @@ describe Discussion, model: true do
           first_note.resolve!(user)
         end
 
-        it "calls resolve! on every resolvable note" do
-          expect(first_note).to receive(:resolve!).with(current_user)
-          expect(second_note).not_to receive(:resolve!)
-          expect(third_note).to receive(:resolve!).with(current_user)
-
-          subject.resolve!(current_user)
-        end
-
         it "doesn't change resolved_at on the resolved note" do
           expect(first_note.resolved_at).not_to be_nil
 
-          expect { subject.resolve!(current_user) }.not_to change { first_note.resolved_at }
+          expect { subject.resolve!(current_user) }.
+            not_to change { first_note.reload.resolved_at }
         end
 
         it "doesn't change resolved_by on the resolved note" do
           expect(first_note.resolved_by).to eq(user)
 
-          expect { subject.resolve!(current_user) }.not_to change { first_note.resolved_by }
+          expect { subject.resolve!(current_user) }.
+            not_to change { first_note.reload && first_note.resolved_by }
         end
 
         it "doesn't change the resolved state on the resolved note" do
           expect(first_note.resolved?).to be true
 
-          expect { subject.resolve!(current_user) }.not_to change { first_note.resolved? }
+          expect { subject.resolve!(current_user) }.
+            not_to change { first_note.reload && first_note.resolved? }
         end
 
         it "sets resolved_at on the unresolved note" do
           subject.resolve!(current_user)
+          third_note.reload
 
           expect(third_note.resolved_at).not_to be_nil
         end
 
         it "sets resolved_by on the unresolved note" do
           subject.resolve!(current_user)
+          third_note.reload
 
           expect(third_note.resolved_by).to eq(current_user)
         end
 
         it "marks the unresolved note as resolved" do
           subject.resolve!(current_user)
+          third_note.reload
 
           expect(third_note.resolved?).to be true
         end
@@ -373,16 +363,10 @@ describe Discussion, model: true do
       end
 
       context "when no resolvable notes are resolved" do
-        it "calls resolve! on every resolvable note" do
-          expect(first_note).to receive(:resolve!).with(current_user)
-          expect(second_note).not_to receive(:resolve!)
-          expect(third_note).to receive(:resolve!).with(current_user)
-
-          subject.resolve!(current_user)
-        end
-
         it "sets resolved_at on the unresolved notes" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved_at).not_to be_nil
           expect(third_note.resolved_at).not_to be_nil
@@ -390,6 +374,8 @@ describe Discussion, model: true do
 
         it "sets resolved_by on the unresolved notes" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved_by).to eq(current_user)
           expect(third_note.resolved_by).to eq(current_user)
@@ -397,6 +383,8 @@ describe Discussion, model: true do
 
         it "marks the unresolved notes as resolved" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved?).to be true
           expect(third_note.resolved?).to be true
@@ -404,18 +392,24 @@ describe Discussion, model: true do
 
         it "sets resolved_at" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(subject.resolved_at).not_to be_nil
         end
 
         it "sets resolved_by" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(subject.resolved_by).to eq(current_user)
         end
 
         it "marks as resolved" do
           subject.resolve!(current_user)
+          first_note.reload
+          third_note.reload
 
           expect(subject.resolved?).to be true
         end
@@ -451,16 +445,10 @@ describe Discussion, model: true do
           third_note.resolve!(user)
         end
 
-        it "calls unresolve! on every resolvable note" do
-          expect(first_note).to receive(:unresolve!)
-          expect(second_note).not_to receive(:unresolve!)
-          expect(third_note).to receive(:unresolve!)
-
-          subject.unresolve!
-        end
-
         it "unsets resolved_at on the resolved notes" do
           subject.unresolve!
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved_at).to be_nil
           expect(third_note.resolved_at).to be_nil
@@ -468,6 +456,8 @@ describe Discussion, model: true do
 
         it "unsets resolved_by on the resolved notes" do
           subject.unresolve!
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved_by).to be_nil
           expect(third_note.resolved_by).to be_nil
@@ -475,6 +465,8 @@ describe Discussion, model: true do
 
         it "unmarks the resolved notes as resolved" do
           subject.unresolve!
+          first_note.reload
+          third_note.reload
 
           expect(first_note.resolved?).to be false
           expect(third_note.resolved?).to be false
@@ -482,12 +474,16 @@ describe Discussion, model: true do
 
         it "unsets resolved_at" do
           subject.unresolve!
+          first_note.reload
+          third_note.reload
 
           expect(subject.resolved_at).to be_nil
         end
 
         it "unsets resolved_by" do
           subject.unresolve!
+          first_note.reload
+          third_note.reload
 
           expect(subject.resolved_by).to be_nil
         end
@@ -504,40 +500,22 @@ describe Discussion, model: true do
           first_note.resolve!(user)
         end
 
-        it "calls unresolve! on every resolvable note" do
-          expect(first_note).to receive(:unresolve!)
-          expect(second_note).not_to receive(:unresolve!)
-          expect(third_note).to receive(:unresolve!)
-
-          subject.unresolve!
-        end
-
         it "unsets resolved_at on the resolved note" do
           subject.unresolve!
 
-          expect(first_note.resolved_at).to be_nil
+          expect(subject.first_note.resolved_at).to be_nil
         end
 
         it "unsets resolved_by on the resolved note" do
           subject.unresolve!
 
-          expect(first_note.resolved_by).to be_nil
+          expect(subject.first_note.resolved_by).to be_nil
         end
 
         it "unmarks the resolved note as resolved" do
           subject.unresolve!
 
-          expect(first_note.resolved?).to be false
-        end
-      end
-
-      context "when no resolvable notes are resolved" do
-        it "calls unresolve! on every resolvable note" do
-          expect(first_note).to receive(:unresolve!)
-          expect(second_note).not_to receive(:unresolve!)
-          expect(third_note).to receive(:unresolve!)
-
-          subject.unresolve!
+          expect(subject.first_note.resolved?).to be false
         end
       end
     end

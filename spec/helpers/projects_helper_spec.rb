@@ -183,4 +183,48 @@ describe ProjectsHelper do
       end
     end
   end
+
+  describe "#project_feature_access_select" do
+    let(:project) { create(:empty_project, :public) }
+    let(:user)    { create(:user) }
+
+    context "when project is internal or public" do
+      it "shows all options" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).to include("Everyone with access")
+      end
+    end
+
+    context "when project is private" do
+      before { project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
+      it "shows only allowed options" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).not_to include("Everyone with access")
+      end
+    end
+
+    context "when project moves from public to private" do
+      before do
+        project.project_feature.update_attributes(issues_access_level: ProjectFeature::ENABLED)
+        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it "shows the highest allowed level selected" do
+        helper.instance_variable_set(:@project, project)
+        result = helper.project_feature_access_select(:issues_access_level)
+
+        expect(result).to include("Disabled")
+        expect(result).to include("Only team members")
+        expect(result).not_to include("Everyone with access")
+        expect(result).to have_selector('option[selected]', text: "Only team members")
+      end
+    end
+  end
 end

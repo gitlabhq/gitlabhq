@@ -441,7 +441,7 @@ describe Repository, models: true do
     end
   end
 
-  describe '#commit_with_hooks' do
+  describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
 
@@ -454,22 +454,55 @@ describe Repository, models: true do
 
       it 'runs without errors' do
         expect do
-          repository.commit_with_hooks(user, 'feature') { new_rev }
+          repository.update_branch_with_hooks(user, 'feature') { new_rev }
         end.not_to raise_error
       end
 
       it 'ensures the autocrlf Git option is set to :input' do
         expect(repository).to receive(:update_autocrlf_option)
 
-        repository.commit_with_hooks(user, 'feature') { new_rev }
+        repository.update_branch_with_hooks(user, 'feature') { new_rev }
       end
 
       context "when the branch wasn't empty" do
         it 'updates the head' do
           expect(repository.find_branch('feature').target.id).to eq(old_rev)
-          repository.commit_with_hooks(user, 'feature') { new_rev }
+          repository.update_branch_with_hooks(user, 'feature') { new_rev }
           expect(repository.find_branch('feature').target.id).to eq(new_rev)
         end
+      end
+    end
+
+    context 'when the update adds more than one commit' do
+      it 'runs without errors' do
+        old_rev = '33f3729a45c02fc67d00adb1b8bca394b0e761d9'
+
+        # old_rev is an ancestor of new_rev
+        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+
+        # old_rev is not a direct ancestor (parent) of new_rev
+        expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
+
+        branch = 'feature-ff-target'
+        repository.add_branch(user, branch, old_rev)
+
+        expect { repository.update_branch_with_hooks(user, branch) { new_rev } }.not_to raise_error
+      end
+    end
+
+    context 'when the update would remove commits from the target branch' do
+      it 'raises an exception' do
+        branch = 'master'
+        old_rev = repository.find_branch(branch).target.sha
+
+        # The 'master' branch is NOT an ancestor of new_rev.
+        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+
+        # Updating 'master' to new_rev would lose the commits on 'master' that
+        # are not contained in new_rev. This should not be allowed.
+        expect do
+          repository.update_branch_with_hooks(user, branch) { new_rev }
+        end.to raise_error(Repository::CommitError)
       end
     end
 
@@ -478,7 +511,7 @@ describe Repository, models: true do
         allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([false, ''])
 
         expect do
-          repository.commit_with_hooks(user, 'feature') { new_rev }
+          repository.update_branch_with_hooks(user, 'feature') { new_rev }
         end.to raise_error(GitHooksService::PreReceiveError)
       end
     end
@@ -497,7 +530,7 @@ describe Repository, models: true do
         expect(repository).to     receive(:expire_has_visible_content_cache)
         expect(repository).to     receive(:expire_branch_count_cache)
 
-        repository.commit_with_hooks(user, 'new-feature') { new_rev }
+        repository.update_branch_with_hooks(user, 'new-feature') { new_rev }
       end
     end
 

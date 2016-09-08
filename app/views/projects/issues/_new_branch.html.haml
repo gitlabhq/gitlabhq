@@ -1,6 +1,6 @@
 - if can?(current_user, :push_code, @project)
   .pull-right
-    #new-branch{'data-path' => can_create_branch_namespace_project_issue_path(@project.namespace, @project, @issue)}
+    #new-branch.new-branch{'data-path' => can_create_branch_namespace_project_issue_path(@project.namespace, @project, @issue)}
       = link_to '#', class: 'checking btn btn-grouped', disabled: 'disabled' do
         = icon('spinner spin')
         Checking branches

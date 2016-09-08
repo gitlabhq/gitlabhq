@@ -3,7 +3,7 @@ module Ci
     module Helpers
       BUILD_TOKEN_HEADER = "HTTP_BUILD_TOKEN"
       BUILD_TOKEN_PARAM = :token
-      UPDATE_RUNNER_EVERY = 60
+      UPDATE_RUNNER_EVERY = 40 * 60
 
       def authenticate_runners!
         forbidden! unless runner_registration_token_valid?
@@ -22,11 +22,13 @@ module Ci
         params[:token] == current_application_settings.runners_registration_token
       end
 
-      def update_runner_last_contact
+      def update_runner_last_contact(save: true)
         # Use a random threshold to prevent beating DB updates
+        # it generates a distribution between: [40m, 80m]
         contacted_at_max_age = UPDATE_RUNNER_EVERY + Random.rand(UPDATE_RUNNER_EVERY)
         if current_runner.contacted_at.nil? || Time.now - current_runner.contacted_at >= contacted_at_max_age
-          current_runner.update_attributes(contacted_at: Time.now)
+          current_runner.contacted_at = Time.now
+          current_runner.save if current_runner.changed? && save
         end
       end
 

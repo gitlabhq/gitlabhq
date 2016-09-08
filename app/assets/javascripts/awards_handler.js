@@ -255,12 +255,12 @@
     };
 
     AwardsHandler.prototype.animateEmoji = function($emoji) {
-      var className;
-      className = 'pulse animated';
+      var className = 'pulse animated once short';
       $emoji.addClass(className);
-      return setTimeout((function() {
-        return $emoji.removeClass(className);
-      }), 321);
+
+      $emoji.on('webkitAnimationEnd animationEnd', function() {
+        $(this).removeClass(className);
+      });
     };
 
     AwardsHandler.prototype.createEmoji = function(votesBlock, emoji) {
