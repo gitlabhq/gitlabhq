@@ -2,6 +2,7 @@
 # It takes a `issuable_type`, and expect an `issuable`.
 
 shared_examples 'issuable record that supports slash commands in its description and notes' do |issuable_type|
+  include SlashCommandsHelpers
   include WaitForAjax
 
   let(:master) { create(:user) }
@@ -23,15 +24,6 @@ shared_examples 'issuable record that supports slash commands in its description
   after do
     # Ensure all outstanding Ajax requests are complete to avoid database deadlocks
     wait_for_ajax
-  end
-
-  def write_note(text)
-    Sidekiq::Testing.fake! do
-      page.within('.js-main-target-form') do
-        fill_in 'note[note]', with: text
-        click_button 'Comment'
-      end
-    end
   end
 
   describe "new #{issuable_type}" do
