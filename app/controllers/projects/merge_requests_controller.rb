@@ -90,15 +90,26 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @merge_request.merge_request_diff
       end
 
+    @merge_request_diffs = @merge_request.merge_request_diffs.select_without_diff
+    @comparable_diffs = @merge_request_diffs.select { |diff| diff.id < @merge_request_diff.id }
+
+    if params[:start_sha].present?
+      @start_sha = params[:start_sha]
+      @start_version = @comparable_diffs.find { |diff| diff.head_commit_sha == @start_sha }
+
+      unless @start_version
+        render_404
+      end
+    end
+
     respond_to do |format|
       format.html { define_discussion_vars }
       format.json do
-        unless @merge_request_diff.latest?
-          # Disable comments if browsing older version of the diff
-          @diff_notes_disabled = true
+        if @start_sha
+          compared_diff_version
+        else
+          original_diff_version
         end
-
-        @diffs = @merge_request_diff.diffs(diff_options)
 
         render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") }
       end
@@ -528,5 +539,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def build_merge_request
     params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
     @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
+  end
+
+  def compared_diff_version
+    @diff_notes_disabled = true
+    @diffs = @merge_request_diff.compare_with(@start_sha).diffs(diff_options)
+  end
+
+  def original_diff_version
+    @diff_notes_disabled = !@merge_request_diff.latest?
+    @diffs = @merge_request_diff.diffs(diff_options)
   end
 end
