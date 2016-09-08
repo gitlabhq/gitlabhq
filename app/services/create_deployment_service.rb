@@ -4,14 +4,17 @@ class CreateDeploymentService < BaseService
   def execute(deployable = nil)
     environment = find_or_create_environment
 
-    project.deployments.create(
-      environment: environment,
-      ref: params[:ref],
-      tag: params[:tag],
-      sha: params[:sha],
-      user: current_user,
-      deployable: deployable
-    )
+    deployment = project.deployments.create(
+                  environment: environment,
+                  ref: params[:ref],
+                  tag: params[:tag],
+                  sha: params[:sha],
+                  user: current_user,
+                  deployable: deployable
+                )
+    deployment.create_refs
+
+    deployment
   end
 
   private

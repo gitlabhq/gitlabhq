@@ -43,7 +43,8 @@
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
 
-- @merge_request.environments.each do |environment|
+- @merge_request.deployments.each do |deployment|
+  - environment = deployment.environment
   .mr-widget-heading
     .ci_widget.ci-success
       = ci_icon_for_status("success")
@@ -51,6 +52,7 @@
         Deployed to
         = succeed '.' do
           = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment), class: 'environment'
+          = time_ago_with_tooltip(deployment.created_at)
         - external_url = environment.external_url
         - if external_url
           = link_to external_url, target: '_blank' do

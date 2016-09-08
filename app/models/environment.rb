@@ -38,9 +38,11 @@ class Environment < ActiveRecord::Base
       end
   end
 
-  def includes_commit?(commit)
-    return false unless last_deployment
+  def deployment_for(commit)
+    project.repository.deployment_ref_for_sha(ref_path, commit.sha)
+  end
 
-    last_deployment.includes_commit?(commit)
+  def ref_path
+    "refs/environments/#{name}/"
   end
 end

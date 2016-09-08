@@ -701,7 +701,7 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#environments" do
+  describe "#deployments" do
     let(:project)       { create(:project) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 

@@ -651,12 +651,15 @@ class MergeRequest < ActiveRecord::Base
     !pipeline || pipeline.success?
   end
 
-  def environments
-    return [] unless diff_head_commit
+  def deployments
+    return nil unless diff_head_commit
 
-    target_project.environments.select do |environment|
-      environment.includes_commit?(diff_head_commit)
-    end
+    deployment_ids =
+      target_project.environments.map do |environment|
+        environment.deployment_for(diff_head_commit)
+      end
+
+    deployment_ids.empty? ? nil : Deployment.find(deployment_ids)
   end
 
   def state_human_name

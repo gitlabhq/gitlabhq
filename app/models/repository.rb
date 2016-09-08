@@ -241,7 +241,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
+      create_ref(keep_around_ref_name(sha), sha)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -256,6 +256,10 @@ class Repository
     rescue Rugged::ReferenceError
       false
     end
+  end
+
+  def create_ref(ref_name, sha, force: true)
+    rugged.references.create(ref_name, sha, force: force)
   end
 
   def tag_names
@@ -715,6 +719,19 @@ class Repository
 
       contributor
     end
+  end
+
+  def deployment_ref_for_sha(environment_ref_path, sha)
+    args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{environment_ref_path} --contains #{sha})
+
+    # Not found -> ["", 0]
+    # Found -> ["b8d95eb4969eefacb0a58f6a28f6803f8070e7b9 commit\trefs/environments/production/77\n", 0]
+    ref = Gitlab::Popen.popen(args, path_to_repo).first
+
+    return nil if ref.empty?
+
+    # Parse "<sha> commit\trefs/environments/<environment_name>/<id>\n" to ID
+    ref.split('/').last.rstrip!
   end
 
   def refs_contains_sha(ref_type, sha)

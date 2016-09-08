@@ -11,7 +11,13 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :keep_around_commit
+  def last?
+    self == environment.last_deployment
+  end
+
+  def short_sha
+    Commit.truncate_sha(sha)
+  end
 
   def commit
     project.commit(sha)
@@ -21,25 +27,22 @@ class Deployment < ActiveRecord::Base
     commit.try(:title)
   end
 
-  def short_sha
-    Commit.truncate_sha(sha)
-  end
-
-  def last?
-    self == environment.last_deployment
-  end
-
-  def keep_around_commit
-    project.repository.keep_around(self.sha)
+  def create_refs
+    project.repository.create_ref(ref_path, sha)
+    project.repository.create_ref(ref_path_head, sha)
   end
 
   def manual_actions
     deployable.try(:other_actions)
   end
 
-  def includes_commit?(commit)
-    return false unless commit
+  private
 
-    project.repository.is_ancestor?(commit.id, sha)
+  def ref_path
+    environment.ref_path + id.to_s
+  end
+
+  def ref_path_head
+    environment.ref_path + 'HEAD'
   end
 end
