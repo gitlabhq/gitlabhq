@@ -336,6 +336,15 @@ describe MergeRequest, models: true do
       end.to change { merge_request.number_of_potential_approvers }.by(1)
     end
 
+    it "excludes blocked users" do
+      developer = create(:user)
+      blocked_developer = create(:user).tap { |u| u.block! }
+      project.team << [developer, :developer]
+      project.team << [blocked_developer, :developer]
+
+      expect(merge_request.number_of_potential_approvers).to eq(1)
+    end
+
     context "when the project is part of a group" do
       let(:group) { create(:group) }
       before { project.update_attributes(group: group) }
@@ -346,6 +355,8 @@ describe MergeRequest, models: true do
           group.add_reporter(create(:user))
           group.add_developer(create(:user))
           group.add_master(create(:user))
+          blocked_developer = create(:user).tap { |u| u.block! }
+          group.add_developer(blocked_developer)
         end.to change { merge_request.number_of_potential_approvers }.by(2)
       end
     end
