@@ -115,10 +115,10 @@ module Gitlab
         return periods if periods.empty?
 
         periods.drop(1).inject([periods.first]) do |result, current|
-          merged = try_merge_period(result.last, current)
+          previous = result.last
 
-          if merged
-            result[-1] = merged
+          if overlap?(previous, current)
+            result[-1] = merge(previous, current)
             result
           else
             result << current
@@ -126,10 +126,12 @@ module Gitlab
         end
       end
 
-      def try_merge_period(previous, current)
-        if current.first <= previous.last
-          Period.new(previous.first, [previous.last, current.last].max)
-        end
+      def overlap?(previous, current)
+        current.first <= previous.last
+      end
+
+      def merge(previous, current)
+        Period.new(previous.first, [previous.last, current.last].max)
       end
 
       def process_duration(periods)
