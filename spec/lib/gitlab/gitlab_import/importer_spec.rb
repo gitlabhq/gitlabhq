@@ -13,6 +13,7 @@ describe Gitlab::GitlabImport::Importer, lib: true do
           'title' => 'Issue',
           'description' => 'Lorem ipsum',
           'state' => 'opened',
+          'confidential' => true,
           'author' => {
             'id' => 283999,
             'name' => 'John Doe'
@@ -34,6 +35,7 @@ describe Gitlab::GitlabImport::Importer, lib: true do
         title: 'Issue',
         description: "*Created by: John Doe*\n\nLorem ipsum",
         state: 'opened',
+        confidential: true,
         author_id: project.creator_id
       }
 
