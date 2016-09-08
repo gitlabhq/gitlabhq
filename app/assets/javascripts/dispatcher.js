@@ -40,7 +40,7 @@
           new Milestone();
           break;
         case 'dashboard:todos:index':
-          new Todos();
+          new gl.Todos();
           break;
         case 'projects:milestones:new':
         case 'projects:milestones:edit':

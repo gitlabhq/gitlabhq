@@ -1,34 +1,29 @@
-(function() {
-  var bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+(global => {
 
-  this.Todos = (function() {
-    function Todos(opts) {
-      var ref;
-      if (opts == null) {
-        opts = {};
-      }
-      this.allDoneClicked = bind(this.allDoneClicked, this);
-      this.doneClicked = bind(this.doneClicked, this);
-      this.el = (ref = opts.el) != null ? ref : $('.js-todos-options');
+  class Todos {
+    constructor(opts = {}) {
+      this.allDoneClicked = this.allDoneClicked.bind(this);
+      this.doneClicked = this.doneClicked.bind(this);
+      this.el = opts.el || $('.js-todos-options');
       this.perPage = this.el.data('perPage');
       this.clearListeners();
       this.initBtnListeners();
       this.initFilters();
     }
 
-    Todos.prototype.clearListeners = function() {
+    clearListeners() {
       $('.done-todo').off('click');
       $('.js-todos-mark-all').off('click');
       return $('.todo').off('click');
-    };
+    }
 
-    Todos.prototype.initBtnListeners = function() {
+    initBtnListeners() {
       $('.done-todo').on('click', this.doneClicked);
       $('.js-todos-mark-all').on('click', this.allDoneClicked);
       return $('.todo').on('click', this.goToTodoUrl);
-    };
+    }
 
-    Todos.prototype.initFilters = function() {
+    initFilters() {
       new UsersSelect();
       this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
       this.initFilterDropdown($('.js-type-search'), 'type');
@@ -38,125 +33,117 @@
         event.preventDefault();
         Turbolinks.visit(this.action + '&' + $(this).serialize());
       });
-    };
+    }
 
-    Todos.prototype.initFilterDropdown = function($dropdown, fieldName, searchFields) {
+    initFilterDropdown($dropdown, fieldName, searchFields) {
       $dropdown.glDropdown({
+        fieldName,
         selectable: true,
         filterable: searchFields ? true : false,
-        fieldName: fieldName,
         search: { fields: searchFields },
         data: $dropdown.data('data'),
         clicked: function() {
           return $dropdown.closest('form.filter-form').submit();
         }
       })
-    };
+    }
 
-    Todos.prototype.doneClicked = function(e) {
-      var $this;
+    doneClicked(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      $this = $(e.currentTarget);
-      $this.disable();
+      const $target = $(e.currentTarget);
+      $target.disable();
       return $.ajax({
         type: 'POST',
-        url: $this.attr('href'),
+        url: $target.attr('href'),
         dataType: 'json',
         data: {
           '_method': 'delete'
         },
-        success: (function(_this) {
-          return function(data) {
-            _this.redirectIfNeeded(data.count);
-            _this.clearDone($this.closest('li'));
-            return _this.updateBadges(data);
-          };
-        })(this)
+        success: data => {
+          this.redirectIfNeeded(data.count);
+          this.clearDone($target.closest('li'));
+          return this.updateBadges(data);
+        }
       });
-    };
+    }
 
-    Todos.prototype.allDoneClicked = function(e) {
-      var $this;
+    allDoneClicked(e) {
       e.preventDefault();
       e.stopImmediatePropagation();
-      $this = $(e.currentTarget);
-      $this.disable();
+      $target = $(e.currentTarget);
+      $target.disable();
       return $.ajax({
         type: 'POST',
-        url: $this.attr('href'),
+        url: $target.attr('href'),
         dataType: 'json',
         data: {
           '_method': 'delete'
         },
-        success: (function(_this) {
-          return function(data) {
-            $this.remove();
-            $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
-            return _this.updateBadges(data);
-          };
-        })(this)
+        success: data => {
+          $target.remove();
+          $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
+          return this.updateBadges(data);
+        }
       });
-    };
+    }
 
-    Todos.prototype.clearDone = function($row) {
-      var $ul;
-      $ul = $row.closest('ul');
+    clearDone($row) {
+      const $ul = $row.closest('ul');
       $row.remove();
       if (!$ul.find('li').length) {
         return $ul.parents('.panel').remove();
       }
-    };
+    }
 
-    Todos.prototype.updateBadges = function(data) {
+    updateBadges(data) {
       $('.todos-pending .badge, .todos-pending-count').text(data.count);
       return $('.todos-done .badge').text(data.done_count);
-    };
+    }
 
-    Todos.prototype.getTotalPages = function() {
+    getTotalPages() {
       return this.el.data('totalPages');
-    };
+    }
 
-    Todos.prototype.getCurrentPage = function() {
+    getCurrentPage() {
       return this.el.data('currentPage');
-    };
+    }
 
-    Todos.prototype.getTodosPerPage = function() {
+    getTodosPerPage() {
       return this.el.data('perPage');
-    };
+    }
 
-    Todos.prototype.redirectIfNeeded = function(total) {
-      var currPage, currPages, newPages, pageParams, url;
-      currPages = this.getTotalPages();
+    redirectIfNeeded(total) {
+      let currPages = this.getTotalPages();
       currPage = this.getCurrentPage();
+
       // Refresh if no remaining Todos
       if (!total) {
-        location.reload();
+        window.location.reload();
         return;
       }
       // Do nothing if no pagination
       if (!currPages) {
         return;
       }
-      newPages = Math.ceil(total / this.getTodosPerPage());
-      // Includes query strings
-      url = location.href;
-      // If new total of pages is different than we have now
+
+      const newPages = Math.ceil(total / this.getTodosPerPage());
+      let url = location.href;
+
       if (newPages !== currPages) {
         // Redirect to previous page if there's one available
         if (currPages > 1 && currPage === currPages) {
-          pageParams = {
+          const pageParams = {
             page: currPages - 1
           };
           url = gl.utils.mergeUrlParams(pageParams, url);
         }
         return Turbolinks.visit(url);
       }
-    };
+    }
 
-    Todos.prototype.goToTodoUrl = function(e) {
-      var todoLink;
-      todoLink = $(this).data('url');
+    goToTodoUrl(e) {
+      const todoLink = $(this).data('url');
       if (!todoLink) {
         return;
       }
@@ -167,10 +154,8 @@
       } else {
         return Turbolinks.visit(todoLink);
       }
-    };
+    }
+  }
 
-    return Todos;
-
-  })();
-
-}).call(this);
+  global.Todos = Todos;
+})(window.gl || (window.gl = {}));
