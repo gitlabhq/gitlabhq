@@ -54,22 +54,18 @@ repo = Repository.new
 
 params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
 
-print "Indexing commits..."
+LOGGER.info("Indexing commits started")
 
 timings = Benchmark.measure do
   repo.index_commits(params)
 end
 
-puts "Done"
-
 LOGGER.info("Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
 
-print "Indexing blobs..."
+LOGGER.info("Indexing blobs started")
 
 timings = Benchmark.measure do
   repo.index_blobs(params)
 end
-
-puts "Done"
 
 LOGGER.info("Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
