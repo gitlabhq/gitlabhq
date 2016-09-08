@@ -154,8 +154,13 @@ if Gitlab::Metrics.enabled?
 
     config.instrument_instance_methods(Search::GlobalService)
     config.instrument_instance_methods(Search::ProjectService)
+
     config.instrument_instance_methods(Gitlab::Elastic::SearchResults)
     config.instrument_instance_methods(Gitlab::Elastic::ProjectSearchResults)
+    config.instrument_instance_methods(Gitlab::Elastic::Indexer)
+    config.instrument_instance_methods(Gitlab::Elastic::SnippetSearchResults)
+    config.instrument_methods(Gitlab::Elastic::Helper)
+
     config.instrument_instance_methods(Elastic::ApplicationSearch)
     config.instrument_instance_methods(Elastic::IssuesSearch)
     config.instrument_instance_methods(Elastic::MergeRequestsSearch)
