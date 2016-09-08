@@ -2,7 +2,7 @@
   .panel-heading
     Users with access to
     %strong #{@project.name}
-    %span.badge= @members_size
+    %span.badge= @project_members.total_count
   %ul.content-list
     - members.each do |member|
       = render 'shared/members/member', member: member

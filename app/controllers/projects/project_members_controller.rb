@@ -7,15 +7,15 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   def index
     @groups = @project.project_group_links
 
-    project_members = @project.project_members
-    project_members = project_members.non_invite unless can?(current_user, :admin_project, @project)
+    @project_members = @project.project_members
+    @project_members = @project_members.non_invite unless can?(current_user, :admin_project, @project)
 
-    members_ids = project_members.pluck(:id)
+    if params[:search].present?
+      users = @project.users.search(params[:search]).to_a
+      @project_members = @project_members.where(user_id: users)
+    end
 
-    @members = Member.where(id: members_ids.flatten)
-    @members_size = @members.size
-
-    @members = @members.page(params[:page])
+    @project_members = @project_members.page(params[:page])
 
     @requesters = @project.requesters if can?(current_user, :admin_project, @project)
 
