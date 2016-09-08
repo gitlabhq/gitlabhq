@@ -119,30 +119,11 @@
       parser.href = url;
       return parser;
     };
-
     gl.utils.cleanupBeforeFetch = function() {
       // Unbind scroll events
       $(document).off('scroll');
       // Close any open tooltips
       $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
-    };
-
-    return jQuery.timefor = function(time, suffix, expiredLabel) {
-      var suffixFromNow, timefor;
-      if (!time) {
-        return '';
-      }
-      suffix || (suffix = 'remaining');
-      expiredLabel || (expiredLabel = 'Past due');
-      jQuery.timeago.settings.allowFuture = true;
-      suffixFromNow = jQuery.timeago.settings.strings.suffixFromNow;
-      jQuery.timeago.settings.strings.suffixFromNow = suffix;
-      timefor = $.timeago(time);
-      if (timefor.indexOf('ago') > -1) {
-        timefor = expiredLabel;
-      }
-      jQuery.timeago.settings.strings.suffixFromNow = suffixFromNow;
-      return timefor;
     };
   })(window);
 

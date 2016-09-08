@@ -13,7 +13,6 @@
 /*= require jquery-ui/sortable */
 /*= require jquery_ujs */
 /*= require jquery.endless-scroll */
-/*= require jquery.timeago */
 /*= require jquery.highlight */
 /*= require jquery.waitforimages */
 /*= require jquery.atwho */
@@ -238,8 +237,5 @@
 
     // bind sidebar events
     new gl.Sidebar();
-
-    // Custom time ago
-    gl.utils.shortTimeAgo($('.js-short-timeago'));
   });
 }).call(this);

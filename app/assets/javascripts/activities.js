@@ -13,12 +13,12 @@
     }
 
     Activities.prototype.updateTooltips = function() {
-      return gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+      gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
     };
 
     Activities.prototype.reloadActivities = function() {
       $(".content_list").html('');
-      return Pager.init(20, true);
+      Pager.init(20, true, false, this.updateTooltips);
     };
 
     Activities.prototype.toggleFilter = function(sender) {
