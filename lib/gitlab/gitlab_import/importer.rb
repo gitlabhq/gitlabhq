@@ -41,7 +41,7 @@ module Gitlab
               title: issue["title"],
               state: issue["state"],
               updated_at: issue["updated_at"],
-              author_id: gl_user_id(project, issue["author"]["id"])
+              author_id: gitlab_user_id(project, issue["author"]["id"])
             )
           end
         end
@@ -51,7 +51,7 @@ module Gitlab
 
       private
 
-      def gl_user_id(project, gitlab_id)
+      def gitlab_user_id(project, gitlab_id)
         user = User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'gitlab'", gitlab_id.to_s)
         (user && user.id) || project.creator_id
       end
