@@ -73,6 +73,7 @@ v 8.12.0 (unreleased)
   - Fix badge count alignment (ClemMakesApps)
   - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
+  - Change update interval of contacted_at
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
   - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
