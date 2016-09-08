@@ -18,6 +18,15 @@ shared_examples 'issuable record that supports slash commands in its description
     login_with(master)
   end
 
+  def write_note(text)
+    Sidekiq::Testing.fake! do
+      page.within('.js-main-target-form') do
+        fill_in 'note[note]', with: text
+        click_button 'Comment'
+      end
+    end
+  end
+
   describe "new #{issuable_type}" do
     context 'with commands in the description' do
       it "creates the #{issuable_type} and interpret commands accordingly" do
@@ -44,10 +53,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context 'with a note containing commands' do
       it 'creates a note without the commands and interpret the commands accordingly' do
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "Awesome!\n/assign @bob\n/label ~bug\n/milestone %\"ASAP\""
-          click_button 'Comment'
-        end
+        write_note("Awesome!\n/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
 
         expect(page).to have_content 'Awesome!'
         expect(page).not_to have_content '/assign @bob'
@@ -66,10 +72,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context 'with a note containing only commands' do
       it 'does not create a note but interpret the commands accordingly' do
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/assign @bob\n/label ~bug\n/milestone %\"ASAP\""
-          click_button 'Comment'
-        end
+        write_note("/assign @bob\n/label ~bug\n/milestone %\"ASAP\"")
 
         expect(page).not_to have_content '/assign @bob'
         expect(page).not_to have_content '/label ~bug'
@@ -92,10 +95,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user can close #{issuable_type}" do
         it "closes the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/close"
-            click_button 'Comment'
-          end
+          write_note("/close")
 
           expect(page).not_to have_content '/close'
           expect(page).to have_content 'Your commands have been executed!'
@@ -112,10 +112,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         it "does not close the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/close"
-            click_button 'Comment'
-          end
+          write_note("/close")
 
           expect(page).not_to have_content '/close'
           expect(page).not_to have_content 'Your commands have been executed!'
@@ -133,10 +130,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
       context "when current user can reopen #{issuable_type}" do
         it "reopens the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/reopen"
-            click_button 'Comment'
-          end
+          write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
           expect(page).to have_content 'Your commands have been executed!'
@@ -153,10 +147,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         it "does not reopen the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/reopen"
-            click_button 'Comment'
-          end
+          write_note("/reopen")
 
           expect(page).not_to have_content '/reopen'
           expect(page).not_to have_content 'Your commands have been executed!'
@@ -169,10 +160,7 @@ shared_examples 'issuable record that supports slash commands in its description
     context "with a note changing the #{issuable_type}'s title" do
       context "when current user can change title of #{issuable_type}" do
         it "reopens the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/title Awesome new title"
-            click_button 'Comment'
-          end
+          write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
           expect(page).to have_content 'Your commands have been executed!'
@@ -189,10 +177,7 @@ shared_examples 'issuable record that supports slash commands in its description
         end
 
         it "does not reopen the #{issuable_type}" do
-          page.within('.js-main-target-form') do
-            fill_in 'note[note]', with: "/title Awesome new title"
-            click_button 'Comment'
-          end
+          write_note("/title Awesome new title")
 
           expect(page).not_to have_content '/title'
           expect(page).not_to have_content 'Your commands have been executed!'
@@ -204,10 +189,7 @@ shared_examples 'issuable record that supports slash commands in its description
 
     context "with a note marking the #{issuable_type} as todo" do
       it "creates a new todo for the #{issuable_type}" do
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/todo"
-          click_button 'Comment'
-        end
+        write_note("/todo")
 
         expect(page).not_to have_content '/todo'
         expect(page).to have_content 'Your commands have been executed!'
@@ -238,10 +220,7 @@ shared_examples 'issuable record that supports slash commands in its description
         expect(todo.author).to eq master
         expect(todo.user).to eq master
 
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/done"
-          click_button 'Comment'
-        end
+        write_note("/done")
 
         expect(page).not_to have_content '/done'
         expect(page).to have_content 'Your commands have been executed!'
@@ -254,10 +233,7 @@ shared_examples 'issuable record that supports slash commands in its description
       it "creates a new todo for the #{issuable_type}" do
         expect(issuable.subscribed?(master)).to be_falsy
 
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/subscribe"
-          click_button 'Comment'
-        end
+        write_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
         expect(page).to have_content 'Your commands have been executed!'
@@ -274,10 +250,7 @@ shared_examples 'issuable record that supports slash commands in its description
       it "creates a new todo for the #{issuable_type}" do
         expect(issuable.subscribed?(master)).to be_truthy
 
-        page.within('.js-main-target-form') do
-          fill_in 'note[note]', with: "/unsubscribe"
-          click_button 'Comment'
-        end
+        write_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
         expect(page).to have_content 'Your commands have been executed!'
