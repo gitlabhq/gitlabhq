@@ -1,4 +1,5 @@
-(global => {
+((global) => {
+
   class Profile {
     constructor(opts = {}) {
       this.onSubmitForm = this.onSubmitForm.bind(this);

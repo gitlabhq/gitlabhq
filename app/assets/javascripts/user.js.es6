@@ -1,4 +1,4 @@
-(global => {
+((global) => {
   global.User = class {
     constructor(opts) {
       this.opts = opts;

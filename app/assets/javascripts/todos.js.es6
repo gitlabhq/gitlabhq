@@ -1,4 +1,4 @@
-(global => {
+((global) => {
 
   class Todos {
     constructor(opts = {}) {

@@ -1,4 +1,4 @@
-(global => {
+((global) => {
 
   const KEYCODE = {
     ESCAPE: 27,

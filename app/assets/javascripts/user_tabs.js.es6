@@ -57,7 +57,7 @@ content on the Users#show page.
      </div>
    </div>
 */
-(global => {
+((global) => {
   class UserTabs {
     constructor (opts) {
       this.loaded = {};
