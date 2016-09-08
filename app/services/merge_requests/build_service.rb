@@ -88,7 +88,7 @@ module MergeRequests
         closes_issue = "Closes ##{iid}"
 
         if merge_request.description.present?
-          merge_request.description += closes_issue.prepend("\n")
+          merge_request.description += closes_issue.prepend("\n\n")
         else
           merge_request.description = closes_issue
         end

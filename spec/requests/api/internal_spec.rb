@@ -44,8 +44,8 @@ describe API::API, api: true  do
            secret_token: secret_token,
            key_id: 12345
 
-      expect(response).to have_http_status(404)
-      expect(json_response['message']).to eq('404 Not found')
+      expect(json_response['success']).to be_falsey
+      expect(json_response['message']).to eq('Could not find the given key')
     end
 
     it 'returns an error message when the key is a deploy key' do

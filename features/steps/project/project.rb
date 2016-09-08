@@ -171,11 +171,11 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should not see the issues settings' do
-    expect(find('.issue-feature')).not_to be_visible
+    expect(find('.issues-feature')).not_to be_visible
   end
 
   step 'I should see the issues settings' do
-    expect(find('.issue-feature')).to be_visible
+    expect(find('.issues-feature')).to be_visible
   end
 
   step 'I create bare repo' do

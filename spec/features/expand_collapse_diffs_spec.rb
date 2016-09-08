@@ -211,6 +211,13 @@ feature 'Expand and collapse diffs', js: true, feature: true do
   context 'expanding all diffs' do
     before do
       click_link('Expand all')
+
+      # Wait for elements to appear to ensure full page reload
+      expect(page).to have_content('This diff was suppressed by a .gitattributes entry')
+      expect(page).to have_content('This diff could not be displayed because it is too large.')
+      expect(page).to have_content('too_large_image.jpg')
+      find('.note-textarea')
+
       wait_for_ajax
       execute_script('window.ajaxUris = []; $(document).ajaxSend(function(event, xhr, settings) { ajaxUris.push(settings.url) });')
     end

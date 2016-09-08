@@ -4,21 +4,21 @@
       %thead
         %tr
           %th Name
-          %th Last Update
-          %th.hidden-xs.last-commit
-            Last Commit
-            .last-commit-content.hidden-sm
+          %th.hidden-xs
+            .pull-left Last Commit
+            .last-commit.hidden-sm.pull-left
+              &nbsp;
               %i.fa.fa-angle-right
               &nbsp;
               %small.light
                 = link_to @commit.short_id, namespace_project_commit_path(@project.namespace, @project, @commit), class: "monospace"
                 &ndash;
                 = time_ago_with_tooltip(@commit.committed_date)
-                &ndash;
                 = @commit.full_title
+            %small.commit-history-link-spacer &#124;
             = lock_file_link(html_options: {class: 'pull-right prepend-left-10 path-lock'})
-            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'pull-right'
-
+            = link_to 'History', namespace_project_commits_path(@project.namespace, @project, @id), class: 'commit-history-link'
+          %th.text-right Last Update
       - if @path.present?
         %tr.tree-item
           %td.tree-item-file-name

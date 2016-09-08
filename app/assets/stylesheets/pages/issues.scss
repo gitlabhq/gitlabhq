@@ -9,7 +9,7 @@
 
     .issue-check {
       float: left;
-      padding-right: 8px;
+      padding-right: 16px;
       margin-bottom: 10px;
       min-width: 15px;
 
@@ -72,12 +72,12 @@ form.edit-issue {
   }
 
   &.closed {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 
   &.merged {
-    background: #f9f9f9;
+    background: $gray-light;
     border-color: #e5e5e5;
   }
 }

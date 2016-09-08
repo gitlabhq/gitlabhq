@@ -1,4 +1,9 @@
 module ImportHelper
+  def import_project_target(owner, name)
+    namespace = current_user.can_create_group? ? owner : current_user.namespace_path
+    "#{namespace}/#{name}"
+  end
+
   def github_project_link(path_with_namespace)
     link_to path_with_namespace, github_project_url(path_with_namespace), target: '_blank'
   end
