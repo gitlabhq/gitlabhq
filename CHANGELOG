@@ -127,6 +127,7 @@ v 8.12.0 (unreleased)
   - Allow bulk update merge requests from merge requests index page
   - Add notification_settings API calls !5632 (mahcsig)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
+  - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
 
 v 8.11.6 (unreleased)
   - Fix an error where we were unable to create a CommitStatus for running state
