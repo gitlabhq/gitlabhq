@@ -182,7 +182,7 @@ describe ProjectsController do
       expect(response).to redirect_to(dashboard_projects_path)
     end
 
-    context "when project is forked" do
+    context "when the project is forked" do
       let(:project)      { create(:project) }
       let(:fork_project) { create(:project, forked_from_project: project) }
       let(:merge_request) do

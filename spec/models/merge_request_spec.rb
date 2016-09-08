@@ -1109,7 +1109,7 @@ describe MergeRequest, models: true do
       end
     end
 
-    context 'when merge request is opened' do
+    context 'when the merge request is opened' do
       it 'returns false' do
         expect(subject.can_reopen?).to be_falsey
       end
