@@ -29,7 +29,7 @@
       new BlobGitignoreSelectors({
         editor: this.editor
       });
-      new BlobCiYamlSelectors({
+      new gl.BlobCiYamlSelectors({
         editor: this.editor
       });
     }
