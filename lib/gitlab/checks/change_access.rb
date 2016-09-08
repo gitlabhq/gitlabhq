@@ -163,9 +163,7 @@ module Gitlab
 
         return validations unless push_rule
 
-        if push_rule.file_name_regex.present?
-          validations << file_name_validation(push_rule.file_name_regex)
-        end
+        validations << file_name_validation(push_rule)
 
         if push_rule.max_file_size > 0
           validations << file_size_validation(commit, push_rule.max_file_size)
@@ -196,12 +194,12 @@ module Gitlab
         end
       end
 
-      def file_name_validation(file_name_regex)
-        regexp = Regexp.new(file_name_regex)
-
+      def file_name_validation(push_rule)
         lambda do |diff|
-          if (diff.renamed_file || diff.new_file) && diff.new_path =~ regexp
-            return "File name #{diff.new_path.inspect} is prohibited by the pattern '#{file_name_regex}'"
+          if (diff.renamed_file || diff.new_file) && blacklisted_regex = push_rule.filename_blacklisted?(diff.new_path)
+            return nil unless blacklisted_regex.present?
+
+            "File name #{diff.new_path} was blacklisted by the pattern #{blacklisted_regex}."
           end
         end
       end

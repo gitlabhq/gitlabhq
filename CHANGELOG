@@ -7,6 +7,7 @@ v 8.12.0 (unreleased)
   - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
   - Prune events older than 12 months. (ritave)
+  - Prevent secrets to be pushed to the repository
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Fix issues/merge-request templates dropdown for forked projects
   - Filter tags by name !6121
