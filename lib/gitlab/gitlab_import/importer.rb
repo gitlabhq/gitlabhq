@@ -41,7 +41,8 @@ module Gitlab
               title: issue["title"],
               state: issue["state"],
               updated_at: issue["updated_at"],
-              author_id: gitlab_user_id(project, issue["author"]["id"])
+              author_id: gitlab_user_id(project, issue["author"]["id"]),
+              confidential: issue["confidential"]
             )
           end
         end
