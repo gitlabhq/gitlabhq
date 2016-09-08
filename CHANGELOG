@@ -46,6 +46,8 @@ v 8.12.0 (unreleased)
   - Use 'git update-ref' for safer web commits !6130
   - Sort pipelines requested through the API
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Change pipeline duration to be jobs running time instead of simple wall time from start to end !6084
+  - Show queued time when showing a pipeline !6084
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
   - Fix groups sort dropdown alignment (ClemMakesApps)
