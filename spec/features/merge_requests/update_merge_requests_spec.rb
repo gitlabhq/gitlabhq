@@ -13,29 +13,39 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   end
 
   context 'status', js: true do
-    it 'sets to closed' do
-      visit namespace_project_merge_requests_path(project.namespace, project)
-
-      change_status('Closed')
-      expect(page).to have_selector('.merge-request', count: 0)
-    end
-
-    it 'sets to open' do
-      merge_request.close
-      visit namespace_project_merge_requests_path(project.namespace, project, state: 'closed')
-
-      change_status('Open')
-      expect(page).to have_selector('.merge-request', count: 0)
-    end
-  end
-
-  context 'assignee', js: true do
-    context 'set assignee' do
+    describe 'close merge request' do
       before do
         visit namespace_project_merge_requests_path(project.namespace, project)
       end
 
-      it "should update merge request with assignee" do
+      it 'closes merge request' do
+        change_status('Closed')
+
+        expect(page).to have_selector('.merge-request', count: 0)
+      end
+    end
+
+    describe 'reopen merge request' do
+      before do
+        merge_request.close
+        visit namespace_project_merge_requests_path(project.namespace, project, state: 'closed')
+      end
+
+      it 'reopens merge request' do
+        change_status('Open')
+
+        expect(page).to have_selector('.merge-request', count: 0)
+      end
+    end
+  end
+
+  context 'assignee', js: true do
+    describe 'set assignee' do
+      before do
+        visit namespace_project_merge_requests_path(project.namespace, project)
+      end
+
+      it "updates merge request with assignee" do
         change_assignee(user.name)
 
         page.within('.merge-request .controls') do
@@ -44,15 +54,16 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       end
     end
 
-    context 'remove assignee' do
+    describe 'remove assignee' do
       before do
         merge_request.assignee = user
         merge_request.save
         visit namespace_project_merge_requests_path(project.namespace, project)
       end
 
-      it "should remove assignee from the merge request" do
+      it "removes assignee from the merge request" do
         change_assignee('Unassigned')
+
         expect(find('.merge-request .controls')).not_to have_css('.author_link')
       end
     end
@@ -61,26 +72,28 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
   context 'milestone', js: true do
     let(:milestone)  { create(:milestone, project: project) }
 
-    context 'set milestone' do
+    describe 'set milestone' do
       before do
         visit namespace_project_merge_requests_path(project.namespace, project)
       end
 
-      it "should update merge request with milestone" do
+      it "updates merge request with milestone" do
         change_milestone(milestone.title)
+
         expect(find('.merge-request')).to have_content milestone.title
       end
     end
 
-    context 'unset milestone' do
+    describe 'unset milestone' do
       before do
         merge_request.milestone = milestone
         merge_request.save
         visit namespace_project_merge_requests_path(project.namespace, project)
       end
 
-      it "should remove milestone from the merge request" do
+      it "removes milestone from the merge request" do
         change_milestone("No Milestone")
+
         expect(find('.merge-request')).not_to have_content milestone.title
       end
     end

@@ -24,13 +24,13 @@ module IssuableActions
   private
 
   def authorize_destroy_issuable!
-    unless current_user.can?(:"destroy_#{issuable.to_ability_name}", issuable)
+    unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)
       return access_denied!
     end
   end
 
   def authorize_admin_issuable!
-    unless current_user.can?(:"admin_#{resource_name}", @project)
+    unless can?(current_user, :"admin_#{resource_name}", @project)
       return access_denied!
     end
   end
