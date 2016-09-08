@@ -144,12 +144,9 @@
   .cover-title {
     color: $gl-header-color;
     margin: 0;
-    font-size: 24px;
     font-weight: normal;
     margin-bottom: 10px;
-    color: #4c4e54;
     font-size: 23px;
-    line-height: 1.1;
 
     h1 {
       color: $gl-gray-dark;
@@ -212,6 +209,9 @@
         float: none;
       }
     }
+  }
+  &.user-cover-block {
+    padding: 24px 0 0;
   }
 
   .group-info {
