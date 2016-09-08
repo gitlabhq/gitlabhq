@@ -1,12 +1,15 @@
 //= require vue
+//= require ./merge_conflicts/components/diff_file_editor
+
+const INTERACTIVE_RESOLVE_MODE = 'interactive';
+const EDIT_RESOLVE_MODE = 'edit';
 
 class MergeConflictResolver {
 
   constructor() {
-    this.dataProvider = new MergeConflictDataProvider()
-    this.initVue()
+    this.dataProvider = new MergeConflictDataProvider();
+    this.initVue();
   }
-
 
   initVue() {
     const that = this;
@@ -17,15 +20,28 @@ class MergeConflictResolver {
       created  : this.fetchData(),
       computed : this.setComputedProperties(),
       methods  : {
-        handleSelected(sectionId, selection) {
-          that.dataProvider.handleSelected(sectionId, selection);
+        handleSelected(file, sectionId, selection) {
+          that.dataProvider.handleSelected(file, sectionId, selection);
         },
         handleViewTypeChange(newType) {
           that.dataProvider.updateViewType(newType);
         },
         commit() {
           that.commit();
-        }
+        },
+        onClickResolveModeButton(file, mode) {
+          that.toggleResolveMode(file, mode);
+        },
+        acceptDiscardConfirmation(file) {
+          that.dataProvider.setPromptConfirmationState(file, false);
+          that.dataProvider.setFileResolveMode(file, INTERACTIVE_RESOLVE_MODE);
+        },
+        cancelDiscardConfirmation(file) {
+          that.dataProvider.setPromptConfirmationState(file, false);
+        },
+      },
+      components: {
+        'diff-file-editor': window.gl.diffFileEditor
       }
     })
   }
@@ -36,7 +52,6 @@ class MergeConflictResolver {
 
     return {
       conflictsCount() { return dp.getConflictsCount() },
-      resolvedCount() { return dp.getResolvedCount() },
       readyToCommit() { return dp.isReadyToCommit() },
       commitButtonText() { return dp.getCommitButtonText() }
     }
@@ -69,14 +84,29 @@ class MergeConflictResolver {
   commit() {
     this.vue.isSubmitting = true;
 
-    $.post($('#conflicts').data('resolveConflictsPath'), this.dataProvider.getCommitData())
-      .done((data) => {
-        window.location.href = data.redirect_to;
-      })
-      .error(() => {
-        this.vue.isSubmitting = false;
-        new Flash('Something went wrong!');
-      });
+    $.ajax({
+      url: $('#conflicts').data('resolveConflictsPath'),
+      data: JSON.stringify(this.dataProvider.getCommitData()),
+      contentType: "application/json",
+      dataType: 'json',
+      method: 'POST'
+    })
+    .done((data) => {
+      window.location.href = data.redirect_to;
+    })
+    .error(() => {
+      this.vue.isSubmitting = false;
+      new Flash('Something went wrong!');
+    });
   }
 
+
+  toggleResolveMode(file, mode) {
+    if (mode === INTERACTIVE_RESOLVE_MODE && file.resolveEditChanged) {
+      this.dataProvider.setPromptConfirmationState(file, true);
+      return;
+    }
+
+    this.dataProvider.setFileResolveMode(file, mode);
+  }
 }

@@ -2,7 +2,9 @@ const HEAD_HEADER_TEXT    = 'HEAD//our changes';
 const ORIGIN_HEADER_TEXT  = 'origin//their changes';
 const HEAD_BUTTON_TITLE   = 'Use ours';
 const ORIGIN_BUTTON_TITLE = 'Use theirs';
-
+const INTERACTIVE_RESOLVE_MODE = 'interactive';
+const EDIT_RESOLVE_MODE = 'edit';
+const DEFAULT_RESOLVE_MODE = INTERACTIVE_RESOLVE_MODE;
 
 class MergeConflictDataProvider {
 
@@ -18,8 +20,7 @@ class MergeConflictDataProvider {
       diffViewType   : diffViewType,
       fixedLayout    : fixedLayout,
       isSubmitting   : false,
-      conflictsData  : {},
-      resolutionData : {}
+      conflictsData  : {}
     }
   }
 
@@ -35,9 +36,9 @@ class MergeConflictDataProvider {
       data.shortCommitSha = data.commit_sha.slice(0, 7);
       data.commitMessage  = data.commit_message;
 
+      this.decorateFiles(data);
       this.setParallelLines(data);
       this.setInlineLines(data);
-      this.updateResolutionsData(data);
     }
 
     vueInstance.conflictsData = data;
@@ -47,16 +48,12 @@ class MergeConflictDataProvider {
     vueInstance.conflictsData.conflictsText = conflictsText;
   }
 
-
-  updateResolutionsData(data) {
-    const vi = this.vueInstance;
-
-    data.files.forEach( (file) => {
-      file.sections.forEach( (section) => {
-        if (section.conflict) {
-          vi.$set(`resolutionData['${section.id}']`, false);
-        }
-      });
+  decorateFiles(data) {
+    data.files.forEach((file) => {
+      file.content = '';
+      file.resolutionData = {};
+      file.promptDiscardConfirmation = false;
+      file.resolveMode = DEFAULT_RESOLVE_MODE;
     });
   }
 
@@ -165,11 +162,14 @@ class MergeConflictDataProvider {
   }
 
 
-  handleSelected(sectionId, selection) {
+  handleSelected(file, sectionId, selection) {
     const vi = this.vueInstance;
+    let files = vi.conflictsData.files;
 
-    vi.resolutionData[sectionId] = selection;
-    vi.conflictsData.files.forEach( (file) => {
+    vi.$set(`conflictsData.files[${files.indexOf(file)}].resolutionData['${sectionId}']`, selection);
+
+
+    files.forEach( (file) => {
       file.inlineLines.forEach( (line) => {
         if (line.id === sectionId && (line.hasConflict || line.isHeader)) {
           this.markLine(line, selection);
@@ -208,6 +208,48 @@ class MergeConflictDataProvider {
       .toggleClass('container-limited', !vi.isParallel && vi.fixedLayout);
   }
 
+  setFileResolveMode(file, mode) {
+    const vi = this.vueInstance;
+
+    // Restore Interactive mode when switching to Edit mode
+    if (mode === EDIT_RESOLVE_MODE) {
+      file.resolutionData = {};
+
+      this.restoreFileLinesState(file);
+    }
+
+    file.resolveMode = mode;
+  }
+
+
+  restoreFileLinesState(file) {
+    file.inlineLines.forEach((line) => {
+      if (line.hasConflict || line.isHeader) {
+        line.isSelected = false;
+        line.isUnselected = false;
+      }
+    });
+
+    file.parallelLines.forEach((lines) => {
+      const left         = lines[0];
+      const right        = lines[1];
+      const isLeftMatch  = left.hasConflict || left.isHeader;
+      const isRightMatch = right.hasConflict || right.isHeader;
+
+      if (isLeftMatch || isRightMatch) {
+        left.isSelected = false;
+        left.isUnselected = false;
+        right.isSelected = false;
+        right.isUnselected = false;
+      }
+    });
+  }
+
+
+  setPromptConfirmationState(file, state) {
+    file.promptDiscardConfirmation = state;
+  }
+
 
   markLine(line, selection) {
     if (selection === 'head' && line.isHead) {
@@ -226,31 +268,54 @@ class MergeConflictDataProvider {
 
 
   getConflictsCount() {
-    return Object.keys(this.vueInstance.resolutionData).length;
-  }
+    const files = this.vueInstance.conflictsData.files;
+    let count = 0;
 
-
-  getResolvedCount() {
-    let  count = 0;
-    const data = this.vueInstance.resolutionData;
-
-    for (const id in data) {
-      const resolution = data[id];
-      if (resolution) {
-        count++;
-      }
-    }
+    files.forEach((file) => {
+      file.sections.forEach((section) => {
+        if (section.conflict) {
+          count++;
+        }
+      });
+    });
 
     return count;
   }
 
 
   isReadyToCommit() {
-    const { conflictsData, isSubmitting } = this.vueInstance
-    const allResolved = this.getConflictsCount() === this.getResolvedCount();
-    const hasCommitMessage = $.trim(conflictsData.commitMessage).length;
+    const vi = this.vueInstance;
+    const files = this.vueInstance.conflictsData.files;
+    const hasCommitMessage = $.trim(this.vueInstance.conflictsData.commitMessage).length;
+    let unresolved = 0;
 
-    return !isSubmitting && hasCommitMessage && allResolved;
+    for (let i = 0, l = files.length; i < l; i++) {
+      let file = files[i];
+
+      if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
+        let numberConflicts = 0;
+        let resolvedConflicts = Object.keys(file.resolutionData).length
+
+        for (let j = 0, k = file.sections.length; j < k; j++) {
+          if (file.sections[j].conflict) {
+            numberConflicts++;
+          }
+        }
+
+        if (resolvedConflicts !== numberConflicts) {
+          unresolved++;
+        }
+      } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
+        // Unlikely to happen since switching to Edit mode saves content automatically.
+        // Checking anyway in case the save strategy changes in the future
+        if (!file.content) {
+          unresolved++;
+          continue;
+        }
+      }
+    }
+
+    return !vi.isSubmitting && hasCommitMessage && !unresolved;
   }
 
 
@@ -332,10 +397,33 @@ class MergeConflictDataProvider {
 
 
   getCommitData() {
-    return {
-      commit_message: this.vueInstance.conflictsData.commitMessage,
-      sections: this.vueInstance.resolutionData
-    }
+    let conflictsData = this.vueInstance.conflictsData;
+    let commitData = {};
+
+    commitData = {
+      commitMessage: conflictsData.commitMessage,
+      files: []
+    };
+
+    conflictsData.files.forEach((file) => {
+      let addFile;
+
+      addFile = {
+        old_path: file.old_path,
+        new_path: file.new_path
+      };
+
+      // Submit only one data for type of editing
+      if (file.resolveMode === INTERACTIVE_RESOLVE_MODE) {
+        addFile.sections = file.resolutionData;
+      } else if (file.resolveMode === EDIT_RESOLVE_MODE) {
+        addFile.content = file.content;
+      }
+
+      commitData.files.push(addFile);
+    });
+
+    return commitData;
   }
 
 
@@ -343,5 +431,4 @@ class MergeConflictDataProvider {
     const { old_path, new_path } = file;
     return old_path === new_path ? new_path : `${old_path} → ${new_path}`;
   }
-
 }

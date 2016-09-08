@@ -1,0 +1,6 @@
+%template{ id: "diff-file-editor" }
+  %div
+    .editor-wrap{ ":class" => "classObject" }
+      %p.loading-text Loading...
+      .editor
+        %textarea{ "@input" => "onInput", cols: '80', rows: '20' }

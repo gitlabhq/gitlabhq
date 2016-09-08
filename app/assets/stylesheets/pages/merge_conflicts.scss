@@ -235,4 +235,30 @@ $colors: (
   .btn-success .fa-spinner {
     color: #fff;
   }
+
+  .editor-wrap {
+    &.is-loading {
+      .editor {
+        display: none;
+      }
+
+      .loading-text {
+        display: block;
+      }
+    }
+
+    &.saved {
+      .editor {
+        border-top: solid 1px green;
+      }
+    }
+    
+    .editor {
+      border-top: solid 1px yellow;
+    }
+
+    .loading-text {
+      display: none;
+    }
+  }
 }
