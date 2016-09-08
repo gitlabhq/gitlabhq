@@ -2,7 +2,7 @@
   - if can?(current_user, :update_merge_request, @merge_request)
     - if @merge_request.open?
       = link_to 'Close merge request', merge_request_path(@merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-nr btn-comment btn-close close-mr-link js-note-target-close", title: "Close merge request", data: {original_text: "Close merge request", alternative_text: "Comment & close merge request"}
-    - unless @merge_request.open? || @merge_request.closed_without_fork?
+    - if @merge_request.can_reopen?
       = link_to 'Reopen merge request', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-nr btn-comment btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request", data: {original_text: "Reopen merge request", alternative_text: "Comment & reopen merge request"}
   %comment-and-resolve-btn{ "inline-template" => true, ":discussion-id" => "" }
     %button.btn.btn-nr.btn-default.append-right-10.js-comment-resolve-button{ "v-if" => "showButton", type: "submit", data: { namespace_path: "#{@merge_request.project.namespace.path}", project_path: "#{@merge_request.project.path}" } }

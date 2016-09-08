@@ -1039,24 +1039,24 @@ describe MergeRequest, models: true do
     end
   end
 
-  describe "#closed_without_source_project?" do
+  describe '#closed_without_source_project?' do
     let(:project)      { create(:project) }
     let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
     let(:destroy_project) { Projects::DestroyService.new(fork_project, user, {}) }
 
-    context "when the merge request is closed" do
+    context 'when the merge request is closed' do
       let(:closed_merge_request) do
         create(:closed_merge_request,
           source_project: fork_project,
           target_project: project)
       end
 
-      it "returns false if the source project exist" do
+      it 'returns false if the source project exists' do
         expect(closed_merge_request.closed_without_source_project?).to be_falsey
       end
 
-      it "returns true if the source project does not exist" do
+      it 'returns true if the source project does not exist' do
         destroy_project.async_execute
         closed_merge_request.reload
 
@@ -1064,29 +1064,55 @@ describe MergeRequest, models: true do
       end
     end
 
-    context "when the merge request is open" do
-      let(:open_merge_request) do
-        create(:merge_request,
-          source_project: fork_project,
-          target_project: project)
-      end
-
-      it "returns false" do
-        expect(open_merge_request.closed_without_source_project?).to be_falsey
+    context 'when the merge request is open' do
+      it 'returns false' do
+        expect(subject.closed_without_source_project?).to be_falsey
       end
     end
   end
 
   describe '#can_reopen?' do
-    it "returns true" do
-      subject.close
-      binding.pry
+    context 'when the merge request is closed' do
+      it 'returns true' do
+        subject.close
 
-      expect(subject.can_reopen?).to be_truthy
+        expect(subject.can_reopen?).to be_truthy
+      end
+
+      context 'forked project' do
+        let(:project)      { create(:project) }
+        let(:fork_project) { create(:project, forked_from_project: project) }
+        let(:user)         { create(:user) }
+        let(:merge_request) do
+          create(:closed_merge_request,
+            source_project: fork_project,
+            target_project: project)
+        end
+
+        it 'returns false if unforked' do
+          Projects::UnlinkForkService.new(fork_project, user).execute
+
+          expect(merge_request.reload.can_reopen?).to be_falsey
+        end
+
+        it 'returns false if the source project is deleted' do
+          Projects::DestroyService.new(fork_project, user, {}).async_execute
+
+          expect(merge_request.reload.can_reopen?).to be_falsey
+        end
+
+        it 'returnes false if the merge request is merged' do
+          merge_request.update_attributes(state: 'merged')
+
+          expect(merge_request.reload.can_reopen?).to be_falsey
+        end
+      end
     end
 
-    it "returns false" do
-      expect(subject.can_reopen?).to be_falsey
+    context 'when merge request is opened' do
+      it 'returns false' do
+        expect(subject.can_reopen?).to be_falsey
+      end
     end
   end
 end
