@@ -279,7 +279,8 @@
     Dispatcher.prototype.initSearch = function() {
       // Only when search form is present
       if ($('.search').length) {
-        return new SearchAutocomplete();
+        debugger;
+        return new gl.SearchAutocomplete();
       }
     };
 
