@@ -21,8 +21,8 @@
           %th
 
       - if admin
-        = render partial: "shared/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, admin: true }
+        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, admin: true }
       - else
-        = render partial: "shared/builds/build", collection: builds, as: :build, locals: {commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled? }
+        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: {commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled? }
 
   = paginate builds, theme: 'gitlab'
