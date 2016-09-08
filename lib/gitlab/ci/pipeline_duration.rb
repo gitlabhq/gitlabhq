@@ -79,8 +79,7 @@ module Gitlab
     module PipelineDuration
       extend self
 
-      PeriodStruct = Struct.new(:first, :last)
-      class Period < PeriodStruct
+      Period = Struct.new(:first, :last) do
         def duration
           last - first
         end
