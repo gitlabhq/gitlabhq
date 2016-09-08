@@ -113,7 +113,8 @@
 
     .fa {
       font-size: 12px;
-      color: $table-text-gray;
+      color: $gl-text-color;
+      margin-left: 3px;
     }
 
     .commit-id {
