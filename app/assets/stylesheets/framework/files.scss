@@ -63,7 +63,7 @@
     &.image_file {
       background: #eee;
       text-align: center;
-      
+
       img {
         padding: 20px;
         max-width: 80%;
@@ -94,7 +94,6 @@
     &.blame {
       table {
         border: none;
-        box-shadow: none;
         margin: 0;
       }
       tr {
@@ -108,19 +107,10 @@
           border-right: none;
         }
       }
-      img.avatar {
-        border: 0 none;
-        float: none;
-        margin: 0;
-        padding: 0;
-      }
       td.blame-commit {
+        padding: 0 10px;
+        min-width: 400px;
         background: $gray-light;
-        min-width: 350px;
-
-        .commit-author-link {
-          color: #888;
-        }
       }
       td.line-numbers {
         float: none;
@@ -133,12 +123,6 @@
       }
       td.lines {
         padding: 0;
-        code {
-          font-family: $monospace_font;
-        }
-        pre {
-          margin: 0;
-        }
       }
     }
 

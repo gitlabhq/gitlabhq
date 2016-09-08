@@ -84,7 +84,7 @@ update-knapsack:
     - export KNAPSACK_REPORT_PATH=knapsack/rspec_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - export KNAPSACK_GENERATE_REPORT=true
     - cp knapsack/rspec_report.json ${KNAPSACK_REPORT_PATH}
-    - knapsack rspec
+    - knapsack rspec "--color --format documentation"
   artifacts:
     expire_in: 31d
     paths:

@@ -137,4 +137,14 @@ module MergeRequestsHelper
   def merge_request_button_visibility(merge_request, closed)
     return 'hidden' if merge_request.closed? == closed || (merge_request.merged? == closed && !merge_request.closed?) || merge_request.closed_without_fork?
   end
+
+  def merge_request_version_path(project, merge_request, merge_request_diff, start_sha = nil)
+    diffs_namespace_project_merge_request_path(
+      project.namespace, project, merge_request,
+      diff_id: merge_request_diff.id, start_sha: start_sha)
+  end
+
+  def version_index(merge_request_diff)
+    @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
+  end
 end

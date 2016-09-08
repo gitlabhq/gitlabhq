@@ -608,7 +608,7 @@ GEM
       railties (>= 4.2.0, < 5.1)
     rinku (2.0.0)
     rotp (2.1.2)
-    rouge (2.0.5)
+    rouge (2.0.6)
     rqrcode (0.7.0)
       chunky_png
     rqrcode-rails3 (0.1.7)

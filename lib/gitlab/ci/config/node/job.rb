@@ -80,7 +80,19 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts
+                  :artifacts, :commands
+
+          def compose!(deps = nil)
+            super do
+              if type_defined? && !stage_defined?
+                @entries[:stage] = @entries[:type]
+              end
+
+              @entries.delete(:type)
+            end
+
+            inherit!(deps)
+          end
 
           def name
             @metadata[:name]
@@ -90,12 +102,30 @@ module Gitlab
             @config.merge(to_hash.compact)
           end
 
+          def commands
+            (before_script_value.to_a + script_value.to_a).join("\n")
+          end
+
           private
+
+          def inherit!(deps)
+            return unless deps
+
+            self.class.nodes.each_key do |key|
+              global_entry = deps[key]
+              job_entry = @entries[key]
+
+              if global_entry.specified? && !job_entry.specified?
+                @entries[key] = global_entry
+              end
+            end
+          end
 
           def to_hash
             { name: name,
               before_script: before_script,
               script: script,
+              commands: commands,
               image: image,
               services: services,
               stage: stage,
@@ -105,16 +135,6 @@ module Gitlab
               variables: variables_defined? ? variables : nil,
               artifacts: artifacts,
               after_script: after_script }
-          end
-
-          def compose!
-            super
-
-            if type_defined? && !stage_defined?
-              @entries[:stage] = @entries[:type]
-            end
-
-            @entries.delete(:type)
           end
         end
       end

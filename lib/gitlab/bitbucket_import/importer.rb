@@ -21,7 +21,7 @@ module Gitlab
 
       private
 
-      def gl_user_id(project, bitbucket_id)
+      def gitlab_user_id(project, bitbucket_id)
         if bitbucket_id
           user = User.joins(:identities).find_by("identities.extern_uid = ? AND identities.provider = 'bitbucket'", bitbucket_id.to_s)
           (user && user.id) || project.creator_id
@@ -74,7 +74,7 @@ module Gitlab
             description: body,
             title: issue["title"],
             state: %w(resolved invalid duplicate wontfix closed).include?(issue["status"]) ? 'closed' : 'opened',
-            author_id: gl_user_id(project, reporter)
+            author_id: gitlab_user_id(project, reporter)
           )
         end
       rescue ActiveRecord::RecordInvalid => e

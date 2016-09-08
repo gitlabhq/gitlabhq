@@ -76,8 +76,8 @@ export CI_RUNNER_DESCRIPTION="my runner"
 export CI_RUNNER_TAGS="docker, linux"
 export CI_SERVER="yes"
 export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="8.9.0"
-export CI_SERVER_VERSION="70606bf"
+export CI_SERVER_REVISION="70606bf"
+export CI_SERVER_VERSION="8.9.0"
 ```
 
 ### YAML-defined variables

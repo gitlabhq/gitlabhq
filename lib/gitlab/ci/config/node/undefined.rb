@@ -3,13 +3,32 @@ module Gitlab
     class Config
       module Node
         ##
-        # This class represents an unspecified entry node.
+        # This class represents an undefined node.
         #
-        # It decorates original entry adding method that indicates it is
-        # unspecified.
+        # Implements the Null Object pattern.
         #
-        class Undefined < SimpleDelegator
+        class Undefined < Entry
+          def initialize(*)
+            super(nil)
+          end
+
+          def value
+            nil
+          end
+
+          def valid?
+            true
+          end
+
+          def errors
+            []
+          end
+
           def specified?
+            false
+          end
+
+          def relevant?
             false
           end
         end

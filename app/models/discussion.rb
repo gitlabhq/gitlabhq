@@ -1,7 +1,7 @@
 class Discussion
   NUMBER_OF_TRUNCATED_DIFF_LINES = 16
 
-  attr_reader :first_note, :last_note, :notes
+  attr_reader :notes
 
   delegate  :created_at,
             :project,
@@ -36,8 +36,6 @@ class Discussion
   end
 
   def initialize(notes)
-    @first_note = notes.first
-    @last_note = notes.last
     @notes = notes
   end
 
@@ -70,15 +68,23 @@ class Discussion
   end
 
   def resolvable?
-    return @resolvable if defined?(@resolvable)
+    return @resolvable if @resolvable.present?
 
     @resolvable = diff_discussion? && notes.any?(&:resolvable?)
   end
 
   def resolved?
-    return @resolved if defined?(@resolved)
+    return @resolved if @resolved.present?
 
     @resolved = resolvable? && notes.none?(&:to_be_resolved?)
+  end
+
+  def first_note
+    @first_note ||= @notes.first
+  end
+
+  def last_note
+    @last_note ||= @notes.last
   end
 
   def resolved_notes
@@ -100,17 +106,13 @@ class Discussion
   def resolve!(current_user)
     return unless resolvable?
 
-    notes.each do |note|
-      note.resolve!(current_user) if note.resolvable?
-    end
+    update { |notes| notes.resolve!(current_user) }
   end
 
   def unresolve!
     return unless resolvable?
 
-    notes.each do |note|
-      note.unresolve! if note.resolvable?
-    end
+    update { |notes| notes.unresolve! }
   end
 
   def for_target?(target)
@@ -118,7 +120,7 @@ class Discussion
   end
 
   def active?
-    return @active if defined?(@active)
+    return @active if @active.present?
 
     @active = first_note.active?
   end
@@ -173,5 +175,18 @@ class Discussion
     end
 
     prev_lines
+  end
+
+  private
+
+  def update
+    notes_relation = DiffNote.where(id: notes.map(&:id)).fresh
+    yield(notes_relation)
+
+    # Set the notes array to the updated notes
+    @notes = notes_relation.to_a
+
+    # Reset the memoized values
+    @last_resolved_note = @resolvable = @resolved = @first_note = @last_note = nil
   end
 end

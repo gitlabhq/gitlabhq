@@ -31,6 +31,43 @@ describe DiffNote, models: true do
 
   subject { create(:diff_note_on_merge_request, project: project, position: position, noteable: merge_request) }
 
+  describe ".resolve!" do
+    let(:current_user) { create(:user) }
+    let!(:commit_note) { create(:diff_note_on_commit) }
+    let!(:resolved_note) { create(:diff_note_on_merge_request, :resolved) }
+    let!(:unresolved_note) { create(:diff_note_on_merge_request) }
+
+    before do
+      described_class.resolve!(current_user)
+
+      commit_note.reload
+      resolved_note.reload
+      unresolved_note.reload
+    end
+
+    it 'resolves only the resolvable, not yet resolved notes' do
+      expect(commit_note.resolved_at).to be_nil
+      expect(resolved_note.resolved_by).not_to eq(current_user)
+      expect(unresolved_note.resolved_at).not_to be_nil
+      expect(unresolved_note.resolved_by).to eq(current_user)
+    end
+  end
+
+  describe ".unresolve!" do
+    let!(:resolved_note) { create(:diff_note_on_merge_request, :resolved) }
+
+    before do
+      described_class.unresolve!
+
+      resolved_note.reload
+    end
+
+    it 'unresolves the resolved notes' do
+      expect(resolved_note.resolved_by).to be_nil
+      expect(resolved_note.resolved_at).to be_nil
+    end
+  end
+
   describe "#position=" do
     context "when provided a string" do
       it "sets the position" do

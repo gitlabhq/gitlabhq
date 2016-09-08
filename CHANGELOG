@@ -6,7 +6,10 @@ v 8.11.1
   - Fix file links on project page when default view is Files !5933
   - Fixed enter key in search input not working !5888
 v 8.12.0 (unreleased)
+  - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
+  - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
+  - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Filter tags by name !6121
   - Make push events have equal vertical spacing.
@@ -16,22 +19,28 @@ v 8.12.0 (unreleased)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Fix pagination on user snippets page
+  - Escape search term before passing it to Regexp.new !6241 (winniehell)
+  - Fix pinned sidebar behavior in smaller viewports !6169
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
   - Expose `sha` and `merge_commit_sha` in merge request API (Ben Boeckel)
   - Set path for all JavaScript cookies to honor GitLab's subdirectory setting !5627 (Mike Greiling)
+  - Fix blame table layout width
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Center build stage columns in pipeline overview (ClemMakesApps)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
+  - Fix project visibility level fields on settings
   - Add hover color to emoji icon (ClemMakesApps)
+  - Add textarea autoresize after comment (ClemMakesApps)
   - Fix branches page dropdown sort alignment (ClemMakesApps)
   - Add white background for no readme container (ClemMakesApps)
   - API: Expose issue confidentiality flag. (Robert Schilling)
   - Fix markdown anchor icon interaction (ClemMakesApps)
   - Test migration paths from 8.5 until current release !4874
+  - Replace animateEmoji timeout with eventListener (ClemMakesApps)
   - Optimistic locking for Issues and Merge Requests (title and description overriding prevention)
   - Add `wiki_page_events` to project hook APIs (Ben Boeckel)
   - Remove Gitorious import
@@ -40,6 +49,7 @@ v 8.12.0 (unreleased)
   - Add Sentry logging to API calls
   - Add BroadcastMessage API
   - Use 'git update-ref' for safer web commits !6130
+  - Sort pipelines requested through the API
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
   - Remove unused mixins (ClemMakesApps)
   - Add search to all issue board lists
@@ -59,6 +69,7 @@ v 8.12.0 (unreleased)
   - Ability to manage project issues, snippets, wiki, merge requests and builds access level
   - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
   - Align add button on repository view (ClemMakesApps)
+  - Fix contributions calendar month label truncation (ClemMakesApps)
   - Added tests for diff notes
   - Add a button to download latest successful artifacts for branches and tags !5142
   - Remove redundant pipeline tooltips (ClemMakesApps)
@@ -67,6 +78,7 @@ v 8.12.0 (unreleased)
   - Fix badge count alignment (ClemMakesApps)
   - Remove green outline from `New branch unavailable` button on issue page !5858 (winniehell)
   - Fix repo title alignment (ClemMakesApps)
+  - Change update interval of contacted_at
   - Fix branch title trailing space on hover (ClemMakesApps)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
   - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
@@ -96,13 +108,21 @@ v 8.12.0 (unreleased)
   - Refactor the triggers page and documentation !6217
   - Show values of CI trigger variables only when clicked (Katarzyna Kobierska Ula Budziszewska)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
+  - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
 
-v 8.11.5 (unreleased)
-  - Optimize branch lookups and force a repository reload for Repository#find_branch
-  - Fix member expiration date picker after update
+v 8.11.6 (unreleased)
+
+v 8.11.5
+  - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
+  - Fix member expiration date picker after update. !6184
   - Fix suggested colors options for new labels in the admin area. !6138
+  - Optimize discussion notes resolving and unresolving
   - Fix GitLab import button
+  - Fix confidential issues being exposed as public using gitlab.com export
+  - Remove gitorious from import_sources. !6180
+  - Scope webhooks/services that will run for confidential issues
   - Remove gitorious from import_sources
+  - Fix confidential issues being exposed as public using gitlab.com export
 
 v 8.11.4
   - Fix resolving conflicts on forks. !6082
@@ -116,13 +136,10 @@ v 8.11.4
   - Creating an issue through our API now emails label subscribers !5720
   - Block concurrent updates for Pipeline
   - Don't create groups for unallowed users when importing projects
-  - Fix resolving conflicts on forks
-  - Fix diff commenting on merge requests created prior to 8.10
-  - Don't create groups for unallowed users when importing projects
-  - Scope webhooks/services that will run for confidential issues
   - Fix issue boards leak private label names and descriptions
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
   - Remove gitorious. !5866
+  - Allow compare merge request versions
 
 v 8.11.3
   - Allow system info page to handle case where info is unavailable
@@ -135,6 +152,7 @@ v 8.11.3
   - Fix external issue tracker "Issues" link leading to 404s
   - Don't try to show merge conflict resolution info if a merge conflict contains non-UTF-8 characters
   - Automatically expand hidden discussions when accessed by a permalink !5585 (Mike Greiling)
+  - Issues filters reset button
 
 v 8.11.2
   - Show "Create Merge Request" widget for push events to fork projects on the source project. !5978

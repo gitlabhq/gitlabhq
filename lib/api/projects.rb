@@ -193,16 +193,30 @@ module API
         end
       end
 
-      # Fork new project for the current user.
+      # Fork new project for the current user or provided namespace.
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   namespace (optional) - The ID or name of the namespace that the project will be forked into.
       # Example Request
       #   POST /projects/fork/:id
       post 'fork/:id' do
+        attrs = {}
+        namespace_id = params[:namespace]
+
+        if namespace_id.present?
+          namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
+
+          not_found!('Target Namespace') unless namespace
+
+          attrs[:namespace] = namespace
+        end
+
         @forked_project =
           ::Projects::ForkService.new(user_project,
-                                      current_user).execute
+                                      current_user,
+                                      attrs).execute
+
         if @forked_project.errors.any?
           conflict!(@forked_project.errors.messages)
         else

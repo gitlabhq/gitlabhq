@@ -38,6 +38,9 @@
                     %a{href: "#", data: { id: weight }, class: ("is-active" if params[:weight] == weight.to_s)}
                       = weight
 
+        .filter-item.inline.reset-filters
+          %a{href: page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :issue_search])} Reset filters
+
         .pull-right
           - if controller.controller_name == 'boards'
             #js-boards-seach.issue-boards-search
