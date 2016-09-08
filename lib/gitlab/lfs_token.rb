@@ -6,7 +6,15 @@ module Gitlab
     EXPIRY_TIME = 1800
 
     def initialize(actor)
-      set_actor(actor)
+      @actor =
+        case actor
+        when DeployKey, User
+          actor
+        when Key
+          actor.user
+        else
+          #
+        end
     end
 
     def generate
@@ -37,18 +45,6 @@ module Gitlab
 
     def redis_key
       "gitlab:lfs_token:#{actor.class.name.underscore}_#{actor.id}" if actor
-    end
-
-    def set_actor(actor)
-      @actor =
-        case actor
-        when DeployKey, User
-          actor
-        when Key
-          actor.user
-        else
-          #
-        end
     end
   end
 end

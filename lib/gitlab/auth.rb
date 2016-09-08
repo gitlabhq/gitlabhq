@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:user, :type)
+    Result = Struct.new(:actor, :type)
 
     class MissingPersonalTokenError < StandardError; end
 
@@ -49,6 +49,24 @@ module Gitlab
 
       private
 
+      def populate_result(login, password, project, ip)
+        result =
+          ci_request_check(login, password, project) ||
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          lfs_token_check(login, password) ||
+          personal_access_token_check(login, password)
+
+        if result && result.type != :ci
+          result.type = nil unless result.actor
+        end
+
+        success = result ? result.actor.present? || result.type == :ci : false
+        rate_limit!(ip, success: success, login: login)
+
+        result || Result.new
+      end
+
       def valid_ci_request?(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
 
@@ -67,31 +85,14 @@ module Gitlab
         end
       end
 
-      def populate_result(login, password, project, ip)
-        result = Result.new(nil, :ci) if valid_ci_request?(login, password, project)
-
-        result ||=
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
-          lfs_token_check(login, password) ||
-          personal_access_token_check(login, password)
-
-        if result && result.type != :ci
-          result.type = nil unless result.user
-
-          if result.user && result.type == :gitlab_or_ldap && result.user.two_factor_enabled?
-            raise Gitlab::Auth::MissingPersonalTokenError
-          end
-        end
-
-        success = result ? result.user.present? || [:ci].include?(result.type) : false
-        rate_limit!(ip, success: success, login: login)
-
-        result || Result.new
+      def ci_request_check(login, password, project)
+        Result.new(nil, :ci) if valid_ci_request?(login, password, project)
       end
 
       def user_with_password_for_git(login, password)
         user = find_with_user_password(login, password)
+        raise Gitlab::Auth::MissingPersonalTokenError if user && user.two_factor_enabled?
+
         Result.new(user, :gitlab_or_ldap) if user
       end
 
@@ -114,11 +115,11 @@ module Gitlab
       end
 
       def lfs_token_check(login, password)
+        deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
+
         actor =
-          if login =~ /\Alfs\+deploy-key-\d+\Z/
-            /\d+\Z/.match(login) do |id|
-              DeployKey.find(id[0])
-            end
+          if deploy_key_matches
+            DeployKey.find(deploy_key_matches[1])
           else
             User.by_login(login)
           end

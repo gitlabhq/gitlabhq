@@ -4,7 +4,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  attr_reader :user
+  attr_reader :user, :actor
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
@@ -24,13 +24,13 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
       handle_basic_authentication(login, password)
 
-      if ci? || user
+      if ci? || actor
         return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && spnego_provided?
-      @user = find_kerberos_user
+      @actor = find_kerberos_user
 
-      if user
+      if actor
         send_final_spnego_response
         return # Allow access
       end
@@ -110,6 +110,10 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     @ci.present?
   end
 
+  def user
+    @actor
+  end
+
   def handle_basic_authentication(login, password)
     auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
@@ -117,21 +121,21 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     when :ci
       @ci = true if download_request?
     when :oauth
-      @user = auth_result.user if download_request?
+      @actor = auth_result.actor if download_request?
     when :lfs_deploy_token
       if download_request?
         @lfs_deploy_key = true
-        @user = auth_result.user
+        @actor = auth_result.actor
       end
     when :lfs_token, :personal_token, :gitlab_or_ldap
-      @user = auth_result.user
+      @actor = auth_result.actor
     else
       # Not allowed
     end
   end
 
   def lfs_deploy_key?
-    @lfs_deploy_key.present? && (user && user.projects.include?(project))
+    @lfs_deploy_key.present? && actor && actor.projects.include?(project)
   end
 
   def verify_workhorse_api!
