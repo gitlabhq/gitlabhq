@@ -15,4 +15,5 @@
     = form_for [@project.namespace.becomes(Namespace), @project, @push_rule] do |f|
       = form_errors(@push_rule)
 
-      = render "shared/push_rules_form", f: f
+      = render "shared/push_rules_form", f: f,
+        prevent_committing_secrets_check: true

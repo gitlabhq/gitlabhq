@@ -14,6 +14,17 @@
     %p.light.append-bottom-0
       Restrict commits by author (email) to existing GitLab users
 
+- if local_assigns.fetch(:prevent_committing_secrets_check, false)
+  .form-group
+    = f.check_box :member_check, class: "pull-left"
+    .prepend-left-20
+      = f.label :member_check, "Prevent committing secrets to git", class: "label-light append-bottom-0"
+      %p.light.append-bottom-0
+        We'll reject anything that is likely to contain secrets from your commits.
+        The list of things we reject is available in
+        %a{ href: '/' }
+          the documentation.
+
 .form-group
   = f.label :commit_message_regex, "Commit message", class: 'label-light'
   = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
