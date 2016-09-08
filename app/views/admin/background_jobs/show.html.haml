@@ -28,9 +28,10 @@
               %th COMMAND
             %tbody
               - @sidekiq_processes.each do |process|
-                %td= gitlab_config.user
-                - parse_sidekiq_ps(process).each do |value|
-                  %td= value
+                %tr
+                  %td= gitlab_config.user
+                  - parse_sidekiq_ps(process).each do |value|
+                    %td= value
         .clearfix
           %p
             %i.fa.fa-exclamation-circle
