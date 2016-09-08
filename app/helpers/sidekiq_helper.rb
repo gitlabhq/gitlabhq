@@ -1,14 +1,12 @@
 module SidekiqHelper
-  SIDEKIQ_PS_REGEXP = /\A([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+([^\s]+)\s+(.+)\s+(sidekiq.*\])\s+\z/
-
   SIDEKIQ_PS_REGEXP = /\A
-  (?<pid>\d+)\s+
-  (?<cpu>[\d\.,]+)\s+
-  (?<mem>[\d\.,]+)\s+
-  (?<state>[DRSTWXZNLsl\+<]+)\s+
-  (?<start>.+)\s+
-  (?<command>sidekiq.*\])\s+
-  \z/x
+    (?<pid>\d+)\s+
+    (?<cpu>[\d\.,]+)\s+
+    (?<mem>[\d\.,]+)\s+
+    (?<state>[DRSTWXZNLsl\+<]+)\s+
+    (?<start>.+)\s+
+    (?<command>sidekiq.*\])\s+
+    \z/x
 
   def parse_sidekiq_ps(line)
     match = line.match(SIDEKIQ_PS_REGEXP)
