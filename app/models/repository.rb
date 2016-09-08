@@ -963,7 +963,7 @@ class Repository
     raise "Invalid merge target" if our_commit.nil?
     raise "Invalid merge source" if their_commit.nil?
 
-    commit_with_hooks(user, target_branch) do
+    update_branch_with_hooks(user, target_branch) do
       merge_request.update(in_progress_merge_commit_sha: their_commit.oid) if merge_request
       their_commit.oid
     end
