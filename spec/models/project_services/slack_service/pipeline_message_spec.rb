@@ -1,28 +1,27 @@
 require 'spec_helper'
 
-describe SlackService::BuildMessage do
-  subject { SlackService::BuildMessage.new(args) }
+describe SlackService::PipelineMessage do
+  subject { SlackService::PipelineMessage.new(args) }
 
   let(:args) do
     {
-      sha: '97de212e80737a608d939f648d959671fb0a0142',
-      ref: 'develop',
-      tag: false,
-
-      project_name: 'project_name',
-      project_url: 'example.gitlab.com',
-
-      commit: {
+      object_attributes: {
+        id: 123,
+        sha: '97de212e80737a608d939f648d959671fb0a0142',
+        tag: false,
+        ref: 'develop',
         status: status,
-        author_name: 'hacker',
-        duration: duration,
+        duration: duration
       },
+      project: { path_with_namespace: 'project_name',
+                 web_url: 'example.gitlab.com' },
+      commit: { author_name: 'hacker' }
     }
   end
 
   let(:message) { build_message }
 
-  context 'build succeeded' do
+  context 'pipeline succeeded' do
     let(:status) { 'success' }
     let(:color) { 'good' }
     let(:duration) { 10 }
@@ -35,7 +34,7 @@ describe SlackService::BuildMessage do
     end
   end
 
-  context 'build failed' do
+  context 'pipeline failed' do
     let(:status) { 'failed' }
     let(:color) { 'danger' }
     let(:duration) { 10 }
@@ -49,8 +48,7 @@ describe SlackService::BuildMessage do
 
   def build_message(status_text = status)
     "<example.gitlab.com|project_name>:" \
-    " Commit <example.gitlab.com/commit/" \
-    "97de212e80737a608d939f648d959671fb0a0142/builds|97de212e>" \
+    " Pipeline <example.gitlab.com/pipelines/123|97de212e>" \
     " of <example.gitlab.com/commits/develop|develop> branch" \
     " by hacker #{status_text} in #{duration} #{'second'.pluralize(duration)}"
   end
