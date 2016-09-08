@@ -16,11 +16,7 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
     it 'sets to closed' do
       visit namespace_project_merge_requests_path(project.namespace, project)
 
-      find('#check_all_issues').click
-      find('.js-issue-status').click
-
-      find('.dropdown-menu-status a', text: 'Closed').click
-      click_update_merge_requests_button
+      change_status('Closed')
       expect(page).to have_selector('.merge-request', count: 0)
     end
 
@@ -28,80 +24,92 @@ feature 'Multiple merge requests updating from merge_requests#index', feature: t
       merge_request.close
       visit namespace_project_merge_requests_path(project.namespace, project, state: 'closed')
 
-      find('#check_all_issues').click
-      find('.js-issue-status').click
-
-      find('.dropdown-menu-status a', text: 'Open').click
-      click_update_merge_requests_button
+      change_status('Open')
       expect(page).to have_selector('.merge-request', count: 0)
     end
   end
 
   context 'assignee', js: true do
-    it 'updates to current user' do
-      visit namespace_project_merge_requests_path(project.namespace, project)
+    context 'set assignee' do
+      before do
+        visit namespace_project_merge_requests_path(project.namespace, project)
+      end
 
-      find('#check_all_issues').click
-      click_update_assignee_button
+      it "should update merge request with assignee" do
+        change_assignee(user.name)
 
-      find('.dropdown-menu-user-link', text: user.username).click
-      click_update_merge_requests_button
-
-      page.within('.merge-request .controls') do
-        expect(find('.author_link')["title"]).to have_content(user.name)
+        page.within('.merge-request .controls') do
+          expect(find('.author_link')["title"]).to have_content(user.name)
+        end
       end
     end
 
-    it 'updates to unassigned' do
-      merge_request.assignee = user
-      merge_request.save
-      visit namespace_project_merge_requests_path(project.namespace, project)
+    context 'remove assignee' do
+      before do
+        merge_request.assignee = user
+        merge_request.save
+        visit namespace_project_merge_requests_path(project.namespace, project)
+      end
 
-      find('#check_all_issues').click
-      click_update_assignee_button
-
-      click_link 'Unassigned'
-      click_update_merge_requests_button
-      expect(find('.merge-request:first-child .controls')).not_to have_css('.author_link')
+      it "should remove assignee from the merge request" do
+        change_assignee('Unassigned')
+        expect(find('.merge-request .controls')).not_to have_css('.author_link')
+      end
     end
   end
 
   context 'milestone', js: true do
     let(:milestone)  { create(:milestone, project: project) }
 
-    it 'updates milestone' do
-      visit namespace_project_merge_requests_path(project.namespace, project)
+    context 'set milestone' do
+      before do
+        visit namespace_project_merge_requests_path(project.namespace, project)
+      end
 
-      find('#check_all_issues').click
-      find('.issues_bulk_update .js-milestone-select').click
-
-      find('.dropdown-menu-milestone a', text: milestone.title).click
-      click_update_merge_requests_button
-
-      expect(find('.merge-request')).to have_content milestone.title
+      it "should update merge request with milestone" do
+        change_milestone(milestone.title)
+        expect(find('.merge-request')).to have_content milestone.title
+      end
     end
 
-    it 'sets to no milestone' do
-      merge_request.milestone = milestone
-      merge_request.save
+    context 'unset milestone' do
+      before do
+        merge_request.milestone = milestone
+        merge_request.save
+        visit namespace_project_merge_requests_path(project.namespace, project)
+      end
 
-      visit namespace_project_merge_requests_path(project.namespace, project)
-
-      expect(first('.merge-request')).to have_content milestone.title
-
-      find('#check_all_issues').click
-      find('.issues_bulk_update .js-milestone-select').click
-
-      find('.dropdown-menu-milestone a', text: "No Milestone").click
-      click_update_merge_requests_button
-
-      expect(find('.merge-request:first-child')).not_to have_content milestone.title
+      it "should remove milestone from the merge request" do
+        change_milestone("No Milestone")
+        expect(find('.merge-request')).not_to have_content milestone.title
+      end
     end
   end
 
-  def click_update_assignee_button
+  def change_status(text)
+    find('#check_all_issues').click
+    find('.js-issue-status').click
+    find('.dropdown-menu-status a', text: text).click
+    click_update_merge_requests_button
+  end
+
+  def change_assignee(text)
+    find('#check_all_issues').click
     find('.js-update-assignee').click
     wait_for_ajax
+
+    page.within '.dropdown-menu-user' do
+      click_link text
+    end
+
+    click_update_merge_requests_button
+  end
+
+  def change_milestone(text)
+    find('#check_all_issues').click
+    find('.issues_bulk_update .js-milestone-select').click
+    find('.dropdown-menu-milestone a', text: text).click
+    click_update_merge_requests_button
   end
 
   def click_update_merge_requests_button
