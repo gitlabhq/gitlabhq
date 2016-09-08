@@ -114,8 +114,8 @@
     }
 
     redirectIfNeeded(total) {
-      let currPages = this.getTotalPages();
-      currPage = this.getCurrentPage();
+      const currPages = this.getTotalPages();
+      const currPage = this.getCurrentPage();
 
       // Refresh if no remaining Todos
       if (!total) {
