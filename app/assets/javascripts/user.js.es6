@@ -14,7 +14,7 @@
     }
 
     initTabs() {
-      return new UserTabs({
+      return new global.UserTabs({
         parentEl: '.user-profile',
         action: this.opts.action
       });
