@@ -1,4 +1,5 @@
 by
 %a{ href: user_path(@build.user) }
   = image_tag avatar_icon(@build.user, 24), class: "avatar s24"
-  %strong= @build.user.to_reference
+  %strong{ data: { toggle: 'tooltip', placement: 'top', title: @build.user.to_reference } }
+    = @build.user.name
