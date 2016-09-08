@@ -126,7 +126,7 @@
   .builds-container
     - statuses.each do |build_status|
       - builds.select{|build| build.status == build_status}.each do |build|
-        .build-job{class: ('active' if build == @build), data: {stage: build.stage}}
+        .build-job{class: ('active' if build == @build; 'retried' if @build.retried?), data: {stage: build.stage}}
           = link_to namespace_project_build_path(@project.namespace, @project, build) do
             = icon('arrow-right')
             = ci_icon_for_status(build.status)
@@ -136,4 +136,4 @@
               - else
                 = build.id
             - if @build.retried?
-              %i.fa.fa-warning.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'This build was retried'}
+              %i.fa.fa-refresh.has-tooltip{data: { container: 'body', placement: 'bottom' }, title: 'This build was retried'}

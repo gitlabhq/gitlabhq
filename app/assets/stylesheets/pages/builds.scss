@@ -210,8 +210,17 @@
         }
       }
 
+      &.retried {
+        background-color: $gray-lightest;
+      }
+
       &:hover {
         background-color: $row-hover;
+      }
+
+      .fa-refresh {
+        font-size: 13px;
+        margin-left: 3px;
       }
     }
   }

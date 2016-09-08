@@ -6,7 +6,7 @@
 - coverage = local_assigns.fetch(:coverage, false)
 - allow_retry = local_assigns.fetch(:allow_retry, false)
 
-%tr.build.commit
+%tr.build.commit{class: ('retried' if defined?(retried) && retried)}
   %td.status
     - if can?(current_user, :read_build, build)
       = ci_status_with_icon(build.status, namespace_project_build_url(build.project.namespace, build.project, build))
