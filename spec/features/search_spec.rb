@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "Search", feature: true  do
+  include WaitForAjax
+
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let!(:issue) { create(:issue, project: project, assignee: user) }
@@ -14,6 +16,36 @@ describe "Search", feature: true  do
 
   it 'does not show top right search form' do
     expect(page).not_to have_selector('.search')
+  end
+
+  context 'search filters', js: true do
+    let(:group) { create(:group) }
+
+    before do
+      group.add_owner(user)
+    end
+
+    it 'shows group name after filtering' do
+      find('.js-search-group-dropdown').click
+      wait_for_ajax
+
+      page.within '.search-holder' do
+        click_link group.name
+      end
+
+      expect(find('.js-search-group-dropdown')).to have_content(group.name)
+    end
+
+    it 'shows project name after filtering' do
+      page.within('.project-filter') do
+        find('.js-search-project-dropdown').click
+        wait_for_ajax
+
+        click_link project.name_with_namespace
+      end
+
+      expect(find('.js-search-project-dropdown')).to have_content(project.name_with_namespace)
+    end
   end
 
   describe 'searching for Projects' do
