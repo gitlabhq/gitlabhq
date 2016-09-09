@@ -9,7 +9,7 @@ module MembershipActions
   end
 
   def approve_access_request
-    Members::ApproveAccessRequestService.new(membershipable, current_user, user_id: params[:id]).execute
+    Members::ApproveAccessRequestService.new(membershipable, current_user, params).execute
 
     redirect_to polymorphic_url([membershipable, :members])
   end

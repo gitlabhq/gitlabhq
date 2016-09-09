@@ -2,9 +2,10 @@ require 'spec_helper'
 
 describe Groups::GroupMembersController do
   let(:user)  { create(:user) }
-  let(:group) { create(:group) }
 
   describe '#index' do
+    let(:group) { create(:group) }
+
     before do
       group.add_owner(user)
       stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])

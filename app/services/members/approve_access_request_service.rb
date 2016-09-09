@@ -11,7 +11,8 @@ module Members
     end
 
     def execute
-      access_requester = source.requesters.find_by!(user_id: params[:user_id])
+      condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
+      access_requester = source.requesters.find_by!(condition)
 
       raise Gitlab::Access::AccessDeniedError if cannot_update_access_requester?(access_requester)
 

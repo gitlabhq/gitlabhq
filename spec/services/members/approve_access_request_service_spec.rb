@@ -83,6 +83,14 @@ describe Members::ApproveAccessRequestService, services: true do
       it_behaves_like 'a service approving an access request' do
         let(:source) { group }
       end
+
+      context 'when given a :id' do
+        let(:params) { { id: project.requesters.find_by!(user_id: access_requester.id).id } }
+
+        it_behaves_like 'a service approving an access request' do
+          let(:source) { project }
+        end
+      end
     end
   end
 end
