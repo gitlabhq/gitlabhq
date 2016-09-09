@@ -133,8 +133,7 @@ module Gitlab
 
         if issue.labels.count > 0
           label_ids = issue.labels
-            .map { |raw| LabelFormatter.new(project, raw).attributes }
-            .map { |attrs| Label.find_by(attrs).try(:id) }
+            .map { |attrs| project.labels.find_by(title: attrs.name).try(:id) }
             .compact
 
           issuable.update_attribute(:label_ids, label_ids)

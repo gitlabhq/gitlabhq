@@ -13,6 +13,12 @@ module Gitlab
         Label
       end
 
+      def create!
+        project.labels.find_or_create_by!(title: title) do |label|
+          label.color = color
+        end
+      end
+
       private
 
       def color
