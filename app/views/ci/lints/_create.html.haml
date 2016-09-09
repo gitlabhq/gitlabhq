@@ -21,7 +21,7 @@
 
                 %br
                 %b Tag list:
-                = build[:tag_list]
+                = build[:tag_list] && build[:tag_list].join(", ")
                 %br
                 %b Refs only:
                 = build[:only] && build[:only].join(", ")
