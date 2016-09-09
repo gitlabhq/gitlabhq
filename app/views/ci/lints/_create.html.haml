@@ -21,13 +21,16 @@
 
                 %br
                 %b Tag list:
-                = build[:tags]
+                = build[:tag_list]
                 %br
                 %b Refs only:
                 = build[:only] && build[:only].join(", ")
                 %br
                 %b Refs except:
                 = build[:except] && build[:except].join(", ")
+                %br
+                %b Environment:
+                = build[:environment]
                 %br
                 %b When:
                 = build[:when]

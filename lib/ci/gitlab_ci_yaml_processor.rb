@@ -59,6 +59,8 @@ module Ci
         tag_list: job[:tags] || [],
         name: job[:name].to_s,
         allow_failure: job[:allow_failure] || false,
+        only: job[:only],
+        except: job[:except],
         when: job[:when] || 'on_success',
         environment: job[:environment_name],
         yaml_variables: yaml_variables(name),
