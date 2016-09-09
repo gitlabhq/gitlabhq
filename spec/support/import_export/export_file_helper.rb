@@ -1,3 +1,5 @@
+require './spec/support/import_export/configuration_helper'
+
 module ExportFileHelper
   include ConfigurationHelper
 
