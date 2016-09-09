@@ -27,6 +27,7 @@ v 8.12.0 (unreleased)
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Center build stage columns in pipeline overview (ClemMakesApps)
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
+  - Fix bug stopping issue description being scrollable after selecting issue template
   - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
   - Fix project visibility level fields on settings
