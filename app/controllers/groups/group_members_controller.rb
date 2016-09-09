@@ -40,7 +40,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def destroy
-    Members::DestroyService.new(@group, current_user, user_id: params[:id]).execute(:all)
+    Members::DestroyService.new(@group, current_user, id: params[:id]).execute(:all)
 
     respond_to do |format|
       format.html { redirect_to group_group_members_path(@group), notice: 'User was successfully removed from group.' }

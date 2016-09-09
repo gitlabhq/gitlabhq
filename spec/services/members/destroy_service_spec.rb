@@ -98,6 +98,15 @@ describe Members::DestroyService, services: true do
       it_behaves_like 'a service destroying a member' do
         let(:source) { group }
       end
+
+      context 'when given a :id' do
+        let(:params) { { id: project.members.find_by!(user_id: user.id).id } }
+
+        it 'destroys the member' do
+          expect { described_class.new(project, user, params).execute }.
+            to change { project.members.count }.by(-1)
+        end
+      end
     end
   end
 end

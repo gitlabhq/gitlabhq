@@ -15,16 +15,17 @@ module MembershipActions
   end
 
   def leave
-    Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).execute(:all)
+    member = Members::DestroyService.new(membershipable, current_user, user_id: current_user.id).
+      execute(:all)
 
     source_type = membershipable.class.to_s.humanize(capitalize: false)
     notice =
-      if @member.request?
+      if member.request?
         "Your access request to the #{source_type} has been withdrawn."
       else
         "You left the \"#{membershipable.human_name}\" #{source_type}."
       end
-    redirect_path = @member.request? ? @member.source : [:dashboard, membershipable.class.to_s.tableize]
+    redirect_path = member.request? ? member.source : [:dashboard, membershipable.class.to_s.tableize]
 
     redirect_to redirect_path, notice: notice
   end

@@ -15,7 +15,7 @@ module Members
     def execute(scope = :members)
       raise "scope :#{scope} is not allowed!" unless ALLOWED_SCOPES.include?(scope)
 
-      member = find_member(scope)
+      member = find_member!(scope)
 
       raise Gitlab::Access::AccessDeniedError if cannot_destroy_member?(member)
 
@@ -24,13 +24,14 @@ module Members
 
     private
 
-    def find_member(scope)
+    def find_member!(scope)
+      condition = params[:user_id] ? { user_id: params[:user_id] } : { id: params[:id] }
       case scope
       when :all
-        source.members.find_by(user_id: params[:user_id]) ||
-          source.requesters.find_by!(user_id: params[:user_id])
+        source.members.find_by(condition) ||
+          source.requesters.find_by!(condition)
       else
-        source.public_send(scope).find_by!(user_id: params[:user_id])
+        source.public_send(scope).find_by!(condition)
       end
     end
 

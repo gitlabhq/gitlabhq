@@ -75,7 +75,8 @@ module API
           required_attributes! [:user_id]
           source = find_source(source_type, params[:id])
 
-          ::Members::DestroyService.new(source, current_user, declared(params)).execute(:requesters)
+          ::Members::DestroyService.new(source, current_user, params).
+            execute(:requesters)
         end
       end
     end
