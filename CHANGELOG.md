@@ -12,6 +12,7 @@ Please view this file on the master branch, on stable branches it's out of date.
   - Escape ref and path for relative links !6050 (winniehell)
   - Fixed link typo on /help/ui to Alerts section. !6915 (Sam Rose)
   - Fix filtering of milestones with quotes in title (airatshigapov)
+  - Refactor less readable existance checking code from CoffeeScript !6289 (jlogandavison)
   - Simpler arguments passed to named_route on toggle_award_url helper method
   - Fix: Backup restore doesn't clear cache
   - API: Fix project deploy keys 400 and 500 errors when adding an existing key. !6784 (Joshua Welsh)
