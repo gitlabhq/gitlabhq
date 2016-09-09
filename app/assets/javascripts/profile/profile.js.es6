@@ -1,9 +1,9 @@
 ((global) => {
 
   class Profile {
-    constructor(opts = {}) {
+    constructor({ form = $('.edit-user') }) {
       this.onSubmitForm = this.onSubmitForm.bind(this);
-      this.form = opts.form || $('.edit-user');
+      this.form = form;
       this.bindEvents();
       this.initAvatarGlCrop();
     }
@@ -72,12 +72,8 @@
         dataType: "json",
         processData: false,
         contentType: false,
-        success: (response) => {
-          return new Flash(response.message, 'notice');
-        },
-        error: (jqXHR) => {
-          return new Flash(jqXHR.responseJSON.message, 'alert');
-        },
+        success: response => new Flash(response.message, 'notice'),
+        error: jqXHR => new Flash(jqXHR.responseJSON.message, 'alert'),
         complete: () => {
           window.scrollTo(0, 0);
           // Enable submit button after requests ends

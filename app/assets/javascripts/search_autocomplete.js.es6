@@ -9,19 +9,20 @@
   };
 
   class SearchAutocomplete {
-    constructor(opts = {}) {
-      this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
-      this.onClearInputClick = this.onClearInputClick.bind(this);
-      this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
-      this.onSearchInputClick = this.onSearchInputClick.bind(this);
-      this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
-      this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
-      this.wrap = opts.wrap || $('.search');
-      this.optsEl = opts.optsEl || this.wrap.find('.search-autocomplete-opts');
-      this.autocompletePath = opts.autocompletePath || this.optsEl.data('autocomplete-path')
-      this.projectId = opts.projectId || this.optsEl.data('autocomplete-project-id') || '';
-      this.projectRef = opts.projectRef || this.optsEl.data('autocomplete-project-ref') || '';
-      this.dropdown = this.wrap.find('.dropdown');
+    constructor({
+      wrap = $('.search'),
+      optsEl = wrap.find('.search-autocomplete-opts'),
+      autocompletePath = optsEl.data('autocomplete-path'),
+      projectId = (optsEl.data('autocomplete-project-id') || ''),
+      projectRef = (optsEl.data('autocomplete-project-ref') || '')
+    }) {
+      this.bindEventContext();
+      this.wrap = wrap;
+      this.optsEl = optsEl;
+      this.autocompletePath = autocompletePath;
+      this.projectId = projectId;
+      this.projectRef = projectRef;
+      this.dropdown = wrap.find('.dropdown');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
       this.scopeInputEl = this.getElement('#scope');
@@ -42,6 +43,14 @@
     }
 
     // Finds an element inside wrapper element
+    bindEventContext() {
+      this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
+      this.onClearInputClick = this.onClearInputClick.bind(this);
+      this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
+      this.onSearchInputClick = this.onSearchInputClick.bind(this);
+      this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
+      this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
+    }
     getElement(selector) {
       return this.wrap.find(selector);
     }

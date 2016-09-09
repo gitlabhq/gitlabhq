@@ -1,11 +1,11 @@
 ((global) => {
 
   class Todos {
-    constructor(opts = {}) {
+    constructor({ el = $('.js-todos-options') }) {
       this.allDoneClicked = this.allDoneClicked.bind(this);
       this.doneClicked = this.doneClicked.bind(this);
-      this.el = opts.el || $('.js-todos-options');
-      this.perPage = this.el.data('perPage');
+      this.el = el;
+      this.perPage = el.data('perPage');
       this.clearListeners();
       this.initBtnListeners();
       this.initFilters();
@@ -60,7 +60,7 @@
         data: {
           '_method': 'delete'
         },
-        success: data => {
+        success: (data) => {
           this.redirectIfNeeded(data.count);
           this.clearDone($target.closest('li'));
           return this.updateBadges(data);
@@ -80,7 +80,7 @@
         data: {
           '_method': 'delete'
         },
-        success: data => {
+        success: (data) => {
           $target.remove();
           $('.prepend-top-default').html('<div class="nothing-here-block">You\'re all done!</div>');
           return this.updateBadges(data);

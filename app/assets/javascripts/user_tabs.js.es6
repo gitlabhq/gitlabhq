@@ -59,11 +59,11 @@ content on the Users#show page.
 */
 ((global) => {
   class UserTabs {
-    constructor (opts) {
+    constructor ({ defaultAction = 'activity', action = defaultAction, parentEl }) {
       this.loaded = {};
-      this.defaultAction = opts.defaultAction || 'activity';
-      this.action = opts.action || 'activity';
-      this.$parentEl = $(opts.parentEl) || $(document);
+      this.defaultAction = defaultAction;
+      this.action = action;
+      this.$parentEl = $(parentEl) || $(document);
       this._location = window.location;
       this.$parentEl.find('.nav-links a')
         .each((i, navLink) => {
@@ -81,7 +81,7 @@ content on the Users#show page.
 
     bindEvents() {
       return this.$parentEl.off('shown.bs.tab', '.nav-links a[data-toggle="tab"]')
-        .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', (event) => this.tabShown(event));
+        .on('shown.bs.tab', '.nav-links a[data-toggle="tab"]', event => this.tabShown(event));
     }
 
     tabShown(event) {
@@ -93,7 +93,7 @@ content on the Users#show page.
     }
 
     activateTab(action) {
-      return this.$parentEl.find(".nav-links .js-" + action + "-tab a")
+      return this.$parentEl.find(`.nav-links .js-${action}-tab a`)
         .tab('show');
     }
 
@@ -104,7 +104,9 @@ content on the Users#show page.
       if (action === 'activity') {
         this.loadActivities(source);
       }
-      if (action === 'groups' || action === 'contributed' || action === 'projects' || action === 'snippets') {
+
+      const loadableActions = [ 'groups', 'contributed', 'projects', 'snippets' ];
+      if (loadableActions.indexOf(action) > -1) {
         return this.loadTab(source, action);
       }
     }
@@ -115,9 +117,9 @@ content on the Users#show page.
         complete: () => this.toggleLoading(false),
         dataType: 'json',
         type: 'GET',
-        url: source + ".json",
+        url: `${source}.json`,
         success: (data) => {
-          const tabSelector = 'div#' + action;
+          const tabSelector = `div#${action}`;
           this.$parentEl.find(tabSelector).html(data.html);
           this.loaded[action] = true;
           return gl.utils.localTimeAgo($('.js-timeago', tabSelector));
@@ -141,12 +143,12 @@ content on the Users#show page.
     }
 
     setCurrentAction(action) {
-      const regExp = new RegExp('\/(' + this.actions.join('|') + ')(\.html)?\/?$');
+      const regExp = new RegExp(`\/(${this.actions.join('|')})(\.html)?\/?$`);
       let new_state = this._location.pathname;
-      new_state = new_state.replace(/\/+$/, "");
+      new_state = new_state.replace(/\/+$/, '');
       new_state = new_state.replace(regExp, '');
       if (action !== this.defaultAction) {
-        new_state += "/" + action;
+        new_state += `/${action}`;
       }
       new_state += this._location.search + this._location.hash;
       history.replaceState({

@@ -8,15 +8,15 @@
 
     requestFile(query) {
       return Api.gitlabCiYml(query.name, this.requestFileSuccess.bind(this));
-    };
+    }
   };
 
   global.BlobCiYamlSelector = BlobCiYamlSelector;
 
   class BlobCiYamlSelectors {
-    constructor(opts) {
-      this.$dropdowns = opts.$dropdowns || $('.js-gitlab-ci-yml-selector');
-      this.editor = opts.editor;
+    constructor({ editor, $dropdowns = $('.js-gitlab-ci-yml-selector') }) {
+      this.editor = editor;
+      this.$dropdowns = $dropdowns;
       this.initSelectors();
     }
 
@@ -24,11 +24,11 @@
       this.$dropdowns.each((i, dropdown) => {
         const $dropdown = $(dropdown);
         return new BlobCiYamlSelector({
+          editor,
           pattern: /(.gitlab-ci.yml)/,
           data: $dropdown.data('data'),
           wrapper: $dropdown.closest('.js-gitlab-ci-yml-selector-wrap'),
-          dropdown: $dropdown,
-          editor: this.editor
+          dropdown: $dropdown
         });
       });
     }
