@@ -117,4 +117,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def ci?
     @ci.present?
   end
+
+  def verify_workhorse_api!
+    Gitlab::Workhorse.verify_api_request!(request.headers)
+  end
 end
