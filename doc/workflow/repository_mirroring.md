@@ -23,6 +23,6 @@ When creating a new project, you can enable Repository Mirroring when you choose
 
 ### Existing projects
 
-For existing projects, you can set up Repository Mirroring by navigating to Project Settings &gt; Repository Mirroring.
+For existing projects, you can set up Repository Mirroring by navigating to Project Settings &gt; Mirror Repository.
 
 ![Settings](repository_mirroring/settings.png)
