@@ -14,6 +14,7 @@ v 8.12.0 (unreleased)
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
+  - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix pagination on user snippets page
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
@@ -111,7 +112,6 @@ v 8.12.0 (unreleased)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
-  - Project search API is now agnostic to casing
 
 v 8.11.6 (unreleased)
 
