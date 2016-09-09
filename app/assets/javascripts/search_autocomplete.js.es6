@@ -15,7 +15,8 @@
       autocompletePath = optsEl.data('autocomplete-path'),
       projectId = (optsEl.data('autocomplete-project-id') || ''),
       projectRef = (optsEl.data('autocomplete-project-ref') || '')
-    }) {
+    } = {}) {
+
       this.bindEventContext();
       this.wrap = wrap;
       this.optsEl = optsEl;

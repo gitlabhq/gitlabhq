@@ -1,7 +1,7 @@
 ((global) => {
 
   class Profile {
-    constructor({ form = $('.edit-user') }) {
+    constructor({ form = $('.edit-user') } = {}) {
       this.onSubmitForm = this.onSubmitForm.bind(this);
       this.form = form;
       this.bindEvents();
