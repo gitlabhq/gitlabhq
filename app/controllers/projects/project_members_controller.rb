@@ -13,6 +13,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     if params[:search].present?
       users = @project.users.search(params[:search]).to_a
       @project_members = @project_members.where(user_id: users)
+
+      group_ids = @groups.pluck(:group_id)
+      group_ids = Group.where(id: group_ids).search(params[:search]).to_a
+      @groups = @project.project_group_links.where(group_id: group_ids)
     end
 
     @project_members = @project_members.order('access_level DESC')
