@@ -57,7 +57,11 @@ params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
 LOGGER.info("Indexing commits started")
 
 timings = Benchmark.measure do
-  repo.index_commits(params)
+  indexed = 0
+  repo.index_commits(params) do |batch, total_count|
+    indexed += batch.length
+    LOGGER.info("Indexed #{indexed}/#{total_count} commits")
+  end
 end
 
 LOGGER.info("Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
@@ -65,7 +69,11 @@ LOGGER.info("Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}
 LOGGER.info("Indexing blobs started")
 
 timings = Benchmark.measure do
-  repo.index_blobs(params)
+  indexed = 0
+  repo.index_blobs(params) do |batch, total_count|
+    indexed += batch.length
+    LOGGER.info("Indexed #{indexed}/#{total_count} blobs")
+  end
 end
 
 LOGGER.info("Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
