@@ -3,5 +3,9 @@ module WaitForVueResource
     Timeout.timeout(Capybara.default_max_wait_time) do
       loop until page.evaluate_script('Vue.activeResources').zero?
     end
+
+    if spinner
+      expect(page).not_to have_selector('.fa-spinner')
+    end
   end
 end
