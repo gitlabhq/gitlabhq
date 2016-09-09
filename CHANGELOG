@@ -34,6 +34,7 @@ v 8.12.0 (unreleased)
   - Add textarea autoresize after comment (ClemMakesApps)
   - Refresh todos count cache when an Issue/MR is deleted
   - Fix branches page dropdown sort alignment (ClemMakesApps)
+  - Hides merge request button on branches page is user doesn't have permissions
   - Add white background for no readme container (ClemMakesApps)
   - API: Expose issue confidentiality flag. (Robert Schilling)
   - Fix markdown anchor icon interaction (ClemMakesApps)
