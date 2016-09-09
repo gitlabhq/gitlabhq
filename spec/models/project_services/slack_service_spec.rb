@@ -21,6 +21,9 @@
 require 'spec_helper'
 
 describe SlackService, models: true do
+  let(:slack) { SlackService.new }
+  let(:webhook_url) { 'https://example.gitlab.com/' }
+
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -42,15 +45,14 @@ describe SlackService, models: true do
   end
 
   describe "Execute" do
-    let(:slack)   { SlackService.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
+    let(:username) { 'slack_username' }
+    let(:channel)  { 'slack_channel' }
+
     let(:push_sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end
-    let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
-    let(:username) { 'slack_username' }
-    let(:channel) { 'slack_channel' }
 
     before do
       allow(slack).to receive_messages(
@@ -212,10 +214,8 @@ describe SlackService, models: true do
   end
 
   describe "Note events" do
-    let(:slack)   { SlackService.new }
     let(:user) { create(:user) }
     let(:project) { create(:project, creator_id: user.id) }
-    let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
 
     before do
       allow(slack).to receive_messages(
@@ -282,6 +282,65 @@ describe SlackService, models: true do
         slack.execute(data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
+      end
+    end
+  end
+
+  describe 'Pipeline events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project, status: status,
+             sha: project.commit.sha, ref: project.default_branch)
+    end
+
+    before do
+      allow(slack).to receive_messages(
+        project: project,
+        service_hook: true,
+        webhook: webhook_url
+      )
+    end
+
+    shared_examples 'call Slack API' do
+      before do
+        WebMock.stub_request(:post, webhook_url)
+      end
+
+      it 'calls Slack API for pipeline events' do
+        data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+        slack.execute(data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+      end
+    end
+
+    context 'with failed pipeline' do
+      let(:status) { 'failed' }
+
+      it_behaves_like 'call Slack API'
+    end
+
+    context 'with succeeded pipeline' do
+      let(:status) { 'success' }
+
+      context 'with default to notify_only_broken_pipelines' do
+        it 'does not call Slack API for pipeline events' do
+          data = Gitlab::DataBuilder::Pipeline.build(pipeline)
+          result = slack.execute(data)
+
+          expect(result).to be_falsy
+        end
+      end
+
+      context 'with setting notify_only_broken_pipelines to false' do
+        before do
+          slack.notify_only_broken_pipelines = false
+        end
+
+        it_behaves_like 'call Slack API'
       end
     end
   end

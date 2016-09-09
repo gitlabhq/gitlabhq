@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Git LFS API and storage' do
+  include WorkhorseHelpers
+
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
 
@@ -715,6 +717,12 @@ describe 'Git LFS API and storage' do
             project.team << [user, :developer]
           end
 
+          context 'and the request bypassed workhorse' do
+            it 'raises an exception' do
+              expect { put_authorize(verified: false) }.to raise_error JWT::DecodeError
+            end
+          end
+
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
               put_authorize
@@ -722,6 +730,10 @@ describe 'Git LFS API and storage' do
 
             it 'responds with status 200' do
               expect(response).to have_http_status(200)
+            end
+
+            it 'uses the gitlab-workhorse content type' do
+              expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             end
 
             it 'responds with status 200, location of lfs store and object details' do
@@ -863,8 +875,11 @@ describe 'Git LFS API and storage' do
       end
     end
 
-    def put_authorize
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, headers
+    def put_authorize(verified: true)
+      authorize_headers = headers
+      authorize_headers.merge!(workhorse_internal_api_request_header) if verified
+
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
     end
 
     def put_finalize(lfs_tmp = lfs_tmp_file)

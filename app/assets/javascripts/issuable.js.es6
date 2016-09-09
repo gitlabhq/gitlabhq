@@ -77,7 +77,7 @@
     },
     checkChanged: function() {
       const $checkedIssues = $('.selected_issue:checked');
-      const $updateIssuesIds = $('#update_issues_ids');
+      const $updateIssuesIds = $('#update_issuable_ids');
       const $issuesOtherFilters = $('.issues-other-filters');
       const $issuesBulkUpdate = $('.issues_bulk_update');
 

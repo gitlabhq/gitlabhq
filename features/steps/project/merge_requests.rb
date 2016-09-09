@@ -31,7 +31,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    click_link "Closed"
+    page.within('.issues-state-filters') do
+      click_link "Closed"
+    end
   end
 
   step 'I should see merge request "Wiki Feature"' do

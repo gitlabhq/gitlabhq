@@ -1,7 +1,7 @@
 %li{ id: dom_id(issue), class: issue_css_classes(issue), url: issue_path(issue), data: { labels: issue.label_ids, id: issue.id } }
-  - if controller.controller_name == 'issues' && can?(current_user, :admin_issue, @project)
+  - if @bulk_edit
     .issue-check
-      = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
+      = check_box_tag dom_id(issue, "selected"), nil, false, 'data-id' => issue.id, class: "selected_issue"
 
   .issue-title.title
     %span.issue-title-text

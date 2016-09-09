@@ -797,6 +797,7 @@ Rails.application.routes.draw do
             get :branch_to
             get :update_branches
             get :diff_for_path
+            post :bulk_update
           end
 
           resources :approvers, only: :destroy
