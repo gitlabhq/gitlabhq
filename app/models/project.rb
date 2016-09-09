@@ -237,12 +237,11 @@ class Project < ActiveRecord::Base
 
     after_transition any => :finished, do: :reset_cache_and_import_attrs
 
-    after_transition started: :finished do |project, transaction|
+    before_transition started: :finished do |project, transaction|
       if project.mirror?
         timestamp = DateTime.now
         project.mirror_last_update_at = timestamp
         project.mirror_last_successful_update_at = timestamp
-        project.save
       end
 
       if current_application_settings.elasticsearch_indexing?
@@ -250,10 +249,8 @@ class Project < ActiveRecord::Base
       end
     end
 
-    after_transition started: :failed do |project, transaction|
-      if project.mirror?
-        project.update(mirror_last_update_at: DateTime.now)
-      end
+    before_transition started: :failed do |project, transaction|
+      project.mirror_last_update_at = DateTime.now if project.mirror?
     end
   end
 
