@@ -1,7 +1,5 @@
 
 /*= require mousetrap */
-
-
 /*= require shortcuts_navigation */
 
 (function() {
@@ -43,16 +41,20 @@
         if (selected.trim() === "") {
           return;
         }
+        // Put a '>' character before each non-empty line in the selection
         quote = _.map(selected.split("\n"), function(val) {
           if (val.trim() !== '') {
             return "> " + val + "\n";
           }
         });
+        // If replyField already has some content, add a newline before our quote
         separator = replyField.val().trim() !== "" && "\n" || '';
         replyField.val(function(_, current) {
           return current + separator + quote.join('') + "\n";
         });
+        // Trigger autosave for the added text
         replyField.trigger('input');
+        // Focus the input field
         return replyField.focus();
       }
     };

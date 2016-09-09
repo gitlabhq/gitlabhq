@@ -11,7 +11,13 @@
         url = $("#project_clone").val();
         $('#project_clone').val(url);
         return $('.clone').text(url);
+      // Git protocol switcher
+      // Remove the active class for all buttons (ssh, http, kerberos if shown)
+      // Add the active class for the clicked button
+      // Update the input field
+      // Update the command line instructions
       });
+      // Ref switcher
       this.initRefSwitcher();
       $('.project-refs-select').on('change', function() {
         return $(this).parents('form').submit();
