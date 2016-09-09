@@ -58,6 +58,17 @@
       $.get(link, params, response => $target.parent().replaceWith(response));
     }
 
+    openAnchoredDiff(anchoredDiff, cb) {
+      const diffTitle = $(`#file-path-${anchoredDiff}`);
+      const diffFile = diffTitle.closest('.diff-file');
+      const nothingHereBlock = $('.nothing-here-block:visible', diffFile);
+      if (nothingHereBlock.length) {
+        diffFile.singleFileDiff(true, cb);
+      } else {
+        cb();
+      }
+    }
+
     handleClickLineNum(event) {
       const hash = $(event.currentTarget).attr('href');
       event.preventDefault();
