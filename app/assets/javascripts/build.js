@@ -27,7 +27,7 @@
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
-      $('.step-up-trace, .step-down-trace').off('click').on('click', this.stepTrace);
+      $('#js-build-scroll > a').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
@@ -167,11 +167,11 @@
     };
 
     Build.prototype.stepTrace = function(e) {
-      if ($(e.currentTarget).hasClass('step-up-trace')) {
-          $.scrollTo('-=50px');
-      } else {
-        $.scrollTo('+=50px');
-      }
+      e.preventDefault();
+      $currentTarget = $(e.currentTarget);
+      $.scrollTo($currentTarget.attr('href'), {
+        offset: -($('.navbar-gitlab').outerHeight() + $('.layout-nav').outerHeight())
+      });
     };
 
     return Build;
