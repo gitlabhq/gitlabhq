@@ -26,7 +26,7 @@
         case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
-          new IssuableBulkActions();
+          new gl.IssuableBulkActions();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:issues:show':

@@ -1,13 +1,10 @@
-(function() {
-  this.IssuableBulkActions = (function() {
-    function IssuableBulkActions(opts) {
-      // Set defaults
-      var ref, ref1, ref2;
-      if (opts == null) {
-        opts = {};
-      }
-      this.container = (ref = opts.container) != null ? ref : $('.content'), this.form = (ref1 = opts.form) != null ? ref1 : this.getElement('.bulk-update'), this.issues = (ref2 = opts.issues) != null ? ref2 : this.getElement('.issuable-list > li');
-      // Save instance
+((global) => {
+
+  class IssuableBulkActions {
+    constructor({ container, form, issues } = {}) {
+      this.container = container || $('.content'),
+      this.form = form || this.getElement('.bulk-update');
+      this.issues = issues || this.getElement('.issues-list .issue');
       this.form.data('bulkActions', this);
       this.willUpdateLabels = false;
       this.bindEvents();
@@ -15,53 +12,46 @@
       Issuable.initChecks();
     }
 
-    IssuableBulkActions.prototype.getElement = function(selector) {
+    getElement(selector) {
       return this.container.find(selector);
-    };
+    }
 
-    IssuableBulkActions.prototype.bindEvents = function() {
+    bindEvents() {
       return this.form.off('submit').on('submit', this.onFormSubmit.bind(this));
-    };
+    }
 
-    IssuableBulkActions.prototype.onFormSubmit = function(e) {
+    onFormSubmit(e) {
       e.preventDefault();
       return this.submit();
-    };
+    }
 
-    IssuableBulkActions.prototype.submit = function() {
-      var _this, xhr;
-      _this = this;
-      xhr = $.ajax({
+    submit() {
+      const _this = this;
+      const xhr = $.ajax({
         url: this.form.attr('action'),
         method: this.form.attr('method'),
         dataType: 'JSON',
         data: this.getFormDataAsObject()
       });
-      xhr.done(function(response, status, xhr) {
-        return location.reload();
-      });
-      xhr.fail(function() {
-        return new Flash("Issue update failed");
-      });
+      xhr.done(() => window.location.reload());
+      xhr.fail(() => new Flash("Issue update failed"));
       return xhr.always(this.onFormSubmitAlways.bind(this));
-    };
+    }
 
-    IssuableBulkActions.prototype.onFormSubmitAlways = function() {
+    onFormSubmitAlways() {
       return this.form.find('[type="submit"]').enable();
-    };
+    }
 
-    IssuableBulkActions.prototype.getSelectedIssues = function() {
+    getSelectedIssues() {
       return this.issues.has('.selected_issue:checked');
-    };
+    }
 
-    IssuableBulkActions.prototype.getLabelsFromSelection = function() {
-      var labels;
-      labels = [];
+    getLabelsFromSelection() {
+      const labels = [];
       this.getSelectedIssues().map(function() {
-        var _labels;
-        _labels = $(this).data('labels');
-        if (_labels) {
-          return _labels.map(function(labelId) {
+        const labelsData = $(this).data('labels');
+        if (labelsData) {
+          return labelsData.map(function(labelId) {
             if (labels.indexOf(labelId) === -1) {
               return labels.push(labelId);
             }
@@ -69,7 +59,7 @@
         }
       });
       return labels;
-    };
+    }
 
 
     /**
@@ -77,25 +67,19 @@
      * @return {Array} Label IDs
      */
 
-    IssuableBulkActions.prototype.getUnmarkedIndeterminedLabels = function() {
-      var el, i, id, j, labelsToKeep, len, len1, ref, ref1, result;
-      result = [];
-      labelsToKeep = [];
-      ref = this.getElement('.labels-filter .is-indeterminate');
-      for (i = 0, len = ref.length; i < len; i++) {
-        el = ref[i];
-        labelsToKeep.push($(el).data('labelId'));
-      }
-      ref1 = this.getLabelsFromSelection();
-      for (j = 0, len1 = ref1.length; j < len1; j++) {
-        id = ref1[j];
-        // Only the ones that we are not going to keep
-        if (labelsToKeep.indexOf(id) === -1) {
-          result.push(id);
-        }
-      }
+    getUnmarkedIndeterminedLabels() {
+      const result = [];
+      const elements = this.getElement('.labels-filter .is-indeterminate');
+      const labelsToKeep = elements.map((el) => labelsToKeep.push($(el).data('labelId')));
+      const selectedLabels = this.getLabelsFromSelection()
+        .forEach(() => {
+          const id = selectedLabels[j];
+          if (labelsToKeep.indexOf(id) === -1) {
+            result.push(id);
+          }
+        });
       return result;
-    };
+    }
 
 
     /**
@@ -103,9 +87,8 @@
      * Returns key/value pairs from form data
      */
 
-    IssuableBulkActions.prototype.getFormDataAsObject = function() {
-      var formData;
-      formData = {
+    getFormDataAsObject() {
+      const formData = {
         update: {
           state_event: this.form.find('input[name="update[state_event]"]').val(),
           assignee_id: this.form.find('input[name="update[assignee_id]"]').val(),
@@ -125,19 +108,18 @@
         });
       }
       return formData;
-    };
+    }
 
-    IssuableBulkActions.prototype.getLabelsToApply = function() {
-      var $labels, labelIds;
-      labelIds = [];
-      $labels = this.form.find('.labels-filter input[name="update[label_ids][]"]');
+    getLabelsToApply() {
+      const labelIds = [];
+      const $labels = this.form.find('.labels-filter input[name="update[label_ids][]"]');
       $labels.each(function(k, label) {
         if (label) {
           return labelIds.push(parseInt($(label).val()));
         }
       });
       return labelIds;
-    };
+    }
 
 
     /**
@@ -145,11 +127,10 @@
      * @return {Array} Array of labels IDs
      */
 
-    IssuableBulkActions.prototype.getLabelsToRemove = function() {
-      var indeterminatedLabels, labelsToApply, result;
-      result = [];
-      indeterminatedLabels = this.getUnmarkedIndeterminedLabels();
-      labelsToApply = this.getLabelsToApply();
+    getLabelsToRemove() {
+      const result = [];
+      const indeterminatedLabels = this.getUnmarkedIndeterminedLabels();
+      const labelsToApply = this.getLabelsToApply();
       indeterminatedLabels.map(function(id) {
         // We need to exclude label IDs that will be applied
         // By not doing this will cause issues from selection to not add labels at all
@@ -158,10 +139,9 @@
         }
       });
       return result;
-    };
+    }
+  }
 
-    return IssuableBulkActions;
+  global.IssuableBulkActions = IssuableBulkActions;
 
-  })();
-
-}).call(this);
+})(window.gl || (window.gl = {}));

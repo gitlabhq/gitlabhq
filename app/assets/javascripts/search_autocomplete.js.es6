@@ -9,14 +9,14 @@
   };
 
   class SearchAutocomplete {
-    constructor({ wrap, optsEl, autocompletePath, projectId, projectRef }) {
+    constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
       this.bindEventContext();
       this.wrap = wrap || $('.search');
-      this.optsEl = optsEl || wrap.find('.search-autocomplete-opts');
-      this.autocompletePath = autocompletePath || optsEl.data('autocomplete-path');
-      this.projectId = projectId || (optsEl.data('autocomplete-project-id') || '');
-      this.projectRef = projectRef || (optsEl.data('autocomplete-project-ref') || '');
-      this.dropdown = wrap.find('.dropdown');
+      this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');
+      this.autocompletePath = autocompletePath || this.optsEl.data('autocomplete-path');
+      this.projectId = projectId || (this.optsEl.data('autocomplete-project-id') || '');
+      this.projectRef = projectRef || (this.optsEl.data('autocomplete-project-ref') || '');
+      this.dropdown = this.wrap.find('.dropdown');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
       this.scopeInputEl = this.getElement('#scope');
