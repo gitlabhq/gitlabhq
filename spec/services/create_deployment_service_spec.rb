@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CreateDeploymentService, services: true do
-  let(:project) { create(:empty_project) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   let(:service) { described_class.new(project, user, params) }
@@ -88,7 +88,7 @@ describe CreateDeploymentService, services: true do
 
   describe 'processing of builds' do
     let(:environment) { nil }
-    
+
     shared_examples 'does not create environment and deployment' do
       it 'does not create a new environment' do
         expect { subject }.not_to change { Environment.count }
@@ -133,12 +133,12 @@ describe CreateDeploymentService, services: true do
 
     context 'without environment specified' do
       let(:build) { create(:ci_build, project: project) }
-      
+
       it_behaves_like 'does not create environment and deployment' do
         subject { build.success }
       end
     end
-    
+
     context 'when environment is specified' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
       let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production', options: options) }
@@ -168,5 +168,6 @@ describe CreateDeploymentService, services: true do
         end
       end
     end
+
   end
 end

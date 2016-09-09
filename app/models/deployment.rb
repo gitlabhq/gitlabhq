@@ -28,8 +28,10 @@ class Deployment < ActiveRecord::Base
   end
 
   def create_refs
-    project.repository.create_ref(ref_path, sha)
-    project.repository.create_ref(ref_path_head, sha)
+    path = project.repository.path_to_repo
+
+    project.repository.fetch_ref(path, ref, ref_path)
+    project.repository.fetch_ref(path, ref, ref_path_head)
   end
 
   def manual_actions

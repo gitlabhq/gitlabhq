@@ -5,13 +5,13 @@ class CreateDeploymentService < BaseService
     environment = find_or_create_environment
 
     deployment = project.deployments.create(
-                  environment: environment,
-                  ref: params[:ref],
-                  tag: params[:tag],
-                  sha: params[:sha],
-                  user: current_user,
-                  deployable: deployable
-                )
+      environment: environment,
+      ref: params[:ref],
+      tag: params[:tag],
+      sha: params[:sha],
+      user: current_user,
+      deployable: deployable
+    )
     deployment.create_refs
 
     deployment

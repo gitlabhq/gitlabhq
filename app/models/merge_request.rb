@@ -657,9 +657,9 @@ class MergeRequest < ActiveRecord::Base
     deployment_ids =
       target_project.environments.map do |environment|
         environment.deployment_for(diff_head_commit)
-      end
+      end.compact
 
-    deployment_ids.empty? ? nil : Deployment.find(deployment_ids)
+    deployment_ids.empty? ? nil : target_project.deployments.find(deployment_ids)
   end
 
   def state_human_name

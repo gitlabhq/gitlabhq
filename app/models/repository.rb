@@ -241,7 +241,7 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      create_ref(keep_around_ref_name(sha), sha)
+      rugged.references.create(keep_around_ref_name(sha), sha, force: true)
     rescue Rugged::ReferenceError => ex
       Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
@@ -256,10 +256,6 @@ class Repository
     rescue Rugged::ReferenceError
       false
     end
-  end
-
-  def create_ref(ref_name, sha, force: true)
-    rugged.references.create(ref_name, sha, force: force)
   end
 
   def tag_names
