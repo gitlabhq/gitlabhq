@@ -156,11 +156,13 @@
                 selectedClass.push('is-indeterminate');
               }
               if (active.indexOf(label.id) !== -1) {
+                // Remove is-indeterminate class if the item will be marked as active
                 i = selectedClass.indexOf('is-indeterminate');
                 if (i !== -1) {
                   selectedClass.splice(i, 1);
                 }
                 selectedClass.push('is-active');
+                // Add input manually
                 instance.addInput(this.fieldName, label.id);
               }
             }
@@ -172,6 +174,7 @@
             }
             if (label.duplicate) {
               spacing = 100 / label.color.length;
+              // Reduce the colors to 4
               label.color = label.color.filter(function(color, i) {
                 return i < 4;
               });
@@ -192,11 +195,13 @@
             } else {
               colorEl = '';
             }
+            // We need to identify which items are actually labels
             if (label.id) {
               selectedClass.push('label-item');
               $a.attr('data-label-id', label.id);
             }
             $a.addClass(selectedClass.join(' ')).html(colorEl + " " + label.title);
+            // Return generated html
             return $li.html($a).prop('outerHTML');
           },
           persistWhenHide: $dropdown.data('persistWhenHide'),
@@ -238,6 +243,7 @@
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = page === 'projects:merge_requests:index';
             $selectbox.hide();
+            // display:block overrides the hide-collapse rule
             $value.removeAttr('style');
             if (page === 'projects:boards:show') {
               return;
@@ -255,6 +261,7 @@
               }
             }
             if ($dropdown.hasClass('js-filter-bulk-update')) {
+              // If we are persisting state we need the classes
               if (!this.options.persistWhenHide) {
                 return $dropdown.parent().find('.is-active, .is-indeterminate').removeClass();
               }
@@ -324,7 +331,9 @@
       if ($('.selected_issue:checked').length) {
         return;
       }
+      // Remove inputs
       $('.issues_bulk_update .labels-filter input[type="hidden"]').remove();
+      // Also restore button text
       return $('.issues_bulk_update .labels-filter .dropdown-toggle-text').text('Label');
     };
 

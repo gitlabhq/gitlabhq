@@ -66,6 +66,9 @@
       // be added by all subclasses.
     };
 
+    // To be implemented on the extending class
+    // e.g.
+    // Api.gitignoreText item.name, @requestFileSuccess.bind(@)
     TemplateSelector.prototype.requestFileSuccess = function(file, skipFocus) {
       this.editor.setValue(file.content, 1);
       if (!skipFocus) this.editor.focus();

@@ -1,5 +1,12 @@
 (function(w) {
   $(function() {
+    // Toggle button. Show/hide content inside parent container.
+    // Button does not change visibility. If button has icon - it changes chevron style.
+    //
+    // %div.js-toggle-container
+    //   %a.js-toggle-button
+    //   %div.js-toggle-content
+    //
     $('body').on('click', '.js-toggle-button', function(e) {
       e.preventDefault();
       $(this)
