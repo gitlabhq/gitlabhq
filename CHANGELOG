@@ -102,6 +102,7 @@ v 8.12.0 (unreleased)
   - Use the default branch for displaying the project icon instead of master !5792 (Hannes Rosenögger)
   - Adds response mime type to transaction metric action when it's not HTML
   - Fix hover leading space bug in pipeline graph !5980
+  - Avoid conflict with admin labels when importing GitHub labels
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
   - Fix repository page ui issues
   - Fixed invisible scroll controls on build page on iPhone
