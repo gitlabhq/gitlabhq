@@ -11,6 +11,8 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
+  after_save :create_refs
+
   def last?
     self == environment.last_deployment
   end

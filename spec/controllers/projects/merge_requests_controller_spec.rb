@@ -694,4 +694,20 @@ describe Projects::MergeRequestsController do
       end
     end
   end
+
+  describe 'GET deployments' do
+    let(:json_response) { JSON.parse(response.body) }
+
+    before do
+      get :deployments, namespace_id: project.namespace.to_param, project_id: project.to_param,
+                  id: merge_request.iid
+    end
+
+    context 'when there are no deployments' do
+      it 'returns an empty Array' do
+        expect(json_response).to be_an Array
+        expect(json_response).to eq []
+      end
+    end
+  end
 end

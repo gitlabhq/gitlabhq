@@ -10,7 +10,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts,
+    :deployments
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds, :pipelines]
@@ -208,6 +209,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
       format.json { render json: { html: view_to_html_string('projects/merge_requests/show/_pipelines') } }
     end
+  end
+
+  def deployments
+    deployments = @merge_request.deployments
+
+    deployments.map do |deployment|
+      { environment_name: deployment.environment.name, created_at: deployment.created_at }
+    end
+
+    render json: deployments.to_json
   end
 
   def new
