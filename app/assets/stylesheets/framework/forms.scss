@@ -73,7 +73,7 @@ label {
 }
 
 .form-control {
-  @include box-shadow(none);
+  box-shadow: none;
   border-radius: 3px;
   padding: $gl-vert-padding $gl-input-padding;
 }
