@@ -17,8 +17,7 @@ RSpec.shared_examples "protected branches > access control > EE" do
 
       click_on "Protect"
 
-      sleep 1
-
+      within(".protected-branches-list") { expect(page).to have_content('master') }
       expect(ProtectedBranch.count).to eq(1)
       roles.each { |(access_type_id, _)| expect(ProtectedBranch.last.send("#{git_operation}_access_levels".to_sym).map(&:access_level)).to include(access_type_id) }
       users.each { |user| expect(ProtectedBranch.last.send("#{git_operation}_access_levels".to_sym).map(&:user_id)).to include(user.id) }

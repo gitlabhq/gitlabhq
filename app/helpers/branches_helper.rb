@@ -31,11 +31,9 @@ module BranchesHelper
   end
 
   def access_levels_data(access_levels)
-    levels = []
-
     access_levels.map do |level|
       if level.type == :user
-        levels << {
+        {
           id: level.id,
           type: level.type,
           user_id: level.user_id,
@@ -44,10 +42,8 @@ module BranchesHelper
           avatar_url: level.user.avatar_url
         }
       else
-        levels << { id: level.id, type: level.type, access_level: level.access_level }
+        { id: level.id, type: level.type, access_level: level.access_level }
       end
     end
-
-    levels
   end
 end
