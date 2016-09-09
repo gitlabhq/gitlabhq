@@ -1,5 +1,7 @@
 Please view this file on the master branch, on stable branches it's out of date.
 v 8.12.0 (Unreleased)
+  - [ES] Instrument Elasticsearch::Git::Repository
+  - [ES] Instrument other Gitlab::Elastic classes
 
 v 8.11.6
   - Exclude blocked users from potential MR approvers
