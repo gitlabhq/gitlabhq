@@ -34,9 +34,9 @@
         Build has been erased #{erased_by.html_safe} #{time_ago_with_tooltip(@build.erased_at)}
     - else
       #js-build-scroll.scroll-controls
-        = link_to '#build-trace', class: 'btn' do
+        %a.step-up-trace.btn
           %i.fa.fa-angle-up
-        = link_to '#down-build-trace', class: 'btn' do
+        %a.step-down-trace.btn
           %i.fa.fa-angle-down
       %pre.build-trace#build-trace
         %code.bash.js-build-output

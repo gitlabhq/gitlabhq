@@ -27,10 +27,11 @@
       $(document).off('click', '.js-sidebar-build-toggle').on('click', '.js-sidebar-build-toggle', this.toggleSidebar);
       $(window).off('resize.build').on('resize.build', this.hideSidebar);
       $(document).off('click', '.stage-item').on('click', '.stage-item', this.updateDropdown);
+      $('.step-up-trace, .step-down-trace').off('click').on('click', this.stepTrace);
       this.updateArtifactRemoveDate();
       if ($('#build-trace').length) {
         this.getInitialBuildTrace();
-        this.initScrollButtonAffix();
+        this.initScrollButtons();
       }
       if (this.build_status === "running" || this.build_status === "pending") {
         $('#autoscroll-button').on('click', function() {
@@ -106,7 +107,7 @@
       }
     };
 
-    Build.prototype.initScrollButtonAffix = function() {
+    Build.prototype.initScrollButtons = function() {
       var $body, $buildScroll, $buildTrace;
       $buildScroll = $('#js-build-scroll');
       $body = $('body');
@@ -163,6 +164,14 @@
       var stage = e.currentTarget.text;
       this.updateStageDropdownText(stage);
       this.populateJobs(stage);
+    };
+
+    Build.prototype.stepTrace = function(e) {
+      if ($(e.currentTarget).hasClass('step-up-trace')) {
+          $.scrollTo('-=50px');
+      } else {
+        $.scrollTo('+=50px');
+      }
     };
 
     return Build;
