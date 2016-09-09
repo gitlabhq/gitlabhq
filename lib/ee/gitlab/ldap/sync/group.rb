@@ -118,6 +118,11 @@ module EE
 
               desired_access = access_levels[member_dn]
 
+              # Skip validations and callbacks. We have a limited set of attrs
+              # due to the `select` lookup, and we need to be efficient.
+              # Low risk, because the member should already be valid.
+              member.update_column(:ldap, true) unless member.ldap?
+
               # Don't do anything if the user already has the desired access level
               if member.access_level == desired_access
                 access_levels.delete(member_dn)
@@ -127,10 +132,12 @@ module EE
               # Check and update the access level. If `desired_access` is `nil`
               # we need to delete the user from the group.
               if desired_access.present?
-                add_or_update_user_membership(user, group, desired_access)
-
-                # Delete this entry from the hash now that we've acted on it
+                # Delete this entry from the hash now that we're acting on it
                 access_levels.delete(member_dn)
+
+                next if member.ldap? && member.override?
+
+                add_or_update_user_membership(user, group, desired_access)
               elsif group.last_owner?(user)
                 warn_cannot_remove_last_owner(user, group)
               else
@@ -175,7 +182,7 @@ module EE
               else
                 # If you pass the user object, instead of just user ID,
                 # it saves an extra user database query.
-                group.add_users([user], access, skip_notification: true)
+                group.add_users([user], access, skip_notification: true, ldap: true)
               end
             end
           end
@@ -191,7 +198,7 @@ module EE
           end
 
           def select_and_preload_group_members(group)
-            group.members.select_access_level_and_user
+            group.members.select(:id, :access_level, :user_id, :ldap, :override)
               .with_identity_provider(provider).preload(:user)
           end
 

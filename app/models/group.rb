@@ -107,7 +107,7 @@ class Group < Namespace
     end
   end
 
-  def add_users(user_ids, access_level, current_user: nil, skip_notification: false, expires_at: nil)
+  def add_users(user_ids, access_level, current_user: nil, skip_notification: false, expires_at: nil, ldap: false)
     user_ids.each do |user_id|
       Member.add_user(
         self.group_members,
@@ -115,7 +115,8 @@ class Group < Namespace
         access_level,
         current_user: current_user,
         skip_notification: skip_notification,
-        expires_at: expires_at
+        expires_at: expires_at,
+        ldap: ldap
       )
     end
   end

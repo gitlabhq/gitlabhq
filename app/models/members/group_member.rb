@@ -9,7 +9,6 @@ class GroupMember < Member
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
-  scope :select_access_level_and_user, -> { select(:access_level, :user_id) }
   scope :with_identity_provider, ->(provider) do
     joins(user: :identities).where(identities: { provider: provider })
   end
