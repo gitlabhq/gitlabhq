@@ -31,7 +31,7 @@ module NamespacesHelper
   def process_extra_groups(extra_groups)
     # Remove duplicate groups - we either keep the ones that exist for the user
     # (already in groups) or ignore those that do not belong to the user.
-    duplicated_groups = extra_groups.map { |name| Namespace.where(name: name).map(&:name) }
+    duplicated_groups = extra_groups.map { |name| Namespace.where(name: name).pluck(:name) }
     extra_groups = extra_groups - duplicated_groups.flatten
 
     extra_groups.map { |name| Group.new(name: name) }
