@@ -137,7 +137,7 @@ describe ProjectTeam, models: true do
 
   describe '#find_member' do
     context 'personal project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:empty_project, :public) }
       let(:requester) { create(:user) }
 
       before do
@@ -200,7 +200,7 @@ describe ProjectTeam, models: true do
     let(:requester) { create(:user) }
 
     context 'personal project' do
-      let(:project) { create(:empty_project) }
+      let(:project) { create(:empty_project, :public) }
 
       context 'when project is not shared with group' do
         before do

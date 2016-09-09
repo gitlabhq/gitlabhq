@@ -68,7 +68,7 @@ describe Project, models: true do
     it { is_expected.to have_many(:forks).through(:forked_project_links) }
 
     describe '#members & #requesters' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :public) }
       let(:requester) { create(:user) }
       let(:developer) { create(:user) }
       before do

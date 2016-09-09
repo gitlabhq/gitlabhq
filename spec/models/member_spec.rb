@@ -57,7 +57,7 @@ describe Member, models: true do
 
   describe 'Scopes & finders' do
     before do
-      project = create(:empty_project)
+      project = create(:empty_project, :public)
       group = create(:group)
       @owner_user = create(:user).tap { |u| group.add_owner(u) }
       @owner = group.members.find_by(user_id: @owner_user.id)
