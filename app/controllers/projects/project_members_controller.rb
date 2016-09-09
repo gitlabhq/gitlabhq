@@ -15,6 +15,7 @@ class Projects::ProjectMembersController < Projects::ApplicationController
       @project_members = @project_members.where(user_id: users)
     end
 
+    @project_members = @project_members.order('access_level DESC')
     @project_members = @project_members.page(params[:page])
 
     @requesters = @project.requesters if can?(current_user, :admin_project, @project)
