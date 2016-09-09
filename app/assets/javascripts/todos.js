@@ -129,16 +129,21 @@
       var currPage, currPages, newPages, pageParams, url;
       currPages = this.getTotalPages();
       currPage = this.getCurrentPage();
+      // Refresh if no remaining Todos
       if (!total) {
         location.reload();
         return;
       }
+      // Do nothing if no pagination
       if (!currPages) {
         return;
       }
       newPages = Math.ceil(total / this.getTodosPerPage());
+      // Includes query strings
       url = location.href;
+      // If new total of pages is different than we have now
       if (newPages !== currPages) {
+        // Redirect to previous page if there's one available
         if (currPages > 1 && currPage === currPages) {
           pageParams = {
             page: currPages - 1
@@ -155,6 +160,7 @@
       if (!todoLink) {
         return;
       }
+      // Allow Meta-Click or Mouse3-click to open in a new tab
       if (e.metaKey || e.which === 2) {
         e.preventDefault();
         return window.open(todoLink, '_blank');

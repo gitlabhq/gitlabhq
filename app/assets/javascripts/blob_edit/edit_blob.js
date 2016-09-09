@@ -18,6 +18,8 @@
         return function() {
           return $("#file-content").val(_this.editor.getValue());
         };
+      // Before a form submission, move the content from the Ace editor into the
+      // submitted textarea
       })(this));
       this.initModePanesAndLinks();
       new BlobLicenseSelectors({

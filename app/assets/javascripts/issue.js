@@ -1,10 +1,6 @@
 
 /*= require flash */
-
-
 /*= require jquery.waitforimages */
-
-
 /*= require task_list */
 
 (function() {
@@ -13,6 +9,7 @@
   this.Issue = (function() {
     function Issue() {
       this.submitNoteForm = bind(this.submitNoteForm, this);
+      // Prevent duplicate event bindings
       this.disableTaskList();
       if ($('a.btn-close').length) {
         this.initTaskList();
@@ -99,6 +96,8 @@
         url: $('form.js-issuable-update').attr('action'),
         data: patchData
       });
+    // TODO (rspeicher): Make the issue description inline-editable like a note so
+    // that we can re-use its form here
     };
 
     Issue.prototype.initMergeRequests = function() {
@@ -128,6 +127,8 @@
     Issue.prototype.initCanCreateBranch = function() {
       var $container;
       $container = $('#new-branch');
+      // If the user doesn't have the required permissions the container isn't
+      // rendered at all.
       if ($container.length === 0) {
         return;
       }
