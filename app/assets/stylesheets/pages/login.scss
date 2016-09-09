@@ -17,6 +17,7 @@
     line-height: 1.5;
 
     p {
+      font-size: 18px;
       color: #888;
     }
 
@@ -36,10 +37,13 @@
     }
   }
 
+  p {
+    font-size: 13px;
+  }
   .login-box {
-    background: #fafafa;
-    border-radius: 10px;
-    box-shadow: 0 0 2px #ccc;
+    box-shadow: 0 0 0 1px $border-color;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
     padding: 15px;
 
     .login-heading h3 {
@@ -74,7 +78,6 @@
     .nav .active a {
       background: transparent;
     }
-  }
 
   .form-control {
     font-size: 14px;
@@ -92,16 +95,107 @@
       border-top: 0;
       margin-bottom: 20px;
     }
+  }
+
+  // Styles the glowing border of focused input for username async validation
+  .login-body {
+    font-size: 13px;
+
+
+    input + p {
+      margin-top: 5px;
+    }
+
+    .gl-field-success-outline {
+      border: 1px solid $green-normal;
+
+      &:focus {
+        box-shadow: 0 0 0 1px $green-normal inset, 0 0 4px 0 $green-normal;
+        border: 0 none;
+      }
+    }
+
+    .gl-field-error-outline {
+      border: 1px solid $red-normal;
+
+      &:focus {
+        opacity: .6;
+        box-shadow: 0 0 0 1px $red-normal inset, 0 0 4px 0 $red-normal;
+        border: 0 none;
+      }
+    }
+
+    .username .validation-success,
+    .gl-field-success-message {
+      color: $green-normal;
+    }
+
+    .username .validation-error,
+    .gl-field-error-message {
+      color: $red-normal;
+    }
+
+    .gl-field-hint {
+      color: $gl-text-color;
+    }
+
+  }
+
+  .new-session-tabs { // Are these being applied to other login-related screens? They need to be.
+    display: flex;
+    box-shadow: 0 0 0 1px $border-color;
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+
+    li {
+      flex: 1;
+      text-align: center;
 
     &.middle {
       border-top: 0;
       margin-bottom: 0;
       border-radius: 0;
-    }
+      &:last-of-type {
+        border-left: 1px solid $border-color;
+      }
 
+      &:not(.active) {
+        background-color: $gray-light;
+      }
+
+      a {
+        width: 100%;
+        font-size: 18px;
+        &:hover {
+          border: 1px solid transparent;
+        }
+      }
+
+      &.active {
+        border-bottom: 1px solid $border-color;
+
+        a {
+          border: none;
+          border-bottom: 2px solid $link-underline-blue;
+          color: $black;
+
+          &:hover {
+            border-bottom: 2px solid $link-underline-blue;
+          }
+        }
+      }
+    }
+  }
+
+
+  .form-control {
     &:active, &:focus {
       background-color: #fff;
     }
+  }
+
+  label {
+    font-weight: normal;
   }
 
   .devise-errors {
@@ -109,14 +203,6 @@
       margin-top: 0;
       font-size: 14px;
       color: #a00;
-    }
-  }
-
-  .remember-me {
-    margin-top: -10px;
-
-    label {
-      font-weight: normal;
     }
   }
 }
@@ -135,5 +221,33 @@
   img {
     width: 32px;
     height: 32px;
+  }
+}
+
+.devise-layout-html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+// Fixes footer container to bottom of viewport
+.devise-layout-html body {
+  // offset height of fixed header + 1 to avoid scroll
+  height: calc(100% - 51px);
+  margin: 0;
+  padding: 0;
+
+  .page-wrap {
+    min-height: 100%;
+    position: relative;
+  }
+
+  .footer-container, hr.footer-fixed {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: $white-light;
   }
 }

@@ -1,6 +1,10 @@
-= form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user' ) do
-  = text_field_tag :username, nil, {class: "form-control top", placeholder: "Username", autofocus: "autofocus"}
-  = password_field_tag :password, nil, {class: "form-control bottom", placeholder: "Password"}
+= form_tag(omniauth_authorize_path(:user, :crowd), id: 'new_crowd_user' class: 'show-gl-field-errors') do
+  .form-group
+    = label_tag 'Username or email', for: :username
+    = text_field_tag :username, nil, {class: "form-control top", title: "This field is required", autofocus: "autofocus", required: true }
+  .form-group
+    = label_tag :password
+    = password_field_tag :password, nil, { class: "form-control bottom", title: "This field is required.", required: true }
   - if devise_mapping.rememberable?
     .remember-me.checkbox
       %label{for: "remember_me"}

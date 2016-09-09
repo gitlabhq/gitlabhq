@@ -152,7 +152,8 @@
     @include btn-blue-medium;
   }
 
-  &.btn-info {
+  &.btn-info,
+  &.btn-register {
     @include btn-blue;
   }
 

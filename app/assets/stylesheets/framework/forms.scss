@@ -73,8 +73,8 @@ label {
 }
 
 .form-control {
-  box-shadow: none;
-  border-radius: 3px;
+  @include box-shadow(none);
+  border-radius: 2px;
   padding: $gl-vert-padding $gl-input-padding;
 }
 
@@ -127,3 +127,12 @@ label {
     border-right: 0;
   }
 }
+
+.help-block {
+  margin-bottom: 0;
+}
+
+.gl-field-error {
+  color: $red-normal;
+}
+

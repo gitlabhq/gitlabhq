@@ -1,19 +1,23 @@
 - page_title "Sign in"
 %div
-  - if signin_enabled? || ldap_enabled? || crowd_enabled?
-    = render 'devise/shared/signin_box'
+  - if form_based_providers.any?
+    = render 'devise/shared/tabs_ldap'
+  - else
+    = render 'devise/shared/tabs_normal'
+  .tab-content
+    - if signin_enabled? || ldap_enabled? || crowd_enabled?
+      = render 'devise/shared/signin_box'
 
-  -# Omniauth fits between signin/ldap signin and signup and does not have a surrounding box
-  - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
-    .clearfix.prepend-top-20
-      = render 'devise/shared/omniauth_box'
-
-  -# Signup only makes sense if you can also sign-in
-  - if signin_enabled? && signup_enabled?
-    .prepend-top-20
+    -# Signup only makes sense if you can also sign-in
+    - if signin_enabled? && signup_enabled?
       = render 'devise/shared/signup_box'
 
-  -# Show a message if none of the mechanisms above are enabled
-  - if !signin_enabled? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
-    %div
-      No authentication methods configured.
+    - if omniauth_enabled? && devise_mapping.omniauthable? && button_based_providers_enabled?
+      .clearfix
+        = render 'devise/shared/omniauth_box'
+
+    -# Show a message if none of the mechanisms above are enabled
+    - if !signin_enabled? && !ldap_enabled? && !(omniauth_enabled? && devise_mapping.omniauthable?)
+      %div
+        No authentication methods configured.
+

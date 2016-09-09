@@ -1,15 +1,16 @@
 require 'spec_helper'
 
-feature 'Users', feature: true do
+feature 'Users', feature: true, js: true do
   let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
 
   scenario 'GET /users/sign_in creates a new user account' do
     visit new_user_session_path
+    click_link 'Register'
     fill_in 'new_user_name',     with: 'Name Surname'
     fill_in 'new_user_username', with: 'Great'
     fill_in 'new_user_email',    with: 'name@mail.com'
     fill_in 'new_user_password', with: 'password1234'
-    expect { click_button 'Sign up' }.to change { User.count }.by(1)
+    expect { click_button 'Register' }.to change { User.count }.by(1)
   end
 
   scenario 'Successful user signin invalidates password reset token' do
@@ -31,11 +32,12 @@ feature 'Users', feature: true do
 
   scenario 'Should show one error if email is already taken' do
     visit new_user_session_path
+    click_link 'Register'
     fill_in 'new_user_name',     with: 'Another user name'
     fill_in 'new_user_username', with: 'anotheruser'
     fill_in 'new_user_email',    with: user.email
     fill_in 'new_user_password', with: '12341234'
-    expect { click_button 'Sign up' }.to change { User.count }.by(0)
+    expect { click_button 'Register' }.to change { User.count }.by(0)
     expect(page).to have_text('Email has already been taken')
     expect(number_of_errors_on_page(page)).to be(1), 'errors on page:\n #{errors_on_page page}'
   end
@@ -48,6 +50,30 @@ feature 'Users', feature: true do
 
       expect(current_path).to eq user_path(user)
       expect(page).to have_text(user.name)
+    end
+  end
+
+  feature 'username validation' do
+    include WaitForAjax
+    let(:loading_icon) { '.fa.fa-spinner' }
+    let(:username_input) { 'new_user_username' }
+
+    before(:each) do
+      visit new_user_session_path
+      click_link 'Register'
+      @username_field = find '.username'
+    end
+
+    scenario 'shows an error border if the username already exists' do
+      fill_in username_input, with: user.username
+      wait_for_ajax
+      expect(@username_field).to have_css '.gl-field-error-outline'
+    end
+
+    scenario 'doesn\'t show an error border if the username is available' do
+      fill_in username_input, with: 'new-user'
+      wait_for_ajax
+      expect(@username_field).not_to have_css '.gl-field-error-outline'
     end
   end
 

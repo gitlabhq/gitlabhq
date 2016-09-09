@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   skip_before_action :authenticate_user!
-  before_action :user
+  before_action :user, except: [:exists]
   before_action :authorize_read_user!, only: [:show]
 
   def show
@@ -83,6 +83,10 @@ class UsersController < ApplicationController
     @events = contributions_calendar.events_by_date(@calendar_date)
 
     render 'calendar_activities', layout: false
+  end
+
+  def exists
+    render json: { exists: !User.find_by_username(params[:username]).nil? }
   end
 
   private
