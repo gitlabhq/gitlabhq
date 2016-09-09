@@ -59,10 +59,10 @@ content on the Users#show page.
 */
 ((global) => {
   class UserTabs {
-    constructor ({ defaultAction = 'activity', action = defaultAction, parentEl }) {
+    constructor ({ defaultAction, action, parentEl }) {
       this.loaded = {};
-      this.defaultAction = defaultAction;
-      this.action = action;
+      this.defaultAction = defaultAction || 'activity';
+      this.action = action || this.defaultAction;
       this.$parentEl = $(parentEl) || $(document);
       this._location = window.location;
       this.$parentEl.find('.nav-links a')

@@ -9,20 +9,13 @@
   };
 
   class SearchAutocomplete {
-    constructor({
-      wrap = $('.search'),
-      optsEl = wrap.find('.search-autocomplete-opts'),
-      autocompletePath = optsEl.data('autocomplete-path'),
-      projectId = (optsEl.data('autocomplete-project-id') || ''),
-      projectRef = (optsEl.data('autocomplete-project-ref') || '')
-    } = {}) {
-
+    constructor({ wrap, optsEl, autocompletePath, projectId, projectRef }) {
       this.bindEventContext();
-      this.wrap = wrap;
-      this.optsEl = optsEl;
-      this.autocompletePath = autocompletePath;
-      this.projectId = projectId;
-      this.projectRef = projectRef;
+      this.wrap = wrap || $('.search');
+      this.optsEl = optsEl || wrap.find('.search-autocomplete-opts');
+      this.autocompletePath = autocompletePath || optsEl.data('autocomplete-path');
+      this.projectId = projectId || (optsEl.data('autocomplete-project-id') || '');
+      this.projectRef = projectRef || (optsEl.data('autocomplete-project-ref') || '');
       this.dropdown = wrap.find('.dropdown');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
