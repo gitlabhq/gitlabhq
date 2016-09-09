@@ -153,4 +153,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   def verify_workhorse_api!
     Gitlab::Workhorse.verify_api_request!(request.headers)
   end
+
+  def verify_workhorse_api!
+    Gitlab::Workhorse.verify_api_request!(request.headers)
+  end
 end
