@@ -257,8 +257,17 @@ module Ci
       ]
     end
 
+    def queued_duration
+      return unless started_at
+
+      seconds = (started_at - created_at).to_i
+      seconds unless seconds.zero?
+    end
+
     def update_duration
-      self.duration = calculate_duration
+      return unless started_at
+
+      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def execute_hooks

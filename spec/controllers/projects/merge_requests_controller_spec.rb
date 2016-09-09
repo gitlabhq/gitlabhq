@@ -451,6 +451,12 @@ describe Projects::MergeRequestsController do
         expect(response).to have_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./).now
       end
+
+      it 'delegates the update of the todos count cache to TodoService' do
+        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+
+        delete :destroy, namespace_id: project.namespace.path, project_id: project.path, id: merge_request.iid
+      end
     end
   end
 

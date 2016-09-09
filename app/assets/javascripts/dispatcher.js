@@ -23,6 +23,7 @@
         case 'projects:boards:show':
           shortcut_handler = new ShortcutsNavigation();
           break;
+        case 'projects:merge_requests:index':
         case 'projects:issues:index':
           Issuable.init();
           new IssuableBulkActions();
@@ -93,10 +94,6 @@
           break;
         case "projects:merge_requests:conflicts":
           window.mcui = new MergeConflictResolver()
-        case 'projects:merge_requests:index':
-          shortcut_handler = new ShortcutsNavigation();
-          Issuable.init();
-          break;
         case 'dashboard:activity':
           new Activities();
           break;

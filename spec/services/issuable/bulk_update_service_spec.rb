@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe Issues::BulkUpdateService, services: true do
+describe Issuable::BulkUpdateService, services: true do
   let(:user)    { create(:user) }
   let(:project) { create(:empty_project, namespace: user.namespace) }
 
   def bulk_update(issues, extra_params = {})
     bulk_update_params = extra_params
-      .reverse_merge(issues_ids: Array(issues).map(&:id).join(','))
+      .reverse_merge(issuable_ids: Array(issues).map(&:id).join(','))
 
-    Issues::BulkUpdateService.new(project, user, bulk_update_params).execute
+    Issuable::BulkUpdateService.new(project, user, bulk_update_params).execute('issue')
   end
 
   describe 'close issues' do

@@ -1,6 +1,6 @@
 class SlackService < Service
   prop_accessor :webhook, :username, :channel
-  boolean_accessor :notify_only_broken_builds
+  boolean_accessor :notify_only_broken_builds, :notify_only_broken_pipelines
   validates :webhook, presence: true, url: true, if: :activated?
 
   def initialize_properties
@@ -10,6 +10,7 @@ class SlackService < Service
     if properties.nil?
       self.properties = {}
       self.notify_only_broken_builds = true
+      self.notify_only_broken_pipelines = true
     end
   end
 
@@ -38,13 +39,15 @@ class SlackService < Service
         { type: 'text', name: 'username', placeholder: 'username' },
         { type: 'text', name: 'channel', placeholder: "#general" },
         { type: 'checkbox', name: 'notify_only_broken_builds' },
+        { type: 'checkbox', name: 'notify_only_broken_pipelines' },
       ]
 
     default_fields + build_event_channels
   end
 
   def supported_events
-    %w(push issue confidential_issue merge_request note tag_push build wiki_page)
+    %w[push issue confidential_issue merge_request note tag_push
+       build pipeline wiki_page]
   end
 
   def execute(data)
@@ -62,32 +65,22 @@ class SlackService < Service
     # 'close' action. Ignore update events for now to prevent duplicate
     # messages from arriving.
 
-    message = \
-      case object_kind
-      when "push", "tag_push"
-        PushMessage.new(data)
-      when "issue"
-        IssueMessage.new(data) unless is_update?(data)
-      when "merge_request"
-        MergeMessage.new(data) unless is_update?(data)
-      when "note"
-        NoteMessage.new(data)
-      when "build"
-        BuildMessage.new(data) if should_build_be_notified?(data)
-      when "wiki_page"
-        WikiPageMessage.new(data)
-      end
-
-    opt = {}
-
-    event_channel = get_channel_field(object_kind) || channel
-
-    opt[:channel] = event_channel if event_channel
-    opt[:username] = username if username
+    message = get_message(object_kind, data)
 
     if message
+      opt = {}
+
+      event_channel = get_channel_field(object_kind) || channel
+
+      opt[:channel] = event_channel if event_channel
+      opt[:username] = username if username
+
       notifier = Slack::Notifier.new(webhook, opt)
       notifier.ping(message.pretext, attachments: message.attachments, fallback: message.fallback)
+
+      true
+    else
+      false
     end
   end
 
@@ -104,6 +97,25 @@ class SlackService < Service
   end
 
   private
+
+  def get_message(object_kind, data)
+    case object_kind
+    when "push", "tag_push"
+      PushMessage.new(data)
+    when "issue"
+      IssueMessage.new(data) unless is_update?(data)
+    when "merge_request"
+      MergeMessage.new(data) unless is_update?(data)
+    when "note"
+      NoteMessage.new(data)
+    when "build"
+      BuildMessage.new(data) if should_build_be_notified?(data)
+    when "pipeline"
+      PipelineMessage.new(data) if should_pipeline_be_notified?(data)
+    when "wiki_page"
+      WikiPageMessage.new(data)
+    end
+  end
 
   def get_channel_field(event)
     field_name = event_channel_name(event)
@@ -142,6 +154,17 @@ class SlackService < Service
       false
     end
   end
+
+  def should_pipeline_be_notified?(data)
+    case data[:object_attributes][:status]
+    when 'success'
+      !notify_only_broken_pipelines?
+    when 'failed'
+      true
+    else
+      false
+    end
+  end
 end
 
 require "slack_service/issue_message"
@@ -149,4 +172,5 @@ require "slack_service/push_message"
 require "slack_service/merge_message"
 require "slack_service/note_message"
 require "slack_service/build_message"
+require "slack_service/pipeline_message"
 require "slack_service/wiki_page_message"
