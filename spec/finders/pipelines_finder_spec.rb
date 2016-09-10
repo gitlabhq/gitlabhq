@@ -43,9 +43,10 @@ describe PipelinesFinder do
     let(:params) { { scope: 'running' } }
 
     it 'orders in descending order on ID' do
-      create(:ci_pipeline, project: project, ref: 'feature')
+      feature_pipeline = create(:ci_pipeline, project: project, ref: 'feature')
 
-      expect(subject.map(&:id)).to eq [3, 2, 1]
+      expected_ids = [feature_pipeline.id, branch_pipeline.id, tag_pipeline.id].sort.reverse
+      expect(subject.map(&:id)).to eq expected_ids
     end
   end
 end
