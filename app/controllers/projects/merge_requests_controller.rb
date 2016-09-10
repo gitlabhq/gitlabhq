@@ -377,9 +377,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
 
     deployments = @merge_request.deployments
+
     if deployments
-      deployments.map do |deployment|
-        { environment_name: deployment.environment.name, created_at: deployment.created_at }
+      deployments = deployments.map do |deployment|
+        deployment = {
+          environment_name: deployment.environment.name,
+          environment_id: deployment.environment.id,
+          external_url: deployment.environment.external_url,
+          created_at: deployment.created_at
+        }
+        if deployment[:external_url]
+          deployment[:external_url_formatted] = deployment[:external_url].gsub(/\A.*?:\/\//, '')
+        end
+        deployment
       end
     end
 

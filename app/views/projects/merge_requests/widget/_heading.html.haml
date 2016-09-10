@@ -43,17 +43,15 @@
       = icon("times-circle")
       Could not connect to the CI server. Please check your settings and try again.
 
-- @merge_request.deployments.each do |deployment|
-  - environment = deployment.environment
-  .mr-widget-heading
+-# JavaScript template
+.js-deployment-status.hidden
+  .mr-widget-heading{id: '{{ environment_id }}'}
     .ci_widget.ci-success
-      = ci_icon_for_status("success")
-      %span.hidden-sm
+      = ci_icon_for_status('success')
+      %span
         Deployed to
         = succeed '.' do
-          = link_to environment.name, namespace_project_environment_path(@project.namespace, @project, environment), class: 'environment'
-          = time_ago_with_tooltip(deployment.created_at)
-        - external_url = environment.external_url
-        - if external_url
-          = link_to external_url, target: '_blank' do
-            = icon('external-link', text: "View on #{external_url.gsub(/\A.*?:\/\//, '')}", right: true)
+          = link_to '{{ environment_name }}', "#{@project.namespace.path}/#{@project.path}/environments/{{ environment_id }}", class: 'environment', data: { toggle: 'tooltip', placement: 'top', title: '{{ created_at }}' }
+        .js-deployment-link
+          = link_to '{{ external_url }}', target: '_blank' do
+            = icon('external-link', text: 'View on {{ external_url_formatted }}', right: true)

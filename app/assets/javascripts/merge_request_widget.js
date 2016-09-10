@@ -1,6 +1,8 @@
 (function() {
   var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
+  var DEPLOYMENT_TEMPLATE;
+
   this.MergeRequestWidget = (function() {
     function MergeRequestWidget(opts) {
       // Initialize MergeRequestWidget behavior
@@ -19,6 +21,7 @@
       clearInterval(this.fetchBuildStatusInterval);
       this.clearEventListeners();
       this.addEventListeners();
+      this.initDeploymentStatus();
       this.getCIStatus(false);
       this.pollCIStatus();
       notifyPermissions();
@@ -48,6 +51,13 @@
       })(this));
     };
 
+    MergeRequestWidget.prototype.initDeploymentStatus = function() {
+      var $deploymentStatus = $('.js-deployment-status');
+      DEPLOYMENT_TEMPLATE = $deploymentStatus.html();
+      $deploymentStatus.remove();
+      this.$widgetBody = $('.mr-widget-body');
+    };
+
     MergeRequestWidget.prototype.mergeInProgress = function(deleteSourceBranch) {
       if (deleteSourceBranch == null) {
         deleteSourceBranch = false;
@@ -62,7 +72,7 @@
               urlSuffix = deleteSourceBranch ? '?deleted_source_branch=true' : '';
               return window.location.href = window.location.pathname + urlSuffix;
             } else if (data.merge_error) {
-              return $('.mr-widget-body').html("<h4>" + data.merge_error + "</h4>");
+              return this.$widgetBody.html("<h4>" + data.merge_error + "</h4>");
             } else {
               callback = function() {
                 return merge_request_widget.mergeInProgress(deleteSourceBranch);
@@ -118,6 +128,7 @@
           if (data.status === '') {
             return;
           }
+          if (data.deployments && data.deployments.length) _this.renderDeployments(data.deployments);
           if (_this.firstCICheck || data.status !== _this.opts.ci_status && (data.status != null)) {
             _this.opts.ci_status = data.status;
             _this.showCIStatus(data.status);
@@ -148,6 +159,21 @@
           }
         };
       })(this));
+    };
+
+    MergeRequestWidget.prototype.renderDeployments = function(deployments) {
+      for (var i = 0; i < deployments.length; i++) {
+        var deployment = deployments[i];
+        if ($('.mr-state-widget #' + deployment.environment_id).length) return;
+        var $template = $(DEPLOYMENT_TEMPLATE);
+        if (!deployment.external_url) $('.js-deployment-link', $template).remove();
+        deployment.created_at = $.timeago(deployment.created_at);
+        var templateString = $template[0].outerHTML
+          .replace(/{{/g, '<%-')
+          .replace(/}}/g, '%>');
+        var template = _.template(templateString)(deployment)
+        this.$widgetBody.before(template);
+      }
     };
 
     MergeRequestWidget.prototype.showCIStatus = function(state) {
