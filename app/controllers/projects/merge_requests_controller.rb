@@ -10,8 +10,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_action :module_enabled
   before_action :merge_request, only: [
     :edit, :update, :show, :diffs, :commits, :conflicts, :builds, :pipelines, :merge, :merge_check,
-    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts,
-    :deployments
+    :ci_status, :toggle_subscription, :cancel_merge_when_build_succeeds, :remove_wip, :resolve_conflicts
   ]
   before_action :validates_merge_request, only: [:show, :diffs, :commits, :builds, :pipelines]
   before_action :define_show_vars, only: [:show, :diffs, :commits, :conflicts, :builds, :pipelines]
@@ -211,16 +210,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def deployments
-    deployments = @merge_request.deployments
-
-    deployments.map do |deployment|
-      { environment_name: deployment.environment.name, created_at: deployment.created_at }
-    end
-
-    render json: deployments.to_json
-  end
-
   def new
     apply_diff_view_cookie!
 
@@ -387,11 +376,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       end
     end
 
+    deployments = @merge_request.deployments
+    if deployments
+      deployments.map do |deployment|
+        { environment_name: deployment.environment.name, created_at: deployment.created_at }
+      end
+    end
+
     response = {
       title: merge_request.title,
       sha: merge_request.diff_head_commit.short_id,
       status: status,
-      coverage: coverage
+      coverage: coverage,
+      deployments: deployments
     }
 
     render json: response

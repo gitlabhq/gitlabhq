@@ -740,7 +740,6 @@ Rails.application.routes.draw do
             post :remove_wip
             get :diff_for_path
             post :resolve_conflicts
-            get :deployments
           end
 
           collection do
