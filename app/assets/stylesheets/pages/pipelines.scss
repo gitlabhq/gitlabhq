@@ -155,6 +155,30 @@
       vertical-align: middle;
       overflow: visible;
     }
+
+    .stage-container {
+      display: inline-block;
+      position: relative;
+      margin-right: 6px;
+
+      &:not(:last-child) {
+        &::after {
+          content: '';
+          height: 20px;
+          width: 9px;
+          position: absolute;;
+          right: -9px;
+          bottom: 36%;
+          border-bottom: 2px solid $white-dark;
+        }
+      }
+    }
+
+    .stage-empty {
+      g {
+        fill: $white-normal;
+      }
+    }
   }
 
   .duration,

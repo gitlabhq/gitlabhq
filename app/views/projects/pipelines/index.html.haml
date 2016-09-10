@@ -47,13 +47,14 @@
           %tbody
             %th Status
             %th Commit
-            - stages.each do |stage|
-              %th.stage
-                - if stage.titleize.length > 12
-                  %span.has-tooltip{ title: "#{stage.titleize}" }
-                    = stage.titleize
-                - else
-                  = stage.titleize
+            %th Stages
+            -# - stages.each do |stage|
+            -#   %th.stage
+            -#     - if stage.titleize.length > 12
+            -#       %span.has-tooltip{ title: "#{stage.titleize}" }
+            -#         = stage.titleize
+            -#     - else
+            -#       = stage.titleize
             %th
             %th
           = render @pipelines, commit_sha: true, stage: true, allow_retry: true, stages: stages
