@@ -64,7 +64,7 @@ describe CacheMarkdownField do
   let(:html) { "<p><code>Foo</code></p>" }
 
   let(:updated_markdown) { "`Bar`" }
-  let(:updated_html) { "<p><code>Bar</code></p>" }
+  let(:updated_html) { "<p dir=\"auto\"><code>Bar</code></p>" }
 
   subject { ThingWithMarkdownFields.new(foo: markdown, foo_html: html) }
 
