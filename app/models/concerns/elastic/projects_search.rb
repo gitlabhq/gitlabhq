@@ -12,7 +12,8 @@ module Elastic
         indexes :path,                type: :string,
                                       index_options: 'offsets'
         indexes :name_with_namespace, type: :string,
-                                      index_options: 'offsets'
+                                      index_options: 'offsets',
+                                      analyzer: :my_ngram_analyzer
         indexes :path_with_namespace, type: :string,
                                       index_options: 'offsets'
         indexes :description,         type: :string,

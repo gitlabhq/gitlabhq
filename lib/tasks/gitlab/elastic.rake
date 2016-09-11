@@ -58,7 +58,7 @@ namespace :gitlab do
 
     desc "GitLab | Elasticsearch | Index wiki repositories"
     task index_wikis: :environment  do
-      projects = apply_project_filters(Project.where(wiki_enabled: true))
+      projects = apply_project_filters(Project.with_wiki_enabled)
 
       projects.find_each do |project|
         unless project.wiki.empty?
