@@ -1,13 +1,13 @@
 # Frontend Development Guidelines
 
 This document describes various guidelines to ensure consistency and quality
-across GitLab's frontend.
+across GitLab's frontend team.
 
 ## Overview
 
-GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] (with
-[Hamlit][hamlit] for performance reasons, be wary of [the limitations this comes
-with][hamlit-limits]), [SCSS][scss], and plain JavaScript with
+GitLab is built on top of [Ruby on Rails][rails] using [Haml][haml] with
+[Hamlit][hamlit]. Be wary of [the limitations that come with using
+Hamlit][hamlit-limits]. We also use [SCSS][scss] and plain JavaScript with
 [ES6 by way of Babel][es6].
 
 The asset pipeline is [Sprockets][sprockets], which handles the concatenation,
@@ -19,8 +19,7 @@ minification, and compression of our assets.
 ### Vue
 
 For more complex frontend features, we recommend using Vue.js. It shares
-some ideas with React.js while being smaller and – arguably – easier to get
-into.
+some ideas with React.js as well as Angular.
 
 To get started with Vue, read through [their documentation][vue-docs].
 
@@ -62,9 +61,10 @@ Steps to split page-specific JavaScript from the main `application.js`:
   = page_specific_javascript_tag('graphs/graphs_bundle.js')
 ```
 
-The above loads `chart.js` and `graphs_bundle.js` for only this page. `chart.js`
+The above loads `chart.js` and `graphs_bundle.js` for this page only. `chart.js`
 is separated from the bundle file so it can be cached separately from the bundle
-and reused for other pages that also rely on the library.
+and reused for other pages that also rely on the library. For an example, see
+[this Haml file][page-specific-js-example].
 
 ### Minimizing page size
 
@@ -74,17 +74,17 @@ data is used for users with capped data plans.
 
 General tips:
 
-- Don't add unnecessary fonts.
+- Don't add new fonts.
 - Prefer font formats with better compression, e.g. WOFF2 is better than WOFF, which is better than TTF.
 - Compress and minify assets wherever possible (For CSS/JS, Sprockets does this for us).
-- If a piece of functionality can be reasonably done without adding extra libraries, prefer not to use extra libraries.
-- Use page-specific JavaScripts as described above to dynamically load libraries that are only needed on certain pages.
+- If some functionality can reasonably be achieved without adding extra libraries, avoid them.
+- Use page-specific JavaScript as described above to dynamically load libraries that are only needed on certain pages.
 
 ## Accessibility
 
 ### Resources
 
-The [Chrome Accessibility Developer Tools][chrome-accessibility-developer-tools]
+[Chrome Accessibility Developer Tools][chrome-accessibility-developer-tools]
 are useful for testing for potential accessibility problems in GitLab.
 
 Accessibility best-practices and more in-depth information is available on
@@ -160,13 +160,11 @@ such as with ReCaptcha, which cannot be used without an `iframe`.
 
 ### Avoiding inline scripts and styles
 
-In order to protect users from [XSS vulnerabilities][xss], our intention is to
-disable inline scripts entirely using Content Security Policy at some point in
-the future.
+In order to protect users from [XSS vulnerabilities][xss], we will disable inline scripts in the future using Content Security Policy.
 
 While inline scripts can be useful, they're also a security concern. If
 user-supplied content is unintentionally left un-sanitized, malicious users can
-inject scripts into the site.
+inject scripts into the web app.
 
 Inline styles should be avoided in almost all cases, they should only be used
 when no alternatives can be found. This allows reusability of styles as well as
@@ -180,8 +178,9 @@ See the relevant style guides for our guidelines and for information on linting:
 
 ## Testing
 
-Feature tests should be written for all new features as well as any regressions
-to prevent them from occurring again.
+Feature tests need to be written for all new features. Regression tests
+also need to be written for all bug fixes to prevent them from occurring
+again in the future.
 
 See [the Testing Standards and Style Guidelines](testing.md) for more
 information.
@@ -206,6 +205,7 @@ For our currently-supported browsers, see our [requirements][requirements].
 [browser-diet]: https://browserdiet.com/
 [d3]: https://d3js.org/
 [chartjs]: http://www.chartjs.org/
+[page-specific-js-example]: https://gitlab.com/gitlab-org/gitlab-ce/blob/13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f/app/views/projects/graphs/_head.html.haml#L6-8
 [chrome-accessibility-developer-tools]: https://github.com/GoogleChrome/accessibility-developer-tools
 [audit-rules]: https://github.com/GoogleChrome/accessibility-developer-tools/wiki/Audit-Rules
 [observatory-cli]: https://github.com/mozilla/http-observatory-cli)
