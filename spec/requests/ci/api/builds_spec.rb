@@ -158,6 +158,16 @@ describe Ci::API::API do
         end
       end
 
+      context 'when runner is paused' do
+        let(:inactive_runner) { create(:ci_runner, :inactive, token: "InactiveRunner") }
+
+        before do
+          register_builds inactive_runner.token
+        end
+
+        it { expect(response).to have_http_status 404 }
+      end
+
       def register_builds(token = runner.token, **params)
         post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
       end
