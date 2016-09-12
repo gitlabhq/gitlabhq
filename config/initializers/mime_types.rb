@@ -13,9 +13,5 @@ Mime::Type.register "video/mp4",  :mp4, [], [:m4v, :mov]
 Mime::Type.register "video/webm", :webm
 Mime::Type.register "video/ogg",  :ogv
 
-middlewares = Gitlab::Application.config.middleware
-middlewares.swap(ActionDispatch::ParamsParser, ActionDispatch::ParamsParser, {
-  Mime::Type.lookup('application/vnd.git-lfs+json') => lambda do |body|
-    ActiveSupport::JSON.decode(body)
-  end
-})
+Mime::Type.unregister :json
+Mime::Type.register 'application/json', :json, %w(application/vnd.git-lfs+json application/json)
