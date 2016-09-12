@@ -89,6 +89,7 @@ v 8.12.0 (unreleased)
   - Fix repo title alignment (ClemMakesApps)
   - Change update interval of contacted_at
   - Fix branch title trailing space on hover (ClemMakesApps)
+  - Don't include 'Created By' tag line when importing from GitHub if there is a linked GitLab account (EspadaV8)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
   - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
   - Order award emoji tooltips in order they were added (EspadaV8)
