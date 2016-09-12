@@ -26,7 +26,7 @@
 
 ## Administrator documentation
 
-- [Upload your GitLab License](license/README.md) Upload the license you purchased for GitLab Enterprise Edition to unlock its features.
+- [Upload your GitLab License](user/admin_area/license.md) Upload the license you purchased for GitLab Enterprise Edition to unlock its features.
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
