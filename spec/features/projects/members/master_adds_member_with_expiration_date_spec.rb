@@ -2,7 +2,6 @@ require 'spec_helper'
 
 feature 'Projects > Members > Master adds member with expiration date', feature: true, js: true do
   include WaitForAjax
-  include Select2Helper
   include ActiveSupport::Testing::TimeHelpers
 
   let(:master) { create(:user) }
@@ -19,7 +18,7 @@ feature 'Projects > Members > Master adds member with expiration date', feature:
       visit namespace_project_project_members_path(project.namespace, project)
 
       page.within '.users-project-form' do
-        select2(new_member.id, from: '#user_ids', multiple: true)
+        find('#js-member-user-ids', visible: false).set(new_member.id)
         fill_in 'expires_at', with: '2016-08-10'
         click_on 'Add to project'
       end

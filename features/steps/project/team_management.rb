@@ -19,7 +19,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: "Mike")
 
     page.within ".users-project-form" do
-      find('#js-member-user-ids', visible: true).set(user.id)
+      find('#js-member-user-ids', visible: false).set(user.id)
       select "Reporter", from: "access_level"
     end
     click_button "Add to project"
@@ -36,7 +36,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I select "sjobs@apple.com" as "Reporter"' do
     page.within ".users-project-form" do
-      find('#js-member-user-ids', visible: true).set('sjobs@apple.com')
+      find('#js-member-user-ids', visible: false).set('sjobs@apple.com')
       select "Reporter", from: "access_level"
     end
     click_button "Add to project"

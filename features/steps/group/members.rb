@@ -10,7 +10,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     user = User.find_by(name: "Mike")
 
     page.within ".users-group-form" do
-      find('#js-member-user-ids', visible: true).set(user.id)
+      find('#js-member-user-ids', visible: false).set(user.id)
       select "Reporter", from: "access_level"
     end
 
@@ -21,7 +21,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     user = User.find_by(name: "Mike")
 
     page.within ".users-group-form" do
-      find('#js-member-user-ids', visible: true).set(user.id)
+      find('#js-member-user-ids', visible: false).set(user.id)
       select "Master", from: "access_level"
     end
 
@@ -44,7 +44,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
 
   step 'I select "sjobs@apple.com" as "Reporter"' do
     page.within ".users-group-form" do
-      find('#js-member-user-ids', visible: true).set("sjobs@apple.com")
+      find('#js-member-user-ids', visible: false).set("sjobs@apple.com")
       select "Reporter", from: "access_level"
     end
 
@@ -63,7 +63,7 @@ class Spinach::Features::GroupMembers < Spinach::FeatureSteps
     user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
 
     page.within ".users-group-form" do
-      find('#js-member-user-ids', visible: true).set(user.id)
+      find('#js-member-user-ids', visible: false).set(user.id)
       select "Reporter", from: "access_level"
     end
 

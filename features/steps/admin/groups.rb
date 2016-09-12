@@ -38,7 +38,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
-    find('#js-member-user-ids', visible: true).set(user_john.id)
+    find('#js-member-user-ids', visible: false).set(user_john.id)
     page.within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
@@ -46,7 +46,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "johndoe@gitlab.com" from user list as "Reporter"' do
-    find('#js-member-user-ids', visible: true).set('johndoe@gitlab.com')
+    find('#js-member-user-ids', visible: false).set('johndoe@gitlab.com')
     page.within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
@@ -101,7 +101,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
 
   step 'I select current user as "Developer"' do
     page.within ".users-group-form" do
-      find('#js-member-user-ids', visible: true).set(current_user.id)
+      find('#js-member-user-ids', visible: false).set(current_user.id)
       select "Developer", from: "access_level"
     end
 
