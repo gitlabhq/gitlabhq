@@ -17,21 +17,24 @@ describe API::API, api: true  do
            assignee: user,
            project: project,
            state: :closed,
-           milestone: milestone
+           milestone: milestone,
+           updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
     create :issue,
            :confidential,
            project: project,
            author: author,
-           assignee: assignee
+           assignee: assignee,
+           updated_at: 2.hours.ago
   end
   let!(:issue) do
     create :issue,
            author: user,
            assignee: user,
            project: project,
-           milestone: milestone
+           milestone: milestone,
+           updated_at: 1.hour.ago
   end
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
@@ -135,6 +138,42 @@ describe API::API, api: true  do
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(0)
       end
+
+      it 'sorts by created_at descending by default' do
+        get api('/issues', user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      it 'sorts ascending when requested' do
+        get api('/issues?sort=asc', user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort)
+      end
+
+      it 'sorts by updated_at descending when requested' do
+        get api('/issues?order_by=updated_at', user)
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      it 'sorts by updated_at ascending when requested' do
+        get api('/issues?order_by=updated_at&sort=asc', user)
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+        expect(response_dates).to eq(response_dates.sort)
+      end
     end
   end
 
@@ -147,21 +186,24 @@ describe API::API, api: true  do
              assignee: user,
              project: group_project,
              state: :closed,
-             milestone: group_milestone
+             milestone: group_milestone,
+             updated_at: 3.hours.ago
     end
     let!(:group_confidential_issue) do
       create :issue,
              :confidential,
              project: group_project,
              author: author,
-             assignee: assignee
+             assignee: assignee,
+             updated_at: 2.hours.ago
     end
     let!(:group_issue) do
       create :issue,
              author: user,
              assignee: user,
              project: group_project,
-             milestone: group_milestone
+             milestone: group_milestone,
+             updated_at: 1.hour.ago
     end
     let!(:group_label) do
       create(:label, title: 'group_lbl', color: '#FFAABB', project: group_project)
@@ -278,6 +320,42 @@ describe API::API, api: true  do
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(group_closed_issue.id)
     end
+
+    it 'sorts by created_at descending by default' do
+      get api(base_url, user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts ascending when requested' do
+      get api("#{base_url}?sort=asc", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
+
+    it 'sorts by updated_at descending when requested' do
+      get api("#{base_url}?order_by=updated_at", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts by updated_at ascending when requested' do
+      get api("#{base_url}?order_by=updated_at&sort=asc", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
   end
 
   describe "GET /projects/:id/issues" do
@@ -385,6 +463,42 @@ describe API::API, api: true  do
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(1)
       expect(json_response.first['id']).to eq(closed_issue.id)
+    end
+
+    it 'sorts by created_at descending by default' do
+      get api("#{base_url}/issues", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts ascending when requested' do
+      get api("#{base_url}/issues?sort=asc", user)
+      response_dates = json_response.map { |issue| issue['created_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
+    end
+
+    it 'sorts by updated_at descending when requested' do
+      get api("#{base_url}/issues?order_by=updated_at", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort.reverse)
+    end
+
+    it 'sorts by updated_at ascending when requested' do
+      get api("#{base_url}/issues?order_by=updated_at&sort=asc", user)
+      response_dates = json_response.map { |issue| issue['updated_at'] }
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_an Array
+      expect(response_dates).to eq(response_dates.sort)
     end
   end
 
