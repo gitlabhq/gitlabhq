@@ -206,6 +206,7 @@ spinach 9 10 ruby21: *spinach-knapsack-ruby21
     - bundle exec $CI_BUILD_NAME
 
 rubocop: *exec
+rake haml-lint: *exec
 rake scss_lint: *exec
 rake brakeman: *exec
 rake flog: *exec
