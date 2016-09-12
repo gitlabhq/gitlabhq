@@ -4,8 +4,8 @@
 
 %div{ class: container_class }
   .top-area
-    - build_path = ->(scope) { project_builds_path(@project, scope: scope) }
-    = render "shared/builds/tabs", build_path: build_path, all_builds: @all_builds, scope: @scope
+    - build_path_proc = ->(scope) { project_builds_path(@project, scope: scope) }
+    = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 
     .nav-controls
       - if can?(current_user, :update_build, @project)

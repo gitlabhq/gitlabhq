@@ -1,4 +1,5 @@
-- admin = false unless admin
+- admin = false unless defined?(admin)
+
 - if builds.blank?
   %li
     .nothing-here-block No builds to show
@@ -15,13 +16,11 @@
           %th Stage
           %th Name
           %th
-          %th
-            - if !admin && project.build_coverage_enabled?
-              Coverage
+          %th Coverage
           %th
 
       - if admin
-        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, admin: true }
+        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, coverage: true, admin: true }
       - else
         = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: {commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled? }
 
