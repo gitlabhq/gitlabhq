@@ -36,11 +36,12 @@ module Boards
       end
 
       def set_state
+        return if list.movable?
+
         params[:state] =
           case list.list_type.to_sym
           when :backlog then 'opened'
           when :done then 'closed'
-          else params[:state]
           end
       end
 
