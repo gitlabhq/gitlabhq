@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe 'projects/merge_requests/widget/_heading' do
-  include Devise::TestHelpers
+feature 'Widget Deployments Header', feature: true, js: true do
+  include WaitForAjax
 
-  context 'when released to an environment' do
+  describe 'when deployed to an environment' do
     let(:project)       { merge_request.target_project }
     let(:merge_request) { create(:merge_request, :merged) }
     let(:environment)   { create(:environment, project: project) }
@@ -12,15 +12,13 @@ describe 'projects/merge_requests/widget/_heading' do
     end
 
     before do
-      assign(:merge_request, merge_request)
-      assign(:project, project)
-
-      render
+      login_as :admin
+      visit namespace_project_merge_request_path(project.namespace, project, merge_request)
     end
 
     it 'displays that the environment is deployed' do
-      expect(rendered).to match("Deployed to")
-      expect(rendered).to match("#{environment.name}")
+      wait_for_ajax
+      expect(page).to have_content("Deployed to #{environment.name}.")
     end
   end
 end
