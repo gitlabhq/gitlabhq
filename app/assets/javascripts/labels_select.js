@@ -143,7 +143,7 @@
               return callback(data);
             });
           },
-          renderRow: function(label, instance) {
+          renderRow: function(label, group, index, instance) {
             var $a, $li, active, color, colorEl, indeterminate, removesAll, selectedClass, spacing;
             $li = $('<li>');
             $a = $('<a href="#">');
