@@ -21,6 +21,8 @@ module Ci
         user: current_user,
         trigger_request: trigger_request
       )
+      # OPTIMIZE: We copy over all attributes of Job into Build, therefore this workaround
+      build_attributes = build_attributes.except(:only, :except)
       pipeline.builds.create(build_attributes)
     end
 
