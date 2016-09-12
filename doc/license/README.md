@@ -23,7 +23,7 @@ it in your local machine. You can then upload it directly by choosing the
 license file and clicking the **Upload license** button. In the image below,
 you can see that the selected license file is named `GitLab.gitlab-license`.
 
-![Upload license](img/upload.png)
+![Upload license](img/license_upload.png)
 
 ---
 
@@ -31,14 +31,14 @@ If you've received your license as plain text, you need to select the
 "Enter license key" option, copy the license, paste it into the "License key"
 field and click **Upload license**.
 
-![Enter license](img/enter.png)
+![Enter license](img/license_enter.png)
 
 Once you've uploaded your license, all GitLab Enterprise Edition functionality
 will be active until the end of the license period.
 You can review the license details at any time in the License section of the
 Admin Area.
 
-![License details](img/details.png)
+![License details](img/license_details.png)
 
 ## License history
 
@@ -55,7 +55,7 @@ One month before the license expires, a message informing when the expiration
 is due to will be shown to GitLab admins. Make sure that you update your license
 beforehand otherwise you will miss important features if it expires.
 
-![License expiration](img/expire_message.png)
+![License expiration](img/license_expire_message.png)
 
 ## What happens when your license expires
 
@@ -65,7 +65,7 @@ GitLab and creation of new issues and merge requests will be disabled.
 A message to inform of the locked state of GitLab will be presented to all
 users and admins will be able to see a link to upload a license.
 
-![No license message](img/no_license_message.png)
+![No license message](img/license_no_license_message.png)
 
 [free trial]: https://about.gitlab.com/free-trial/
 [pricing]: https://about.gitlab.com/pricing/
