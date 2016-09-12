@@ -29,6 +29,7 @@ v 8.12.0 (unreleased)
   - Fix bug where pagination is still displayed despite all todos marked as done (ClemMakesApps)
   - Request only the LDAP attributes we need !6187
   - Center build stage columns in pipeline overview (ClemMakesApps)
+  - Fix bug with tooltip not hiding on discussion toggle button
   - Rename behaviour to behavior in bug issue template for consistency (ClemMakesApps)
   - Remove suggested colors hover underline (ClemMakesApps)
   - Shorten task status phrase (ClemMakesApps)
