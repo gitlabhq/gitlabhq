@@ -38,7 +38,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
-    find('#js-member-user-ids', visible: false).set(user_john.id)
+    select2(user_john.id, from: "#user_ids", multiple: true)
     page.within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
@@ -46,7 +46,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "johndoe@gitlab.com" from user list as "Reporter"' do
-    find('#js-member-user-ids', visible: false).set('johndoe@gitlab.com')
+    select2('johndoe@gitlab.com', from: "#user_ids", multiple: true)
     page.within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
