@@ -27,7 +27,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def create
-    @label = @project.labels.create(label_params)
+    @label = Labels::CreateService.new(@project, current_user, label_params).execute
 
     if @label.valid?
       redirect_to namespace_project_labels_path(@project.namespace, @project)

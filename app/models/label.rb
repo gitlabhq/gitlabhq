@@ -26,7 +26,7 @@ class Label < ActiveRecord::Base
   validates :title,
             presence: true,
             format: { with: /\A[^,]+\z/ },
-            uniqueness: { scope: :subject_id }
+            uniqueness: { scope: [:subject_id, :subject_type] }
 
   before_save :nullify_priority
 

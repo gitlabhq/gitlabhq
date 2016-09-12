@@ -15,7 +15,7 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def create
-    @label = @group.labels.create(label_params)
+    @label = Labels::CreateService.new(@group, current_user, label_params).execute
 
     if @label.valid?
       redirect_to group_labels_path(@group)

@@ -43,6 +43,8 @@ describe Label, models: true do
       expect(label).to allow_value('G&ITLAB').for(:title)
       expect(label).to allow_value("customer's request").for(:title)
     end
+
+    it { is_expected.to validate_uniqueness_of(:title).scoped_to([:subject_id, :subject_type]) }
   end
 
   describe '#title' do
