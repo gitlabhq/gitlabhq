@@ -16,7 +16,8 @@ module EE
         def groups(cn = "*", size = nil)
           options = {
             base: config.group_base,
-            filter: Net::LDAP::Filter.eq("cn", cn)
+            filter: Net::LDAP::Filter.eq("cn", cn),
+            attributes: %w(dn cn memberuid member submember uniquemember memberof)
           }
 
           options.merge!(size: size) if size
@@ -30,13 +31,13 @@ module EE
           groups(*args).first
         end
 
-        def dn_matches_filter?(dn, filter)
+        def dns_for_filter(filter)
           ldap_search(
-            base: dn,
+            base: config.base,
             filter: filter,
-            scope: Net::LDAP::SearchScope_BaseObject,
+            scope: Net::LDAP::SearchScope_WholeSubtree,
             attributes: %w{dn}
-          ).any?
+          ).map(&:dn)
         end
       end
     end

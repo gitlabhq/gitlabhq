@@ -3,6 +3,7 @@ require 'spec_helper'
 describe EE::Gitlab::LDAP::Sync::Group, lib: true do
   include LdapHelpers
 
+  let(:adapter) { ldap_adapter }
   let(:sync_group) { described_class.new(group, proxy(adapter)) }
   let(:user) { create(:user) }
 
