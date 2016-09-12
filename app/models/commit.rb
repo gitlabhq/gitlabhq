@@ -231,7 +231,7 @@ class Commit
 
   def status
     return @status if defined?(@status)
-    @status ||= pipelines.status
+    @status ||= pipelines.order(:id).last.try(:status)
   end
 
   def revert_branch_name
