@@ -8,8 +8,9 @@ module HasStatus
 
   class_methods do
     def status_sql
-      scope = all.relevant
+      scope = all
       builds = scope.select('count(*)').to_sql
+      created = scope.created.select('count(*)').to_sql
       success = scope.success.select('count(*)').to_sql
       ignored = scope.ignored.select('count(*)').to_sql if scope.respond_to?(:ignored)
       ignored ||= '0'
@@ -22,9 +23,9 @@ module HasStatus
         WHEN (#{builds})=0 THEN NULL
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
-        WHEN (#{builds})=(#{pending})+(#{skipped}) THEN 'pending'
+        WHEN (#{builds})=(#{created})+(#{pending})+(#{skipped}) THEN 'pending'
         WHEN (#{builds})=(#{canceled})+(#{success})+(#{ignored})+(#{skipped}) THEN 'canceled'
-        WHEN (#{running})+(#{pending})>0 THEN 'running'
+        WHEN (#{running})+(#{pending})+(#{created})>0 THEN 'running'
         ELSE 'failed'
       END)"
 
