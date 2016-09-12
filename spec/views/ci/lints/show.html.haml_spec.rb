@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe 'ci/lints/show' do
   let(:content) do
-    { build_template: {
+    {
+      build_template: {
         script: './build.sh',
         tags: ['dotnet'],
         only: ['test@dude/repo'],
@@ -11,16 +12,17 @@ describe 'ci/lints/show' do
       }
     }
   end
+
   let(:config_processor) { Ci::GitlabCiYamlProcessor.new(YAML.dump(content)) }
 
-  context 'when content is valid' do
+  context 'when the content is valid' do
     before do
       assign(:status, true)
       assign(:builds, config_processor.builds)
       assign(:stages, config_processor.stages)
     end
 
-    it 'shows correct values' do
+    it 'shows the correct values' do
       render
 
       expect(rendered).to have_content('Tag list: dotnet')
