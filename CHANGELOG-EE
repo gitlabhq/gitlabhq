@@ -3,6 +3,7 @@ v 8.12.0 (Unreleased)
   - Reduce UPDATE queries when moving between import states on projects
   - [ES] Instrument Elasticsearch::Git::Repository
   - [ES] Instrument other Gitlab::Elastic classes
+  - [ES] Fix: Elasticsearch does not find partial matches in project names
 
 v 8.11.6
   - Exclude blocked users from potential MR approvers

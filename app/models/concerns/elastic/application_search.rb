@@ -13,14 +13,26 @@ module Elastic
           analysis: {
             analyzer: {
               default: {
-                tokenizer: "standard",
-                filter: ["standard", "lowercase", "my_stemmer"]
+                tokenizer: 'standard',
+                filter: ['standard', 'lowercase', 'my_stemmer']
+              },
+              my_ngram_analyzer: {
+                tokenizer: 'my_ngram_tokenizer',
+                filter: ['lowercase']
               }
             },
             filter: {
               my_stemmer: {
-                type: "stemmer",
-                name: "light_english"
+                type: 'stemmer',
+                name: 'light_english'
+              }
+            },
+            tokenizer: {
+              my_ngram_tokenizer: {
+                type: 'nGram',
+                min_gram: 2,
+                max_gram: 3,
+                token_chars: [ 'letter', 'digit' ]
               }
             }
           }
