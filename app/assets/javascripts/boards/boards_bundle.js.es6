@@ -69,7 +69,7 @@ $(() => {
       e.preventDefault();
 
       if (!$this.parent().hasClass('active')) {
-        gl.issueBoards.BoardsStore.state.filters.state = $(this).data('state');
+        gl.issueBoards.BoardsStore.state.filters.state = $this.data('state');
         gl.issueBoards.BoardsStore.updateFiltersUrl();
 
         $this.closest('.nav-links')

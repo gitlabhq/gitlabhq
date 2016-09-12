@@ -234,9 +234,7 @@ lex
 }
 
 .issue-state-closed {
-  position: absolute;
-  right: 0;
-  top: 4px;
+  margin-top: 4px;
   width: 7px;
   height: 7px;
   background-color: $gl-danger;
