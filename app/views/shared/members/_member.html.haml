@@ -4,7 +4,7 @@
 - source = member.source
 
 %li.member{ class: dom_class(member), id: dom_id(member) }
-  %span{ class: ("list-item-name" if show_controls) }
+  %span.list-item-name
     - if user
       = image_tag avatar_icon(user, 40), class: "avatar s40", alt: ''
       %strong
