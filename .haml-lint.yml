@@ -1,0 +1,107 @@
+# Default application configuration that all configurations inherit from.
+#
+# This is an opinionated list of which hooks are valuable to run and what their
+# out of the box settings should be.
+
+# Whether to ignore frontmatter at the beginning of HAML documents for
+# frameworks such as Jekyll/Middleman
+skip_frontmatter: false
+exclude:
+  - 'vendor/**/*'
+
+linters:
+  AltText:
+    enabled: false
+
+  ClassAttributeWithStaticValue:
+    enabled: false
+
+  ClassesBeforeIds:
+    enabled: false
+
+  ConsecutiveComments:
+    enabled: false
+
+  ConsecutiveSilentScripts:
+    enabled: false
+    max_consecutive: 2
+
+  EmptyObjectReference:
+    enabled: true
+
+  EmptyScript:
+    enabled: true
+
+  FinalNewline:
+    enabled: false
+    present: true
+
+  HtmlAttributes:
+    enabled: false
+
+  ImplicitDiv:
+    enabled: false
+
+  LeadingCommentSpace:
+    enabled: false
+
+  LineLength:
+    enabled: false
+    max: 80
+
+  MultilinePipe:
+    enabled: false
+
+  MultilineScript:
+    enabled: true
+
+  ObjectReferenceAttributes:
+    enabled: true
+
+  RuboCop:
+    enabled: false
+    # These cops are incredibly noisy when it comes to HAML templates, so we
+    # ignore them.
+    ignored_cops:
+      - Lint/BlockAlignment
+      - Lint/EndAlignment
+      - Lint/Void
+      - Metrics/LineLength
+      - Style/AlignParameters
+      - Style/BlockNesting
+      - Style/ElseAlignment
+      - Style/FileName
+      - Style/FinalNewline
+      - Style/FrozenStringLiteralComment
+      - Style/IfUnlessModifier
+      - Style/IndentationWidth
+      - Style/Next
+      - Style/TrailingBlankLines
+      - Style/TrailingWhitespace
+      - Style/WhileUntilModifier
+
+  RubyComments:
+    enabled: false
+
+  SpaceBeforeScript:
+    enabled: false
+
+  SpaceInsideHashAttributes:
+    enabled: false
+    style: space
+
+  Indentation:
+    enabled: true
+    character: space # or tab
+
+  TagName:
+    enabled: true
+
+  TrailingWhitespace:
+    enabled: false
+
+  UnnecessaryInterpolation:
+    enabled: false
+
+  UnnecessaryStringOutput:
+    enabled: false
