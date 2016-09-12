@@ -1,10 +1,15 @@
 module LdapHelpers
+<<<<<<< HEAD
   def adapter(provider = 'ldapmain')
     ::Gitlab::LDAP::Adapter.new(provider, double(:ldap))
   end
 
   def proxy(adapter, provider = 'ldapmain')
     EE::Gitlab::LDAP::Sync::Proxy.new(provider, adapter)
+=======
+  def ldap_adapter(provider = 'ldapmain', ldap = double(:ldap))
+    ::Gitlab::LDAP::Adapter.new(provider, ldap)
+>>>>>>> 13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f
   end
 
   def user_dn(uid)
@@ -34,16 +39,21 @@ module LdapHelpers
   #
   #  stub_ldap_person_find_by_uid('john_doe', ldap_user_entry, adapter)
   def stub_ldap_person_find_by_uid(uid, entry, provider = 'ldapmain')
+<<<<<<< HEAD
     return_value = if entry.present?
                      ::Gitlab::LDAP::Person.new(entry, provider)
                    else
                      nil
                    end
+=======
+    return_value = ::Gitlab::LDAP::Person.new(entry, provider) if entry.present?
+>>>>>>> 13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f
 
     allow(::Gitlab::LDAP::Person)
       .to receive(:find_by_uid).with(uid, any_args).and_return(return_value)
   end
 
+<<<<<<< HEAD
   # Stub an LDAP group search and provide the return entry. Specify `nil` for
   # `entry` to simulate when an LDAP group is not found
   #
@@ -105,6 +115,14 @@ module LdapHelpers
 
     members = [members].flatten
     entry[member_attr] = members if members.any?
+=======
+  # Create a simple LDAP user entry.
+  def ldap_user_entry(uid)
+    entry = Net::LDAP::Entry.new
+    entry['dn'] = user_dn(uid)
+    entry['uid'] = uid
+
+>>>>>>> 13bb9ed77f405c5f6ee4fdbc964ecf635c9a223f
     entry
   end
 end
