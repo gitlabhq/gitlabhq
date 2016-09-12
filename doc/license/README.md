@@ -40,6 +40,15 @@ Admin Area.
 
 ![License details](img/details.png)
 
+## License history
+
+It's possible to upload more than one license, but only the last one will be
+taken into account.
+
+You can see your previous licenses' history at the bottom of the License page.
+
+![License history](img/license_history.png)
+
 ## Notification before the license expires
 
 One month before the license expires, a message informing when the expiration
