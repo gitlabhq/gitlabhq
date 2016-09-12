@@ -66,7 +66,7 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
 
   step 'I select current user as "Developer"' do
     page.within ".users-project-form" do
-      select2(current_user.id, from: "#user_ids", multiple: true)
+      find('#js-member-user-ids', visible: false).set(current_user.id)
       select "Developer", from: "access_level"
     end
 
