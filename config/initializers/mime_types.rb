@@ -13,10 +13,5 @@ Mime::Type.register "video/mp4",  :mp4, [], [:m4v, :mov]
 Mime::Type.register "video/webm", :webm
 Mime::Type.register "video/ogg",  :ogv
 
-json_mime_types = %w(
-  application/vnd.git-lfs+json
-  application/json
-)
-
 Mime::Type.unregister :json
-Mime::Type.register 'application/json', :json, json_mime_types
+Mime::Type.register 'application/json', :json, %w(application/vnd.git-lfs+json application/json)
