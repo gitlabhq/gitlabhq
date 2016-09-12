@@ -428,18 +428,9 @@ module API
       # Example Request:
       #   GET /projects/search/:query
       get "/search/:query" do
-        ids = current_user.authorized_projects.map(&:id)
-        visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
-        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
-
-        projects = case params["order_by"]
-                   when 'id' then projects.order("id #{sort}")
-                   when 'name' then projects.order("name #{sort}")
-                   when 'created_at' then projects.order("created_at #{sort}")
-                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
-                   else projects
-                   end
+        search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
+        projects = search_service.objects('projects', params[:page])
+        projects = projects.reorder(project_order_by => project_sort)
 
         present paginate(projects), with: Entities::Project
       end
