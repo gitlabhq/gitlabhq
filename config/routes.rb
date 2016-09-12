@@ -463,7 +463,7 @@ Rails.application.routes.draw do
       resource :analytics, only: [:show]
       resource :ldap, only: [] do
         member do
-          put :reset_access
+          put :sync
         end
       end
 
