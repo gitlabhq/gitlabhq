@@ -57,7 +57,8 @@ describe Projects::Boards::IssuesController do
 
       get :index, namespace_id: project.namespace.to_param,
                   project_id: project.to_param,
-                  list_id: list_id.to_param
+                  list_id: list_id.to_param,
+                  state: 'all'
     end
   end
 

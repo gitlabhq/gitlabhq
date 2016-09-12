@@ -9,6 +9,10 @@
     "iid": { "type": "integer" },
     "title": { "type": "string" },
     "confidential": { "type": "boolean" },
+    "state": {
+      "type": "string",
+      "enum": ["opened", "reopened", "closed"]
+    },
     "labels": {
       "type": "array",
       "items": {
