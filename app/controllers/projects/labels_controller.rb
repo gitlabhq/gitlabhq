@@ -48,7 +48,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def generate
-    Gitlab::IssuesLabels.generate(@project)
+    Labels::GenerateService.new(@project, current_user).execute
 
     if params[:redirect] == 'issues'
       redirect_to namespace_project_issues_path(@project.namespace, @project)

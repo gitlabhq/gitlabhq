@@ -36,6 +36,8 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def generate
+    Labels::GenerateService.new(@group, current_user).execute
+
     redirect_to group_labels_path(@group)
   end
 
