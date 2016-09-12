@@ -16,6 +16,7 @@ v 8.12.0 (unreleased)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
   - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
+  - Fix long comments in diffs messing with table width
   - Fix pagination on user snippets page
   - Fix sorting of issues in API
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
