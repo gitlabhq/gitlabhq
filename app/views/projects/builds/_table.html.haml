@@ -1,4 +1,4 @@
-- admin = false unless defined?(admin)
+- admin = local_assigns.fetch(:admin, false)
 
 - if builds.blank?
   %li
@@ -19,9 +19,6 @@
           %th Coverage
           %th
 
-      - if admin
-        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, runner: true, coverage: true, admin: true }
-      - else
-        = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: {commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: project.build_coverage_enabled? }
+      = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: admin || project.build_coverage_enabled?, admin: admin }
 
   = paginate builds, theme: 'gitlab'

@@ -1,4 +1,10 @@
-- admin = false unless defined?(admin)
+- admin = local_assigns.fetch(:admin, false)
+- ref = local_assigns.fetch(:ref, nil)
+- commit_sha = local_assigns.fetch(:commit_sha, nil)
+- retried = local_assigns.fetch(:retried, false)
+- stage = local_assigns.fetch(:stage, false)
+- coverage = local_assigns.fetch(:coverage, false)
+- allow_retry = local_assigns.fetch(:allow_retry, false)
 
 %tr.build.commit
   %td.status
@@ -52,7 +58,7 @@
       - if build.project
         = link_to build.project.name_with_namespace, admin_namespace_project_path(build.project.namespace, build.project)
 
-  - if defined?(runner) && runner
+  - if admin
     %td
       - if build.try(:runner)
         = runner_link(build.runner)
