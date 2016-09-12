@@ -1,4 +1,12 @@
 (function() {
+
+  function addMarginToBuild () {
+    const $secondChild = $('.build:nth-child(2)');
+    if ($secondChild.length) {
+      $secondChild.closest('.stage-column').addClass('left-margin');
+    }
+  }
+
   function toggleGraph() {
     const $pipelineBtn = $(this).closest('.toggle-pipeline-btn');
     const $pipelineGraph = $(this).closest('.row-content-block').next('.pipeline-graph');
@@ -21,4 +29,5 @@
   }
 
   $(document).on('click', '.toggle-pipeline-btn', toggleGraph);
+  $(document).on('ready', addMarginToBuild);
 })();
