@@ -414,6 +414,19 @@ merge request:
     [Naming][rss-naming]. Use:
     - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
+    - Array `%` literals:  Prefer `[]` as delimiters for all `%` literals since
+    the `[` and `]` are already used for non-literal arrays, e.g.
+
+    ```ruby
+    # good
+    ['a', 'b', 'c']
+    %w[one two three]
+    %i[one two three]
+
+    # bad
+    %w(one two three)
+    %i{one two three}
+    ```
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Newlines styleguide][newlines-styleguide]
 1.  [Testing](doc/development/testing.md)
