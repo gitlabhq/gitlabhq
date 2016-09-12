@@ -26,6 +26,7 @@
 
 ## Administrator documentation
 
+- [Upload your GitLab License](license/README.md) Upload the license you purchased for GitLab Enterprise Edition to unlock its features.
 - [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 - [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols) Define which Git access protocols can be used to talk to GitLab
 - [Authentication/Authorization](administration/auth/README.md) Configure
@@ -36,7 +37,6 @@
 - [Push Rules](push_rules/push_rules.md) Advanced push rules for your project.
 - [Help message](customization/help_message.md) Set information about administrators of your GitLab instance.
 - [Install](install/README.md) Requirements, directory structures and installation from source.
-- [Installing your license](license/README.md)
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 - [Restart GitLab](administration/restart_gitlab.md) Learn how to restart GitLab and its components.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
