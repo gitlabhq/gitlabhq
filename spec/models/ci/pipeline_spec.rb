@@ -124,21 +124,38 @@ describe Ci::Pipeline, models: true do
 
   describe 'state machine' do
     let(:current) { Time.now.change(usec: 0) }
-    let(:build) { create :ci_build, name: 'build1', pipeline: pipeline }
+    let(:build) { create_build('build1', current, 10) }
+    let(:build_b) { create_build('build2', current, 20) }
+    let(:build_c) { create_build('build3', current + 50, 10) }
 
     describe '#duration' do
       before do
-        travel_to(current - 120) do
+        pipeline.update(created_at: current)
+
+        travel_to(current + 5) do
           pipeline.run
+          pipeline.save
         end
 
-        travel_to(current) do
-          pipeline.succeed
+        travel_to(current + 30) do
+          build.success
         end
+
+        travel_to(current + 40) do
+          build_b.drop
+        end
+
+        travel_to(current + 70) do
+          build_c.success
+        end
+
+        pipeline.drop
       end
 
       it 'matches sum of builds duration' do
-        expect(pipeline.reload.duration).to eq(120)
+        pipeline.reload
+
+        expect(pipeline.duration).to eq(40)
       end
     end
 
@@ -169,6 +186,14 @@ describe Ci::Pipeline, models: true do
         expect(pipeline.reload.finished_at).to be_nil
       end
     end
+
+    def create_build(name, queued_at = current, started_from = 0)
+      create(:ci_build,
+             name: name,
+             pipeline: pipeline,
+             queued_at: queued_at,
+             started_at: queued_at + started_from)
+    end
   end
 
   describe '#branch?' do
@@ -191,6 +216,36 @@ describe Ci::Pipeline, models: true do
 
       it 'return false when tag is set to true' do
         is_expected.to be_falsey
+      end
+    end
+  end
+
+  context 'with non-empty project' do
+    let(:project) { create(:project) }
+
+    let(:pipeline) do
+      create(:ci_pipeline,
+             project: project,
+             ref: project.default_branch,
+             sha: project.commit.sha)
+    end
+
+    describe '#latest?' do
+      context 'with latest sha' do
+        it 'returns true' do
+          expect(pipeline).to be_latest
+        end
+      end
+
+      context 'with not latest sha' do
+        before do
+          pipeline.update(
+            sha: project.commit("#{project.default_branch}~1").sha)
+        end
+
+        it 'returns false' do
+          expect(pipeline).not_to be_latest
+        end
       end
     end
   end

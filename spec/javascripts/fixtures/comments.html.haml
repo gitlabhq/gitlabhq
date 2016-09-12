@@ -1,0 +1,21 @@
+.flash-container.timeline-content
+.timeline-icon.hidden-xs.hidden-sm
+  %a.author_link
+    %img
+.timeline-content.timeline-content-form
+  %form.new-note.js-quick-submit.common-note-form.gfm-form.js-main-target-form
+    .md-area
+      .md-header
+      .md-write-holder
+        .zen-backdrop.div-dropzone-wrapper
+          .div-dropzone-wrapper
+            .div-dropzone.dz-clickable
+              %textarea.note-textarea.js-note-text.js-gfm-input.js-autosize.markdown-area
+    .note-form-actions.clearfix
+      %input.btn.btn-nr.btn-create.append-right-10.comment-btn.js-comment-button{ type: 'submit' }
+      %a.btn.btn-nr.btn-reopen.btn-comment.js-note-target-reopen
+        Reopen issue
+      %a.btn.btn-nr.btn-close.btn-comment.js-note-target-close
+        Close issue
+      %a.btn.btn-cancel.js-note-discard
+        Discard draft

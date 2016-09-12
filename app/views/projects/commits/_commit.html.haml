@@ -7,7 +7,7 @@
 - cache_key = [project.path_with_namespace, commit.id, current_application_settings, note_count]
 - cache_key.push(commit.status) if commit.status
 
-= cache(cache_key) do
+= cache(cache_key, expires_in: 1.day) do
   %li.commit.js-toggle-container{ id: "commit-#{commit.short_id}" }
     = author_avatar(commit, size: 36)
 

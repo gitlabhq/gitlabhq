@@ -41,6 +41,27 @@ describe 'Dashboard Todos', feature: true do
           expect(page).to have_content("You're all done!")
         end
       end
+
+      context 'todo is stale on the page' do
+        before do
+          todos = TodosFinder.new(user, state: :pending).execute
+          TodoService.new.mark_todos_as_done(todos, user)
+        end
+
+        describe 'deleting the todo' do
+          before do
+            first('.done-todo').click
+          end
+
+          it 'is removed from the list' do
+            expect(page).not_to have_selector('.todos-list .todo')
+          end
+
+          it 'shows "All done" message' do
+            expect(page).to have_content("You're all done!")
+          end
+        end
+      end
     end
 
     context 'User has Todos with labels spanning multiple projects' do
@@ -95,6 +116,20 @@ describe 'Dashboard Todos', feature: true do
 
           expect(current_path).to eq dashboard_todos_path
           expect(page).to have_css("#todo_#{Todo.first.id}")
+        end
+      end
+
+      describe 'mark all as done', js: true do
+        before do
+          visit dashboard_todos_path
+          click_link('Mark all as done')
+        end
+
+        it 'shows "All done" message!' do
+          within('.todos-pending-count') { expect(page).to have_content '0' }
+          expect(page).to have_content 'To do 0'
+          expect(page).to have_content "You're all done!"
+          expect(page).not_to have_selector('.gl-pagination')
         end
       end
     end

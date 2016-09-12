@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Git LFS API and storage' do
+  include WorkhorseHelpers
+
   let(:user) { create(:user) }
   let!(:lfs_object) { create(:lfs_object, :with_file) }
 
@@ -41,6 +43,113 @@ describe 'Git LFS API and storage' do
     it 'responds with 501' do
       expect(response).to have_http_status(501)
       expect(json_response).to include('message' => 'Git LFS is not enabled on this GitLab server, contact your admin.')
+    end
+  end
+
+  context 'project specific LFS settings' do
+    let(:project) { create(:empty_project) }
+    let(:body) do
+      {
+        'objects' => [
+          { 'oid' => '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897',
+            'size' => 1575078
+          },
+          { 'oid' => sample_oid,
+            'size' => sample_size
+          }
+        ],
+        'operation' => 'upload'
+      }
+    end
+    let(:authorization) { authorize_user }
+
+    context 'with LFS disabled globally' do
+      before do
+        project.team << [user, :master]
+        allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
+      end
+
+      describe 'LFS disabled in project' do
+        before do
+          project.update_attribute(:lfs_enabled, false)
+        end
+
+        it 'responds with a 501 message on upload' do
+          post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+
+          expect(response).to have_http_status(501)
+        end
+
+        it 'responds with a 501 message on download' do
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+
+          expect(response).to have_http_status(501)
+        end
+      end
+
+      describe 'LFS enabled in project' do
+        before do
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it 'responds with a 501 message on upload' do
+          post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+
+          expect(response).to have_http_status(501)
+        end
+
+        it 'responds with a 501 message on download' do
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+
+          expect(response).to have_http_status(501)
+        end
+      end
+    end
+
+    context 'with LFS enabled globally' do
+      before do
+        project.team << [user, :master]
+        enable_lfs
+      end
+
+      describe 'LFS disabled in project' do
+        before do
+          project.update_attribute(:lfs_enabled, false)
+        end
+
+        it 'responds with a 403 message on upload' do
+          post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+
+          expect(response).to have_http_status(403)
+          expect(json_response).to include('message' => 'Access forbidden. Check your access level.')
+        end
+
+        it 'responds with a 403 message on download' do
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+
+          expect(response).to have_http_status(403)
+          expect(json_response).to include('message' => 'Access forbidden. Check your access level.')
+        end
+      end
+
+      describe 'LFS enabled in project' do
+        before do
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        it 'responds with a 200 message on upload' do
+          post_lfs_json "#{project.http_url_to_repo}/info/lfs/objects/batch", body, headers
+
+          expect(response).to have_http_status(200)
+          expect(json_response['objects'].first['size']).to eq(1575078)
+        end
+
+        it 'responds with a 200 message on download' do
+          get "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}", nil, headers
+
+          expect(response).to have_http_status(200)
+        end
+      end
     end
   end
 
@@ -608,6 +717,12 @@ describe 'Git LFS API and storage' do
             project.team << [user, :developer]
           end
 
+          context 'and the request bypassed workhorse' do
+            it 'raises an exception' do
+              expect { put_authorize(verified: false) }.to raise_error JWT::DecodeError
+            end
+          end
+
           context 'and request is sent by gitlab-workhorse to authorize the request' do
             before do
               put_authorize
@@ -615,6 +730,10 @@ describe 'Git LFS API and storage' do
 
             it 'responds with status 200' do
               expect(response).to have_http_status(200)
+            end
+
+            it 'uses the gitlab-workhorse content type' do
+              expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             end
 
             it 'responds with status 200, location of lfs store and object details' do
@@ -756,8 +875,11 @@ describe 'Git LFS API and storage' do
       end
     end
 
-    def put_authorize
-      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, headers
+    def put_authorize(verified: true)
+      authorize_headers = headers
+      authorize_headers.merge!(workhorse_internal_api_request_header) if verified
+
+      put "#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}/authorize", nil, authorize_headers
     end
 
     def put_finalize(lfs_tmp = lfs_tmp_file)

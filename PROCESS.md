@@ -50,7 +50,7 @@ etc.).
 
 The most important thing is making sure valid issues receive feedback from the
 development team. Therefore the priority is mentioning developers that can help
-on those issue. Please select someone with relevant experience from
+on those issues. Please select someone with relevant experience from
 [GitLab core team][core-team]. If there is nobody mentioned with that expertise
 look in the commit history for the affected files to find someone. Avoid
 mentioning the lead developer, this is the person that is least likely to give a

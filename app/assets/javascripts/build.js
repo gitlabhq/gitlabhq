@@ -16,6 +16,7 @@
       this.toggleSidebar = bind(this.toggleSidebar, this);
       this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
+      // Init breakpoint checker
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
 
@@ -42,6 +43,9 @@
             $(this).data("state", "enabled");
             return $(this).text("disable autoscroll");
           }
+        //
+        // Bind autoscroll button to follow build output
+        //
         });
         Build.interval = setInterval((function(_this) {
           return function() {
@@ -49,17 +53,23 @@
               return _this.getBuildTrace();
             }
           };
+        //
+        // Check for new build output if user still watching build page
+        // Only valid for runnig build when output changes during time
+        //
         })(this), 4000);
       }
     }
 
     Build.prototype.getInitialBuildTrace = function() {
+      var removeRefreshStatuses = ['success', 'failed', 'canceled', 'skipped']
+
       return $.ajax({
         url: this.build_url,
         dataType: 'json',
         success: function(build_data) {
           $('.js-build-output').html(build_data.trace_html);
-          if (build_data.status === 'success' || build_data.status === 'failed') {
+          if (removeRefreshStatuses.indexOf(build_data.status) >= 0) {
             return $('.js-build-refresh').remove();
           }
         }

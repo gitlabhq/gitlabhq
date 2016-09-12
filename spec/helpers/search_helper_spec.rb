@@ -32,6 +32,10 @@ describe SearchHelper do
         expect(search_autocomplete_opts("adm").size).to eq(1)
       end
 
+      it "does not allow regular expression in search term" do
+        expect(search_autocomplete_opts("(webhooks|api)").size).to eq(0)
+      end
+
       it "includes the user's groups" do
         create(:group).add_owner(user)
         expect(search_autocomplete_opts("gro").size).to eq(1)

@@ -108,15 +108,6 @@ class Commit
     @diff_line_count
   end
 
-  # Returns a string describing the commit for use in a link title
-  #
-  # Example
-  #
-  #   "Commit: Alex Denisov - Project git clone panel"
-  def link_title
-    "Commit: #{author_name} - #{title}"
-  end
-
   # Returns the commits title.
   #
   # Usually, the commit title is the first line of the commit message.

@@ -1,4 +1,6 @@
 - @no_container = true
+- @bulk_edit = can?(current_user, :admin_issue, @project)
+
 - page_title "Issues"
 - new_issue_email = @project.new_issue_address(current_user)
 = render "projects/issues/head"

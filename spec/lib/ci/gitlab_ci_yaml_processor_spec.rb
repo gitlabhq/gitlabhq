@@ -1250,5 +1250,40 @@ EOT
         end
       end
     end
+
+    describe "#validation_message" do
+      context "when the YAML could not be parsed" do
+        it "returns an error about invalid configutaion" do
+          content = YAML.dump("invalid: yaml: test")
+
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "Invalid configuration format"
+        end
+      end
+
+      context "when the tags parameter is invalid" do
+        it "returns an error about invalid tags" do
+          content = YAML.dump({ rspec: { script: "test", tags: "mysql" } })
+
+          expect(GitlabCiYamlProcessor.validation_message(content))
+            .to eq "jobs:rspec tags should be an array of strings"
+        end
+      end
+
+      context "when YAML content is empty" do
+        it "returns an error about missing content" do
+          expect(GitlabCiYamlProcessor.validation_message(''))
+            .to eq "Please provide content of .gitlab-ci.yml"
+        end
+      end
+
+      context "when the YAML is valid" do
+        it "does not return any errors" do
+          content = File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml'))
+
+          expect(GitlabCiYamlProcessor.validation_message(content)).to be_nil
+        end
+      end
+    end
   end
 end

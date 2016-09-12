@@ -2,6 +2,7 @@
   this.ImageFile = (function() {
     var prepareFrames;
 
+    // Width where images must fits in, for 2-up this gets divided by 2
     ImageFile.availWidth = 900;
 
     ImageFile.viewModes = ['two-up', 'swipe'];
@@ -9,6 +10,7 @@
     function ImageFile(file) {
       this.file = file;
       this.requestImageInfo($('.two-up.view .frame.deleted img', this.file), (function(_this) {
+        // Determine if old and new file has same dimensions, if not show 'two-up' view
         return function(deletedWidth, deletedHeight) {
           return _this.requestImageInfo($('.two-up.view .frame.added img', _this.file), function(width, height) {
             if (width === deletedWidth && height === deletedHeight) {

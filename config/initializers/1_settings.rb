@@ -212,7 +212,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab gitorious google_code fogbugz git gitlab_project]
+Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project]
 Settings.gitlab['trusted_proxies'] ||= []
 
 #
@@ -299,6 +299,9 @@ Settings.cron_jobs['remove_expired_members_worker']['job_class'] = 'RemoveExpire
 Settings.cron_jobs['remove_expired_group_links_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_expired_group_links_worker']['cron'] ||= '10 0 * * *'
 Settings.cron_jobs['remove_expired_group_links_worker']['job_class'] = 'RemoveExpiredGroupLinksWorker'
+Settings.cron_jobs['prune_old_events_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['prune_old_events_worker']['cron'] ||= '* */6 * * *'
+Settings.cron_jobs['prune_old_events_worker']['job_class'] = 'PruneOldEventsWorker'
 
 #
 # GitLab Shell

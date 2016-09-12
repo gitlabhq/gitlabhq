@@ -147,6 +147,37 @@ feature 'Diff notes', js: true, feature: true do
       end
     end
 
+    context 'when the MR only supports legacy diff notes' do
+      before do
+        @merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
+        visit diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, view: 'inline')
+      end
+
+      context 'with a new line' do
+        it 'should allow commenting' do
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
+        end
+      end
+
+      context 'with an old line' do
+        it 'should allow commenting' do
+          should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'))
+        end
+      end
+
+      context 'with an unchanged line' do
+        it 'should allow commenting' do
+          should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_7_7"]'))
+        end
+      end
+
+      context 'with a match line' do
+        it 'should not allow commenting' do
+          should_not_allow_commenting(find('.match', match: :first))
+        end
+      end
+    end
+
     def should_allow_commenting(line_holder, diff_side = nil)
       line = get_line_components(line_holder, diff_side)
       line[:content].hover

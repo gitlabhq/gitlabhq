@@ -54,4 +54,11 @@ $(() => {
         });
     }
   });
+
+  gl.IssueBoardsSearch = new Vue({
+    el: '#js-boards-seach',
+    data: {
+      filters: Store.state.filters
+    }
+  });
 });

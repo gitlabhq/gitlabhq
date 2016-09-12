@@ -90,6 +90,7 @@
       results = [];
       while (k < this.mspace) {
         this.colors.push(Raphael.getColor(.8));
+        // Skipping a few colors in the spectrum to get more contrast between colors
         Raphael.getColor();
         Raphael.getColor();
         results.push(k++);
@@ -112,6 +113,7 @@
       for (mm = j = 0, len = ref.length; j < len; mm = ++j) {
         day = ref[mm];
         if (cuday !== day[0] || cumonth !== day[1]) {
+          // Dates
           r.text(55, this.offsetY + this.unitTime * mm, day[0]).attr({
             font: "12px Monaco, monospace",
             fill: "#BBB"
@@ -119,6 +121,7 @@
           cuday = day[0];
         }
         if (cumonth !== day[1]) {
+          // Months
           r.text(20, this.offsetY + this.unitTime * mm, day[1]).attr({
             font: "12px Monaco, monospace",
             fill: "#EEE"
@@ -207,6 +210,7 @@
       }
       r = this.r;
       shortrefs = commit.refs;
+      // Truncate if longer than 15 chars
       if (shortrefs.length > 17) {
         shortrefs = shortrefs.substr(0, 15) + "…";
       }
@@ -217,6 +221,7 @@
         title: commit.refs
       });
       textbox = text.getBBox();
+      // Create rectangle based on the size of the textbox
       rect = r.rect(x, y - 7, textbox.width + 5, textbox.height + 5, 4).attr({
         fill: "#000",
         "fill-opacity": .5,
@@ -229,6 +234,7 @@
       });
       label = r.set(rect, text);
       label.transform(["t", -rect.getBBox().width - 15, 0]);
+      // Set text to front
       return text.toFront();
     };
 
@@ -283,11 +289,13 @@
         parentY = this.offsetY + this.unitTime * parentCommit.time;
         parentX1 = this.offsetX + this.unitSpace * (this.mspace - parentCommit.space);
         parentX2 = this.offsetX + this.unitSpace * (this.mspace - parent[1]);
+        // Set line color
         if (parentCommit.space <= commit.space) {
           color = this.colors[commit.space];
         } else {
           color = this.colors[parentCommit.space];
         }
+        // Build line shape
         if (parent[1] === commit.space) {
           offset = [0, 5];
           arrow = "l-2,5,4,0,-2,-5,0,5";
@@ -298,13 +306,17 @@
           offset = [-3, 3];
           arrow = "l-5,0,2,4,3,-4,-4,2";
         }
+        // Start point
         route = ["M", x + offset[0], y + offset[1]];
+        // Add arrow if not first parent
         if (i > 0) {
           route.push(arrow);
         }
+        // Circumvent if overlap
         if (commit.space !== parentCommit.space || commit.space !== parent[1]) {
           route.push("L", parentX2, y + 10, "L", parentX2, parentY - 5);
         }
+        // End point
         route.push("L", parentX1, parentY);
         results.push(r.path(route).attr({
           stroke: color,
@@ -325,6 +337,7 @@
           "fill-opacity": .5,
           stroke: "none"
         });
+        // Displayed in the center
         return this.element.scrollTop(y - this.graphHeight / 2);
       }
     };

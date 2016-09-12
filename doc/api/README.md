@@ -11,9 +11,10 @@ following locations:
 - [Award Emoji](award_emoji.md)
 - [Branches](branches.md)
 - [Builds](builds.md)
-- [Build triggers](build_triggers.md)
+- [Build Triggers](build_triggers.md)
 - [Build Variables](build_variables.md)
 - [Commits](commits.md)
+- [Deployments](deployments.md)
 - [Deploy Keys](deploy_keys.md)
 - [Groups](groups.md)
 - [Group Access Requests](access_requests.md)
@@ -26,6 +27,7 @@ following locations:
 - [Open source license templates](licenses.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)
@@ -40,8 +42,9 @@ following locations:
 - [Sidekiq metrics](sidekiq_metrics.md)
 - [System Hooks](system_hooks.md)
 - [Tags](tags.md)
-- [Users](users.md)
 - [Todos](todos.md)
+- [Users](users.md)
+- [Validate CI configuration](ci/lint.md)
 
 ### Internal CI API
 

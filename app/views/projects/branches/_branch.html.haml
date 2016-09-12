@@ -3,6 +3,7 @@
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
 - number_commits_behind = diverging_commit_counts[:behind]
 - number_commits_ahead = diverging_commit_counts[:ahead]
+- merge_project = can?(current_user, :create_merge_request, @project) ? @project : (current_user && current_user.fork_of(@project))
 %li(class="js-branch-#{branch.name}")
   %div
     = link_to namespace_project_tree_path(@project.namespace, @project, branch.name), class: 'item-title str-truncated' do
@@ -19,13 +20,15 @@
         %i.fa.fa-lock
         protected
     .controls.hidden-xs
-      - if create_mr_button?(@repository.root_ref, branch.name)
+      - if merge_project && create_mr_button?(@repository.root_ref, branch.name)
         = link_to create_mr_path(@repository.root_ref, branch.name), class: 'btn btn-default' do
           Merge Request
 
       - if branch.name != @repository.root_ref
-        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: 'btn btn-default', method: :post, title: "Compare" do
+        = link_to namespace_project_compare_index_path(@project.namespace, @project, from: @repository.root_ref, to: branch.name), class: "btn btn-default #{'prepend-left-10' unless merge_project}", method: :post, title: "Compare" do
           Compare
+
+      = render 'projects/buttons/download', project: @project, ref: branch.name
 
       - if can_remove_branch?(@project, branch.name)
         = link_to namespace_project_branch_path(@project.namespace, @project, branch.name), class: 'btn btn-remove remove-row has-tooltip', title: "Delete branch", method: :delete, data: { confirm: "Deleting the '#{branch.name}' branch cannot be undone. Are you sure?", container: 'body' }, remote: true do

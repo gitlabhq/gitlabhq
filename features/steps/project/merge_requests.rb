@@ -31,7 +31,9 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Closed"' do
-    click_link "Closed"
+    page.within('.issues-state-filters') do
+      click_link "Closed"
+    end
   end
 
   step 'I should see merge request "Wiki Feature"' do
@@ -58,8 +60,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     expect(find('.merge-request-info')).not_to have_content "master"
   end
 
-  step 'I should see "other_branch" branch' do
-    expect(page).to have_content "other_branch"
+  step 'I should see "feature_conflict" branch' do
+    expect(page).to have_content "feature_conflict"
   end
 
   step 'I should see "Bug NS-04" in merge requests' do
@@ -124,7 +126,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            source_project: project,
            target_project: project,
            source_branch: 'fix',
-           target_branch: 'other_branch',
+           target_branch: 'feature_conflict',
            author: project.users.first,
            description: "# Description header"
           )

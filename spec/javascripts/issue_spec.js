@@ -1,7 +1,5 @@
 
 /*= require lib/utils/text_utility */
-
-
 /*= require issue */
 
 (function() {

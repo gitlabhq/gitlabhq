@@ -36,6 +36,7 @@
     &.affix {
       right: 30px;
       bottom: 15px;
+      z-index: 1;
 
       @media (min-width: $screen-md-min) {
         right: 26%;
@@ -45,12 +46,6 @@
     a {
       display: block;
       margin-bottom: 10px;
-    }
-  }
-
-  .page-sidebar-collapsed {
-    .scroll-controls {
-      left: 70px;
     }
   }
 }
@@ -107,11 +102,21 @@
   }
 
   .blocks-container {
-    padding: $gl-padding;
+    padding: 0 $gl-padding;
   }
 
   .block {
     width: 100%;
+  }
+
+  .js-build-variable {
+    color: $code-color;
+  }
+
+  .js-build-value {
+    padding: 2px 4px;
+    color: $black;
+    background-color: $white-light;
   }
 
   .build-sidebar-header {
@@ -119,6 +124,13 @@
 
     .gutter-toggle {
       margin-top: 0;
+    }
+  }
+
+  .retry-link {
+    color: $gl-link-color;
+    &:hover {
+      text-decoration: underline;
     }
   }
 
@@ -131,7 +143,7 @@
   }
 
   .build-dropdown {
-    padding: 0 $gl-padding;
+    padding: $gl-padding 0;
 
     .dropdown-menu-toggle {
       margin-top: 8px;
@@ -145,12 +157,11 @@
   }
 
   .builds-container {
-    margin-top: $gl-padding;
     background-color: $white-light;
     border-top: 1px solid $border-color;
     border-bottom: 1px solid $border-color;
     max-height: 300px;
-    overflow: scroll;
+    overflow: auto;
 
     svg {
       position: relative;

@@ -1,7 +1,7 @@
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Ci::Model
-    include Statuseable
+    include HasStatus
 
     self.table_name = 'ci_commits'
 
@@ -65,8 +65,8 @@ module Ci
     end
 
     # ref can't be HEAD or SHA, can only be branch/tag name
-    scope :latest_successful_for, ->(ref = default_branch) do
-      where(ref: ref).success.order(id: :desc).limit(1)
+    def self.latest_successful_for(ref)
+      where(ref: ref).order(id: :desc).success.first
     end
 
     def self.truncate_sha(sha)
@@ -83,7 +83,7 @@ module Ci
     end
 
     def stages_with_latest_statuses
-      statuses.latest.order(:stage_idx).group_by(&:stage)
+      statuses.latest.includes(project: :namespace).order(:stage_idx).group_by(&:stage)
     end
 
     def project_id
@@ -257,8 +257,17 @@ module Ci
       ]
     end
 
+    def queued_duration
+      return unless started_at
+
+      seconds = (started_at - created_at).to_i
+      seconds unless seconds.zero?
+    end
+
     def update_duration
-      self.duration = calculate_duration
+      return unless started_at
+
+      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
     end
 
     def execute_hooks

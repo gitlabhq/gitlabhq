@@ -13,8 +13,11 @@
       this.selectRowUp = bind(this.selectRowUp, this);
       this.filePaths = {};
       this.inputElement = this.element.find(".file-finder-input");
+      // init event
       this.initEvent();
+      // focus text input box
       this.inputElement.focus();
+      // load file list
       this.load(this.options.url);
     }
 
@@ -42,6 +45,7 @@
           }
         }
       });
+    // init event
     };
 
     ProjectFindFile.prototype.findFile = function() {
@@ -49,8 +53,10 @@
       searchText = this.inputElement.val();
       result = searchText.length > 0 ? fuzzaldrinPlus.filter(this.filePaths, searchText) : this.filePaths;
       return this.renderList(result, searchText);
+    // find file
     };
 
+    // files pathes load
     ProjectFindFile.prototype.load = function(url) {
       return $.ajax({
         url: url,
@@ -67,6 +73,7 @@
       });
     };
 
+    // render result
     ProjectFindFile.prototype.renderList = function(filePaths, searchText) {
       var blobItemUrl, filePath, html, i, j, len, matches, results;
       this.element.find(".tree-table > tbody").empty();
@@ -86,6 +93,7 @@
       return results;
     };
 
+    // highlight text(awefwbwgtc -> <b>a</b>wefw<b>b</b>wgt<b>c</b> )
     highlighter = function(element, text, matches) {
       var highlightText, j, lastIndex, len, matchIndex, matchedChars, unmatched;
       lastIndex = 0;
@@ -110,6 +118,7 @@
       return element.append(document.createTextNode(text.substring(lastIndex)));
     };
 
+    // make tbody row html
     ProjectFindFile.prototype.makeHtml = function(filePath, matches, blobItemUrl) {
       var $tr;
       $tr = $("<tr class='tree-item'><td class='tree-item-file-name'><i class='fa fa-file-text-o fa-fw'></i><span class='str-truncated'><a></a></span></td></tr>");

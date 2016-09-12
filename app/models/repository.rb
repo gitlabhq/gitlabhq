@@ -120,8 +120,21 @@ class Repository
     commits
   end
 
-  def find_branch(name)
-    raw_repository.branches.find { |branch| branch.name == name }
+  def find_branch(name, fresh_repo: true)
+    # Since the Repository object may have in-memory index changes, invalidating the memoized Repository object may
+    # cause unintended side effects. Because finding a branch is a read-only operation, we can safely instantiate
+    # a new repo here to ensure a consistent state to avoid a libgit2 bug where concurrent access (e.g. via git gc)
+    # may cause the branch to "disappear" erroneously or have the wrong SHA.
+    #
+    # See: https://github.com/libgit2/libgit2/issues/1534 and https://gitlab.com/gitlab-org/gitlab-ce/issues/15392
+    raw_repo =
+      if fresh_repo
+        Gitlab::Git::Repository.new(path_to_repo)
+      else
+        raw_repository
+      end
+
+    raw_repo.find_branch(name)
   end
 
   def find_tag(name)
@@ -136,7 +149,7 @@ class Repository
     return false unless target
 
     GitHooksService.new.execute(user, path_to_repo, oldrev, target, ref) do
-      rugged.branches.create(branch_name, target)
+      update_ref!(ref, target, oldrev)
     end
 
     after_create_branch
@@ -168,7 +181,7 @@ class Repository
     ref    = Gitlab::Git::BRANCH_REF_PREFIX + branch_name
 
     GitHooksService.new.execute(user, path_to_repo, oldrev, newrev, ref) do
-      rugged.branches.delete(branch_name)
+      update_ref!(ref, newrev, oldrev)
     end
 
     after_remove_branch
@@ -200,6 +213,21 @@ class Repository
 
   def ref_exists?(ref)
     rugged.references.exist?(ref)
+  end
+
+  def update_ref!(name, newrev, oldrev)
+    # We use 'git update-ref' because libgit2/rugged currently does not
+    # offer 'compare and swap' ref updates. Without compare-and-swap we can
+    # (and have!) accidentally reset the ref to an earlier state, clobbering
+    # commits. See also https://github.com/libgit2/libgit2/issues/1534.
+    command = %w[git update-ref --stdin -z]
+    _, status = Gitlab::Popen.popen(command, path_to_repo) do |stdin|
+      stdin.write("update #{name}\x00#{newrev}\x00#{oldrev}\x00")
+    end
+
+    return if status.zero?
+
+    raise CommitError.new("Could not update branch #{name.sub('refs/heads/', '')}. Please refresh and try again.")
   end
 
   # Makes sure a commit is kept around when Git garbage collection runs.
@@ -729,7 +757,7 @@ class Repository
   end
 
   def commit_dir(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -746,7 +774,7 @@ class Repository
   end
 
   def commit_file(user, path, content, message, branch, update)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -768,7 +796,7 @@ class Repository
   end
 
   def update_file(user, path, content, branch:, previous_path:, message:)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -795,7 +823,7 @@ class Repository
   end
 
   def remove_file(user, path, message, branch)
-    commit_with_hooks(user, branch) do |ref|
+    update_branch_with_hooks(user, branch) do |ref|
       committer = user_to_committer(user)
       options = {}
       options[:committer] = committer
@@ -843,7 +871,7 @@ class Repository
     merge_index = rugged.merge_commits(our_commit, their_commit)
     return false if merge_index.conflicts?
 
-    commit_with_hooks(user, merge_request.target_branch) do
+    update_branch_with_hooks(user, merge_request.target_branch) do
       actual_options = options.merge(
         parents: [our_commit, their_commit],
         tree: merge_index.write_tree(rugged),
@@ -861,7 +889,7 @@ class Repository
 
     return false unless revert_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.revert_message,
@@ -878,7 +906,7 @@ class Repository
 
     return false unless cherry_pick_tree_id
 
-    commit_with_hooks(user, base_branch) do
+    update_branch_with_hooks(user, base_branch) do
       committer = user_to_committer(user)
       source_sha = Rugged::Commit.create(rugged,
         message: commit.message,
@@ -894,7 +922,7 @@ class Repository
   end
 
   def resolve_conflicts(user, branch, params)
-    commit_with_hooks(user, branch) do
+    update_branch_with_hooks(user, branch) do
       committer = user_to_committer(user)
 
       Rugged::Commit.create(rugged, params.merge(author: committer, committer: committer))
@@ -998,17 +1026,12 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo)
   end
 
-  def commit_with_hooks(current_user, branch)
+  def update_branch_with_hooks(current_user, branch)
     update_autocrlf_option
 
-    oldrev = Gitlab::Git::BLANK_SHA
     ref = Gitlab::Git::BRANCH_REF_PREFIX + branch
     target_branch = find_branch(branch)
     was_empty = empty?
-
-    if !was_empty && target_branch
-      oldrev = target_branch.target.id
-    end
 
     # Make commit
     newrev = yield(ref)
@@ -1017,24 +1040,19 @@ class Repository
       raise CommitError.new('Failed to create commit')
     end
 
-    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
-      if was_empty || !target_branch
-        # Create branch
-        rugged.references.create(ref, newrev)
+    if rugged.lookup(newrev).parent_ids.empty? || target_branch.nil?
+      oldrev = Gitlab::Git::BLANK_SHA
+    else
+      oldrev = rugged.merge_base(newrev, target_branch.target.sha)
+    end
 
+    GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
+      update_ref!(ref, newrev, oldrev)
+      
+      if was_empty || !target_branch
         # If repo was empty expire cache
         after_create if was_empty
         after_create_branch
-      else
-        # Update head
-        current_head = find_branch(branch).target.id
-
-        # Make sure target branch was not changed during pre-receive hook
-        if current_head == oldrev
-          rugged.references.update(ref, newrev)
-        else
-          raise CommitError.new('Commit was rejected because branch received new push')
-        end
       end
     end
 
@@ -1065,7 +1083,7 @@ class Repository
 
     @avatar ||= cache.fetch(:avatar) do
       AVATAR_FILES.find do |file|
-        blob_at_branch('master', file)
+        blob_at_branch(root_ref, file)
       end
     end
   end

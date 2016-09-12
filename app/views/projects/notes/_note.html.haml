@@ -1,6 +1,5 @@
 - return unless note.author
 - return if note.cross_reference_not_visible_for?(current_user)
-- can_resolve = can?(current_user, :resolve_note, note)
 
 - note_editable = note_editable?(note)
 %li.timeline-entry{ id: dom_id(note), class: ["note", "note-row-#{note.id}", ('system-note' if note.system)], data: {author_id: note.author.id, editable: note_editable} }
@@ -24,6 +23,8 @@
               %span.note-role.hidden-xs= access
 
             - if note.resolvable?
+              - can_resolve = can?(current_user, :resolve_note, note)
+
               %resolve-btn{ ":namespace-path" => "'#{note.project.namespace.path}'",
                   ":project-path" => "'#{note.project.path}'",
                   ":discussion-id" => "'#{note.discussion_id}'",
@@ -52,11 +53,11 @@
               - if note.emoji_awardable?
                 = link_to '#', title: 'Award Emoji', class: 'note-action-button note-emoji-button js-add-award js-note-emoji', data: { position: 'right' } do
                   = icon('spinner spin')
-                  = icon('smile-o')
+                  = icon('smile-o', class: 'link-highlight')
 
               - if note_editable
                 = link_to '#', title: 'Edit comment', class: 'note-action-button js-note-edit' do
-                  = icon('pencil')
+                  = icon('pencil', class: 'link-highlight')
                 = link_to namespace_project_note_path(note.project.namespace, note.project, note), title: 'Remove comment', method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: 'note-action-button hidden-xs js-note-delete danger' do
                   = icon('trash-o')
       .note-body{class: note_editable ? 'js-task-list-container' : ''}

@@ -1,4 +1,6 @@
 - @no_container = true
+- @bulk_edit = can?(current_user, :admin_merge_request, @project)
+
 - page_title "Merge Requests"
 = render "projects/issues/head"
 = render 'projects/last_push'

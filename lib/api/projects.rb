@@ -51,7 +51,7 @@ module API
         @projects = current_user.viewable_starred_projects
         @projects = filter_projects(@projects)
         @projects = paginate @projects
-        present @projects, with: Entities::Project
+        present @projects, with: Entities::Project, user: current_user
       end
 
       # Get all projects for admin user
@@ -105,6 +105,7 @@ module API
       #   visibility_level (optional) - 0 by default
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   POST /projects
       post do
@@ -124,7 +125,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
@@ -156,6 +158,7 @@ module API
       #   visibility_level (optional)
       #   import_url (optional)
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -174,7 +177,8 @@ module API
                                      :visibility_level,
                                      :import_url,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -185,16 +189,30 @@ module API
         end
       end
 
-      # Fork new project for the current user.
+      # Fork new project for the current user or provided namespace.
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   namespace (optional) - The ID or name of the namespace that the project will be forked into.
       # Example Request
       #   POST /projects/fork/:id
       post 'fork/:id' do
+        attrs = {}
+        namespace_id = params[:namespace]
+
+        if namespace_id.present?
+          namespace = Namespace.find_by(id: namespace_id) || Namespace.find_by_path_or_name(namespace_id)
+
+          not_found!('Target Namespace') unless namespace
+
+          attrs[:namespace] = namespace
+        end
+
         @forked_project =
           ::Projects::ForkService.new(user_project,
-                                      current_user).execute
+                                      current_user,
+                                      attrs).execute
+
         if @forked_project.errors.any?
           conflict!(@forked_project.errors.messages)
         else
@@ -220,6 +238,7 @@ module API
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - visibility level of a project
       #   public_builds (optional)
+      #   lfs_enabled (optional)
       # Example Request
       #   PUT /projects/:id
       put ':id' do
@@ -237,7 +256,8 @@ module API
                                      :public,
                                      :visibility_level,
                                      :public_builds,
-                                     :only_allow_merge_if_build_succeeds]
+                                     :only_allow_merge_if_build_succeeds,
+                                     :lfs_enabled]
         attrs = map_public_to_visibility_level(attrs)
         authorize_admin_project
         authorize! :rename_project, user_project if attrs[:name].present?
@@ -408,18 +428,9 @@ module API
       # Example Request:
       #   GET /projects/search/:query
       get "/search/:query" do
-        ids = current_user.authorized_projects.map(&:id)
-        visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
-        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
-        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
-
-        projects = case params["order_by"]
-                   when 'id' then projects.order("id #{sort}")
-                   when 'name' then projects.order("name #{sort}")
-                   when 'created_at' then projects.order("created_at #{sort}")
-                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
-                   else projects
-                   end
+        search_service = Search::GlobalService.new(current_user, search: params[:query]).execute
+        projects = search_service.objects('projects', params[:page])
+        projects = projects.reorder(project_order_by => project_sort)
 
         present paginate(projects), with: Entities::Project
       end
