@@ -21,7 +21,7 @@
       - else
         %span.build-link ##{build.id}
 
-      - if defined?(ref) && ref
+      - if ref
         - if build.ref
           .icon-container
             = build.tag? ? icon('tag') : icon('code-fork')
@@ -31,12 +31,12 @@
         .icon-container
           = custom_icon("icon_commit")
 
-      - if defined?(commit_sha) && commit_sha
+      - if commit_sha
         = link_to build.short_sha, namespace_project_commit_path(build.project.namespace, build.project, build.sha), class: "commit-id monospace"
 
       - if build.stuck?
         = icon('warning', class: 'text-warning has-tooltip', title: 'Build is stuck. Check runners.')
-      - if defined?(retried) && retried
+      - if retried
         = icon('warning', class: 'text-warning has-tooltip', title: 'Build was retried.')
 
       .label-container
@@ -48,7 +48,7 @@
           %span.label.label-info triggered
         - if build.try(:allow_failure)
           %span.label.label-danger allowed to fail
-        - if defined?(retried) && retried
+        - if retried
           %span.label.label-warning retried
         - if build.manual?
           %span.label.label-info manual
@@ -65,7 +65,7 @@
       - else
         .light none
 
-  - if defined?(stage) && stage
+  - if stage
     %td
       = build.stage
 
@@ -84,7 +84,7 @@
         %span #{time_ago_with_tooltip(build.finished_at)}
 
   %td.coverage
-    - if defined?(coverage) && coverage
+    - if coverage
       - if build.try(:coverage)
         #{build.coverage}%
 
@@ -97,7 +97,7 @@
         - if build.active?
           = link_to cancel_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Cancel', class: 'btn btn-build' do
             = icon('remove', class: 'cred')
-        - elsif defined?(allow_retry) && allow_retry
+        - elsif allow_retry
           - if build.retryable?
             = link_to retry_namespace_project_build_path(build.project.namespace, build.project, build, return_to: request.original_url), method: :post, title: 'Retry', class: 'btn btn-build' do
               = icon('repeat')
