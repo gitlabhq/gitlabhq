@@ -18,6 +18,7 @@ describe API::API, api: true  do
            project: project,
            state: :closed,
            milestone: milestone,
+           created_at: generate(:issue_created_at),
            updated_at: 3.hours.ago
   end
   let!(:confidential_issue) do
@@ -26,6 +27,7 @@ describe API::API, api: true  do
            project: project,
            author: author,
            assignee: assignee,
+           created_at: generate(:issue_created_at),
            updated_at: 2.hours.ago
   end
   let!(:issue) do
@@ -34,6 +36,7 @@ describe API::API, api: true  do
            assignee: user,
            project: project,
            milestone: milestone,
+           created_at: generate(:issue_created_at),
            updated_at: 1.hour.ago
   end
   let!(:label) do
