@@ -83,7 +83,7 @@ module Projects
         @project.create_wiki if @project.feature_available?(:wiki, current_user)
         @project.build_missing_services
 
-        @project.create_labels
+        Labels::ReplicateService.new(@project, current_user).execute
       end
 
       event_service.create_project(@project, current_user)

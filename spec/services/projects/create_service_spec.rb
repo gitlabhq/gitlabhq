@@ -17,12 +17,10 @@ describe Projects::CreateService, services: true do
       expect(project.services).not_to be_empty
     end
 
-    it 'creates labels on Project creation if there are templates' do
-      Label.create(title: "bug", template: true)
-      project = create_project(@user, @opts)
-      project.reload
+    it 'delegates labels replication to Labels::ReplicateService' do
+      expect_any_instance_of(Labels::ReplicateService).to receive(:execute).once.and_call_original
 
-      expect(project.labels).not_to be_empty
+      create_project(@user, @opts)
     end
 
     context 'user namespace' do
