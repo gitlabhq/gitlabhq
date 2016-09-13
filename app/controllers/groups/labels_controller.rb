@@ -28,7 +28,9 @@ class Groups::LabelsController < Groups::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    service = Labels::UpdateService.new(@group, current_user, label_params)
+
+    if service.execute(@label)
       redirect_to group_labels_path(@group)
     else
       render 'edit'

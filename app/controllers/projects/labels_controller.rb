@@ -40,7 +40,9 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def update
-    if @label.update_attributes(label_params)
+    service = Labels::UpdateService.new(@project, current_user, label_params)
+
+    if service.execute(@label)
       redirect_to namespace_project_labels_path(@project.namespace, @project)
     else
       render 'edit'
