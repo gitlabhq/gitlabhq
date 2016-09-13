@@ -1,0 +1,12 @@
+- @no_container = true
+- page_title "Integrations"
+
+%div{ class: container_class }
+  .top-area
+    .col-md-9
+      %h3.page-title= @integration.name.capitalize
+    .col-md-3
+      .nav-controls
+        - if can?(current_user, :update_integration, @integration)
+          = link_to 'Edit', edit_namespace_project_integration_path(@project.namespace, @project, @integration), class: 'btn'
+          = link_to 'Destroy', namespace_project_integration_path(@project.namespace, @project, @integration), data: { confirm: 'Are you sure you want to delete this integration?' }, class: 'btn btn-danger', method: :delete

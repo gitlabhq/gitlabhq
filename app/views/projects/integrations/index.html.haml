@@ -1,0 +1,25 @@
+- page_title "Integrations"
+%h3.page-title Integrations
+%p.light Integrations allow other services to request data on this project.
+
+%div
+  - if can?(current_user, :create_integration, @project)
+    .top-area.nav-controls
+      = link_to new_namespace_project_integration_path(@project.namespace, @project), class: 'btn btn-create' do
+        New integration
+
+  - unless @integrations.blank?
+    .table-holder
+      %table.table
+        %thead
+          %tr
+            %th Name
+            %th Enabled since
+        - @integrations.sort_by(&:type).each do |integration|
+          %tr
+            %td
+              = link_to edit_namespace_project_integration_path(@project.namespace, @project, integration.id) do
+                %strong= integration.name
+            %td.light
+              = time_ago_in_words integration.created_at
+              ago

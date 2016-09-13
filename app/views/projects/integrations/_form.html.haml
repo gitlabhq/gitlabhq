@@ -1,0 +1,22 @@
+.row.prepend-top-default.append-bottom-default
+  .col-lg-3
+    %h4.prepend-top-0
+      Integrations
+    %p
+      Integrations allow services to communicate with GitLab to enrich the experience.
+      = succeed "." do
+        = link_to "Read more about integrations", help_page_path("integrations")
+
+  = form_for [@project.namespace.becomes(Namespace), @project, @integration], html: { class: 'col-lg-9' } do |f|
+    = form_errors(@integration)
+
+    .form-group
+      = f.label :name, 'Name', class: 'label-light'
+      = f.text_field :name, required: true, class: 'form-control'
+    .form-group
+      = f.label :external_token, 'External token', class: 'label-light'
+      = f.text_field :external_token, class: 'form-control'
+
+    .form-actions
+      = f.submit 'Save', class: 'btn btn-save'
+      = link_to 'Cancel', namespace_project_integrations_path(@project.namespace, @project), class: 'btn btn-cancel'

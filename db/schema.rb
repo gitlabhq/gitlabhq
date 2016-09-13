@@ -439,6 +439,17 @@ ActiveRecord::Schema.define(version: 20160915042921) do
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "integrations", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "external_token"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "integrations", ["external_token"], name: "index_integrations_on_external_token", unique: true, using: :btree
+  add_index "integrations", ["project_id"], name: "index_integrations_on_project_id", using: :btree
+
   create_table "issue_metrics", force: :cascade do |t|
     t.integer  "issue_id",                           null: false
     t.datetime "first_mentioned_in_commit_at"
@@ -1181,6 +1192,7 @@ ActiveRecord::Schema.define(version: 20160915042921) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
 
   add_foreign_key "boards", "projects"
+  add_foreign_key "integrations", "projects"
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
   add_foreign_key "lists", "boards"
   add_foreign_key "lists", "labels"

@@ -707,6 +707,8 @@ Rails.application.routes.draw do
           end
         end
 
+        resources :integrations
+
         resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create] do
           member do
             put :enable

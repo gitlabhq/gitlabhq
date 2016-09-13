@@ -88,6 +88,7 @@ class ProjectPolicy < BasePolicy
     can! :update_container_image
     can! :create_environment
     can! :create_deployment
+    can! :read_integration
   end
 
   def master_access!
@@ -95,6 +96,9 @@ class ProjectPolicy < BasePolicy
     can! :update_project_snippet
     can! :update_environment
     can! :update_deployment
+    can! :create_integration
+    can! :update_integration
+    can! :destroy_integration
     can! :admin_milestone
     can! :admin_project_snippet
     can! :admin_project_member
