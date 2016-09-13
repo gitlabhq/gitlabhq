@@ -44,7 +44,7 @@ curl --request POST "https://gitlab.example.com/ci/api/v1/builds/register" --for
 |--------|------|---------------------------------------------------------------------------|
 | `201`  | yes  | When a build is scheduled for a runner                                    |
 | `204`  | no   | When no builds are scheduled for a runner (for GitLab Runner >= `v1.3.0`) |
-| `403`  | no   | When invalid token is used or no token is send                            |
+| `403`  | no   | When invalid token is used or no token is sent                            |
 | `404`  | no   | When no builds are scheduled for a runner (for GitLab Runner < `v1.3.0`) **or** when the runner is set to `paused` in GitLab runner's configuration page |
 
 ### Update details of an existing build
