@@ -138,9 +138,11 @@ Rails.application.routes.draw do
   resources :notification_settings, only: [:create, :update]
 
   #
-  # Integrations (trigger actions because of payload)
+  # Integrations
   #
-  resources :integrations, only: [:trigger]
+  namespace :integrations do
+    post :trigger
+  end
 
   #
   # Import
