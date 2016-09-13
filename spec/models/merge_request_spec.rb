@@ -1101,7 +1101,7 @@ describe MergeRequest, models: true do
           expect(merge_request.reload.can_reopen?).to be_falsey
         end
 
-        it 'returnes false if the merge request is merged' do
+        it 'returns false if the merge request is merged' do
           merge_request.update_attributes(state: 'merged')
 
           expect(merge_request.reload.can_reopen?).to be_falsey
