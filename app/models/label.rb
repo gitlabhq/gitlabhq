@@ -12,6 +12,8 @@ class Label < ActiveRecord::Base
 
   default_value_for :color, DEFAULT_COLOR
 
+  enum label_type: { global_label: 0, group_label: 1, project_label: 2 }
+
   belongs_to :subject, polymorphic: true
 
   has_many :lists, dependent: :destroy
@@ -21,6 +23,7 @@ class Label < ActiveRecord::Base
 
   validates :color, color: true, allow_blank: false
   validates :subject_id, :subject_type, presence: true, unless: Proc.new { |service| service.template? }
+  validates :label_type, presence: true
 
   # Don't allow ',' for label titles
   validates :title,
@@ -32,7 +35,7 @@ class Label < ActiveRecord::Base
 
   default_scope { order(title: :asc) }
 
-  scope :templates, ->  { where(template: true) }
+  scope :templates, -> { where(template: true) }
 
   def self.prioritized
     where.not(priority: nil).reorder(:priority, :title)

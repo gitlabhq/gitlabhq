@@ -504,6 +504,7 @@ ActiveRecord::Schema.define(version: 20160913212128) do
     t.string   "description"
     t.integer  "priority"
     t.string   "subject_type"
+    t.integer  "label_type",   default: 2, null: false
   end
 
   add_index "labels", ["priority"], name: "index_labels_on_priority", using: :btree
