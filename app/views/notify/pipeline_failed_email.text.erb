@@ -5,7 +5,7 @@ Commit Message: <%= @pipeline.git_commit_message %>
 Commit Author: <%= @pipeline.git_author_name %>
 Pusher: <%= @pipeline.user.try(:name) %>
 <% failed = @pipeline.statuses.latest.failed %>
-Pipeline #<%= @pipeline.id %> had <%= failed.size %> failed <%= 'job'.plural(failed.size) %>.
+Pipeline #<%= @pipeline.id %> had <%= failed.size %> failed <%= 'job'.pluralize(failed.size) %>.
 
 <% failed.each do |job| %>
 ID: <%= job.id %>
