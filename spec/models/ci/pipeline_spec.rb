@@ -398,7 +398,7 @@ describe Ci::Pipeline, models: true do
             build_b.enqueue
           end
 
-          it 'receive a pending event once' do
+          it 'receives a pending event once' do
             expect(WebMock).to have_requested_pipeline_hook('pending').once
           end
         end
@@ -411,7 +411,7 @@ describe Ci::Pipeline, models: true do
             build_b.run
           end
 
-          it 'receive a running event once' do
+          it 'receives a running event once' do
             expect(WebMock).to have_requested_pipeline_hook('running').once
           end
         end
@@ -422,7 +422,7 @@ describe Ci::Pipeline, models: true do
             build_b.success
           end
 
-          it 'receive a success event once' do
+          it 'receives a success event once' do
             expect(WebMock).to have_requested_pipeline_hook('success').once
           end
         end
@@ -432,7 +432,7 @@ describe Ci::Pipeline, models: true do
             build_a.drop
           end
 
-          it 'receive a failed event once' do
+          it 'receives a failed event once' do
             expect(WebMock).to have_requested_pipeline_hook('failed').once
           end
         end
