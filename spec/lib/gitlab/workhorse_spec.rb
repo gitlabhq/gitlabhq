@@ -30,6 +30,11 @@ describe Gitlab::Workhorse, lib: true do
       expect(subject.encoding).to eq(Encoding::ASCII_8BIT)
     end
 
+    it 'accepts a trailing newline' do
+      open(described_class.secret_path, 'a') { |f| f.write "\n" }
+      expect(subject.length).to eq(32)
+    end
+
     it 'raises an exception if the secret file cannot be read' do
       File.delete(described_class.secret_path)
       expect { subject }.to raise_exception(Errno::ENOENT)
