@@ -4,20 +4,19 @@ module API
     before { authenticate! }
 
     resource :namespaces do
-      # Get a namespaces list
-      #
-      # Example Request:
-      #  GET /namespaces
+      desc 'Get a namespaces list' do
+        succcess Entities::Namespace
+      end
       get do
-        @namespaces = if current_user.admin
+        namespaces = if current_user.admin
                         Namespace.all
                       else
                         current_user.namespaces
                       end
-        @namespaces = @namespaces.search(params[:search]) if params[:search].present?
-        @namespaces = paginate @namespaces
 
-        present @namespaces, with: Entities::Namespace
+        namespaces = namespaces.search(params[:search]) if params[:search].present?
+
+        present paginate(namespaces), with: Entities::Namespace
       end
     end
   end
