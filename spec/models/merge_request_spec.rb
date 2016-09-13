@@ -1041,8 +1041,8 @@ describe MergeRequest, models: true do
 
   describe '#closed_without_source_project?' do
     let(:project)      { create(:project) }
-    let(:fork_project) { create(:project, forked_from_project: project) }
     let(:user)         { create(:user) }
+    let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
     let(:destroy_project) { Projects::DestroyService.new(fork_project, user, {}) }
 
     context 'when the merge request is closed' do
@@ -1057,7 +1057,7 @@ describe MergeRequest, models: true do
       end
 
       it 'returns true if the source project does not exist' do
-        destroy_project.async_execute
+        destroy_project.execute
         closed_merge_request.reload
 
         expect(closed_merge_request.closed_without_source_project?).to be_truthy
@@ -1081,8 +1081,8 @@ describe MergeRequest, models: true do
 
       context 'forked project' do
         let(:project)      { create(:project) }
-        let(:fork_project) { create(:project, forked_from_project: project) }
         let(:user)         { create(:user) }
+        let(:fork_project) { create(:project, forked_from_project: project, namespace: user.namespace) }
         let(:merge_request) do
           create(:closed_merge_request,
             source_project: fork_project,
@@ -1096,7 +1096,7 @@ describe MergeRequest, models: true do
         end
 
         it 'returns false if the source project is deleted' do
-          Projects::DestroyService.new(fork_project, user, {}).async_execute
+          Projects::DestroyService.new(fork_project, user, {}).execute
 
           expect(merge_request.reload.can_reopen?).to be_falsey
         end
