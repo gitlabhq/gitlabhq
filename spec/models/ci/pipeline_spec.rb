@@ -373,8 +373,8 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#execute_hooks' do
-    let!(:build_a) { create_build('a') }
-    let!(:build_b) { create_build('b') }
+    let!(:build_a) { create_build('a', 0) }
+    let!(:build_b) { create_build('b', 1) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -427,6 +427,16 @@ describe Ci::Pipeline, models: true do
           end
         end
 
+        context 'when stage one failed' do
+          before do
+            build_a.drop
+          end
+
+          it 'receive a failed event once' do
+            expect(WebMock).to have_requested_pipeline_hook('failed').once
+          end
+        end
+
         def have_requested_pipeline_hook(status)
           have_requested(:post, hook.url).with do |req|
             json_body = JSON.parse(req.body)
@@ -450,8 +460,12 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    def create_build(name)
-      create(:ci_build, :created, pipeline: pipeline, name: name)
+    def create_build(name, stage_idx)
+      create(:ci_build,
+             :created,
+             pipeline: pipeline,
+             name: name,
+             stage_idx: stage_idx)
     end
   end
 end
