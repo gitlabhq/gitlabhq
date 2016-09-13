@@ -15,6 +15,7 @@ At its current state, GitHub importer can import:
 - the wiki pages (introduced in GitLab 8.4)
 - the milestones (introduced in GitLab 8.7)
 - the labels (introduced in GitLab 8.7)
+- the release note descriptions (introduced in GitLab 8.12)
 
 With GitLab 8.7+, references to pull requests and issues are preserved.
 

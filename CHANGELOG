@@ -79,6 +79,7 @@ v 8.12.0 (unreleased)
   - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
   - Align add button on repository view (ClemMakesApps)
   - Fix contributions calendar month label truncation (ClemMakesApps)
+  - Import release note descriptions from GitHub (EspadaV8)
   - Added tests for diff notes
   - Add pipeline events to Slack integration !5525
   - Add a button to download latest successful artifacts for branches and tags !5142
