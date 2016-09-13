@@ -37,7 +37,7 @@ module API
       #   id (required) - The ID of a project
       #   sha (required) - The commit hash
       #   ref (optional) - The ref
-      #   state (required) - The state of the status. Can be: pending, running, success, error or failure
+      #   state (required) - The state of the status. Can be: pending, running, success, failed or canceled
       #   target_url (optional) - The target URL to associate with this status
       #   description (optional) - A short description of the status
       #   name or context (optional) - A string label to differentiate this status from the status of other systems. Default: "default"
@@ -46,7 +46,7 @@ module API
       post ':id/statuses/:sha' do
         authorize! :create_commit_status, user_project
         required_attributes! [:state]
-        attrs = attributes_for_keys [:ref, :target_url, :description, :context, :name]
+        attrs = attributes_for_keys [:target_url, :description]
         commit = @project.commit(params[:sha])
         not_found! 'Commit' unless commit
 
@@ -58,36 +58,38 @@ module API
         # the first found branch on that commit
 
         ref = params[:ref]
-        unless ref
-          branches = @project.repository.branch_names_contains(commit.sha)
-          not_found! 'References for commit' if branches.none?
-          ref = branches.first
-        end
+        ref ||= @project.repository.branch_names_contains(commit.sha).first
+        not_found! 'References for commit' unless ref
+
+        name = params[:name] || params[:context] || 'default'
 
         pipeline = @project.ensure_pipeline(commit.sha, ref, current_user)
 
-        name = params[:name] || params[:context]
-        status = GenericCommitStatus.running_or_pending.find_by(pipeline: pipeline, name: name, ref: params[:ref])
-        status ||= GenericCommitStatus.new(project: @project, pipeline: pipeline, user: current_user)
-        status.update(attrs)
+        status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
+          project: @project, pipeline: pipeline,
+          user: current_user, name: name, ref: ref)
+        status.attributes = attrs
 
-        case params[:state].to_s
-        when 'running'
-          status.run
-        when 'success'
-          status.success
-        when 'failed'
-          status.drop
-        when 'canceled'
-          status.cancel
-        else
-          status.status = params[:state].to_s
-        end
+        begin
+          case params[:state].to_s
+          when 'pending'
+            status.enqueue!
+          when 'running'
+            status.enqueue
+            status.run!
+          when 'success'
+            status.success!
+          when 'failed'
+            status.drop!
+          when 'canceled'
+            status.cancel!
+          else
+            render_api_error!('invalid state', 400)
+          end
 
-        if status.save
           present status, with: Entities::CommitStatus
-        else
-          render_validation_error!(status)
+        rescue StateMachines::InvalidTransition => e
+          render_api_error!(e.message, 400)
         end
       end
     end
