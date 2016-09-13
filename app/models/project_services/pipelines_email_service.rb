@@ -7,7 +7,7 @@ class PipelinesEmailService < Service
     if: ->(s) { s.activated? && !s.add_pusher? }
 
   def initialize_properties
-    self.properties ||= { notify_only_broken_builds: true }
+    self.properties ||= { notify_only_broken_pipelines: true }
   end
 
   def title
@@ -28,7 +28,7 @@ class PipelinesEmailService < Service
 
   def execute(data, force = false)
     return unless supported_events.include?(data[:object_kind])
-    return unless force || should_build_be_notified?(data)
+    return unless force || should_pipeline_be_notified?(data)
 
     all_recipients = retrieve_recipients(data)
 
@@ -73,10 +73,12 @@ class PipelinesEmailService < Service
     { success: false, result: error }
   end
 
-  def should_build_be_notified?(data)
+  def should_pipeline_be_notified?(data)
     case data[:object_attributes][:status]
     when 'success'
       !notify_only_broken_pipelines?
+    when 'failed'
+      true
     else
       false
     end
