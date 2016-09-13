@@ -14,6 +14,7 @@ v 8.12.0 (unreleased)
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
+  - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
