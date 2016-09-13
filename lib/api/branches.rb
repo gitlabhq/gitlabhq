@@ -24,7 +24,7 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
       end
       get ':id/repository/branches/:branch' do
         branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
@@ -40,9 +40,9 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
-        optional :developers_can_push, type: String, desc 'Flag if developers can push to that branch'
-        optional :developers_can_merge, type: String, desc 'Flag if developers can merge to that branch'
+        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
+        optional :developers_can_push, type: String, desc: 'Flag if developers can push to that branch'
+        optional :developers_can_merge, type: String, desc: 'Flag if developers can merge to that branch'
       end
       put ':id/repository/branches/:branch/protect' do
         authorize_admin_project
@@ -94,7 +94,7 @@ module API
         success Entities::RepoBranch
       end
       params do
-        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
       end
       put ':id/repository/branches/:branch/unprotect' do
         authorize_admin_project
@@ -130,11 +130,11 @@ module API
 
       desc 'Delete a branch'
       params do
-        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+        requires :branch, type: String, regexp: /.+/, desc: 'The name of the branch'
       end
       delete ":id/repository/branches/:branch" do
         authorize_push_project
-        
+
         result = DeleteBranchService.new(user_project, current_user).
           execute(params[:branch])
 
