@@ -16,7 +16,7 @@
     }
 
     Autosave.prototype.restore = function() {
-      var e, error, text;
+      var e, text;
       if (window.localStorage == null) {
         return;
       }
@@ -41,7 +41,7 @@
       if ((text != null ? text.length : void 0) > 0) {
         try {
           return window.localStorage.setItem(this.key, text);
-        } catch (undefined) {}
+        } catch (error) {}
       } else {
         return this.reset();
       }
@@ -53,7 +53,7 @@
       }
       try {
         return window.localStorage.removeItem(this.key);
-      } catch (undefined) {}
+      } catch (error) {}
     };
 
     return Autosave;

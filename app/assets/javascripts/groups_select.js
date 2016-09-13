@@ -53,6 +53,7 @@
               return _this.formatSelection.apply(_this, args);
             },
             dropdownCssClass: "ajax-groups-dropdown",
+            // we do not want to escape markup since we are displaying html in results
             escapeMarkup: function(m) {
               return m;
             }

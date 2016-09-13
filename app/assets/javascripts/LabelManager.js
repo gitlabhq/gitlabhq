@@ -3,6 +3,7 @@
     LabelManager.prototype.errorMessage = 'Unable to update label prioritization at this time';
 
     function LabelManager(opts) {
+      // Defaults
       var ref, ref1, ref2;
       if (opts == null) {
         opts = {};
@@ -28,6 +29,7 @@
       $btn = $(e.currentTarget);
       $label = $("#" + ($btn.data('domId')));
       action = $btn.parents('.js-prioritized-labels').length ? 'remove' : 'add';
+      // Make sure tooltip will hide
       $tooltip = $("#" + ($btn.find('.has-tooltip:visible').attr('aria-describedby')));
       $tooltip.tooltip('destroy');
       return _this.toggleLabelPriority($label, action);
@@ -42,6 +44,7 @@
       url = $label.find('.js-toggle-priority').data('url');
       $target = this.prioritizedLabels;
       $from = this.otherLabels;
+      // Optimistic update
       if (action === 'remove') {
         $target = this.otherLabels;
         $from = this.prioritizedLabels;
@@ -53,6 +56,7 @@
         $target.find('.empty-message').addClass('hidden');
       }
       $label.detach().appendTo($target);
+      // Return if we are not persisting state
       if (!persistState) {
         return;
       }
@@ -61,6 +65,7 @@
           url: url,
           type: 'DELETE'
         });
+        // Restore empty message
         if (!$from.find('li').length) {
           $from.find('.empty-message').removeClass('hidden');
         }

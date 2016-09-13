@@ -7,3 +7,5 @@
   })();
 
 }).call(this);
+
+// I kept class for future

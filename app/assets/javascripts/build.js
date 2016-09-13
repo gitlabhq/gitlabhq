@@ -16,6 +16,7 @@
       this.toggleSidebar = bind(this.toggleSidebar, this);
       this.updateDropdown = bind(this.updateDropdown, this);
       clearInterval(Build.interval);
+      // Init breakpoint checker
       this.bp = Breakpoints.get();
       $('.js-build-sidebar').niceScroll();
 
@@ -42,6 +43,9 @@
             $(this).data("state", "enabled");
             return $(this).text("disable autoscroll");
           }
+        //
+        // Bind autoscroll button to follow build output
+        //
         });
         Build.interval = setInterval((function(_this) {
           return function() {
@@ -49,6 +53,10 @@
               return _this.getBuildTrace();
             }
           };
+        //
+        // Check for new build output if user still watching build page
+        // Only valid for runnig build when output changes during time
+        //
         })(this), 4000);
       }
     }

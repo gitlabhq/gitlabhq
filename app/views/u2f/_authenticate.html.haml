@@ -20,6 +20,8 @@
   %div
     %p We heard back from your U2F device. Click this button to authenticate with the GitLab server.
     = form_tag(new_user_session_path, method: :post) do |f|
+      - resource_params = params[resource_name].presence || params
+      = hidden_field_tag 'user[remember_me]', resource_params.fetch(:remember_me, 0)
       = hidden_field_tag 'user[device_response]', nil, class: 'form-control', required: true, id: "js-device-response"
       = submit_tag "Authenticate via U2F Device", class: "btn btn-success"
 

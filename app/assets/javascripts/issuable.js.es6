@@ -38,9 +38,11 @@
       return $(document).off('click', '.js-label-filter-remove').on('click', '.js-label-filter-remove', function(e) {
         var $button;
         $button = $(this);
+        // Remove the label input box
         $('input[name="label_name[]"]').filter(function() {
           return this.value === $button.data('label');
         }).remove();
+        // Submit the form to get new data
         Issuable.filterResults($('.filter-form'));
         return $('.js-label-select').trigger('update.label');
       });

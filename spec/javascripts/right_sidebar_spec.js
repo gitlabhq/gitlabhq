@@ -1,10 +1,6 @@
 
 /*= require right_sidebar */
-
-
 /*= require jquery */
-
-
 /*= require jquery.cookie */
 
 (function() {
