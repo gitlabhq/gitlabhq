@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Labels::CreateService, services: true do
   describe '#execute' do
-    let(:group) { create(:group) }
+    let!(:group) { create(:group) }
     let!(:project) { create(:empty_project, group: group) }
 
     let(:params) do
@@ -20,10 +20,16 @@ describe Labels::CreateService, services: true do
         expect { service.execute }.to change(group.labels, :count).by(1)
       end
 
+      it 'sets label_type to group_label' do
+        service.execute
+
+        expect(Label.last).to have_attributes(label_type: 'group_label')
+      end
+
       it 'becames available to all already existing projects of the group' do
         service.execute
 
-        expect(project.labels.where(params)).not_to be_empty
+        expect(project.labels.where(params.merge(label_type: Label.label_types[:group_label]))).not_to be_empty
       end
 
       it 'does not overwrite label that already exists in the project' do
@@ -43,8 +49,14 @@ describe Labels::CreateService, services: true do
         expect { service.execute }.to change(project.labels, :count).by(1)
       end
 
+      it 'sets label_type to project_label' do
+        service.execute
+
+        expect(Label.last).to have_attributes(label_type: 'project_label')
+      end
+
       it 'does not create a label that already exists on the group level' do
-        group.labels.create(params)
+        group.labels.create(params.merge(label_type: Label.label_types[:group_label]))
 
         expect { service.execute }.not_to change(project.labels, :count)
       end

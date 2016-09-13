@@ -2,18 +2,27 @@ module Labels
   class DestroyService < Labels::BaseService
     def execute(label)
       Label.transaction do
-        destroy_project_labels(label.title) if subject.is_a?(Group)
         label.destroy
+
+        return unless label.group_label?
+
+        if subject.is_a?(Group)
+          destroy_labels(subject.projects, label.title)
+        end
+
+        if subject.is_a?(Project)
+          destroy_labels(subject.group, label.title)
+          destroy_labels(subject.group.projects - [subject], label.title)
+        end
       end
     end
 
     private
 
-    def destroy_project_labels(title)
-      subject.projects.each do |project|
-        label = project.labels.find_by(title: title)
-        label.destroy if label.present?
-      end
+    def destroy_labels(subject, title)
+      Label.with_type(:group_label)
+           .where(subject: subject, title: title)
+           .each(&:destroy)
     end
   end
 end

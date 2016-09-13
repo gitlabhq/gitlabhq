@@ -36,6 +36,7 @@ class Label < ActiveRecord::Base
   default_scope { order(title: :asc) }
 
   scope :templates, -> { where(template: true) }
+  scope :with_type, ->(label_type) { where(label_type: Label.label_types[label_type]) }
 
   def self.prioritized
     where.not(priority: nil).reorder(:priority, :title)
