@@ -63,7 +63,7 @@ class Projects::LabelsController < Projects::ApplicationController
   end
 
   def destroy
-    @label.destroy
+    Labels::DestroyService.new(@project, current_user).execute(@label)
 
     respond_to do |format|
       format.html do
