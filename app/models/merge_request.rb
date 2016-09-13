@@ -327,9 +327,10 @@ class MergeRequest < ActiveRecord::Base
     !source_project.forked_from?(target_project)
   end
 
-  def can_reopen?
+  def reopenable?
     return false if closed_without_fork? || closed_without_source_project? || merged?
-    return true if closed?
+
+    closed?
   end
 
   def ensure_merge_request_diff
