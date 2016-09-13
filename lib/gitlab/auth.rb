@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:user, :type, :project, :capabilities)
+    Result = Struct.new(:user, :project, :type, :capabilities)
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
