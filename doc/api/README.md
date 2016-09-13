@@ -27,6 +27,7 @@ following locations:
 - [Milestones](milestones.md)
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
+- [Notification settings](notification_settings.md)
 - [Open source license templates](licenses.md)
 - [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks

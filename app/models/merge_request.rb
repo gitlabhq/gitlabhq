@@ -321,6 +321,10 @@ class MergeRequest < ActiveRecord::Base
     closed? && forked_source_project_missing?
   end
 
+  def closed_without_source_project?
+    closed? && !source_project
+  end
+
   def forked_source_project_missing?
     return false unless for_fork?
     return true unless source_project
@@ -342,6 +346,12 @@ class MergeRequest < ActiveRecord::Base
       errors.add :validate_approvals_before_merge,
                  'Number of approvals must be greater than those on target project'
     end
+  end
+
+  def reopenable?
+    return false if closed_without_fork? || closed_without_source_project? || merged?
+
+    closed?
   end
 
   def ensure_merge_request_diff

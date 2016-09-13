@@ -346,6 +346,13 @@ GEM
       multi_json (>= 1.3.2)
     gssapi (1.2.0)
       ffi (>= 1.0.1)
+    haml (4.0.7)
+      tilt
+    haml_lint (0.18.2)
+      haml (~> 4.0)
+      rake (>= 10, < 12)
+      rubocop (>= 0.36.0)
+      sysexits (~> 1.1)
     hamlit (2.6.1)
       temple (~> 0.7.6)
       thor
@@ -747,6 +754,7 @@ GEM
     stringex (2.5.2)
     sys-filesystem (1.1.6)
       ffi
+    sysexits (1.2.0)
     systemu (2.6.5)
     task_list (1.0.2)
       html-pipeline
@@ -898,6 +906,7 @@ DEPENDENCIES
   grape (~> 0.15.0)
   grape-entity (~> 0.4.2)
   gssapi
+  haml_lint (~> 0.18.2)
   hamlit (~> 2.6.1)
   health_check (~> 2.1.0)
   hipchat (~> 1.5.0)
