@@ -43,8 +43,6 @@ module API
         requires :value, type: String, desc: 'The value of the variable'
       end
       post ':id/variables' do
-        required_attributes! [:key, :value]
-
         variable = user_project.variables.create(key: params[:key], value: params[:value])
 
         if variable.valid?
