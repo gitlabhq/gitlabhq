@@ -86,7 +86,7 @@ appear on top.
 ## Subscribe to labels
 
 If you don’t want to miss issues or merge requests that are important to you,
-simply subscribe to a label. You’ll get notified whenever the label gets added
+simply subscribe to a label. You’ll get notified via email whenever the label gets added
 to an issue or merge request, making sure you don’t miss a thing.
 
 Go to your project's **Issues > Labels** area, find the label(s) you want to
