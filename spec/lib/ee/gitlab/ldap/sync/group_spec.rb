@@ -3,6 +3,7 @@ require 'spec_helper'
 describe EE::Gitlab::LDAP::Sync::Group, lib: true do
   include LdapHelpers
 
+  let(:adapter) { ldap_adapter }
   let(:sync_group) { described_class.new(group, proxy(adapter)) }
   let(:user) { create(:user) }
 
@@ -90,6 +91,24 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
     let(:ldap_group1) { ldap_group_entry(user_dn(user.username)) }
 
     include_examples :group_state_machine
+  end
+
+  describe '.ldap_sync_ready?' do
+    let(:ldap_group1) { nil }
+
+    it 'returns false when ldap sync started' do
+      group = create(:group)
+      group.start_ldap_sync
+
+      expect(described_class.ldap_sync_ready?(group)).to be_falsey
+    end
+
+    it 'returns true when ldap sync pending' do
+      group = create(:group)
+      group.pending_ldap_sync
+
+      expect(described_class.ldap_sync_ready?(group)).to be_truthy
+    end
   end
 
   describe '#update_permissions' do

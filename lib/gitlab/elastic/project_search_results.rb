@@ -28,15 +28,10 @@ module Gitlab
         when 'wiki_blobs'
           wiki_blobs.page(page).per(per_page)
         when 'commits'
-          Kaminari.paginate_array(commits).page(page).per(per_page)
+          commits(page: page, per_page: per_page)
         else
           super
         end
-      end
-
-      def total_count
-        @total_count ||= issues_count + merge_requests_count + blobs_count +
-                         notes_count + wiki_blobs_count + commits_count
       end
 
       def blobs_count
@@ -52,7 +47,7 @@ module Gitlab
       end
 
       def commits_count
-        @commits_count ||= commits.count
+        @commits_count ||= commits.total_count
       end
 
       private
@@ -98,17 +93,19 @@ module Gitlab
         Note.elastic_search(query, options: opt)
       end
 
-      def commits
+      def commits(page: 1, per_page: 20)
         if project.empty_repo? || query.blank?
           Kaminari.paginate_array([])
         else
           # We use elastic for default branch only
           if root_ref?
-            project.repository.find_commits_by_message_with_elastic(query)
-          else
-            Kaminari.paginate_array(
-              project.repository.find_commits_by_message(query).compact
+            project.repository.find_commits_by_message_with_elastic(
+              query,
+              page: (page || 1).to_i,
+              per_page: per_page
             )
+          else
+            project.repository.find_commits_by_message(query).compact
           end
         end
       end

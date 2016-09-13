@@ -17,7 +17,7 @@ FROM_SHA = ENV['FROM_SHA']
 TO_SHA = ENV['TO_SHA']
 RAILS_ENV = ENV['RAILS_ENV']
 
-LOGGER.info("[ES indexer]: Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
+LOGGER.info("Has been scheduled for project #{REPO_PATH} with SHA range #{FROM_SHA}:#{TO_SHA}")
 
 elastic_connection_info = JSON.parse ENV['ELASTIC_CONNECTION_INFO']
 ELASTIC_HOST = elastic_connection_info['host']
@@ -41,6 +41,10 @@ class Repository
     PROJECT_ID
   end
 
+  def project_id
+    PROJECT_ID
+  end
+
   def path_to_repo
     REPO_PATH
   end
@@ -50,22 +54,26 @@ repo = Repository.new
 
 params = { from_rev: FROM_SHA, to_rev: TO_SHA }.compact
 
-print "Indexing commits..."
+LOGGER.info("Indexing commits started")
 
 timings = Benchmark.measure do
-  repo.index_commits(params)
+  indexed = 0
+  repo.index_commits(params) do |batch, total_count|
+    indexed += batch.length
+    LOGGER.info("Indexed #{indexed}/#{total_count} commits")
+  end
 end
 
-puts "Done"
+LOGGER.info("Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
 
-LOGGER.info("[ES indexer]: Commits for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
-
-print "Indexing blobs..."
+LOGGER.info("Indexing blobs started")
 
 timings = Benchmark.measure do
-  repo.index_blobs(params)
+  indexed = 0
+  repo.index_blobs(params) do |batch, total_count|
+    indexed += batch.length
+    LOGGER.info("Indexed #{indexed}/#{total_count} blobs")
+  end
 end
 
-puts "Done"
-
-LOGGER.info("[ES indexer]: Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")
+LOGGER.info("Blobs for #{REPO_PATH} are indexed. Time elapsed: #{timings.real}")

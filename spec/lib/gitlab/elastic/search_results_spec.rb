@@ -41,7 +41,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    it 'lists issues that title or description contain the query' do
+    it 'lists found issues' do
       results = described_class.new(user, 'hello world', limit_project_ids)
       issues = results.objects('issues')
 
@@ -51,7 +51,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.issues_count).to eq 2
     end
 
-    it 'returns empty list when issues title or description does not contain the query' do
+    it 'returns empty list when issues are not found' do
       results = described_class.new(user, 'security', limit_project_ids)
 
       expect(results.objects('issues')).to be_empty
@@ -297,7 +297,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       Gitlab::Elastic::Helper.refresh_index
     end
 
-    it 'lists merge requests that title or description contain the query' do
+    it 'lists found merge requests' do
       results = described_class.new(user, 'hello world', limit_project_ids)
       merge_requests = results.objects('merge_requests')
 
@@ -307,7 +307,7 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(results.merge_requests_count).to eq 2
     end
 
-    it 'returns empty list when merge requests title or description does not contain the query' do
+    it 'returns empty list when merge requests are not found' do
       results = described_class.new(user, 'security', limit_project_ids)
 
       expect(results.objects('merge_requests')).to be_empty
@@ -364,6 +364,74 @@ describe Gitlab::Elastic::SearchResults, lib: true do
       expect(result.merge_requests_count).to eq(2)
       expect(result.milestones_count).to eq(2)
       expect(result.projects_count).to eq(1)
+    end
+  end
+
+  describe 'Blobs' do
+    before do
+      project_1.repository.index_blobs
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it 'founds blobs' do
+      results = described_class.new(user, 'def', limit_project_ids)
+      blobs = results.objects('blobs')
+
+      expect(blobs.first["_source"]["blob"]["content"]).to include("def")
+      expect(results.blobs_count).to eq 4
+    end
+
+    it 'founds blobs from public projects only' do
+      project_2 = create :project, :private
+      project_2.repository.index_blobs
+      Gitlab::Elastic::Helper.refresh_index
+
+      results = described_class.new(user, 'def', [project_1.id])
+      expect(results.blobs_count).to eq 4
+
+      results = described_class.new(user, 'def', [project_1.id, project_2.id])
+      expect(results.blobs_count).to eq 8
+    end
+
+    it 'returns zero when blobs are not found' do
+      results = described_class.new(user, 'asdfg', limit_project_ids)
+
+      expect(results.blobs_count).to eq 0
+    end
+  end
+
+  describe 'Commits' do
+    before do
+      project_1.repository.index_commits
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    it 'founds commits' do
+      results = described_class.new(user, 'add', limit_project_ids)
+      commits = results.objects('commits')
+
+      expect(commits.first.message).to include("add")
+      expect(results.commits_count).to eq 5
+    end
+
+    it 'founds commits from public projects only' do
+      project_2 = create :project, :private
+      project_2.repository.index_commits
+      Gitlab::Elastic::Helper.refresh_index
+
+      results = described_class.new(user, 'add', [project_1.id])
+      expect(results.commits_count).to eq 5
+
+      results = described_class.new(user, 'add', [project_1.id, project_2.id])
+      expect(results.commits_count).to eq 10
+    end
+
+    it 'returns zero when commits are not found' do
+      results = described_class.new(user, 'asdfg', limit_project_ids)
+
+      expect(results.commits_count).to eq 0
     end
   end
 end

@@ -134,6 +134,13 @@ describe Project, models: true do
       end
     end
 
+    context 'mirror' do
+      subject { build(:project, mirror: true) }
+
+      it { is_expected.to validate_presence_of(:import_url) }
+      it { is_expected.to validate_presence_of(:mirror_user) }
+    end
+
     it 'does not allow an invalid URI as import_url' do
       project2 = build(:project, import_url: 'invalid://')
 

@@ -131,12 +131,6 @@ class Repository
     commits
   end
 
-  def find_commits_by_message_with_elastic(query)
-    project.repository.search(query, type: :commit)[:commits][:results].map do |result|
-      commit result["_source"]["commit"]["sha"]
-    end
-  end
-
   def find_branch(name, fresh_repo: true)
     # Since the Repository object may have in-memory index changes, invalidating the memoized Repository object may
     # cause unintended side effects. Because finding a branch is a read-only operation, we can safely instantiate
@@ -1146,88 +1140,6 @@ class Repository
     Gitlab::Popen.popen(args, path_to_repo).first.scrub.split(/^--$/)
   end
 
-  def parse_search_result(result)
-    if result.is_a?(String)
-      parse_search_result_from_grep(result)
-    else
-      parse_search_result_from_elastic(result)
-    end
-  end
-
-  def parse_search_result_from_elastic(result)
-    ref = result["_source"]["blob"]["commit_sha"]
-    filename = result["_source"]["blob"]["path"]
-    extname = File.extname(filename)
-    basename = filename.sub(/#{extname}$/, '')
-    content = result["_source"]["blob"]["content"]
-    total_lines = content.lines.size
-
-    highlighted_content = result["highlight"]["blob.content"]
-    term = highlighted_content && highlighted_content[0].match(/gitlabelasticsearch→(.*?)←gitlabelasticsearch/)[1]
-
-    found_line_number = 0
-
-    content.each_line.each_with_index do |line, index|
-      if term && line.include?(term)
-        found_line_number = index
-        break
-      end
-    end
-
-    from = if found_line_number >= 2
-             found_line_number - 2
-           else
-             found_line_number
-           end
-
-    to = if (total_lines - found_line_number) > 3
-           found_line_number + 2
-         else
-           found_line_number
-         end
-
-    data = content.lines[from..to]
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: from + 1,
-      data: data.join
-    )
-  end
-
-  def parse_search_result_from_grep(result)
-    ref = nil
-    filename = nil
-    basename = nil
-    startline = 0
-
-    result.each_line.each_with_index do |line, index|
-      if line =~ /^.*:.*:\d+:/
-        ref, filename, startline = line.split(':')
-        startline = startline.to_i - index
-        extname = Regexp.escape(File.extname(filename))
-        basename = filename.sub(/#{extname}$/, '')
-        break
-      end
-    end
-
-    data = ""
-
-    result.each_line do |line|
-      data << line.sub(ref, '').sub(filename, '').sub(/^:-\d+-/, '').sub(/^::\d+:/, '')
-    end
-
-    OpenStruct.new(
-      filename: filename,
-      basename: basename,
-      ref: ref,
-      startline: startline,
-      data: data
-    )
-  end
-
   def fetch_ref(source_path, source_ref, target_ref)
     args = %W(#{Gitlab.config.git.bin_path} fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
     Gitlab::Popen.popen(args, path_to_repo)
@@ -1255,7 +1167,7 @@ class Repository
 
     GitHooksService.new.execute(current_user, path_to_repo, oldrev, newrev, ref) do
       update_ref!(ref, newrev, oldrev)
-      
+
       if was_empty || !target_branch
         # If repo was empty expire cache
         after_create if was_empty

@@ -1,11 +1,17 @@
-- blob = @project.repository.parse_search_result(blob)
+- parsed_blob = parse_search_result(blob)
+- project = @project || find_project_for_blob(blob)
+- blob_link = namespace_project_blob_path(project.namespace, project, tree_join(parsed_blob.ref, parsed_blob.filename))
 .blob-result
   .file-holder
     .file-title
-      - blob_link = namespace_project_blob_path(@project.namespace, @project, tree_join(blob.ref, blob.filename))
       = link_to blob_link do
-        %i.fa.fa-file
+        = icon('fa-file')
         %strong
-          = blob.filename
+          - if @project
+            = parsed_blob.filename
+          - else
+            #{project.name_with_namespace}:
+            %i= parsed_blob.filename
+
     .file-content.code.term
-      = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link
+      = render 'shared/file_highlight', blob: parsed_blob, first_line_number: parsed_blob.startline, blob_link: blob_link

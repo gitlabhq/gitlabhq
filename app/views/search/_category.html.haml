@@ -69,3 +69,14 @@
         Milestones
         %span.badge
           = @search_results.milestones_count
+    - if current_application_settings.elasticsearch_search?
+      %li{class: ("active" if @scope == 'blobs')}
+        = link_to search_filter_path(scope: 'blobs') do
+          Code
+          %span.badge
+            = @search_results.blobs_count
+      %li{class: ("active" if @scope == 'commits')}
+        = link_to search_filter_path(scope: 'commits') do
+          Commits
+          %span.badge
+            = @search_results.commits_count

@@ -11,7 +11,7 @@ describe Project, elastic: true do
     stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
   end
 
-  it "searches projects" do
+  it "finds projects" do
     project_ids = []
 
     Sidekiq::Testing.inline! do
@@ -27,6 +27,20 @@ describe Project, elastic: true do
     expect(described_class.elastic_search('test', options: { pids: project_ids }).total_count).to eq(1)
     expect(described_class.elastic_search('test1', options: { pids: project_ids }).total_count).to eq(1)
     expect(described_class.elastic_search('someone_elses_project', options: { pids: project_ids }).total_count).to eq(0)
+  end
+
+  it "finds partial matches in project names" do
+    project_ids = []
+
+    Sidekiq::Testing.inline! do
+      project = create :empty_project, name: 'tesla-model-s'
+      project1 = create :empty_project, name: 'tesla_model_s'
+      project_ids += [project.id, project1.id]
+
+      Gitlab::Elastic::Helper.refresh_index
+    end
+
+    expect(described_class.elastic_search('tesla', options: { pids: project_ids }).total_count).to eq(2)
   end
 
   it "returns json with all needed elements" do
