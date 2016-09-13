@@ -13,16 +13,25 @@ module Ci
     private
 
     def create_build(build_attributes)
-      build_attributes = build_attributes.merge(
+      build_attributes = {
+        stage_idx: build_attributes[:stage_idx],
+        stage: build_attributes[:stage],
+        commands: build_attributes[:commands],
+        tag_list: build_attributes[:tag_list],
+        name: build_attributes[:name],
+        when: build_attributes[:when],
+        allow_failure: build_attributes[:allow_failure],
+        environment: build_attributes[:environment],
+        yaml_variables: build_attributes[:yaml_variables],
+        options: build_attributes[:options],
         pipeline: pipeline,
         project: pipeline.project,
         ref: pipeline.ref,
         tag: pipeline.tag,
         user: current_user,
         trigger_request: trigger_request
-      )
-      # OPTIMIZE: We copy over all attributes of Job into Build, therefore this workaround
-      build_attributes = build_attributes.except(:only, :except)
+      }
+
       pipeline.builds.create(build_attributes)
     end
 
