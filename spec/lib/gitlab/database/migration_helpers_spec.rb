@@ -91,63 +91,85 @@ describe Gitlab::Database::MigrationHelpers, lib: true do
 
   describe '#add_column_with_default' do
     context 'outside of a transaction' do
-      before do
-        expect(model).to receive(:transaction_open?).and_return(false)
+      context 'when a column limit is not set' do
+        before do
+          expect(model).to receive(:transaction_open?).and_return(false)
 
-        expect(model).to receive(:transaction).and_yield
+          expect(model).to receive(:transaction).and_yield
 
-        expect(model).to receive(:add_column).
-          with(:projects, :foo, :integer, default: nil)
+          expect(model).to receive(:add_column).
+            with(:projects, :foo, :integer, default: nil)
 
-        expect(model).to receive(:change_column_default).
-          with(:projects, :foo, 10)
-      end
+          expect(model).to receive(:change_column_default).
+            with(:projects, :foo, 10)
+        end
 
-      it 'adds the column while allowing NULL values' do
-        expect(model).to receive(:update_column_in_batches).
-          with(:projects, :foo, 10)
+        it 'adds the column while allowing NULL values' do
+          expect(model).to receive(:update_column_in_batches).
+            with(:projects, :foo, 10)
 
-        expect(model).not_to receive(:change_column_null)
+          expect(model).not_to receive(:change_column_null)
 
-        model.add_column_with_default(:projects, :foo, :integer,
-                                      default: 10,
-                                      allow_null: true)
-      end
+          model.add_column_with_default(:projects, :foo, :integer,
+                                        default: 10,
+                                        allow_null: true)
+        end
 
-      it 'adds the column while not allowing NULL values' do
-        expect(model).to receive(:update_column_in_batches).
-          with(:projects, :foo, 10)
+        it 'adds the column while not allowing NULL values' do
+          expect(model).to receive(:update_column_in_batches).
+            with(:projects, :foo, 10)
 
-        expect(model).to receive(:change_column_null).
-          with(:projects, :foo, false)
+          expect(model).to receive(:change_column_null).
+            with(:projects, :foo, false)
 
-        model.add_column_with_default(:projects, :foo, :integer, default: 10)
-      end
-
-      it 'removes the added column whenever updating the rows fails' do
-        expect(model).to receive(:update_column_in_batches).
-          with(:projects, :foo, 10).
-          and_raise(RuntimeError)
-
-        expect(model).to receive(:remove_column).
-          with(:projects, :foo)
-
-        expect do
           model.add_column_with_default(:projects, :foo, :integer, default: 10)
-        end.to raise_error(RuntimeError)
+        end
+
+        it 'removes the added column whenever updating the rows fails' do
+          expect(model).to receive(:update_column_in_batches).
+            with(:projects, :foo, 10).
+            and_raise(RuntimeError)
+
+          expect(model).to receive(:remove_column).
+            with(:projects, :foo)
+
+          expect do
+            model.add_column_with_default(:projects, :foo, :integer, default: 10)
+          end.to raise_error(RuntimeError)
+        end
+
+        it 'removes the added column whenever changing a column NULL constraint fails' do
+          expect(model).to receive(:change_column_null).
+            with(:projects, :foo, false).
+            and_raise(RuntimeError)
+
+          expect(model).to receive(:remove_column).
+            with(:projects, :foo)
+
+          expect do
+            model.add_column_with_default(:projects, :foo, :integer, default: 10)
+          end.to raise_error(RuntimeError)
+        end
       end
 
-      it 'removes the added column whenever changing a column NULL constraint fails' do
-        expect(model).to receive(:change_column_null).
-          with(:projects, :foo, false).
-          and_raise(RuntimeError)
+      context 'when a column limit is set' do
+        it 'adds the column with a limit' do
+          allow(model).to receive(:transaction_open?).and_return(false)
+          allow(model).to receive(:transaction).and_yield
+          expect(model).to receive(:add_column).
+            with(:projects, :foo, :integer, default: nil, limit: 8)
+          allow(model).to receive(:update_column_in_batches).
+            with(:projects, :foo, 10)
+          allow(model).to receive(:change_column_null).
+            with(:projects, :foo, false)
+          allow(model).to receive(:change_column_default).
+            with(:projects, :foo, 10)
 
-        expect(model).to receive(:remove_column).
-          with(:projects, :foo)
+          expect(model).to receive(:add_column).
+            with(:projects, :foo, :integer, default: nil, limit: 8)
 
-        expect do
-          model.add_column_with_default(:projects, :foo, :integer, default: 10)
-        end.to raise_error(RuntimeError)
+          model.add_column_with_default(:projects, :foo, :integer, default: 10, limit: 8)
+        end
       end
     end
 
