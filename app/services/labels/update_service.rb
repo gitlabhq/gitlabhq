@@ -1,9 +1,5 @@
 module Labels
-  class UpdateService
-    def initialize(subject, user, params = {})
-      @subject, @user, @params = subject, user, params.dup
-    end
-
+  class UpdateService < Labels::BaseService
     def execute(label)
       Label.transaction do
         if subject.is_a?(Group)
@@ -16,9 +12,5 @@ module Labels
         label.update_attributes(params)
       end
     end
-
-    private
-
-    attr_reader :subject, :user, :params
   end
 end

@@ -1,9 +1,5 @@
 module Labels
-  class CreateService
-    def initialize(subject, user, params = {})
-      @subject, @user, @params = subject, user, params.dup
-    end
-
+  class CreateService < Labels::BaseService
     def execute
       label = subject.labels.build(params)
 
@@ -24,8 +20,6 @@ module Labels
     end
 
     private
-
-    attr_reader :subject, :user, :params
 
     def title
       params[:title]

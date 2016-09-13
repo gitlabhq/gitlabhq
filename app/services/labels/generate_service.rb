@@ -1,9 +1,5 @@
 module Labels
-  class GenerateService
-    def initialize(subject, user)
-      @subject, @user = subject, user
-    end
-
+  class GenerateService < Labels::BaseService
     def execute
       label_params.each do |params|
         Labels::CreateService.new(subject, user, params).execute
@@ -11,8 +7,6 @@ module Labels
     end
 
     private
-
-    attr_reader :subject, :user
 
     def label_params
       red = '#d9534f'

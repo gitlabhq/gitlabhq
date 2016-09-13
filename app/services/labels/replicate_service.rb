@@ -1,16 +1,10 @@
 module Labels
-  class ReplicateService
-    def initialize(subject, user)
-      @subject, @user = subject, user
-    end
-
+  class ReplicateService < Labels::BaseService
     def execute
       labels.each { |label| replicate(label) }
     end
 
     private
-
-    attr_reader :subject, :user
 
     def labels
       global_labels = Label.templates
