@@ -20,7 +20,6 @@ v 8.12.0 (unreleased)
   - Fix pagination on user snippets page
   - Fix sorting of issues in API
   - Ensure specs on sorting of issues in API are deterministic on MySQL
-  - Use haml_lint for views linting
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
   - Fix file permissions change when updating a file on the Gitlab UI !5979
