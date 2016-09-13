@@ -429,6 +429,7 @@ storage:
     accesskey: 'AKIAKIAKI'
     secretkey: 'secret123'
     bucket: 'gitlab-registry-bucket-AKIAKIAKI'
+    region: 'your-s3-region'
   cache:
     blobdescriptor: inmemory
   delete:
