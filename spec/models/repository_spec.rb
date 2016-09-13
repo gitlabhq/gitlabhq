@@ -132,7 +132,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :commit_file do
+  describe 'commit_file' do
     it 'commits change to a file successfully' do
       expect do
         repository.commit_file(user, 'CHANGELOG', 'Changelog!',
@@ -146,7 +146,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :update_file do
+  describe 'update_file' do
     it 'updates filename successfully' do
       expect do
         repository.update_file(user, 'NEWLICENSE', 'Copyright!',
@@ -185,32 +185,6 @@ describe Repository, models: true do
 
       it { is_expected.to be_an String }
       it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
-    end
-
-    describe 'parsing result' do
-      subject { repository.parse_search_result(search_result) }
-      let(:search_result) { results.first }
-
-      it { is_expected.to be_an OpenStruct }
-      it { expect(subject.filename).to eq('CHANGELOG') }
-      it { expect(subject.basename).to eq('CHANGELOG') }
-      it { expect(subject.ref).to eq('master') }
-      it { expect(subject.startline).to eq(186) }
-      it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
-
-      context "when filename has extension" do
-        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
-
-        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
-        it { expect(subject.basename).to eq('CONTRIBUTE') }
-      end
-
-      context "when file under directory" do
-        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
-
-        it { expect(subject.filename).to eq('a/b/c.md') }
-        it { expect(subject.basename).to eq('a/b/c') }
-      end
     end
   end
 
@@ -761,7 +735,7 @@ describe Repository, models: true do
     end
   end
 
-  describe :skip_merged_commit do
+  describe 'skip_merged_commit' do
     subject { repository.commits(Gitlab::Git::BRANCH_REF_PREFIX + "'test'", limit: 100, skip_merges: true).map{ |k| k.id } }
 
     it { is_expected.not_to include('e56497bb5f03a90a51293fc6d516788730953899') }
@@ -1068,7 +1042,23 @@ describe Repository, models: true do
       stub_application_setting(elasticsearch_search: false, elasticsearch_indexing: false)
     end
 
-    describe :find_commits_by_message_with_elastic do
+    describe "class method find_commits_by_message_with_elastic" do
+      it "returns commits" do
+        project = create :project
+        project1 = create :project
+
+        project.repository.index_commits
+        project1.repository.index_commits
+
+        Gitlab::Elastic::Helper.refresh_index
+
+        expect(described_class.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
+        expect(described_class.find_commits_by_message_with_elastic('initial').count).to eq(2)
+        expect(described_class.find_commits_by_message_with_elastic('initial').total_count).to eq(2)
+      end
+    end
+
+    describe "find_commits_by_message_with_elastic" do
       it "returns commits" do
         project = create :project
 
@@ -1078,29 +1068,7 @@ describe Repository, models: true do
 
         expect(project.repository.find_commits_by_message_with_elastic('initial').first).to be_a(Commit)
         expect(project.repository.find_commits_by_message_with_elastic('initial').count).to eq(1)
-      end
-    end
-
-    describe :parse_search_result_from_elastic do
-      it "returns parsed result" do
-        project = create :project
-
-        project.repository.index_blobs
-
-        Gitlab::Elastic::Helper.refresh_index
-
-        result = project.repository.search(
-          'def popen',
-          type: :blob,
-          options: { highlight: true }
-        )[:blobs][:results][0]
-
-        parsed_result = project.repository.parse_search_result_from_elastic(result)
-
-        expect(parsed_result.ref). to eq('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-        expect(parsed_result.filename).to eq('files/ruby/popen.rb')
-        expect(parsed_result.startline).to eq(2)
-        expect(parsed_result.data).to include("Popen")
+        expect(project.repository.find_commits_by_message_with_elastic('initial').total_count).to eq(1)
       end
     end
   end

@@ -41,6 +41,10 @@ class Repository
     PROJECT_ID
   end
 
+  def project_id
+    PROJECT_ID
+  end
+
   def path_to_repo
     REPO_PATH
   end

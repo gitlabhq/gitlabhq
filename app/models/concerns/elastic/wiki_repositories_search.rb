@@ -11,8 +11,8 @@ module Elastic
         "wiki_#{project.id}"
       end
 
-      def self.repositories_count
-        Project.with_wiki_enabled.count
+      def project_id
+        project.id
       end
 
       def client_for_indexing
