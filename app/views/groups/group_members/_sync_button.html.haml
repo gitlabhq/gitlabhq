@@ -1,0 +1,15 @@
+- if @group.ldap_sync_started?
+  %span.btn.disabled
+    = icon("refresh spin")
+    Syncing&hellip;
+- elsif @group.ldap_sync_pending?
+  %span.btn.disabled
+    = icon("refresh spin")
+    Pending sync&hellip;
+- else
+  = link_to sync_group_ldap_path(@group), method: :put, class: 'btn' do
+    = icon("refresh")
+    Sync now
+- if @group.ldap_sync_ready? && @group.ldap_sync_last_successful_update_at
+  %p.inline.prepend-left-10
+    Successfully synced #{time_ago_with_tooltip(@group.ldap_sync_last_successful_update_at)}.

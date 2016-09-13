@@ -1,0 +1,14 @@
+- if current_user && @group.ldap_synced?
+  .bs-callout.bs-callout-info
+    The members of this group are managed using LDAP and cannot be added, changed or removed here.
+    Because LDAP permissions in GitLab get updated one user at a time and because GitLab caches LDAP check results, changes on your LDAP server or in this group's LDAP sync settings may take up to #{Gitlab.config.ldap['sync_time']}s to show in the list below.
+    %ul
+      - @group.ldap_group_links.each do |ldap_group_link|
+        %li
+          People in cn
+          %code= ldap_group_link.cn
+          are given
+          %code= ldap_group_link.human_access
+          access.
+    - if can?(current_user, :admin_group, @group)
+      = render 'sync_button'

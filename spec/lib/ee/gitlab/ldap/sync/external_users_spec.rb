@@ -4,6 +4,7 @@ describe EE::Gitlab::LDAP::Sync::ExternalUsers, lib: true do
   include LdapHelpers
 
   describe '#update_permissions' do
+    let(:adapter) { ldap_adapter }
     let(:sync_external) { described_class.new(proxy(adapter)) }
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }

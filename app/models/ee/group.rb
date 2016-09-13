@@ -10,10 +10,15 @@ module EE
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
         state :started
+        state :pending
         state :failed
 
+        event :pending do
+          transition [:ready, :failed] => :pending
+        end
+
         event :start do
-          transition [:ready, :failed] => :started
+          transition [:ready, :pending, :failed] => :started
         end
 
         event :finish do

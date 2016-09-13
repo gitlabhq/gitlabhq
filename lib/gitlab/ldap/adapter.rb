@@ -44,13 +44,11 @@ module Gitlab
         users(*args).first
       end
 
-      def dns_for_filter(filter)
-        ldap_search(
-          base: config.base,
-          filter: filter,
-          scope: Net::LDAP::SearchScope_WholeSubtree,
-          attributes: %w{dn}
-        ).map(&:dn)
+      def dn_matches_filter?(dn, filter)
+        ldap_search(base: dn,
+                    filter: filter,
+                    scope: Net::LDAP::SearchScope_BaseObject,
+                    attributes: %w{dn}).any?
       end
 
       def ldap_search(*args)

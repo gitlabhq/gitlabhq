@@ -3,6 +3,8 @@ require 'spec_helper'
 describe EE::Gitlab::LDAP::Sync::AdminUsers, lib: true do
   include LdapHelpers
 
+  let(:adapter) { ldap_adapter }
+
   describe '#update_permissions' do
     let(:sync_admin) { described_class.new(proxy(adapter)) }
 

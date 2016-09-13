@@ -3,6 +3,7 @@ require 'spec_helper'
 describe EE::Gitlab::LDAP::Sync::Groups, lib: true do
   include LdapHelpers
 
+  let(:adapter) { ldap_adapter }
   let(:group_sync) { described_class.new(proxy(adapter)) }
 
   describe '#update_permissions' do
