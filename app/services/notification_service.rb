@@ -319,11 +319,11 @@ class NotificationService
     recipients ||= build_recipients(
       pipeline,
       pipeline.project,
-      pipeline.user,
+      nil, # The acting user, who won't be added to recipients
       action: pipeline.status)
 
     recipients.each do |to|
-      mailer.public_send(email_template, pipeline, to).deliver_later
+      mailer.public_send(email_template, pipeline, to.email).deliver_later
     end
   end
 
