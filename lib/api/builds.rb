@@ -3,15 +3,18 @@ module API
   class Builds < Grape::API
     before { authenticate! }
 
+    params do
+      requires :id, type: String, desc: 'The project ID'
+    end
     resource :projects do
-      # Get a project builds
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
-      #                      if none provided showing all builds)
-      # Example Request:
-      #   GET /projects/:id/builds
+
+      desc 'Get a project builds' do
+        success Entities::Build
+        named "Get project pipeline builds"
+      end
+      params do
+        optional :scope, type: String, desc: 'Scope filter; zero or more of: pending, running, failed, success, or canceled'
+      end
       get ':id/builds' do
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
@@ -20,15 +23,14 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Get builds for a specific commit of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The SHA id of a commit
-      #   scope (optional) - The scope of builds to show (one or array of: pending, running, failed, success, canceled;
-      #                      if none provided showing all builds)
-      # Example Request:
-      #   GET /projects/:id/repository/commits/:sha/builds
+      desc 'Get builds for a specific commit of a project' do
+        success Entities::Build
+        named "Get a build for a given commit SHA"
+      end
+      params do
+        requires :sha, type: String, desc: 'The SHA id of a commit'
+        optional :scope, type: String, desc: 'Scope filter; zero or more of: pending, running, failed, success, or canceled'
+      end
       get ':id/repository/commits/:sha/builds' do
         authorize_read_builds!
 
@@ -42,13 +44,13 @@ module API
                                   user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Get a specific build of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   GET /projects/:id/builds/:build_id
+      desc 'Get a specific build of a project' do
+        success Entities::Build
+        named 'Get a build by its ID'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of a build'
+      end
       get ':id/builds/:build_id' do
         authorize_read_builds!
 
@@ -58,13 +60,14 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Download the artifacts file from build
-      #
-      # Parameters:
-      #   id (required) - The ID of a build
-      #   token (required) - The build authorization token
-      # Example Request:
-      #   GET /projects/:id/builds/:build_id/artifacts
+      desc 'Download the artifacts file from build' do
+        success 200
+        named 'Get the builds artifacts'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+        requires :token, type: String, desc: 'The build authorization token'
+      end
       get ':id/builds/:build_id/artifacts' do
         authorize_read_builds!
 
@@ -73,16 +76,14 @@ module API
         present_artifacts!(build.artifacts_file)
       end
 
-      # Download the artifacts file from ref_name and job
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   ref_name (required) - The ref from repository
-      #   job (required) - The name for the build
-      # Example Request:
-      #   GET /projects/:id/builds/artifacts/:ref_name/download?job=name
-      get ':id/builds/artifacts/:ref_name/download',
-        requirements: { ref_name: /.+/ } do
+      desc 'Download the artifacts file for a ref_name and job' do
+        success 200
+      end
+      params do
+        requires :ref_name, type: String, regex: /.+/, desc: 'The ref from repository'
+        requires :job, type: String, desc: 'The name for the build'
+      end
+      get ':id/builds/artifacts/:ref_name/download' do
         authorize_read_builds!
 
         builds = user_project.latest_successful_builds_for(params[:ref_name])
@@ -91,17 +92,15 @@ module API
         present_artifacts!(latest_build.artifacts_file)
       end
 
-      # Get a trace of a specific build of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   GET /projects/:id/build/:build_id/trace
-      #
       # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
+      desc 'Get a trace of a specific build of a project' do
+        success 200
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+      end
       get ':id/builds/:build_id/trace' do
         authorize_read_builds!
 
@@ -115,13 +114,12 @@ module API
         body trace
       end
 
-      # Cancel a specific build of a project
-      #
-      # parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example request:
-      #   post /projects/:id/build/:build_id/cancel
+      desc 'Cancel a specific build of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+      end
       post ':id/builds/:build_id/cancel' do
         authorize_update_builds!
 
@@ -133,13 +131,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Retry a specific build of a project
-      #
-      # parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example request:
-      #   post /projects/:id/build/:build_id/retry
+      desc 'Retry a specific build of a project' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+      end
       post ':id/builds/:build_id/retry' do
         authorize_update_builds!
 
@@ -152,13 +149,13 @@ module API
                        user_can_download_artifacts: can?(current_user, :read_build, user_project)
       end
 
-      # Erase build (remove artifacts and build trace)
-      #
-      # Parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - the id of a build
-      # example Request:
-      #  post  /projects/:id/build/:build_id/erase
+      desc 'Erase the build trace' do
+        success Entities::Build
+        named 'Remove artifacts and build trace for a build'
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+      end
       post ':id/builds/:build_id/erase' do
         authorize_update_builds!
 
@@ -170,13 +167,12 @@ module API
                        user_can_download_artifacts: can?(current_user, :download_build_artifacts, user_project)
       end
 
-      # Keep the artifacts to prevent them from being deleted
-      #
-      # Parameters:
-      #   id (required) - the id of a project
-      #   build_id (required) - The ID of a build
-      # Example Request:
-      #   POST /projects/:id/builds/:build_id/artifacts/keep
+      desc 'Keep the artifacts to prevent them from being deleted' do
+        success Entities::Build
+      end
+      params do
+        requires :build_id, type: Integer, desc: 'The ID of the build'
+      end
       post ':id/builds/:build_id/artifacts/keep' do
         authorize_update_builds!
 
