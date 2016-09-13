@@ -68,13 +68,13 @@ describe API::API do
         it 'validates variables to be a hash' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: 'value', ref: 'master')
           expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq('variables needs to be a hash')
+          expect(json_response['error']).to include('variables is invalid')
         end
 
         it 'validates variables needs to be a map of key-valued strings' do
           post api("/projects/#{project.id}/trigger/builds"), options.merge(variables: { key: %w(1 2) }, ref: 'master')
           expect(response).to have_http_status(400)
-          expect(json_response['message']).to eq('variables needs to be a map of key-valued strings')
+          expect(json_response['error']).to include('variables[value] is missing')
         end
 
         it 'creates trigger request with variables' do
