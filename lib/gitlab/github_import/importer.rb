@@ -24,6 +24,7 @@ module Gitlab
         import_issues
         import_pull_requests
         import_wiki
+        import_releases
         handle_errors
 
         true
@@ -133,8 +134,7 @@ module Gitlab
 
         if issue.labels.count > 0
           label_ids = issue.labels
-            .map { |raw| LabelFormatter.new(project, raw).attributes }
-            .map { |attrs| Label.find_by(attrs).try(:id) }
+            .map { |attrs| project.labels.find_by(title: attrs.name).try(:id) }
             .compact
 
           issuable.update_attribute(:label_ids, label_ids)
@@ -176,6 +176,18 @@ module Gitlab
         # we can skip the import.
         if e.message !~ /repository not exported/
           errors << { type: :wiki, errors: e.message }
+        end
+      end
+
+      def import_releases
+        releases = client.releases(repo, per_page: 100)
+        releases.each do |raw|
+          begin
+            gh_release = ReleaseFormatter.new(project, raw)
+            gh_release.create! if gh_release.valid?
+          rescue => e
+            errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+          end
         end
       end
     end
