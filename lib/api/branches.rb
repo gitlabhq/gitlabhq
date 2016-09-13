@@ -7,58 +7,55 @@ module API
     before { authorize! :download_code, user_project }
 
     resource :projects do
-      # Get a project repository branches
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/repository/branches
+      params do
+        requires :id, type: String, desc: 'The ID of a project'
+      end
+
+      desc 'Get a project repository branches' do
+        success Entities::RepoBranch
+      end
       get ":id/repository/branches" do
         branches = user_project.repository.branches.sort_by(&:name)
 
         present branches, with: Entities::RepoBranch, project: user_project
       end
 
-      # Get a single branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      # Example Request:
-      #   GET /projects/:id/repository/branches/:branch
-      get ':id/repository/branches/:branch', requirements: { branch: /.+/ } do
-        @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
-        not_found!("Branch") unless @branch
+      desc 'Get a single branch' do
+        success Entities::RepoBranch
+      end
+      params do
+        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+      end
+      get ':id/repository/branches/:branch' do
+        branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
+        not_found!("Branch") unless branch
 
-        present @branch, with: Entities::RepoBranch, project: user_project
+        present branch, with: Entities::RepoBranch, project: user_project
       end
 
-      # Protect a single branch
-      #
       # Note: The internal data model moved from `developers_can_{merge,push}` to `allowed_to_{merge,push}`
       # in `gitlab-org/gitlab-ce!5081`. The API interface has not been changed (to maintain compatibility),
       # but it works with the changed data model to infer `developers_can_merge` and `developers_can_push`.
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      #   developers_can_push (optional) - Flag if developers can push to that branch
-      #   developers_can_merge (optional) - Flag if developers can merge to that branch
-      # Example Request:
-      #   PUT /projects/:id/repository/branches/:branch/protect
-      put ':id/repository/branches/:branch/protect',
-          requirements: { branch: /.+/ } do
+      desc 'Protect a single branch' do
+        success Entities::RepoBranch
+      end
+      params do
+        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+        optional :developers_can_push, type: String, desc 'Flag if developers can push to that branch'
+        optional :developers_can_merge, type: String, desc 'Flag if developers can merge to that branch'
+      end
+      put ':id/repository/branches/:branch/protect' do
         authorize_admin_project
 
-        @branch = user_project.repository.find_branch(params[:branch])
-        not_found!('Branch') unless @branch
-        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
+        branch = user_project.repository.find_branch(params[:branch])
+        not_found!('Branch') unless branch
+        protected_branch = user_project.protected_branches.find_by(name: branch.name)
 
         developers_can_merge = to_boolean(params[:developers_can_merge])
         developers_can_push = to_boolean(params[:developers_can_push])
 
         protected_branch_params = {
-          name: @branch.name
+          name: branch.name
         }
 
         # If `developers_can_merge` is switched off, _all_ `DEVELOPER`
@@ -90,36 +87,33 @@ module API
           service.execute
         end
 
-        present @branch, with: Entities::RepoBranch, project: user_project
+        present branch, with: Entities::RepoBranch, project: user_project
       end
 
-      # Unprotect a single branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      # Example Request:
-      #   PUT /projects/:id/repository/branches/:branch/unprotect
-      put ':id/repository/branches/:branch/unprotect',
-          requirements: { branch: /.+/ } do
+      desc 'Unprotect a single branch' do
+        success Entities::RepoBranch
+      end
+      params do
+        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+      end
+      put ':id/repository/branches/:branch/unprotect' do
         authorize_admin_project
 
-        @branch = user_project.repository.find_branch(params[:branch])
-        not_found!("Branch") unless @branch
-        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
+        branch = user_project.repository.find_branch(params[:branch])
+        not_found!("Branch") unless branch
+        protected_branch = user_project.protected_branches.find_by(name: branch.name)
         protected_branch.destroy if protected_branch
 
-        present @branch, with: Entities::RepoBranch, project: user_project
+        present branch, with: Entities::RepoBranch, project: user_project
       end
 
-      # Create branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch_name (required) - The name of the branch
-      #   ref (required) - Create branch from commit sha or existing branch
-      # Example Request:
-      #   POST /projects/:id/repository/branches
+      desc 'Create branch' do
+        success Entities::RepoBranch
+      end
+      params do
+        requires :branch_name, type: String, desc: 'The name of the branch'
+        requires :ref, type: String, desc: 'Create branch from commit sha or existing branch'
+      end
       post ":id/repository/branches" do
         authorize_push_project
         result = CreateBranchService.new(user_project, current_user).
@@ -134,16 +128,13 @@ module API
         end
       end
 
-      # Delete branch
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   branch (required) - The name of the branch
-      # Example Request:
-      #   DELETE /projects/:id/repository/branches/:branch
-      delete ":id/repository/branches/:branch",
-          requirements: { branch: /.+/ } do
+      desc 'Delete a branch'
+      params do
+        requires :branch, type: String, regexp: /.+/, desc 'The name of the branch'
+      end
+      delete ":id/repository/branches/:branch" do
         authorize_push_project
+        
         result = DeleteBranchService.new(user_project, current_user).
           execute(params[:branch])
 
