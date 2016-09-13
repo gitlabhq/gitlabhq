@@ -110,7 +110,7 @@ describe API::API, api: true  do
         get api("/projects/#{project.id}/repository/commits/#{project.repository.commit.id}", user)
 
         expect(response).to have_http_status(200)
-        expect(json_response['status']).to eq('created')
+        expect(json_response['status']).to be_nil
       end
     end
 

@@ -20,7 +20,7 @@ module HasStatus
       skipped = scope.skipped.select('count(*)').to_sql
 
       deduce_status = "(CASE
-        WHEN (#{builds})=0 THEN NULL
+        WHEN (#{builds})=(#{created}) THEN NULL
         WHEN (#{builds})=(#{skipped}) THEN 'skipped'
         WHEN (#{builds})=(#{success})+(#{ignored})+(#{skipped}) THEN 'success'
         WHEN (#{builds})=(#{created})+(#{pending})+(#{skipped}) THEN 'pending'
