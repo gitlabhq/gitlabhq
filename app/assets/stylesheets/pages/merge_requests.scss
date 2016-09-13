@@ -204,6 +204,18 @@
   word-break: break-all;
 }
 
+.commits-empty {
+  text-align: center;
+
+  h4 {
+    padding-top: 20px;
+    padding-bottom: 10px;
+  }
+  svg {
+    width: 230px;
+  }
+}
+
 .mr-list {
   .merge-request {
     padding: 10px 15px;
