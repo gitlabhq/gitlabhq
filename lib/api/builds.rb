@@ -80,7 +80,7 @@ module API
         success 200
       end
       params do
-        requires :ref_name, type: String, regex: /.+/, desc: 'The ref from repository'
+        requires :ref_name, type: String, regexp: /.+/, desc: 'The ref from repository'
         requires :job, type: String, desc: 'The name for the build'
       end
       get ':id/builds/artifacts/:ref_name/download' do
