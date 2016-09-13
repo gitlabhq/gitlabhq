@@ -311,6 +311,22 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
+  def pipeline_finished(pipeline, recipients = nil)
+    email_template = "pipeline_#{pipeline.status}_email"
+
+    return unless mailer.respond_to?(email_template)
+
+    recipients ||= build_recipients(
+      pipeline,
+      pipeline.project,
+      pipeline.user,
+      action: pipeline.status)
+
+    recipients.each do |to|
+      Notify.public_send(email_template, pipeline, to).deliver_later
+    end
+  end
+
   protected
 
   # Get project/group users with CUSTOM notification level
@@ -613,6 +629,6 @@ class NotificationService
   # Build event key to search on custom notification level
   # Check NotificationSetting::EMAIL_EVENTS
   def build_custom_key(action, object)
-    "#{action}_#{object.class.name.underscore}".to_sym
+    "#{action}_#{object.class.model_name.name.underscore}".to_sym
   end
 end

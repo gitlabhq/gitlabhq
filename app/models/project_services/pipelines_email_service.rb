@@ -34,7 +34,8 @@ class PipelinesEmailService < Service
 
     return unless all_recipients.any?
 
-    PipelineEmailWorker.perform_async(data, all_recipients)
+    pipeline = Ci::Pipeline.find(data[:object_attributes][:id])
+    Ci::SendPipelineNotificationService.new(pipeline).execute(all_recipients)
   end
 
   def can_test?

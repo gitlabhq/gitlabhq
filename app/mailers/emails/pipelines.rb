@@ -1,18 +1,18 @@
 module Emails
   module Pipelines
-    def pipeline_succeeded_email(params, to)
-      pipeline_mail(params, to, 'succeeded')
+    def pipeline_success_email(pipeline, to)
+      pipeline_mail(pipeline, to, 'succeeded')
     end
 
-    def pipeline_failed_email(params, to)
-      pipeline_mail(params, to, 'failed')
+    def pipeline_failed_email(pipeline, to)
+      pipeline_mail(pipeline, to, 'failed')
     end
 
     private
 
-    def pipeline_mail(params, to, status)
-      @project = params.project
-      @pipeline = params.pipeline
+    def pipeline_mail(pipeline, to, status)
+      @project = pipeline.project
+      @pipeline = pipeline
       add_headers
 
       mail(to: to, subject: pipeline_subject(status))
