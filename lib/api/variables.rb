@@ -5,26 +5,26 @@ module API
     before { authorize! :admin_build, user_project }
 
     resource :projects do
-      # Get project variables
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   page (optional) - The page number for pagination
-      #   per_page (optional) - The value of items per page to show
-      # Example Request:
-      #   GET /projects/:id/variables
+      desc 'Get project variables' do
+        success Entities::Variable
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a project'
+        optional :page, type: Integer, desc: 'The page number for pagination'
+        optional :per_page, type: Integer, desc: 'The value of items per page to show'
+      end
       get ':id/variables' do
         variables = user_project.variables
         present paginate(variables), with: Entities::Variable
       end
 
-      # Get specific variable of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   key (required) - The `key` of variable
-      # Example Request:
-      #   GET /projects/:id/variables/:key
+      desc 'Get specific variable of a project' do
+        success Entities::Variable
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a project'
+        requires :key, type: String, desc: 'The key of the variable'
+      end
       get ':id/variables/:key' do
         key = params[:key]
         variable = user_project.variables.find_by(key: key.to_s)
@@ -34,14 +34,14 @@ module API
         present variable, with: Entities::Variable
       end
 
-      # Create a new variable in project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   key (required) - The key of variable
-      #   value (required) - The value of variable
-      # Example Request:
-      #   POST /projects/:id/variables
+      desc 'Create a new variable in project' do
+        success Entities::Variable
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a project'
+        requires :key, type: String, desc: 'The key of the variable'
+        requires :value, type: String, desc: 'The value of the variable'
+      end
       post ':id/variables' do
         required_attributes! [:key, :value]
 
@@ -54,14 +54,14 @@ module API
         end
       end
 
-      # Update existing variable of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   key (optional) - The `key` of variable
-      #   value (optional) - New value for `value` field of variable
-      # Example Request:
-      #   PUT /projects/:id/variables/:key
+      desc 'Update existing variable of a project' do
+        success Entities::Variable
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a project'
+        optional :key, type: String, desc: 'The key of the variable'
+        optional :value, type: String, desc: 'TNew value for `value` field of the variable'
+      end
       put ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key].to_s)
 
@@ -75,13 +75,13 @@ module API
         end
       end
 
-      # Delete existing variable of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   key (required) - The ID of a variable
-      # Example Request:
-      #   DELETE /projects/:id/variables/:key
+      desc 'Delete existing variable of a project' do
+        success Entities::Variable
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of a project'
+        requires :key, type: String, desc: 'The key of the variable'
+      end
       delete ':id/variables/:key' do
         variable = user_project.variables.find_by(key: params[:key].to_s)
 
