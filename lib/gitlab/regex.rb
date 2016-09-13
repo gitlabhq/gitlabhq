@@ -96,11 +96,11 @@ module Gitlab
     end
 
     def environment_name_regex
-      @environment_name_regex ||= /\A[a-zA-Z0-9_-]+\z/.freeze
+      git_reference_regex
     end
 
     def environment_name_regex_message
-      "can contain only letters, digits, '-' and '_'."
+      "be a valid git reference name"
     end
   end
 end

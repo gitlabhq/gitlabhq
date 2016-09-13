@@ -83,7 +83,9 @@ module Ci
                                                 environment: build.environment,
                                                 sha: build.sha,
                                                 ref: build.ref,
-                                                tag: build.tag)
+                                                tag: build.tag,
+                                                options: build.options[:environment],
+                                                variables: variables)
           service.execute(build)
         end
       end
