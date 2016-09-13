@@ -169,7 +169,6 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url, addressable_url: true, if: :external_import?
-  validates :mirror_user, presence: true, if: :mirror?
   validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
   validate :avatar_type,
@@ -182,6 +181,11 @@ class Project < ActiveRecord::Base
   validates :repository_storage,
     presence: true,
     inclusion: { in: ->(_object) { Gitlab.config.repositories.storages.keys } }
+
+  with_options if: :mirror? do |project|
+    project.validates :import_url, presence: true
+    project.validates :mirror_user, presence: true
+  end
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token
