@@ -5,7 +5,7 @@ module API
 
     resource :namespaces do
       desc 'Get a namespaces list' do
-        succcess Entities::Namespace
+        success Entities::Namespace
       end
       get do
         namespaces = if current_user.admin

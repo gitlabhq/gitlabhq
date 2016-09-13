@@ -9,7 +9,7 @@ module API
       optional :email, type: String, desc: 'The users email'
       exactly_one_of :login, :email
 
-      required :password, type: String, desc: 'The users password'
+      requires :password, type: String, desc: 'The users password'
     end
     post "/session" do
       user = Gitlab::Auth.find_with_user_password(params[:email] || params[:login], params[:password])
