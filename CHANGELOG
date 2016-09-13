@@ -8,6 +8,7 @@ v 8.12.0 (unreleased)
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Filter tags by name !6121
+  - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
   - Make push events have equal vertical spacing.
   - Add two-factor recovery endpoint to internal API !5510
