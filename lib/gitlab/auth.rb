@@ -1,6 +1,6 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:user, :type, :access_type)
+    Result = Struct.new(:user, :type, :project, :capabilities)
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
@@ -9,7 +9,7 @@ module Gitlab
         result = Result.new
 
         if valid_ci_request?(login, password, project)
-          result.type = :ci
+          result = Result.new(nil, project, :ci, restricted_capabilities)
         else
           result = populate_result(login, password)
         end
@@ -81,7 +81,7 @@ module Gitlab
           personal_access_token_check(login, password)
 
         if result
-          result.type = nil unless result.user && result.type != :ci
+          result.type = nil unless result.capabilities
 
           if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
             result.type = :missing_personal_token
@@ -93,7 +93,7 @@ module Gitlab
 
       def user_with_password_for_git(login, password)
         user = find_with_user_password(login, password)
-        Result.new(user, :gitlab_or_ldap, :full) if user
+        Result.new(user, :gitlab_or_ldap, nil, full_capabilities) if user
       end
 
       def oauth_access_token_check(login, password)
@@ -101,7 +101,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            Result.new(user, :oauth, :full)
+            Result.new(user, nil, :oauth, full_capabilities)
           end
         end
       end
@@ -110,7 +110,7 @@ module Gitlab
         if login && password
           user = User.find_by_personal_access_token(password)
           validation = User.by_login(login)
-          Result.new(user, :personal_token, :full) if user == validation
+          Result.new(user, nil, :personal_token, full_capabilities) if user == validation
         end
       end
 
@@ -123,11 +123,30 @@ module Gitlab
 
         if build.user
           # If user is assigned to build, use restricted credentials of user
-          Result.new(build.user, :build, :restricted)
+          Result.new(build.user, build.project, :build, restricted_capabilities)
         else
           # Otherwise use generic CI credentials (backward compatibility)
-          Result.new(nil, :ci, :restricted)
+          Result.new(nil, build.project, :ci, restricted_capabilities)
         end
+      end
+
+      private
+
+      def restricted_capabilities
+        [
+          :read_project,
+          :restricted_download_code,
+          :restricted_read_container_image
+        ]
+      end
+
+      def full_capabilities
+        restricted_capabilities + [
+          :download_code,
+          :push_code,
+          :read_container_image,
+          :update_container_image
+        ]
       end
     end
   end

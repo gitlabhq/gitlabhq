@@ -29,11 +29,11 @@ module LfsHelper
   end
 
   def privileged_user_can_download_code?
-    full? && user && user.can?(:download_code, project)
+    has_capability?(:download_code) && user && user.can?(:download_code, project)
   end
 
   def restricted_user_can_download_code?
-    restricted? && user && user.can?(:restricted_download_code, project)
+    has_capability?(:restricted_download_code) && user && user.can?(:restricted_download_code, project)
   end
 
   def lfs_upload_access?
@@ -43,7 +43,7 @@ module LfsHelper
   end
 
   def privileged_user_can_push_code?
-    full? && user && user.can?(:push_code, project)
+    has_capability?(:push_code) && user && user.can?(:push_code, project)
   end
 
   def render_lfs_forbidden
