@@ -1,7 +1,7 @@
 - if @related_branches.any?
   %h2.related-branches-title
     = pluralize(@related_branches.count, 'Related Branch')
-  %ul.unstyled-list
+  %ul.unstyled-list.related-merge-requests
     - @related_branches.each do |branch|
       %li
         - target = @project.repository.find_branch(branch).target

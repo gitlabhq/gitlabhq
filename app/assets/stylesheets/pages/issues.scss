@@ -37,6 +37,15 @@ form.edit-issue {
   margin: 0;
 }
 
+ul.related-merge-requests > li {
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  .merge-request-id {
+    flex-shrink: 0;
+  }
+}
+
 .merge-requests-title, .related-branches-title {
   font-size: 16px;
   font-weight: 600;
