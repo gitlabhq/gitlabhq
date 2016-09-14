@@ -348,6 +348,13 @@ v 8.11.0
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
 
+v 8.10.9
+  - Exclude some pending or inactivated rows in Member scopes
+
+v 8.10.8
+  - Fix information disclosure in issue boards.
+  - Fix privilege escalation in project import.
+
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
   - Upgrade Doorkeeper to 4.2.0. !5881
