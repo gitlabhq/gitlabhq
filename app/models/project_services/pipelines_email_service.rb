@@ -26,7 +26,7 @@ class PipelinesEmailService < Service
     %w[pipeline]
   end
 
-  def execute(data, force = false)
+  def execute(data, force: false)
     return unless supported_events.include?(data[:object_kind])
     return unless force || should_pipeline_be_notified?(data)
 
@@ -66,7 +66,7 @@ class PipelinesEmailService < Service
   end
 
   def test(data)
-    result = execute(data, true)
+    result = execute(data, force: true)
 
     { success: true, result: result }
   rescue StandardError => error
