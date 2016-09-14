@@ -135,9 +135,15 @@ v 8.12.0 (unreleased)
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
 
-v 8.11.6 (unreleased)
-  - Fix an error where we were unable to create a CommitStatus for running state
+v 8.11.6
+  - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
+  - Make merge conflict file size limit 200 KB, to match the docs. !6052
+  - Fix an error where we were unable to create a CommitStatus for running state. !6107
+  - Optimize discussion notes resolving and unresolving. !6141
+  - Fix GitLab import button. !6167
   - Restore SSH Key title auto-population behavior. !6186
+  - Fix DB schema to match latest migration. !6256
+  - Exclude some pending or inactivated rows in Member scopes.
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
@@ -566,6 +572,9 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.9
+  - Exclude some pending or inactivated rows in Member scopes
 
 v 8.9.8
   - Upgrade Doorkeeper to 4.2.0. !5881
