@@ -655,9 +655,9 @@ class MergeRequest < ActiveRecord::Base
     return nil unless diff_head_commit
 
     deployment_ids =
-      target_project.environments.map do |environment|
-        environment.deployment_for(diff_head_commit)
-      end.compact
+      target_project.environments.
+        map { |environment| environment.deployment_for(diff_head_commit) }.
+        compact
 
     target_project.deployments.find(deployment_ids)
   end

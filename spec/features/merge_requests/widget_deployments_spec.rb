@@ -18,7 +18,7 @@ feature 'Widget Deployments Header', feature: true, js: true do
 
     it 'displays that the environment is deployed' do
       wait_for_ajax
-      expect(page).to have_content("Deployed to #{environment.name}.")
+      expect(page).to have_content("Deployed to #{environment.name}")
     end
   end
 end

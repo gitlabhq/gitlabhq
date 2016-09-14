@@ -387,9 +387,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
           created_at: deployment.created_at,
           created_at_formatted: deployment.created_at.to_time.in_time_zone.to_s(:medium)
         }
+
         if deployment[:external_url]
           deployment[:external_url_formatted] = deployment[:external_url].gsub(/\A.*?:\/\//, '')
         end
+        
         deployment
       end
     end
