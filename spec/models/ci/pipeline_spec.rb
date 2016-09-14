@@ -528,6 +528,7 @@ describe Ci::Pipeline, models: true do
     before do
       ActionMailer::Base.deliveries.clear
 
+      pipeline.update(user: create(:user))
       pipeline.enqueue
       pipeline.run
     end
@@ -548,9 +549,11 @@ describe Ci::Pipeline, models: true do
     context 'with success pipeline' do
       before do
         perform_enqueued_jobs do
-          pipeline.success
+          pipeline.succeed
         end
       end
+
+      it_behaves_like 'sending a notification'
     end
 
     context 'with failed pipeline' do
@@ -559,6 +562,8 @@ describe Ci::Pipeline, models: true do
           pipeline.drop
         end
       end
+
+      it_behaves_like 'sending a notification'
     end
 
     context 'with skipped pipeline' do
@@ -567,6 +572,8 @@ describe Ci::Pipeline, models: true do
           pipeline.skip
         end
       end
+
+      it_behaves_like 'not sending any notification'
     end
 
     context 'with cancelled pipeline' do
@@ -575,6 +582,8 @@ describe Ci::Pipeline, models: true do
           pipeline.cancel
         end
       end
+
+      it_behaves_like 'not sending any notification'
     end
   end
 end
