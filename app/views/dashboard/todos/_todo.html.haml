@@ -20,6 +20,15 @@
 
       &middot; #{time_ago_with_tooltip(todo.created_at)}
 
+      - if todo.target.try(:due_date)
+        &middot;
+        %span{ class: ('text-warning' if todo.target.due_date.try(:today?)) }
+          Due
+          - if todo.target.due_date.try(:today?)
+            today
+          - else
+            = todo.target.due_date.to_s(:medium)
+
     .todo-body
       .todo-note
         .md
