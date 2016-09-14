@@ -3,17 +3,14 @@ v 8.12.0 (Unreleased)
   - Reduce UPDATE queries when moving between import states on projects
   - [ES] Instrument Elasticsearch::Git::Repository
   - Request only the LDAP attributes we need
+  - Add 'Sync now' to group members page !704
   - [ES] Instrument other Gitlab::Elastic classes
   - [ES] Fix: Elasticsearch does not find partial matches in project names
   - [ES] Global code search
   - [ES] Improve logging
 
 v 8.11.6
-  - Exclude blocked users from potential MR approvers
-  - Add 'Sync now' to group members page !704
-
-v 8.11.6
-  - Fix mirrored projects allowing empty import urls
+  - Exclude blocked users from potential MR approvers.
 
 v 8.11.5
   - API: Restore backward-compatibility for POST /projects/:id/members when membership is locked
@@ -51,6 +48,12 @@ v 8.11.0
   - [Fix] Push rules check existing commits in some cases
   - [ES] Limit amount of retries for sidekiq jobs
   - Fix Projects::UpdateMirrorService to allow tags pointing to blob objects
+
+v 8.10.9
+  - Exclude blocked users from potential MR approvers.
+
+v 8.10.8
+  - No EE-specific changes
 
 v 8.10.7
   - No EE-specific changes
