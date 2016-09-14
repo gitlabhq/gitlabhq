@@ -240,6 +240,8 @@ describe CommitStatus, models: true do
       'rspec:windows 10000 20000' => 'rspec:windows',
       'rspec:windows 0 : / 1' => 'rspec:windows',
       'rspec:windows 0 : / 1 name' => 'rspec:windows name',
+      '0 1 name ruby' => 'name ruby',
+      '0 :/ 1 name ruby' => 'name ruby'
     }
 
     tests.each do |name, group_name|
