@@ -14,25 +14,19 @@ module ProtectedBranches
       @protected_branch = protected_branch
 
       protected_branch.transaction do
-        # If a protected branch can have only a single access level (CE), delete it to
-        # make room for the new access level. If a protected branch can have more than
-        # one access level (EE), only remove the relevant access levels. If we don't do this,
-        # we'll have a failed validation.
-        if protected_branch_restricted_to_single_access_level?
-          delete_redundant_ce_access_levels
-        else
-          delete_redundant_ee_access_levels
-        end
+        delete_redundant_access_levels
 
-        if @developers_can_push
+        case @developers_can_push
+        when true
           params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
-        elsif @developers_can_push == false
+        when false
           params.merge!(push_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
         end
 
-        if @developers_can_merge
+        case @developers_can_merge
+        when true
           params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::DEVELOPER }])
-        elsif @developers_can_merge == false
+        when false
           params.merge!(merge_access_levels_attributes: [{ access_level: Gitlab::Access::MASTER }])
         end
 
@@ -43,7 +37,7 @@ module ProtectedBranches
 
     private
 
-    def delete_redundant_ce_access_levels
+    def delete_redundant_access_levels
       if @developers_can_merge || @developers_can_merge == false
         @protected_branch.merge_access_levels.destroy_all
       end
@@ -51,29 +45,6 @@ module ProtectedBranches
       if @developers_can_push || @developers_can_push == false
         @protected_branch.push_access_levels.destroy_all
       end
-    end
-
-    def delete_redundant_ee_access_levels
-      if @developers_can_merge
-        @protected_branch.merge_access_levels.developer.destroy_all
-      elsif @developers_can_merge == false
-        @protected_branch.merge_access_levels.developer.destroy_all
-        @protected_branch.merge_access_levels.master.destroy_all
-      end
-
-      if @developers_can_push
-        @protected_branch.push_access_levels.developer.destroy_all
-      elsif @developers_can_push == false
-        @protected_branch.push_access_levels.developer.destroy_all
-        @protected_branch.push_access_levels.master.destroy_all
-      end
-    end
-
-    def protected_branch_restricted_to_single_access_level?
-      length_validator = ProtectedBranch.validators_on(:push_access_levels).find do |validator|
-        validator.is_a? ActiveModel::Validations::LengthValidator
-      end
-      length_validator.options[:is] == 1 if length_validator
     end
   end
 end
