@@ -1,18 +1,15 @@
 require 'spec_helper'
 
 describe PipelinesEmailService do
-  let(:data) do
-    Gitlab::DataBuilder::Pipeline.build(create(:ci_pipeline))
-  end
-
+  let(:pipeline) { create(:ci_pipeline) }
   let(:recipient) { 'test@gitlab.com' }
 
-  def expect_pipeline_service
-    expect_any_instance_of(Ci::SendPipelineNotificationService)
+  let(:data) do
+    Gitlab::DataBuilder::Pipeline.build(pipeline)
   end
 
-  def receive_execute
-    receive(:execute).with([recipient])
+  before do
+    ActionMailer::Base.deliveries.clear
   end
 
   describe 'Validations' do
@@ -57,24 +54,53 @@ describe PipelinesEmailService do
     end
   end
 
+  shared_examples 'sending email' do
+    before do
+      perform_enqueued_jobs do
+        run
+      end
+    end
+
+    it 'sends email' do
+      sent_to = ActionMailer::Base.deliveries.flat_map(&:to)
+      expect(sent_to).to contain_exactly(recipient)
+    end
+  end
+
+  shared_examples 'not sending email' do
+    before do
+      perform_enqueued_jobs do
+        run
+      end
+    end
+
+    it 'does not send email' do
+      expect(ActionMailer::Base.deliveries).to be_empty
+    end
+  end
+
   describe '#test' do
+    def run
+      subject.test(data)
+    end
+
     before do
       subject.recipients = recipient
     end
 
-    shared_examples 'sending email' do
-      it 'sends email' do
-        expect_pipeline_service.to receive_execute
-
-        subject.test(data)
+    context 'when pipeline is failed' do
+      before do
+        data[:object_attributes][:status] = 'failed'
+        pipeline.update(status: 'failed')
       end
-    end
 
-    it_behaves_like 'sending email'
+      it_behaves_like 'sending email'
+    end
 
     context 'when pipeline is succeeded' do
       before do
         data[:object_attributes][:status] = 'success'
+        pipeline.update(status: 'success')
       end
 
       it_behaves_like 'sending email'
@@ -82,25 +108,31 @@ describe PipelinesEmailService do
   end
 
   describe '#execute' do
+    def run
+      subject.execute(data)
+    end
+
     context 'with recipients' do
       before do
         subject.recipients = recipient
       end
 
-      it 'sends email for failed pipeline' do
-        data[:object_attributes][:status] = 'failed'
+      context 'with failed pipeline' do
+        before do
+          data[:object_attributes][:status] = 'failed'
+          pipeline.update(status: 'failed')
+        end
 
-        expect_pipeline_service.to receive_execute
-
-        subject.execute(data)
+        it_behaves_like 'sending email'
       end
 
-      it 'does not send email for succeeded pipeline' do
-        data[:object_attributes][:status] = 'success'
+      context 'with succeeded pipeline' do
+        before do
+          data[:object_attributes][:status] = 'success'
+          pipeline.update(status: 'success')
+        end
 
-        expect_pipeline_service.not_to receive_execute
-
-        subject.execute(data)
+        it_behaves_like 'not sending email'
       end
 
       context 'with notify_only_broken_pipelines on' do
@@ -108,23 +140,39 @@ describe PipelinesEmailService do
           subject.notify_only_broken_pipelines = true
         end
 
-        it 'sends email for failed pipeline' do
-          data[:object_attributes][:status] = 'failed'
+        context 'with failed pipeline' do
+          before do
+            data[:object_attributes][:status] = 'failed'
+            pipeline.update(status: 'failed')
+          end
 
-          expect_pipeline_service.to receive_execute
+          it_behaves_like 'sending email'
+        end
 
-          subject.execute(data)
+        context 'with succeeded pipeline' do
+          before do
+            data[:object_attributes][:status] = 'success'
+            pipeline.update(status: 'success')
+          end
+
+          it_behaves_like 'not sending email'
         end
       end
     end
 
-    it 'does not send email when recipients list is empty' do
-      subject.recipients = ' ,, '
-      data[:object_attributes][:status] = 'failed'
+    context 'with empty recipients list' do
+      before do
+        subject.recipients = ' ,, '
+      end
 
-      expect_pipeline_service.not_to receive_execute
+      context 'with failed pipeline' do
+        before do
+          data[:object_attributes][:status] = 'failed'
+          pipeline.update(status: 'failed')
+        end
 
-      subject.execute(data)
+        it_behaves_like 'not sending email'
+      end
     end
   end
 end
