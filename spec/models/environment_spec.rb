@@ -63,4 +63,20 @@ describe Environment, models: true do
       end
     end
   end
+
+  describe '#environment_type' do
+    subject { environment.environment_type }
+
+    it 'sets a environment type if name has multiple segments' do
+      environment.update(name: 'production/worker.gitlab.com')
+
+      is_expected.to eq('production')
+    end
+
+    it 'nullifies a type if it\'s a simple name' do
+      environment.update(name: 'production')
+
+      is_expected.to be_nil
+    end
+  end
 end

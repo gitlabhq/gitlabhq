@@ -23,13 +23,13 @@ class CreateDeploymentService < BaseService
   private
 
   def expanded_name
-    name.expand_variables(variables)
+    ExpandVariables.expand(name, variables)
   end
 
   def expanded_url
     return unless url
 
-    @expanded_url ||= url.expand_variables(variables)
+    @expanded_url ||= ExpandVariables.expand(url, variables)
   end
 
   def name
