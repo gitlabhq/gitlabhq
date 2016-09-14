@@ -78,7 +78,7 @@ describe Member, models: true do
         project.members,
         'toto1@example.com',
         Gitlab::Access::DEVELOPER,
-        current_user: @master_user
+        @master_user
       )
       @invited_member = project.members.invite.find_by_invite_email('toto1@example.com')
 
@@ -87,7 +87,7 @@ describe Member, models: true do
         project.members,
         'toto2@example.com',
         Gitlab::Access::DEVELOPER,
-        current_user: @master_user
+        @master_user
       )
       @accepted_invite_member = project.members.invite.find_by_invite_email('toto2@example.com').tap { |u| u.accept_invite!(accepted_invite_user) }
 
