@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.9.9
+  - Exclude some pending or inactivated rows in Member scopes
+
 v 8.9.8
   - Upgrade Doorkeeper to 4.2.0. !5881
 
