@@ -4,7 +4,8 @@ v 8.10.9
   - Exclude some pending or inactivated rows in Member scopes.
 
 v 8.10.8
-  - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
+  - Fix information disclosure in issue boards.
+  - Fix privilege escalation in project import.
 
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
