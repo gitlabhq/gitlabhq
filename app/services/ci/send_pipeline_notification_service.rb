@@ -1,5 +1,5 @@
 module Ci
-  class SendPipelineNotificationService < BaseService
+  class SendPipelineNotificationService
     attr_reader :pipeline
 
     def initialize(new_pipeline)
