@@ -4,15 +4,14 @@ describe 'projects/pipelines/show' do
   include Devise::TestHelpers
 
   let(:project) { create(:project) }
-  let(:pipeline) do
-    create(:ci_empty_pipeline, project: project,
-           sha: project.commit.id)
-  end
+  let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id) }
 
   before do
+    controller.prepend_view_path('app/views/projects')
+
     create_build('build', 0, 'build')
-    create_build('test', 1, 'rspec 0 2')
-    create_build('test', 1, 'rspec 1 2')
+    create_build('test', 1, 'rspec 0:2')
+    create_build('test', 1, 'rspec 1:2')
     create_build('test', 1, 'audit')
     create_build('deploy', 2, 'production')
 
@@ -38,7 +37,7 @@ describe 'projects/pipelines/show' do
 
     # builds
     expect(rendered).to have_text('rspec')
-    expect(rendered).to have_text('rspec 0:1')
+    expect(rendered).to have_text('rspec 0:2')
     expect(rendered).to have_text('production')
     expect(rendered).to have_text('jenkins')
   end

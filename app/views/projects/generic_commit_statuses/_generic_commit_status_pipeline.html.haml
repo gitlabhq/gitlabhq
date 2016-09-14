@@ -1,5 +1,5 @@
 - if subject.target_url
-  - link_to subject.target_url do
+  = link_to subject.target_url do
     = render_status_with_link('commit status', subject.status)
     %span.ci-status-text= subject.name
 - else

@@ -3,7 +3,7 @@
   - if grouped_statuses.one?
     - status = grouped_statuses.first
     - is_playable = status.playable? && can?(current_user, :update_build, @project)
-    %li.build{class: ("playable" if is_playable)}
+    %li.build{ class: ("playable" if is_playable) }
       .curve
       .build-content
         = render "projects/#{status.to_partial_path}_pipeline", subject: status
