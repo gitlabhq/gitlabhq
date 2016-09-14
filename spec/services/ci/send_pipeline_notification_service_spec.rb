@@ -23,7 +23,7 @@ describe Ci::SendPipelineNotificationService, services: true do
     shared_examples 'sending emails' do
       it 'sends emails' do
         perform_enqueued_jobs do
-          subject.execute([user.email])
+          subject.execute
         end
 
         expected_receivers = [pusher, watcher].uniq.sort_by(&:email)

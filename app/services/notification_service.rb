@@ -312,6 +312,22 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
+  def pipeline_finished(pipeline, recipients = nil)
+    email_template = "pipeline_#{pipeline.status}_email"
+
+    return unless mailer.respond_to?(email_template)
+
+    recipients ||= build_recipients(
+      pipeline,
+      pipeline.project,
+      nil, # The acting user, who won't be added to recipients
+      action: pipeline.status)
+
+    recipients.each do |to|
+      mailer.public_send(email_template, pipeline, to.email).deliver_later
+    end
+  end
+
   protected
 
   # Get project/group users with CUSTOM notification level
