@@ -28,6 +28,9 @@ module Issuable
         loaded? && to_a.all? { |note| note.association(:award_emoji).loaded? }
       end
     end
+
+    has_many :system_notes, -> { merge(Note.system) }, class_name: Note, as: :noteable, inverse_of: :noteable
+
     has_many :label_links, as: :target, dependent: :destroy
     has_many :labels, through: :label_links
     has_many :todos, as: :target, dependent: :destroy

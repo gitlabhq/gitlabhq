@@ -2,7 +2,7 @@ class CycleAnalytics
   module Queries
     class << self
       def issues(project, created_after:)
-        project.issues.where("created_at >= ?", created_after).map { |issue| { issue: issue } }
+        project.issues.where("created_at >= ?", created_after).preload(:metrics, :system_notes).map { |issue| { issue: issue } }
       end
 
       def merge_requests_closing_issues(project, options = {})
@@ -29,7 +29,7 @@ class CycleAnalytics
       def issue_first_mentioned_in_commit_at
         lambda do |data_point|
           issue = data_point[:issue]
-          commits_mentioning_issue = issue.notes.system.map { |note| note.all_references.commits }.flatten
+          commits_mentioning_issue = issue.system_notes.map { |note| note.all_references.commits }.flatten
           commits_mentioning_issue.map(&:committed_date).min if commits_mentioning_issue.present?
         end
       end

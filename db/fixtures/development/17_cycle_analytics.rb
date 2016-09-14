@@ -1,9 +1,10 @@
 require 'sidekiq/testing'
 
 class Gitlab::Seeder::CycleAnalytics
-  def initialize(project)
+  def initialize(project, perf: false)
     @project = project
     @user = User.find(1)
+    @issue_count = perf ? 1000 : 5
     stub_git_pre_receive!
   end
 
@@ -27,32 +28,26 @@ class Gitlab::Seeder::CycleAnalytics
       # Stage 1
       Timecop.travel 5.days.from_now
       add_milestones_and_list_labels(issues)
-      Timecop.return
 
       # Stage 2
-      Timecop.travel 10.days.from_now
+      Timecop.travel 5.days.from_now
       branches = mention_in_commits(issues)
-      Timecop.return
 
       # Stage 3
-      Timecop.travel 15.days.from_now
+      Timecop.travel 5.days.from_now
       merge_requests = create_merge_requests_closing_issues(issues, branches)
-      Timecop.return
 
       # Stage 4
-      Timecop.travel 20.days.from_now
+      Timecop.travel 5.days.from_now
       run_builds(merge_requests)
-      Timecop.return
 
       # Stage 5
-      Timecop.travel 25.days.from_now
+      Timecop.travel 5.days.from_now
       merge_merge_requests(merge_requests)
-      Timecop.return
 
       # Stage 6 / 7
-      Timecop.travel 30.days.from_now
+      Timecop.travel 5.days.from_now
       deploy_to_production(merge_requests)
-      Timecop.return
     end
 
     print '.'
@@ -61,7 +56,7 @@ class Gitlab::Seeder::CycleAnalytics
   private
 
   def create_issues(project)
-    Array.new(5) do
+    Array.new(@issue_count) do
       issue_params = {
         title: "Cycle Analytics: #{FFaker::Lorem.sentence(6)}",
         description: FFaker::Lorem.sentence,
@@ -166,8 +161,13 @@ class Gitlab::Seeder::CycleAnalytics
 end
 
 Gitlab::Seeder.quiet do
-  Project.all.each do |project|
-    seeder = Gitlab::Seeder::CycleAnalytics.new(project)
+  if ENV['SEED_CYCLE_ANALYTICS']
+      seeder = Gitlab::Seeder::CycleAnalytics.new(Project.find(1))
+      seeder.seed!
+  elsif ENV['CYCLE_ANALYTICS_PERF_TEST']
+    seeder = Gitlab::Seeder::CycleAnalytics.new(Project.first, perf: true)
     seeder.seed!
+  else
+    puts "Not running the cycle analytics seed file. Use the `SEED_CYCLE_ANALYTICS` environment variable to enable it."
   end
 end
