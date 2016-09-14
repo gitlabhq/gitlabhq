@@ -66,7 +66,7 @@
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
           .monospace= hook.url
           %div
-            - %w(push_events tag_push_events issues_events note_events merge_requests_events build_events).each do |trigger|
+            - %w[push_events tag_push_events issues_events note_events merge_requests_events pipeline_events].each do |trigger|
               - if hook.send(trigger)
                 %span.label.label-gray= trigger.titleize
             %span.label.label-gray SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}

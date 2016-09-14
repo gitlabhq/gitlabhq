@@ -44,7 +44,6 @@ module API
           :merge_requests_events,
           :tag_push_events,
           :note_events,
-          :build_events,
           :pipeline_events,
           :wiki_page_events,
           :enable_ssl_verification
@@ -79,7 +78,6 @@ module API
           :merge_requests_events,
           :tag_push_events,
           :note_events,
-          :build_events,
           :pipeline_events,
           :wiki_page_events,
           :enable_ssl_verification

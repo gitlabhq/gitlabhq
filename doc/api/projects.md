@@ -930,7 +930,6 @@ Parameters:
   "merge_requests_events": true,
   "tag_push_events": true,
   "note_events": true,
-  "build_events": true,
   "pipeline_events": true,
   "wiki_page_events": true,
   "enable_ssl_verification": true,
@@ -955,7 +954,6 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
-- `build_events` - Trigger hook on build events
 - `pipeline_events` - Trigger hook on pipeline events
 - `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook
@@ -978,7 +976,6 @@ Parameters:
 - `merge_requests_events` - Trigger hook on merge_requests events
 - `tag_push_events` - Trigger hook on push_tag events
 - `note_events` - Trigger hook on note events
-- `build_events` - Trigger hook on build events
 - `pipeline_events` - Trigger hook on pipeline events
 - `wiki_page_events` - Trigger hook on wiki page events
 - `enable_ssl_verification` - Do SSL verification when triggering the hook

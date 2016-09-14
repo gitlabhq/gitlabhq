@@ -6870,7 +6870,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "issue_tracker",
       "default": true,
       "wiki_page_events": true
@@ -6891,7 +6890,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -6912,7 +6910,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -6933,7 +6930,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -6954,7 +6950,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -6975,7 +6970,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -6997,7 +6991,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -7018,7 +7011,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7039,7 +7031,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7060,7 +7051,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7081,7 +7071,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7102,7 +7091,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7123,7 +7111,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7144,7 +7131,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7165,7 +7151,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "issue_tracker",
       "default": false,
       "wiki_page_events": true
@@ -7186,7 +7171,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7207,7 +7191,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7228,7 +7211,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7249,7 +7231,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "ci",
       "default": false,
       "wiki_page_events": true
@@ -7270,7 +7251,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true
@@ -7291,7 +7271,6 @@
       "merge_requests_events": true,
       "tag_push_events": true,
       "note_events": true,
-      "build_events": true,
       "category": "common",
       "default": false,
       "wiki_page_events": true

@@ -55,7 +55,6 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook_params
     params.require(:hook).permit(
-      :build_events,
       :pipeline_events,
       :enable_ssl_verification,
       :issues_events,

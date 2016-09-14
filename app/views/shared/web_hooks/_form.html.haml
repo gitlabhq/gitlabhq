@@ -66,13 +66,6 @@
               %p.light
                 This URL will be triggered when a merge request is created/updated/merged
           %li
-            = f.check_box :build_events, class: 'pull-left'
-            .prepend-left-20
-              = f.label :build_events, class: 'list-label' do
-                %strong Build events
-              %p.light
-                This URL will be triggered when the build status changes
-          %li
             = f.check_box :pipeline_events, class: 'pull-left'
             .prepend-left-20
               = f.label :pipeline_events, class: 'list-label' do
