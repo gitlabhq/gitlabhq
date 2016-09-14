@@ -390,10 +390,11 @@ ActiveRecord::Schema.define(version: 20160913212128) do
 
   create_table "environments", force: :cascade do |t|
     t.integer  "project_id"
-    t.string   "name",         null: false
+    t.string   "name",             null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "external_url"
+    t.string   "environment_type"
   end
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", using: :btree
