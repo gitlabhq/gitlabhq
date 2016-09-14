@@ -87,6 +87,19 @@ describe Gitlab::Ci::Config::Node::Environment do
     end
   end
 
+  context 'when variables are used for environment' do
+    let(:config) do
+      { name: 'review/$CI_BUILD_REF_NAME',
+        url: 'https://$CI_BUILD_REF_NAME.review.gitlab.com' }
+    end
+
+    describe '#valid?' do
+      it 'is valid' do
+        expect(entry).to be_valid
+      end
+    end
+  end
+
   context 'when configuration is invalid' do
     context 'when configuration is an array' do
       let(:config) { ['env'] }
@@ -118,6 +131,23 @@ describe Gitlab::Ci::Config::Node::Environment do
         it 'contains error about missing environment name' do
           expect(entry.errors)
             .to include "environment name can't be blank"
+        end
+      end
+    end
+
+    context 'when invalid URL is used' do
+      let(:config) { { name: 'test', url: 'invalid-example.gitlab.com' } }
+
+      describe '#valid?' do
+        it 'is not valid' do
+          expect(entry).not_to be_valid
+        end
+      end
+
+      describe '#errors?' do
+        it 'contains error about invalid URL' do
+          expect(entry.errors)
+            .to include "environment url must be a valid url"
         end
       end
     end

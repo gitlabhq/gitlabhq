@@ -11,6 +11,11 @@ module Gitlab
           validations do
             validates :name, presence: true
 
+            validates :url,
+                      length: { maximum: 255 },
+                      allow_nil: true,
+                      addressable_url: true
+
             validate do
               unless hash? || string?
                 errors.add(:config, 'should be a hash or a string')
