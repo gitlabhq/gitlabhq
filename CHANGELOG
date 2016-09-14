@@ -141,6 +141,10 @@ v 8.11.6
   - Fix an error where we were unable to create a CommitStatus for running state. !6107
   - Optimize discussion notes resolving and unresolving. !6141
   - Fix GitLab import button. !6167
+  - Frontend for Merge Request diff dropdowns
+
+v 8.11.6 (unreleased)
+  - Fix an error where we were unable to create a CommitStatus for running state
   - Restore SSH Key title auto-population behavior. !6186
   - Fix DB schema to match latest migration. !6256
   - Exclude some pending or inactivated rows in Member scopes.

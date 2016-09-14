@@ -377,11 +377,26 @@
 
 .mr-version-controls {
   background: $background-color;
-  padding: $gl-btn-padding;
+  border: 1px solid $border-color;
+  border-top: 0;
+  padding: 0 16px;
   color: $gl-placeholder-color;
 
-  a.btn-link {
-    color: $gl-dark-link-color;
+  .mr-version-dropdown,
+  .mr-version-compare-dropdown {
+    margin: 0 10px;
+  }
+
+  .comments-disabled-notif {
+    border-top: 1px solid $border-color;
+  }
+
+  .dropdown-title {
+    color: $gl-text-color;
+  }
+
+  .fa-info-circle {
+    color: $red-normal;
   }
 }
 
