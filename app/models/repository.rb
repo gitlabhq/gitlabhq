@@ -717,7 +717,7 @@ class Repository
     end
   end
 
-  def deployment_ref_for_sha(environment_ref_path, sha)
+  def ref_name_for_sha(environment_ref_path, sha)
     args = %W(#{Gitlab.config.git.bin_path} for-each-ref --count=1 #{environment_ref_path} --contains #{sha})
 
     # Not found -> ["", 0]
@@ -725,7 +725,7 @@ class Repository
     ref = Gitlab::Popen.popen(args, path_to_repo).first
 
     # Parse "<sha> commit\trefs/environments/<environment_name>/<id>\n" to ID
-    ref.rstrip.split('/').last
+    ref.rstrip.split('/').last.to_i
   end
 
   def refs_contains_sha(ref_type, sha)

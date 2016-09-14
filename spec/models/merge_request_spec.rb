@@ -701,6 +701,30 @@ describe MergeRequest, models: true do
     end
   end
 
+  describe '#deployments' do
+    let(:project)       { create(:project) }
+    let!(:environment)  { create(:environment, project: project) }
+    let!(:deployment)   { create(:deployment, environment: environment, ref: head_commit.id) }
+    let(:head_commit)   { project.commit('feature') }
+
+    let(:merge_request) { build(:merge_request, :simple, source_project: project) }
+
+    context 'with multiple environments' do
+      let!(:environment1) { create(:environment, project: project) }
+      let!(:deployment1)  { create(:deployment, environment: environment1, ref: head_commit.id) }
+
+      it 'returns all deployments' do
+        expect(merge_request.deployments).to eq [deployment, deployment1]
+      end
+    end
+
+    it 'when there is no deployment' do
+      merge_request = build(:merge_request, source_project: project)
+
+      expect(merge_request.deployments).to eq []
+    end
+  end
+
   describe "#reload_diff" do
     let(:note) { create(:diff_note_on_merge_request, project: subject.project, noteable: subject) }
 

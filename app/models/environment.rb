@@ -38,8 +38,8 @@ class Environment < ActiveRecord::Base
       end
   end
 
-  def deployment_for(commit)
-    project.repository.deployment_ref_for_sha(ref_path, commit.sha)
+  def deployment_id_for(commit)
+    project.repository.ref_name_for_sha(ref_path, commit.sha)
   end
 
   def ref_path

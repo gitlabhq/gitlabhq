@@ -11,7 +11,7 @@ class Deployment < ActiveRecord::Base
 
   delegate :name, to: :environment, prefix: true
 
-  after_save :create_refs
+  after_save :create_ref
 
   def last?
     self == environment.last_deployment
@@ -29,11 +29,8 @@ class Deployment < ActiveRecord::Base
     commit.try(:title)
   end
 
-  def create_refs
-    path = project.repository.path_to_repo
-
-    project.repository.fetch_ref(path, ref, ref_path)
-    project.repository.fetch_ref(path, ref, ref_path_head)
+  def create_ref
+    project.repository.fetch_ref(project.repository.path_to_repo, ref, ref_path)
   end
 
   def manual_actions
@@ -43,10 +40,6 @@ class Deployment < ActiveRecord::Base
   private
 
   def ref_path
-    environment.ref_path + id.to_s
-  end
-
-  def ref_path_head
-    environment.ref_path + 'HEAD'
+    "#{environment.ref_path}#{id}"
   end
 end
