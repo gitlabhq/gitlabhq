@@ -1,51 +1,56 @@
-%h2 Cycle Analytics from #{@cycle_analytics.from} to Today
+= render 'projects/pipelines/head'
 
-%ul.list-group
-  %li.list-group-item
-    Issue:
-    - if issue = @cycle_analytics.issue
-      = distance_of_time_in_words issue
-    - else
-      = "<Not enough data>"
+#cycle-analytics{"v-cloak" => "true", ":class" => "{ 'waiting': isLoading }"}
+  .panel.panel-default
+    .panel-heading
+      Pipeline Health
 
-  %li.list-group-item
-    Plan:
-    - if plan = @cycle_analytics.plan
-      = distance_of_time_in_words plan
-    - else
-      = "<Not enough data>"
+    .content-block
+      = icon("spinner spin", "v-if" => "isLoading")
 
-  %li.list-group-item
-    Code:
-    - if code = @cycle_analytics.code.presence
-      = distance_of_time_in_words code
-    - else
-      = "<Not enough data>"
+      .row
+        %template{"v-for" => "info in analytics.summary"}
+          .col-md-3.column
+            %span.header {{info.value}}
+            %br
+            %span.text {{info.desc}}
 
-  %li.list-group-item
-    Test:
-    - if test = @cycle_analytics.test.presence
-      = distance_of_time_in_words test
-    - else
-      = "<Not enough data>"
+        .col-md-3.column
+          .dropdown.inline.js-ca-dropdown
+            %button.dropdown-menu-toggle{"aria-expanded" => "false", "data-toggle" => "dropdown", :type => "button"}
+              %span.dropdown-label Last 30 days
+              %i.fa.fa-chevron-down
+            %ul.dropdown-menu.dropdown-menu-align-right
+              %li
+                %a{'href' => "#", 'data-value' => '30days'}
+                  Last 30 days
+              %li
+                %a{'href' => "#", 'data-value' => '90days'}
+                  Last 90 days
 
-  %li.list-group-item
-    Review:
-    - if review = @cycle_analytics.review.presence
-      = distance_of_time_in_words review
-    - else
-      = "<Not enough data>"
+  .bordered-box
+    = icon("spinner spin", "v-if" => "isLoading")
 
-  %li.list-group-item
-    Staging:
-    - if staging = @cycle_analytics.staging.presence
-      = distance_of_time_in_words staging
-    - else
-      = "<Not enough data>"
+    %ul.content-list{{"v-if" => "!notAvailable"}}
+      %li{"v-for" => "info in analytics.data"}
+        .row
+          .col-md-10
+            %span
+              {{info.title}}
+            %br
+            %span
+              {{info.desc}}
+          .col-md-2
+            %span
+              {{info.value}}
 
-  %li.list-group-item
-    Production:
-    - if production = @cycle_analytics.production.presence
-      = distance_of_time_in_words production
-    - else
-      = "<Not enough data>"
+
+    .content-block{{"v-if" => "notAvailable"}}
+      .inner-content
+        = custom_icon('icon_cycle_analytics_splash')
+        %h4
+          Set up your deploys to environment!
+        %p
+          Cycle Analytics will give an overview on how much time it takes to go from an idea to production in your project.
+
+        = button_tag 'Set up', class: 'btn btn-create btn-block'
