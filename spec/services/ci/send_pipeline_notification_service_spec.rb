@@ -9,7 +9,7 @@ describe Ci::SendPipelineNotificationService, services: true do
     shared_examples 'sending emails' do
       it 'sends an email to pipeline user' do
         perform_enqueued_jobs do
-          subject.execute
+          subject.execute([user.email])
         end
 
         email = ActionMailer::Base.deliveries.last

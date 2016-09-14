@@ -32,9 +32,7 @@ class NotificationSetting < ActiveRecord::Base
     :reopen_merge_request,
     :close_merge_request,
     :reassign_merge_request,
-    :merge_merge_request,
-    :failed_pipeline,
-    :success_pipeline
+    :merge_merge_request
   ]
 
   store :events, accessors: EMAIL_EVENTS, coder: JSON
