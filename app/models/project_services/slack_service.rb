@@ -108,8 +108,6 @@ class SlackService < Service
       MergeMessage.new(data) unless is_update?(data)
     when "note"
       NoteMessage.new(data)
-    when "build"
-      BuildMessage.new(data) if should_build_be_notified?(data)
     when "pipeline"
       PipelineMessage.new(data) if should_pipeline_be_notified?(data)
     when "wiki_page"
@@ -144,17 +142,6 @@ class SlackService < Service
     data[:object_attributes][:action] == 'update'
   end
 
-  def should_build_be_notified?(data)
-    case data[:commit][:status]
-    when 'success'
-      !notify_only_broken_builds?
-    when 'failed'
-      true
-    else
-      false
-    end
-  end
-
   def should_pipeline_be_notified?(data)
     case data[:object_attributes][:status]
     when 'success'
@@ -171,6 +158,5 @@ require "slack_service/issue_message"
 require "slack_service/push_message"
 require "slack_service/merge_message"
 require "slack_service/note_message"
-require "slack_service/build_message"
 require "slack_service/pipeline_message"
 require "slack_service/wiki_page_message"

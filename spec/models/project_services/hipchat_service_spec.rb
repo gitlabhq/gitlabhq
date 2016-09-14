@@ -300,13 +300,12 @@ describe HipchatService, models: true do
       end
     end
 
-    context 'build events' do
+    context 'pipeline events' do
       let(:pipeline) { create(:ci_empty_pipeline) }
-      let(:build) { create(:ci_build, pipeline: pipeline) }
-      let(:data) { Gitlab::DataBuilder::Build.build(build) }
+      let(:data) { Gitlab::DataBuilder::Pipeline.build(pipeline) }
 
       context 'for failed' do
-        before { build.drop }
+        before { pipeline.drop }
 
         it "calls Hipchat API" do
           hipchat.execute(data)
@@ -315,35 +314,35 @@ describe HipchatService, models: true do
         end
 
         it "creates a build message" do
-          message = hipchat.send(:create_build_message, data)
+          message = hipchat.send(:create_pipeline_message, data)
 
           project_url = project.web_url
           project_name = project.name_with_namespace.gsub(/\s/, '')
-          sha = data[:sha]
-          ref = data[:ref]
-          ref_type = data[:tag] ? 'tag' : 'branch'
-          duration = data[:commit][:duration]
+          sha = pipeline.sha
+          ref = pipeline.ref
+          ref_type = pipeline.tag ? 'tag' : 'branch'
+          duration = pipeline.duration
 
           expect(message).to eq("<a href=\"#{project_url}\">#{project_name}</a>: " \
-            "Commit <a href=\"#{project_url}/commit/#{sha}/builds\">#{Commit.truncate_sha(sha)}</a> " \
+            "Commit <a href=\"#{project_url}/pipelines/#{pipelines.id}\">#{Commit.truncate_sha(sha)}</a> " \
             "of <a href=\"#{project_url}/commits/#{ref}\">#{ref}</a> #{ref_type} " \
-            "by #{data[:commit][:author_name]} failed in #{duration} second(s)")
+            "by Unknown failed in #{duration} second(s)")
         end
       end
 
       context 'for succeeded' do
         before do
-          build.success
+          pipeline.success
         end
 
         it "calls Hipchat API" do
-          hipchat.notify_only_broken_builds = false
+          hipchat.notify_only_broken_pipelines = false
           hipchat.execute(data)
           expect(WebMock).to have_requested(:post, api_url).once
         end
 
         it "notifies only broken" do
-          hipchat.notify_only_broken_builds = true
+          hipchat.notify_only_broken_pipelines = true
           hipchat.execute(data)
           expect(WebMock).not_to have_requested(:post, api_url).once
         end

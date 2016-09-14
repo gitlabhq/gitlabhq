@@ -26,8 +26,6 @@ module Ci
     before_save :update_artifacts_size, if: :artifacts_file_changed?
     before_destroy { project }
 
-    after_create :execute_hooks
-
     class << self
       def first_pending
         pending.unstarted.order('created_at ASC').first
@@ -68,13 +66,8 @@ module Ci
     end
 
     state_machine :status do
-      after_transition pending: :running do |build|
-        build.execute_hooks
-      end
-
       after_transition any => [:success, :failed, :canceled] do |build|
         build.update_coverage
-        build.execute_hooks
       end
 
       after_transition any => [:success] do |build|
@@ -359,14 +352,6 @@ module Ci
 
     def stuck?
       pending? && !any_runners_online?
-    end
-
-    def execute_hooks
-      return unless project
-      build_data = Gitlab::DataBuilder::Build.build(self)
-      project.execute_hooks(build_data.dup, :build_hooks)
-      project.execute_services(build_data.dup, :build_hooks)
-      project.running_or_pending_build_count(force: true)
     end
 
     def artifacts?

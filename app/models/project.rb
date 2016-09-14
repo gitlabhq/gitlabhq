@@ -1189,12 +1189,6 @@ class Project < ActiveRecord::Base
     @wiki ||= ProjectWiki.new(self, self.owner)
   end
 
-  def running_or_pending_build_count(force: false)
-    Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
-      builds.running_or_pending.count(:all)
-    end
-  end
-
   def mark_import_as_failed(error_message)
     original_errors = errors.dup
     sanitized_message = Gitlab::UrlSanitizer.sanitize(error_message)

@@ -2,13 +2,13 @@ class HipchatService < Service
   MAX_COMMITS = 3
 
   prop_accessor :token, :room, :server, :notify, :color, :api_version
-  boolean_accessor :notify_only_broken_builds
+  boolean_accessor :notify_only_broken_pipelines
   validates :token, presence: true, if: :activated?
 
   def initialize_properties
     if properties.nil?
       self.properties = {}
-      self.notify_only_broken_builds = true
+      self.notify_only_broken_pipelines = true
     end
   end
 
@@ -34,12 +34,12 @@ class HipchatService < Service
         placeholder: 'Leave blank for default (v2)' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' },
-      { type: 'checkbox', name: 'notify_only_broken_builds' },
+      { type: 'checkbox', name: 'notify_only_broken_pipelines' },
     ]
   end
 
   def supported_events
-    %w(push issue confidential_issue merge_request note tag_push build)
+    %w[push issue confidential_issue merge_request note tag_push pipeline]
   end
 
   def execute(data)
@@ -83,8 +83,8 @@ class HipchatService < Service
       create_merge_request_message(data) unless is_update?(data)
     when "note"
       create_note_message(data)
-    when "build"
-      create_build_message(data) if should_build_be_notified?(data)
+    when "pipeline"
+      create_pipeline_message(data) if should_pipeline_be_notified?(data)
     end
   end
 
@@ -226,28 +226,30 @@ class HipchatService < Service
     message
   end
 
-  def create_build_message(data)
-    ref_type = data[:tag] ? 'tag' : 'branch'
-    ref = data[:ref]
-    sha = data[:sha]
-    user_name = data[:commit][:author_name]
-    status = data[:commit][:status]
-    duration = data[:commit][:duration]
+  def create_pipeline_message(data)
+    pipeline_attributes = data[:object_attributes]
+    pipeline_id = pipeline_attributes[:id]
+    ref_type = pipeline_attributes[:tag] ? 'tag' : 'branch'
+    ref = pipeline_attributes[:ref]
+    sha = pipeline_attributes[:sha]
+    user_name = data[:commit] && data[:commit][:author_name] || 'Unknown'
+    status = pipeline_attributes[:status]
+    duration = pipeline_attributes[:duration]
 
     branch_link = "<a href=\"#{project_url}/commits/#{CGI.escape(ref)}\">#{ref}</a>"
-    commit_link = "<a href=\"#{project_url}/commit/#{CGI.escape(sha)}/builds\">#{Commit.truncate_sha(sha)}</a>"
+    pipeline_link = "<a href=\"#{project_url}/pipelines/#{pipeline_id}\">#{Commit.truncate_sha(sha)}</a>"
 
-    "#{project_link}: Commit #{commit_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
+    "#{project_link}: Pipeline #{pipeline_link} of #{branch_link} #{ref_type} by #{user_name} #{humanized_status(status)} in #{duration} second(s)"
   end
 
   def message_color(data)
-    build_status_color(data) || color || 'yellow'
+    pipeline_status_color(data) || color || 'yellow'
   end
 
-  def build_status_color(data)
-    return unless data && data[:object_kind] == 'build'
+  def pipeline_status_color(data)
+    return unless data && data[:object_kind] == 'pipeline'
 
-    case data[:commit][:status]
+    case data[:object_attributes][:status]
     when 'success'
       'green'
     else
@@ -280,10 +282,10 @@ class HipchatService < Service
     end
   end
 
-  def should_build_be_notified?(data)
-    case data[:commit][:status]
+  def should_pipeline_be_notified?(data)
+    case data[:object_attributes][:status]
     when 'success'
-      !notify_only_broken_builds?
+      !notify_only_broken_pipelines?
     when 'failed'
       true
     else

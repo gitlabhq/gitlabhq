@@ -24,4 +24,3 @@ Feature: Project Builds Summary
     Then recent build has been erased
     And recent build summary does not have artifacts widget
     And recent build summary contains information saying that build has been erased
-    And the build count cache is updated
