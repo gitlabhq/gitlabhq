@@ -1,9 +1,12 @@
 (function() {
 
   function addMarginToBuild () {
-    const $secondChild = $('.build:nth-child(2)');
-    if ($secondChild.length) {
-      $secondChild.closest('.stage-column').addClass('left-margin');
+    const $secondChildBuildNode = $('.build:nth-child(2)');
+    const $firstChildBuildNode = $secondChildBuildNode.prev('.build');
+    // const $previousBuildColumn = $secondChildBuildNode.closest('.stage-column').prev('.stage-column');
+    if ($secondChildBuildNode.length) {
+      $secondChildBuildNode.closest('.stage-column').addClass('left-margin');
+      $firstChildBuildNode.addClass('left-connector');
     }
   }
 

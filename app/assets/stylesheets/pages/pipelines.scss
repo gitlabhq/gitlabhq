@@ -303,11 +303,26 @@
 .stage-column {
   display: inline-block;
   vertical-align: top;
-  margin-right: 48px;
+
+  &:not(:last-child) {
+    margin-right: 44px;
+  }
 
   &.left-margin {
     &:not(:first-child) {
-      margin-left: 48px;
+      margin-left: 44px;
+
+      .left-connector {
+        &::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: -48px;
+          border-top: 2px solid $border-color;
+          width: 48px;
+          height: 1px;
+        }
+      }
     }
   }
 
@@ -348,7 +363,10 @@
     }
 
     .build-content {
-      width: 130px;
+      width: 164px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       .ci-status-text {
         width: 110px;
