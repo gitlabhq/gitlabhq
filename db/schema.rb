@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160902122721) do
+ActiveRecord::Schema.define(version: 20160906143504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -630,6 +630,8 @@ ActiveRecord::Schema.define(version: 20160902122721) do
     t.datetime "invite_accepted_at"
     t.datetime "requested_at"
     t.date     "expires_at"
+    t.boolean  "ldap",               default: false, null: false
+    t.boolean  "override",           default: false, null: false
   end
 
   add_index "members", ["access_level"], name: "index_members_on_access_level", using: :btree

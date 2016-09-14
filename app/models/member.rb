@@ -75,7 +75,7 @@ class Member < ActiveRecord::Base
       user
     end
 
-    def add_user(members, user_id, access_level, current_user: nil, skip_notification: false, expires_at: nil)
+    def add_user(members, user_id, access_level, current_user: nil, skip_notification: false, expires_at: nil, ldap: false)
       user = user_for_id(user_id)
 
       # `user` can be either a User object or an email to be invited
@@ -91,6 +91,7 @@ class Member < ActiveRecord::Base
         member.access_level = access_level
         member.expires_at = expires_at
         member.skip_notification = skip_notification
+        member.ldap = ldap
 
         member.save
       end

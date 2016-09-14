@@ -134,10 +134,11 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
           sync_group.update_permissions
         end
 
-        it 'adds new members' do
+        it 'adds new members and sets ldap attribute to true' do
           sync_group.update_permissions
 
           expect(group.members.pluck(:user_id)).to include(user.id)
+          expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
         end
 
         it 'converts an existing membership access request to a real member' do
@@ -176,6 +177,32 @@ describe EE::Gitlab::LDAP::Sync::Group, lib: true do
 
           expect(group.members.find_by(user_id: user.id).access_level)
             .to eq(::Gitlab::Access::DEVELOPER)
+        end
+
+        it 'sets an existing member ldap attribute to true' do
+          group.add_users(
+            [user],
+            ::Gitlab::Access::DEVELOPER,
+            skip_notification: true
+          )
+
+          sync_group.update_permissions
+
+          expect(group.members.find_by(user_id: user.id).ldap?).to be_truthy
+        end
+
+        it 'does not alter an ldap member that has a permission override' do
+          group.members.create(
+            user: user,
+            access_level: ::Gitlab::Access::MASTER,
+            ldap: true,
+            override: true
+          )
+
+          sync_group.update_permissions
+
+          expect(group.members.find_by(user_id: user.id).access_level)
+            .to eq(::Gitlab::Access::MASTER)
         end
       end
 
