@@ -40,13 +40,10 @@
       - stages.each do |stage|
         - status = stages_status[stage]
         - tooltip = "#{stage.titleize}: #{status || 'not found'}"
-        .stage-container
-          - if status
+        - if status
+          .stage-container
             = link_to namespace_project_pipeline_path(pipeline.project.namespace, pipeline.project, pipeline.id, anchor: stage), class: "has-tooltip ci-status-icon-#{status}", title: tooltip do
               = ci_icon_for_status(status)
-          - else
-            .light.has-tooltip{ title: tooltip }
-              = custom_icon('icon_stage_empty')
 
   %td
     - if pipeline.duration

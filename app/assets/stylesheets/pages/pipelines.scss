@@ -160,6 +160,10 @@
       position: relative;
       margin-right: 6px;
 
+      .tooltip {
+        white-space: nowrap;
+      }
+
       &:not(:last-child) {
         &::after {
           content: '';
@@ -168,14 +172,8 @@
           position: absolute;;
           right: -9px;
           bottom: 36%;
-          border-bottom: 2px solid $white-dark;
+          border-bottom: 3px solid $table-text-gray;
         }
-      }
-    }
-
-    .stage-empty {
-      g {
-        fill: $white-normal;
       }
     }
   }
