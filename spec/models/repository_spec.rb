@@ -186,32 +186,6 @@ describe Repository, models: true do
       it { is_expected.to be_an String }
       it { expect(subject.lines[2]).to eq("master:CHANGELOG:188:  - Feature: Replace teams with group membership\n") }
     end
-
-    describe 'parsing result' do
-      subject { repository.parse_search_result(search_result) }
-      let(:search_result) { results.first }
-
-      it { is_expected.to be_an OpenStruct }
-      it { expect(subject.filename).to eq('CHANGELOG') }
-      it { expect(subject.basename).to eq('CHANGELOG') }
-      it { expect(subject.ref).to eq('master') }
-      it { expect(subject.startline).to eq(186) }
-      it { expect(subject.data.lines[2]).to eq("  - Feature: Replace teams with group membership\n") }
-
-      context "when filename has extension" do
-        let(:search_result) { "master:CONTRIBUTE.md:5:- [Contribute to GitLab](#contribute-to-gitlab)\n" }
-
-        it { expect(subject.filename).to eq('CONTRIBUTE.md') }
-        it { expect(subject.basename).to eq('CONTRIBUTE') }
-      end
-
-      context "when file under directory" do
-        let(:search_result) { "master:a/b/c.md:5:a b c\n" }
-
-        it { expect(subject.filename).to eq('a/b/c.md') }
-        it { expect(subject.basename).to eq('a/b/c') }
-      end
-    end
   end
 
   describe "#changelog" do
