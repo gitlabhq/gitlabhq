@@ -523,4 +523,58 @@ describe Ci::Pipeline, models: true do
       expect(pipeline.merge_requests).to be_empty
     end
   end
+
+  describe 'notifications when pipeline success or failed' do
+    before do
+      ActionMailer::Base.deliveries.clear
+
+      pipeline.enqueue
+      pipeline.run
+    end
+
+    shared_examples 'sending a notification' do
+      it 'sends an email' do
+        sent_to = ActionMailer::Base.deliveries.flat_map(&:to)
+        expect(sent_to).to contain_exactly(pipeline.user.email)
+      end
+    end
+
+    shared_examples 'not sending any notification' do
+      it 'does not send any email' do
+        expect(ActionMailer::Base.deliveries).to be_empty
+      end
+    end
+
+    context 'with success pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.success
+        end
+      end
+    end
+
+    context 'with failed pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.drop
+        end
+      end
+    end
+
+    context 'with skipped pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.skip
+        end
+      end
+    end
+
+    context 'with cancelled pipeline' do
+      before do
+        perform_enqueued_jobs do
+          pipeline.cancel
+        end
+      end
+    end
+  end
 end
