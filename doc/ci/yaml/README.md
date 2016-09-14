@@ -553,7 +553,7 @@ GitLab.
 If `environment` is specified and no environment under that name exists, a new
 one will be created automatically.
 
-The `environment` name must contain only letters, digits, '-' and '_'. Common
+The `environment` name must be a valid git reference name. Common
 names are `qa`, `staging`, and `production`, but you can use whatever name works
 with your workflow.
 
@@ -570,6 +570,33 @@ deploy to production:
 
 The `deploy to production` job will be marked as doing deployment to
 `production` environment.
+
+#### dynamic environments
+
+>**Note:**
+Introduced in GitLab 8.12.
+
+`environment` can also represent a configuration hash with `name` and `url`.
+These parameters can use any of defined CI variables (including predefined, secure variables and .gitlab-ci.yml variables).
+
+The common use case is to create a dynamic environments for branches and use them as review apps.
+
+---
+
+**Example configurations**
+
+```
+deploy as review app:
+  stage: deploy
+  script: ...
+  environment: 
+    name: review-apps/$CI_BUILD_REF_NAME
+    url: https://$CI_BUILD_REF_NAME.review.example.com/
+```
+
+The `deploy to production` job will be marked as doing deployment to
+`production` environment.
+
 
 ### artifacts
 
