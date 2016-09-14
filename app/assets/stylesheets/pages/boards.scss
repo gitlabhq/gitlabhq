@@ -54,6 +54,7 @@
 
 .boards-list {
   height: calc(100vh - 152px);
+  width: 100%;
   padding-top: 25px;
   padding-bottom: 25px;
   padding-right: ($gl-padding / 2);
@@ -63,6 +64,7 @@
 
   @media (min-width: $screen-sm-min) {
     height: calc(100vh - 220px);
+    min-height: 475px;
   }
 }
 
