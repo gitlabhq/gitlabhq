@@ -1,5 +1,8 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+v 8.10.9
+  - Exclude some pending or inactivated rows in Member scopes.
+
 v 8.10.8
   - Fix broken gitlab:backup:restore because of bad permissions on repo storage !6098 (Dirk Hörner)
 
