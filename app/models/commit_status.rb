@@ -96,7 +96,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.gsub(/\d+[\s:]+\d+\s*/, '')
+    name.gsub(/\d+[\s:\/\\]+\d+\s*/, '').strip
   end
 
   def self.stages
@@ -115,6 +115,10 @@ class CommitStatus < ActiveRecord::Base
 
   def ignored?
     allow_failure? && (failed? || canceled?)
+  end
+
+  def playable?
+    false
   end
 
   def duration
