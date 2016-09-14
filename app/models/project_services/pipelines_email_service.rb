@@ -89,8 +89,8 @@ class PipelinesEmailService < Service
 
     if add_pusher? && data[:user].try(:[], :email)
       all_recipients << data[:user][:email]
-    else
-      all_recipients
     end
+
+    all_recipients
   end
 end
