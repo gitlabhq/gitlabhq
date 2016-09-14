@@ -14,6 +14,7 @@ v 8.12.0 (unreleased)
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
+  - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
@@ -131,6 +132,8 @@ v 8.12.0 (unreleased)
   - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
   - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
+  - Fix Gitlab::Popen.popen thread-safety issue
+  - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
 
 v 8.11.6 (unreleased)
   - Fix an error where we were unable to create a CommitStatus for running state
