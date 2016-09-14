@@ -23,14 +23,6 @@ describe PipelinesEmailService do
       end
 
       it { is_expected.to validate_presence_of(:recipients) }
-
-      context 'when pusher is added' do
-        before do
-          subject.add_pusher = true
-        end
-
-        it { is_expected.not_to validate_presence_of(:recipients) }
-      end
     end
 
     context 'when service is inactive' do
