@@ -102,7 +102,7 @@ module Gitlab
 
       def secret
         @secret ||= begin
-          bytes = Base64.strict_decode64(File.read(secret_path))
+          bytes = Base64.strict_decode64(File.read(secret_path).chomp)
           raise "#{secret_path} does not contain #{SECRET_LENGTH} bytes" if bytes.length != SECRET_LENGTH
           bytes
         end

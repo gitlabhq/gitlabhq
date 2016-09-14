@@ -231,6 +231,34 @@ describe Ci::Build, models: true do
       it { is_expected.to eq(predefined_variables) }
     end
 
+    context 'when build has user' do
+      let(:user) { create(:user, username: 'starter') }
+      let(:user_variables) do
+        [
+          { key: 'GITLAB_USER_ID',    value: user.id.to_s, public: true },
+          { key: 'GITLAB_USER_EMAIL', value: user.email,   public: true }
+        ]
+      end
+
+      before do
+        build.update_attributes(user: user)
+      end
+
+      it { user_variables.each { |v| is_expected.to include(v) } }
+    end
+
+    context 'when build started manually' do
+      before do
+        build.update_attributes(when: :manual)
+      end
+
+      let(:manual_variable) do
+        { key: 'CI_BUILD_MANUAL', value: 'true', public: true }
+      end
+
+      it { is_expected.to include(manual_variable) }
+    end
+
     context 'when build is for tag' do
       let(:tag_variable) do
         { key: 'CI_BUILD_TAG', value: 'master', public: true }

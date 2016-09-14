@@ -140,6 +140,12 @@ describe Gitlab::GithubImport::PullRequestFormatter, lib: true do
 
         expect(pull_request.attributes.fetch(:author_id)).to eq gl_user.id
       end
+
+      it 'returns description without created at tag line' do
+        create(:omniauth_user, extern_uid: octocat.id, provider: 'github')
+
+        expect(pull_request.attributes.fetch(:description)).to eq('Please pull these awesome changes')
+      end
     end
 
     context 'when it has a milestone' do

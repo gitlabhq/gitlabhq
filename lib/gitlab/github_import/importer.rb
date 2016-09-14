@@ -24,6 +24,7 @@ module Gitlab
         import_issues
         import_pull_requests
         import_wiki
+        import_releases
         handle_errors
 
         true
@@ -175,6 +176,18 @@ module Gitlab
         # we can skip the import.
         if e.message !~ /repository not exported/
           errors << { type: :wiki, errors: e.message }
+        end
+      end
+
+      def import_releases
+        releases = client.releases(repo, per_page: 100)
+        releases.each do |raw|
+          begin
+            gh_release = ReleaseFormatter.new(project, raw)
+            gh_release.create! if gh_release.valid?
+          rescue => e
+            errors << { type: :release, url: Gitlab::UrlSanitizer.sanitize(raw.url), errors: e.message }
+          end
         end
       end
     end

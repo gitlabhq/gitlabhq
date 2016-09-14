@@ -30,5 +30,9 @@ FactoryGirl.define do
     trait :shared do
       is_shared true
     end
+
+    trait :inactive do
+      active false
+    end
   end
 end
