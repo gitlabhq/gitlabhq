@@ -1,21 +1,29 @@
 module Gitlab
   module Auth
-    Result = Struct.new(:user, :project, :type, :capabilities)
+    class Result
+      attr_reader :user, :project, :type, :capabilities
+
+      def initialize?(user = nil, project = nil, type = nil, capabilities = nil)
+        @user, @project, @type, @capabilities = user, project, type, capabilities
+      end
+
+      def success?
+        user.present? || [:ci, :missing_personal_token].include?(type)
+      end
+    end
 
     class << self
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
-        result = Result.new
+        result = service_access_token_check(login, password, project) ||
+          build_access_token_check(login, password) ||
+          user_with_password_for_git(login, password) ||
+          oauth_access_token_check(login, password) ||
+          personal_access_token_check(login, password) ||
+          Result.new
 
-        if valid_ci_request?(login, password, project)
-          result = Result.new(nil, project, :ci, restricted_capabilities)
-        else
-          result = populate_result(login, password)
-        end
-
-        success = result.user.present? || [:ci, :missing_personal_token].include?(result.type)
-        rate_limit!(ip, success: success, login: login)
+        rate_limit!(ip, success: result.success?, login: login)
         result
       end
 
@@ -57,10 +65,10 @@ module Gitlab
 
       private
 
-      def valid_ci_request?(login, password, project)
+      def service_access_token_check(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)
 
-        return false unless project && matched_login.present?
+        return unless project && matched_login.present?
 
         underscored_service = matched_login['service'].underscore
 
@@ -69,31 +77,24 @@ module Gitlab
           # in the Service.available_services_names whitelist.
           service = project.public_send("#{underscored_service}_service")
 
-          service && service.activated? && service.valid_token?(password)
-        end
-      end
-
-      def populate_result(login, password)
-        result =
-          build_access_token_check(login, password) ||
-          user_with_password_for_git(login, password) ||
-          oauth_access_token_check(login, password) ||
-          personal_access_token_check(login, password)
-
-        if result
-          result.type = nil unless result.capabilities
-
-          if result.user && result.user.two_factor_enabled? && result.type == :gitlab_or_ldap
-            result.type = :missing_personal_token
+          if service && service.activated? && service.valid_token?(password)
+            Result.new(nil, project, :ci, restricted_capabilities)
           end
         end
-
-        result || Result.new
       end
 
       def user_with_password_for_git(login, password)
         user = find_with_user_password(login, password)
-        Result.new(user, :gitlab_or_ldap, nil, full_capabilities) if user
+        return unless user
+
+        type =
+          if user.two_factor_enabled?
+            :missing_personal_token
+          else
+            :gitlab_or_ldap
+          end
+
+        Result.new(user, type, nil, full_capabilities)
       end
 
       def oauth_access_token_check(login, password)
@@ -101,7 +102,7 @@ module Gitlab
           token = Doorkeeper::AccessToken.by_token(password)
           if token && token.accessible?
             user = User.find_by(id: token.resource_owner_id)
-            Result.new(user, nil, :oauth, full_capabilities)
+            Result.new(user, nil, :oauth, read_capabilities)
           end
         end
       end
@@ -140,11 +141,16 @@ module Gitlab
         ]
       end
 
-      def full_capabilities
+      def read_capabilities
         restricted_capabilities + [
           :download_code,
+          :read_container_image
+        ]
+      end
+
+      def full_capabilities
+        read_capabilities + [
           :push_code,
-          :read_container_image,
           :update_container_image
         ]
       end
