@@ -58,13 +58,12 @@
       $dropdown.find('li a').on('click', (e) => {
         e.preventDefault();
         const $target = $(e.currentTarget);
-        $label.text($target.text().trim());
-        value = $target.data('value');
+        const value = $target.data('value');
 
+        $label.text($target.text().trim());
         this.vue.isLoading = true;
       })
     }
-
   }
 
 })(window.gl || (window.gl = {}));
