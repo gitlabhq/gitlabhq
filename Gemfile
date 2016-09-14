@@ -135,8 +135,7 @@ gem 'after_commit_queue', '~> 1.3.0'
 gem 'acts-as-taggable-on', '~> 3.4'
 
 # Background jobs
-gem 'sinatra', '~> 1.4.4', require: false
-gem 'sidekiq', '~> 4.0'
+gem 'sidekiq', '~> 4.2'
 gem 'sidekiq-cron', '~> 0.4.0'
 gem 'redis-namespace', '~> 1.5.2'
 
