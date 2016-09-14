@@ -147,10 +147,13 @@
   }
 
   .stage-cell {
+    font-size: 0;
 
     svg {
       height: 18px;
       width: 18px;
+      position: relative;
+      z-index: 2;
       vertical-align: middle;
       overflow: visible;
     }
@@ -167,12 +170,11 @@
       &:not(:last-child) {
         &::after {
           content: '';
-          height: 20px;
-          width: 9px;
+          width: 8px;
           position: absolute;;
-          right: -9px;
-          bottom: 36%;
-          border-bottom: 3px solid $table-text-gray;
+          right: -7px;
+          bottom: 44%;
+          border-bottom: 2px solid $border-color;
         }
       }
     }
