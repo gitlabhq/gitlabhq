@@ -41,7 +41,7 @@ describe CreateDeploymentService, services: true do
 
     context 'for environment with invalid name' do
       let(:params) do
-        { environment: 'name with spaces',
+        { environment: '..',
           ref: 'master',
           tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
@@ -64,10 +64,8 @@ describe CreateDeploymentService, services: true do
           tag: false,
           sha: '97de212e80737a608d939f648d959671fb0a0142',
           options: {
-            environment: {
-              name: 'review-apps/$CI_BUILD_REF_NAME',
-              url: 'http://$CI_BUILD_REF_NAME.review-apps.gitlab.com'
-            }
+            name: 'review-apps/$CI_BUILD_REF_NAME',
+            url: 'http://$CI_BUILD_REF_NAME.review-apps.gitlab.com'
           },
           variables: [
             { key: 'CI_BUILD_REF_NAME', value: 'feature-review-apps' }
@@ -83,7 +81,7 @@ describe CreateDeploymentService, services: true do
       end
 
       it 'does create a new deployment' do
-        expect(subject).not_to be_persisted
+        expect(subject).to be_persisted
       end
     end
   end
@@ -125,6 +123,12 @@ describe CreateDeploymentService, services: true do
 
         expect(Deployment.last.deployable).to eq(deployable)
       end
+
+      it 'create environment has URL set' do
+        subject
+
+        expect(Deployment.last.environment.external_url).not_to be_nil
+      end
     end
 
     context 'without environment specified' do
@@ -137,7 +141,10 @@ describe CreateDeploymentService, services: true do
     
     context 'when environment is specified' do
       let(:pipeline) { create(:ci_pipeline, project: project) }
-      let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production') }
+      let(:build) { create(:ci_build, pipeline: pipeline, environment: 'production', options: options) }
+      let(:options) do
+        { environment: { name: 'production', url: 'http://gitlab.com' } }
+      end
 
       context 'when build succeeds' do
         it_behaves_like 'does create environment and deployment' do

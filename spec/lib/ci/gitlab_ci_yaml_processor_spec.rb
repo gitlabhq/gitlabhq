@@ -754,6 +754,20 @@ module Ci
         it 'does return production' do
           expect(builds.size).to eq(1)
           expect(builds.first[:environment]).to eq(environment)
+          expect(builds.first[:options]).to include(environment: { name: environment })
+        end
+      end
+
+      context 'when hash is specified' do
+        let(:environment) do
+          { name: 'production',
+            url: 'http://production.gitlab.com' }
+        end
+
+        it 'does return production and URL' do
+          expect(builds.size).to eq(1)
+          expect(builds.first[:environment]).to eq(environment[:name])
+          expect(builds.first[:options]).to include(environment)
         end
       end
 

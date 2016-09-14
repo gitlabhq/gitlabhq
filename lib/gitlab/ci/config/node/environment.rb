@@ -8,7 +8,11 @@ module Gitlab
         class Environment < Entry
           include Validatable
 
+          ALLOWED_KEYS = %i[name url]
+
           validations do
+            validates :config, allowed_keys: ALLOWED_KEYS, if: :hash?
+
             validates :name, presence: true
 
             validates :url,
@@ -32,9 +36,9 @@ module Gitlab
           end
 
           def name
-            case
-            when string? then @config
-            when hash? then @config[:name]
+            case @config.type
+            when String then @config
+            when Hash then @config[:name]
             end
           end
 
@@ -43,9 +47,9 @@ module Gitlab
           end
 
           def value
-            case
-            when string? then { name: @config }
-            when hash? then @config
+            case @config.type
+            when String then { name: @config }
+            when Hash then @config
             end
           end
         end

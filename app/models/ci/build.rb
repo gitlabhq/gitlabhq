@@ -86,7 +86,7 @@ module Ci
             ref: build.ref,
             tag: build.tag,
             options: build.options[:environment],
-            variables: variables)
+            variables: build.variables)
           service.execute(build)
         end
       end

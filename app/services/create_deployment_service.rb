@@ -2,13 +2,7 @@ require_relative 'base_service'
 
 class CreateDeploymentService < BaseService
   def execute(deployable = nil)
-    environment = project.environments.find_or_create_by(
-      name: expanded_name
-    )
-
-    if expanded_url
-      environment.external_url = expanded_url
-    end
+    environment = find_or_create_environment
 
     project.deployments.create(
       environment: environment,
@@ -21,6 +15,12 @@ class CreateDeploymentService < BaseService
   end
 
   private
+
+  def find_or_create_environment
+    project.environments.find_or_create_by(name: expanded_name) do |environment|
+      environment.external_url = expanded_url
+    end
+  end
 
   def expanded_name
     ExpandVariables.expand(name, variables)
@@ -41,7 +41,7 @@ class CreateDeploymentService < BaseService
   end
 
   def options
-    params[:environment] || {}
+    params[:options] || {}
   end
 
   def variables

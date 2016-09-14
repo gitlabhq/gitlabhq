@@ -1,6 +1,6 @@
 module ExpandVariables
   class << self
-    def expand_variables(value, variables)
+    def expand(value, variables)
       # Convert hash array to variables
       if variables.is_a?(Array)
         variables = variables.reduce({}) do |hash, variable|

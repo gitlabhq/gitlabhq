@@ -29,14 +29,6 @@ module Gitlab
                 inclusion: { in: %w[on_success on_failure always manual],
                              message: 'should be on_success, on_failure, ' \
                                       'always or manual' }
-              validates :environment,
-                type: {
-                  with: String,
-                  message: Gitlab::Regex.environment_name_regex_message }
-              validates :environment,
-                format: {
-                  with: Gitlab::Regex.environment_name_regex,
-                  message: Gitlab::Regex.environment_name_regex_message }
 
               validates :dependencies, array_of_strings: true
             end
@@ -83,7 +75,7 @@ module Gitlab
 
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
-                  :artifacts, :commands
+                  :artifacts, :commands, :environment
 
           def compose!(deps = nil)
             super do
