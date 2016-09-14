@@ -13,7 +13,7 @@ module Gitlab
                             type stage when artifacts cache dependencies before_script
                             after_script variables environment]
 
-          attributes :tags, :allow_failure, :when, :environment, :dependencies
+          attributes :tags, :allow_failure, :when, :dependencies
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -78,6 +78,9 @@ module Gitlab
           node :artifacts, Artifacts,
             description: 'Artifacts configuration for this job.'
 
+          node :environment, Environment,
+               description: 'Environment configuration for this job.'
+
           helpers :before_script, :script, :stage, :type, :after_script,
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :commands
@@ -133,6 +136,7 @@ module Gitlab
               only: only,
               except: except,
               variables: variables_defined? ? variables : nil,
+              environment: environment_defined? ? environment : nil,
               artifacts: artifacts,
               after_script: after_script }
           end

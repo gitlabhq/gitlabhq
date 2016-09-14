@@ -3,28 +3,45 @@ module Gitlab
     class Config
       module Node
         ##
-        # Entry that represents environment variables.
+        # Entry that represents an environment.
         #
         class Environment < Entry
           include Validatable
 
           validations do
-            include LegacyValidationHelpers
+            validates :name, presence: true
 
             validate do
-              unless string_or_array_of_strings?(config)
-                errors.add(:config,
-                           'should be a string or an array of strings')
+              unless hash? || string?
+                errors.add(:config, 'should be a hash or a string')
               end
-            end
-
-            def string_or_array_of_strings?(field)
-              validate_string(field) || validate_array_of_strings(field)
             end
           end
 
+          def hash?
+            @config.is_a?(Hash)
+          end
+
+          def string?
+            @config.is_a?(String)
+          end
+
+          def name
+            case
+            when string? then @config
+            when hash? then @config[:name]
+            end
+          end
+
+          def url
+            @config[:url] if hash?
+          end
+
           def value
-            Array(@config)
+            case
+            when string? then { name: @config }
+            when hash? then @config
+            end
           end
         end
       end
