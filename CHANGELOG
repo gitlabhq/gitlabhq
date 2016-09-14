@@ -1,17 +1,19 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.11.6
-  - Fix an error where we were unable to create a CommitStatus for running state.
+  - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
+  - Make merge conflict file size limit 200 KB, to match the docs. !6052
+  - Fix an error where we were unable to create a CommitStatus for running state. !6107
+  - Optimize discussion notes resolving and unresolving. !6141
+  - Fix GitLab import button. !6167
   - Restore SSH Key title auto-population behavior. !6186
-  - Optimize discussion notes resolving and unresolving.
-  - Fix GitLab import button.
-  - Make merge conflict file size limit 200 KB, to match the docs.
+  - Fix DB schema to match latest migration. !6256
+  - Exclude some pending or inactivated rows in Member scopes.
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch
   - Fix member expiration date picker after update
   - Fix suggested colors options for new labels in the admin area. !6138
-  - Fix GitLab import button
   - Fix confidential issues being exposed as public using gitlab.com export
   - Remove gitorious from import_sources. !6180
   - Scope webhooks/services that will run for confidential issues
