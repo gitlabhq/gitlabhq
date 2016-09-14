@@ -26,7 +26,7 @@ gem 'omniauth-auth0',         '~> 1.4.1'
 gem 'omniauth-azure-oauth2',  '~> 0.0.6'
 gem 'omniauth-bitbucket',     '~> 0.0.2'
 gem 'omniauth-cas3',          '~> 1.1.2'
-gem 'omniauth-facebook',      '~> 3.0.0'
+gem 'omniauth-facebook',      '~> 4.0.0'
 gem 'omniauth-github',        '~> 1.1.1'
 gem 'omniauth-gitlab',        '~> 1.0.0'
 gem 'omniauth-google-oauth2', '~> 0.4.1'
@@ -57,7 +57,7 @@ gem 'browser', '~> 2.2'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 10.6.3'
+gem 'gitlab_git', '~> 10.6.6'
 
 # LDAP Auth
 # GitLab fork with several improvements to original library. For full list of changes
