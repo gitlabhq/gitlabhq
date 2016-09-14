@@ -334,6 +334,10 @@ a.deploy-project-label {
   a {
     color: $gl-dark-link-color;
   }
+
+  .dropdown-menu {
+    width: 240px;
+  }
 }
 
 .last-push-widget {
