@@ -577,9 +577,9 @@ The `deploy to production` job will be marked as doing deployment to
 Introduced in GitLab 8.12.
 
 `environment` can also represent a configuration hash with `name` and `url`.
-These parameters can use any of defined CI variables (including predefined, secure variables and .gitlab-ci.yml variables).
+These parameters can use any of the defined CI variables (including predefined, secure variables and `.gitlab-ci.yml` variables).
 
-The common use case is to create a dynamic environments for branches and use them as review apps.
+The common use case is to create dynamic environments for branches and use them as review apps.
 
 ---
 
@@ -594,9 +594,10 @@ deploy as review app:
     url: https://$CI_BUILD_REF_NAME.review.example.com/
 ```
 
-The `deploy to production` job will be marked as doing deployment to
-`production` environment.
+The `deploy as review app` job will be marked as deployment to
+dynamically created `review-apps/branch-name` environment.
 
+This environment should be accessible under `https://branch-name.review.example.com/`.
 
 ### artifacts
 

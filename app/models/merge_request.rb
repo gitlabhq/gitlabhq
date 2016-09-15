@@ -744,21 +744,10 @@ class MergeRequest < ActiveRecord::Base
     @pipeline ||= source_project.pipeline_for(source_branch, diff_head_sha)
   end
 
-  def all_commits_sha
-    merge_request_diffs.map(&:commits).flatten.map(&:sha).sort.uniq
-  end
-
-  def latest_pipelines
-    @latest_pipelines ||=
-      if diff_head_sha && source_project
-        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
-      end
-  end
-
   def all_pipelines
     @all_pipelines ||=
       if diff_head_sha && source_project
-        source_project.pipelines.order(id: :desc).where(sha: all_commits_sha, ref: source_branch)
+        source_project.pipelines.order(id: :desc).where(sha: commits_sha, ref: source_branch)
       end
   end
 

@@ -36,14 +36,11 @@ module Gitlab
           end
 
           def name
-            case @config.type
-            when String then @config
-            when Hash then @config[:name]
-            end
+            value[:name]
           end
 
           def url
-            @config[:url] if hash?
+            value[:url]
           end
 
           def value
