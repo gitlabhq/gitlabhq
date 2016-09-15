@@ -135,6 +135,7 @@ v 8.12.0 (unreleased)
   - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
   - Fix Gitlab::Popen.popen thread-safety issue
   - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
+  - Clean environment variables when running git hooks
 
 v 8.11.6
   - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
