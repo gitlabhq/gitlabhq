@@ -144,8 +144,7 @@ class HipchatService < Service
     message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
     if description
-      description = format_body(description)
-      message << description
+      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(description))
     end
 
     message
@@ -167,8 +166,7 @@ class HipchatService < Service
       "#{project_link}: <b>#{title}</b>"
 
     if description
-      description = format_body(description)
-      message << description
+      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(description))
     end
 
     message
@@ -219,8 +217,7 @@ class HipchatService < Service
     message << title
 
     if note
-      note = format_body(note)
-      message << note
+      message << format_body(Banzai::Filter::MarkdownFilter.renderer.render(note))
     end
 
     message
