@@ -1,0 +1,89 @@
+require 'spec_helper'
+
+describe API::API, api: true do
+  include ApiHelpers
+
+  let(:user) { create(:user) }
+  let!(:group) { create(:group) }
+  let!(:project) { create(:project, :public, creator_id: user.id, namespace: group) }
+
+  describe "GET /notification_settings" do
+    it "returns global notification settings for the current user" do
+      get api("/notification_settings", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_a Hash
+      expect(json_response['notification_email']).to eq(user.notification_email)
+      expect(json_response['level']).to eq(user.global_notification_setting.level)
+    end
+  end
+
+  describe "PUT /notification_settings" do
+    let(:email) { create(:email, user: user) }
+
+    it "updates global notification settings for the current user" do
+      put api("/notification_settings", user), { level: 'watch', notification_email: email.email }
+
+      expect(response).to have_http_status(200)
+      expect(json_response['notification_email']).to eq(email.email)
+      expect(user.reload.notification_email).to eq(email.email)
+      expect(json_response['level']).to eq(user.reload.global_notification_setting.level)
+    end
+  end
+
+  describe "PUT /notification_settings" do
+    it "fails on non-user email address" do
+      put api("/notification_settings", user), { notification_email: 'invalid@example.com' }
+
+      expect(response).to have_http_status(400)
+    end
+  end
+
+  describe "GET /groups/:id/notification_settings" do
+    it "returns group level notification settings for the current user" do
+      get api("/groups/#{group.id}/notification_settings", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_a Hash
+      expect(json_response['level']).to eq(user.notification_settings_for(group).level)
+    end
+  end
+
+  describe "PUT /groups/:id/notification_settings" do
+    it "updates group level notification settings for the current user" do
+      put api("/groups/#{group.id}/notification_settings", user), { level: 'watch' }
+
+      expect(response).to have_http_status(200)
+      expect(json_response['level']).to eq(user.reload.notification_settings_for(group).level)
+    end
+  end
+
+  describe "GET /projects/:id/notification_settings" do
+    it "returns project level notification settings for the current user" do
+      get api("/projects/#{project.id}/notification_settings", user)
+
+      expect(response).to have_http_status(200)
+      expect(json_response).to be_a Hash
+      expect(json_response['level']).to eq(user.notification_settings_for(project).level)
+    end
+  end
+
+  describe "PUT /projects/:id/notification_settings" do
+    it "updates project level notification settings for the current user" do
+      put api("/projects/#{project.id}/notification_settings", user), { level: 'custom', new_note: true }
+
+      expect(response).to have_http_status(200)
+      expect(json_response['level']).to eq(user.reload.notification_settings_for(project).level)
+      expect(json_response['events']['new_note']).to eq(true)
+      expect(json_response['events']['new_issue']).to eq(false)
+    end
+  end
+
+  describe "PUT /projects/:id/notification_settings" do
+    it "fails on invalid level" do
+      put api("/projects/#{project.id}/notification_settings", user), { level: 'invalid' }
+
+      expect(response).to have_http_status(400)
+    end
+  end
+end

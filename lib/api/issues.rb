@@ -41,7 +41,8 @@ module API
         issues = current_user.issues.inc_notes_with_associations
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
-        issues.reorder(issuable_order_by => issuable_sort)
+        issues = issues.reorder(issuable_order_by => issuable_sort)
+
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
     end
@@ -73,7 +74,11 @@ module API
         params[:group_id] = group.id
         params[:milestone_title] = params.delete(:milestone)
         params[:label_name] = params.delete(:labels)
-        params[:sort] = "#{params.delete(:order_by)}_#{params.delete(:sort)}" if params[:order_by] && params[:sort]
+
+        if params[:order_by] || params[:sort]
+          # The Sortable concern takes 'created_desc', not 'created_at_desc' (for example)
+          params[:sort] = "#{issuable_order_by.sub('_at', '')}_#{issuable_sort}"
+        end
 
         issues = IssuesFinder.new(current_user, params).execute
 
@@ -113,7 +118,8 @@ module API
           issues = filter_issues_milestone(issues, params[:milestone])
         end
 
-        issues.reorder(issuable_order_by => issuable_sort)
+        issues = issues.reorder(issuable_order_by => issuable_sort)
+
         present paginate(issues), with: Entities::Issue, current_user: current_user
       end
 

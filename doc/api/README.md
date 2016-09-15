@@ -28,6 +28,7 @@ following locations:
 - [Namespaces](namespaces.md)
 - [Notes](notes.md) (comments)
 - [Open source license templates](licenses.md)
+- [Notification settings](notification_settings.md)
 - [Pipelines](pipelines.md)
 - [Projects](projects.md) including setting Webhooks
 - [Project Access Requests](access_requests.md)

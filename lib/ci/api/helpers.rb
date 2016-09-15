@@ -32,6 +32,14 @@ module Ci
         end
       end
 
+      def build_not_found!
+        if headers['User-Agent'].match(/gitlab-ci-multi-runner \d+\.\d+\.\d+(~beta\.\d+\.g[0-9a-f]+)? /)
+          no_content!
+        else
+          not_found!
+        end
+      end
+
       def current_runner
         @runner ||= Runner.find_by_token(params[:token].to_s)
       end

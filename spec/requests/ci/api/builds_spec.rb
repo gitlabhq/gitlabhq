@@ -15,6 +15,25 @@ describe Ci::API::API do
 
     describe "POST /builds/register" do
       let!(:build) { create(:ci_build, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+      let(:user_agent) { 'gitlab-ci-multi-runner 1.5.2 (1-5-stable; go1.6.3; linux/amd64)' }
+
+      shared_examples 'no builds available' do
+        context 'when runner sends version in User-Agent' do
+          context 'for stable version' do
+            it { expect(response).to have_http_status(204) }
+          end
+
+          context 'for beta version' do
+            let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0~beta.167.g2b2bacc (1-5-stable; go1.6.3; linux/amd64)' }
+            it { expect(response).to have_http_status(204) }
+          end
+        end
+
+        context "when runner doesn't send version in User-Agent" do
+          let(:user_agent) { 'Go-http-client/1.1' }
+          it { expect(response).to have_http_status(404) }
+        end
+      end
 
       it "starts a build" do
         register_builds info: { platform: :darwin }
@@ -33,36 +52,30 @@ describe Ci::API::API do
       context 'when builds are finished' do
         before do
           build.success
-        end
-
-        it "returns 404 error if no builds for specific runner" do
           register_builds
-
-          expect(response).to have_http_status(404)
         end
+
+        it_behaves_like 'no builds available'
       end
 
       context 'for other project with builds' do
         before do
           build.success
           create(:ci_build, :pending)
-        end
-
-        it "returns 404 error if no builds for shared runner" do
           register_builds
-
-          expect(response).to have_http_status(404)
         end
+
+        it_behaves_like 'no builds available'
       end
 
       context 'for shared runner' do
         let(:shared_runner) { create(:ci_runner, token: "SharedRunner") }
 
-        it "should return 404 error if no builds for shared runner" do
+        before do
           register_builds shared_runner.token
-
-          expect(response).to have_http_status(404)
         end
+
+        it_behaves_like 'no builds available'
       end
 
       context 'for triggered build' do
@@ -136,18 +149,27 @@ describe Ci::API::API do
         end
 
         context 'when runner is not allowed to pick untagged builds' do
-          before { runner.update_column(:run_untagged, false) }
-
-          it 'does not pick build' do
+          before do
+            runner.update_column(:run_untagged, false)
             register_builds
-
-            expect(response).to have_http_status 404
           end
+
+          it_behaves_like 'no builds available'
         end
       end
 
+      context 'when runner is paused' do
+        let(:inactive_runner) { create(:ci_runner, :inactive, token: "InactiveRunner") }
+
+        before do
+          register_builds inactive_runner.token
+        end
+
+        it { expect(response).to have_http_status 404 }
+      end
+
       def register_builds(token = runner.token, **params)
-        post ci_api("/builds/register"), params.merge(token: token)
+        post ci_api("/builds/register"), params.merge(token: token), { 'User-Agent' => user_agent }
       end
     end
 

@@ -373,8 +373,8 @@ describe Ci::Pipeline, models: true do
   end
 
   describe '#execute_hooks' do
-    let!(:build_a) { create_build('a') }
-    let!(:build_b) { create_build('b') }
+    let!(:build_a) { create_build('a', 0) }
+    let!(:build_b) { create_build('b', 1) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -398,7 +398,7 @@ describe Ci::Pipeline, models: true do
             build_b.enqueue
           end
 
-          it 'receive a pending event once' do
+          it 'receives a pending event once' do
             expect(WebMock).to have_requested_pipeline_hook('pending').once
           end
         end
@@ -411,7 +411,7 @@ describe Ci::Pipeline, models: true do
             build_b.run
           end
 
-          it 'receive a running event once' do
+          it 'receives a running event once' do
             expect(WebMock).to have_requested_pipeline_hook('running').once
           end
         end
@@ -422,8 +422,18 @@ describe Ci::Pipeline, models: true do
             build_b.success
           end
 
-          it 'receive a success event once' do
+          it 'receives a success event once' do
             expect(WebMock).to have_requested_pipeline_hook('success').once
+          end
+        end
+
+        context 'when stage one failed' do
+          before do
+            build_a.drop
+          end
+
+          it 'receives a failed event once' do
+            expect(WebMock).to have_requested_pipeline_hook('failed').once
           end
         end
 
@@ -450,8 +460,12 @@ describe Ci::Pipeline, models: true do
       end
     end
 
-    def create_build(name)
-      create(:ci_build, :created, pipeline: pipeline, name: name)
+    def create_build(name, stage_idx)
+      create(:ci_build,
+             :created,
+             pipeline: pipeline,
+             name: name,
+             stage_idx: stage_idx)
     end
   end
 end

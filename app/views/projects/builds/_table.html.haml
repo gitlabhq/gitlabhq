@@ -1,0 +1,24 @@
+- admin = local_assigns.fetch(:admin, false)
+
+- if builds.blank?
+  %li
+    .nothing-here-block No builds to show
+- else
+  .table-holder
+    %table.table.builds
+      %thead
+        %tr
+          %th Status
+          %th Commit
+          - if admin
+            %th Project
+            %th Runner
+          %th Stage
+          %th Name
+          %th
+          %th Coverage
+          %th
+
+      = render partial: "projects/ci/builds/build", collection: builds, as: :build, locals: { commit_sha: true, ref: true, stage: true, allow_retry: true, coverage: admin || project.build_coverage_enabled?, admin: admin }
+
+  = paginate builds, theme: 'gitlab'

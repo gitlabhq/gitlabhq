@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160906143504) do
+ActiveRecord::Schema.define(version: 20160913162434) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -945,7 +945,6 @@ ActiveRecord::Schema.define(version: 20160906143504) do
     t.boolean  "mirror_trigger_builds",              default: false,     null: false
     t.boolean  "pending_delete",                     default: false
     t.boolean  "public_builds",                      default: true,      null: false
-    t.integer  "pushes_since_gc",                    default: 0
     t.boolean  "last_repository_check_failed"
     t.datetime "last_repository_check_at"
     t.boolean  "container_registry_enabled"

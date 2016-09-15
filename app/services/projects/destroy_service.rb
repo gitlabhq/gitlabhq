@@ -24,6 +24,8 @@ module Projects
       # Git data (e.g. a list of branch names).
       flush_caches(project, wiki_path)
 
+      Projects::UnlinkForkService.new(project, current_user).execute
+
       Project.transaction do
         project.destroy!
         trash_repositories!

@@ -49,7 +49,7 @@ module Gitlab
       end
 
       def author_id
-        gitlab_user_id(raw_data.user.id) || project.creator_id
+        gitlab_author_id || project.creator_id
       end
 
       def body
@@ -57,7 +57,11 @@ module Gitlab
       end
 
       def description
-        @formatter.author_line(author) + body
+        if gitlab_author_id
+          body
+        else
+          formatter.author_line(author) + body
+        end
       end
 
       def milestone

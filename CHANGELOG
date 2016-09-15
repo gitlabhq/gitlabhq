@@ -2,22 +2,29 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 v 8.12.0 (unreleased)
   - Update the rouge gem to 2.0.6, which adds highlighting support for JSX, Prometheus, and others. !6251
+  - Only check :can_resolve permission if the note is resolvable
   - Add ability to fork to a specific namespace using API. (ritave)
   - Cleanup misalignments in Issue list view !6206
   - Prune events older than 12 months. (ritave)
   - Prepend blank line to `Closes` message on merge request linked to issue (lukehowell)
   - Filter tags by name !6121
+  - Update gitlab shell secret file also when it is empty. !3774 (glensc)
   - Give project selection dropdowns responsive width, make non-wrapping.
   - Make push events have equal vertical spacing.
   - Add two-factor recovery endpoint to internal API !5510
   - Pass the "Remember me" value to the U2F authentication form
   - Remove vendor prefixes for linear-gradient CSS (ClemMakesApps)
+  - Move pushes_since_gc from the database to Redis
   - Add font color contrast to external label in admin area (ClemMakesApps)
   - Change logo animation to CSS (ClemMakesApps)
   - Instructions for enabling Git packfile bitmaps !6104
+  - Use Search::GlobalService.new in the `GET /projects/search/:query` endpoint
   - Fix pagination on user snippets page
+  - Fix sorting of issues in API
+  - Ensure specs on sorting of issues in API are deterministic on MySQL
   - Escape search term before passing it to Regexp.new !6241 (winniehell)
   - Fix pinned sidebar behavior in smaller viewports !6169
+  - Fix file permissions change when updating a file on the Gitlab UI !5979
   - Change merge_error column from string to text type
   - Reduce contributions calendar data payload (ClemMakesApps)
   - Add `web_url` field to issue, merge request, and snippet API objects (Ben Boeckel)
@@ -74,6 +81,7 @@ v 8.12.0 (unreleased)
   - Remove inconsistent font weight for sidebar's labels (ClemMakesApps)
   - Align add button on repository view (ClemMakesApps)
   - Fix contributions calendar month label truncation (ClemMakesApps)
+  - Import release note descriptions from GitHub (EspadaV8)
   - Added tests for diff notes
   - Add pipeline events to Slack integration !5525
   - Add a button to download latest successful artifacts for branches and tags !5142
@@ -85,12 +93,14 @@ v 8.12.0 (unreleased)
   - Fix repo title alignment (ClemMakesApps)
   - Change update interval of contacted_at
   - Fix branch title trailing space on hover (ClemMakesApps)
+  - Don't include 'Created By' tag line when importing from GitHub if there is a linked GitLab account (EspadaV8)
   - Award emoji tooltips containing more than 10 usernames are now truncated !4780 (jlogandavison)
   - Fix duplicate "me" in award emoji tooltip !5218 (jlogandavison)
   - Order award emoji tooltips in order they were added (EspadaV8)
   - Fix spacing and vertical alignment on build status icon on commits page (ClemMakesApps)
   - Update merge_requests.md with a simpler way to check out a merge request. !5944
   - Fix button missing type (ClemMakesApps)
+  - Gitlab::Checks is now instrumented
   - Move to project dropdown with infinite scroll for better performance
   - Fix leaking of submit buttons outside the width of a main container !18731 (originally by @pavelloz)
   - Load branches asynchronously in Cherry Pick and Revert dialogs.
@@ -109,6 +119,8 @@ v 8.12.0 (unreleased)
   - Avoid conflict with admin labels when importing GitHub labels
   - User can edit closed MR with deleted fork (Katarzyna Kobierska Ula Budziszewska) !5496
   - Fix repository page ui issues
+  - Avoid protected branches checks when verifying access without branch name
+  - Add information about user and manual build start to runner as variables !6201 (Sergey Gnuskov)
   - Fixed invisible scroll controls on build page on iPhone
   - Fix error on raw build trace download for old builds stored in database !4822
   - Refactor the triggers page and documentation !6217
@@ -116,8 +128,24 @@ v 8.12.0 (unreleased)
   - Use default clone protocol on "check out, review, and merge locally" help page URL
   - API for Ci Lint !5953 (Katarzyna Kobierska Urszula Budziszewska)
   - Allow bulk update merge requests from merge requests index page
+  - Add notification_settings API calls !5632 (mahcsig)
+  - Remove duplication between project builds and admin builds view !5680 (Katarzyna Kobierska Ula Budziszewska)
+  - Fix URLs with anchors in wiki !6300 (houqp)
+  - Deleting source project with existing fork link will close all related merge requests !6177 (Katarzyna Kobierska Ula Budziszeska)
+  - Return 204 instead of 404 for /ci/api/v1/builds/register.json if no builds are scheduled for a runner !6225
+  - Fix Gitlab::Popen.popen thread-safety issue
+  - Add specs to removing project (Katarzyna Kobierska Ula Budziszewska)
+  - Clean environment variables when running git hooks
 
-v 8.11.6 (unreleased)
+v 8.11.6
+  - Fix unnecessary horizontal scroll area in pipeline visualizations. !6005
+  - Make merge conflict file size limit 200 KB, to match the docs. !6052
+  - Fix an error where we were unable to create a CommitStatus for running state. !6107
+  - Optimize discussion notes resolving and unresolving. !6141
+  - Fix GitLab import button. !6167
+  - Restore SSH Key title auto-population behavior. !6186
+  - Fix DB schema to match latest migration. !6256
+  - Exclude some pending or inactivated rows in Member scopes.
 
 v 8.11.5
   - Optimize branch lookups and force a repository reload for Repository#find_branch. !6087
@@ -323,6 +351,13 @@ v 8.11.0
   - Eliminate unneeded calls to Repository#blob_at when listing commits with no path
   - Update gitlab_git gem to 10.4.7
   - Simplify SQL queries of marking a todo as done
+
+v 8.10.9
+  - Exclude some pending or inactivated rows in Member scopes
+
+v 8.10.8
+  - Fix information disclosure in issue boards.
+  - Fix privilege escalation in project import.
 
 v 8.10.7
   - Upgrade Hamlit to 2.6.1. !5873
@@ -552,6 +587,9 @@ v 8.10.0
   - Export and import avatar as part of project import/export
   - Fix migration corrupting import data for old version upgrades
   - Show tooltip on GitLab export link in new project page
+
+v 8.9.9
+  - Exclude some pending or inactivated rows in Member scopes
 
 v 8.9.8
   - Upgrade Doorkeeper to 4.2.0. !5881

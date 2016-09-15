@@ -55,6 +55,7 @@ module API
     mount ::API::Milestones
     mount ::API::Namespaces
     mount ::API::Notes
+    mount ::API::NotificationSettings
     mount ::API::Pipelines
     mount ::API::ProjectHooks
     mount ::API::ProjectGitHook # TODO: Should be removed after 8.11 is released
