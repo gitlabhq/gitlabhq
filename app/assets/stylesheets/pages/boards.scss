@@ -1,3 +1,4 @@
+lex
 [v-cloak] {
   display: none;
 }
@@ -76,6 +77,7 @@
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   white-space: normal;
+  vertical-align: top;
 
   @media (min-width: $screen-sm-min) {
     width: 400px;
@@ -83,10 +85,6 @@
 }
 
 .board-inner {
-  display: -webkit-flex;
-  display: flex;
-  -webkit-flex-direction: column;
-  flex-direction: column;
   height: 100%;
   font-size: $issue-boards-font-size;
   background: $background-color;
@@ -158,7 +156,7 @@
 }
 
 .board-list {
-  height: 100%;
+  height: calc(100% - 49px);
   margin-bottom: 0;
   padding: 5px;
   list-style: none;
