@@ -30,18 +30,25 @@ describe API::Members, api: true  do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
       end
 
-      context 'when authenticated as a non-member' do
-        %i[access_requester stranger].each do |type|
-          context "as a #{type}" do
-            it 'returns 200' do
-              user = public_send(type)
-              get api("/#{source_type.pluralize}/#{source.id}/members", user)
+      %i[master developer access_requester stranger].each do |type|
+        context "when authenticated as a #{type}" do
+          it 'returns 200' do
+            user = public_send(type)
+            get api("/#{source_type.pluralize}/#{source.id}/members", user)
 
-              expect(response).to have_http_status(200)
-              expect(json_response.size).to eq(2)
-            end
+            expect(response).to have_http_status(200)
+            expect(json_response.size).to eq(2)
           end
         end
+      end
+
+      it 'does not return invitees' do
+        invitee = create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
+
+        get api("/#{source_type.pluralize}/#{source.id}/members", developer)
+
+        expect(response).to have_http_status(200)
+        expect(json_response.size).to eq(2)
       end
 
       it 'finds members with query string' do
