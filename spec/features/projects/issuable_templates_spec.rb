@@ -13,10 +13,12 @@ feature 'issuable templates', feature: true, js: true do
 
   context 'user creates an issue using templates' do
     let(:template_content) { 'this is a test "bug" template' }
+    let(:longtemplate_content) { %Q(this\n\n\n\n\nis\n\n\n\n\na\n\n\n\n\nbug\n\n\n\n\ntemplate) }
     let(:issue) { create(:issue, author: user, assignee: user, project: project) }
 
     background do
       project.repository.commit_file(user, '.gitlab/issue_templates/bug.md', template_content, 'added issue template', 'master', false)
+      project.repository.commit_file(user, '.gitlab/issue_templates/test.md', longtemplate_content, 'added issue template', 'master', false)
       visit edit_namespace_project_issue_path project.namespace, project, issue
       fill_in :'issue[title]', with: 'test issue title'
     end
@@ -26,6 +28,17 @@ feature 'issuable templates', feature: true, js: true do
       wait_for_ajax
       preview_template
       save_changes
+    end
+
+    it 'updates height of markdown textarea' do
+      start_height = page.evaluate_script('$(".markdown-area").outerHeight()')
+
+      select_template 'test'
+      wait_for_ajax
+
+      end_height = page.evaluate_script('$(".markdown-area").outerHeight()')
+      
+      expect(end_height).not_to eq(start_height)
     end
   end
 

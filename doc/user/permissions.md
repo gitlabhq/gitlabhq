@@ -63,7 +63,7 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches [^2] |         |            |             |          |        |
 | Remove protected branches [^2]        |         |            |             |          |        |
 
-[^1]: If **Allow guest to access builds** is enabled in CI settings
+[^1]: If **Public pipelines** is enabled in **Project Settings > CI/CD Pipelines**
 [^2]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 
 ## Group

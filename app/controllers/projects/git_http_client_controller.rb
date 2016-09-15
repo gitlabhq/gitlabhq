@@ -4,7 +4,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   include ActionController::HttpAuthentication::Basic
   include KerberosSpnegoHelper
 
-  attr_reader :user, :capabilities
+  attr_reader :actor, :capabilities
 
   # Git clients will not know what authenticity token to send along
   skip_before_action :verify_authenticity_token
@@ -21,31 +21,14 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     if allow_basic_auth? && basic_auth_provided?
       login, password = user_name_and_password(request)
-      auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
 
-      if auth_result.type == :ci && !download_request?
-        # Not allowed
-        auth_result = Gitlab::Auth::Result.new
-      elsif auth_result.type == :oauth && !download_request?
-        # Not allowed
-        auth_result = Gitlab::Auth::Result.new
-      elsif auth_result.type == :missing_personal_token
-        render_missing_personal_token
-        return # Render above denied access, nothing left to do
-      else
-        @user = auth_result.user
-      end
-
-      @capabilities = auth_result.capabilities || []
-      @ci = auth_result.type == :ci
-
-      if auth_result.succeeded?
+      if handle_basic_authentication(login, password)
         return # Allow access
       end
     elsif allow_kerberos_spnego_auth? && spnego_provided?
-      @user = find_kerberos_user
+      @actor = find_kerberos_user
 
-      if user
+      if actor
         send_final_spnego_response
         return # Allow access
       end
@@ -53,6 +36,8 @@ class Projects::GitHttpClientController < Projects::ApplicationController
 
     send_challenges
     render plain: "HTTP Basic: Access denied\n", status: 401
+  rescue Gitlab::Auth::MissingPersonalTokenError
+    render_missing_personal_token
   end
 
   def basic_auth_provided?
@@ -120,7 +105,49 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   end
 
   def ci?
-    @ci.present?
+    @ci
+  end
+
+  def user
+    @actor
+  end
+
+  def handle_basic_authentication(login, password)
+    auth_result = Gitlab::Auth.find_for_git_client(login, password, project: project, ip: request.ip)
+
+    case auth_result.type
+    when :ci
+      if download_request?
+        @ci = true
+      else
+        return false
+      end
+    when :oauth
+      if download_request?
+        @actor = auth_result.actor
+        @capabilities = auth_result.capabilities
+      else
+        return false
+      end
+    when :lfs_deploy_token
+      if download_request?
+        @lfs_deploy_key = true
+        @actor = auth_result.actor
+        @capabilities = auth_result.capabilities
+      end
+    when :lfs_token, :personal_token, :gitlab_or_ldap, :build
+      @actor = auth_result.actor
+      @capabilities = auth_result.capabilities
+    else
+      # Not allowed
+      return false
+    end
+
+    true
+  end
+
+  def lfs_deploy_key?
+    @lfs_deploy_key && actor && actor.projects.include?(project)
   end
 
   def has_capability?(capability)

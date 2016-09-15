@@ -105,7 +105,8 @@ What is important is that each job is run independently from each other.
 
 If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
 Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
-the link under **Settings > CI settings** in your project.
+a "CI Lint" button to go to this page under **Pipelines > Pipelines** and
+**Pipelines > Builds** in your project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
 [the documentation on .gitlab-ci.yml](../yaml/README.md).

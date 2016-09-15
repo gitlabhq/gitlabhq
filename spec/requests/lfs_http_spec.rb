@@ -246,6 +246,18 @@ describe 'Git LFS API and storage' do
           end
         end
 
+        context 'when deploy key is authorized' do
+          let(:key) { create(:deploy_key) }
+          let(:authorization) { authorize_deploy_key }
+
+          let(:update_permissions) do
+            project.deploy_keys << key
+            project.lfs_objects << lfs_object
+          end
+
+          it_behaves_like 'responds with a file'
+        end
+
         context 'when build is authorized' do
           let(:authorization) { authorize_ci_project }
 
@@ -904,6 +916,10 @@ describe 'Git LFS API and storage' do
 
   def authorize_user
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, user.password)
+  end
+
+  def authorize_deploy_key
+    ActionController::HttpAuthentication::Basic.encode_credentials("lfs+deploy-key-#{key.id}", Gitlab::LfsToken.new(key).generate)
   end
 
   def fork_project(project, user, object = nil)
